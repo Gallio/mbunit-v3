@@ -17,16 +17,17 @@ namespace MbUnit.GUI
 
             // Set the application version in the window title.
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            this.Text = String.Format(this.Text, appVersion.Major, appVersion.Minor, appVersion.Build);
+            this.Text = String.Format(this.Text, appVersion.Major, appVersion.Minor);
 
         }
 
         private void Form_Load(object sender, EventArgs e)
         {
-            ddlTreeFilter.SelectedIndex = 1;
+            treeFilterCombo.SelectedIndex = 1;
+            filterTestResultsCombo.SelectedIndex = 0;
 
             TreeNode project = new TreeNode("Test Project 1.0", 0, 0);
-            treeFunctions.Nodes.Add(project);
+            projectTree.Nodes.Add(project);
 
             TreeNode namespaces = new TreeNode("Namespaces", 0, 0);
             project.Nodes.Add(namespaces);
@@ -38,30 +39,30 @@ namespace MbUnit.GUI
             ns.Nodes.Add(cl);
 
             TreeNode m1 = new TreeNode("TestMethod", 3, 3);
-            m1.Tag = Color.Green;
+            m1.ForeColor = Color.Green;
             cl.Nodes.Add(m1);
 
             TreeNode m2 = new TreeNode("AnotherMethod", 3, 3);
-            m2.Tag = Color.Red;
+            m2.ForeColor = Color.Red;
             cl.Nodes.Add(m2);
 
             TreeNode cl2 = new TreeNode("Class2", 2, 2);
             ns.Nodes.Add(cl2);
 
             TreeNode m3 = new TreeNode("MethodThatWorks", 3, 3);
-            m3.Tag = Color.Green;
+            m3.ForeColor = Color.Green;
             cl2.Nodes.Add(m3);
 
             TreeNode m4 = new TreeNode("DoesntWork", 3, 3);
-            m4.Tag = Color.Red;
+            m4.ForeColor = Color.Red;
             cl2.Nodes.Add(m4);
 
             TreeNode m5 = new TreeNode("DoGetProgress", 3, 3);
-            m5.Tag = Color.Green;
+            m5.ForeColor = Color.Green;
             cl2.Nodes.Add(m5);
 
             TreeNode m6 = new TreeNode("BuildTree", 3, 3);
-            m6.Tag = Color.Green;
+            m6.ForeColor = Color.Green;
             cl2.Nodes.Add(m6);
 
             project.ExpandAll();
@@ -73,46 +74,55 @@ namespace MbUnit.GUI
             Application.Exit();
         }
 
-        private void linkSummary_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (panelResults.Height >= 149)
-            {
-                linkSummary.Text = "Show test summary...";
+        //private void linkSummary_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        //{
+        //    if (panelResults.Height >= 149)
+        //    {
+        //        linkSummary.Text = "Show test summary...";
 
-                while (panelResults.Height >= 68)
-                {
-                    panelResults.Height -= 4;
-                    Application.DoEvents();
-                }
-            }
-            else
-            {
-                linkSummary.Text = "Hide test summary...";
+        //        while (panelResults.Height >= 68)
+        //        {
+        //            panelResults.Height -= 4;
+        //            Application.DoEvents();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        linkSummary.Text = "Hide test summary...";
 
-                while (panelResults.Height <= 149)
-                {
-                    panelResults.Height += 4;
-                    Application.DoEvents();
-                }
-            }
-        }
+        //        while (panelResults.Height <= 149)
+        //        {
+        //            panelResults.Height += 4;
+        //            Application.DoEvents();
+        //        }
+        //    }
+        //}
 
         private void tlbStart_Click(object sender, EventArgs e)
         {
-            testStatusBar1.Clear();
-            testStatusBar1.Total = 50;
-            for (int i = 0; i < testStatusBar1.Total; i++)
+            testProgressStatusBar.Clear();
+            testProgressStatusBar.Total = 50;
+            for (int i = 0; i < testProgressStatusBar.Total; i++)
             {
                 if (i == 12 || i == 20 || i == 28 || i == 29 || i == 38 || i == 40 || i == 45 || i == 46 || i == 47 || i == 18 || i == 25)
-                    testStatusBar1.Failed += 1;
+                    testProgressStatusBar.Failed += 1;
                 else if (i == 30 || i == 42)
-                    testStatusBar1.Ignored += 1;
+                    testProgressStatusBar.Ignored += 1;
                 else
-                    testStatusBar1.Passed += 1;
+                    testProgressStatusBar.Passed += 1;
 
                 Application.DoEvents();
                 System.Threading.Thread.Sleep(50);
             }
+        }
+
+        private void aboutMenuItem_Click(object sender, EventArgs e)
+        {
+            About aboutForm = new About();
+            aboutForm.ShowDialog();
+
+            if (aboutForm != null)
+                aboutForm.Dispose();
         }
     }
 }

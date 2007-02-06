@@ -65,11 +65,11 @@ namespace MbUnit.GUI.Controls
                 float right = r.Left + width;
                 DrawProgressRegion(e.Graphics, r, left, width, passedColor);
 
-                // Draw failed region.
-                width = r.Width * (this.failedTests / (float)this.totalTests);
+                // Draw ignored region.
+                width = r.Width * (this.ignoredTests / (float)this.totalTests);
                 left = right;
                 right = left + width;
-                DrawProgressRegion(e.Graphics, r, left, width, failedColor);
+                DrawProgressRegion(e.Graphics, r, left, width, ignoredColor);
 
                 // Draw skipped region.
                 width = r.Width * (this.skippedTests / (float)this.totalTests);
@@ -77,11 +77,11 @@ namespace MbUnit.GUI.Controls
                 right = left + width;
                 DrawProgressRegion(e.Graphics, r, left, width, skippedColor);
 
-                // Draw ignored region.
-                width = r.Width * (this.ignoredTests / (float)this.totalTests);
+                // Draw failed region.
+                width = r.Width * (this.failedTests / (float)this.totalTests);
                 left = right;
                 right = left + width;
-                DrawProgressRegion(e.Graphics, r, left, width, ignoredColor);
+                DrawProgressRegion(e.Graphics, r, left, width, failedColor);
             }
 
             // Draw a border around the control.
@@ -92,9 +92,9 @@ namespace MbUnit.GUI.Controls
                 this.Text,
                 this.totalTests,
                 this.passedTests,
-                this.failedTests,
-                this.skippedTests,
                 this.ignoredTests,
+                this.skippedTests,
+                this.failedTests,
                 this.elapsedTime
                 );
 
@@ -277,7 +277,7 @@ namespace MbUnit.GUI.Controls
         public override string Text
         {
             // Force the control to display this text always.
-            get { return "{0} tests - {1} successes - {2} failures - {3} skipped - {4} ignored - {5:0.0}s"; }
+            get { return "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s"; }
         }
 
         [Browsable(false)]
