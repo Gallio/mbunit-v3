@@ -124,5 +124,25 @@ namespace MbUnit.GUI
             if (aboutForm != null)
                 aboutForm.Dispose();
         }
+
+        private void Main_SizeChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+                this.Hide();
+        }
+
+        private void trayIcon_DoubleClick(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Minimized;
+                this.Hide();
+            }
+        }
     }
 }

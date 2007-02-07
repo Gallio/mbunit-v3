@@ -73,7 +73,6 @@ namespace MbUnit.GUI
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.projectTabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.projectTree = new MbUnit.GUI.Controls.TestTreeView();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.assemblyList = new System.Windows.Forms.ListView();
             this.columnHeader9 = new System.Windows.Forms.ColumnHeader();
@@ -99,8 +98,10 @@ namespace MbUnit.GUI
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panelResults = new System.Windows.Forms.Panel();
-            this.testProgressStatusBar = new MbUnit.GUI.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
+            this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.projectTree = new MbUnit.GUI.Controls.TestTreeView();
+            this.testProgressStatusBar = new MbUnit.GUI.Controls.TestStatusBar();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -483,19 +484,6 @@ namespace MbUnit.GUI
             this.tabPage3.Text = "Class View";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // projectTree
-            // 
-            this.projectTree.CheckBoxes = true;
-            this.projectTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.projectTree.ImageIndex = 0;
-            this.projectTree.ImageList = this.treeImages;
-            this.projectTree.Location = new System.Drawing.Point(3, 3);
-            this.projectTree.Name = "projectTree";
-            this.projectTree.SelectedImageIndex = 0;
-            this.projectTree.Size = new System.Drawing.Size(302, 565);
-            this.projectTree.TabIndex = 2;
-            this.projectTree.TestStateImageList = this.stateImages;
-            // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.assemblyList);
@@ -710,6 +698,35 @@ namespace MbUnit.GUI
             this.panelResults.Size = new System.Drawing.Size(673, 56);
             this.panelResults.TabIndex = 0;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(61, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Test Status";
+            // 
+            // trayIcon
+            // 
+            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
+            this.trayIcon.Text = "MbUnit Icarus";
+            this.trayIcon.Visible = true;
+            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
+            // 
+            // projectTree
+            // 
+            this.projectTree.CheckBoxes = true;
+            this.projectTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.projectTree.ImageIndex = 0;
+            this.projectTree.ImageList = this.treeImages;
+            this.projectTree.Location = new System.Drawing.Point(3, 3);
+            this.projectTree.Name = "projectTree";
+            this.projectTree.SelectedImageIndex = 0;
+            this.projectTree.Size = new System.Drawing.Size(302, 565);
+            this.projectTree.TabIndex = 2;
+            this.projectTree.TestStateImageList = this.stateImages;
+            // 
             // testProgressStatusBar
             // 
             this.testProgressStatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -732,15 +749,6 @@ namespace MbUnit.GUI
             this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
             this.testProgressStatusBar.Total = 0;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 6);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Test Status";
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -753,6 +761,7 @@ namespace MbUnit.GUI
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Main";
             this.Text = "MbUnit Icarus {0}.{1}";
+            this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
             this.Load += new System.EventHandler(this.Form_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
@@ -857,6 +866,7 @@ namespace MbUnit.GUI
         private System.Windows.Forms.ToolStripMenuItem textReportToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem dOXReportToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.NotifyIcon trayIcon;
     }
 }
 
