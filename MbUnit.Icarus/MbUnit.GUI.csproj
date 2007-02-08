@@ -42,9 +42,12 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Enums\CheckBoxState.cs" />
+    <Compile Include="Controls\Enums\TestState.cs" />
     <Compile Include="Controls\TestStatusBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TestTreeNode.cs" />
     <Compile Include="Controls\TestTreeView.cs">
       <SubType>Component</SubType>
     </Compile>

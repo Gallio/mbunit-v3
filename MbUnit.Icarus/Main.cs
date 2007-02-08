@@ -7,6 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
 
+using MbUnit.GUI.Controls;
+using MbUnit.GUI.Controls.Enums;
+
 namespace MbUnit.GUI
 {
     public partial class Main : Form
@@ -26,43 +29,43 @@ namespace MbUnit.GUI
             treeFilterCombo.SelectedIndex = 1;
             filterTestResultsCombo.SelectedIndex = 0;
 
-            TreeNode project = new TreeNode("Test Project 1.0", 0, 0);
+            TestTreeNode project = new TestTreeNode("Test Project 1.0", 0, 0);
             projectTree.Nodes.Add(project);
 
-            TreeNode namespaces = new TreeNode("Namespaces", 0, 0);
+            TestTreeNode namespaces = new TestTreeNode("Namespaces", 0, 0);
             project.Nodes.Add(namespaces);
 
-            TreeNode ns = new TreeNode("TestNamespace", 1, 1);
+            TestTreeNode ns = new TestTreeNode("TestNamespace", 1, 1);
             namespaces.Nodes.Add(ns);
 
-            TreeNode cl = new TreeNode("Class1", 2, 2);
+            TestTreeNode cl = new TestTreeNode("Class1", 2, 2);
             ns.Nodes.Add(cl);
 
-            TreeNode m1 = new TreeNode("TestMethod", 3, 3);
-            m1.ForeColor = Color.Green;
+            TestTreeNode m1 = new TestTreeNode("TestMethod", 3, 3);
+            m1.TestState = TestState.Success;
             cl.Nodes.Add(m1);
 
-            TreeNode m2 = new TreeNode("AnotherMethod", 3, 3);
-            m2.ForeColor = Color.Red;
+            TestTreeNode m2 = new TestTreeNode("AnotherMethod", 3, 3);
+            m2.TestState = TestState.Failure;
             cl.Nodes.Add(m2);
 
-            TreeNode cl2 = new TreeNode("Class2", 2, 2);
+            TestTreeNode cl2 = new TestTreeNode("Class2", 2, 2);
             ns.Nodes.Add(cl2);
 
-            TreeNode m3 = new TreeNode("MethodThatWorks", 3, 3);
-            m3.ForeColor = Color.Green;
+            TestTreeNode m3 = new TestTreeNode("MethodThatWorks", 3, 3);
+            m3.TestState = TestState.Success;
             cl2.Nodes.Add(m3);
 
-            TreeNode m4 = new TreeNode("DoesntWork", 3, 3);
-            m4.ForeColor = Color.Red;
+            TestTreeNode m4 = new TestTreeNode("DoesntWork", 3, 3);
+            m4.TestState = TestState.Failure;
             cl2.Nodes.Add(m4);
 
-            TreeNode m5 = new TreeNode("DoGetProgress", 3, 3);
-            m5.ForeColor = Color.Green;
+            TestTreeNode m5 = new TestTreeNode("DoGetProgress", 3, 3);
+            m5.TestState = TestState.Success;
             cl2.Nodes.Add(m5);
 
-            TreeNode m6 = new TreeNode("BuildTree", 3, 3);
-            m6.ForeColor = Color.Green;
+            TestTreeNode m6 = new TestTreeNode("BuildTree", 3, 3);
+            m6.TestState = TestState.Success;
             cl2.Nodes.Add(m6);
 
             project.ExpandAll();
@@ -143,6 +146,11 @@ namespace MbUnit.GUI
                 this.WindowState = FormWindowState.Minimized;
                 this.Hide();
             }
+        }
+
+        private void reloadToolbarButton_Click(object sender, EventArgs e)
+        {
+            trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.", ToolTipIcon.Error);
         }
     }
 }

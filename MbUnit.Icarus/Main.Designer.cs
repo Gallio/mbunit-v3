@@ -61,9 +61,9 @@ namespace MbUnit.GUI
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.reloadToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.tlbStart = new System.Windows.Forms.ToolStripButton();
+            this.startToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
@@ -100,6 +100,12 @@ namespace MbUnit.GUI
             this.panelResults = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.classTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.expanedFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectTree = new MbUnit.GUI.Controls.TestTreeView();
             this.testProgressStatusBar = new MbUnit.GUI.Controls.TestStatusBar();
             this.menuStrip.SuspendLayout();
@@ -119,6 +125,7 @@ namespace MbUnit.GUI
             this.testResultsTabPage.SuspendLayout();
             this.resultsFilterPanel.SuspendLayout();
             this.panelResults.SuspendLayout();
+            this.classTreeMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -324,15 +331,15 @@ namespace MbUnit.GUI
             this.toolStripButton1,
             this.toolStripButton2,
             this.toolStripSeparator1,
-            this.toolStripButton6,
+            this.reloadToolbarButton,
             this.toolStripSeparator6,
-            this.tlbStart,
+            this.startToolbarButton,
             this.toolStripButton4,
             this.toolStripSeparator2,
             this.toolStripButton5});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(258, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(289, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
@@ -360,28 +367,29 @@ namespace MbUnit.GUI
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton6
+            // reloadToolbarButton
             // 
-            this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
-            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(60, 22);
-            this.toolStripButton6.Text = "Reload";
+            this.reloadToolbarButton.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolbarButton.Image")));
+            this.reloadToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.reloadToolbarButton.Name = "reloadToolbarButton";
+            this.reloadToolbarButton.Size = new System.Drawing.Size(60, 22);
+            this.reloadToolbarButton.Text = "Reload";
+            this.reloadToolbarButton.Click += new System.EventHandler(this.reloadToolbarButton_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
-            // tlbStart
+            // startToolbarButton
             // 
-            this.tlbStart.Image = ((System.Drawing.Image)(resources.GetObject("tlbStart.Image")));
-            this.tlbStart.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tlbStart.Name = "tlbStart";
-            this.tlbStart.Size = new System.Drawing.Size(51, 22);
-            this.tlbStart.Text = "Start";
-            this.tlbStart.ToolTipText = "Start Tests";
-            this.tlbStart.Click += new System.EventHandler(this.tlbStart_Click);
+            this.startToolbarButton.Image = ((System.Drawing.Image)(resources.GetObject("startToolbarButton.Image")));
+            this.startToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.startToolbarButton.Name = "startToolbarButton";
+            this.startToolbarButton.Size = new System.Drawing.Size(51, 22);
+            this.startToolbarButton.Text = "Start";
+            this.startToolbarButton.ToolTipText = "Start Tests";
+            this.startToolbarButton.Click += new System.EventHandler(this.tlbStart_Click);
             // 
             // toolStripButton4
             // 
@@ -714,10 +722,53 @@ namespace MbUnit.GUI
             this.trayIcon.Visible = true;
             this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
             // 
+            // classTreeMenuStrip
+            // 
+            this.classTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.expandAllToolStripMenuItem,
+            this.collapseAllToolStripMenuItem,
+            this.toolStripSeparator7,
+            this.expanedFailedToolStripMenuItem,
+            this.collapseFailedToolStripMenuItem});
+            this.classTreeMenuStrip.Name = "classTreeMenuStrip";
+            this.classTreeMenuStrip.Size = new System.Drawing.Size(157, 98);
+            // 
+            // expandAllToolStripMenuItem
+            // 
+            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
+            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.expandAllToolStripMenuItem.Text = "&Expand All";
+            // 
+            // collapseAllToolStripMenuItem
+            // 
+            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
+            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.collapseAllToolStripMenuItem.Text = "&Collapse All";
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(153, 6);
+            // 
+            // expanedFailedToolStripMenuItem
+            // 
+            this.expanedFailedToolStripMenuItem.Name = "expanedFailedToolStripMenuItem";
+            this.expanedFailedToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.expanedFailedToolStripMenuItem.Text = "Expand &Failed";
+            // 
+            // collapseFailedToolStripMenuItem
+            // 
+            this.collapseFailedToolStripMenuItem.Name = "collapseFailedToolStripMenuItem";
+            this.collapseFailedToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.collapseFailedToolStripMenuItem.Text = "Collapse F&ailed";
+            // 
             // projectTree
             // 
             this.projectTree.CheckBoxes = true;
+            this.projectTree.ContextMenuStrip = this.classTreeMenuStrip;
             this.projectTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.projectTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.projectTree.HideSelection = false;
             this.projectTree.ImageIndex = 0;
             this.projectTree.ImageList = this.treeImages;
             this.projectTree.Location = new System.Drawing.Point(3, 3);
@@ -788,6 +839,7 @@ namespace MbUnit.GUI
             this.resultsFilterPanel.PerformLayout();
             this.panelResults.ResumeLayout(false);
             this.panelResults.PerformLayout();
+            this.classTreeMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -806,7 +858,7 @@ namespace MbUnit.GUI
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripButton tlbStart;
+        private System.Windows.Forms.ToolStripButton startToolbarButton;
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButton5;
@@ -832,7 +884,7 @@ namespace MbUnit.GUI
         private System.Windows.Forms.Panel panelResults;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.ToolStripButton toolStripButton6;
+        private System.Windows.Forms.ToolStripButton reloadToolbarButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ImageList treeImages;
         private System.Windows.Forms.ListView testResultsList;
@@ -867,6 +919,12 @@ namespace MbUnit.GUI
         private System.Windows.Forms.ToolStripMenuItem dOXReportToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.NotifyIcon trayIcon;
+        private System.Windows.Forms.ContextMenuStrip classTreeMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem expanedFailedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem collapseFailedToolStripMenuItem;
     }
 }
 
