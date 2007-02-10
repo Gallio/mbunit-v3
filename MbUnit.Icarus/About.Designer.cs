@@ -134,17 +134,17 @@ namespace MbUnit.GUI
             this.projectContributorsLabel.Name = "projectContributorsLabel";
             this.projectContributorsLabel.Size = new System.Drawing.Size(287, 31);
             this.projectContributorsLabel.TabIndex = 3;
-            this.projectContributorsLabel.Text = "jcansdale, ben2004uk, grahamrhay, johan.appelgren, joeycalisay, dparkinson, jeff." +
-                "brown, marcstober";
+            this.projectContributorsLabel.Text = "Ben Hall, Graham Hay, Johan Appelgren, Joey Calisay, Dave Parkinson, Jeff Brown, " +
+                "Marc Stober, Mark Haley";
             // 
             // projectLeadsLabel
             // 
             this.projectLeadsLabel.AutoSize = true;
             this.projectLeadsLabel.Location = new System.Drawing.Point(22, 35);
             this.projectLeadsLabel.Name = "projectLeadsLabel";
-            this.projectLeadsLabel.Size = new System.Drawing.Size(106, 13);
+            this.projectLeadsLabel.Size = new System.Drawing.Size(86, 13);
             this.projectLeadsLabel.TabIndex = 2;
-            this.projectLeadsLabel.Text = "astopford, jay.flowers";
+            this.projectLeadsLabel.Text = "Andrew Stopford";
             // 
             // label4
             // 

@@ -162,8 +162,11 @@ namespace MbUnit.GUI
 
         private void Main_SizeChanged(object sender, EventArgs e)
         {
+
             if (this.WindowState == FormWindowState.Minimized)
-                this.Hide();
+            {
+                this.Hide();        
+            }
         }
 
         private void trayIcon_DoubleClick(object sender, EventArgs e)
@@ -171,7 +174,7 @@ namespace MbUnit.GUI
             if (this.WindowState == FormWindowState.Minimized)
             {
                 this.Show();
-                this.WindowState = FormWindowState.Normal;
+                this.WindowState = FormWindowState.Normal;           
             }
             else
             {

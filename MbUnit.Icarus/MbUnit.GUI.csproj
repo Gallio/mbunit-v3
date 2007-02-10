@@ -87,9 +87,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\FailMb.ico" />
     <Content Include="Resources\MbUnit.ico" />
     <Content Include="Resources\MbUnitLogo.png" />
     <Content Include="Resources\MbUnitLogoText.png" />
+    <Content Include="Resources\PassMb.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ICSharpCode.TextEditor\ICSharpCode.TextEditor.csproj">
