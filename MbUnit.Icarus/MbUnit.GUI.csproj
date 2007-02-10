@@ -28,6 +28,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.TextEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Components\ICSharpCode.TextEditor.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -97,17 +101,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Components\ICSharpCode.TextEditor.dll" />
+    <Content Include="Components\ICSharpCode.TextEditor.pdb" />
     <Content Include="Resources\FailMb.ico" />
     <Content Include="Resources\MbUnit.ico" />
     <Content Include="Resources\MbUnitLogo.png" />
     <Content Include="Resources\MbUnitLogoText.png" />
     <Content Include="Resources\PassMb.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="ICSharpCode.TextEditor\ICSharpCode.TextEditor.csproj">
-      <Project>{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}</Project>
-      <Name>ICSharpCode.TextEditor</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

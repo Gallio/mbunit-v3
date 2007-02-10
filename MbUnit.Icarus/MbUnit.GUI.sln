@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.GUI", "MbUnit.GUI.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.TextEditor", "ICSharpCode.TextEditor\ICSharpCode.TextEditor.csproj", "{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,10 +12,6 @@ Global
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
