@@ -14,6 +14,8 @@ using ICSharpCode.TextEditor.Document;
 using ICSharpCode.TextEditor.Actions;
 using ICSharpCode.TextEditor;
 
+using ZedGraph;
+
 namespace MbUnit.GUI
 {
     public partial class Main : Form
@@ -26,40 +28,62 @@ namespace MbUnit.GUI
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             this.Text = String.Format(this.Text, appVersion.Major, appVersion.Minor);
 
-//            textEditorControl1.ShowEOLMarkers = false;
-//            textEditorControl1.ShowInvalidLines = false;
-//            textEditorControl1.ShowSpaces = false;
-//            textEditorControl1.ShowTabs = false;
+            GraphPane graphPane = zedGraphControl1.GraphPane;
+            graphPane.Title.Text = "Total Test Results";
+            graphPane.XAxis.Title.Text = "Number of Tests";
+            graphPane.YAxis.Title.Text = "Test Suites";
 
-//            textEditorControl1.Document.HighlightingStrategy = HighlightingManager.Manager.FindHighlighter("C#");
 
-//            textEditorControl1.Text = @"
-//using System;
-//using System.Collections.Generic;
-//using System.Windows.Forms;
-//
-//namespace MbUnit.GUI
-//{
-//    static class Program
-//    {
-//        /// <summary>
-//        /// The main entry point for the application.
-//        /// </summary>
-//        [STAThread]
-//        static void Main()
-//        {
-//            Application.EnableVisualStyles();
-//            Application.SetCompatibleTextRenderingDefault(false);
-//            Application.Run(new Main());
-//        }
-//    }
-//}";
+            // Make up some data points
+            string[] labels = { "Test Assembly 1", "Test Assembly 2"};
+            double[] x = {1, 2};
+            double[] x2 = {1, 5};
+            double[] x3 = {4, 10};
+
+            // Generate a red bar with "Curve 1" in the legend
+            BarItem myCurve = graphPane.AddBar("Fail", x, null, Color.Red);
+            // Fill the bar with a red-white-red color gradient for a 3d look
+            myCurve.Bar.Fill = new Fill(Color.Red, Color.White, Color.Red, 90f);
+
+            // Generate a blue bar with "Curve 2" in the legend
+            myCurve = graphPane.AddBar("Ignore", x2, null, Color.Yellow);
+            // Fill the bar with a Blue-white-Blue color gradient for a 3d look
+            myCurve.Bar.Fill = new Fill(Color.Blue, Color.White, Color.Blue, 90f);
+
+            // Generate a green bar with "Curve 3" in the legend
+            myCurve = graphPane.AddBar("Pass", x3, null, Color.Green);
+            // Fill the bar with a Green-white-Green color gradient for a 3d look
+            myCurve.Bar.Fill = new Fill(Color.Green, Color.White, Color.Green, 90f);
+
+            // Draw the Y tics between the labels instead of at the labels
+            graphPane.YAxis.MajorTic.IsBetweenLabels = true;
+
+            // Set the YAxis labels
+            graphPane.YAxis.Scale.TextLabels = labels;
+            // Set the YAxis to Text type
+            graphPane.YAxis.Type = AxisType.Text;
+
+            // Set the bar type to stack, which stacks the bars by automatically accumulating the values
+            graphPane.BarSettings.Type = BarType.Stack;
+
+            // Make the bars horizontal by setting the BarBase to "Y"
+            graphPane.BarSettings.Base = BarBase.Y;
+
+            // Fill the chart background with a color gradient
+            graphPane.Chart.Fill = new Fill(Color.White,
+               Color.FromArgb(255, 255, 166), 45.0F);
+                      
+            zedGraphControl1.AxisChange();
+
+
+
         }
 
         private void Form_Load(object sender, EventArgs e)
         {
             treeFilterCombo.SelectedIndex = 1;
             filterTestResultsCombo.SelectedIndex = 0;
+            graphsFilterBox1.SelectedIndex = 0;
 
             TestTreeNode project = new TestTreeNode("Test Project 1.0", 0, 0);
             projectTree.Nodes.Add(project);

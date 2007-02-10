@@ -49,6 +49,7 @@ namespace MbUnit.GUI
             this.textReportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.textReportToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.dOXReportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.scriptingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,6 +74,7 @@ namespace MbUnit.GUI
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.projectTabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.projectTree = new MbUnit.GUI.Controls.TestTreeView();
             this.classTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -103,12 +105,14 @@ namespace MbUnit.GUI
             this.label3 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.graphsFilterBox1 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.panelResults = new System.Windows.Forms.Panel();
+            this.testProgressStatusBar = new MbUnit.GUI.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.projectTree = new MbUnit.GUI.Controls.TestTreeView();
-            this.testProgressStatusBar = new MbUnit.GUI.Controls.TestStatusBar();
-            this.scriptingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -126,6 +130,8 @@ namespace MbUnit.GUI
             this.testResultsTabs.SuspendLayout();
             this.testResultsTabPage.SuspendLayout();
             this.resultsFilterPanel.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panelResults.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -251,7 +257,7 @@ namespace MbUnit.GUI
             this.textReportToolStripMenuItem2,
             this.dOXReportToolStripMenuItem1});
             this.reportsToolStripMenuItem1.Name = "reportsToolStripMenuItem1";
-            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
+            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
             this.reportsToolStripMenuItem1.Text = "&Reports";
             // 
             // hTMLReportToolStripMenuItem1
@@ -278,15 +284,22 @@ namespace MbUnit.GUI
             this.dOXReportToolStripMenuItem1.Size = new System.Drawing.Size(145, 22);
             this.dOXReportToolStripMenuItem1.Text = "&DOX Report";
             // 
+            // scriptingToolStripMenuItem
+            // 
+            this.scriptingToolStripMenuItem.Name = "scriptingToolStripMenuItem";
+            this.scriptingToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.scriptingToolStripMenuItem.Text = "Scripting";
+            this.scriptingToolStripMenuItem.Click += new System.EventHandler(this.scriptingToolStripMenuItem_Click);
+            // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(118, 6);
             // 
             // optionsToolStripMenuItem1
             // 
             this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
-            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
+            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
             this.optionsToolStripMenuItem1.Text = "&Options";
             // 
             // helpToolStripMenuItem
@@ -500,6 +513,22 @@ namespace MbUnit.GUI
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Class View";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // projectTree
+            // 
+            this.projectTree.CheckBoxes = true;
+            this.projectTree.ContextMenuStrip = this.classTreeMenuStrip;
+            this.projectTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.projectTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.projectTree.HideSelection = false;
+            this.projectTree.ImageIndex = 0;
+            this.projectTree.ImageList = this.treeImages;
+            this.projectTree.Location = new System.Drawing.Point(3, 3);
+            this.projectTree.Name = "projectTree";
+            this.projectTree.SelectedImageIndex = 0;
+            this.projectTree.Size = new System.Drawing.Size(302, 565);
+            this.projectTree.TabIndex = 2;
+            this.projectTree.TestStateImageList = this.stateImages;
             // 
             // classTreeMenuStrip
             // 
@@ -737,6 +766,8 @@ namespace MbUnit.GUI
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.panel2);
+            this.tabPage2.Controls.Add(this.zedGraphControl1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -744,6 +775,51 @@ namespace MbUnit.GUI
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Performance Monitor";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.graphsFilterBox1);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(659, 48);
+            this.panel2.TabIndex = 1;
+            // 
+            // graphsFilterBox1
+            // 
+            this.graphsFilterBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.graphsFilterBox1.FormattingEnabled = true;
+            this.graphsFilterBox1.Items.AddRange(new object[] {
+            "Total Test Results",
+            "Test Execution Time"});
+            this.graphsFilterBox1.Location = new System.Drawing.Point(62, 12);
+            this.graphsFilterBox1.Name = "graphsFilterBox1";
+            this.graphsFilterBox1.Size = new System.Drawing.Size(189, 21);
+            this.graphsFilterBox1.TabIndex = 2;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 12);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(44, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Graphs:";
+            // 
+            // zedGraphControl1
+            // 
+            this.zedGraphControl1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.zedGraphControl1.Location = new System.Drawing.Point(3, 57);
+            this.zedGraphControl1.Name = "zedGraphControl1";
+            this.zedGraphControl1.ScrollMaxX = 0;
+            this.zedGraphControl1.ScrollMaxY = 0;
+            this.zedGraphControl1.ScrollMaxY2 = 0;
+            this.zedGraphControl1.ScrollMinX = 0;
+            this.zedGraphControl1.ScrollMinY = 0;
+            this.zedGraphControl1.ScrollMinY2 = 0;
+            this.zedGraphControl1.Size = new System.Drawing.Size(659, 486);
+            this.zedGraphControl1.TabIndex = 0;
             // 
             // panelResults
             // 
@@ -754,39 +830,6 @@ namespace MbUnit.GUI
             this.panelResults.Name = "panelResults";
             this.panelResults.Size = new System.Drawing.Size(673, 56);
             this.panelResults.TabIndex = 0;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 6);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Test Status";
-            // 
-            // trayIcon
-            // 
-            this.trayIcon.BalloonTipText = "All tests are good";
-            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
-            this.trayIcon.Text = "MbUnit Icarus";
-            this.trayIcon.Visible = true;
-            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
-            // 
-            // projectTree
-            // 
-            this.projectTree.CheckBoxes = true;
-            this.projectTree.ContextMenuStrip = this.classTreeMenuStrip;
-            this.projectTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.projectTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.projectTree.HideSelection = false;
-            this.projectTree.ImageIndex = 0;
-            this.projectTree.ImageList = this.treeImages;
-            this.projectTree.Location = new System.Drawing.Point(3, 3);
-            this.projectTree.Name = "projectTree";
-            this.projectTree.SelectedImageIndex = 0;
-            this.projectTree.Size = new System.Drawing.Size(302, 565);
-            this.projectTree.TabIndex = 2;
-            this.projectTree.TestStateImageList = this.stateImages;
             // 
             // testProgressStatusBar
             // 
@@ -810,12 +853,22 @@ namespace MbUnit.GUI
             this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
             this.testProgressStatusBar.Total = 0;
             // 
-            // scriptingToolStripMenuItem
+            // label2
             // 
-            this.scriptingToolStripMenuItem.Name = "scriptingToolStripMenuItem";
-            this.scriptingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.scriptingToolStripMenuItem.Text = "Scripting";
-            this.scriptingToolStripMenuItem.Click += new System.EventHandler(this.scriptingToolStripMenuItem_Click);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(61, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Test Status";
+            // 
+            // trayIcon
+            // 
+            this.trayIcon.BalloonTipText = "All tests are good";
+            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
+            this.trayIcon.Text = "MbUnit Icarus";
+            this.trayIcon.Visible = true;
+            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
             // 
             // Main
             // 
@@ -855,6 +908,9 @@ namespace MbUnit.GUI
             this.testResultsTabPage.ResumeLayout(false);
             this.resultsFilterPanel.ResumeLayout(false);
             this.resultsFilterPanel.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panelResults.ResumeLayout(false);
             this.panelResults.PerformLayout();
             this.ResumeLayout(false);
@@ -943,6 +999,10 @@ namespace MbUnit.GUI
         private System.Windows.Forms.ToolStripMenuItem expanedFailedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseFailedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem scriptingToolStripMenuItem;
+        private ZedGraph.ZedGraphControl zedGraphControl1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox graphsFilterBox1;
     }
 }
 
