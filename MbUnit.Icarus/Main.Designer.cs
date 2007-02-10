@@ -101,8 +101,6 @@ namespace MbUnit.GUI
             this.resultsFilterPanel = new System.Windows.Forms.Panel();
             this.filterTestResultsCombo = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.textEditorControl1 = new ICSharpCode.TextEditor.TextEditorControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panelResults = new System.Windows.Forms.Panel();
@@ -110,6 +108,7 @@ namespace MbUnit.GUI
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.projectTree = new MbUnit.GUI.Controls.TestTreeView();
             this.testProgressStatusBar = new MbUnit.GUI.Controls.TestStatusBar();
+            this.scriptingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -127,7 +126,6 @@ namespace MbUnit.GUI
             this.testResultsTabs.SuspendLayout();
             this.testResultsTabPage.SuspendLayout();
             this.resultsFilterPanel.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.panelResults.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -238,6 +236,7 @@ namespace MbUnit.GUI
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reportsToolStripMenuItem1,
+            this.scriptingToolStripMenuItem,
             this.toolStripSeparator8,
             this.optionsToolStripMenuItem1});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -622,7 +621,6 @@ namespace MbUnit.GUI
             // testResultsTabs
             // 
             this.testResultsTabs.Controls.Add(this.testResultsTabPage);
-            this.testResultsTabs.Controls.Add(this.tabPage1);
             this.testResultsTabs.Controls.Add(this.tabPage4);
             this.testResultsTabs.Controls.Add(this.tabPage2);
             this.testResultsTabs.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -728,28 +726,6 @@ namespace MbUnit.GUI
             this.label3.TabIndex = 0;
             this.label3.Text = "Filter Results By";
             // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.textEditorControl1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(665, 546);
-            this.tabPage1.TabIndex = 4;
-            this.tabPage1.Text = "Scripting";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // textEditorControl1
-            // 
-            this.textEditorControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textEditorControl1.Location = new System.Drawing.Point(0, 0);
-            this.textEditorControl1.Name = "textEditorControl1";
-            this.textEditorControl1.ShowEOLMarkers = true;
-            this.textEditorControl1.ShowSpaces = true;
-            this.textEditorControl1.ShowTabs = true;
-            this.textEditorControl1.ShowVRuler = true;
-            this.textEditorControl1.Size = new System.Drawing.Size(665, 546);
-            this.textEditorControl1.TabIndex = 0;
-            // 
             // tabPage4
             // 
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
@@ -834,6 +810,13 @@ namespace MbUnit.GUI
             this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
             this.testProgressStatusBar.Total = 0;
             // 
+            // scriptingToolStripMenuItem
+            // 
+            this.scriptingToolStripMenuItem.Name = "scriptingToolStripMenuItem";
+            this.scriptingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.scriptingToolStripMenuItem.Text = "Scripting";
+            this.scriptingToolStripMenuItem.Click += new System.EventHandler(this.scriptingToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -872,7 +855,6 @@ namespace MbUnit.GUI
             this.testResultsTabPage.ResumeLayout(false);
             this.resultsFilterPanel.ResumeLayout(false);
             this.resultsFilterPanel.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
             this.panelResults.ResumeLayout(false);
             this.panelResults.PerformLayout();
             this.ResumeLayout(false);
@@ -960,8 +942,7 @@ namespace MbUnit.GUI
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem expanedFailedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseFailedToolStripMenuItem;
-        private System.Windows.Forms.TabPage tabPage1;
-        private ICSharpCode.TextEditor.TextEditorControl textEditorControl1;
+        private System.Windows.Forms.ToolStripMenuItem scriptingToolStripMenuItem;
     }
 }
 

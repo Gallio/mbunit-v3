@@ -26,34 +26,34 @@ namespace MbUnit.GUI
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             this.Text = String.Format(this.Text, appVersion.Major, appVersion.Minor);
 
-            textEditorControl1.ShowEOLMarkers = false;
-            textEditorControl1.ShowInvalidLines = false;
-            textEditorControl1.ShowSpaces = false;
-            textEditorControl1.ShowTabs = false;
+//            textEditorControl1.ShowEOLMarkers = false;
+//            textEditorControl1.ShowInvalidLines = false;
+//            textEditorControl1.ShowSpaces = false;
+//            textEditorControl1.ShowTabs = false;
 
-            textEditorControl1.Document.HighlightingStrategy = HighlightingManager.Manager.FindHighlighter("C#");
+//            textEditorControl1.Document.HighlightingStrategy = HighlightingManager.Manager.FindHighlighter("C#");
 
-            textEditorControl1.Text = @"
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-
-namespace MbUnit.GUI
-{
-    static class Program
-    {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
-        }
-    }
-}";
+//            textEditorControl1.Text = @"
+//using System;
+//using System.Collections.Generic;
+//using System.Windows.Forms;
+//
+//namespace MbUnit.GUI
+//{
+//    static class Program
+//    {
+//        /// <summary>
+//        /// The main entry point for the application.
+//        /// </summary>
+//        [STAThread]
+//        static void Main()
+//        {
+//            Application.EnableVisualStyles();
+//            Application.SetCompatibleTextRenderingDefault(false);
+//            Application.Run(new Main());
+//        }
+//    }
+//}";
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -186,6 +186,15 @@ namespace MbUnit.GUI
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
             trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.", ToolTipIcon.Error);
+        }
+
+        private void scriptingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Scripting scriptingWindow = new Scripting();
+            scriptingWindow.ShowDialog();
+
+            if (scriptingWindow != null)
+                scriptingWindow.Dispose();
         }
     }
 }
