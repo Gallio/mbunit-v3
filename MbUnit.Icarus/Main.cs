@@ -35,7 +35,7 @@ namespace MbUnit.GUI
 
 
             // Make up some data points
-            string[] labels = { "Test Assembly 1", "Test Assembly 2"};
+            string[] labels = { "Class 1", "Class 2"};
             double[] x = {1, 2};
             double[] x2 = {1, 5};
             double[] x3 = {4, 10};
@@ -132,30 +132,6 @@ namespace MbUnit.GUI
         {
             Application.Exit();
         }
-
-        //private void linkSummary_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        //{
-        //    if (panelResults.Height >= 149)
-        //    {
-        //        linkSummary.Text = "Show test summary...";
-
-        //        while (panelResults.Height >= 68)
-        //        {
-        //            panelResults.Height -= 4;
-        //            Application.DoEvents();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        linkSummary.Text = "Hide test summary...";
-
-        //        while (panelResults.Height <= 149)
-        //        {
-        //            panelResults.Height += 4;
-        //            Application.DoEvents();
-        //        }
-        //    }
-        //}
 
         private void tlbStart_Click(object sender, EventArgs e)
         {
