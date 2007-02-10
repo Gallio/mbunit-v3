@@ -91,6 +91,12 @@
     <Content Include="Resources\MbUnitLogo.png" />
     <Content Include="Resources\MbUnitLogoText.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="ICSharpCode.TextEditor\ICSharpCode.TextEditor.csproj">
+      <Project>{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}</Project>
+      <Name>ICSharpCode.TextEditor</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

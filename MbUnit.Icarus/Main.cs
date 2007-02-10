@@ -10,6 +10,10 @@ using System.Reflection;
 using MbUnit.GUI.Controls;
 using MbUnit.GUI.Controls.Enums;
 
+using ICSharpCode.TextEditor.Document;
+using ICSharpCode.TextEditor.Actions;
+using ICSharpCode.TextEditor;
+
 namespace MbUnit.GUI
 {
     public partial class Main : Form
@@ -22,6 +26,34 @@ namespace MbUnit.GUI
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             this.Text = String.Format(this.Text, appVersion.Major, appVersion.Minor);
 
+            textEditorControl1.ShowEOLMarkers = false;
+            textEditorControl1.ShowInvalidLines = false;
+            textEditorControl1.ShowSpaces = false;
+            textEditorControl1.ShowTabs = false;
+
+            textEditorControl1.Document.HighlightingStrategy = HighlightingManager.Manager.FindHighlighter("C#");
+
+            textEditorControl1.Text = @"
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+namespace MbUnit.GUI
+{
+    static class Program
+    {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Main());
+        }
+    }
+}";
         }
 
         private void Form_Load(object sender, EventArgs e)

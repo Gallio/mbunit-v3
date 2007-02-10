@@ -73,6 +73,12 @@ namespace MbUnit.GUI
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.projectTabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.classTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.expanedFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.assemblyList = new System.Windows.Forms.ListView();
             this.columnHeader9 = new System.Windows.Forms.ColumnHeader();
@@ -95,19 +101,15 @@ namespace MbUnit.GUI
             this.resultsFilterPanel = new System.Windows.Forms.Panel();
             this.filterTestResultsCombo = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panelResults = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.classTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.expanedFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.collapseFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectTree = new MbUnit.GUI.Controls.TestTreeView();
             this.testProgressStatusBar = new MbUnit.GUI.Controls.TestStatusBar();
+            this.textEditorControl1 = new ICSharpCode.TextEditor.TextEditorControl();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -119,13 +121,14 @@ namespace MbUnit.GUI
             this.splitContainer.SuspendLayout();
             this.projectTabs.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.classTreeMenuStrip.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.panel1.SuspendLayout();
             this.testResultsTabs.SuspendLayout();
             this.testResultsTabPage.SuspendLayout();
             this.resultsFilterPanel.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.panelResults.SuspendLayout();
-            this.classTreeMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -304,7 +307,7 @@ namespace MbUnit.GUI
             // aboutMenuItem
             // 
             this.aboutMenuItem.Name = "aboutMenuItem";
-            this.aboutMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.aboutMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutMenuItem.Text = "&About";
             this.aboutMenuItem.Click += new System.EventHandler(this.aboutMenuItem_Click);
             // 
@@ -339,7 +342,7 @@ namespace MbUnit.GUI
             this.toolStripButton5});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(289, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(258, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
@@ -492,6 +495,46 @@ namespace MbUnit.GUI
             this.tabPage3.Text = "Class View";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // classTreeMenuStrip
+            // 
+            this.classTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.expandAllToolStripMenuItem,
+            this.collapseAllToolStripMenuItem,
+            this.toolStripSeparator7,
+            this.expanedFailedToolStripMenuItem,
+            this.collapseFailedToolStripMenuItem});
+            this.classTreeMenuStrip.Name = "classTreeMenuStrip";
+            this.classTreeMenuStrip.Size = new System.Drawing.Size(157, 98);
+            // 
+            // expandAllToolStripMenuItem
+            // 
+            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
+            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.expandAllToolStripMenuItem.Text = "&Expand All";
+            // 
+            // collapseAllToolStripMenuItem
+            // 
+            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
+            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.collapseAllToolStripMenuItem.Text = "&Collapse All";
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(153, 6);
+            // 
+            // expanedFailedToolStripMenuItem
+            // 
+            this.expanedFailedToolStripMenuItem.Name = "expanedFailedToolStripMenuItem";
+            this.expanedFailedToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.expanedFailedToolStripMenuItem.Text = "Expand &Failed";
+            // 
+            // collapseFailedToolStripMenuItem
+            // 
+            this.collapseFailedToolStripMenuItem.Name = "collapseFailedToolStripMenuItem";
+            this.collapseFailedToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.collapseFailedToolStripMenuItem.Text = "Collapse F&ailed";
+            // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.assemblyList);
@@ -572,6 +615,7 @@ namespace MbUnit.GUI
             // testResultsTabs
             // 
             this.testResultsTabs.Controls.Add(this.testResultsTabPage);
+            this.testResultsTabs.Controls.Add(this.tabPage1);
             this.testResultsTabs.Controls.Add(this.tabPage4);
             this.testResultsTabs.Controls.Add(this.tabPage2);
             this.testResultsTabs.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -677,6 +721,16 @@ namespace MbUnit.GUI
             this.label3.TabIndex = 0;
             this.label3.Text = "Filter Results By";
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.textEditorControl1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(665, 546);
+            this.tabPage1.TabIndex = 4;
+            this.tabPage1.Text = "Scripting";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
             // tabPage4
             // 
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
@@ -722,46 +776,6 @@ namespace MbUnit.GUI
             this.trayIcon.Visible = true;
             this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
             // 
-            // classTreeMenuStrip
-            // 
-            this.classTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.expandAllToolStripMenuItem,
-            this.collapseAllToolStripMenuItem,
-            this.toolStripSeparator7,
-            this.expanedFailedToolStripMenuItem,
-            this.collapseFailedToolStripMenuItem});
-            this.classTreeMenuStrip.Name = "classTreeMenuStrip";
-            this.classTreeMenuStrip.Size = new System.Drawing.Size(157, 98);
-            // 
-            // expandAllToolStripMenuItem
-            // 
-            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
-            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.expandAllToolStripMenuItem.Text = "&Expand All";
-            // 
-            // collapseAllToolStripMenuItem
-            // 
-            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
-            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.collapseAllToolStripMenuItem.Text = "&Collapse All";
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(153, 6);
-            // 
-            // expanedFailedToolStripMenuItem
-            // 
-            this.expanedFailedToolStripMenuItem.Name = "expanedFailedToolStripMenuItem";
-            this.expanedFailedToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.expanedFailedToolStripMenuItem.Text = "Expand &Failed";
-            // 
-            // collapseFailedToolStripMenuItem
-            // 
-            this.collapseFailedToolStripMenuItem.Name = "collapseFailedToolStripMenuItem";
-            this.collapseFailedToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.collapseFailedToolStripMenuItem.Text = "Collapse F&ailed";
-            // 
             // projectTree
             // 
             this.projectTree.CheckBoxes = true;
@@ -800,6 +814,18 @@ namespace MbUnit.GUI
             this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
             this.testProgressStatusBar.Total = 0;
             // 
+            // textEditorControl1
+            // 
+            this.textEditorControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textEditorControl1.Location = new System.Drawing.Point(0, 0);
+            this.textEditorControl1.Name = "textEditorControl1";
+            this.textEditorControl1.ShowEOLMarkers = true;
+            this.textEditorControl1.ShowSpaces = true;
+            this.textEditorControl1.ShowTabs = true;
+            this.textEditorControl1.ShowVRuler = true;
+            this.textEditorControl1.Size = new System.Drawing.Size(665, 546);
+            this.textEditorControl1.TabIndex = 0;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -830,6 +856,7 @@ namespace MbUnit.GUI
             this.splitContainer.ResumeLayout(false);
             this.projectTabs.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
+            this.classTreeMenuStrip.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -837,9 +864,9 @@ namespace MbUnit.GUI
             this.testResultsTabPage.ResumeLayout(false);
             this.resultsFilterPanel.ResumeLayout(false);
             this.resultsFilterPanel.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
             this.panelResults.ResumeLayout(false);
             this.panelResults.PerformLayout();
-            this.classTreeMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -925,6 +952,8 @@ namespace MbUnit.GUI
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem expanedFailedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseFailedToolStripMenuItem;
+        private System.Windows.Forms.TabPage tabPage1;
+        private ICSharpCode.TextEditor.TextEditorControl textEditorControl1;
     }
 }
 
