@@ -247,5 +247,12 @@ namespace MbUnit.GUI
         {
             MessageBox.Show(saveFileDialog1.FileName);
         }
+
+        private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = ".NET DLL Assembly | *.dll | .NET EXE Assembly | *.exe";
+            openFileDialog1.FileOk += new CancelEventHandler(openFileDialog1_FileOk);
+            openFileDialog1.ShowDialog();
+        }
     }
 }
