@@ -113,6 +113,8 @@ namespace MbUnit.GUI
             this.testProgressStatusBar = new MbUnit.GUI.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -175,6 +177,7 @@ namespace MbUnit.GUI
             this.openProjectToolStripMenuItem.Name = "openProjectToolStripMenuItem";
             this.openProjectToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.openProjectToolStripMenuItem.Text = "&Open Project";
+            this.openProjectToolStripMenuItem.Click += new System.EventHandler(this.openProjectToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -194,6 +197,7 @@ namespace MbUnit.GUI
             this.saveProjectAsToolStripMenuItem.Name = "saveProjectAsToolStripMenuItem";
             this.saveProjectAsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.saveProjectAsToolStripMenuItem.Text = "Save Project &As...";
+            this.saveProjectAsToolStripMenuItem.Click += new System.EventHandler(this.saveProjectAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -809,8 +813,8 @@ namespace MbUnit.GUI
             // 
             // zedGraphControl1
             // 
-            this.zedGraphControl1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.zedGraphControl1.Location = new System.Drawing.Point(3, 57);
+            this.zedGraphControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.zedGraphControl1.Location = new System.Drawing.Point(3, 3);
             this.zedGraphControl1.Name = "zedGraphControl1";
             this.zedGraphControl1.ScrollMaxX = 0;
             this.zedGraphControl1.ScrollMaxY = 0;
@@ -818,7 +822,7 @@ namespace MbUnit.GUI
             this.zedGraphControl1.ScrollMinX = 0;
             this.zedGraphControl1.ScrollMinY = 0;
             this.zedGraphControl1.ScrollMinY2 = 0;
-            this.zedGraphControl1.Size = new System.Drawing.Size(659, 486);
+            this.zedGraphControl1.Size = new System.Drawing.Size(659, 540);
             this.zedGraphControl1.TabIndex = 0;
             // 
             // panelResults
@@ -869,6 +873,10 @@ namespace MbUnit.GUI
             this.trayIcon.Text = "MbUnit Icarus";
             this.trayIcon.Visible = true;
             this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // Main
             // 
@@ -1003,6 +1011,8 @@ namespace MbUnit.GUI
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox graphsFilterBox1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 

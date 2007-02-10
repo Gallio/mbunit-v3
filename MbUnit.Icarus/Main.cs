@@ -220,5 +220,32 @@ namespace MbUnit.GUI
             if (scriptingWindow != null)
                 scriptingWindow.Dispose();
         }
+
+        private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "MbUnit Projects | *.mbunit";
+            openFileDialog1.FileOk += new CancelEventHandler(openFileDialog1_FileOk);
+            openFileDialog1.ShowDialog();
+        }
+
+        void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            MessageBox.Show(openFileDialog1.FileName);
+        }
+
+        private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.OverwritePrompt = true;
+            saveFileDialog1.AddExtension = true;
+            saveFileDialog1.DefaultExt = "MbUnit Projects |*.mbunit";
+            saveFileDialog1.Filter = "MbUnit Projects |*.mbunit";
+            saveFileDialog1.FileOk +=new CancelEventHandler(saveFileDialog1_FileOk);
+            saveFileDialog1.ShowDialog();
+        }
+
+        void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            MessageBox.Show(saveFileDialog1.FileName);
+        }
     }
 }
