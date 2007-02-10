@@ -160,12 +160,14 @@ namespace MbUnit.GUI
             // 
             // newProjectToolStripMenuItem
             // 
+            this.newProjectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newProjectToolStripMenuItem.Image")));
             this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
             this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.newProjectToolStripMenuItem.Text = "&New Project";
             // 
             // openProjectToolStripMenuItem
             // 
+            this.openProjectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openProjectToolStripMenuItem.Image")));
             this.openProjectToolStripMenuItem.Name = "openProjectToolStripMenuItem";
             this.openProjectToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.openProjectToolStripMenuItem.Text = "&Open Project";
@@ -177,12 +179,14 @@ namespace MbUnit.GUI
             // 
             // saveProjectToolStripMenuItem
             // 
+            this.saveProjectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveProjectToolStripMenuItem.Image")));
             this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
             this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.saveProjectToolStripMenuItem.Text = "&Save Project";
             // 
             // saveProjectAsToolStripMenuItem
             // 
+            this.saveProjectAsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveProjectAsToolStripMenuItem.Image")));
             this.saveProjectAsToolStripMenuItem.Name = "saveProjectAsToolStripMenuItem";
             this.saveProjectAsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.saveProjectAsToolStripMenuItem.Text = "Save Project &As...";
@@ -211,18 +215,21 @@ namespace MbUnit.GUI
             // 
             // addAssemblyToolStripMenuItem
             // 
+            this.addAssemblyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addAssemblyToolStripMenuItem.Image")));
             this.addAssemblyToolStripMenuItem.Name = "addAssemblyToolStripMenuItem";
             this.addAssemblyToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.addAssemblyToolStripMenuItem.Text = "&Add Assembly";
             // 
             // removeAssemblyToolStripMenuItem
             // 
+            this.removeAssemblyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeAssemblyToolStripMenuItem.Image")));
             this.removeAssemblyToolStripMenuItem.Name = "removeAssemblyToolStripMenuItem";
             this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.removeAssemblyToolStripMenuItem.Text = "&Remove Assembly";
             // 
             // reloadToolStripMenuItem
             // 
+            this.reloadToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolStripMenuItem.Image")));
             this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
             this.reloadToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.reloadToolStripMenuItem.Text = "R&eload";
@@ -245,42 +252,42 @@ namespace MbUnit.GUI
             this.textReportToolStripMenuItem2,
             this.dOXReportToolStripMenuItem1});
             this.reportsToolStripMenuItem1.Name = "reportsToolStripMenuItem1";
-            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
+            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.reportsToolStripMenuItem1.Text = "&Reports";
             // 
             // hTMLReportToolStripMenuItem1
             // 
             this.hTMLReportToolStripMenuItem1.Name = "hTMLReportToolStripMenuItem1";
-            this.hTMLReportToolStripMenuItem1.Size = new System.Drawing.Size(145, 22);
+            this.hTMLReportToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.hTMLReportToolStripMenuItem1.Text = "&HTML Report";
             // 
             // textReportToolStripMenuItem1
             // 
             this.textReportToolStripMenuItem1.Name = "textReportToolStripMenuItem1";
-            this.textReportToolStripMenuItem1.Size = new System.Drawing.Size(145, 22);
+            this.textReportToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.textReportToolStripMenuItem1.Text = "&XML Report";
             // 
             // textReportToolStripMenuItem2
             // 
             this.textReportToolStripMenuItem2.Name = "textReportToolStripMenuItem2";
-            this.textReportToolStripMenuItem2.Size = new System.Drawing.Size(145, 22);
+            this.textReportToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.textReportToolStripMenuItem2.Text = "&Text Report";
             // 
             // dOXReportToolStripMenuItem1
             // 
             this.dOXReportToolStripMenuItem1.Name = "dOXReportToolStripMenuItem1";
-            this.dOXReportToolStripMenuItem1.Size = new System.Drawing.Size(145, 22);
+            this.dOXReportToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.dOXReportToolStripMenuItem1.Text = "&DOX Report";
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
             // 
             // optionsToolStripMenuItem1
             // 
             this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
-            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
+            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.optionsToolStripMenuItem1.Text = "&Options";
             // 
             // helpToolStripMenuItem
@@ -296,18 +303,18 @@ namespace MbUnit.GUI
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.helpToolStripMenuItem1.Text = "&Help";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
             // 
             // aboutMenuItem
             // 
             this.aboutMenuItem.Name = "aboutMenuItem";
-            this.aboutMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutMenuItem.Text = "&About";
             this.aboutMenuItem.Click += new System.EventHandler(this.aboutMenuItem_Click);
             // 
