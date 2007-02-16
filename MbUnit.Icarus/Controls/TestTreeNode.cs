@@ -2,9 +2,10 @@ using System;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Forms;
-using MbUnit.GUI.Controls.Enums;
 
-namespace MbUnit.GUI.Controls
+using MbUnit.Icarus.Controls.Enums;
+
+namespace MbUnit.Icarus.Controls
 {
     public class TestTreeNode : TreeNode
     {
@@ -51,7 +52,7 @@ namespace MbUnit.GUI.Controls
         Description("The current state of the node's checkbox, Unchecked, Checked, or Indeterminate"),
         DefaultValue(CheckBoxState.Unchecked),
         TypeConverter(typeof(CheckBoxState)),
-        Editor("MbUnit.GUI.Controls.Enums.CheckBoxState", typeof(CheckBoxState))]
+        Editor("MbUnit.Icarus.Controls.Enums.CheckBoxState", typeof(CheckBoxState))]
         public CheckBoxState CheckState
         {
             get { return this.checkState; }

@@ -7,8 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
 
-using MbUnit.GUI.Controls;
-using MbUnit.GUI.Controls.Enums;
+using MbUnit.Icarus.Controls;
+using MbUnit.Icarus.Controls.Enums;
 
 using ICSharpCode.TextEditor.Document;
 using ICSharpCode.TextEditor.Actions;
@@ -16,7 +16,7 @@ using ICSharpCode.TextEditor;
 
 using ZedGraph;
 
-namespace MbUnit.GUI
+namespace MbUnit.Icarus
 {
     public partial class Main : Form
     {
@@ -85,6 +85,8 @@ namespace MbUnit.GUI
             filterTestResultsCombo.SelectedIndex = 0;
             graphsFilterBox1.SelectedIndex = 0;
 
+            this.projectTree.TestStateImageList = this.stateImages;
+
             TestTreeNode project = new TestTreeNode("Test Project 1.0", 0, 0);
             projectTree.Nodes.Add(project);
 
@@ -97,30 +99,30 @@ namespace MbUnit.GUI
             TestTreeNode cl = new TestTreeNode("Class1", 2, 2);
             ns.Nodes.Add(cl);
 
-            TestTreeNode m1 = new TestTreeNode("TestMethod", 3, 3);
+            TestTreeNode m1 = new TestTreeNode("TestMethod()", 3, 3);
             m1.TestState = TestState.Success;
             cl.Nodes.Add(m1);
 
-            TestTreeNode m2 = new TestTreeNode("AnotherMethod", 3, 3);
+            TestTreeNode m2 = new TestTreeNode("AnotherMethod()", 3, 3);
             m2.TestState = TestState.Failure;
             cl.Nodes.Add(m2);
 
             TestTreeNode cl2 = new TestTreeNode("Class2", 2, 2);
             ns.Nodes.Add(cl2);
 
-            TestTreeNode m3 = new TestTreeNode("MethodThatWorks", 3, 3);
-            m3.TestState = TestState.Success;
+            TestTreeNode m3 = new TestTreeNode("MethodThatsIgnored()", 3, 3);
+            m3.TestState = TestState.Ignored;
             cl2.Nodes.Add(m3);
 
-            TestTreeNode m4 = new TestTreeNode("DoesntWork", 3, 3);
+            TestTreeNode m4 = new TestTreeNode("DoesntWork()", 3, 3);
             m4.TestState = TestState.Failure;
             cl2.Nodes.Add(m4);
 
-            TestTreeNode m5 = new TestTreeNode("DoGetProgress", 3, 3);
+            TestTreeNode m5 = new TestTreeNode("DoGetProgress()", 3, 3);
             m5.TestState = TestState.Success;
             cl2.Nodes.Add(m5);
 
-            TestTreeNode m6 = new TestTreeNode("BuildTree", 3, 3);
+            TestTreeNode m6 = new TestTreeNode("BuildTree()", 3, 3);
             m6.TestState = TestState.Success;
             cl2.Nodes.Add(m6);
 

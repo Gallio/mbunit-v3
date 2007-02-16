@@ -10,7 +10,7 @@ using ICSharpCode.TextEditor.Document;
 using ICSharpCode.TextEditor.Actions;
 using ICSharpCode.TextEditor;
 
-namespace MbUnit.GUI
+namespace MbUnit.Icarus
 {
     public partial class Scripting : Form
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace MbUnit.GUI.Controls.Enums
+namespace MbUnit.Icarus.Controls.Enums
 {
     [FlagsAttribute]
     public enum CheckBoxState

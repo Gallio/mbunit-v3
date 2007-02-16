@@ -1,13 +1,13 @@
 using System;
 
-namespace MbUnit.GUI.Controls.Enums
+namespace MbUnit.Icarus.Controls.Enums
 {
     public enum TestState
     {
-        Success = 1,
-        Failure = 2,
+        Success = 0,
+        Failure = 1,
+        Ignored = 2,
         Skipped = 3,
-        Ignored = 4,
         Undefined = 99
     }
 }

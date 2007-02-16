@@ -1,4 +1,4 @@
-namespace MbUnit.GUI
+namespace MbUnit.Icarus
 {
     partial class About
     {

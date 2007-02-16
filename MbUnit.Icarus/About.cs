@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
 
-namespace MbUnit.GUI
+namespace MbUnit.Icarus
 {
     public partial class About : Form
     {

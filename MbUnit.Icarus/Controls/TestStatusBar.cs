@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.ComponentModel;
 
-namespace MbUnit.GUI.Controls
+namespace MbUnit.Icarus.Controls
 {
     class TestStatusBar : Control
     {

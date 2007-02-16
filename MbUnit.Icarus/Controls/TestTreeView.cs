@@ -5,9 +5,9 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Drawing;
 
-using MbUnit.GUI.Controls.Enums;
+using MbUnit.Icarus.Controls.Enums;
 
-namespace MbUnit.GUI.Controls
+namespace MbUnit.Icarus.Controls
 {
     public class TestTreeView : TreeView
     {
@@ -87,6 +87,9 @@ namespace MbUnit.GUI.Controls
                 else if (node.TestState == TestState.Success)
                     nodeColor = new SolidBrush(Color.Green);
 
+                else if (node.TestState == TestState.Ignored)
+                    nodeColor = new SolidBrush(Color.SlateGray);
+
                 // If we do not want to hide the selection, paint it in again.
                 if (this.SelectedNode == e.Node && !this.HideSelection)
                 {
@@ -99,18 +102,13 @@ namespace MbUnit.GUI.Controls
                 }
 
                 // If the test icons have been set and we are at a leaf node, draw the extra image.
-                if (this.testStateImages.Images.Count == 2 && e.Node.Nodes.Count == 0)
+                if (this.testStateImages.Images.Count > 0 && e.Node.Nodes.Count == 0)
                 {
-                    // Set the node image to the failed icon.
-                    int index = 0;
-                    if (node.TestState == TestState.Failure) 
-                        index = 1;
-
                     // Draw the highlighted background if the node has been selected.
                     if ((e.State & TreeNodeStates.Focused) != 0)
                         e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X + 17, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
 
-                    e.Graphics.DrawImageUnscaled(this.testStateImages.Images[index], e.Bounds.X, e.Bounds.Y);
+                    e.Graphics.DrawImageUnscaled(this.testStateImages.Images[(int)node.TestState], e.Bounds.X, e.Bounds.Y);
                     e.Graphics.DrawString(e.Node.Text, nodeFont, nodeColor, e.Bounds.X + 16, e.Bounds.Y + 1);
                 }
                 else

@@ -7,8 +7,8 @@
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MbUnit.GUI</RootNamespace>
-    <AssemblyName>MbUnit.GUI</AssemblyName>
+    <RootNamespace>MbUnit.Icarus</RootNamespace>
+    <AssemblyName>MbUnit.Icarus</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -87,6 +87,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -103,15 +104,6 @@
     <Compile Include="Scripting.Designer.cs">
       <DependentUpon>Scripting.cs</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Components\ICSharpCode.TextEditor.dll" />
-    <Content Include="Components\ICSharpCode.TextEditor.pdb" />
-    <Content Include="Resources\FailMb.ico" />
-    <Content Include="Resources\MbUnit.ico" />
-    <Content Include="Resources\MbUnitLogo.png" />
-    <Content Include="Resources\MbUnitLogoText.png" />
-    <Content Include="Resources\PassMb.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
