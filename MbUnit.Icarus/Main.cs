@@ -232,5 +232,23 @@ namespace MbUnit.Icarus
             openFileDialog1.FileOk += new CancelEventHandler(openFileDialog1_FileOk);
             openFileDialog1.ShowDialog();
         }
+
+        private void pluginsMenuItem_Click(object sender, EventArgs e)
+        {
+            Plugins.PluginManager manager = new MbUnit.Icarus.Plugins.PluginManager();
+            manager.ShowDialog();
+
+            if (!manager.IsDisposed)
+                manager.Dispose();
+        }
+
+        private void optionsMenuItem_Click(object sender, EventArgs e)
+        {
+            Options options = new Options();
+            options.ShowDialog();
+
+            if (!options.IsDisposed)
+                options.Dispose();
+        }
     }
 }

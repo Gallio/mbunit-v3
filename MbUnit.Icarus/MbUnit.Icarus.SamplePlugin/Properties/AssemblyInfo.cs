@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MbUnit.GUI")]
-[assembly: AssemblyDescription("Icarus")]
+[assembly: AssemblyTitle("MbUnit Icarus Sample Plugin")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MbUnit Project")]
-[assembly: AssemblyProduct("MbUnit Icarus")]
+[assembly: AssemblyProduct("MbUnit Icarus Sample Plugin")]
 [assembly: AssemblyCopyright("Copyright © MbUnit Project 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5000c5dd-c567-4c0a-9eee-87de797a450f")]
+[assembly: Guid("f8f0dc89-6a6e-4da7-98f4-a7de724bb044")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -29,5 +29,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the '*' as shown below:
 [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

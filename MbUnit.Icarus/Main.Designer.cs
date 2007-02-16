@@ -50,8 +50,10 @@ namespace MbUnit.Icarus
             this.textReportToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.dOXReportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.pluginsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -248,8 +250,10 @@ namespace MbUnit.Icarus
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reportsToolStripMenuItem1,
             this.scriptingToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.pluginsMenuItem,
             this.toolStripSeparator8,
-            this.optionsToolStripMenuItem1});
+            this.optionsMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
@@ -262,7 +266,7 @@ namespace MbUnit.Icarus
             this.textReportToolStripMenuItem2,
             this.dOXReportToolStripMenuItem1});
             this.reportsToolStripMenuItem1.Name = "reportsToolStripMenuItem1";
-            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
+            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
             this.reportsToolStripMenuItem1.Text = "&Reports";
             // 
             // hTMLReportToolStripMenuItem1
@@ -292,20 +296,33 @@ namespace MbUnit.Icarus
             // scriptingToolStripMenuItem
             // 
             this.scriptingToolStripMenuItem.Name = "scriptingToolStripMenuItem";
-            this.scriptingToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.scriptingToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.scriptingToolStripMenuItem.Text = "Scripting";
             this.scriptingToolStripMenuItem.Click += new System.EventHandler(this.scriptingToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(155, 6);
+            // 
+            // pluginsMenuItem
+            // 
+            this.pluginsMenuItem.Name = "pluginsMenuItem";
+            this.pluginsMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.pluginsMenuItem.Text = "&Plugin Manager";
+            this.pluginsMenuItem.Click += new System.EventHandler(this.pluginsMenuItem_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(123, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(155, 6);
             // 
-            // optionsToolStripMenuItem1
+            // optionsMenuItem
             // 
-            this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
-            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
-            this.optionsToolStripMenuItem1.Text = "&Options";
+            this.optionsMenuItem.Name = "optionsMenuItem";
+            this.optionsMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.optionsMenuItem.Text = "&Options";
+            this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -994,7 +1011,7 @@ namespace MbUnit.Icarus
         private System.Windows.Forms.ColumnHeader columnHeader10;
         private System.Windows.Forms.ColumnHeader columnHeader11;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem optionsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem hTMLReportToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem textReportToolStripMenuItem1;
@@ -1015,6 +1032,8 @@ namespace MbUnit.Icarus
         private System.Windows.Forms.ComboBox graphsFilterBox1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem pluginsMenuItem;
     }
 }
 
