@@ -3,6 +3,10 @@ using System.Windows.Forms;
 
 namespace MbUnit.Icarus.Plugins
 {
+    public delegate void ProjectLoadedDelegate(string projectName, string projectPath);
+    public delegate void AssemblyAddedDelegate(string assemblyName);
+    public delegate void AssemblyRemovedDelegate(string assemblyName);
+
     public interface IMbUnitPlugin
     {
         IMbUnitPluginHost Host { get; set;}
@@ -14,7 +18,7 @@ namespace MbUnit.Icarus.Plugins
 
         UserControl MainInterface { get; }
 
-        string[] OptionsMenu { get; }
+        OptionsTreeNode OptionsMenu { get; }
 
         void Initialize();
         void Dispose();
@@ -23,6 +27,10 @@ namespace MbUnit.Icarus.Plugins
 
     public interface IMbUnitPluginHost
     {
+        event ProjectLoadedDelegate ProjectLoaded;
+        event AssemblyAddedDelegate AssemblyAdded;
+        event AssemblyRemovedDelegate AssemblyRemoved;
+
         void Feedback(string Feedback, IMbUnitPlugin Plugin);
     }
 }

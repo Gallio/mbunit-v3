@@ -30,10 +30,23 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnotherOptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AnotherOptionsPanel.Designer.cs">
+      <DependentUpon>AnotherOptionsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginOptions.Designer.cs">
+      <DependentUpon>PluginOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="PluginStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -42,6 +55,16 @@
       <Project>{6892F020-5C35-4C96-B66D-E69C890CBA75}</Project>
       <Name>MbUnit.Icarus.PluginInterfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AnotherOptionsPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AnotherOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginOptions.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PluginOptions.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

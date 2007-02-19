@@ -202,13 +202,9 @@ namespace MbUnit.Icarus
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.Filter = "MbUnit Projects | *.mbunit";
-            openFileDialog1.FileOk += new CancelEventHandler(openFileDialog1_FileOk);
             openFileDialog1.ShowDialog();
-        }
 
-        void openFileDialog1_FileOk(object sender, CancelEventArgs e)
-        {
-            MessageBox.Show(openFileDialog1.FileName);
+            Program.Host.FireProjectLoaded(System.IO.Path.GetFileName(openFileDialog1.FileName), System.IO.Path.GetDirectoryName(openFileDialog1.FileName));
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -229,7 +225,6 @@ namespace MbUnit.Icarus
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.Filter = ".NET DLL Assembly | *.dll | .NET EXE Assembly | *.exe";
-            openFileDialog1.FileOk += new CancelEventHandler(openFileDialog1_FileOk);
             openFileDialog1.ShowDialog();
         }
 

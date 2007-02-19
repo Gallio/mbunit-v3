@@ -17,8 +17,7 @@ namespace MbUnit.Icarus.SamplePlugin
         private Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
         private IMbUnitPluginHost host;
-        
-        
+
         #region IMbUnitPlugin Members
 
         public IMbUnitPluginHost Host
@@ -58,24 +57,51 @@ namespace MbUnit.Icarus.SamplePlugin
             get { return null; }
         }
 
-        public string[] OptionsMenu
+        public OptionsTreeNode OptionsMenu
         {
             get
             {
-                return new string[] { "Plugin Menu Item" };
+                OptionsTreeNode menu = new OptionsTreeNode("Plugin Menu Item");
+
+                OptionsTreeNode node1 = new OptionsTreeNode("Sub Menu Item", new OptionsTreeNodeSelectedHandler(DisplayOptions));
+                menu.Nodes.Add(node1);
+
+                OptionsTreeNode node2 = new OptionsTreeNode("Another Item", new OptionsTreeNodeSelectedHandler(DisplayOtherOptions));
+                menu.Nodes.Add(node2);
+
+                return menu;
             }
+        }
+
+        private UserControl DisplayOptions()
+        {
+            return new PluginOptions();
+        }
+
+        private UserControl DisplayOtherOptions()
+        {
+            return new AnotherOptionsPanel();
         }
 
         public void Initialize()
         {
-            MessageBox.Show("Sample Plugin Has Been Loaded");
+            if (this.host != null)
+            {
+                // Register the events we want to listen to.
+                this.host.ProjectLoaded += new ProjectLoadedDelegate(Host_ProjectLoaded);
+            }
         }
 
         public void Dispose()
         {
-            
+
         }
 
         #endregion
+
+        void Host_ProjectLoaded(string projectName, string projectPath)
+        {
+            MessageBox.Show(projectName + " :: " + projectPath);
+        }
     }
 }

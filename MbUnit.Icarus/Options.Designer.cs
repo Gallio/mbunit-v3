@@ -49,6 +49,7 @@ namespace MbUnit.Icarus
             // 
             this.optionCategoryTree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
+            this.optionCategoryTree.HideSelection = false;
             this.optionCategoryTree.Location = new System.Drawing.Point(13, 43);
             this.optionCategoryTree.Name = "optionCategoryTree";
             treeNode1.Name = "Node0";
@@ -69,6 +70,7 @@ namespace MbUnit.Icarus
             treeNode6});
             this.optionCategoryTree.Size = new System.Drawing.Size(176, 327);
             this.optionCategoryTree.TabIndex = 0;
+            this.optionCategoryTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.optionCategoryTree_AfterSelect);
             // 
             // cancelButton
             // 
@@ -99,7 +101,7 @@ namespace MbUnit.Icarus
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Location = new System.Drawing.Point(195, 43);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(438, 317);
+            this.panel2.Size = new System.Drawing.Size(438, 322);
             this.panel2.TabIndex = 4;
             // 
             // seperatorBar

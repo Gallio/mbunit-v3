@@ -8,7 +8,8 @@ namespace MbUnit.Icarus
 {
     static class Program
     {
-        public static PluginServices Plugins = new PluginServices();
+        private static PluginServices plugins = new PluginServices();
+        private static PluginHost host = new PluginHost();
 
         /// <summary>
         /// The main entry point for the application.
@@ -23,6 +24,16 @@ namespace MbUnit.Icarus
             Plugins.FindPlugins(Application.StartupPath + @"\Plugins");
 
             Application.Run(new Main());
+        }
+
+        public static PluginHost Host
+        {
+            get { return host; }
+        }
+
+        public static PluginServices Plugins
+        {
+            get { return plugins; }
         }
     }
 }

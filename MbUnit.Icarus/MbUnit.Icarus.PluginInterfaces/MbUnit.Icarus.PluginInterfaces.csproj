@@ -7,8 +7,8 @@
     <ProjectGuid>{6892F020-5C35-4C96-B66D-E69C890CBA75}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MbUnit.Icarus.Plugin.PluginInterface</RootNamespace>
-    <AssemblyName>MbUnit.Icarus.Plugin.PluginInterface</AssemblyName>
+    <RootNamespace>MbUnit.Icarus.Plugins</RootNamespace>
+    <AssemblyName>MbUnit.Icarus.PluginInterface</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,10 +30,12 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OptionsComponents.cs" />
     <Compile Include="PluginInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

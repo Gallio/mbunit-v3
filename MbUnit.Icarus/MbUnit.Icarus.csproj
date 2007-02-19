@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Plugins\AvailablePlugin.cs" />
     <Compile Include="Plugins\PluginCollection.cs" />
+    <Compile Include="Plugins\PluginHost.cs" />
     <Compile Include="Plugins\PluginManager.cs">
       <SubType>Form</SubType>
     </Compile>

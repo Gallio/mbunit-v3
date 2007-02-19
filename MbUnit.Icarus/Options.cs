@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using System.Reflection;
+
 using MbUnit.Icarus.Plugins;
 
 namespace MbUnit.Icarus
@@ -22,22 +24,13 @@ namespace MbUnit.Icarus
             // Go through all the plugins and get the options menu items.
             foreach (AvailablePlugin plugin in Program.Plugins.AvailablePlugins)
             {
-                TreeNode node = new TreeNode(plugin.Instance.Name);
-                optionCategoryTree.Nodes.Add(PluginOptionsMenu(node, plugin.Instance.OptionsMenu));
+                if (plugin.Instance.OptionsMenu != null)
+                    optionCategoryTree.Nodes.Add(plugin.Instance.OptionsMenu);
             }
 
             optionCategoryTree.ExpandAll();
         }
 
-        private TreeNode PluginOptionsMenu(TreeNode node, string[] menuItems)
-        {
-            foreach (string item in menuItems)
-            {
-                node.Nodes.Add(item);
-            }
-
-            return node;
-        }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
@@ -49,6 +42,29 @@ namespace MbUnit.Icarus
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void optionCategoryTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            panel2.Controls.Clear();
+
+            if (e.Node is OptionsTreeNode)
+            {
+                OptionsTreeNode node = (OptionsTreeNode)e.Node;
+                if (node.OptionsPanel != null)
+                    panel2.Controls.Add(node.OptionsPanel);
+                else
+                {
+                    foreach (OptionsTreeNode childNode in node.Nodes)
+                    {
+                        if (childNode.OptionsPanel != null)
+                        {
+                            panel2.Controls.Add(childNode.OptionsPanel);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

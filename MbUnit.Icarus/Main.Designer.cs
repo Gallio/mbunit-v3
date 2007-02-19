@@ -33,7 +33,7 @@ namespace MbUnit.Icarus
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveProjectAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,6 +76,7 @@ namespace MbUnit.Icarus
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.projectTabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.projectTree = new MbUnit.Icarus.Controls.TestTreeView();
             this.classTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,12 +112,11 @@ namespace MbUnit.Icarus
             this.label4 = new System.Windows.Forms.Label();
             this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.panelResults = new System.Windows.Forms.Panel();
+            this.testProgressStatusBar = new MbUnit.Icarus.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.projectTree = new MbUnit.Icarus.Controls.TestTreeView();
-            this.testProgressStatusBar = new MbUnit.Icarus.Controls.TestStatusBar();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -156,7 +156,7 @@ namespace MbUnit.Icarus
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newProjectToolStripMenuItem,
-            this.openProjectToolStripMenuItem,
+            this.openProjectMenuItem,
             this.toolStripSeparator3,
             this.saveProjectToolStripMenuItem,
             this.saveProjectAsToolStripMenuItem,
@@ -173,13 +173,13 @@ namespace MbUnit.Icarus
             this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.newProjectToolStripMenuItem.Text = "&New Project";
             // 
-            // openProjectToolStripMenuItem
+            // openProjectMenuItem
             // 
-            this.openProjectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openProjectToolStripMenuItem.Image")));
-            this.openProjectToolStripMenuItem.Name = "openProjectToolStripMenuItem";
-            this.openProjectToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.openProjectToolStripMenuItem.Text = "&Open Project";
-            this.openProjectToolStripMenuItem.Click += new System.EventHandler(this.openProjectToolStripMenuItem_Click);
+            this.openProjectMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openProjectMenuItem.Image")));
+            this.openProjectMenuItem.Name = "openProjectMenuItem";
+            this.openProjectMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.openProjectMenuItem.Text = "&Open Project";
+            this.openProjectMenuItem.Click += new System.EventHandler(this.openProjectToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -537,6 +537,22 @@ namespace MbUnit.Icarus
             this.tabPage3.Text = "Class View";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // projectTree
+            // 
+            this.projectTree.CheckBoxes = true;
+            this.projectTree.ContextMenuStrip = this.classTreeMenuStrip;
+            this.projectTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.projectTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.projectTree.HideSelection = false;
+            this.projectTree.ImageIndex = 0;
+            this.projectTree.ImageList = this.treeImages;
+            this.projectTree.Location = new System.Drawing.Point(3, 3);
+            this.projectTree.Name = "projectTree";
+            this.projectTree.SelectedImageIndex = 0;
+            this.projectTree.Size = new System.Drawing.Size(302, 565);
+            this.projectTree.TabIndex = 2;
+            this.projectTree.TestStateImageList = this.stateImages;
+            // 
             // classTreeMenuStrip
             // 
             this.classTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -838,43 +854,6 @@ namespace MbUnit.Icarus
             this.panelResults.Size = new System.Drawing.Size(673, 56);
             this.panelResults.TabIndex = 0;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 6);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Test Status";
-            // 
-            // trayIcon
-            // 
-            this.trayIcon.BalloonTipText = "All tests are good";
-            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
-            this.trayIcon.Text = "MbUnit Icarus";
-            this.trayIcon.Visible = true;
-            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // projectTree
-            // 
-            this.projectTree.CheckBoxes = true;
-            this.projectTree.ContextMenuStrip = this.classTreeMenuStrip;
-            this.projectTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.projectTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.projectTree.HideSelection = false;
-            this.projectTree.ImageIndex = 0;
-            this.projectTree.ImageList = this.treeImages;
-            this.projectTree.Location = new System.Drawing.Point(3, 3);
-            this.projectTree.Name = "projectTree";
-            this.projectTree.SelectedImageIndex = 0;
-            this.projectTree.Size = new System.Drawing.Size(302, 565);
-            this.projectTree.TabIndex = 2;
-            this.projectTree.TestStateImageList = this.stateImages;
-            // 
             // testProgressStatusBar
             // 
             this.testProgressStatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -896,6 +875,27 @@ namespace MbUnit.Icarus
             this.testProgressStatusBar.TabIndex = 4;
             this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
             this.testProgressStatusBar.Total = 0;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(61, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Test Status";
+            // 
+            // trayIcon
+            // 
+            this.trayIcon.BalloonTipText = "All tests are good";
+            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
+            this.trayIcon.Text = "MbUnit Icarus";
+            this.trayIcon.Visible = true;
+            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // Main
             // 
@@ -965,7 +965,7 @@ namespace MbUnit.Icarus
         private System.Windows.Forms.ToolStripMenuItem assembliesToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openProjectMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem saveProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveProjectAsToolStripMenuItem;

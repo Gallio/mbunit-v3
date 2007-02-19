@@ -9,7 +9,7 @@ namespace MbUnit.Icarus.Plugins
     /// <summary>
     /// Summary description for PluginServices.
     /// </summary>
-    public class PluginServices : IMbUnitPluginHost 
+    public class PluginServices 
     {
         /// <summary>
         /// Constructor of the Class
@@ -110,7 +110,7 @@ namespace MbUnit.Icarus.Plugins
                         newPlugin.Instance = (IMbUnitPlugin)Activator.CreateInstance(pluginAssembly.GetType(pluginType.ToString()));
 
                         // Set the Plugin's host to this class which inherits IPluginHost
-                        newPlugin.Instance.Host = this;
+                        newPlugin.Instance.Host = Program.Host;
 
                         // Call the initialization sub of the plugin
                         newPlugin.Instance.Initialize();
@@ -130,37 +130,6 @@ namespace MbUnit.Icarus.Plugins
         }
 
         #endregion
-
-        /// <summary>
-        /// Displays a feedback dialog from the plugin
-        /// </summary>
-        /// <param name="Feedback">String message for feedback</param>
-        /// <param name="Plugin">The plugin that called the feedback</param>
-        public void Feedback(string Feedback, IMbUnitPlugin Plugin)
-        {
-        //    //This sub makes a new feedback form and fills it out
-        //    //With the appropriate information
-        //    //This method can be called from the actual plugin with its Host Property
-
-        //    System.Windows.Forms.Form newForm = null;
-        //    frmFeedback newFeedbackForm = new frmFeedback();
-
-        //    //Here we set the frmFeedback's properties that i made custom
-        //    newFeedbackForm.PluginAuthor = "By: " + Plugin.Author;
-        //    newFeedbackForm.PluginDesc = Plugin.Description;
-        //    newFeedbackForm.PluginName = Plugin.Name;
-        //    newFeedbackForm.PluginVersion = Plugin.Version;
-        //    newFeedbackForm.Feedback = Feedback;
-
-        //    //We also made a Form object to hold the frmFeedback instance
-        //    //If we were to declare if not as  frmFeedback object at first,
-        //    //We wouldn't have access to the properties we need on it
-        //    newForm = newFeedbackForm;
-        //    newForm.ShowDialog();
-
-        //    newFeedbackForm = null;
-        //    newForm = null;
-        }
     }
 }
 
