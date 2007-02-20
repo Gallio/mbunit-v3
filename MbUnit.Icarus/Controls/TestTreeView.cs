@@ -81,7 +81,7 @@ namespace MbUnit.Icarus.Controls
                 if ((e.State & TreeNodeStates.Focused) != 0)
                     nodeColor = SystemBrushes.HighlightText;
 
-                else if (node.TestState == TestState.Failure)
+                else if (node.TestState == TestState.Failed)
                     nodeColor = new SolidBrush(Color.Red);
 
                 else if (node.TestState == TestState.Success)

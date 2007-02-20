@@ -10,10 +10,6 @@ using System.Reflection;
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Controls.Enums;
 
-using ICSharpCode.TextEditor.Document;
-using ICSharpCode.TextEditor.Actions;
-using ICSharpCode.TextEditor;
-
 using ZedGraph;
 
 namespace MbUnit.Icarus
@@ -75,8 +71,6 @@ namespace MbUnit.Icarus
                       
             zedGraphControl1.AxisChange();
 
-
-
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -85,10 +79,11 @@ namespace MbUnit.Icarus
             filterTestResultsCombo.SelectedIndex = 0;
             graphsFilterBox1.SelectedIndex = 0;
 
-            this.projectTree.TestStateImageList = this.stateImages;
+            this.testTree.Sort();
+            this.testTree.TestStateImageList = this.stateImages;
 
             TestTreeNode project = new TestTreeNode("Test Project 1.0", 0, 0);
-            projectTree.Nodes.Add(project);
+            testTree.Nodes.Add(project);
 
             TestTreeNode namespaces = new TestTreeNode("Namespaces", 0, 0);
             project.Nodes.Add(namespaces);
@@ -104,7 +99,7 @@ namespace MbUnit.Icarus
             cl.Nodes.Add(m1);
 
             TestTreeNode m2 = new TestTreeNode("AnotherMethod()", 3, 3);
-            m2.TestState = TestState.Failure;
+            m2.TestState = TestState.Success;
             cl.Nodes.Add(m2);
 
             TestTreeNode cl2 = new TestTreeNode("Class2", 2, 2);
@@ -115,7 +110,7 @@ namespace MbUnit.Icarus
             cl2.Nodes.Add(m3);
 
             TestTreeNode m4 = new TestTreeNode("DoesntWork()", 3, 3);
-            m4.TestState = TestState.Failure;
+            m4.TestState = TestState.Failed;
             cl2.Nodes.Add(m4);
 
             TestTreeNode m5 = new TestTreeNode("DoGetProgress()", 3, 3);
@@ -133,6 +128,15 @@ namespace MbUnit.Icarus
         private void fileExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void aboutMenuItem_Click(object sender, EventArgs e)
+        {
+            About aboutForm = new About();
+            aboutForm.ShowDialog();
+
+            if (aboutForm != null)
+                aboutForm.Dispose();
         }
 
         private void tlbStart_Click(object sender, EventArgs e)
@@ -153,22 +157,10 @@ namespace MbUnit.Icarus
             }
         }
 
-        private void aboutMenuItem_Click(object sender, EventArgs e)
-        {
-            About aboutForm = new About();
-            aboutForm.ShowDialog();
-
-            if (aboutForm != null)
-                aboutForm.Dispose();
-        }
-
         private void Main_SizeChanged(object sender, EventArgs e)
         {
-
             if (this.WindowState == FormWindowState.Minimized)
-            {
                 this.Hide();        
-            }
         }
 
         private void trayIcon_DoubleClick(object sender, EventArgs e)
@@ -201,30 +193,25 @@ namespace MbUnit.Icarus
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "MbUnit Projects | *.mbunit";
-            openFileDialog1.ShowDialog();
+            openFileDialog1.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
+            DialogResult res = openFileDialog1.ShowDialog();
 
-            Program.Host.FireProjectLoaded(System.IO.Path.GetFileName(openFileDialog1.FileName), System.IO.Path.GetDirectoryName(openFileDialog1.FileName));
+            if(res == DialogResult.OK)
+                Program.Host.FireProjectLoaded(System.IO.Path.GetFileName(openFileDialog1.FileName), System.IO.Path.GetDirectoryName(openFileDialog1.FileName));
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveFileDialog1.OverwritePrompt = true;
             saveFileDialog1.AddExtension = true;
-            saveFileDialog1.DefaultExt = "MbUnit Projects |*.mbunit";
-            saveFileDialog1.Filter = "MbUnit Projects |*.mbunit";
-            saveFileDialog1.FileOk +=new CancelEventHandler(saveFileDialog1_FileOk);
+            saveFileDialog1.DefaultExt = "MbUnit Projects (*.mbunit)|*.mbunit";
+            saveFileDialog1.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
             saveFileDialog1.ShowDialog();
-        }
-
-        void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
-        {
-            MessageBox.Show(saveFileDialog1.FileName);
         }
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = ".NET DLL Assembly | *.dll | .NET EXE Assembly | *.exe";
+            openFileDialog1.Filter = "All Assembly Files|*.dll;*.exe|.NET DLL Assembly|*.dll|.NET EXE Assembly|*.exe";
             openFileDialog1.ShowDialog();
         }
 
@@ -245,5 +232,58 @@ namespace MbUnit.Icarus
             if (!options.IsDisposed)
                 options.Dispose();
         }
+
+        #region Test Tree Context Menu
+
+        private void expandAllMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.BeginUpdate();
+            testTree.ExpandAll();
+            testTree.EndUpdate();
+        }
+
+        private void collapseAllMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.BeginUpdate();
+            testTree.CollapseAll();
+            testTree.EndUpdate();
+        }
+
+        private void expandFailedMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.BeginUpdate();
+
+            testTree.CollapseAll();
+            TestNodes(testTree.Nodes[0], TestState.Failed);
+
+            testTree.EndUpdate();
+        }
+
+        private void TestNodes(TreeNode node, TestState state)
+        {
+            if (node is TestTreeNode)
+            {
+                if (((TestTreeNode)node).TestState == state)
+                    ExpandNode(node);
+            }
+
+            // Loop though all the child nodes and expand them if they
+            // meet the test state.
+            foreach (TreeNode tNode in node.Nodes)
+                TestNodes(tNode, state);
+        }
+
+        private void ExpandNode(TreeNode node)
+        {
+            // Loop through all parent nodes that are not already
+            // expanded and expand them.
+            if (node.Parent != null && !node.Parent.IsExpanded)
+                ExpandNode(node.Parent);
+
+            node.Expand();
+        }
+
+        #endregion
+
     }
 }

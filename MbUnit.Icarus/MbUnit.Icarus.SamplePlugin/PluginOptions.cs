@@ -10,7 +10,6 @@ using MbUnit.Icarus.Plugins;
 
 namespace MbUnit.Icarus.SamplePlugin
 {
-    //[OptionsMenuItem("Plugin Test Node")]
     public partial class PluginOptions : UserControl
     {
         public PluginOptions()

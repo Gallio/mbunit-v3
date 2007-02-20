@@ -35,12 +35,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnotherOptionsPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="AnotherOptionsPanel.Designer.cs">
-      <DependentUpon>AnotherOptionsPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="PluginOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -57,10 +51,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AnotherOptionsPanel.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>AnotherOptionsPanel.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PluginOptions.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PluginOptions.cs</DependentUpon>

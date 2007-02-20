@@ -62,12 +62,8 @@ namespace MbUnit.Icarus.SamplePlugin
             get
             {
                 OptionsTreeNode menu = new OptionsTreeNode("Plugin Menu Item");
-
                 OptionsTreeNode node1 = new OptionsTreeNode("Sub Menu Item", new OptionsTreeNodeSelectedHandler(DisplayOptions));
                 menu.Nodes.Add(node1);
-
-                OptionsTreeNode node2 = new OptionsTreeNode("Another Item", new OptionsTreeNodeSelectedHandler(DisplayOtherOptions));
-                menu.Nodes.Add(node2);
 
                 return menu;
             }
@@ -76,11 +72,6 @@ namespace MbUnit.Icarus.SamplePlugin
         private UserControl DisplayOptions()
         {
             return new PluginOptions();
-        }
-
-        private UserControl DisplayOtherOptions()
-        {
-            return new AnotherOptionsPanel();
         }
 
         public void Initialize()

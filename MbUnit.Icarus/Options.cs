@@ -21,6 +21,8 @@ namespace MbUnit.Icarus
 
         private void Options_Load(object sender, EventArgs e)
         {
+            optionCategoryTree.Sort();
+
             // Go through all the plugins and get the options menu items.
             foreach (AvailablePlugin plugin in Program.Plugins.AvailablePlugins)
             {

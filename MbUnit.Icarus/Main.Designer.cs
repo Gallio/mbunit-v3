@@ -76,13 +76,12 @@ namespace MbUnit.Icarus
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.projectTabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.projectTree = new MbUnit.Icarus.Controls.TestTreeView();
+            this.testTree = new MbUnit.Icarus.Controls.TestTreeView();
             this.classTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.expandAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.expanedFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.collapseFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.expandFailedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.assemblyList = new System.Windows.Forms.ListView();
             this.columnHeader9 = new System.Windows.Forms.ColumnHeader();
@@ -528,7 +527,7 @@ namespace MbUnit.Icarus
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.projectTree);
+            this.tabPage3.Controls.Add(this.testTree);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -537,61 +536,57 @@ namespace MbUnit.Icarus
             this.tabPage3.Text = "Class View";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // projectTree
+            // testTree
             // 
-            this.projectTree.CheckBoxes = true;
-            this.projectTree.ContextMenuStrip = this.classTreeMenuStrip;
-            this.projectTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.projectTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.projectTree.HideSelection = false;
-            this.projectTree.ImageIndex = 0;
-            this.projectTree.ImageList = this.treeImages;
-            this.projectTree.Location = new System.Drawing.Point(3, 3);
-            this.projectTree.Name = "projectTree";
-            this.projectTree.SelectedImageIndex = 0;
-            this.projectTree.Size = new System.Drawing.Size(302, 565);
-            this.projectTree.TabIndex = 2;
-            this.projectTree.TestStateImageList = this.stateImages;
+            this.testTree.CheckBoxes = true;
+            this.testTree.ContextMenuStrip = this.classTreeMenuStrip;
+            this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.testTree.HideSelection = false;
+            this.testTree.ImageIndex = 0;
+            this.testTree.ImageList = this.treeImages;
+            this.testTree.Location = new System.Drawing.Point(3, 3);
+            this.testTree.Name = "testTree";
+            this.testTree.SelectedImageIndex = 0;
+            this.testTree.Size = new System.Drawing.Size(302, 565);
+            this.testTree.TabIndex = 2;
+            this.testTree.TestStateImageList = this.stateImages;
             // 
             // classTreeMenuStrip
             // 
             this.classTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.expandAllToolStripMenuItem,
-            this.collapseAllToolStripMenuItem,
+            this.expandAllMenuItem,
+            this.collapseAllMenuItem,
             this.toolStripSeparator7,
-            this.expanedFailedToolStripMenuItem,
-            this.collapseFailedToolStripMenuItem});
+            this.expandFailedMenuItem});
             this.classTreeMenuStrip.Name = "classTreeMenuStrip";
-            this.classTreeMenuStrip.Size = new System.Drawing.Size(157, 98);
+            this.classTreeMenuStrip.Size = new System.Drawing.Size(153, 98);
             // 
-            // expandAllToolStripMenuItem
+            // expandAllMenuItem
             // 
-            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
-            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.expandAllToolStripMenuItem.Text = "&Expand All";
+            this.expandAllMenuItem.Name = "expandAllMenuItem";
+            this.expandAllMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.expandAllMenuItem.Text = "&Expand All";
+            this.expandAllMenuItem.Click += new System.EventHandler(this.expandAllMenuItem_Click);
             // 
-            // collapseAllToolStripMenuItem
+            // collapseAllMenuItem
             // 
-            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
-            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.collapseAllToolStripMenuItem.Text = "&Collapse All";
+            this.collapseAllMenuItem.Name = "collapseAllMenuItem";
+            this.collapseAllMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.collapseAllMenuItem.Text = "&Collapse All";
+            this.collapseAllMenuItem.Click += new System.EventHandler(this.collapseAllMenuItem_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(153, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
             // 
-            // expanedFailedToolStripMenuItem
+            // expandFailedMenuItem
             // 
-            this.expanedFailedToolStripMenuItem.Name = "expanedFailedToolStripMenuItem";
-            this.expanedFailedToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.expanedFailedToolStripMenuItem.Text = "Expand &Failed";
-            // 
-            // collapseFailedToolStripMenuItem
-            // 
-            this.collapseFailedToolStripMenuItem.Name = "collapseFailedToolStripMenuItem";
-            this.collapseFailedToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.collapseFailedToolStripMenuItem.Text = "Collapse F&ailed";
+            this.expandFailedMenuItem.Name = "expandFailedMenuItem";
+            this.expandFailedMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.expandFailedMenuItem.Text = "Expand &Failed";
+            this.expandFailedMenuItem.Click += new System.EventHandler(this.expandFailedMenuItem_Click);
             // 
             // tabPage5
             // 
@@ -996,7 +991,7 @@ namespace MbUnit.Icarus
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
-        private MbUnit.Icarus.Controls.TestTreeView projectTree;
+        private MbUnit.Icarus.Controls.TestTreeView testTree;
         private System.Windows.Forms.ImageList stateImages;
         private MbUnit.Icarus.Controls.TestStatusBar testProgressStatusBar;
         private System.Windows.Forms.ToolStripContainer toolStripContainer;
@@ -1020,11 +1015,10 @@ namespace MbUnit.Icarus
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip classTreeMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem expandAllMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem collapseAllMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripMenuItem expanedFailedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem collapseFailedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem expandFailedMenuItem;
         private System.Windows.Forms.ToolStripMenuItem scriptingToolStripMenuItem;
         private ZedGraph.ZedGraphControl zedGraphControl1;
         private System.Windows.Forms.Panel panel2;
