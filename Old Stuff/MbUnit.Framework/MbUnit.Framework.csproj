@@ -1,0 +1,138 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{16A95B91-9238-4D76-9ECB-4B7A1AEAC536}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit.Framework</RootNamespace>
+    <AssemblyName>MbUnit.Framework</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Adapdev.UnitTest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=57e06bdbfcf2fd11" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TestDriven.UnitTesting, Version=0.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\TestDriven.NET 2.0\NUnit\TestDriven.UnitTesting.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Asserts\Assert.cs" />
+    <Compile Include="Asserts\DataAssert.cs" />
+    <Compile Include="Asserts\FileAssert.cs" />
+    <Compile Include="Asserts\ReflectionAssert.cs" />
+    <Compile Include="Asserts\SerialAssert.cs" />
+    <Compile Include="Asserts\XmlAssert.cs" />
+    <Compile Include="CombinationalTestAttribute.cs" />
+    <Compile Include="Core\Collections\AttributedMethodCollection.cs" />
+    <Compile Include="Core\Collections\AttributedMethodEnumerator.cs" />
+    <Compile Include="Core\Collections\AttributedPropertyCollection.cs" />
+    <Compile Include="Core\Collections\AttributedPropertyEnumerator.cs" />
+    <Compile Include="Core\Exceptions\ConstructorNotFoundException.cs" />
+    <Compile Include="Core\Exceptions\IndexerNotFoundException.cs" />
+    <Compile Include="Core\Exceptions\MethodNotFoundException.cs" />
+    <Compile Include="Core\Reflection\SignatureChecker.cs" />
+    <Compile Include="Core\TypeHelper.cs" />
+    <Compile Include="Exceptions\AssertionException.cs" />
+    <Compile Include="CategoryAttribute.cs" />
+    <Compile Include="Asserts\CollectionAssert.cs" />
+    <Compile Include="Asserts\CompilerAssert.cs" />
+    <Compile Include="Exceptions\CompilationException.cs" />
+    <Compile Include="ExpectedExceptionAttribute.cs" />
+    <Compile Include="ExplicitAttribute.cs" />
+    <Compile Include="FactoryAttribute.cs" />
+    <Compile Include="IgnoreAttribute.cs" />
+    <Compile Include="Exceptions\IgnoreRunException.cs" />
+    <Compile Include="IgnoreTestCase.cs" />
+    <Compile Include="Exceptions\NotEqualAssertionException.cs" />
+    <Compile Include="Asserts\ArrayAssert.cs" />
+    <Compile Include="Operations\ArrayDomain.cs" />
+    <Compile Include="Operations\CartesianProductDomainTupleEnumerable.cs" />
+    <Compile Include="Operations\CartesianProductDomainTupleEnumerator.cs" />
+    <Compile Include="Operations\CollectionDomain.cs" />
+    <Compile Include="Operations\DomainBase.cs" />
+    <Compile Include="Operations\DomainCollection.cs" />
+    <Compile Include="Operations\Domains.cs" />
+    <Compile Include="Operations\DomainTupleEnumeratorBase.cs" />
+    <Compile Include="Operations\EmptyDomain.cs" />
+    <Compile Include="Operations\GreedyTupleEnumerator.cs" />
+    <Compile Include="Operations\IDomain.cs" />
+    <Compile Include="Operations\IDomainCollection.cs" />
+    <Compile Include="Operations\IDomainEnumerator.cs" />
+    <Compile Include="Operations\ITuple.cs" />
+    <Compile Include="Operations\ITupleEnumerable.cs" />
+    <Compile Include="Operations\ITupleEnumerator.cs" />
+    <Compile Include="Operations\ITupleEnumeratorFactory.cs" />
+    <Compile Include="Operations\LinearInt32Domain.cs" />
+    <Compile Include="Operations\NamespaceDoc.cs" />
+    <Compile Include="Operations\PairWizeProductDomainTupleEnumerable.cs" />
+    <Compile Include="Operations\Permutation.cs" />
+    <Compile Include="Operations\Products.cs" />
+    <Compile Include="Operations\StringDomain.cs" />
+    <Compile Include="Operations\Tuple.cs" />
+    <Compile Include="Operations\UniformPairWizeProductDomainTupleEnumerable.cs" />
+    <Compile Include="Operations\UniformTWizeProductDomainTupleEnumerable.cs" />
+    <Compile Include="PatternAttribute.cs" />
+    <Compile Include="SetUpAttribute.cs" />
+    <Compile Include="SetUpTearDownTestCaseDecorator.cs" />
+    <Compile Include="Asserts\StringAssert.cs" />
+    <Compile Include="TearDownAttribute.cs" />
+    <Compile Include="TestAttribute.cs" />
+    <Compile Include="TestFixture.cs" />
+    <Compile Include="TestFixtureAttribute.cs" />
+    <Compile Include="TestFixtureSetUpAttribute.cs" />
+    <Compile Include="TestFixtureTearDownAttribute.cs" />
+    <Compile Include="TestRowAttribute.cs" />
+    <Compile Include="UsingBaseAttribute.cs" />
+    <Compile Include="UsingEnumAttribute.cs" />
+    <Compile Include="UsingFactoriesAttribute.cs" />
+    <Compile Include="UsingLinearAttribute.cs" />
+    <Compile Include="UsingLiteralsAttribute.cs" />
+    <Compile Include="Xml\DiffConfiguration.cs" />
+    <Compile Include="Xml\Difference.cs" />
+    <Compile Include="Xml\Differences.cs" />
+    <Compile Include="Xml\DifferenceType.cs" />
+    <Compile Include="Xml\DiffResult.cs" />
+    <Compile Include="Xml\FlowControlException.cs" />
+    <Compile Include="Xml\NamespaceDoc.cs" />
+    <Compile Include="Xml\Validator.cs" />
+    <Compile Include="Xml\XmlDiff.cs" />
+    <Compile Include="Xml\XmlInput.cs" />
+    <Compile Include="Xml\XmlOutput.cs" />
+    <Compile Include="Xml\XPath.cs" />
+    <Compile Include="Xml\Xslt.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

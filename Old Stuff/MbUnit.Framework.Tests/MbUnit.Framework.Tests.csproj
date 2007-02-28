@@ -1,0 +1,94 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9673298A-2E7B-4024-9261-00E4A9FF13EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit.Framework.Tests</RootNamespace>
+    <AssemblyName>MbUnit.Framework.Tests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Adapdev.UnitTest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=57e06bdbfcf2fd11" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TestDriven.UnitTesting, Version=0.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\TestDriven.NET 2.0\NUnit\TestDriven.UnitTesting.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assert_Test.cs" />
+    <Compile Include="CombinationalFixture_Test.cs" />
+    <Compile Include="CompilerAssert_Test.cs" />
+    <Compile Include="CsSample.cs" />
+    <Compile Include="Dummy.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RowTestFixture_Test.cs" />
+    <Compile Include="TestFixtureSetUpAndTearDown_Test.cs" />
+    <Compile Include="StringAssert_Test.cs" />
+    <Compile Include="XmlUnitTests\DiffConfigurationTests.cs" />
+    <Compile Include="XmlUnitTests\DifferenceTests.cs" />
+    <Compile Include="XmlUnitTests\DiffResultTests.cs" />
+    <Compile Include="XmlUnitTests\ValidatorTests.cs" />
+    <Compile Include="XmlUnitTests\XmlAssertionTests.cs" />
+    <Compile Include="XmlUnitTests\XmlDiffTests.cs" />
+    <Compile Include="XmlUnitTests\XmlInputTests.cs" />
+    <Compile Include="XmlUnitTests\XPathTests.cs" />
+    <Compile Include="XmlUnitTests\XsltTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XmlUnitTests\etc\animal.xsl" />
+    <Content Include="XmlUnitTests\etc\BookXsdGenerated.xml" />
+    <Content Include="XmlUnitTests\etc\controlDetail.xml" />
+    <Content Include="XmlUnitTests\etc\controlNamespaces.xml" />
+    <Content Include="XmlUnitTests\etc\invalidBook.xml" />
+    <Content Include="XmlUnitTests\etc\test.blame.html" />
+    <Content Include="XmlUnitTests\etc\test1.xml" />
+    <Content Include="XmlUnitTests\etc\test2.xml" />
+    <Content Include="XmlUnitTests\etc\testAnimal.xml" />
+    <Content Include="XmlUnitTests\etc\testDetail.xml" />
+    <Content Include="XmlUnitTests\etc\testNamespaces.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="XmlUnitTests\etc\Book.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="XmlUnitTests\etc\test.dtd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MbUnit.Framework\MbUnit.Framework.csproj">
+      <Project>{16A95B91-9238-4D76-9ECB-4B7A1AEAC536}</Project>
+      <Name>MbUnit.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
