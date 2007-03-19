@@ -1,0 +1,115 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B25D6A49-2395-40B9-847B-CB8B4E33058A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit</RootNamespace>
+    <AssemblyName>MbUnit</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Collections\IKeyedCollection.cs" />
+    <Compile Include="Core\Services\Report\Attachments\IAttachmentCollection.cs" />
+    <Compile Include="Core\Services\Report\IReportStreamCollection.cs" />
+    <Compile Include="Core\Utilities\ListUtils.cs" />
+    <Compile Include="Core\Collections\SyncUnorderedKeyedCollection.cs" />
+    <Compile Include="Core\Exceptions\AssertionException.cs" />
+    <Compile Include="Core\Runtime\DefaultServiceProvider.cs" />
+    <Compile Include="Core\Runtime\IGenericServiceProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Services\Report\Attachments\Attachment.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Services\Report\Attachments\AttachmentUtils.cs" />
+    <Compile Include="Core\Services\Report\Attachments\BinaryAttachment.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Services\Report\Attachments\MimeTypes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Services\Report\Attachments\TextAttachment.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Services\Report\Attachments\XmlAttachment.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Services\Report\Attachments\AttachmentCollection.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportBodyTag.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportContainerTag.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportEmbedTag.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportTag.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportSectionTag.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportStream.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReport.cs" />
+    <Compile Include="Core\Services\Report\DefaultReportService.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportStreamCollection.cs" />
+    <Compile Include="Core\Services\Report\IReport.cs" />
+    <Compile Include="Core\Services\Report\ContextualReportStreamWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Services\Report\ContextualReportTraceListener.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Runtime\Runtime.cs" />
+    <Compile Include="Core\Services\Assert\AssertionResultType.cs" />
+    <Compile Include="Core\Services\Assert\AssertionUtils.cs" />
+    <Compile Include="Core\Services\Reflection\TestInfo.cs" />
+    <Compile Include="Framework\Block.cs" />
+    <Compile Include="Core\Services\Assert\AssertionCondition.cs" />
+    <Compile Include="Core\Services\Assert\Assertion.cs" />
+    <Compile Include="Core\Services\Assert\AssertionResult.cs" />
+    <Compile Include="Core\Services\Assert\DefaultAssertionService.cs" />
+    <Compile Include="Core\Services\Context\DefaultContext.cs" />
+    <Compile Include="Core\Services\Context\DefaultContextManager.cs" />
+    <Compile Include="Core\Services\Assert\IAssertionService.cs" />
+    <Compile Include="Core\Services\Context\IContextManager.cs" />
+    <Compile Include="Core\Services\Context\IContext.cs" />
+    <Compile Include="Core\Services\Report\IReportService.cs" />
+    <Compile Include="Core\Services\Report\IReportStream.cs" />
+    <Compile Include="Core\Services\Report\ReportUtils.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlContentEncoding.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportAttachment.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportTextTag.cs" />
+    <Compile Include="Core\Utilities\EmptyArray.cs" />
+    <Compile Include="Core\Utilities\StringUtils.cs" />
+    <Compile Include="Framework\Assert.cs" />
+    <Compile Include="Framework\Context.cs" />
+    <Compile Include="Framework\Report.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
