@@ -81,41 +81,43 @@ namespace MbUnit.Icarus.Controls
                 if ((e.State & TreeNodeStates.Focused) != 0)
                     nodeColor = SystemBrushes.HighlightText;
 
-                else if (node.TestState == TestState.Failed)
+                else if (node.TestState == TestStates.Failed)
                     nodeColor = new SolidBrush(Color.Red);
 
-                else if (node.TestState == TestState.Success)
+                else if (node.TestState == TestStates.Success)
                     nodeColor = new SolidBrush(Color.Green);
 
-                else if (node.TestState == TestState.Ignored)
+                else if (node.TestState == TestStates.Ignored)
                     nodeColor = new SolidBrush(Color.SlateGray);
+
+                SizeF textSize = e.Graphics.MeasureString(e.Node.Text, nodeFont);
 
                 // If we do not want to hide the selection, paint it in again.
                 if (this.SelectedNode == e.Node && !this.HideSelection)
                 {
                     nodeColor = SystemBrushes.HighlightText;
 
-                    if (e.Node.Nodes.Count == 0 && node.TestState != TestState.Undefined)
-                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X + 17, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
+                    if (node.TestState != TestStates.Undefined)
+                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X + 17, e.Bounds.Y, textSize.Width, e.Bounds.Height);
                     else
-                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
+                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X, e.Bounds.Y, textSize.Width, e.Bounds.Height);
                 }
 
                 // If the test icons have been set and we are at a leaf node, draw the extra image.
-                if (this.testStateImages.Images.Count > 0 && e.Node.Nodes.Count == 0)
+                if (this.testStateImages.Images.Count > 0 && node.TestState != TestStates.Undefined)
                 {
                     // Draw the highlighted background if the node has been selected.
                     if ((e.State & TreeNodeStates.Focused) != 0)
-                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X + 17, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
+                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X + 17, e.Bounds.Y, textSize.Width, e.Bounds.Height);
 
-                    e.Graphics.DrawImageUnscaled(this.testStateImages.Images[(int)node.TestState], e.Bounds.X, e.Bounds.Y);
+                    e.Graphics.DrawImageUnscaled(this.testStateImages.Images[(int)node.TestState - 1], e.Bounds.X, e.Bounds.Y);
                     e.Graphics.DrawString(e.Node.Text, nodeFont, nodeColor, e.Bounds.X + 16, e.Bounds.Y + 1);
                 }
                 else
                 {
                     // Draw a regular node, we do not need to extend the highlight area or add any image.
                     if ((e.State & TreeNodeStates.Focused) != 0)
-                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
+                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X, e.Bounds.Y, textSize.Width, e.Bounds.Height);
 
                     e.Graphics.DrawString(e.Node.Text, nodeFont, nodeColor, e.Bounds.X, e.Bounds.Y + 1);
                 }
@@ -127,9 +129,11 @@ namespace MbUnit.Icarus.Controls
         {
             base.OnNodeMouseClick(e);
 
+            TestTreeNode node = e.Node as TestTreeNode;
+
             // Extend the selectable region of the control by 16px to include the image.
-            // Only leaf level nodes can have the extra icon so only apply the new size to them.
-            if ((e.Node.Nodes.Count == 0) && 
+            if ((node != null) &&
+                (node.TestState != TestStates.Undefined) && 
                 (e.Node.Bounds.Right + 16 >= e.Location.X) && 
                 (e.Node.Bounds.Left + 16 <= e.Location.X) && 
                 (e.Button == MouseButtons.Left))

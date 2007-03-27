@@ -2,10 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Icarus", "MbUnit.Icarus.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Icarus.PluginInterfaces", "MbUnit.Icarus.PluginInterfaces\MbUnit.Icarus.PluginInterfaces.csproj", "{6892F020-5C35-4C96-B66D-E69C890CBA75}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Icarus.SamplePlugin", "MbUnit.Icarus.SamplePlugin\MbUnit.Icarus.SamplePlugin.csproj", "{826A338A-ECA1-4BB4-9EE2-4C3B4579F1EE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,14 +12,6 @@ Global
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6892F020-5C35-4C96-B66D-E69C890CBA75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6892F020-5C35-4C96-B66D-E69C890CBA75}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6892F020-5C35-4C96-B66D-E69C890CBA75}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6892F020-5C35-4C96-B66D-E69C890CBA75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{826A338A-ECA1-4BB4-9EE2-4C3B4579F1EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{826A338A-ECA1-4BB4-9EE2-4C3B4579F1EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{826A338A-ECA1-4BB4-9EE2-4C3B4579F1EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{826A338A-ECA1-4BB4-9EE2-4C3B4579F1EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

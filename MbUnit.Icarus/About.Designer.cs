@@ -109,10 +109,10 @@ namespace MbUnit.Icarus
             this.websiteLink.LinkArea = new System.Windows.Forms.LinkArea(9, 38);
             this.websiteLink.Location = new System.Drawing.Point(258, 82);
             this.websiteLink.Name = "websiteLink";
-            this.websiteLink.Size = new System.Drawing.Size(163, 17);
+            this.websiteLink.Size = new System.Drawing.Size(169, 17);
             this.websiteLink.TabIndex = 6;
             this.websiteLink.TabStop = true;
-            this.websiteLink.Text = "Website: http://www.mbunit.net/";
+            this.websiteLink.Text = "Website: http://www.mbunit.com/";
             this.websiteLink.UseCompatibleTextRendering = true;
             // 
             // groupBox1
@@ -134,8 +134,8 @@ namespace MbUnit.Icarus
             this.projectContributorsLabel.Name = "projectContributorsLabel";
             this.projectContributorsLabel.Size = new System.Drawing.Size(287, 31);
             this.projectContributorsLabel.TabIndex = 3;
-            this.projectContributorsLabel.Text = "Ben Hall, Graham Hay, Johan Appelgren, Joey Calisay, Dave Parkinson, Jeff Brown, " +
-                "Marc Stober, Mark Haley";
+            this.projectContributorsLabel.Text = "Ben Hall, Graham Hay, Johan Appelgren, Joey Calisay, David Parkinson, Jeff Brown," +
+                " Marc Stober, Mark Haley";
             // 
             // projectLeadsLabel
             // 

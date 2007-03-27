@@ -31,10 +31,10 @@ namespace MbUnit.Icarus
 
 
             // Make up some data points
-            string[] labels = { "Class 1", "Class 2"};
-            double[] x = {1, 2};
-            double[] x2 = {1, 5};
-            double[] x3 = {4, 10};
+            string[] labels = { "Class 1", "Class 2" };
+            double[] x = { 1, 2 };
+            double[] x2 = { 1, 5 };
+            double[] x3 = { 4, 10 };
 
             // Generate a red bar with "Curve 1" in the legend
             BarItem myCurve = graphPane.AddBar("Fail", x, null, Color.Red);
@@ -68,7 +68,7 @@ namespace MbUnit.Icarus
             // Fill the chart background with a color gradient
             graphPane.Chart.Fill = new Fill(Color.White,
                Color.FromArgb(255, 255, 166), 45.0F);
-                      
+
             zedGraphControl1.AxisChange();
 
         }
@@ -83,46 +83,50 @@ namespace MbUnit.Icarus
             this.testTree.TestStateImageList = this.stateImages;
 
             TestTreeNode project = new TestTreeNode("Test Project 1.0", 0, 0);
+            //project.TestState = TestState.Failed;
             testTree.Nodes.Add(project);
 
-            TestTreeNode namespaces = new TestTreeNode("Namespaces", 0, 0);
+            TestTreeNode namespaces = new TestTreeNode("Namespaces", 1, 1);
+            //namespaces.TestState = TestState.Failed;
             project.Nodes.Add(namespaces);
 
-            TestTreeNode ns = new TestTreeNode("TestNamespace", 1, 1);
+            TestTreeNode ns = new TestTreeNode("TestNamespace", 2, 2);
+            //ns.TestState = TestState.Failed;
             namespaces.Nodes.Add(ns);
 
-            TestTreeNode cl = new TestTreeNode("Class1", 2, 2);
+            TestTreeNode cl = new TestTreeNode("Class1", 3, 3);
+            //cl.TestState = TestState.Success;
             ns.Nodes.Add(cl);
 
-            TestTreeNode m1 = new TestTreeNode("TestMethod()", 3, 3);
-            m1.TestState = TestState.Success;
+            TestTreeNode m1 = new TestTreeNode("TestMethod()", 4, 4);
+            //m1.TestState = TestState.Success;
             cl.Nodes.Add(m1);
 
-            TestTreeNode m2 = new TestTreeNode("AnotherMethod()", 3, 3);
-            m2.TestState = TestState.Success;
+            TestTreeNode m2 = new TestTreeNode("AnotherMethod()", 4, 4);
+            //m2.TestState = TestState.Success;
             cl.Nodes.Add(m2);
 
-            TestTreeNode cl2 = new TestTreeNode("Class2", 2, 2);
+            TestTreeNode cl2 = new TestTreeNode("Class2", 3, 3);
+            //cl2.TestState = TestState.Failed;
             ns.Nodes.Add(cl2);
 
-            TestTreeNode m3 = new TestTreeNode("MethodThatsIgnored()", 3, 3);
-            m3.TestState = TestState.Ignored;
+            TestTreeNode m3 = new TestTreeNode("MethodThatsIgnored()", 4, 4);
+            //m3.TestState = TestState.Ignored;
             cl2.Nodes.Add(m3);
 
-            TestTreeNode m4 = new TestTreeNode("DoesntWork()", 3, 3);
-            m4.TestState = TestState.Failed;
+            TestTreeNode m4 = new TestTreeNode("DoesntWork()", 4, 4);
+            //m4.TestState = TestState.Failed;
             cl2.Nodes.Add(m4);
 
-            TestTreeNode m5 = new TestTreeNode("DoGetProgress()", 3, 3);
-            m5.TestState = TestState.Success;
+            TestTreeNode m5 = new TestTreeNode("DoGetProgress()", 4, 4);
+            //m5.TestState = TestState.Success;
             cl2.Nodes.Add(m5);
 
-            TestTreeNode m6 = new TestTreeNode("BuildTree()", 3, 3);
-            m6.TestState = TestState.Success;
+            TestTreeNode m6 = new TestTreeNode("BuildTree()", 4, 4);
+            //m6.TestState = TestState.Success;
             cl2.Nodes.Add(m6);
 
             project.ExpandAll();
-
         }
 
         private void fileExit_Click(object sender, EventArgs e)
@@ -193,35 +197,29 @@ namespace MbUnit.Icarus
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
-            DialogResult res = openFileDialog1.ShowDialog();
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
+            DialogResult res = openFile.ShowDialog();
 
             if(res == DialogResult.OK)
-                Program.Host.FireProjectLoaded(System.IO.Path.GetFileName(openFileDialog1.FileName), System.IO.Path.GetDirectoryName(openFileDialog1.FileName));
+                MessageBox.Show(System.IO.Path.GetFileName(openFile.FileName), System.IO.Path.GetDirectoryName(openFile.FileName));
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.OverwritePrompt = true;
-            saveFileDialog1.AddExtension = true;
-            saveFileDialog1.DefaultExt = "MbUnit Projects (*.mbunit)|*.mbunit";
-            saveFileDialog1.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
-            saveFileDialog1.ShowDialog();
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.OverwritePrompt = true;
+            saveFile.AddExtension = true;
+            saveFile.DefaultExt = "MbUnit Projects (*.mbunit)|*.mbunit";
+            saveFile.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
+            saveFile.ShowDialog();
         }
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "All Assembly Files|*.dll;*.exe|.NET DLL Assembly|*.dll|.NET EXE Assembly|*.exe";
-            openFileDialog1.ShowDialog();
-        }
-
-        private void pluginsMenuItem_Click(object sender, EventArgs e)
-        {
-            Plugins.PluginManager manager = new MbUnit.Icarus.Plugins.PluginManager();
-            manager.ShowDialog();
-
-            if (!manager.IsDisposed)
-                manager.Dispose();
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.Filter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
+            openFile.ShowDialog();
         }
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
@@ -254,12 +252,12 @@ namespace MbUnit.Icarus
             testTree.BeginUpdate();
 
             testTree.CollapseAll();
-            TestNodes(testTree.Nodes[0], TestState.Failed);
+            TestNodes(testTree.Nodes[0], TestStates.Failed);
 
             testTree.EndUpdate();
         }
 
-        private void TestNodes(TreeNode node, TestState state)
+        private void TestNodes(TreeNode node, TestStates state)
         {
             if (node is TestTreeNode)
             {
@@ -283,7 +281,40 @@ namespace MbUnit.Icarus
             node.Expand();
         }
 
+        private void resetTestsMenuItem_Click(object sender, EventArgs e)
+        {
+            if (testTree.Nodes.Count > 0)
+            {
+                testTree.BeginUpdate();
+                ClearResults(testTree.Nodes[0]);
+                testTree.EndUpdate();
+
+                testProgressStatusBar.Clear();
+                testProgressStatusBar.Total = 50;
+            }
+        }
+
+        private void ClearResults(TreeNode node)
+        {
+            if (node.Nodes.Count > 0)
+            {
+                foreach (TreeNode child in node.Nodes)
+                    ClearResults(child);
+            }
+            else
+            {
+                TestTreeNode testNode = node as TestTreeNode;
+                if (testNode != null)
+                    testNode.TestState = TestStates.Undefined;
+            }
+        }
+
         #endregion
+
+        private void helpToolbarButton_Click(object sender, EventArgs e)
+        {
+            ((TestTreeNode)testTree.SelectedNode).TestState = TestStates.Failed;
+        }
 
     }
 }

@@ -9,8 +9,8 @@ namespace MbUnit.Icarus.Controls
 {
     public class TestTreeNode : TreeNode
     {
-        private CheckBoxState checkState = CheckBoxState.Unchecked;
-        private TestState testState = TestState.Undefined;
+        private CheckBoxStates checkState = CheckBoxStates.Unchecked;
+        private TestStates testState = TestStates.Undefined;
 
         #region Constructors
 
@@ -50,10 +50,10 @@ namespace MbUnit.Icarus.Controls
 
         [Category("Behaviour"),
         Description("The current state of the node's checkbox, Unchecked, Checked, or Indeterminate"),
-        DefaultValue(CheckBoxState.Unchecked),
-        TypeConverter(typeof(CheckBoxState)),
-        Editor("MbUnit.Icarus.Controls.Enums.CheckBoxState", typeof(CheckBoxState))]
-        public CheckBoxState CheckState
+        DefaultValue(CheckBoxStates.Unchecked),
+        TypeConverter(typeof(CheckBoxStates)),
+        Editor("MbUnit.Icarus.Controls.Enums.CheckBoxState", typeof(CheckBoxStates))]
+        public CheckBoxStates CheckState
         {
             get { return this.checkState; }
             set
@@ -67,21 +67,24 @@ namespace MbUnit.Icarus.Controls
                     // Setting the Checked property in code will cause the OnAfterCheck to be called
                     // and the action will be 'Unknown'; do not handle that case.
                     if ((this.TreeView != null) && (this.TreeView.CheckBoxes))
-                        this.Checked = (this.checkState == CheckBoxState.Checked);
+                        this.Checked = (this.checkState == CheckBoxStates.Checked);
                 }
             }
         }
 
-        public TestState TestState
+        public TestStates TestState
         {
             get { return this.testState; }
-            set { this.testState = value; }
+            set { 
+                this.testState = value;
+                UpdateParentTestState();
+            }
         }
 
         /// <summary>
         /// Returns the 'combined' state for all siblings of a node.
         /// </summary>
-        private CheckBoxState SiblingsState
+        private CheckBoxStates SiblingsState
         {
             get
             {
@@ -94,7 +97,7 @@ namespace MbUnit.Icarus.Controls
                 // The parent has more than one child.  Walk through parent's child
                 // nodes to determine the state of all this node's siblings,
                 // including this node.
-                CheckBoxState state = 0;
+                CheckBoxStates state = 0;
                 foreach (TreeNode node in this.Parent.Nodes)
                 {
                     TestTreeNode child = node as TestTreeNode;
@@ -105,11 +108,34 @@ namespace MbUnit.Icarus.Controls
                     // is a combination of checked and unchecked nodes
                     // and no longer need to continue evaluating the rest
                     // of the sibling nodes.
-                    if (state == CheckBoxState.Indeterminate)
+                    if (state == CheckBoxStates.Indeterminate)
                         break;
                 }
 
-                return (state == 0) ? CheckBoxState.Unchecked : state;
+                return (state == 0) ? CheckBoxStates.Unchecked : state;
+            }
+        }
+
+        private TestStates SiblingTestState
+        {
+            get
+            {
+                if ((this.Parent == null) || (this.Parent.Nodes.Count == 1))
+                    return this.TestState;
+
+                TestStates testState = TestStates.Undefined;
+                foreach (TreeNode node in this.Parent.Nodes)
+                {
+                    TestTreeNode child = node as TestTreeNode;
+                    if (child != null && child.TestState > testState)
+                        testState = child.TestState;
+
+                    // Failed is the worst state we can get to, dont bother checking the rest.
+                    if (testState == TestStates.Failed)
+                        break;
+                }
+
+                return testState;
             }
         }
 
@@ -120,20 +146,20 @@ namespace MbUnit.Icarus.Controls
         /// Manages state changes from one state to the next.
         /// </summary>
         /// <param name="fromState">The state upon which to base the state change.</param>
-        public void Toggle(CheckBoxState fromState)
+        public void Toggle(CheckBoxStates fromState)
         {
             switch (fromState)
             {
-                case CheckBoxState.Unchecked:
+                case CheckBoxStates.Unchecked:
                     {
-                        this.CheckState = CheckBoxState.Checked;
+                        this.CheckState = CheckBoxStates.Checked;
                         break;
                     }
-                case CheckBoxState.Checked:
-                case CheckBoxState.Indeterminate:
+                case CheckBoxStates.Checked:
+                case CheckBoxStates.Indeterminate:
                 default:
                     {
-                        this.CheckState = CheckBoxState.Unchecked;
+                        this.CheckState = CheckBoxStates.Unchecked;
                         break;
                     }
             }
@@ -161,7 +187,7 @@ namespace MbUnit.Icarus.Controls
 
                 // If want to cascade checkbox state changes to child nodes of this node and
                 // if the current state is not intermediate, update the state of child nodes.
-                if (this.CheckState != CheckBoxState.Indeterminate)
+                if (this.CheckState != CheckBoxStates.Indeterminate)
                     this.UpdateChildNodeState();
 
                 this.UpdateParentNodeState(true);
@@ -183,7 +209,7 @@ namespace MbUnit.Icarus.Controls
                 {
                     child = node as TestTreeNode;
                     child.CheckState = this.CheckState;
-                    child.Checked = (this.CheckState != CheckBoxState.Unchecked);
+                    child.Checked = (this.CheckState != CheckBoxStates.Unchecked);
                     child.UpdateChildNodeState();
                 }
             }
@@ -208,11 +234,11 @@ namespace MbUnit.Icarus.Controls
             TestTreeNode parent = this.Parent as TestTreeNode;
             if (parent != null)
             {
-                CheckBoxState state = CheckBoxState.Unchecked;
+                CheckBoxStates state = CheckBoxStates.Unchecked;
 
                 // Determine the new state
-                if (!isStartingPoint && (this.CheckState == CheckBoxState.Indeterminate))
-                    state = CheckBoxState.Indeterminate;
+                if (!isStartingPoint && (this.CheckState == CheckBoxStates.Indeterminate))
+                    state = CheckBoxStates.Indeterminate;
                 else
                     state = this.SiblingsState;
 
@@ -220,9 +246,27 @@ namespace MbUnit.Icarus.Controls
                 if (parent.CheckState != state)
                 {
                     parent.CheckState = state;
-                    parent.Checked = (state != CheckBoxState.Unchecked);
+                    parent.Checked = (state != CheckBoxStates.Unchecked);
                     parent.UpdateParentNodeState(false);
                 }
+            }
+        }
+
+        private void UpdateParentTestState()
+        {
+            TestTreeView tv = this.TreeView as TestTreeView;
+            if (tv != null)
+            {
+                tv.BeginUpdate();
+
+                TestTreeNode parent = this.Parent as TestTreeNode;
+                if (parent != null)
+                {
+                    TestStates state = this.SiblingTestState;
+                    parent.TestState = state;
+                }
+
+                tv.EndUpdate();
             }
         }
 
