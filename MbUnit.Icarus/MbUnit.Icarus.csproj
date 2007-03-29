@@ -50,6 +50,7 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Collections\AssemblyCollection.cs" />
     <Compile Include="Controls\Enums\CheckBoxState.cs" />
     <Compile Include="Controls\Enums\TestState.cs" />
     <Compile Include="Controls\TestStatusBar.cs">
