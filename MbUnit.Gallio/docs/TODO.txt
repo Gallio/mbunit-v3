@@ -1,0 +1,40 @@
+
+* Allow the TestGraph to be updated at runtime.  It should be possible to
+  cancel tests previously added and to add new tests and ensure they are
+  scheduled to run accordingly.
+  
+  Use case 1: User decides to cancel a whole bunch of tests interactively
+              after observing intermediate results.  However, the entire
+              run of tests should not be abandoned.
+              
+              Caveat: Abandoning the tests altogether is easier and quite
+                      effective in most circumstances.
+              
+  Use case 2: User decides to add a few more cases during a long test run
+              in response to intermediate observations.  This is especially
+              useful for system testing scnearios.
+              
+              Caveat: An alternate solution is to provide affordances that
+                      make it easy for a user to batch up a new test run.
+                      This is particularly convenient when working with remote
+                      test agents that can perhaps run all of the tests in parallel.
+                      
+  Use case 3: The system is unable to determine a-priori what all of the
+              tests to run will be.  Possibly the set of tests or the parameters
+              for the tests are determined at runtime based on prior test
+              executions.
+              
+              Caveat: Explicit test batch sequencing can accomplish this
+                      quite neatly but it's somewhat more inconvenient for the
+                      user.  Interim results may need to be saved to a file
+                      so they can be reloaded as test parameters in the test
+                      iteration.
+                      
+                      A few years ago I'd have laughed off this idea, but
+                      I've seen people do weird things with xUnit frameworks
+                      (particularly for system testing) that make it difficult
+                      to obtain a-priori knowledge.
+                      
+  Use case 4: A test framework is to be integrated that does not support
+              the two-pass runtime model with test enumeration being
+              separate from test execution.

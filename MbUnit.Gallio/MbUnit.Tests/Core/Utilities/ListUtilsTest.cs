@@ -1,11 +1,7 @@
 extern alias MbUnit24;
 using MbUnit24::MbUnit.Framework;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework;
 
 
 namespace MbUnit.Tests.Core.Utilities

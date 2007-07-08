@@ -35,6 +35,61 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Collections\IKeyedCollection.cs" />
+    <Compile Include="Core\Collections\MultiMap.cs" />
+    <Compile Include="Core\Metadata\MetadataConstants.cs" />
+    <Compile Include="Core\Model\BaseTestComponent.cs" />
+    <Compile Include="Core\Model\BaseTestParameter.cs" />
+    <Compile Include="Core\Model\BaseTestParameterSet.cs" />
+    <Compile Include="Core\Model\BaseTestTemplate.cs" />
+    <Compile Include="Core\Model\ITestComponent.cs" />
+    <Compile Include="Core\Model\ITestParameter.cs" />
+    <Compile Include="Core\Model\ITestParameterSet.cs" />
+    <Compile Include="Core\Model\ITestTemplate.cs" />
+    <Compile Include="Core\Model\TestProject.cs" />
+    <Compile Include="Core\Model\TestTemplateTreeBuilder.cs" />
+    <Compile Include="Core\Model\MetadataMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Metadata\TemplateKind.cs" />
+    <Compile Include="Core\Runner\IsolatedTestDomain.cs" />
+    <Compile Include="Core\Runner\ITestDomain.cs" />
+    <Compile Include="Core\Runner\TestDomainException.cs" />
+    <Compile Include="Core\Serialization\CodeReferenceInfo.cs" />
+    <Compile Include="Core\Serialization\MetadataMapEntry.cs" />
+    <Compile Include="Core\Serialization\MetadataMapInfo.cs" />
+    <Compile Include="Core\Serialization\SerializationUtils.cs" />
+    <Compile Include="Core\Serialization\TestComponentInfo.cs" />
+    <Compile Include="Core\Serialization\TestParameterInfo.cs" />
+    <Compile Include="Core\Serialization\TestParameterSetInfo.cs" />
+    <Compile Include="Core\Serialization\TestProjectInfo.cs" />
+    <Compile Include="Core\Serialization\TestTemplateInfo.cs" />
+    <Compile Include="Framework\AuthorAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\AssemblyDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\AssemblyPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\ConditionPatternAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\Core\Attributes\DataPatternAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\Core\Attributes\DecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\FixtureDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\ParameterPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\FixturePatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\MetadataPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\ParameterDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\PatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\TestDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\TestPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\DecoratorOrderComparer.cs" />
+    <Compile Include="Framework\Core\MbUnitTestFramework.cs" />
+    <Compile Include="Framework\Core\Model\MbUnitTestAssemblyTemplate.cs" />
+    <Compile Include="Framework\Core\Model\MbUnitTestFixtureTemplate.cs" />
+    <Compile Include="Framework\Core\Model\MbUnitTestFrameworkTemplate.cs" />
+    <Compile Include="Framework\Core\Model\MbUnitTestMethodTemplate.cs" />
+    <Compile Include="Framework\Core\Model\MbUnitTestParameter.cs" />
+    <Compile Include="Core\Model\CodeReference.cs" />
+    <Compile Include="Core\Model\ITestFramework.cs" />
     <Compile Include="Core\Services\Report\Attachments\IAttachmentCollection.cs" />
     <Compile Include="Core\Services\Report\IReportStreamCollection.cs" />
     <Compile Include="Core\Utilities\ListUtils.cs" />
@@ -81,6 +136,7 @@
     <Compile Include="Core\Services\Assert\AssertionResultType.cs" />
     <Compile Include="Core\Services\Assert\AssertionUtils.cs" />
     <Compile Include="Core\Services\Reflection\TestInfo.cs" />
+    <Compile Include="Core\Utilities\ReflectionUtils.cs" />
     <Compile Include="Framework\Block.cs" />
     <Compile Include="Core\Services\Assert\AssertionCondition.cs" />
     <Compile Include="Core\Services\Assert\Assertion.cs" />
@@ -101,7 +157,22 @@
     <Compile Include="Core\Utilities\StringUtils.cs" />
     <Compile Include="Framework\Assert.cs" />
     <Compile Include="Framework\Context.cs" />
+    <Compile Include="Framework\Core\Model\MbUnitTestParameterSet.cs" />
+    <Compile Include="Framework\Core\Model\MbUnitTestTemplate.cs" />
+    <Compile Include="Framework\Core\Model\Slot.cs" />
+    <Compile Include="Framework\DescriptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedExceptionAttribute.cs" />
+    <Compile Include="Framework\ParameterAttribute.cs" />
     <Compile Include="Framework\Report.cs" />
+    <Compile Include="Framework\RowAttribute.cs" />
+    <Compile Include="Framework\RowTestAttribute.cs" />
+    <Compile Include="Framework\SetUpAttribute.cs" />
+    <Compile Include="Framework\TearDownAttribute.cs" />
+    <Compile Include="Framework\TestAttribute.cs" />
+    <Compile Include="Framework\TestFixtureAttribute.cs" />
+    <Compile Include="Framework\TestFixtureSetUpAttribute.cs" />
+    <Compile Include="Framework\TestFixtureTearDownAttribute.cs" />
+    <Compile Include="Framework\TestsOnAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
