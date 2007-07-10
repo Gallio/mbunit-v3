@@ -1,0 +1,86 @@
+<Project DefaultTargets="Clean;Build;Test" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <RootDir>$(MSBuildProjectDirectory)</RootDir>
+    <BuildDir>$(RootDir)\build</BuildDir>
+    <BuildBinDir>$(BuildDir)\bin</BuildBinDir>
+    <BuildReportsDir>$(BuildDir)\reports</BuildReportsDir>
+    <BuildDocsDir>$(BuildDir)\docs</BuildDocsDir>
+    <LibsDir>$(RootDir)\libs</LibsDir>
+    <SourceDir>$(RootDir)\src</SourceDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit\MbUnit.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\MbUnit.Plugin.NUnitAdapter.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests.Resources.Gallio\MbUnit.Tests.Resources.Gallio.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests.Resources.MbUnit2\MbUnit.Tests.Resources.MbUnit2.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests.Resources.NUnit\MbUnit.Tests.Resources.NUnit.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests\MbUnit.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\MbUnit.Plugin.NUnitAdapter.Tests.csproj" />
+
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit\bin\MbUnit.Gallio.dll" />
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll" />
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.dll" />
+
+    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests\bin\MbUnit.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\bin\MbUnit.Plugin.MbUnit2Adapter.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\bin\MbUnit.Plugin.NUnitAdapter.Tests.dll" />
+  </ItemGroup>
+
+  <Target Name="Build"
+          DependsOnTargets="Build-CSharpProjects">
+    <Copy SourceFiles="@(Binary)"
+          DestinationFolder="$(BuildBinDir)" />
+
+    <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=Intellisense -project=&quot;$(SourceDir)\MbUnit.ndoc&quot;" />
+    <Delete Files="$(BuildBinDir)\ndoc_qa.log;$(BuildBinDir)\ndoc_build.log" />
+  </Target>
+
+  <Target Name="Clean"
+          DependsOnTargets="Clean-CSharpProjects">
+    <RemoveDir Directories="$(BuildDir)"
+               Condition="Exists('$(BuildDir)')" />
+  </Target>
+
+  <Target Name="Test">
+    <Exec Command="&quot;$(LibsDir)\MbUnit2\bin\MbUnit.Cons.exe&quot; /report-type:Html /report-folder:&quot;$(BuildReportsDir)&quot; /show-reports @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
+    </Exec>
+    <Warning Text="Some MbUnit tests failed!"
+             Condition="'$(MbUnitExitCode)'!='0'" />
+  </Target>
+
+  <Target Name="BuildDotNetDocs">
+    <!-- Produce the HTML docs. -->
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-Web -project=&quot;$(SourceDir)\MbUnit.ndoc&quot;" />
+    <Delete Files="$(BuildDocsDir)\ndoc_qa.log;$(BuildDocsDir)\ndoc_build.log" />
+  </Target>
+
+  <Target Name="Release"
+          DependsOnTargets="Clean;Build;Test;BuildDotNetDocs" />
+
+  <Target Name="Build-CSharpProjects"
+          DependsOnTargets="CreateBuildDir">
+    <MSBuild Projects="@(CSharpProject)"
+             Targets="Build"
+             Properties="
+               Configuration=Release;
+             " />
+  </Target>
+
+  <Target Name="Clean-CSharpProjects">
+    <MSBuild Projects="@(CSharpProject)"
+             Targets="Clean"
+             Properties="
+               Configuration=Release;
+             " />
+  </Target>
+
+  <Target Name="CreateBuildDir">
+    <MakeDir Directories="$(BuildDir);$(BuildBinDir);$(BuildReportsDir);$(BuildDocsDir)" />
+  </Target>
+</Project>

@@ -106,6 +106,16 @@ namespace MbUnit.Core.Collections
             return removedOne;
         }
 
+        /// <summary>
+        /// Removes all values associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <returns>True if at least one value was removed</returns>
+        public bool RemoveKey(TKey key)
+        {
+            return map.Remove(key);
+        }
+
         /// <inheritdoc />
         public void Clear()
         {

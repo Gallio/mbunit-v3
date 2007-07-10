@@ -8,25 +8,22 @@ namespace MbUnit.Framework.Core.Attributes
 {
     /// <summary>
     /// <para>
-    /// Declares that a method in a fixture class represents an MbUnit test.
+    /// Declares that a method in a fixture class represents an MbUnit test method.
     /// Subclasses of this attribute can customize how test template enumeration takes
     /// place within a fixture.
     /// </para>
     /// <para>
     /// At most one attribute of this type may appear on any given class.
     /// </para>
-
-    /// Declares that a method in a fixture is an MbUnit test method.
-    /// At most one attribute of this type may appear on any given test method.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
-    public abstract class TestPatternAttribute : PatternAttribute
+    public abstract class MethodPatternAttribute : PatternAttribute
     {
         /// <summary>
         /// Gets a default instance of the test pattern attribute to use
         /// when none was specified.
         /// </summary>
-        public static readonly TestPatternAttribute DefaultInstance = new DefaultImpl();
+        public static readonly MethodPatternAttribute DefaultInstance = new DefaultImpl();
 
         /// <summary>
         /// Creates a test method template.
@@ -58,8 +55,8 @@ namespace MbUnit.Framework.Core.Attributes
         {
             // FIXME: Should we apply decorators in two separate sorted batches or merge them
             //        together to produce a single ordered collection?
-            TestDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method);
-            TestDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method.ReflectedType);
+            MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method);
+            MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method.ReflectedType);
             MetadataPatternAttribute.ProcessMetadata(builder, methodTemplate, methodTemplate.Method);
 
             ProcessParameters(builder, methodTemplate);
@@ -73,13 +70,13 @@ namespace MbUnit.Framework.Core.Attributes
         /// <param name="method">The method to process</param>
         public static void ProcessMethod(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate, MethodInfo method)
         {
-            TestPatternAttribute testPatternAttribute = ReflectionUtils.GetAttribute<TestPatternAttribute>(method);
-            if (testPatternAttribute == null)
+            MethodPatternAttribute methodPatternAttribute = ReflectionUtils.GetAttribute<MethodPatternAttribute>(method);
+            if (methodPatternAttribute == null)
                 return;
 
-            MbUnitTestMethodTemplate methodTemplate = testPatternAttribute.CreateTemplate(builder, fixtureTemplate, method);
-            fixtureTemplate.AddMethod(methodTemplate);
-            testPatternAttribute.Apply(builder, methodTemplate);
+            MbUnitTestMethodTemplate methodTemplate = methodPatternAttribute.CreateTemplate(builder, fixtureTemplate, method);
+            fixtureTemplate.AddMethodTemplate(methodTemplate);
+            methodPatternAttribute.Apply(builder, methodTemplate);
         }
 
         /// <summary>
@@ -109,7 +106,7 @@ namespace MbUnit.Framework.Core.Attributes
             ParameterPatternAttribute.ProcessSlot(builder, parameterSet, new Slot(parameter));
         }
 
-        private class DefaultImpl : TestPatternAttribute
+        private class DefaultImpl : MethodPatternAttribute
         {
         }
     }

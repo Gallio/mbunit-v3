@@ -49,7 +49,7 @@ namespace MbUnit.Core.Model
     public interface ITestTemplate : ITestComponent
     {
         /// <summary>
-        /// Gets the parent of this test template, or null if this template
+        /// Gets or sets the parent of this test template, or null if this template
         /// is at the root of the template tree.
         /// </summary>
         ITestTemplate Parent { get; set; }
@@ -57,7 +57,7 @@ namespace MbUnit.Core.Model
         /// <summary>
         /// Gets the children of this test template.
         /// </summary>
-        IList<ITestTemplate> Children { get; }
+        IEnumerable<ITestTemplate> Children { get; }
 
         /// <summary>
         /// Gets the parameter sets that belong to this test template.
@@ -71,5 +71,14 @@ namespace MbUnit.Core.Model
         
         void BuildTests(ITestGraphBuilder builder, ITestScope scope, IDictionary<ITestParameter, object> parameterValues);
         */
+
+        /// <summary>
+        /// Adds a child template.
+        /// Sets the child's parent to this template as part of the addition process.
+        /// </summary>
+        /// <param name="template">The template to add</param>
+        /// <exception cref="NotSupportedException">Thrown if the template does not support
+        /// the addition of arbitrary children (because it has some more specific internal structure)</exception>
+        void AddChild(ITestTemplate template);
     }
 }

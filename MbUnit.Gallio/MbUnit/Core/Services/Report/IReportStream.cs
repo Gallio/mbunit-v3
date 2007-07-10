@@ -71,7 +71,7 @@ namespace MbUnit.Core.Services.Report
 
         /// <summary>
         /// Writes a formatted string to the report stream.
-        /// <seealso cref="String.Format"/>
+        /// <seealso cref="String.Format(string, object[])"/>
         /// </summary>
         /// <param name="format">The format string</param>
         /// <param name="args">The format string arguments</param>
@@ -92,7 +92,7 @@ namespace MbUnit.Core.Services.Report
 
         /// <summary>
         /// Writes a formatted string to the report stream followed by a line delimiter.
-        /// <seealso cref="String.Format"/>
+        /// <seealso cref="String.Format(string, object[])"/>
         /// </summary>
         /// <param name="format">The format string</param>
         /// <param name="args">The format string arguments</param>

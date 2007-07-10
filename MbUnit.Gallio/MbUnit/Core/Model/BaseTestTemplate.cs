@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Core.Metadata;
 using MbUnit.Core.Serialization;
 using MbUnit.Core.Utilities;
 
@@ -12,7 +13,6 @@ namespace MbUnit.Core.Model
     public class BaseTestTemplate : BaseTestComponent, ITestTemplate
     {
         private ITestTemplate parent;
-        private List<ITestTemplate> children;
         private List<ITestParameterSet> parameterSets;
 
         /// <summary>
@@ -25,8 +25,21 @@ namespace MbUnit.Core.Model
         public BaseTestTemplate(string name, CodeReference codeReference)
             : base(name, codeReference)
         {
-            this.children = new List<ITestTemplate>();
             this.parameterSets = new List<ITestParameterSet>();
+            Kind = TemplateKind.Custom;
+        }
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="MetadataConstants.TemplateKindKey" />
+        /// metadata entry.  (This is a convenience method.)
+        /// </summary>
+        /// <value>
+        /// One of the <see cref="TemplateKind" /> constants.
+        /// </value>
+        public string Kind
+        {
+            get { return (string) Metadata.GetValue(MetadataConstants.TemplateKindKey); }
+            set { Metadata.SetValue(MetadataConstants.TemplateKindKey, value); }
         }
 
         /// <inheritdoc />
@@ -37,15 +50,21 @@ namespace MbUnit.Core.Model
         }
 
         /// <inheritdoc />
-        public IList<ITestTemplate> Children
+        public virtual IEnumerable<ITestTemplate> Children
         {
-            get { return children; }
+            get { yield break; }
         }
 
         /// <inheritdoc />
         public IList<ITestParameterSet> ParameterSets
         {
             get { return parameterSets; }
+        }
+
+        /// <inheritdoc />
+        public virtual void AddChild(ITestTemplate template)
+        {
+            throw new NotSupportedException("This template does not support the addition of arbitrary children.");
         }
 
         /// <inheritdoc />
@@ -82,11 +101,10 @@ namespace MbUnit.Core.Model
         {
             base.PopulateInfo(info);
 
-            info.Children = ListUtils.ConvertAllToArray<ITestTemplate, TestTemplateInfo>(children,
-                delegate(ITestTemplate child)
-                {
-                    return (TestTemplateInfo) child.ToInfo();
-                });
+            List<TestTemplateInfo> childrenInfo = new List<TestTemplateInfo>();
+            foreach (ITestTemplate child in Children)
+                childrenInfo.Add((TestTemplateInfo) child.ToInfo());
+            info.Children = childrenInfo.ToArray();
 
             info.ParameterSets = ListUtils.ConvertAllToArray<ITestParameterSet, TestParameterSetInfo>(parameterSets,
                 delegate(ITestParameterSet parameterSet)

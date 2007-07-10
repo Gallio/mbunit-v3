@@ -16,11 +16,11 @@ namespace MbUnit.Framework.Core.Attributes
     /// </para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public abstract class TestDecoratorPatternAttribute : DecoratorPatternAttribute
+    public abstract class MethodDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <summary>
         /// Applies contributions to a method template.
-        /// This method is called after the contributions of the <see cref="TestPatternAttribute"/>
+        /// This method is called after the contributions of the <see cref="MethodPatternAttribute"/>
         /// have been applied but before any further processing takes place.
         /// </summary>
         /// <remarks>
@@ -42,10 +42,10 @@ namespace MbUnit.Framework.Core.Attributes
         /// <param name="attributeProvider">The attribute provider to scan</param>
         public static void ProcessDecorators(TestTemplateTreeBuilder builder, MbUnitTestMethodTemplate methodTemplate, ICustomAttributeProvider attributeProvider)
         {
-            object[] decorators = attributeProvider.GetCustomAttributes(typeof(TestDecoratorPatternAttribute), true);
+            object[] decorators = attributeProvider.GetCustomAttributes(typeof(MethodDecoratorPatternAttribute), true);
             Sort(decorators);
 
-            foreach (TestDecoratorPatternAttribute decoratorAttribute in decorators)
+            foreach (MethodDecoratorPatternAttribute decoratorAttribute in decorators)
             {
                 decoratorAttribute.Apply(builder, methodTemplate);
             }

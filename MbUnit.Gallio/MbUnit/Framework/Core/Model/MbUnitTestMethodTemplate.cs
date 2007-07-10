@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using MbUnit.Core.Metadata;
 using MbUnit.Core.Model;
 
 namespace MbUnit.Framework.Core.Model
@@ -23,6 +24,8 @@ namespace MbUnit.Framework.Core.Model
         {
             this.fixtureTemplate = fixtureTemplate;
             this.method = method;
+
+            Kind = TemplateKind.Test;
         }
 
         /// <summary>

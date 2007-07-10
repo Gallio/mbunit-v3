@@ -1,0 +1,70 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit.Plugin.MbUnit2Adapter.Tests</RootNamespace>
+    <AssemblyName>MbUnit.Plugin.MbUnit2Adapter.Tests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MbUnit.Framework, Version=1.0.2700.29885, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
+      <Aliases>MbUnit2</Aliases>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MbUnit2Adapter\MbUnit2TestFrameworkTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj">
+      <Project>{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A}</Project>
+      <Name>MbUnit.Plugin.MbUnit2Adapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit.Tests.Resources.MbUnit2\MbUnit.Tests.Resources.MbUnit2.csproj">
+      <Project>{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}</Project>
+      <Name>MbUnit.Tests.Resources.MbUnit2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit.Tests\MbUnit.Tests.csproj">
+      <Project>{F836C015-46C1-4E01-A48A-EFA0BA0AB92F}</Project>
+      <Name>MbUnit.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit\MbUnit.csproj">
+      <Project>{B25D6A49-2395-40B9-847B-CB8B4E33058A}</Project>
+      <Name>MbUnit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

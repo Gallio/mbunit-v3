@@ -4,7 +4,7 @@ using MbUnit.Core.Model;
 namespace MbUnit.Framework.Core.Model
 {
     /// <summary>
-    /// Abstract base class for MbUnit-derived test templates.
+    /// Abstract base class for MbUnit-derived test method templates.
     /// </summary>
     public abstract class MbUnitTestTemplate : BaseTestTemplate
     {

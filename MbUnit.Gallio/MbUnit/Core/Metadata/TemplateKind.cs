@@ -31,6 +31,11 @@ namespace MbUnit.Core.Metadata
         public const string Framework = "Framework";
 
         /// <summary>
+        /// The template describes the tests contained in a single test assembly.
+        /// </summary>
+        public const string Assembly = "Assembly";
+
+        /// <summary>
         /// The template describes a grouping of templates for descriptive purposes.
         /// </summary>
         public const string Group = "Group";

@@ -33,6 +33,32 @@ namespace MbUnit.Core.Model
         }
 
         /// <summary>
+        /// Gets the value associated with the metadata key.
+        /// If there are multiple values, returns only the first one.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <returns>The value, or null if none</returns>
+        public object GetValue(string key)
+        {
+            IList<object> values = entries[key];
+            if (values.Count == 0)
+                return null;
+            return values[0];
+        }
+
+        /// <summary>
+        /// Sets the value associated with the metadata key.
+        /// Removes all values previously associated with that key.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <param name="value">The new value</param>
+        public void SetValue(string key, object value)
+        {
+            entries.RemoveKey(key);
+            entries.Add(key, value);
+        }
+
+        /// <summary>
         /// Gets a serializable description of the metadata map.
         /// </summary>
         /// <returns>The metadata map info</returns>

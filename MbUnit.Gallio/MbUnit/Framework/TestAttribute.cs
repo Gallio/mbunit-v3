@@ -1,5 +1,7 @@
 using System;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Core.Attributes;
+using MbUnit.Framework.Core.Model;
 
 namespace MbUnit.Framework
 {
@@ -8,7 +10,7 @@ namespace MbUnit.Framework
     /// Must appear within a test fixture class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public sealed class TestAttribute : TestPatternAttribute
+    public sealed class TestAttribute : MethodPatternAttribute
     {
     }
 }

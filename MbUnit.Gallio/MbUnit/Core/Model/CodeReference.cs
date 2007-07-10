@@ -122,8 +122,12 @@ namespace MbUnit.Core.Model
         /// </summary>
         /// <param name="parameter">The parameter</param>
         /// <returns>The code reference</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null</exception>
         public static CodeReference CreateFromParameter(ParameterInfo parameter)
         {
+            if (parameter == null)
+                throw new ArgumentNullException("parameter");
+
             MemberInfo member = parameter.Member;
             return new CodeReference(member.ReflectedType.Assembly, member.ReflectedType.Namespace,
                 member.ReflectedType, member, parameter);
@@ -134,8 +138,12 @@ namespace MbUnit.Core.Model
         /// </summary>
         /// <param name="member">The member</param>
         /// <returns>The code reference</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="member"/> is null</exception>
         public static CodeReference CreateFromMember(MemberInfo member)
         {
+            if (member == null)
+                throw new ArgumentNullException("member");
+
             return new CodeReference(member.ReflectedType.Assembly, member.ReflectedType.Namespace,
                 member.ReflectedType, member, null);
         }
@@ -145,8 +153,12 @@ namespace MbUnit.Core.Model
         /// </summary>
         /// <param name="type">The type</param>
         /// <returns>The code reference</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
         public static CodeReference CreateFromType(Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
             return new CodeReference(type.Assembly, type.Namespace, type, null, null);
         }
 
@@ -155,8 +167,12 @@ namespace MbUnit.Core.Model
         /// </summary>
         /// <param name="assembly">The assembly</param>
         /// <returns>The code reference</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
         public static CodeReference CreateFromAssembly(Assembly assembly)
         {
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+
             return new CodeReference(assembly, null, null, null, null);
         }
 
@@ -173,6 +189,28 @@ namespace MbUnit.Core.Model
             info.MemberName = member != null ? member.Name : null;
             info.ParameterName = parameter != null ? parameter.Name : null;
             return info;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            CodeReference other = obj as CodeReference;
+            return other != null
+                && assembly == other.Assembly
+                && @namespace == other.@namespace
+                && type == other.type
+                && member == other.member
+                && parameter == other.parameter;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (assembly != null ? assembly.GetHashCode() : 0)
+                ^ (@namespace != null ? @namespace.GetHashCode() : 0)
+                ^ (type != null ? type.GetHashCode() : 0)
+                ^ (member != null ? member.GetHashCode() : 0)
+                ^ (parameter != null ? parameter.GetHashCode() : 0);
         }
     }
 }

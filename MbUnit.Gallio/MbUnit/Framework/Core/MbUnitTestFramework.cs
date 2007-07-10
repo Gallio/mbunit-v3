@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using MbUnit.Core.Collections;
 using MbUnit.Core.Model;
 using MbUnit.Core.Utilities;
-using System.Collections;
 using MbUnit.Framework.Core.Attributes;
 using MbUnit.Framework.Core.Model;
 
@@ -23,31 +23,20 @@ namespace MbUnit.Framework.Core
         /// <inheritdoc />
         public void PopulateTestTemplateTree(TestTemplateTreeBuilder builder, ITestTemplate parent, TestProject project)
         {
-            List<Assembly> testAssemblies = new List<Assembly>();
-            Version version = null;
-
-            foreach (Assembly assembly in project.Assemblies)
+            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(project.Assemblies, "MbUnit.Gallio");
+            foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
-                AssemblyName reference = ReflectionUtils.FindReferencedAssembly(assembly.GetName(), "MbUnit.Gallio");
-                if (reference != null)
+                // Build templates for the contents of the assemblies that reference MbUnit Gallio
+                // via reflection.  The attributes exercise a great deal of control over this
+                // process so that it can be easily extended by users.
+                Version frameworkVersion = entry.Key.Version;
+                MbUnitTestFrameworkTemplate frameworkTemplate = new MbUnitTestFrameworkTemplate(frameworkVersion);
+                parent.AddChild(frameworkTemplate);
+
+                foreach (Assembly assembly in entry.Value)
                 {
-                    if (reference.Version.Major == 3)
-                    {
-                        version = reference.Version;
-                        testAssemblies.Add(assembly);
-                    }
+                    AssemblyPatternAttribute.ProcessAssembly(builder, frameworkTemplate, assembly);
                 }
-            }
-
-            if (version == null)
-                return;
-
-            MbUnitTestFrameworkTemplate frameworkTemplate = new MbUnitTestFrameworkTemplate(version);
-            TestTemplateTreeBuilder.LinkTemplate(parent, frameworkTemplate);
-
-            foreach (Assembly assembly in testAssemblies)
-            {
-                AssemblyPatternAttribute.ProcessAssembly(builder, frameworkTemplate, assembly);
             }
         }
     }

@@ -15,7 +15,7 @@ namespace MbUnit.Core.Model
     /// </summary>
     public class TestTemplateTreeBuilder
     {
-        private ITestTemplate root;
+        private TestTemplateGroup root;
         private IDictionary<object, ITestTemplate> registry;
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace MbUnit.Core.Model
         /// <summary>
         /// Gets the root node of the test template tree.
         /// </summary>
-        public ITestTemplate Root
+        public TestTemplateGroup Root
         {
             get { return root; }
         }
@@ -69,26 +69,12 @@ namespace MbUnit.Core.Model
             return registry.TryGetValue(key, out template) ? template : null;
         }
 
-        /// <summary>
-        /// Links a template into a template tree.
-        /// </summary>
-        /// <param name="parent">The parent template already within the tree</param>
-        /// <param name="child">The child template</param>
-        public static void LinkTemplate(ITestTemplate parent, ITestTemplate child)
-        {
-            if (child.Parent != null)
-                throw new ArgumentNullException("The child is already in the tree.");
-
-            child.Parent = parent;
-            parent.Children.Add(child);
-        }
-
         //public event EventHandler PostProcess;
 
-        private static ITestTemplate CreateRoot()
+        private static TestTemplateGroup CreateRoot()
         {
-            ITestTemplate root = new BaseTestTemplate("Root", CodeReference.Unknown);
-            root.Metadata.Entries.Add(MetadataConstants.TemplateKindKey, TemplateKind.Root);
+            TestTemplateGroup root = new TestTemplateGroup("Root", CodeReference.Unknown);
+            root.Kind = TemplateKind.Root;
             return root;
         }
     }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<project SchemaVersion="2.0">
+    <assemblies>
+        <assembly location="..\build\bin\MbUnit.Gallio.dll" documentation="MbUnit.Gallio\MbUnit\bin\MbUnit.Gallio.xml" />
+    </assemblies>
+    <namespaces>
+    </namespaces>
+    <documenters>
+        <documenter name="Intellisense">
+            <property name="OutputDirectory" value="..\build\bin\" />
+            <property name="UseAssemblyShadowCache" value="False" />
+        </documenter>
+        <documenter name="MSDN-Web">
+            <property name="RootPageContainsNamespaces" value="True" />
+            <property name="OutputDirectory" value="..\build\docs\api\" />
+            <property name="HtmlHelpName" value="MbUnit" />
+            <property name="Title" value="MbUnit .Net API" />
+            <property name="UseAssemblyShadowCache" value="False" />
+            <property name="CopyrightText" value="Copyright 2007 MbUnit Project - http://www.mbunit.com/" />
+            <property name="CopyrightHref" value="http://www.mbunit.com/" />
+            <property name="IncludeDefaultThreadSafety" value="False" />
+            <property name="CleanIntermediates" value="True" />
+        </documenter>
+        <documenter name="MSDN-CHM">
+            <property name="OutputDirectory" value="..\build\docs\api\" />
+            <property name="HtmlHelpName" value="MbUnit" />
+            <property name="Title" value="MbUnit .Net API" />
+            <property name="UseAssemblyShadowCache" value="False" />
+            <property name="CopyrightText" value="Copyright 2007 MbUnit Project - http://www.mbunit.com/" />
+            <property name="CopyrightHref" value="http://www.mbunit.com/" />
+            <property name="IncludeDefaultThreadSafety" value="False" />
+            <property name="CleanIntermediates" value="True" />
+        </documenter>
+    </documenters>
+</project>

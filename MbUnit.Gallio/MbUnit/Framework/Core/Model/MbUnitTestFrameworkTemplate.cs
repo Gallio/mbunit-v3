@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using MbUnit.Core.Metadata;
 using MbUnit.Core.Model;
+using MbUnit.Core.Utilities;
 
 namespace MbUnit.Framework.Core.Model
 {
@@ -12,6 +13,7 @@ namespace MbUnit.Framework.Core.Model
     public class MbUnitTestFrameworkTemplate : MbUnitTestTemplate
     {
         private Version version;
+        private List<MbUnitTestAssemblyTemplate> assemblyTemplates;
 
         /// <summary>
         /// Initializes the MbUnit framework template model object.
@@ -21,6 +23,19 @@ namespace MbUnit.Framework.Core.Model
             : base("MbUnit Gallio v" + version, CodeReference.Unknown)
         {
             this.version = version;
+
+            assemblyTemplates = new List<MbUnitTestAssemblyTemplate>();
+            Kind = TemplateKind.Framework;
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<ITestTemplate> Children
+        {
+            get
+            {
+                foreach (MbUnitTestAssemblyTemplate assemblyTemplate in assemblyTemplates)
+                    yield return assemblyTemplate;
+            }
         }
 
         /// <summary>
@@ -32,12 +47,21 @@ namespace MbUnit.Framework.Core.Model
         }
 
         /// <summary>
+        /// Gets the list of assembly templates.
+        /// </summary>
+        /// <returns>The assembly templates</returns>
+        public IList<MbUnitTestAssemblyTemplate> AssemblyTemplates
+        {
+            get { return assemblyTemplates; }
+        }
+
+        /// <summary>
         /// Adds an assembly template to the framework.
         /// </summary>
         /// <param name="assemblyTemplate">The assembly template</param>
         public void AddAssemblyTemplate(MbUnitTestAssemblyTemplate assemblyTemplate)
         {
-            TestTemplateTreeBuilder.LinkTemplate(this, assemblyTemplate);
+            ModelUtils.LinkTemplate(this, assemblyTemplates, assemblyTemplate);
         }
     }
 }

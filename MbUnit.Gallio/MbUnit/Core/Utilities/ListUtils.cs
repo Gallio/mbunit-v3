@@ -60,6 +60,23 @@ namespace MbUnit.Core.Utilities
 
             return output;
         }
+
+        /// <summary>
+        /// Returns the first element of the input enumeration for which the specified
+        /// predicate returns true.
+        /// </summary>
+        /// <typeparam name="T">The input type</typeparam>
+        /// <param name="input">The input collection</param>
+        /// <param name="predicate">The predicate</param>
+        /// <returns>The first matching value or the default for the type if not found</returns>
+        public static T Find<T>(IEnumerable<T> input, Predicate<T> predicate)
+        {
+            foreach (T value in input)
+                if (predicate(value))
+                    return value;
+
+            return default(T);
+        }
     }
 }
 

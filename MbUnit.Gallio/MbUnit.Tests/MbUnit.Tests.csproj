@@ -14,7 +14,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,42 +22,41 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MbUnit.Framework, Version=1.0.2614.40165, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
+    <Reference Include="MbUnit.Framework, Version=1.0.2700.29885, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\MbUnit.Framework.dll</HintPath>
-      <Aliases>MbUnit24</Aliases>
+      <HintPath>..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
+      <Aliases>MbUnit2</Aliases>
     </Reference>
-    <Reference Include="MbUnit.Framework.2.0, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5, processorArchitecture=MSIL">
+    <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\MbUnit.Framework.2.0.dll</HintPath>
-      <Aliases>MbUnit24</Aliases>
-    </Reference>
-    <Reference Include="Rhino.Mocks, Version=3.0.498.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Rhino.Mocks.dll</HintPath>
+      <HintPath>..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Model\CodeReferenceTest.cs" />
     <Compile Include="Core\Utilities\ListUtilsTest.cs" />
+    <Compile Include="Framework\MbUnitTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MbUnit.Tests.Resources.Gallio\MbUnit.Tests.Resources.Gallio.csproj">
+      <Project>{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE}</Project>
+      <Name>MbUnit.Tests.Resources.Gallio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MbUnit\MbUnit.csproj">
       <Project>{B25D6A49-2395-40B9-847B-CB8B4E33058A}</Project>
       <Name>MbUnit</Name>
+      <Aliases>global</Aliases>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Framework\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

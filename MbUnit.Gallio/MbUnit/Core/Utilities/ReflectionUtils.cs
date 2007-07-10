@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using MbUnit.Core.Collections;
 
 namespace MbUnit.Core.Utilities
 {
@@ -31,7 +33,7 @@ namespace MbUnit.Core.Utilities
         }
 
         /// <summary>
-        /// Finds the referenced assembly name with the specified display name.
+        /// Finds the assembly name of the referenced assembly with the specified display name.
         /// Recursively searches referenced assemblies beginning with the one specified as a parameter.
         /// Loads referenced assemblies on demand to resolve names.
         /// </summary>
@@ -40,26 +42,59 @@ namespace MbUnit.Core.Utilities
         /// <returns>The referenced assembly name or null if none</returns>
         public static AssemblyName FindReferencedAssembly(AssemblyName assemblyName, string displayName)
         {
+            return FindReferencedAssembly(assemblyName, displayName, new Dictionary<string, bool>());
+        }
+
+        /// <summary>
+        /// Searches a list of assemblies for all of those that contain an assembly reference with
+        /// the specified display name.  Produces a map from the assembly name of the referenced
+        /// assemblies to the source assemplies specified.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to search</param>
+        /// <param name="displayName">The display name of the referenced assembly to search for</param>
+        /// <returns>The reverse reference map</returns>
+        public static MultiMap<AssemblyName, Assembly> GetReverseAssemblyReferenceMap(IList<Assembly> assemblies, string displayName)
+        {
+            MultiMap<AssemblyName, Assembly> map = new MultiMap<AssemblyName, Assembly>();
+
+            foreach (Assembly assembly in assemblies)
+            {
+                AssemblyName reference = FindReferencedAssembly(assembly.GetName(), displayName);
+                if (reference != null)
+                    map.Add(reference, assembly);
+            }
+
+            return map;
+        }
+
+        private static AssemblyName FindReferencedAssembly(AssemblyName assemblyName, string displayName,
+            Dictionary<string, bool> visitedSet)
+        {
             if (assemblyName.Name == displayName)
                 return assemblyName;
+
+            visitedSet.Add(assemblyName.FullName, false);
 
             Assembly assembly;
             try
             {
-                assembly = Assembly.Load(assemblyName);
+                assembly = Assembly.ReflectionOnlyLoad(assemblyName.FullName);
             }
             catch (Exception)
             {
                 // Ignore failures to load the referenced assembly.
-                // Obvious the referenced assembly wasn't found there...
+                // Obviously the referenced assembly wasn't found there...
                 return null;
             }
 
             foreach (AssemblyName reference in assembly.GetReferencedAssemblies())
             {
-                AssemblyName result = FindReferencedAssembly(reference, displayName);
-                if (result != null)
-                    return result;
+                if (!visitedSet.ContainsKey(reference.FullName))
+                {
+                    AssemblyName result = FindReferencedAssembly(reference, displayName, visitedSet);
+                    if (result != null)
+                        return result;
+                }
             }
 
             return null;

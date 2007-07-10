@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using MbUnit.Core.Metadata;
 using MbUnit.Core.Model;
 
 namespace MbUnit.Framework.Core.Model
@@ -12,6 +13,7 @@ namespace MbUnit.Framework.Core.Model
     public class MbUnitTestFixtureTemplate : MbUnitTestTemplate
     {
         private MbUnitTestAssemblyTemplate assemblyTemplate;
+        private List<MbUnitTestMethodTemplate> methodTemplates;
 
         /// <summary>
         /// Initializes an MbUnit test fixture template model object.
@@ -22,6 +24,19 @@ namespace MbUnit.Framework.Core.Model
             : base(fixtureType.Name, CodeReference.CreateFromType(fixtureType))
         {
             this.assemblyTemplate = assemblyTemplate;
+
+            methodTemplates = new List<MbUnitTestMethodTemplate>();
+            Kind = TemplateKind.Fixture;
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<ITestTemplate> Children
+        {
+            get
+            {
+                foreach (MbUnitTestMethodTemplate methodTemplate in methodTemplates)
+                    yield return methodTemplate;
+            }
         }
 
         /// <summary>
@@ -41,29 +56,20 @@ namespace MbUnit.Framework.Core.Model
         }
 
         /// <summary>
+        /// Gets the list of method templates.
+        /// </summary>
+        public IList<MbUnitTestMethodTemplate> MethodTemplates
+        {
+            get { return methodTemplates; }
+        }
+
+        /// <summary>
         /// Adds a test method template as a child of the fixture.
         /// </summary>
         /// <param name="methodTemplate">The test method model</param>
-        public void AddMethod(MbUnitTestMethodTemplate methodTemplate)
+        public void AddMethodTemplate(MbUnitTestMethodTemplate methodTemplate)
         {
-            Children.Add(methodTemplate);
-        }
-
-        public void AddConstructorParameters(ConstructorInfo constructor, IList<MbUnitTestParameter> parameters)
-        {
-            // FIXME: Currently we arbitrarily choose the first constructor and throw away the rest.
-            //        This should be replaced by a more intelligent mechanism that can
-            //        handle optional or alternative dependencies.  We might benefit from
-            //        using an existing inversion of control framework like Castle
-            //        to handle stuff like this.
-        }
-
-        public void AddFieldParameter(FieldInfo field, MbUnitTestParameter parameter)
-        {
-        }
-
-        public void AddPropertyParameter(PropertyInfo property, MbUnitTestParameter parameter)
-        {
+            ModelUtils.LinkTemplate(this, methodTemplates, methodTemplate);
         }
     }
 }

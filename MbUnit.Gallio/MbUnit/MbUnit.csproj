@@ -8,24 +8,26 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MbUnit</RootNamespace>
-    <AssemblyName>MbUnit</AssemblyName>
+    <AssemblyName>MbUnit.Gallio</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\MbUnit.Gallio.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\MbUnit.Gallio.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,7 +47,9 @@
     <Compile Include="Core\Model\ITestParameter.cs" />
     <Compile Include="Core\Model\ITestParameterSet.cs" />
     <Compile Include="Core\Model\ITestTemplate.cs" />
+    <Compile Include="Core\Model\ModelUtils.cs" />
     <Compile Include="Core\Model\TestProject.cs" />
+    <Compile Include="Core\Model\TestTemplateGroup.cs" />
     <Compile Include="Core\Model\TestTemplateTreeBuilder.cs" />
     <Compile Include="Core\Model\MetadataMap.cs">
       <SubType>Code</SubType>
@@ -79,8 +83,8 @@
     <Compile Include="Framework\Core\Attributes\MetadataPatternAttribute.cs" />
     <Compile Include="Framework\Core\Attributes\ParameterDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Core\Attributes\PatternAttribute.cs" />
-    <Compile Include="Framework\Core\Attributes\TestDecoratorPatternAttribute.cs" />
-    <Compile Include="Framework\Core\Attributes\TestPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\MethodDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Core\Attributes\MethodPatternAttribute.cs" />
     <Compile Include="Framework\Core\Attributes\DecoratorOrderComparer.cs" />
     <Compile Include="Framework\Core\MbUnitTestFramework.cs" />
     <Compile Include="Framework\Core\Model\MbUnitTestAssemblyTemplate.cs" />

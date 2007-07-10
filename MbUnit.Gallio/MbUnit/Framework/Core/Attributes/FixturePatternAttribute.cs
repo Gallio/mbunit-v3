@@ -75,6 +75,13 @@ namespace MbUnit.Framework.Core.Attributes
             foreach (ConstructorInfo constructor in fixtureTemplate.FixtureType.GetConstructors())
             {
                 ProcessConstructor(builder, fixtureTemplate, constructor);
+
+                // FIXME: Currently we arbitrarily choose the first constructor and throw away the rest.
+                //        This should be replaced by a more intelligent mechanism that can
+                //        handle optional or alternative dependencies.  We might benefit from
+                //        using an existing inversion of control framework like Castle
+                //        to handle stuff like this.
+                break;
             }
         }
 
@@ -165,7 +172,7 @@ namespace MbUnit.Framework.Core.Attributes
         protected virtual void ProcessMethod(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate, MethodInfo method)
         {
             if (ReflectionUtils.CanInvokeNonStatic(method))
-                TestPatternAttribute.ProcessMethod(builder, fixtureTemplate, method);
+                MethodPatternAttribute.ProcessMethod(builder, fixtureTemplate, method);
         }
 
         /// <summary>

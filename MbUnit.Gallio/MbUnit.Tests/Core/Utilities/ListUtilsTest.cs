@@ -1,5 +1,5 @@
-extern alias MbUnit24;
-using MbUnit24::MbUnit.Framework;
+extern alias MbUnit2;
+using MbUnit2::MbUnit.Framework;
 
 using MbUnit.Core.Utilities;
 
