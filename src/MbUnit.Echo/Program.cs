@@ -1,49 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Reflection;
 
 namespace MbUnit.Echo
 {
-    class Program
+    /// <summary>
+    /// The MbUnit console test runner program.
+    /// </summary>
+    public class Program
     {
-        static void Main(string[] args)
+        [STAThread]
+        [LoaderOptimization(LoaderOptimization.MultiDomain)]
+        public static int Main(string[] args)
         {
-            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            string applicationTitle = string.Format("MbUnit Console Application - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build);
-            
-            Console.Title = applicationTitle;
-            Console.WriteLine(applicationTitle);
-            Console.Write("Get the latest version at ");
-            
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("http://www.mbunit.com/");
-            Console.ResetColor();
-            
-            Console.WriteLine("---------------------------------------------------");
-            Console.WriteLine();
-
-            if (args.Length > 0)
+            try
             {
-                switch (args[0])
+                using (MainClass main = new MainClass())
                 {
-                    case "/?": // Help Menu
-                        Console.WriteLine("\tMbUnit Echo");
-                        Console.WriteLine(string.Format("\tVersion {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build));
-                        Console.WriteLine();
-                        Console.WriteLine("\tProject Lead: Andrew Stopford");
-                        Console.WriteLine("\tContributors: Ben Hall, Graham Hay, Johan Appelgren, Joey Calisay,");
-                        Console.WriteLine("\t              David Parkinson, Jeff Brown, Marc Stober, Mark Haley");
-                        Console.WriteLine();
-                        break;
-
-                    default:
-                        Console.WriteLine(string.Format("Unrecognised command line argument '{0}'", args[0]));
-                        break;
+                    return main.Run(args);
                 }
             }
-
-            Console.WriteLine("[Warning] Application not yet implemented.");
+            finally
+            {
+                Console.ResetColor();
+            }
         }
     }
 }

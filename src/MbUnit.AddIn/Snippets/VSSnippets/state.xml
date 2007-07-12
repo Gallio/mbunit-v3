@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>IState wrapper</Title>
+        <Shortcut>state</Shortcut>
+        <Description>Expansion snippet for a IState wrapper</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="false">
+                <ID>name</ID>
+                <ToolTip>State Name</ToolTip>
+            </Literal>
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[public IState $name$State
+        {
+            get
+            {
+                return this.States["$name$"];
+            }
+        }$select$]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

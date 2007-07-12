@@ -4,10 +4,11 @@ using System.Text;
 namespace MbUnit.Core.Services.Report
 {
     /// <summary>
-    /// A contextual report stream writer writes text messages to a report stream associated
-    /// with the test execution context at the time it was written.
+    /// A contextual report stream writer writes text messages to a stream in
+    /// the report associated with the current test execution context at the time
+    /// the message was written.
     /// </summary>
-    public class ContextualReportStreamWriter : TextWriter
+    public class ContextualReportTextWriter : TextWriter
     {
         private string reportStreamName;
 
@@ -15,7 +16,7 @@ namespace MbUnit.Core.Services.Report
         /// Creates a text writer that writes to the specified report stream.
         /// </summary>
         /// <param name="reportStreamName">The report stream name</param>
-        public ContextualReportStreamWriter(string reportStreamName)
+        public ContextualReportTextWriter(string reportStreamName)
         {
             this.reportStreamName = reportStreamName;
         }

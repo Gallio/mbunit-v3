@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>NAnt task</Title>
+        <Shortcut>nant</Shortcut>
+        <Description>Expansion snippet for a NAnt task</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="true">
+                <ID>name</ID>
+                <ToolTip>Fixture name</ToolTip>
+                <Default>My</Default>
+            </Literal>
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[<!-- MbUnit NAnt task definition -->
+<mbunit>
+    <formatter type="Html"
+        userfile="true"
+        outputdir=".."
+        />
+    <test>
+        $end$
+    </test>    
+</mbunit>]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Core\Model\CodeReferenceTest.cs" />
     <Compile Include="Core\Utilities\ListUtilsTest.cs" />
     <Compile Include="Framework\MbUnitTestFrameworkTest.cs" />

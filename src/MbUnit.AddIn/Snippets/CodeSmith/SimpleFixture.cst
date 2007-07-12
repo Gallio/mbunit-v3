@@ -1,0 +1,91 @@
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Description="A simple TestFixture generator" %>
+<%@ Property Name="Class" Type="System.String" Category="Appearance" Description="Tested class name." %>
+<%@ Property Name="Namespace" Type="System.String" Category="Appearance" Description="Tested class namespace." %>
+<%@ Property Name="TestNamespace" Type="System.String" Category="Appearance" Description="Test namespace." %>
+<%@ Property Name="Fixture" Type="FixtureType" Category="Options" Appearance="Fixture has setup" %>
+<%@ Property Name="SetUp" Type="System.Boolean" Category="Options" Default="false" Description="Fixture has setup" %>
+<%@ Property Name="TearDown" Type="System.Boolean" Category="Options" Default="false" Description="Fixture has setup" %>
+<%@ Property Name="TestClassFormat" Type="System.String" Category="Options" Default="{0}Test" Description="Format string for creating TestClass" %>
+
+#region Includes
+using System;
+using System.Collections;
+using System.IO;
+using MbUnit.Core.Framework;
+using MbUnit.Framework;
+#endregion
+
+using <%= Namespace %>;
+
+namespace <%= TestNamespace %>
+{
+	/// <summary>
+	/// <see cref="<%= Fixture %>"/> for the <see cref="<%= Class %>"/> class.
+	/// </summary>
+	[<%= FixtureAttribute %>]
+	public class <%= TestClass %>
+	{
+<% if (this.SetUpOrTearDown) {%>
+		#region SetUp and TearDown
+<% if (this.SetUp) {%>
+		[SetUp]
+		public void SetUp()
+		{
+			throw new NotImplemented();
+		}
+<%}%>
+<% if (this.TearDown) {%>
+		[TearDown]
+		public void TearDown()
+		{
+			throw new NotImplemented();
+		}
+<%}%>
+		#endregion
+<%}%>
+
+		#region Tests
+		#endregion
+	}
+}
+
+<script runat="template">
+public enum FixtureType
+{
+	TestFixture,
+	TypeFixture,
+	DataFixture,
+	ProcessTestFixture,
+	TestSuiteFixture,
+	CollectionIndexingFixture,
+	CollectionOrderFixture,
+	EnumerationFixture
+}
+
+public bool SetUpOrTearDown
+{
+	get
+	{
+		return this.SetUp || this.TearDown;
+	}
+}
+
+public string FixtureAttribute
+{
+	get
+	{
+		if(this.Fixture == FixtureType.TypeFixture)
+			return "TypeFixture(typeof(PutTestedTypeHere))";
+		
+		return this.Fixture.ToString();
+	}
+}
+
+public string TestClass
+{
+	get
+	{
+		return String.Format(this.TestClassFormat, this.Class);
+	}
+}
+</script>

@@ -1,0 +1,296 @@
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Description="Basic Mock Object template." %>
+<%@ Property Name="Interface" Type="System.String" Category="Options" Description="Interface to mock" %>
+<%@ Property Name="Namespace" Type="System.String" Category="Options" Description="Namespace of the wrapped class" %>
+<%@ Property Name="MockNamespace" Type="System.String" Category="Options" Description="Namespace of the wrapped class" %>
+<%@ Import Namespace="System.Reflection" %>
+<%@ Import Namespace="System.Collections" %>
+<%@ Import Namespace="System.Collections.Specialized" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="System.ComponentModel.Design" %>
+<%@ Import Namespace="System.Drawing.Design" %>
+<%@ Assembly Name="AssemblyHelper"%>
+<%@ Assembly Name="System.Design"%>
+<%@ Import Namespace="AssemblyHelper" %>
+
+using System;
+using DotNetMock;
+using <%= Namespace %>
+
+namespace <%= MockNamespace %>
+{
+	/// <summary>
+	/// Mock of the <%= SeeInterface %> interface.
+	/// </summary>
+	/// <remark>
+	/// This class was generated and needs some work :)
+	/// </remarks>
+	public class <%= MockClass %> : <%= Interface %>, MockObject 
+	{
+		#region Private fields
+<% foreach(ExpectationEntry ep in this.expectations){%>
+		private <%= ep.ExpectedType %> <%= ep.FieldName %> = new <%= ep.ExpectedType %>("<%= MockClass %>.<%= ep.Name %>");
+<%}%>
+		#endregion
+		
+		#region MockObject
+		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		public <%= MockClass %>() {}
+		
+		/// <summary>
+		/// Constructor. Sets the name of this <see cref="<%= MockClass %>"/>
+		/// </summary>
+		/// <param name="name">Name of this MockObject</param>
+		public <%= MockClass %>(string name)
+		:base(name) 
+		{}
+
+<% foreach(ExpectationEntry ep in this.expectations){%>
+		/// <summary>
+		/// Sets the ... affected 
+		/// </summary>
+		/// <param name="expected">
+		/// Expected value.
+		/// </param>
+		public void <%= ep.MethodName() %>(<%= ep.ValueType %> expected)
+		{
+			this.<%= ep.Name %>.Expected = expected;
+			this.NotImplemented("Set<%= ep.MethodName() %>");
+		}
+<%}%>
+
+		#endregion
+		
+		#region <%= Interface %> members 
+<%	foreach(MethodInfo mi in this.InterfaceType.GetMethods()){
+		if (mi.Name.StartsWith("get_") || mi.Name.StartsWith("set_"))
+			continue;
+%>
+		<%= mi.ReturnType %> <%= this.InterfaceType.Name %>.<%= mi.Name %>(<%= MethodParameters(mi) %>)
+		{
+			this.NotImplemented("<%= mi.Name %>");
+		}
+		
+<%	}%>
+<%	foreach(PropertyInfo pi in this.InterfaceType.GetProperties()){%>
+		<%= pi.PropertyType %> <%= this.InterfaceType.Name %>.<%= pi.Name %><%= PropertyParameters(pi) %> 
+		{
+<%      if (pi.CanRead){%>
+            get
+			{
+				this.NotImplemented("get <%= pi.Name %>");
+			}
+<%      }
+        if (pi.CanWrite){%>
+            get
+			{
+				this.NotImplemented("set <%= pi.Name %>");
+			}
+<%      }%>			
+		}
+		
+<%	}%>
+		#endregion
+
+<% foreach(Type it in this.InterfaceType.GetInterfaces()) {%>
+		#region <%= it.Name %> members 
+<%	foreach(MethodInfo mi in it.GetMethods()){
+		if (mi.Name.StartsWith("get_") || mi.Name.StartsWith("set_"))
+			continue;
+%>
+		<%= mi.ReturnType %> <%= it.Name %>.<%= mi.Name %>(<%= MethodParameters(mi) %>)
+		{
+				this.NotImplemented("<%= mi.Name %>");
+		}
+		
+<%	}%>
+<%	foreach(PropertyInfo pi in it.GetProperties()){%>
+		<%= pi.PropertyType %> <%= it.Name %>.<%= pi.Name %><%= PropertyParameters(pi) %> 
+		{
+<%      if (pi.CanRead){%>
+            get
+			{
+				this.NotImplemented("get <%= pi.Name %>");
+			}
+<%      }
+        if (pi.CanWrite){%>
+            get
+			{
+				this.NotImplemented("set <%= pi.Name %>");
+			}
+<%      }%>			
+		}
+		
+<%	}%>
+		#endregion
+<%}%>
+	}
+}
+
+<script runat="template">
+private Assembly assembly;
+private ExpectationEntryCollection expectations = new ExpectationEntryCollection();
+
+[Editor(typeof(AssemblyHelper.AssemblyFilePicker), typeof(System.Drawing.Design.UITypeEditor))]
+[Category("Options")]
+public Assembly AssemblyToLoad
+{
+      get{return assembly;}
+      set{assembly = value;}
+}
+
+[TypeConverter(typeof(ExpandableObjectConverter))] 
+[Category("Options")]
+public class ExpectationEntry
+{
+	private string expectedType;
+	private string fieldName;
+	private string name;
+	private string value;
+	private string valueType;
+	
+	[Category("Options")]
+	public String ExpectedType
+	{	
+		get{ return this.expectedType;}
+		set{ this.expectedType = value;}
+	}
+	[Category("Options")]
+	public String FieldName
+	{	
+		get{ return this.fieldName;}
+		set{ this.fieldName = value;}
+	}	
+	[Category("Options")]
+	public String Name
+	{	
+		get{ return this.name;}
+		set{ this.name = value;}
+	}	
+	[Category("Options")]
+	public String Value
+	{	
+		get{ return this.value;}
+		set{ this.value = value;}
+	}
+	[Category("Options")]
+	public String ValueType
+	{	
+		get{ return this.valueType;}
+		set{ this.valueType = value;}
+	}
+	public Type GetExpectationType()
+	{
+		return System.Type.GetType(this.expectedType, true);
+	}
+	public Type GetValueType()
+	{
+		return System.Type.GetType(this.valueType, true);
+	}	
+	public String ValueToString()
+	{
+		if (GetValueType()== typeof(String))
+			return String.Format("\"{0}\"", this.Value);
+		else
+			return this.Value.ToString();
+	}
+	public String MethodName()
+	{
+		return "See" + Char.ToUpper(fieldName[0]) + fieldName.Substring(1, fieldName.Length-1);
+	}
+}
+
+public class ExpectationEntryCollection : ArrayList
+{
+	public new ExpectationEntry this[int index]
+	{
+		get
+		{
+			return (ExpectationEntry)base[index];
+		}
+		set
+		{
+			base[index] = value;
+		}
+	}
+}
+
+[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+[Editor(typeof(CollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
+[Category("Options")]
+public ExpectationEntryCollection Expectations
+{
+      get{return expectations;}
+	  set{expectations = value;}
+}
+
+// fields
+private Type interfaceType = null;
+// mocked class type
+protected Type InterfaceType
+{
+	get
+	{
+		if (this.interfaceType==null)
+		{
+			this.interfaceType=this.AssemblyToLoad.GetType(
+				String.Format("{0}.{1}",
+					this.Namespace,this.Interface), 
+					true);			
+			if (!this.interfaceType.IsInterface)
+				throw new Exception("Type must be an interface");
+		}
+		return this.interfaceType;
+	}
+}
+// <see cref="Interface"/>
+protected string SeeInterface
+{
+	get
+	{
+		return String.Format("<see cref=\"{0}\"/>", this.Interface);
+	}
+}
+// mock class name
+protected string MockClass
+{	
+	get
+	{
+		return "Mock" + this.Interface.Substring(1, this.Interface.Length-1);
+	} 
+}
+// output parameters to string
+protected string MethodParameters(MethodBase mi)
+{
+	StringWriter sw = new StringWriter();
+	bool comma = false;
+	foreach(ParameterInfo pi in mi.GetParameters())
+	{
+		if (comma)
+			sw.Write(", ");
+		else
+			comma=true;
+			
+		sw.Write("{0} {1}",pi.ParameterType.Name, pi.Name);
+	}
+	return sw.ToString();
+}
+protected string PropertyParameters(PropertyInfo pi)
+{
+	if (pi.CanRead)
+	{
+		if (pi.GetGetMethod().GetParameters().Length==0)
+			return null;
+		else
+			return String.Format("[{0}]",this.MethodParameters(pi.GetGetMethod()));
+	}
+	else
+	{
+		if (pi.GetSetMethod().GetParameters().Length==0)
+			return null;
+		else
+			return String.Format("[{0}]",this.MethodParameters(pi.GetSetMethod()));
+	}
+}
+</script>

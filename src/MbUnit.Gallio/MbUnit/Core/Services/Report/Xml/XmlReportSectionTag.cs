@@ -2,34 +2,41 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using MbUnit.Core.Serialization;
 
 namespace MbUnit.Core.Services.Report.Xml
 {
     /// <summary>
     /// An Xml-serializable container for a section of a report with
-    /// an identifying section header.  This tag is used to delineate
+    /// an identifying section name.  This tag is used to delineate
     /// sections within a report.
     /// </summary>
-    [XmlType]
+    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
     [Serializable]
     public sealed class XmlReportSectionTag : XmlReportContainerTag
     {
-        private string heading = "";
+        private string name;
 
         /// <summary>
-        /// Gets or sets the section heading, not null.
+        /// Gets or sets the section name, not null.
         /// </summary>
-        [XmlAttribute("heading")]
-        public string Heading
+        [XmlAttribute("name")]
+        public string Name
         {
-            get { return heading; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
+            get { return name; }
+            set { name = value; }
+        }
 
-                heading = value;
-            }
+        /// <summary>
+        /// Creates an empty but fully initialized instance.
+        /// </summary>
+        /// <param name="sectionName">The section name</param>
+        public static XmlReportSectionTag Create(string sectionName)
+        {
+            XmlReportSectionTag tag = new XmlReportSectionTag();
+            tag.Initialize();
+            tag.name = sectionName;
+            return tag;
         }
     }
 }

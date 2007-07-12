@@ -9,7 +9,6 @@ namespace MbUnit.Core.Model
     /// A test project provides parameters for test enumeration such as the list
     /// of test assemblies.
     /// </summary>
-    [Serializable]
     public class TestProject
     {
         private List<Assembly> assemblies;

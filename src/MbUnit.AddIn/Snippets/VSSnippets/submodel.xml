@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>ISubModel wrapper</Title>
+        <Shortcut>submodel</Shortcut>
+        <Description>Expansion snippet for a ISubModel wrapper</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="false">
+                <ID>model</ID>
+                <ToolTip>Model type</ToolTip>
+            </Literal>
+            <Literal default="false">
+                <ID>name</ID>
+                <ToolTip>SubModel Name</ToolTip>
+            </Literal>
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[public $model$ $name$Model
+        {
+            get
+            {
+                return ($model$)this.SubModels["$name$"].Model;
+            }
+        }$select$]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

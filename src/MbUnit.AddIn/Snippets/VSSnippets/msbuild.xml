@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>MSBuild task</Title>
+        <Shortcut>msbuild</Shortcut>
+        <Description>Expansion snippet for a MSBuild task</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="true">
+                <ID>name</ID>
+                <ToolTip>Fixture name</ToolTip>
+                <Default>My</Default>
+            </Literal>
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[<?xml version="1.0" encoding="utf-8" ?> 
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <UsingTask AssemblyName="MbUnit.MSBuild.Tasks" TaskName="MbUnit.MSBuild.Tasks.MbUnit"/>
+    <ItemGroup>
+        <TestAssemblies Include="$end$" />
+    </ItemGroup>
+    <Target Name="Tests">        
+        <MbUnit
+            Assemblies ="@(TestAssemblies)"
+            HaltOnFailure="false"
+            ReportTypes="Xml;Text;Html;Dox"
+            ReportFileNameFormat="mbunit-{0}-{1}"            
+            />        
+    </Target>
+</Project>  
+]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

@@ -1,32 +1,32 @@
 extern alias MbUnit2;
 using MbUnit2::MbUnit.Framework;
 
+using System;
 using System.Reflection;
 using MbUnit.Core.Metadata;
 using MbUnit.Core.Model;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Core.Model;
 using MbUnit.Framework.Core;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
+using MbUnit.Core.Runtime;
 
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(MbUnitTestFramework))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class MbUnitTestFrameworkTest
+    public class MbUnitTestFrameworkTest : BaseUnitTest
     {
         private MbUnitTestFramework framework;
         private TestTemplateTreeBuilder builder;
+        private IAssemblyResolverManager resolverManager;
 
-        [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            framework = new MbUnitTestFramework();
-            builder = new TestTemplateTreeBuilder();
+            base.SetUp();
+
+            resolverManager = Mocks.CreateMock<IAssemblyResolverManager>();
+            framework = new MbUnitTestFramework(resolverManager);
         }
 
         [Test]
@@ -115,7 +115,9 @@ namespace MbUnit.Tests.Framework
         {
             TestProject project = new TestProject();
             project.Assemblies.Add(assembly);
-            framework.PopulateTestTemplateTree(builder, builder.Root, project);
+
+            builder = new TestTemplateTreeBuilder(project);
+            framework.BuildTemplates(builder, builder.Root);
         }
     }
 }

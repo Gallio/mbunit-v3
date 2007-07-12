@@ -18,11 +18,19 @@ namespace MbUnit.Core.Model
         string Name { get; }
 
         /// <summary>
-        /// Populates the test template tree using a test project.
+        /// Populates the test template tree with this framework's contributions.
         /// </summary>
         /// <param name="builder">The template tree builder</param>
         /// <param name="parent">The parent template</param>
-        /// <param name="project">The test project</param>
-        void PopulateTestTemplateTree(TestTemplateTreeBuilder builder, ITestTemplate parent, TestProject project);
+        void BuildTemplates(TestTemplateTreeBuilder builder, ITestTemplate parent);
+
+        /// <summary>
+        /// Provides the test framework with an opportunity to perform processing
+        /// just after a test assembly is loaded.  For example, it might quickly
+        /// scan the assembly to configure assembly resolution strategies or
+        /// to configure the behavior of built-in services in other ways.
+        /// </summary>
+        /// <param name="assembly">The loaded test assembly</param>
+        void InitializeTestAssembly(Assembly assembly);
     }
 }

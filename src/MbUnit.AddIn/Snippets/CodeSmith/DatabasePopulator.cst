@@ -1,0 +1,386 @@
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Description="TestFu DatabasePopulator Template" %>
+<%@ Property Name="Namespace" Type="System.String" 
+	Default="Populators" 
+	Category="Output" 
+	Description="Namespace of the populator." %>
+<%@ Property Name="DataSetNameFormat" Type="System.String" 
+	Default="{0}DataSet" 
+	Category="Output" 
+	Description="Format string to create the DatabaseSet class name." %>
+<%@ Property Name="DatabasePopulatorNameFormat" Type="System.String" 
+	Default="{0}DatabasePopulator" 
+	Category="Output" 
+	Description="Format string to create the DatabasePopulator class name." %>
+<%@ Property Name="TableNamePrefix" Type="System.String" 
+	Default="" 
+	Category="Output" 
+	Optional="true"
+	Description="Prefix to be removed." %>
+<%@ Property Name="TablePopulatorNameFormat" Type="System.String" 
+	Default="{0}TablePopulator" 
+	Category="Output" 
+	Description="Format string to create the TablePopulator class names." %>
+<%@ Property Name="ColumnDataGeneratorNameFormat" Type="System.String" 
+	Default="{0}DataGenerator" 
+	Category="Output" 
+	Description="Format string to create the ColumnGenenerator properties." %>
+<%@ Property Name="UniqueValidatorNameFormat" Type="System.String" 
+	Default="{0}Validator" 
+	Category="Output" 
+	Description="Format string to create the UniqueValidator properties." %>
+<%@ Property Name="ForeignKeyProviderNameFormat" Type="System.String" 
+	Default="{0}Provider" 
+	Category="Output" 
+	Description="Format string to create the ForeignKeyProviderNameFormat properties." %>
+<%@ Property Name="Database" Type="SchemaExplorer.DatabaseSchema"
+      Category="Context"
+      Description="Target database for the IDatabasePopulator." %> 
+<%@ Assembly Name="SchemaExplorer" %> 
+<%@ Import Namespace="SchemaExplorer" %>
+//////////////////////////////////////////////////////////////////
+//
+// Strongly typed populator for the <%= DatabaseName %>
+//
+//////////////////////////////////////////////////////////////////
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+
+using TestFu.Data;
+using TestFu.Data.Populators;
+using TestFu.Data.SqlClient;
+using TestFu.Data.Generators;
+
+namespace <%= Namespace %>
+{
+	/// <summary>
+	/// A strongly typed <see cref="IDatabasePopulator"/> implementation for the
+	/// <%= DatabaseName %> database.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This class can be used to generate <see cref="DataRow" /> instances that are compatible with
+	/// the constraint of the tables. 
+	/// </para>
+	/// </remarks>
+	public class <%= DatabasePopulatorName %> : SqlDatabasePopulator
+	{
+		#region Constructors
+		/// <summary>
+		/// Initializes a new <see cref="<%= DatabasePopulatorName %>"/> with the 
+		/// connection string of the database.
+		/// </summary>
+		/// <param name="connectionString">
+		/// A valid conneciton string to the target database.
+		/// </param>
+		/// <exception type="ArgumentNullException">
+		/// The <paramref name="connectionString"/> is a 
+		/// null reference (Nothing in Visual Basic).
+		/// </exception>		
+		/// <exception type="ArgumentException">
+		/// The <paramref name="connectionString"/> is empty.
+		/// </exception>		
+		public <%= DatabasePopulatorName %>(string connectionString)
+		:this(new <%= DataSetName %>(), connectionString)
+		{}
+		
+		/// <summary>
+		/// Initializes a new <see cref="<%= DatabasePopulatorName %>"/> with the 
+		/// connection string of the database.
+		/// </summary>
+		/// <param name="dataSet">
+		/// A <see cref="DataSet"/> representing the structure of the
+		/// <em><%= DatabaseName %></em> database.
+		/// </param>
+		/// <param name="connectionString">
+		/// A valid conneciton string to the target database.
+		/// </param>
+		/// <exception type="ArgumentNullException">
+		/// The <paramref name="dataSet"/> or the <paramref name="connectionString"/> is a 
+		/// null reference (Nothing in Visual Basic).
+		/// </exception>		
+		/// <exception type="ArgumentException">
+		/// The <paramref name="connectionString"/> is empty.
+		/// </exception>				
+		public <%= DatabasePopulatorName %>(
+			DataSet dataSet,
+			string connectionString
+			)
+		:base(connectionString)
+		{		
+			// populate
+			this.Populate(dataSet);
+		}
+		
+        protected override void PopulateTables()
+        {
+			// replace each ITablePopulator by a strongly-typed version
+<% foreach(TableSchema table in this.Database.Tables) {%>
+			this.Tables.Add(new <%= GetTablePopulatorName(table)%>(this));
+<%} // foreach(TableSchema table in this.Database.Tables) %>
+		}
+		#endregion		
+		
+		#region Tables
+<% foreach(TableSchema table in this.Database.Tables) {%>
+		/// <summary>
+		/// Gets the <see cref="GetTablePopulatorName(table)"/> that populates the
+		/// <em><%= table.Name %></em> table.
+		/// </summary>
+		/// <value>
+		/// A strongly typed implementation of <see cref="ITablePopulator"/> that targets
+		/// the <em><%= table.Name %></em> table.
+		/// </value>
+		public <%= GetTablePopulatorName(table) %> <%= GetTablePopulatorPropertyName(table) %>
+		{
+			get
+			{
+				DataTable table = this.DataSet.Tables["<%= table.Name %>"];
+				if (table==null)
+					throw new InvalidOperationException("The table <%= table.Name %> was not found in the DataSet");
+				<%= GetTablePopulatorName(table) %> tablePopulator = this.Tables[table] as <%= GetTablePopulatorName(table) %>;
+				if (tablePopulator==null)
+					throw new InvalidOperationException("The table populator for the <%= table.FullName %> was not found");
+				return tablePopulator;
+			}
+		}
+<%} // foreach(TableSchema table in this.Database.Tables) %>
+		#endregion
+		#region Table Classes
+<% foreach(TableSchema table in this.Database.Tables) {%>
+
+		#region <%= GetTablePopulatorName(table) %>
+		/// <summary>
+		/// A strongly typed implementation of <see cref="ITablePopulator"/> that targets
+		/// the <%= table.Name %> table.
+		/// </summary>
+		public class <%= GetTablePopulatorName(table) %> : TablePopulator
+		{
+			public <%= GetTablePopulatorName(table)	%>(<%= DatabasePopulatorName %> databasePopulator)
+			:base(databasePopulator,databasePopulator.DataSet.Tables["<%= table.Name %>"])
+			{}
+			
+			public new <%= DatabasePopulatorName %> Database
+			{
+				get
+				{
+					return base.Database as <%= DatabasePopulatorName %>;
+				}
+			}
+			
+			public DataRow GetRandomRow()
+			{
+				return this.Database.GetRandomRow(this.Table);
+			}
+			
+			protected override void PopulateDataGenerators()
+			{
+				base.PopulateDataGenerators();
+				
+				// Fix fields length
+<%			foreach(ColumnSchema column in table.Columns){ 
+			if (column.SystemType.IsValueType) 
+				continue;
+			if (column.NativeType.ToLower() == "ntext" || column.NativeType.ToLower() == "text")
+				continue;
+%>
+				this.FixLength(this.Columns["<%= column.Name %>"],<%= column.Size %>, <%= (table.PrimaryKey.MemberColumns.Contains(column)) ? "false" : "true" %>);
+<%}%>				
+			}	
+			
+			private void FixLength(IDataGenerator gen, int size, bool updateMaxLengthOnly)
+			{
+				StringGeneratorBase stringGenerator = gen as StringGeneratorBase;
+				if(stringGenerator!=null)
+				{
+					if (!updateMaxLengthOnly)	
+						stringGenerator.MinLength = size;					
+					stringGenerator.MaxLength = size;
+					return;
+				}
+				
+				BinaryGenerator binaryGenerator = gen as BinaryGenerator;
+				if (binaryGenerator!=null)
+				{
+					if (!updateMaxLengthOnly)	
+						binaryGenerator.MinLength = size;					
+					binaryGenerator.MaxLength = 16;
+					return;
+				}
+			}
+			
+			#region Columns Data Generators
+<%			foreach(ColumnSchema column in table.Columns){ %>
+			/// <summary>
+			/// Gets or sets the <see cref="IDataGenerator"/> that generates data for
+			/// the <em><%= GetColumnDataGeneratorName(column) %></em> column.
+			/// </summary>
+			/// <value>
+			/// A <see cref="IDataGenerator"/> instance that generates the data
+			/// for the <em><%= GetColumnDataGeneratorName(column) %></em> column.
+			/// </value>
+			/// <exception type="ArgumentNullException">
+			/// set property, the value is a null reference.
+			/// </exception>
+			public IDataGenerator <%= GetColumnDataGeneratorName(column) %>
+			{
+				get
+				{
+					DataColumn column = this.Table.Columns["<%= column.Name %>"];
+					if (column==null)
+						throw new InvalidOperationException("Column <%= column.Name %> not found");
+					IDataGenerator dataGenerator = this.Columns[column];
+					if (dataGenerator==null)
+						throw new InvalidOperationException("IDataGenerator not found for <%= column.Name %>");
+					return dataGenerator;
+				}
+				set
+				{
+					if (value==null)
+						throw new ArgumentNullException("IDataGenerator cannot be null");
+					this.Columns.Remove("<%= column.Name %>");
+					this.Columns.Add(value);
+				}					
+			}
+<%} //		foreach(ColumnSchema column in table.Columns) %>	
+			#endregion
+		
+			#region UniqueValidators
+<%			foreach(TableKeySchema unique in table.PrimaryKeys){ %>
+			/// <summary>
+			/// Gets or sets the <see cref="IUniqueValidator"/> that validates data
+			/// the <em><%= GetUniqueValidatorName(unique) %></em> unique constraint.
+			/// </summary>
+			/// <value>
+			/// A <see cref="IUniqueValidator"/> instance that  validates data
+			/// the <em><%= GetUniqueValidatorName(unique) %></em> unique constraint.
+			/// </value>
+			/// <exception type="ArgumentNullException">
+			/// set property, the value is a null reference.
+			/// </exception>
+			public IUniqueValidator <%= GetUniqueValidatorName(unique)%>
+			{			
+				get
+				{
+					UniqueConstraint unique = this.Table.Constraints["<%= unique.Name %>"] as UniqueConstraint;
+					if (unique==null)
+						throw new InvalidOperationException("Could not find UniqueConstraint <%= unique.Name %>");
+					IUniqueValidator validator = this.Uniques[unique];
+					if (validator==null)
+						throw new InvalidOperationException("Could not find validator for UniqueConstraint <%= unique.Name %>");
+					return validator;
+				}
+				set
+				{
+					if (value==null)
+						throw new ArgumentNullException("IUniqueValidator cannot be null");
+					UniqueConstraint unique = this.Table.Constraints["<%= unique.Name %>"] as UniqueConstraint;
+					if (unique==null)
+						throw new InvalidOperationException("Could not find UniqueConstraint <%= unique.Name %>");
+					this.Uniques[unique] = value;
+				}
+			}
+<%}	//		foreach(TableKeySchema unique in table.TableKeySchemas) %>						
+			#endregion
+		
+			#region ForeignKeyProviders
+<%			foreach(TableKeySchema foreignKey in table.ForeignKeys){ %>
+			/// <summary>
+			/// Gets or sets the <see cref="IForeignKeyProvider"/> that fetches valid
+			/// foreign key columns values for
+			/// the <em><%= GetForeignKeyProviderName(foreignKey) %></em> foreign key constraint.
+			/// </summary>
+			/// <value>
+			/// A <see cref="IForeignKeyProvider"/> that fetches valid
+			/// foreign key columns values for
+			/// the <em><%= GetForeignKeyProviderName(foreignKey) %></em> foreign key constraint.
+			/// </value>
+			/// <exception type="ArgumentNullException">
+			/// set property, the value is a null reference.
+			/// </exception>
+			public IForeignKeyProvider <%= GetForeignKeyProviderName(foreignKey)%>
+			{
+				get
+				{
+					ForeignKeyConstraint foreignKey = this.Table.Constraints["<%= foreignKey.Name %>"] as ForeignKeyConstraint;
+					if (foreignKey==null)
+						throw new InvalidOperationException("Could not find ForeignKeyConstraint <%= foreignKey.Name %>");
+					IForeignKeyProvider provider = this.ForeignKeys[foreignKey];
+					if (provider==null)
+						throw new InvalidOperationException("Could not find provider for UniqueConstraint <%= foreignKey.Name %>");
+					return provider;
+				}
+				set
+				{
+					if (value==null)
+						throw new ArgumentNullException("IForeignKeyProvider cannot be null");
+					ForeignKeyConstraint foreignKey = this.Table.Constraints["<%= foreignKey.Name %>"] as ForeignKeyConstraint;
+					if (foreignKey==null)
+						throw new InvalidOperationException("Could not find ForeignKeyConstraint <%= foreignKey.Name %>");
+					this.ForeignKeys[foreignKey] = value;
+				}
+			}
+<%}	//		foreach(TableKeySchema foreignKey in table.ForeignKeys) %>						
+			#endregion			
+		}
+		#endregion
+<%} // foreach(TableSchema table in this.Database.Tables) %>		
+		#endregion		
+		
+	}
+}
+<script runat="template">
+#region Properties
+public string DatabaseName
+{ 
+	get
+	{
+		return this.Database.Name;
+	}
+}
+
+public string DataSetName
+{
+	get{ return Format(this.DataSetNameFormat, this.DatabaseName);}
+}
+
+public string DatabasePopulatorName
+{
+	get{ return Format(this.DatabasePopulatorNameFormat,this.DatabaseName);}
+}
+public string GetTablePopulatorName(TableSchema table)
+{
+	return Format(this.TablePopulatorNameFormat, table.Name);
+}
+public string GetTablePopulatorPropertyName(TableSchema table)
+{
+	return Format(table.Name);
+}
+public string GetColumnDataGeneratorName(ColumnSchema column)
+{
+	return Format(ColumnDataGeneratorNameFormat, column.Name);
+}
+public string GetUniqueValidatorName(TableKeySchema unique)
+{
+	return  Format(UniqueValidatorNameFormat, unique.Name);
+}
+public string GetForeignKeyProviderName(TableKeySchema unique)
+{
+	return  Format(ForeignKeyProviderNameFormat, unique.Name);
+}
+
+protected string Format(string format, params Object[] args)
+{
+	string result = string.Format(format,args);
+	if (this.TableNamePrefix!=null && this.TableNamePrefix.Length > 0)
+	{
+		if (result.StartsWith(this.TableNamePrefix))
+			result = result.Substring(this.TableNamePrefix.Length);
+	}
+	
+	result = result.Replace(" ","").Replace("_","").Replace(".","");
+	return result;
+}
+#endregion
+</script>

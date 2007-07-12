@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>TestFixture</Title>
+        <Shortcut>testfixture</Shortcut>
+        <Description>Expansion snippet for TestFixture</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="false">
+                <ID>namespace</ID>
+                <ToolTip>Test namespace</ToolTip>
+            </Literal>            
+            <Literal>
+                <ID>type</ID>
+                <ToolTip>Tested type</ToolTip>
+            </Literal>
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[using System;
+using MbUnit.Core.Framework;
+using MbUnit.Framework;
+
+namespace $namespace$
+{
+    /// <summary>
+    /// A <see cref="TestFixture"/> for the <see cref="$type$"/> 
+    /// class
+    /// </summary>
+    [TestFixture]
+    [TestsOn(typeof($type$))]
+    public class $type$Test
+    {
+        #region Fields, SetUp and TearDown
+        private $type$ target = null;
+        
+        /// <summary>
+        /// Sets up the fixture
+        /// </summary>
+        [SetUp]
+        public void SetUp()
+        {
+            this.target = new $type$();
+        }
+        /// <summary>
+        /// Cleans up the fixture
+        /// </summary>
+        [TearDown]
+        public void TearDown()
+        {
+            IDisposable disposable = this.target as IDisposable;
+            if (disposable!=null)
+                disposable.Dispose();
+        }
+        #endregion
+    
+        #region Test cases
+        [Test]
+        public void Test()
+        {
+            $end$
+        }
+        #endregion    
+    }
+}]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

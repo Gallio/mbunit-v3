@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Core.Collections;
 using MbUnit.Core.Model;
+using MbUnit.Core.Runtime;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Core.Attributes;
 using MbUnit.Framework.Core.Model;
@@ -14,6 +15,17 @@ namespace MbUnit.Framework.Core
     /// </summary>
     public class MbUnitTestFramework : ITestFramework
     {
+        private IAssemblyResolverManager assemblyResolverManager;
+
+        /// <summary>
+        /// Initializes the test framework.
+        /// </summary>
+        /// <param name="assemblyResolverManager">The assembly resolver manager</param>
+        public MbUnitTestFramework(IAssemblyResolverManager assemblyResolverManager)
+        {
+            this.assemblyResolverManager = assemblyResolverManager;
+        }
+
         /// <inheritdoc />
         public string Name
         {
@@ -21,9 +33,9 @@ namespace MbUnit.Framework.Core
         }
 
         /// <inheritdoc />
-        public void PopulateTestTemplateTree(TestTemplateTreeBuilder builder, ITestTemplate parent, TestProject project)
+        public void BuildTemplates(TestTemplateTreeBuilder builder, ITestTemplate parent)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(project.Assemblies, "MbUnit.Gallio");
+            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(builder.Project.Assemblies, "MbUnit.Gallio");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Build templates for the contents of the assemblies that reference MbUnit Gallio
@@ -36,6 +48,28 @@ namespace MbUnit.Framework.Core
                 foreach (Assembly assembly in entry.Value)
                 {
                     AssemblyPatternAttribute.ProcessAssembly(builder, frameworkTemplate, assembly);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public void InitializeTestAssembly(Assembly assembly)
+        {
+            foreach (AssemblyResolverAttribute resolverAttribute in
+                assembly.GetCustomAttributes(typeof(AssemblyResolverAttribute), false))
+            {
+                Type type = resolverAttribute.AssemblyResolverType;
+                try
+                {
+                    IAssemblyResolver resolver = (IAssemblyResolver) Activator.CreateInstance(type);
+                    assemblyResolverManager.AssemblyResolve += delegate(object sender, ResolveEventArgs e)
+                    {
+                        return resolver.Resolve(e.Name);
+                    };
+                }
+                catch (Exception ex)
+                {
+                    throw new ModelException(String.Format("Failed to create custom assembly resolver type '{0}'.", type), ex);
                 }
             }
         }

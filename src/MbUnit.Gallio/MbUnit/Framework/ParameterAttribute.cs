@@ -12,7 +12,7 @@ namespace MbUnit.Framework
     /// test method parameters and test fixture constructor parameters the parameter
     /// will be declared with default values (which are usually just fine).
     /// </summary>
-    public sealed class ParameterAttribute : ParameterPatternAttribute
+    public class ParameterAttribute : ParameterPatternAttribute
     {
         private string name;
         private string set;
@@ -90,6 +90,8 @@ namespace MbUnit.Framework
 
             if (index.HasValue)
                 parameter.Index = index.Value;
+
+            base.Apply(builder, parameter);
         }
     }
 }

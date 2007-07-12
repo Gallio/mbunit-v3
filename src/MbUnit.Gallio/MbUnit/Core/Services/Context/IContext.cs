@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using MbUnit.Core.Services.Reflection;
+using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Services.Context
 {
@@ -36,9 +36,9 @@ namespace MbUnit.Core.Services.Context
         bool IsActive { get; }
 
         /// <summary>
-        /// Gets information about the test running within the context.
+        /// Gets information about the test currently running within the context.
         /// </summary>
-        TestInfo TestInfo { get; }
+        ITest CurrentTest { get; }
 
         /// <summary>
         /// The exited event is raised when the context is about to be exited.

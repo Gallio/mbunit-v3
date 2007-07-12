@@ -7,6 +7,7 @@ namespace MbUnit.Core.Serialization
     /// <summary>
     /// Describes a test component in a portable manner for serialization.
     /// </summary>
+    /// <seealso cref="ITestComponent"/>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
     public class TestComponentInfo

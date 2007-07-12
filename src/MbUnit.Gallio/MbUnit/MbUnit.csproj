@@ -9,6 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MbUnit</RootNamespace>
     <AssemblyName>MbUnit.Gallio</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,43 +32,83 @@
     <DocumentationFile>bin\MbUnit.Gallio.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.0.5, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Collections\IKeyedCollection.cs" />
     <Compile Include="Core\Collections\MultiMap.cs" />
     <Compile Include="Core\Metadata\MetadataConstants.cs" />
     <Compile Include="Core\Model\BaseTestComponent.cs" />
     <Compile Include="Core\Model\BaseTestParameter.cs" />
     <Compile Include="Core\Model\BaseTestParameterSet.cs" />
     <Compile Include="Core\Model\BaseTestTemplate.cs" />
+    <Compile Include="Core\Model\ITest.cs" />
     <Compile Include="Core\Model\ITestComponent.cs" />
     <Compile Include="Core\Model\ITestParameter.cs" />
     <Compile Include="Core\Model\ITestParameterSet.cs" />
     <Compile Include="Core\Model\ITestTemplate.cs" />
     <Compile Include="Core\Model\ModelUtils.cs" />
     <Compile Include="Core\Model\TestProject.cs" />
+    <Compile Include="Core\Model\ITestTemplateBinding.cs" />
+    <Compile Include="Core\Model\ModelException.cs" />
+    <Compile Include="Core\Model\TestScope.cs" />
     <Compile Include="Core\Model\TestTemplateGroup.cs" />
     <Compile Include="Core\Model\TestTemplateTreeBuilder.cs" />
     <Compile Include="Core\Model\MetadataMap.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Metadata\TemplateKind.cs" />
-    <Compile Include="Core\Runner\IsolatedTestDomain.cs" />
-    <Compile Include="Core\Runner\ITestDomain.cs" />
-    <Compile Include="Core\Runner\TestDomainException.cs" />
+    <Compile Include="Core\Model\TestTreeBuilder.cs" />
+    <Compile Include="Core\Runner\AutoRunner.cs" />
+    <Compile Include="Core\Runner\BaseTestDomain.cs" />
+    <Compile Include="Core\Runner\CommandLine\CommandLineArgumentAttribute.cs" />
+    <Compile Include="Core\Runner\CommandLine\CommandLineArgumentParser.cs" />
+    <Compile Include="Core\Runner\CommandLine\CommandLineArgumentType.cs" />
+    <Compile Include="Core\Runner\CommandLine\CommandLineUtility.cs" />
+    <Compile Include="Core\Runner\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
+    <Compile Include="Core\Runner\CommandLine\ErrorReporter.cs" />
+    <Compile Include="Core\Runner\IsolatedTestDomain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Runner\ITestDomain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Runner\LocalTestDomain.cs" />
+    <Compile Include="Core\Runner\RemoteTestDomain.cs" />
+    <Compile Include="Core\Runner\FatalRunnerException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Runtime\DefaultAssemblyResolverManager.cs" />
+    <Compile Include="Core\Runtime\IAssemblyResolverManager.cs" />
     <Compile Include="Core\Serialization\CodeReferenceInfo.cs" />
     <Compile Include="Core\Serialization\MetadataMapEntry.cs" />
     <Compile Include="Core\Serialization\MetadataMapInfo.cs" />
     <Compile Include="Core\Serialization\SerializationUtils.cs" />
     <Compile Include="Core\Serialization\TestComponentInfo.cs" />
+    <Compile Include="Core\Serialization\TestInfo.cs" />
     <Compile Include="Core\Serialization\TestParameterInfo.cs" />
     <Compile Include="Core\Serialization\TestParameterSetInfo.cs" />
     <Compile Include="Core\Serialization\TestProjectInfo.cs" />
     <Compile Include="Core\Serialization\TestTemplateInfo.cs" />
+    <Compile Include="Core\Services\Report\DelegatingReport.cs" />
+    <Compile Include="Core\Services\Report\IReportWriter.cs" />
+    <Compile Include="Core\Services\Report\Xml\XmlReportWriter.cs" />
+    <Compile Include="Core\Utilities\LongLivingMarshalByRefObject.cs" />
+    <Compile Include="Framework\AssemblyResolverAttribute.cs" />
     <Compile Include="Framework\AuthorAttribute.cs" />
     <Compile Include="Framework\Core\Attributes\AssemblyDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Core\Attributes\AssemblyPatternAttribute.cs" />
@@ -94,10 +136,8 @@
     <Compile Include="Framework\Core\Model\MbUnitTestParameter.cs" />
     <Compile Include="Core\Model\CodeReference.cs" />
     <Compile Include="Core\Model\ITestFramework.cs" />
-    <Compile Include="Core\Services\Report\Attachments\IAttachmentCollection.cs" />
     <Compile Include="Core\Services\Report\IReportStreamCollection.cs" />
     <Compile Include="Core\Utilities\ListUtils.cs" />
-    <Compile Include="Core\Collections\SyncUnorderedKeyedCollection.cs" />
     <Compile Include="Core\Exceptions\AssertionException.cs" />
     <Compile Include="Core\Runtime\DefaultServiceProvider.cs" />
     <Compile Include="Core\Runtime\IGenericServiceProvider.cs">
@@ -119,7 +159,6 @@
     <Compile Include="Core\Services\Report\Attachments\XmlAttachment.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Services\Report\Attachments\AttachmentCollection.cs" />
     <Compile Include="Core\Services\Report\Xml\XmlReportBodyTag.cs" />
     <Compile Include="Core\Services\Report\Xml\XmlReportContainerTag.cs" />
     <Compile Include="Core\Services\Report\Xml\XmlReportEmbedTag.cs" />
@@ -128,9 +167,8 @@
     <Compile Include="Core\Services\Report\Xml\XmlReportStream.cs" />
     <Compile Include="Core\Services\Report\Xml\XmlReport.cs" />
     <Compile Include="Core\Services\Report\DefaultReportService.cs" />
-    <Compile Include="Core\Services\Report\Xml\XmlReportStreamCollection.cs" />
     <Compile Include="Core\Services\Report\IReport.cs" />
-    <Compile Include="Core\Services\Report\ContextualReportStreamWriter.cs">
+    <Compile Include="Core\Services\Report\ContextualReportTextWriter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Services\Report\ContextualReportTraceListener.cs">
@@ -139,7 +177,6 @@
     <Compile Include="Core\Runtime\Runtime.cs" />
     <Compile Include="Core\Services\Assert\AssertionResultType.cs" />
     <Compile Include="Core\Services\Assert\AssertionUtils.cs" />
-    <Compile Include="Core\Services\Reflection\TestInfo.cs" />
     <Compile Include="Core\Utilities\ReflectionUtils.cs" />
     <Compile Include="Framework\Block.cs" />
     <Compile Include="Core\Services\Assert\AssertionCondition.cs" />
@@ -166,6 +203,7 @@
     <Compile Include="Framework\Core\Model\Slot.cs" />
     <Compile Include="Framework\DescriptionAttribute.cs" />
     <Compile Include="Framework\ExpectedExceptionAttribute.cs" />
+    <Compile Include="Framework\IAssemblyResolver.cs" />
     <Compile Include="Framework\ParameterAttribute.cs" />
     <Compile Include="Framework\Report.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
@@ -178,6 +216,9 @@
     <Compile Include="Framework\TestFixtureTearDownAttribute.cs" />
     <Compile Include="Framework\TestsOnAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Runner\IsolatedTestDomain.config.template" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

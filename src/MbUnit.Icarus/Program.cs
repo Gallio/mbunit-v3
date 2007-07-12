@@ -10,6 +10,7 @@ namespace MbUnit.Icarus
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
+        [LoaderOptimization(LoaderOptimization.MultiDomain)]
         static void Main()
         {
             Application.EnableVisualStyles();

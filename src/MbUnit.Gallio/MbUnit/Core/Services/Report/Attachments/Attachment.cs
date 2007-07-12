@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-using System.Xml.Serialization;
+using System.Xml;
 using MbUnit.Core.Services.Report.Xml;
 
 namespace MbUnit.Core.Services.Report.Attachments
@@ -52,33 +51,49 @@ namespace MbUnit.Core.Services.Report.Attachments
         /// <summary>
         /// Serializes the attachment to Xml.
         /// </summary>
-        /// <param name="xmlAttachment">The Xml report attachment</param>
-        public virtual void XmlSerializeTo(XmlReportAttachment xmlAttachment)
-        {
-            xmlAttachment.Name = name;
-            xmlAttachment.ContentType = contentType;
-        }
+        /// <returns>The Xml-serializable attachment</returns>
+        public abstract XmlReportAttachment XmlSerialize();
 
         /// <summary>
         /// Deserializes the attachment from Xml.
         /// </summary>
         /// <param name="xmlAttachment">The Xml report attachment</param>
         /// <returns>The deserialized form</returns>
-        public static Attachment XmlDeserializeFrom(XmlReportAttachment xmlAttachment)
+        public static Attachment XmlDeserialize(XmlReportAttachment xmlAttachment)
         {
+            if (xmlAttachment.Name == null)
+                throw new XmlException("The attachment is missing its name attribute.");
+            if (xmlAttachment.ContentType == null)
+                throw new XmlException("The attachment is missing its contentType attribute.");
+
             switch (xmlAttachment.ContentEncoding)
             {
                 case XmlContentEncoding.Xml:
-                    return new XmlAttachment(xmlAttachment.Name, xmlAttachment.ContentType, xmlAttachment.InnerXml[0]);
+                {
+                    if (xmlAttachment.InnerXml == null || xmlAttachment.InnerXml.Length == 0)
+                        throw new XmlException("The xml attachment is missing its inner Xml content.");
 
-                case XmlContentEncoding.Text:
+                    return new XmlAttachment(xmlAttachment.Name, xmlAttachment.ContentType, xmlAttachment.InnerXml[0]);
+                }
+
+            case XmlContentEncoding.Text:
+                {
+                    if (xmlAttachment.InnerText == null)
+                        throw new XmlException("The text attachment is missing its inner text content.");
+
                     return new TextAttachment(xmlAttachment.Name, xmlAttachment.ContentType, xmlAttachment.InnerText);
-                
-                case XmlContentEncoding.Base64:
+                }
+
+            case XmlContentEncoding.Base64:
+                {
+                    if (xmlAttachment.InnerText == null)
+                        throw new XmlException("The base64 attachment is missing its inner text content.");
+
                     return new BinaryAttachment(xmlAttachment.Name, xmlAttachment.ContentType, Convert.FromBase64String(xmlAttachment.InnerText));
+                }
             }
 
-            throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
+            throw new XmlException(String.Format(CultureInfo.CurrentCulture,
                 "Unrecognized Xml content encoding '{0}'.", xmlAttachment.ContentEncoding));
         }
     }

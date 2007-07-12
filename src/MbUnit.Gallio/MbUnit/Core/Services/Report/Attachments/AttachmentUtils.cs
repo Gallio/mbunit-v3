@@ -69,6 +69,9 @@ namespace MbUnit.Core.Services.Report.Attachments
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
         public static BinaryAttachment CreateImageAttachment(string name, Image image)
         {
+            if (image == null)
+                throw new ArgumentNullException("image");
+
             // TODO: Choose a better mime-type based on the image format.
             using (MemoryStream stream = new MemoryStream())
             {

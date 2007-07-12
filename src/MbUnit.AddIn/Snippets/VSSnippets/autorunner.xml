@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>AutoRunner</Title>
+        <Shortcut>autorunner</Shortcut>
+        <Description>Expansion snippet for a AutorRunner main.</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="true">
+                <ID>name</ID>
+                <ToolTip>Main class name</ToolTip>
+                <Default>Program</Default>
+            </Literal>
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[
+using System;
+
+namespace MbUnit.Tests
+{
+    using MbUnit.Core;
+    using MbUnit.Core.Filters;
+
+    static class $name$
+    {
+        public static void Main(string[] args)
+        {
+            using (AutoRunner auto = new AutoRunner())
+            {
+                // Note: uncomment if you want to execute only the fixtures
+                // that are tagged with [CurrentFixture] attribute.
+                //
+                //  auto.Domain.Filter = FixtureFilters.Current;
+                auto.Run();
+                auto.ReportToHtml();
+            }
+        }
+    }
+}
+]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

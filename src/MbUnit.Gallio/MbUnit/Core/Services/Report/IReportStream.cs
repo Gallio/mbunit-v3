@@ -8,17 +8,18 @@ using MbUnit.Core.Services.Report.Attachments;
 namespace MbUnit.Core.Services.Report
 {
     /// <summary>
-    /// A report stream provides methods for including text, images, XML, HTML,
-    /// serialized objects, binary blobs, and other content in a report as a stream of
-    /// attachments with corresponding mime type.
+    /// A report stream provides methods for writing a named stream of text and
+    /// embedded attachments in a report.  A report stream may be further subdivided
+    /// into a sequence of possibly nested report sections.
     /// </summary>
     /// <remarks>
     /// The operations on this interface are thread-safe.
     /// </remarks>
+    /// <seealso cref="IReport"/>
     public interface IReportStream
     {
         /// <summary>
-        /// Gets the report within which the stream is contained.
+        /// Gets the report that contains the report stream.
         /// </summary>
         IReport Report { get; }
 
@@ -29,21 +30,25 @@ namespace MbUnit.Core.Services.Report
 
         /// <summary>
         /// Gets a <see cref="TextWriter" /> adapter for the report stream.
+        /// Writing text to the text stream is equivalent to calling <see cref="Write(string)" />
+        /// for each string.
         /// </summary>
+        /// <seealso cref="Write(string)"/>
         /// <returns>The text writer</returns>
         TextWriter TextWriter { get; }
 
         /// <summary>
-        /// Begins a report section with the specified heading.
-        /// Sections may be nested.
+        /// Begins a report section with the specified name.
+        /// Report sections may be nested.
         /// </summary>
-        /// <param name="sectionHeading">The text to appear at the beginning of the section</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sectionHeading"/> is null</exception>
-        void BeginSection(string sectionHeading);
+        /// <param name="sectionName">The name of the section</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sectionName"/> is null</exception>
+        void BeginSection(string sectionName);
 
         /// <summary>
         /// Ends the current report section.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if there is no current report section</exception>
         void EndSection();
 
         /// <summary>
@@ -101,11 +106,20 @@ namespace MbUnit.Core.Services.Report
 
         /// <summary>
         /// Embeds an attachment into the report stream.
-        /// The same attachment may be embedded at multiple places in a report and in multiple report streams.
         /// </summary>
+        /// <remarks>
+        /// Only one copy of an attachment instance is saved with a report even if
+        /// <see cref="IReport.Attach" /> or <see cref="IReportStream.Embed" /> are
+        /// called multiple times with the same instance.  However, an attachment instance
+        /// can be embedded multiple times into multiple report streams since each
+        /// embedded copy is represented as a link to the same common attachment instance.
+        /// </remarks>
         /// <param name="attachment">The attachment to embed</param>
         /// <returns>The attachment</returns>
+        /// <seealso cref="IReport.Attach"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if a different attachment instance
+        /// with the same name was already attached or embedded</exception>
         Attachment Embed(Attachment attachment);
 
         /// <summary>
@@ -113,6 +127,7 @@ namespace MbUnit.Core.Services.Report
         /// </summary>
         /// <param name="text">The text to attach</param>
         /// <returns>The attachment</returns>
+        /// <seealso cref="IReport.AttachPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
         TextAttachment EmbedPlainText(string text);
 
@@ -121,6 +136,7 @@ namespace MbUnit.Core.Services.Report
         /// </summary>
         /// <param name="html">The HTML to attach</param>
         /// <returns>The attachment</returns>
+        /// <seealso cref="IReport.AttachHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
         TextAttachment EmbedHtml(string html);
 
@@ -129,6 +145,7 @@ namespace MbUnit.Core.Services.Report
         /// </summary>
         /// <param name="xhtml">The XHTML to attach</param>
         /// <returns>The attachment</returns>
+        /// <seealso cref="IReport.AttachXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
         XmlAttachment EmbedXHtml(string xhtml);
 
@@ -137,6 +154,7 @@ namespace MbUnit.Core.Services.Report
         /// </summary>
         /// <param name="xml">The XML to attach</param>
         /// <returns>The attachment</returns>
+        /// <seealso cref="IReport.AttachXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
         XmlAttachment EmbedXml(string xml);
 
@@ -145,6 +163,7 @@ namespace MbUnit.Core.Services.Report
         /// </summary>
         /// <param name="image">The image to attach</param>
         /// <returns>The attachment</returns>
+        /// <seealso cref="IReport.AttachImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
         BinaryAttachment EmbedImage(Image image);
 
@@ -154,8 +173,10 @@ namespace MbUnit.Core.Services.Report
         /// <seealso cref="XmlSerializer"/>
         /// </summary>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
-        /// <param name="xmlSerializer">The xml serializer to use, or null to use the default based on the object's type</param>
+        /// <param name="xmlSerializer">The xml serializer to use, or null to use the default XmlSerializer
+        /// for the object's type</param>
         /// <returns>The attachment</returns>
+        /// <seealso cref="IReport.AttachObjectAsXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         XmlAttachment EmbedObjectAsXml(object obj, XmlSerializer xmlSerializer);
     }

@@ -66,6 +66,8 @@ namespace MbUnit.Core.Model
         /// </summary>
         IList<ITestParameterSet> ParameterSets { get; }
 
+        //ITestTemplateBinding Bind();
+
         /*
         ITestScope Scope { get; }
         

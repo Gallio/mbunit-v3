@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
-using MbUnit.Core.Services.Reflection;
+using MbUnit.Core.Model;
 using MbUnit.Framework;
 
 namespace MbUnit.Core.Services.Context
@@ -21,25 +21,27 @@ namespace MbUnit.Core.Services.Context
         private IContext rootContext;
         private IDictionary<Thread, IContext> threadOverrides;
 
+        /// <summary>
+        /// Initializes the context manager.
+        /// </summary>
         public DefaultContextManager()
         {
-            rootContext = CreateContext(null, TestInfo.CreateRootTestInfo());
+            rootContext = CreateContext(null, null);
         }
 
-        /// <summary>
-        /// Gets or sets the current call context slot value.
-        /// </summary>
         private static IContext CurrentCallContextSlotValue
         {
             get { return CallContext.GetData(ContextKey) as IContext; }
             set { CallContext.SetData(ContextKey, value); }
         }
 
+        /// <inheritdoc />
         public IContext RootContext
         {
             get { return rootContext; }
         }
 
+        /// <inheritdoc />
         public IContext CurrentContext
         {
             get
@@ -65,11 +67,13 @@ namespace MbUnit.Core.Services.Context
             }
         }
 
-        public IContext CreateContext(IContext parent, TestInfo testInfo)
+        /// <inheritdoc />
+        public IContext CreateContext(IContext parent, ITest test)
         {
-            return new DefaultContext(parent, testInfo);
+            return new DefaultContext(parent, test);
         }
 
+        /// <inheritdoc />
         public void SetThreadContext(Thread thread, IContext context)
         {
             lock (syncRoot)
@@ -104,6 +108,7 @@ namespace MbUnit.Core.Services.Context
             }
         }
 
+        /// <inheritdoc />
         public void RunWithContext(IContext context, Block block)
         {
             // Create a new execution context within which to run the block.

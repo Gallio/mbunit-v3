@@ -1,0 +1,177 @@
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Description="TestFu DatabasePopulator Template" %>
+<%@ Property Name="Namespace" Type="System.String" 
+	Default="Populators" 
+	Category="Output" 
+	Description="Namespace of the populator." %>
+<%@ Property Name="TestFixtureFormatName" Type="System.String" 
+	Default="{0}CrudTest" 
+	Category="Output" 
+	Description="Format string of the fixture" %>
+<%@ Property Name="DataSetNameFormat" Type="System.String" 
+	Default="{0}DataSet" 
+	Category="Output" 
+	Description="Format string to create the DatabaseSet class name." %>
+<%@ Property Name="DatabasePopulatorNameFormat" Type="System.String" 
+	Default="{0}DatabasePopulator" 
+	Category="Output" 
+	Description="Format string to create the DatabasePopulator class name." %>
+<%@ Property Name="CrudPopulatorNameFormat" Type="System.String" 
+	Default="{0}CrudPopulator" 
+	Category="Output" 
+	Description="Format string to create the CrudPopulator class name." %>	
+<%@ Property Name="TableNamePrefix" Type="System.String" 
+	Default="" 
+	Category="Output" 
+	Optional="true"
+	Description="Prefix to be removed." %>
+<%@ Property Name="RollBack" Type="System.Boolean" 
+	Default="false" 
+	Category="Output" 
+	Description="True if Rollback attribute is used." %>
+<%@ Property Name="TablePopulatorNameFormat" Type="System.String" 
+	Default="{0}TablePopulator" 
+	Category="Output" 
+	Description="Format string to create the TablePopulator class names." %>
+<%@ Property Name="ColumnDataGeneratorNameFormat" Type="System.String" 
+	Default="{0}DataGenerator" 
+	Category="Output" 
+	Description="Format string to create the ColumnGenenerator properties." %>
+<%@ Property Name="UniqueValidatorNameFormat" Type="System.String" 
+	Default="{0}Validator" 
+	Category="Output" 
+	Description="Format string to create the UniqueValidator properties." %>
+<%@ Property Name="ForeignKeyProviderNameFormat" Type="System.String" 
+	Default="{0}Provider" 
+	Category="Output" 
+	Description="Format string to create the ForeignKeyProviderNameFormat properties." %>
+<%@ Property Name="Database" Type="SchemaExplorer.DatabaseSchema"
+      Category="Context"
+      Description="Target database for the IDatabasePopulator." %> 
+<%@ Assembly Name="SchemaExplorer" %> 
+<%@ Import Namespace="SchemaExplorer" %>
+//////////////////////////////////////////////////////////////////
+//
+// Strongly typed populator for the <%= DatabaseName %>
+//
+//////////////////////////////////////////////////////////////////
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+using MbUnit.Core.Framework;
+using MbUnit.Framework;
+
+using TestFu.Data;
+using TestFu.Data.Populators;
+using TestFu.Data.SqlClient;
+
+namespace <%= Namespace %>
+{
+	[TestFixture]
+	public class <%= String.Format(this.TestFixtureFormatName, Format(DatabaseName)) %>
+	{
+		private string connectionString;
+		private <%= CrudPopulatorName %> populator;
+		
+		[TestFixtureSetUp]
+		public void TestFixtureSetUp()
+		{
+			this.connectionString = ConfigurationSettings.AppSettings["connString"];
+			this.populator = new <%= CrudPopulatorName %>(connectionString);
+		}
+		
+<% foreach(TableSchema table in this.Database.Tables) {%>
+		[Test<%= AddRollBack() %>]
+		public void Create<%= Format(table.Name) %>()
+		{
+			this.populator.Create<%= Format(table.Name) %>();
+		}
+		[Test<%= AddRollBack() %>]
+		public void CreateAndDelete<%= Format(table.Name) %>()
+		{
+			DataRow row = this.populator.Create<%= Format(table.Name) %>();
+			this.populator.Delete<%= Format(table.Name) %>(row);
+		}
+<% if (table.PrimaryKey.MemberColumns.Count != table.Columns.Count ) {%>
+		[Test<%= AddRollBack() %>]
+		public void CreateAndUpdate<%= Format(table.Name) %>()
+		{
+			DataRow row = this.populator.Create<%= Format(table.Name) %>();
+			this.populator.Update<%= Format(table.Name) %>();
+		}
+<% } %>		
+<%} // foreach(TableSchema table in this.Database.Tables) %>
+	}
+}
+<script runat="template">
+#region Properties
+public string CrudPopulatorName
+{
+	get{ return Format(this.CrudPopulatorNameFormat,this.DatabaseName);}
+}
+public string DatabaseName
+{ 
+	get
+	{
+		return this.Database.Name;
+	}
+}
+
+public string DataSetName
+{
+	get{ return Format(this.DataSetNameFormat, this.DatabaseName);}
+}
+public string AddRollBack()
+{
+	if (this.RollBack)
+		return ",RollBack";
+	else
+		return "";
+}
+
+public string DatabasePopulatorName
+{
+	get{ return Format(this.DatabasePopulatorNameFormat,this.DatabaseName);}
+}
+public string GetTablePopulatorName(TableSchema table)
+{
+	return Format(this.TablePopulatorNameFormat, table.Name);
+}
+public string GetTablePopulatorPropertyName(TableSchema table)
+{
+	return Format(table.Name);
+}
+public string GetColumnDataGeneratorName(ColumnSchema column)
+{
+	return Format(ColumnDataGeneratorNameFormat, column.Name);
+}
+public string GetUniqueValidatorName(TableKeySchema unique)
+{
+	return  Format(UniqueValidatorNameFormat, unique.Name);
+}
+public string GetForeignKeyProviderName(TableKeySchema unique)
+{
+	return  Format(ForeignKeyProviderNameFormat, unique.Name);
+}
+protected string FormatLower(string format, params object[] args)
+{
+	string s= Format(format,args);
+	return Char.ToLower(s[0]) + s.Substring(1);
+}
+protected string Format(string format, params Object[] args)
+{
+	string result = string.Format(format,args);
+	if (this.TableNamePrefix!=null && this.TableNamePrefix.Length > 0)
+	{
+		if (result.StartsWith(this.TableNamePrefix))
+			result = result.Substring(this.TableNamePrefix.Length);
+	}
+	
+	result = result.Replace(" ","").Replace("_","").Replace(".","");
+	return result;
+}
+
+#endregion
+</script>

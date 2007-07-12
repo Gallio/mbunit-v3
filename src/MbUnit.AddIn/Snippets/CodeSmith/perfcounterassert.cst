@@ -1,0 +1,173 @@
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Description="Perf diag template." %>
+<%@ Property Name="ClassName" Type="System.String" Default="PerfCounterInfo" Category="Options" Description="ClassName." %>
+<%@ Import Namespace="System.Diagnostics" %>
+<%@ Import Namespace="System.Text.RegularExpressions" %>
+
+using System;
+using System.Diagnostics;
+
+namespace MbUnit.Core.Framework
+{
+	public class <%= ClassName %>
+	{
+		#region Constructors
+		private <%= ClassName %>() {}
+		#endregion
+		
+		#region Categories
+<% foreach(PerformanceCounterCategory cat in PerformanceCounterCategory.GetCategories()){
+if (!this.categories.Contains(cat.CategoryName))
+	continue;
+try
+{
+PerformanceCounter[] counters=null;
+bool hasInstance = cat.GetInstanceNames().Length!=0;
+if (!hasInstance)
+    counters = cat.GetCounters();
+else
+	counters = cat.GetCounters(cat.GetInstanceNames()[0]);
+	foreach(PerformanceCounter counter in counters) {};
+%>
+		#region <%= cat.CategoryName %>
+		/// <summary>
+		/// <%= cat.CategoryHelp %>
+		/// </summary>
+		public sealed class <%= GetCategoryClassName(cat) %>
+		{
+			public const string CategoryName = @"<%= cat.CategoryName %>";
+			#region Constructors
+			private <%= GetCategoryClassName(cat) %>(){}
+			#endregion
+			
+<%foreach(PerformanceCounter counter in counters) {%>
+			#region <%= counter.CounterName %>
+			/// <summary>
+			/// <%= counter.CounterHelp %>
+			/// </summary>			
+			public sealed class <%= GetCounterClassName(counter)%>
+			{
+				public const string CounterName = @"<%= counter.CounterName%>";
+				private <%= GetCounterClassName(counter)%>(){}
+<% if (hasInstance){%>				
+				/// <summary>
+				/// Gets the value of the <see cref="PerformanceCounter"/>.
+				/// <summary>
+				/// <returns>
+				/// Value returned by <see cref="PerformanceCounter.NextValue"/>
+				/// for the current instance.
+				/// </returns>
+				public static float NextValue()
+				{
+					return NextValue(Process.GetCurrentProcess().ProcessName);
+				}
+				
+				public static float NextValue(string instanceName)
+				{
+					return PerfCounterAssert.NextValue(
+						<%= GetCategoryClassName(cat) %>.CategoryName,
+						CounterName,
+						instanceName
+						);						
+				}
+<%}else{%>
+				/// <summary>
+				/// Gets the value of the <see cref="PerformanceCounter"/>.
+				/// <summary>
+				/// <returns>
+				/// Value returned by <see cref="PerformanceCounter.NextValue"/>.
+				/// </returns>
+				public static float NextValue()
+				{
+					return PerfCounterAssert.NextValue(
+							<%= GetCategoryClassName(cat) %>.CategoryName,
+							CounterName,
+							null
+							);
+				}
+<%}%>
+			}
+			#endregion
+<%} // GetCounters %>
+		}
+		#endregion
+<%
+}catch(Exception)
+{}
+%>
+
+
+<%} // GetCategories %>
+		#endregion
+		
+		public static float NextValue(
+			string categoryName,
+			string counterName,
+			string instanceName
+			)
+		{
+            using (PerformanceCounter counter = new PerformanceCounter(
+                categoryName,
+                counterName,
+                instanceName,
+                true)
+                )
+            {
+                return counter.NextValue();
+            }		
+		}
+	}
+}
+
+<script runat="template">
+private System.Collections.Specialized.StringCollection categories = null;
+
+[Category("Options")]
+public System.Collections.Specialized.StringCollection Categories
+{
+	get
+	{
+		if (categories==null)
+		{
+			categories = new System.Collections.Specialized.StringCollection();
+			foreach(PerformanceCounterCategory cat in PerformanceCounterCategory.GetCategories()){
+				categories.Add(cat.CategoryName);
+			}
+		}
+		return categories;
+	}
+	set
+	{
+		this.categories=value;
+	}
+}
+
+public string Capitalize(string name)
+{
+	return name[0] + name.Substring(1,name.Length-1);
+}
+public string Normalize(string name)
+{
+	name = Regex.Replace(name,@"[A-Z]+",new System.Text.RegularExpressions.MatchEvaluator(Capit));
+	name = Regex.Replace(name,@"#",@"Nb");
+	name = Regex.Replace(name,@"\W",@"");
+	
+	return name;
+}
+
+public string Capit(System.Text.RegularExpressions.Match m)
+{
+	return m.Value[0] + m.Value.Substring(1,m.Value.Length-1).ToLower();
+}
+public string GetCategoryClassName(PerformanceCounterCategory cat)
+{
+	string name = Normalize(cat.CategoryName);
+	
+	return String.Format("{0}",name);
+}
+public string GetCounterClassName(PerformanceCounter counter)
+{
+	string name = Normalize(counter.CounterName);
+	
+	return String.Format("{0}",name);
+}
+</script>

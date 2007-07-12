@@ -3,8 +3,9 @@ using System.Diagnostics;
 namespace MbUnit.Core.Services.Report
 {
     /// <summary>
-    /// A contextual report stream trace listener writes trace messages to a report stream
-    /// associated with the test execution context at the time it was written.
+    /// A contextual report stream trace listener writes trace messages to a stream
+    /// in the report associated with the current test execution context at the time
+    /// the message was written.
     /// </summary>
     public class ContextualReportTraceListener : TraceListener
     {

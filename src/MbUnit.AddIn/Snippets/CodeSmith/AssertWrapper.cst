@@ -1,0 +1,181 @@
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Description="Assert Tester Wrapper" %>
+<%@ Property Name="ClassName" Type="System.String" Category="Options" Description="Prefix of the class name, Assert will be appended." %>
+<%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Description="Namespace of the wrapped class" %>
+<%@ Import Namespace="System.Reflection" %>
+<%@ Import Namespace="System.Collections" %>
+<%@ Assembly Name="AssemblyHelper"%>
+<%@ Import Namespace="AssemblyHelper" %>
+
+// MbUnit project.
+// http://mbunit.tigris.org
+
+using System;
+using <%= ClassNamespace %>;
+
+namespace MbUnit.Core.Framework
+{
+	/// <summary>
+	/// Assertion helper for the <see cref="<%= ClassName %>"/> class.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This class contains static helper methods to verify assertions on the
+	/// <see cref="<%= ClassName %>"/> class.
+	/// </para>
+	/// <para>
+	/// This class was automatically generated. Do not edit (or edit the template).
+	/// </para>
+	/// </remarks>
+	public sealed class <%= FullClassName %>
+	{
+		#region Private constructor
+		private <%= FullClassName %>()
+		{}		
+		#endregion		
+		
+<% foreach(PropertyInfo pi in this.ClassType.GetProperties())
+{
+	if (pi.PropertyType == typeof(bool))
+	{%>
+		/// <summary>
+		/// Verifies that the property value <see cref="<%= FullPropertyName(pi) %>"/>
+		/// is true.
+		/// </summary>
+		/// <param name="actual"/>
+		/// Instance containing the expected value.
+		/// </param>
+		public static void <%= IsPropertyName(pi) %>(
+			<%= ClassName%> actual
+			)
+		{		
+		    <% CheckNonNull("actual");%>  
+			Assert.IsTrue(actual.<%= pi.Name %>,
+						  "Property <%= pi.Name %> is false");
+		}
+
+		/// <summary>
+		/// Verifies that the property value <see cref="<%= FullPropertyName(pi) %>"/>
+		/// is false.
+		/// </summary>
+		/// <param name="actual"/>
+		/// Instance containing the expected value.
+		/// </param>
+		public static void <%= IsNotPropertyName(pi) %>(
+			<%= ClassName%> actual
+			)
+		{		
+		    <% CheckNonNull("actual");%>  
+			Assert.IsFalse(actual.<%= pi.Name %>,
+						  "Property <%= pi.Name %> is true");			
+		}
+
+	<%}
+	%>
+	
+		/// <summary>
+		/// Verifies that the property value <see cref="<%= FullPropertyName(pi) %>"/>
+		/// of <paramref name="expected"/> and <paramref="actual"/> are equal.
+		/// </summary>
+		/// <param name="expected"/>
+		/// Instance containing the expected value.
+		/// </param>
+		/// <param name="actual"/>
+		/// Instance containing the tested value.
+		/// </param>
+		public static void <%= ArePropertyEqualName(pi) %>(
+			<%= ClassName%> expected,
+			<%= ClassName%> actual
+			)
+		{
+			<% CheckBothNull("expected","actual"); %>
+			<% CheckNonNull("expected");%>
+			<% CheckNonNull("actual");%>
+			<%= ArePropertyEqualName(pi)%>(expected.<%= pi.Name %>,actual);
+		}
+		
+		/// <summary>
+		/// Verifies that the property value <see cref="<%= FullPropertyName(pi) %>"/>
+		/// of <paramref name="actual"/> is equal to <paramref="expected"/>.
+		/// </summary>
+		/// <param name="expected"/>
+		/// Expected value.
+		/// </param>
+		/// <param name="actual"/>
+		/// Instance containing the tested value.
+		/// </param>
+		public static void <%= ArePropertyEqualName(pi) %>(
+			<%= pi.PropertyType %> expected,
+			<%= ClassName%> actual
+			)
+		{
+			<% if (!pi.PropertyType.IsValueType)
+				CheckBothNull("expected","actual"); 
+			%>
+			<% CheckNonNull("actual");%>
+			Assert.AreEqual(expected,actual.<%= pi.Name %>,
+						"Property <%= pi.Name %> not equal");			
+		}		
+<%}%>
+	}
+}
+<script runat="template">
+private Assembly assembly;
+
+[Editor(typeof(AssemblyHelper.AssemblyFilePicker), typeof(System.Drawing.Design.UITypeEditor))]
+public Assembly AssemblyToLoad
+{
+      get{return assembly;}
+      set{assembly = value;}
+}
+
+protected string FullClassName
+{
+	get
+	{
+		return String.Format("{0}Assert",this.ClassName);
+	}
+}
+protected string FullPropertyName(PropertyInfo pi)
+{
+	return String.Format("{0}.{1}",this.ClassName,pi.Name);
+}
+protected string ArePropertyEqualName(PropertyInfo pi)
+{
+	return String.Format("Are{0}Equal",pi.Name);
+}
+protected string IsPropertyName(PropertyInfo pi)
+{
+	return pi.Name;
+}
+protected string IsNotPropertyName(PropertyInfo pi)
+{
+	if (pi.Name.StartsWith("Is"))
+	{
+		return String.Format("IsNot{0}",
+			pi.Name.Substring(3,pi.Name.Length-3));
+	}
+	else
+		return String.Format("Not{0}",pi.Name);
+}
+
+protected Type ClassType
+{
+	get
+	{
+		return this.AssemblyToLoad.GetType(String.Format("{0}.{1}",this.ClassNamespace, this.ClassName), true);
+	}
+}
+protected void CheckNonNull(string name)
+{
+	if (!this.ClassType.IsValueType)
+		Response.WriteLine("			Assert.IsNotNull({0});",name);
+}
+protected void CheckBothNull(string expected, string actual)
+{
+	if (!this.ClassType.IsValueType)
+	{
+		Response.WriteLine("			if ({0}==null && {1}==null)",expected, actual);
+		Response.WriteLine("                return;");
+	}
+}
+</script>

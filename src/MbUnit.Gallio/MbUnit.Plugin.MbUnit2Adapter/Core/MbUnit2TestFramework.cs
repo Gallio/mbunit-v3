@@ -21,9 +21,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         }
 
         /// <inheritdoc />
-        public void PopulateTestTemplateTree(TestTemplateTreeBuilder builder, ITestTemplate parent, TestProject project)
+        public void BuildTemplates(TestTemplateTreeBuilder builder, ITestTemplate parent)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(project.Assemblies, "MbUnit.Framework");
+            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(builder.Project.Assemblies, "MbUnit.Framework");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
@@ -44,6 +44,11 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     // TODO: Add rules to populate the test graph using MbUnit v2.
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public void InitializeTestAssembly(Assembly assembly)
+        {
         }
 
         /*

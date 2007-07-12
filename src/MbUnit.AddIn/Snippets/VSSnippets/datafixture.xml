@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>DataFixture</Title>
+        <Shortcut>datafixture</Shortcut>
+        <Description>Expansion snippet for DataFixture</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="false">
+                <ID>namespace</ID>
+                <ToolTip>Test namespace</ToolTip>
+            </Literal>            
+            <Literal default="true">
+                <ID>name</ID>
+                <ToolTip>Fixture name</ToolTip>
+                <Default>My</Default>
+            </Literal>
+            <Literal default="true">
+                <ID>resource</ID>
+                <ToolTip>Resource name</ToolTip>
+                <Default>Put the xml resource name here</Default>
+            </Literal>            
+            <Literal default="true">
+                <ID>resourceXPath</ID>
+                <ToolTip>Data XPath</ToolTip>
+                <Default>Put the data XPath here</Default>
+            </Literal>            
+            <Literal default="true">
+                <ID>testXPath</ID>
+                <ToolTip>Resource XPath</ToolTip>
+                <Default>Put the test case XPath here</Default>
+            </Literal>             
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[#region using
+using System;
+using MbUnit.Core.Framework;
+using MbUnit.Framework;
+#endregion
+
+namespace $namespace$
+{
+    [DataFixture]
+    [ResourceXmlDataProvider(typeof($name$Test),"$resource$","$resourceXPath$")]
+    public class $name$Test
+    {  
+        #region Test cases
+	    [ForEachTest("$testXPath$")]
+	    public void ForEachTest(XmlNode node)
+	    {
+	    }
+        #endregion    
+    }
+}]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

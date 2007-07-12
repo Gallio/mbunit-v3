@@ -1,3 +1,5 @@
+* Use a publisher policy file in the GAC to silently redirect clients to
+  newer versions of MbUnit.
 
 * Allow the TestGraph to be updated at runtime.  It should be possible to
   cancel tests previously added and to add new tests and ensure they are

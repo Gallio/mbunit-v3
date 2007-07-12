@@ -20,9 +20,9 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         }
 
         /// <inheritdoc />
-        public void PopulateTestTemplateTree(TestTemplateTreeBuilder builder, ITestTemplate parent, TestProject project)
+        public void BuildTemplates(TestTemplateTreeBuilder builder, ITestTemplate parent)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(project.Assemblies, "nunit.framework");
+            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(builder.Project.Assemblies, "nunit.framework");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
@@ -43,6 +43,11 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                     // TODO: Add rules to populate the test graph using NUnit.
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public void InitializeTestAssembly(Assembly assembly)
+        {
         }
     }
 }

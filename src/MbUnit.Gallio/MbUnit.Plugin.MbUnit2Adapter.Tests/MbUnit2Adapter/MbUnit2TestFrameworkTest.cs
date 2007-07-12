@@ -26,7 +26,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
         public void SetUp()
         {
             framework = new MbUnit2TestFramework();
-            builder = new TestTemplateTreeBuilder();
         }
 
         [Test]
@@ -74,7 +73,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
         {
             TestProject project = new TestProject();
             project.Assemblies.Add(assembly);
-            framework.PopulateTestTemplateTree(builder, builder.Root, project);
+
+            builder = new TestTemplateTreeBuilder(project);
+            framework.BuildTemplates(builder, builder.Root);
         }
     }
 }

@@ -9,6 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MbUnit.Icarus</RootNamespace>
     <AssemblyName>MbUnit.Icarus</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\MbUnit.snk</AssemblyOriginatorKeyFile>
+    <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,7 +53,6 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
-    <Compile Include="Collections\AssemblyCollection.cs" />
     <Compile Include="Controls\Enums\CheckBoxState.cs" />
     <Compile Include="Controls\Enums\TestState.cs" />
     <Compile Include="Controls\TestStatusBar.cs">
@@ -115,6 +117,15 @@
     <Compile Include="Scripting.Designer.cs">
       <DependentUpon>Scripting.cs</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MbUnit.Gallio\MbUnit\MbUnit.csproj">
+      <Project>{B25D6A49-2395-40B9-847B-CB8B4E33058A}</Project>
+      <Name>MbUnit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

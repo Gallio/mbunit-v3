@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using MbUnit.Core.Model;
 using MbUnit.Core.Runtime;
-using MbUnit.Core.Services;
 using MbUnit.Core.Services.Context;
 
 namespace MbUnit.Framework
@@ -33,6 +33,14 @@ namespace MbUnit.Framework
         public static IContext CurrentContext
         {
             get { return ContextManager.CurrentContext; }
+        }
+
+        /// <summary>
+        /// Gets the current test.
+        /// </summary>
+        public static ITest CurrentTest
+        {
+            get { return CurrentContext.CurrentTest; }
         }
 
         /// <summary>

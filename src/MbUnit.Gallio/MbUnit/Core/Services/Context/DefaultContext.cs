@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.Services.Reflection;
+using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Services.Context
 {
@@ -14,37 +14,48 @@ namespace MbUnit.Core.Services.Context
         private IContext parent;
         private IDictionary<string, object> data;
         private bool isActive;
-        private TestInfo testInfo;
+        private ITest currentTest;
 
         private event EventHandler exiting;
 
-        public DefaultContext(IContext parent, TestInfo testInfo)
+        /// <summary>
+        /// Creates a new context.
+        /// </summary>
+        /// <param name="parent">The parent context</param>
+        /// <param name="currentTest">The current test</param>
+        public DefaultContext(IContext parent, ITest currentTest)
         {
             this.parent = parent;
-            this.testInfo = testInfo;
+            this.currentTest = currentTest;
+
             this.isActive = true;
         }
 
+        /// <inheritdoc />
         public object SyncRoot
         {
             get { return syncRoot; }
         }
 
+        /// <inheritdoc />
         public IContext Parent
         {
             get { return parent; }
         }
 
+        /// <inheritdoc />
         public bool IsActive
         {
             get { return isActive; }
         }
 
-        public TestInfo TestInfo
+        /// <inheritdoc />
+        public ITest CurrentTest
         {
-            get { return testInfo; }
+            get { return currentTest; }
         }
 
+        /// <inheritdoc />
         public event EventHandler Exiting
         {
             add
@@ -67,6 +78,7 @@ namespace MbUnit.Core.Services.Context
             }
         }
 
+        /// <inheritdoc />
         public void Exit()
         {
             EventHandler handlers;
@@ -85,6 +97,7 @@ namespace MbUnit.Core.Services.Context
                 handlers(this, EventArgs.Empty);
         }
 
+        /// <inheritdoc />
         public bool TryGetData<T>(string key, out T value)
         {
             lock (syncRoot)
@@ -104,6 +117,7 @@ namespace MbUnit.Core.Services.Context
             }
         }
 
+        /// <inheritdoc />
         public void SetData<T>(string key, T value)
         {
             lock (syncRoot)
@@ -115,6 +129,7 @@ namespace MbUnit.Core.Services.Context
             }
         }
 
+        /// <inheritdoc />
         public void RemoveData(string key)
         {
             lock (syncRoot)

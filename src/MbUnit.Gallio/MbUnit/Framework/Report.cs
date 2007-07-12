@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 using System.Xml.Serialization;
-using MbUnit.Core.Collections;
 using MbUnit.Core.Runtime;
-using MbUnit.Core.Services;
 using MbUnit.Core.Services.Report;
 using MbUnit.Core.Services.Report.Attachments;
 
@@ -133,17 +129,15 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets the collection of attachments in the report.
-        /// </summary>
-        public static IAttachmentCollection Attachments
-        {
-            get { return Current.Attachments; }
-        }
-
-        /// <summary>
         /// Attaches an attachment to the report.
-        /// If the attachment has already been attached to the report, does nothing.
         /// </summary>
+        /// <remarks>
+        /// Only one copy of an attachment instance is saved with a report even if
+        /// <see cref="IReport.Attach" /> or <see cref="IReportStream.Embed" /> are
+        /// called multiple times with the same instance.  However, an attachment instance
+        /// can be embedded multiple times into multiple report streams since each
+        /// embedded copy is represented as a link to the same common attachment instance.
+        /// </remarks>
         /// <param name="attachment">The attachment to include</param>
         /// <returns>The attachment</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
@@ -213,7 +207,8 @@ namespace MbUnit.Framework
         /// <seealso cref="XmlSerializer"/>
         /// </summary>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
-        /// <param name="xmlSerializer">The xml serializer to use, or null to use the default based on the object's type</param>
+        /// <param name="xmlSerializer">The xml serializer to use, or null to use the default XmlSerializer
+        /// for the object's type</param>
         /// <returns>The attachment</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         public static XmlAttachment AttachObjectAsXml(object obj, XmlSerializer xmlSerializer)

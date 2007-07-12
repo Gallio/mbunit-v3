@@ -15,6 +15,7 @@ namespace MbUnit.Core.Model
     /// </summary>
     public class TestTemplateTreeBuilder
     {
+        private TestProject project;
         private TestTemplateGroup root;
         private IDictionary<object, ITestTemplate> registry;
 
@@ -22,10 +23,21 @@ namespace MbUnit.Core.Model
         /// Creates a test template tree builder initially populated with
         /// a root template.
         /// </summary>
-        public TestTemplateTreeBuilder()
+        /// <param name="project">The test project</param>
+        public TestTemplateTreeBuilder(TestProject project)
         {
+            this.project = project;
+
             root = CreateRoot();
             registry = new Dictionary<object, ITestTemplate>();
+        }
+
+        /// <summary>
+        /// Gets the test project.
+        /// </summary>
+        public TestProject Project
+        {
+            get { return project; }
         }
 
         /// <summary>

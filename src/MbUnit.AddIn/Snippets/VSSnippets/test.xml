@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>Test Method</Title>
+        <Shortcut>test</Shortcut>
+        <Description>Expansion snippet for a Test method</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="true">
+                <ID>name</ID>
+                <ToolTip>TestName</ToolTip>
+                <Default>Test</Default>
+            </Literal>
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[[Test]        
+        public void $name$()
+        {
+            $end$
+        }]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

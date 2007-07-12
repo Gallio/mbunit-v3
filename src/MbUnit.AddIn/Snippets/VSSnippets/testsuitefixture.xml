@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>TestSuiteFixture</Title>
+        <Shortcut>testsuitefixture</Shortcut>
+        <Description>Expansion snippet for TestSuiteFixture</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Declarations>
+            <Literal default="false">
+                <ID>namespace</ID>
+                <ToolTip>Test namespace</ToolTip>
+            </Literal>            
+            <Literal default="true">
+                <ID>name</ID>
+                <ToolTip>Fixture name</ToolTip>
+                <Default>My</Default>
+            </Literal>
+            <Literal default="true">
+                <ID>suiteName</ID>
+                <ToolTip>Suite name</ToolTip>
+                <Default>Suite</Default>
+            </Literal>
+        </Declarations>
+        <Code Language="csharp" Format="CData">
+<![CDATA[using System;
+using MbUnit.Core.Framework;
+using MbUnit.Framework;
+
+namespace $namespace$
+{
+    [TestSuiteFixture]
+    public class $name$Test
+    {
+        [TestSuite] 
+        public TestSuite $suiteName$()
+        {
+            TestSuite suite = new TestSuite("$suiteName$");
+        
+            $end$
+            
+            return suite;
+        }
+    }
+}]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

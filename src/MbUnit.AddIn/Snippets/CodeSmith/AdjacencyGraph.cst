@@ -1,0 +1,1703 @@
+<%@ CodeTemplate Language="C#" TargetLanguage="Text" Description="Template description here." %>
+<%@ Property Name="VertexType" Type="System.String" Category="Graph" Description="Vertex Type." Optional="False" %>
+<%@ Property Name="EdgeType" Type="System.String" Category="Graph" Description="Edge Type." Optional="False" %>
+<%@ Property Name="ClassName" Type="System.String" Category="Options" Description="Class Name." Optional="False" %>
+<%@ Property Name="TargetNamespace" Type="System.String" Category="Namespaces" Description="Class namespace" %>
+<%@ Property Name="DefaultConstructor" Type="System.Boolean" Category="Options" Description="Generates default constructor" Optional="True" Default="True" %>
+<%@ Property Name="EdgeCollectionBaseType" Type="System.String" Category="Graph" Description="Base type of collection used to store edges" Optional="False" Default="CollectionBase" %>
+<%@ Property Name="VertexEdgesDictionaryBaseType" Type="System.String" Category="Graph" Description="Base type of vertex-edge collection dictionary" Optional="False" Default="DictionaryBase" %>
+<%@ Property Name="Bidirectional" Type="System.Boolean" Category="Graph" Description="Adjacency graph or bi-directional graph" Optional="False" Default="False" %>
+<%@ Property Name="IndexedEdges" Type="System.Boolean" Category="Graph" Description="Edges accessible by index" Optional="False" Default="True" %>
+
+// Automatically generated code, dot edit!
+
+namespace <%= TargetNamespace %>
+{
+	using System;
+	using System.Collections;
+	using System.Diagnostics;
+
+	using QuickGraph.Concepts;
+	using QuickGraph.Concepts.Traversals;
+	using QuickGraph.Concepts.Modifications;
+	using QuickGraph.Concepts.MutableTraversals;
+	using QuickGraph.Concepts.Predicates;
+	using QuickGraph.Concepts.Providers;
+	using QuickGraph.Concepts.Collections;
+	using QuickGraph.Concepts.Serialization;
+	using QuickGraph.Collections;
+	using QuickGraph.Exceptions;
+	using QuickGraph.Predicates;
+
+	/// <summary>
+	/// A mutable <% if (Bidirectional){%> bidirectional <%}%> 
+	/// incidence graph implemetation of <%= VertexTypeSee %> and
+	/// <%= EdgeTypeSee %>.
+	/// </summary>
+	public class <%= ClassName %> :
+		 IMutableGraph
+		,IFilteredVertexAndEdgeListGraph
+		,IFilteredIncidenceGraph
+		,IMutableEdgeListGraph
+		,IEdgeMutableGraph
+		,IMutableIncidenceGraph
+		,IEdgeListAndIncidenceGraph
+		,ISerializableVertexAndEdgeListGraph
+		,IMutableVertexAndEdgeListGraph
+		,IAdjacencyGraph
+		,IImplicitGraph
+		<% if (IndexedEdges) {%>
+		,IIndexedVertexListGraph
+		<%}%>
+		<% if (Bidirectional){%>
+		,IFilteredBidirectionalGraph
+		,IMutableBidirectionalGraph
+		,IBidirectionalVertexAndEdgeListGraph
+		,IMutableBidirectionalVertexAndEdgeListGraph
+		<%}%>
+	{
+		private int version=0;
+		private bool allowParallelEdges;
+		private <%= VertexProviderType %> vertexProvider;
+		private <%= EdgeProviderType %> edgeProvider;
+		private <%= VertexEdgesDictionaryType %> vertexOutEdges = new <%= VertexEdgesDictionaryType %>();
+		<%if (Bidirectional) {%>
+		private <%= VertexEdgesDictionaryType %> vertexInEdges = new <%= VertexEdgesDictionaryType %>();
+		<%}%>
+		
+		#region Constructors
+		<% if (DefaultConstructor){%>
+		/// <summary>
+		/// Builds a new empty directed graph with default vertex and edge
+		/// provider.
+		/// </summary>
+		/// <remarks>
+		/// </remarks>
+		public <%= ClassName %>()
+		:this(
+			new <%= VertexProviderType %>(),
+			new <%= EdgeProviderType %>(),
+			true
+			)
+		{}
+
+		/// <summary>
+		/// Builds a new empty directed graph with default vertex and edge
+		/// provider.
+		/// </summary>
+		/// <param name="allowParallelEdges">true if parallel edges are allowed</param>
+		public <%= ClassName %>(bool allowParallelEdges)
+		:this(
+			new <%= VertexProviderType %>(),
+			new <%= EdgeProviderType %>(),
+			allowParallelEdges
+			)
+		{}
+		<%}%>
+
+		/// <summary>
+		/// Builds a new empty directed graph with custom providers
+		/// </summary>	
+		/// <param name="allowParallelEdges">true if the graph allows
+		/// multiple edges</param>	
+		/// <param name="edgeProvider">custom edge provider</param>
+		/// <param name="vertexProvider">custom vertex provider</param>
+		/// <exception cref="ArgumentNullException">
+		/// vertexProvider or edgeProvider is a null reference (Nothing in Visual Basic)
+		/// </exception>
+		public <%= ClassName %>(
+			<%= VertexProviderType %> vertexProvider,
+			<%= EdgeProviderType %> edgeProvider,
+			bool allowParallelEdges
+			)
+		{
+			if (vertexProvider == null)
+				throw new ArgumentNullException("vertexProvider");
+			if (edgeProvider == null)
+				throw new ArgumentNullException("edgeProvider");
+
+			this.vertexProvider = vertexProvider;
+			this.edgeProvider = edgeProvider;
+			this.allowParallelEdges = allowParallelEdges;
+		}
+		#endregion
+
+		#region IMutableGraph
+		/// <summary>
+		/// Remove all of the edges and vertices from the graph.
+		/// </summary>
+		public virtual void Clear()
+		{
+			this.version++;
+			this.vertexOutEdges.Clear();
+			<% if (Bidirectional){%>
+			this.vertexInEdges.Clear();
+			<%}%>
+		}
+		#endregion
+		
+		#region IGraph
+		/// <summary>
+		/// Gets a value indicating if the <%= ClassNameSee %> 
+		/// is directed.
+		/// </summary>
+		/// <value>
+		/// true if the graph is directed, false if undirected.
+		/// </value>
+		public bool IsDirected
+		{
+			get
+			{
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating if the <%= ClassNameSee %> allows parallel edges.
+		/// </summary>
+		/// <value>
+		/// true if the <%= ClassNameSee %> is a multi-graph, false otherwise
+		/// </value>
+		public bool AllowParallelEdges
+		{
+			get
+			{
+				return this.IsDirected && this.allowParallelEdges;
+			}
+		}
+		#endregion
+			
+		#region IVertexMutableGraph		
+		/// <summary>
+		/// Gets the <%= VertexTypeSee %> provider
+		/// </summary>
+		/// <value>
+		/// <%= VertexTypeSee %> provider
+		/// </value>
+		public <%= VertexProviderType %> VertexProvider
+		{
+			get
+			{
+				return this.vertexProvider;
+			}
+		}	
+		
+		IVertexProvider IVertexMutableGraph.VertexProvider
+		{
+			get
+			{
+				return this.VertexProvider;
+			}
+		}	
+		
+		/// <summary>
+		/// Add a new <%= VertexType %> to the graph and returns it.
+		/// </summary>
+		/// <returns>
+		/// Created vertex
+		/// </returns>
+		public virtual <%= VertexType %> AddVertex()
+		{
+			this.version++;
+			<%= VertexType %> v = (<%= VertexType %>)this.VertexProvider.ProvideVertex();
+			this.vertexOutEdges.Add(v);
+			<% if (Bidirectional) {%>
+			this.vertexInEdges.Add(v);
+			<%}%>
+			
+			return v;
+		}
+		
+		IVertex IVertexMutableGraph.AddVertex()
+		{
+			return this.AddVertex();
+		}
+		
+		/// <summary>
+		/// Removes the vertex from the graph.
+		/// </summary>
+		/// <param name="v">vertex to remove</param>
+		/// <exception cref="ArgumentNullException">v is null</exception>
+		public virtual void RemoveVertex(<%= VertexType %> v)
+		{
+			if (v == null)
+				throw new ArgumentNullException("v");
+			if (!ContainsVertex(v))
+				throw new VertexNotFoundException("v");
+
+			this.version++;
+			this.ClearVertex(v);
+
+			// removing vertex
+			this.vertexOutEdges.Remove(v);
+			<% if (Bidirectional) {%>
+			this.vertexInEdges.Remove(v);
+			<%}%>
+		}	
+		
+		void IVertexMutableGraph.RemoveVertex(IVertex v)
+		{
+			this.RemoveVertex((<%= VertexType %>)v);
+		}
+		#endregion
+		
+		#region IEdgeMutableGraph
+		/// <summary>
+		/// Gets the <%= EdgeTypeSee %> provider
+		/// </summary>
+		/// <value>
+		/// <%= EdgeTypeSee %> provider
+		/// </value>
+		public <%= EdgeProviderType %> EdgeProvider
+		{
+			get
+			{
+				return this.edgeProvider;
+			}
+		}
+		
+		IEdgeProvider IEdgeMutableGraph.EdgeProvider
+		{
+			get
+			{
+				return this.EdgeProvider;
+			}
+		}
+		
+		/// <summary>
+		/// Add a new vertex from source to target
+		///  
+		/// Complexity: 2 search + 1 insertion
+		/// </summary>
+		/// <param name="source">Source vertex</param>
+		/// <param name="target">Target vertex</param>
+		/// <returns>Created Edge</returns>
+		/// <exception cref="ArgumentNullException">
+		/// source or target is a null reference
+		/// </exception>
+		/// <exception cref="Exception">source or target are not part of the graph</exception>
+		public virtual <%= EdgeType %> AddEdge(
+			<%= VertexType %> source,
+			<%= VertexType %> target
+			)
+		{
+			// look for the vertex in the list
+			if (!this.vertexOutEdges.Contains(source))
+				throw new VertexNotFoundException("Could not find source vertex");
+			if (!this.vertexOutEdges.Contains(target))
+				throw new VertexNotFoundException("Could not find target vertex");
+
+			// if parralel edges are not allowed check if already in the graph
+			if (!this.AllowParallelEdges)
+			{
+				if (ContainsEdge(source,target))
+					throw new Exception("Parallel edge not allowed");
+			}
+
+			this.version++;
+			// create edge
+			<%= EdgeType %> e = (<%= EdgeType %>)this.EdgeProvider.ProvideEdge(source,target);
+			this.vertexOutEdges[source].Add(e);
+			<% if (Bidirectional) {%>
+			this.vertexInEdges[target].Add(e);
+			<%}%>
+
+			return e;
+		}
+		
+		IEdge IEdgeMutableGraph.AddEdge(
+			IVertex source,
+			IVertex target
+			)
+		{
+			return this.AddEdge((<%= VertexType %>)source,(<%= VertexType %>)target);
+		}
+		
+
+		/// <summary>
+		/// Remove all edges to and from vertex u from the graph.
+		/// </summary>
+		/// <param name="v"></param>
+		public virtual void ClearVertex(<%= VertexType %> v)
+		{
+			if (v == null)
+				throw new ArgumentNullException("vertex");
+
+			this.version++;
+			// removing edges touching v
+			this.RemoveEdgeIf(new IsAdjacentEdgePredicate(v));
+
+			// removing edges
+			this.vertexOutEdges[v].Clear();
+			<% if (Bidirectional) {%>
+			this.vertexInEdges[v].Clear();
+			<%}%>
+		}
+		
+		void IEdgeMutableGraph.ClearVertex(IVertex v)
+		{
+			this.ClearVertex((<%= VertexType %>)v);
+		}
+		
+
+		/// <summary>
+		/// Removes an edge from the graph.
+		/// 
+		/// Complexity: 2 edges removed from the vertex edge list + 1 edge
+		/// removed from the edge list.
+		/// </summary>
+		/// <param name="e">edge to remove</param>
+		/// <exception cref="ArgumentNullException">
+		/// e is a null reference (Nothing in Visual Basic)
+		/// </exception>
+		/// <exception cref="EdgeNotFoundException">
+		/// <paramref name="e"/> is not part of the graph
+		/// </exception>
+		public virtual void RemoveEdge(<%= EdgeType %> e)
+		{
+			if (e == null)
+				throw new ArgumentNullException("e");
+			if (!this.ContainsEdge(e))
+				throw new EdgeNotFoundException("e");
+			
+			this.version++;
+			// removing edge from vertices
+			<%= VertexType %> source= (<%= VertexType %>)e.Source;
+			<%= EdgeCollectionType %> outEdges = this.vertexOutEdges[source];
+			if (outEdges==null)
+				throw new VertexNotFoundException(source.ToString());
+			outEdges.Remove(e);
+			<% if (Bidirectional) {%>
+			<%= VertexType %> target= (<%= VertexType %>)e.Target;
+			<%= EdgeCollectionType %> inEdges = this.vertexInEdges[target];
+			if (inEdges==null)
+				throw new VertexNotFoundException(target.ToString());
+			inEdges.Remove(e);
+			<%}%>
+		}
+
+		void IEdgeMutableGraph.RemoveEdge(IEdge e)
+		{
+			this.RemoveEdge((<%= EdgeType %>)e);
+		}
+		
+		/// <summary>
+		/// Remove the edge (u,v) from the graph. 
+		/// If the graph allows parallel edges this remove all occurrences of 
+		/// (u,v).
+		/// </summary>
+		/// <param name="u">source vertex</param>
+		/// <param name="v">target vertex</param>
+		public virtual void RemoveEdge(<%= VertexType %> u, <%= VertexType %> v)
+		{
+			if (u == null)
+				throw new ArgumentNullException("u");
+			if (v == null)
+				throw new ArgumentNullException("v");
+
+			this.version++;
+			// getting out-edges
+			<%= EdgeCollectionType %> outEdges = this.vertexOutEdges[u];
+			
+			// marking edges to remove
+			<%= EdgeCollectionType %> removedEdges = new <%= EdgeCollectionType %>();
+			foreach(<%= EdgeType %> e in outEdges)
+			{
+				if (e.Target == v)
+					removedEdges.Add(e);
+			}
+			//removing out-edges
+			foreach(<%= EdgeType %> e in removedEdges)
+				outEdges.Remove(e);
+			
+			<% if (Bidirectional) {%>
+			removedEdges.Clear();
+			<%= EdgeCollectionType %> inEdges = this.vertexInEdges[v];
+			foreach(<%= EdgeType %> e in inEdges)
+			{
+				if (e.Source == u)
+					removedEdges.Add(e);
+			}
+			//removing in-edges
+			foreach(<%= EdgeType %> e in removedEdges)
+				inEdges.Remove(e);
+			<%}%>			
+		}
+		
+		void IEdgeMutableGraph.RemoveEdge(IVertex u, IVertex v)
+		{
+			this.RemoveEdge((<%= VertexType %>) u, (<%= VertexType %>) v);
+		}
+		
+		#endregion 
+		
+		#region ISerializableVertexListGraph
+		/// <summary>
+		/// Add a new vertex to the graph and returns it.
+		/// </summary>
+		/// <returns>Create vertex</returns>
+		internal virtual void AddVertex(<%= VertexType %> v)
+		{
+			if (v==null)
+				throw new ArgumentNullException("vertex");
+			if (this.vertexOutEdges.Contains(v))
+				throw new ArgumentException("vertex already in graph");
+
+			this.version++;
+			this.VertexProvider.UpdateVertex(v);
+			this.vertexOutEdges.Add(v);
+			<% if (Bidirectional) {%>
+			this.vertexInEdges.Add(v);
+			<%}%>			
+		}
+		
+		void ISerializableVertexListGraph.AddVertex(IVertex v)
+		{
+			this.AddVertex((<%= VertexType %>) v);
+		}
+		#endregion
+		
+		#region ISerializableEdgeListGraph
+		/// <summary>
+		/// Used for serialization. Not for private use.
+		/// </summary>
+		/// <param name="e">edge to add.</param>
+		internal virtual void AddEdge(<%= EdgeType %> e)
+		{
+			if (e==null)
+				throw new ArgumentNullException("vertex");
+			if (e.GetType().IsAssignableFrom(EdgeProvider.EdgeType))
+				throw new ArgumentNullException("vertex type not valid");
+			
+			<%= VertexType %> source= (<%= VertexType %>)e.Source;
+			if (!this.vertexOutEdges.Contains(source))
+				throw new VertexNotFoundException(source.ToString());
+			<%= VertexType %> target= (<%= VertexType %>)e.Target;
+			if (!this.vertexOutEdges.Contains(target))
+				throw new VertexNotFoundException(target.ToString());
+
+			// if parralel edges are not allowed check if already in the graph
+			if (!this.AllowParallelEdges)
+			{
+				if (ContainsEdge(source,target))
+					throw new ArgumentException("graph does not allow duplicate edges");
+			}
+			// create edge
+			this.EdgeProvider.UpdateEdge(e);
+			this.vertexOutEdges[source].Add(e);
+			<% if (Bidirectional) {%>
+			this.vertexInEdges[target].Add(e);
+			<%}%>						
+		}		
+		
+		void ISerializableEdgeListGraph.AddEdge(IEdge e)
+		{
+			this.AddEdge((<%= EdgeType %>)e);
+		}		
+		#endregion
+
+		#region IIncidenceGraph
+		/// <summary>
+		/// Gets a value indicating if the set of out-edges is empty
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// Usually faster that calling <see cref="OutDegree"/>.
+		/// </para>
+		/// </remarks>
+		/// <value>
+		/// true if the out-edge set is empty, false otherwise.
+		/// </value>
+		/// <exception cref="ArgumentNullException">
+		/// v is a null reference (Nothing in Visual Basic)
+		/// </exception>
+		/// <exception cref="VertexNotFoundException">
+		/// v is not part of the graph.
+		/// </exception>
+		public bool OutEdgesEmpty(<%= VertexType %> v)
+		{
+			if (v == null)
+				throw new ArgumentNullException("v");
+			<%= EdgeCollectionType %> edges = this.vertexOutEdges[v];
+			if (edges==null)
+				throw new VertexNotFoundException(v.ToString());
+			return edges.Count==0;
+		}
+		
+		bool IImplicitGraph.OutEdgesEmpty(IVertex v)
+		{
+			return this.OutEdgesEmpty((<%= VertexType %>)v);
+		}
+
+		/// <summary>
+		/// Returns the number of out-degree edges of v
+		/// </summary>
+		/// <param name="v">vertex</param>
+		/// <returns>number of out-edges of the <%= VertexTypeSee %> v</returns>
+		/// <exception cref="ArgumentNullException">
+		/// v is a null reference (Nothing in Visual Basic)
+		/// </exception>
+		/// <exception cref="VertexNotFoundException">
+		/// v is not part of the graph.
+		/// </exception>		
+		public int OutDegree(<%= VertexType %> v)
+		{
+			if (v == null)
+				throw new ArgumentNullException("v");
+			<%= EdgeCollectionType %> edges = this.vertexOutEdges[v];
+			if (edges==null)
+				throw new VertexNotFoundException(v.ToString());
+			return edges.Count;
+		}
+
+		int IImplicitGraph.OutDegree(IVertex v)
+		{
+			return this.OutDegree((<%= VertexType %>)v);
+		}
+
+		/// <summary>
+		/// Returns an iterable collection over the edge connected to v
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns>out-edges of v</returns>
+		/// <exception cref="ArgumentNullException">
+		/// v is a null reference.
+		/// </exception>
+		/// <exception cref="VertexNotFoundException">
+		/// v is not part of the graph.
+		/// </exception>
+		<% if(IndexedEdges){%>
+		public IEdgeCollection OutEdges(<%= VertexType %> v)
+		<% }else{%>
+		public IEdgeEnumerable OutEdges(<%= VertexType %> v)
+		<%}%>
+		{
+			if (v == null)
+				throw new ArgumentNullException("v");
+
+			<%= EdgeCollectionType %> edges = this.vertexOutEdges[v];
+			if (edges==null)
+				throw new VertexNotFoundException(v.ToString());
+			return edges;
+		}		
+
+		IEdgeEnumerable IImplicitGraph.OutEdges(IVertex v)
+		{
+			return this.OutEdges((<%= VertexType %>)v);
+		}
+
+		/// <summary>
+		/// Test is an edge (u,v) is part of the graph
+		/// </summary>
+		/// <param name="u">source vertex</param>
+		/// <param name="v">target vertex</param>
+		/// <returns>true if part of the graph</returns>
+		public bool ContainsEdge(<%= VertexType %> u,<%= VertexType %> v)
+		{
+			// try to find the edge
+			foreach(<%= EdgeType %> e in this.OutEdges(u))
+			{
+				if (e.Target == v)
+					return true;
+			}
+			return false;
+		}
+		
+		bool IIncidenceGraph.ContainsEdge(IVertex u, IVertex v)
+		{
+			return this.ContainsEdge((<%= VertexType %>)u,(<%= VertexType %>)v);
+		}		
+		#endregion 
+		
+		#region IFilteredIncidenceGraph  
+		/// <summary>
+		/// Returns the first out-edge that matches the predicate
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="ep">Edge predicate</param>
+		/// <returns>null if not found, otherwize the first Edge that
+		/// matches the predicate.</returns>
+		/// <exception cref="ArgumentNullException">v or ep is null</exception>
+		public <%= EdgeType %> SelectSingleOutEdge(<%= VertexType %> v, IEdgePredicate ep)
+		{
+			if (ep==null)
+				throw new ArgumentNullException("ep");
+			
+			foreach(<%= EdgeType %> e in this.SelectOutEdges(v,ep))
+				return e;
+
+			return null;
+		}
+
+		IEdge IFilteredIncidenceGraph.SelectSingleOutEdge(IVertex v, IEdgePredicate ep)
+		{
+			return this.SelectSingleOutEdge((<%= VertexType %>)v,ep);
+		}
+
+		/// <summary>
+		/// Returns the collection of out-edges that matches the predicate
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="ep">Edge predicate</param>
+		/// <returns>enumerable colleciton of vertices that matches the 
+		/// criteron</returns>
+		/// <exception cref="ArgumentNullException">v or ep is null</exception>
+		public IEdgeEnumerable SelectOutEdges(<%= VertexType %> v, IEdgePredicate ep)
+		{
+			if (v==null)
+				throw new ArgumentNullException("v");
+			if (ep==null)
+				throw new ArgumentNullException("ep");
+			
+			return new FilteredEdgeEnumerable(this.OutEdges(v),ep);
+		}
+
+		IEdgeEnumerable IFilteredIncidenceGraph.SelectOutEdges(IVertex v, IEdgePredicate ep)
+		{
+			return this.SelectOutEdges((<%= VertexType %>)v,ep);
+		}
+
+
+		/// <summary>
+		/// Remove all the edges from graph g for which the predicate pred
+		/// returns true.
+		/// </summary>
+		/// <param name="pred">edge predicate</param>
+		public virtual void RemoveEdgeIf(IEdgePredicate pred)
+		{
+			if (pred == null)
+				throw new ArgumentNullException("predicate");
+
+			// marking edge for removal
+			<%= EdgeCollectionType %> removedEdges = new <%= EdgeCollectionType %>();
+			foreach(<%= EdgeType %> e in Edges)
+			{
+				if (pred.Test(e))
+					removedEdges.Add(e);
+			}
+
+			// removing edges
+			foreach(<%= EdgeType %> e in removedEdges)
+				this.RemoveEdge(e);
+		}
+		#endregion
+
+		#region IMutableIncidenceGraph
+		/// <summary>
+		/// Remove all the out-edges of vertex u for which the predicate pred 
+		/// returns true.
+		/// </summary>
+		/// <param name="u">vertex</param>
+		/// <param name="pred">edge predicate</param>
+		public virtual void RemoveOutEdgeIf(<%= VertexType %> u, IEdgePredicate pred)
+		{
+			if (u==null)
+				throw new ArgumentNullException("u");
+			if (pred == null)
+				throw new ArgumentNullException("pred");
+
+			<%= EdgeCollectionType %> edges = this.vertexOutEdges[u];
+			<%= EdgeCollectionType %> removedEdges = new <%= EdgeCollectionType %>();
+			foreach(<%= EdgeType %> e in edges)
+			{
+				if (pred.Test(e))
+					removedEdges.Add(e);
+			}
+
+			foreach(<%= EdgeType %> e in removedEdges)
+				this.RemoveEdge(e);
+		}
+
+		void IMutableIncidenceGraph.RemoveOutEdgeIf(IVertex u, IEdgePredicate pred)
+		{
+			this.RemoveOutEdgeIf((<%= VertexType %>)u,pred);
+		}
+		#endregion
+		
+		<% if (IndexedEdges){%>
+		#region IIndexedIncidenceGraph
+		IEdgeCollection IIndexedIncidenceGraph.OutEdges(IVertex v)
+		{
+			return this.OutEdges((<%= VertexType %>)v);
+		}
+		#endregion
+		<%}%>
+
+		#region IVertexListGraph
+		/// <summary>
+		/// Gets a value indicating if the vertex set is empty
+		/// </summary>
+		/// <para>
+		/// Usually faster (O(1)) that calling <c>VertexCount</c>.
+		/// </para>
+		/// <value>
+		/// true if the vertex set is empty, false otherwise.
+		/// </value>
+		public bool VerticesEmpty
+		{
+			get
+			{
+				return this.vertexOutEdges.Count==0;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of vertices
+		/// </summary>
+		/// <value>
+		/// Number of vertices in the graph
+		/// </value>
+		public int VerticesCount
+		{
+			get
+			{
+				return this.vertexOutEdges.Count;
+			}
+		}
+
+		/// <summary>
+		/// Enumerable collection of vertices.
+		/// </summary>
+		public IVertexEnumerable Vertices
+		{
+			get
+			{
+				return this.vertexOutEdges.Vertices;
+			}
+		}
+		
+		/// <summary>
+		/// Tests if a <%= VertexTypeSee %> is part of the graph
+		/// </summary>
+		/// <param name="v">Vertex to test</param>
+		/// <returns>true if is part of the graph, false otherwize</returns>
+		public bool ContainsVertex(<%= VertexType %> v)
+		{
+			return this.vertexOutEdges.Contains(v);
+		}		
+		
+		bool IVertexListGraph.ContainsVertex(IVertex v)	
+		{
+			return this.ContainsVertex((<%= VertexType %>)v);
+		}
+		#endregion
+		
+		#region IFilteredVertexListGraph
+		/// <summary>
+		/// Returns the first <%= VertexTypeSee %> that matches the predicate
+		/// </summary>
+		/// <param name="vp">vertex predicate</param>
+		/// <returns>null if not found, otherwize the first vertex that
+		/// matches the predicate.</returns>
+		/// <exception cref="ArgumentNullException">vp is null</exception>
+		public <%= VertexType %> SelectSingleVertex(IVertexPredicate vp)
+		{
+			if (vp == null)
+				throw new ArgumentNullException("vertex predicate");
+
+			foreach(<%= VertexType %> v in this.SelectVertices(vp))
+				return v;
+			return null;
+		}
+
+		IVertex IFilteredVertexListGraph.SelectSingleVertex(IVertexPredicate vp)
+		{
+			return this.SelectSingleVertex(vp);
+		}
+
+		/// <summary>
+		/// Returns the collection of vertices that matches the predicate
+		/// </summary>
+		/// <param name="vp">vertex predicate</param>
+		/// <returns>enumerable colleciton of vertices that matches the 
+		/// criteron</returns>
+		/// <exception cref="ArgumentNullException">vp is null</exception>
+		public IVertexEnumerable SelectVertices(IVertexPredicate vp)
+		{
+			if (vp == null)
+				throw new ArgumentNullException("vertex predicate");
+
+			return new FilteredVertexEnumerable(Vertices,vp);
+		}
+		#endregion
+
+		#region EdgeListGraph
+		/// <summary>
+		/// Gets a value indicating if the vertex set is empty
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// Usually faster that calling <see cref="EdgesCount"/>.
+		/// </para>
+		/// </remarks>
+		/// <value>
+		/// true if the vertex set is empty, false otherwise.
+		/// </value>
+		public bool EdgesEmpty
+		{
+			get
+			{				
+				return this.EdgesCount==0;
+			}
+		}
+
+		/// <summary>
+		/// Gets the edge count
+		/// </summary>
+		/// <remarks>
+		/// Edges count
+		/// </remarks>
+		public int EdgesCount
+		{
+			get
+			{
+				int n = 0;
+				foreach(DictionaryEntry d in vertexOutEdges)
+				{
+					n+=((<%= EdgeCollectionType %>)d.Value).Count;
+				}
+				return n;
+			}
+		}
+
+		/// <summary>
+		/// Enumerable collection of edges.
+		/// </summary>
+		public IEdgeEnumerable Edges
+		{
+			get
+			{
+				return this.vertexOutEdges.Edges;
+			}
+		}
+		
+		/// <summary>
+		/// Tests if a (<%= EdgeTypeSee %>) is part of the graph
+		/// </summary>
+		/// <param name="e">Edge to test</param>
+		/// <returns>true if is part of the graph, false otherwize</returns>
+		public bool ContainsEdge(<%= EdgeType %> e)
+		{
+			foreach(DictionaryEntry di in this.vertexOutEdges)
+			{
+				<%= EdgeCollectionType %> es = (<%= EdgeCollectionType %>)di.Value;
+				if (es.Contains(e))
+					return true;
+			}
+			return false;
+		}
+
+		bool IEdgeListGraph.ContainsEdge(IEdge e)
+		{	
+			return this.ContainsEdge((<%= EdgeType %>)e);
+		}
+		#endregion
+
+		#region IFileteredEdgeListGraph
+		/// <summary>
+		/// Returns the first Edge that matches the predicate
+		/// </summary>
+		/// <param name="ep">Edge predicate</param>
+		/// <returns>null if not found, otherwize the first Edge that
+		/// matches the predicate.</returns>
+		/// <exception cref="ArgumentNullException">ep is null</exception>
+		public <%= EdgeType %> SelectSingleEdge(IEdgePredicate ep)
+		{
+			if (ep == null)
+				throw new ArgumentNullException("edge predicate");
+			foreach(<%= EdgeType %> e in this.SelectEdges(ep))
+				return e;
+			return null;
+		}
+
+		IEdge IFilteredEdgeListGraph.SelectSingleEdge(IEdgePredicate ep)
+		{
+			return this.SelectSingleEdge(ep);
+		}
+
+		/// <summary>
+		/// Returns the collection of edges that matches the predicate
+		/// </summary>
+		/// <param name="ep">Edge predicate</param>
+		/// <returns>enumerable colleciton of vertices that matches the 
+		/// criteron</returns>
+		/// <exception cref="ArgumentNullException">ep is null</exception>
+		public IEdgeEnumerable SelectEdges(IEdgePredicate ep)
+		{
+			if (ep == null)
+				throw new ArgumentNullException("edge predicate");
+
+			return new FilteredEdgeEnumerable(Edges,ep);
+		}
+		#endregion
+
+		#region IAdjacencyGraph
+		/// <summary>
+		/// Gets an enumerable collection of adjacent vertices
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns>Enumerable collection of adjacent vertices</returns>
+		public IVertexEnumerable AdjacentVertices(<%= VertexType %> v)
+		{
+			return new TargetVertexEnumerable(this.OutEdges(v));
+		}
+		
+		IVertexEnumerable IAdjacencyGraph.AdjacentVertices(IVertex v)
+		{
+			return AdjacentVertices((<%= VertexType %>)v);
+		}
+		#endregion
+		
+		<%if (Bidirectional){%>
+		#region IBidirectionalGraph
+		/// <summary>
+		/// Gets a value indicating if the set of in-edges is empty
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// Usually faster that calling <see cref="InDegree"/>.
+		/// </para>
+		/// </remarks>
+		/// <value>
+		/// true if the in-edge set is empty, false otherwise.
+		/// </value>
+		/// <exception cref="ArgumentNullException">
+		/// v is a null reference (Nothing in Visual Basic)
+		/// </exception>
+		/// <exception cref="VertexNotFoundException">
+		/// <paramref name="v"/> is not part of the graph.
+		/// </exception>
+		public bool InEdgesEmpty(<%= VertexType%> v)
+		{
+			if (v==null)
+				throw new ArgumentNullException("v");
+			<%= EdgeCollectionType %> edges = this.vertexInEdges[v];
+			if (edges==null)
+				throw new VertexNotFoundException("v");
+			return edges.Count==0;
+		}
+
+		bool IBidirectionalGraph.InEdgesEmpty(IVertex v)
+		{
+			return this.InEdgesEmpty((<%= VertexType %>)v);
+		}
+
+		/// <summary>
+		/// Returns the number of in-degree edges of v
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns>number of in-edges of the vertex v</returns>
+		/// <exception cref="ArgumentNullException">
+		/// v is a null reference (Nothing in Visual Basic)
+		/// </exception>
+		/// <exception cref="VertexNotFoundException">
+		/// <paramref name="v"/> is not part of the graph.
+		/// </exception>		
+		public int InDegree(<%= VertexType %> v)
+		{
+			if (v == null)
+				throw new ArgumentNullException("v");
+			<%= EdgeCollectionType %> edges = this.vertexInEdges[v];
+			if (edges==null)
+				throw new VertexNotFoundException("v");
+			return edges.Count;
+		}
+		int IBidirectionalGraph.InDegree(IVertex v)
+		{
+			return this.InDegree((<%= VertexType %>)v);
+		}
+
+		/// <summary>
+		/// Returns an iterable collection over the in-edge connected to v
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns>in-edges of v</returns>
+		/// <exception cref="ArgumentNullException">
+		/// v is a null reference (Nothing in Visual Basic)
+		/// </exception>
+		/// <exception cref="VertexNotFoundException">
+		/// <paramref name="v"/> is not part of the graph.
+		/// </exception>		
+		<%if (IndexedEdges){%>
+		public IEdgeCollection InEdges(<%= VertexType %> v)
+		<%}else{%>
+		public IEdgeEnumerable InEdges((<%= VertexType %>) v)
+		<%}%>
+		{
+			if (v == null)
+				throw new ArgumentNullException("v");
+			<%= EdgeCollectionType %> edges = this.vertexInEdges[v];
+			if (edges==null)
+				throw new VertexNotFoundException(v.ToString());
+			return edges;
+		}
+
+		/// <summary>
+		/// Incidence graph implementation
+		/// </summary>
+		IEdgeEnumerable IBidirectionalGraph.InEdges(IVertex v)
+		{
+			return this.InEdges((<%= VertexType %>)v);
+		}
+
+		/// <summary>
+		/// Gets a value indicating if the set of edges connected to v is empty
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// Usually faster that calling <see cref="Degree"/>.
+		/// </para>
+		/// </remarks>
+		/// <value>
+		/// true if the adjacent edge set is empty, false otherwise.
+		/// </value>
+		/// <exception cref="ArgumentNullException">v is a null reference</exception>
+		public bool AdjacentEdgesEmpty(<%= VertexType %> v)
+		{
+			if (v==null)
+				throw new ArgumentNullException("v");
+			return this.OutEdgesEmpty(v) && this.InEdgesEmpty(v);
+		}
+
+		bool IBidirectionalGraph.AdjacentEdgesEmpty(IVertex v)
+		{
+			return this.AdjacentEdgesEmpty((<%= VertexType %>)v);
+		}
+
+		/// <summary>
+		/// Returns the number of in-edges plus out-edges.
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns></returns>
+		public int Degree(<%= VertexType %> v)
+		{
+			if (v == null)
+				throw new ArgumentNullException("v");
+			<%= EdgeCollectionType %> outEdges = this.vertexOutEdges[v];
+			if (outEdges==null)
+				throw new VertexNotFoundException("v");
+			<%= EdgeCollectionType %> inEdges = this.vertexInEdges[v];
+			Debug.Assert(inEdges!=null);
+			return outEdges.Count + inEdges.Count;
+		}
+		
+		int IBidirectionalGraph.Degree(IVertex v)
+		{
+			return this.Degree((<%= VertexType %>)v);
+		}
+		#endregion
+
+		#region IFilteredBidirectionalGraph
+		/// <summary>
+		/// Returns the first in-edge that matches the predicate
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="ep">Edge predicate</param>
+		/// <returns>null if not found, otherwize the first Edge that
+		/// matches the predicate.</returns>
+		/// <exception cref="ArgumentNullException">v or ep is null</exception>
+		public <%= EdgeType %> SelectSingleInEdge(<%= VertexType %> v, IEdgePredicate ep)
+		{
+			if (ep==null)
+				throw new ArgumentNullException("edge predicate");
+			
+			foreach(<%= EdgeType %> e in this.SelectInEdges(v,ep))
+				return e;
+
+			return null;
+		}
+		IEdge IFilteredBidirectionalGraph.SelectSingleInEdge(IVertex v, IEdgePredicate ep)
+		{
+			return this.SelectSingleInEdge((<%= VertexType %>)v, ep);
+		}
+
+		/// <summary>
+		/// Returns the collection of in-edges that matches the predicate
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="ep">Edge predicate</param>
+		/// <returns>enumerable colleciton of vertices that matches the 
+		/// criteron</returns>
+		/// <exception cref="ArgumentNullException">v or ep is null</exception>
+		public IEdgeEnumerable SelectInEdges(<%= VertexType %> v, IEdgePredicate ep)
+		{
+			if (v==null)
+				throw new ArgumentNullException("vertex");
+			if (ep==null)
+				throw new ArgumentNullException("edge predicate");
+			
+			return new FilteredEdgeEnumerable(this.InEdges(v),ep);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="ep"></param>
+		/// <returns></returns>
+		IEdgeEnumerable IFilteredBidirectionalGraph.SelectInEdges(IVertex v, IEdgePredicate ep)
+		{
+			return this.SelectInEdges((<%= VertexType %>)v,ep);
+		}
+		#endregion
+		
+		#region IMutableBidirectionalGraph
+
+		/// <summary>
+		/// Remove all the out-edges of vertex u for which the predicate pred 
+		/// returns true.
+		/// </summary>
+		/// <param name="u">vertex</param>
+		/// <param name="pred">edge predicate</param>
+		public void RemoveInEdgeIf(<%= VertexType %> u, IEdgePredicate pred)
+		{
+			if (u==null)
+				throw new ArgumentNullException("vertex u");
+			if (pred == null)
+				throw new ArgumentNullException("predicate");
+
+			<%= EdgeCollectionType %> edges = this.vertexInEdges[u];
+			<%= EdgeCollectionType %> removedEdges = new <%= EdgeCollectionType %>();
+			foreach(<%= EdgeType %> e in edges)
+			{
+				if (pred.Test(e))
+					removedEdges.Add(e);
+			}
+
+			foreach(<%= EdgeType %> e in removedEdges)
+				this.RemoveEdge(e);
+		}
+
+		void IMutableBidirectionalGraph.RemoveInEdgeIf(IVertex u, IEdgePredicate pred)
+		{
+			this.RemoveInEdgeIf((<%= VertexType %>)u,pred);
+		}
+
+		#endregion
+		<%}%>
+
+		#region <%= EdgeCollectionType %>
+		private class <%= EdgeCollectionType %> : 
+			<%= EdgeCollectionBaseType %>
+			<% if (IndexedEdges){%>
+			,IEdgeCollection
+			<%}else{%>
+			,IEdgeEnumerable
+			<%}%>
+		{
+			/// <summary>
+			/// Initializes a new empty instance of the 
+			/// <see cref="<%= EdgeCollectionType %>"/> class.
+			/// </summary>
+			public <%= EdgeCollectionType %>()
+			{}
+			
+			/// <summary>
+			/// Adds an instance of type <%= EdgeTypeSee %> to the end of this 
+			/// <see cref="<%= EdgeCollectionType %>"/>.
+			/// </summary>
+			/// <param name="value">
+			/// The Edge to be added to the end of this EdgeCollection.
+			/// </param>
+			internal void Add(<%= EdgeType %> value)
+			{
+				this.List.Add(value);
+			}
+			
+			/// <summary>
+			/// Removes the first occurrence of a specific Edge from this EdgeCollection.
+			/// </summary>
+			/// <param name="value">
+			/// The Edge value to remove from this EdgeCollection.
+			/// </param>
+			internal void Remove(IEdge value)
+			{
+				this.List.Remove(value);
+			}
+
+			<% if (IndexedEdges){%>
+			#region IEdgeCollection
+			/// <summary>
+			/// Determines whether a specfic <%= EdgeTypeSee %> value is in this EdgeCollection.
+			/// </summary>
+			/// <param name="value">
+			/// edge value to locate in this <see cref="<%= EdgeCollectionType %>"/>.
+			/// </param>
+			/// <returns>
+			/// true if value is found in this collection;
+			/// false otherwise.
+			/// </returns>
+			public bool Contains(<%= EdgeType %> value)
+			{	
+				return this.List.Contains(value);
+			}
+			
+			bool IEdgeCollection.Contains(IEdge value)
+			{
+				return this.Contains((<%= EdgeType %>)value);
+			}
+			
+			/// <summary>
+			/// Gets or sets the Edge at the given index in this EdgeCollection.
+			/// </summary>
+			public <%= EdgeType %> this[int index]
+			{
+				get
+				{
+					return (<%= EdgeType %>)this.List[index];
+				}
+				set
+				{
+					this.List[index] = value;
+				}
+			}
+			
+			IEdge IEdgeCollection.this[int index]
+			{
+				get
+				{
+					return this[index];
+				}
+				set
+				{
+					this[index] = (<%= EdgeType %>)value;
+				}
+			}		
+			#endregion
+			<%}%>			
+			
+			#region IEdgeEnumerable
+			/// <summary>
+			/// Returns an enumerator that can iterate through the elements of this EdgeCollection.
+			/// </summary>
+			/// <returns>
+			/// An object that implements System.Collections.IEnumerator.
+			/// </returns>        
+			public new IEdgeEnumerator GetEnumerator()
+			{
+				return new <%= EdgeEnumeratorType %>(this);
+			}
+			
+			private class <%= EdgeEnumeratorType %>  : IEdgeEnumerator
+			{
+				private IEnumerator wrapped;
+
+				/// <summary>
+				/// Create a new enumerator on the collection
+				/// </summary>
+				/// <param name="collection">collection to enumerate</param>
+				public <%= EdgeEnumeratorType %>(<%= EdgeCollectionType %> collection)
+				{
+					this.wrapped = ((System.Collections.CollectionBase)collection).GetEnumerator();
+				}
+
+				/// <summary>
+				/// The current element. 
+				/// </summary>
+				public <%= EdgeType %> Current
+				{
+					get
+					{
+						return (<%= EdgeType %>)this.wrapped.Current;
+					}
+				}
+				#region IEdgeEnumerator
+				IEdge IEdgeEnumerator.Current
+				{
+					get
+					{
+						return this.Current;
+					}
+				}				
+				#endregion
+				#region IEnumerator
+				object IEnumerator.Current
+				{
+					get
+					{
+						return this.Current;
+					}
+				}
+
+				/// <summary>
+				/// Moves cursor to next element.
+				/// </summary>
+				/// <returns>true if current is valid, false otherwize</returns>
+				public bool MoveNext()
+				{
+					return this.wrapped.MoveNext();
+				}
+	
+				/// <summary>
+				/// Resets the cursor to the position before the first element.
+				/// </summary>
+				public void Reset()
+				{
+					this.wrapped.Reset();
+				}				
+				#endregion
+			}
+			#endregion
+		}
+		#endregion
+
+		#region <%= VertexEdgesDictionaryType %>
+		private class <%= VertexEdgesDictionaryType %> :
+			<%= VertexEdgesDictionaryBaseType %>
+		{
+			public <%= VertexEdgesDictionaryType %>()
+			{}
+			
+			public void Add(<%= VertexType %> u)
+			{
+				Debug.Assert(u!=null);
+				this.Dictionary.Add(u, new <%= EdgeCollectionType %>() );
+			}
+			
+			public  bool Contains(<%= VertexType %> key)
+			{
+				return this.Dictionary.Contains(key);
+			}
+			
+			public void Remove(<%= VertexType %> key)
+			{
+				this.Dictionary.Remove(key);
+			}
+			
+			public IVertexEnumerable Vertices
+			{
+				get
+				{
+					return new <%= VertexEdgesVertexEnumerableType %>(this.Dictionary.Keys);
+				}
+			}
+			
+			public IEdgeEnumerable Edges
+			{
+				get
+				{
+					return new <%= VertexEdgesEdgeEnumerableType %>(this.Dictionary.Values);
+				}			
+			}
+			
+			public <%= EdgeCollectionType %> this[<%= VertexType %> v]
+			{
+				get
+				{
+					return (<%= EdgeCollectionType %>)this.Dictionary[v];
+				}
+			}
+			
+			#region Vertex Enumerable/Enumerator
+			private class <%= VertexEdgesVertexEnumerableType %> : 
+				IVertexEnumerable
+			{
+				private IEnumerable en;
+				public <%= VertexEdgesVertexEnumerableType %>(IEnumerable en)
+				{
+					Debug.Assert(en!=null);
+					this.en = en;
+				}
+				public IVertexEnumerator GetEnumerator()
+				{
+					return new <%= VertexEdgesVertexEnumeratorType %>(en);
+				}
+				IEnumerator IEnumerable.GetEnumerator()
+				{
+					return this.GetEnumerator();
+				}
+				
+				#region Enumerator
+				private class <%= VertexEdgesVertexEnumeratorType %> :
+					IVertexEnumerator
+				{
+					private IEnumerator en;
+					public <%= VertexEdgesVertexEnumeratorType %>(IEnumerable col)
+					{
+						Debug.Assert(col!=null);
+						this.en = col.GetEnumerator();
+					}
+					
+					public <%= VertexType %> Current
+					{
+						get
+						{
+							return (<%= VertexType %>)this.en.Current;
+						}
+					}
+					IVertex IVertexEnumerator.Current
+					{
+						get
+						{
+							return this.Current;
+						}						
+					}
+					Object IEnumerator.Current
+					{
+						get
+						{
+							return this.Current;
+						}						
+					}
+					public void Reset()
+					{
+						this.en.Reset();
+					}
+					public bool MoveNext()
+					{
+						return this.en.MoveNext();
+					}
+				}
+				#endregion
+			}
+			#endregion
+			
+			#region Edge Enumerable/Enumerator
+			private class <%= VertexEdgesEdgeEnumerableType %> : 
+				IEdgeEnumerable
+			{
+				private IEnumerable en;
+				public <%= VertexEdgesEdgeEnumerableType %>(IEnumerable en)
+				{
+					Debug.Assert(en!=null);
+					this.en = en;
+				}
+				public IEdgeEnumerator GetEnumerator()
+				{
+					return new <%= VertexEdgesEdgeEnumeratorType %>(en);
+				}
+				IEnumerator IEnumerable.GetEnumerator()
+				{
+					return this.GetEnumerator();
+				}
+				
+				#region Edge Enumerator
+				private class <%= VertexEdgesEdgeEnumeratorType %> :
+					IEdgeEnumerator
+				{
+					private IEnumerator edges;
+					private IEdgeEnumerator edge;
+
+					public <%= VertexEdgesEdgeEnumeratorType %>(IEnumerable en)
+					{
+						Debug.Assert(en!=null);
+						this.edges = en.GetEnumerator();
+						this.edge = null;
+					}
+
+					public void Reset()
+					{
+						this.edges.Reset();
+						this.edge=null;
+					}
+
+					public bool MoveNext()
+					{
+						// check if first time.
+						if (this.edge == null)
+						{
+							if (!moveNextVertex())
+								return false;
+						}
+
+						// getting next valid entry
+						do 
+						{
+							// try getting edge in the current out edge list
+							if (edge.MoveNext())
+								return true;
+
+							// move to the next outedge list
+							if (!moveNextVertex())
+								return false;
+						} 
+						while(true);
+					}
+
+					public <%= EdgeType %> Current
+					{
+						get
+						{
+							if (this.edge == null)
+								throw new InvalidOperationException();
+							return (<%= EdgeType %>)this.edge.Current;
+						}
+					}
+					
+					IEdge IEdgeEnumerator.Current
+					{
+						get
+						{
+							return this.Current;
+						}
+					}
+					
+					Object IEnumerator.Current
+					{
+						get
+						{
+							return this.Current;
+						}
+					}
+					
+					private bool moveNextVertex()
+					{
+						// check if empty vertex set
+						if (!this.edges.MoveNext())
+						{
+							this.edges=null;
+							return false;
+						}
+
+						// getting enumerator
+						this.edge = ((<%= EdgeCollectionType %>)this.edges.Current).GetEnumerator();
+						return true;
+					}
+				}
+				#endregion
+			}
+			#endregion			
+		}
+		#endregion
+
+		#region <%= VertexEnumeratorType %>
+		private class <%= VertexEnumeratorType %> : IVertexEnumerator
+		{
+			private IEnumerator en;
+			public <%= VertexEnumeratorType %>(IEnumerable enumerable)
+			{
+				Debug.Assert(en!=null);
+				this.en = enumerable.GetEnumerator();
+			}
+			
+			public void Reset()
+			{
+				this.en.Reset();
+			}			
+			public bool MoveNext()
+			{
+				return this.en.MoveNext();
+			}
+			public <%= VertexType %> Current
+			{
+				get
+				{				
+					return (<%= VertexType %>)this.en.Current;
+				}
+			}
+			IVertex IVertexEnumerator.Current
+			{
+				get
+				{
+					return this.Current;
+				}
+			}
+			Object IEnumerator.Current
+			{
+				get
+				{
+					return this.en.Current;
+				}
+			}
+		}
+		#endregion
+	}
+}
+
+<script runat="template">
+private String seeTag(string type)
+{
+	return String.Format("<see cref=\"{0}\"/>",type);
+}
+public String ClassNameSee
+{
+	get
+	{
+		return seeTag(this.ClassName);
+	}
+}
+public String VertexTypeSee
+{
+	get
+	{
+		return seeTag(this.VertexType);
+	}
+}
+public String EdgeTypeSee
+{
+	get
+	{
+		return seeTag(this.EdgeType);
+	}
+}
+public string VertexProviderType
+{
+	get
+	{
+		return this.VertexType + "Provider";
+	}
+}
+public string EdgeProviderType
+{
+	get
+	{
+		return this.EdgeType + "Provider";
+	}
+}
+public string VertexEnumeratorType
+{
+	get
+	{
+		return this.VertexType + "Enumerator";
+	}
+}
+public string EdgeEnumeratorType
+{
+	get
+	{
+		return this.EdgeType + "Enumerator";
+	}
+}
+public string EdgeCollectionType
+{
+	get
+	{
+		return this.EdgeType + "Collection";
+	}
+}
+public string VertexEdgesDictionaryType
+{
+	get
+	{
+		return this.VertexType + this.EdgeCollectionType + "Dictionary";
+	}
+}
+public string VertexEdgesVertexEnumerableType
+{
+	get
+	{
+		return this.VertexType +  this.EdgeCollectionType + "VertexEnumerable";
+	}
+}
+public string VertexEdgesVertexEnumeratorType
+{
+	get
+	{
+		return this.VertexType +  this.EdgeCollectionType + "VertexEnumerator";
+	}
+}
+public string VertexEdgesEdgeEnumerableType
+{
+	get
+	{
+		return this.VertexType +  this.EdgeCollectionType + "EdgeEnumerable";
+	}
+}
+public string VertexEdgesEdgeEnumeratorType
+{
+	get
+	{
+		return this.VertexType +  this.EdgeCollectionType + "EdgeEnumerator";
+	}
+}
+</script>

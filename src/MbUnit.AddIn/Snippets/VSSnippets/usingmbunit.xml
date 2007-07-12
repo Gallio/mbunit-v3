@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+    <Header>
+        <Title>Using MbUnit Includes</Title>
+        <Shortcut>usingMbUnit</Shortcut>
+        <Description>Expansion snippet for the MbUnit using statements</Description>
+        <SnippetTypes>
+            <SnippetType>Expansion</SnippetType>
+        </SnippetTypes>
+    </Header>
+    <Snippet>
+        <Code Language="csharp" Format="CData">
+<![CDATA[using MbUnit.Core.Framework;
+using MbUnit.Framework;
+]]>
+	</Code>
+    </Snippet>
+</CodeSnippet>

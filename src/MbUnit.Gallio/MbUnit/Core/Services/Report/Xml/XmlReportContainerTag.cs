@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace MbUnit.Core.Services.Report.Xml
@@ -22,22 +21,24 @@ namespace MbUnit.Core.Services.Report.Xml
         public XmlReportTag[] Contents
         {
             get { return contents.ToArray(); }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                contents = new List<XmlReportTag>(value);
-            }
+            set { contents = new List<XmlReportTag>(value); }
         }
 
         /// <summary>
-        /// Appends contents to the container.
+        /// Adds a content tag to the container.
         /// </summary>
-        /// <param name="content">The content to append</param>
-        public void Append(XmlReportTag content)
+        /// <param name="tag">The tag to add</param>
+        public void AddContent(XmlReportTag tag)
         {
-            contents.Add(content);
+            contents.Add(tag);
+        }
+
+        /// <summary>
+        /// Initializes the contents list to an empty list.
+        /// </summary>
+        protected void Initialize()
+        {
+            contents = new List<XmlReportTag>();
         }
     }
 }

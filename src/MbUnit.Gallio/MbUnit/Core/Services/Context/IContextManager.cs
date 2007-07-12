@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using MbUnit.Core.Services.Reflection;
+using MbUnit.Core.Model;
 using MbUnit.Framework;
 
 namespace MbUnit.Core.Services.Context
@@ -34,9 +34,9 @@ namespace MbUnit.Core.Services.Context
         /// Creates a context for a test.
         /// </summary>
         /// <param name="parent">The parent context</param>
-        /// <param name="testInfo">Information about the test running within the context</param>
+        /// <param name="test">The test that will run within the context</param>
         /// <returns>The context</returns>
-        IContext CreateContext(IContext parent, TestInfo testInfo);
+        IContext CreateContext(IContext parent, ITest test);
 
         /// <summary>
         /// Sets the context associated with the specified thread overriding

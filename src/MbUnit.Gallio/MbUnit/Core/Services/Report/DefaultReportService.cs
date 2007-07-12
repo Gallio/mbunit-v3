@@ -14,6 +14,7 @@ namespace MbUnit.Core.Services
     {
         private const string ContextDataKey = "$$DefaultReportService.ContextData$$";
 
+        /// <inheritdoc />
         public IReport GetReport(IContext context)
         {
             ContextData state = GetInitializedContextData(context);
@@ -46,13 +47,15 @@ namespace MbUnit.Core.Services
         /// </summary>
         private class ContextData
         {
+            private IReport report;
+
             /// <summary>
             /// Create the state for the specified report service.
             /// </summary>
             /// <param name="service">The report service</param>
             public ContextData(DefaultReportService service)
             {
-                report = new XmlReport();
+                //report = new XmlReport();
             }
 
             /// <summary>
@@ -62,7 +65,6 @@ namespace MbUnit.Core.Services
             {
                 get { return report; }
             }
-            private IReport report;
         }
     }
 }

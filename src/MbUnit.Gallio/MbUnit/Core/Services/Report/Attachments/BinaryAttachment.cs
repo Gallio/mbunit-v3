@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using MbUnit.Core.Services.Report.Xml;
+using MbUnit.Core.Utilities;
 
 namespace MbUnit.Core.Services.Report.Attachments
 {
@@ -37,16 +39,12 @@ namespace MbUnit.Core.Services.Report.Attachments
             get { return data; }
         }
 
-        /// <summary>
-        /// Serializes the attachment to an Xml report attachment.
-        /// </summary>
-        /// <param name="xmlAttachment">The Xml report attachment</param>
-        public override void XmlSerializeTo(XmlReportAttachment xmlAttachment)
+        /// <inheritdoc />
+        public override XmlReportAttachment XmlSerialize()
         {
-            base.XmlSerializeTo(xmlAttachment);
-
-            xmlAttachment.ContentEncoding = XmlContentEncoding.Base64;
-            xmlAttachment.InnerText = Convert.ToBase64String(data, Base64FormattingOptions.None);
+            return XmlReportAttachment.Create(Name, ContentType, XmlContentEncoding.Base64,
+                Convert.ToBase64String(data, Base64FormattingOptions.None),
+                EmptyArray<XmlElement>.Instance);
         }
     }
 }

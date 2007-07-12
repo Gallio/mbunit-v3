@@ -7,6 +7,7 @@ namespace MbUnit.Core.Serialization
     /// <summary>
     /// Describes a test template in a portable manner for serialization.
     /// </summary>
+    /// <seealso cref="ITestTemplate"/>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
     public class TestTemplateInfo : TestComponentInfo

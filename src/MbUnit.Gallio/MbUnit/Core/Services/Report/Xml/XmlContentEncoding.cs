@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using MbUnit.Core.Serialization;
 
 namespace MbUnit.Core.Services.Report.Xml
 {
     /// <summary>
     /// Specifies the Xml-encoding of an embedded report attachment.
     /// </summary>
-    [XmlType]
+    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
     public enum XmlContentEncoding
     {
         /// <summary>
