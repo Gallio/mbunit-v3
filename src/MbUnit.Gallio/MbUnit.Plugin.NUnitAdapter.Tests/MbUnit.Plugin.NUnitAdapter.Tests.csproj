@@ -54,19 +54,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MbUnit.Core.Tests\MbUnit.Gallio.Core.Tests.csproj">
+    <ProjectReference Include="..\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj">
       <Project>{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E}</Project>
       <Name>MbUnit.Gallio.Core.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Core\MbUnit.Gallio.Core.csproj">
+    <ProjectReference Include="..\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
       <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
       <Name>MbUnit.Gallio.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj">
+    <ProjectReference Include="..\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj">
       <Project>{0783AC75-ECD1-4846-B85A-70D7313BF1D9}</Project>
       <Name>MbUnit.Gallio.Framework.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Framework\MbUnit.Gallio.Framework.csproj">
+    <ProjectReference Include="..\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>
     </ProjectReference>
@@ -74,7 +74,7 @@
       <Project>{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}</Project>
       <Name>MbUnit.Plugin.NUnitAdapter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Tests.Resources.NUnit\MbUnit.TestResources.NUnit.csproj">
+    <ProjectReference Include="..\MbUnit.TestResources.NUnit\MbUnit.TestResources.NUnit.csproj">
       <Project>{42CC86A2-B9A9-447F-97DD-D6809D78A8EB}</Project>
       <Name>MbUnit.TestResources.NUnit</Name>
     </ProjectReference>

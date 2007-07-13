@@ -14,7 +14,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +22,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -49,11 +49,11 @@
     <Compile Include="Utilities\ListUtilsTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MbUnit.Framework\MbUnit.Gallio.Framework.csproj">
+    <ProjectReference Include="..\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Tests.Resources.Gallio\MbUnit.TestResources.Gallio.csproj">
+    <ProjectReference Include="..\MbUnit.TestResources.Gallio\MbUnit.TestResources.Gallio.csproj">
       <Project>{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE}</Project>
       <Name>MbUnit.TestResources.Gallio</Name>
     </ProjectReference>

@@ -35,7 +35,7 @@ namespace MbUnit.Framework.Core
         /// <inheritdoc />
         public void BuildTemplates(TestTemplateTreeBuilder builder, ITestTemplate parent)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(builder.Project.Assemblies, "MbUnit.Gallio");
+            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(builder.Project.Assemblies, "MbUnit.Gallio.Framework");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Build templates for the contents of the assemblies that reference MbUnit Gallio
