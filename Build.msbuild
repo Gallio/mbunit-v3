@@ -22,6 +22,8 @@
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\MbUnit.Plugin.NUnitAdapter.Tests.csproj" />
 
+    <Binary Include="$(RootDir)\MbUnit License.txt" />
+    <Binary Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework\bin\MbUnit.Gallio.Framework.dll" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.dll" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll" />

@@ -16,7 +16,7 @@ set PATTERN=%~1
 set LICENSE_FILE=%~2
 
 for /R "." %%V in (%PATTERN%) do (
-  findstr /R /C:"Copyright" "%%V" >nul
+  findstr /R /C:"Copyright .* MbUnit Project - http://www\.mbunit\.com/" "%%V" >nul
   if errorlevel 1 (
     echo - %%V
     REM Use sed to strip out UTF8 byte order marks before adding the boilerplate.
