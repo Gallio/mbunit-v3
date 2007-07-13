@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using MbUnit.Core;
 using MbUnit.Core.Runtime;
 using MbUnit.Core.Services;
 using MbUnit.Core.Services.Assert;

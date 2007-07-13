@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Threading;
 using MbUnit.Core.Exceptions;
 using MbUnit.Core.Services.Context;
-using MbUnit.Framework;
 
 namespace MbUnit.Core.Services.Assert
 {

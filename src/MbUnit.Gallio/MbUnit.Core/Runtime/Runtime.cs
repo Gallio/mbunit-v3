@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using MbUnit.Core.Services;
 using MbUnit.Core.Services.Assert;
 using MbUnit.Core.Services.Context;
 using MbUnit.Core.Services.Report;
-using MbUnit.Framework;
 
 namespace MbUnit.Core.Runtime
 {
@@ -25,13 +21,6 @@ namespace MbUnit.Core.Runtime
     {
         private static readonly object syncRoot = new object();
         private static Runtime instance;
-
-        private TextReader oldConsoleIn;
-        private TextWriter oldConsoleOut;
-        private TextWriter oldConsoleError;
-
-        private ContextualReportTraceListener debugListener;
-        private ContextualReportTraceListener traceListener;
 
         private IServiceProvider serviceProvider;
         private IContextManager contextManager;
@@ -138,35 +127,10 @@ namespace MbUnit.Core.Runtime
             contextManager = GetService<IContextManager>();
             assertionService = GetService<IAssertionService>();
             reportService = GetService<IReportService>();
-
-            // Save the old console streams.
-            oldConsoleIn = Console.In;
-            oldConsoleOut = Console.Out;
-            oldConsoleError = Console.Error;
-
-            // Inject debug and trace listeners.
-            debugListener = new ContextualReportTraceListener(Report.DebugStreamName);
-            traceListener = new ContextualReportTraceListener(Report.TraceStreamName);
-            Debug.Listeners.Add(debugListener);
-            Debug.AutoFlush = true;
-
-            Trace.Listeners.Add(traceListener);
-            Trace.AutoFlush = true;
-            
-            // Inject console streams.
-
         }
 
         private void InternalTearDown()
         {
-            // Remove debug and trace listeners.
-            Debug.Listeners.Remove(debugListener);
-            Trace.Listeners.Remove(traceListener);
-
-            // Restore the old console streams.
-            Console.SetIn(oldConsoleIn);
-            Console.SetOut(oldConsoleOut);
-            Console.SetError(oldConsoleError);
         }
     }
 }

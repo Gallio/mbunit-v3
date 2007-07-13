@@ -4,7 +4,6 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using MbUnit.Core.Model;
-using MbUnit.Framework;
 
 namespace MbUnit.Core.Services.Context
 {

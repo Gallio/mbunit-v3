@@ -104,13 +104,8 @@
     <Content Include="Snippets\VSSnippets\typefixture.xml" />
     <Content Include="Snippets\VSSnippets\usingmbunit.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MbUnit.Gallio\MbUnit\MbUnit.csproj">
-      <Project>{B25D6A49-2395-40B9-847B-CB8B4E33058A}</Project>
-      <Name>MbUnit</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <Import Project="..\MbUnit.Gallio.ProjectReferences.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

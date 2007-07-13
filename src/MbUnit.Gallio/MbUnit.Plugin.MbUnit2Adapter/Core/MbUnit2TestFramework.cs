@@ -4,7 +4,6 @@ using System.Reflection;
 using MbUnit.Core.Collections;
 using MbUnit.Core.Metadata;
 using MbUnit.Core.Model;
-using MbUnit.Core.Remoting;
 using MbUnit.Core.Utilities;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Core

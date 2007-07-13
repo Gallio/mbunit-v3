@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Core.Exceptions;
 using MbUnit.Core.Services.Context;
-using MbUnit.Framework;
 
 namespace MbUnit.Core.Services.Assert
 {

@@ -10,7 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit\MbUnit.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Core\MbUnit.Core.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Framework\MbUnit.Framework.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\MbUnit.Plugin.NUnitAdapter.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests.Resources.Gallio\MbUnit.Tests.Resources.Gallio.csproj" />
@@ -20,7 +22,7 @@
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\MbUnit.Plugin.NUnitAdapter.Tests.csproj" />
 
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit\bin\MbUnit.Gallio.dll" />
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio\bin\MbUnit.Gallio.dll" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.dll" />
 

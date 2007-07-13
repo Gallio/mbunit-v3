@@ -62,12 +62,9 @@
       <Project>{F836C015-46C1-4E01-A48A-EFA0BA0AB92F}</Project>
       <Name>MbUnit.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit\MbUnit.csproj">
-      <Project>{B25D6A49-2395-40B9-847B-CB8B4E33058A}</Project>
-      <Name>MbUnit</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\MbUnit.Gallio.ProjectReferences.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

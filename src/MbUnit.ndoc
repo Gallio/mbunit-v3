@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <project SchemaVersion="2.0">
     <assemblies>
-        <assembly location="..\build\bin\MbUnit.Gallio.dll" documentation="MbUnit.Gallio\MbUnit\bin\MbUnit.Gallio.xml" />
+        <assembly location="MbUnit.Gallio\MbUnit.Gallio\bin\MbUnit.Gallio.dll" documentation="MbUnit.Gallio\MbUnit.Gallio\bin\MbUnit.Gallio.xml" />
     </assemblies>
     <namespaces>
     </namespaces>

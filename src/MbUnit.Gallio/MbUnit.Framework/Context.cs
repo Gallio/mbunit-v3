@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using MbUnit.Core;
 using MbUnit.Core.Model;
 using MbUnit.Core.Runtime;
 using MbUnit.Core.Services.Context;

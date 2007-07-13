@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MbUnit Gallio")]
+[assembly: AssemblyTitle("MbUnit.Framework")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MbUnit Gallio")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyProduct("MbUnit.Framework")]
+[assembly: AssemblyCopyright("Copyright © MbUnit Project 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("906e66aa-0c35-4d7c-a593-945ba9dddd8f")]
+[assembly: Guid("e59e2250-578a-44a0-a947-c46a2c5b003f")]
 
 // Version information for an assembly consists of the following four values:
 //
