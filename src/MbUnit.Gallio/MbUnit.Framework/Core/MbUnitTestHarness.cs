@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using MbUnit.Core.Services.Report;
+using MbUnit.Framework.Services.Reports;
 
 namespace MbUnit.Framework.Core
 {

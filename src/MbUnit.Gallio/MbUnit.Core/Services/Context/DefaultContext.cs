@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
+using MbUnit.Framework.Services.Contexts;
 
-namespace MbUnit.Core.Services.Context
+namespace MbUnit.Core.Services.Contexts
 {
     /// <summary>
     /// Default implementation of a context object.

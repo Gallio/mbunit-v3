@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.Services.Context;
-using MbUnit.Core.Services.Report;
-using MbUnit.Core.Services.Report.Xml;
+using MbUnit.Core.Services.Contexts;
+using MbUnit.Framework.Services.Reports;
+using MbUnit.Core.Services.Reports.Xml;
+using MbUnit.Framework.Services.Contexts;
 
-namespace MbUnit.Core.Services
+namespace MbUnit.Core.Services.Reports
 {
     /// <summary>
     /// The default implementation of the report service.

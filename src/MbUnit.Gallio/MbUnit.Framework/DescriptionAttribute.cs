@@ -1,6 +1,6 @@
 using System;
-using MbUnit.Core.Metadata;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model.Metadata;
+using MbUnit.Framework.Model;
 using MbUnit.Framework.Core.Attributes;
 
 namespace MbUnit.Framework

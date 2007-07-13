@@ -1,6 +1,6 @@
 using System;
 using System.Reflection;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
 
 namespace MbUnit.Framework.Core.Model
 {

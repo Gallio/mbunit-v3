@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Core.Serialization;
 
-namespace MbUnit.Core.Services.Report.Xml
+namespace MbUnit.Core.Services.Reports.Xml
 {
     /// <summary>
     /// An Xml-serializable report body.

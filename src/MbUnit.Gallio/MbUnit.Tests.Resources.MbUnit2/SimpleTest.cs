@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Resources.MbUnit2
+namespace MbUnit.TestResources.MbUnit2
 {
     [TestFixture]
     public class SimpleTest

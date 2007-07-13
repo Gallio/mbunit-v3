@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using MbUnit.Core.Metadata;
-using MbUnit.Core.Model;
-using MbUnit.Core.Utilities;
+using MbUnit.Framework.Model.Metadata;
+using MbUnit.Framework.Model;
 
 namespace MbUnit.Framework.Core.Model
 {

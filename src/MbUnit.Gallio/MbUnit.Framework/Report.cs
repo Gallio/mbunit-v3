@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.Xml.Serialization;
-using MbUnit.Core.Runtime;
-using MbUnit.Core.Services.Report;
-using MbUnit.Core.Services.Report.Attachments;
+using MbUnit.Framework.Services.Reports;
+using MbUnit.Framework.Services.Reports;
+using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Framework
 {
@@ -53,7 +53,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IReportService ReportingService
         {
-            get { return Runtime.Instance.ReportingService; }
+            get { return RuntimeHolder.Instance.Resolve<IReportService>(); }
         }
 
         /// <summary>

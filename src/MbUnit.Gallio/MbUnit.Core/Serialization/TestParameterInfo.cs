@@ -1,6 +1,6 @@
 using System;
 using System.Xml.Serialization;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
 
 namespace MbUnit.Core.Serialization
 {
@@ -14,6 +14,24 @@ namespace MbUnit.Core.Serialization
     {
         private string typeName;
         private int index;
+
+        /// <summary>
+        /// Creates an empty object.
+        /// </summary>
+        public TestParameterInfo()
+        {
+        }
+
+        /// <summary>
+        /// Creates an serializable description of a model object.
+        /// </summary>
+        /// <param name="obj">The model object</param>
+        public TestParameterInfo(ITestParameter obj)
+            : base(obj)
+        {
+            typeName = obj.Type.FullName;
+            index = obj.Index;
+        }
 
         /// <summary>
         /// Gets or sets the fully-qualified type name of the parameter's value type.  (non-null)

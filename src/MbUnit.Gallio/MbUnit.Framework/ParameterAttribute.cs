@@ -1,5 +1,5 @@
 using System;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
 using MbUnit.Framework.Core.Attributes;
 using MbUnit.Framework.Core.Model;
 

@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Core.Collections;
-using MbUnit.Core.Metadata;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Collections;
+using MbUnit.Framework.Model.Metadata;
+using MbUnit.Framework.Model;
 using MbUnit.Core.Utilities;
+using MbUnit.Framework.Utilities;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Core
 {

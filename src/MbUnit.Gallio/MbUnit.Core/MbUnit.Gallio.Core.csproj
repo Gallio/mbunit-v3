@@ -1,0 +1,110 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B1843915-598A-4F80-9E47-BA890F879262}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit.Core</RootNamespace>
+    <AssemblyName>MbUnit.Gallio.Core</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\MbUnit.Gallio.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\MbUnit.Gallio.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runner\AutoRunner.cs" />
+    <Compile Include="Runner\BaseTestDomain.cs" />
+    <Compile Include="Runner\CommandLine\CommandLineArgumentAttribute.cs" />
+    <Compile Include="Runner\CommandLine\CommandLineArgumentParser.cs" />
+    <Compile Include="Runner\CommandLine\CommandLineArgumentType.cs" />
+    <Compile Include="Runner\CommandLine\CommandLineUtility.cs" />
+    <Compile Include="Runner\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
+    <Compile Include="Runner\CommandLine\ErrorReporter.cs" />
+    <Compile Include="Runner\FatalRunnerException.cs" />
+    <Compile Include="Runner\IsolatedTestDomain.cs" />
+    <Compile Include="Runner\ITestDomain.cs" />
+    <Compile Include="Runner\LocalTestDomain.cs" />
+    <Compile Include="Runner\RemoteTestDomain.cs" />
+    <Compile Include="Services\Runtime\DefaultAssemblyResolverManager.cs" />
+    <Compile Include="Serialization\CodeReferenceInfo.cs" />
+    <Compile Include="Serialization\MetadataMapEntry.cs" />
+    <Compile Include="Serialization\MetadataMapInfo.cs" />
+    <Compile Include="Serialization\SerializationUtils.cs" />
+    <Compile Include="Serialization\TestComponentInfo.cs" />
+    <Compile Include="Serialization\TestInfo.cs" />
+    <Compile Include="Serialization\TestParameterInfo.cs" />
+    <Compile Include="Serialization\TestParameterSetInfo.cs" />
+    <Compile Include="Serialization\TestProjectInfo.cs" />
+    <Compile Include="Serialization\TestTemplateInfo.cs" />
+    <Compile Include="Services\Assertion\AssertionUtils.cs" />
+    <Compile Include="Services\Assertion\DefaultAssertionService.cs" />
+    <Compile Include="Services\Context\DefaultContext.cs" />
+    <Compile Include="Services\Context\DefaultContextManager.cs" />
+    <Compile Include="Services\Report\DefaultReportService.cs" />
+    <Compile Include="Services\Report\Xml\XmlContentEncoding.cs" />
+    <Compile Include="Services\Report\Xml\XmlReport.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportAttachment.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportAttachmentSerializer.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportBodyTag.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportContainerTag.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportEmbedTag.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportSectionTag.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportStream.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportTag.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportTextTag.cs" />
+    <Compile Include="Services\Report\Xml\XmlReportWriter.cs" />
+    <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Runner\IsolatedTestDomain.config.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MbUnit.Framework\MbUnit.Gallio.Framework.csproj">
+      <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
+      <Name>MbUnit.Gallio.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

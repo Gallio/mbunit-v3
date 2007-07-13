@@ -1,0 +1,148 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit.Framework</RootNamespace>
+    <AssemblyName>MbUnit.Gallio.Framework</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\MbUnit.Gallio.Framework.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\MbUnit.Gallio.Framework.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyResolverAttribute.cs" />
+    <Compile Include="Assert.cs" />
+    <Compile Include="AuthorAttribute.cs" />
+    <Compile Include="Block.cs" />
+    <Compile Include="Collections\MultiMap.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="Core\Attributes\AssemblyDecoratorPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\AssemblyPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\ConditionPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\DataPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\DecoratorOrderComparer.cs" />
+    <Compile Include="Core\Attributes\DecoratorPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\FixtureDecoratorPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\FixturePatternAttribute.cs" />
+    <Compile Include="Core\Attributes\MetadataPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\MethodDecoratorPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\MethodPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\ParameterDecoratorPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\ParameterPatternAttribute.cs" />
+    <Compile Include="Core\Attributes\PatternAttribute.cs" />
+    <Compile Include="Core\MbUnitTestHarness.cs" />
+    <Compile Include="Core\MbUnitTestFramework.cs" />
+    <Compile Include="Core\Model\MbUnitTestAssemblyTemplate.cs" />
+    <Compile Include="Core\Model\MbUnitTestFixtureTemplate.cs" />
+    <Compile Include="Core\Model\MbUnitTestFrameworkTemplate.cs" />
+    <Compile Include="Core\Model\MbUnitTestMethodTemplate.cs" />
+    <Compile Include="Core\Model\MbUnitTestParameter.cs" />
+    <Compile Include="Core\Model\MbUnitTestParameterSet.cs" />
+    <Compile Include="Core\Model\MbUnitTestTemplate.cs" />
+    <Compile Include="Core\Model\Slot.cs" />
+    <Compile Include="DescriptionAttribute.cs" />
+    <Compile Include="Exceptions\AssertionException.cs" />
+    <Compile Include="ExpectedExceptionAttribute.cs" />
+    <Compile Include="IAssemblyResolver.cs" />
+    <Compile Include="Metadata\MetadataConstants.cs" />
+    <Compile Include="Metadata\TemplateKind.cs" />
+    <Compile Include="Model\BaseTestComponent.cs" />
+    <Compile Include="Model\BaseTestParameter.cs" />
+    <Compile Include="Model\BaseTestParameterSet.cs" />
+    <Compile Include="Model\BaseTestTemplate.cs" />
+    <Compile Include="Model\CodeReference.cs" />
+    <Compile Include="Model\ITest.cs" />
+    <Compile Include="Model\ITestComponent.cs" />
+    <Compile Include="Model\ITestFramework.cs" />
+    <Compile Include="Model\ITestParameter.cs" />
+    <Compile Include="Model\ITestParameterSet.cs" />
+    <Compile Include="Model\ITestTemplate.cs" />
+    <Compile Include="Model\ITestTemplateBinding.cs" />
+    <Compile Include="Model\MetadataMap.cs" />
+    <Compile Include="Model\ModelException.cs" />
+    <Compile Include="Model\ModelUtils.cs" />
+    <Compile Include="Model\TestProject.cs" />
+    <Compile Include="Model\TestScope.cs" />
+    <Compile Include="Model\TestTemplateGroup.cs" />
+    <Compile Include="Model\TestTemplateTreeBuilder.cs" />
+    <Compile Include="Model\TestTreeBuilder.cs" />
+    <Compile Include="ParameterAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report.cs" />
+    <Compile Include="RowAttribute.cs" />
+    <Compile Include="RowTestAttribute.cs" />
+    <Compile Include="Services\Assertions\Assertion.cs" />
+    <Compile Include="Services\Assertions\AssertionCondition.cs" />
+    <Compile Include="Services\Assertions\AssertionResult.cs" />
+    <Compile Include="Services\Assertions\AssertionResultType.cs" />
+    <Compile Include="Services\Assertions\AssertionUtils.cs" />
+    <Compile Include="Services\Assertions\IAssertionService.cs" />
+    <Compile Include="Services\Contexts\IContext.cs" />
+    <Compile Include="Services\Contexts\IContextManager.cs" />
+    <Compile Include="Services\Runtime\IAssemblyResolverManager.cs" />
+    <Compile Include="Services\Reports\Attachments\Attachment.cs" />
+    <Compile Include="Services\Reports\Attachments\AttachmentUtils.cs" />
+    <Compile Include="Services\Reports\Attachments\BinaryAttachment.cs" />
+    <Compile Include="Services\Reports\Attachments\IAttachmentVisitor.cs" />
+    <Compile Include="Services\Reports\Attachments\MimeTypes.cs" />
+    <Compile Include="Services\Reports\Attachments\TextAttachment.cs" />
+    <Compile Include="Services\Reports\Attachments\XmlAttachment.cs" />
+    <Compile Include="Services\Reports\ContextualReportTextWriter.cs" />
+    <Compile Include="Services\Reports\ContextualReportTraceListener.cs" />
+    <Compile Include="Services\Reports\DelegatingReport.cs" />
+    <Compile Include="Services\Reports\IReport.cs" />
+    <Compile Include="Services\Reports\IReportService.cs" />
+    <Compile Include="Services\Reports\IReportStream.cs" />
+    <Compile Include="Services\Reports\IReportStreamCollection.cs" />
+    <Compile Include="Services\Reports\IReportWriter.cs" />
+    <Compile Include="Services\Runtime\IRuntime.cs" />
+    <Compile Include="Services\Runtime\RuntimeHolder.cs" />
+    <Compile Include="SetUpAttribute.cs" />
+    <Compile Include="TearDownAttribute.cs" />
+    <Compile Include="TestAttribute.cs" />
+    <Compile Include="TestFixtureAttribute.cs" />
+    <Compile Include="TestFixtureSetUpAttribute.cs" />
+    <Compile Include="TestFixtureTearDownAttribute.cs" />
+    <Compile Include="TestsOnAttribute.cs" />
+    <Compile Include="Utilities\EmptyArray.cs" />
+    <Compile Include="Utilities\ListUtils.cs" />
+    <Compile Include="Utilities\ReflectionUtils.cs" />
+    <Compile Include="Utilities\StringUtils.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

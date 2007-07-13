@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using MbUnit.Core.Services.Report.Attachments;
+using MbUnit.Framework.Services.Reports;
 
-namespace MbUnit.Core.Services.Report.Xml
+namespace MbUnit.Core.Services.Reports.Xml
 {
     /// <summary>
     /// Writes reports to an Xml-serializable format.
@@ -70,7 +70,7 @@ namespace MbUnit.Core.Services.Report.Xml
                 else
                 {
                     attachmentMap.Add(attachment.Name, attachment);
-                    xmlReport.AddAttachment(attachment.XmlSerialize());
+                    xmlReport.AddAttachment(XmlReportAttachment.XmlSerialize(attachment));
                 }
 
                 if (streamName != null)

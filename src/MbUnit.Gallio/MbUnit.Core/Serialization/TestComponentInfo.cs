@@ -1,6 +1,6 @@
 using System;
 using System.Xml.Serialization;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
 
 namespace MbUnit.Core.Serialization
 {
@@ -15,6 +15,24 @@ namespace MbUnit.Core.Serialization
         private string name;
         private CodeReferenceInfo codeReference;
         private MetadataMapInfo metadata;
+
+        /// <summary>
+        /// Creates an empty object.
+        /// </summary>
+        public TestComponentInfo()
+        {
+        }
+
+        /// <summary>
+        /// Creates an serializable description of a model object.
+        /// </summary>
+        /// <param name="obj">The model object</param>
+        public TestComponentInfo(ITestComponent obj)
+        {
+            name = obj.Name;
+            codeReference = new CodeReferenceInfo(obj.CodeReference);
+            metadata = new MetadataMapInfo(obj.Metadata);
+        }
 
         /// <summary>
         /// Gets or sets the test component name.  (non-null)

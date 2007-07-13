@@ -10,23 +10,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Core\MbUnit.Core.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Framework\MbUnit.Framework.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\MbUnit.Plugin.NUnitAdapter.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests.Resources.Gallio\MbUnit.Tests.Resources.Gallio.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests.Resources.MbUnit2\MbUnit.Tests.Resources.MbUnit2.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests.Resources.NUnit\MbUnit.Tests.Resources.NUnit.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests\MbUnit.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.TestResources.Gallio\MbUnit.TestResources.Gallio.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.TestResources.MbUnit2\MbUnit.TestResources.MbUnit2.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.TestResources.NUnit\MbUnit.TestResources.NUnit.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\MbUnit.Plugin.NUnitAdapter.Tests.csproj" />
 
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio\bin\MbUnit.Gallio.dll" />
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework\bin\MbUnit.Gallio.Framework.dll" />
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.dll" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.dll" />
 
-    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Tests\bin\MbUnit.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework.Tests\bin\MbUnit.Gallio.Framework.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core.Tests\bin\MbUnit.Gallio.Core.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\bin\MbUnit.Plugin.MbUnit2Adapter.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\bin\MbUnit.Plugin.NUnitAdapter.Tests.dll" />
   </ItemGroup>

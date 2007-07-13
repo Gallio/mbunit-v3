@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using MbUnit.Core;
-using MbUnit.Core.Model;
-using MbUnit.Core.Runtime;
-using MbUnit.Core.Services.Context;
+using MbUnit.Framework.Model;
+using MbUnit.Framework.Services.Contexts;
+using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Framework
 {
@@ -25,7 +24,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IContextManager ContextManager
         {
-            get { return Runtime.Instance.ContextManager; }
+            get { return RuntimeHolder.Instance.Resolve<IContextManager>(); }
         }
 
         /// <summary>

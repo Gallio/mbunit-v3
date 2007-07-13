@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Resources.Gallio
+namespace MbUnit.TestResources.Gallio
 {
     [TestFixture]
     public class SimpleTest

@@ -1,8 +1,8 @@
 using System;
 using System.Reflection;
-using MbUnit.Core.Model;
-using MbUnit.Core.Utilities;
+using MbUnit.Framework.Model;
 using MbUnit.Framework.Core.Model;
+using MbUnit.Framework.Utilities;
 
 namespace MbUnit.Framework.Core.Attributes
 {

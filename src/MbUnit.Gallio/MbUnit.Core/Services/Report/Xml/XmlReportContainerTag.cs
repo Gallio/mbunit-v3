@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace MbUnit.Core.Services.Report.Xml
+namespace MbUnit.Core.Services.Reports.Xml
 {
     /// <summary>
     /// Abstract class of Xml-serializable report container tags.

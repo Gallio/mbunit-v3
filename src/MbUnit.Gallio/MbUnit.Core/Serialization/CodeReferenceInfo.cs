@@ -1,6 +1,6 @@
 using System;
 using System.Xml.Serialization;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
 
 namespace MbUnit.Core.Serialization
 {
@@ -16,6 +16,26 @@ namespace MbUnit.Core.Serialization
         private string typeName;
         private string memberName;
         private string parameterName;
+
+        /// <summary>
+        /// Creates an empty object.
+        /// </summary>
+        public CodeReferenceInfo()
+        {
+        }
+
+        /// <summary>
+        /// Creates an serializable description of a model object.
+        /// </summary>
+        /// <param name="obj">The model object</param>
+        public CodeReferenceInfo(CodeReference obj)
+        {
+            assemblyName = obj.Assembly != null ? obj.Assembly.FullName : null;
+            namespaceName = obj.Namespace;
+            typeName = obj.Type != null ? obj.Type.FullName : null;
+            memberName = obj.Member != null ? obj.Member.Name : null;
+            parameterName = obj.Parameter != null ? obj.Parameter.Name : null;
+        }
 
         /// <summary>
         /// Gets or sets the assembly name, or null if none.

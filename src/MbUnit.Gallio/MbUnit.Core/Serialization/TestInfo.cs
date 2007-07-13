@@ -1,6 +1,6 @@
 using System;
 using System.Xml.Serialization;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
 
 namespace MbUnit.Core.Serialization
 {
@@ -10,43 +10,22 @@ namespace MbUnit.Core.Serialization
     /// <seealso cref="ITest"/>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class TestInfo
+    public class TestInfo : TestComponentInfo
     {
-        private string name;
-        private CodeReferenceInfo codeReference;
-        private MetadataMapInfo metadata;
-
         /// <summary>
-        /// Gets or sets the test name.  (non-null)
+        /// Creates an empty object.
         /// </summary>
-        /// <seealso cref="ITest.Name"/>
-        [XmlAttribute("name")]
-        public string Name
+        public TestInfo()
         {
-            get { return name; }
-            set { name = value; }
         }
 
         /// <summary>
-        /// Gets or sets the code reference.  (non-null)
+        /// Creates an serializable description of a model object.
         /// </summary>
-        /// <seealso cref="ITest.CodeReference"/>
-        [XmlElement("codeReference", IsNullable=false)]
-        public CodeReferenceInfo CodeReference
+        /// <param name="obj">The model object</param>
+        public TestInfo(ITest obj)
+            : base(obj)
         {
-            get { return codeReference; }
-            set { codeReference = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the metadata map.  (non-null)
-        /// </summary>
-        /// <seealso cref="ITest.Metadata"/>
-        [XmlElement("metadata", IsNullable=false)]
-        public MetadataMapInfo Metadata
-        {
-            get { return metadata; }
-            set { metadata = value; }
         }
     }
 }

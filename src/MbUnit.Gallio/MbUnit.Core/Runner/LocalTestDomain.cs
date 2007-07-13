@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
-using MbUnit.Core.Model;
-using MbUnit.Core.Runtime;
+using MbUnit.Framework.Model;
 using MbUnit.Core.Serialization;
+using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Core.Runner
 {

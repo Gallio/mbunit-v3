@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
+using MbUnit.Core.Utilities;
+using MbUnit.Framework.Utilities;
 
 namespace MbUnit.Core.Serialization
 {
@@ -14,6 +17,32 @@ namespace MbUnit.Core.Serialization
     {
         private TestTemplateInfo[] children;
         private TestParameterSetInfo[] parameterSets;
+
+        /// <summary>
+        /// Creates an empty object.
+        /// </summary>
+        public TestTemplateInfo()
+        {
+        }
+
+        /// <summary>
+        /// Creates an serializable description of a model object.
+        /// </summary>
+        /// <param name="obj">The model object</param>
+        public TestTemplateInfo(ITestTemplate obj)
+            : base(obj)
+        {
+            List<TestTemplateInfo> childrenInfo = new List<TestTemplateInfo>();
+            foreach (ITestTemplate child in obj.Children)
+                childrenInfo.Add(new TestTemplateInfo(child));
+            children = childrenInfo.ToArray();
+
+            parameterSets = ListUtils.ConvertAllToArray<ITestParameterSet, TestParameterSetInfo>(obj.ParameterSets,
+                delegate(ITestParameterSet parameterSet)
+                {
+                    return new TestParameterSetInfo(parameterSet);
+                });
+        }
 
         /// <summary>
         /// Gets or sets the children.  (non-null but possibly empty)

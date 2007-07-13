@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace MbUnit.Core.Services.Report.Xml
+namespace MbUnit.Core.Services.Reports.Xml
 {
     /// <summary>
     /// A report tag is an Xml-serializable object that is included

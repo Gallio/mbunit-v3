@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model;
+using MbUnit.Framework;
+using MbUnit.Framework.Services.Contexts;
 
-namespace MbUnit.Core.Services.Context
+namespace MbUnit.Core.Services.Contexts
 {
     /// <summary>
     /// The default context manager tracks the current context by way

@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.Services.Runtime;
 
 namespace MbUnit.Core.Runner
 {

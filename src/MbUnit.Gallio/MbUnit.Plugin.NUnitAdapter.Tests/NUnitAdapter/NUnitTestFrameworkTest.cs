@@ -2,9 +2,8 @@ extern alias MbUnit2;
 using MbUnit2::MbUnit.Framework;
 
 using System.Reflection;
-using MbUnit.Core.Metadata;
-using MbUnit.Core.Model;
-using MbUnit.Core.Utilities;
+using MbUnit.Framework.Model.Metadata;
+using MbUnit.Framework.Model;
 using MbUnit.Framework.Core.Model;
 using MbUnit.Plugin.NUnitAdapter.Core;
 
@@ -43,7 +42,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
         [Test]
         public void PopulateTree_WhenAssemblyReferencesNUnit_ContainsJustTheFrameworkTemplate()
         {
-            Type fixtureType = typeof(MbUnit.Tests.Resources.NUnit.SimpleTest);
+            Type fixtureType = typeof(MbUnit.TestResources.NUnit.SimpleTest);
             Assembly assembly = fixtureType.Assembly;
             Version expectedVersion = typeof(NUnit.Framework.Assert).Assembly.GetName().Version;
 

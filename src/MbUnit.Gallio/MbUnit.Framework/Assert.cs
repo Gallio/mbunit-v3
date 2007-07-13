@@ -2,13 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using MbUnit.Core;
-using MbUnit.Core.Runtime;
-using MbUnit.Core.Services;
-using MbUnit.Core.Services.Assert;
-using MbUnit.Core.Utilities;
-using MbUnit.Core.Exceptions;
+using MbUnit.Framework.Exceptions;
 using System.Globalization;
+using MbUnit.Framework.Services.Assertions;
+using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Framework
 {
@@ -26,7 +23,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IAssertionService AssertionService
         {
-            get { return Runtime.Instance.AssertionService; }
+            get { return RuntimeHolder.Instance.Resolve<IAssertionService>(); }
         }
 
         #region Override Equals and ReferenceEquals for safety

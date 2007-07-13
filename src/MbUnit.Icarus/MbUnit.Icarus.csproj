@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.TextEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Components\ICSharpCode.TextEditor.dll</HintPath>
@@ -121,8 +129,17 @@
   <ItemGroup>
     <Content Include="App.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MbUnit.Gallio\MbUnit.Core\MbUnit.Gallio.Core.csproj">
+      <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
+      <Name>MbUnit.Gallio.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit.Gallio\MbUnit.Framework\MbUnit.Gallio.Framework.csproj">
+      <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
+      <Name>MbUnit.Gallio.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\MbUnit.Gallio.ProjectReferences.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

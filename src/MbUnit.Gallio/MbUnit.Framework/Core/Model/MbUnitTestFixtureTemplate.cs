@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using MbUnit.Core.Metadata;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Model.Metadata;
+using MbUnit.Framework.Model;
 
 namespace MbUnit.Framework.Core.Model
 {
