@@ -7,15 +7,7 @@
     <legacyUnhandledExceptionPolicy enabled="1" />
 
     <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
-      <dependentAssembly>
-        <assemblyIdentity name="{MBUNIT_ASSEMBLY_NAME}"
-                          publicKeyToken="{MBUNIT_ASSEMBLY_PUBLIC_KEY_TOKEN}"
-                          culture="neutral" />
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535"
-                         newVersion="{MBUNIT_ASSEMBLY_VERSION}"/>
-        <codeBase version="{MBUNIT_ASSEMBLY_VERSION}"
-                  href="{MBUNIT_ASSEMBLY_CODEBASE}" />
-      </dependentAssembly>
+      {ASSEMBLY_BINDINGS}
     </assemblyBinding>
   </runtime>
 
