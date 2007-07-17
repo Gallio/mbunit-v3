@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <castle>
+    <facilities>
+      <!-- The Startable facility enables components that implement the IStartable
+           interface to be automatically started when the IoC container is
+           initialized and then automatically stopped when the IoC container is
+           shut down.  So if you have a component that you want to ensure is
+           initialized when the application starts, just make it implement IStartable. -->
+      <facility id="Startable"
+                type="Castle.Facilities.Startable.StartableFacility, Castle.MicroKernel" />
+    </facilities>
+
+    <components>
+      <component id="Core.MbUnitTestFramework"
+                 service="MbUnit.Framework.Kernel.Harness.ITestFramework, MbUnit.Gallio.Framework"
+                 type="MbUnit.Core.Harness.MbUnitTestFramework, MbUnit.Gallio.Core" />
+      
+      <component id="Core.AssertionService"
+                 service="MbUnit.Framework.Services.Assertions.IAssertionService, MbUnit.Gallio.Framework" 
+                 type="MbUnit.Core.Services.Assertions.DefaultAssertionService, MbUnit.Gallio.Core" />
+      <component id="Core.ContextManager"
+                 service="MbUnit.Framework.Services.Contexts.IContextManager, MbUnit.Gallio.Framework"
+                 type="MbUnit.Core.Services.Contexts.DefaultContextManager, MbUnit.Gallio.Core" />
+      <component id="Core.ReportService"
+                 service="MbUnit.Framework.Services.Reports.IReportService, MbUnit.Gallio.Framework"
+                 type="MbUnit.Core.Services.Reports.DefaultReportService, MbUnit.Gallio.Core" />
+    </components>
+  </castle>
+</configuration>

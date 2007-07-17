@@ -30,7 +30,7 @@ namespace MbUnit.Framework.Services.Runtime
     /// container provided by the MbUnit core.
     /// </para>
     /// </summary>
-    public interface IRuntime
+    public interface IRuntime : IDisposable
     {
         /// <summary>
         /// Resolves a reference to a component that implements the specified service.

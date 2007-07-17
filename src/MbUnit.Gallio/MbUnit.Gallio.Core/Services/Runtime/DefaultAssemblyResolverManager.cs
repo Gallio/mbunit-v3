@@ -25,13 +25,6 @@ namespace MbUnit.Core.Services.Runtime
     /// <summary>
     /// Resolves assemblies using hint paths and custom resolvers.
     /// </summary>
-    /// <remarks>
-    /// Note that this implementation does not depend on any particular test framework
-    /// or on components that cannot be found in the main MbUnit assembly.  If it
-    /// did, we could have interesting bootstrapping problems with the assembly resolver
-    /// if the other required components used assemblies not located in the application
-    /// base directory.
-    /// </remarks>
     public class DefaultAssemblyResolverManager : LongLivingMarshalByRefObject, IAssemblyResolverManager
     {
         private List<string> hintDirectories = null;

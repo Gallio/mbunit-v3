@@ -20,11 +20,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MbUnit.Framework.Tests")]
+[assembly: AssemblyTitle("MbUnit._Framework.Tests")]
 [assembly: AssemblyDescription("MbUnit Framework Tests")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MbUnit Project")]
-[assembly: AssemblyProduct("MbUnit.Framework.Tests")]
+[assembly: AssemblyProduct("MbUnit._Framework.Tests")]
 [assembly: AssemblyCopyright("Copyright © MbUnit Project 2007 - http://www.mbunit.com/")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

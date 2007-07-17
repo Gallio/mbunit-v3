@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using MbUnit.Framework.Model;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework;
 using MbUnit.Framework.Services.Contexts;
 

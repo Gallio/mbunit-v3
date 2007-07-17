@@ -1,0 +1,3 @@
+* Eliminate the stupid underscore prefix on MbUnit._Framework.Tests
+  that was needed to disambiguate between MbUnit v2 and v3 framework bits.
+  Once we're self-hosting that becomes moot.

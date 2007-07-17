@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using MbUnit.Framework.Model;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Utilities;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Serialization
 {

@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Text;
 using Rhino.Mocks;
 
-namespace MbUnit.Tests
+namespace MbUnit._Framework.Tests
 {
     /// <summary>
     /// Base unit test.

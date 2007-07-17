@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Model.Metadata;
-using MbUnit.Framework.Model;
-using MbUnit.Framework.Core.Attributes;
+using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Attributes;
 
 namespace MbUnit.Framework
 {

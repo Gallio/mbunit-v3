@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <castle>
+    <facilities>
+    </facilities>
+
+    <components>
+      <component id="MbUnit2Adapter.TestFramework"
+                 service="MbUnit.Framework.Kernel.Harness.ITestFramework, MbUnit.Gallio.Framework"
+                 type="MbUnit.Plugin.MbUnit2Adapter.Core.MbUnit2TestFramework, MbUnit.Plugin.MbUnit2Adapter" />
+    </components>
+  </castle>
+</configuration>

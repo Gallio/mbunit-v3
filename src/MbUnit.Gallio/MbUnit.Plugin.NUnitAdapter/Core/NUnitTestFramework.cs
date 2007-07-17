@@ -16,11 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Framework.Collections;
-using MbUnit.Framework.Model.Metadata;
-using MbUnit.Framework.Model;
+using MbUnit.Framework.Kernel.Collections;
+using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Utilities;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Plugin.NUnitAdapter.Core
 {

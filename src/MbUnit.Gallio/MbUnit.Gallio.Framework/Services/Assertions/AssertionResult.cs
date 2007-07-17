@@ -16,7 +16,7 @@
 using System;
 using System.Xml.Serialization;
 using MbUnit.Framework.Services.Assertions;
-using MbUnit.Framework.Utilities;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Framework.Services.Assertions
 {

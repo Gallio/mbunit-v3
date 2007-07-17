@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Collections;
+using MbUnit.Framework.Kernel.Collections;
 
 namespace MbUnit.Framework.Services.Reports
 {

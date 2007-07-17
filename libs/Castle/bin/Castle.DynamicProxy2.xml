@@ -1,0 +1,344 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Castle.DynamicProxy2</name>
+    </assembly>
+    <members>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.IndirectReference">
+            <summary>
+            Wraps a reference that is passed 
+            ByRef and provides indirect load/store support.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.NewArrayExpression">
+            <summary>
+            Summary description for NewArrayExpression.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.ReferencesToObjectArrayExpression">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.LdcOpCodesDictionary">
+            <summary>
+            Provides appropriate Ldc.X opcode for the type of primitive value to be loaded.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.LdindOpCodesDictionary">
+            <summary>
+            Provides appropriate Ldind.X opcode for 
+            the type of primitive value to be loaded indirectly.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.MethodEmitter.CopyParametersAndReturnTypeFrom(System.Reflection.MethodInfo,Castle.DynamicProxy.Generators.Emitters.AbstractTypeEmitter)">
+            <summary>
+            Inspect the base method for generic definitions
+            and set the return type and the parameters
+            accordingly
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadOpCodeForConstantValue(System.Reflection.Emit.ILGenerator,System.Object)">
+            <summary>
+            Emits a load opcode of the appropriate kind for a constant string or
+            primitive value.
+            </summary>
+            <param name="gen"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadOpCodeForDefaultValueOfType(System.Reflection.Emit.ILGenerator,System.Type)">
+            <summary>
+            Emits a load opcode of the appropriate kind for the constant default value of a
+            type, such as 0 for value types and null for reference types.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadIndirectOpCodeForType(System.Reflection.Emit.ILGenerator,System.Type)">
+            <summary>
+            Emits a load indirect opcode of the appropriate type for a value or object reference.
+            Pops a pointer off the evaluation stack, dereferences it and loads
+            a value of the specified type.
+            </summary>
+            <param name="gen"></param>
+            <param name="type"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitStoreIndirectOpCodeForType(System.Reflection.Emit.ILGenerator,System.Type)">
+            <summary>
+            Emits a store indirectopcode of the appropriate type for a value or object reference.
+            Pops a value of the specified type and a pointer off the evaluation stack, and
+            stores the value.
+            </summary>
+            <param name="gen"></param>
+            <param name="type"></param>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.PropertiesCollection">
+            <summary>
+            Summary description for PropertiesCollection.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.StindOpCodesDictionary">
+            <summary>
+            Provides appropriate Stind.X opcode 
+            for the type of primitive value to be stored indirectly.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.BaseProxyGenerator">
+            <summary>
+            Base class that exposes the common functionalities
+            to proxy generation.
+            </summary>
+            <remarks>
+            TODO: 
+            - Add events so people can hook into the proxy generation and change the generated code
+            - Add serialization support
+            - Add Xml serialization support
+            - Allow one to specify the base class for interface proxies
+            - Use the interceptor selector if provided
+            - Expose parameters of non-parameterless constructors on the generated constructor
+            - Add tests and fixes for 'leaking this' problem
+            - Mixin support
+            </remarks>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.GetProxyTargetReference">
+            <summary>
+            Used by dinamically implement <see cref="T:Castle.Core.Interceptor.IProxyTargetAccessor"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.GenerateParameterlessConstructor(Castle.DynamicProxy.Generators.Emitters.ClassEmitter,System.Type,Castle.DynamicProxy.Generators.Emitters.SimpleAST.FieldReference)">
+            <summary>
+            Generates a parameters constructor that initializes the proxy
+            state with <see cref="T:Castle.Core.Interceptor.StandardInterceptor"/> just to make it non-null.
+            <para>
+            This constructor is important to allow proxies to be XML serializable
+            </para>
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.BuildInvocationNestedType(Castle.DynamicProxy.Generators.Emitters.ClassEmitter,System.Type,System.Type,System.Reflection.MethodInfo,System.Reflection.MethodInfo,Castle.DynamicProxy.Generators.ConstructorVersion)">
+            <summary>
+            If callbackMethod is null the InvokeOnTarget implementation 
+            is just the code to throw an exception
+            </summary>
+            <param name="emitter"></param>
+            <param name="targetType"></param>
+            <param name="targetForInvocation"></param>
+            <param name="methodInfo"></param>
+            <param name="callbackMethod"></param>
+            <param name="version"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.CreateIInvocationConstructor(System.Type,Castle.DynamicProxy.Generators.Emitters.NestedClassEmitter,Castle.DynamicProxy.Generators.Emitters.SimpleAST.FieldReference,Castle.DynamicProxy.Generators.ConstructorVersion)">
+            <summary>
+            Generates the constructor for the nested class that extends
+            <see cref="T:Castle.DynamicProxy.AbstractInvocation"/>
+            </summary>
+            <param name="targetFieldType"></param>
+            <param name="nested"></param>
+            <param name="targetField"></param>
+            <param name="version"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.CreateInitializeCacheMethodBody(System.Type,System.Reflection.MethodInfo[],Castle.DynamicProxy.Generators.Emitters.ClassEmitter,Castle.DynamicProxy.Generators.Emitters.ConstructorEmitter)">
+            <summary>
+            Improvement: this cache should be static. We should generate a
+            type constructor instead
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.AcceptMethod(System.Reflection.MethodInfo,System.Boolean)">
+            <summary>
+            Performs some basic screening and invokes the <see cref="T:Castle.DynamicProxy.IProxyGenerationHook"/>
+            to select methods.
+            </summary>
+            <param name="method"></param>
+            <param name="onlyVirtuals"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.IsAccessible(System.Reflection.MethodInfo)">
+            <summary>
+            Checks if the method is public or protected.
+            </summary>
+            <param name="method"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.CacheKey.#ctor(System.Type,System.Type[],Castle.DynamicProxy.ProxyGenerationOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.Generators.CacheKey"/> class.
+            </summary>
+            <param name="targetType">Type of the target.</param>
+            <param name="interfaces">The interfaces.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.ClassProxyGenerator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.InterfaceProxyWithTargetGenerator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.InterfaceProxyWithTargetGenerator.FindMethodOnTargetType(System.Reflection.MethodInfo,System.Type)">
+            <summary>
+            Finds the type of the method on target.
+            </summary>
+            <param name="methodOnInterface">The method on interface.</param>
+            <param name="proxyTargetType">Type of the proxy target.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.InterfaceProxyWithTargetGenerator.IsTypeEquivalent(System.Type,System.Type)">
+            <summary>
+            Checks whether the given types are the same. This is 
+            more complicated than it looks.
+            </summary>
+            <param name="sourceType"></param>
+            <param name="targetType"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Castle.DynamicProxy.IProxyGenerationHook">
+            <summary>
+            Used during the target type inspection process.
+            Implementors have a chance to interfere in the
+            proxy generation process
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.IProxyGenerationHook.ShouldInterceptMethod(System.Type,System.Reflection.MethodInfo)">
+            <summary>
+            Invoked by the generation process to know if
+            the specified member should be proxied
+            </summary>
+            <param name="type"></param>
+            <param name="memberInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.IProxyGenerationHook.NonVirtualMemberNotification(System.Type,System.Reflection.MemberInfo)">
+            <summary>
+            Invoked by the generation process to notify that a
+            member wasn't marked as virtual.
+            </summary>
+            <param name="type"></param>
+            <param name="memberInfo"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.IProxyGenerationHook.MethodsInspected">
+            <summary>
+            Invoked by the generation process to notify 
+            that the whole process is completed.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.IProxyBuilder">
+            <summary>
+            Abstracts the implementation of proxy constructions
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.IProxyBuilder.CreateClassProxy(System.Type,Castle.DynamicProxy.ProxyGenerationOptions)">
+            <summary>
+            Implementors should return a proxy for the specified type
+            </summary>
+            <param name="theClass"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.IProxyBuilder.CreateClassProxy(System.Type,System.Type[],Castle.DynamicProxy.ProxyGenerationOptions)">
+            <summary>
+            Implementors should return a proxy for the specified
+            type and interfaces. The interfaces must be only "mark" interfaces
+            </summary>
+            <param name="theClass"></param>
+            <param name="interfaces"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.IProxyBuilder.CreateInterfaceProxyTypeWithTarget(System.Type,System.Type[],System.Type,Castle.DynamicProxy.ProxyGenerationOptions)">
+            <summary>
+            Implementors should return a proxy for the specified
+            interface that 'proceeds' executions to the 
+            specified target
+            </summary>
+            <param name="theInterface"></param>
+            <param name="interfaces"></param>
+            <param name="targetType"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.IProxyBuilder.CreateInterfaceProxyTypeWithoutTarget(System.Type,System.Type[],Castle.DynamicProxy.ProxyGenerationOptions)">
+            <summary>
+            Implementors should return a proxy for the specified
+            interface that delegate all executions to the 
+            specified interceptor(s)
+            </summary>
+            <param name="theInterface"></param>
+            <param name="interfaces"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Castle.DynamicProxy.ModuleScope">
+            <summary>
+            Summary description for ModuleScope.
+            </summary>
+        </member>
+        <member name="F:Castle.DynamicProxy.ModuleScope.moduleBuilderWithStrongName">
+            <summary>
+            Avoid leaks caused by non disposal of generated types.
+            </summary>
+        </member>
+        <member name="F:Castle.DynamicProxy.ModuleScope.typeCache">
+            <summary>
+            Keep track of generated types
+            </summary>
+        </member>
+        <member name="F:Castle.DynamicProxy.ModuleScope._lockobj">
+            <summary>
+            Used to lock the module builder creation
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.ProxyGenerationOptions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.ProxyGenerator.#ctor(Castle.DynamicProxy.IProxyBuilder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.ProxyGenerator"/> class.
+            </summary>
+            <param name="builder">The builder.</param>
+        </member>
+        <member name="M:Castle.DynamicProxy.ProxyGenerator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.ProxyGenerator"/> class.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.ProxyGenerator.CreateClassProxy(System.Type,System.Type[],Castle.Core.Interceptor.IInterceptor[])">
+            <summary>
+            
+            </summary>
+            <param name="targetType"></param>
+            <param name="interfaces"></param>
+            <param name="interceptors"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.ProxyGenerator.CreateClassProxy(System.Type,Castle.DynamicProxy.ProxyGenerationOptions,Castle.Core.Interceptor.IInterceptor[])">
+            <summary>
+            
+            </summary>
+            <param name="targetType"></param>
+            <param name="options"></param>
+            <param name="interceptors"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.ProxyGenerator.CreateClassProxy(System.Type,System.Type[],Castle.DynamicProxy.ProxyGenerationOptions,System.Object[],Castle.Core.Interceptor.IInterceptor[])">
+            <summary>
+            
+            </summary>
+            <param name="targetType"></param>
+            <param name="interfaces"></param>
+            <param name="options"></param>
+            <param name="interceptors"></param>
+            <param name="constructorArgs"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Castle.DynamicProxy.ProxyGenerator.ProxyBuilder">
+            <summary>
+            Gets the proxy builder instance.
+            </summary>
+            <value>The proxy builder.</value>
+        </member>
+    </members>
+</doc>

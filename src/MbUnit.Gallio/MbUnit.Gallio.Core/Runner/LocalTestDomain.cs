@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
-using MbUnit.Framework.Model;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Serialization;
 using MbUnit.Framework.Services.Runtime;
 
@@ -30,16 +30,21 @@ namespace MbUnit.Core.Runner
     /// </summary>
     public class LocalTestDomain : BaseTestDomain
     {
-        private IAssemblyResolverManager resolverManager;
+        private IRuntime runtime;
         private TestProject modelProject;
 
         /// <summary>
         /// Creates a local test domain using the specified resolver manager.
         /// </summary>
-        /// <param name="resolverManager">The assembly resolver manager</param>
-        public LocalTestDomain(IAssemblyResolverManager resolverManager)
+        /// <param name="runtime">The runtime environment for tests (will be set in
+        /// <see cref="RuntimeHolder" /> during test execution)</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
+        public LocalTestDomain(IRuntime runtime)
         {
-            this.resolverManager = resolverManager;
+            if (runtime == null)
+                throw new ArgumentNullException("runtime");
+
+            this.runtime = runtime;
         }
 
         /// <inheritdoc />
@@ -51,6 +56,9 @@ namespace MbUnit.Core.Runner
         /// <inheritdoc />
         protected override void InternalLoadProject(TestProjectInfo project)
         {
+            IAssemblyResolverManager resolverManager = runtime.Resolve<IAssemblyResolverManager>();
+            RuntimeHolder.Instance = runtime;
+
             modelProject = new TestProject();
 
             foreach (string path in project.HintDirectories)
@@ -87,6 +95,7 @@ namespace MbUnit.Core.Runner
         protected override void InternalUnloadProject()
         {
             modelProject = null;
+            RuntimeHolder.Instance = null;
         }
 
         private Assembly LoadTestAssembly(string assemblyFile)

@@ -21,13 +21,30 @@
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\MbUnit.Plugin.NUnitAdapter.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Echo\MbUnit.Echo.csproj" />
+    <CSharpProject Include="$(SourceDir)\MbUnit.Icarus\MbUnit.Icarus.csproj" />
 
     <Binary Include="$(RootDir)\MbUnit License.txt" />
     <Binary Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
+
+    <Binary Include="$(LibsDir)\Castle\bin\Castle.Core.dll" />
+    <Binary Include="$(LibsDir)\Castle\bin\Castle.MicroKernel.dll" />
+    <Binary Include="$(LibsDir)\Castle\bin\Castle.Windsor.dll" />
+    <Binary Include="$(LibsDir)\Castle\bin\Castle.DynamicProxy2.dll" />
+
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework\bin\MbUnit.Gallio.Framework.dll" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.dll" />
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.plugin" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll" />
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.plugin" />
     <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.dll" />
+    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.plugin" />
+
+    <Binary Include="$(SourceDir)\MbUnit.Echo\bin\MbUnit.Echo.exe" />
+    <Binary Include="$(SourceDir)\MbUnit.Echo\bin\MbUnit.Echo.exe.config" />
+
+    <Binary Include="$(SourceDir)\MbUnit.Icarus\bin\MbUnit.Icarus.exe" />
+    <Binary Include="$(SourceDir)\MbUnit.Icarus\bin\MbUnit.Icarus.exe.config" />
 
     <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework.Tests\bin\MbUnit.Gallio.Framework.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core.Tests\bin\MbUnit.Gallio.Core.Tests.dll" />

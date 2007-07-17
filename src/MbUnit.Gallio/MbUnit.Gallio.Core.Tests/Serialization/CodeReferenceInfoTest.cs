@@ -17,7 +17,7 @@ extern alias MbUnit2;
 using System;
 using System.Reflection;
 using MbUnit.Core.Serialization;
-using MbUnit.Framework.Model;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit.Core.Tests.Serialization

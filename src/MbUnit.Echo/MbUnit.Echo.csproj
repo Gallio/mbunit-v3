@@ -57,9 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
-    <Content Include="MbUnit.Echo.exe.config">
+    <None Include="MbUnit.Echo.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MbUnit.Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">

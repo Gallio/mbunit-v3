@@ -15,15 +15,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
 using Castle.Core.Logging;
 using Castle.MicroKernel;
-using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Runner
 {
@@ -37,6 +36,7 @@ namespace MbUnit.Core.Runner
     public class IsolatedTestDomain : RemoteTestDomain
     {
         private AppDomain appDomain;
+        private Bootstrapper bootstrapper;
         private Dictionary<Assembly, bool> bootstrapAssemblies;
 
         /// <summary>
@@ -66,6 +66,7 @@ namespace MbUnit.Core.Runner
             }
         }
 
+        /// <inheritdoc />
         protected override ITestDomain InternalConnect()
         {
             try
@@ -92,21 +93,44 @@ namespace MbUnit.Core.Runner
 
                 Evidence evidence = new Evidence(AppDomain.CurrentDomain.Evidence); // FIXME: should be more careful here
                 appDomain = AppDomain.CreateDomain("IsolatedTestDomain", evidence, setup);
-
-                return Bootstrap();
             }
             catch (Exception ex)
             {
                 throw new FatalRunnerException("Could not create the isolated AppDomain.", ex);
             }
+
+            try
+            {
+                bootstrapper = CreateRemoteInstance<Bootstrapper>();
+                
+                // TODO: Support additional plugin directories.
+                bootstrapper.Initialize(EmptyArray<string>.Instance);
+
+                return bootstrapper.CreateTestDomain();
+            }
+            catch (Exception ex)
+            {
+                throw new FatalRunnerException("Could not initialize the isolated runtime environment.", ex);
+            }
         }
 
+        /// <inheritdoc />
         protected override void InternalDisconnect()
         {
             try
             {
-                if (appDomain != null)
-                    AppDomain.Unload(appDomain);
+                try
+                {
+                    if (bootstrapper != null)
+                        bootstrapper.Shutdown();
+                }
+                finally
+                {
+                    bootstrapper = null;
+
+                    if (appDomain != null)
+                        AppDomain.Unload(appDomain);
+                }
             }
             catch (Exception ex)
             {
@@ -116,17 +140,6 @@ namespace MbUnit.Core.Runner
             {
                 appDomain = null;
             }
-        }
-
-        private ITestDomain Bootstrap()
-        {
-            // Initialize the assembly resolver.
-            DefaultAssemblyResolverManager assemblyResolverManager = CreateRemoteInstance<DefaultAssemblyResolverManager>();
-            assemblyResolverManager.AddMbUnitDirectories();
-
-            // Get the test domain.
-            LocalTestDomain testDomain = CreateRemoteInstance<LocalTestDomain>(assemblyResolverManager);
-            return testDomain;
         }
 
         private T CreateRemoteInstance<T>(params object[] args)
