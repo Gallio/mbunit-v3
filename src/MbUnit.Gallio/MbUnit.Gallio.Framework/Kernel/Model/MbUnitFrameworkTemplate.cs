@@ -24,30 +24,30 @@ namespace MbUnit.Framework.Kernel.Model
     /// The template that is the ancestor of all templates declared
     /// by the MbUnit test framework.
     /// </summary>
-    public class MbUnitTestFrameworkTemplate : MbUnitTestTemplate
+    public class MbUnitFrameworkTemplate : MbUnitTemplate
     {
         private Version version;
-        private List<MbUnitTestAssemblyTemplate> assemblyTemplates;
+        private List<MbUnitAssemblyTemplate> assemblyTemplates;
 
         /// <summary>
         /// Initializes the MbUnit framework template model object.
         /// </summary>
         /// <param name="version">The MbUnit framework version</param>
-        public MbUnitTestFrameworkTemplate(Version version)
+        public MbUnitFrameworkTemplate(Version version)
             : base("MbUnit Gallio v" + version, CodeReference.Unknown)
         {
             this.version = version;
 
-            assemblyTemplates = new List<MbUnitTestAssemblyTemplate>();
+            assemblyTemplates = new List<MbUnitAssemblyTemplate>();
             Kind = TemplateKind.Framework;
         }
 
         /// <inheritdoc />
-        public override IEnumerable<ITestTemplate> Children
+        public override IEnumerable<ITemplate> Children
         {
             get
             {
-                foreach (MbUnitTestAssemblyTemplate assemblyTemplate in assemblyTemplates)
+                foreach (MbUnitAssemblyTemplate assemblyTemplate in assemblyTemplates)
                     yield return assemblyTemplate;
             }
         }
@@ -64,7 +64,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// Gets the list of assembly templates.
         /// </summary>
         /// <returns>The assembly templates</returns>
-        public IList<MbUnitTestAssemblyTemplate> AssemblyTemplates
+        public IList<MbUnitAssemblyTemplate> AssemblyTemplates
         {
             get { return assemblyTemplates; }
         }
@@ -73,7 +73,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// Adds an assembly template to the framework.
         /// </summary>
         /// <param name="assemblyTemplate">The assembly template</param>
-        public void AddAssemblyTemplate(MbUnitTestAssemblyTemplate assemblyTemplate)
+        public void AddAssemblyTemplate(MbUnitAssemblyTemplate assemblyTemplate)
         {
             ModelUtils.LinkTemplate(this, assemblyTemplates, assemblyTemplate);
         }

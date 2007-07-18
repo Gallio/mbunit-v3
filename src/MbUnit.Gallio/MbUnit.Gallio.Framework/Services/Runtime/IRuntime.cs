@@ -46,5 +46,12 @@ namespace MbUnit.Framework.Services.Runtime
         /// <typeparam name="T">The service type</typeparam>
         /// <returns>A component that implements the service</returns>
         T Resolve<T>();
+
+        /// <summary>
+        /// Resolves references to all components that implement the specified service.
+        /// </summary>
+        /// <typeparam name="T">The service type</typeparam>
+        /// <returns>An array of components that implement the service</returns>
+        T[] ResolveAll<T>();
     }
 }

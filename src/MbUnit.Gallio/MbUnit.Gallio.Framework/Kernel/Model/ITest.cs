@@ -22,7 +22,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// <para>
     /// A test object represents a single instance of a test that has been
-    /// generated from a <see cref="ITestTemplate" /> using particular
+    /// generated from a <see cref="ITemplate" /> using particular
     /// bindings in a particular scope.
     /// </para>
     /// <para>

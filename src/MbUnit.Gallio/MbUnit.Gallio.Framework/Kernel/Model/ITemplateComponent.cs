@@ -19,13 +19,10 @@ using System.Text;
 
 namespace MbUnit.Framework.Kernel.Model
 {
-    public interface ITestTemplateBinding
+    /// <summary>
+    /// The root interface of the template object model.
+    /// </summary>
+    public interface ITemplateComponent : IModelComponent
     {
-        ITestTemplate Template { get; }
-
-        TestScope Scope { get; }
-
-        IDictionary<string, object> Arguments { get; }
-
     }
 }

@@ -16,24 +16,24 @@
 using System;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Serialization
 {
     /// <summary>
-    /// Describes a test parameter in a portable manner for serialization.
+    /// Describes a template parameter set in a portable manner for serialization.
     /// </summary>
-    /// <seealso cref="ITestParameter"/>
+    /// <seealso cref="ITemplateParameterSet"/>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class TestParameterInfo : TestComponentInfo
+    public class TemplateParameterSetInfo : TemplateComponentInfo
     {
-        private string typeName;
-        private int index;
+        private TemplateParameterInfo[] parameters;
 
         /// <summary>
         /// Creates an empty object.
         /// </summary>
-        public TestParameterInfo()
+        public TemplateParameterSetInfo()
         {
         }
 
@@ -41,33 +41,26 @@ namespace MbUnit.Core.Serialization
         /// Creates an serializable description of a model object.
         /// </summary>
         /// <param name="obj">The model object</param>
-        public TestParameterInfo(ITestParameter obj)
+        public TemplateParameterSetInfo(ITemplateParameterSet obj)
             : base(obj)
         {
-            typeName = obj.Type.FullName;
-            index = obj.Index;
+            parameters = ListUtils.ConvertAllToArray<ITemplateParameter, TemplateParameterInfo>(obj.Parameters,
+                delegate(ITemplateParameter parameter)
+                {
+                    return new TemplateParameterInfo(parameter);
+                });
         }
 
         /// <summary>
-        /// Gets or sets the fully-qualified type name of the parameter's value type.  (non-null)
+        /// Gets or sets the test parameters.  (non-null but possibly empty)
         /// </summary>
-        /// <seealso cref="ITestParameter.Type"/>
-        [XmlAttribute("type")]
-        public string TypeName
+        /// <seealso cref="ITemplateParameterSet.Parameters"/>
+        [XmlArray("parameters", IsNullable=false)]
+        [XmlArrayItem("parameter", IsNullable=false)]
+        public TemplateParameterInfo[] Parameters
         {
-            get { return typeName; }
-            set { typeName = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the index of the parameter.
-        /// </summary>
-        /// <seealso cref="ITestParameter.Index"/>
-        [XmlAttribute("index")]
-        public int Index
-        {
-            get { return index; }
-            set { index = value; }
+            get { return parameters; }
+            set { parameters = value; }
         }
     }
 }

@@ -14,11 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Reflection;
-using System.Text;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Core.Serialization;
 using MbUnit.Framework.Services.Runtime;
 
@@ -31,83 +27,83 @@ namespace MbUnit.Core.Runner
     public class LocalTestDomain : BaseTestDomain
     {
         private IRuntime runtime;
-        private TestProject modelProject;
+        private ITestHarnessFactory harnessFactory;
+        private ITestHarness harness;
 
         /// <summary>
         /// Creates a local test domain using the specified resolver manager.
         /// </summary>
         /// <param name="runtime">The runtime environment for tests (will be set in
         /// <see cref="RuntimeHolder" /> during test execution)</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
-        public LocalTestDomain(IRuntime runtime)
+        /// <param name="harnessFactory">The test harness factory</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> or
+        /// <paramref name="harnessFactory"/> is null</exception>
+        public LocalTestDomain(IRuntime runtime, ITestHarnessFactory harnessFactory)
         {
             if (runtime == null)
                 throw new ArgumentNullException("runtime");
+            if (harnessFactory == null)
+                throw new ArgumentNullException("harnessFactory");
 
             this.runtime = runtime;
+            this.harnessFactory = harnessFactory;
         }
 
         /// <inheritdoc />
         protected override void InternalDispose()
         {
-            throw new NotImplementedException();
+            runtime = null;
+            harnessFactory = null;
         }
 
         /// <inheritdoc />
-        protected override void InternalLoadProject(TestProjectInfo project)
+        protected override void InternalLoadProject(TestProject project)
         {
-            IAssemblyResolverManager resolverManager = runtime.Resolve<IAssemblyResolverManager>();
             RuntimeHolder.Instance = runtime;
-
-            modelProject = new TestProject();
+            harness = harnessFactory.CreateHarness();
 
             foreach (string path in project.HintDirectories)
-                resolverManager.AddHintDirectory(path);
+                harness.AssemblyResolverManager.AddHintDirectory(path);
 
             foreach (string assemblyFile in project.AssemblyFiles)
-                resolverManager.AddHintDirectoryContainingFile(assemblyFile);
+                harness.AssemblyResolverManager.AddHintDirectoryContainingFile(assemblyFile);
 
             foreach (string assemblyFile in project.AssemblyFiles)
-            {
-                modelProject.Assemblies.Add(LoadTestAssembly(assemblyFile));
-            }
+                harness.LoadAssemblyFrom(assemblyFile);
+
+            harness.Initialize();
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTestTemplates()
+        protected override void InternalBuildTemplates()
         {
-            throw new NotImplementedException();
+            TemplateTreeRoot = null;
+            harness.BuildTemplates();
+            TemplateTreeRoot = new TemplateInfo(harness.TemplateTreeBuilder.Root);
         }
 
         /// <inheritdoc />
         protected override void InternalBuildTests()
         {
-            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         protected override void InternalRunTests()
         {
-            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         protected override void InternalUnloadProject()
         {
-            modelProject = null;
-            RuntimeHolder.Instance = null;
-        }
-
-        private Assembly LoadTestAssembly(string assemblyFile)
-        {
             try
             {
-                return Assembly.LoadFrom(assemblyFile);
+                if (harness != null)
+                    harness.Dispose();
             }
-            catch (Exception ex)
+            finally
             {
-                throw new FatalRunnerException(String.Format(CultureInfo.CurrentCulture,
-                    "Could not load test assembly from '{0}'.", assemblyFile), ex);
+                harness = null;
+                RuntimeHolder.Instance = null;
             }
         }
     }

@@ -21,11 +21,11 @@ namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
     /// <para>
-    /// A test parameter describes a formal parameter of a <see cref="ITestTemplate" />
+    /// A template parameter describes a formal parameter of a <see cref="ITemplate" />
     /// to which a value be bound to produce a concrete instance of the template.
     /// </para>
     /// <para>
-    /// Data-driven tests are represented by <see cref="ITestTemplate"/>s with
+    /// Data-driven tests are represented by <see cref="ITemplate"/>s with
     /// at least one parameter.
     /// </para>
     /// <para>
@@ -33,13 +33,13 @@ namespace MbUnit.Framework.Kernel.Model
     /// parameter set name.  A parameter set name can be used to select
     /// </para>
     /// </summary>
-    public interface ITestParameter : ITestComponent
+    public interface ITemplateParameter : ITemplateComponent
     {
         /// <summary>
-        /// Gets or sets the parameter set to which the test parameter belongs.
+        /// Gets or sets the parameter set to which the parameter belongs.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        ITestParameterSet ParameterSet { get; set; }
+        ITemplateParameterSet ParameterSet { get; set; }
 
         /// <summary>
         /// Gets or sets the type of value that must be bound to the parameter.

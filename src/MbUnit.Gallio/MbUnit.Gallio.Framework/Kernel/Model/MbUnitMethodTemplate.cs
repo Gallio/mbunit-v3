@@ -24,9 +24,9 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Represents a template derived from an MbUnit test method.
     /// </summary>
-    public class MbUnitTestMethodTemplate : MbUnitTestTemplate
+    public class MbUnitMethodTemplate : MbUnitTemplate
     {
-        private MbUnitTestFixtureTemplate fixtureTemplate;
+        private MbUnitFixtureTemplate fixtureTemplate;
         private MethodInfo method;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="fixtureTemplate">The containing fixture template</param>
         /// <param name="method">The test method</param>
-        public MbUnitTestMethodTemplate(MbUnitTestFixtureTemplate fixtureTemplate, MethodInfo method)
+        public MbUnitMethodTemplate(MbUnitFixtureTemplate fixtureTemplate, MethodInfo method)
             : base(method.Name, CodeReference.CreateFromMember(method))
         {
             this.fixtureTemplate = fixtureTemplate;
@@ -46,7 +46,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Gets the containing fixture template.
         /// </summary>
-        public MbUnitTestFixtureTemplate FixtureTemplate
+        public MbUnitFixtureTemplate FixtureTemplate
         {
             get { return fixtureTemplate; }
         }
@@ -63,7 +63,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// Adds a test method parameter.
         /// </summary>
         /// <param name="parameter">The parameter to add</param>
-        public void AddParameter(MbUnitTestParameter parameter)
+        public void AddParameter(MbUnitTemplateParameter parameter)
         {
         }
     }

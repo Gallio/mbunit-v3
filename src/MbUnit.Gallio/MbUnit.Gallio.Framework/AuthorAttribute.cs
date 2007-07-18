@@ -75,7 +75,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(TestTemplateTreeBuilder builder, ITestComponent component)
+        public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
         {
             if (authorName.Length != 0)
                 component.Metadata.Entries.Add(MetadataConstants.AuthorNameKey, authorName);

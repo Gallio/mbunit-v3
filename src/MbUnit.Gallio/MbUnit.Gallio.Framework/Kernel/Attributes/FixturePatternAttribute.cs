@@ -26,7 +26,7 @@ namespace MbUnit.Framework.Kernel.Attributes
     /// <summary>
     /// <para>
     /// Declares that a class represents an MbUnit test fixture.  Subclasses of this
-    /// attribute can customize how test template enumeration takes place within
+    /// attribute can customize how template enumeration takes place within
     /// a fixture.
     /// </para>
     /// <para>
@@ -50,26 +50,26 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model
-        /// objects in the test template tree and to further expand the tree using
+        /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="assemblyTemplate">The containing assembly template</param>
         /// <param name="fixtureType">The fixture type</param>
         /// <returns>The test fixture template</returns>
-        public virtual MbUnitTestFixtureTemplate CreateTemplate(TestTemplateTreeBuilder builder,
-            MbUnitTestAssemblyTemplate assemblyTemplate, Type fixtureType)
+        public virtual MbUnitFixtureTemplate CreateTemplate(TemplateTreeBuilder builder,
+            MbUnitAssemblyTemplate assemblyTemplate, Type fixtureType)
         {
-            return new MbUnitTestFixtureTemplate(assemblyTemplate, fixtureType);
+            return new MbUnitFixtureTemplate(assemblyTemplate, fixtureType);
         }
 
         /// <summary>
         /// Applies contributions to a fixture template.
         /// This method is called after the fixture template is linked to the template tree.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
-        public virtual void Apply(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate)
+        public virtual void Apply(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate)
         {
             FixtureDecoratorPatternAttribute.ProcessDecorators(builder, fixtureTemplate, fixtureTemplate.FixtureType);
             MetadataPatternAttribute.ProcessMetadata(builder, fixtureTemplate, fixtureTemplate.FixtureType);
@@ -83,9 +83,9 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <summary>
         /// Processes all public constructors using reflection to populate fixture parameters.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
-        protected virtual void ProcessConstructors(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate)
+        protected virtual void ProcessConstructors(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate)
         {
             foreach (ConstructorInfo constructor in fixtureTemplate.FixtureType.GetConstructors())
             {
@@ -103,12 +103,12 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <summary>
         /// Processes a constructor using reflection to populate fixture parameters.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
         /// <param name="constructor">The constructor to process</param>
-        protected virtual void ProcessConstructor(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate, ConstructorInfo constructor)
+        protected virtual void ProcessConstructor(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, ConstructorInfo constructor)
         {
-            MbUnitTestParameterSet parameterSet = fixtureTemplate.CreateAnonymousParameterSet();
+            MbUnitTemplateParameterSet parameterSet = fixtureTemplate.CreateAnonymousParameterSet();
             foreach (ParameterInfo parameter in constructor.GetParameters())
             {
                 ParameterPatternAttribute.ProcessSlot(builder, parameterSet, new Slot(parameter));
@@ -118,9 +118,9 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <summary>
         /// Processes all public fields using reflection to populate fixture parameters.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
-        protected virtual void ProcessFields(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate)
+        protected virtual void ProcessFields(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate)
         {
             foreach (FieldInfo field in fixtureTemplate.FixtureType.GetFields())
             {
@@ -131,10 +131,10 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <summary>
         /// Processes a field using reflection to populate fixture parameters.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
         /// <param name="field">The field to process</param>
-        protected virtual void ProcessField(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate, FieldInfo field)
+        protected virtual void ProcessField(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, FieldInfo field)
         {
             ParameterPatternAttribute.ProcessSlot(builder, fixtureTemplate.CreateAnonymousParameterSet(), new Slot(field));
         }
@@ -142,9 +142,9 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <summary>
         /// Processes all public properties using reflection to populate fixture parameters.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
-        protected virtual void ProcessProperties(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate)
+        protected virtual void ProcessProperties(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate)
         {
             foreach (PropertyInfo property in fixtureTemplate.FixtureType.GetProperties())
             {
@@ -155,10 +155,10 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <summary>
         /// Processes a property using reflection to populate fixture parameters.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
         /// <param name="property">The property to process</param>
-        protected virtual void ProcessProperty(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate, PropertyInfo property)
+        protected virtual void ProcessProperty(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, PropertyInfo property)
         {
             if (ReflectionUtils.CanGetAndSetNonStatic(property))
                 ParameterPatternAttribute.ProcessSlot(builder, fixtureTemplate.CreateAnonymousParameterSet(), new Slot(property));
@@ -168,9 +168,9 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// Processes all public methods using reflection to populate tests and other
         /// executable components.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
-        protected virtual void ProcessMethods(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate)
+        protected virtual void ProcessMethods(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate)
         {
             foreach (MethodInfo method in fixtureTemplate.FixtureType.GetMethods())
             {
@@ -181,28 +181,28 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <summary>
         /// Processes a method using reflection to populate tests and other executable components.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
         /// <param name="method">The method to process</param>
-        protected virtual void ProcessMethod(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate, MethodInfo method)
+        protected virtual void ProcessMethod(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, MethodInfo method)
         {
             if (ReflectionUtils.CanInvokeNonStatic(method))
                 MethodPatternAttribute.ProcessMethod(builder, fixtureTemplate, method);
         }
 
         /// <summary>
-        /// Scans a type using reflection to build a test template tree.
+        /// Scans a type using reflection to build a template tree.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="assemblyTemplate">The containing assembly template</param>
         /// <param name="type">The type to process</param>
-        public static void ProcessType(TestTemplateTreeBuilder builder, MbUnitTestAssemblyTemplate assemblyTemplate, Type type)
+        public static void ProcessType(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate, Type type)
         {
             FixturePatternAttribute fixturePatternAttribute = ReflectionUtils.GetAttribute<FixturePatternAttribute>(type);
             if (fixturePatternAttribute == null || ! ReflectionUtils.CanInstantiate(type))
                 return;
 
-            MbUnitTestFixtureTemplate fixtureTemplate = fixturePatternAttribute.CreateTemplate(builder, assemblyTemplate, type);
+            MbUnitFixtureTemplate fixtureTemplate = fixturePatternAttribute.CreateTemplate(builder, assemblyTemplate, type);
             assemblyTemplate.AddFixtureTemplate(fixtureTemplate);
             fixturePatternAttribute.Apply(builder, fixtureTemplate);
         }

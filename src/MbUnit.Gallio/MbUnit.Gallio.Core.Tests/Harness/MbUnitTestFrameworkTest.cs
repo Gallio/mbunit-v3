@@ -15,11 +15,14 @@
 
 extern alias MbUnit2;
 using MbUnit.Core.Harness;
+using MbUnit.Core.Services.Runtime;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Services.Runtime;
 using MbUnit.Framework.Kernel.Utilities;
 using MbUnit._Framework.Tests;
+using MbUnit.Framework.Tests.Kernel.Runtime;
 using MbUnit2::MbUnit.Framework;
 
 using System;
@@ -33,15 +36,23 @@ namespace MbUnit.Core.Tests.Harness
     public class MbUnitTestFrameworkTest : BaseUnitTest
     {
         private MbUnitTestFramework framework;
-        private TestTemplateTreeBuilder builder;
-        private IAssemblyResolverManager resolverManager;
+        private TemplateTreeBuilder builder;
+
+        private MockRuntime mockRuntime;
+        private IAssemblyResolverManager mockAssemblyResolverManager;
+        private ITestHarness mockHarness;
 
         public override void SetUp()
         {
             base.SetUp();
 
-            resolverManager = Mocks.CreateMock<IAssemblyResolverManager>();
-            framework = new MbUnitTestFramework(resolverManager);
+            mockRuntime = new MockRuntime();
+            mockAssemblyResolverManager = Mocks.CreateMock<IAssemblyResolverManager>();
+            mockRuntime.Components.Add(typeof(IAssemblyResolverManager), mockAssemblyResolverManager);
+            mockHarness = new DefaultTestHarness(mockRuntime);
+
+            framework = new MbUnitTestFramework();
+            mockHarness.AddContributor(framework);
         }
 
         [Test]
@@ -51,9 +62,9 @@ namespace MbUnit.Core.Tests.Harness
         }
 
         [Test]
-        public void PopulateTree_WhenAssemblyDoesNotReferenceMbUnitGallio_IsEmpty()
+        public void PopulateTemplateTree_WhenAssemblyDoesNotReferenceMbUnitGallio_IsEmpty()
         {
-            PopulateTree(typeof(Int32).Assembly);
+            PopulateTemplateTree(typeof(Int32).Assembly);
 
             Assert.AreEqual(0, builder.Root.ChildrenList.Count);
         }
@@ -64,19 +75,19 @@ namespace MbUnit.Core.Tests.Harness
         /// attributes are handled belong elsewhere.
         /// </summary>
         [Test]
-        public void PopulateTree_WhenAssemblyReferencesMbUnitGallio_ContainsSimpleTest()
+        public void PopulateTemplateTree_WhenAssemblyReferencesMbUnitGallio_ContainsSimpleTest()
         {
             Type fixtureType = typeof(MbUnit.TestResources.Gallio.SimpleTest);
             Assembly assembly = fixtureType.Assembly;
             Version expectedVersion = typeof(MbUnitTestFramework).Assembly.GetName().Version;
 
-            PopulateTree(assembly);
+            PopulateTemplateTree(assembly);
             Assert.IsNull(builder.Root.Parent);
             Assert.AreEqual(TemplateKind.Root, builder.Root.Kind);
             Assert.AreEqual(CodeReference.Unknown, builder.Root.CodeReference);
             Assert.AreEqual(1, builder.Root.ChildrenList.Count);
 
-            MbUnitTestFrameworkTemplate frameworkTemplate = (MbUnitTestFrameworkTemplate) builder.Root.ChildrenList[0];
+            MbUnitFrameworkTemplate frameworkTemplate = (MbUnitFrameworkTemplate) builder.Root.ChildrenList[0];
             Assert.AreSame(builder.Root, frameworkTemplate.Parent);
             Assert.AreEqual(TemplateKind.Framework, frameworkTemplate.Kind);
             Assert.AreEqual(CodeReference.Unknown, frameworkTemplate.CodeReference);
@@ -84,14 +95,14 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual("MbUnit Gallio v" + expectedVersion, frameworkTemplate.Name);
             Assert.AreEqual(1, frameworkTemplate.AssemblyTemplates.Count);
 
-            MbUnitTestAssemblyTemplate assemblyTemplate = frameworkTemplate.AssemblyTemplates[0];
+            MbUnitAssemblyTemplate assemblyTemplate = frameworkTemplate.AssemblyTemplates[0];
             Assert.AreSame(frameworkTemplate, assemblyTemplate.Parent);
             Assert.AreEqual(TemplateKind.Assembly, assemblyTemplate.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(assembly), assemblyTemplate.CodeReference);
             Assert.AreEqual(assembly, assemblyTemplate.Assembly);
             Assert.GreaterEqualThan(1, assemblyTemplate.FixtureTemplates.Count);
 
-            MbUnitTestFixtureTemplate fixtureTemplate = ListUtils.Find(assemblyTemplate.FixtureTemplates, delegate(MbUnitTestFixtureTemplate template)
+            MbUnitFixtureTemplate fixtureTemplate = ListUtils.Find(assemblyTemplate.FixtureTemplates, delegate(MbUnitFixtureTemplate template)
             {
                 return template.FixtureType == fixtureType;
             });
@@ -103,7 +114,7 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual("SimpleTest", fixtureTemplate.Name);
             Assert.AreEqual(2, fixtureTemplate.MethodTemplates.Count);
 
-            MbUnitTestMethodTemplate passTemplate = ListUtils.Find(fixtureTemplate.MethodTemplates, delegate(MbUnitTestMethodTemplate template)
+            MbUnitMethodTemplate passTemplate = ListUtils.Find(fixtureTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
             {
                 return template.Name == "Pass";
             });
@@ -114,7 +125,7 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual(fixtureType.GetMethod("Pass"), passTemplate.Method);
             Assert.AreEqual("Pass", passTemplate.Name);
 
-            MbUnitTestMethodTemplate failTemplate = ListUtils.Find(fixtureTemplate.MethodTemplates, delegate(MbUnitTestMethodTemplate template)
+            MbUnitMethodTemplate failTemplate = ListUtils.Find(fixtureTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
             {
                 return template.Name == "Fail";
             });
@@ -126,13 +137,13 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual("Fail", failTemplate.Name);
         }
 
-        private void PopulateTree(Assembly assembly)
+        private void PopulateTemplateTree(Assembly assembly)
         {
-            TestProject project = new TestProject();
-            project.Assemblies.Add(assembly);
+            mockHarness.AddAssembly(assembly);
+            mockHarness.Initialize();
+            mockHarness.BuildTemplates();
 
-            builder = new TestTemplateTreeBuilder(project);
-            framework.BuildTemplates(builder, builder.Root);
+            builder = mockHarness.TemplateTreeBuilder;
         }
     }
 }

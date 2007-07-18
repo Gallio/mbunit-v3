@@ -24,7 +24,7 @@ namespace MbUnit.Core.Harness
     /// <summary>
     /// Sets up and tears down the environment used for running MbUnit tests.
     /// </summary>
-    public class MbUnitTestHarness
+    public class MbUnitTestContext
     {
         private TextReader oldConsoleIn;
         private TextWriter oldConsoleOut;

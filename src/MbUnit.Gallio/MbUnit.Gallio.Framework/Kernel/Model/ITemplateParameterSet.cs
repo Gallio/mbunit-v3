@@ -33,15 +33,15 @@ namespace MbUnit.Framework.Kernel.Model
     /// set is empty, the set is considered anonymous.
     /// </para>
     /// </summary>
-    public interface ITestParameterSet : ITestComponent
+    public interface ITemplateParameterSet : ITemplateComponent
     {
         /// <summary>
         /// Gets the list of parameters in a parameter set.
         /// </summary>
         /// <remarks>
         /// The order in which the parameters appear is not significant and does
-        /// not necessarily correspond to the sequence of <see cref="ITestParameter.Index" /> values.
+        /// not necessarily correspond to the sequence of <see cref="ITemplateParameter.Index" /> values.
         /// </remarks>
-        IList<ITestParameter> Parameters { get; }
+        IList<ITemplateParameter> Parameters { get; }
     }
 }

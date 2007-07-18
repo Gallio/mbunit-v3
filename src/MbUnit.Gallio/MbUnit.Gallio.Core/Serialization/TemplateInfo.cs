@@ -17,26 +17,26 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Serialization
 {
     /// <summary>
-    /// Describes a test template in a portable manner for serialization.
+    /// Describes a template in a portable manner for serialization.
     /// </summary>
-    /// <seealso cref="ITestTemplate"/>
+    /// <seealso cref="ITemplate"/>
     [Serializable]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class TestTemplateInfo : TestComponentInfo
+    [XmlRoot("template", Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    public class TemplateInfo : TemplateComponentInfo
     {
-        private TestTemplateInfo[] children;
-        private TestParameterSetInfo[] parameterSets;
+        private TemplateInfo[] children;
+        private TemplateParameterSetInfo[] parameterSets;
 
         /// <summary>
         /// Creates an empty object.
         /// </summary>
-        public TestTemplateInfo()
+        public TemplateInfo()
         {
         }
 
@@ -44,28 +44,28 @@ namespace MbUnit.Core.Serialization
         /// Creates an serializable description of a model object.
         /// </summary>
         /// <param name="obj">The model object</param>
-        public TestTemplateInfo(ITestTemplate obj)
+        public TemplateInfo(ITemplate obj)
             : base(obj)
         {
-            List<TestTemplateInfo> childrenInfo = new List<TestTemplateInfo>();
-            foreach (ITestTemplate child in obj.Children)
-                childrenInfo.Add(new TestTemplateInfo(child));
+            List<TemplateInfo> childrenInfo = new List<TemplateInfo>();
+            foreach (ITemplate child in obj.Children)
+                childrenInfo.Add(new TemplateInfo(child));
             children = childrenInfo.ToArray();
 
-            parameterSets = ListUtils.ConvertAllToArray<ITestParameterSet, TestParameterSetInfo>(obj.ParameterSets,
-                delegate(ITestParameterSet parameterSet)
+            parameterSets = ListUtils.ConvertAllToArray<ITemplateParameterSet, TemplateParameterSetInfo>(obj.ParameterSets,
+                delegate(ITemplateParameterSet parameterSet)
                 {
-                    return new TestParameterSetInfo(parameterSet);
+                    return new TemplateParameterSetInfo(parameterSet);
                 });
         }
 
         /// <summary>
         /// Gets or sets the children.  (non-null but possibly empty)
         /// </summary>
-        /// <seealso cref="ITestTemplate.Children"/>
+        /// <seealso cref="ITemplate.Children"/>
         [XmlArray("children", IsNullable=false)]
-        [XmlArrayItem("child", IsNullable=false)]
-        public TestTemplateInfo[] Children
+        [XmlArrayItem("template", IsNullable=false)]
+        public TemplateInfo[] Children
         {
             get { return children; }
             set { children = value; }
@@ -74,10 +74,10 @@ namespace MbUnit.Core.Serialization
         /// <summary>
         /// Gets or sets the parameter sets.  (non-null but possibly empty)
         /// </summary>
-        /// <seealso cref="ITestTemplate.ParameterSets"/>
+        /// <seealso cref="ITemplate.ParameterSets"/>
         [XmlArray("parameterSets", IsNullable = false)]
         [XmlArrayItem("parameterSet", IsNullable = false)]
-        public TestParameterSetInfo[] ParameterSets
+        public TemplateParameterSetInfo[] ParameterSets
         {
             get { return parameterSets; }
             set { parameterSets = value; }

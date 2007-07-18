@@ -14,33 +14,32 @@
 // limitations under the License.
 
 using System;
-using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.Model;
+using System.Runtime.Serialization;
 
-namespace MbUnit.Core.Serialization
+namespace MbUnit.Framework.Kernel.Harness
 {
     /// <summary>
-    /// Describes a test in a portable manner for serialization.
+    /// The type of exception thrown when test harness operations fail.
     /// </summary>
-    /// <seealso cref="ITest"/>
     [Serializable]
-    [XmlRoot("test", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class TestInfo : TestComponentInfo
+    public class TestHarnessException : Exception
     {
-        /// <summary>
-        /// Creates an empty object.
-        /// </summary>
-        public TestInfo()
+        public TestHarnessException()
         {
         }
 
-        /// <summary>
-        /// Creates an serializable description of a model object.
-        /// </summary>
-        /// <param name="obj">The model object</param>
-        public TestInfo(ITest obj)
-            : base(obj)
+        public TestHarnessException(string message)
+            : base(message)
+        {
+        }
+
+        public TestHarnessException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        public TestHarnessException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

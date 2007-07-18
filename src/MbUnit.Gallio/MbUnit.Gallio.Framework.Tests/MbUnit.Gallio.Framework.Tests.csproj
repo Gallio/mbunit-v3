@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Kernel\Model\CodeReferenceTest.cs" />
+    <Compile Include="Kernel\Runtime\MockRuntime.cs" />
     <Compile Include="Kernel\Utilities\ListUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -56,6 +57,9 @@
       <Project>{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE}</Project>
       <Name>MbUnit.TestResources.Gallio</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Kernel\Harness\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

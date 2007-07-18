@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using MbUnit.Core.Utilities;
+using MbUnit.Framework;
 using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Core.Services.Runtime
@@ -27,7 +28,8 @@ namespace MbUnit.Core.Services.Runtime
     /// </summary>
     public class DefaultAssemblyResolverManager : LongLivingMarshalByRefObject, IAssemblyResolverManager
     {
-        private List<string> hintDirectories = null;
+        private List<string> hintDirectories;
+        private List<IAssemblyResolver> assemblyResolvers;
 
         /// <summary>
         /// Initializes the assembly resolver manager.
@@ -35,6 +37,7 @@ namespace MbUnit.Core.Services.Runtime
         public DefaultAssemblyResolverManager()
         {
             hintDirectories = new List<string>();
+            assemblyResolvers = new List<IAssemblyResolver>();
 
             AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
         }
@@ -45,10 +48,8 @@ namespace MbUnit.Core.Services.Runtime
             AppDomain.CurrentDomain.AssemblyResolve -= new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 
             hintDirectories = null;
+            assemblyResolvers = null;
         }
-
-        /// <inheritdoc />
-        public event ResolveEventHandler AssemblyResolve;
 
         /// <inheritdoc />
         public void AddHintDirectory(string hintDirectory)
@@ -81,21 +82,26 @@ namespace MbUnit.Core.Services.Runtime
             AddHintDirectory(typeof(DefaultAssemblyResolverManager).Assembly.Location);
         }
 
+        /// <inheritdoc />
+        public void AddAssemblyResolver(IAssemblyResolver assemblyResolver)
+        {
+            if (assemblyResolver == null)
+                throw new ArgumentNullException("assemblyResolver");
+
+            assemblyResolvers.Add(assemblyResolver);
+        }
+
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             if (args.Name.EndsWith("XmlSerializers"))
                 return null;
 
             // Try the custom handler chain
-            ResolveEventHandler multiHandler = AssemblyResolve;
-            if (multiHandler != null)
+            foreach (IAssemblyResolver assemblyResolver in assemblyResolvers)
             {
-                foreach (ResolveEventHandler handler in multiHandler.GetInvocationList())
-                {
-                    Assembly assembly = handler(sender, args);
-                    if (assembly != null)
-                        return assembly;
-                }
+                Assembly assembly = assemblyResolver.Resolve(args.Name);
+                if (assembly != null)
+                    return assembly;
             }
 
             // Try hint directories

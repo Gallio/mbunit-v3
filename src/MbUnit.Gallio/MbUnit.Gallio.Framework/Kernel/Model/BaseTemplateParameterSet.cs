@@ -14,39 +14,34 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Kernel.Model;
+using System.Collections.Generic;
+using System.Text;
 
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Represents a parameter set derived from an MbUnit fixture or test method.
+    /// Base implementation of <see cref="ITemplateParameterSet" />.
     /// </summary>
-    public class MbUnitTestParameterSet : BaseTestParameterSet
+    public class BaseTemplateParameterSet : BaseTemplateComponent, ITemplateParameterSet
     {
-        private MbUnitTestTemplate template;
+        private List<ITemplateParameter> parameters;
 
         /// <summary>
         /// Initializes a test parameter set.
         /// </summary>
-        /// <param name="template">The containing template</param>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition of the parameter set</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="codeReference"/> is null</exception>
-        public MbUnitTestParameterSet(MbUnitTestTemplate template, string name, CodeReference codeReference)
+        public BaseTemplateParameterSet(string name, CodeReference codeReference)
             : base(name, codeReference)
         {
-            if (template == null)
-                throw new ArgumentNullException("template");
-
-            this.template = template;
+            parameters = new List<ITemplateParameter>();
         }
 
-        /// <summary>
-        /// Gets the containing test template.
-        /// </summary>
-        public MbUnitTestTemplate Template
+        /// <inheritdoc />
+        public IList<ITemplateParameter> Parameters
         {
-            get { return template; }
+            get { return parameters; }
         }
     }
 }

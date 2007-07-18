@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Core.Harness;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Core.Utilities;
 
@@ -45,7 +46,7 @@ namespace MbUnit.Core.Runner
             if (runtime == null)
                 throw new InvalidOperationException("The runtime has not been initialized.");
 
-            return new LocalTestDomain(runtime);
+            return new LocalTestDomain(runtime, new DefaultTestHarnessFactory(runtime));
         }
 
         /// <summary>

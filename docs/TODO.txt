@@ -1,3 +1,26 @@
 * Eliminate the stupid underscore prefix on MbUnit._Framework.Tests
   that was needed to disambiguate between MbUnit v2 and v3 framework bits.
   Once we're self-hosting that becomes moot.
+
+* Add support for test harness options passed in from the command-line.
+  Such options can control how test frameworks perform enumeration, test
+  execution, etc...
+  Just plain vanilla string-based key/value pairs should suffice but
+  we might want to allow test harness contributions to pass back descriptions
+  of the parameters they can accept.
+
+* When test enumeration fails for some reason, create templates or tests
+  with special "Error" metadata to indicate the reason.  This way the test
+  runner can still obtain the remainder of the tree.
+
+* Add MSBuild and NAnt tasks for MbUnit.
+
+* Someone on the newsgroups asked how to run a test repeatedly for a set period of time.
+  This means that the number of tests is not known ahead of time and may change
+  over the course of test execution.  Tricky.
+  
+  Would be interesting if the runner could handle dynamically created sub-tests
+  somehow.  So the number of tests known to the runner would be fixed, but any of
+  these tests could fork off someplace into as many dynamically generated tests
+  as it needs and they will appear in the report as usual although perhaps decorated
+  with an IsDynamic=true metadata entry or something.

@@ -14,6 +14,11 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using MbUnit._Framework.Tests;
+using MbUnit.Core.Harness;
+using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Tests.Kernel.Runtime;
 using MbUnit2::MbUnit.Framework;
 
 using System.Reflection;
@@ -28,15 +33,26 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
     [TestFixture]
     [TestsOn(typeof(NUnitTestFramework))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class NUnitTestFrameworkTest
+    public class NUnitTestFrameworkTest : BaseUnitTest
     {
         private NUnitTestFramework framework;
-        private TestTemplateTreeBuilder builder;
+        private TemplateTreeBuilder builder;
 
-        [SetUp]
-        public void SetUp()
+        private MockRuntime mockRuntime;
+        private IAssemblyResolverManager mockAssemblyResolverManager;
+        private ITestHarness mockHarness;
+
+        public override void SetUp()
         {
+            base.SetUp();
+
+            mockRuntime = new MockRuntime();
+            mockAssemblyResolverManager = Mocks.CreateMock<IAssemblyResolverManager>();
+            mockRuntime.Components.Add(typeof(IAssemblyResolverManager), mockAssemblyResolverManager);
+            mockHarness = new DefaultTestHarness(mockRuntime);
+
             framework = new NUnitTestFramework();
+            mockHarness.AddContributor(framework);
         }
 
         [Test]
@@ -46,47 +62,47 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
         }
 
         [Test]
-        public void PopulateTree_WhenAssemblyDoesNotReferenceMbUnit_IsEmpty()
+        public void PopulateTemplateTree_WhenAssemblyDoesNotReferenceMbUnit_IsEmpty()
         {
-            PopulateTree(typeof(Int32).Assembly);
+            PopulateTemplateTree(typeof(Int32).Assembly);
 
             Assert.AreEqual(0, builder.Root.ChildrenList.Count);
         }
 
         [Test]
-        public void PopulateTree_WhenAssemblyReferencesNUnit_ContainsJustTheFrameworkTemplate()
+        public void PopulateTemplateTree_WhenAssemblyReferencesNUnit_ContainsJustTheFrameworkTemplate()
         {
             Type fixtureType = typeof(MbUnit.TestResources.NUnit.SimpleTest);
             Assembly assembly = fixtureType.Assembly;
             Version expectedVersion = typeof(NUnit.Framework.Assert).Assembly.GetName().Version;
 
-            PopulateTree(assembly);
+            PopulateTemplateTree(assembly);
             Assert.IsNull(builder.Root.Parent);
             Assert.AreEqual(TemplateKind.Root, builder.Root.Kind);
             Assert.AreEqual(CodeReference.Unknown, builder.Root.CodeReference);
             Assert.AreEqual(1, builder.Root.ChildrenList.Count);
 
-            TestTemplateGroup frameworkTemplate = (TestTemplateGroup)builder.Root.ChildrenList[0];
+            TemplateGroup frameworkTemplate = (TemplateGroup)builder.Root.ChildrenList[0];
             Assert.AreSame(builder.Root, frameworkTemplate.Parent);
             Assert.AreEqual(TemplateKind.Framework, frameworkTemplate.Kind);
             Assert.AreEqual(CodeReference.Unknown, frameworkTemplate.CodeReference);
             Assert.AreEqual("NUnit v" + expectedVersion, frameworkTemplate.Name);
             Assert.AreEqual(1, frameworkTemplate.ChildrenList.Count);
 
-            TestTemplateGroup assemblyTemplate = (TestTemplateGroup) frameworkTemplate.ChildrenList[0];
+            TemplateGroup assemblyTemplate = (TemplateGroup) frameworkTemplate.ChildrenList[0];
             Assert.AreSame(frameworkTemplate, assemblyTemplate.Parent);
             Assert.AreEqual(TemplateKind.Assembly, assemblyTemplate.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(assembly), assemblyTemplate.CodeReference);
             Assert.AreEqual(0, assemblyTemplate.ChildrenList.Count);
         }
 
-        private void PopulateTree(Assembly assembly)
+        private void PopulateTemplateTree(Assembly assembly)
         {
-            TestProject project = new TestProject();
-            project.Assemblies.Add(assembly);
+            mockHarness.AddAssembly(assembly);
+            mockHarness.Initialize();
+            mockHarness.BuildTemplates();
 
-            builder = new TestTemplateTreeBuilder(project);
-            framework.BuildTemplates(builder, builder.Root);
+            builder = mockHarness.TemplateTreeBuilder;
         }
     }
 }

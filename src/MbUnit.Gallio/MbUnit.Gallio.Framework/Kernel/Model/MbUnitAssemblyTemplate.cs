@@ -24,31 +24,31 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Represents a template derived from an MbUnit test assembly.
     /// </summary>
-    public class MbUnitTestAssemblyTemplate : MbUnitTestTemplate
+    public class MbUnitAssemblyTemplate : MbUnitTemplate
     {
-        private MbUnitTestFrameworkTemplate frameworkTemplate;
-        private List<MbUnitTestFixtureTemplate> fixtureTemplates;
+        private MbUnitFrameworkTemplate frameworkTemplate;
+        private List<MbUnitFixtureTemplate> fixtureTemplates;
 
         /// <summary>
         /// Initializes an MbUnit test assembly template model object.
         /// </summary>
         /// <param name="frameworkTemplate">The containing framework template</param>
         /// <param name="assembly">The test assembly</param>
-        public MbUnitTestAssemblyTemplate(MbUnitTestFrameworkTemplate frameworkTemplate, Assembly assembly)
+        public MbUnitAssemblyTemplate(MbUnitFrameworkTemplate frameworkTemplate, Assembly assembly)
             : base(assembly.GetName().Name, CodeReference.CreateFromAssembly(assembly))
         {
             this.frameworkTemplate = frameworkTemplate;
 
-            fixtureTemplates = new List<MbUnitTestFixtureTemplate>();
+            fixtureTemplates = new List<MbUnitFixtureTemplate>();
             Kind = TemplateKind.Assembly;
         }
 
         /// <inheritdoc />
-        public override IEnumerable<ITestTemplate> Children
+        public override IEnumerable<ITemplate> Children
         {
             get
             {
-                foreach (MbUnitTestFixtureTemplate fixtureTemplate in fixtureTemplates)
+                foreach (MbUnitFixtureTemplate fixtureTemplate in fixtureTemplates)
                     yield return fixtureTemplate;
             }
         }
@@ -56,7 +56,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Gets the containing framework template.
         /// </summary>
-        public MbUnitTestFrameworkTemplate FrameworkTemplate
+        public MbUnitFrameworkTemplate FrameworkTemplate
         {
             get { return frameworkTemplate; }
         }
@@ -72,7 +72,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Gets the list of fixture templates.
         /// </summary>
-        public IList<MbUnitTestFixtureTemplate> FixtureTemplates
+        public IList<MbUnitFixtureTemplate> FixtureTemplates
         {
             get { return fixtureTemplates; }
         }
@@ -81,7 +81,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// Adds a test fixture template as a child of the assembly.
         /// </summary>
         /// <param name="fixtureTemplate">The test fixture template</param>
-        public void AddFixtureTemplate(MbUnitTestFixtureTemplate fixtureTemplate)
+        public void AddFixtureTemplate(MbUnitFixtureTemplate fixtureTemplate)
         {
             ModelUtils.LinkTemplate(this, fixtureTemplates, fixtureTemplate);
         }

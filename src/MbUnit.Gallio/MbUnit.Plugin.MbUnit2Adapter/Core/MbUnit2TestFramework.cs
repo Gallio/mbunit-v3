@@ -20,7 +20,6 @@ using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Core
@@ -37,9 +36,14 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         }
 
         /// <inheritdoc />
-        public void BuildTemplates(TestTemplateTreeBuilder builder, ITestTemplate parent)
+        public void Apply(ITestHarness harness)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(builder.Project.Assemblies, "MbUnit.Framework");
+            harness.BuildingTemplates += harness_BuildingTemplates;
+        }
+
+        private void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
+        {
+            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, "MbUnit.Framework");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
@@ -47,24 +51,19 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 // template because we can't perform any interesting meta-operations
                 // on them like binding test parameters or composing tests.
                 Version frameworkVersion = entry.Key.Version;
-                TestTemplateGroup frameworkTemplate = new TestTemplateGroup("MbUnit v" + frameworkVersion, CodeReference.Unknown);
+                TemplateGroup frameworkTemplate = new TemplateGroup("MbUnit v" + frameworkVersion, CodeReference.Unknown);
                 frameworkTemplate.Kind = TemplateKind.Framework;
-                parent.AddChild(frameworkTemplate);
+                harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
 
                 foreach (Assembly assembly in entry.Value)
                 {
-                    TestTemplateGroup assemblyTemplate = new TestTemplateGroup(assembly.FullName, CodeReference.CreateFromAssembly(assembly));
+                    TemplateGroup assemblyTemplate = new TemplateGroup(assembly.FullName, CodeReference.CreateFromAssembly(assembly));
                     assemblyTemplate.Kind = TemplateKind.Assembly;
                     frameworkTemplate.AddChild(assemblyTemplate);
 
                     // TODO: Add rules to populate the test graph using MbUnit v2.
                 }
             }
-        }
-
-        /// <inheritdoc />
-        public void InitializeTestAssembly(Assembly assembly)
-        {
         }
 
         /*

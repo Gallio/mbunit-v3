@@ -32,6 +32,8 @@ namespace MbUnit.Core.Runner
     {
         private ILogger logger;
         private ITestDomain domain;
+        private bool isTemplateTreeReady;
+        private bool isTestTreeReady;
 
         /// <summary>
         /// Creates a runner, initially without a project.
@@ -63,7 +65,7 @@ namespace MbUnit.Core.Runner
         /// Loads a test project.
         /// </summary>
         /// <param name="project">The test project</param>
-        public void LoadProject(TestProjectInfo project)
+        public void LoadProject(TestProject project)
         {
             logger.Debug("Loading project into test domain.");
 
@@ -71,10 +73,31 @@ namespace MbUnit.Core.Runner
         }
 
         /// <summary>
+        /// Gets the root of the template tree.
+        /// Automatically builds the template tree if needed.
+        /// </summary>
+        public TemplateInfo GetTemplateTreeRoot()
+        {
+            BuildTemplatesIfNeeded();
+            return domain.TemplateTreeRoot;
+        }
+
+        /// <summary>
+        /// Gets the root of the test tree.
+        /// Automatically builds the test tree if needed.
+        /// </summary>
+        public TestInfo GetTestTreeRoot()
+        {
+            BuildTestsIfNeeded();
+            return domain.TestTreeRoot;
+        }
+
+        /// <summary>
         /// Runs the tests.
         /// </summary>
         public void Run()
         {
+            BuildTestsIfNeeded();
             domain.RunTests();
         }
 
@@ -83,6 +106,26 @@ namespace MbUnit.Core.Runner
         /// </summary>
         public void WriteReport()
         {
+        }
+
+        private void BuildTemplatesIfNeeded()
+        {
+            if (! isTemplateTreeReady)
+            {
+                domain.BuildTemplates();
+                isTemplateTreeReady = true;
+            }
+        }
+
+        private void BuildTestsIfNeeded()
+        {
+            BuildTemplatesIfNeeded();
+
+            if (!isTestTreeReady)
+            {
+                domain.BuildTests();
+                isTestTreeReady = true;
+            }
         }
     }
 }

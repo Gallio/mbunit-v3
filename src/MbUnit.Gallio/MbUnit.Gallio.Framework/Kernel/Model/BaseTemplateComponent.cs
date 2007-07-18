@@ -20,25 +20,20 @@ using System.Text;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Provides utility functions for manipulating the object model.
+    /// Base implementation of <see cref="ITemplateComponent" />.
     /// </summary>
-    public static class ModelUtils
+    public class BaseTemplateComponent : BaseModelComponent, ITemplateComponent
     {
         /// <summary>
-        /// Links a template into the list of children managed by a given parent template.
+        /// Initializes a component initially without a parent.
         /// </summary>
-        /// <param name="parent">The parent template</param>
-        /// <param name="childrenOfParent">The mutable list of children owned by the parent</param>
-        /// <param name="child">The child template</param>
-        /// <exception cref="InvalidOperationException">Thrown if the child already has a parent</exception>
-        public static void LinkTemplate<T>(ITemplate parent, IList<T> childrenOfParent, T child)
-            where T : ITemplate
+        /// <param name="name">The name of the component</param>
+        /// <param name="codeReference">The point of definition</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="codeReference"/> is null</exception>
+        public BaseTemplateComponent(string name, CodeReference codeReference)
+            : base(name, codeReference)
         {
-            if (child.Parent != null)
-                throw new InvalidOperationException("The template to be added is already a child of another template.");
-
-            child.Parent = parent;
-            childrenOfParent.Add(child);
         }
     }
 }

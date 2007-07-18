@@ -18,7 +18,7 @@ using System;
 namespace MbUnit.Framework.Kernel.Metadata
 {
     /// <summary>
-    /// Specifies the kind of a test template.
+    /// Specifies the kind of a template.
     /// </summary>
     /// <remarks>
     /// <para>

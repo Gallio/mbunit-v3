@@ -31,8 +31,8 @@ namespace MbUnit.Core.Runner
     public abstract class BaseTestDomain : LongLivingMarshalByRefObject, ITestDomain
     {
         private bool disposed;
-        private TestProjectInfo testProject;
-        private TestTemplateInfo testTemplateTreeRoot;
+        private TestProject testProject;
+        private TemplateInfo templateTreeRoot;
         private TestInfo testTreeRoot;
 
         /// <inheritdoc />
@@ -43,14 +43,14 @@ namespace MbUnit.Core.Runner
                 InternalDispose();
 
                 testProject = null;
-                testTemplateTreeRoot = null;
+                templateTreeRoot = null;
                 testTreeRoot = null;
                 disposed = true;
             }
         }
 
         /// <inheritdoc />
-        public virtual TestProjectInfo TestProject
+        public virtual TestProject TestProject
         {
             get
             {
@@ -64,16 +64,16 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public virtual TestTemplateInfo TestTemplateTreeRoot
+        public virtual TemplateInfo TemplateTreeRoot
         {
             get
             {
                 ThrowIfDisposed();
-                return testTemplateTreeRoot;
+                return templateTreeRoot;
             }
             protected set
             {
-                testTemplateTreeRoot = value;
+                templateTreeRoot = value;
             }
         }
 
@@ -92,7 +92,7 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public void LoadProject(TestProjectInfo project)
+        public void LoadProject(TestProject project)
         {
             if (project == null)
                 throw new ArgumentNullException("project");
@@ -113,10 +113,10 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public void BuildTestTemplates()
+        public void BuildTemplates()
         {
             ThrowIfDisposed();
-            InternalBuildTestTemplates();
+            InternalBuildTemplates();
         }
 
         /// <inheritdoc />
@@ -134,7 +134,7 @@ namespace MbUnit.Core.Runner
 
             testProject = null;
             testTreeRoot = null;
-            testTemplateTreeRoot = null;
+            templateTreeRoot = null;
         }
 
         /// <inheritdoc />
@@ -153,13 +153,13 @@ namespace MbUnit.Core.Runner
         /// Internal implementation of <see cref="LoadProject" />.
         /// </summary>
         /// <param name="project">The test project</param>
-        protected abstract void InternalLoadProject(TestProjectInfo project);
+        protected abstract void InternalLoadProject(TestProject project);
 
         /// <summary>
-        /// Internal implementation of <see cref="BuildTestTemplates" />.
+        /// Internal implementation of <see cref="BuildTemplates" />.
         /// </summary>
         /// <returns>The root template</returns>
-        protected abstract void InternalBuildTestTemplates();
+        protected abstract void InternalBuildTemplates();
 
         /// <summary>
         /// Internal implementation of <see cref="BuildTests" />.

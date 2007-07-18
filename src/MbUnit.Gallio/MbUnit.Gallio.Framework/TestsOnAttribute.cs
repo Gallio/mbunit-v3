@@ -68,7 +68,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(TestTemplateTreeBuilder builder, ITestComponent component)
+        public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
         {
             component.Metadata.Entries.Add(MetadataConstants.TestsOnKey, typeName);
         }

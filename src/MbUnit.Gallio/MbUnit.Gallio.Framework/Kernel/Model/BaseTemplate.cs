@@ -21,24 +21,24 @@ using MbUnit.Framework.Kernel.Metadata;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Base implementation of <see cref="ITestTemplate" />.
+    /// Base implementation of <see cref="ITemplate" />.
     /// </summary>
-    public class BaseTestTemplate : BaseTestComponent, ITestTemplate
+    public class BaseTemplate : BaseTemplateComponent, ITemplate
     {
-        private ITestTemplate parent;
-        private List<ITestParameterSet> parameterSets;
+        private ITemplate parent;
+        private List<ITemplateParameterSet> parameterSets;
 
         /// <summary>
-        /// Initializes a test template initially without a parent.
+        /// Initializes a template initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
         /// or <paramref name="codeReference"/> is null</exception>
-        public BaseTestTemplate(string name, CodeReference codeReference)
+        public BaseTemplate(string name, CodeReference codeReference)
             : base(name, codeReference)
         {
-            this.parameterSets = new List<ITestParameterSet>();
+            this.parameterSets = new List<ITemplateParameterSet>();
             Kind = TemplateKind.Custom;
         }
 
@@ -56,26 +56,26 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
-        public ITestTemplate Parent
+        public ITemplate Parent
         {
             get { return parent; }
             set { parent = value; }
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<ITestTemplate> Children
+        public virtual IEnumerable<ITemplate> Children
         {
             get { yield break; }
         }
 
         /// <inheritdoc />
-        public IList<ITestParameterSet> ParameterSets
+        public IList<ITemplateParameterSet> ParameterSets
         {
             get { return parameterSets; }
         }
 
         /// <inheritdoc />
-        public virtual void AddChild(ITestTemplate template)
+        public virtual void AddChild(ITemplate template)
         {
             throw new NotSupportedException("This template does not support the addition of arbitrary children.");
         }
@@ -86,11 +86,11 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="parameterSetName">The parameter set name</param>
         /// <returns>The parameter set</returns>
-        public ITestParameterSet GetParameterSetByName(string parameterSetName)
+        public ITemplateParameterSet GetParameterSetByName(string parameterSetName)
         {
             if (parameterSetName.Length != 0)
             {
-                foreach (ITestParameterSet parameterSet in parameterSets)
+                foreach (ITemplateParameterSet parameterSet in parameterSets)
                     if (parameterSet.Name == parameterSetName)
                         return parameterSet;
             }

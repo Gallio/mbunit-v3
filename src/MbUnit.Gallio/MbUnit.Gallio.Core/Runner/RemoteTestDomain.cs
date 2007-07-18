@@ -46,7 +46,7 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalLoadProject(TestProjectInfo project)
+        protected override void InternalLoadProject(TestProject project)
         {
             Connect();
 
@@ -61,15 +61,17 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTestTemplates()
+        protected override void InternalBuildTemplates()
         {
             try
             {
-                proxy.BuildTestTemplates();
+                TemplateTreeRoot = null;
+                proxy.BuildTemplates();
+                TemplateTreeRoot = proxy.TemplateTreeRoot;
             }
             catch (Exception ex)
             {
-                throw new FatalRunnerException("Failed to build test templates in the remote test domain.", ex);
+                throw new FatalRunnerException("Failed to build templates in the remote test domain.", ex);
             }
         }
 
@@ -78,7 +80,9 @@ namespace MbUnit.Core.Runner
         {
             try
             {
+                TestTreeRoot = null;
                 proxy.BuildTests();
+                TestTreeRoot = proxy.TestTreeRoot;
             }
             catch (Exception ex)
             {

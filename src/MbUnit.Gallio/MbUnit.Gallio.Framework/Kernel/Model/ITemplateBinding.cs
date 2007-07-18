@@ -20,25 +20,24 @@ using System.Text;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Provides utility functions for manipulating the object model.
+    /// A template binding binds a template with its actual argument values
+    /// in the scope in which it was instantiated.
     /// </summary>
-    public static class ModelUtils
+    public interface ITemplateBinding
     {
         /// <summary>
-        /// Links a template into the list of children managed by a given parent template.
+        /// Gets the template that has been bound.
         /// </summary>
-        /// <param name="parent">The parent template</param>
-        /// <param name="childrenOfParent">The mutable list of children owned by the parent</param>
-        /// <param name="child">The child template</param>
-        /// <exception cref="InvalidOperationException">Thrown if the child already has a parent</exception>
-        public static void LinkTemplate<T>(ITemplate parent, IList<T> childrenOfParent, T child)
-            where T : ITemplate
-        {
-            if (child.Parent != null)
-                throw new InvalidOperationException("The template to be added is already a child of another template.");
+        ITemplate Template { get; }
 
-            child.Parent = parent;
-            childrenOfParent.Add(child);
-        }
+        /// <summary>
+        /// Gets the scope in which the binding occurred.
+        /// </summary>
+        TestScope Scope { get; }
+
+        /// <summary>
+        /// Gets the actual argument values used to bind the template.
+        /// </summary>
+        IDictionary<ITemplateParameter, object> Arguments { get; }
     }
 }

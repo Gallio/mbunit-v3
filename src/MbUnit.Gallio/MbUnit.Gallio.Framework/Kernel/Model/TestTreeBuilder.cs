@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.Harness;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -25,25 +26,28 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class TestTreeBuilder
     {
+        private ITestHarness harness;
         private ITest root;
-        private TestProject project;
 
         /// <summary>
-        /// Creates a test tree builder for the specified project.
+        /// Creates a test tree builder.
         /// </summary>
-        /// <param name="project">The test project</param>
-        public TestTreeBuilder(TestProject project)
+        /// <param name="harness">The test project</param>
+        public TestTreeBuilder(ITestHarness harness)
         {
-            this.project = project;
+            if (harness == null)
+                throw new ArgumentNullException("harness");
+
+            this.harness = harness;
             root = CreateRoot();
         }
 
         /// <summary>
-        /// Gets the test project.
+        /// Gets the test harness.
         /// </summary>
-        public TestProject Project
+        public ITestHarness Harness
         {
-            get { return project; }
+            get { return harness; }
         }
 
         /// <summary>

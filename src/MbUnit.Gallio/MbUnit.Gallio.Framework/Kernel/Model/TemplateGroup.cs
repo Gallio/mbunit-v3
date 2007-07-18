@@ -21,44 +21,44 @@ using MbUnit.Framework.Kernel.Metadata;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// A test template group is a test template that aggregates a collection
+    /// A template group is a template that aggregates a collection
     /// of related templates under some common parent.  It supports the
     /// addition of arbitrary templates as children.
     /// </summary>
-    public class TestTemplateGroup : BaseTestTemplate
+    public class TemplateGroup : BaseTemplate
     {
-        private List<ITestTemplate> children;
+        private List<ITemplate> children;
 
         /// <summary>
-        /// Initializes an empty test template group.
+        /// Initializes an empty template group.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
         /// or <paramref name="codeReference"/> is null</exception>
-        public TestTemplateGroup(string name, CodeReference codeReference)
+        public TemplateGroup(string name, CodeReference codeReference)
             : base(name, codeReference)
         {
-            children = new List<ITestTemplate>();
+            children = new List<ITemplate>();
             Kind = TemplateKind.Group;
         }
 
         /// <inheritdoc />
-        public override IEnumerable<ITestTemplate> Children
+        public override IEnumerable<ITemplate> Children
         {
             get { return children; }
         }
 
         /// <summary>
-        /// Gets the children of this test template as a list.
+        /// Gets the children of this template as a list.
         /// </summary>
-        public IList<ITestTemplate> ChildrenList
+        public IList<ITemplate> ChildrenList
         {
             get { return children; }
         }
 
         /// <inheritdoc />
-        public override void AddChild(ITestTemplate template)
+        public override void AddChild(ITemplate template)
         {
             ModelUtils.LinkTemplate(this, children, template);
         }

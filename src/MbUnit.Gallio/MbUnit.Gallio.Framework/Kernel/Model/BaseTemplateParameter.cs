@@ -18,11 +18,11 @@ using System;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Base implementation of <see cref="ITestParameter" />.
+    /// Base implementation of <see cref="ITemplateParameter" />.
     /// </summary>
-    public class BaseTestParameter : BaseTestComponent, ITestParameter
+    public class BaseTemplateParameter : BaseTemplateComponent, ITemplateParameter
     {
-        private ITestParameterSet parameterSet;
+        private ITemplateParameterSet parameterSet;
         private Type type;
         private int index;
 
@@ -35,7 +35,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="type">The type of the parameter</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, <paramref name="codeReference"/>,
         /// <paramref name="parameterSet"/> or <paramref name="type"/> is null</exception>
-        public BaseTestParameter(string name, CodeReference codeReference, ITestParameterSet parameterSet, Type type)
+        public BaseTemplateParameter(string name, CodeReference codeReference, ITemplateParameterSet parameterSet, Type type)
             : base(name, codeReference)
         {
             if (parameterSet == null)
@@ -48,7 +48,7 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
-        public ITestParameterSet ParameterSet
+        public ITemplateParameterSet ParameterSet
         {
             get { return parameterSet; }
             set

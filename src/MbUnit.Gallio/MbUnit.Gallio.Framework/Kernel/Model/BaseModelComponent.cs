@@ -20,9 +20,9 @@ using System.Text;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Base implementation of <see cref="ITestComponent" />.
+    /// Base implementation of <see cref="ITemplateComponent" />.
     /// </summary>
-    public abstract class BaseTestComponent : ITestComponent
+    public abstract class BaseModelComponent : IModelComponent
     {
         private string id;
         private string name;
@@ -36,7 +36,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="codeReference">The point of definition of the component</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="codeReference"/>
         /// is null</exception>
-        public BaseTestComponent(/*string id, */string name, CodeReference codeReference)
+        public BaseModelComponent(/*string id, */string name, CodeReference codeReference)
         {
             if (name == null)
                 throw new ArgumentNullException("name");

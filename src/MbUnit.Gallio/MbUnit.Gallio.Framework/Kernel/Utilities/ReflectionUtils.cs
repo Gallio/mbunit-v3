@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using MbUnit.Framework.Kernel.Collections;
@@ -52,12 +53,12 @@ namespace MbUnit.Framework.Kernel.Utilities
         /// Recursively searches referenced assemblies beginning with the one specified as a parameter.
         /// Loads referenced assemblies on demand to resolve names.
         /// </summary>
-        /// <param name="assemblyName">The name of the first assembly to check</param>
+        /// <param name="assembly">The assembly whose references are to be scanned</param>
         /// <param name="displayName">The display name of the assembly to search for</param>
         /// <returns>The referenced assembly name or null if none</returns>
-        public static AssemblyName FindReferencedAssembly(AssemblyName assemblyName, string displayName)
+        public static AssemblyName FindReferencedAssembly(Assembly assembly, string displayName)
         {
-            return FindReferencedAssembly(assemblyName, displayName, new Dictionary<string, bool>());
+            return FindReferencedAssembly(assembly, displayName, new Dictionary<string, bool>());
         }
 
         /// <summary>
@@ -74,7 +75,7 @@ namespace MbUnit.Framework.Kernel.Utilities
 
             foreach (Assembly assembly in assemblies)
             {
-                AssemblyName reference = FindReferencedAssembly(assembly.GetName(), displayName);
+                AssemblyName reference = FindReferencedAssembly(assembly, displayName);
                 if (reference != null)
                     map.Add(reference, assembly);
             }
@@ -82,31 +83,33 @@ namespace MbUnit.Framework.Kernel.Utilities
             return map;
         }
 
-        private static AssemblyName FindReferencedAssembly(AssemblyName assemblyName, string displayName,
+        private static AssemblyName FindReferencedAssembly(Assembly assembly, string displayName,
                                                            Dictionary<string, bool> visitedSet)
         {
-            if (assemblyName.Name == displayName)
-                return assemblyName;
-
-            visitedSet.Add(assemblyName.FullName, false);
-
-            Assembly assembly;
-            try
-            {
-                assembly = Assembly.ReflectionOnlyLoad(assemblyName.FullName);
-            }
-            catch (Exception)
-            {
-                // Ignore failures to load the referenced assembly.
-                // Obviously the referenced assembly wasn't found there...
-                return null;
-            }
-
             foreach (AssemblyName reference in assembly.GetReferencedAssemblies())
             {
+                if (reference.Name == displayName)
+                    return reference;
+
                 if (!visitedSet.ContainsKey(reference.FullName))
                 {
-                    AssemblyName result = FindReferencedAssembly(reference, displayName, visitedSet);
+                    visitedSet.Add(reference.FullName, false);
+
+                    Assembly referencedAssembly;
+                    try
+                    {
+                        referencedAssembly = Assembly.ReflectionOnlyLoad(reference.FullName);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Ignore failures to load the referenced assembly.
+                        // Obviously the referenced assembly wasn't found there...
+                        Debug.WriteLine(String.Format(CultureInfo.CurrentCulture,
+                            "Could not scan references of assembly '{0}'.\n{1}", reference.FullName, ex));
+                        continue;
+                    }
+
+                    AssemblyName result = FindReferencedAssembly(referencedAssembly, displayName, visitedSet);
                     if (result != null)
                         return result;
                 }

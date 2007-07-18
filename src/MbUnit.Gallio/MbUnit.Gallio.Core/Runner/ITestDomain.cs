@@ -60,15 +60,15 @@ namespace MbUnit.Core.Runner
         /// </summary>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        TestProjectInfo TestProject { get; }
+        TestProject TestProject { get; }
 
         /// <summary>
-        /// Gets the root of the test template tree, or null if the test templates have not
+        /// Gets the root of the template tree, or null if the templates have not
         /// been built yet.
         /// </summary>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        TestTemplateInfo TestTemplateTreeRoot { get; }
+        TemplateInfo TemplateTreeRoot { get; }
 
         /// <summary>
         /// Gets the root of the test tree, or null if the tests have not been built yet.
@@ -83,14 +83,14 @@ namespace MbUnit.Core.Runner
         /// <param name="project">The test project to load</param>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void LoadProject(TestProjectInfo project);
+        void LoadProject(TestProject project);
 
         /// <summary>
-        /// Builds the tree of test templates.
+        /// Builds the tree of templates.
         /// </summary>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void BuildTestTemplates();
+        void BuildTemplates();
 
         /// <summary>
         /// Builds the tree of tests.

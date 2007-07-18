@@ -16,7 +16,6 @@
 using System;
 using System.Reflection;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Attributes
 {
@@ -35,22 +34,22 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model
-        /// objects in the test template tree and to further expand the tree using
+        /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="assemblyTemplate">The assembly template</param>
-        public virtual void Apply(TestTemplateTreeBuilder builder, MbUnitTestAssemblyTemplate assemblyTemplate)
+        public virtual void Apply(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate)
         {
         }
 
         /// <summary>
         /// Processes all assembly decorators via reflection.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="assemblyTemplate">The assembly template</param>
         /// <param name="attributeProvider">The attribute provider to scan</param>
-        public static void ProcessDecorators(TestTemplateTreeBuilder builder, MbUnitTestAssemblyTemplate assemblyTemplate, ICustomAttributeProvider attributeProvider)
+        public static void ProcessDecorators(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate, ICustomAttributeProvider attributeProvider)
         {
             object[] decorators = attributeProvider.GetCustomAttributes(typeof(AssemblyDecoratorPatternAttribute), true);
             Sort(decorators);

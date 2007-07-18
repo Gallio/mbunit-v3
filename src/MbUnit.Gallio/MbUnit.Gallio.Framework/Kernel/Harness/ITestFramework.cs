@@ -26,27 +26,16 @@ namespace MbUnit.Framework.Kernel.Harness
     /// may be supported by defining and registering a suitable implementation
     /// of this interface.
     /// </summary>
-    public interface ITestFramework
+    /// <remarks>
+    /// A test framework should register this interface rather than <see cref="ITestHarnessContributor" />
+    /// directly because it allows the system to see which frameworks are available and
+    /// to selectively enable them.
+    /// </remarks>
+    public interface ITestFramework : ITestHarnessContributor
     {
         /// <summary>
         /// Gets the name of the test framework.
         /// </summary>
         string Name { get; }
-
-        /// <summary>
-        /// Populates the test template tree with this framework's contributions.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="parent">The parent template</param>
-        void BuildTemplates(TestTemplateTreeBuilder builder, ITestTemplate parent);
-
-        /// <summary>
-        /// Provides the test framework with an opportunity to perform processing
-        /// just after a test assembly is loaded.  For example, it might quickly
-        /// scan the assembly to configure assembly resolution strategies or
-        /// to configure the behavior of built-in services in other ways.
-        /// </summary>
-        /// <param name="assembly">The loaded test assembly</param>
-        void InitializeTestAssembly(Assembly assembly);
     }
 }

@@ -37,9 +37,14 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         }
 
         /// <inheritdoc />
-        public void BuildTemplates(TestTemplateTreeBuilder builder, ITestTemplate parent)
+        public void Apply(ITestHarness harness)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(builder.Project.Assemblies, "nunit.framework");
+            harness.BuildingTemplates += harness_BuildingTemplates;
+        }
+
+        void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
+        {
+            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, "nunit.framework");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
@@ -47,24 +52,19 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 // template because we can't perform any interesting meta-operations
                 // on them like binding test parameters or composing tests.
                 Version frameworkVersion = entry.Key.Version;
-                TestTemplateGroup frameworkTemplate = new TestTemplateGroup("NUnit v" + frameworkVersion, CodeReference.Unknown);
+                TemplateGroup frameworkTemplate = new TemplateGroup("NUnit v" + frameworkVersion, CodeReference.Unknown);
                 frameworkTemplate.Kind = TemplateKind.Framework;
-                parent.AddChild(frameworkTemplate);
+                harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
 
                 foreach (Assembly assembly in entry.Value)
                 {
-                    TestTemplateGroup assemblyTemplate = new TestTemplateGroup(assembly.FullName, CodeReference.CreateFromAssembly(assembly));
+                    TemplateGroup assemblyTemplate = new TemplateGroup(assembly.FullName, CodeReference.CreateFromAssembly(assembly));
                     assemblyTemplate.Kind = TemplateKind.Assembly;
                     frameworkTemplate.AddChild(assemblyTemplate);
 
                     // TODO: Add rules to populate the test graph using NUnit.
                 }
             }
-        }
-
-        /// <inheritdoc />
-        public void InitializeTestAssembly(Assembly assembly)
-        {
         }
     }
 }

@@ -24,7 +24,7 @@ namespace MbUnit.Framework.Services.Contexts
     /// <summary>
     /// A context is created to represent the scope of test execution.
     /// Contexts may be nested to capture composition relationships, such as
-    /// test assemblies containing test fixtures containing test templates
+    /// test assemblies containing test fixtures containing templates
     /// containing test instances.  Each nested level corresponds to the
     /// hierarchical scope of a test.
     /// </summary>

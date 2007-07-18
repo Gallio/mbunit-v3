@@ -23,11 +23,6 @@ namespace MbUnit.Framework.Services.Runtime
     public interface IAssemblyResolverManager : IDisposable
     {
         /// <summary>
-        /// The event raised when standard assembly resolution fails.
-        /// </summary>
-        event ResolveEventHandler AssemblyResolve; 
-
-        /// <summary>
         /// Adds an assembly load hint directory to search when standard assembly
         /// resolution fails.
         /// </summary>
@@ -47,5 +42,12 @@ namespace MbUnit.Framework.Services.Runtime
         /// Adds the MbUnit assembly directories to the hint directory list.
         /// </summary>
         void AddMbUnitDirectories();
+
+        /// <summary>
+        /// Adds a custom assembly resolver to use when standard assembly resolution fails.
+        /// </summary>
+        /// <param name="assemblyResolver">The assembly resolver</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyResolver"/> is null</exception>
+        void AddAssemblyResolver(IAssemblyResolver assemblyResolver);
     }
 }

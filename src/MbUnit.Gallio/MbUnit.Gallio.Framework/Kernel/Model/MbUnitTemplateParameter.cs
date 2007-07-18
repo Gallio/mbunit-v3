@@ -14,36 +14,44 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// A test project provides parameters for test enumeration such as the list
-    /// of test assemblies.
+    /// Represents a template parameter.
     /// </summary>
-    public class TestProject
+    public class MbUnitTemplateParameter : BaseTemplateParameter
     {
-        private List<Assembly> assemblies;
+        private Slot slot;
 
         /// <summary>
-        /// Creates an empty test project.
+        /// Initializes an MbUnit test parameter model object.
         /// </summary>
-        public TestProject()
+        /// <param name="parameterSet">The parameter set</param>
+        /// <param name="slot">The slot, non-null</param>
+        public MbUnitTemplateParameter(MbUnitTemplateParameterSet parameterSet, Slot slot)
+            : base(slot.Name, slot.CodeReference, parameterSet, slot.ValueType)
         {
-            assemblies = new List<Assembly>();
+            this.slot = slot;
+
+            Index = slot.Position;
+        }
+
+        /// <inheritdoc />
+        public new MbUnitTemplateParameterSet ParameterSet
+        {
+            get { return (MbUnitTemplateParameterSet) base.ParameterSet; }
+            set { base.ParameterSet = value; }
         }
 
         /// <summary>
-        /// Gets the list of test assemblies.
+        /// Gets the associated slot.
         /// </summary>
-        public IList<Assembly> Assemblies
+        public Slot Slot
         {
-            get { return assemblies; }
+            get { return slot; }
         }
-
-        // TODO: Filters, file-based test descriptions, framework-specific options etc...
     }
 }

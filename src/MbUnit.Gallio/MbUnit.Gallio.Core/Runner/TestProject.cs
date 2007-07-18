@@ -17,17 +17,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Core.Serialization;
 
-namespace MbUnit.Core.Serialization
+namespace MbUnit.Core.Runner
 {
     /// <summary>
-    /// Describes a test project in a portable manner for serialization.
+    /// A test project specifies the options used by a test runner to load tests
+    /// into memory for execution.  This specification can also be serialized as
+    /// XML or using .Net remoting for persistence and remote operation.
     /// </summary>
-    /// <seealso cref="TestProject"/>
     [Serializable]
+    [XmlRoot(Namespace=SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class TestProjectInfo
+    public class TestProject
     {
         private string applicationBase;
         private List<string> hintDirectories;
@@ -98,9 +100,9 @@ namespace MbUnit.Core.Serialization
         /// Creates an empty but fully initialized project.
         /// </summary>
         /// <returns>The project</returns>
-        public static TestProjectInfo Create()
+        public static TestProject Create()
         {
-            TestProjectInfo project = new TestProjectInfo();
+            TestProject project = new TestProject();
             project.applicationBase = "";
             project.hintDirectories = new List<string>();
             project.assemblyFiles = new List<string>();

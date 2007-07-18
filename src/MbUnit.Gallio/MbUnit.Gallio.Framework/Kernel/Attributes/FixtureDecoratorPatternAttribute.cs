@@ -35,22 +35,22 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model
-        /// objects in the test template tree and to further expand the tree using
+        /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
-        public virtual void Apply(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate)
+        public virtual void Apply(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate)
         {
         }
 
         /// <summary>
         /// Processes all fixture decorators via reflection.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="fixtureTemplate">The fixture template</param>
         /// <param name="attributeProvider">The attribute provider to scan</param>
-        public static void ProcessDecorators(TestTemplateTreeBuilder builder, MbUnitTestFixtureTemplate fixtureTemplate, ICustomAttributeProvider attributeProvider)
+        public static void ProcessDecorators(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, ICustomAttributeProvider attributeProvider)
         {
             object[] decorators = attributeProvider.GetCustomAttributes(typeof(FixtureDecoratorPatternAttribute), true);
             Sort(decorators);

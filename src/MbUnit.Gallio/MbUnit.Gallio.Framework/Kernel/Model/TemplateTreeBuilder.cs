@@ -15,12 +15,13 @@
 
 using System;
 using System.Collections.Generic;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Metadata;
 
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// The builder for a test template tree.  The builder holds the root of
+    /// The builder for a template tree.  The builder holds the root of
     /// the tree and provides a registry for cooperatively resolving internal
     /// references among templates within the tree.  When internal references
     /// are present, two passes through the tree must be made to resolve
@@ -28,40 +29,57 @@ namespace MbUnit.Framework.Kernel.Model
     /// callbacks to perform fixup activities once all templates have been
     /// registered.
     /// </summary>
-    public class TestTemplateTreeBuilder
+    public class TemplateTreeBuilder
     {
-        private TestProject project;
-        private TestTemplateGroup root;
-        private IDictionary<object, ITestTemplate> registry;
+        private ITestHarness harness;
+        private TemplateGroup root;
+        private IDictionary<object, ITemplate> registry;
 
         /// <summary>
-        /// Creates a test template tree builder initially populated with
+        /// Creates a template tree builder initially populated with
         /// a root template.
         /// </summary>
-        /// <param name="project">The test project</param>
-        public TestTemplateTreeBuilder(TestProject project)
+        /// <param name="harness">The test harness</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> is null</exception>
+        public TemplateTreeBuilder(ITestHarness harness)
         {
-            this.project = project;
+            if (harness == null)
+                throw new ArgumentNullException("harness");
+            this.harness = harness;
 
             root = CreateRoot();
-            registry = new Dictionary<object, ITestTemplate>();
+            registry = new Dictionary<object, ITemplate>();
         }
 
         /// <summary>
-        /// Gets the test project.
+        /// Gets the test harness.
         /// </summary>
-        public TestProject Project
+        public ITestHarness Harness
         {
-            get { return project; }
+            get { return harness; }
         }
 
         /// <summary>
-        /// Gets the root node of the test template tree.
+        /// Gets the root node of the template tree.
         /// </summary>
-        public TestTemplateGroup Root
+        public TemplateGroup Root
         {
             get { return root; }
         }
+
+        /// <summary>
+        /// This event is fired once all templates have been added to the tree to
+        /// allow cross-references among templates to be resolved.  New templates
+        /// should not be added to the tree at this time.
+        /// </summary>
+        public event EventHandler<EventArgs> ResolveReferences;
+
+        /// <summary>
+        /// This event is fired after <see cref="ResolveReferences" /> to finalize
+        /// any remaining template construction issues.  New templates should not
+        /// be added to the tree at this time.
+        /// </summary>
+        public event EventHandler<EventArgs> PostProcess;
 
         /// <summary>
         /// Registers a given template with a given key (such as a type).
@@ -71,7 +89,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="template">The template to register</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or
         /// <paramref name="template"/> is null</exception>
-        public void RegisterTemplate(object key, ITestTemplate template)
+        public void RegisterTemplate(object key, ITemplate template)
         {
             if (key == null)
                 throw new ArgumentNullException("key");
@@ -87,20 +105,42 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="key">The key</param>
         /// <returns>The registered template, or null if not found</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        public ITestTemplate GetTemplate(string key)
+        public ITemplate GetTemplate(string key)
         {
             if (key == null)
                 throw new ArgumentNullException("key");
 
-            ITestTemplate template;
+            ITemplate template;
             return registry.TryGetValue(key, out template) ? template : null;
         }
 
-        //public event EventHandler PostProcess;
-
-        private static TestTemplateGroup CreateRoot()
+        /// <summary>
+        /// Once all declarative template information has been added to the template
+        /// tree, this method should be called to run the <see cref="ResolveReferences" />
+        /// and <see cref="PostProcess" /> event handlers.
+        /// </summary>
+        /// <remarks>
+        /// The event handler references are cleared by this method since they are 
+        /// no longer of any use.
+        /// </remarks>
+        public void FinishBuilding()
         {
-            TestTemplateGroup root = new TestTemplateGroup("Root", CodeReference.Unknown);
+            if (ResolveReferences != null)
+            {
+                ResolveReferences(this, EventArgs.Empty);
+                ResolveReferences = null;
+            }
+
+            if (PostProcess != null)
+            {
+                PostProcess(this, EventArgs.Empty);
+                PostProcess = null;
+            }
+        }
+
+        private static TemplateGroup CreateRoot()
+        {
+            TemplateGroup root = new TemplateGroup("Root", CodeReference.Unknown);
             root.Kind = TemplateKind.Root;
             return root;
         }

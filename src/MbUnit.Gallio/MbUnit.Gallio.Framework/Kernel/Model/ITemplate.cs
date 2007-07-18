@@ -21,7 +21,7 @@ namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
     /// <para>
-    /// A template is an abstract description of a test component.
+    /// A template is an abstract parameterized description of some part of a test.
     /// </para>
     /// <para>
     /// During test enumeration, a tree of templates is constructed to
@@ -33,55 +33,54 @@ namespace MbUnit.Framework.Kernel.Model
     /// correspond to the hierarchical arrangement of templates in the tree.
     /// </para>
     /// <para>
-    /// A template may have zero or more <see cref="ITestParameter" />s.
-    /// Furthermore, each <see cref="ITestParameter" /> belongs to a
-    /// <see cref="ITestParameterSet" />.  Values must be bound to each
+    /// A template may have zero or more <see cref="ITemplateParameter" />s.
+    /// Furthermore, each <see cref="ITemplateParameter" /> belongs to a
+    /// <see cref="ITemplateParameterSet" />.  Values must be bound to each
     /// parameter when templates are specialized during test enumeration.
-    /// The result of template specialization is a <see cref="ITestTemplateBinding" />
+    /// The result of template specialization is a <see cref="ITemplateBinding" />
     /// that contains the actual values that were bound to each parameter.
     /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// During test enumeration, the template adds each <see cref="ITest" />s to a
-    /// test graph.  The template can inject its own contributions in and around
-    /// those of the templates by modifying the <see cref="ITestScope" /> it passes
-    /// to the inner templates, or by instrumenting the <see cref="ITestGraphBuilder" />.
-    /// Thus a template can effect great control over its constituent parts.
+    /// During test enumeration, the template contributes <see cref="ITest" />s to a
+    /// <see cref="TestTreeBuilder" />.  The template can inject its own contributions
+    /// in and around those of the templates by modifying the <see cref="TestScope" /> it passes
+    /// to the inner templates, or by instrumenting the <see cref="TestTreeBuilder" />
+    /// appropriates.  Thus a template can effect great control over test construction.
     /// </para>
     /// <para>
-    /// It can happen that a template is never enumerated, possibly because no values
-    /// were specified for its parameters in the enclosing context or because its
-    /// enumeration was skipped due to filtering or other means.  In this case,
-    /// the template does not contribute anything to the test graph but it will
-    /// still be visible to runtime reflection.
+    /// It can happen that a template is never asked to produce tests, possibly because
+    /// it has some other purpose, or because no values were specified for its parameters
+    /// in the enclosing context.  In this case, the template does not contribute anything
+    /// to the test tree but it will still be visible in the template tree.
     /// </para>
     /// <para>
-    /// Refer to <see cref="ITestScope" /> for information on how a <see cref="IDataProvider" />
+    /// Refer to <see cref="TestScope" /> for information on how a <see cref="IDataProvider" />
     /// can be used to provide values for template parameters.
     /// </para>
     /// </remarks>
-    public interface ITestTemplate : ITestComponent
+    public interface ITemplate : ITemplateComponent
     {
         /// <summary>
-        /// Gets or sets the parent of this test template, or null if this template
+        /// Gets or sets the parent of this template, or null if this template
         /// is at the root of the template tree.
         /// </summary>
-        ITestTemplate Parent { get; set; }
+        ITemplate Parent { get; set; }
 
         /// <summary>
-        /// Gets the children of this test template.
+        /// Gets the children of this template.
         /// </summary>
-        IEnumerable<ITestTemplate> Children { get; }
+        IEnumerable<ITemplate> Children { get; }
 
         /// <summary>
-        /// Gets the parameter sets that belong to this test template.
+        /// Gets the parameter sets that belong to this template.
         /// Each parameter set must have a unique name.  The order in which
         /// the parameter sets appear is not significant.
         /// </summary>
-        IList<ITestParameterSet> ParameterSets { get; }
+        IList<ITemplateParameterSet> ParameterSets { get; }
 
-        //ITestTemplateBinding Bind();
+        //ITemplateBinding Bind();
 
         /*
         ITestScope Scope { get; }
@@ -96,6 +95,6 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="template">The template to add</param>
         /// <exception cref="NotSupportedException">Thrown if the template does not support
         /// the addition of arbitrary children (because it has some more specific internal structure)</exception>
-        void AddChild(ITestTemplate template);
+        void AddChild(ITemplate template);
     }
 }

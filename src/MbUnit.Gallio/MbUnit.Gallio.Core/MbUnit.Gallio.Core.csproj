@@ -51,8 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harness\DefaultTestHarness.cs" />
+    <Compile Include="Harness\DefaultTestHarnessFactory.cs" />
     <Compile Include="Harness\MbUnitTestFramework.cs" />
-    <Compile Include="Harness\MbUnitTestHarness.cs" />
+    <Compile Include="Harness\MbUnitTestContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runner\AutoRunner.cs" />
     <Compile Include="Runner\BaseTestDomain.cs" />
@@ -68,6 +70,8 @@
     <Compile Include="Runner\ITestDomain.cs" />
     <Compile Include="Runner\LocalTestDomain.cs" />
     <Compile Include="Runner\RemoteTestDomain.cs" />
+    <Compile Include="Serialization\ModelComponentInfo.cs" />
+    <Compile Include="Serialization\TestComponentInfo.cs" />
     <Compile Include="Services\Assertions\AssertionUtils.cs" />
     <Compile Include="Services\Assertions\DefaultAssertionService.cs" />
     <Compile Include="Services\Contexts\DefaultContext.cs" />
@@ -90,12 +94,12 @@
     <Compile Include="Serialization\MetadataMapEntry.cs" />
     <Compile Include="Serialization\MetadataMapInfo.cs" />
     <Compile Include="Serialization\SerializationUtils.cs" />
-    <Compile Include="Serialization\TestComponentInfo.cs" />
+    <Compile Include="Serialization\TemplateComponentInfo.cs" />
     <Compile Include="Serialization\TestInfo.cs" />
-    <Compile Include="Serialization\TestParameterInfo.cs" />
-    <Compile Include="Serialization\TestParameterSetInfo.cs" />
-    <Compile Include="Serialization\TestProjectInfo.cs" />
-    <Compile Include="Serialization\TestTemplateInfo.cs" />
+    <Compile Include="Serialization\TemplateParameterInfo.cs" />
+    <Compile Include="Serialization\TemplateParameterSetInfo.cs" />
+    <Compile Include="Runner\TestProject.cs" />
+    <Compile Include="Serialization\TemplateInfo.cs" />
     <Compile Include="Services\Runtime\WindsorRuntime.cs" />
     <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
   </ItemGroup>

@@ -43,14 +43,14 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// This method is called when a parameter is discovered via reflection to
         /// create a new model object to represent it.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="parameterSet">The parameter set</param>
         /// <param name="slot">The slot</param>
         /// <returns>The test parameter</returns>
-        public virtual MbUnitTestParameter CreateParameter(TestTemplateTreeBuilder builder,
-            MbUnitTestParameterSet parameterSet, Slot slot)
+        public virtual MbUnitTemplateParameter CreateParameter(TemplateTreeBuilder builder,
+            MbUnitTemplateParameterSet parameterSet, Slot slot)
         {
-            return new MbUnitTestParameter(parameterSet, slot);
+            return new MbUnitTemplateParameter(parameterSet, slot);
         }
 
         /// <summary>
@@ -59,12 +59,12 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model
-        /// objects in the test template tree and to further expand the tree using
+        /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="parameter">The parameter</param>
-        public virtual void Apply(TestTemplateTreeBuilder builder, MbUnitTestParameter parameter)
+        public virtual void Apply(TemplateTreeBuilder builder, MbUnitTemplateParameter parameter)
         {
             ICustomAttributeProvider attributeProvider = parameter.Slot.AttributeProvider;
             ParameterDecoratorPatternAttribute.ProcessDecorators(builder, parameter, attributeProvider);
@@ -76,10 +76,10 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <summary>
         /// Processes a slot using reflection and attaches a test parameter to the template if applicable.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="parameterSet">The default parameter set</param>
         /// <param name="slot">The slot to process</param>
-        public static void ProcessSlot(TestTemplateTreeBuilder builder, MbUnitTestParameterSet parameterSet, Slot slot)
+        public static void ProcessSlot(TemplateTreeBuilder builder, MbUnitTemplateParameterSet parameterSet, Slot slot)
         {
             ParameterPatternAttribute parameterPatternAttribute = ReflectionUtils.GetAttribute<ParameterPatternAttribute>(slot.AttributeProvider);
 
@@ -100,7 +100,7 @@ namespace MbUnit.Framework.Kernel.Attributes
                 parameterPatternAttribute = DefaultInstance;
             }
 
-            MbUnitTestParameter parameter = parameterPatternAttribute.CreateParameter(builder, parameterSet, slot);
+            MbUnitTemplateParameter parameter = parameterPatternAttribute.CreateParameter(builder, parameterSet, slot);
             parameter.ParameterSet.Parameters.Add(parameter);
             parameterPatternAttribute.Apply(builder, parameter);
         }

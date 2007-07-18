@@ -21,16 +21,16 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Abstract base class for MbUnit-derived test method templates.
     /// </summary>
-    public abstract class MbUnitTestTemplate : BaseTestTemplate
+    public abstract class MbUnitTemplate : BaseTemplate
     {
         /// <summary>
-        /// Initializes a test template initially without a parent.
+        /// Initializes a template initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
         /// or <paramref name="codeReference"/> is null</exception>
-        public MbUnitTestTemplate(string name, CodeReference codeReference)
+        public MbUnitTemplate(string name, CodeReference codeReference)
             : base(name, codeReference)
         {
         }
@@ -39,9 +39,9 @@ namespace MbUnit.Framework.Kernel.Model
         /// Creates an anonymous parameter set associated with this template.
         /// </summary>
         /// <returns>The parameter set</returns>
-        public MbUnitTestParameterSet CreateAnonymousParameterSet()
+        public MbUnitTemplateParameterSet CreateAnonymousParameterSet()
         {
-            MbUnitTestParameterSet parameterSet = new MbUnitTestParameterSet(this, "", CodeReference);
+            MbUnitTemplateParameterSet parameterSet = new MbUnitTemplateParameterSet(this, "", CodeReference);
             ParameterSets.Add(parameterSet);
             return parameterSet;
         }
@@ -53,7 +53,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="parameter">The parameter to move to a different parameter set</param>
         /// <param name="parameterSetName">The parameter set name</param>
-        public void SetParameterSetName(MbUnitTestParameter parameter, string parameterSetName)
+        public void SetParameterSetName(MbUnitTemplateParameter parameter, string parameterSetName)
         {
             if (parameter.ParameterSet.Name == parameterSetName)
                 return;
@@ -71,10 +71,10 @@ namespace MbUnit.Framework.Kernel.Model
                 ParameterSets.Remove(parameter.ParameterSet);
 
             // Add the parameter to its new set.
-            ITestParameterSet parameterSet = GetParameterSetByName(parameterSetName);
+            ITemplateParameterSet parameterSet = GetParameterSetByName(parameterSetName);
             if (parameterSet == null)
             {
-                parameterSet = new MbUnitTestParameterSet(this, parameterSetName, CodeReference);
+                parameterSet = new MbUnitTemplateParameterSet(this, parameterSetName, CodeReference);
                 ParameterSets.Add(parameterSet);
             }
 

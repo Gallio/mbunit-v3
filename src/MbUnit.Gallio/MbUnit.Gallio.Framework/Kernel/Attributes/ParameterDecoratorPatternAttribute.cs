@@ -37,22 +37,22 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model
-        /// objects in the test template tree and to further expand the tree using
+        /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="parameter">The parameter</param>
-        public virtual void Apply(TestTemplateTreeBuilder builder, MbUnitTestParameter parameter)
+        public virtual void Apply(TemplateTreeBuilder builder, MbUnitTemplateParameter parameter)
         {
         }
 
         /// <summary>
         /// Processes all parameter decorators via reflection.
         /// </summary>
-        /// <param name="builder">The test template tree builder</param>
+        /// <param name="builder">The template tree builder</param>
         /// <param name="parameter">The parameter</param>
         /// <param name="attributeProvider">The attribute provider to scan</param>
-        public static void ProcessDecorators(TestTemplateTreeBuilder builder, MbUnitTestParameter parameter, ICustomAttributeProvider attributeProvider)
+        public static void ProcessDecorators(TemplateTreeBuilder builder, MbUnitTemplateParameter parameter, ICustomAttributeProvider attributeProvider)
         {
             object[] decorators = attributeProvider.GetCustomAttributes(typeof(ParameterDecoratorPatternAttribute), true);
             Sort(decorators);

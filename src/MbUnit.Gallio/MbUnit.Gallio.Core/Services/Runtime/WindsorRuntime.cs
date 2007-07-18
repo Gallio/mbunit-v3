@@ -99,6 +99,12 @@ namespace MbUnit.Core.Services.Runtime
             return container.Resolve<T>();
         }
 
+        /// <inheritdoc />
+        public T[] ResolveAll<T>()
+        {
+            return container.Kernel.ResolveServices<T>();
+        }
+
         private void ThrowIfDisposed()
         {
             if (container == null)
