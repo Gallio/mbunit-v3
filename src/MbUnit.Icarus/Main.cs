@@ -331,5 +331,10 @@ namespace MbUnit.Icarus
             ((TestTreeNode)testTree.SelectedNode).TestState = TestStates.Failed;
         }
 
+        private void ExitMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
     }
 }
