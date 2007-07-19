@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Core.Serialization;
 
@@ -27,7 +26,7 @@ namespace MbUnit.Core.Runner
     /// XML or using .Net remoting for persistence and remote operation.
     /// </summary>
     [Serializable]
-    [XmlRoot(Namespace=SerializationUtils.XmlNamespace)]
+    [XmlRoot("project", Namespace=SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public class TestProject
     {
@@ -37,10 +36,21 @@ namespace MbUnit.Core.Runner
         private bool enableShadowCopy;
 
         /// <summary>
+        /// Creates an empty project.
+        /// </summary>
+        public TestProject()
+        {
+            applicationBase = "";
+            hintDirectories = new List<string>();
+            assemblyFiles = new List<string>();
+        }
+
+        /// <summary>
         /// Gets or sets the relative or absolute path of the application base directory.
         /// If relative, the path is based on the application base of the test runner,
         /// so a value of "" causes the test runner's application base to be used.
         /// </summary>
+        [XmlArrayItem("applicationBase")]
         public string ApplicationBase
         {
             get { return applicationBase; }
@@ -72,6 +82,7 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Gets or sets whether assembly shadow copying is enabled.
         /// </summary>
+        [XmlAttribute("enableShadowCopy")]
         public bool EnableShadowCopy
         {
             get { return enableShadowCopy; }
@@ -94,19 +105,6 @@ namespace MbUnit.Core.Runner
         public void AddAssemblyFile(string assemblyFile)
         {
             assemblyFiles.Add(assemblyFile);
-        }
-
-        /// <summary>
-        /// Creates an empty but fully initialized project.
-        /// </summary>
-        /// <returns>The project</returns>
-        public static TestProject Create()
-        {
-            TestProject project = new TestProject();
-            project.applicationBase = "";
-            project.hintDirectories = new List<string>();
-            project.assemblyFiles = new List<string>();
-            return project;
         }
     }
 }

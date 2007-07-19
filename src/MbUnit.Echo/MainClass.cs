@@ -22,6 +22,7 @@ using System.Xml.Serialization;
 using Castle.Core.Logging;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
+using MbUnit.Core.Services.Runtime;
 using MbUnit.Echo;
 
 namespace MbUnit.Echo
@@ -32,6 +33,7 @@ namespace MbUnit.Echo
         private LevelFilteredLogger logger;
         private MainArguments arguments = new MainArguments();
         private TestProject project;
+        private RuntimeSetup runtimeSetup;
 
         public MainClass()
         {
@@ -80,6 +82,7 @@ namespace MbUnit.Echo
 
                 logger.Debug(arguments.ToString());
 
+                BuildRuntimeSetupFromArguments();
                 BuildProjectFromArguments();
                 RunProject();
 
@@ -118,15 +121,23 @@ namespace MbUnit.Echo
             Console.WriteLine(CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments)));
         }
 
+        private void BuildRuntimeSetupFromArguments()
+        {
+            runtimeSetup = new RuntimeSetup();
+
+            foreach (string pluginDirectory in arguments.PluginDirectories)
+                runtimeSetup.AddPluginDirectory(Path.GetFullPath(pluginDirectory));
+        }
+
         private void BuildProjectFromArguments()
         {
-            project = TestProject.Create();
+            project = new TestProject();
 
             foreach (string path in arguments.AssemblyPath)
-                project.AddHintDirectory(path);
+                project.AddHintDirectory(Path.GetFullPath(path));
 
             foreach (string file in arguments.Files)
-                project.AddAssemblyFile(file);
+                project.AddAssemblyFile(Path.GetFullPath(file));
         }
 
         private void RunProject()
@@ -137,30 +148,32 @@ namespace MbUnit.Echo
                 return;
             }
 
-            AutoRunner runner = new AutoRunner();
-            runner.Logger = logger;
-
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            logger.InfoFormat("\nStart time: {0}", DateTime.Now.ToShortTimeString());
-            logger.Info("Loading test assemblies...\n");
-
-            runner.LoadProject(project);
-
-            if (arguments.SaveTemplateTree != null)
+            using (AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup))
             {
-                SaveToXml(runner.GetTemplateTreeRoot(), arguments.SaveTemplateTree);
+                runner.Logger = logger;
+
+                Stopwatch stopWatch = Stopwatch.StartNew();
+                logger.InfoFormat("\nStart time: {0}", DateTime.Now.ToShortTimeString());
+                logger.Info("Loading test assemblies...\n");
+
+                runner.LoadProject(project);
+
+                if (arguments.SaveTemplateTree != null)
+                {
+                    SaveToXml(runner.GetTemplateTreeRoot(), arguments.SaveTemplateTree);
+                }
+
+                if (arguments.SaveTestTree != null)
+                {
+                    SaveToXml(runner.GetTestTreeRoot(), arguments.SaveTestTree);
+                }
+
+                logger.Info("\nStarting execution...\n");
+                runner.Run();
+
+                logger.InfoFormat("\nStop time: {0}", DateTime.Now.ToShortTimeString());
+                logger.InfoFormat("Total execution time: {0:#0.000}s", stopWatch.Elapsed.TotalSeconds);
             }
-
-            if (arguments.SaveTestTree != null)
-            {
-                SaveToXml(runner.GetTestTreeRoot(), arguments.SaveTestTree);
-            }
-
-            logger.Info("\nStarting execution...\n");
-            runner.Run();
-
-            logger.InfoFormat("\nStop time: {0}", DateTime.Now.ToShortTimeString());
-            logger.InfoFormat("Total execution time: {0:#0.000}s", stopWatch.Elapsed.TotalSeconds);
         }
 
         private static void SaveToXml(object root, string filename)

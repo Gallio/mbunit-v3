@@ -68,6 +68,20 @@ namespace MbUnit.Framework.Kernel.Collections
         }
 
         /// <summary>
+        /// Adds all of the values from the specified map.
+        /// </summary>
+        /// <param name="map">The map</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null</exception>
+        public void AddAll(MultiMap<TKey, TValue> map)
+        {
+            if (map == null)
+                throw new ArgumentNullException("map");
+
+            foreach (KeyValuePair<TKey, IList<TValue>> entry in map)
+                Add(entry);
+        }
+
+        /// <summary>
         /// Adds a value to the list of those associated with a key.
         /// </summary>
         /// <param name="key">The key</param>

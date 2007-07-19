@@ -15,6 +15,7 @@
 
 using System;
 using System.Xml.Serialization;
+using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Services.Assertions;
 using MbUnit.Framework.Kernel.Utilities;
 

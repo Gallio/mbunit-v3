@@ -47,10 +47,10 @@ namespace MbUnit.Core.Serialization
         public TemplateInfo(ITemplate obj)
             : base(obj)
         {
-            List<TemplateInfo> childrenInfo = new List<TemplateInfo>();
-            foreach (ITemplate child in obj.Children)
-                childrenInfo.Add(new TemplateInfo(child));
-            children = childrenInfo.ToArray();
+            children = ListUtils.ConvertAllToArray<ITemplate, TemplateInfo>(obj.Children, delegate(ITemplate child)
+            {
+                return new TemplateInfo(child);
+            });
 
             parameterSets = ListUtils.ConvertAllToArray<ITemplateParameterSet, TemplateParameterSetInfo>(obj.ParameterSets,
                 delegate(ITemplateParameterSet parameterSet)

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -34,6 +35,15 @@ namespace MbUnit.Framework.Kernel.Model
             : base(name, codeReference)
         {
         }
+
+        /// <summary>
+        /// This event is fired when a new template binding is created to allow
+        /// MbUnit framework attributes to contribute to the test construction
+        /// process performed by the binding.  Framework attributes will generally
+        /// hook this event to capture the binding process then hook additional
+        /// events on the bound template itself which is passed in as the parameter.
+        /// </summary>
+        public event Action<ITemplateBinding> ProcessBinding;
 
         /// <summary>
         /// Creates an anonymous parameter set associated with this template.
@@ -79,6 +89,17 @@ namespace MbUnit.Framework.Kernel.Model
             }
 
             parameterSet.Parameters.Add(parameter);
+        }
+
+        /// <inheritdoc />
+        public override ITemplateBinding Bind(TestScope scope, IDictionary<ITemplateParameter, object> arguments)
+        {
+            MbUnitTemplateBinding binding = new MbUnitTemplateBinding(this, scope, arguments);
+
+            if (ProcessBinding != null)
+                ProcessBinding(binding);
+
+            return binding;
         }
     }
 }

@@ -67,13 +67,13 @@ namespace MbUnit.Core.Harness
 
         private void harness_BuildingTemplates(ITestHarness sender, EventArgs e)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(sender.Assemblies, "MbUnit.Gallio.Framework");
-            foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
+            MultiMap<Version, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(sender.Assemblies, "MbUnit.Gallio.Framework");
+            foreach (KeyValuePair<Version, IList<Assembly>> entry in map)
             {
                 // Build templates for the contents of the assemblies that reference MbUnit Gallio
                 // via reflection.  The attributes exercise a great deal of control over this
                 // process so that it can be easily extended by users.
-                Version frameworkVersion = entry.Key.Version;
+                Version frameworkVersion = entry.Key;
                 MbUnitFrameworkTemplate frameworkTemplate = new MbUnitFrameworkTemplate(frameworkVersion);
                 sender.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
 

@@ -131,6 +131,14 @@ namespace MbUnit.Echo
 		public bool Verbose = false;
 
         [CommandLineArgument(
+             CommandLineArgumentType.MultipleUnique,
+             ShortName = "pd",
+             LongName = "plugin-directory",
+             Description = "Additional directories that contain MbUnit plugins"
+             )]
+        public string[] PluginDirectories;
+
+        [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
              LongName = "save-template-tree",
              Description = "Saves the template tree to a file as XML"

@@ -85,6 +85,9 @@ namespace MbUnit.Core.Runner
         /// <inheritdoc />
         protected override void InternalBuildTests()
         {
+            TestTreeRoot = null;
+            harness.BuildTests();
+            TestTreeRoot = new TestInfo(harness.TestTreeBuilder.Root);
         }
 
         /// <inheritdoc />

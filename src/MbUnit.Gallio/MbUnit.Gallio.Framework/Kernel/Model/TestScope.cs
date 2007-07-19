@@ -19,7 +19,41 @@ using System.Text;
 
 namespace MbUnit.Framework.Kernel.Model
 {
+    /// <summary>
+    /// Describes the scope in which a test has been instantiated including
+    /// its parentage and available data providers.
+    /// </summary>
     public class TestScope
     {
+        private TestScope parentScope;
+        private ITest containingTest;
+
+        /// <summary>
+        /// Creates a new scope.
+        /// </summary>
+        /// <param name="parentScope">The parent scope, or null if at the root</param>
+        /// <param name="containingTest">The containing test</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="containingTest"/> is null</exception>
+        public TestScope(TestScope parentScope, ITest containingTest)
+        {
+            this.parentScope = parentScope;
+            this.containingTest = containingTest;
+        }
+
+        /// <summary>
+        /// Gets the parent of this scope, or null if at the root.
+        /// </summary>
+        public TestScope ParentScope
+        {
+            get { return parentScope; }
+        }
+
+        /// <summary>
+        /// Gets the test that contains this scope, never null.
+        /// </summary>
+        public ITest ContainingTest
+        {
+            get { return containingTest; }
+        }
     }
 }

@@ -39,6 +39,13 @@ namespace MbUnit.Framework.Kernel.Harness
         TemplateTreeBuilder TemplateTreeBuilder { get; }
 
         /// <summary>
+        /// Gets the test tree builder for the test harness.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the test
+        /// tree has not been built</exception>
+        TestTreeBuilder TestTreeBuilder { get; }
+
+        /// <summary>
         /// The event fired when the test harness is initialized.
         /// </summary>
         /// <remarks>
@@ -57,6 +64,15 @@ namespace MbUnit.Framework.Kernel.Harness
         /// the template tree.
         /// </remarks>
         event TypedEventHandler<ITestHarness, EventArgs> BuildingTemplates;
+
+        /// <summary>
+        /// The event fired when the test harness is building tests.
+        /// </summary>
+        /// <remarks>
+        /// This event provides test harness contributions with an opportunity to populate
+        /// the test tree.
+        /// </remarks>
+        event TypedEventHandler<ITestHarness, EventArgs> BuildingTests;
 
         /// <summary>
         /// The event fired when the test harness about to be disposed.
@@ -102,12 +118,16 @@ namespace MbUnit.Framework.Kernel.Harness
         /// </summary>
         void BuildTemplates();
 
-        /*
         /// <summary>
         /// Populates the test tree.
         /// </summary>
-        void BuildTests(TestScope rootScope);
+        /// <todo>
+        /// Add a parameter to pass in bindings for particular templates so they
+        /// end up in the root scope.
+        /// </todo>
+        void BuildTests();
 
+        /*
         /// <summary>
         /// Runs the tests.
         /// </summary>

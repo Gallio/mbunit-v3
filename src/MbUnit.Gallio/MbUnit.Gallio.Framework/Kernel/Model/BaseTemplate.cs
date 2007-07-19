@@ -23,9 +23,14 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Base implementation of <see cref="ITemplate" />.
     /// </summary>
+    /// <remarks>
+    /// The base template implementation acts as a simple container for templates.
+    /// Accordingly its kind is set to <see cref="ComponentKind.Group" /> by default.
+    /// </remarks>
     public class BaseTemplate : BaseTemplateComponent, ITemplate
     {
         private ITemplate parent;
+        private List<ITemplate> children;
         private List<ITemplateParameterSet> parameterSets;
 
         /// <summary>
@@ -38,21 +43,10 @@ namespace MbUnit.Framework.Kernel.Model
         public BaseTemplate(string name, CodeReference codeReference)
             : base(name, codeReference)
         {
-            this.parameterSets = new List<ITemplateParameterSet>();
-            Kind = TemplateKind.Custom;
-        }
+            children = new List<ITemplate>();
+            parameterSets = new List<ITemplateParameterSet>();
 
-        /// <summary>
-        /// Gets or sets the value of the <see cref="MetadataConstants.TemplateKindKey" />
-        /// metadata entry.  (This is a convenience method.)
-        /// </summary>
-        /// <value>
-        /// One of the <see cref="TemplateKind" /> constants.
-        /// </value>
-        public string Kind
-        {
-            get { return (string) Metadata.GetValue(MetadataConstants.TemplateKindKey); }
-            set { Metadata.SetValue(MetadataConstants.TemplateKindKey, value); }
+            Kind = ComponentKind.Group;
         }
 
         /// <inheritdoc />
@@ -63,9 +57,9 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<ITemplate> Children
+        public virtual IList<ITemplate> Children
         {
-            get { yield break; }
+            get { return children; }
         }
 
         /// <inheritdoc />
@@ -75,9 +69,15 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
+        public virtual ITemplateBinding Bind(TestScope scope, IDictionary<ITemplateParameter, object> arguments)
+        {
+            return new BaseTemplateBinding(this, scope, arguments);
+        }
+
+        /// <inheritdoc />
         public virtual void AddChild(ITemplate template)
         {
-            throw new NotSupportedException("This template does not support the addition of arbitrary children.");
+            ModelUtils.Link<ITemplate>(this, template);
         }
 
         /// <summary>

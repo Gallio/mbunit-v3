@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.Harness;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Core.Utilities;
+using MbUnit.Framework.Kernel.Harness;
 
 namespace MbUnit.Core.Runner
 {
@@ -18,10 +18,9 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Initializes the AppDomain's runtime environment.
         /// </summary>
-        /// <param name="pluginDirectories">Additional plugin directories to search
-        /// beyond the default one containing the MbUnit core</param>
+        /// <param name="runtimeSetup">The runtime setup</param>
         /// <exception cref="InvalidOperationException">Thrown if the runtime has already been initialized</exception>
-        public void Initialize(IList<string> pluginDirectories)
+        public void Initialize(RuntimeSetup runtimeSetup)
         {
             if (runtime != null)
                 throw new InvalidOperationException("The runtime has already been initialized.");
@@ -29,10 +28,7 @@ namespace MbUnit.Core.Runner
             DefaultAssemblyResolverManager assemblyResolverManager = new DefaultAssemblyResolverManager();
             assemblyResolverManager.AddMbUnitDirectories();
 
-            runtime = new WindsorRuntime(assemblyResolverManager);
-            foreach (string pluginDirectory in pluginDirectories)
-                runtime.PluginDirectories.Add(pluginDirectory);
-
+            runtime = new WindsorRuntime(assemblyResolverManager, runtimeSetup);
             runtime.Initialize();
         }
 
@@ -46,7 +42,8 @@ namespace MbUnit.Core.Runner
             if (runtime == null)
                 throw new InvalidOperationException("The runtime has not been initialized.");
 
-            return new LocalTestDomain(runtime, new DefaultTestHarnessFactory(runtime));
+            ITestHarnessFactory harnessFactory = runtime.Resolve<ITestHarnessFactory>();
+            return new LocalTestDomain(runtime, harnessFactory);
         }
 
         /// <summary>

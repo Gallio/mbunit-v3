@@ -57,6 +57,7 @@
     <Compile Include="Harness\MbUnitTestContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runner\AutoRunner.cs" />
+    <Compile Include="Runner\BaseRunner.cs" />
     <Compile Include="Runner\BaseTestDomain.cs" />
     <Compile Include="Runner\Bootstrapper.cs" />
     <Compile Include="Runner\CommandLine\CommandLineArgumentAttribute.cs" />
@@ -66,8 +67,12 @@
     <Compile Include="Runner\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
     <Compile Include="Runner\CommandLine\ErrorReporter.cs" />
     <Compile Include="Runner\FatalRunnerException.cs" />
+    <Compile Include="Runner\ITestRunner.cs" />
+    <Compile Include="Runner\IIsolatedTestDomainContributor.cs" />
     <Compile Include="Runner\IsolatedTestDomain.cs" />
+    <Compile Include="Runner\IsolatedTestDomainFactory.cs" />
     <Compile Include="Runner\ITestDomain.cs" />
+    <Compile Include="Runner\ITestDomainFactory.cs" />
     <Compile Include="Runner\LocalTestDomain.cs" />
     <Compile Include="Runner\RemoteTestDomain.cs" />
     <Compile Include="Serialization\ModelComponentInfo.cs" />
@@ -100,6 +105,8 @@
     <Compile Include="Serialization\TemplateParameterSetInfo.cs" />
     <Compile Include="Runner\TestProject.cs" />
     <Compile Include="Serialization\TemplateInfo.cs" />
+    <Compile Include="Services\Runtime\ICoreRuntime.cs" />
+    <Compile Include="Services\Runtime\RuntimeSetup.cs" />
     <Compile Include="Services\Runtime\WindsorRuntime.cs" />
     <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
   </ItemGroup>

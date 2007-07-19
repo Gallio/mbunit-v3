@@ -8,6 +8,10 @@
       <component id="MbUnit2Adapter.TestFramework"
                  service="MbUnit.Framework.Kernel.Harness.ITestFramework, MbUnit.Gallio.Framework"
                  type="MbUnit.Plugin.MbUnit2Adapter.Core.MbUnit2TestFramework, MbUnit.Plugin.MbUnit2Adapter" />
+
+      <component id="MbUnit2Adapter.AssemblyBindingRedirect"
+                 service="MbUnit.Core.Runner.IIsolatedTestDomainContributor, MbUnit.Gallio.Core"
+                 type="MbUnit.Plugin.MbUnit2Adapter.Core.MbUnit2AssemblyBindingRedirect, MbUnit.Plugin.MbUnit2Adapter" />
     </components>
   </castle>
 </configuration>

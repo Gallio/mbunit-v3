@@ -39,5 +39,11 @@ namespace MbUnit.Framework.Kernel.Model
         /// Gets the actual argument values used to bind the template.
         /// </summary>
         IDictionary<ITemplateParameter, object> Arguments { get; }
+
+        /// <summary>
+        /// Builds tests from this template binding.
+        /// </summary>
+        /// <param name="builder">The test tree builder</param>
+        void BuildTests(TestTreeBuilder builder);
     }
 }

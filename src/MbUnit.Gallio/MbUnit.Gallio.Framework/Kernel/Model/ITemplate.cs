@@ -60,19 +60,8 @@ namespace MbUnit.Framework.Kernel.Model
     /// can be used to provide values for template parameters.
     /// </para>
     /// </remarks>
-    public interface ITemplate : ITemplateComponent
+    public interface ITemplate : ITemplateComponent, IModelTreeNode<ITemplate>
     {
-        /// <summary>
-        /// Gets or sets the parent of this template, or null if this template
-        /// is at the root of the template tree.
-        /// </summary>
-        ITemplate Parent { get; set; }
-
-        /// <summary>
-        /// Gets the children of this template.
-        /// </summary>
-        IEnumerable<ITemplate> Children { get; }
-
         /// <summary>
         /// Gets the parameter sets that belong to this template.
         /// Each parameter set must have a unique name.  The order in which
@@ -80,21 +69,16 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         IList<ITemplateParameterSet> ParameterSets { get; }
 
-        //ITemplateBinding Bind();
-
-        /*
-        ITestScope Scope { get; }
-        
-        void BuildTests(ITestGraphBuilder builder, ITestScope scope, IDictionary<ITestParameter, object> parameterValues);
-        */
-
         /// <summary>
-        /// Adds a child template.
-        /// Sets the child's parent to this template as part of the addition process.
+        /// Binds a template to a particular scope with the specified arguments.
         /// </summary>
-        /// <param name="template">The template to add</param>
-        /// <exception cref="NotSupportedException">Thrown if the template does not support
-        /// the addition of arbitrary children (because it has some more specific internal structure)</exception>
-        void AddChild(ITemplate template);
+        /// <remarks>
+        /// The template has a chance to validate or transform the arguments
+        /// as the binding is created.
+        /// </remarks>
+        /// <param name="scope">The scope in which the template was bound</param>
+        /// <param name="arguments">The actual values for the template's parameters</param>
+        /// <returns>The template binding</returns>
+        ITemplateBinding Bind(TestScope scope, IDictionary<ITemplateParameter, object> arguments);
     }
 }

@@ -52,19 +52,13 @@ namespace MbUnit.Framework.Kernel.Model
     /// not (unless there are side-effects).
     /// </para>
     /// </summary>
-    public interface ITest : ITestComponent
+    public interface ITest : ITestComponent, IModelTreeNode<ITest>
     {
         /// <summary>
-        /// Gets or sets the parent of this test, or null if this test
-        /// is at the root of the test tree.
+        /// Gets or sets the template binding from which the test was produced,
+        /// or null if this test was not produced from any particular template.
         /// </summary>
-        ITest Parent { get; set; }
-
-        /// <summary>
-        /// Gets the children of this test.
-        /// The children are considered subordinate to the parent.
-        /// </summary>
-        IEnumerable<ITest> Children { get; }
+        ITemplateBinding TemplateBinding { get; set; }
 
         /// <summary>
         /// Gets the list of the dependencies of this test.
@@ -72,12 +66,8 @@ namespace MbUnit.Framework.Kernel.Model
         IList<ITest> Dependencies { get; }
 
         /// <summary>
-        /// Adds a child test.
-        /// Sets the child's parent to this test as part of the addition process.
+        /// Gets the scope of this test.
         /// </summary>
-        /// <param name="test">The test to add</param>
-        /// <exception cref="NotSupportedException">Thrown if the test does not support
-        /// the addition of arbitrary children (because it has some more specific internal structure)</exception>
-        void AddChild(ITest test);
+        TestScope Scope { get; }
     }
 }

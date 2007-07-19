@@ -27,7 +27,6 @@ namespace MbUnit.Framework.Kernel.Model
     public class MbUnitAssemblyTemplate : MbUnitTemplate
     {
         private MbUnitFrameworkTemplate frameworkTemplate;
-        private List<MbUnitFixtureTemplate> fixtureTemplates;
 
         /// <summary>
         /// Initializes an MbUnit test assembly template model object.
@@ -39,18 +38,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             this.frameworkTemplate = frameworkTemplate;
 
-            fixtureTemplates = new List<MbUnitFixtureTemplate>();
-            Kind = TemplateKind.Assembly;
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<ITemplate> Children
-        {
-            get
-            {
-                foreach (MbUnitFixtureTemplate fixtureTemplate in fixtureTemplates)
-                    yield return fixtureTemplate;
-            }
+            Kind = ComponentKind.Assembly;
         }
 
         /// <summary>
@@ -74,7 +62,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         public IList<MbUnitFixtureTemplate> FixtureTemplates
         {
-            get { return fixtureTemplates; }
+            get { return ModelUtils.FilterChildrenByType<ITemplate, MbUnitFixtureTemplate>(this); }
         }
 
         /// <summary>
@@ -83,7 +71,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="fixtureTemplate">The test fixture template</param>
         public void AddFixtureTemplate(MbUnitFixtureTemplate fixtureTemplate)
         {
-            ModelUtils.LinkTemplate(this, fixtureTemplates, fixtureTemplate);
+            AddChild(fixtureTemplate);
         }
 
         /*

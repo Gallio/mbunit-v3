@@ -49,10 +49,10 @@ namespace MbUnit.Framework.Kernel.Metadata
         public const string DescriptionKey = "Description";
 
         /// <summary>
-        /// The metadata key used to describe the kind of a template.
-        /// The associated value should be one of the <see cref="TemplateKind" /> string constants.
+        /// The metadata key used to describe the kind of a component.
+        /// The associated value should be one of the <see cref="ComponentKind" /> string constants.
         /// </summary>
-        public const string TemplateKindKey = "TemplateKind";
+        public const string ComponentKindKey = "ComponentKind";
 
         /// <summary>
         /// The metadata key for the name of the type being tested.

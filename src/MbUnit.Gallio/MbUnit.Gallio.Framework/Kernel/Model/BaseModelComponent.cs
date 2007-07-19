@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.Metadata;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -92,6 +93,19 @@ namespace MbUnit.Framework.Kernel.Model
 
                 codeReference = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="MetadataConstants.ComponentKindKey" />
+        /// metadata entry.  (This is a convenience method.)
+        /// </summary>
+        /// <value>
+        /// One of the <see cref="ComponentKind" /> constants.
+        /// </value>
+        public string Kind
+        {
+            get { return (string)Metadata.GetValue(MetadataConstants.ComponentKindKey); }
+            set { Metadata.SetValue(MetadataConstants.ComponentKindKey, value); }
         }
     }
 }

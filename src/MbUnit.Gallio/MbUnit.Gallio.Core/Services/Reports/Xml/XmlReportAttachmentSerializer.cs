@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Services.Reports;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Utilities;

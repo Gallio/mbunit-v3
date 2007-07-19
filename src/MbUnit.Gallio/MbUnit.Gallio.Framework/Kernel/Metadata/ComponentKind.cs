@@ -18,11 +18,11 @@ using System;
 namespace MbUnit.Framework.Kernel.Metadata
 {
     /// <summary>
-    /// Specifies the kind of a template.
+    /// Specifies the kind of a test or template component.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The template kind is not significant to the MbUnit test runner.  Instead
+    /// The component kind is not significant to the MbUnit test runner.  Instead
     /// it provides a loose classification that may be used to provide appropriate
     /// decorations when presenting the template in a user interface.
     /// </para>
@@ -32,46 +32,46 @@ namespace MbUnit.Framework.Kernel.Metadata
     /// in the user interface (albeit perhaps without special affordances.)
     /// </para>
     /// </remarks>
-    /// <seealso cref="MetadataConstants.TemplateKindKey"/>
-    public static class TemplateKind
+    /// <seealso cref="MetadataConstants.ComponentKindKey"/>
+    public static class ComponentKind
     {
         /// <summary>
-        /// The template is the root of the template tree.
+        /// The component is the root of the test or template tree.
         /// </summary>
         public const string Root = "Root";
 
         /// <summary>
-        /// The template encloses all contributions offered by a given test framework.
+        /// The component encloses all contributions offered by a given test framework.
         /// </summary>
         public const string Framework = "Framework";
 
         /// <summary>
-        /// The template describes the tests contained in a single test assembly.
+        /// The component describes the tests contained in a single test assembly.
         /// </summary>
         public const string Assembly = "Assembly";
 
         /// <summary>
-        /// The template describes a grouping of templates for descriptive purposes.
+        /// The component describes a grouping of templates or tests for descriptive purposes.
         /// </summary>
         public const string Group = "Group";
 
         /// <summary>
-        /// The template describes a test suite.
+        /// The component describes a test suite.
         /// </summary>
         public const string Suite = "Suite";
 
         /// <summary>
-        /// The template describes a test fixture.
+        /// The component describes a test fixture.
         /// </summary>
         public const string Fixture = "Fixture";
 
         /// <summary>
-        /// The template describes a test.
+        /// The component describes a test.
         /// </summary>
         public const string Test = "Test";
 
         /// <summary>
-        /// The template is of some other unspecified kind.
+        /// The component is of some other unspecified kind.
         /// </summary>
         /// <remarks>
         /// If none of the built-in kinds are appropriate, you may use the

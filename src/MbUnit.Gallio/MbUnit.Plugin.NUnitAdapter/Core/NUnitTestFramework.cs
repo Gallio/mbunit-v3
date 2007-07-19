@@ -44,22 +44,22 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
         void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, "nunit.framework");
-            foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
+            MultiMap<Version, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, "nunit.framework");
+            foreach (KeyValuePair<Version, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
                 // NUnit test enumerator.  We don't actually represent each test as a
                 // template because we can't perform any interesting meta-operations
                 // on them like binding test parameters or composing tests.
-                Version frameworkVersion = entry.Key.Version;
-                TemplateGroup frameworkTemplate = new TemplateGroup("NUnit v" + frameworkVersion, CodeReference.Unknown);
-                frameworkTemplate.Kind = TemplateKind.Framework;
+                Version frameworkVersion = entry.Key;
+                BaseTemplate frameworkTemplate = new BaseTemplate("NUnit v" + frameworkVersion, CodeReference.Unknown);
+                frameworkTemplate.Kind = ComponentKind.Framework;
                 harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
 
                 foreach (Assembly assembly in entry.Value)
                 {
-                    TemplateGroup assemblyTemplate = new TemplateGroup(assembly.FullName, CodeReference.CreateFromAssembly(assembly));
-                    assemblyTemplate.Kind = TemplateKind.Assembly;
+                    BaseTemplate assemblyTemplate = new BaseTemplate(assembly.FullName, CodeReference.CreateFromAssembly(assembly));
+                    assemblyTemplate.Kind = ComponentKind.Assembly;
                     frameworkTemplate.AddChild(assemblyTemplate);
 
                     // TODO: Add rules to populate the test graph using NUnit.

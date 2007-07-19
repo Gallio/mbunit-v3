@@ -43,41 +43,24 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
         private void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
         {
-            MultiMap<AssemblyName, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, "MbUnit.Framework");
-            foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
+            MultiMap<Version, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, "MbUnit.Framework");
+            foreach (KeyValuePair<Version, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
                 // MbUnit v2 test enumerator.  We don't actually represent each test as a
                 // template because we can't perform any interesting meta-operations
                 // on them like binding test parameters or composing tests.
-                Version frameworkVersion = entry.Key.Version;
-                TemplateGroup frameworkTemplate = new TemplateGroup("MbUnit v" + frameworkVersion, CodeReference.Unknown);
-                frameworkTemplate.Kind = TemplateKind.Framework;
+                Version frameworkVersion = entry.Key;
+                BaseTemplate frameworkTemplate = new BaseTemplate("MbUnit v" + frameworkVersion, CodeReference.Unknown);
+                frameworkTemplate.Kind = ComponentKind.Framework;
                 harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
 
                 foreach (Assembly assembly in entry.Value)
                 {
-                    TemplateGroup assemblyTemplate = new TemplateGroup(assembly.FullName, CodeReference.CreateFromAssembly(assembly));
-                    assemblyTemplate.Kind = TemplateKind.Assembly;
+                    MbUnit2AssemblyTemplate assemblyTemplate = new MbUnit2AssemblyTemplate(assembly);
                     frameworkTemplate.AddChild(assemblyTemplate);
-
-                    // TODO: Add rules to populate the test graph using MbUnit v2.
                 }
             }
         }
-
-        /*
-        private void BuildTests(Assembly assembly)
-        {
-            FixtureExplorer explorer = new FixtureExplorer(assembly);
-            explorer.Explore();
-            // Use Fixture.Load on each Fixture in the FixtureGraph to
-            // populate the run pipes.
-
-            // Use FixtureFilter to select test fixtures by type.
-            // Use RunPipeFilter to select tests by members.
-            // Use GetDependentAssemblies() to handle assembly dependencies
-        }
-         */
     }
 }

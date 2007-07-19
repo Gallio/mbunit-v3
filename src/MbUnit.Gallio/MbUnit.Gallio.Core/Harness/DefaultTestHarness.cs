@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
@@ -19,6 +20,7 @@ namespace MbUnit.Core.Harness
         private IRuntime runtime;
         private IList<Assembly> assemblies;
         private TemplateTreeBuilder templateTreeBuilder;
+        private TestTreeBuilder testTreeBuilder;
 
         /// <summary>
         /// Creates a test harness.
@@ -33,6 +35,27 @@ namespace MbUnit.Core.Harness
             this.runtime = runtime;
 
             assemblies = new List<Assembly>();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (!isDisposed)
+            {
+                if (Disposing != null)
+                    Disposing(this, EventArgs.Empty);
+
+                isDisposed = true;
+
+                Initialized = null;
+                BuildingTemplates = null;
+                Disposing = null;
+
+                templateTreeBuilder = null;
+                testTreeBuilder = null;
+                assemblies = null;
+                runtime = null;
+            }
         }
 
         /// <inheritdoc />
@@ -75,10 +98,26 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
+        public TestTreeBuilder TestTreeBuilder
+        {
+            get
+            {
+                ThrowIfDisposed();
+
+                if (testTreeBuilder == null)
+                    throw new InvalidOperationException("Tests have not been built yet.");
+                return testTreeBuilder;
+            }
+        }
+
+        /// <inheritdoc />
         public event TypedEventHandler<ITestHarness, EventArgs> Initialized;
 
         /// <inheritdoc />
         public event TypedEventHandler<ITestHarness, EventArgs> BuildingTemplates;
+
+        /// <inheritdoc />
+        public event TypedEventHandler<ITestHarness, EventArgs> BuildingTests;
 
         /// <inheritdoc />
         public event TypedEventHandler<ITestHarness, EventArgs> Disposing;
@@ -135,6 +174,7 @@ namespace MbUnit.Core.Harness
         {
             ThrowIfDisposed();
 
+            testTreeBuilder = null;
             templateTreeBuilder = new TemplateTreeBuilder(this);
 
             if (BuildingTemplates != null)
@@ -144,23 +184,22 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public void Dispose()
+        public void BuildTests()
         {
-            if (!isDisposed)
-            {
-                if (Disposing != null)
-                    Disposing(this, EventArgs.Empty);
+            ThrowIfDisposed();
 
-                isDisposed = true;
+            if (templateTreeBuilder == null)
+                throw new InvalidOperationException("The template tree has not been built yet.");
 
-                Initialized = null;
-                BuildingTemplates = null;
-                Disposing = null;
+            testTreeBuilder = new TestTreeBuilder(this);
 
-                templateTreeBuilder = null;
-                assemblies = null;
-                runtime = null;
-            }
+            ITemplateBinding rootBinding = templateTreeBuilder.Root.Bind(testTreeBuilder.Root.Scope, EmptyDictionary<ITemplateParameter, object>.Instance);
+            rootBinding.BuildTests(testTreeBuilder);
+
+            if (BuildingTests != null)
+                BuildingTests(this, EventArgs.Empty);
+
+            testTreeBuilder.FinishBuilding();
         }
 
         private void ThrowIfDisposed()

@@ -21,8 +21,8 @@ using System.Security.Policy;
 using System.Text;
 using Castle.Core.Logging;
 using Castle.MicroKernel;
+using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework.Services.Runtime;
-using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Runner
 {
@@ -35,9 +35,24 @@ namespace MbUnit.Core.Runner
     /// </summary>
     public class IsolatedTestDomain : RemoteTestDomain
     {
+        private ICoreRuntime runtime;
+
         private AppDomain appDomain;
         private Bootstrapper bootstrapper;
         private Dictionary<Assembly, bool> bootstrapAssemblies;
+
+        /// <summary>
+        /// Creates an isolated test domain.
+        /// </summary>
+        /// <param name="runtime">The runtime from which to obtain services</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
+        public IsolatedTestDomain(ICoreRuntime runtime)
+        {
+            if (runtime == null)
+                throw new ArgumentNullException("runtime");
+
+            this.runtime = runtime;
+        }
 
         /// <summary>
         /// Gets the list of assemblies from the host domain that must be loaded into
@@ -64,6 +79,15 @@ namespace MbUnit.Core.Runner
 
                 return bootstrapAssemblies;
             }
+        }
+
+        /// <summary>
+        /// Adds a contributor to the test domain.
+        /// </summary>
+        /// <param name="contributor">The contributor</param>
+        public void AddContributor(IIsolatedTestDomainContributor contributor)
+        {
+            contributor.Apply(this);
         }
 
         /// <inheritdoc />
@@ -102,9 +126,7 @@ namespace MbUnit.Core.Runner
             try
             {
                 bootstrapper = CreateRemoteInstance<Bootstrapper>();
-                
-                // TODO: Support additional plugin directories.
-                bootstrapper.Initialize(EmptyArray<string>.Instance);
+                bootstrapper.Initialize(runtime.GetRuntimeSetup());
 
                 return bootstrapper.CreateTestDomain();
             }

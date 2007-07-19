@@ -63,21 +63,21 @@ namespace MbUnit.Framework.Kernel.Utilities
 
         /// <summary>
         /// Searches a list of assemblies for all of those that contain an assembly reference with
-        /// the specified display name.  Produces a map from the assembly name of the referenced
-        /// assemblies to the source assemplies specified.
+        /// the specified display name.  Produces a map from the versions of the referenced
+        /// assemblies to the source assemblies specified.
         /// </summary>
         /// <param name="assemblies">The assemblies to search</param>
         /// <param name="displayName">The display name of the referenced assembly to search for</param>
         /// <returns>The reverse reference map</returns>
-        public static MultiMap<AssemblyName, Assembly> GetReverseAssemblyReferenceMap(IList<Assembly> assemblies, string displayName)
+        public static MultiMap<Version, Assembly> GetReverseAssemblyReferenceMap(IList<Assembly> assemblies, string displayName)
         {
-            MultiMap<AssemblyName, Assembly> map = new MultiMap<AssemblyName, Assembly>();
+            MultiMap<Version, Assembly> map = new MultiMap<Version, Assembly>();
 
             foreach (Assembly assembly in assemblies)
             {
                 AssemblyName reference = FindReferencedAssembly(assembly, displayName);
                 if (reference != null)
-                    map.Add(reference, assembly);
+                    map.Add(reference.Version, assembly);
             }
 
             return map;

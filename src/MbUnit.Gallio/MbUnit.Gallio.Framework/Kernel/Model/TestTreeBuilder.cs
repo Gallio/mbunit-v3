@@ -17,50 +17,32 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Metadata;
 
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Builds a test tree for a given test project.  The builder retains
-    /// context information used during the construction of a test tree.
+    /// The builder for a test tree.
     /// </summary>
-    public class TestTreeBuilder
+    public class TestTreeBuilder : ModelTreeBuilder<ITest>
     {
-        private ITestHarness harness;
-        private ITest root;
-
         /// <summary>
-        /// Creates a test tree builder.
+        /// Creates a test tree builder initially populated with
+        /// a root test.
         /// </summary>
-        /// <param name="harness">The test project</param>
+        /// <param name="harness">The test harness</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> is null</exception>
         public TestTreeBuilder(ITestHarness harness)
+            : base(harness, new RootTest())
         {
-            if (harness == null)
-                throw new ArgumentNullException("harness");
-
-            this.harness = harness;
-            root = CreateRoot();
         }
 
         /// <summary>
-        /// Gets the test harness.
+        /// Gets the root test.
         /// </summary>
-        public ITestHarness Harness
+        new public RootTest Root
         {
-            get { return harness; }
-        }
-
-        /// <summary>
-        /// Gets the root of the test tree.
-        /// </summary>
-        public ITest Root
-        {
-            get { return root; }
-        }
-
-        private static ITest CreateRoot()
-        {
-            return null;
+            get { return (RootTest)base.Root; }
         }
     }
 }

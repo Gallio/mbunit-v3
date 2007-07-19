@@ -56,6 +56,7 @@ namespace MbUnit.Framework.Kernel.Model
             IList<object> values = entries[key];
             if (values.Count == 0)
                 return null;
+
             return values[0];
         }
 
@@ -64,11 +65,13 @@ namespace MbUnit.Framework.Kernel.Model
         /// Removes all values previously associated with that key.
         /// </summary>
         /// <param name="key">The key</param>
-        /// <param name="value">The new value</param>
+        /// <param name="value">The new value, or null to remove the value</param>
         public void SetValue(string key, object value)
         {
             entries.RemoveKey(key);
-            entries.Add(key, value);
+
+            if (value != null)
+                entries.Add(key, value);
         }
     }
 }

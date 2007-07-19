@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Serialization
 {
@@ -28,6 +30,8 @@ namespace MbUnit.Core.Serialization
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public class TestInfo : TestComponentInfo
     {
+        private TestInfo[] children;
+
         /// <summary>
         /// Creates an empty object.
         /// </summary>
@@ -42,6 +46,23 @@ namespace MbUnit.Core.Serialization
         public TestInfo(ITest obj)
             : base(obj)
         {
+            children = ListUtils.ConvertAllToArray<ITest, TestInfo>(obj.Children,
+                delegate(ITest child)
+            {
+                return new TestInfo(child);
+            });
+        }
+
+        /// <summary>
+        /// Gets or sets the children.  (non-null but possibly empty)
+        /// </summary>
+        /// <seealso cref="ITemplate.Children"/>
+        [XmlArray("children", IsNullable = false)]
+        [XmlArrayItem("test", IsNullable = false)]
+        public TestInfo[] Children
+        {
+            get { return children; }
+            set { children = value; }
         }
     }
 }

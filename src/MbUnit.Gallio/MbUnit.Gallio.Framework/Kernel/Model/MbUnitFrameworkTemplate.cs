@@ -27,7 +27,6 @@ namespace MbUnit.Framework.Kernel.Model
     public class MbUnitFrameworkTemplate : MbUnitTemplate
     {
         private Version version;
-        private List<MbUnitAssemblyTemplate> assemblyTemplates;
 
         /// <summary>
         /// Initializes the MbUnit framework template model object.
@@ -38,18 +37,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             this.version = version;
 
-            assemblyTemplates = new List<MbUnitAssemblyTemplate>();
-            Kind = TemplateKind.Framework;
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<ITemplate> Children
-        {
-            get
-            {
-                foreach (MbUnitAssemblyTemplate assemblyTemplate in assemblyTemplates)
-                    yield return assemblyTemplate;
-            }
+            Kind = ComponentKind.Framework;
         }
 
         /// <summary>
@@ -66,7 +54,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <returns>The assembly templates</returns>
         public IList<MbUnitAssemblyTemplate> AssemblyTemplates
         {
-            get { return assemblyTemplates; }
+            get { return ModelUtils.FilterChildrenByType<ITemplate, MbUnitAssemblyTemplate>(this); }
         }
 
         /// <summary>
@@ -75,7 +63,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="assemblyTemplate">The assembly template</param>
         public void AddAssemblyTemplate(MbUnitAssemblyTemplate assemblyTemplate)
         {
-            ModelUtils.LinkTemplate(this, assemblyTemplates, assemblyTemplate);
+            AddChild(assemblyTemplate);
         }
     }
 }

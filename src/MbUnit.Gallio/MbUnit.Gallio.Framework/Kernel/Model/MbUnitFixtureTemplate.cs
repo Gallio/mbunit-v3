@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 
@@ -28,7 +26,6 @@ namespace MbUnit.Framework.Kernel.Model
     public class MbUnitFixtureTemplate : MbUnitTemplate
     {
         private MbUnitAssemblyTemplate assemblyTemplate;
-        private List<MbUnitMethodTemplate> methodTemplates;
 
         /// <summary>
         /// Initializes an MbUnit test fixture template model object.
@@ -40,18 +37,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             this.assemblyTemplate = assemblyTemplate;
 
-            methodTemplates = new List<MbUnitMethodTemplate>();
-            Kind = TemplateKind.Fixture;
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<ITemplate> Children
-        {
-            get
-            {
-                foreach (MbUnitMethodTemplate methodTemplate in methodTemplates)
-                    yield return methodTemplate;
-            }
+            Kind = ComponentKind.Fixture;
         }
 
         /// <summary>
@@ -75,7 +61,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         public IList<MbUnitMethodTemplate> MethodTemplates
         {
-            get { return methodTemplates; }
+            get { return ModelUtils.FilterChildrenByType<ITemplate, MbUnitMethodTemplate>(this); }
         }
 
         /// <summary>
@@ -84,7 +70,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="methodTemplate">The test method model</param>
         public void AddMethodTemplate(MbUnitMethodTemplate methodTemplate)
         {
-            ModelUtils.LinkTemplate(this, methodTemplates, methodTemplate);
+            AddChild(methodTemplate);
         }
     }
 }

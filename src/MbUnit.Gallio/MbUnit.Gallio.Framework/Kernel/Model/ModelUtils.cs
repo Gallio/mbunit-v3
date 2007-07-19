@@ -25,20 +25,40 @@ namespace MbUnit.Framework.Kernel.Model
     public static class ModelUtils
     {
         /// <summary>
-        /// Links a template into the list of children managed by a given parent template.
+        /// Links a node into the list of children managed by a given parent.
         /// </summary>
-        /// <param name="parent">The parent template</param>
-        /// <param name="childrenOfParent">The mutable list of children owned by the parent</param>
-        /// <param name="child">The child template</param>
+        /// <param name="parent">The parent node</param>
+        /// <param name="child">The child to add</param>
         /// <exception cref="InvalidOperationException">Thrown if the child already has a parent</exception>
-        public static void LinkTemplate<T>(ITemplate parent, IList<T> childrenOfParent, T child)
-            where T : ITemplate
+        public static void Link<T>(T parent, T child)
+            where T : class, IModelTreeNode<T>
         {
             if (child.Parent != null)
-                throw new InvalidOperationException("The template to be added is already a child of another template.");
+                throw new InvalidOperationException("The node to be added is already a child of another node.");
 
             child.Parent = parent;
-            childrenOfParent.Add(child);
+            parent.Children.Add(child);
+        }
+
+        /// <summary>
+        /// Gets all children of the node that have the specified type.
+        /// </summary>
+        /// <typeparam name="S">The node type</typeparam>
+        /// <typeparam name="T">The type to filter by</typeparam>
+        /// <param name="node">The node whose children are to be scanned</param>
+        /// <returns>The filtered list of children</returns>
+        public static IList<T> FilterChildrenByType<S, T>(IModelTreeNode<S> node)
+            where S : class, IModelTreeNode<S> where T : class, S
+        {
+            List<T> filteredChildren = new List<T>();
+            foreach (S child in node.Children)
+            {
+                T filteredChild = child as T;
+                if (filteredChild != null)
+                    filteredChildren.Add(filteredChild);
+            }
+
+            return filteredChildren;
         }
     }
 }

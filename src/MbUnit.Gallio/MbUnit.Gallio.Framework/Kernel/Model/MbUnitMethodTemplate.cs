@@ -40,7 +40,7 @@ namespace MbUnit.Framework.Kernel.Model
             this.fixtureTemplate = fixtureTemplate;
             this.method = method;
 
-            Kind = TemplateKind.Test;
+            Kind = ComponentKind.Test;
         }
 
         /// <summary>

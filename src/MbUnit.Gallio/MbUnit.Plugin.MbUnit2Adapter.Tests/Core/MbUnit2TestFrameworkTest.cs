@@ -68,7 +68,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
         {
             PopulateTemplateTree(typeof(Int32).Assembly);
 
-            Assert.AreEqual(0, builder.Root.ChildrenList.Count);
+            Assert.AreEqual(0, builder.Root.Children.Count);
         }
 
         [Test]
@@ -80,22 +80,22 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
 
             PopulateTemplateTree(assembly);
             Assert.IsNull(builder.Root.Parent);
-            Assert.AreEqual(TemplateKind.Root, builder.Root.Kind);
+            Assert.AreEqual(ComponentKind.Root, builder.Root.Kind);
             Assert.AreEqual(CodeReference.Unknown, builder.Root.CodeReference);
-            Assert.AreEqual(1, builder.Root.ChildrenList.Count);
+            Assert.AreEqual(1, builder.Root.Children.Count);
 
-            TemplateGroup frameworkTemplate = (TemplateGroup)builder.Root.ChildrenList[0];
+            BaseTemplate frameworkTemplate = (BaseTemplate) builder.Root.Children[0];
             Assert.AreSame(builder.Root, frameworkTemplate.Parent);
-            Assert.AreEqual(TemplateKind.Framework, frameworkTemplate.Kind);
+            Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
             Assert.AreEqual(CodeReference.Unknown, frameworkTemplate.CodeReference);
             Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTemplate.Name);
-            Assert.AreEqual(1, frameworkTemplate.ChildrenList.Count);
+            Assert.AreEqual(1, frameworkTemplate.Children.Count);
 
-            TemplateGroup assemblyTemplate = (TemplateGroup) frameworkTemplate.ChildrenList[0];
+            MbUnit2AssemblyTemplate assemblyTemplate = (MbUnit2AssemblyTemplate)frameworkTemplate.Children[0];
             Assert.AreSame(frameworkTemplate, assemblyTemplate.Parent);
-            Assert.AreEqual(TemplateKind.Assembly, assemblyTemplate.Kind);
+            Assert.AreEqual(ComponentKind.Assembly, assemblyTemplate.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(assembly), assemblyTemplate.CodeReference);
-            Assert.AreEqual(0, assemblyTemplate.ChildrenList.Count);
+            Assert.AreEqual(0, assemblyTemplate.Children.Count);
         }
 
         private void PopulateTemplateTree(Assembly assembly)

@@ -15,7 +15,15 @@
       <component id="Core.MbUnitTestFramework"
                  service="MbUnit.Framework.Kernel.Harness.ITestFramework, MbUnit.Gallio.Framework"
                  type="MbUnit.Core.Harness.MbUnitTestFramework, MbUnit.Gallio.Core" />
-      
+
+      <component id="Core.TestHarnessFactory"
+                 service="MbUnit.Framework.Kernel.Harness.ITestHarnessFactory, MbUnit.Gallio.Framework"
+                 type="MbUnit.Core.Harness.DefaultTestHarnessFactory, MbUnit.Gallio.Core" />
+
+      <component id="Core.IsolatedTestDomainFactory"
+                 service="MbUnit.Core.Runner.ITestDomainFactory, MbUnit.Gallio.Core"
+                 type="MbUnit.Core.Runner.IsolatedTestDomainFactory, MbUnit.Gallio.Core" />
+
       <component id="Core.AssertionService"
                  service="MbUnit.Framework.Services.Assertions.IAssertionService, MbUnit.Gallio.Framework" 
                  type="MbUnit.Core.Services.Assertions.DefaultAssertionService, MbUnit.Gallio.Core" />

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Xml;
 using Castle.Core;
 using Castle.Core.Resource;
@@ -24,28 +23,36 @@ namespace MbUnit.Core.Services.Runtime
     /// any Windsor configuration sections into the container.
     /// </remarks>
     [Singleton]
-    public class WindsorRuntime : IRuntime, IContainerAccessor, IInitializable, IDisposable
+    public class WindsorRuntime : ICoreRuntime, IContainerAccessor, IInitializable, IDisposable
     {
-        private WindsorContainer container;
         private IAssemblyResolverManager assemblyResolverManager;
+        private RuntimeSetup runtimeSetup;
+
+        private WindsorContainer container;
         private List<string> pluginDirectories;
 
         /// <summary>
         /// Initializes the runtime.
         /// </summary>
         /// <param name="assemblyResolverManager">The assembly resolver to use</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyResolverManager"/> is null</exception>
-        public WindsorRuntime(IAssemblyResolverManager assemblyResolverManager)
+        /// <param name="runtimeSetup">The runtime setup options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyResolverManager"/> or
+        /// <param name="runtimeSetup" /> is null</exception>
+        public WindsorRuntime(IAssemblyResolverManager assemblyResolverManager, RuntimeSetup runtimeSetup)
         {
             if (assemblyResolverManager == null)
                 throw new ArgumentNullException("assemblyResolverManager");
+            if (runtimeSetup == null)
+                throw new ArgumentNullException("runtimeSetup");
 
             this.assemblyResolverManager = assemblyResolverManager;
+            this.runtimeSetup = runtimeSetup;
 
             container = new WindsorContainer();
             pluginDirectories = new List<string>();
 
             SetDefaultPluginDirectories();
+            ConfigureFromSetup(runtimeSetup);
         }
 
         /// <inheritdoc />
@@ -75,12 +82,25 @@ namespace MbUnit.Core.Services.Runtime
             get { return pluginDirectories; }
         }
 
+
+
+        /// <summary>
+        /// Adds a plugin directory.
+        /// </summary>
+        /// <param name="pluginDirectory">The plugin directory to add</param>
+        public void AddPluginDirectory(string pluginDirectory)
+        {
+            if (!pluginDirectories.Contains(pluginDirectory))
+                pluginDirectories.Add(pluginDirectory);
+        }
+
         /// <inheritdoc />
         public void Initialize()
         {
             ThrowIfDisposed();
 
             container.Kernel.AddComponentInstance("Core.Runtime", typeof(IRuntime), this);
+            container.Kernel.AddComponentInstance("Core.CoreRuntime", typeof(ICoreRuntime), this);
             container.Kernel.AddComponentInstance("Core.AssemblyResolverManager", typeof(IAssemblyResolverManager), assemblyResolverManager);
 
             LoadAllPluginConfiguration();
@@ -105,6 +125,12 @@ namespace MbUnit.Core.Services.Runtime
             return container.Kernel.ResolveServices<T>();
         }
 
+        /// <inheritdoc />
+        public RuntimeSetup GetRuntimeSetup()
+        {
+            return runtimeSetup.Copy();
+        }
+
         private void ThrowIfDisposed()
         {
             if (container == null)
@@ -115,11 +141,19 @@ namespace MbUnit.Core.Services.Runtime
         {
             string coreCodebase = new Uri(typeof(WindsorRuntime).Assembly.CodeBase).LocalPath;
 
-            pluginDirectories.Add(Path.GetDirectoryName(Path.GetFullPath(coreCodebase)));
+            AddPluginDirectory(Path.GetDirectoryName(Path.GetFullPath(coreCodebase)));
+        }
+
+        private void ConfigureFromSetup(RuntimeSetup runtimeSetup)
+        {
+            foreach (string pluginDirectory in runtimeSetup.PluginDirectories)
+                AddPluginDirectory(pluginDirectory);
         }
 
         private void LoadAllPluginConfiguration()
         {
+            List<string> loadedPluginFilenames = new List<string>();
+            
             foreach (string pluginDirectory in pluginDirectories)
             {
                 DirectoryInfo pluginDirectoryInfo = new DirectoryInfo(pluginDirectory);
@@ -127,7 +161,18 @@ namespace MbUnit.Core.Services.Runtime
                 {
                     foreach (FileInfo pluginConfigFile in pluginDirectoryInfo.GetFiles("MbUnit.*.plugin"))
                     {
-                        LoadConfigurationFromFile(pluginConfigFile.FullName);
+                        // It can happen that we find two copies of the same plugin file
+                        // in different directories such as during debugging when we ask
+                        // the runtime to load plugins from multiple directories that happen
+                        // to each contain the MbUnit.Gallio.Core assembly.  So we enforce
+                        // a uniqueness constraint on plugin files and we assume subsequent
+                        // copies are just dupes.
+                        if (!loadedPluginFilenames.Contains(pluginConfigFile.Name))
+                        {
+                            loadedPluginFilenames.Add(pluginConfigFile.Name);
+
+                            LoadConfigurationFromFile(pluginConfigFile.FullName);
+                        }
                     }
                 }
             }
