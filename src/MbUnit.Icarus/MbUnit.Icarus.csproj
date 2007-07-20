@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
+    <None Include="Resources\FailMb.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MbUnit.Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">

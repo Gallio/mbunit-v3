@@ -24,6 +24,7 @@ using System.Reflection;
 
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Controls.Enums;
+using MbUnit.Icarus.Properties;
 
 using ZedGraph;
 
@@ -198,6 +199,7 @@ namespace MbUnit.Icarus
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
+            trayIcon.Icon = Resources.FailMb;
             trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.", ToolTipIcon.Error);
         }
 
