@@ -131,22 +131,24 @@ namespace MbUnit.Framework.Kernel.Harness
         /// Populates the template tree.
         /// Causes the <see cref="BuildingTemplates" /> event to fire.
         /// </summary>
-        void BuildTemplates();
+        /// <param name="options">The template enumeration options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        void BuildTemplates(TemplateEnumerationOptions options);
 
         /// <summary>
         /// Populates the test tree.
         /// </summary>
-        /// <todo>
-        /// Add a parameter to pass in bindings for particular templates so they
-        /// end up in the root scope.
-        /// </todo>
-        void BuildTests();
+        /// <param name="options">The test enumeration options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTemplates" /> has not been called yet</exception>
+        void BuildTests(TestEnumerationOptions options);
 
-        /*
         /// <summary>
         /// Runs the tests.
         /// </summary>
-        void RunTests(ITestFilter filter, ITestListener listener);
-         */
+        /// <param name="options">The test execution options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTests" /> has not been called yet</exception>
+        void RunTests(TestExecutionOptions options);
     }
 }

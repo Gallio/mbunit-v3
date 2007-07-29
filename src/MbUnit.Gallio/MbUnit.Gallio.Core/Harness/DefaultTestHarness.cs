@@ -185,12 +185,15 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public void BuildTemplates()
+        public void BuildTemplates(TemplateEnumerationOptions options)
         {
+            if (options == null)
+                throw new ArgumentNullException("options");
+
             ThrowIfDisposed();
 
             testTreeBuilder = null;
-            templateTreeBuilder = new TemplateTreeBuilder(this);
+            templateTreeBuilder = new TemplateTreeBuilder(this, options);
 
             if (BuildingTemplates != null)
                 BuildingTemplates(this, EventArgs.Empty);
@@ -199,14 +202,17 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public void BuildTests()
+        public void BuildTests(TestEnumerationOptions options)
         {
+            if (options == null)
+                throw new ArgumentNullException("options");
+
             ThrowIfDisposed();
 
             if (templateTreeBuilder == null)
                 throw new InvalidOperationException("The template tree has not been built yet.");
 
-            testTreeBuilder = new TestTreeBuilder(this);
+            testTreeBuilder = new TestTreeBuilder(this, options);
 
             ITemplateBinding rootBinding = templateTreeBuilder.Root.Bind(testTreeBuilder.Root.Scope, EmptyDictionary<ITemplateParameter, object>.Instance);
             rootBinding.BuildTests(testTreeBuilder);
@@ -215,6 +221,18 @@ namespace MbUnit.Core.Harness
                 BuildingTests(this, EventArgs.Empty);
 
             testTreeBuilder.FinishBuilding();
+        }
+
+        /// <inheritdoc />
+        public void RunTests(TestExecutionOptions options)
+        {
+            if (options == null)
+                throw new ArgumentNullException("options");
+
+            ThrowIfDisposed();
+
+            if (testTreeBuilder == null)
+                throw new InvalidOperationException("The test tree has not been built yet.");
         }
 
         private void ThrowIfDisposed()

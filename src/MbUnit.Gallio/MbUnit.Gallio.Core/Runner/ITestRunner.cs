@@ -15,6 +15,7 @@
 
 using System;
 using MbUnit.Core.Serialization;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Core.Runner
@@ -27,8 +28,34 @@ namespace MbUnit.Core.Runner
     /// This interface is primarily used to simplify test runner integration
     /// concerns by gathering the entire lifecycle in one place.
     /// </remarks>
+    /// <todo author="jeff">
+    /// I don't like the direction this API is taking.  I intended it to capture
+    /// state management and lifecycle concerns so that test runners don't need
+    /// to bother with some of the minor steps if they don't care about the
+    /// intermediate results.  However, this is starting to look like a rather
+    /// ugly version of <see cref="ITestDomain" /> with confusing rules as regards
+    /// state.  Aggregating <see cref="ITestDomain" /> is a possibility.  Suggestions?
+    /// </todo>
     public interface ITestRunner : IDisposable
     {
+        /// <summary>
+        /// Gets or sets the template enumeration options.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        TemplateEnumerationOptions TemplateEnumerationOptions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test enumeration options.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        TestEnumerationOptions TestEnumerationOptions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test execution options.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        TestExecutionOptions TestExecutionOptions { get; set; }
+
         /// <summary>
         /// Loads a test project.
         /// </summary>

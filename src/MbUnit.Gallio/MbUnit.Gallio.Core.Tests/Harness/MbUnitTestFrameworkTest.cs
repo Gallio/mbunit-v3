@@ -141,7 +141,7 @@ namespace MbUnit.Core.Tests.Harness
         {
             mockHarness.AddAssembly(assembly);
             mockHarness.Initialize();
-            mockHarness.BuildTemplates();
+            mockHarness.BuildTemplates(new TemplateEnumerationOptions());
 
             builder = mockHarness.TemplateTreeBuilder;
         }

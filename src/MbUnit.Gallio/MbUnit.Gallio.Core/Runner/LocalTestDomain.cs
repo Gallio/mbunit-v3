@@ -75,24 +75,25 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTemplates()
+        protected override void InternalBuildTemplates(TemplateEnumerationOptions options)
         {
             TemplateTreeRoot = null;
-            harness.BuildTemplates();
+            harness.BuildTemplates(options);
             TemplateTreeRoot = new TemplateInfo(harness.TemplateTreeBuilder.Root);
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTests()
+        protected override void InternalBuildTests(TestEnumerationOptions options)
         {
             TestTreeRoot = null;
-            harness.BuildTests();
+            harness.BuildTests(options);
             TestTreeRoot = new TestInfo(harness.TestTreeBuilder.Root);
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests()
+        protected override void InternalRunTests(TestExecutionOptions options)
         {
+            harness.RunTests(options);
         }
 
         /// <inheritdoc />

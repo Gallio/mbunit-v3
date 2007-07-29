@@ -24,15 +24,23 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class TemplateTreeBuilder : ModelTreeBuilder<ITemplate>
     {
+        private TemplateEnumerationOptions options;
+
         /// <summary>
         /// Creates a template tree builder initially populated with
         /// a root template.
         /// </summary>
         /// <param name="harness">The test harness</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> is null</exception>
-        public TemplateTreeBuilder(ITestHarness harness)
+        /// <param name="options">The template enumeration options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> or
+        /// <paramref name="options"/> is null</exception>
+        public TemplateTreeBuilder(ITestHarness harness, TemplateEnumerationOptions options)
             : base(harness, new RootTemplate())
         {
+            if (options == null)
+                throw new ArgumentNullException("options");
+
+            this.options = options;
         }
 
         /// <summary>
@@ -41,6 +49,14 @@ namespace MbUnit.Framework.Kernel.Model
         new public RootTemplate Root
         {
             get { return (RootTemplate)base.Root; }
+        }
+
+        /// <summary>
+        /// Gets the template enumeration options.
+        /// </summary>
+        public TemplateEnumerationOptions Options
+        {
+            get { return options; }
         }
     }
 }

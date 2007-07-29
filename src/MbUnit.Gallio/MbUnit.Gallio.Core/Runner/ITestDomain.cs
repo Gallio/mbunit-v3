@@ -15,6 +15,7 @@
 
 using System;
 using MbUnit.Core.Serialization;
+using MbUnit.Framework.Kernel.Harness;
 
 namespace MbUnit.Core.Runner
 {
@@ -88,19 +89,25 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Builds the tree of templates.
         /// </summary>
+        /// <param name="options">The template enumeration options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void BuildTemplates();
+        void BuildTemplates(TemplateEnumerationOptions options);
 
         /// <summary>
         /// Builds the tree of tests.
         /// </summary>
-        void BuildTests();
+        /// <param name="options">The test enumeration options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        void BuildTests(TestEnumerationOptions options);
 
         /// <summary>
         /// Runs the tests.
         /// </summary>
-        void RunTests();
+        /// <param name="options">The test execution options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        void RunTests(TestExecutionOptions options);
 
         /// <summary>
         /// Unloads the current test project so that the test domain can

@@ -100,7 +100,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
         {
             mockHarness.AddAssembly(assembly);
             mockHarness.Initialize();
-            mockHarness.BuildTemplates();
+            mockHarness.BuildTemplates(new TemplateEnumerationOptions());
 
             builder = mockHarness.TemplateTreeBuilder;
         }

@@ -43,6 +43,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseUnitTest.cs" />
+    <Compile Include="Kernel\Filters\AndFilterTest.cs" />
+    <Compile Include="Kernel\Filters\AnyFilterTest.cs" />
+    <Compile Include="Kernel\Filters\AssemblyFilterTest.cs" />
+    <Compile Include="Kernel\Filters\IdFilterTest.cs" />
+    <Compile Include="Kernel\Filters\MemberFilterTest.cs" />
+    <Compile Include="Kernel\Filters\MetadataFilterTest.cs" />
+    <Compile Include="Kernel\Filters\NamespaceFilterTest.cs" />
+    <Compile Include="Kernel\Filters\NoneFilterTest.cs" />
+    <Compile Include="Kernel\Filters\NotFilterTest.cs" />
+    <Compile Include="Kernel\Filters\OrFilterTest.cs" />
+    <Compile Include="Kernel\Filters\TypeFilterTest.cs" />
     <Compile Include="Kernel\Model\CodeReferenceTest.cs" />
     <Compile Include="Kernel\Runtime\MockRuntime.cs" />
     <Compile Include="Kernel\Utilities\ListUtilsTest.cs" />

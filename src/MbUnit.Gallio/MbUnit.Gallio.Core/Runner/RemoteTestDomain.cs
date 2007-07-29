@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using MbUnit.Core.Serialization;
+using MbUnit.Framework.Kernel.Harness;
 
 namespace MbUnit.Core.Runner
 {
@@ -61,12 +62,12 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTemplates()
+        protected override void InternalBuildTemplates(TemplateEnumerationOptions options)
         {
             try
             {
                 TemplateTreeRoot = null;
-                proxy.BuildTemplates();
+                proxy.BuildTemplates(options);
                 TemplateTreeRoot = proxy.TemplateTreeRoot;
             }
             catch (Exception ex)
@@ -76,12 +77,12 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTests()
+        protected override void InternalBuildTests(TestEnumerationOptions options)
         {
             try
             {
                 TestTreeRoot = null;
-                proxy.BuildTests();
+                proxy.BuildTests(options);
                 TestTreeRoot = proxy.TestTreeRoot;
             }
             catch (Exception ex)
@@ -91,11 +92,11 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests()
+        protected override void InternalRunTests(TestExecutionOptions options)
         {
             try
             {
-                proxy.RunTests();
+                proxy.RunTests(options);
             }
             catch (Exception ex)
             {

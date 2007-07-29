@@ -19,7 +19,7 @@ using System.Text;
 using Castle.Core.Logging;
 using MbUnit.Core.Serialization;
 using MbUnit.Core.Services.Runtime;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Harness;
 
 namespace MbUnit.Core.Runner
 {
@@ -31,10 +31,15 @@ namespace MbUnit.Core.Runner
         private ICoreRuntime runtime;
         private ITestDomainFactory domainFactory;
 
+        private TemplateEnumerationOptions templateEnumerationOptions;
+        private TestEnumerationOptions testEnumerationOptions;
+        private TestExecutionOptions testExecutionOptions;
+
+        private TemplateEnumerationOptions currentTemplateEnumerationOptions;
+        private TestEnumerationOptions currentTestEnumerationOptions;
+
         private ILogger logger;
         private ITestDomain domain;
-        private bool isTemplateTreeReady;
-        private bool isTestTreeReady;
 
         /// <summary>
         /// Creates a runner with a specified test domain factory.
@@ -54,6 +59,9 @@ namespace MbUnit.Core.Runner
             this.domainFactory = domainFactory;
 
             logger = NullLogger.Instance;
+            templateEnumerationOptions = new TemplateEnumerationOptions();
+            testEnumerationOptions = new TestEnumerationOptions();
+            testExecutionOptions = new TestExecutionOptions();
         }
 
         /// <summary>
@@ -99,6 +107,45 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
+        public TemplateEnumerationOptions TemplateEnumerationOptions
+        {
+            get { return templateEnumerationOptions; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                templateEnumerationOptions = value;
+            }
+        }
+
+        /// <inheritdoc />
+        public TestEnumerationOptions TestEnumerationOptions
+        {
+            get { return testEnumerationOptions; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                testEnumerationOptions = value;
+            }
+        }
+
+        /// <inheritdoc />
+        public TestExecutionOptions TestExecutionOptions
+        {
+            get { return testExecutionOptions; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                testExecutionOptions = value;
+            }
+        }
+
+        /// <inheritdoc />
         public virtual void LoadProject(TestProject project)
         {
             logger.Debug("Loading project into test domain.");
@@ -124,7 +171,7 @@ namespace MbUnit.Core.Runner
         public virtual void Run()
         {
             BuildTestsIfNeeded();
-            Domain.RunTests();
+            Domain.RunTests(testExecutionOptions);
         }
 
         /// <inheritdoc />
@@ -134,10 +181,10 @@ namespace MbUnit.Core.Runner
 
         private void BuildTemplatesIfNeeded()
         {
-            if (! isTemplateTreeReady)
+            if (! templateEnumerationOptions.Equals(currentTemplateEnumerationOptions))
             {
-                Domain.BuildTemplates();
-                isTemplateTreeReady = true;
+                Domain.BuildTemplates(templateEnumerationOptions);
+                currentTemplateEnumerationOptions = templateEnumerationOptions;
             }
         }
 
@@ -145,10 +192,10 @@ namespace MbUnit.Core.Runner
         {
             BuildTemplatesIfNeeded();
 
-            if (!isTestTreeReady)
+            if (!testEnumerationOptions.Equals(currentTestEnumerationOptions))
             {
-                Domain.BuildTests();
-                isTestTreeReady = true;
+                Domain.BuildTests(testEnumerationOptions);
+                currentTestEnumerationOptions = testEnumerationOptions;
             }
         }
     }

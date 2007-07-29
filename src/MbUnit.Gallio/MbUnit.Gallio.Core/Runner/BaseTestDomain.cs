@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Core.Serialization;
 using MbUnit.Core.Utilities;
+using MbUnit.Framework.Kernel.Harness;
 
 namespace MbUnit.Core.Runner
 {
@@ -113,17 +114,23 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public void BuildTemplates()
+        public void BuildTemplates(TemplateEnumerationOptions options)
         {
+            if (options == null)
+                throw new ArgumentNullException("options");
+
             ThrowIfDisposed();
-            InternalBuildTemplates();
+            InternalBuildTemplates(options);
         }
 
         /// <inheritdoc />
-        public void BuildTests()
+        public void BuildTests(TestEnumerationOptions options)
         {
+            if (options == null)
+                throw new ArgumentNullException("options");
+
             ThrowIfDisposed();
-            InternalBuildTests();
+            InternalBuildTests(options);
         }
 
         /// <inheritdoc />
@@ -138,10 +145,13 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public void RunTests()
+        public void RunTests(TestExecutionOptions options)
         {
+            if (options == null)
+                throw new ArgumentNullException("options");
+
             ThrowIfDisposed();
-            InternalRunTests();
+            InternalRunTests(options);
         }
 
         /// <summary>
@@ -158,19 +168,20 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Internal implementation of <see cref="BuildTemplates" />.
         /// </summary>
-        /// <returns>The root template</returns>
-        protected abstract void InternalBuildTemplates();
+        /// <param name="options">The template enumeration options</param>
+        protected abstract void InternalBuildTemplates(TemplateEnumerationOptions options);
 
         /// <summary>
         /// Internal implementation of <see cref="BuildTests" />.
         /// </summary>
-        /// <returns>The root test</returns>
-        protected abstract void InternalBuildTests();
+        /// <param name="options">The test enumeration options</param>
+        protected abstract void InternalBuildTests(TestEnumerationOptions options);
 
         /// <summary>
         /// Internal implementation of <see cref="RunTests" />.
         /// </summary>
-        protected abstract void InternalRunTests();
+        /// <param name="options">The test execution options</param>
+        protected abstract void InternalRunTests(TestExecutionOptions options);
 
         /// <summary>
         /// Internal implementation of <see cref="UnloadProject" />.

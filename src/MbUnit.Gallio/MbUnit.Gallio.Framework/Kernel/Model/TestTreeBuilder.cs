@@ -26,15 +26,23 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class TestTreeBuilder : ModelTreeBuilder<ITest>
     {
+        private TestEnumerationOptions options;
+
         /// <summary>
         /// Creates a test tree builder initially populated with
         /// a root test.
         /// </summary>
         /// <param name="harness">The test harness</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> is null</exception>
-        public TestTreeBuilder(ITestHarness harness)
+        /// <param name="options">The test enumeration options</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> or
+        /// <param name="options" /> is null</exception>
+        public TestTreeBuilder(ITestHarness harness, TestEnumerationOptions options)
             : base(harness, new RootTest())
         {
+            if (options == null)
+                throw new ArgumentNullException("options");
+
+            this.options = options;
         }
 
         /// <summary>
@@ -43,6 +51,14 @@ namespace MbUnit.Framework.Kernel.Model
         new public RootTest Root
         {
             get { return (RootTest)base.Root; }
+        }
+
+        /// <summary>
+        /// Gets the test enumeration options.
+        /// </summary>
+        public TestEnumerationOptions Options
+        {
+            get { return options; }
         }
     }
 }
