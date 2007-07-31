@@ -150,6 +150,7 @@
         <BLANK_LINES_AROUND_REGION>1</BLANK_LINES_AROUND_REGION>
         <BLANK_LINES_INSIDE_REGION>1</BLANK_LINES_INSIDE_REGION>
         <BLANK_LINES_BETWEEN_USING_GROUPS>0</BLANK_LINES_BETWEEN_USING_GROUPS>
+        <BLANK_LINES_AFTER_USING_LIST>1</BLANK_LINES_AFTER_USING_LIST>
         <MODIFIERS_ORDER length="14">
           <_0>public</_0>
           <_1>protected</_1>
@@ -226,22 +227,6 @@
         <MandatoryImports length="0" />
         <KeepNontrivialAlias>True</KeepNontrivialAlias>
       </UsingsSettings>
-      <MemberOrderPattern>
-        <Entry Criteria="public delegate" RegionName="" />
-        <Entry Criteria="public enum" RegionName="" />
-        <Entry Criteria="constant" RegionName="" />
-        <Entry Criteria="static field" RegionName="" />
-        <Entry Criteria="readonly field" RegionName="" />
-        <Entry Criteria="field" RegionName="" />
-        <Entry Criteria="constructor" RegionName="" />
-        <Entry Criteria="property" RegionName="" />
-        <Entry Criteria="indexer" RegionName="" />
-        <Entry Criteria="eventhandler" RegionName="Event Handlers" Sort="alpha" />
-        <Entry Criteria="implement" RegionName="{0} Members" Sort="immediate-interface" />
-        <Entry Criteria="" RegionName="" />
-        <Entry Criteria="unittest" RegionName="" Sort="alpha" />
-        <Entry Criteria="type" RegionName="" />
-      </MemberOrderPattern>
     </CSharp>
     <VB>
       <FormatSettings>
@@ -312,6 +297,13 @@
         <INDENT_CASE_FROM_SELECT>True</INDENT_CASE_FROM_SELECT>
         <STICK_COMMENT>True</STICK_COMMENT>
       </FormatSettings>
+      <ImportsSettings>
+        <AllowAlias>True</AllowAlias>
+        <PreferQualifiedReference>False</PreferQualifiedReference>
+        <KeepImports length="0" />
+        <MandatoryImports length="0" />
+        <KeepNontrivialAlias>True</KeepNontrivialAlias>
+      </ImportsSettings>
     </VB>
     <SkipRegions length="4">
       <_0>Windows Form Designer generated code</_0>
@@ -319,5 +311,6 @@
       <_2>Designer generated code</_2>
       <_3>Web Form Designer generated code</_3>
     </SkipRegions>
+    <CopyXmlCommentsOnOverride>False</CopyXmlCommentsOnOverride>
   </CodeStyleSettings>
 </Configuration>

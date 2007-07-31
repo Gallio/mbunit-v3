@@ -19,7 +19,8 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using MbUnit.Framework.Kernel.Collections;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 using MbUnit.Framework.Services.Runtime;
@@ -36,6 +37,7 @@ namespace MbUnit.Core.Harness
         private IList<Assembly> assemblies;
         private TemplateTreeBuilder templateTreeBuilder;
         private TestTreeBuilder testTreeBuilder;
+        private EventDispatcher eventDispatcher;
 
         /// <summary>
         /// Creates a test harness.
@@ -50,6 +52,7 @@ namespace MbUnit.Core.Harness
             this.runtime = runtime;
 
             assemblies = new List<Assembly>();
+            eventDispatcher = new EventDispatcher();
         }
 
         /// <inheritdoc />
@@ -97,6 +100,12 @@ namespace MbUnit.Core.Harness
                 ThrowIfDisposed();
                 return assemblies;
             }
+        }
+
+        /// <inheritdoc />
+        public EventDispatcher EventDispatcher
+        {
+            get { return eventDispatcher; }
         }
 
         /// <inheritdoc />
@@ -193,7 +202,7 @@ namespace MbUnit.Core.Harness
             ThrowIfDisposed();
 
             testTreeBuilder = null;
-            templateTreeBuilder = new TemplateTreeBuilder(this, options);
+            templateTreeBuilder = new TemplateTreeBuilder(options);
 
             if (BuildingTemplates != null)
                 BuildingTemplates(this, EventArgs.Empty);
@@ -212,7 +221,7 @@ namespace MbUnit.Core.Harness
             if (templateTreeBuilder == null)
                 throw new InvalidOperationException("The template tree has not been built yet.");
 
-            testTreeBuilder = new TestTreeBuilder(this, options);
+            testTreeBuilder = new TestTreeBuilder(options);
 
             ITemplateBinding rootBinding = templateTreeBuilder.Root.Bind(testTreeBuilder.Root.Scope, EmptyDictionary<ITemplateParameter, object>.Instance);
             rootBinding.BuildTests(testTreeBuilder);
@@ -233,6 +242,45 @@ namespace MbUnit.Core.Harness
 
             if (testTreeBuilder == null)
                 throw new InvalidOperationException("The test tree has not been built yet.");
+
+            Dictionary<ITest, TestBatch> filteredTests = new Dictionary<ITest, TestBatch>();
+            PopulateClosureOfFilteredTests(testTreeBuilder.Root, options.Filter, filteredTests, null);
+
+            MultiMap<TestBatch, ITest> batches = new MultiMap<TestBatch, ITest>();
+            foreach (ITest test in filteredTests.Keys)
+            {
+                TestBatch batch = test.Batch;
+                if (batch != null)
+                    batches.Add(batch, test);
+            }
+
+            foreach (KeyValuePair<TestBatch, IList<ITest>> batch in batches)
+            {
+                ITestController controller = batch.Key.CreateController();
+                controller.Run(options, eventDispatcher, batch.Value);
+            }
+        }
+
+        private static bool PopulateClosureOfFilteredTests(ITest test, Filter<ITest> filter, Dictionary<ITest, TestBatch> filteredTests, TestBatch parentBatch)
+        {
+            TestBatch batch = test.Batch;
+            if (parentBatch != null && batch != parentBatch)
+                throw new TestHarnessException("Detected nested test batches in the test tree!");
+
+            bool childWasIncluded = false;
+            foreach (ITest child in test.Children)
+                if (PopulateClosureOfFilteredTests(child, filter, filteredTests, batch))
+                    childWasIncluded = true;
+
+            // Ensure that we include the parent test if one of its children was matched by the filter
+            // and included in the list of filtered tests.
+            if (childWasIncluded || filter.IsMatch(test))
+            {
+                filteredTests.Add(test, batch);
+                return true;
+            }
+
+            return false;
         }
 
         private void ThrowIfDisposed()

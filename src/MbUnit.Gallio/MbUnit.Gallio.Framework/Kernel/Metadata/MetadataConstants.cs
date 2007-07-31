@@ -37,16 +37,16 @@ namespace MbUnit.Framework.Kernel.Metadata
         public const string AuthorNameKey = "AuthorName";
 
         /// <summary>
+        /// The metadata key for the author's homepage.
+        /// The associated value should be the author's homepage as a string.
+        /// </summary>
+        public const string AuthorHomepageKey = "AuthorHomepage";
+
+        /// <summary>
         /// The metadata key for the name of a category to which a test belongs.
         /// The associated value should be the category name as a string.
         /// </summary>
         public const string CategoryNameKey = "CategoryName";
-
-        /// <summary>
-        /// The metadata key for the description of a test component.
-        /// The associated value should be the description as a string.
-        /// </summary>
-        public const string DescriptionKey = "Description";
 
         /// <summary>
         /// The metadata key used to describe the kind of a component.
@@ -55,8 +55,21 @@ namespace MbUnit.Framework.Kernel.Metadata
         public const string ComponentKindKey = "ComponentKind";
 
         /// <summary>
+        /// The metadata key for the description of a test component.
+        /// The associated value should be the description as a string.
+        /// </summary>
+        public const string DescriptionKey = "Description";
+
+        /// <summary>
+        /// The metadata key for the importance of a test component.
+        /// The associated value should be one of those from <see cref="TestImportance" /> represented as a string.
+        /// </summary>
+        public const string ImportanceKey = "Importance";
+
+        /// <summary>
         /// The metadata key for the name of the type being tested.
-        /// The associated value should be the fully qualified name of the type as a string.
+        /// The associated value should be the full name of the type from <see cref="Type.FullName" />
+        /// or the assembly qualified name of the type from <see cref="Type.AssemblyQualifiedName" />.
         /// </summary>
         public const string TestsOnKey = "TestsOn";
     }

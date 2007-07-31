@@ -16,14 +16,13 @@
 extern alias MbUnit2;
 using MbUnit._Framework.Tests;
 using MbUnit.Core.Harness;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Services.Runtime;
 using MbUnit.Framework.Tests.Kernel.Runtime;
 using MbUnit2::MbUnit.Framework;
 
 using System.Reflection;
 using MbUnit.Framework.Kernel.Metadata;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Plugin.MbUnit2Adapter.Core;
 
 using System;

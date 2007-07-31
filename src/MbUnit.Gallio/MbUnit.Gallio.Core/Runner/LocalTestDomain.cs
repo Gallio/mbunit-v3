@@ -14,7 +14,8 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Core.Harness;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Serialization;
 using MbUnit.Framework.Services.Runtime;
 
@@ -62,6 +63,9 @@ namespace MbUnit.Core.Runner
             RuntimeHolder.Instance = runtime;
             harness = harnessFactory.CreateHarness();
 
+            if (Listener != null)
+                harness.EventDispatcher.Listeners.Add(Listener);
+
             foreach (string path in project.HintDirectories)
                 harness.AssemblyResolverManager.AddHintDirectory(path);
 
@@ -77,17 +81,17 @@ namespace MbUnit.Core.Runner
         /// <inheritdoc />
         protected override void InternalBuildTemplates(TemplateEnumerationOptions options)
         {
-            TemplateTreeRoot = null;
+            TemplateModel = null;
             harness.BuildTemplates(options);
-            TemplateTreeRoot = new TemplateInfo(harness.TemplateTreeBuilder.Root);
+            TemplateModel = new TemplateModel(new TemplateInfo(harness.TemplateTreeBuilder.Root));
         }
 
         /// <inheritdoc />
         protected override void InternalBuildTests(TestEnumerationOptions options)
         {
-            TestTreeRoot = null;
+            TestModel = null;
             harness.BuildTests(options);
-            TestTreeRoot = new TestInfo(harness.TestTreeBuilder.Root);
+            TestModel = new TestModel(new TestInfo(harness.TestTreeBuilder.Root));
         }
 
         /// <inheritdoc />

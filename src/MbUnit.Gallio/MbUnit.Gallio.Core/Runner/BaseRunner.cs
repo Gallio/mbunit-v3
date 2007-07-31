@@ -19,7 +19,8 @@ using System.Text;
 using Castle.Core.Logging;
 using MbUnit.Core.Serialization;
 using MbUnit.Core.Services.Runtime;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -28,15 +29,13 @@ namespace MbUnit.Core.Runner
     /// </summary>
     public abstract class BaseRunner : ITestRunner
     {
+        private EventDispatcher eventDispatcher;
         private ICoreRuntime runtime;
         private ITestDomainFactory domainFactory;
 
         private TemplateEnumerationOptions templateEnumerationOptions;
         private TestEnumerationOptions testEnumerationOptions;
         private TestExecutionOptions testExecutionOptions;
-
-        private TemplateEnumerationOptions currentTemplateEnumerationOptions;
-        private TestEnumerationOptions currentTestEnumerationOptions;
 
         private ILogger logger;
         private ITestDomain domain;
@@ -59,6 +58,7 @@ namespace MbUnit.Core.Runner
             this.domainFactory = domainFactory;
 
             logger = NullLogger.Instance;
+            eventDispatcher = new EventDispatcher();
             templateEnumerationOptions = new TemplateEnumerationOptions();
             testEnumerationOptions = new TestEnumerationOptions();
             testExecutionOptions = new TestExecutionOptions();
@@ -90,7 +90,11 @@ namespace MbUnit.Core.Runner
             get
             {
                 if (domain == null)
+                {
                     domain = domainFactory.CreateDomain();
+                    domain.SetEventListener(eventDispatcher);
+                }
+
                 return domain;
             }
             protected set { domain = value; }
@@ -104,6 +108,12 @@ namespace MbUnit.Core.Runner
                 domain.Dispose();
                 domain = null;
             }
+        }
+
+        /// <inheritdoc />
+        public EventDispatcher EventDispatcher
+        {
+            get { return eventDispatcher; }
         }
 
         /// <inheritdoc />
@@ -146,6 +156,18 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
+        public TemplateModel TemplateModel
+        {
+            get { return Domain.TemplateModel; }
+        }
+
+        /// <inheritdoc />
+        public TestModel TestModel
+        {
+            get { return Domain.TestModel; }
+        }
+
+        /// <inheritdoc />
         public virtual void LoadProject(TestProject project)
         {
             logger.Debug("Loading project into test domain.");
@@ -154,49 +176,32 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public virtual TemplateInfo GetTemplateTreeRoot()
+        public virtual void BuildTemplates()
         {
-            BuildTemplatesIfNeeded();
-            return Domain.TemplateTreeRoot;
+            logger.Debug("Building templates.");
+
+            Domain.BuildTemplates(templateEnumerationOptions);
         }
 
         /// <inheritdoc />
-        public virtual TestInfo GetTestTreeRoot()
+        public virtual void BuildTests()
         {
-            BuildTestsIfNeeded();
-            return Domain.TestTreeRoot;
+            logger.Debug("Building tests.");
+
+            Domain.BuildTests(testEnumerationOptions);
         }
 
         /// <inheritdoc />
         public virtual void Run()
         {
-            BuildTestsIfNeeded();
+            logger.Debug("Running tests.");
+
             Domain.RunTests(testExecutionOptions);
         }
 
         /// <inheritdoc />
         public virtual void WriteReport()
         {
-        }
-
-        private void BuildTemplatesIfNeeded()
-        {
-            if (! templateEnumerationOptions.Equals(currentTemplateEnumerationOptions))
-            {
-                Domain.BuildTemplates(templateEnumerationOptions);
-                currentTemplateEnumerationOptions = templateEnumerationOptions;
-            }
-        }
-
-        private void BuildTestsIfNeeded()
-        {
-            BuildTemplatesIfNeeded();
-
-            if (!testEnumerationOptions.Equals(currentTestEnumerationOptions))
-            {
-                Domain.BuildTests(testEnumerationOptions);
-                currentTestEnumerationOptions = testEnumerationOptions;
-            }
         }
     }
 }

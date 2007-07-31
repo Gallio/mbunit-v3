@@ -25,14 +25,14 @@ namespace MbUnit.Framework.Kernel.Collections
     /// </summary>
     public class MultiMap<TKey, TValue> : ICollection<KeyValuePair<TKey, IList<TValue>>>
     {
-        private IDictionary<TKey, IList<TValue>> map;
+        private IDictionary<TKey, IList<TValue>> entries;
 
         /// <summary>
         /// Creates an empty multi-map.
         /// </summary>
         public MultiMap()
         {
-            map = new Dictionary<TKey, IList<TValue>>();
+            entries = new Dictionary<TKey, IList<TValue>>();
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace MbUnit.Framework.Kernel.Collections
         /// </summary>
         public int Count
         {
-            get { return map.Count; }
+            get { return entries.Count; }
         }
 
         /// <inheritdoc />
@@ -60,7 +60,7 @@ namespace MbUnit.Framework.Kernel.Collections
             get
             {
                 IList<TValue> list;
-                if (map.TryGetValue(key, out list))
+                if (entries.TryGetValue(key, out list))
                     return list;
 
                 return EmptyArray<TValue>.Instance;
@@ -89,10 +89,10 @@ namespace MbUnit.Framework.Kernel.Collections
         public void Add(TKey key, TValue value)
         {
             IList<TValue> list;
-            if (! map.TryGetValue(key, out list))
+            if (! entries.TryGetValue(key, out list))
             {
                 list = new List<TValue>();
-                map.Add(key, list);
+                entries.Add(key, list);
             }
 
             list.Add(value);
@@ -117,7 +117,7 @@ namespace MbUnit.Framework.Kernel.Collections
         public bool Remove(TKey key, TValue value)
         {
             IList<TValue> list;
-            return map.TryGetValue(key, out list) && list.Remove(value);
+            return entries.TryGetValue(key, out list) && list.Remove(value);
         }
 
         /// <summary>
@@ -142,19 +142,19 @@ namespace MbUnit.Framework.Kernel.Collections
         /// <returns>True if at least one value was removed</returns>
         public bool RemoveKey(TKey key)
         {
-            return map.Remove(key);
+            return entries.Remove(key);
         }
 
         /// <inheritdoc />
         public void Clear()
         {
-            map.Clear();
+            entries.Clear();
         }
 
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, IList<TValue>>> GetEnumerator()
         {
-            return map.GetEnumerator();
+            return entries.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

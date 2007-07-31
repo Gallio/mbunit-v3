@@ -42,9 +42,9 @@ namespace MbUnit.Framework.Kernel.Model
             if (name == null)
                 throw new ArgumentNullException("name");
             if (codeReference == null)
-                throw new ArgumentNullException("reflectedDefinition");
+                throw new ArgumentNullException("codeReference");
 
-            this.id = ""; // interim non-null value until initialized
+            this.id = Guid.NewGuid().ToString(); // interim value until initialized to a stable identifier
             this.name = name;
             this.codeReference = codeReference;
             this.metadata = new MetadataMap();

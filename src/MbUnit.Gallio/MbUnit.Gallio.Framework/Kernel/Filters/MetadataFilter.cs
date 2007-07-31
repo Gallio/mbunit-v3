@@ -26,7 +26,7 @@ namespace MbUnit.Framework.Kernel.Filters
     public class MetadataFilter<T> : Filter<T> where T : IModelComponent
     {
         private string key;
-        private object value;
+        private string value;
 
         /// <summary>
         /// Creates a metadata filter.
@@ -34,7 +34,7 @@ namespace MbUnit.Framework.Kernel.Filters
         /// <param name="key">The metadata key to look for</param>
         /// <param name="value">The metadata value to look for</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        public MetadataFilter(string key, object value)
+        public MetadataFilter(string key, string value)
         {
             if (key == null)
                 throw new ArgumentNullException("key");

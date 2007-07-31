@@ -43,13 +43,15 @@ namespace MbUnit.Framework
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            this.typeName = type.FullName;
+            this.typeName = type.AssemblyQualifiedName;
         }
 
         /// <summary>
-        /// Associates the fully-qualified name of the type under test with the test component annotated by this attribute.
+        /// Associates the full name or assembly qualified name of the type under test
+        /// with the test component annotated by this attribute.
         /// </summary>
-        /// <param name="typeName">The fully-qualified name of the type under test</param>
+        /// <param name="typeName">The name of the type under test as obtained by <see cref="Type.FullName" />
+        /// or <see cref="Type.AssemblyQualifiedName" /></param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null</exception>
         public TestsOnAttribute(string typeName)
         {
@@ -60,8 +62,12 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets or sets the fully-qualified name of the type under test.
+        /// Gets or sets the full name or assembly qualified name of the type under test.
         /// </summary>
+        /// <value>
+        /// The name of the type under test as obtained by <see cref="Type.FullName" />
+        /// or <see cref="Type.AssemblyQualifiedName" />.
+        /// </value>
         public string TypeName
         {
             get { return typeName; }

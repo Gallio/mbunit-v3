@@ -14,8 +14,14 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using MbUnit.Core.Runner.CommandLine;
+using MbUnit.Framework;
+using MbUnit.Framework.Kernel.Filters;
+using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Echo
 {
@@ -71,38 +77,37 @@ namespace MbUnit.Echo
 
 		#region Filter Arguments
 		[CommandLineArgument(
-			 CommandLineArgumentType.AtMostOnce,
+			 CommandLineArgumentType.MultipleUnique,
 			 ShortName = "fc",
 			 LongName = "filter-category",
 			 Description="Name of the filtered category"
 			 )]
-		public String FilterCategory = null;
+		public string[] FilterCategories = null;
 
 		[CommandLineArgument(
-			 CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentType.MultipleUnique,
 			 ShortName = "fa",
 			 LongName = "filter-author",
 			 Description="Name of the filtered author name"
 			 )]
-		public String FilterAuthor = null;
+        public string[] FilterAuthors = null;
 
 		[CommandLineArgument(
-			 CommandLineArgumentType.AtMostOnce,
+			 CommandLineArgumentType.MultipleUnique,
 			 ShortName = "ft",
 			 LongName = "filter-type",
 			 Description="Name of the filtered type"
 			 )]
-		public String FilterType = null;
+        public string[] FilterTypes = null;
 
 		[CommandLineArgument(
-			 CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentType.MultipleUnique,
 			 ShortName = "fn",
 			 LongName = "filter-namespace",
 			 Description="Name of the filtered namespace"
 			 )]
-		public String FilterNamespace = null;
+        public string[] FilterNamespaces = null;
 
-/*
 		[CommandLineArgument(
 			 CommandLineArgumentType.MultipleUnique,
 			 ShortName = "fi",
@@ -110,7 +115,6 @@ namespace MbUnit.Echo
 			 Description="Name of the filtered importance"
 			 )]
 		public TestImportance[] FilterImportances = null;
-*/
 		#endregion
 
         #region Misc arguments
@@ -177,15 +181,15 @@ namespace MbUnit.Echo
 
             sw.WriteLine("Report folder: {0}",this.ReportFolder);
             sw.WriteLine("Report Name Format: {0}",this.ReportNameFormat);
-			sw.WriteLine("Report types:");
-			foreach(ReportType type in this.ReportTypes)
-				sw.WriteLine("\t{0}",type);
+			sw.WriteLine("Report types: {0}", String.Join(", ",
+                ListUtils.ConvertAllToArray<ReportType, string>(this.ReportTypes, delegate(ReportType reportType) { return reportType.ToString(); })));
             sw.WriteLine("Show reports: {0}", this.ShowReports);
 
-            sw.WriteLine("Filter Category: {0}",this.FilterCategory);
-			sw.WriteLine("Filter Author: {0}",this.FilterAuthor);
-			sw.WriteLine("Filter Namespace: {0}",this.FilterNamespace);
-			sw.WriteLine("Filter Type: {0}",this.FilterType);
+            sw.WriteLine("Filter Category: {0}", String.Join(", ", this.FilterCategories));
+			sw.WriteLine("Filter Author: {0}", String.Join(", ", this.FilterAuthors));
+			sw.WriteLine("Filter Namespace: {0}", String.Join(", ", this.FilterNamespaces));
+			sw.WriteLine("Filter Type: {0}", String.Join(", ", this.FilterTypes));
+
 			sw.WriteLine("Verbose: {0}",this.Verbose);
             sw.WriteLine("Save Template Tree: {0}", this.SaveTemplateTree);
             sw.WriteLine("Save Test Tree: {0}", this.SaveTestTree);
@@ -193,41 +197,62 @@ namespace MbUnit.Echo
             return sw.ToString();
 		}
 
-        /*
-		public FixtureFilterBase GetFilter()
+		public Filter<ITest> GetFilter()
 		{
-			FixtureFilterBase filter = FixtureFilters.Any;
+            List<Filter<ITest>> filters = new List<Filter<ITest>>();
 
-			if (this.FilterCategory!=null)
+			if (FilterCategories.Length != 0)
 			{
-				filter = FixtureFilters.And(
-					filter,
-					FixtureFilters.Category(this.FilterCategory)
-					);
+                List<Filter<ITest>> categoryFilters = new List<Filter<ITest>>();
+
+                foreach (string category in FilterCategories)
+                    categoryFilters.Add(new MetadataFilter<ITest>(MetadataConstants.CategoryNameKey, category));
+
+                filters.Add(new OrFilter<ITest>(categoryFilters.ToArray()));
 			}
-			if (this.FilterAuthor!=null)
+
+			if (FilterAuthors.Length != 0)
 			{
-				filter = FixtureFilters.And(
-					filter,
-					FixtureFilters.Author(this.FilterAuthor)
-					);
+                List<Filter<ITest>> authorFilters = new List<Filter<ITest>>();
+
+                foreach (string author in FilterAuthors)
+                    authorFilters.Add(new MetadataFilter<ITest>(MetadataConstants.AuthorNameKey, author));
+
+                filters.Add(new OrFilter<ITest>(authorFilters.ToArray()));
 			}
-			if (this.FilterNamespace!=null)
-			{
-				filter = FixtureFilters.And(
-					filter,
-					FixtureFilters.Namespace(this.FilterNamespace)
-					);
-			}
-			if (this.FilterType!=null)
-			{
-				filter = FixtureFilters.And(
-					filter,
-					FixtureFilters.Type(this.FilterType)
-					);
-			}
-			return filter;
+
+            if (FilterImportances.Length != 0)
+            {
+                List<Filter<ITest>> importanceFilters = new List<Filter<ITest>>();
+
+                foreach (TestImportance importance in FilterImportances)
+                    importanceFilters.Add(new MetadataFilter<ITest>(MetadataConstants.ImportanceKey, importance.ToString()));
+
+                filters.Add(new OrFilter<ITest>(importanceFilters.ToArray()));
+            }
+
+            if (FilterNamespaces.Length != 0)
+            {
+                List<Filter<ITest>> namespaceFilters = new List<Filter<ITest>>();
+
+                foreach (string @namespace in FilterNamespaces)
+                    namespaceFilters.Add(new NamespaceFilter<ITest>(@namespace));
+
+                filters.Add(new OrFilter<ITest>(namespaceFilters.ToArray()));
+            }
+
+            if (FilterTypes.Length != 0)
+            {
+                List<Filter<ITest>> typeFilters = new List<Filter<ITest>>();
+
+                // FIXME: Should we always include derived types?
+                foreach (string type in FilterTypes)
+                    typeFilters.Add(new TypeFilter<ITest>(type, true));
+
+                filters.Add(new OrFilter<ITest>(typeFilters.ToArray()));
+            }
+
+            return new AndFilter<ITest>(filters.ToArray());
 		}
-         */
 	}
 }

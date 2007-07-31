@@ -27,20 +27,20 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class MetadataMap
     {
-        private MultiMap<string, object> entries;
+        private MultiMap<string, string> entries;
 
         /// <summary>
         /// Creates an empty metadata map.
         /// </summary>
         public MetadataMap()
         {
-            entries = new MultiMap<string, object>();
+            entries = new MultiMap<string, string>();
         }
 
         /// <summary>
         /// Gets the multi-valued dictionary of metadata entries.
         /// </summary>
-        public MultiMap<string, object> Entries
+        public MultiMap<string, string> Entries
         {
             get { return entries; }
         }
@@ -51,9 +51,9 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="key">The key</param>
         /// <returns>The value, or null if none</returns>
-        public object GetValue(string key)
+        public string GetValue(string key)
         {
-            IList<object> values = entries[key];
+            IList<string> values = entries[key];
             if (values.Count == 0)
                 return null;
 
@@ -66,7 +66,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="key">The key</param>
         /// <param name="value">The new value, or null to remove the value</param>
-        public void SetValue(string key, object value)
+        public void SetValue(string key, string value)
         {
             entries.RemoveKey(key);
 

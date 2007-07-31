@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Metadata;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -31,36 +31,22 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class ModelTreeBuilder<T> where T : class, IModelTreeNode<T>
     {
-        private ITestHarness harness;
         private T root;
         private Dictionary<object, T> registry;
 
         /// <summary>
         /// Creates a tree builder initially populated with the specified root node.
         /// </summary>
-        /// <param name="harness">The test harness</param>
         /// <param name="root">The root of the tree</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> or
-        /// <paramref name="root"/> is null</exception>
-        public ModelTreeBuilder(ITestHarness harness, T root)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="root"/> is null</exception>
+        public ModelTreeBuilder(T root)
         {
-            if (harness == null)
-                throw new ArgumentNullException("harness");
             if (root == null)
                 throw new ArgumentNullException("root");
 
-            this.harness = harness;
             this.root = root;
 
             registry = new Dictionary<object, T>();
-        }
-
-        /// <summary>
-        /// Gets the test harness.
-        /// </summary>
-        public ITestHarness Harness
-        {
-            get { return harness; }
         }
 
         /// <summary>

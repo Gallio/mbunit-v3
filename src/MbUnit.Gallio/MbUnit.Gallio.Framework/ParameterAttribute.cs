@@ -16,7 +16,6 @@
 using System;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Attributes;
-using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework
 {

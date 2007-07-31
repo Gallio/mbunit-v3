@@ -19,8 +19,17 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
+
+using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
+using AuthorAttribute2 = MbUnit2::MbUnit.Framework.AuthorAttribute;
+using FixtureCategoryAttribute2 = MbUnit2::MbUnit.Framework.FixtureCategoryAttribute;
+using TestCategoryAttribute2 = MbUnit2::MbUnit.Framework.TestCategoryAttribute;
+using TestsOnAttribute2 = MbUnit2::MbUnit.Framework.TestsOnAttribute;
+using ImportanceAttribute2 = MbUnit2::MbUnit.Framework.ImportanceAttribute;
+using TestImportance2 = MbUnit2::MbUnit.Framework.TestImportance;
 
 using MbUnit2::MbUnit.Core;
 using MbUnit2::MbUnit.Core.Remoting;
@@ -66,37 +75,22 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             RunFixtureExplorerIfNeeded();
 
             ITest assemblyTest = CreateAssemblyTest(Scope, Assembly);
+            assemblyTest.Batch = new TestBatch("MbUnit v2: " + Template.Name, delegate
+            {
+                return new MbUnit2TestController(fixtureExplorer);
+            });
 
             foreach (Fixture fixture in fixtureExplorer.FixtureGraph.Fixtures)
             {
-                ITest fixtureTest = CreateFixtureTest(assemblyTest.Scope, fixture.Type, fixture.Name);
+                ITest fixtureTest = CreateFixtureTest(assemblyTest.Scope, fixture);
 
                 foreach (RunPipeStarter starter in fixture.Starters)
                 {
-                    ITest test = CreateTest(fixtureTest.Scope, starter.Pipe.Name);
+                    ITest test = CreateTest(fixtureTest.Scope, starter.Pipe);
                 }
             }
 
-            // Use GetDependentAssemblies() to handle assembly dependencies
-        }
-
-        private void RunTests()
-        {
-            RunFixtureExplorerIfNeeded();
-
-            IFixtureFilter fixtureFilter = new AnyFixtureFilter(); // fixme
-            IRunPipeFilter runPipeFilter = new AnyRunPipeFilter(); // fixme
-            ReportListener reportListener = new ReportListener();
-
-            DependencyFixtureRunner fixtureRunner = new DependencyFixtureRunner();
-            fixtureRunner.FixtureFilter = fixtureFilter;
-            fixtureRunner.RunPipeFilter = runPipeFilter;
-
-            // todo: hook event handlers
-
-            fixtureRunner.Run(fixtureExplorer, reportListener);
-
-            // todo: do something with the result
+            // TODO: Use GetDependentAssemblies() to handle assembly dependencies
         }
 
         private void RunFixtureExplorerIfNeeded()
@@ -120,32 +114,83 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
         private ITest CreateAssemblyTest(TestScope parentScope, Assembly assembly)
         {
-            BaseTest test = new BaseTest(assembly.FullName, CodeReference.CreateFromAssembly(assembly), parentScope);
+            BaseTest test = new MbUnit2Test(assembly.FullName, CodeReference.CreateFromAssembly(assembly), parentScope, null, null);
             test.Kind = ComponentKind.Assembly;
-            // TODO: Get metadata...
+
+            // TODO: Is there any metadata on assemblies that we need?
 
             parentScope.ContainingTest.AddChild(test);
             return test;
         }
 
-        private ITest CreateFixtureTest(TestScope parentScope, Type fixtureType, string fixtureName)
+        private ITest CreateFixtureTest(TestScope parentScope, Fixture fixture)
         {
-            BaseTest test = new BaseTest(fixtureName, CodeReference.CreateFromType(fixtureType), parentScope);
+            Type fixtureType = fixture.Type;
+            BaseTest test = new MbUnit2Test(fixture.Name, CodeReference.CreateFromType(fixtureType), parentScope, fixture, null);
             test.Kind = ComponentKind.Fixture;
-            // TODO: Get metadata...
+
+            // Populate metadata
+            foreach (AuthorAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(AuthorAttribute2), true))
+            {
+                test.Metadata.Entries.Add(MetadataConstants.AuthorNameKey, attrib.Name);
+                test.Metadata.Entries.Add(MetadataConstants.AuthorEmailKey, attrib.EMail);
+                test.Metadata.Entries.Add(MetadataConstants.AuthorHomepageKey, attrib.HomePage);
+            }
+            foreach (FixtureCategoryAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(FixtureCategoryAttribute2), true))
+            {
+                test.Metadata.Entries.Add(MetadataConstants.CategoryNameKey, attrib.Category);
+            }
+            foreach (TestsOnAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestsOnAttribute2), true))
+            {
+                test.Metadata.Entries.Add(MetadataConstants.TestsOnKey, attrib.TestedType.AssemblyQualifiedName);
+            }
+            foreach (ImportanceAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(ImportanceAttribute2), true))
+            {
+                // Note: In principle we could eliminate the call to MapImportance because TestImportance is
+                //       defined the same way in Gallio as in MbUnit v2.  But there is no guarantee that will remain the case.
+                test.Metadata.Entries.Add(MetadataConstants.TestsOnKey, MapImportance(attrib.Importance).ToString());
+            }
+            foreach (TestFixturePatternAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestFixturePatternAttribute2), true))
+            {
+                test.Metadata.Entries.Add(MetadataConstants.DescriptionKey, attrib.Description);
+            }
 
             parentScope.ContainingTest.AddChild(test);
             return test;
         }
 
-        private ITest CreateTest(TestScope parentScope, string testName)
+        private ITest CreateTest(TestScope parentScope, RunPipe runPipe)
         {
-            BaseTest test = new BaseTest(testName, CodeReference.Unknown, parentScope);
+            BaseTest test = new MbUnit2Test(runPipe.Name, CodeReference.CreateFromType(runPipe.FixtureType), parentScope, runPipe.Fixture, runPipe);
             test.Kind = ComponentKind.Test;
-            // TODO: Get metadata...
+
+            // TODO: How can we populate the metadata?
+            //       We don't even know the MethodInfo!
 
             parentScope.ContainingTest.AddChild(test);
             return test;
+        }
+
+        private TestImportance MapImportance(TestImportance2 importance)
+        {
+            switch (importance)
+            {
+                case TestImportance2.Critical:
+                    return TestImportance.Critical;
+
+                case TestImportance2.Severe:
+                    return TestImportance.Severe;
+
+                case TestImportance2.Serious:
+                    return TestImportance.Serious;
+
+                case TestImportance2.NoOneReallyCaresAbout:
+                    return TestImportance.NoOneReallyCaresAbout;
+
+                default:
+                case TestImportance2.Default:
+                    return TestImportance.Default;
+            }
         }
     }
 }

@@ -24,3 +24,5 @@
   these tests could fork off someplace into as many dynamically generated tests
   as it needs and they will appear in the report as usual although perhaps decorated
   with an IsDynamic=true metadata entry or something.
+
+  Launching new sub-tests could be handled by the context service perhaps.

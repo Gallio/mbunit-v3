@@ -17,7 +17,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using MbUnit.Framework;
-using MbUnit.Framework.Services.Reports;
+using MbUnit.Framework.Services.ExecutionLogs;
 
 namespace MbUnit.Core.Harness
 {
@@ -30,8 +30,8 @@ namespace MbUnit.Core.Harness
         private TextWriter oldConsoleOut;
         private TextWriter oldConsoleError;
 
-        private ContextualReportTraceListener debugListener;
-        private ContextualReportTraceListener traceListener;
+        private ContextualExecutionLogTraceListener debugListener;
+        private ContextualExecutionLogTraceListener traceListener;
 
         public void SetUp()
         {
@@ -41,8 +41,8 @@ namespace MbUnit.Core.Harness
             oldConsoleError = Console.Error;
 
             // Inject debug and trace listeners.
-            debugListener = new ContextualReportTraceListener(Report.DebugStreamName);
-            traceListener = new ContextualReportTraceListener(Report.TraceStreamName);
+            debugListener = new ContextualExecutionLogTraceListener(ExecutionLogStreams.Debug);
+            traceListener = new ContextualExecutionLogTraceListener(ExecutionLogStreams.Trace);
             Debug.Listeners.Add(debugListener);
             Debug.AutoFlush = true;
 

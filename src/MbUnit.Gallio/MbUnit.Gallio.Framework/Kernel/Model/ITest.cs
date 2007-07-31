@@ -63,11 +63,26 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Gets the list of the dependencies of this test.
         /// </summary>
+        /// <remarks>
+        /// It is an error to create a dependency on a <see cref="ITest" /> that
+        /// belongs to a different <see cref="TestBatch" />.
+        /// </remarks>
         IList<ITest> Dependencies { get; }
 
         /// <summary>
         /// Gets the scope of this test.
         /// </summary>
         TestScope Scope { get; }
+
+        /// <summary>
+        /// Gets or sets the test batch to which the test belongs.
+        /// </summary>
+        /// <remarks>
+        /// The test inherits the value of the <see cref="Batch" /> property from its parent
+        /// unless it is overridden here.  It is an error to set the value of this property
+        /// so as to create a nested <see cref="TestBatch" />.
+        /// </remarks>
+        /// <seealso cref="TestBatch"/> for a discussion of the rules governing test batches.
+        TestBatch Batch { get; set; }
     }
 }

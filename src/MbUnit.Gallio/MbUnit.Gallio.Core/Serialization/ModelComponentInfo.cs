@@ -27,6 +27,7 @@ namespace MbUnit.Core.Serialization
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public class ModelComponentInfo
     {
+        private string id;
         private string name;
         private CodeReferenceInfo codeReference;
         private MetadataMapInfo metadata;
@@ -44,9 +45,21 @@ namespace MbUnit.Core.Serialization
         /// <param name="obj">The model object</param>
         public ModelComponentInfo(IModelComponent obj)
         {
+            id = obj.Id;
             name = obj.Name;
             codeReference = new CodeReferenceInfo(obj.CodeReference);
             metadata = new MetadataMapInfo(obj.Metadata);
+        }
+
+        /// <summary>
+        /// Gets or sets the test component id.  (non-null)
+        /// </summary>
+        /// <seealso cref="IModelComponent.Id"/>
+        [XmlAttribute("id")]
+        public string Id
+        {
+            get { return id; }
+            set { id = value; }
         }
 
         /// <summary>

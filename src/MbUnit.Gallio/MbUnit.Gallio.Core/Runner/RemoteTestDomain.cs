@@ -16,9 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using MbUnit.Core.Serialization;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -66,9 +64,9 @@ namespace MbUnit.Core.Runner
         {
             try
             {
-                TemplateTreeRoot = null;
+                TemplateModel = null;
                 proxy.BuildTemplates(options);
-                TemplateTreeRoot = proxy.TemplateTreeRoot;
+                TemplateModel = proxy.TemplateModel;
             }
             catch (Exception ex)
             {
@@ -81,9 +79,9 @@ namespace MbUnit.Core.Runner
         {
             try
             {
-                TestTreeRoot = null;
+                TestModel = null;
                 proxy.BuildTests(options);
-                TestTreeRoot = proxy.TestTreeRoot;
+                TestModel = proxy.TestModel;
             }
             catch (Exception ex)
             {
@@ -138,6 +136,9 @@ namespace MbUnit.Core.Runner
             try
             {
                 proxy = InternalConnect();
+
+                if (Listener != null)
+                    proxy.SetEventListener(new RemoteEventListener(Listener));
             }
             catch (Exception ex)
             {

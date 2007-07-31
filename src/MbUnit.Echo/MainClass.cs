@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -22,6 +23,7 @@ using System.Xml.Serialization;
 using Castle.Core.Logging;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
+using MbUnit.Core.Runner.Monitors;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Echo;
 
@@ -34,6 +36,7 @@ namespace MbUnit.Echo
         private MainArguments arguments = new MainArguments();
         private TestProject project;
         private RuntimeSetup runtimeSetup;
+        private AutoRunner runner;
 
         public MainClass()
         {
@@ -148,24 +151,28 @@ namespace MbUnit.Echo
                 return;
             }
 
-            using (AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup))
+            using (runner = AutoRunner.CreateRunner(runtimeSetup))
             {
                 runner.Logger = logger;
+                runner.TestExecutionOptions.Filter = arguments.GetFilter();
+                new ConsoleMonitor(Console.Out).Attach(runner);
 
                 Stopwatch stopWatch = Stopwatch.StartNew();
                 logger.InfoFormat("\nStart time: {0}", DateTime.Now.ToShortTimeString());
                 logger.Info("Loading test assemblies...\n");
 
                 runner.LoadProject(project);
+                runner.BuildTemplates();
+                runner.BuildTests();
 
                 if (arguments.SaveTemplateTree != null)
                 {
-                    SaveToXml(runner.GetTemplateTreeRoot(), arguments.SaveTemplateTree);
+                    SaveToXml(runner.TemplateModel.RootTemplate, arguments.SaveTemplateTree);
                 }
 
                 if (arguments.SaveTestTree != null)
                 {
-                    SaveToXml(runner.GetTestTreeRoot(), arguments.SaveTestTree);
+                    SaveToXml(runner.TestModel.RootTest, arguments.SaveTestTree);
                 }
 
                 logger.Info("\nStarting execution...\n");

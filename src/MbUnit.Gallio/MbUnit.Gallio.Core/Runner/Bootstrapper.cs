@@ -16,9 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Core.Harness;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
 {

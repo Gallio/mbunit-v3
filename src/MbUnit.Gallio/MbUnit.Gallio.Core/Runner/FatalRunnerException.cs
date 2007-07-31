@@ -26,20 +26,37 @@ namespace MbUnit.Core.Runner
     [Serializable]
     public class FatalRunnerException : Exception
     {
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
         public FatalRunnerException()
         {
         }
 
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message</param>
         public FatalRunnerException(string message)
             : base(message)
         {
         }
 
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="innerException">The inner exception</param>
         public FatalRunnerException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
+        /// <summary>
+        /// Creates an exception from serialization info.
+        /// </summary>
+        /// <param name="info">The serialization info</param>
+        /// <param name="context">The streaming context</param>
         protected FatalRunnerException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

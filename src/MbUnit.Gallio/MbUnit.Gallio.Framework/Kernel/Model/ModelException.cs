@@ -25,21 +25,38 @@ namespace MbUnit.Framework.Kernel.Model
     [Serializable]
     public class ModelException : Exception
     {
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
         public ModelException()
         {
         }
 
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message</param>
         public ModelException(string message)
             : base(message)
         {
         }
 
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="innerException">The inner exception</param>
         public ModelException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        public ModelException(SerializationInfo info, StreamingContext context)
+        /// <summary>
+        /// Creates an exception from serialization info.
+        /// </summary>
+        /// <param name="info">The serialization info</param>
+        /// <param name="context">The streaming context</param>
+        protected ModelException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

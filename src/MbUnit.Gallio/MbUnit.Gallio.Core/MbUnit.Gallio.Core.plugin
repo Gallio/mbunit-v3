@@ -13,11 +13,11 @@
 
     <components>
       <component id="Core.MbUnitTestFramework"
-                 service="MbUnit.Framework.Kernel.Harness.ITestFramework, MbUnit.Gallio.Framework"
+                 service="MbUnit.Core.Harness.ITestFramework, MbUnit.Gallio.Core"
                  type="MbUnit.Core.Harness.MbUnitTestFramework, MbUnit.Gallio.Core" />
 
       <component id="Core.TestHarnessFactory"
-                 service="MbUnit.Framework.Kernel.Harness.ITestHarnessFactory, MbUnit.Gallio.Framework"
+                 service="MbUnit.Core.Harness.ITestHarnessFactory, MbUnit.Gallio.Core"
                  type="MbUnit.Core.Harness.DefaultTestHarnessFactory, MbUnit.Gallio.Core" />
 
       <component id="Core.IsolatedTestDomainFactory"
@@ -30,9 +30,9 @@
       <component id="Core.ContextManager"
                  service="MbUnit.Framework.Services.Contexts.IContextManager, MbUnit.Gallio.Framework"
                  type="MbUnit.Core.Services.Contexts.DefaultContextManager, MbUnit.Gallio.Core" />
-      <component id="Core.ReportService"
-                 service="MbUnit.Framework.Services.Reports.IReportService, MbUnit.Gallio.Framework"
-                 type="MbUnit.Core.Services.Reports.DefaultReportService, MbUnit.Gallio.Core" />
+      <component id="Core.ExecutionLogService"
+                 service="MbUnit.Framework.Services.ExecutionLogs.IExecutionLogService, MbUnit.Gallio.Framework"
+                 type="MbUnit.Core.Services.ExecutionLogs.DefaultExecutionLogService, MbUnit.Gallio.Core" />
     </components>
   </castle>
 </configuration>

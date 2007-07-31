@@ -33,9 +33,10 @@ namespace MbUnit.Framework.Kernel.Model
         private List<ITest> dependencies;
         private ITemplateBinding templateBinding;
         private TestScope scope;
+        private TestBatch batch;
 
         /// <summary>
-        /// Initializes a template initially without a parent.
+        /// Initializes a test initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition</param>
@@ -67,21 +68,37 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
-        public virtual IList<ITest> Children
+        public IList<ITest> Children
         {
             get { return children; }
         }
 
         /// <inheritdoc />
-        public virtual IList<ITest> Dependencies
+        public IList<ITest> Dependencies
         {
             get { return dependencies; }
         }
 
         /// <inheritdoc />
-        public virtual TestScope Scope
+        public TestScope Scope
         {
             get { return scope; }
+        }
+
+        /// <inheritdoc />
+        public TestBatch Batch
+        {
+            get
+            {
+                if (batch == null && parent != null)
+                    batch = parent.Batch;
+
+                return batch;
+            }
+            set
+            {
+                batch = value;
+            }
         }
 
         /// <inheritdoc />

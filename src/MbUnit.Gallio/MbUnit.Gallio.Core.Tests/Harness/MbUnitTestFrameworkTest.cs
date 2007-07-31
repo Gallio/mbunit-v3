@@ -16,7 +16,6 @@
 extern alias MbUnit2;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Services.Runtime;
-using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Services.Runtime;

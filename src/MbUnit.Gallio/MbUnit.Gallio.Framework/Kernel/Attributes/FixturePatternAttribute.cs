@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Framework.Kernel.Attributes

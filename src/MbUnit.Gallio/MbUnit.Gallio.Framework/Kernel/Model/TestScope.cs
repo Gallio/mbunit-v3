@@ -36,6 +36,9 @@ namespace MbUnit.Framework.Kernel.Model
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="containingTest"/> is null</exception>
         public TestScope(TestScope parentScope, ITest containingTest)
         {
+            if (containingTest == null)
+                throw new ArgumentNullException("containingTest");
+
             this.parentScope = parentScope;
             this.containingTest = containingTest;
         }

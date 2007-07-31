@@ -15,7 +15,8 @@
 
 using System;
 using MbUnit.Core.Serialization;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -51,12 +52,6 @@ namespace MbUnit.Core.Runner
     public interface ITestDomain : IDisposable
     {
         /// <summary>
-        /// Adds or removes a progress event handler to receive notifications
-        /// of operations that are in progress.
-        /// </summary>
-        //event EventHandler<ProgressEventArgs> Progress;
-
-        /// <summary>
         /// Gets the currently loaded test project, or null if none.
         /// </summary>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
@@ -64,19 +59,24 @@ namespace MbUnit.Core.Runner
         TestProject TestProject { get; }
 
         /// <summary>
-        /// Gets the root of the template tree, or null if the templates have not
-        /// been built yet.
+        /// Gets the template model, or null if templates have not been built yet.
         /// </summary>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        TemplateInfo TemplateTreeRoot { get; }
+        TemplateModel TemplateModel { get; }
 
         /// <summary>
-        /// Gets the root of the test tree, or null if the tests have not been built yet.
+        /// Gets the test model, or null if tests have not been built yet.
         /// </summary>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        TestInfo TestTreeRoot { get; }
+        TestModel TestModel { get; }
+
+        /// <summary>
+        /// Sets the event listener for the domain.
+        /// </summary>
+        /// <param name="listener">The listener</param>
+        void SetEventListener(IEventListener listener);
 
         /// <summary>
         /// Loads a test project into the test domain.

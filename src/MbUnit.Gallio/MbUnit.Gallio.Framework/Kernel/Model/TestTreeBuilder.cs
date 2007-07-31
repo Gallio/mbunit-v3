@@ -16,8 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Kernel.Harness;
-using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -32,12 +31,10 @@ namespace MbUnit.Framework.Kernel.Model
         /// Creates a test tree builder initially populated with
         /// a root test.
         /// </summary>
-        /// <param name="harness">The test harness</param>
         /// <param name="options">The test enumeration options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> or
-        /// <param name="options" /> is null</exception>
-        public TestTreeBuilder(ITestHarness harness, TestEnumerationOptions options)
-            : base(harness, new RootTest())
+        /// <exception cref="ArgumentNullException">Thrown if <param name="options" /> is null</exception>
+        public TestTreeBuilder(TestEnumerationOptions options)
+            : base(new RootTest())
         {
             if (options == null)
                 throw new ArgumentNullException("options");

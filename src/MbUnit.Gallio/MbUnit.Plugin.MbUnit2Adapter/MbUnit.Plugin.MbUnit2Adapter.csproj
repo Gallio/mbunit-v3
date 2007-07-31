@@ -43,6 +43,8 @@
     <Compile Include="Core\MbUnit2AssemblyBindingRedirect.cs" />
     <Compile Include="Core\MbUnit2AssemblyTemplate.cs" />
     <Compile Include="Core\MbUnit2AssemblyTemplateBinding.cs" />
+    <Compile Include="Core\MbUnit2Test.cs" />
+    <Compile Include="Core\MbUnit2TestController.cs" />
     <Compile Include="Core\MbUnit2TestFramework.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -18,7 +18,8 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Core.Serialization;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -32,9 +33,10 @@ namespace MbUnit.Core.Runner
     public abstract class BaseTestDomain : LongLivingMarshalByRefObject, ITestDomain
     {
         private bool disposed;
+        private IEventListener listener;
         private TestProject testProject;
-        private TemplateInfo templateTreeRoot;
-        private TestInfo testTreeRoot;
+        private TemplateModel templateModel;
+        private TestModel testModel;
 
         /// <inheritdoc />
         public void Dispose()
@@ -43,15 +45,16 @@ namespace MbUnit.Core.Runner
             {
                 InternalDispose();
 
+                listener = null;
                 testProject = null;
-                templateTreeRoot = null;
-                testTreeRoot = null;
+                templateModel = null;
+                testModel = null;
                 disposed = true;
             }
         }
 
         /// <inheritdoc />
-        public virtual TestProject TestProject
+        public TestProject TestProject
         {
             get
             {
@@ -65,31 +68,45 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public virtual TemplateInfo TemplateTreeRoot
+        public TemplateModel TemplateModel
         {
             get
             {
                 ThrowIfDisposed();
-                return templateTreeRoot;
+                return templateModel;
             }
             protected set
             {
-                templateTreeRoot = value;
+                templateModel = value;
             }
         }
 
         /// <inheritdoc />
-        public virtual TestInfo TestTreeRoot
+        public TestModel TestModel
         {
             get
             {
                 ThrowIfDisposed();
-                return testTreeRoot;
+                return testModel;
             }
             protected set
             {
-                testTreeRoot = value;
+                testModel = value;
             }
+        }
+
+        /// <summary>
+        /// Gets the event listener, or null if none was set.
+        /// </summary>
+        protected IEventListener Listener
+        {
+            get { return listener; }
+        }
+
+        /// <inheritdoc />
+        public void SetEventListener(IEventListener listener)
+        {
+            this.listener = listener;
         }
 
         /// <inheritdoc />
@@ -140,8 +157,8 @@ namespace MbUnit.Core.Runner
             InternalUnloadProject();
 
             testProject = null;
-            testTreeRoot = null;
-            templateTreeRoot = null;
+            testModel = null;
+            templateModel = null;
         }
 
         /// <inheritdoc />

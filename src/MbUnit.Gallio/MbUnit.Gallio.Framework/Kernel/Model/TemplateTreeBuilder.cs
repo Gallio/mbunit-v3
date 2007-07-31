@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -30,12 +30,10 @@ namespace MbUnit.Framework.Kernel.Model
         /// Creates a template tree builder initially populated with
         /// a root template.
         /// </summary>
-        /// <param name="harness">The test harness</param>
         /// <param name="options">The template enumeration options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="harness"/> or
-        /// <paramref name="options"/> is null</exception>
-        public TemplateTreeBuilder(ITestHarness harness, TemplateEnumerationOptions options)
-            : base(harness, new RootTemplate())
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        public TemplateTreeBuilder(TemplateEnumerationOptions options)
+            : base(new RootTemplate())
         {
             if (options == null)
                 throw new ArgumentNullException("options");

@@ -28,6 +28,7 @@ namespace MbUnit.Framework
     {
         private string authorName;
         private string authorEmail;
+        private string authorHomepage;
 
         /// <summary>
         /// Associates the author's name with the test component annotated
@@ -36,7 +37,7 @@ namespace MbUnit.Framework
         /// <param name="authorName">The author's name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/> is null</exception>
         public AuthorAttribute(string authorName)
-            : this(authorName, "")
+            : this(authorName, "", "")
         {
         }
 
@@ -48,14 +49,30 @@ namespace MbUnit.Framework
         /// <param name="authorEmail">The author's email address</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/> or <paramref name="authorEmail "/> is null</exception>
         public AuthorAttribute(string authorName, string authorEmail)
+            : this(authorName, authorEmail, "")
+        {
+        }
+
+        /// <summary>
+        /// Associates the author's name, email address and homepage with the test component annotated
+        /// by this attribute.
+        /// </summary>
+        /// <param name="authorName">The author's name</param>
+        /// <param name="authorEmail">The author's email address</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/>,
+        /// <paramref name="authorEmail "/> or <paramref name="authorHomepage"/> is null</exception>
+        public AuthorAttribute(string authorName, string authorEmail, string authorHomepage)
         {
             if (authorName == null)
                 throw new ArgumentNullException("authorName");
             if (authorEmail == null)
                 throw new ArgumentNullException("authorEmail");
+            if (authorHomepage == null)
+                throw new ArgumentNullException("authorHomepage");
 
             this.authorName = authorName;
             this.authorEmail = authorEmail;
+            this.authorHomepage = authorHomepage;
         }
 
         /// <summary>
@@ -74,6 +91,14 @@ namespace MbUnit.Framework
             get { return authorEmail; }
         }
 
+        /// <summary>
+        /// Gets or sets the author's homepage or an empty string if none.
+        /// </summary>
+        public string AuthorHomepage
+        {
+            get { return authorHomepage; }
+        }
+
         /// <inheritdoc />
         public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
         {
@@ -81,6 +106,8 @@ namespace MbUnit.Framework
                 component.Metadata.Entries.Add(MetadataConstants.AuthorNameKey, authorName);
             if (authorEmail.Length != 0)
                 component.Metadata.Entries.Add(MetadataConstants.AuthorEmailKey, authorEmail);
+            if (authorHomepage.Length != 0)
+                component.Metadata.Entries.Add(MetadataConstants.AuthorHomepageKey, authorHomepage);
         }
     }
 }

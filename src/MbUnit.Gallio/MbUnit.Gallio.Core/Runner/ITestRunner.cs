@@ -15,8 +15,8 @@
 
 using System;
 using MbUnit.Core.Serialization;
-using MbUnit.Framework.Kernel.Harness;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -33,11 +33,20 @@ namespace MbUnit.Core.Runner
     /// state management and lifecycle concerns so that test runners don't need
     /// to bother with some of the minor steps if they don't care about the
     /// intermediate results.  However, this is starting to look like a rather
-    /// ugly version of <see cref="ITestDomain" /> with confusing rules as regards
-    /// state.  Aggregating <see cref="ITestDomain" /> is a possibility.  Suggestions?
+    /// ugly version of <see cref="ITestDomain" />.
+    /// Aggregating <see cref="ITestDomain" /> is a possibility.  Suggestions?
+    /// </todo>
+    /// <todo author="jeff">
+    /// Add features for tracking run summaries, computing the total number of tests,
+    /// and a simple way to generate console-style output.
     /// </todo>
     public interface ITestRunner : IDisposable
     {
+        /// <summary>
+        /// Gets the event dispatcher for the test runner.
+        /// </summary>
+        EventDispatcher EventDispatcher { get; }
+
         /// <summary>
         /// Gets or sets the template enumeration options.
         /// </summary>
@@ -57,22 +66,32 @@ namespace MbUnit.Core.Runner
         TestExecutionOptions TestExecutionOptions { get; set; }
 
         /// <summary>
+        /// Gets the template model, or null if templates have not been built yet.
+        /// </summary>
+        TemplateModel TemplateModel { get; }
+
+        /// <summary>
+        /// Gets the test model, or null if tests have not been built yet.
+        /// </summary>
+        TestModel TestModel { get; }
+
+        /// <summary>
         /// Loads a test project.
         /// </summary>
         /// <param name="project">The test project</param>
         void LoadProject(TestProject project);
 
         /// <summary>
-        /// Gets the root of the template tree.
-        /// Automatically builds the template tree if needed.
+        /// Builds the template tree using the current <see cref="TemplateEnumerationOptions" />.
+        /// Populates <see cref="TemplateModel" /> accordingly.
         /// </summary>
-        TemplateInfo GetTemplateTreeRoot();
+        void BuildTemplates();
 
         /// <summary>
-        /// Gets the root of the test tree.
-        /// Automatically builds the test tree if needed.
+        /// Builds the test tree using the current <see cref="TestEnumerationOptions" />.
+        /// Populates <see cref="TestModel" /> accordingly.
         /// </summary>
-        TestInfo GetTestTreeRoot();
+        void BuildTests();
 
         /// <summary>
         /// Runs the tests.

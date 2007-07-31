@@ -24,23 +24,41 @@ namespace MbUnit.Framework.Exceptions
     /// <summary>
     /// The exception type used to signal MbUnit assertion failures.
     /// </summary>
+    [Serializable]
     public class AssertionException : Exception
     {
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
         public AssertionException()
         {
         }
 
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message</param>
         public AssertionException(string message)
             : base(message)
         {
         }
 
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="innerException">The inner exception</param>
         public AssertionException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        public AssertionException(SerializationInfo info, StreamingContext context)
+        /// <summary>
+        /// Creates an exception from serialization info.
+        /// </summary>
+        /// <param name="info">The serialization info</param>
+        /// <param name="context">The streaming context</param>
+        protected AssertionException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

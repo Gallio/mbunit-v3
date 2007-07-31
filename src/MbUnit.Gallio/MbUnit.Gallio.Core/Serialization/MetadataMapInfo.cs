@@ -45,15 +45,12 @@ namespace MbUnit.Core.Serialization
         /// <param name="obj">The model object</param>
         public MetadataMapInfo(MetadataMap obj)
         {
-            entries = ListUtils.ConvertAllToArray<KeyValuePair<string, IList<object>>, MetadataMapEntry>(
-                obj.Entries, delegate(KeyValuePair<string, IList<object>> pair)
+            entries = ListUtils.ConvertAllToArray<KeyValuePair<string, IList<string>>, MetadataMapEntry>(
+                obj.Entries, delegate(KeyValuePair<string, IList<string>> pair)
                 {
                     MetadataMapEntry entry = new MetadataMapEntry();
                     entry.Key = pair.Key;
-                    entry.Values = ListUtils.ConvertAllToArray<object, string>(pair.Value, delegate(object value)
-                    {
-                        return value.ToString();
-                    });
+                    entry.Values = ListUtils.CopyAllToArray(pair.Value);
                     return entry;
                 });
         }

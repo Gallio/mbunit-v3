@@ -22,6 +22,7 @@ using System.Text;
 using Castle.Core.Logging;
 using Castle.MicroKernel;
 using MbUnit.Core.Services.Runtime;
+using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Core.Runner
@@ -128,7 +129,8 @@ namespace MbUnit.Core.Runner
                 bootstrapper = CreateRemoteInstance<Bootstrapper>();
                 bootstrapper.Initialize(runtime.GetRuntimeSetup());
 
-                return bootstrapper.CreateTestDomain();
+                ITestDomain testDomain = bootstrapper.CreateTestDomain();
+                return testDomain;
             }
             catch (Exception ex)
             {
