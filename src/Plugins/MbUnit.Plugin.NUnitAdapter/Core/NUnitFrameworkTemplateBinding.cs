@@ -80,10 +80,11 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
             try
             {
-                TestPackage package = new TestPackage("Tests");
-                package.AutoBinPath = true;
-                package.Settings.Add("AutoNamespaceSuites", true);
+                // Note: If we don't initialize the host, then we can't enumerate tests!
+                //       Interestingly we don't get any runtime errors if we forget...
+                CoreExtensions.Host.InitializeService();
 
+                TestPackage package = new TestPackage("Tests");
                 foreach (Assembly assembly in Assemblies)
                     package.Assemblies.Add(assembly.Location);
 
@@ -134,8 +135,11 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             parentTest.AddChild(test);
 
             // Build children.
-            foreach (NUnit.Core.ITest childNUnitTest in nunitTest.Tests)
-                BuildTests(test, childNUnitTest);
+            if (nunitTest.Tests != null)
+            {
+                foreach (NUnit.Core.ITest childNUnitTest in nunitTest.Tests)
+                    BuildTests(test, childNUnitTest);
+            }
         }
     }
 }
