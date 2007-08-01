@@ -1,0 +1,31 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AdditionalAssemblyInfo>$(IntermediateOutputPath)AdditionalAssemblyInfo.cs</AdditionalAssemblyInfo>
+    <CoreCompileDependsOn>
+      $(CoreCompileDependsOn);
+      GenerateAdditionalAssemblyInfo;
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(AdditionalAssemblyInfo)" />
+
+    <AdditionalAssemblyInfo Include="$(AdditionalAssemblyInfo)">
+      <Contents>
+        using System.Reflection%3B;
+        [assembly: AssemblyFileVersion("$(Version)")];
+        [assembly: AssemblyVersion("$(Version)")];
+      </Contents>
+    </AdditionalAssemblyInfo>
+  </ItemGroup>
+
+  <Target Name="GenerateAdditionalAssemblyInfo">
+    <WriteLinesToFile File="$(AdditionalAssemblyInfo)"
+                      Lines="%(AdditionalAssemblyInfo.Contents)"
+                      Overwrite="true">
+    </WriteLinesToFile>
+    <CreateItem Include="$(AdditionalAssemblyInfo)">
+      <Output TaskParameter="Include" ItemName="FileWrites" />
+    </CreateItem>
+  </Target>
+</Project>
