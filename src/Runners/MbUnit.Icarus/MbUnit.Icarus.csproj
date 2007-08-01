@@ -41,7 +41,7 @@
     </Reference>
     <Reference Include="ICSharpCode.TextEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Components\ICSharpCode.TextEditor.dll</HintPath>
+      <HintPath>..\..\..\libs\Components\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="ZedGraph, Version=5.0.2.16769, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Components\ZedGraph.dll</HintPath>
+      <HintPath>..\..\..\libs\Components\ZedGraph.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

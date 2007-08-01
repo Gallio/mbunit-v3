@@ -41,6 +41,8 @@
     <Binary Include="$(LibsDir)\Castle\bin\Castle.MicroKernel.dll" />
     <Binary Include="$(LibsDir)\Castle\bin\Castle.Windsor.dll" />
     <Binary Include="$(LibsDir)\Castle\bin\Castle.DynamicProxy2.dll" />
+    <Binary Include="$(LibsDir)\Components\ZedGraph.dll" />
+    <Binary Include="$(LibsDir)\Components\ICSharpCode.TextEditor.dll" />
 
     <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework\bin\MbUnit.Gallio.Framework.dll" />
     <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.dll" />
