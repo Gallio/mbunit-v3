@@ -152,7 +152,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             }
             foreach (TestFixturePatternAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestFixturePatternAttribute2), true))
             {
-                test.Metadata.Entries.Add(MetadataConstants.DescriptionKey, attrib.Description);
+                if (! String.IsNullOrEmpty(attrib.Description))
+                    test.Metadata.Entries.Add(MetadataConstants.DescriptionKey, attrib.Description);
             }
 
             parentScope.ContainingTest.AddChild(test);

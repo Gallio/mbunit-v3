@@ -22,11 +22,15 @@ namespace MbUnit.Framework
     /// to be executed.
     /// </summary>
     /// <remarks>
-    /// In MbUnit v2 this enum had the <see cref="FlagsAttribute" /> attribute and allowed
-    /// multiple values to be specified together by OR-ing them.  This usage is no longer permitted because
-    /// it does not work well with the new metadata architecture.  To indicate that a test
-    /// belongs to multiple importance classes, decorate it with multiple occurrences of
-    /// the <see cref="ImportanceAttribute" />.
+    /// <para>
+    /// In MbUnit v2 this enum had the <see cref="FlagsAttribute" /> attribute which was
+    /// pointless because the values were not binary so they could not actually be OR'ed together
+    /// without loss of information.
+    /// </para>
+    /// <para>
+    /// In Gallio, to indicate that a test belongs to multiple importance classes, decorate it with
+    /// multiple occurrences of the <see cref="ImportanceAttribute" />.
+    /// </para>
     /// </remarks>
     public enum TestImportance
     {
