@@ -138,7 +138,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.MultipleUnique,
              ShortName = "pd",
              LongName = "plugin-directory",
-             Description = "Additional directories that contain MbUnit plugins"
+             Description = "Additional MbUnit plugin directories to search recursively"
              )]
         public string[] PluginDirectories;
 

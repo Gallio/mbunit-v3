@@ -1,0 +1,53 @@
+// Copyright 2007 MbUnit Project - http://www.mbunit.com/
+// Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using MbUnit.Framework.Kernel.Model;
+
+namespace MbUnit.Plugin.NUnitAdapter.Core
+{
+    /// <summary>
+    /// Wraps an NUnit test.
+    /// </summary>
+    public class NUnitTest : BaseTest
+    {
+        private NUnit.Core.ITest test;
+
+        /// <summary>
+        /// Initializes a test initially without a parent.
+        /// </summary>
+        /// <param name="name">The name of the component</param>
+        /// <param name="codeReference">The point of definition</param>
+        /// <param name="parentScope">The parent scope, or null if none</param>
+        /// <param name="test">The NUnit test, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="codeReference"/> is null</exception>
+        public NUnitTest(string name, CodeReference codeReference, TestScope parentScope, NUnit.Core.ITest test)
+            : base(name, codeReference, parentScope)
+        {
+            this.test = test;
+        }
+
+        /// <summary>
+        /// Gets the NUnit test.
+        /// </summary>
+        public NUnit.Core.ITest Test
+        {
+            get { return test; }
+        }
+    }
+}

@@ -40,7 +40,7 @@
     <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
+    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>
     </ProjectReference>

@@ -87,7 +87,7 @@ namespace MbUnit.Core.Services.Runtime
         }
 
         /// <summary>
-        /// Gets a mutable list of directories to be searched for plugins configuration files.
+        /// Gets a mutable list of directories to be searched recursively for plugins configuration files.
         /// </summary>
         /// <value>
         /// Initially contains the MbUnit core directory.
@@ -97,10 +97,8 @@ namespace MbUnit.Core.Services.Runtime
             get { return pluginDirectories; }
         }
 
-
-
         /// <summary>
-        /// Adds a plugin directory.
+        /// Adds a plugin directory to be searched recursively.
         /// </summary>
         /// <param name="pluginDirectory">The plugin directory to add</param>
         public void AddPluginDirectory(string pluginDirectory)
@@ -174,7 +172,7 @@ namespace MbUnit.Core.Services.Runtime
                 DirectoryInfo pluginDirectoryInfo = new DirectoryInfo(pluginDirectory);
                 if (pluginDirectoryInfo.Exists)
                 {
-                    foreach (FileInfo pluginConfigFile in pluginDirectoryInfo.GetFiles("MbUnit.*.plugin"))
+                    foreach (FileInfo pluginConfigFile in pluginDirectoryInfo.GetFiles("MbUnit.*.plugin", SearchOption.AllDirectories))
                     {
                         // It can happen that we find two copies of the same plugin file
                         // in different directories such as during debugging when we ask

@@ -74,7 +74,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         {
             RunFixtureExplorerIfNeeded();
 
-            ITest assemblyTest = CreateAssemblyTest(Scope, Assembly);
+            MbUnit2Test assemblyTest = CreateAssemblyTest(Scope, Assembly);
             assemblyTest.Batch = new TestBatch("MbUnit v2: " + Template.Name, delegate
             {
                 return new MbUnit2TestController(fixtureExplorer);
@@ -82,11 +82,11 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             foreach (Fixture fixture in fixtureExplorer.FixtureGraph.Fixtures)
             {
-                ITest fixtureTest = CreateFixtureTest(assemblyTest.Scope, fixture);
+                MbUnit2Test fixtureTest = CreateFixtureTest(assemblyTest.Scope, fixture);
 
                 foreach (RunPipeStarter starter in fixture.Starters)
                 {
-                    ITest test = CreateTest(fixtureTest.Scope, starter.Pipe);
+                    MbUnit2Test test = CreateTest(fixtureTest.Scope, starter.Pipe);
                 }
             }
 
@@ -95,6 +95,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
         private void RunFixtureExplorerIfNeeded()
         {
+            if (fixtureExplorer != null)
+                return;
+
             try
             {
                 fixtureExplorer = new FixtureExplorer(Assembly);
@@ -112,9 +115,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             }
         }
 
-        private ITest CreateAssemblyTest(TestScope parentScope, Assembly assembly)
+        private MbUnit2Test CreateAssemblyTest(TestScope parentScope, Assembly assembly)
         {
-            BaseTest test = new MbUnit2Test(assembly.FullName, CodeReference.CreateFromAssembly(assembly), parentScope, null, null);
+            MbUnit2Test test = new MbUnit2Test(assembly.FullName, CodeReference.CreateFromAssembly(assembly), parentScope, null, null);
             test.Kind = ComponentKind.Assembly;
 
             // TODO: Is there any metadata on assemblies that we need?
@@ -123,18 +126,21 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             return test;
         }
 
-        private ITest CreateFixtureTest(TestScope parentScope, Fixture fixture)
+        private MbUnit2Test CreateFixtureTest(TestScope parentScope, Fixture fixture)
         {
             Type fixtureType = fixture.Type;
-            BaseTest test = new MbUnit2Test(fixture.Name, CodeReference.CreateFromType(fixtureType), parentScope, fixture, null);
+            MbUnit2Test test = new MbUnit2Test(fixture.Name, CodeReference.CreateFromType(fixtureType), parentScope, fixture, null);
             test.Kind = ComponentKind.Fixture;
 
             // Populate metadata
             foreach (AuthorAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(AuthorAttribute2), true))
             {
-                test.Metadata.Entries.Add(MetadataConstants.AuthorNameKey, attrib.Name);
-                test.Metadata.Entries.Add(MetadataConstants.AuthorEmailKey, attrib.EMail);
-                test.Metadata.Entries.Add(MetadataConstants.AuthorHomepageKey, attrib.HomePage);
+                if (! String.IsNullOrEmpty(attrib.Name))
+                    test.Metadata.Entries.Add(MetadataConstants.AuthorNameKey, attrib.Name);
+                if (! String.IsNullOrEmpty(attrib.EMail) && attrib.EMail != "unspecified")
+                    test.Metadata.Entries.Add(MetadataConstants.AuthorEmailKey, attrib.EMail);
+                if (!String.IsNullOrEmpty(attrib.HomePage) && attrib.HomePage != "unspecified")
+                    test.Metadata.Entries.Add(MetadataConstants.AuthorHomepageKey, attrib.HomePage);
             }
             foreach (FixtureCategoryAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(FixtureCategoryAttribute2), true))
             {
@@ -160,9 +166,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             return test;
         }
 
-        private ITest CreateTest(TestScope parentScope, RunPipe runPipe)
+        private MbUnit2Test CreateTest(TestScope parentScope, RunPipe runPipe)
         {
-            BaseTest test = new MbUnit2Test(runPipe.Name, CodeReference.CreateFromType(runPipe.FixtureType), parentScope, runPipe.Fixture, runPipe);
+            MbUnit2Test test = new MbUnit2Test(runPipe.Name, CodeReference.CreateFromType(runPipe.FixtureType), parentScope, runPipe.Fixture, runPipe);
             test.Kind = ComponentKind.Test;
 
             // TODO: How can we populate the metadata?

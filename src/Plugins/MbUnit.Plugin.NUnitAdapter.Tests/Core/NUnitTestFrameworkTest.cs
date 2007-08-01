@@ -86,13 +86,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
             Assert.AreEqual(CodeReference.Unknown, frameworkTemplate.CodeReference);
             Assert.AreEqual("NUnit v" + expectedVersion, frameworkTemplate.Name);
-            Assert.AreEqual(1, frameworkTemplate.Children.Count);
-
-            BaseTemplate assemblyTemplate = (BaseTemplate)frameworkTemplate.Children[0];
-            Assert.AreSame(frameworkTemplate, assemblyTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Assembly, assemblyTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromAssembly(assembly), assemblyTemplate.CodeReference);
-            Assert.AreEqual(0, assemblyTemplate.Children.Count);
+            Assert.AreEqual(0, frameworkTemplate.Children.Count);
         }
 
         private void PopulateTemplateTree(Assembly assembly)

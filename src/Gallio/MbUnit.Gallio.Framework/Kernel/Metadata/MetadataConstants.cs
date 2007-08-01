@@ -61,6 +61,13 @@ namespace MbUnit.Framework.Kernel.Metadata
         public const string DescriptionKey = "Description";
 
         /// <summary>
+        /// The metadata key for the ignore reason of a test component.
+        /// The associated value should describe the reason the test is being ignored.
+        /// (Tests may of course be ignored without a declared reason.)
+        /// </summary>
+        public const string IgnoreReasonKey = "IgnoreReason";
+
+        /// <summary>
         /// The metadata key for the importance of a test component.
         /// The associated value should be one of those from <see cref="TestImportance" /> represented as a string.
         /// </summary>

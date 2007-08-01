@@ -51,18 +51,8 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 // template because we can't perform any interesting meta-operations
                 // on them like binding test parameters or composing tests.
                 Version frameworkVersion = entry.Key;
-                BaseTemplate frameworkTemplate = new BaseTemplate("NUnit v" + frameworkVersion, CodeReference.Unknown);
-                frameworkTemplate.Kind = ComponentKind.Framework;
+                NUnitFrameworkTemplate frameworkTemplate = new NUnitFrameworkTemplate(frameworkVersion, entry.Value);
                 harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
-
-                foreach (Assembly assembly in entry.Value)
-                {
-                    BaseTemplate assemblyTemplate = new BaseTemplate(assembly.FullName, CodeReference.CreateFromAssembly(assembly));
-                    assemblyTemplate.Kind = ComponentKind.Assembly;
-                    frameworkTemplate.AddChild(assemblyTemplate);
-
-                    // TODO: Add rules to populate the test graph using NUnit.
-                }
             }
         }
     }

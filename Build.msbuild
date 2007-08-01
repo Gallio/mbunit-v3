@@ -10,19 +10,29 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\MbUnit.Plugin.NUnitAdapter.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.TestResources.Gallio\MbUnit.TestResources.Gallio.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.TestResources.MbUnit2\MbUnit.TestResources.MbUnit2.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.TestResources.NUnit\MbUnit.TestResources.NUnit.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\MbUnit.Plugin.NUnitAdapter.Tests.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Echo\MbUnit.Echo.csproj" />
-    <CSharpProject Include="$(SourceDir)\MbUnit.Icarus\MbUnit.Icarus.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj" />
+    <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.Gallio\MbUnit.TestResources.Gallio.csproj" />
+    <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.MbUnit2\MbUnit.TestResources.MbUnit2.csproj" />
+    <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.NUnit\MbUnit.TestResources.NUnit.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj" />
+
+    <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj" />
+    <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\MbUnit.Plugin.NUnitAdapter.csproj" />
+    <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter.Tests\MbUnit.Plugin.NUnitAdapter.Tests.csproj" />
+
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.AddIn\MbUnit.AddIn.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.AddIn.Tests\MbUnit.AddIn.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Echo\MbUnit.Echo.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Echo.Tests\MbUnit.Echo.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Icarus\MbUnit.Icarus.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Icarus.Tests\MbUnit.Icarus.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild\MbUnit.Tasks.MSBuild.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild.Tests\MbUnit.Tasks.MSBuild.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.NAnt\MbUnit.Tasks.NAnt.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.NAnt.Tests\MbUnit.Tasks.NAnt.Tests.csproj" />
 
     <Binary Include="$(RootDir)\MbUnit License.txt" />
     <Binary Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
@@ -32,30 +42,85 @@
     <Binary Include="$(LibsDir)\Castle\bin\Castle.Windsor.dll" />
     <Binary Include="$(LibsDir)\Castle\bin\Castle.DynamicProxy2.dll" />
 
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework\bin\MbUnit.Gallio.Framework.dll" />
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.dll" />
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.plugin" />
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll" />
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.plugin" />
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.dll" />
-    <Binary Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.plugin" />
+    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework\bin\MbUnit.Gallio.Framework.dll" />
+    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.dll" />
+    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.plugin" />
 
-    <Binary Include="$(SourceDir)\MbUnit.Echo\bin\MbUnit.Echo.exe" />
-    <Binary Include="$(SourceDir)\MbUnit.Echo\bin\MbUnit.Echo.exe.config" />
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll">
+        <Folder>MbUnit2</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.plugin">
+        <Folder>MbUnit2</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\MbUnit2\bin\MbUnit.Framework.dll">
+        <Folder>MbUnit2</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\MbUnit2\bin\MbUnit.Framework.2.0.dll">
+        <Folder>MbUnit2</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\MbUnit2\bin\QuickGraph.dll">
+        <Folder>MbUnit2</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\MbUnit2\bin\QuickGraph.Algorithms.dll">
+        <Folder>MbUnit2</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\MbUnit2\bin\TestFu.dll">
+        <Folder>MbUnit2</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\MbUnit2\bin\Refly.dll">
+        <Folder>MbUnit2</Folder>
+    </Binary>
 
-    <Binary Include="$(SourceDir)\MbUnit.Icarus\bin\MbUnit.Icarus.exe" />
-    <Binary Include="$(SourceDir)\MbUnit.Icarus\bin\MbUnit.Icarus.exe.config" />
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.dll">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.plugin">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\NUnit\license.txt">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\NUnit\bin\nunit.framework.dll">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\NUnit\bin\nunit.framework.extensions.dll">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\NUnit\bin\nunit.core.dll">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\NUnit\bin\nunit.core.extensions.dll">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\NUnit\bin\nunit.core.interfaces.dll">
+        <Folder>NUnit</Folder>
+    </Binary>
 
-    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Framework.Tests\bin\MbUnit.Gallio.Framework.Tests.dll" />
-    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Gallio.Core.Tests\bin\MbUnit.Gallio.Core.Tests.dll" />
-    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.MbUnit2Adapter.Tests\bin\MbUnit.Plugin.MbUnit2Adapter.Tests.dll" />
-    <TestAssembly Include="$(SourceDir)\MbUnit.Gallio\MbUnit.Plugin.NUnitAdapter.Tests\bin\MbUnit.Plugin.NUnitAdapter.Tests.dll" />
+    <Binary Include="$(SourceDir)\Runners\MbUnit.AddIn\bin\MbUnit.AddIn.dll" />
+    <Binary Include="$(SourceDir)\Runners\MbUnit.Echo\bin\MbUnit.Echo.exe" />
+    <Binary Include="$(SourceDir)\Runners\MbUnit.Echo\bin\MbUnit.Echo.exe.config" />
+    <Binary Include="$(SourceDir)\Runners\MbUnit.Icarus\bin\MbUnit.Icarus.exe" />
+    <Binary Include="$(SourceDir)\Runners\MbUnit.Icarus\bin\MbUnit.Icarus.exe.config" />
+    <Binary Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild\bin\MbUnit.Tasks.MSBuild.dll" />
+    <Binary Include="$(SourceDir)\Runners\MbUnit.Tasks.NAnt\bin\MbUnit.Tasks.NAnt.dll" />
+
+    <TestAssembly Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework.Tests\bin\MbUnit.Gallio.Framework.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core.Tests\bin\MbUnit.Gallio.Core.Tests.dll" />
+
+    <TestAssembly Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter.Tests\bin\MbUnit.Plugin.MbUnit2Adapter.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter.Tests\bin\MbUnit.Plugin.NUnitAdapter.Tests.dll" />
+
+    <TestAssembly Include="$(SourceDir)\Runners\MbUnit.AddIn.Tests\bin\MbUnit.AddIn.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Runners\MbUnit.Echo.Tests\bin\MbUnit.Echo.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Runners\MbUnit.Icarus.Tests\bin\MbUnit.Icarus.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild.Tests\bin\MbUnit.Tasks.MSBuild.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Runners\MbUnit.Tasks.NAnt.Tests\bin\MbUnit.Tasks.NAnt.Tests.dll" />
   </ItemGroup>
 
   <Target Name="Build"
           DependsOnTargets="Build-CSharpProjects">
     <Copy SourceFiles="@(Binary)"
-          DestinationFolder="$(BuildBinDir)" />
+          DestinationFolder="$(BuildBinDir)\%(Binary.Folder)" />
 
     <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=Intellisense -project=&quot;$(SourceDir)\MbUnit.ndoc&quot;" />

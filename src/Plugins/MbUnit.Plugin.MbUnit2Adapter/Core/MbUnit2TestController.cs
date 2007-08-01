@@ -67,12 +67,12 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         /// <inheritdoc />
         public void Run(TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
         {
-            ThrowIfDisposed();
-
             try
             {
                 lock (this)
                 {
+                    ThrowIfDisposed();
+
                     if (aborted)
                     {
                         // TODO: Should we mark tests aborted here?
@@ -95,10 +95,10 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         /// <inheritdoc />
         public void Abort()
         {
-            ThrowIfDisposed();
-
             lock (this)
             {
+                ThrowIfDisposed();
+
                 aborted = true;
 
                 if (fixtureRunner != null)

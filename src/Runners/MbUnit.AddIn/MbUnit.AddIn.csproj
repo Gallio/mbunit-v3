@@ -8,7 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyName>MbUnit.AddIn</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\MbUnit.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
     <RootNamespace>MbUnit.AddIn</RootNamespace>
@@ -65,7 +65,7 @@
     </Reference>
     <Reference Include="TestDriven.Framework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=50ecb853f8c6b8d2">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\TestDriven.Net\TestDriven.Framework.dll</HintPath>
+      <HintPath>..\..\..\libs\TestDriven.Net\TestDriven.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -105,11 +105,11 @@
     <Content Include="Snippets\VSSnippets\usingmbunit.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MbUnit.Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
+    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
       <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
       <Name>MbUnit.Gallio.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
+    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>
     </ProjectReference>
