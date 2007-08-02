@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Framework", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Icarus.Core", "..\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj", "{BADF6646-9750-4CFB-8867-5D2D4086412A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Icarus.Tests", "..\MbUnit.Icarus.Tests\MbUnit.Icarus.Tests.csproj", "{A90A40C4-4D48-4D0B-BE9B-432510EB1057}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{BADF6646-9750-4CFB-8867-5D2D4086412A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BADF6646-9750-4CFB-8867-5D2D4086412A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BADF6646-9750-4CFB-8867-5D2D4086412A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A90A40C4-4D48-4D0B-BE9B-432510EB1057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A90A40C4-4D48-4D0B-BE9B-432510EB1057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A90A40C4-4D48-4D0B-BE9B-432510EB1057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A90A40C4-4D48-4D0B-BE9B-432510EB1057}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
