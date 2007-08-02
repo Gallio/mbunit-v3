@@ -203,15 +203,6 @@ namespace MbUnit.Icarus
             trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.", ToolTipIcon.Error);
         }
 
-        private void scriptingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Scripting scriptingWindow = new Scripting();
-            scriptingWindow.ShowDialog();
-
-            if (scriptingWindow != null)
-                scriptingWindow.Dispose();
-        }
-
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog();
