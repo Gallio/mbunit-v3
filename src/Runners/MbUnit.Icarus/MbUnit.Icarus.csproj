@@ -31,18 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.TextEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Components\ICSharpCode.TextEditor.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -124,13 +112,9 @@
     <None Include="Resources\FailMb.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
-      <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
-      <Name>MbUnit.Gallio.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
-      <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
-      <Name>MbUnit.Gallio.Framework</Name>
+    <ProjectReference Include="..\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj">
+      <Project>{BADF6646-9750-4CFB-8867-5D2D4086412A}</Project>
+      <Name>MbUnit.Icarus.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

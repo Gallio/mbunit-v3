@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Core", "..\..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Framework", "..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj", "{691E62B3-823F-4F1E-9585-58D0E00B72C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Icarus.Core", "..\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj", "{BADF6646-9750-4CFB-8867-5D2D4086412A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BADF6646-9750-4CFB-8867-5D2D4086412A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BADF6646-9750-4CFB-8867-5D2D4086412A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BADF6646-9750-4CFB-8867-5D2D4086412A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BADF6646-9750-4CFB-8867-5D2D4086412A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
