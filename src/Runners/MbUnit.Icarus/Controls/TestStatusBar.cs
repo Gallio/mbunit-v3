@@ -13,54 +13,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace MbUnit.Icarus.Controls
 {
-    class TestStatusBar : Control
+    internal class TestStatusBar : Control
     {
-        private int totalTests = 0;
-
-        private int passedTests = 0;
+        private double elapsedTime = 0;
+        private Color failedColor = Color.Red;
         private int failedTests = 0;
-        private int skippedTests = 0;
+        private Color ignoredColor = Color.Gold;
         private int ignoredTests = 0;
 
-        private double elapsedTime = 0;
-
         private Color passedColor = Color.Green;
-        private Color failedColor = Color.Red;
+        private int passedTests = 0;
         private Color skippedColor = Color.SteelBlue;
-        private Color ignoredColor = Color.Gold;
+        private int skippedTests = 0;
+        private int totalTests = 0;
 
         public TestStatusBar()
         {
-            this.Font = new Font("Verdana", 8);
-            this.BackColor = Color.White;
+            //Font = new Font("Verdana", 8);
+            //BackColor = Color.White;
 
             // Setup the control styles so that the control does not flicker
             // when it is resized or redrawn.
-            this.SetStyle(ControlStyles.DoubleBuffer, true);
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-            this.SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.DoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            Font = new Font("Verdana", 8);
+            BackColor = Color.White;
+
             base.OnPaint(e);
 
             int alpha = 200;
-            SolidBrush backBrush = new SolidBrush(this.BackColor);
-            SolidBrush textBrush = new SolidBrush(FromColor(this.ForeColor, alpha));
+            SolidBrush backBrush = new SolidBrush(BackColor);
+            SolidBrush textBrush = new SolidBrush(FromColor(ForeColor, alpha));
 
             // Define the drawing area.
-            Rectangle r = this.ClientRectangle;
+            Rectangle r = ClientRectangle;
             r = new Rectangle(
                 r.Location,
                 new Size(r.Width - 1, r.Height - 1)
@@ -72,30 +70,29 @@ namespace MbUnit.Icarus.Controls
             SmoothingMode m = e.Graphics.SmoothingMode;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            if (this.totalTests > 0)
+            if (totalTests > 0)
             {
                 // Draw passed region.
-                float width = r.Width * (this.passedTests / (float)this.totalTests);
+                float width = r.Width*(passedTests/(float) totalTests);
                 float left = r.Left;
                 float right = r.Left + width;
                 DrawProgressRegion(e.Graphics, r, left, width, passedColor);
 
                 // Draw ignored region.
-                width = r.Width * (this.ignoredTests / (float)this.totalTests);
+                width = r.Width*(ignoredTests/(float) totalTests);
                 left = right;
                 right = left + width;
                 DrawProgressRegion(e.Graphics, r, left, width, ignoredColor);
 
                 // Draw skipped region.
-                width = r.Width * (this.skippedTests / (float)this.totalTests);
+                width = r.Width*(skippedTests/(float) totalTests);
                 left = right;
                 right = left + width;
                 DrawProgressRegion(e.Graphics, r, left, width, skippedColor);
 
                 // Draw failed region.
-                width = r.Width * (this.failedTests / (float)this.totalTests);
+                width = r.Width*(failedTests/(float) totalTests);
                 left = right;
-                right = left + width;
                 DrawProgressRegion(e.Graphics, r, left, width, failedColor);
             }
 
@@ -104,13 +101,13 @@ namespace MbUnit.Icarus.Controls
 
             // Build up the display text.
             string text = string.Format(
-                this.Text,
-                this.totalTests,
-                this.passedTests,
-                this.ignoredTests,
-                this.skippedTests,
-                this.failedTests,
-                this.elapsedTime
+                Text,
+                totalTests,
+                passedTests,
+                ignoredTests,
+                skippedTests,
+                failedTests,
+                elapsedTime
                 );
 
             // Draw the text to the center of the control.
@@ -119,10 +116,10 @@ namespace MbUnit.Icarus.Controls
             format.LineAlignment = StringAlignment.Center;
             e.Graphics.DrawString(
                 text,
-                this.Font,
+                Font,
                 textBrush,
-                r.Left + r.Width / 2,
-                (r.Top + r.Height / 2) + 1,
+                r.Left + r.Width/2,
+                (r.Top + r.Height/2) + 1,
                 format
                 );
             e.Graphics.SmoothingMode = m;
@@ -135,22 +132,22 @@ namespace MbUnit.Icarus.Controls
         /// </summary>
         public void Clear()
         {
-            this.passedTests = 0;
-            this.failedTests = 0;
-            this.ignoredTests = 0;
-            this.skippedTests = 0;
-            this.totalTests = 0;
+            passedTests = 0;
+            failedTests = 0;
+            ignoredTests = 0;
+            skippedTests = 0;
+            totalTests = 0;
 
-            this.elapsedTime = 0;
+            elapsedTime = 0;
 
-            this.Invalidate();
+            Invalidate();
         }
 
         #endregion
 
         #region Private Functions
 
-        private Color FromColor(Color c, int alpha)
+        private static Color FromColor(Color c, int alpha)
         {
             return Color.FromArgb(
                 alpha,
@@ -160,7 +157,7 @@ namespace MbUnit.Icarus.Controls
                 );
         }
 
-        private void DrawProgressRegion(Graphics g, Rectangle r, float left, float width, Color c)
+        private static void DrawProgressRegion(Graphics g, Rectangle r, float left, float width, Color c)
         {
             if (width == 0)
                 return;
@@ -178,10 +175,11 @@ namespace MbUnit.Icarus.Controls
         [Browsable(false)]
         public double ElapsedTime
         {
-            get { return this.elapsedTime; }
-            set { 
-                this.elapsedTime = value;
-                this.Invalidate();
+            get { return elapsedTime; }
+            set
+            {
+                elapsedTime = value;
+                Invalidate();
             }
         }
 
@@ -189,10 +187,11 @@ namespace MbUnit.Icarus.Controls
         [Category("Test Status")]
         public int Total
         {
-            get { return this.totalTests; }
-            set { 
-                this.totalTests = value;
-                this.Invalidate();
+            get { return totalTests; }
+            set
+            {
+                totalTests = value;
+                Invalidate();
             }
         }
 
@@ -200,10 +199,11 @@ namespace MbUnit.Icarus.Controls
         [Category("Test Status")]
         public int Passed
         {
-            get { return this.passedTests; }
-            set { 
-                this.passedTests = value;
-                this.Invalidate();
+            get { return passedTests; }
+            set
+            {
+                passedTests = value;
+                Invalidate();
             }
         }
 
@@ -211,21 +211,23 @@ namespace MbUnit.Icarus.Controls
         [Category("Test Status")]
         public int Failed
         {
-            get { return this.failedTests; }
-            set { 
-                this.failedTests = value;
-                this.Invalidate();
-            } 
+            get { return failedTests; }
+            set
+            {
+                failedTests = value;
+                Invalidate();
+            }
         }
 
         [Browsable(true)]
         [Category("Test Status")]
         public int Ignored
         {
-            get { return this.ignoredTests; }
-            set { 
-                this.ignoredTests = value;
-                this.Invalidate();
+            get { return ignoredTests; }
+            set
+            {
+                ignoredTests = value;
+                Invalidate();
             }
         }
 
@@ -233,10 +235,11 @@ namespace MbUnit.Icarus.Controls
         [Category("Test Status")]
         public int Skipped
         {
-            get { return this.skippedTests; }
-            set { 
-                this.skippedTests = value;
-                this.Invalidate();
+            get { return skippedTests; }
+            set
+            {
+                skippedTests = value;
+                Invalidate();
             }
         }
 
@@ -244,10 +247,11 @@ namespace MbUnit.Icarus.Controls
         [Category("Appearance")]
         public Color PassedColor
         {
-            get { return this.passedColor; }
-            set { 
-                this.passedColor = value;
-                this.Invalidate();
+            get { return passedColor; }
+            set
+            {
+                passedColor = value;
+                Invalidate();
             }
         }
 
@@ -255,10 +259,11 @@ namespace MbUnit.Icarus.Controls
         [Category("Appearance")]
         public Color FailedColor
         {
-            get { return this.failedColor; }
-            set {
-                this.failedColor = value;
-                this.Invalidate();
+            get { return failedColor; }
+            set
+            {
+                failedColor = value;
+                Invalidate();
             }
         }
 
@@ -266,10 +271,11 @@ namespace MbUnit.Icarus.Controls
         [Category("Appearance")]
         public Color IngoredColor
         {
-            get { return this.ignoredColor; }
-            set {
-                this.ignoredColor = value;
-                this.Invalidate();
+            get { return ignoredColor; }
+            set
+            {
+                ignoredColor = value;
+                Invalidate();
             }
         }
 
@@ -277,10 +283,11 @@ namespace MbUnit.Icarus.Controls
         [Category("Appearance")]
         public Color SkippedColor
         {
-            get { return this.skippedColor; }
-            set {
-                this.skippedColor = value;
-                this.Invalidate();
+            get { return skippedColor; }
+            set
+            {
+                skippedColor = value;
+                Invalidate();
             }
         }
 

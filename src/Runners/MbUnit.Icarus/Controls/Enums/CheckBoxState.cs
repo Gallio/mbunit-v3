@@ -22,6 +22,6 @@ namespace MbUnit.Icarus.Controls.Enums
     {
         Unchecked = 1,
         Checked = 2,
-        Indeterminate = CheckBoxStates.Unchecked | CheckBoxStates.Checked
+        Indeterminate = Unchecked | Checked
     }
 }

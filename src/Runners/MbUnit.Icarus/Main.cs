@@ -14,18 +14,14 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+using System.IO;
 using System.Reflection;
-
+using System.Threading;
+using System.Windows.Forms;
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Controls.Enums;
 using MbUnit.Icarus.Properties;
-
 using ZedGraph;
 
 namespace MbUnit.Icarus
@@ -37,9 +33,6 @@ namespace MbUnit.Icarus
             InitializeComponent();
 
             // Set the application version in the window title.
-            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            this.Text = String.Format(this.Text, appVersion.Major, appVersion.Minor);
-
             GraphPane graphPane = zedGraphControl1.GraphPane;
             graphPane.Title.Text = "Total Test Results";
             graphPane.XAxis.Title.Text = "Number of Tests";
@@ -47,10 +40,10 @@ namespace MbUnit.Icarus
 
 
             // Make up some data points
-            string[] labels = { "Class 1", "Class 2" };
-            double[] x = { 1, 2 };
-            double[] x2 = { 1, 5 };
-            double[] x3 = { 4, 10 };
+            string[] labels = {"Class 1", "Class 2"};
+            double[] x = {1, 2};
+            double[] x2 = {1, 5};
+            double[] x3 = {4, 10};
 
             // Generate a red bar with "Curve 1" in the legend
             BarItem myCurve = graphPane.AddBar("Fail", x, null, Color.Red);
@@ -83,20 +76,22 @@ namespace MbUnit.Icarus
 
             // Fill the chart background with a color gradient
             graphPane.Chart.Fill = new Fill(Color.White,
-               Color.FromArgb(255, 255, 166), 45.0F);
+                                            Color.FromArgb(255, 255, 166), 45.0F);
 
             zedGraphControl1.AxisChange();
-
         }
 
         private void Form_Load(object sender, EventArgs e)
         {
+            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
+            Text = String.Format(Text, appVersion.Major, appVersion.Minor);
+
             treeFilterCombo.SelectedIndex = 1;
             filterTestResultsCombo.SelectedIndex = 0;
             graphsFilterBox1.SelectedIndex = 0;
 
-            this.testTree.Sort();
-            this.testTree.TestStateImageList = this.stateImages;
+            testTree.Sort();
+            testTree.TestStateImageList = stateImages;
 
             TestTreeNode project = new TestTreeNode("Test Project 1.0", 0, 0);
             //project.TestState = TestState.Failed;
@@ -139,7 +134,7 @@ namespace MbUnit.Icarus
             cl2.Nodes.Add(m5);
 
             TestTreeNode m6 = new TestTreeNode("BuildTree()", 4, 4);
-            //m6.TestState = TestState.Success;
+            //m6.TestState = 
             cl2.Nodes.Add(m6);
 
             project.ExpandAll();
@@ -155,7 +150,7 @@ namespace MbUnit.Icarus
             About aboutForm = new About();
             aboutForm.ShowDialog();
 
-            if (aboutForm != null)
+            //if (aboutForm != null)
                 aboutForm.Dispose();
         }
 
@@ -165,7 +160,8 @@ namespace MbUnit.Icarus
             testProgressStatusBar.Total = 50;
             for (int i = 0; i < testProgressStatusBar.Total; i++)
             {
-                if (i == 12 || i == 20 || i == 28 || i == 29 || i == 38 || i == 40 || i == 45 || i == 46 || i == 47 || i == 18 || i == 25)
+                if (i == 12 || i == 20 || i == 28 || i == 29 || i == 38 || i == 40 || i == 45 || i == 46 || i == 47 ||
+                    i == 18 || i == 25)
                     testProgressStatusBar.Failed += 1;
                 else if (i == 30 || i == 42)
                     testProgressStatusBar.Ignored += 1;
@@ -173,34 +169,35 @@ namespace MbUnit.Icarus
                     testProgressStatusBar.Passed += 1;
 
                 Application.DoEvents();
-                System.Threading.Thread.Sleep(50);
+                Thread.Sleep(50);
             }
         }
 
         private void Main_SizeChanged(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Minimized)
-                this.Hide();        
+            if (WindowState == FormWindowState.Minimized)
+                Hide();
         }
 
         private void trayIcon_DoubleClick(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Minimized)
+            if (WindowState == FormWindowState.Minimized)
             {
-                this.Show();
-                this.WindowState = FormWindowState.Normal;           
+                Show();
+                WindowState = FormWindowState.Normal;
             }
             else
             {
-                this.WindowState = FormWindowState.Minimized;
-                this.Hide();
+                WindowState = FormWindowState.Minimized;
+                Hide();
             }
         }
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
             trayIcon.Icon = Resources.FailMb;
-            trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.", ToolTipIcon.Error);
+            trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
+                                    ToolTipIcon.Error);
         }
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -209,8 +206,8 @@ namespace MbUnit.Icarus
             openFile.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
             DialogResult res = openFile.ShowDialog();
 
-            if(res == DialogResult.OK)
-                MessageBox.Show(System.IO.Path.GetFileName(openFile.FileName), System.IO.Path.GetDirectoryName(openFile.FileName));
+            if (res == DialogResult.OK)
+                MessageBox.Show(Path.GetFileName(openFile.FileName), Path.GetDirectoryName(openFile.FileName));
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -237,6 +234,16 @@ namespace MbUnit.Icarus
 
             if (!options.IsDisposed)
                 options.Dispose();
+        }
+
+        private void helpToolbarButton_Click(object sender, EventArgs e)
+        {
+            ((TestTreeNode) testTree.SelectedNode).TestState = TestStates.Failed;
+        }
+
+        private void ExitMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         #region Test Tree Context Menu
@@ -269,7 +276,7 @@ namespace MbUnit.Icarus
         {
             if (node is TestTreeNode)
             {
-                if (((TestTreeNode)node).TestState == state)
+                if (((TestTreeNode) node).TestState == state)
                     ExpandNode(node);
             }
 
@@ -318,16 +325,5 @@ namespace MbUnit.Icarus
         }
 
         #endregion
-
-        private void helpToolbarButton_Click(object sender, EventArgs e)
-        {
-            ((TestTreeNode)testTree.SelectedNode).TestState = TestStates.Failed;
-        }
-
-        private void ExitMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
     }
 }
