@@ -32,26 +32,10 @@ namespace MbUnit.Framework.Kernel.Model
         /// <remarks>
         /// This method can be called at most once during the lifetime of a test controller.
         /// </remarks>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test execution options</param>
         /// <param name="listener">The test listener</param>
         /// <param name="tests">The tests to run (these have been pre-filtered by the test harness)</param>
-        void Run(TestExecutionOptions options, IEventListener listener, IList<ITest> tests);
-
-        /// <summary>
-        /// <para>
-        /// Asynchronously aborts running tests and prevents any further tests from starting.
-        /// </para>
-        /// <para>
-        /// If the tests have not started running, then they will be automatically
-        /// aborted when <see cref="Run" /> is next called.
-        /// </para>
-        /// <para>
-        /// If the tests have already completed, does nothing.
-        /// </para>
-        /// </summary>
-        /// <remarks>
-        /// This method can be called at most once during the lifetime of a test controller.
-        /// </remarks>
-        void Abort();
+        void Run(IProgressMonitor progressMonitor, TestExecutionOptions options, IEventListener listener, IList<ITest> tests);
     }
 }

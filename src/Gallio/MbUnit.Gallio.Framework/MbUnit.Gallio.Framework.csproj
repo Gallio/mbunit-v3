@@ -65,16 +65,48 @@
     <Compile Include="Kernel\Collections\EmptyArray.cs" />
     <Compile Include="Kernel\Collections\EmptyDictionary.cs" />
     <Compile Include="Kernel\Collections\MultiMap.cs" />
-    <Compile Include="Kernel\Events\TestExecutionLogEventArgs.cs" />
-    <Compile Include="Kernel\Events\TestExecutionLogEventType.cs" />
-    <Compile Include="Kernel\Events\MessageEventArgs.cs" />
-    <Compile Include="Kernel\Events\TestEventArgs.cs" />
-    <Compile Include="Kernel\Events\TestLifecycleEventType.cs" />
-    <Compile Include="Kernel\Events\TestLifecycleEventArgs.cs" />
+    <Compile Include="Kernel\Events\BaseProgressMonitor.cs" />
+    <Compile Include="Kernel\Events\EventDispatcher.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\IEventListener.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\IProgressMonitor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\MessageEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\MessageType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\NullProgressMonitor.cs" />
+    <Compile Include="Kernel\Events\RemoteEventListener.cs" />
+    <Compile Include="Kernel\Events\RemoteProgressMonitor.cs" />
+    <Compile Include="Kernel\Events\SubProgressMonitor.cs" />
+    <Compile Include="Kernel\Events\TestEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\TestExecutionLogEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\TestExecutionLogEventType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\TestLifecycleEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\TestLifecycleEventType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\TestStepConstants.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\Events\TrackingProgressMonitor.cs" />
     <Compile Include="Kernel\Results\TestOutcome.cs" />
     <Compile Include="Kernel\Results\TestResult.cs" />
     <Compile Include="Kernel\Results\TestState.cs" />
-    <Compile Include="Kernel\Events\TestStep.cs" />
     <Compile Include="Kernel\Filters\AndFilter.cs" />
     <Compile Include="Kernel\Filters\AnyFilter.cs" />
     <Compile Include="Kernel\Filters\AssemblyFilter.cs" />
@@ -88,9 +120,7 @@
     <Compile Include="Kernel\Filters\NotFilter.cs" />
     <Compile Include="Kernel\Filters\OrFilter.cs" />
     <Compile Include="Kernel\Model\ITestController.cs" />
-    <Compile Include="Kernel\Events\EventDispatcher.cs" />
     <Compile Include="Kernel\Model\TestControllerFactory.cs" />
-    <Compile Include="Kernel\Events\IEventListener.cs" />
     <Compile Include="Kernel\Model\TemplateEnumerationOptions.cs" />
     <Compile Include="Kernel\Model\TestEnumerationOptions.cs" />
     <Compile Include="Kernel\Model\TestExecutionOptions.cs" />

@@ -86,7 +86,7 @@ namespace MbUnit.Framework.Kernel.Events
         /// <summary>
         /// Creates a <see cref="TestLifecycleEventType.Step" /> event.
         /// </summary>
-        /// <seealso cref="TestStep"/>
+        /// <seealso cref="TestStepConstants"/>
         /// <param name="testId">The id of the test this event is about</param>
         /// <param name="stepName">The step name.</param>
         /// <returns>The event</returns>

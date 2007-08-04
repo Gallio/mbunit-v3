@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Utilities;
 using NUnit.Core;
 
 namespace MbUnit.Plugin.NUnitAdapter.Core
@@ -33,7 +32,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
     {
         private string TestTypeMetadataKey = "NUnit.TestType";
 
-        private SimpleTestRunner runner;
+        private TestRunner runner;
 
         /// <summary>
         /// Creates a template binding.
@@ -88,7 +87,8 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 foreach (Assembly assembly in Assemblies)
                     package.Assemblies.Add(assembly.Location);
 
-                runner = new SimpleTestRunner();
+                //runner = new SimpleTestRunner();
+                runner = new RemoteTestRunner();
                 if (!runner.Load(package))
                     throw new ModelException("Cannot load one or more NUnit test assemblies.");
             }

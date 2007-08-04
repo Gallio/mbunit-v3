@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using MbUnit.Core.Harness;
 using MbUnit.Core.Serialization;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
@@ -78,29 +79,39 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Loads a test project.
         /// </summary>
-        /// <param name="project">The test project</param>
-        void LoadProject(TestProject project);
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="package">The test project</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
+        void LoadProject(IProgressMonitor progressMonitor, TestPackage package);
 
         /// <summary>
         /// Builds the template tree using the current <see cref="TemplateEnumerationOptions" />.
         /// Populates <see cref="TemplateModel" /> accordingly.
         /// </summary>
-        void BuildTemplates();
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        void BuildTemplates(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Builds the test tree using the current <see cref="TestEnumerationOptions" />.
         /// Populates <see cref="TestModel" /> accordingly.
         /// </summary>
-        void BuildTests();
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        void BuildTests(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.
         /// </summary>
-        void Run();
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        void Run(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Writes a test report.
         /// </summary>
-        void WriteReport();
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        void WriteReport(IProgressMonitor progressMonitor);
     }
 }

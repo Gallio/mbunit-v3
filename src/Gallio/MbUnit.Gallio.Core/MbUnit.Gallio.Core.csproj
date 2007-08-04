@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harness\AssemblyAddedEventArgs.cs" />
     <Compile Include="Harness\DefaultTestHarness.cs" />
     <Compile Include="Harness\DefaultTestHarnessFactory.cs" />
     <Compile Include="Harness\ITestFramework.cs" />
@@ -71,8 +72,9 @@
     <Compile Include="Runner\CommandLine\CommandLineUtility.cs" />
     <Compile Include="Runner\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
     <Compile Include="Runner\CommandLine\ErrorReporter.cs" />
+    <Compile Include="Runner\ConsoleProgressMonitor.cs" />
     <Compile Include="Runner\Monitors\BaseTestRunnerMonitor.cs" />
-    <Compile Include="Runner\Monitors\ConsoleMonitor.cs" />
+    <Compile Include="Runner\Monitors\DebugMonitor.cs" />
     <Compile Include="Runner\FatalRunnerException.cs" />
     <Compile Include="Runner\ITestRunner.cs" />
     <Compile Include="Runner\IIsolatedTestDomainContributor.cs" />
@@ -82,7 +84,6 @@
     <Compile Include="Runner\ITestDomainFactory.cs" />
     <Compile Include="Runner\LocalTestDomain.cs" />
     <Compile Include="Runner\Monitors\ITestRunnerMonitor.cs" />
-    <Compile Include="Runner\RemoteEventListener.cs" />
     <Compile Include="Runner\RemoteTestDomain.cs" />
     <Compile Include="Runner\Monitors\TestSummary.cs" />
     <Compile Include="Runner\Monitors\TestSummaryMonitor.cs" />
@@ -116,7 +117,7 @@
     <Compile Include="Serialization\TestInfo.cs" />
     <Compile Include="Serialization\TemplateParameterInfo.cs" />
     <Compile Include="Serialization\TemplateParameterSetInfo.cs" />
-    <Compile Include="Runner\TestProject.cs" />
+    <Compile Include="Harness\TestPackage.cs" />
     <Compile Include="Serialization\TemplateInfo.cs" />
     <Compile Include="Services\Runtime\ICoreRuntime.cs" />
     <Compile Include="Services\Runtime\RuntimeSetup.cs" />

@@ -30,6 +30,7 @@
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Echo\MbUnit.Echo.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Echo.Tests\MbUnit.Echo.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Icarus\MbUnit.Icarus.csproj" />
+    <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Icarus.Tests\MbUnit.Icarus.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild\MbUnit.Tasks.MSBuild.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild.Tests\MbUnit.Tasks.MSBuild.Tests.csproj" />
@@ -105,6 +106,7 @@
     <Binary Include="$(SourceDir)\Runners\MbUnit.Echo\bin\MbUnit.Echo.exe.config" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Icarus\bin\MbUnit.Icarus.exe" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Icarus\bin\MbUnit.Icarus.exe.config" />
+    <Binary Include="$(SourceDir)\Runners\MbUnit.Icarus\bin\MbUnit.Icarus.Core.dll" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild\bin\MbUnit.Tasks.MSBuild.dll" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Tasks.NAnt\bin\MbUnit.Tasks.NAnt.dll" />
 

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using MbUnit.Core.Harness;
 using MbUnit.Core.Serialization;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
@@ -52,11 +53,11 @@ namespace MbUnit.Core.Runner
     public interface ITestDomain : IDisposable
     {
         /// <summary>
-        /// Gets the currently loaded test project, or null if none.
+        /// Gets the currently loaded test package, or null if none.
         /// </summary>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        TestProject TestProject { get; }
+        TestPackage Package { get; }
 
         /// <summary>
         /// Gets the template model, or null if templates have not been built yet.
@@ -79,42 +80,49 @@ namespace MbUnit.Core.Runner
         void SetEventListener(IEventListener listener);
 
         /// <summary>
-        /// Loads a test project into the test domain.
+        /// Loads a test package into the test domain.
         /// </summary>
-        /// <param name="project">The test project to load</param>
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="package">The test package to load</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void LoadProject(TestProject project);
+        void LoadPackage(IProgressMonitor progressMonitor, TestPackage package);
 
         /// <summary>
         /// Builds the tree of templates.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The template enumeration options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void BuildTemplates(TemplateEnumerationOptions options);
+        void BuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options);
 
         /// <summary>
         /// Builds the tree of tests.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test enumeration options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
-        void BuildTests(TestEnumerationOptions options);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
+        void BuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options);
 
         /// <summary>
         /// Runs the tests.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test execution options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
-        void RunTests(TestExecutionOptions options);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
+        void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options);
 
         /// <summary>
-        /// Unloads the current test project so that the test domain can
-        /// be recycled for use with a different test project.
+        /// Unloads the current test package so that the test domain can
+        /// be recycled for use with a different test package.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void UnloadProject();
+        void UnloadPackage(IProgressMonitor progressMonitor);
     }
 }

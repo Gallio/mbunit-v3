@@ -26,19 +26,30 @@ namespace MbUnit.Framework.Kernel.Events
     [Serializable]
     public class MessageEventArgs : EventArgs
     {
+        private MessageType messageType;
         private string message;
 
         /// <summary>
         /// Creates a message event.
         /// </summary>
+        /// <param name="messageType">The message type</param>
         /// <param name="message">The message text</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
-        public MessageEventArgs(string message)
+        public MessageEventArgs(MessageType messageType, string message)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
 
+            this.messageType = messageType;
             this.message = message;
+        }
+
+        /// <summary>
+        /// Gets the message type.
+        /// </summary>
+        public MessageType MessageType
+        {
+            get { return messageType; }
         }
 
         /// <summary>

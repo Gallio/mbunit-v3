@@ -38,28 +38,25 @@ namespace MbUnit.Core.Harness
         /// <inheritdoc />
         public void Apply(ITestHarness harness)
         {
-            harness.Initialized += harness_Initialized;
+            harness.AssemblyAdded += harness_AssemblyAdded;
             harness.BuildingTemplates += harness_BuildingTemplates;
             harness.Disposing += harness_Disposing;
         }
 
-        private void harness_Initialized(ITestHarness harness, EventArgs e)
+        private void harness_AssemblyAdded(ITestHarness harness, AssemblyAddedEventArgs e)
         {
-            foreach (Assembly assembly in harness.Assemblies)
+            foreach (AssemblyResolverAttribute resolverAttribute in
+                e.Assembly.GetCustomAttributes(typeof(AssemblyResolverAttribute), false))
             {
-                foreach (AssemblyResolverAttribute resolverAttribute in
-                    assembly.GetCustomAttributes(typeof(AssemblyResolverAttribute), false))
+                Type type = resolverAttribute.AssemblyResolverType;
+                try
                 {
-                    Type type = resolverAttribute.AssemblyResolverType;
-                    try
-                    {
-                        IAssemblyResolver resolver = (IAssemblyResolver)Activator.CreateInstance(type);
-                        harness.AssemblyResolverManager.AddAssemblyResolver(resolver);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new ModelException(String.Format("Failed to create custom assembly resolver type '{0}'.", type), ex);
-                    }
+                    IAssemblyResolver resolver = (IAssemblyResolver)Activator.CreateInstance(type);
+                    harness.AssemblyResolverManager.AddAssemblyResolver(resolver);
+                }
+                catch (Exception ex)
+                {
+                    throw new ModelException(String.Format("Failed to create custom assembly resolver type '{0}'.", type), ex);
                 }
             }
         }

@@ -40,9 +40,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
     {
         private FixtureExplorer fixtureExplorer;
 
-        private InstrumentedFixtureRunner fixtureRunner;
-        private bool aborted;
-
         /// <summary>
         /// Creates a runner.
         /// </summary>
@@ -55,67 +52,27 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         /// <inheritdoc />
         public void Dispose()
         {
-            lock (this)
-            {
-                if (fixtureRunner != null)
-                    throw new InvalidOperationException("Dispose cannot be called while tests are still running.");
-
-                fixtureExplorer = null;
-            }
+            fixtureExplorer = null;
         }
 
         /// <inheritdoc />
-        public void Run(TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
+        public void Run(IProgressMonitor progressMonitor,
+            TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
         {
-            try
+            ThrowIfDisposed();
+
+            using (progressMonitor)
             {
-                lock (this)
+                progressMonitor.BeginTask("Running MbUnit v2 tests.", 1);
+
+                if (progressMonitor.IsCanceled)
+                    return;
+
+                using (InstrumentedFixtureRunner fixtureRunner = new InstrumentedFixtureRunner(fixtureExplorer,
+                    progressMonitor, options, listener, tests))
                 {
-                    ThrowIfDisposed();
-
-                    if (aborted)
-                    {
-                        // TODO: Should we mark tests aborted here?
-                        return;
-                    }
-
-                    fixtureRunner = new InstrumentedFixtureRunner(this, options, listener, tests);
                     fixtureRunner.Run();
                 }
-            }
-            finally
-            {
-                lock (this)
-                {
-                    fixtureRunner = null;
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public void Abort()
-        {
-            lock (this)
-            {
-                ThrowIfDisposed();
-
-                aborted = true;
-
-                if (fixtureRunner != null)
-                    fixtureRunner.Abort();
-            }
-        }
-
-        private void CheckAbort()
-        {
-            // Note: This check resolves a possible race condition while aborting tests
-            //       that can happen because the fixture runner resets the AbortPending
-            //       flag when its Run method is invoked.  It is possible that this
-            //       will prevent the abort from succeeding if it happens too early.
-            lock (this)
-            {
-                if (aborted && fixtureRunner != null)
-                    fixtureRunner.Abort();
             }
         }
 
@@ -125,9 +82,10 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 throw new ObjectDisposedException("The test controller has been disposed.");
         }
 
-        private class InstrumentedFixtureRunner : DependencyFixtureRunner, IFixtureFilter, IRunPipeFilter, IRunPipeListener
+        private class InstrumentedFixtureRunner : DependencyFixtureRunner, IDisposable, IFixtureFilter, IRunPipeFilter, IRunPipeListener
         {
-            private MbUnit2TestController controller;
+            private FixtureExplorer fixtureExplorer;
+            private IProgressMonitor progressMonitor;
             private TestExecutionOptions options;
             private IEventListener listener;
             private IList<ITest> tests;
@@ -142,10 +100,13 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             private Stack<ITest> testStack;
 
-            public InstrumentedFixtureRunner(MbUnit2TestController controller,
+            private double workUnit;
+
+            public InstrumentedFixtureRunner(FixtureExplorer fixtureExplorer, IProgressMonitor progressMonitor,
                 TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
             {
-                this.controller = controller;
+                this.fixtureExplorer = fixtureExplorer;
+                this.progressMonitor = progressMonitor;
                 this.options = options;
                 this.listener = listener;
                 this.tests = tests;
@@ -153,8 +114,22 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 Initialize();
             }
 
+            public void Dispose()
+            {
+                progressMonitor.Canceled -= HandleCanceled;
+            }
+
             private void Initialize()
             {
+                progressMonitor.Canceled += HandleCanceled;
+                progressMonitor.SetStatus("Initializing MbUnit v2 test runner.");
+
+                int totalWork = 1;
+                if (fixtureExplorer.HasAssemblySetUp)
+                    totalWork += 1;
+                if (fixtureExplorer.HasAssemblyTearDown)
+                    totalWork += 1;
+
                 // Build a reverse mapping from types and run-pipes to tests.
                 includedFixtureTypes = new Dictionary<Type, bool>();
                 fixtureTestsByFixture = new Dictionary<Fixture, MbUnit2Test>();
@@ -173,10 +148,16 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     {
                         includedFixtureTypes[fixture.Type] = true;
                         fixtureTestsByFixture[fixture] = test;
+
+                        if (fixture.HasSetUp)
+                            totalWork += 1;
+                        if (fixture.HasTearDown)
+                            totalWork += 1;
                     }
                     else
                     {
                         testsByRunPipe[runPipe] = test;
+                        totalWork += 1;
                     }
                 }
 
@@ -186,12 +167,15 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 IsExplicit = options.IsExplicit;
                 FixtureFilter = this;
                 RunPipeFilter = this;
+
+                workUnit = 1.0 / totalWork;
+                progressMonitor.Worked(workUnit);
             }
 
             public void Run()
             {
                 ReportListener reportListener = new ReportListener();
-                Run(controller.fixtureExplorer, reportListener);
+                Run(fixtureExplorer, reportListener);
 
                 // TODO: Do we need to do anyhing with the result in the report listener?
             }
@@ -199,13 +183,14 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             #region Overrides to track assembly and fixture lifecycle
             protected override bool RunAssemblySetUp()
             {
-                // Note: This fixes a race condition involving Abort
-                controller.CheckAbort();
+                CheckCanceled();
+
+                progressMonitor.SetStatus("Run assembly set up: " + Explorer.AssemblyName + ".");
 
                 HandleAssemblyStart();
 
                 if (Explorer.HasAssemblySetUp)
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(assemblyTest.Id, TestStep.SetUp));
+                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(assemblyTest.Id, TestStepConstants.SetUp));
 
                 bool success = base.RunAssemblySetUp();
 
@@ -214,22 +199,28 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 if (!success)
                     HandleAssemblyFinish(TestState.Failed);
 
+                progressMonitor.Worked(workUnit);
                 return success;
             }
 
             protected override bool RunAssemblyTearDown()
             {
+                progressMonitor.SetStatus("Run assembly tear down: " + Explorer.AssemblyName + ".");
+
                 if (Explorer.HasAssemblyTearDown && assemblyTest != null)
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(assemblyTest.Id, TestStep.TearDown));
+                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(assemblyTest.Id, TestStepConstants.TearDown));
 
                 bool success = base.RunAssemblyTearDown();
                 HandleAssemblyFinish(success ? TestState.Completed : TestState.Failed);
 
+                progressMonitor.Worked(workUnit);
                 return success;
             }
 
             protected override ReportRunResult RunFixture(Fixture fixture)
             {
+                CheckCanceled();
+
                 try
                 {
                     HandleFixtureStart(fixture);
@@ -254,6 +245,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             protected override void SkipStarters(Fixture fixture, Exception ex)
             {
+                CheckCanceled();
+
                 HandleFixtureStart(fixture);
 
                 base.SkipStarters(fixture, ex);
@@ -263,24 +256,37 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             protected override object RunFixtureSetUp(Fixture fixture, object fixtureInstance)
             {
+                CheckCanceled();
+
+                progressMonitor.SetStatus("Run fixture set up: " + fixture.Name + ".");
+
                 MbUnit2Test fixtureTest;
                 if (fixture.HasSetUp && fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
                 {
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(fixtureTest.Id, TestStep.SetUp));
+                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(fixtureTest.Id, TestStepConstants.SetUp));
                 }
 
-                return base.RunFixtureSetUp(fixture, fixtureInstance);
+                object result = base.RunFixtureSetUp(fixture, fixtureInstance);
+
+                progressMonitor.Worked(workUnit);
+                return result;
             }
 
             protected override void RunFixtureTearDown(Fixture fixture, object fixtureInstance)
             {
+                CheckCanceled();
+
+                progressMonitor.SetStatus("Run fixture tear down: " + fixture.Name + ".");
+
                 MbUnit2Test fixtureTest;
                 if (fixture.HasSetUp && fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
                 {
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(fixtureTest.Id, TestStep.TearDown));
+                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(fixtureTest.Id, TestStepConstants.TearDown));
                 }
 
                 base.RunFixtureTearDown(fixture, fixtureInstance);
+
+                progressMonitor.Worked(workUnit);
             }
             #endregion
 
@@ -301,6 +307,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             #region IRunPipeListener
             void IRunPipeListener.Start(RunPipe pipe)
             {
+                CheckCanceled();
+
                 HandleTestStart(pipe);
             }
 
@@ -378,6 +386,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             private void HandleTestStart(RunPipe runPipe)
             {
+                progressMonitor.SetStatus("Run test: " + runPipe.ShortName + ".");
+
                 MbUnit2Test test;
                 if (!testsByRunPipe.TryGetValue(runPipe, out test))
                     return;
@@ -389,46 +399,65 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             private void HandleTestFinish(RunPipe runPipe, ReportRun reportRun)
             {
                 MbUnit2Test test;
-                if (!testsByRunPipe.TryGetValue(runPipe, out test))
-                    return;
-
-                // Produce the final result.
-                TestResult result = new TestResult();
-                result.Duration = TimeSpan.FromMilliseconds(reportRun.Duration);
-                SetTestResultStateAndOutcomeFromReportRunResult(result, reportRun.Result);
-
-                // Output all execution log contents.
-                // Note: ReportRun.Asserts is not actually populated by MbUnit so we ignore it.
-                if (reportRun.ConsoleOut.Length != 0)
+                if (testsByRunPipe.TryGetValue(runPipe, out test))
                 {
-                    listener.NotifyTestExecutionLogEvent(
-                        TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
-                        ExecutionLogStreams.ConsoleOutput, reportRun.ConsoleOut));
-                }
-                if (reportRun.ConsoleError.Length != 0)
-                {
-                    listener.NotifyTestExecutionLogEvent(
-                        TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
-                        ExecutionLogStreams.ConsoleError, reportRun.ConsoleError));
-                }
-                foreach (ReportWarning warning in reportRun.Warnings)
-                {
-                    listener.NotifyTestExecutionLogEvent(
-                        TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
-                        ExecutionLogStreams.Warnings, warning.Text + "\n"));
-                }
-                if (reportRun.Exception != null)
-                {
-                    listener.NotifyTestExecutionLogEvent(
-                        TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
-                        ExecutionLogStreams.Failures, FormatReportException(reportRun.Exception)));
+                    // Produce the final result.
+                    TestResult result = new TestResult();
+                    result.Duration = TimeSpan.FromMilliseconds(reportRun.Duration);
+                    SetTestResultStateAndOutcomeFromReportRunResult(result, reportRun.Result);
+
+                    // Output all execution log contents.
+                    // Note: ReportRun.Asserts is not actually populated by MbUnit so we ignore it.
+                    if (reportRun.ConsoleOut.Length != 0)
+                    {
+                        listener.NotifyTestExecutionLogEvent(
+                            TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
+                            ExecutionLogStreams.ConsoleOutput, reportRun.ConsoleOut));
+                    }
+                    if (reportRun.ConsoleError.Length != 0)
+                    {
+                        listener.NotifyTestExecutionLogEvent(
+                            TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
+                            ExecutionLogStreams.ConsoleError, reportRun.ConsoleError));
+                    }
+                    foreach (ReportWarning warning in reportRun.Warnings)
+                    {
+                        listener.NotifyTestExecutionLogEvent(
+                            TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
+                            ExecutionLogStreams.Warnings, warning.Text + "\n"));
+                    }
+                    if (reportRun.Exception != null)
+                    {
+                        listener.NotifyTestExecutionLogEvent(
+                            TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
+                            ExecutionLogStreams.Failures, FormatReportException(reportRun.Exception)));
+                    }
+
+                    listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateCloseEvent(test.Id));
+
+                    // Finish up...
+                    testStack.Pop();
+                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateFinishEvent(test.Id, result));
                 }
 
-                listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateCloseEvent(test.Id));
+                progressMonitor.Worked(workUnit);
+            }
 
-                // Finish up...
-                testStack.Pop();
-                listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateFinishEvent(test.Id, result));
+            private void HandleCanceled(object sender, EventArgs e)
+            {
+                Abort();
+            }
+
+            /// <summary>
+            /// MbUnit's handling of Abort() isn't very robust.  It is susceptible to
+            /// race conditions in various placed.  For example, the fixture runner resets
+            /// its AbortPending flag when Run is invoked.  It is possible that this
+            //  will prevent the abort from succeeding if it happens too early.
+            /// </summary>
+            private void CheckCanceled()
+            {
+                if (progressMonitor.IsCanceled)
+                    Abort();
             }
 
             /// <summary>

@@ -26,14 +26,14 @@ using System.Xml;
 namespace MbUnit.Core.Runner.Monitors
 {
     /// <summary>
-    /// Monitors <see cref="ITestRunner" /> events and writes progress messages
-    /// to an output stream.
+    /// Monitors <see cref="ITestRunner" /> events and writes messages to
+    /// an output stream for debugging.
     /// </summary>
     /// <todo author="jeff">
     /// Tentative.  Subject to change!!
     /// Needs a lot of work anyways.
     /// </todo>
-    public class ConsoleMonitor : BaseTestRunnerMonitor
+    public class DebugMonitor : BaseTestRunnerMonitor
     {
         private TextWriter writer;
         private TestSummaryMonitor summaryMonitor;
@@ -43,7 +43,7 @@ namespace MbUnit.Core.Runner.Monitors
         /// </summary>
         /// <param name="writer">The text writer for all output</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
-        public ConsoleMonitor(TextWriter writer)
+        public DebugMonitor(TextWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
@@ -72,7 +72,7 @@ namespace MbUnit.Core.Runner.Monitors
 
         private void HandleMessageEvent(object sender, MessageEventArgs e)
         {
-            writer.WriteLine("[message] - {0}\n", e.Message);
+            writer.WriteLine("[message({0})] - {1}\n", e.MessageType, e.Message);
         }
 
         private void HandleTestLifecycleEvent(object sender, TestLifecycleEventArgs e)

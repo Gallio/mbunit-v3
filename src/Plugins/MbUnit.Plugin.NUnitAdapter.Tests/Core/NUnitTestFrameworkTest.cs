@@ -16,6 +16,7 @@
 extern alias MbUnit2;
 using MbUnit._Framework.Tests;
 using MbUnit.Core.Harness;
+using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Services.Runtime;
 using MbUnit.Framework.Tests.Kernel.Runtime;
@@ -91,9 +92,9 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
 
         private void PopulateTemplateTree(Assembly assembly)
         {
+            mockHarness.LoadPackage(new NullProgressMonitor(), new TestPackage());
             mockHarness.AddAssembly(assembly);
-            mockHarness.Initialize();
-            mockHarness.BuildTemplates(new TemplateEnumerationOptions());
+            mockHarness.BuildTemplates(new NullProgressMonitor(), new TemplateEnumerationOptions());
 
             builder = mockHarness.TemplateTreeBuilder;
         }

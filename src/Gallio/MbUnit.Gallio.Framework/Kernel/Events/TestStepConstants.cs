@@ -23,7 +23,7 @@ namespace MbUnit.Framework.Kernel.Events
     /// Defines the names of common test steps.
     /// Custom test steps may also be defined.
     /// </summary>
-    public static class TestStep
+    public static class TestStepConstants
     {
         /// <summary>
         /// The test is being set up.

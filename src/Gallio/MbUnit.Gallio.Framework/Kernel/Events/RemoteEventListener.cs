@@ -16,26 +16,22 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Remoting.Messaging;
-using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Events;
 
-namespace MbUnit.Core.Runner
+namespace MbUnit.Framework.Kernel.Events
 {
     /// <summary>
-    /// <para>
     /// A remote event listener is a serializable wrapper for another listener.
     /// The wrapper can be passed to another AppDomain and communication occurs over
     /// .Net remoting.
-    /// </para>
-    /// <para>
-    /// The implementation is defined so as to protect the sender from latency and failures
-    /// in the remoting channel.
-    /// </para>
     /// </summary>
+    /// <remarks>
+    /// The implementation is defined so as to guard against latency and failures in the remoting channel.
+    /// </remarks>
     [Serializable]
     public sealed class RemoteEventListener : IEventListener
     {
-        private readonly ForwardingEventListener forwardingEventListener;
+        private readonly Forwarder forwarder;
 
         /// <summary>
         /// Creates a wrapper for the specified listener.
@@ -47,7 +43,7 @@ namespace MbUnit.Core.Runner
             if (listener == null)
                 throw new ArgumentNullException("listener");
 
-            forwardingEventListener = new ForwardingEventListener(listener);
+            forwarder = new Forwarder(listener);
         }
 
         /// <inheritdoc />
@@ -55,7 +51,7 @@ namespace MbUnit.Core.Runner
         {
             try
             {
-                forwardingEventListener.NotifyMessageEvent(e);
+                forwarder.NotifyMessageEvent(e);
             }
             catch (Exception ex)
             {
@@ -68,7 +64,7 @@ namespace MbUnit.Core.Runner
         {
             try
             {
-                forwardingEventListener.NotifyTestLifecycleEvent(e);
+                forwarder.NotifyTestLifecycleEvent(e);
             }
             catch (Exception ex)
             {
@@ -81,7 +77,7 @@ namespace MbUnit.Core.Runner
         {
             try
             {
-                forwardingEventListener.NotifyTestExecutionLogEvent(e);
+                forwarder.NotifyTestExecutionLogEvent(e);
             }
             catch (Exception ex)
             {
@@ -90,31 +86,27 @@ namespace MbUnit.Core.Runner
         }
 
         /// <summary>
-        /// The forwarding event listener handles the recipient's end of the communication
-        /// which is on the opposite side of the remote channel from the sender.
+        /// The forwarding event listener forwards events to the host's event listener.
         /// </summary>
-        private sealed class ForwardingEventListener : LongLivingMarshalByRefObject, IEventListener
+        private sealed class Forwarder : MarshalByRefObject
         {
             private readonly IEventListener listener;
 
-            public ForwardingEventListener(IEventListener listener)
+            public Forwarder(IEventListener listener)
             {
                 this.listener = listener;
             }
 
-            [OneWay]
             public void NotifyMessageEvent(MessageEventArgs e)
             {
                 listener.NotifyMessageEvent(e);
             }
 
-            [OneWay]
             public void NotifyTestLifecycleEvent(TestLifecycleEventArgs e)
             {
                 listener.NotifyTestLifecycleEvent(e);
             }
 
-            [OneWay]
             public void NotifyTestExecutionLogEvent(TestExecutionLogEventArgs e)
             {
                 listener.NotifyTestExecutionLogEvent(e);

@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Castle.Core.Logging;
+using MbUnit.Core.Harness;
 using MbUnit.Core.Serialization;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework.Kernel.Events;
@@ -37,7 +39,6 @@ namespace MbUnit.Core.Runner
         private TestEnumerationOptions testEnumerationOptions;
         private TestExecutionOptions testExecutionOptions;
 
-        private ILogger logger;
         private ITestDomain domain;
 
         /// <summary>
@@ -57,20 +58,10 @@ namespace MbUnit.Core.Runner
             this.runtime = runtime;
             this.domainFactory = domainFactory;
 
-            logger = NullLogger.Instance;
             eventDispatcher = new EventDispatcher();
             templateEnumerationOptions = new TemplateEnumerationOptions();
             testEnumerationOptions = new TestEnumerationOptions();
             testExecutionOptions = new TestExecutionOptions();
-        }
-
-        /// <summary>
-        /// Gets or sets the logger for writing messages.
-        /// </summary>
-        public ILogger Logger
-        {
-            get { return logger; }
-            set { logger = value; }
         }
 
         /// <summary>
@@ -168,40 +159,48 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public virtual void LoadProject(TestProject project)
+        public virtual void LoadProject(IProgressMonitor progressMonitor, TestPackage package)
         {
-            logger.Debug("Loading project into test domain.");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+            if (package == null)
+                throw new ArgumentNullException("package");
 
-            Domain.LoadProject(project);
+            Domain.LoadPackage(progressMonitor, package);
         }
 
         /// <inheritdoc />
-        public virtual void BuildTemplates()
+        public virtual void BuildTemplates(IProgressMonitor progressMonitor)
         {
-            logger.Debug("Building templates.");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
 
-            Domain.BuildTemplates(templateEnumerationOptions);
+            Domain.BuildTemplates(progressMonitor, templateEnumerationOptions);
         }
 
         /// <inheritdoc />
-        public virtual void BuildTests()
+        public virtual void BuildTests(IProgressMonitor progressMonitor)
         {
-            logger.Debug("Building tests.");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
 
-            Domain.BuildTests(testEnumerationOptions);
+            Domain.BuildTests(progressMonitor, testEnumerationOptions);
         }
 
         /// <inheritdoc />
-        public virtual void Run()
+        public virtual void Run(IProgressMonitor progressMonitor)
         {
-            logger.Debug("Running tests.");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
 
-            Domain.RunTests(testExecutionOptions);
+            Domain.RunTests(progressMonitor, testExecutionOptions);
         }
 
         /// <inheritdoc />
-        public virtual void WriteReport()
+        public virtual void WriteReport(IProgressMonitor progressMonitor)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
         }
     }
 }

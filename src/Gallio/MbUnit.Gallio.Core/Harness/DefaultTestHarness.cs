@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -35,6 +36,7 @@ namespace MbUnit.Core.Harness
         private bool isDisposed;
         private IRuntime runtime;
         private IList<Assembly> assemblies;
+        private TestPackage package;
         private TemplateTreeBuilder templateTreeBuilder;
         private TestTreeBuilder testTreeBuilder;
         private EventDispatcher eventDispatcher;
@@ -65,7 +67,7 @@ namespace MbUnit.Core.Harness
 
                 isDisposed = true;
 
-                Initialized = null;
+                PackageLoaded = null;
                 BuildingTemplates = null;
                 Disposing = null;
 
@@ -109,6 +111,12 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
+        public TestPackage Package
+        {
+            get { return package; }
+        }
+
+        /// <inheritdoc />
         public TemplateTreeBuilder TemplateTreeBuilder
         {
             get
@@ -135,7 +143,13 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public event TypedEventHandler<ITestHarness, EventArgs> Initialized;
+        public event TypedEventHandler<ITestHarness, EventArgs> PackageLoading;
+
+        /// <inheritdoc />
+        public event TypedEventHandler<ITestHarness, EventArgs> PackageLoaded;
+
+        /// <inheritdoc />
+        public event TypedEventHandler<ITestHarness, AssemblyAddedEventArgs> AssemblyAdded;
 
         /// <inheritdoc />
         public event TypedEventHandler<ITestHarness, EventArgs> BuildingTemplates;
@@ -162,7 +176,12 @@ namespace MbUnit.Core.Harness
                 throw new ArgumentNullException("assembly");
 
             if (!assemblies.Contains(assembly))
+            {
                 assemblies.Add(assembly);
+
+                if (AssemblyAdded != null)
+                    AssemblyAdded(this, new AssemblyAddedEventArgs(assembly));
+            }
         }
 
         /// <inheritdoc />
@@ -170,6 +189,8 @@ namespace MbUnit.Core.Harness
         {
             if (assemblyFile == null)
                 throw new ArgumentNullException("assemblyFile");
+
+            Status("Loading assembly: " + assemblyFile);
 
             try
             {
@@ -185,34 +206,99 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public void Initialize()
+        public void LoadPackage(IProgressMonitor progressMonitor, TestPackage package)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+            if (package == null)
+                throw new ArgumentNullException("package");
+
             ThrowIfDisposed();
 
-            if (Initialized != null)
-                Initialized(this, EventArgs.Empty);
+            if (this.package != null)
+                throw new InvalidOperationException("A package has already been loaded.");
+
+            using (progressMonitor)
+            {
+                progressMonitor.BeginTask("Loading test package.", 10);
+
+                progressMonitor.SetStatus("Performing pre-processing.");
+                this.package = package;
+
+                if (PackageLoading != null)
+                    PackageLoading(this, EventArgs.Empty);
+
+                foreach (string path in package.HintDirectories)
+                    AssemblyResolverManager.AddHintDirectory(path);
+
+                foreach (string assemblyFile in package.AssemblyFiles)
+                    AssemblyResolverManager.AddHintDirectoryContainingFile(assemblyFile);
+
+                progressMonitor.Worked(1);
+
+                LoadAssemblies(new SubProgressMonitor(progressMonitor, 8), package.AssemblyFiles);
+
+                progressMonitor.SetStatus("Performing post-processing.");
+
+                if (PackageLoaded != null)
+                    PackageLoaded(this, EventArgs.Empty);
+
+                progressMonitor.Worked(1);
+            }
+        }
+
+        private void LoadAssemblies(IProgressMonitor progressMonitor, string[] assemblyFiles)
+        {
+            using (progressMonitor)
+            {
+                if (assemblyFiles.Length != 0)
+                {
+                    progressMonitor.BeginTask("Loading test assemblies.", assemblyFiles.Length);
+
+                    foreach (string assemblyFile in package.AssemblyFiles)
+                    {
+                        progressMonitor.SetStatus("Loading: " + assemblyFile + ".");
+
+                        LoadAssemblyFrom(assemblyFile);
+
+                        progressMonitor.Worked(1);
+                    }
+                }
+            }
         }
 
         /// <inheritdoc />
-        public void BuildTemplates(TemplateEnumerationOptions options)
+        public void BuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
             if (options == null)
                 throw new ArgumentNullException("options");
 
             ThrowIfDisposed();
 
-            testTreeBuilder = null;
-            templateTreeBuilder = new TemplateTreeBuilder(options);
+            if (package == null)
+                throw new InvalidOperationException("No package has been loaded.");
 
-            if (BuildingTemplates != null)
-                BuildingTemplates(this, EventArgs.Empty);
+            using (progressMonitor)
+            {
+                progressMonitor.BeginTask("Building test templates.", 10);
 
-            templateTreeBuilder.FinishBuilding();
+                testTreeBuilder = null;
+                templateTreeBuilder = new TemplateTreeBuilder(options);
+
+                if (BuildingTemplates != null)
+                    BuildingTemplates(this, EventArgs.Empty);
+
+                templateTreeBuilder.FinishBuilding();
+            }
         }
 
         /// <inheritdoc />
-        public void BuildTests(TestEnumerationOptions options)
+        public void BuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
             if (options == null)
                 throw new ArgumentNullException("options");
 
@@ -221,20 +307,27 @@ namespace MbUnit.Core.Harness
             if (templateTreeBuilder == null)
                 throw new InvalidOperationException("The template tree has not been built yet.");
 
-            testTreeBuilder = new TestTreeBuilder(options);
+            using (progressMonitor)
+            {
+                progressMonitor.BeginTask("Building tests.", 10);
 
-            ITemplateBinding rootBinding = templateTreeBuilder.Root.Bind(testTreeBuilder.Root.Scope, EmptyDictionary<ITemplateParameter, object>.Instance);
-            rootBinding.BuildTests(testTreeBuilder);
+                testTreeBuilder = new TestTreeBuilder(options);
 
-            if (BuildingTests != null)
-                BuildingTests(this, EventArgs.Empty);
+                ITemplateBinding rootBinding = templateTreeBuilder.Root.Bind(testTreeBuilder.Root.Scope, EmptyDictionary<ITemplateParameter, object>.Instance);
+                rootBinding.BuildTests(testTreeBuilder);
 
-            testTreeBuilder.FinishBuilding();
+                if (BuildingTests != null)
+                    BuildingTests(this, EventArgs.Empty);
+
+                testTreeBuilder.FinishBuilding();
+            }
         }
 
         /// <inheritdoc />
-        public void RunTests(TestExecutionOptions options)
+        public void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
             if (options == null)
                 throw new ArgumentNullException("options");
 
@@ -243,21 +336,39 @@ namespace MbUnit.Core.Harness
             if (testTreeBuilder == null)
                 throw new InvalidOperationException("The test tree has not been built yet.");
 
-            Dictionary<ITest, TestBatch> filteredTests = new Dictionary<ITest, TestBatch>();
-            PopulateClosureOfFilteredTests(testTreeBuilder.Root, options.Filter, filteredTests, null);
-
-            MultiMap<TestBatch, ITest> batches = new MultiMap<TestBatch, ITest>();
-            foreach (ITest test in filteredTests.Keys)
+            using (progressMonitor)
             {
-                TestBatch batch = test.Batch;
-                if (batch != null)
-                    batches.Add(batch, test);
-            }
+                progressMonitor.BeginTask("Running tests.", 100);
 
-            foreach (KeyValuePair<TestBatch, IList<ITest>> batch in batches)
-            {
-                ITestController controller = batch.Key.CreateController();
-                controller.Run(options, eventDispatcher, batch.Value);
+                progressMonitor.SetStatus("Sorting tests.");
+
+                Dictionary<ITest, TestBatch> filteredTests = new Dictionary<ITest, TestBatch>();
+                PopulateClosureOfFilteredTests(testTreeBuilder.Root, options.Filter, filteredTests, null);
+
+                MultiMap<TestBatch, ITest> batches = new MultiMap<TestBatch, ITest>();
+                foreach (ITest test in filteredTests.Keys)
+                {
+                    TestBatch batch = test.Batch;
+                    if (batch != null)
+                        batches.Add(batch, test);
+                }
+
+                progressMonitor.Worked(1);
+
+                int testCount = 0;
+                foreach (KeyValuePair<TestBatch, IList<ITest>> batch in batches)
+                {
+                    testCount += batch.Value.Count;
+                }
+
+                foreach (KeyValuePair<TestBatch, IList<ITest>> batch in batches)
+                {
+                    IList<ITest> tests = batch.Value;
+                    ITestController controller = batch.Key.CreateController();
+
+                    controller.Run(new SubProgressMonitor(progressMonitor, testCount == 0 ? double.NaN : tests.Count * 99.0 / testCount),
+                        options, eventDispatcher, tests);
+                }
             }
         }
 
@@ -287,6 +398,11 @@ namespace MbUnit.Core.Harness
         {
             if (isDisposed)
                 throw new ObjectDisposedException("The test harness has been disposed.");
+        }
+
+        private void Status(string message)
+        {
+            eventDispatcher.NotifyMessageEvent(new MessageEventArgs(MessageType.Status, message));
         }
     }
 }

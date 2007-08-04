@@ -18,9 +18,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
     /// </summary>
     public class NUnitTestController : ITestController
     {
-        private bool aborted;
         private TestRunner runner;
-        private RunMonitor monitor;
 
         /// <summary>
         /// Creates a test controller.
@@ -34,46 +32,23 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         /// <inheritdoc />
         public void Dispose()
         {
-            lock (this)
-            {
-                runner = null;
-            }
+            runner = null;
         }
 
         /// <inheritdoc />
-        public void Run(TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
+        public void Run(IProgressMonitor progressMonitor,
+            TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
         {
-            try
+            ThrowIfDisposed();
+
+            using (progressMonitor)
             {
-                lock (this)
+                progressMonitor.BeginTask("Running NUnit tests.", tests.Count);
+
+                using (RunMonitor monitor = new RunMonitor(progressMonitor, runner, options, listener, tests))
                 {
-                    ThrowIfDisposed();
-
-                    if (aborted)
-                        return; // TODO: Should we mark tests aborted or something?
-
-                    monitor = new RunMonitor(runner, options, listener, tests);
+                    monitor.Run();
                 }
-
-                monitor.Run();
-            }
-            finally
-            {
-                monitor = null;
-            }
-        }
-
-        /// <inheritdoc />
-        public void Abort()
-        {
-            lock (this)
-            {
-                ThrowIfDisposed();
-
-                aborted = true;
-
-                if (monitor != null)
-                    monitor.Abort();
             }
         }
 
@@ -83,9 +58,9 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 throw new ObjectDisposedException("The test controller has been disposed.");
         }
 
-        private class RunMonitor : EventListener, ITestFilter
+        private class RunMonitor : EventListener, ITestFilter, IDisposable
         {
-            private bool aborted;
+            private IProgressMonitor progressMonitor;
             private TestRunner runner;
             private TestExecutionOptions options;
             private IEventListener listener;
@@ -94,9 +69,10 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             private Dictionary<TestName, NUnitTest> testsByTestName;
             private Stack<NUnitTest> testStack;
 
-            public RunMonitor(TestRunner runner,
+            public RunMonitor(IProgressMonitor progressMonitor, TestRunner runner,
                 TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
             {
+                this.progressMonitor = progressMonitor;
                 this.runner = runner;
                 this.options = options;
                 this.listener = listener;
@@ -105,19 +81,42 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 Initialize();
             }
 
-            public void Run()
+            public void Dispose()
             {
-                runner.Run(this, this);
+                progressMonitor.Canceled -= HandleCanceled;
             }
 
-            public void Abort()
+            public void Run()
             {
-                aborted = true;
-                runner.CancelRun();
+                try
+                {
+                    // NUnit does not seem to catch unhandled exceptions at the app-domain level
+                    // itself so they bubble up to the test runner and get printed to the console
+                    // (due to our use of the legacyExceptionPolicy).  This is very bizarre.
+                    // So we handle these exceptions here and try to log them with the test results.
+                    AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
+
+                    runner.Run(this, this);
+                }
+                catch (ThreadAbortException)
+                {
+                    // NUnit cancelation is nasty!  It does a Thread.Abort on the test runner's
+                    // thread.  If we were aborted due to cancelation then we try to recover here.
+                    // This happened when we were using the SimpleTestRunner but it looks like the
+                    // RemoteTestRunner is immune.  I'm leaving this in just in case.
+                    if (progressMonitor.IsCanceled)
+                        Thread.ResetAbort();
+                }
+                finally
+                {
+                    AppDomain.CurrentDomain.UnhandledException -= HandleUnhandledException;
+                }
             }
 
             private void Initialize()
             {
+                progressMonitor.Canceled += HandleCanceled;
+
                 // Build a reverse mapping from NUnit tests.
                 testsByTestName = new Dictionary<TestName, NUnitTest>();
                 foreach (NUnitTest test in tests)
@@ -132,15 +131,9 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             #region EventListener Members
             void EventListener.RunStarted(string name, int testCount)
             {
-                // Note: Must handle a possible race condition involving Abort wherein the
+                // Note: This handles a possible race condition involving Cancel wherein the
                 //       cancelation may not occur if we abort too soon.
-                if (aborted)
-                {
-                    ThreadPool.QueueUserWorkItem(delegate
-                    {
-                        runner.CancelRun();
-                    });
-                }
+                CheckCanceled();
             }
 
             void EventListener.RunFinished(NUnit.Core.TestResult result)
@@ -200,6 +193,11 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
             void EventListener.UnhandledException(Exception exception)
             {
+                LogException(exception);
+            }
+
+            private void LogException(Exception exception)
+            {
                 if (testStack.Count == 0)
                     return;
 
@@ -216,6 +214,8 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 if (!testsByTestName.TryGetValue(testName, out test))
                     return;
 
+                progressMonitor.SetStatus("Run test: " + test.Name + ".");
+
                 testStack.Push(test);
                 listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStartEvent(test.Id));
             }
@@ -225,6 +225,8 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 NUnitTest test;
                 if (!testsByTestName.TryGetValue(nunitResult.Test.TestName, out test))
                     return;
+
+                progressMonitor.Worked(1);
 
                 if (nunitResult.Message != null)
                 {
@@ -311,6 +313,32 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 return testsByTestName.ContainsKey(test.TestName);
             }
             #endregion
+
+            private void Cancel()
+            {
+                ThreadPool.QueueUserWorkItem(delegate
+                {
+                    runner.CancelRun();
+                });
+            }
+
+            private void CheckCanceled()
+            {
+                if (progressMonitor.IsCanceled)
+                    Cancel();
+            }
+
+            private void HandleCanceled(object sender, EventArgs e)
+            {
+                Cancel();
+            }
+
+            private void HandleUnhandledException(object sender, UnhandledExceptionEventArgs e)
+            {
+                Exception ex = e.ExceptionObject as Exception;
+                if (ex != null)
+                    LogException(ex);
+            }
         }
     }
 }

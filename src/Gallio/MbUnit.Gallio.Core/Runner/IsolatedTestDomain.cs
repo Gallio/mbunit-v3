@@ -92,24 +92,26 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override ITestDomain InternalConnect()
+        protected override ITestDomain InternalConnect(IProgressMonitor progressMonitor)
         {
             try
             {
+                progressMonitor.SetStatus("Creating the isolated AppDomain.");
+
                 AppDomainSetup setup = new AppDomainSetup();
 
-                if (TestProject.ApplicationBase.Length == 0
-                    || !Path.IsPathRooted(TestProject.ApplicationBase))
-                    setup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, TestProject.ApplicationBase);
+                if (Package.ApplicationBase.Length == 0
+                    || !Path.IsPathRooted(Package.ApplicationBase))
+                    setup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Package.ApplicationBase);
                 else
-                    setup.ApplicationBase = TestProject.ApplicationBase;
+                    setup.ApplicationBase = Package.ApplicationBase;
 
                 setup.ApplicationName = "IsolatedTestDomain";
 
-                if (TestProject.EnableShadowCopy)
+                if (Package.EnableShadowCopy)
                 {
                     setup.ShadowCopyFiles = "true";
-                    setup.ShadowCopyDirectories = TestProject.ApplicationBase;
+                    setup.ShadowCopyDirectories = Package.ApplicationBase;
                     // FIXME: should we also shadow-copy all assembly reference paths?
                 }
 
@@ -118,6 +120,8 @@ namespace MbUnit.Core.Runner
 
                 Evidence evidence = new Evidence(AppDomain.CurrentDomain.Evidence); // FIXME: should be more careful here
                 appDomain = AppDomain.CreateDomain("IsolatedTestDomain", evidence, setup);
+
+                progressMonitor.Worked(0.7);
             }
             catch (Exception ex)
             {
@@ -126,10 +130,14 @@ namespace MbUnit.Core.Runner
 
             try
             {
+                progressMonitor.SetStatus("Initializing the test runner.");
+
                 bootstrapper = CreateRemoteInstance<Bootstrapper>();
                 bootstrapper.Initialize(runtime.GetRuntimeSetup());
 
                 ITestDomain testDomain = bootstrapper.CreateTestDomain();
+
+                progressMonitor.Worked(0.3);
                 return testDomain;
             }
             catch (Exception ex)
@@ -139,21 +147,29 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalDisconnect()
+        protected override void InternalDisconnect(IProgressMonitor progressMonitor)
         {
             try
             {
                 try
                 {
+                    progressMonitor.SetStatus("Shutting down the test runner.");
+
                     if (bootstrapper != null)
                         bootstrapper.Shutdown();
+
+                    progressMonitor.Worked(0.3);
                 }
                 finally
                 {
+                    progressMonitor.SetStatus("Unloading the isolate AppDomain.");
+
                     bootstrapper = null;
 
                     if (appDomain != null)
                         AppDomain.Unload(appDomain);
+
+                    progressMonitor.Worked(0.7);
                 }
             }
             catch (Exception ex)

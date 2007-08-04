@@ -53,6 +53,11 @@ namespace MbUnit.Core.Harness
         EventDispatcher EventDispatcher { get; }
 
         /// <summary>
+        /// Gets the package loaded in the test harness, or null if none.
+        /// </summary>
+        TestPackage Package { get; }
+
+        /// <summary>
         /// Gets the template tree builder for the test harness.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the template
@@ -67,15 +72,36 @@ namespace MbUnit.Core.Harness
         TestTreeBuilder TestTreeBuilder { get; }
 
         /// <summary>
-        /// The event fired when the test harness is initialized.
+        /// The event fired when a test package is about to be loaded.
+        /// The <see cref="Package" /> property specifies the package being loaded.
         /// </summary>
         /// <remarks>
         /// This event provides test harness contributions with an opportunity to perform
-        /// processing just after a test project is loaded.  For example, they might quickly
+        /// processing just before a test package is loaded.  For example, they might quickly
         /// scan the assemblies to configure assembly resolution strategies or
         /// to configure the behavior of built-in services in other ways.
         /// </remarks>
-        event TypedEventHandler<ITestHarness, EventArgs> Initialized;
+        event TypedEventHandler<ITestHarness, EventArgs> PackageLoading;
+
+        /// <summary>
+        /// The event fired when a test package is loaded.
+        /// </summary>
+        /// <remarks>
+        /// This event provides test harness contributions with an opportunity to perform
+        /// processing just after a test package is loaded.  For example, a plugin might
+        /// contribute a test script compiler that loads the dynamically compiled
+        /// assemblies into the test harness at this time.
+        /// </remarks>
+        event TypedEventHandler<ITestHarness, EventArgs> PackageLoaded;
+
+        /// <summary>
+        /// The event fired when an assembly is added to the list.
+        /// </summary>
+        /// <remarks>
+        /// This event provides test harness contributions with an oppotunity to perform
+        /// process just after a test assembly is loaded.
+        /// </remarks>
+        event TypedEventHandler<ITestHarness, AssemblyAddedEventArgs> AssemblyAdded;
 
         /// <summary>
         /// The event fired when the test harness is building templates.
@@ -128,33 +154,43 @@ namespace MbUnit.Core.Harness
         Assembly LoadAssemblyFrom(string assemblyFile);
 
         /// <summary>
-        /// Initializes the test harness after its contributions have been registered.
-        /// Causes the <see cref="Initialized" /> event to fire.
+        /// Loads the test package into the test harness.
+        /// Causes the <see cref="PackageLoaded" /> event to fire.
         /// </summary>
-        void Initialize();
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="package">The test package</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadPackage" /> has already been called once
+        /// because this interface does not support unloading packages except by disposing the harness
+        /// and recreating it</exception>
+        void LoadPackage(IProgressMonitor progressMonitor, TestPackage package);
 
         /// <summary>
         /// Populates the template tree.
         /// Causes the <see cref="BuildingTemplates" /> event to fire.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The template enumeration options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
-        void BuildTemplates(TemplateEnumerationOptions options);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadPackage" /> has not been called yet</exception>
+        void BuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options);
 
         /// <summary>
         /// Populates the test tree.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test enumeration options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTemplates" /> has not been called yet</exception>
-        void BuildTests(TestEnumerationOptions options);
+        void BuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options);
 
         /// <summary>
         /// Runs the tests.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test execution options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTests" /> has not been called yet</exception>
-        void RunTests(TestExecutionOptions options);
+        void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options);
     }
 }

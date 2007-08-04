@@ -32,7 +32,7 @@ namespace MbUnit.Framework.Kernel.Events
         /// <summary>
         /// The test is performing a step of its execution such as setup or teardown.
         /// </summary>
-        /// <seealso cref="TestStep"/>
+        /// <seealso cref="TestStepConstants"/>
         Step,
 
         /// <summary>

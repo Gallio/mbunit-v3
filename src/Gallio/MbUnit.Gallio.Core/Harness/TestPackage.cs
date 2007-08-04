@@ -18,17 +18,23 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using MbUnit.Core.Serialization;
 
-namespace MbUnit.Core.Runner
+namespace MbUnit.Core.Harness
 {
     /// <summary>
-    /// A test project specifies the options used by a test runner to load tests
-    /// into memory for execution.  This specification can also be serialized as
+    /// A test package specifies the options used by a test runner to load tests
+    /// into memory for execution.  The package may contain multiple test assemblies
+    /// that are to be loaded together for test execution.  It can also be serialized as
     /// XML or using .Net remoting for persistence and remote operation.
     /// </summary>
+    /// <remarks author="jeff">
+    /// Someday a test package might allow other kinds of resources to be specified
+    /// such as individual test scripts, archives, dependent files, environmental
+    /// configuration settings, etc...
+    /// </remarks>
     [Serializable]
-    [XmlRoot("project", Namespace=SerializationUtils.XmlNamespace)]
+    [XmlRoot("package", Namespace=SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class TestProject
+    public class TestPackage
     {
         private string applicationBase;
         private List<string> hintDirectories;
@@ -36,9 +42,9 @@ namespace MbUnit.Core.Runner
         private bool enableShadowCopy;
 
         /// <summary>
-        /// Creates an empty project.
+        /// Creates an empty package.
         /// </summary>
-        public TestProject()
+        public TestPackage()
         {
             applicationBase = "";
             hintDirectories = new List<string>();

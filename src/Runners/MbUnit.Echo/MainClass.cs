@@ -14,13 +14,13 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using Castle.Core.Logging;
+using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
 using MbUnit.Core.Runner.Monitors;
@@ -29,12 +29,19 @@ using MbUnit.Echo;
 
 namespace MbUnit.Echo
 {
+    /// <summary>
+    /// The main process.
+    /// </summary>
+    /// <todo author="jeff">
+    /// Cancelation should be handled more intelligently.  For example, if the user
+    /// cancels the test run, we should still display summary results.
+    /// </todo>
     public sealed class MainClass : IDisposable
     {
         private string applicationTitle;
         private LevelFilteredLogger logger;
         private MainArguments arguments = new MainArguments();
-        private TestProject project;
+        private TestPackage package;
         private RuntimeSetup runtimeSetup;
         private AutoRunner runner;
 
@@ -55,6 +62,15 @@ namespace MbUnit.Echo
 
         public int Run(string[] args)
         {
+            // Disable ordinary cancelation handling.
+            // We handle cancelation directly in ways that should result in the user
+            // losing less data than if the OS just kills the process.
+            Console.TreatControlCAsInput = false;
+            Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs e)
+            {
+                e.Cancel = true;
+            };
+
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             applicationTitle = string.Format("MbUnit Echo - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build);
 
@@ -75,7 +91,19 @@ namespace MbUnit.Echo
                     return ResultCode.InvalidArguments;
                 }
 
-                logger.Level = arguments.Verbose ? LoggerLevel.Debug : LoggerLevel.Info;
+                switch (arguments.Verbosity)
+                {
+                    case Verbosity.Quiet:
+                        logger.Level = LoggerLevel.Warn;
+                        break;
+                    case Verbosity.Normal:
+                    case Verbosity.Verbose:
+                        logger.Level = LoggerLevel.Info;
+                        break;
+                    case Verbosity.Debug:
+                        logger.Level = LoggerLevel.Debug;
+                        break;
+                }
 
                 if (arguments.Help)
                 {
@@ -86,10 +114,12 @@ namespace MbUnit.Echo
                 logger.Debug(arguments.ToString());
 
                 BuildRuntimeSetupFromArguments();
-                BuildProjectFromArguments();
-                RunProject();
+                BuildPackageFromArguments();
+                int resultCode = RunPackage();
 
-                return ResultCode.Success;
+                if (resultCode == ResultCode.Canceled)
+                    logger.Warn("Canceled!");
+                return resultCode;
             }
             catch (Exception ex)
             {
@@ -132,55 +162,106 @@ namespace MbUnit.Echo
                 runtimeSetup.AddPluginDirectory(Path.GetFullPath(pluginDirectory));
         }
 
-        private void BuildProjectFromArguments()
+        private void BuildPackageFromArguments()
         {
-            project = new TestProject();
+            package = new TestPackage();
 
             foreach (string path in arguments.AssemblyPath)
-                project.AddHintDirectory(Path.GetFullPath(path));
+                package.AddHintDirectory(Path.GetFullPath(path));
 
             foreach (string file in arguments.Files)
-                project.AddAssemblyFile(Path.GetFullPath(file));
+                package.AddAssemblyFile(Path.GetFullPath(file));
         }
 
-        private void RunProject()
+        private int RunPackage()
         {
-            if (project.AssemblyFiles.Length == 0)
+            if (package.AssemblyFiles.Length == 0)
             {
                 logger.Warn("No test assemblies to execute!");
-                return;
+                return ResultCode.Success;
             }
 
             using (runner = AutoRunner.CreateRunner(runtimeSetup))
             {
-                runner.Logger = logger;
+                StringWriter debugWriter = null;
+                if (arguments.Verbosity == Verbosity.Debug)
+                {
+                    debugWriter = new StringWriter();
+                    new DebugMonitor(debugWriter).Attach(runner);
+                }
+
                 runner.TestExecutionOptions.Filter = arguments.GetFilter();
-                new ConsoleMonitor(Console.Out).Attach(runner);
 
                 Stopwatch stopWatch = Stopwatch.StartNew();
                 logger.InfoFormat("\nStart time: {0}", DateTime.Now.ToShortTimeString());
-                logger.Info("Loading test assemblies...\n");
 
-                runner.LoadProject(project);
-                runner.BuildTemplates();
-                runner.BuildTests();
+                using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
+                {
+                    runner.LoadProject(progressMonitor, package);
+
+                    if (progressMonitor.IsCanceled)
+                        return ResultCode.Canceled;
+                }
+
+                using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
+                {
+                    runner.BuildTemplates(progressMonitor);
+
+                    if (progressMonitor.IsCanceled)
+                        return ResultCode.Canceled;
+                }
+
+                using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
+                {
+                    runner.BuildTests(progressMonitor);
+
+                    if (progressMonitor.IsCanceled)
+                        return ResultCode.Canceled;
+                }
 
                 if (arguments.SaveTemplateTree != null)
                 {
-                    SaveToXml(runner.TemplateModel.RootTemplate, arguments.SaveTemplateTree);
+                    using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
+                    {
+                        progressMonitor.BeginTask("Saving template tree to: " + arguments.SaveTemplateTree + ".", 1);
+
+                        SaveToXml(runner.TemplateModel.RootTemplate, arguments.SaveTemplateTree);
+
+                        if (progressMonitor.IsCanceled)
+                            return ResultCode.Canceled;
+                    }
                 }
 
                 if (arguments.SaveTestTree != null)
                 {
-                    SaveToXml(runner.TestModel.RootTest, arguments.SaveTestTree);
+                    using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
+                    {
+                        progressMonitor.BeginTask("Saving test tree to: " + arguments.SaveTestTree + ".", 1);
+
+                        SaveToXml(runner.TestModel.RootTest, arguments.SaveTestTree);
+
+                        if (progressMonitor.IsCanceled)
+                            return ResultCode.Canceled;
+                    }
                 }
 
-                logger.Info("\nStarting execution...\n");
-                runner.Run();
+                using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
+                {
+                    runner.Run(progressMonitor);
+
+                    if (progressMonitor.IsCanceled)
+                        return ResultCode.Canceled;
+                }
+
+                if (debugWriter != null)
+                    logger.Debug(debugWriter.ToString());
 
                 logger.InfoFormat("\nStop time: {0}", DateTime.Now.ToShortTimeString());
                 logger.InfoFormat("Total execution time: {0:#0.000}s", stopWatch.Elapsed.TotalSeconds);
             }
+
+            // TODO: Return a different code if there were failures.
+            return ResultCode.Success;
         }
 
         private static void SaveToXml(object root, string filename)

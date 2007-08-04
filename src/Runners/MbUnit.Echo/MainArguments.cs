@@ -129,10 +129,10 @@ namespace MbUnit.Echo
         [CommandLineArgument(
 			 CommandLineArgumentType.AtMostOnce,
 			 ShortName = "v",
-			 LongName = "verbose",
+			 LongName = "verbosity",
 			 Description="Return a lot of information or not..."
 			 )]
-		public bool Verbose = false;
+		public Verbosity Verbosity = Verbosity.Normal;
 
         [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,
@@ -190,7 +190,7 @@ namespace MbUnit.Echo
 			sw.WriteLine("Filter Namespace: {0}", String.Join(", ", this.FilterNamespaces));
 			sw.WriteLine("Filter Type: {0}", String.Join(", ", this.FilterTypes));
 
-			sw.WriteLine("Verbose: {0}",this.Verbose);
+			sw.WriteLine("Verbosity: {0}", this.Verbosity);
             sw.WriteLine("Save Template Tree: {0}", this.SaveTemplateTree);
             sw.WriteLine("Save Test Tree: {0}", this.SaveTestTree);
             sw.WriteLine("ShadowCopyFiles: {0}", this.ShadowCopyFiles);

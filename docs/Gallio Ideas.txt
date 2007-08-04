@@ -47,3 +47,181 @@
   Use case 4: A test framework is to be integrated that does not support
               the two-pass runtime model with test enumeration being
               separate from test execution.
+
+
+* Custom attributes for integration with common testing tools.
+
+  eg. Rhino.Mocks (in MbUnit.Framework.RhinoMocks)
+      The MocksAttribute automatically adds initialization code to test setup
+      to create a MockRepository and adds a call to mocks.VerifyAll() in teardown.
+      It might also gather extra Rhino.Mocks diagnostic output for the execution
+      log (like a trace of mocked method calls, perhaps).
+
+      [Mocks]
+      private MockRepository mocks;
+      
+  eg. WatiN (in MbUnit.Framework.WatiN)
+      The BrowserAttribute automatically adds initialization code to test setup
+      to create a Browser and a call to browser.Dispose() in teardown.
+      It could capture snapshots of all page loads and embed them in the execution
+      log as HTML with attached resources, or just capture images.
+  
+      [Browser]
+      private Browser browser;
+
+* Add a command-line option to Echo and switches to the build tasks for
+  NAnt report compatibility mode.  (Run our XML reports through XSLT to generate
+  a compatible report.)  I'm not sure how useful this is in the long run though.
+  
+* Add switches to the build tasks for NCover integration and perhaps other
+  profilers.
+
+* Add Mixins.  A parameterized template could serve as the basis for inclusion
+  in another template.
+  
+  eg. When testing collections, perhaps we could use mixins to abstract out
+      various test patterns.
+      
+      [Mixin]
+      [Bind("Instance")]
+      public CollectionTester collectionTester;
+
+      Or:
+      
+      [Mixin]
+      public CollectionTester CollectionTests()
+      {
+          return new CollectionTester(instance);
+      }
+      
+* Add Agent-driven tests.  An Agent is simply a worker that is started on its
+  own thread by a test and automatically shut down when it terminates.  Exceptions
+  thrown by an agent cause the test to fail.  Because agents belong to the same
+  test fixture they can share global state.  This is useful for coordinating the
+  actions of multiple concurrent agents.  Addtional primitives could be offered
+  for synchronization too.
+  
+  eg. We want to test a blocking producer-consumer queue.  We can declare the test like this:
+      
+      [TestFixture]
+      public class QueueTest
+      {
+          private Queue queue;
+      
+	      [Test]
+	      public void ProducerConsumer()
+	      {
+	          queue = new Queue();
+	          Agent.StartAll();
+	      }
+	      
+	      [Agent]
+	      public void Producer()
+	      {
+	          queue.Put("foo");
+	          queue.Put("bar");
+	      }
+	      
+	      [Agent]
+	      public void Consumer()
+	      {
+	          Assert.AreEqual("foo", queue.Get());
+	          Assert.AreEqual("bar", queue.Get());
+	          Assert.IsFalse(queue.TryGetWithTimeout(1000));
+	      }
+	  }
+	  
+  eg. Test a SIP telephony stack.
+  
+      [TestFixture]
+      public class SIPTest
+      {	   
+	      private SIPStack sip;
+	      
+	      [SetUp]
+	      public void SetUpSIPStack()
+	      {
+	          sip = new SIPStack();
+	      }
+      
+          [Test]   
+          public void DialThenAnswerThenAnswererHangsUp()
+          {
+              Agent.Start("Dialer", false);
+              Agent.Start("Answerer", true);
+              Agent.JoinAll();
+              
+              CallRecord record = sip.GetCallRecord();
+              Assert.AreEqual(CallTerminationState.AnswererHungUp, record.CallTerminationState);
+          }
+
+          [Test]   
+          public void DialThenAnswerThenDialerHangsUp()
+          {
+              Agent.Start("Dialer", true);
+              Agent.Start("Answerer", false);
+              Agent.JoinAll();
+              
+              CallRecord record = GetCallRecord();
+              Assert.AreEqual(CallTerminationState.DialerHungUp, record.CallTerminationState);
+          }
+      
+	      [Agent]
+	      public void Dialer(bool hangUp)
+	      {
+	          SIPEndpoint endpoint = sip.CreateSIPEndpoint("5.6.7.8");	          
+	          Agent.WaitForSignal("AnswererReady");
+	          
+	          endpoint.Dial("1.2.3.4");
+	          endpoint.WaitForAnswer();
+	          
+	          if (hangUp)
+	              endpoint.HangUp();
+	          else
+		          endpoint.WaitForHangUp();
+	      }
+	      
+	      [Agent]
+	      public void Answerer(bool hangUp)
+	      {
+	          SIPEndpoint endpoint = sip.CreateSIPEndpoint("1.2.3.4");
+	          Agent.Signal("AnswererReady");
+	          
+	          endpoint.WaitForCall();
+	          Assert.AreEqual("5.6.7.8", endpoint.CallerIP);
+	          endpoint.Answer();
+	          
+	          if (hangUp)
+	              endpoint.HangUp();
+	          else
+		          endpoint.WaitForHangUp();
+	      }
+      }
+
+  Possible primitives:
+  
+  - Start/Stop/Join/Kill agents.
+  - Signals, Condition Variables, Barriers.
+  - Provide events or declarative flags to specify how an agent should get cleaned up.
+    (All lumped together here)
+    
+    [Agent(CleanUp = CleanUp.Abort)]
+    [Agent(CleanUp = CleanUp.Interrupt)]
+    [Agent(CleanUp = typeof(CustomType)]
+    public void Agent()
+    {
+        Agent.Current.CleanUp += delegate { myService.Stop(); }
+    }
+    
+    public class CustomType
+    {
+        public CleanUp(AgentHandle agent)
+        {
+            agent.Thread.SetLocalData(shutdownSlot, true);
+        }
+    }
+ 
+  In simple cases we could provide a declarative mechanism for starting agents:
+    [Test]
+    [StartAgent("Producer"), StartAgent("Consumer")]
+    public void Test() { }

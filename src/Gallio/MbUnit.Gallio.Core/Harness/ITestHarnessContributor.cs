@@ -36,8 +36,7 @@ namespace MbUnit.Core.Harness
     {
         /// <summary>
         /// Applies the contributions of this test harness contributor to the
-        /// specified test harness.  This method is called before the test
-        /// harness <see cref="ITestHarness.Initialize" /> event is fired.
+        /// specified test harness.
         /// </summary>
         /// <param name="harness">The test harness</param>
         void Apply(ITestHarness harness);

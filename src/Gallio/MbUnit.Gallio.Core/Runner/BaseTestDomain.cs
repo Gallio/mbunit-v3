@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Core.Harness;
 using MbUnit.Core.Serialization;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Events;
@@ -34,7 +35,7 @@ namespace MbUnit.Core.Runner
     {
         private bool disposed;
         private IEventListener listener;
-        private TestProject testProject;
+        private TestPackage package;
         private TemplateModel templateModel;
         private TestModel testModel;
 
@@ -46,7 +47,7 @@ namespace MbUnit.Core.Runner
                 InternalDispose();
 
                 listener = null;
-                testProject = null;
+                package = null;
                 templateModel = null;
                 testModel = null;
                 disposed = true;
@@ -54,16 +55,16 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public TestProject TestProject
+        public TestPackage Package
         {
             get
             {
                 ThrowIfDisposed();
-                return testProject;
+                return package;
             }
             protected set
             {
-                testProject = value;
+                package = value;
             }
         }
 
@@ -110,65 +111,98 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public void LoadProject(TestProject project)
+        public void LoadPackage(IProgressMonitor progressMonitor, TestPackage package)
         {
-            if (project == null)
-                throw new ArgumentNullException("project");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+            if (package == null)
+                throw new ArgumentNullException("package");
+
             ThrowIfDisposed();
 
-            InternalUnloadProject();
-
-            try
+            using (progressMonitor)
             {
-                this.testProject = project;
-                InternalLoadProject(project);
+                progressMonitor.BeginTask("Loading test package.", 1.05);
+
+                using (SubProgressMonitor unloadProgressMonitor = new SubProgressMonitor(progressMonitor, 0.05))
+                {
+                    unloadProgressMonitor.BeginTask("Unloading previous test package.", 1);
+                    InternalUnloadPackage(progressMonitor);
+                }
+
+                this.package = package;
+                InternalLoadPackage(progressMonitor, package);
             }
-            catch (Exception)
+        }
+
+        /// <inheritdoc />
+        public void BuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options)
+        {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+            if (options == null)
+                throw new ArgumentNullException("options");
+
+            ThrowIfDisposed();
+
+            using (progressMonitor)
             {
-                UnloadProject();
-                throw;
+                progressMonitor.BeginTask("Building test templates.", 1);
+                InternalBuildTemplates(progressMonitor, options);
             }
         }
 
         /// <inheritdoc />
-        public void BuildTemplates(TemplateEnumerationOptions options)
+        public void BuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
             if (options == null)
                 throw new ArgumentNullException("options");
 
             ThrowIfDisposed();
-            InternalBuildTemplates(options);
+
+            using (progressMonitor)
+            {
+                progressMonitor.BeginTask("Building tests.", 1);
+                InternalBuildTests(progressMonitor, options);
+            }
         }
 
         /// <inheritdoc />
-        public void BuildTests(TestEnumerationOptions options)
+        public void UnloadPackage(IProgressMonitor progressMonitor)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+
+            ThrowIfDisposed();
+
+            using (progressMonitor)
+            {
+                progressMonitor.BeginTask("Unloading test package.", 1);
+                InternalUnloadPackage(progressMonitor);
+
+                package = null;
+                testModel = null;
+                templateModel = null;
+            }
+        }
+
+        /// <inheritdoc />
+        public void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options)
+        {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
             if (options == null)
                 throw new ArgumentNullException("options");
 
             ThrowIfDisposed();
-            InternalBuildTests(options);
-        }
 
-        /// <inheritdoc />
-        public void UnloadProject()
-        {
-            ThrowIfDisposed();
-            InternalUnloadProject();
-
-            testProject = null;
-            testModel = null;
-            templateModel = null;
-        }
-
-        /// <inheritdoc />
-        public void RunTests(TestExecutionOptions options)
-        {
-            if (options == null)
-                throw new ArgumentNullException("options");
-
-            ThrowIfDisposed();
-            InternalRunTests(options);
+            using (progressMonitor)
+            {
+                progressMonitor.BeginTask("Running tests.", 1);
+                InternalRunTests(progressMonitor, options);
+            }
         }
 
         /// <summary>
@@ -177,33 +211,38 @@ namespace MbUnit.Core.Runner
         protected abstract void InternalDispose();
 
         /// <summary>
-        /// Internal implementation of <see cref="LoadProject" />.
+        /// Internal implementation of <see cref="LoadPackage" />.
         /// </summary>
-        /// <param name="project">The test project</param>
-        protected abstract void InternalLoadProject(TestProject project);
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
+        /// <param name="package">The test package</param>
+        protected abstract void InternalLoadPackage(IProgressMonitor progressMonitor, TestPackage package);
 
         /// <summary>
         /// Internal implementation of <see cref="BuildTemplates" />.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <param name="options">The template enumeration options</param>
-        protected abstract void InternalBuildTemplates(TemplateEnumerationOptions options);
+        protected abstract void InternalBuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options);
 
         /// <summary>
         /// Internal implementation of <see cref="BuildTests" />.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <param name="options">The test enumeration options</param>
-        protected abstract void InternalBuildTests(TestEnumerationOptions options);
+        protected abstract void InternalBuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options);
 
         /// <summary>
         /// Internal implementation of <see cref="RunTests" />.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <param name="options">The test execution options</param>
-        protected abstract void InternalRunTests(TestExecutionOptions options);
+        protected abstract void InternalRunTests(IProgressMonitor progressMonitor, TestExecutionOptions options);
 
         /// <summary>
-        /// Internal implementation of <see cref="UnloadProject" />.
+        /// Internal implementation of <see cref="UnloadPackage" />.
         /// </summary>
-        protected abstract void InternalUnloadProject();
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
+        protected abstract void InternalUnloadPackage(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Throws <see cref="ObjectDisposedException"/> if the domain has been disposed.

@@ -15,6 +15,7 @@
 
 using System;
 using MbUnit.Core.Harness;
+using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Serialization;
 using MbUnit.Framework.Services.Runtime;
@@ -58,55 +59,54 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalLoadProject(TestProject project)
+        protected override void InternalLoadPackage(IProgressMonitor progressMonitor, TestPackage package)
         {
+            progressMonitor.SetStatus("Creating test harness.");
+
             RuntimeHolder.Instance = runtime;
             harness = harnessFactory.CreateHarness();
+
+            progressMonitor.Worked(0.1);
 
             if (Listener != null)
                 harness.EventDispatcher.Listeners.Add(Listener);
 
-            foreach (string path in project.HintDirectories)
-                harness.AssemblyResolverManager.AddHintDirectory(path);
-
-            foreach (string assemblyFile in project.AssemblyFiles)
-                harness.AssemblyResolverManager.AddHintDirectoryContainingFile(assemblyFile);
-
-            foreach (string assemblyFile in project.AssemblyFiles)
-                harness.LoadAssemblyFrom(assemblyFile);
-
-            harness.Initialize();
+            harness.LoadPackage(new SubProgressMonitor(progressMonitor, 0.9), package);
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTemplates(TemplateEnumerationOptions options)
+        protected override void InternalBuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options)
         {
             TemplateModel = null;
-            harness.BuildTemplates(options);
+            harness.BuildTemplates(new SubProgressMonitor(progressMonitor, 1), options);
             TemplateModel = new TemplateModel(new TemplateInfo(harness.TemplateTreeBuilder.Root));
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTests(TestEnumerationOptions options)
+        protected override void InternalBuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options)
         {
             TestModel = null;
-            harness.BuildTests(options);
+            harness.BuildTests(new SubProgressMonitor(progressMonitor, 1), options);
             TestModel = new TestModel(new TestInfo(harness.TestTreeBuilder.Root));
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests(TestExecutionOptions options)
+        protected override void InternalRunTests(IProgressMonitor progressMonitor, TestExecutionOptions options)
         {
-            harness.RunTests(options);
+            harness.RunTests(new SubProgressMonitor(progressMonitor, 1), options);
         }
 
         /// <inheritdoc />
-        protected override void InternalUnloadProject()
+        protected override void InternalUnloadPackage(IProgressMonitor progressMonitor)
         {
             try
             {
+                progressMonitor.SetStatus("Disposing test harness.");
+
                 if (harness != null)
                     harness.Dispose();
+
+                progressMonitor.Worked(1);
             }
             finally
             {

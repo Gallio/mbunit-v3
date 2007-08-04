@@ -35,9 +35,14 @@ namespace MbUnit.Echo
         public const int Failure = 1;
 
         /// <summary>
+        /// The tests were canceled.
+        /// </summary>
+        public const int Canceled = 2;
+
+        /// <summary>
         /// A fatal runtime exception occurred.
         /// </summary>
-        public const int FatalException = 2;
+        public const int FatalException = 3;
 
         /// <summary>
         /// Invalid arguments were supplied on the command-line.

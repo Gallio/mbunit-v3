@@ -16,6 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MbUnit.Core.Harness;
+using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
@@ -41,17 +43,17 @@ namespace MbUnit.Core.Runner
         /// <inheritdoc />
         protected override void InternalDispose()
         {
-            Disconnect();
+            Disconnect(new NullProgressMonitor());
         }
 
         /// <inheritdoc />
-        protected override void InternalLoadProject(TestProject project)
+        protected override void InternalLoadPackage(IProgressMonitor progressMonitor, TestPackage package)
         {
-            Connect();
+            Connect(new SubProgressMonitor(progressMonitor, 0.1));
 
             try
             {
-                proxy.LoadProject(project);
+                proxy.LoadPackage(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 0.9)), package);
             }
             catch (Exception ex)
             {
@@ -60,12 +62,12 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTemplates(TemplateEnumerationOptions options)
+        protected override void InternalBuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options)
         {
             try
             {
                 TemplateModel = null;
-                proxy.BuildTemplates(options);
+                proxy.BuildTemplates(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)), options);
                 TemplateModel = proxy.TemplateModel;
             }
             catch (Exception ex)
@@ -75,12 +77,12 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTests(TestEnumerationOptions options)
+        protected override void InternalBuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options)
         {
             try
             {
                 TestModel = null;
-                proxy.BuildTests(options);
+                proxy.BuildTests(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)), options);
                 TestModel = proxy.TestModel;
             }
             catch (Exception ex)
@@ -90,11 +92,11 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests(TestExecutionOptions options)
+        protected override void InternalRunTests(IProgressMonitor progressMonitor, TestExecutionOptions options)
         {
             try
             {
-                proxy.RunTests(options);
+                proxy.RunTests(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)), options);
             }
             catch (Exception ex)
             {
@@ -103,12 +105,12 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalUnloadProject()
+        protected override void InternalUnloadPackage(IProgressMonitor progressMonitor)
         {
             try
             {
                 if (proxy != null)
-                    proxy.UnloadProject();
+                    proxy.UnloadPackage(new SubProgressMonitor(progressMonitor, 0.9));
             }
             catch (Exception ex)
             {
@@ -116,29 +118,35 @@ namespace MbUnit.Core.Runner
             }
             finally
             {
-                Disconnect();
+                Disconnect(new SubProgressMonitor(progressMonitor, 0.1));
             }
         }
 
         /// <summary>
         /// Connects to the remote test domain and returns a proxy for the remote instance.
         /// </summary>
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <returns>A proxy for the remote test domain instance</returns>
-        protected abstract ITestDomain InternalConnect();
+        protected abstract ITestDomain InternalConnect(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Disconnects from the remote test domain.
         /// </summary>
-        protected abstract void InternalDisconnect();
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
+        protected abstract void InternalDisconnect(IProgressMonitor progressMonitor);
 
-        private void Connect()
+        private void Connect(IProgressMonitor progressMonitor)
         {
             try
             {
-                proxy = InternalConnect();
+                using (progressMonitor)
+                {
+                    progressMonitor.BeginTask("Connecting to the remote test domain.", 1);
+                    proxy = InternalConnect(progressMonitor);
 
-                if (Listener != null)
-                    proxy.SetEventListener(new RemoteEventListener(Listener));
+                    if (Listener != null)
+                        proxy.SetEventListener(new RemoteEventListener(Listener));
+                }
             }
             catch (Exception ex)
             {
@@ -146,11 +154,15 @@ namespace MbUnit.Core.Runner
             }
         }
 
-        private void Disconnect()
+        private void Disconnect(IProgressMonitor progressMonitor)
         {
             try
             {
-                InternalDisconnect();
+                using (progressMonitor)
+                {
+                    progressMonitor.BeginTask("Disconnecting from the remote test domain.", 1);
+                    InternalDisconnect(progressMonitor);
+                }
             }
             catch (Exception ex)
             {
