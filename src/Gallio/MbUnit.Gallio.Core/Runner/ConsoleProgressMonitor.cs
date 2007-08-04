@@ -23,7 +23,7 @@ namespace MbUnit.Core.Runner
         /// </summary>
         public ConsoleProgressMonitor()
         {
-            Console.CancelKeyPress += Console_CancelKeyPress;
+            ConsoleCancelHandler.Cancel += HandleCancel;
         }
 
         protected override void OnBeginTask(string taskName, double totalWorkUnits)
@@ -44,7 +44,7 @@ namespace MbUnit.Core.Runner
         {
             base.OnDone();
 
-            Console.CancelKeyPress -= Console_CancelKeyPress;
+            ConsoleCancelHandler.Cancel -= HandleCancel;
             UpdateDisplay();
         }
 
@@ -129,10 +129,8 @@ namespace MbUnit.Core.Runner
             Console.CursorTop -= 1;
         }
 
-        private void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        private void HandleCancel(object sender, EventArgs e)
         {
-            e.Cancel = true;
-
             NotifyCanceled();
             UpdateDisplay();
         }

@@ -65,11 +65,7 @@ namespace MbUnit.Echo
             // Disable ordinary cancelation handling.
             // We handle cancelation directly in ways that should result in the user
             // losing less data than if the OS just kills the process.
-            Console.TreatControlCAsInput = false;
-            Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs e)
-            {
-                e.Cancel = true;
-            };
+            ConsoleCancelHandler.Install();
 
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             applicationTitle = string.Format("MbUnit Echo - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build);

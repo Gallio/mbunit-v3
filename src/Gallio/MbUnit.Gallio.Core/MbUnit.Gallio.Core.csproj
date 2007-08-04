@@ -72,6 +72,7 @@
     <Compile Include="Runner\CommandLine\CommandLineUtility.cs" />
     <Compile Include="Runner\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
     <Compile Include="Runner\CommandLine\ErrorReporter.cs" />
+    <Compile Include="Runner\ConsoleCancelHandler.cs" />
     <Compile Include="Runner\ConsoleProgressMonitor.cs" />
     <Compile Include="Runner\Monitors\BaseTestRunnerMonitor.cs" />
     <Compile Include="Runner\Monitors\DebugMonitor.cs" />
