@@ -124,6 +124,7 @@
     <Compile Include="Services\Runtime\RuntimeSetup.cs" />
     <Compile Include="Services\Runtime\WindsorRuntime.cs" />
     <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
+    <Compile Include="Utilities\MonoSupport.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Runner\IsolatedTestDomain.config.template" />

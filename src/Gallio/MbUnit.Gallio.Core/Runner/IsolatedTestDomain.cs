@@ -22,6 +22,7 @@ using System.Text;
 using Castle.Core.Logging;
 using Castle.MicroKernel;
 using MbUnit.Core.Services.Runtime;
+using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Services.Runtime;
 
@@ -98,28 +99,7 @@ namespace MbUnit.Core.Runner
             {
                 progressMonitor.SetStatus("Creating the isolated AppDomain.");
 
-                AppDomainSetup setup = new AppDomainSetup();
-
-                if (Package.ApplicationBase.Length == 0
-                    || !Path.IsPathRooted(Package.ApplicationBase))
-                    setup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Package.ApplicationBase);
-                else
-                    setup.ApplicationBase = Package.ApplicationBase;
-
-                setup.ApplicationName = "IsolatedTestDomain";
-
-                if (Package.EnableShadowCopy)
-                {
-                    setup.ShadowCopyFiles = "true";
-                    setup.ShadowCopyDirectories = Package.ApplicationBase;
-                    // FIXME: should we also shadow-copy all assembly reference paths?
-                }
-
-                setup.LoaderOptimization = LoaderOptimization.MultiDomain;
-                setup.SetConfigurationBytes(CreateConfiguration());
-
-                Evidence evidence = new Evidence(AppDomain.CurrentDomain.Evidence); // FIXME: should be more careful here
-                appDomain = AppDomain.CreateDomain("IsolatedTestDomain", evidence, setup);
+                CreateAppDomain();
 
                 progressMonitor.Worked(0.7);
             }
@@ -180,6 +160,39 @@ namespace MbUnit.Core.Runner
             {
                 appDomain = null;
             }
+        }
+
+        private void CreateAppDomain()
+        {
+            AppDomainSetup setup = new AppDomainSetup();
+
+            if (Package.ApplicationBase.Length == 0
+                || !Path.IsPathRooted(Package.ApplicationBase))
+                setup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Package.ApplicationBase);
+            else
+                setup.ApplicationBase = Package.ApplicationBase;
+
+            setup.ApplicationName = "IsolatedTestDomain";
+
+            if (Package.EnableShadowCopy)
+            {
+                setup.ShadowCopyFiles = "true";
+                setup.ShadowCopyDirectories = Package.ApplicationBase;
+                // FIXME: should we also shadow-copy all assembly reference paths?
+            }
+
+            // NOTE: Loader optimization and override configuration not supported by Mono.
+            if (!MonoSupport.IsUsingMonoRuntime)
+                ConfigureAppDomainSetupForCLR(setup);
+
+            Evidence evidence = new Evidence(AppDomain.CurrentDomain.Evidence); // FIXME: should be more careful here
+            appDomain = AppDomain.CreateDomain("IsolatedTestDomain", evidence, setup);
+        }
+
+        private void ConfigureAppDomainSetupForCLR(AppDomainSetup setup)
+        {
+            setup.LoaderOptimization = LoaderOptimization.MultiDomain;
+            setup.SetConfigurationBytes(CreateConfiguration());
         }
 
         private T CreateRemoteInstance<T>(params object[] args)
