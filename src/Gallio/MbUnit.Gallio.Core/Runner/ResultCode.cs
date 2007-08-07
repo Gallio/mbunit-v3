@@ -13,11 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MbUnit.Echo
+namespace MbUnit.Core.Runner
 {
     /// <summary>
     /// Describes the result codes used by the application.
@@ -48,5 +44,10 @@ namespace MbUnit.Echo
         /// Invalid arguments were supplied on the command-line.
         /// </summary>
         public const int InvalidArguments = 10;
+
+        /// <summary>
+        /// No tests were found
+        /// </summary>
+        public const int NoTests = 16;
     }
 }

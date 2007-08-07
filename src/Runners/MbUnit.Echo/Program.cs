@@ -30,9 +30,9 @@ namespace MbUnit.Echo
         {
             try
             {
-                using (MainClass main = new MainClass())
+                using (MainClass main = new MainClass(args))
                 {
-                    return main.Run(args);
+                    return main.Run();
                 }
             }
             finally

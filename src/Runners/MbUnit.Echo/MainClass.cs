@@ -14,18 +14,13 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using Castle.Core.Logging;
-using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
-using MbUnit.Core.Runner.Monitors;
-using MbUnit.Core.Services.Runtime;
-using MbUnit.Echo;
+using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Echo
 {
@@ -40,87 +35,133 @@ namespace MbUnit.Echo
     {
         private string applicationTitle;
         private LevelFilteredLogger logger;
-        private MainArguments arguments = new MainArguments();
-        private TestPackage package;
-        private RuntimeSetup runtimeSetup;
-        private AutoRunner runner;
+        private readonly MainArguments arguments = new MainArguments();
+        private bool haltExecution = false;
+        private int resultCode;
 
-        public MainClass()
+        public MainClass(string[] args)
         {
-            logger = new PrettyConsoleLogger();
+            if (args == null)
+                throw new ArgumentNullException("args");
+            SetUp(args);
         }
 
-        public void Dispose()
+        public void SetUp(string[] args)
         {
+            SetApplicationTitle();
+            InstallCancelHandler();
+            if (!ParseArguments(args))
+            {
+                haltExecution = true;
+                resultCode = ResultCode.InvalidArguments;
+            }
+            if (arguments.Help)
+            {
+                ShowHelp();
+                haltExecution = true;
+                resultCode = ResultCode.Success;
+            }
+            SetUpLogger();
         }
 
-        public LevelFilteredLogger Logger
+        public int Run()
         {
-            get { return logger; }
-            set { logger = value; }
-        }
-
-        public int Run(string[] args)
-        {
-            // Disable ordinary cancelation handling.
-            // We handle cancelation directly in ways that should result in the user
-            // losing less data than if the OS just kills the process.
-            ConsoleCancelHandler.Install();
-
-            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            applicationTitle = string.Format("MbUnit Echo - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build);
-
-            Console.Title = applicationTitle;
-
             try
             {
-                try
+                if (haltExecution)
                 {
-                    CommandLineUtility.ParseCommandLineArguments(args, arguments, delegate(string message)
-                    {
-                        logger.FatalFormat("Error: {0}", message);
-                    });
+                    return resultCode;
                 }
-                catch (Exception)
-                {
-                    ShowHelp();
-                    return ResultCode.InvalidArguments;
-                }
-
-                switch (arguments.Verbosity)
-                {
-                    case Verbosity.Quiet:
-                        logger.Level = LoggerLevel.Warn;
-                        break;
-                    case Verbosity.Normal:
-                    case Verbosity.Verbose:
-                        logger.Level = LoggerLevel.Info;
-                        break;
-                    case Verbosity.Debug:
-                        logger.Level = LoggerLevel.Debug;
-                        break;
-                }
-
-                if (arguments.Help)
-                {
-                    ShowHelp();
-                    return ResultCode.Success;
-                }
-
-                logger.Debug(arguments.ToString());
-
-                BuildRuntimeSetupFromArguments();
-                BuildPackageFromArguments();
-                int resultCode = RunPackage();
-
-                if (resultCode == ResultCode.Canceled)
-                    logger.Warn("Canceled!");
+                resultCode = RunTests();
+                CheckResultCode();
+                //Console.ReadLine();
                 return resultCode;
             }
             catch (Exception ex)
             {
                 logger.FatalFormat(ex, "A fatal exception occurred.");
                 return ResultCode.FatalException;
+            }
+        }
+
+        private int RunTests()
+        {
+            using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper
+                (
+                delegate { return new ConsoleProgressMonitor(); },
+                logger,
+                arguments.Verbosity,
+                arguments.GetFilter()
+                ))
+            {
+                testRunnerHelper.TemplateTreePersister = SaveTemplateTree;
+                testRunnerHelper.TemplateTreePersister = SaveTestTree;
+                testRunnerHelper.AddPluginDirectories(arguments.PluginDirectories);
+                testRunnerHelper.AddHintDirectories(arguments.AssemblyPath);
+                testRunnerHelper.AddAssemblyFiles(arguments.Files);
+                return testRunnerHelper.Run();
+            }
+        }
+
+        private void SetUpLogger()
+        {
+            logger = new PrettyConsoleLogger();
+            SetVerbosityLevel();
+            logger.Debug(arguments.ToString());
+        }
+
+        private static void InstallCancelHandler()
+        {
+            // Disable ordinary cancelation handling.
+            // We handle cancelation directly in ways that should result in the user
+            // losing less data than if the OS just kills the process.
+            ConsoleCancelHandler.Install();
+        }
+
+        private void CheckResultCode()
+        {
+            if (resultCode == ResultCode.Canceled)
+                logger.Warn("Canceled!");
+        }
+
+        private bool ParseArguments(string[] args)
+        {
+            try
+            {
+                CommandLineUtility.ParseCommandLineArguments(args, arguments, delegate(string message)
+                {
+                    logger.FatalFormat("Error: {0}", message);
+                });
+            }
+            catch (Exception)
+            {
+                ShowHelp();
+                return false;
+            }
+            return true;
+        }
+
+        private void SetApplicationTitle()
+        {
+            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
+            applicationTitle = string.Format("MbUnit Echo - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build);
+            Console.Title = applicationTitle;
+        }
+
+        private void SetVerbosityLevel()
+        {
+            switch (arguments.Verbosity)
+            {
+                case Verbosity.Quiet:
+                    logger.Level = LoggerLevel.Warn;
+                    break;
+                case Verbosity.Normal:
+                case Verbosity.Verbose:
+                    logger.Level = LoggerLevel.Info;
+                    break;
+                case Verbosity.Debug:
+                    logger.Level = LoggerLevel.Debug;
+                    break;
             }
         }
 
@@ -150,114 +191,22 @@ namespace MbUnit.Echo
             Console.WriteLine(CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments)));
         }
 
-        private void BuildRuntimeSetupFromArguments()
+        private void SaveTemplateTree(object root, IProgressMonitor progressMonitor)
         {
-            runtimeSetup = new RuntimeSetup();
-
-            foreach (string pluginDirectory in arguments.PluginDirectories)
-                runtimeSetup.AddPluginDirectory(Path.GetFullPath(pluginDirectory));
+            if (arguments.SaveTemplateTree != null)
+            {
+                progressMonitor.BeginTask("Saving template tree to: " + arguments.SaveTemplateTree + ".", 1);
+                SaveToXml(root, arguments.SaveTemplateTree);
+            }
         }
 
-        private void BuildPackageFromArguments()
+        private void SaveTestTree(object root, IProgressMonitor progressMonitor)
         {
-            package = new TestPackage();
-
-            foreach (string path in arguments.AssemblyPath)
-                package.AddHintDirectory(Path.GetFullPath(path));
-
-            foreach (string file in arguments.Files)
-                package.AddAssemblyFile(Path.GetFullPath(file));
-        }
-
-        private int RunPackage()
-        {
-            if (package.AssemblyFiles.Length == 0)
+            if (arguments.SaveTestTree != null)
             {
-                logger.Warn("No test assemblies to execute!");
-                return ResultCode.Success;
+                progressMonitor.BeginTask("Saving test tree to: " + arguments.SaveTestTree + ".", 1);
+                SaveToXml(root, arguments.SaveTestTree);
             }
-
-            using (runner = AutoRunner.CreateRunner(runtimeSetup))
-            {
-                StringWriter debugWriter = null;
-                if (arguments.Verbosity == Verbosity.Debug)
-                {
-                    debugWriter = new StringWriter();
-                    new DebugMonitor(debugWriter).Attach(runner);
-                }
-
-                runner.TestExecutionOptions.Filter = arguments.GetFilter();
-
-                Stopwatch stopWatch = Stopwatch.StartNew();
-                logger.InfoFormat("\nStart time: {0}", DateTime.Now.ToShortTimeString());
-
-                using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
-                {
-                    runner.LoadProject(progressMonitor, package);
-
-                    if (progressMonitor.IsCanceled)
-                        return ResultCode.Canceled;
-                }
-
-                using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
-                {
-                    runner.BuildTemplates(progressMonitor);
-
-                    if (progressMonitor.IsCanceled)
-                        return ResultCode.Canceled;
-                }
-
-                using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
-                {
-                    runner.BuildTests(progressMonitor);
-
-                    if (progressMonitor.IsCanceled)
-                        return ResultCode.Canceled;
-                }
-
-                if (arguments.SaveTemplateTree != null)
-                {
-                    using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
-                    {
-                        progressMonitor.BeginTask("Saving template tree to: " + arguments.SaveTemplateTree + ".", 1);
-
-                        SaveToXml(runner.TemplateModel.RootTemplate, arguments.SaveTemplateTree);
-
-                        if (progressMonitor.IsCanceled)
-                            return ResultCode.Canceled;
-                    }
-                }
-
-                if (arguments.SaveTestTree != null)
-                {
-                    using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
-                    {
-                        progressMonitor.BeginTask("Saving test tree to: " + arguments.SaveTestTree + ".", 1);
-
-                        SaveToXml(runner.TestModel.RootTest, arguments.SaveTestTree);
-
-                        if (progressMonitor.IsCanceled)
-                            return ResultCode.Canceled;
-                    }
-                }
-
-                using (ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor())
-                {
-                    runner.Run(progressMonitor);
-
-                    if (progressMonitor.IsCanceled)
-                        return ResultCode.Canceled;
-                }
-
-                if (debugWriter != null)
-                    logger.Debug(debugWriter.ToString());
-
-                logger.InfoFormat("\nStop time: {0}", DateTime.Now.ToShortTimeString());
-                logger.InfoFormat("Total execution time: {0:#0.000}s", stopWatch.Elapsed.TotalSeconds);
-            }
-
-            // TODO: Return a different code if there were failures.
-            return ResultCode.Success;
         }
 
         private static void SaveToXml(object root, string filename)
@@ -270,5 +219,13 @@ namespace MbUnit.Echo
             using (XmlWriter writer = XmlWriter.Create(filename, settings))
                 serializer.Serialize(writer, root);
         }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+        }
+
+        #endregion
     }
 }

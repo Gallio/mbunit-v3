@@ -19,7 +19,7 @@ namespace MbUnit.Framework.Kernel.Events
     /// This interface is mostly not safe for use by multiple concurrent
     /// threads.  Do not share a progress monitor instance across threads!
     /// <seealso cref="Canceled"/> for special rules regarding the handling
-    /// the cancelation event.
+    /// of the cancelation event.
     /// </para>
     /// <para>
     /// <see cref="IDisposable" /> is implemented as a convenience for use

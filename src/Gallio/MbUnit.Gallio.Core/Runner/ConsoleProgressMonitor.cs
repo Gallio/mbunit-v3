@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Core.Runner
 {
@@ -14,41 +10,18 @@ namespace MbUnit.Core.Runner
     /// This is an initial hack to provide an example for development of MbUnit Echo.
     /// Feel free to rip it apart then remove this remark.
     /// </remarks>
-    public class ConsoleProgressMonitor : TrackingProgressMonitor
+    public class ConsoleProgressMonitor : TextualProgressMonitor
     {
         private int newlinesWritten;
 
         /// <summary>
         /// Creates a console progress monitor.
         /// </summary>
-        public ConsoleProgressMonitor()
+        public ConsoleProgressMonitor() : base()
         {
-            ConsoleCancelHandler.Cancel += HandleCancel;
         }
 
-        protected override void OnBeginTask(string taskName, double totalWorkUnits)
-        {
-            base.OnBeginTask(taskName, totalWorkUnits);
-
-            UpdateDisplay();
-        }
-
-        protected override void OnWorked(double workUnits)
-        {
-            base.OnWorked(workUnits);
-
-            UpdateDisplay();
-        }
-
-        protected override void OnDone()
-        {
-            base.OnDone();
-
-            ConsoleCancelHandler.Cancel -= HandleCancel;
-            UpdateDisplay();
-        }
-
-        private void UpdateDisplay()
+        protected override void UpdateDisplay()
         {
             lock (this)
             {
@@ -127,12 +100,6 @@ namespace MbUnit.Core.Runner
             Console.Write(new string(' ', Console.BufferWidth));
             Console.CursorLeft = 0;
             Console.CursorTop -= 1;
-        }
-
-        private void HandleCancel(object sender, EventArgs e)
-        {
-            NotifyCanceled();
-            UpdateDisplay();
         }
     }
 }

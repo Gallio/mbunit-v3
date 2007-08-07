@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Filters;
@@ -177,6 +178,12 @@ namespace MbUnit.Echo
             foreach (string assemblyPath in this.AssemblyPath)
             {
                 sw.WriteLine("\t{0}", assemblyPath);
+            }
+
+            sw.WriteLine("Plugin Directories:");
+            foreach (string pluginDirectory in this.PluginDirectories)
+            {
+                sw.WriteLine("\t{0}", pluginDirectory);
             }
 
             sw.WriteLine("Report folder: {0}",this.ReportFolder);
