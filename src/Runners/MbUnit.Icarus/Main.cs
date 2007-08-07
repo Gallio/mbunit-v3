@@ -97,7 +97,7 @@ namespace MbUnit.Icarus
             //project.TestState = TestState.Failed;
             testTree.Nodes.Add(project);
 
-            TestTreeNode namespaces = new TestTreeNode("Namespaces", 1, 1);
+            TestTreeNode namespaces = new TestTreeNode("MbUnit.Gallio.Core.Tests", 1, 1);
             //namespaces.TestState = TestState.Failed;
             project.Nodes.Add(namespaces);
 
@@ -195,9 +195,35 @@ namespace MbUnit.Icarus
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            trayIcon.Icon = Resources.FailMb;
-            trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
-                                    ToolTipIcon.Error);
+            //trayIcon.Icon = Resources.FailMb;
+            //trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
+            //                        ToolTipIcon.Error);
+
+            TaskButton button1 = new TaskButton();
+            button1.Text = "Button 1";
+            button1.Icon = global::MbUnit.Icarus.Properties.Resources.tick;
+            button1.Description = "This is the first button, it doesnt do very much at the moment.";
+
+            TaskButton button2 = new TaskButton();
+            button2.Text = "Button 2";
+            button2.Icon = global::MbUnit.Icarus.Properties.Resources.help_browser;
+            button2.Description = "This is the second button, this doesnt do anything either but the text for this button is a bit longer, it needs to wrap onto the next line.";
+
+            TaskButton button3 = new TaskButton();
+            button3.Text = "Close Window";
+            button3.Icon = global::MbUnit.Icarus.Properties.Resources.cross;
+            button3.Description = "There is no spoon";
+
+            TaskButton res = TaskDialog.Show(
+                "Hello World", 
+                "This is a description. It should probably cover an explanation of the problem here and what your options are for.", 
+                new TaskButton[] { button1, button2, button3 });
+
+            if (res == button2)
+                MessageBox.Show("Button 2 was clicked.");
+            else if (res == button1)
+                MessageBox.Show("Button 1 was clicked.");
+
         }
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)

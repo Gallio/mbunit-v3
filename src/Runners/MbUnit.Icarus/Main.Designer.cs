@@ -277,7 +277,7 @@ namespace MbUnit.Icarus
             this.textReportToolStripMenuItem2,
             this.dOXReportToolStripMenuItem1});
             this.reportsToolStripMenuItem1.Name = "reportsToolStripMenuItem1";
-            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
             this.reportsToolStripMenuItem1.Text = "&Reports";
             // 
             // hTMLReportToolStripMenuItem1
@@ -307,12 +307,12 @@ namespace MbUnit.Icarus
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(113, 6);
             // 
             // optionsMenuItem
             // 
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsMenuItem.Size = new System.Drawing.Size(116, 22);
             this.optionsMenuItem.Text = "&Options";
             this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
@@ -457,7 +457,7 @@ namespace MbUnit.Icarus
             // 
             this.treeImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("treeImages.ImageStream")));
             this.treeImages.TransparentColor = System.Drawing.Color.Magenta;
-            this.treeImages.Images.SetKeyName(0, "MbUnit.ico");
+            this.treeImages.Images.SetKeyName(0, "App.ico");
             this.treeImages.Images.SetKeyName(1, "VSObject_Assembly.bmp");
             this.treeImages.Images.SetKeyName(2, "VSObject_Namespace.bmp");
             this.treeImages.Images.SetKeyName(3, "VSObject_Class.bmp");
