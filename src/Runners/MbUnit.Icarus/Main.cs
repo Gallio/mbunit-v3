@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -22,6 +23,7 @@ using System.Windows.Forms;
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Controls.Enums;
 using MbUnit.Icarus.Properties;
+using MbUnit.Icarus.Showers;
 using ZedGraph;
 
 namespace MbUnit.Icarus
@@ -198,27 +200,29 @@ namespace MbUnit.Icarus
             //trayIcon.Icon = Resources.FailMb;
             //trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
             //                        ToolTipIcon.Error);
-
+            List<TaskButton> taskButtons = new List<TaskButton>();
+            
             TaskButton button1 = new TaskButton();
             button1.Text = "Button 1";
-            button1.Icon = global::MbUnit.Icarus.Properties.Resources.tick;
+            button1.Icon = Resources.tick;
             button1.Description = "This is the first button, it doesnt do very much at the moment.";
+            taskButtons.Add(button1);
 
             TaskButton button2 = new TaskButton();
             button2.Text = "Button 2";
-            button2.Icon = global::MbUnit.Icarus.Properties.Resources.help_browser;
+            button2.Icon = Resources.help_browser;
             button2.Description = "This is the second button, this doesnt do anything either but the text for this button is a bit longer, it needs to wrap onto the next line.";
+            taskButtons.Add(button2);
 
             TaskButton button3 = new TaskButton();
             button3.Text = "Close Window";
-            button3.Icon = global::MbUnit.Icarus.Properties.Resources.cross;
+            button3.Icon = Resources.cross;
             button3.Description = "There is no spoon";
-
-            TaskButton res = TaskDialog.Show(
-                "Hello World", 
-                "This is a description. It should probably cover an explanation of the problem here and what your options are for.", 
-                new TaskButton[] { button1, button2, button3 });
-
+            taskButtons.Add(button3);
+            
+            TaskDialogShower taskDialogShower = new TaskDialogShower();
+            TaskButton res = taskDialogShower.CreateTaskDialog("title text", "description text", taskButtons);
+            
             if (res == button2)
                 MessageBox.Show("Button 2 was clicked.");
             else if (res == button1)

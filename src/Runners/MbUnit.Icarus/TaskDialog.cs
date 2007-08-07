@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -23,7 +24,7 @@ namespace MbUnit.Icarus
 {
     public abstract class TaskDialog
     {
-        public static TaskButton Show(string title, string description, TaskButton[] buttons)
+        public static TaskButton Show(string title, string description, List<TaskButton> buttons)
         {
             using (TaskDialogForm form = new TaskDialogForm())
             {
@@ -41,8 +42,8 @@ namespace MbUnit.Icarus
         private sealed class TaskDialogForm : Form
         {
             private const int MIN_DIALOG_HEIGHT = 100;
-            private TaskButton[] activeButtons;
-            private TaskButton[] buttons;
+            private List<TaskButton> activeButtons;
+            private List<TaskButton> buttons;
             private Label labelDescription;
             private Label labelTitle;
             private Panel panelCommands;
@@ -150,11 +151,13 @@ namespace MbUnit.Icarus
                 set { labelDescription.Text = value; }
             }
 
-            public TaskButton[] Buttons
+            public List<TaskButton> Buttons
             {
                 set
                 {
-                    buttons = (TaskButton[]) value.Clone();
+                    buttons = value;
+                    //buttons = (TaskButton[]) value.Clone();
+                    //buttons = Buttons;
                     InitButtons();
                 }
             }
@@ -177,12 +180,12 @@ namespace MbUnit.Icarus
 
                 if (activeButtons != null)
                 {
-                    for (int i = 0; i < activeButtons.Length; ++i)
+                    foreach(TaskButton taskButton in activeButtons)
                     {
-                        activeButtons[i].Location = new Point(leftMargin, y);
-                        activeButtons[i].Width = insetWidth;
-                        activeButtons[i].PerformLayout();
-                        y += activeButtons[i].Height + commandButtonVMargin;
+                        taskButton.Location = new Point(leftMargin, y);
+                        taskButton.Width = insetWidth;
+                        taskButton.PerformLayout();
+                        y += taskButton.Height + commandButtonVMargin;
                     }
                 }
 
@@ -207,14 +210,16 @@ namespace MbUnit.Icarus
                     activeButtons = null;
                 }
 
-                activeButtons = new TaskButton[buttons.Length];
+                //activeButtons = new TaskButton[buttons.Length];
+                activeButtons = new List<TaskButton>();
 
-                for (int i = 0; i < activeButtons.Length; ++i)
+                foreach (TaskButton taskButton in buttons)
                 {
-                    TaskButton taskButton = buttons[i];
+                    //TaskButton localTaskButton = buttons[i];
                     taskButton.Click += TaskButton_Click;
 
-                    activeButtons[i] = taskButton;
+                    //activeButtons[i] = taskButton;
+                    activeButtons.Add(taskButton);
                     panelCommands.Controls.Add(taskButton);
                 }
 
