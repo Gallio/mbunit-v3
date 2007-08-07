@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.IO;
 using System.Reflection;
 using MbUnit.Framework.Kernel.Filters;
 //using MbUnit.Framework.Kernel.Metadata;
