@@ -14,10 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using Castle.Core.Logging;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Serialization;
 using MbUnit.Core.Services.Runtime;

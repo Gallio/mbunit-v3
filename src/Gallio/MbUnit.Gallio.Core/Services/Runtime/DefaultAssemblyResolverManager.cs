@@ -79,7 +79,7 @@ namespace MbUnit.Core.Services.Runtime
         /// <inheritdoc />
         public void AddMbUnitDirectories()
         {
-            AddHintDirectory(typeof(DefaultAssemblyResolverManager).Assembly.Location);
+            AddHintDirectoryContainingFile(typeof(DefaultAssemblyResolverManager).Assembly.Location);
         }
 
         /// <inheritdoc />
