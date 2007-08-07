@@ -17,16 +17,23 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Creates a console progress monitor.
         /// </summary>
-        public ConsoleProgressMonitor() : base()
+        public ConsoleProgressMonitor()
         {
+            ConsoleCancelHandler.Cancel += HandleCancel;
         }
 
+        /// <inheritdoc />
+        protected override void OnDone()
+        {
+            ConsoleCancelHandler.Cancel -= HandleCancel;
+            base.OnDone();
+        }
+
+        /// <inheritdoc />
         protected override void UpdateDisplay()
         {
             lock (this)
             {
-                //Thread.Sleep(100);
-
                 EraseLine();
                 for (; newlinesWritten > 0; newlinesWritten -= 1)
                 {
@@ -100,6 +107,12 @@ namespace MbUnit.Core.Runner
             Console.Write(new string(' ', Console.BufferWidth));
             Console.CursorLeft = 0;
             Console.CursorTop -= 1;
+        }
+
+        private void HandleCancel(object sender, EventArgs e)
+        {
+            NotifyCanceled();
+            UpdateDisplay();
         }
     }
 }
