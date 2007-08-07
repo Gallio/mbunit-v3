@@ -24,6 +24,7 @@ using Castle.Core.Resource;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
+using MbUnit.Core.Utilities;
 using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Core.Services.Runtime
@@ -68,6 +69,8 @@ namespace MbUnit.Core.Services.Runtime
 
             SetDefaultPluginDirectories();
             ConfigureFromSetup(runtimeSetup);
+
+            VisualStudioDebugHelper.ConfigureRuntimeForDebugging(assemblyResolverManager, this);
         }
 
         /// <inheritdoc />

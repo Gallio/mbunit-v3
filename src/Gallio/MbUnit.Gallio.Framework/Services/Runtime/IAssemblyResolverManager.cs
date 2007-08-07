@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 
 namespace MbUnit.Framework.Services.Runtime
 {
@@ -22,6 +23,11 @@ namespace MbUnit.Framework.Services.Runtime
     /// </summary>
     public interface IAssemblyResolverManager : IDisposable
     {
+        /// <summary>
+        /// Gets the list of directories that contain MbUnit assemblies.
+        /// </summary>
+        IList<string> MbUnitDirectories { get; }
+
         /// <summary>
         /// Adds an assembly load hint directory to search when standard assembly
         /// resolution fails.

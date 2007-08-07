@@ -39,16 +39,36 @@ namespace MbUnit.Core.Services.Runtime
             hintDirectories = new List<string>();
             assemblyResolvers = new List<IAssemblyResolver>();
 
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            AppDomain.CurrentDomain.AssemblyResolve -= new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
 
             hintDirectories = null;
             assemblyResolvers = null;
+        }
+
+        /// <inheritdoc />
+        public IList<string> MbUnitDirectories
+        {
+            get
+            {
+                List<string> directories = new List<string>();
+
+                try
+                {
+                    directories.Add(Path.GetDirectoryName(new Uri(typeof(DefaultAssemblyResolverManager).Assembly.CodeBase).LocalPath));
+                }
+                catch (InvalidOperationException)
+                {
+                    // Ignore problems getting the local directory
+                }
+
+                return directories;
+            }
         }
 
         /// <inheritdoc />
@@ -79,7 +99,8 @@ namespace MbUnit.Core.Services.Runtime
         /// <inheritdoc />
         public void AddMbUnitDirectories()
         {
-            AddHintDirectoryContainingFile(typeof(DefaultAssemblyResolverManager).Assembly.Location);
+            foreach (string directory in MbUnitDirectories)
+                AddHintDirectory(directory);
         }
 
         /// <inheritdoc />

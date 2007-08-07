@@ -31,13 +31,21 @@ namespace MbUnit.Framework.Kernel.Model
         /// Gets or sets the stable unique identifier of the component.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The identifier must be unique across all components
         /// within a given test project.  It should also be stable so that the
         /// identifier remains valid across recompilations and code changes that
         /// do not alter the underlying declarations (insofar as is possible).
-        /// The identifier is used to refer to test components remotely from
-        /// a test runner and persistently in test projects and reports.
-        /// Normally the identifier is assigned automatically by the <see cref="TemplateTreeBuilder" />.
+        /// </para>
+        /// <para>
+        /// The identifier does not refer to a specific instance of <see cref="IModelComponent" />,
+        /// but rather incorporates enough information so that we can unambiguously find a
+        /// corresponding instance in a model that has been populated.  When we rebuild
+        /// the model, assuming the code hasn't changed too much, the objects in the model
+        /// will have the same identifier as before.  This allows the identifier
+        /// to be saved in project files to construct lists of components.  We can also use
+        /// it to refer to components remotely.
+        /// </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         string Id { get; set; }

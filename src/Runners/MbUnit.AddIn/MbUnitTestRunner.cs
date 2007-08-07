@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Reflection;
 using MbUnit.Framework.Kernel.Filters;
 //using MbUnit.Framework.Kernel.Metadata;
@@ -71,9 +72,6 @@ namespace MbUnit.AddIn
                 filters
                 ))
             {
-                //TODO: THIS SHOULDN'T BE HARDCODED!
-                testRunnerHelper.AddPluginDirectory(@"../../../Plugins/MbUnit.Plugin.MbUnit2Adapter/bin");
-                testRunnerHelper.AddHintDirectory(@"../../../../lib/Castle");
                 testRunnerHelper.AddAssemblyFile(assembly.Location);
                 result = testRunnerHelper.Run();
             }

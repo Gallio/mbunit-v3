@@ -19,8 +19,6 @@ using System.IO;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
-using Castle.Core.Logging;
-using Castle.MicroKernel;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Events;
@@ -73,10 +71,12 @@ namespace MbUnit.Core.Runner
                 if (bootstrapAssemblies == null)
                 {
                     bootstrapAssemblies = new Dictionary<Assembly, bool>();
-                    bootstrapAssemblies.Add(typeof(ILogger).Assembly, false); // Castle.Core
-                    bootstrapAssemblies.Add(typeof(IKernel).Assembly, false); // Castle.MicroKernel
-                    bootstrapAssemblies.Add(typeof(IsolatedTestDomain).Assembly, false); // MbUnit.Gallio.Core
-                    bootstrapAssemblies.Add(typeof(RuntimeHolder).Assembly, true); // MbUnit.Gallio.Framework
+                    bootstrapAssemblies.Add(typeof(Castle.Core.Logging.ILogger).Assembly, false);
+                    bootstrapAssemblies.Add(typeof(Castle.MicroKernel.IKernel).Assembly, false);
+                    bootstrapAssemblies.Add(typeof(Castle.Windsor.WindsorContainer).Assembly, false);
+                    bootstrapAssemblies.Add(typeof(Castle.DynamicProxy.ProxyGenerator).Assembly, false);
+                    bootstrapAssemblies.Add(typeof(MbUnit.Core.Runner.ITestDomain).Assembly, false);
+                    bootstrapAssemblies.Add(typeof(MbUnit.Framework.Assert).Assembly, true);
                 }
 
                 return bootstrapAssemblies;

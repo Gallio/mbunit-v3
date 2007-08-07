@@ -36,6 +36,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
@@ -51,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities\VisualStudioDebugHelper.cs" />
     <Compile Include="Harness\AssemblyAddedEventArgs.cs" />
     <Compile Include="Harness\DefaultTestHarness.cs" />
     <Compile Include="Harness\DefaultTestHarnessFactory.cs" />
