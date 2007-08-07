@@ -14,49 +14,60 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace MbUnit.Icarus
 {
-    public class TaskButton : Control, IButtonControl
+    public class TaskButton :
+        Control, IButtonControl
     {
-        private bool isDefault = false;
-        private DialogResult dialogResult = DialogResult.None;
-
-        private string description = string.Empty;
-        private Image icon;
-        
-        private bool mouseOver = false;
-
         private const int MIN_HEIGHT = 40;
-
-        private Font titleFont;
+        private string description = string.Empty;
         private Font descriptionFont;
+        private DialogResult dialogResult = DialogResult.None;
+        private Image icon;
+        private bool isDefault = false;
+        private bool mouseOver = false;
+        private Font titleFont;
 
         public TaskButton()
         {
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.CacheText, true);
 
-            titleFont = new Font(this.Font.Name, this.Font.Size + 2, FontStyle.Bold);
-            descriptionFont = new Font(this.Font.Name, this.Font.Size, FontStyle.Regular);
+            Initialize();
+        }
+
+        public bool IsDefault
+        {
+            get { return isDefault; }
+        }
+
+        public string Description
+        {
+            get { return description; }
+            set { description = value; }
+        }
+
+        public Image Icon
+        {
+            get { return icon; }
+            set { icon = value; }
         }
 
         #region IButtonControl Members
 
         public DialogResult DialogResult
         {
-            get { return this.dialogResult; }
+            get { return dialogResult; }
 
             set
             {
-                if (this.dialogResult != value)
+                if (dialogResult != value)
                 {
-                    this.dialogResult = value;
+                    dialogResult = value;
                     OnDialogResultChanged();
                 }
             }
@@ -64,9 +75,9 @@ namespace MbUnit.Icarus
 
         public void NotifyDefault(bool value)
         {
-            if (this.isDefault != value)
+            if (isDefault != value)
             {
-                this.isDefault = value;
+                isDefault = value;
                 OnIsDefaultChanged();
                 Invalidate(true);
             }
@@ -79,105 +90,94 @@ namespace MbUnit.Icarus
 
         #endregion
 
+        private void Initialize()
+        {
+            titleFont = new Font(Font.Name, Font.Size + 2, FontStyle.Bold);
+            descriptionFont = new Font(Font.Name, Font.Size, FontStyle.Regular);
+        }
+
         public event EventHandler DialogResultChanged;
+
         protected virtual void OnDialogResultChanged()
         {
             if (DialogResultChanged != null)
-            {
                 DialogResultChanged(this, EventArgs.Empty);
-            }
         }
 
         public event EventHandler IsDefaultChanged;
+
         protected virtual void OnIsDefaultChanged()
         {
             if (IsDefaultChanged != null)
-            {
                 IsDefaultChanged(this, EventArgs.Empty);
-            }
-        }
-
-        public bool IsDefault
-        {
-            get { return this.isDefault; }
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Rectangle bounds = new Rectangle(e.ClipRectangle.X, e.ClipRectangle.Y, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);
+            Rectangle bounds =
+                new Rectangle(e.ClipRectangle.X, e.ClipRectangle.Y, e.ClipRectangle.Width - 1,
+                              e.ClipRectangle.Height - 1);
 
-            if (this.mouseOver)
+            if (mouseOver)
             {
                 e.Graphics.DrawRectangle(new Pen(SystemBrushes.ControlDark), bounds);
 
                 Rectangle gradientArea = new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 1, bounds.Height - 1);
-                e.Graphics.FillRectangle(new LinearGradientBrush(gradientArea, SystemColors.Control, SystemColors.ControlLight, 90F), gradientArea);
+                e.Graphics.FillRectangle(
+                    new LinearGradientBrush(gradientArea, SystemColors.Control, SystemColors.ControlLight, 90F),
+                    gradientArea);
             }
 
-            SizeF titleSize = e.Graphics.MeasureString(this.Text, titleFont);
-            SizeF descriptionSize = e.Graphics.MeasureString(this.Description, descriptionFont);
+            SizeF titleSize = e.Graphics.MeasureString(Text, titleFont);
+            SizeF descriptionSize = e.Graphics.MeasureString(Description, descriptionFont);
 
             float maxWidth = (bounds.Width - 40);
             float lineHeight = descriptionSize.Height;
 
             int rows = 1;
             if (descriptionSize.Width > maxWidth)
-                rows = (int)Math.Ceiling(descriptionSize.Width / maxWidth);
+                rows = (int) Math.Ceiling(descriptionSize.Width/maxWidth);
 
-            RectangleF descriptionArea = new RectangleF(35, titleSize.Height + 5, maxWidth, lineHeight * rows);
+            RectangleF descriptionArea = new RectangleF(35, titleSize.Height + 5, maxWidth, lineHeight*rows);
 
-            e.Graphics.DrawString(this.Text, titleFont, SystemBrushes.WindowText, new PointF(35, 2));
-            e.Graphics.DrawString(this.Description, descriptionFont, SystemBrushes.WindowText, descriptionArea);
+            e.Graphics.DrawString(Text, titleFont, SystemBrushes.WindowText, new PointF(35, 2));
+            e.Graphics.DrawString(Description, descriptionFont, SystemBrushes.WindowText, descriptionArea);
 
-            if (this.Icon != null)
-                e.Graphics.DrawImage(this.Icon, 8, 3, 20, 20);
-        }
-
-        public string Description
-        {
-            get { return this.description; }
-            set { this.description = value; }
-        }
-
-        public Image Icon
-        {
-            get { return this.icon; }
-            set { this.icon = value; }
+            if (Icon != null)
+                e.Graphics.DrawImage(Icon, 8, 3, 20, 20);
         }
 
         protected override void OnLayout(LayoutEventArgs levent)
         {
-            if (this.Height == 0)
+            if (Height == 0)
             {
-                this.Height = MIN_HEIGHT;
+                Height = MIN_HEIGHT;
 
-                Graphics g = this.CreateGraphics();
-                SizeF descriptionSize = g.MeasureString(this.Description, descriptionFont);
+                Graphics g = CreateGraphics();
+                SizeF descriptionSize = g.MeasureString(Description, descriptionFont);
 
-                float maxWidth = (this.Width - 40);
+                float maxWidth = (Width - 40);
                 float lineHeight = descriptionSize.Height;
 
-                int rows = 1;
                 if (descriptionSize.Width > maxWidth)
                 {
-                    rows = (int)Math.Ceiling(descriptionSize.Width / maxWidth);
-                    this.Height = (int)((MIN_HEIGHT + (lineHeight * rows)) - lineHeight);
+                    int rows = (int) Math.Ceiling(descriptionSize.Width/maxWidth);
+                    Height = (int) ((MIN_HEIGHT + (lineHeight*rows)) - lineHeight);
                 }
             }
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            this.Cursor = Cursors.Hand;
-            this.mouseOver = true;
+            Cursor = Cursors.Hand;
+            mouseOver = true;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            this.mouseOver = false;
+            mouseOver = false;
             Invalidate();
         }
-
     }
 }
