@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
+using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
+using MbUnit.Icarus.Properties;
 
 namespace MbUnit.Icarus
 {
@@ -15,7 +15,7 @@ namespace MbUnit.Icarus
                 form.Text = title;
                 form.Description = description;
                 form.Buttons = buttons;
-                
+
                 form.ShowDialog();
                 return form.SelectedButton;
             }
@@ -25,18 +25,16 @@ namespace MbUnit.Icarus
 
         private sealed class TaskDialogForm : Form
         {
-            private System.Windows.Forms.Panel panelCommands;
-            private System.Windows.Forms.PictureBox picLogo;
-            private System.Windows.Forms.Label labelTitle;
-            private System.Windows.Forms.Label labelDescription;
-            private System.Windows.Forms.Panel panelHeader;
-
-            private TaskButton[] buttons;
+            private const int MIN_DIALOG_HEIGHT = 100;
             private TaskButton[] activeButtons;
+            private TaskButton[] buttons;
+            private Label labelDescription;
+            private Label labelTitle;
+            private Panel panelCommands;
+            private Panel panelHeader;
+            private PictureBox picLogo;
 
             private TaskButton selectedButton;
-
-            private const int MIN_DIALOG_HEIGHT = 100;
 
             public TaskDialogForm()
             {
@@ -47,76 +45,77 @@ namespace MbUnit.Icarus
 
             private void InitializeComponent()
             {
-                this.panelCommands = new System.Windows.Forms.Panel();
-                this.picLogo = new System.Windows.Forms.PictureBox();
-                this.labelDescription = new System.Windows.Forms.Label();
-                this.panelHeader = new System.Windows.Forms.Panel();
-                this.labelTitle = new System.Windows.Forms.Label();
-                ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
-                this.panelHeader.SuspendLayout();
-                this.SuspendLayout();
+                panelCommands = new Panel();
+                picLogo = new PictureBox();
+                labelDescription = new Label();
+                panelHeader = new Panel();
+                labelTitle = new Label();
+                ((ISupportInitialize) (picLogo)).BeginInit();
+                panelHeader.SuspendLayout();
+                SuspendLayout();
                 // 
                 // panelCommands
                 // 
-                this.panelCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                            | System.Windows.Forms.AnchorStyles.Left)
-                            | System.Windows.Forms.AnchorStyles.Right)));
-                this.panelCommands.Location = new System.Drawing.Point(12, 88);
-                this.panelCommands.Name = "panelCommands";
-                this.panelCommands.Size = new System.Drawing.Size(421, 144);
+                panelCommands.Anchor = ((AnchorStyles.Top | AnchorStyles.Bottom)
+                                        | AnchorStyles.Left)
+                                       | AnchorStyles.Right;
+                panelCommands.Location = new Point(12, 88);
+                panelCommands.Name = "panelCommands";
+                panelCommands.Size = new Size(421, 144);
                 // 
                 // picLogo
                 // 
-                this.picLogo.Image = global::MbUnit.Icarus.Properties.Resources.MbUnitLogo;
-                this.picLogo.Location = new System.Drawing.Point(324, -5);
-                this.picLogo.Name = "picLogo";
-                this.picLogo.Size = new System.Drawing.Size(133, 82);
+                picLogo.Image = Resources.MbUnitLogo;
+                picLogo.Location = new Point(324, -5);
+                picLogo.Name = "picLogo";
+                picLogo.Size = new Size(133, 82);
                 // 
                 // labelDescription
                 // 
-                this.labelDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                            | System.Windows.Forms.AnchorStyles.Right)));
-                this.labelDescription.BackColor = System.Drawing.Color.Transparent;
-                this.labelDescription.Location = new System.Drawing.Point(9, 33);
-                this.labelDescription.Name = "labelDescription";
-                this.labelDescription.Size = new System.Drawing.Size(309, 30);
+                labelDescription.Anchor = (AnchorStyles.Top | AnchorStyles.Left)
+                                          | AnchorStyles.Right;
+                labelDescription.BackColor = Color.Transparent;
+                labelDescription.Location = new Point(9, 33);
+                labelDescription.Name = "labelDescription";
+                labelDescription.Size = new Size(309, 30);
                 // 
                 // panelHeader
                 // 
-                this.panelHeader.BackColor = System.Drawing.Color.White;
-                this.panelHeader.Controls.Add(this.labelDescription);
-                this.panelHeader.Controls.Add(this.labelTitle);
-                this.panelHeader.Controls.Add(this.picLogo);
-                this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
-                this.panelHeader.Location = new System.Drawing.Point(0, 0);
-                this.panelHeader.Name = "panelHeader";
-                this.panelHeader.Size = new System.Drawing.Size(445, 71);
+                panelHeader.BackColor = Color.White;
+                panelHeader.Controls.Add(labelDescription);
+                panelHeader.Controls.Add(labelTitle);
+                panelHeader.Controls.Add(picLogo);
+                panelHeader.Dock = DockStyle.Top;
+                panelHeader.Location = new Point(0, 0);
+                panelHeader.Name = "panelHeader";
+                panelHeader.Size = new Size(445, 71);
                 // 
                 // labelTitle
                 // 
-                this.labelTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                            | System.Windows.Forms.AnchorStyles.Right)));
-                this.labelTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                this.labelTitle.Location = new System.Drawing.Point(9, 9);
-                this.labelTitle.Name = "labelTitle";
-                this.labelTitle.Size = new System.Drawing.Size(309, 20);
+                labelTitle.Anchor = (AnchorStyles.Top | AnchorStyles.Left)
+                                    | AnchorStyles.Right;
+                labelTitle.Font =
+                    new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+                labelTitle.Location = new Point(9, 9);
+                labelTitle.Name = "labelTitle";
+                labelTitle.Size = new Size(309, 20);
                 // 
                 // TaskDialogForm
                 // 
-                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-                this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-                this.ClientSize = new System.Drawing.Size(445, 100);
-                this.Controls.Add(this.panelCommands);
-                this.Controls.Add(this.panelHeader);
-                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-                this.MaximizeBox = false;
-                this.MinimizeBox = false;
-                this.Name = "TaskDialogForm";
-                this.ShowInTaskbar = false;
-                this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-                ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
-                this.panelHeader.ResumeLayout(false);
-                this.ResumeLayout(false);
+                AutoScaleDimensions = new SizeF(6F, 13F);
+                AutoScaleMode = AutoScaleMode.Font;
+                ClientSize = new Size(445, 100);
+                Controls.Add(panelCommands);
+                Controls.Add(panelHeader);
+                FormBorderStyle = FormBorderStyle.FixedDialog;
+                MaximizeBox = false;
+                MinimizeBox = false;
+                Name = "TaskDialogForm";
+                ShowInTaskbar = false;
+                StartPosition = FormStartPosition.CenterParent;
+                ((ISupportInitialize) (picLogo)).EndInit();
+                panelHeader.ResumeLayout(false);
+                ResumeLayout(false);
             }
 
             #endregion
@@ -124,7 +123,7 @@ namespace MbUnit.Icarus
             public override string Text
             {
                 get { return base.Text; }
-                set 
+                set
                 {
                     base.Text = value;
                     labelTitle.Text = value;
@@ -133,18 +132,21 @@ namespace MbUnit.Icarus
 
             public string Description
             {
-                get { return this.labelDescription.Text; }
-                set { this.labelDescription.Text = value; }
+                set { labelDescription.Text = value; }
             }
 
             public TaskButton[] Buttons
             {
-                get { return (TaskButton[])this.buttons.Clone(); }
-                set 
-                { 
-                    this.buttons = (TaskButton[])value.Clone();
+                set
+                {
+                    buttons = (TaskButton[]) value.Clone();
                     InitButtons();
                 }
+            }
+
+            public TaskButton SelectedButton
+            {
+                get { return selectedButton; }
             }
 
             protected override void OnLayout(LayoutEventArgs levent)
@@ -158,18 +160,18 @@ namespace MbUnit.Icarus
 
                 int y = 0;
 
-                if (this.activeButtons != null)
+                if (activeButtons != null)
                 {
-                    for (int i = 0; i < this.activeButtons.Length; ++i)
+                    for (int i = 0; i < activeButtons.Length; ++i)
                     {
-                        this.activeButtons[i].Location = new Point(leftMargin, y);
-                        this.activeButtons[i].Width = insetWidth;
-                        this.activeButtons[i].PerformLayout();
-                        y += this.activeButtons[i].Height + commandButtonVMargin;
+                        activeButtons[i].Location = new Point(leftMargin, y);
+                        activeButtons[i].Width = insetWidth;
+                        activeButtons[i].PerformLayout();
+                        y += activeButtons[i].Height + commandButtonVMargin;
                     }
                 }
 
-                this.ClientSize = new Size(this.ClientSize.Width, MIN_DIALOG_HEIGHT + y);
+                ClientSize = new Size(ClientSize.Width, MIN_DIALOG_HEIGHT + y);
 
                 base.OnLayout(levent);
             }
@@ -178,41 +180,36 @@ namespace MbUnit.Icarus
             {
                 SuspendLayout();
 
-                if (this.activeButtons != null)
+                if (activeButtons != null)
                 {
-                    foreach (TaskButton taskButton in this.activeButtons)
+                    foreach (TaskButton taskButton in activeButtons)
                     {
                         panelCommands.Controls.Remove(taskButton);
                         taskButton.Click -= TaskButton_Click;
                         taskButton.Dispose();
                     }
 
-                    this.activeButtons = null;
+                    activeButtons = null;
                 }
 
-                this.activeButtons = new TaskButton[this.buttons.Length];
+                activeButtons = new TaskButton[buttons.Length];
 
-                for (int i = 0; i < this.activeButtons.Length; ++i)
+                for (int i = 0; i < activeButtons.Length; ++i)
                 {
-                    TaskButton taskButton = this.buttons[i];
+                    TaskButton taskButton = buttons[i];
                     taskButton.Click += TaskButton_Click;
 
-                    this.activeButtons[i] = taskButton;
+                    activeButtons[i] = taskButton;
                     panelCommands.Controls.Add(taskButton);
                 }
 
                 ResumeLayout();
             }
 
-            public TaskButton SelectedButton
-            {
-                get { return this.selectedButton; }
-            }
-
             private void TaskButton_Click(object sender, EventArgs e)
             {
-                this.selectedButton = (TaskButton)sender;
-                this.Close();
+                selectedButton = (TaskButton) sender;
+                Close();
             }
         }
 
