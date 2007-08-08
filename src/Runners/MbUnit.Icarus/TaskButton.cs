@@ -123,9 +123,16 @@ namespace MbUnit.Icarus
                 e.Graphics.DrawRectangle(new Pen(SystemBrushes.ControlDark), bounds);
 
                 Rectangle gradientArea = new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 1, bounds.Height - 1);
+
+                // Make sure that the darker system colour is on the bottom. This gives a better selection effect.
+                float angle = 90F;
+                if (SystemColors.Control.GetBrightness() > SystemColors.ControlLight.GetBrightness())
+                    angle = -90F;
+
                 e.Graphics.FillRectangle(
-                    new LinearGradientBrush(gradientArea, SystemColors.Control, SystemColors.ControlLight, 90F),
+                    new LinearGradientBrush(gradientArea, SystemColors.ControlLight, SystemColors.Control, angle),
                     gradientArea);
+
             }
 
             SizeF titleSize = e.Graphics.MeasureString(Text, titleFont);
