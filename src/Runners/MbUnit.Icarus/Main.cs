@@ -23,7 +23,6 @@ using System.Windows.Forms;
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Controls.Enums;
 using MbUnit.Icarus.Properties;
-using MbUnit.Icarus.Showers;
 using ZedGraph;
 
 namespace MbUnit.Icarus
@@ -220,7 +219,7 @@ namespace MbUnit.Icarus
             button3.Description = "There is no spoon";
             taskButtons.Add(button3);
             
-            TaskDialogShower taskDialogShower = new TaskDialogShower();
+            Shower taskDialogShower = new Shower();
             TaskButton res = taskDialogShower.CreateTaskDialog("title text", "description text", taskButtons);
             
             if (res == button2)

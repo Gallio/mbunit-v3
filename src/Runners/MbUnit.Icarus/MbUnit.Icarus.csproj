@@ -49,6 +49,7 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shower.cs" />
     <Compile Include="Controls\Enums\CheckBoxState.cs" />
     <Compile Include="Controls\Enums\TestState.cs" />
     <Compile Include="Controls\TestStatusBar.cs">
@@ -58,6 +59,7 @@
     <Compile Include="Controls\TestTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Interfaces\IShower.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,8 +108,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Showers\ITaskDialogShower.cs" />
-    <Compile Include="Showers\TaskDialogShower.cs" />
     <Compile Include="TaskButton.cs">
       <SubType>Component</SubType>
     </Compile>

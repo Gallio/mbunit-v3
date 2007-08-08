@@ -15,13 +15,10 @@
 
 using System.Collections.Generic;
 
-namespace MbUnit.Icarus.Showers
+namespace MbUnit.Icarus.Interfaces
 {
-    internal class TaskDialogShower : ITaskDialogShower
+    interface IShower
     {
-        public TaskButton CreateTaskDialog(string title, string description, List<TaskButton> TaskButtons)
-        {
-            return TaskDialog.Show(title, description, TaskButtons);
-        }
+       TaskButton CreateTaskDialog(string title, string description, List<TaskButton> TaskButtons);
     }
 }

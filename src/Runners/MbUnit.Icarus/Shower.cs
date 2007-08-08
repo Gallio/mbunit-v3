@@ -14,11 +14,15 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using MbUnit.Icarus.Interfaces;
 
-namespace MbUnit.Icarus.Showers
+namespace MbUnit.Icarus
 {
-    interface ITaskDialogShower
+    internal class Shower : IShower
     {
-       TaskButton CreateTaskDialog(string title, string description, List<TaskButton> TaskButtons);
+        public TaskButton CreateTaskDialog(string title, string description, List<TaskButton> TaskButtons)
+        {
+            return TaskDialog.Show(title, description, TaskButtons);
+        }
     }
 }
