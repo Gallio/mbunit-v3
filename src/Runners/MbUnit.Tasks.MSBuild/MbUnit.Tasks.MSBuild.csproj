@@ -32,6 +32,10 @@
     <DocumentationFile>bin\MbUnit.Tasks.MSBuild.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities" />
     <Reference Include="System" />
@@ -42,6 +46,8 @@
     <Compile Include="Formatter.cs" />
     <Compile Include="FormatterType.cs" />
     <Compile Include="MbUnit.cs" />
+    <Compile Include="MSBuildLogger.cs" />
+    <Compile Include="MSBuildProgressMonitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
