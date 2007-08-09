@@ -62,7 +62,6 @@ namespace MbUnit.AddIn
             TDDLogger logger = new TDDLogger(listener);
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             logger.Info(String.Format("MbUnit.AddIn - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build));
-            logger.Info(assembly.Location);
             using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper
                 (
                 delegate { return new TDDProgressMonitor(logger); },

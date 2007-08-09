@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Diagnostics;
 using Castle.Core.Logging;
@@ -51,7 +52,7 @@ namespace MbUnit.Core.Runner
         #region Constructor
 
         /// <summary>
-        /// 
+        /// Initializes a new instance of the TestRunnerHelper class.
         /// </summary>
         /// <param name="progressMonitorCreator">A delegate to a rutine that will be
         /// called to create progress monitors</param>
@@ -124,22 +125,24 @@ namespace MbUnit.Core.Runner
         #region Public Methods
 
         /// <summary>
-        /// 
+        /// Runs a project
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An integer representing the result of the execution.</returns>
         public int Run()
         {
             using (AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup))
             {
+                CreateStopWatch();
+
+                VerifyAssemblies();
+
                 if (!HasTestAssemblies())
                     return ResultCode.NoTests;
 
                 if (debugWriter != null)
                     new DebugMonitor(debugWriter).Attach(runner);
-                
-                ApplyFilter(runner);
 
-                CreateStopWatch();
+                ApplyFilter(runner);
 
                 if (!LoadProject(runner))
                     return ResultCode.Canceled;
@@ -162,23 +165,42 @@ namespace MbUnit.Core.Runner
                 if (debugWriter != null)
                     logger.Debug(debugWriter.ToString());
 
-                LogExecutionTime();
-                stopWatch = null;
+                DisposeStopWatch();
 
                 return ResultCode.Success;
             }
         }
 
-        private void LogExecutionTime()
+        /// <summary>
+        /// Removes any non-existing assemblies from the list of test assemblies.
+        /// </summary>
+        private void VerifyAssemblies()
         {
-            logger.InfoFormat("\nStop time: {0}", DateTime.Now.ToShortTimeString());
-            logger.InfoFormat("Total execution time: {0:#0.000}s", stopWatch.Elapsed.TotalSeconds);
-        }
+            using (IProgressMonitor progressMonitor = progressMonitorCreator())
+            {
+                progressMonitor.BeginTask("Verifying assembly names.", 1);
 
-        private void CreateStopWatch()
-        {
-            stopWatch = Stopwatch.StartNew();
-            logger.InfoFormat("\nStart time: {0}\n", DateTime.Now.ToShortTimeString());
+                List<string> assembliesToRemove = new List<string>();
+                foreach (string assemblyName in package.AssemblyFiles)
+                {
+                    if (!File.Exists(assemblyName))
+                    {
+                        assembliesToRemove.Add(assemblyName);
+                        logger.Error("Test assembly {0} cannot be found", assemblyName);
+                        logger.Error("Full name: {0}", Path.GetFullPath(assemblyName));
+                    }
+                }
+
+                List<string> validAssemblies = new List<string>();
+                validAssemblies.AddRange(package.AssemblyFiles);
+                // Remove invalid assemblies
+                foreach (string assemblyName in assembliesToRemove)
+                {
+                    validAssemblies.Remove(assemblyName);
+                }
+
+                package.AssemblyFiles = validAssemblies.ToArray();
+            }
         }
 
         #region Utility Methods
@@ -193,10 +215,10 @@ namespace MbUnit.Core.Runner
         }
 
         /// <summary>
-        /// 
+        /// Adds a plugin directory and optionally resolves the full path.
         /// </summary>
-        /// <param name="pluginDirectory"></param>
-        /// <param name="resolvePath"></param>
+        /// <param name="pluginDirectory">The plugin directory to add</param>
+        /// <param name="resolvePath">A value indicating whether resolve the full path or not.</param>
         public void AddPluginDirectory(string pluginDirectory, bool resolvePath)
         {
             string path = pluginDirectory;
@@ -208,24 +230,62 @@ namespace MbUnit.Core.Runner
         }
 
         /// <summary>
-        /// 
+        /// Adds zero or more plugin directories resolving the full path for each of them.
         /// </summary>
-        /// <param name="pluginDirectories"></param>
+        /// <param name="pluginDirectories">A list of zero or more directories</param>
+        /// <remarks>The pluginDirectories parameter can be null.
+        /// </remarks>
         public void AddPluginDirectories(IEnumerable<string> pluginDirectories)
         {
             AddPluginDirectories(pluginDirectories, true);
         }
 
         /// <summary>
-        /// 
+        /// Adds zero or more plugin directories resolving the full path for each of them.
         /// </summary>
-        /// <param name="pluginDirectories"></param>
-        /// <param name="resolvePaths"></param>
+        /// <param name="pluginDirectories">A list of zero or more directories</param>
+        /// <remarks>The pluginDirectories parameter can be null.
+        /// </remarks>
+        public void AddPluginDirectories(StringCollection pluginDirectories)
+        {
+            AddPluginDirectories(pluginDirectories, true);
+        }
+
+        /// <summary>
+        /// Adds zero or more plugin directories and optionally resolves the full path
+        /// for each of them.
+        /// </summary>
+        /// <param name="pluginDirectories">A collection of zero or more directories.</param>
+        /// <param name="resolvePaths">A value indicating whether resolve the full path or not.</param>
+        /// <remarks>The pluginDirectories parameter can be null.
+        /// </remarks>
         public void AddPluginDirectories(IEnumerable<string> pluginDirectories, bool resolvePaths)
         {
-            foreach (string pluginDirectory in pluginDirectories)
+            if (pluginDirectories != null)
             {
-                AddPluginDirectory(pluginDirectory, resolvePaths);
+                foreach (string pluginDirectory in pluginDirectories)
+                {
+                    AddPluginDirectory(pluginDirectory, resolvePaths);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds zero or more plugin directories and optionally resolves the full path
+        /// for each of them.
+        /// </summary>
+        /// <param name="pluginDirectories">A collection of zero or more directories.</param>
+        /// <param name="resolvePaths">A value indicating whether resolve the full path or not.</param>
+        /// <remarks>The pluginDirectories parameter can be null.
+        /// </remarks>
+        public void AddPluginDirectories(StringCollection pluginDirectories, bool resolvePaths)
+        {
+            if (pluginDirectories != null)
+            {
+                foreach (string pluginDirectory in pluginDirectories)
+                {
+                    AddPluginDirectory(pluginDirectory, resolvePaths);
+                }
             }
         }
 
@@ -266,8 +326,33 @@ namespace MbUnit.Core.Runner
         /// 
         /// </summary>
         /// <param name="hintDirectories"></param>
+        public void AddHintDirectories(StringCollection hintDirectories)
+        {
+            AddHintDirectories(hintDirectories, true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hintDirectories"></param>
         /// <param name="resolvePaths"></param>
         public void AddHintDirectories(IEnumerable<string> hintDirectories, bool resolvePaths)
+        {
+            if (hintDirectories != null)
+            {
+                foreach (string hintDirectory in hintDirectories)
+                {
+                    AddHintDirectory(hintDirectory, resolvePaths);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hintDirectories"></param>
+        /// <param name="resolvePaths"></param>
+        public void AddHintDirectories(StringCollection hintDirectories, bool resolvePaths)
         {
             foreach (string hintDirectory in hintDirectories)
             {
@@ -312,14 +397,44 @@ namespace MbUnit.Core.Runner
         /// 
         /// </summary>
         /// <param name="assemblyFiles"></param>
+        public void AddAssemblyFiles(StringCollection assemblyFiles)
+        {
+            AddAssemblyFiles(assemblyFiles, true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assemblyFiles"></param>
         /// <param name="resolvePaths"></param>
         public void AddAssemblyFiles(IEnumerable<string> assemblyFiles, bool resolvePaths)
         {
+            if (assemblyFiles == null)
+            {
+                throw new ArgumentNullException("assemblyFiles");
+            }
             foreach (string assemblyFile in assemblyFiles)
             {
-                package.AddAssemblyFile(assemblyFile);
+                AddAssemblyFile(assemblyFile, resolvePaths);
             }
-        } 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assemblyFiles"></param>
+        /// <param name="resolvePaths"></param>
+        public void AddAssemblyFiles(StringCollection assemblyFiles, bool resolvePaths)
+        {
+            if (assemblyFiles == null)
+            {
+                throw new ArgumentNullException("assemblyFiles");
+            }
+            foreach (string assemblyFile in assemblyFiles)
+            {
+                AddAssemblyFile(assemblyFile, resolvePaths);
+            }
+        }
 
         #endregion
 
@@ -342,7 +457,7 @@ namespace MbUnit.Core.Runner
         {
             runner.TestExecutionOptions.Filter = filter;
         }
-        
+
         private bool LoadProject(ITestRunner runner)
         {
             using (IProgressMonitor progressMonitor = progressMonitorCreator())
@@ -419,6 +534,19 @@ namespace MbUnit.Core.Runner
         {
             if (argument == null)
                 throw new ArgumentNullException(argumentName);
+        }
+
+        private void DisposeStopWatch()
+        {
+            logger.InfoFormat("\nStop time: {0}", DateTime.Now.ToShortTimeString());
+            logger.InfoFormat("Total execution time: {0:#0.000}s", stopWatch.Elapsed.TotalSeconds);
+            stopWatch = null;
+        }
+
+        private void CreateStopWatch()
+        {
+            stopWatch = Stopwatch.StartNew();
+            logger.InfoFormat("\nStart time: {0}\n", DateTime.Now.ToShortTimeString());
         }
 
         #endregion
