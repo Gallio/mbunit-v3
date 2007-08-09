@@ -15,7 +15,6 @@
 
 using System;
 using Castle.Core.Logging;
-using MbUnit.Core.Runner;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
 
