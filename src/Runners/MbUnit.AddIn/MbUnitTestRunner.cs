@@ -56,9 +56,8 @@ namespace MbUnit.AddIn
         {
             int result;
             if (listener == null)
-            {
                 throw new ArgumentNullException("listener");
-            }
+
             TDDLogger logger = new TDDLogger(listener);
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             logger.Info(String.Format("MbUnit.AddIn - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build));
@@ -66,7 +65,6 @@ namespace MbUnit.AddIn
                 (
                 delegate { return new RunnerProgressMonitor(logger); },
                 logger,
-                Verbosity.Verbose,
                 filters
                 ))
             {

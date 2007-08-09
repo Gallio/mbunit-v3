@@ -135,7 +135,6 @@ namespace MbUnit.Tasks.MSBuild
                 (
                 delegate { return new RunnerProgressMonitor(logger); },
                 logger,
-                Verbosity.Verbose,
                 new AnyFilter<ITest>()
                 ))
             {

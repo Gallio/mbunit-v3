@@ -47,6 +47,7 @@ namespace MbUnit.Core.Utilities
 	/// </remarks>
 	public class LongLivingMarshalByRefObject : MarshalByRefObject
 	{
+        /// <inheritdoc />
 		public override Object InitializeLifetimeService()
 		{
 			return null;

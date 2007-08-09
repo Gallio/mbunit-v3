@@ -41,7 +41,6 @@ namespace MbUnit.Core.Runner
         private readonly ProgressMonitorCreator progressMonitorCreator;
         private readonly RuntimeSetup runtimeSetup;
         private readonly LevelFilteredLogger logger;
-        private readonly StringWriter debugWriter;
         private readonly Filter<ITest> filter;
         private TreePersister templateTreePersister;
         private TreePersister testTreePersister;
@@ -57,12 +56,10 @@ namespace MbUnit.Core.Runner
         /// <param name="progressMonitorCreator">A delegate to a rutine that will be
         /// called to create progress monitors</param>
         /// <param name="logger"></param>
-        /// <param name="verbosity"></param>
         /// <param name="filter"></param>
         public TestRunnerHelper(
             ProgressMonitorCreator progressMonitorCreator,
             LevelFilteredLogger logger,
-            Verbosity verbosity,
             Filter<ITest> filter)
         {
             CheckRequiredArgument(progressMonitorCreator, "progressMonitorCreator");
@@ -75,10 +72,6 @@ namespace MbUnit.Core.Runner
             this.progressMonitorCreator = progressMonitorCreator;
             this.filter = filter;
             this.logger = logger;
-            if (verbosity == Verbosity.Debug)
-            {
-                debugWriter = new StringWriter();
-            }
         }
 
         #endregion
@@ -141,8 +134,8 @@ namespace MbUnit.Core.Runner
                 if (!HasTestAssemblies())
                     return ResultCode.NoTests;
 
-                if (debugWriter != null)
-                    new DebugMonitor(debugWriter).Attach(runner);
+                StringWriter debugWriter = new StringWriter();
+                new DebugMonitor(debugWriter).Attach(runner);
 
                 ApplyFilter(runner);
 
@@ -164,8 +157,7 @@ namespace MbUnit.Core.Runner
                 if (!RunTests(runner))
                     return ResultCode.Canceled;
 
-                if (debugWriter != null)
-                    logger.Debug(debugWriter.ToString());
+                logger.Debug(debugWriter.ToString());
 
                 DisposeStopWatch();
 

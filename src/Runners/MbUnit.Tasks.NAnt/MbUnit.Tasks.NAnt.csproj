@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MbUnitTask.cs" />
-    <Compile Include="NantLogger.cs" />
+    <Compile Include="NAntLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

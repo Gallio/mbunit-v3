@@ -97,7 +97,6 @@
     <Compile Include="Runner\ResultCode.cs" />
     <Compile Include="Runner\TestRunnerHelper.cs" />
     <Compile Include="Runner\TextualProgressMonitor.cs" />
-    <Compile Include="Runner\Verbosity.cs" />
     <Compile Include="Serialization\TemplateModel.cs" />
     <Compile Include="Serialization\TestModel.cs" />
     <Compile Include="Serialization\ModelComponentInfo.cs" />

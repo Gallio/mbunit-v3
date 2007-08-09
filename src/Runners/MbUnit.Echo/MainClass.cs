@@ -89,7 +89,6 @@ namespace MbUnit.Echo
                 (
                 delegate { return new ConsoleProgressMonitor(); },
                 logger,
-                arguments.Verbosity,
                 arguments.GetFilter()
                 ))
             {

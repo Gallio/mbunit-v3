@@ -14,27 +14,27 @@ namespace MbUnit.Core.Tests.Runners
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestInstatiation_NullProgressMonitorMonitor()
+        public void TestInstantiation_NullProgressMonitorMonitor()
         {
-            TestRunnerHelper runner = new TestRunnerHelper(null, null, Verbosity.Quiet, null);
+            new TestRunnerHelper(null, null, null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestInstatiation_NullLogger()
+        public void TestInstantiation_NullLogger()
         {
-            TestRunnerHelper runner = new TestRunnerHelper(
+            new TestRunnerHelper(
                 delegate { return new NullProgressMonitor(); },
-                null, Verbosity.Quiet, null);
+                null, null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestInstatiation_NullFilter()
+        public void TestInstantiation_NullFilter()
         {
-            TestRunnerHelper runner = new TestRunnerHelper(
+            new TestRunnerHelper(
                 delegate { return new NullProgressMonitor(); },
-                new ConsoleLogger(), Verbosity.Quiet, null);
+                new ConsoleLogger(), null);
         }
     }
 }

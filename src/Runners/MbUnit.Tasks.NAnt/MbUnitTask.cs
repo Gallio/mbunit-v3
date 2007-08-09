@@ -119,12 +119,11 @@ namespace MbUnit.Tasks.NAnt
         protected override void ExecuteTask()
         {
             DisplayVersion();
-            NantLogger logger = new NantLogger(this);
+            NAntLogger logger = new NAntLogger(this);
             using (TestRunnerHelper runner = new TestRunnerHelper
                 (
                 delegate { return new RunnerProgressMonitor(logger); },
                 logger,
-                Verbosity.Verbose,
                 new AnyFilter<ITest>()
                 ))
             {

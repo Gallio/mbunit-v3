@@ -1,13 +1,15 @@
 using System;
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Castle.Core.Logging;
+using ILogger=Castle.Core.Logging.ILogger;
 
 namespace MbUnit.Tasks.MSBuild
 {
     /// <summary>
     /// Logs messages to a TaskLoggingHelper instance.
     /// </summary>
-    public class MSBuildLogger : ConsoleLogger
+    public class MSBuildLogger : LevelFilteredLogger
     {
         private readonly TaskLoggingHelper taskLogger;
         
@@ -19,6 +21,7 @@ namespace MbUnit.Tasks.MSBuild
         public MSBuildLogger(TaskLoggingHelper taskLogger)
         {
             this.taskLogger = taskLogger;
+            Level = LoggerLevel.Debug;
         }
 
         /// <summary>
@@ -30,6 +33,9 @@ namespace MbUnit.Tasks.MSBuild
         /// <param name="exception">The exception to log (it can be null).</param>
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
+            if (exception != null)
+                message += "\n" + exception;
+
             switch (level)
             {
                 case LoggerLevel.Fatal:
@@ -42,13 +48,19 @@ namespace MbUnit.Tasks.MSBuild
                     break;
 
                 case LoggerLevel.Info:
+                    taskLogger.LogMessage(MessageImportance.Normal, message);
+                    break;
+
                 case LoggerLevel.Debug:
-                    taskLogger.LogMessage(message);
+                    taskLogger.LogMessage(MessageImportance.Low, message);
                     break;
             }
+        }
 
-            if (exception != null)
-                taskLogger.LogError(exception.ToString());
+        /// <inheritdoc />
+        public override ILogger CreateChildLogger(string name)
+        {
+            return new MSBuildLogger(taskLogger);
         }
     }
 }

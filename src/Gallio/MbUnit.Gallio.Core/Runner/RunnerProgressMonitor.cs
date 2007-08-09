@@ -9,19 +9,21 @@ namespace MbUnit.Core.Runner
     /// </summary>
     public class RunnerProgressMonitor : TextualProgressMonitor
     {
-        private readonly ConsoleLogger tddLogger = null;
+        private readonly ILogger tddLogger = null;
 
         /// <summary>
         /// Initializes a new instance of the RunnerProgressMonitor class.
         /// </summary>
-        /// <param name="logger">A ConsoleLogger instance where log messages will be
+        /// <param name="logger">A logger instance where log messages will be
         /// channeled to.</param>
-        public RunnerProgressMonitor(ConsoleLogger logger)
-        {            
+        public RunnerProgressMonitor(ILogger logger)
+        {
             tddLogger = logger;
         }
 
         private string previousTaskName = string.Empty;
+
+        /// <inheritdoc />
         protected override void UpdateDisplay()
         {
             // We can't show progress in a convenient way when running 
