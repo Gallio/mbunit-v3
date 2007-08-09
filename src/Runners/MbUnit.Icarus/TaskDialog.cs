@@ -82,9 +82,9 @@ namespace MbUnit.Icarus
                 // picLogo
                 // 
                 picLogo.Image = Resources.MbUnitLogo;
-                picLogo.Location = new Point(324, -5);
+                picLogo.Location = new Point(360, 12);
                 picLogo.Name = "picLogo";
-                picLogo.Size = new Size(133, 82);
+                picLogo.Size = new Size(78, 55);
                 // 
                 // labelDescription
                 // 
@@ -93,7 +93,7 @@ namespace MbUnit.Icarus
                 labelDescription.BackColor = Color.Transparent;
                 labelDescription.Location = new Point(9, 33);
                 labelDescription.Name = "labelDescription";
-                labelDescription.Size = new Size(309, 30);
+                labelDescription.Size = new Size(340, 30);
                 // 
                 // panelHeader
                 // 
@@ -114,7 +114,7 @@ namespace MbUnit.Icarus
                     new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
                 labelTitle.Location = new Point(9, 9);
                 labelTitle.Name = "labelTitle";
-                labelTitle.Size = new Size(309, 20);
+                labelTitle.Size = new Size(340, 20);
                 // 
                 // TaskDialogForm
                 // 

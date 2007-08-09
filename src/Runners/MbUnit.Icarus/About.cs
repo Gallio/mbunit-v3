@@ -26,7 +26,7 @@ namespace MbUnit.Icarus
             InitializeComponent();
 
             // Set the application version.
-            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
+            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             versionLabel.Text = String.Format(versionLabel.Text, appVersion.Major, appVersion.Minor, appVersion.Build);
         }
 

@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
+    <None Include="Resources\LinkToMBU.png" />
     <None Include="Resources\tick.png" />
     <None Include="Resources\help-browser.png" />
     <None Include="Resources\cross.png" />

@@ -150,7 +150,7 @@ namespace MbUnit.Icarus
             this.projectContributorsLabel.Size = new System.Drawing.Size(287, 31);
             this.projectContributorsLabel.TabIndex = 3;
             this.projectContributorsLabel.Text = "Ben Hall, Graham Hay, Johan Appelgren, Joey Calisay, David Parkinson, Jeff Brown," +
-                " Marc Stober, Mark Haley";
+    " Marc Stober, Mark Haley";
             // 
             // projectLeadsLabel
             // 

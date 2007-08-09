@@ -84,7 +84,7 @@ namespace MbUnit.Icarus
 
         private void Form_Load(object sender, EventArgs e)
         {
-            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
+            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
             treeFilterCombo.SelectedIndex = 1;
@@ -204,23 +204,23 @@ namespace MbUnit.Icarus
             TaskButton button1 = new TaskButton();
             button1.Text = "Button 1";
             button1.Icon = Resources.tick;
-            button1.Description = "This is the first button, it doesnt do very much at the moment.";
+            button1.Description = "This is the first button, it should explain what the option does.";
             taskButtons.Add(button1);
 
             TaskButton button2 = new TaskButton();
             button2.Text = "Button 2";
             button2.Icon = Resources.help_browser;
-            button2.Description = "This is the second button, this doesnt do anything either but the text for this button is a bit longer, it needs to wrap onto the next line.";
+            button2.Description = "This is the second button, much the same as the first button but this one demonstrates that the text will wrap onto the next line.";
             taskButtons.Add(button2);
 
             TaskButton button3 = new TaskButton();
             button3.Text = "Close Window";
             button3.Icon = Resources.cross;
-            button3.Description = "There is no spoon";
+            button3.Description = "Saves all changes and exits the application.";
             taskButtons.Add(button3);
             
             Shower taskDialogShower = new Shower();
-            TaskButton res = taskDialogShower.CreateTaskDialog("title text", "description text", taskButtons);
+            TaskButton res = taskDialogShower.CreateTaskDialog("Title Text", "Description about the problem and what you need to do to resolve it. Each button can have its own description too.", taskButtons);
             
             if (res == button2)
                 MessageBox.Show("Button 2 was clicked.");
