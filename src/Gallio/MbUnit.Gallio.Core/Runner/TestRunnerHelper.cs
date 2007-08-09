@@ -132,6 +132,8 @@ namespace MbUnit.Core.Runner
         {
             using (AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup))
             {
+                DisplayConfiguration();
+
                 CreateStopWatch();
 
                 VerifyAssemblies();
@@ -200,6 +202,23 @@ namespace MbUnit.Core.Runner
                 }
 
                 package.AssemblyFiles = validAssemblies.ToArray();
+            }
+        }
+
+        private void DisplayConfiguration()
+        {
+            DisplayPaths(package.AssemblyFiles, "Test assemblies:");
+            DisplayPaths(package.HintDirectories, "Hint Directories:");
+            DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
+        }
+
+        private void DisplayPaths(ICollection<string> paths, string name)
+        {
+            if (paths != null && paths.Count > 0)
+            {
+                logger.Info(name);
+                foreach (string path in paths)
+                    logger.Info("\t{0}", path);
             }
         }
 

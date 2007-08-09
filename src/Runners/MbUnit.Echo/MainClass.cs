@@ -74,7 +74,6 @@ namespace MbUnit.Echo
                 }
                 resultCode = RunTests();
                 CheckResultCode();
-                //Console.ReadLine();
                 return resultCode;
             }
             catch (Exception ex)
@@ -97,8 +96,8 @@ namespace MbUnit.Echo
                 testRunnerHelper.TemplateTreePersister = SaveTemplateTree;
                 testRunnerHelper.TemplateTreePersister = SaveTestTree;
                 testRunnerHelper.AddPluginDirectories(arguments.PluginDirectories);
-                testRunnerHelper.AddHintDirectories(arguments.AssemblyPath);
-                testRunnerHelper.AddAssemblyFiles(arguments.Files);
+                testRunnerHelper.AddHintDirectories(arguments.HintDirectories);
+                testRunnerHelper.AddAssemblyFiles(arguments.Assemblies);
                 return testRunnerHelper.Run();
             }
         }

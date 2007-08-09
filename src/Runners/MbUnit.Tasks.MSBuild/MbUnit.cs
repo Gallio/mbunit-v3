@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Core.Runner;
 using MbUnit.Framework.Kernel.Filters;
@@ -19,9 +18,9 @@ namespace MbUnit.Tasks.MSBuild
         private string[] assemblies;
         private string[] pluginDirectories;
         private string[] hintDirectories;
-        private string reportFileNameFormat = "mbunit.{0}.{1}";
-        private string reportOutputDirectory = "";
         private string[] reportTypes = new string[] { "html" };
+        private string reportFileNameFormat = "mbunit-result-{0}{1}";
+        private string reportOutputDirectory = String.Empty;
         private bool haltOnFailure = false;
         private bool haltOnError = false;
 
@@ -30,7 +29,7 @@ namespace MbUnit.Tasks.MSBuild
         #region Public Properties
 
         /// <summary>
-        /// An array of test assemblies. This is required.
+        /// The list of test assemblies to execute. This is required.
         /// </summary>
         [Required]
         public string[] Assemblies
@@ -40,7 +39,16 @@ namespace MbUnit.Tasks.MSBuild
         }
 
         /// <summary>
-        /// An array of directories that contain MbUnit plugins.
+        /// The list of directories used for loading assemblies and other dependent resources.
+        /// </summary>
+        public string[] HintDirectories
+        {
+            get { return hintDirectories; }
+            set { hintDirectories = value; }
+        }
+
+        /// <summary>
+        ///  Additional MbUnit plugin directories to search recursively.
         /// </summary>
         public string[] PluginDirectories
         {
@@ -49,12 +57,12 @@ namespace MbUnit.Tasks.MSBuild
         }
 
         /// <summary>
-        /// 
+        /// An array of report types to generate.
         /// </summary>
-        public string[] HintDirectories
+        public string[] ReportTypes
         {
-            get { return hintDirectories; }
-            set { hintDirectories = value; }
+            get { return reportTypes; }
+            set { reportTypes = value; }
         }
 
         /// <summary>
@@ -73,16 +81,7 @@ namespace MbUnit.Tasks.MSBuild
         {
             get { return reportOutputDirectory; }
             set { reportOutputDirectory = value; }
-        }
-
-        /// <summary>
-        /// An array of report types to generate.
-        /// </summary>
-        public string[] ReportTypes
-        {
-            get { return reportTypes; }
-            set { reportTypes = value; }
-        }
+        }       
 
         /// <summary>
         /// Whether or not to halt on failure.
@@ -107,7 +106,7 @@ namespace MbUnit.Tasks.MSBuild
         #region Public Methods
 
         /// <summary>
-        /// Executes this task.
+        /// Executes the task.
         /// </summary>
         /// <returns></returns>
         public override bool Execute()
@@ -130,6 +129,7 @@ namespace MbUnit.Tasks.MSBuild
 
         private bool InternalExecute()
         {
+            DisplayVersion();
             MSBuildLogger logger = new MSBuildLogger(Log);
             using (TestRunnerHelper runner = new TestRunnerHelper
                 (
@@ -142,7 +142,6 @@ namespace MbUnit.Tasks.MSBuild
                 runner.AddAssemblyFiles(Assemblies);
                 runner.AddHintDirectories(hintDirectories);
                 runner.AddPluginDirectories(pluginDirectories);
-                DisplayTaskConfiguration();
                 if (runner.Run() == ResultCode.Success)
                     return true;
             }
@@ -150,33 +149,11 @@ namespace MbUnit.Tasks.MSBuild
             return false;
         }
 
-        private void DisplayTaskConfiguration()
-        {
-            DisplayVersion();
-            DisplayPaths(Assemblies, "Test assemblies:");
-            DisplayPaths(HintDirectories, "Hint Directories:");
-            DisplayPaths(PluginDirectories, "Plugin Directories:");
-
-            Log.LogMessage("ReportTypes: {0}", ReportTypes);
-            Log.LogMessage("ReportFileNameFormat: {0}", ReportFileNameFormat);
-            Log.LogMessage("ReportOutputDirectory: {0}", ReportOutputDirectory);
-        }
-
         private void DisplayVersion()
         {
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Log.LogMessage(String.Format("MbUnit MSBuild Task - Version {0}.{1} build {2}",
                                          appVersion.Major, appVersion.Minor, appVersion.Build));
-        }
-
-        private void DisplayPaths(ICollection<string> paths, string name)
-        {
-            if (paths != null && paths.Count > 0)
-            {
-                Log.LogMessage(name);
-                foreach (string assemblyPath in paths)
-                    Log.LogMessage("\t{0}", assemblyPath);
-            }
         }
         
         #endregion

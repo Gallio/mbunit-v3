@@ -26,30 +26,43 @@ using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Echo
 {
-	public class MainArguments
-	{
-		[DefaultCommandLineArgument(
-			 CommandLineArgumentType.MultipleUnique,
-			 Description = "List of assemblies containing the tests"
-			 )]
-		public string[] Files = null;
+    public class MainArguments
+    {
+        #region Files and Directories
+
+        [DefaultCommandLineArgument(
+            CommandLineArgumentType.MultipleUnique,
+            LongName = "assemblies",
+            Description = "List of assemblies containing the tests"
+            )]
+        public string[] Assemblies = null;
 
         [CommandLineArgument(
-             CommandLineArgumentType.MultipleUnique,
-             ShortName = "ap",
-             LongName = "assembly-path",
-             Description = "Path where assembly can be loaded"
-             )]
-        public string[] AssemblyPath = null;
+            CommandLineArgumentType.MultipleUnique,
+            ShortName = "ap",
+            LongName = "hint-directories",
+            Description = "The list of directories used for loading assemblies and other dependent resources."
+            )]
+        public string[] HintDirectories = null;
 
-		#region Report Arguments
-		[CommandLineArgument(
-			 CommandLineArgumentType.AtMostOnce,
-			 ShortName = "rf",
-			 LongName = "report-folder",
-			 Description="Target output folder for the reports"
-			 )]
-		public String ReportFolder = "";
+        [CommandLineArgument(
+            CommandLineArgumentType.MultipleUnique,
+            ShortName = "pd",
+            LongName = "plugin-directory",
+            Description = "Additional MbUnit plugin directories to search recursively"
+            )]
+        public string[] PluginDirectories; 
+
+        #endregion
+
+        #region Report Arguments
+        [CommandLineArgument(
+             CommandLineArgumentType.AtMostOnce,
+             ShortName = "rf",
+             LongName = "report-folder",
+             Description = "Target output folder for the reports"
+             )]
+        public String ReportFolder = "";
 
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
@@ -60,12 +73,12 @@ namespace MbUnit.Echo
         public string ReportNameFormat = "mbunit-{0}{1}";
 
         [CommandLineArgument(
-			 CommandLineArgumentType.MultipleUnique,
-			 ShortName = "rt",
-			 LongName = "report-type",
-			Description="Report types supported: Xml, Html, Text"
-		)]
-		public ReportType[] ReportTypes = null;
+             CommandLineArgumentType.MultipleUnique,
+             ShortName = "rt",
+             LongName = "report-type",
+            Description = "Report types supported: Xml, Html, Text"
+        )]
+        public ReportType[] ReportTypes = null;
 
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
@@ -74,51 +87,54 @@ namespace MbUnit.Echo
             Description = "Show generated reports in a window"
         )]
         public bool ShowReports = false;
-		#endregion
+        #endregion
 
-		#region Filter Arguments
-		[CommandLineArgument(
-			 CommandLineArgumentType.MultipleUnique,
-			 ShortName = "fc",
-			 LongName = "filter-category",
-			 Description="Name of the filtered category"
-			 )]
-		public string[] FilterCategories = null;
+        #region Filter Arguments
 
-		[CommandLineArgument(
+        [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,
-			 ShortName = "fa",
-			 LongName = "filter-author",
-			 Description="Name of the filtered author name"
-			 )]
+             ShortName = "fc",
+             LongName = "filter-category",
+             Description = "Name of the filtered category"
+             )]
+        public string[] FilterCategories = null;
+
+        [CommandLineArgument(
+             CommandLineArgumentType.MultipleUnique,
+             ShortName = "fa",
+             LongName = "filter-author",
+             Description = "Name of the filtered author name"
+             )]
         public string[] FilterAuthors = null;
 
-		[CommandLineArgument(
-			 CommandLineArgumentType.MultipleUnique,
-			 ShortName = "ft",
-			 LongName = "filter-type",
-			 Description="Name of the filtered type"
-			 )]
+        [CommandLineArgument(
+             CommandLineArgumentType.MultipleUnique,
+             ShortName = "ft",
+             LongName = "filter-type",
+             Description = "Name of the filtered type"
+             )]
         public string[] FilterTypes = null;
 
-		[CommandLineArgument(
+        [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,
-			 ShortName = "fn",
-			 LongName = "filter-namespace",
-			 Description="Name of the filtered namespace"
-			 )]
+             ShortName = "fn",
+             LongName = "filter-namespace",
+             Description = "Name of the filtered namespace"
+             )]
         public string[] FilterNamespaces = null;
 
-		[CommandLineArgument(
-			 CommandLineArgumentType.MultipleUnique,
-			 ShortName = "fi",
-			 LongName = "filter-importance",
-			 Description="Name of the filtered importance"
-			 )]
-		public TestImportance[] FilterImportances = null;
-		#endregion
+        [CommandLineArgument(
+             CommandLineArgumentType.MultipleUnique,
+             ShortName = "fi",
+             LongName = "filter-importance",
+             Description = "Name of the filtered importance"
+             )]
+        public TestImportance[] FilterImportances = null;
+
+        #endregion
 
         #region Misc arguments
+
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
              ShortName = "h",
@@ -128,21 +144,13 @@ namespace MbUnit.Echo
         public bool Help = false;
 
         [CommandLineArgument(
-			 CommandLineArgumentType.AtMostOnce,
-			 ShortName = "v",
-			 LongName = "verbosity",
-			 Description="Return a lot of information or not..."
-			 )]
-		public Verbosity Verbosity = Verbosity.Normal;
-
-        [CommandLineArgument(
-             CommandLineArgumentType.MultipleUnique,
-             ShortName = "pd",
-             LongName = "plugin-directory",
-             Description = "Additional MbUnit plugin directories to search recursively"
+             CommandLineArgumentType.AtMostOnce,
+             ShortName = "v",
+             LongName = "verbosity",
+             Description = "Controls the level of detail of the information to display"
              )]
-        public string[] PluginDirectories;
-
+        public Verbosity Verbosity = Verbosity.Normal;
+               
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
              LongName = "save-template-tree",
@@ -164,20 +172,21 @@ namespace MbUnit.Echo
              Description = "Enabled/disable shadow copying of the assemblies"
              )]
         public bool ShadowCopyFiles = false;
+
         #endregion
 
         public override string ToString()
-		{
-			StringWriter sw = new StringWriter();
-			sw.WriteLine("-- Parsed Arguments");
-			sw.WriteLine("Files:");
-			foreach(string file in this.Files)
-				sw.WriteLine("\t{0}",file);
+        {
+            StringWriter sw = new StringWriter();
+            sw.WriteLine("-- Parsed Arguments");
+            sw.WriteLine("Assemblies:");
+            foreach (string file in this.Assemblies)
+                sw.WriteLine("\t{0}", file);
 
-            sw.WriteLine("Assembly paths:");
-            foreach (string assemblyPath in this.AssemblyPath)
+            sw.WriteLine("Hint Directories:");
+            foreach (string hintDirectory in HintDirectories)
             {
-                sw.WriteLine("\t{0}", assemblyPath);
+                sw.WriteLine("\t{0}", hintDirectory);
             }
 
             sw.WriteLine("Plugin Directories:");
@@ -186,47 +195,47 @@ namespace MbUnit.Echo
                 sw.WriteLine("\t{0}", pluginDirectory);
             }
 
-            sw.WriteLine("Report folder: {0}",this.ReportFolder);
-            sw.WriteLine("Report Name Format: {0}",this.ReportNameFormat);
-			sw.WriteLine("Report types: {0}", String.Join(", ",
+            sw.WriteLine("Report folder: {0}", this.ReportFolder);
+            sw.WriteLine("Report Name Format: {0}", this.ReportNameFormat);
+            sw.WriteLine("Report types: {0}", String.Join(", ",
                 ListUtils.ConvertAllToArray<ReportType, string>(this.ReportTypes, delegate(ReportType reportType) { return reportType.ToString(); })));
             sw.WriteLine("Show reports: {0}", this.ShowReports);
 
             sw.WriteLine("Filter Category: {0}", String.Join(", ", this.FilterCategories));
-			sw.WriteLine("Filter Author: {0}", String.Join(", ", this.FilterAuthors));
-			sw.WriteLine("Filter Namespace: {0}", String.Join(", ", this.FilterNamespaces));
-			sw.WriteLine("Filter Type: {0}", String.Join(", ", this.FilterTypes));
+            sw.WriteLine("Filter Author: {0}", String.Join(", ", this.FilterAuthors));
+            sw.WriteLine("Filter Namespace: {0}", String.Join(", ", this.FilterNamespaces));
+            sw.WriteLine("Filter Type: {0}", String.Join(", ", this.FilterTypes));
 
-			sw.WriteLine("Verbosity: {0}", this.Verbosity);
+            sw.WriteLine("Verbosity: {0}", this.Verbosity);
             sw.WriteLine("Save Template Tree: {0}", this.SaveTemplateTree);
             sw.WriteLine("Save Test Tree: {0}", this.SaveTestTree);
             sw.WriteLine("ShadowCopyFiles: {0}", this.ShadowCopyFiles);
             return sw.ToString();
-		}
+        }
 
-		public Filter<ITest> GetFilter()
-		{
+        public Filter<ITest> GetFilter()
+        {
             List<Filter<ITest>> filters = new List<Filter<ITest>>();
 
-			if (FilterCategories.Length != 0)
-			{
+            if (FilterCategories.Length != 0)
+            {
                 List<Filter<ITest>> categoryFilters = new List<Filter<ITest>>();
 
                 foreach (string category in FilterCategories)
                     categoryFilters.Add(new MetadataFilter<ITest>(MetadataConstants.CategoryNameKey, category));
 
                 filters.Add(new OrFilter<ITest>(categoryFilters.ToArray()));
-			}
+            }
 
-			if (FilterAuthors.Length != 0)
-			{
+            if (FilterAuthors.Length != 0)
+            {
                 List<Filter<ITest>> authorFilters = new List<Filter<ITest>>();
 
                 foreach (string author in FilterAuthors)
                     authorFilters.Add(new MetadataFilter<ITest>(MetadataConstants.AuthorNameKey, author));
 
                 filters.Add(new OrFilter<ITest>(authorFilters.ToArray()));
-			}
+            }
 
             if (FilterImportances.Length != 0)
             {
@@ -260,6 +269,6 @@ namespace MbUnit.Echo
             }
 
             return new AndFilter<ITest>(filters.ToArray());
-		}
-	}
+        }
+    }
 }
