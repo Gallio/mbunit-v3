@@ -114,9 +114,7 @@ namespace MbUnit.Icarus
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Rectangle bounds =
-                new Rectangle(e.ClipRectangle.X, e.ClipRectangle.Y, e.ClipRectangle.Width - 1,
-                              e.ClipRectangle.Height - 1);
+            Rectangle bounds = new Rectangle(0 , 0, Width - 1, Height - 1);
 
             if (mouseOver)
             {
