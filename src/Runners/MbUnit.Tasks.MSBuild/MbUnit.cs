@@ -133,7 +133,7 @@ namespace MbUnit.Tasks.MSBuild
             MSBuildLogger logger = new MSBuildLogger(Log);
             using (TestRunnerHelper runner = new TestRunnerHelper
                 (
-                delegate { return new MSBuildProgressMonitor(logger); },
+                delegate { return new RunnerProgressMonitor(logger); },
                 logger,
                 Verbosity.Verbose,
                 new AnyFilter<ITest>()

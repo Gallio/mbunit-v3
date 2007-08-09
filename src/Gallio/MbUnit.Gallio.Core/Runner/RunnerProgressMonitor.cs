@@ -1,30 +1,27 @@
+using Castle.Core.Logging;
 using MbUnit.Core.Runner;
 
-namespace MbUnit.Tasks.MSBuild
+namespace MbUnit.Core.Runner
 {
     /// <summary>
-    /// Implementation of a IProgressMonitor that logs messages to a MSBuildLogger
+    /// Implementation of a IProgressMonitor that logs messages to a ConsoleLogger
     /// instance.
     /// </summary>
-    public class MSBuildProgressMonitor : TextualProgressMonitor
+    public class RunnerProgressMonitor : TextualProgressMonitor
     {
-        private readonly MSBuildLogger logger = null;
+        private readonly ConsoleLogger tddLogger = null;
 
         /// <summary>
-        /// Initializes a new instance of the MSBuildProgressMonitor class.
+        /// Initializes a new instance of the RunnerProgressMonitor class.
         /// </summary>
-        /// <param name="logger">A MSBuildLogger instance where log messages will be
+        /// <param name="logger">A ConsoleLogger instance where log messages will be
         /// channeled to.</param>
-        public MSBuildProgressMonitor(MSBuildLogger logger)
+        public RunnerProgressMonitor(ConsoleLogger logger)
         {            
-            this.logger = logger;
+            tddLogger = logger;
         }
 
         private string previousTaskName = string.Empty;
-
-        /// <summary>
-        /// 
-        /// </summary>
         protected override void UpdateDisplay()
         {
             // We can't show progress in a convenient way when running 
@@ -33,7 +30,7 @@ namespace MbUnit.Tasks.MSBuild
             if (previousTaskName.CompareTo(TaskName) != 0)
             {
                 previousTaskName = TaskName;
-                logger.Info(TaskName);
+                tddLogger.Info(TaskName);
             }
         }
     }

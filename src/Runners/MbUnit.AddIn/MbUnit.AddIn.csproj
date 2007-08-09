@@ -81,7 +81,6 @@
     <Compile Include="TDDLogger.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TDDProgressMonitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Snippets\CodeSmith\AdjacencyGraph.cst" />

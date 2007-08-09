@@ -47,7 +47,6 @@
     <Compile Include="FormatterType.cs" />
     <Compile Include="MbUnit.cs" />
     <Compile Include="MSBuildLogger.cs" />
-    <Compile Include="MSBuildProgressMonitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

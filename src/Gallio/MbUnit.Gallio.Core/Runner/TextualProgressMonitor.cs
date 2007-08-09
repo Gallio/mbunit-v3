@@ -1,4 +1,3 @@
-using System;
 using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Core.Runner

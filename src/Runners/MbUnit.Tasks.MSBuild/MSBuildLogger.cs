@@ -5,7 +5,7 @@ using Castle.Core.Logging;
 namespace MbUnit.Tasks.MSBuild
 {
     /// <summary>
-    /// Logs messages to a TaskLoggingHelper instance
+    /// Logs messages to a TaskLoggingHelper instance.
     /// </summary>
     public class MSBuildLogger :  ConsoleLogger
     {

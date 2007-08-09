@@ -64,7 +64,7 @@ namespace MbUnit.AddIn
             logger.Info(String.Format("MbUnit.AddIn - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build));
             using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper
                 (
-                delegate { return new TDDProgressMonitor(logger); },
+                delegate { return new RunnerProgressMonitor(logger); },
                 logger,
                 Verbosity.Verbose,
                 filters

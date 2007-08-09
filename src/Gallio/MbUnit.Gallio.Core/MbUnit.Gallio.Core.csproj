@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Runner\RunnerProgressMonitor.cs" />
     <Compile Include="Utilities\VisualStudioDebugHelper.cs" />
     <Compile Include="Harness\AssemblyAddedEventArgs.cs" />
     <Compile Include="Harness\DefaultTestHarness.cs" />
