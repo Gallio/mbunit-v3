@@ -22,8 +22,8 @@ namespace MbUnit.AddIn
 {
     internal class TDDLogger : ConsoleLogger
     {
-        private readonly TDF.ITestListener tddLogger = null;
-        public TDDLogger(TDF.ITestListener testListener)
+        private readonly ITestListener tddLogger = null;
+        public TDDLogger(ITestListener testListener)
         {            
             tddLogger = testListener;
         }

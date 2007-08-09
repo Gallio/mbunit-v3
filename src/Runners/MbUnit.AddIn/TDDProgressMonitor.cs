@@ -1,6 +1,4 @@
 using MbUnit.Core.Runner;
-using TestDriven.Framework;
-using TDF = TestDriven.Framework;
 
 namespace MbUnit.AddIn
 {
