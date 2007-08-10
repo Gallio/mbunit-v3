@@ -46,6 +46,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Notes.txt" />
     <Content Include="Stories.txt" />
   </ItemGroup>
   <ItemGroup>
