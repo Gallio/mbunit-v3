@@ -152,7 +152,7 @@ namespace MbUnit.Icarus
             aboutForm.ShowDialog();
 
             //if (aboutForm != null)
-                aboutForm.Dispose();
+            aboutForm.Dispose();
         }
 
         private void tlbStart_Click(object sender, EventArgs e)
@@ -200,7 +200,7 @@ namespace MbUnit.Icarus
             //trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
             //                        ToolTipIcon.Error);
             List<TaskButton> taskButtons = new List<TaskButton>();
-            
+
             TaskButton button1 = new TaskButton();
             button1.Text = "Button 1";
             button1.Icon = Resources.tick;
@@ -210,7 +210,8 @@ namespace MbUnit.Icarus
             TaskButton button2 = new TaskButton();
             button2.Text = "Button 2";
             button2.Icon = Resources.help_browser;
-            button2.Description = "This is the second button, much the same as the first button but this one demonstrates that the text will wrap onto the next line.";
+            button2.Description =
+                "This is the second button, much the same as the first button but this one demonstrates that the text will wrap onto the next line.";
             taskButtons.Add(button2);
 
             TaskButton button3 = new TaskButton();
@@ -218,18 +219,14 @@ namespace MbUnit.Icarus
             button3.Icon = Resources.cross;
             button3.Description = "Saves all changes and exits the application.";
             taskButtons.Add(button3);
-            
-            //Shower taskDialogShower = new Shower();
+
             TaskButton res = TaskDialog.Show("Title Text",
-                            "Description about the problem and what you need to do to resolve it. Each button can have its own description too.",
-                            taskButtons);
-            //TaskButton res = taskDialogShower.CreateTaskDialog("Title Text", "Description about the problem and what you need to do to resolve it. Each button can have its own description too.", taskButtons);
-            
+                                             "Description about the problem and what you need to do to resolve it. Each button can have its own description too.",
+                                             taskButtons);
             if (res == button2)
                 MessageBox.Show("Button 2 was clicked.");
             else if (res == button1)
                 MessageBox.Show("Button 1 was clicked.");
-
         }
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
