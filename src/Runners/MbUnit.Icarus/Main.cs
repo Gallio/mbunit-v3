@@ -219,8 +219,11 @@ namespace MbUnit.Icarus
             button3.Description = "Saves all changes and exits the application.";
             taskButtons.Add(button3);
             
-            Shower taskDialogShower = new Shower();
-            TaskButton res = taskDialogShower.CreateTaskDialog("Title Text", "Description about the problem and what you need to do to resolve it. Each button can have its own description too.", taskButtons);
+            //Shower taskDialogShower = new Shower();
+            TaskButton res = TaskDialog.Show("Title Text",
+                            "Description about the problem and what you need to do to resolve it. Each button can have its own description too.",
+                            taskButtons);
+            //TaskButton res = taskDialogShower.CreateTaskDialog("Title Text", "Description about the problem and what you need to do to resolve it. Each button can have its own description too.", taskButtons);
             
             if (res == button2)
                 MessageBox.Show("Button 2 was clicked.");
