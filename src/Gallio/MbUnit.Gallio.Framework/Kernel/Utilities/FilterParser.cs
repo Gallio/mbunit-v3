@@ -86,7 +86,8 @@ namespace MbUnit.Framework.Kernel.Utilities
             //    filters.Add(new OrFilter<ITest>(typeFilters.ToArray()));
             //}
 
-            return new AndFilter<ITest>(filters.ToArray());
+            //return new AndFilter<ITest>(filters.ToArray());
+            return new AnyFilter<ITest>();
         }
     }
 }

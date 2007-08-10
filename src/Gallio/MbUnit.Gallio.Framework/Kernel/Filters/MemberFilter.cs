@@ -37,7 +37,7 @@ namespace MbUnit.Framework.Kernel.Filters
         public MemberFilter(string memberName)
         {
             if (memberName == null)
-                throw new ArgumentNullException("typeName");
+                throw new ArgumentNullException("memberName");
 
             this.memberName = memberName;
         }

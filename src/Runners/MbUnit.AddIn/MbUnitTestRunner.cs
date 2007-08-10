@@ -31,26 +31,29 @@ namespace MbUnit.AddIn
 
         TestRunState TDF.ITestRunner.RunAssembly(ITestListener testListener, Assembly assembly)
         {
-            return Run(testListener, assembly, null);
+            return Run(testListener, assembly, "");
         }
 
         TestRunState TDF.ITestRunner.RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
         {
-            string filter = "";
+            if (member == null)
+                throw new ArgumentNullException("member");
+            string filter = "Member=" + member.Name;
+            testListener.WriteLine(filter, Category.Info);
             return Run(testListener, assembly, filter);
         }
 
         TestRunState TDF.ITestRunner.RunNamespace(ITestListener testListener, Assembly assembly, string ns)
         {
-            string filter = "";
+            string filter = "Type=" + ns;
+            testListener.WriteLine(filter, Category.Info);
             return Run(testListener, assembly, filter);
         }
 
         #endregion
 
-        private TestRunState Run(ITestListener listener, Assembly assembly, string filter)
+        private static TestRunState Run(ITestListener listener, Assembly assembly, string filter)
         {
-            int result;
             if (listener == null)
                 throw new ArgumentNullException("listener");
 
@@ -65,10 +68,9 @@ namespace MbUnit.AddIn
                 ))
             {
                 testRunnerHelper.AddAssemblyFile(assembly.Location);
-                result = testRunnerHelper.Run();
+                int result = testRunnerHelper.Run();
+                return GetTddResult(result);
             }
-
-            return GetTddResult(result);
         }
 
         private static TestRunState GetTddResult(int result)
