@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MbUnit.Tasks.NAnt</RootNamespace>
-    <AssemblyName>MbUnit.NAnt.Tasks</AssemblyName>
+    <AssemblyName>MbUnit.Tasks.NAnt</AssemblyName>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

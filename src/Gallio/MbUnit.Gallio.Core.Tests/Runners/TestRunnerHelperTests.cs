@@ -16,7 +16,7 @@ namespace MbUnit.Core.Tests.Runners
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestInstantiation_NullProgressMonitorMonitor()
         {
-            new TestRunnerHelper(null, null, null);
+            new TestRunnerHelper(null, null, "");
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace MbUnit.Core.Tests.Runners
         {
             new TestRunnerHelper(
                 delegate { return new NullProgressMonitor(); },
-                null, null);
+                null, "");
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace MbUnit.Core.Tests.Runners
         {
             new TestRunnerHelper(
                 delegate { return new NullProgressMonitor(); },
-                new ConsoleLogger(), null);
+                new ConsoleLogger(), "");
         }
     }
 }

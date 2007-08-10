@@ -18,11 +18,12 @@ namespace MbUnit.Tasks.MSBuild
         private string[] assemblies;
         private string[] pluginDirectories;
         private string[] hintDirectories;
+        private string filter;
         private string[] reportTypes = new string[] { "html" };
         private string reportFileNameFormat = "mbunit-result-{0}{1}";
         private string reportOutputDirectory = String.Empty;
-        private bool haltOnFailure = false;
-        private bool haltOnError = false;
+        private bool ignoreFailures = false;
+        private int exitCode;
 
         #endregion
 
@@ -86,29 +87,37 @@ namespace MbUnit.Tasks.MSBuild
         /// <summary>
         /// Whether or not to halt on failure.
         /// </summary>
-        public bool HaltOnFailure
+        public bool IgnoreFailures
         {
-            get { return haltOnFailure; }
-            set { haltOnFailure = value; }
+            get { return ignoreFailures; }
+            set { ignoreFailures = value; }
         }
 
         /// <summary>
-        /// Whether or not to halt on error.
+        /// The exit code of the tests execution.
         /// </summary>
-        public bool HaltOnError
+        [Output]
+        public int ExitCode
         {
-            get { return haltOnError; }
-            set { haltOnError = value; }
+            get { return exitCode; }
+            set { exitCode = value; }
         } 
 
         #endregion
 
+        /// <summary>
+        /// The filter to apply in the format "property=value;property=value;..."
+        /// If left empty the "Any" filter will be applied.
+        /// </summary>
+        public string Filter
+        {
+            get { return filter; }
+            set { filter = value; }
+        }
+
         #region Public Methods
 
-        /// <summary>
-        /// Executes the task.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public override bool Execute()
         {
             try
@@ -119,7 +128,7 @@ namespace MbUnit.Tasks.MSBuild
             {
                 Log.LogError("Unexpected failure during MbUnit execution");
                 Log.LogErrorFromException(ex,true);
-                return !HaltOnError;
+                return IgnoreFailures;
             }
         }
 
@@ -141,7 +150,9 @@ namespace MbUnit.Tasks.MSBuild
                 runner.AddAssemblyFiles(Assemblies);
                 runner.AddHintDirectories(hintDirectories);
                 runner.AddPluginDirectories(pluginDirectories);
-                if (runner.Run() == ResultCode.Success)
+                ExitCode = runner.Run();
+                //TODO: Maybe count ResultCode.NoTests as sucess too? 
+                if (ExitCode == ResultCode.Success || IgnoreFailures)
                     return true;
             }
 

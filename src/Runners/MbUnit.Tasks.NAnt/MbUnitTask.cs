@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Reflection;
 using MbUnit.Core.Runner;
 using MbUnit.Framework.Kernel.Model;
@@ -8,7 +9,7 @@ using NAnt.Core.Attributes;
 using NAnt.Core.Types;
 
 namespace MbUnit.Tasks.NAnt
-{    
+{
     /// <summary>
     /// A NAnt task for launching MbUnit.
     /// </summary>
@@ -20,11 +21,12 @@ namespace MbUnit.Tasks.NAnt
         private FileSet[] assemblies;
         private DirSet[] hintDirectories;
         private DirSet[] pluginDirectories;
+        private string filter;
         private string reportTypes = "html";
         private string reportFileNameFormat = "mbunit-result-{0}{1}";
         private string reportOutputDirectory = String.Empty;
-        private bool haltOnFailure = false;
-        private bool haltOnError = false;
+        private bool ignoreFailures = false;
+        private string resultProperty;
 
         #endregion
 
@@ -73,7 +75,7 @@ namespace MbUnit.Tasks.NAnt
         ///<summary>
         /// A format string to use to generate the reports filename.
         ///</summary>
-        [TaskAttribute("report-file-name-format", Required = false)]
+        [TaskAttribute("report-filename-format", Required = false)]
         public string ReportFileNameFormat
         {
             get { return reportFileNameFormat; }
@@ -93,32 +95,45 @@ namespace MbUnit.Tasks.NAnt
         ///<summary>
         /// Whether or not to halt on failure.
         ///</summary>
-        [BooleanValidator, TaskAttribute("halt-on-failure", Required = false)]
-        public bool HaltOnFailure
+        [BooleanValidator, TaskAttribute("ignore-failures")]
+        public bool IgnoreFailures
         {
-            get { return haltOnFailure; }
-            set { haltOnFailure = value; }
+            get { return ignoreFailures; }
+            set { ignoreFailures = value; }
         }
 
         /// <summary>
-        /// Whether or not to halt on error.
+        /// The name of a property in which the exit code of the tests execution
+        /// should be stored. Only of interest if <see cref="IgnoreFailures" /> is 
+        /// true.
         /// </summary>
-        [BooleanValidator, TaskAttribute("halt-on-error", Required = false)]
-        public bool HaltOnError
+        [TaskAttribute("result-property")]
+        [StringValidator(AllowEmpty = false)]
+        public string ResultProperty
         {
-            get { return haltOnError; }
-            set { haltOnError = value; }
+            get { return resultProperty; }
+            set { resultProperty = value; }
+        }
+
+        /// <summary>
+        /// The filter to apply in the format "property=value;property=value;..."
+        /// If left empty the "Any" filter will be applied.
+        /// </summary>
+        public string Filter
+        {
+            get { return filter; }
+            set { filter = value; }
         }
 
         #endregion
 
         #region Public Methods"
-        /// <summary>
-        /// Executes the task.
-        /// </summary>
+
+        /// <inheritdoc />
         protected override void ExecuteTask()
         {
             DisplayVersion();
+            DisplaySpecificTaskConfiguration();
             NAntLogger logger = new NAntLogger(this);
             using (TestRunnerHelper runner = new TestRunnerHelper
                 (
@@ -130,13 +145,35 @@ namespace MbUnit.Tasks.NAnt
                 AddAssemblies(runner);
                 AddHintDirectories(runner);
                 AddPluginDirectories(runner);
-                runner.Run();
+                int resultCode = runner.Run();
+                ProcessResultCode(resultCode);
             }
         }
 
         #endregion
 
         #region Private Methods
+
+        /// <summary>
+        /// Checks the result code of the tests exceution and performs the
+        /// corresponding action
+        /// </summary>
+        /// <param name="resultCode"></param>
+        private void ProcessResultCode(int resultCode)
+        {
+            if (!String.IsNullOrEmpty(ResultProperty))
+            {
+                Properties[ResultProperty] = resultCode.ToString(CultureInfo.InvariantCulture);
+            }
+            if (IgnoreFailures)
+            {
+                //TODO: Maybe count ResultCode.NoTests as sucess too?
+                if (resultCode != ResultCode.Success)
+                {
+                    throw new BuildException("MbUnit Tests Execution Failed");
+                }
+            }
+        }
 
         private void DisplayVersion()
         {
@@ -174,13 +211,10 @@ namespace MbUnit.Tasks.NAnt
             }
         }
 
-        private void DisplayTaskConfiguration()
+        private void DisplaySpecificTaskConfiguration()
         {
-            Log(Level.Verbose, "ReportTypes: {0}", ReportTypes);
-            Log(Level.Verbose, "ReportFileNameFormat: {0}", ReportFileNameFormat);
-            Log(Level.Verbose, "ReportOutputDirectory: {0}", ReportOutputDirectory);
-            Log(Level.Verbose, "HaltOnFailure: {0}", HaltOnFailure);
-            Log(Level.Verbose, "HaltOnError: {0}", HaltOnError);
+            Log(Level.Verbose, "Task Configuration");
+            Log(Level.Verbose, "IgnoreFailures: {0}", IgnoreFailures);
         }
 
         #endregion

@@ -24,7 +24,7 @@ namespace MbUnit.Framework.Kernel.Filters
     [Serializable]
     public class AndFilter<T> : Filter<T>
     {
-        private Filter<T>[] filters;
+        private readonly Filter<T>[] filters;
 
         /// <summary>
         /// Creates an AND-filter.

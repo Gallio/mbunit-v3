@@ -15,9 +15,6 @@
 
 using System;
 using System.Reflection;
-using MbUnit.Framework.Kernel.Filters;
-//using MbUnit.Framework.Kernel.Metadata;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Runner;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
@@ -30,29 +27,28 @@ namespace MbUnit.AddIn
     [Serializable]
     public class MbUnitTestRunner : TDF.ITestRunner
     {
-        private readonly Filter<ITest> filters = new AnyFilter<ITest>();
-
         #region TDF.ITestRunner Members
 
         TestRunState TDF.ITestRunner.RunAssembly(ITestListener testListener, Assembly assembly)
         {
-            return Run(testListener, assembly);
+            return Run(testListener, assembly, null);
         }
 
         TestRunState TDF.ITestRunner.RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
         {
-            //filters.Add(new MetadataFilter<ITest>(MetadataConstants.AuthorEmailKey));
-            return Run(testListener, assembly);
+            string filter = "";
+            return Run(testListener, assembly, filter);
         }
 
         TestRunState TDF.ITestRunner.RunNamespace(ITestListener testListener, Assembly assembly, string ns)
         {
-            return Run(testListener, assembly);
+            string filter = "";
+            return Run(testListener, assembly, filter);
         }
 
         #endregion
 
-        private TestRunState Run(ITestListener listener, Assembly assembly)
+        private TestRunState Run(ITestListener listener, Assembly assembly, string filter)
         {
             int result;
             if (listener == null)
@@ -65,7 +61,7 @@ namespace MbUnit.AddIn
                 (
                 delegate { return new RunnerProgressMonitor(logger); },
                 logger,
-                filters
+                filter
                 ))
             {
                 testRunnerHelper.AddAssemblyFile(assembly.Location);

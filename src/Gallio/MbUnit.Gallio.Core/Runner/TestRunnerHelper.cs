@@ -25,6 +25,7 @@ using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Runner
 {
@@ -55,8 +56,8 @@ namespace MbUnit.Core.Runner
         /// </summary>
         /// <param name="progressMonitorCreator">A delegate to a rutine that will be
         /// called to create progress monitors</param>
-        /// <param name="logger"></param>
-        /// <param name="filter"></param>
+        /// <param name="logger">A LevelFilteredLogger instance to log messages to.</param>
+        /// <param name="filter">The filter to apply to the tests.</param>
         public TestRunnerHelper(
             ProgressMonitorCreator progressMonitorCreator,
             LevelFilteredLogger logger,
@@ -72,6 +73,24 @@ namespace MbUnit.Core.Runner
             this.progressMonitorCreator = progressMonitorCreator;
             this.filter = filter;
             this.logger = logger;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the TestRunnerHelper class.
+        /// </summary>
+        /// <param name="progressMonitorCreator">A delegate to a rutine that will be
+        /// called to create progress monitors</param>
+        /// <param name="logger">A LevelFilteredLogger instance to log messages to.</param>
+        /// <param name="filter">A string representation of the filter to apply to
+        /// the tests.</param>
+        public TestRunnerHelper(
+            ProgressMonitorCreator progressMonitorCreator,
+            LevelFilteredLogger logger,
+            string filter)
+            : this(progressMonitorCreator,
+                   logger,
+                   FilterParser.ParseFilterFromString(filter))
+        {
         }
 
         #endregion
@@ -206,6 +225,11 @@ namespace MbUnit.Core.Runner
             DisplayPaths(package.AssemblyFiles, "Test assemblies:");
             DisplayPaths(package.HintDirectories, "Hint Directories:");
             DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
+
+            //TODO: This will be un-commented and fixed once reporting is implemented
+            //Log(Level.Verbose, "ReportTypes: {0}", ReportTypes);
+            //Log(Level.Verbose, "ReportFileNameFormat: {0}", ReportFileNameFormat);
+            //Log(Level.Verbose, "ReportOutputDirectory: {0}", ReportOutputDirectory);
         }
 
         private void DisplayPaths(ICollection<string> paths, string name)
