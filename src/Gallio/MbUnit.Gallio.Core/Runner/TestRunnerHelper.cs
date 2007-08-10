@@ -136,6 +136,9 @@ namespace MbUnit.Core.Runner
 
                 StringWriter debugWriter = new StringWriter();
                 new DebugMonitor(debugWriter).Attach(runner);
+                
+                TestStatisticMonitor tsm = new TestStatisticMonitor();
+                tsm.Attach(runner);
 
                 ApplyFilter(runner);
 
@@ -158,6 +161,7 @@ namespace MbUnit.Core.Runner
                     return ResultCode.Canceled;
 
                 logger.Debug(debugWriter.ToString());
+                logger.Info(tsm.Summary);
 
                 DisposeStopWatch();
 
