@@ -34,7 +34,7 @@ namespace MbUnit.Echo
     public sealed class MainClass : IDisposable
     {
         private string applicationTitle;
-        private LevelFilteredLogger logger;
+        private LevelFilteredLogger logger = new PrettyConsoleLogger();
         private readonly MainArguments arguments = new MainArguments();
         private bool haltExecution = false;
         private int resultCode;
@@ -50,18 +50,22 @@ namespace MbUnit.Echo
         {
             SetApplicationTitle();
             InstallCancelHandler();
+
             if (!ParseArguments(args))
             {
                 haltExecution = true;
                 resultCode = ResultCode.InvalidArguments;
             }
+
             if (arguments.Help)
             {
                 ShowHelp();
                 haltExecution = true;
                 resultCode = ResultCode.Success;
             }
-            SetUpLogger();
+
+            if (resultCode == ResultCode.Success)
+                SetUpLogger();
         }
 
         public int Run()
@@ -103,7 +107,6 @@ namespace MbUnit.Echo
 
         private void SetUpLogger()
         {
-            logger = new PrettyConsoleLogger();
             SetVerbosityLevel();
             logger.Debug(arguments.ToString());
         }
