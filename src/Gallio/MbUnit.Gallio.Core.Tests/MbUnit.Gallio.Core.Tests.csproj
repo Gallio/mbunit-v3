@@ -48,10 +48,15 @@
   <ItemGroup>
     <Compile Include="Harness\MbUnitTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runners\CommandLine\CommandLineArgumentParserTests.cs" />
     <Compile Include="Runners\TestRunnerHelperTests.cs" />
     <Compile Include="Serialization\CodeReferenceInfoTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Runners\MbUnit.Echo\MbUnit.Echo.csproj">
+      <Project>{22AE34D9-185F-41A7-A48D-205BE68B1F7D}</Project>
+      <Name>MbUnit.Echo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
       <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
       <Name>MbUnit.Gallio.Core</Name>
