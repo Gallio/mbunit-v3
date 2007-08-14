@@ -48,7 +48,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
         {
-            component.Metadata.Entries.Add(MetadataConstants.DescriptionKey, importance.ToString());
+            component.Metadata.Entries.Add(MetadataKey.Description, importance.ToString());
         }
     }
 

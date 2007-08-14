@@ -1,0 +1,7 @@
+* Must add IsTestCase flag to ITest and TestInfo so we can tell test cases apart from
+  their containers.
+  
+* When tests fail, their containing assemblies and fixtures should be considered
+  failures too.
+
+* NUnit plugin is not populating code reference

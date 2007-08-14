@@ -252,7 +252,8 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             private TestResult CreateTestResultFromNUnitTestResult(NUnit.Core.TestResult nunitResult)
             {
                 TestResult result = new TestResult();
-                result.Duration = TimeSpan.FromSeconds(nunitResult.Time);
+                result.AssertCount = nunitResult.AssertCount;
+                result.Duration = nunitResult.Time;
 
                 switch (nunitResult.ResultState)
                 {

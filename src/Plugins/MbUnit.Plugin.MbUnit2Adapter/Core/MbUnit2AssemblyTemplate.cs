@@ -29,6 +29,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
     /// </summary>
     public class MbUnit2AssemblyTemplate : BaseTemplate
     {
+        private Assembly assembly;
+
         /// <summary>
         /// Initializes a template initially without a parent.
         /// </summary>
@@ -36,6 +38,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         public MbUnit2AssemblyTemplate(Assembly assembly)
             : base(assembly.FullName, CodeReference.CreateFromAssembly(assembly))
         {
+            this.assembly = assembly;
+
             Kind = ComponentKind.Assembly;
         }
 
@@ -44,7 +48,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         /// </summary>
         public Assembly Assembly
         {
-            get { return CodeReference.Assembly; }
+            get { return assembly; }
         }
 
         /// <inheritdoc />

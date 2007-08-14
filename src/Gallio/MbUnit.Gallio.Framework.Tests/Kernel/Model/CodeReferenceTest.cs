@@ -34,7 +34,6 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         private MethodInfo member;
         private ParameterInfo parameter;
 
-
         [SetUp]
         public void SetUp()
         {
@@ -48,22 +47,22 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         [Test]
         public void Unknown_IsAllNulls()
         {
-            Assert.IsNull(CodeReference.Unknown.Assembly);
-            Assert.IsNull(CodeReference.Unknown.Namespace);
-            Assert.IsNull(CodeReference.Unknown.Type);
-            Assert.IsNull(CodeReference.Unknown.Member);
-            Assert.IsNull(CodeReference.Unknown.Parameter);
+            Assert.IsNull(CodeReference.Unknown.AssemblyName);
+            Assert.IsNull(CodeReference.Unknown.NamespaceName);
+            Assert.IsNull(CodeReference.Unknown.TypeName);
+            Assert.IsNull(CodeReference.Unknown.MemberName);
+            Assert.IsNull(CodeReference.Unknown.ParameterName);
         }
 
         [Test]
         public void CreateFromAssembly()
         {
             CodeReference r = CodeReference.CreateFromAssembly(assembly);
-            Assert.AreEqual(assembly, r.Assembly);
-            Assert.IsNull(r.Namespace);
-            Assert.IsNull(r.Type);
-            Assert.IsNull(r.Member);
-            Assert.IsNull(r.Parameter);
+            Assert.AreEqual(assembly.FullName, r.AssemblyName);
+            Assert.IsNull(r.NamespaceName);
+            Assert.IsNull(r.TypeName);
+            Assert.IsNull(r.MemberName);
+            Assert.IsNull(r.ParameterName);
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
@@ -76,11 +75,11 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         public void CreateFromType()
         {
             CodeReference r = CodeReference.CreateFromType(type);
-            Assert.AreEqual(assembly, r.Assembly);
-            Assert.AreEqual(@namespace, r.Namespace);
-            Assert.AreEqual(type, r.Type);
-            Assert.IsNull(r.Member);
-            Assert.IsNull(r.Parameter);
+            Assert.AreEqual(assembly.FullName, r.AssemblyName);
+            Assert.AreEqual(@namespace, r.NamespaceName);
+            Assert.AreEqual(type.FullName, r.TypeName);
+            Assert.IsNull(r.MemberName);
+            Assert.IsNull(r.ParameterName);
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
@@ -93,11 +92,11 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         public void CreateFromMember()
         {
             CodeReference r = CodeReference.CreateFromMember(member);
-            Assert.AreEqual(assembly, r.Assembly);
-            Assert.AreEqual(@namespace, r.Namespace);
-            Assert.AreEqual(type, r.Type);
-            Assert.AreEqual(member, r.Member);
-            Assert.IsNull(r.Parameter);
+            Assert.AreEqual(assembly.FullName, r.AssemblyName);
+            Assert.AreEqual(@namespace, r.NamespaceName);
+            Assert.AreEqual(type.FullName, r.TypeName);
+            Assert.AreEqual(member.Name, r.MemberName);
+            Assert.IsNull(r.ParameterName);
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
@@ -110,11 +109,11 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         public void CreateFromParameter()
         {
             CodeReference r = CodeReference.CreateFromParameter(parameter);
-            Assert.AreEqual(assembly, r.Assembly);
-            Assert.AreEqual(@namespace, r.Namespace);
-            Assert.AreEqual(type, r.Type);
-            Assert.AreEqual(member, r.Member);
-            Assert.AreEqual(parameter, r.Parameter);
+            Assert.AreEqual(assembly.FullName, r.AssemblyName);
+            Assert.AreEqual(@namespace, r.NamespaceName);
+            Assert.AreEqual(type.FullName, r.TypeName);
+            Assert.AreEqual(member.Name, r.MemberName);
+            Assert.AreEqual(parameter.Name, r.ParameterName);
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]

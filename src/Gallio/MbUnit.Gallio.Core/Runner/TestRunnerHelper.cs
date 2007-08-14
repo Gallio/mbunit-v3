@@ -89,7 +89,7 @@ namespace MbUnit.Core.Runner
             string filter)
             : this(progressMonitorCreator,
                    logger,
-                   FilterParser.ParseFilterFromString(filter))
+                   FilterParser.ParseFilterList<ITest>(filter))
         {
         }
 
@@ -501,7 +501,7 @@ namespace MbUnit.Core.Runner
         {
             using (IProgressMonitor progressMonitor = progressMonitorCreator())
             {
-                runner.LoadProject(progressMonitor, package);
+                runner.LoadPackage(progressMonitor, package);
                 if (progressMonitor.IsCanceled)
                     return false;
             }

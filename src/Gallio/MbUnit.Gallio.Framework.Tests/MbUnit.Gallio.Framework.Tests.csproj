@@ -54,6 +54,7 @@
     <Compile Include="Kernel\Filters\NotFilterTest.cs" />
     <Compile Include="Kernel\Filters\OrFilterTest.cs" />
     <Compile Include="Kernel\Filters\TypeFilterTest.cs" />
+    <Compile Include="Kernel\Metadata\MetadataMapTest.cs" />
     <Compile Include="Kernel\Model\CodeReferenceTest.cs" />
     <Compile Include="Kernel\Runtime\MockRuntime.cs" />
     <Compile Include="Kernel\Utilities\ListUtilsTest.cs" />

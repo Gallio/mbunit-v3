@@ -15,7 +15,7 @@
 
 using System;
 using MbUnit.Core.Harness;
-using MbUnit.Core.Serialization;
+using MbUnit.Framework.Kernel.Serialization;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
@@ -98,6 +98,21 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
+        public event EventHandler LoadPackageComplete;
+
+        /// <inheritdoc />
+        public event EventHandler BuildTemplatesComplete;
+
+        /// <inheritdoc />
+        public event EventHandler BuildTestsComplete;
+
+        /// <inheritdoc />
+        public event EventHandler RunStarting;
+
+        /// <inheritdoc />
+        public event EventHandler RunComplete;
+
+        /// <inheritdoc />
         public EventDispatcher EventDispatcher
         {
             get { return eventDispatcher; }
@@ -143,6 +158,12 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
+        public TestPackage Package
+        {
+            get { return Domain.Package; }
+        }
+
+        /// <inheritdoc />
         public TemplateModel TemplateModel
         {
             get { return Domain.TemplateModel; }
@@ -155,14 +176,22 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public virtual void LoadProject(IProgressMonitor progressMonitor, TestPackage package)
+        public virtual void LoadPackage(IProgressMonitor progressMonitor, TestPackage package)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
             if (package == null)
                 throw new ArgumentNullException("package");
 
-            Domain.LoadPackage(progressMonitor, package);
+            try
+            {
+                Domain.LoadPackage(progressMonitor, package);
+            }
+            finally
+            {
+                if (LoadPackageComplete != null)
+                    LoadPackageComplete(this, EventArgs.Empty);
+            }
         }
 
         /// <inheritdoc />
@@ -171,7 +200,15 @@ namespace MbUnit.Core.Runner
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
-            Domain.BuildTemplates(progressMonitor, templateEnumerationOptions);
+            try
+            {
+                Domain.BuildTemplates(progressMonitor, templateEnumerationOptions);
+            }
+            finally
+            {
+                if (BuildTemplatesComplete != null)
+                    BuildTemplatesComplete(this, EventArgs.Empty);
+            }
         }
 
         /// <inheritdoc />
@@ -180,7 +217,15 @@ namespace MbUnit.Core.Runner
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
-            Domain.BuildTests(progressMonitor, testEnumerationOptions);
+            try
+            {
+                Domain.BuildTests(progressMonitor, testEnumerationOptions);
+            }
+            finally
+            {
+                if (BuildTestsComplete != null)
+                    BuildTestsComplete(this, EventArgs.Empty);
+            }
         }
 
         /// <inheritdoc />
@@ -189,14 +234,18 @@ namespace MbUnit.Core.Runner
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
-            Domain.RunTests(progressMonitor, testExecutionOptions);
-        }
+            try
+            {
+                if (RunStarting != null)
+                    RunStarting(this, EventArgs.Empty);
 
-        /// <inheritdoc />
-        public virtual void WriteReport(IProgressMonitor progressMonitor)
-        {
-            if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
+                Domain.RunTests(progressMonitor, testExecutionOptions);
+            }
+            finally
+            {
+                if (RunComplete != null)
+                    RunComplete(this, EventArgs.Empty);
+            }
         }
     }
 }

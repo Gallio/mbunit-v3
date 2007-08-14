@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace MbUnit.Framework.Kernel.Results
 {
@@ -27,17 +28,20 @@ namespace MbUnit.Framework.Kernel.Results
         /// <summary>
         /// The test passed.
         /// </summary>
+        [XmlEnum("passed")]
         Passed,
 
         /// <summary>
         /// The test failed.
         /// </summary>
+        [XmlEnum("failed")]
         Failed,
 
         /// <summary>
         /// The test result was inconclusive because the test was ignored, skipped, aborted,
         /// did not run, or did not produce reliable results.
         /// </summary>
+        [XmlEnum("inconclusive")]
         Inconclusive
     }
 }

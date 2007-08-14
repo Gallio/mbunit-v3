@@ -27,6 +27,7 @@ namespace MbUnit.Framework.Kernel.Model
     public class MbUnitAssemblyTemplate : MbUnitTemplate
     {
         private MbUnitFrameworkTemplate frameworkTemplate;
+        private Assembly assembly;
 
         /// <summary>
         /// Initializes an MbUnit test assembly template model object.
@@ -37,6 +38,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(assembly.GetName().Name, CodeReference.CreateFromAssembly(assembly))
         {
             this.frameworkTemplate = frameworkTemplate;
+            this.assembly = assembly;
 
             Kind = ComponentKind.Assembly;
         }
@@ -54,7 +56,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         public Assembly Assembly
         {
-            get { return CodeReference.Assembly; }
+            get { return assembly; }
         }
 
         /// <summary>

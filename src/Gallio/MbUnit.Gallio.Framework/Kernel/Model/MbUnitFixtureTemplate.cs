@@ -26,6 +26,7 @@ namespace MbUnit.Framework.Kernel.Model
     public class MbUnitFixtureTemplate : MbUnitTemplate
     {
         private MbUnitAssemblyTemplate assemblyTemplate;
+        private Type fixtureType;
 
         /// <summary>
         /// Initializes an MbUnit test fixture template model object.
@@ -36,6 +37,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(fixtureType.Name, CodeReference.CreateFromType(fixtureType))
         {
             this.assemblyTemplate = assemblyTemplate;
+            this.fixtureType = fixtureType;
 
             Kind = ComponentKind.Fixture;
         }
@@ -53,7 +55,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         public Type FixtureType
         {
-            get { return CodeReference.Type; }
+            get { return fixtureType; }
         }
 
         /// <summary>

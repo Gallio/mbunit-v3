@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using MbUnit.Framework.Kernel.Metadata;
 using MbUnit2::MbUnit.Framework;
 
 using MbUnit.Framework.Kernel.Filters;
@@ -38,7 +39,7 @@ namespace MbUnit._Framework.Tests.Kernel.Filters
                 metadata.Entries.Add("key", value);
 
             IModelComponent component = Mocks.CreateMock<IModelComponent>();
-            Expect.Call(component.Metadata).Return(metadata);
+            SetupResult.For(component.Metadata).Return(metadata);
             Mocks.ReplayAll();
 
             Assert.AreEqual(expectedMatch, new MetadataFilter<IModelComponent>("key", "expectedValue").IsMatch(component));

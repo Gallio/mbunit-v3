@@ -222,7 +222,7 @@ namespace MbUnit.Echo
                 List<Filter<ITest>> categoryFilters = new List<Filter<ITest>>();
 
                 foreach (string category in FilterCategories)
-                    categoryFilters.Add(new MetadataFilter<ITest>(MetadataConstants.CategoryNameKey, category));
+                    categoryFilters.Add(new MetadataFilter<ITest>(MetadataKey.CategoryName, category));
 
                 filters.Add(new OrFilter<ITest>(categoryFilters.ToArray()));
             }
@@ -232,7 +232,7 @@ namespace MbUnit.Echo
                 List<Filter<ITest>> authorFilters = new List<Filter<ITest>>();
 
                 foreach (string author in FilterAuthors)
-                    authorFilters.Add(new MetadataFilter<ITest>(MetadataConstants.AuthorNameKey, author));
+                    authorFilters.Add(new MetadataFilter<ITest>(MetadataKey.AuthorName, author));
 
                 filters.Add(new OrFilter<ITest>(authorFilters.ToArray()));
             }
@@ -242,7 +242,7 @@ namespace MbUnit.Echo
                 List<Filter<ITest>> importanceFilters = new List<Filter<ITest>>();
 
                 foreach (TestImportance importance in FilterImportances)
-                    importanceFilters.Add(new MetadataFilter<ITest>(MetadataConstants.ImportanceKey, importance.ToString()));
+                    importanceFilters.Add(new MetadataFilter<ITest>(MetadataKey.Importance, importance.ToString()));
 
                 filters.Add(new OrFilter<ITest>(importanceFilters.ToArray()));
             }

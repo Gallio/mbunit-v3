@@ -113,19 +113,22 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         private void BuildTests(NUnitTest parentTest, NUnit.Core.ITest nunitTest)
         {
             // TODO: Get Type and Method information (how??)
+            //       Maybe we can parse it out of the TestNames.
 
-            NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, CodeReference.Unknown, parentTest.Scope, nunitTest);
+            CodeReference codeRef = CodeReference.Unknown;
+            NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, codeRef, parentTest.Scope, nunitTest);
             test.Kind = nunitTest.IsSuite ? ComponentKind.Suite : ComponentKind.Test;
+            test.IsTestCase = !nunitTest.IsSuite;
 
             // Populate metadata
             if (!String.IsNullOrEmpty(nunitTest.Description))
-                test.Metadata.Entries.Add(MetadataConstants.DescriptionKey, nunitTest.Description);
+                test.Metadata.Entries.Add(MetadataKey.Description, nunitTest.Description);
 
             if (!String.IsNullOrEmpty(nunitTest.IgnoreReason))
-                test.Metadata.Entries.Add(MetadataConstants.IgnoreReasonKey, nunitTest.IgnoreReason);
+                test.Metadata.Entries.Add(MetadataKey.IgnoreReason, nunitTest.IgnoreReason);
 
             foreach (string category in nunitTest.Categories)
-                test.Metadata.Entries.Add(MetadataConstants.CategoryNameKey, category);
+                test.Metadata.Entries.Add(MetadataKey.CategoryName, category);
 
             foreach (DictionaryEntry entry in nunitTest.Properties)
                 test.Metadata.Entries.Add(entry.Key.ToString(), entry.Value != null ? entry.Value.ToString() : null);

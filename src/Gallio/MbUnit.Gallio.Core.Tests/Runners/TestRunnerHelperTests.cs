@@ -34,7 +34,7 @@ namespace MbUnit.Core.Tests.Runners
         {
             new TestRunnerHelper(
                 delegate { return new NullProgressMonitor(); },
-                new ConsoleLogger(), "");
+                new ConsoleLogger(), (string) null);
         }
     }
 }

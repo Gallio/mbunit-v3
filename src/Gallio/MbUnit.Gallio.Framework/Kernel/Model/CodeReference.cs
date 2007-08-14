@@ -17,6 +17,8 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using System.Xml.Serialization;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -25,75 +27,114 @@ namespace MbUnit.Framework.Kernel.Model
     /// describing the location of a certain code construct to the user.  It is
     /// typically used to identify the point of definition of a test component.
     /// </summary>
+    [Serializable]
+    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
     public class CodeReference
     {
         /// <summary>
         /// Gets an empty code reference used to indicate that the actual
         /// reference is unknown.
         /// </summary>
-        public static readonly CodeReference Unknown = new CodeReference(null, null, null, null, null);
+        public static CodeReference Unknown
+        {
+            get { return new CodeReference(); }
+        }
 
-        private Assembly assembly;
-        private string @namespace;
-        private Type type;
-        private MemberInfo member;
-        private ParameterInfo parameter;
+        private string assemblyName;
+        private string namespaceName;
+        private string typeName;
+        private string memberName;
+        private string parameterName;
+
+        /// <summary>
+        /// Creates an empty code reference.
+        /// </summary>
+        public CodeReference()
+        {
+        }
+
+        /// <summary>
+        /// Creates a code reference from strings.
+        /// </summary>
+        /// <param name="assemblyName">The assembly name, or null if none</param>
+        /// <param name="namespaceName">The namespace name, or null if none</param>
+        /// <param name="typeName">The fully-qualified type name, or null if none</param>
+        /// <param name="memberName">The member name, or null if none</param>
+        /// <param name="parameterName">The parameter name, or null if none</param>
+        public CodeReference(string assemblyName, string namespaceName, string typeName, string memberName, string parameterName)
+        {
+            this.assemblyName = assemblyName;
+            this.namespaceName = namespaceName;
+            this.typeName = typeName;
+            this.memberName = memberName;
+            this.parameterName = parameterName;
+        }
 
         /// <summary>
         /// Creates a code reference.
         /// </summary>
-        /// <param name="assembly">The referenced assembly, or null if none</param>
-        /// <param name="namespace">The referenced namespace, or null if none</param>
-        /// <param name="type">The referenced type, or null if none</param>
-        /// <param name="member">The referenced member, or null if none</param>
-        /// <param name="parameter">The referenced parameter, or null if none</param>
-        protected CodeReference(Assembly assembly, string @namespace, Type type, MemberInfo member, ParameterInfo parameter)
+        /// <param name="assembly">The assembly, or null if none</param>
+        /// <param name="namespace">The namespace, or null if none</param>
+        /// <param name="type">The type, or null if none</param>
+        /// <param name="member">The member, or null if none</param>
+        /// <param name="parameter">The parameter, or null if none</param>
+        public CodeReference(Assembly assembly, string @namespace, Type type, MemberInfo member, ParameterInfo parameter)
+            : this(assembly != null ? assembly.FullName : null,
+                @namespace,
+                type != null ? type.FullName : null,
+                member != null ? member.Name : null,
+                parameter != null ? parameter.Name : null)
         {
-            this.assembly = assembly;
-            this.@namespace = @namespace;
-            this.type = type;
-            this.member = member;
-            this.parameter = parameter;
         }
 
         /// <summary>
-        /// Gets the referenced assembly, or null if none.
+        /// Gets or sets the assembly name, or null if none.
         /// </summary>
-        public Assembly Assembly
+        [XmlAttribute("assembly")]
+        public string AssemblyName
         {
-            get { return assembly; }
+            get { return assemblyName; }
+            set { assemblyName = value; }
         }
 
         /// <summary>
-        /// Gets the referenced namespace, or null if none.
+        /// Gets or sets the namespace name, or null if none.
         /// </summary>
-        public string Namespace
+        [XmlAttribute("namespace")]
+        public string NamespaceName
         {
-            get { return @namespace; }
+            get { return namespaceName; }
+            set { namespaceName = value; }
         }
 
         /// <summary>
-        /// Gets the referenced type, or null if none.
+        /// Gets or sets the fully-qualified type name, or null if none.
         /// </summary>
-        public Type Type
+        [XmlAttribute("type")]
+        public string TypeName
         {
-            get { return type; }
+            get { return typeName; }
+            set { typeName = value; }
         }
 
         /// <summary>
-        /// Gets the referenced type member, or null if none.
+        /// Gets or sets the member name, or null if none.
         /// </summary>
-        public MemberInfo Member
+        [XmlAttribute("member")]
+        public string MemberName
         {
-            get { return member; }
+            get { return memberName; }
+            set { memberName = value; }
         }
 
         /// <summary>
-        /// Gets the referenced method parameter, or null if none.
+        /// Gets or sets the parameter name, or null if none.
         /// </summary>
-        public ParameterInfo Parameter
+        [XmlAttribute("parameter")]
+        public string ParameterName
         {
-            get { return parameter; }
+            get { return parameterName; }
+            set { parameterName = value; }
         }
 
         /// <summary>
@@ -104,28 +145,28 @@ namespace MbUnit.Framework.Kernel.Model
         {
             StringBuilder description = new StringBuilder();
 
-            if (parameter != null)
+            if (parameterName != null)
                 description.AppendFormat(CultureInfo.CurrentCulture,
-                    "Parameter '{0}' of ", parameter.Name);
+                    "Parameter '{0}' of ", parameterName);
 
-            if (type != null)
+            if (typeName != null)
             {
-                description.Append(type.FullName);
+                description.Append(typeName);
 
-                if (member != null)
-                    description.Append('.').Append(member.Name);
+                if (memberName != null)
+                    description.Append('.').Append(memberName);
             }
-            else if (@namespace != null)
+            else if (namespaceName != null)
             {
-                description.Append(@namespace);
+                description.Append(namespaceName);
             }
 
-            if (assembly != null)
+            if (assemblyName != null)
             {
                 if (description.Length != 0)
                     description.Append(", ");
 
-                description.Append(assembly.GetName().Name);
+                description.Append(assemblyName);
             }
 
             return description.ToString();
@@ -195,21 +236,21 @@ namespace MbUnit.Framework.Kernel.Model
         {
             CodeReference other = obj as CodeReference;
             return other != null
-                && assembly == other.Assembly
-                && @namespace == other.@namespace
-                && type == other.type
-                && member == other.member
-                && parameter == other.parameter;
+                && assemblyName == other.assemblyName
+                && namespaceName == other.namespaceName
+                && typeName == other.typeName
+                && memberName == other.memberName
+                && parameterName == other.parameterName;
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (assembly != null ? assembly.GetHashCode() : 0)
-                ^ (@namespace != null ? @namespace.GetHashCode() : 0)
-                ^ (type != null ? type.GetHashCode() : 0)
-                ^ (member != null ? member.GetHashCode() : 0)
-                ^ (parameter != null ? parameter.GetHashCode() : 0);
+            return (assemblyName != null ? assemblyName.GetHashCode() : 0)
+                ^ (namespaceName != null ? namespaceName.GetHashCode() : 0)
+                ^ (typeName != null ? typeName.GetHashCode() : 0)
+                ^ (memberName != null ? memberName.GetHashCode() : 0)
+                ^ (parameterName != null ? parameterName.GetHashCode() : 0);
         }
     }
 }

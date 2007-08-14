@@ -45,11 +45,7 @@ namespace MbUnit.Framework.Kernel.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            MemberInfo member = value.CodeReference.Member;
-            if (member == null)
-                return false;
-
-            return memberName == member.Name;
+            return memberName == value.CodeReference.MemberName;
         }
     }
 }

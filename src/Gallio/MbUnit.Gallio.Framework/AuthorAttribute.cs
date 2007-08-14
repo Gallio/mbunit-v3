@@ -103,11 +103,11 @@ namespace MbUnit.Framework
         public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
         {
             if (authorName.Length != 0)
-                component.Metadata.Entries.Add(MetadataConstants.AuthorNameKey, authorName);
+                component.Metadata.Entries.Add(MetadataKey.AuthorName, authorName);
             if (authorEmail.Length != 0)
-                component.Metadata.Entries.Add(MetadataConstants.AuthorEmailKey, authorEmail);
+                component.Metadata.Entries.Add(MetadataKey.AuthorEmail, authorEmail);
             if (authorHomepage.Length != 0)
-                component.Metadata.Entries.Add(MetadataConstants.AuthorHomepageKey, authorHomepage);
+                component.Metadata.Entries.Add(MetadataKey.AuthorHomepage, authorHomepage);
         }
     }
 }

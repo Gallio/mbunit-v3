@@ -29,6 +29,7 @@ namespace MbUnit.Framework.Kernel.Model
     public class BaseTest : BaseTestComponent, ITest
     {
         private ITest parent;
+        private bool isTestCase;
         private List<ITest> children;
         private List<ITest> dependencies;
         private ITemplateBinding templateBinding;
@@ -58,6 +59,13 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get { return parent; }
             set { parent = value; }
+        }
+
+        /// <inheritdoc />
+        public bool IsTestCase
+        {
+            get { return isTestCase; }
+            set { isTestCase = value; }
         }
 
         /// <inheritdoc />

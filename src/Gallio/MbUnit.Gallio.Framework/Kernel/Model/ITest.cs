@@ -55,6 +55,19 @@ namespace MbUnit.Framework.Kernel.Model
     public interface ITest : ITestComponent, IModelTreeNode<ITest>
     {
         /// <summary>
+        /// Gets or sets whether this test represents an individual test case
+        /// as opposed to a test container such as a fixture or suite.  The value of
+        /// this property can be used by the test harness to avoid processing containers
+        /// that have no test cases.  It can also be used by the reporting infrastructure
+        /// to constrain output statistics to test cases only.
+        /// </summary>
+        /// <remarks>
+        /// This value is defined as a property rather than as a metadata key because it
+        /// can modify the semantics of test execution.
+        /// </remarks>
+        bool IsTestCase { get; set; }
+
+        /// <summary>
         /// Gets or sets the template binding from which the test was produced,
         /// or null if this test was not produced from any particular template.
         /// </summary>

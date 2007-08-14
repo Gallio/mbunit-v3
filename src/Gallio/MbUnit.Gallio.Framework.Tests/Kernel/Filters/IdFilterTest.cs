@@ -32,7 +32,7 @@ namespace MbUnit._Framework.Tests.Kernel.Filters
         public void IsMatchCombinations(bool expectedMatch, string value)
         {
             IModelComponent component = Mocks.CreateMock<IModelComponent>();
-            Expect.Call(component.Id).Return(value);
+            SetupResult.For(component.Id).Return(value);
             Mocks.ReplayAll();
 
             Assert.AreEqual(expectedMatch, new IdFilter<IModelComponent>("expectedValue").IsMatch(component));

@@ -16,13 +16,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Framework.Kernel.Collections
 {
     /// <summary>
     /// A multi-map allows a list of values to be associated with a single key.
     /// </summary>
+    [Serializable]
     public class MultiMap<TKey, TValue> : ICollection<KeyValuePair<TKey, IList<TValue>>>
     {
         private IDictionary<TKey, IList<TValue>> entries;
@@ -162,10 +162,29 @@ namespace MbUnit.Framework.Kernel.Collections
             return GetEnumerator();
         }
 
+        /// <summary>
+        /// Returns true if the map contains an entry with the specified key and value.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <param name="value">The value to find</param>
+        /// <returns>True if the map contains an entry with the specified key and value</returns>
+        public bool Contains(TKey key, TValue value)
+        {
+            return this[key].Contains(value);
+        }
+
         /// <inheritdoc />
         public bool Contains(KeyValuePair<TKey, IList<TValue>> item)
         {
-            throw new NotImplementedException("YAGNI");
+            IList<TValue> values = this[item.Key];
+
+            foreach (TValue value in item.Value)
+            {
+                if (!values.Contains(value))
+                    return false;
+            }
+
+            return true;
         }
 
         /// <inheritdoc />

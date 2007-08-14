@@ -1,7 +1,6 @@
 extern alias MbUnit2;
 using System;
 using MbUnit.Core.Runner.CommandLine;
-using MbUnit.Echo;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit.Core.Tests.Runners.CommandLine
@@ -55,8 +54,25 @@ namespace MbUnit.Core.Tests.Runners.CommandLine
         }
     }
 
+    public class MainArguments
+    {
+        [CommandLineArgument(
+             CommandLineArgumentType.AtMostOnce,
+             ShortName = "h",
+             LongName = "help",
+             Description = "Display this help text"
+             )]
+        public bool Help = false;
+    }
+
     public class MainArgumentsDuplicateDefaultCommandLineArgumentStub : MainArguments
     {
+        [DefaultCommandLineArgument(
+            CommandLineArgumentType.MultipleUnique,
+            Description = "default"
+            )]
+        public string[] Default = null;
+
         [DefaultCommandLineArgument(
             CommandLineArgumentType.MultipleUnique,
             LongName = "duplicate",
@@ -69,21 +85,38 @@ namespace MbUnit.Core.Tests.Runners.CommandLine
     {
         [CommandLineArgument(
             CommandLineArgumentType.MultipleUnique,
-            ShortName = "unique",
-          LongName = "help",
-           Description = "Duplicated long name."
+            ShortName = "unique1",
+            LongName = "dupe",
+            Description = "Duplicated long name."
          )]
         public string[] DuplicateLongName = null;
+
+        [CommandLineArgument(
+            CommandLineArgumentType.MultipleUnique,
+            ShortName = "unique2",
+            LongName = "dupe",
+            Description = "Duplicated long name."
+         )]
+        public string[] DuplicateLongName2 = null;
     }
 
     public class MainArgumentsDuplicateShortNameStub : MainArguments
     {
         [CommandLineArgument(
             CommandLineArgumentType.MultipleUnique,
-           ShortName = "ap",
-            LongName = "long name",
+           ShortName = "dupe",
+            LongName = "unique1",
             Description = "Duplicated short name."
          )]
         public string[] DuplicateShortName = null;
+
+
+        [CommandLineArgument(
+            CommandLineArgumentType.MultipleUnique,
+           ShortName = "dupe",
+            LongName = "unique2",
+            Description = "Duplicated short name."
+         )]
+        public string[] DuplicateShortName2 = null;
     }
 }

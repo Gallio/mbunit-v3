@@ -96,7 +96,7 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Gets or sets the value of the <see cref="MetadataConstants.ComponentKindKey" />
+        /// Gets or sets the value of the <see cref="MetadataKey.ComponentKind" />
         /// metadata entry.  (This is a convenience method.)
         /// </summary>
         /// <value>
@@ -104,8 +104,8 @@ namespace MbUnit.Framework.Kernel.Model
         /// </value>
         public string Kind
         {
-            get { return (string)Metadata.GetValue(MetadataConstants.ComponentKindKey); }
-            set { Metadata.SetValue(MetadataConstants.ComponentKindKey, value); }
+            get { return (string)Metadata.GetValue(MetadataKey.ComponentKind); }
+            set { Metadata.SetValue(MetadataKey.ComponentKind, value); }
         }
     }
 }

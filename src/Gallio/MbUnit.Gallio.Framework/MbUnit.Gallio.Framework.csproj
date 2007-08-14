@@ -104,6 +104,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Kernel\Events\TrackingProgressMonitor.cs" />
+    <Compile Include="Kernel\Model\CodeReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Kernel\Results\TestOutcome.cs" />
     <Compile Include="Kernel\Results\TestResult.cs" />
     <Compile Include="Kernel\Results\TestState.cs" />
@@ -124,7 +127,7 @@
     <Compile Include="Kernel\Model\TemplateEnumerationOptions.cs" />
     <Compile Include="Kernel\Model\TestEnumerationOptions.cs" />
     <Compile Include="Kernel\Model\TestExecutionOptions.cs" />
-    <Compile Include="Kernel\Metadata\MetadataConstants.cs" />
+    <Compile Include="Kernel\Metadata\MetadataKey.cs" />
     <Compile Include="Kernel\Metadata\ComponentKind.cs" />
     <Compile Include="Kernel\Model\BaseModelComponent.cs" />
     <Compile Include="Kernel\Model\BaseTemplateBinding.cs">
@@ -135,7 +138,6 @@
     <Compile Include="Kernel\Model\BaseTemplate.cs" />
     <Compile Include="Kernel\Model\BaseTest.cs" />
     <Compile Include="Kernel\Model\BaseTestComponent.cs" />
-    <Compile Include="Kernel\Model\CodeReference.cs" />
     <Compile Include="Kernel\Model\BaseTemplateComponent.cs" />
     <Compile Include="Kernel\Model\IModelComponent.cs" />
     <Compile Include="Kernel\Model\IModelTreeNode.cs" />
@@ -155,7 +157,7 @@
     <Compile Include="Kernel\Model\MbUnitTemplateParameter.cs" />
     <Compile Include="Kernel\Model\MbUnitTemplateParameterSet.cs" />
     <Compile Include="Kernel\Model\MbUnitTemplate.cs" />
-    <Compile Include="Kernel\Model\MetadataMap.cs" />
+    <Compile Include="Kernel\Metadata\MetadataMap.cs" />
     <Compile Include="Kernel\Model\ModelException.cs" />
     <Compile Include="Kernel\Model\ModelUtils.cs" />
     <Compile Include="Kernel\Model\RootTemplate.cs" />
@@ -166,7 +168,16 @@
     <Compile Include="Kernel\Model\TemplateTreeBuilder.cs" />
     <Compile Include="Kernel\Model\TestTreeBuilder.cs" />
     <Compile Include="Kernel\Model\ModelTreeBuilder.cs" />
-    <Compile Include="Kernel\Utilities\FilterParser.cs" />
+    <Compile Include="Kernel\Serialization\ModelComponentInfo.cs" />
+    <Compile Include="Kernel\Utilities\SerializationUtils.cs" />
+    <Compile Include="Kernel\Serialization\TemplateComponentInfo.cs" />
+    <Compile Include="Kernel\Serialization\TemplateInfo.cs" />
+    <Compile Include="Kernel\Serialization\TemplateModel.cs" />
+    <Compile Include="Kernel\Serialization\TemplateParameterInfo.cs" />
+    <Compile Include="Kernel\Serialization\TemplateParameterSetInfo.cs" />
+    <Compile Include="Kernel\Serialization\TestComponentInfo.cs" />
+    <Compile Include="Kernel\Serialization\TestInfo.cs" />
+    <Compile Include="Kernel\Serialization\TestModel.cs" />
     <Compile Include="Kernel\Utilities\ListUtils.cs" />
     <Compile Include="Kernel\Utilities\ReflectionUtils.cs" />
     <Compile Include="Kernel\Utilities\StringUtils.cs" />

@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.Services.ExecutionLogs.Xml;
+using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Results;
 
 namespace MbUnit.Core.Runner.Monitors
@@ -31,7 +31,7 @@ namespace MbUnit.Core.Runner.Monitors
     public class TestSummary
     {
         private TestResult result;
-        private XmlExecutionLogWriter executionLogWriter;
+        private ExecutionLogWriter executionLogWriter;
 
         /// <summary>
         /// Gets or sets the test result.
@@ -45,20 +45,20 @@ namespace MbUnit.Core.Runner.Monitors
         /// <summary>
         /// Gets the execution log.
         /// </summary>
-        public XmlExecutionLog ExecutionLog
+        public ExecutionLog ExecutionLog
         {
-            get { return ExecutionLogWriter.XmlExecutionLog; }
+            get { return ExecutionLogWriter.ExecutionLog; }
         }
 
         /// <summary>
         /// Gets the execution log writer.
         /// </summary>
-        public XmlExecutionLogWriter ExecutionLogWriter
+        public ExecutionLogWriter ExecutionLogWriter
         {
             get
             {
                 if (executionLogWriter == null)
-                    executionLogWriter = new XmlExecutionLogWriter();
+                    executionLogWriter = new ExecutionLogWriter();
                 return executionLogWriter;
             }
         }

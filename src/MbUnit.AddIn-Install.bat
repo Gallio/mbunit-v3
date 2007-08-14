@@ -22,7 +22,10 @@ if /I "%Answer%"=="Y" set NUnitAddInPriority=5 & goto :NUNIT_DONE_PROMPT
 if /I not "%Answer%"=="N" goto :NUNIT_RETRY_PROMPT
 :NUNIT_DONE_PROMPT
 
-call :AddRunner MbUnit.Gallio 10 MbUnit.Gallio.Framework
+REM Using priority 15 for now so that we can run the MbUnit v2 tests
+REM that link in Gallio using the MbUnit v2 add-in.  Should be 10
+REM when we convert these tests to Gallio.
+call :AddRunner MbUnit.Gallio 15 MbUnit.Gallio.Framework
 call :AddRunner MbUnit.Gallio_MbUnit2 %MbUnit2AddInPriority% MbUnit.Framework
 call :AddRunner MbUnit.Gallio_NUnit %NUnitAddInPriority% nunit.framework
 exit /b 0

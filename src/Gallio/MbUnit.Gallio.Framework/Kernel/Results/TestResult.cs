@@ -16,6 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Framework.Kernel.Results
 {
@@ -23,15 +25,18 @@ namespace MbUnit.Framework.Kernel.Results
     /// A test result describes the final result of having executed a test.
     /// </summary>
     [Serializable]
+    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
     public class TestResult
     {
         private TestOutcome outcome;
         private TestState state;
-        private TimeSpan duration;
+        private int assertCount;
+        private double duration;
 
         /// <summary>
         /// Gets or sets the test outcome.
         /// </summary>
+        [XmlAttribute("outcome")]
         public TestOutcome Outcome
         {
             get { return outcome; }
@@ -41,6 +46,7 @@ namespace MbUnit.Framework.Kernel.Results
         /// <summary>
         /// Gets or sets the test state.
         /// </summary>
+        [XmlAttribute("state")]
         public TestState State
         {
             get { return state; }
@@ -48,9 +54,20 @@ namespace MbUnit.Framework.Kernel.Results
         }
 
         /// <summary>
-        /// Gets or sets the test duration.
+        /// Gets or sets the number of assertions evaluated by the test.
         /// </summary>
-        public TimeSpan Duration
+        [XmlAttribute("assertCount")]
+        public int AssertCount
+        {
+            get { return assertCount; }
+            set { assertCount = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the test duration in seconds.
+        /// </summary>
+        [XmlAttribute("duration")]
+        public double Duration
         {
             get { return duration; }
             set { duration = value; }

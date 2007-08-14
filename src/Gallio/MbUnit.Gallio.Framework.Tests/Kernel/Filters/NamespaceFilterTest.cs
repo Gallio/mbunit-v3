@@ -36,7 +36,7 @@ namespace MbUnit._Framework.Tests.Kernel.Filters
             CodeReference codeReference = type != null ? CodeReference.CreateFromType(type) : CodeReference.Unknown;
 
             IModelComponent component = Mocks.CreateMock<IModelComponent>();
-            Expect.Call(component.CodeReference).Return(codeReference);
+            SetupResult.For(component.CodeReference).Return(codeReference);
             Mocks.ReplayAll();
 
             Assert.AreEqual(expectedMatch, new NamespaceFilter<IModelComponent>(typeof(NamespaceFilterTest).Namespace).IsMatch(component));

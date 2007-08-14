@@ -15,7 +15,7 @@
 
 using System;
 using MbUnit.Core.Harness;
-using MbUnit.Core.Serialization;
+using MbUnit.Framework.Kernel.Serialization;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 
@@ -44,6 +44,31 @@ namespace MbUnit.Core.Runner
     public interface ITestRunner : IDisposable
     {
         /// <summary>
+        /// Event fired once <see cref="LoadPackage" /> completes.
+        /// </summary>
+        event EventHandler LoadPackageComplete;
+
+        /// <summary>
+        /// Event fired once <see cref="BuildTemplates" /> completes.
+        /// </summary>
+        event EventHandler BuildTemplatesComplete;
+
+        /// <summary>
+        /// Event fired once <see cref="BuildTests" /> completes.
+        /// </summary>
+        event EventHandler BuildTestsComplete;
+
+        /// <summary>
+        /// Event fired before <see cref="Run" /> begins doing work.
+        /// </summary>
+        event EventHandler RunStarting;
+
+        /// <summary>
+        /// Event fired once <see cref="Run" /> completes.
+        /// </summary>
+        event EventHandler RunComplete;
+
+        /// <summary>
         /// Gets the event dispatcher for the test runner.
         /// </summary>
         EventDispatcher EventDispatcher { get; }
@@ -67,6 +92,11 @@ namespace MbUnit.Core.Runner
         TestExecutionOptions TestExecutionOptions { get; set; }
 
         /// <summary>
+        /// Gets the currently loaded test package, or null if none has been loaded yet.
+        /// </summary>
+        TestPackage Package { get; }
+
+        /// <summary>
         /// Gets the template model, or null if templates have not been built yet.
         /// </summary>
         TemplateModel TemplateModel { get; }
@@ -77,12 +107,12 @@ namespace MbUnit.Core.Runner
         TestModel TestModel { get; }
 
         /// <summary>
-        /// Loads a test project.
+        /// Loads a test package.
         /// </summary>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <param name="package">The test project</param>
+        /// <param name="package">The test package</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
-        void LoadProject(IProgressMonitor progressMonitor, TestPackage package);
+        void LoadPackage(IProgressMonitor progressMonitor, TestPackage package);
 
         /// <summary>
         /// Builds the template tree using the current <see cref="TemplateEnumerationOptions" />.
@@ -106,12 +136,5 @@ namespace MbUnit.Core.Runner
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
         void Run(IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Writes a test report.
-        /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        void WriteReport(IProgressMonitor progressMonitor);
     }
 }

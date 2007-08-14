@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using MbUnit.Core.Serialization;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Services.Runtime
 {

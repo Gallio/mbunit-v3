@@ -32,7 +32,7 @@ namespace MbUnit.Framework.Kernel.Metadata
     /// in the user interface (albeit perhaps without special affordances.)
     /// </para>
     /// </remarks>
-    /// <seealso cref="MetadataConstants.ComponentKindKey"/>
+    /// <seealso cref="MetadataKey.ComponentKind"/>
     public static class ComponentKind
     {
         /// <summary>

@@ -36,7 +36,7 @@ namespace MbUnit.Framework.Kernel.Filters
         /// on the assembly.
         /// <list type="bullet">
         /// <item>Full name as returned by <see cref="Assembly.FullName" /></item>
-        /// <item>Display name (aka. partial name) as returned by <see cref="AssemblyName.Name" /></item>
+        /// <item>Simple name (aka. partial name) as returned by <see cref="AssemblyName.Name" /></item>
         /// </list>
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> is null</exception>
@@ -51,12 +51,18 @@ namespace MbUnit.Framework.Kernel.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            Assembly assembly = value.CodeReference.Assembly;
-            if (assembly == null)
+            string assemblyName = value.CodeReference.AssemblyName;
+            if (assemblyName == null)
                 return false;
 
-            return assembly.FullName == assemblyName
-                || assembly.GetName().Name == assemblyName;
+            return this.assemblyName == assemblyName
+                || this.assemblyName == GetSimpleName(assemblyName);
+        }
+
+        private string GetSimpleName(string assemblyName)
+        {
+            AssemblyName name = new AssemblyName(assemblyName);
+            return name.Name;
         }
     }
 }

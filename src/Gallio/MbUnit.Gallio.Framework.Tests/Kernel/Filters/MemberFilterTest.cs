@@ -39,7 +39,7 @@ namespace MbUnit._Framework.Tests.Kernel.Filters
                 : CodeReference.Unknown;
 
             IModelComponent component = Mocks.CreateMock<IModelComponent>();
-            Expect.Call(component.CodeReference).Return(codeReference);
+            SetupResult.For(component.CodeReference).Return(codeReference);
             Mocks.ReplayAll();
 
             Assert.AreEqual(expectedMatch, new MemberFilter<IModelComponent>("A").IsMatch(component));

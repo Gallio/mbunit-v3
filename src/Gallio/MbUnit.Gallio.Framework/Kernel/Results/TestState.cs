@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace MbUnit.Framework.Kernel.Results
 {
@@ -27,33 +28,39 @@ namespace MbUnit.Framework.Kernel.Results
         /// <summary>
         /// The test did not run or has not run.
         /// </summary>
+        [XmlEnum("notRun")]
         NotRun,
 
         /// <summary>
         /// The test did not run because it was ignored.
         /// </summary>
+        [XmlEnum("ignored")]
         Ignored,
 
         /// <summary>
         /// The test did not run because it was skipped.
         /// </summary>
+        [XmlEnum("skipped")]
         Skipped,
 
         /// <summary>
         /// The test ran to completion.  This does not imply that the test
         /// passed, merely that nothing abnormal occurred as it ran.
         /// </summary>
+        [XmlEnum("completed")]
         Completed,
 
         /// <summary>
         /// The test failed to run to completion because its preconditions were
         /// not satisfied or because the test runner encountered a fatal error.
         /// </summary>
+        [XmlEnum("failed")]
         Failed,
 
         /// <summary>
         /// The test was prematurely aborted by direct user intervention.
         /// </summary>
+        [XmlEnum("aborted")]
         Aborted
     }
 }

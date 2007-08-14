@@ -18,6 +18,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{70543B8E-DF83-4DA7-AA29-4B71CF333096}"
 	ProjectSection(SolutionItems) = preProject
 		..\docs\Gallio Ideas.txt = ..\docs\Gallio Ideas.txt
+		..\docs\Known Bugs.txt = ..\docs\Known Bugs.txt
 		..\docs\Mono Issues.txt = ..\docs\Mono Issues.txt
 		..\docs\TODO.txt = ..\docs\TODO.txt
 	EndProjectSection

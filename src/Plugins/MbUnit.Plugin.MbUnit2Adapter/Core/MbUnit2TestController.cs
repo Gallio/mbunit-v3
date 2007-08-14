@@ -350,7 +350,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     return;
 
                 TestResult result = new TestResult();
-                result.Duration = assemblyStopwatch.Elapsed;
+                result.Duration = assemblyStopwatch.Elapsed.TotalSeconds;
                 result.State = state;
                 result.Outcome = state == TestState.Completed ? TestOutcome.Passed : TestOutcome.Failed;
 
@@ -377,7 +377,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     return;
 
                 TestResult result = new TestResult();
-                result.Duration = fixtureStopwatch.Elapsed;
+                result.Duration = fixtureStopwatch.Elapsed.TotalSeconds;
                 SetTestResultStateAndOutcomeFromReportRunResult(result, reportRunResult);
 
                 testStack.Pop();
@@ -403,7 +403,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 {
                     // Produce the final result.
                     TestResult result = new TestResult();
-                    result.Duration = TimeSpan.FromMilliseconds(reportRun.Duration);
+                    result.Duration = reportRun.Duration / 1000;
+                    result.AssertCount = reportRun.AssertCount;
                     SetTestResultStateAndOutcomeFromReportRunResult(result, reportRun.Result);
 
                     // Output all execution log contents.

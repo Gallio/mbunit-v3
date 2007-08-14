@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.Metadata;
 
 namespace MbUnit.Framework.Kernel.Model
 {

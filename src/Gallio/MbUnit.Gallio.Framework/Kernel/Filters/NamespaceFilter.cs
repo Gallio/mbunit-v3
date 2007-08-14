@@ -25,26 +25,26 @@ namespace MbUnit.Framework.Kernel.Filters
     [Serializable]
     public class NamespaceFilter<T> : Filter<T> where T : IModelComponent
     {
-        private string @namespace;
+        private string namespaceName;
 
         /// <summary>
         /// Creates a namespace filter.
         /// </summary>
-        /// <param name="namespace">The namespace name that must exactly match the
+        /// <param name="namespaceName">The namespace name that must exactly match the
         /// value obtained via reflection on types</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespace"/> is null</exception>
-        public NamespaceFilter(string @namespace)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespaceName"/> is null</exception>
+        public NamespaceFilter(string namespaceName)
         {
-            if (@namespace == null)
-                throw new ArgumentNullException("namespace");
+            if (namespaceName == null)
+                throw new ArgumentNullException("namespaceName");
 
-            this.@namespace = @namespace;
+            this.namespaceName = namespaceName;
         }
 
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            return @namespace == value.CodeReference.Namespace;
+            return namespaceName == value.CodeReference.NamespaceName;
         }
     }
 }

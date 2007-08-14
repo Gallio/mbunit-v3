@@ -136,30 +136,30 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             foreach (AuthorAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(AuthorAttribute2), true))
             {
                 if (! String.IsNullOrEmpty(attrib.Name))
-                    test.Metadata.Entries.Add(MetadataConstants.AuthorNameKey, attrib.Name);
+                    test.Metadata.Entries.Add(MetadataKey.AuthorName, attrib.Name);
                 if (! String.IsNullOrEmpty(attrib.EMail) && attrib.EMail != "unspecified")
-                    test.Metadata.Entries.Add(MetadataConstants.AuthorEmailKey, attrib.EMail);
+                    test.Metadata.Entries.Add(MetadataKey.AuthorEmail, attrib.EMail);
                 if (!String.IsNullOrEmpty(attrib.HomePage) && attrib.HomePage != "unspecified")
-                    test.Metadata.Entries.Add(MetadataConstants.AuthorHomepageKey, attrib.HomePage);
+                    test.Metadata.Entries.Add(MetadataKey.AuthorHomepage, attrib.HomePage);
             }
             foreach (FixtureCategoryAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(FixtureCategoryAttribute2), true))
             {
-                test.Metadata.Entries.Add(MetadataConstants.CategoryNameKey, attrib.Category);
+                test.Metadata.Entries.Add(MetadataKey.CategoryName, attrib.Category);
             }
             foreach (TestsOnAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestsOnAttribute2), true))
             {
-                test.Metadata.Entries.Add(MetadataConstants.TestsOnKey, attrib.TestedType.AssemblyQualifiedName);
+                test.Metadata.Entries.Add(MetadataKey.TestsOn, attrib.TestedType.AssemblyQualifiedName);
             }
             foreach (ImportanceAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(ImportanceAttribute2), true))
             {
                 // Note: In principle we could eliminate the call to MapImportance because TestImportance is
                 //       defined the same way in Gallio as in MbUnit v2.  But there is no guarantee that will remain the case.
-                test.Metadata.Entries.Add(MetadataConstants.TestsOnKey, MapImportance(attrib.Importance).ToString());
+                test.Metadata.Entries.Add(MetadataKey.TestsOn, MapImportance(attrib.Importance).ToString());
             }
             foreach (TestFixturePatternAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestFixturePatternAttribute2), true))
             {
                 if (! String.IsNullOrEmpty(attrib.Description))
-                    test.Metadata.Entries.Add(MetadataConstants.DescriptionKey, attrib.Description);
+                    test.Metadata.Entries.Add(MetadataKey.Description, attrib.Description);
             }
 
             parentScope.ContainingTest.AddChild(test);
@@ -170,6 +170,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         {
             MbUnit2Test test = new MbUnit2Test(runPipe.Name, CodeReference.CreateFromType(runPipe.FixtureType), parentScope, runPipe.Fixture, runPipe);
             test.Kind = ComponentKind.Test;
+            test.IsTestCase = true;
 
             // TODO: How can we populate the metadata?
             //       We don't even know the MethodInfo!

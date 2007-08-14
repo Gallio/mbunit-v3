@@ -41,7 +41,7 @@ namespace MbUnit.Framework.Kernel.Filters
         /// </list>
         /// </param>
         /// <param name="includeDerivedTypes">If true, subclasses and interface implementations of the specified
-        /// type are also matched by the filter</param>
+        /// type are also matched by the filter if they can be located</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null</exception>
         public TypeFilter(string typeName, bool includeDerivedTypes)
         {
@@ -55,13 +55,21 @@ namespace MbUnit.Framework.Kernel.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            Type type = value.CodeReference.Type;
+            string typeName = value.CodeReference.TypeName;
+            if (typeName == null)
+                return false;
+            string assemblyName = value.CodeReference.AssemblyName;
+            if (assemblyName == null)
+                return false;
+
+            // TODO: Handle case where the type cannot be loaded using plain
+            //       old string comparisons.  Naturally we won't be able to
+            //       handle includeDerivedTypes.
+
+            Type type = Type.GetType(typeName + ", " + assemblyName, false);
             if (type == null)
                 return false;
 
-            // TODO: Optimize the search by getting the actual Type
-            //       object specified by the type name when it is assembly qualified
-            //       and can be resolved unambiguously.
             if (IsMatchForType(type))
                 return true;
 

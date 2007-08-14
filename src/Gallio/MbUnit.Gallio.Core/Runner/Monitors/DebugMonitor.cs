@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
-using MbUnit.Core.Serialization;
-using MbUnit.Core.Services.ExecutionLogs.Xml;
+using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Events;
 using System.Xml;
 
@@ -84,9 +84,9 @@ namespace MbUnit.Core.Runner.Monitors
                 case TestLifecycleEventType.Start:
                     writer.WriteLine("[start] - {0}\n", testInfo.Name);
 
-                    foreach (MetadataMapEntry entry in testInfo.Metadata.Entries)
+                    foreach (KeyValuePair<string, IList<string>> entry in testInfo.Metadata.Entries)
                     {
-                        foreach (string value in entry.Values)
+                        foreach (string value in entry.Value)
                             writer.WriteLine("\t{0} = {1}", entry.Key, value);
                     }
                     break;
@@ -101,10 +101,11 @@ namespace MbUnit.Core.Runner.Monitors
                     TestSummary summary = summaryMonitor.Summaries[e.TestId];
                     writer.WriteLine("\tState: {0}", summary.Result.State);
                     writer.WriteLine("\tOutcome: {0}", summary.Result.Outcome);
+                    writer.WriteLine("\tAsserts: {0}", summary.Result.AssertCount);
                     writer.WriteLine("\tDuration: {0}", summary.Result.Duration);
                     writer.WriteLine("\tExecution Log:");
 
-                    XmlSerializer serializer = new XmlSerializer(typeof(XmlExecutionLog));
+                    XmlSerializer serializer = new XmlSerializer(typeof(ExecutionLog));
 
                     XmlWriterSettings settings = new XmlWriterSettings();
                     settings.Indent = true;

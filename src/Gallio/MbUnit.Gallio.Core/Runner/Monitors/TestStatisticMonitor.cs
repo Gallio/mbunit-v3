@@ -47,7 +47,8 @@ namespace MbUnit.Core.Runner.Monitors
         /// Creates a test summary tracker initially with no contents.
         /// </summary>
         public TestStatisticMonitor()
-        { }
+        {
+        }
 
         #endregion
 
@@ -63,9 +64,7 @@ namespace MbUnit.Core.Runner.Monitors
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         protected override void OnAttach()
         {
             base.OnAttach();
