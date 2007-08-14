@@ -33,25 +33,38 @@ namespace MbUnit.Core.Reporting
         private string name;
 
         /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        private ExecutionLogStreamSectionTag()
+        {
+        }
+
+        /// <summary>
+        /// Creates an initialized tag.
+        /// </summary>
+        /// <param name="name">The section name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public ExecutionLogStreamSectionTag(string name)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            this.name = name;
+        }
+
+        /// <summary>
         /// Gets or sets the section name, not null.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlAttribute("name")]
         public string Name
         {
             get { return name; }
-            set { name = value; }
-        }
-
-        /// <summary>
-        /// Creates an empty but fully initialized instance.
-        /// </summary>
-        /// <param name="sectionName">The section name</param>
-        public static ExecutionLogStreamSectionTag Create(string sectionName)
-        {
-            ExecutionLogStreamSectionTag tag = new ExecutionLogStreamSectionTag();
-            tag.Initialize();
-            tag.name = sectionName;
-            return tag;
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                name = value;
+            }
         }
     }
 }

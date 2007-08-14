@@ -34,6 +34,14 @@ namespace MbUnit.Core.Reporting
         private DateTime endTime;
 
         /// <summary>
+        /// Creates an empty package run.
+        /// </summary>
+        public PackageRun()
+        {
+            testRuns = new List<TestRun>();
+        }
+
+        /// <summary>
         /// Gets or sets the time when the package run started.
         /// </summary>
         [XmlAttribute("startTime")]
@@ -54,48 +62,34 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <summary>
-        /// Gets or sets the array of test runs performed as part of the package run.
-        /// Never null.
+        /// Gets the list of test runs performed as part of the package run.
         /// </summary>
         [XmlArray("testRuns", Namespace=SerializationUtils.XmlNamespace, IsNullable=false)]
         [XmlArrayItem("testRun", Namespace=SerializationUtils.XmlNamespace, IsNullable=false)]
-        public TestRun[] TestRuns
+        public List<TestRun> TestRuns
         {
-            get { return testRuns.ToArray(); }
-            set { testRuns = new List<TestRun>(value); }
+            get { return testRuns; }
         }
 
         /// <summary>
         /// Gets or sets the statistics for the package run.
         /// </summary>
-        [XmlElement("statistics", Namespace=SerializationUtils.XmlNamespace, IsNullable=true)]
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("statistics", Namespace = SerializationUtils.XmlNamespace, IsNullable = false)]
         public PackageRunStatistics Statistics
         {
-            get { return statistics; }
-            set { statistics = value; }
-        }
-
-        /// <summary>
-        /// Adds a test run to the list.
-        /// </summary>
-        /// <param name="run">The test run to add</param>
-        public void AddTestRun(TestRun run)
-        {
-            testRuns.Add(run);
-        }
-
-        /// <summary>
-        /// Creates an initialized package run with a blank list of test runs and statistics.
-        /// </summary>
-        /// <param name="startTime">The start time</param>
-        /// <returns>The package run</returns>
-        public static PackageRun Create(DateTime startTime)
-        {
-            PackageRun run = new PackageRun();
-            run.startTime = startTime;
-            run.testRuns = new List<TestRun>();
-            run.statistics = new PackageRunStatistics();
-            return run;
+            get
+            {
+                if (statistics == null)
+                    statistics = new PackageRunStatistics();
+                return statistics;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                statistics = value;
+            }
         }
     }
 }

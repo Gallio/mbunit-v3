@@ -28,14 +28,5 @@ namespace MbUnit.Core.Reporting
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class ExecutionLogStreamBodyTag : ExecutionLogStreamContainerTag
     {
-        /// <summary>
-        /// Creates an empty but fully initialized instance.
-        /// </summary>
-        public static ExecutionLogStreamBodyTag Create()
-        {
-            ExecutionLogStreamBodyTag tag = new ExecutionLogStreamBodyTag();
-            tag.Initialize();
-            return tag;
-        }
     }
 }

@@ -40,25 +40,15 @@ namespace MbUnit.Core.Services.Runtime
         }
 
         /// <summary>
-        /// Gets or sets the relative or absolute paths of directories to be
+        /// Gets list of relative or absolute paths of directories to be
         /// searched for plugin configuration files in addition to the
         /// primary MbUnit directories.
         /// </summary>
         [XmlArray("pluginDirectories", IsNullable = false)]
         [XmlArrayItem("pluginDirectory", IsNullable = false)]
-        public string[] PluginDirectories
+        public List<string> PluginDirectories
         {
-            get { return pluginDirectories.ToArray(); }
-            set { pluginDirectories = new List<string>(value); }
-        }
-
-        /// <summary>
-        /// Adds a plugin directory to the list.
-        /// </summary>
-        /// <param name="pluginDirectory">The plugin directory to add</param>
-        public void AddPluginDirectory(string pluginDirectory)
-        {
-            pluginDirectories.Add(pluginDirectory);
+            get { return pluginDirectories; }
         }
 
         /// <summary>

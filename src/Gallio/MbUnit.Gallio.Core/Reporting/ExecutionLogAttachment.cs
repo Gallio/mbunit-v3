@@ -43,23 +43,66 @@ namespace MbUnit.Core.Reporting
         private XmlElement[] innerXml;
 
         /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        protected ExecutionLogAttachment()
+        {
+        }
+
+        /// <summary>
+        /// Creates a fully initialized attachment.
+        /// </summary>
+        /// <param name="name">The attachment name</param>
+        /// <param name="contentType">The content type</param>
+        /// <param name="encoding">The content encoding</param>
+        /// <param name="innerText">The inner text or "" if none</param>
+        /// <param name="innerXml">The inner Xml or an empty array if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="contentType"/> is null</exception>
+        public ExecutionLogAttachment(string name, string contentType,
+            ExecutionLogAttachmentEncoding encoding, string innerText, XmlElement[] innerXml)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (contentType == null)
+                throw new ArgumentNullException("contentType");
+
+            this.name = name;
+            this.contentType = contentType;
+            this.encoding = encoding;
+            this.innerText = innerText;
+            this.innerXml = innerXml;
+        }
+
+        /// <summary>
         /// Gets or sets the name of the attachment, not null.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlAttribute("name")]
         public string Name
         {
             get { return name; }
-            set { name = value; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                name = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the content type of the attachment as a MIME type, not null.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlAttribute("contentType")]
         public string ContentType
         {
             get { return contentType; }
-            set { contentType = value; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                contentType = value;
+            }
         }
 
         /// <summary>
@@ -91,26 +134,6 @@ namespace MbUnit.Core.Reporting
         {
             get { return innerXml; }
             set { innerXml = value; }
-        }
-
-        /// <summary>
-        /// Creates an empty but fully initialized instance.
-        /// </summary>
-        /// <param name="attachmentName">The attachment name</param>
-        /// <param name="contentType">The content type</param>
-        /// <param name="encoding">The content encoding</param>
-        /// <param name="innerText">The inner text or "" if none</param>
-        /// <param name="innerXml">The inner Xml or an empty array if none</param>
-        public static ExecutionLogAttachment Create(string attachmentName, string contentType,
-            ExecutionLogAttachmentEncoding encoding, string innerText, XmlElement[] innerXml)
-        {
-            ExecutionLogAttachment tag = new ExecutionLogAttachment();
-            tag.name = attachmentName;
-            tag.contentType = contentType;
-            tag.encoding = encoding;
-            tag.innerText = innerText;
-            tag.innerXml = innerXml;
-            return tag;
         }
 
         /// <summary>

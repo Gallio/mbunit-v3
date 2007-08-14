@@ -24,7 +24,7 @@ namespace MbUnit.Core.Reporting
     /// <summary>
     /// Specifies the Xml-encoding of an embedded execution log attachment.
     /// </summary>
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
+    [XmlType("encoding", Namespace=SerializationUtils.XmlNamespace)]
     public enum ExecutionLogAttachmentEncoding
     {
         /// <summary>

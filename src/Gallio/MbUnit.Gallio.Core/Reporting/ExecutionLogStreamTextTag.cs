@@ -31,24 +31,38 @@ namespace MbUnit.Core.Reporting
         private string text;
 
         /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        private ExecutionLogStreamTextTag()
+        {
+        }
+
+        /// <summary>
+        /// Creates an initialized text tag.
+        /// </summary>
+        /// <param name="text">The text within the tag</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        public ExecutionLogStreamTextTag(string text)
+        {
+            if (text == null)
+                throw new ArgumentNullException("text");
+            this.text = text;
+        }
+
+        /// <summary>
         /// Gets or sets the text within the tag, not null.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlText]
         public string Text
         {
             get { return text; }
-            set { text = value; }
-        }
-
-        /// <summary>
-        /// Creates an empty but fully initialized instance.
-        /// </summary>
-        /// <param name="text">The text</param>
-        public static ExecutionLogStreamTextTag Create(string text)
-        {
-            ExecutionLogStreamTextTag tag = new ExecutionLogStreamTextTag();
-            tag.text = text;
-            return tag;
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                text = value;
+            }
         }
     }
 }

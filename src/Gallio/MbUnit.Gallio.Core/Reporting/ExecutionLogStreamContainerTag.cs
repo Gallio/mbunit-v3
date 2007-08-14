@@ -28,33 +28,23 @@ namespace MbUnit.Core.Reporting
         private List<ExecutionLogStreamTag> contents;
 
         /// <summary>
-        /// Gets or sets the nested contents of this tag.
+        /// Creates an empty container tag.
+        /// </summary>
+        public ExecutionLogStreamContainerTag()
+        {
+            contents = new List<ExecutionLogStreamTag>();
+        }
+
+        /// <summary>
+        /// Gets the list of nested contents of this tag.
         /// </summary>
         [XmlArray("contents", IsNullable=false)]
         [XmlArrayItem("section", typeof(ExecutionLogStreamSectionTag), IsNullable = false)]
         [XmlArrayItem("text", typeof(ExecutionLogStreamTextTag), IsNullable = false)]
         [XmlArrayItem("embed", typeof(ExecutionLogStreamEmbedTag), IsNullable = false)]
-        public ExecutionLogStreamTag[] Contents
+        public List<ExecutionLogStreamTag> Contents
         {
-            get { return contents.ToArray(); }
-            set { contents = new List<ExecutionLogStreamTag>(value); }
-        }
-
-        /// <summary>
-        /// Adds a content tag to the container.
-        /// </summary>
-        /// <param name="tag">The tag to add</param>
-        public void AddContent(ExecutionLogStreamTag tag)
-        {
-            contents.Add(tag);
-        }
-
-        /// <summary>
-        /// Initializes the contents list to an empty list.
-        /// </summary>
-        protected void Initialize()
-        {
-            contents = new List<ExecutionLogStreamTag>();
+            get { return contents; }
         }
     }
 }

@@ -31,12 +31,11 @@ namespace MbUnit.Core.Reporting
         private Dictionary<string, Attachment> attachmentMap;
 
         /// <summary>
-        /// Creates an execution log writer that builds a new Xml-serialized execution log.
+        /// Creates an execution log writer that builds a new execution log.
         /// </summary>
         public ExecutionLogWriter()
         {
-            executionLog = ExecutionLog.Create();
-
+            executionLog = new ExecutionLog();
             streamDataMap = new Dictionary<string, ExecutionLogStreamData>();
             attachmentMap = new Dictionary<string, Attachment>();
         }
@@ -85,7 +84,7 @@ namespace MbUnit.Core.Reporting
                 else
                 {
                     attachmentMap.Add(attachment.Name, attachment);
-                    executionLog.AddAttachment(ExecutionLogAttachment.XmlSerialize(attachment));
+                    executionLog.Attachments.Add(ExecutionLogAttachment.XmlSerialize(attachment));
                 }
 
                 if (streamName != null)
@@ -149,7 +148,7 @@ namespace MbUnit.Core.Reporting
                 streamData = new ExecutionLogStreamData(streamName);
                 streamDataMap.Add(streamName, streamData);
 
-                executionLog.AddStream(streamData.ExecutionLogStream);
+                executionLog.Streams.Add(streamData.ExecutionLogStream);
             }
 
             return streamData;
@@ -169,7 +168,7 @@ namespace MbUnit.Core.Reporting
 
             public ExecutionLogStreamData(string streamName)
             {
-                executionLogStream = Reporting.ExecutionLogStream.Create(streamName);
+                executionLogStream = new ExecutionLogStream(streamName);
                 containerStack = new Stack<ExecutionLogStreamContainerTag>();
                 textBuilder = new StringBuilder();
 
@@ -185,7 +184,7 @@ namespace MbUnit.Core.Reporting
             {
                 if (textBuilder.Length != 0)
                 {
-                    containerStack.Peek().AddContent(ExecutionLogStreamTextTag.Create(textBuilder.ToString()));
+                    containerStack.Peek().Contents.Add(new ExecutionLogStreamTextTag(textBuilder.ToString()));
                     textBuilder.Length = 0;
                 }
             }
@@ -199,15 +198,15 @@ namespace MbUnit.Core.Reporting
             {
                 Flush();
 
-                containerStack.Peek().AddContent(ExecutionLogStreamEmbedTag.Create(attachmentName));
+                containerStack.Peek().Contents.Add(new ExecutionLogStreamEmbedTag(attachmentName));
             }
 
             public void BeginSection(string sectionName)
             {
                 Flush();
 
-                ExecutionLogStreamSectionTag tag = ExecutionLogStreamSectionTag.Create(sectionName);
-                containerStack.Peek().AddContent(tag);
+                ExecutionLogStreamSectionTag tag = new ExecutionLogStreamSectionTag(sectionName);
+                containerStack.Peek().Contents.Add(tag);
                 containerStack.Push(tag);
             }
 

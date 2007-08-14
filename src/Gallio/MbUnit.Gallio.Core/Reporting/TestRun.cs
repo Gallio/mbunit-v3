@@ -38,13 +38,39 @@ namespace MbUnit.Core.Reporting
         private ExecutionLog executionLog;
 
         /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        private TestRun()
+        {
+        }
+
+        /// <summary>
+        /// Creates a test run.
+        /// </summary>
+        /// <param name="testId">The test id</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> is null</exception>
+        public TestRun(string testId)
+        {
+            if (testId == null)
+                throw new ArgumentNullException("testId");
+
+            this.testId = testId;
+        }
+
+        /// <summary>
         /// Gets or sets the id of the test that was run.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlAttribute("id")]
         public string TestId
         {
             get { return testId; }
-            set { testId = value; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                testId = value;
+            }
         }
 
         /// <summary>
@@ -70,21 +96,43 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Gets or sets the test result from the run.
         /// </summary>
-        [XmlElement("result")]
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("result", IsNullable = false)]
         public TestResult Result
         {
-            get { return result; }
-            set { result = value; }
+            get
+            {
+                if (result == null)
+                    result = new TestResult();
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                result = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the execution log.
         /// </summary>
-        [XmlElement("executionLog")]
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("executionLog", IsNullable = false)]
         public ExecutionLog ExecutionLog
         {
-            get { return executionLog; }
-            set { executionLog = value; }
+            get
+            {
+                if (executionLog == null)
+                    executionLog = new ExecutionLog();
+                return executionLog;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                executionLog = value;
+            }
         }
     }
 }

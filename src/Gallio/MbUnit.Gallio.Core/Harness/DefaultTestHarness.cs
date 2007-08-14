@@ -247,13 +247,13 @@ namespace MbUnit.Core.Harness
             }
         }
 
-        private void LoadAssemblies(IProgressMonitor progressMonitor, string[] assemblyFiles)
+        private void LoadAssemblies(IProgressMonitor progressMonitor, IList<string> assemblyFiles)
         {
             using (progressMonitor)
             {
-                if (assemblyFiles.Length != 0)
+                if (assemblyFiles.Count != 0)
                 {
-                    progressMonitor.BeginTask("Loading test assemblies.", assemblyFiles.Length);
+                    progressMonitor.BeginTask("Loading test assemblies.", assemblyFiles.Count);
 
                     foreach (string assemblyFile in package.AssemblyFiles)
                     {

@@ -40,7 +40,7 @@ namespace MbUnit.Core.Reporting
         /// <inheritdoc />
         public void VisitTextAttachment(TextAttachment attachment)
         {
-            this.serializedAttachment = ExecutionLogAttachment.Create(attachment.Name, attachment.ContentType,
+            serializedAttachment = new ExecutionLogAttachment(attachment.Name, attachment.ContentType,
                 ExecutionLogAttachmentEncoding.Text,
                 attachment.Text, 
                 EmptyArray<XmlElement>.Instance);
@@ -49,7 +49,7 @@ namespace MbUnit.Core.Reporting
         /// <inheritdoc />
         public void VisitXmlAttachment(XmlAttachment attachment)
         {
-            this.serializedAttachment = ExecutionLogAttachment.Create(attachment.Name, attachment.ContentType,
+            serializedAttachment = new ExecutionLogAttachment(attachment.Name, attachment.ContentType,
                 ExecutionLogAttachmentEncoding.Xml,
                 "",
                 new XmlElement[] { attachment.XmlElement });
@@ -58,7 +58,7 @@ namespace MbUnit.Core.Reporting
         /// <inheritdoc />
         public void VisitBinaryAttachment(BinaryAttachment attachment)
         {
-            this.serializedAttachment = ExecutionLogAttachment.Create(attachment.Name, attachment.ContentType,
+            serializedAttachment = new ExecutionLogAttachment(attachment.Name, attachment.ContentType,
                 ExecutionLogAttachmentEncoding.Base64,
                 Convert.ToBase64String(attachment.Data, Base64FormattingOptions.None),
                 EmptyArray<XmlElement>.Instance);

@@ -208,15 +208,9 @@ namespace MbUnit.Core.Runner
                     }
                 }
 
-                List<string> validAssemblies = new List<string>();
-                validAssemblies.AddRange(package.AssemblyFiles);
                 // Remove invalid assemblies
                 foreach (string assemblyName in assembliesToRemove)
-                {
-                    validAssemblies.Remove(assemblyName);
-                }
-
-                package.AssemblyFiles = validAssemblies.ToArray();
+                    package.AssemblyFiles.Remove(assemblyName);
             }
         }
 
@@ -265,7 +259,7 @@ namespace MbUnit.Core.Runner
             {
                 path = Path.GetFullPath(path);
             }
-            runtimeSetup.AddPluginDirectory(path);
+            runtimeSetup.PluginDirectories.Add(path);
         }
 
         /// <summary>
@@ -349,7 +343,7 @@ namespace MbUnit.Core.Runner
             {
                 path = Path.GetFullPath(path);
             }
-            package.AddHintDirectory(path);
+            package.HintDirectories.Add(path);
         }
 
         /// <summary>
@@ -420,7 +414,7 @@ namespace MbUnit.Core.Runner
             {
                 path = Path.GetFullPath(path);
             }
-            package.AddAssemblyFile(path);
+            package.AssemblyFiles.Add(path);
         }
 
         /// <summary>
@@ -483,7 +477,7 @@ namespace MbUnit.Core.Runner
 
         private bool HasTestAssemblies()
         {
-            if (package.AssemblyFiles.Length == 0)
+            if (package.AssemblyFiles.Count == 0)
             {
                 logger.Warn("No test assemblies to execute!");
                 return false;

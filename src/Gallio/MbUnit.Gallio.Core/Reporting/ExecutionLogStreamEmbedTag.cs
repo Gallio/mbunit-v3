@@ -31,24 +31,39 @@ namespace MbUnit.Core.Reporting
         private string attachmentName;
 
         /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        private ExecutionLogStreamEmbedTag()
+        {
+        }
+
+        /// <summary>
+        /// Creates an initialized tag.
+        /// </summary>
+        /// <param name="attachmentName">The name of the attachment to embed</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null</exception>
+        public ExecutionLogStreamEmbedTag(string attachmentName)
+        {
+            if (attachmentName == null)
+                throw new ArgumentNullException("attachmentName");
+
+            this.attachmentName = attachmentName;
+        }
+
+        /// <summary>
         /// Gets or sets the name of the referenced attachment to embed, not null.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlAttribute("attachmentName")]
         public string AttachmentName
         {
             get { return attachmentName; }
-            set { attachmentName = value; }
-        }
-
-        /// <summary>
-        /// Creates an empty but fully initialized instance.
-        /// </summary>
-        /// <param name="attachmentName">The name of the referenced attachment to embed</param>
-        public static ExecutionLogStreamEmbedTag Create(string attachmentName)
-        {
-            ExecutionLogStreamEmbedTag tag = new ExecutionLogStreamEmbedTag();
-            tag.attachmentName = attachmentName;
-            return tag;
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                attachmentName = value;
+            }
         }
     }
 }

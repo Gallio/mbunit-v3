@@ -56,7 +56,7 @@ namespace MbUnit.Core.Harness
         /// If relative, the path is based on the application base of the test runner,
         /// so a value of "" causes the test runner's application base to be used.
         /// </summary>
-        [XmlArrayItem("applicationBase")]
+        [XmlAttribute("applicationBase")]
         public string ApplicationBase
         {
             get { return applicationBase; }
@@ -64,25 +64,23 @@ namespace MbUnit.Core.Harness
         }
 
         /// <summary>
-        /// Gets or sets the list of hint directories used to resolve test assemblies and other files.
+        /// Gets the list of hint directories used to resolve test assemblies and other files.
         /// </summary>
         [XmlArray("hintDirectories", IsNullable=false)]
         [XmlArrayItem("hintDirectory", IsNullable=false)]
-        public string[] HintDirectories
+        public List<string> HintDirectories
         {
-            get { return hintDirectories.ToArray(); }
-            set { hintDirectories = new List<string>(value); }
+            get { return hintDirectories; }
         }
 
         /// <summary>
-        /// Gets or sets the relative or absolute paths of test assembly files.
+        /// Gets the list of relative or absolute paths of test assembly files.
         /// </summary>
         [XmlArray("assemblyFiles", IsNullable = false)]
         [XmlArrayItem("assemblyFile", IsNullable = false)]
-        public string[] AssemblyFiles
+        public List<string> AssemblyFiles
         {
-            get { return assemblyFiles.ToArray(); }
-            set { assemblyFiles = new List<string>(value); }
+            get { return assemblyFiles; }
         }
 
         /// <summary>
@@ -93,24 +91,6 @@ namespace MbUnit.Core.Harness
         {
             get { return enableShadowCopy; }
             set { enableShadowCopy = value; }
-        }
-
-        /// <summary>
-        /// Adds a path to use for resolving test assemblies and other files.
-        /// </summary>
-        /// <param name="hintDirectory">The path to add</param>
-        public void AddHintDirectory(string hintDirectory)
-        {
-            hintDirectories.Add(hintDirectory);
-        }
-
-        /// <summary>
-        /// Adds a relative or absolute path of a test assembly.
-        /// </summary>
-        /// <param name="assemblyFile">The path of the assembly file to add</param>
-        public void AddAssemblyFile(string assemblyFile)
-        {
-            assemblyFiles.Add(assemblyFile);
         }
     }
 }

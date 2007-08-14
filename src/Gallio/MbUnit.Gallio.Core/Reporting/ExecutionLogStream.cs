@@ -30,34 +30,60 @@ namespace MbUnit.Core.Reporting
         private ExecutionLogStreamBodyTag body;
 
         /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        private ExecutionLogStream()
+        {
+        }
+
+        /// <summary>
+        /// Creates an initialized stream.
+        /// </summary>
+        /// <param name="name">The stream name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public ExecutionLogStream(string name)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+
+            this.name = name;
+        }
+
+        /// <summary>
         /// Gets or sets the name of the log stream, not null.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlAttribute("name")]
         public string Name
         {
             get { return name; }
-            set { name = value; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                name = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the body of the log stream, not null.
         /// </summary>
-        [XmlElement("body", IsNullable=false)]
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("body", IsNullable = false)]
         public ExecutionLogStreamBodyTag Body
         {
-            get { return body; }
-            set { body = value; }
-        }
-
-        /// <summary>
-        /// Creates an empty but fully initialized instance.
-        /// </summary>
-        public static ExecutionLogStream Create(string streamName)
-        {
-            ExecutionLogStream stream = new ExecutionLogStream();
-            stream.name = streamName;
-            stream.body = ExecutionLogStreamBodyTag.Create();
-            return stream;
+            get
+            {
+                if (body == null)
+                    body = new ExecutionLogStreamBodyTag();
+                return body;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                body = value;
+            }
         }
     }
 }

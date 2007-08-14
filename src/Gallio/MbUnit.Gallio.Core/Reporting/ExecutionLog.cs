@@ -32,55 +32,33 @@ namespace MbUnit.Core.Reporting
         private List<ExecutionLogAttachment> attachments;
 
         /// <summary>
-        /// Gets or sets the array of streams, not null.
+        /// Creates an empty execution log.
+        /// </summary>
+        public ExecutionLog()
+        {
+            streams = new List<ExecutionLogStream>();
+            attachments = new List<ExecutionLogAttachment>();
+        }
+
+        /// <summary>
+        /// Gets the list of streams, not null.
         /// Used for Xml-serialization.
         /// </summary>
         [XmlArray("streams", IsNullable=false)]
         [XmlArrayItem("stream", IsNullable=false)]
-        public ExecutionLogStream[] Streams
+        public List<ExecutionLogStream> Streams
         {
-            get { return streams.ToArray(); }
-            set { streams = new List<ExecutionLogStream>(value); }
+            get { return streams; }
         }
 
         /// <summary>
-        /// Gets or sets the array of attachments, not null.
+        /// Gets the list of attachments, not null.
         /// </summary>
         [XmlArray("attachments", IsNullable=false)]
         [XmlArrayItem("attachment", IsNullable=false)]
-        public ExecutionLogAttachment[] Attachments
+        public List<ExecutionLogAttachment> Attachments
         {
-            get { return attachments.ToArray(); }
-            set { attachments = new List<ExecutionLogAttachment>(value); }
-        }
-
-        /// <summary>
-        /// Adds an execution log stream to the execution log.
-        /// </summary>
-        /// <param name="stream">The log stream to add</param>
-        public void AddStream(ExecutionLogStream stream)
-        {
-            streams.Add(stream);
-        }
-
-        /// <summary>
-        /// Adds an attachment to the execution log.
-        /// </summary>
-        /// <param name="attachment">The attachment to add</param>
-        public void AddAttachment(ExecutionLogAttachment attachment)
-        {
-            attachments.Add(attachment);
-        }
-
-        /// <summary>
-        /// Creates an empty but fully initialized instance.
-        /// </summary>
-        public static ExecutionLog Create()
-        {
-            ExecutionLog executionLog = new ExecutionLog();
-            executionLog.streams = new List<ExecutionLogStream>();
-            executionLog.attachments = new List<ExecutionLogAttachment>();
-            return executionLog;
+            get { return attachments; }
         }
     }
 }

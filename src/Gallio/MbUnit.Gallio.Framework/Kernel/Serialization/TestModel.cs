@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Framework.Kernel.Serialization
 {
@@ -25,12 +27,21 @@ namespace MbUnit.Framework.Kernel.Serialization
     /// This class is safe for used by multiple threads.
     /// </remarks>
     [Serializable]
-    public class TestModel
+    [XmlRoot("testModel", Namespace=SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
+    public sealed class TestModel
     {
         [NonSerialized]
         private Dictionary<string, TestInfo> tests;
 
         private TestInfo rootTest;
+
+        /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        private TestModel()
+        {
+        }
 
         /// <summary>
         /// Creates a test model.
@@ -46,16 +57,30 @@ namespace MbUnit.Framework.Kernel.Serialization
         }
 
         /// <summary>
-        /// Gets the root test in the model.
+        /// Gets or sets the root test in the model.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("root", IsNullable = false)]
         public TestInfo RootTest
         {
             get { return rootTest; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                lock (this)
+                {
+                    rootTest = value;
+                    tests = null;
+                }
+            }
         }
 
         /// <summary>
         /// Gets a dictionary of tests indexed by id.
         /// </summary>
+        [XmlIgnore]
         public IDictionary<string, TestInfo> Tests
         {
             get

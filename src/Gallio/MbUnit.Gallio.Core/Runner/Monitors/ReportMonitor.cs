@@ -100,7 +100,8 @@ namespace MbUnit.Core.Runner.Monitors
             {
                 testRunDataMap.Clear();
 
-                report.PackageRun = PackageRun.Create(DateTime.Now);
+                report.PackageRun = new PackageRun();
+                report.PackageRun.StartTime = DateTime.Now;
             }
         }
 
@@ -178,8 +179,6 @@ namespace MbUnit.Core.Runner.Monitors
             {
                 data = new TestRunData(testId);
                 testRunDataMap.Add(testId, data);
-
-
             }
 
             return data;
@@ -192,10 +191,9 @@ namespace MbUnit.Core.Runner.Monitors
 
             public TestRunData(string testId)
             {
-                Run = new TestRun();
                 ExecutionLogWriter = new ExecutionLogWriter();
 
-                Run.TestId = testId;
+                Run = new TestRun(testId);
                 Run.ExecutionLog = ExecutionLogWriter.ExecutionLog;
             }
         }

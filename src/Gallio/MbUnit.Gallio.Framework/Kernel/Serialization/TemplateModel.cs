@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Framework.Kernel.Serialization
 {
@@ -25,12 +27,21 @@ namespace MbUnit.Framework.Kernel.Serialization
     /// This class is safe for used by multiple threads.
     /// </remarks>
     [Serializable]
-    public class TemplateModel
+    [XmlRoot("templateModel", Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    public sealed class TemplateModel
     {
         [NonSerialized]
         private Dictionary<string, TemplateInfo> templates;
 
         private TemplateInfo rootTemplate;
+
+        /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        private TemplateModel()
+        {
+        }
 
         /// <summary>
         /// Creates a template model.
@@ -49,14 +60,28 @@ namespace MbUnit.Framework.Kernel.Serialization
         /// <summary>
         /// Gets the root template in the model.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("root", IsNullable = false)]
         public TemplateInfo RootTemplate
         {
             get { return rootTemplate; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                lock (this)
+                {
+                    rootTemplate = value;
+                    templates = null;
+                }
+            }
         }
 
         /// <summary>
         /// Gets a dictionary of templates indexed by id.
         /// </summary>
+        [XmlIgnore]
         public IDictionary<string, TemplateInfo> Templates
         {
             get
