@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using MbUnit.Framework.Kernel.Results;
+using MbUnit.Framework.Kernel.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Reporting
@@ -36,7 +38,7 @@ namespace MbUnit.Core.Reporting
         private int inconclusiveCount;
         private int runCount;
         private int skipCount;
-        private int successCount;
+        private int passCount;
         private int testCount;
 
         /// <summary>
@@ -70,13 +72,13 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <summary>
-        /// Gets or sets the number of test cases that ran and succeeded.
+        /// Gets or sets the number of test cases that ran and passed.
         /// </summary>
-        [XmlAttribute("successCount")]
-        public int SuccessCount
+        [XmlAttribute("passCount")]
+        public int PassCount
         {
-            get { return successCount; }
-            set { successCount = value; }
+            get { return passCount; }
+            set { passCount = value; }
         }
 
         /// <summary>
@@ -127,6 +129,70 @@ namespace MbUnit.Core.Reporting
         {
             get { return testCount; }
             set { testCount = value; }
+        }
+
+        /// <summary>
+        /// Formats a single line of text summarizing test case results.
+        /// </summary>
+        public string FormatTestCaseResultSummary()
+        {
+            return String.Format("Run: {0}, Passed: {1}, Failed: {2}, Inconclusive: {3}, Ignored: {4}, Skipped: {5}.",
+                runCount, passCount, failureCount, inconclusiveCount, ignoreCount, skipCount);
+        }
+
+        /// <summary>
+        /// Merges statistics from a test run, incrementing the relevant counters.
+        /// </summary>
+        /// <param name="testInfo">The test info</param>
+        /// <param name="testRun">The test run</param>
+        public void MergeTestRunStatistics(TestInfo testInfo, TestRun testRun)
+        {
+            if (testRun == null)
+                throw new ArgumentNullException("testRun");
+
+            assertCount += testRun.Result.AssertCount;
+
+            if (!testInfo.IsTestCase)
+                return;
+
+            testCount += 1;
+
+            // Tally the various test run states.
+            switch (testRun.Result.State)
+            {
+                case TestState.Completed:
+                case TestState.Failed:
+                case TestState.Canceled:
+                    runCount += 1;
+                    break;
+
+                case TestState.NotRun:
+                    return;
+
+                case TestState.Ignored:
+                    ignoreCount += 1;
+                    return;
+
+                case TestState.Skipped:
+                    skipCount += 1;
+                    return;
+            }
+
+            // If the test ran, tally the various outcomes.
+            switch (testRun.Result.Outcome)
+            {
+                case TestOutcome.Passed:
+                    passCount += 1;
+                    break;
+
+                case TestOutcome.Failed:
+                    failureCount += 1;
+                    break;
+
+                case TestOutcome.Inconclusive:
+                    inconclusiveCount += 1;
+                    break;
+            }
         }
     }
 }

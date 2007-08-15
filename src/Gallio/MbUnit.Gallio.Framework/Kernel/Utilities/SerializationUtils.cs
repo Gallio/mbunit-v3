@@ -16,6 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace MbUnit.Framework.Kernel.Utilities
 {
@@ -28,5 +30,36 @@ namespace MbUnit.Framework.Kernel.Utilities
         /// The XML namespace for all MbUnit Gallio XML types.
         /// </summary>
         public const string XmlNamespace = "http://www.mbunit.com/gallio";
+
+        /// <summary>
+        /// Saves an object graph to a pretty-printed Xml file using <see cref="XmlSerializer" />.
+        /// </summary>
+        /// <param name="root">The root object</param>
+        /// <param name="filename">The filename</param>
+        /// <typeparam name="T">The root object type</typeparam>
+        public static void SaveToXml<T>(T root, string filename)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+
+            using (XmlWriter writer = XmlWriter.Create(filename, settings))
+                serializer.Serialize(writer, root);
+        }
+
+        /// <summary>
+        /// Loads an object graph from an Xml file using <see cref="XmlSerializer" />.
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        /// <returns>The root object</returns>
+        /// <typeparam name="T">The root object type</typeparam>
+        public static T LoadFromXml<T>(string filename)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+            using (XmlReader reader = XmlReader.Create(filename))
+                return (T) serializer.Deserialize(reader);
+        }
     }
 }

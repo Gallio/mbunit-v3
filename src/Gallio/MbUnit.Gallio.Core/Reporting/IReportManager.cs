@@ -56,7 +56,7 @@ namespace MbUnit.Core.Reporting
         /// Saves the report as XML to the specified file.
         /// </summary>
         /// <param name="report">The report</param>
-        /// <param name="filename">The filename to save</param>
+        /// <param name="filename">The name of the file to save</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="filename"/>
         /// or <paramref name="progressMonitor"/> is null</exception>
@@ -65,7 +65,7 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Loads the report from XML from the specified file.
         /// </summary>
-        /// <param name="filename">The filename to save</param>
+        /// <param name="filename">The name of the file to load</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="filename"/> or <paramref name="progressMonitor "/> is null</exception>
         Report LoadReport(string filename, IProgressMonitor progressMonitor);

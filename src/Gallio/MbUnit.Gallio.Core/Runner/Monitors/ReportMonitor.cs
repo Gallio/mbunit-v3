@@ -184,7 +184,7 @@ namespace MbUnit.Core.Runner.Monitors
             return data;
         }
 
-        private class TestRunData
+        private sealed class TestRunData
         {
             public readonly TestRun Run;
             public readonly ExecutionLogWriter ExecutionLogWriter;

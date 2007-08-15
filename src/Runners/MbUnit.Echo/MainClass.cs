@@ -15,12 +15,12 @@
 
 using System;
 using System.Reflection;
-using System.Xml;
-using System.Xml.Serialization;
 using Castle.Core.Logging;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Echo
 {
@@ -96,8 +96,8 @@ namespace MbUnit.Echo
                 arguments.GetFilter()
                 ))
             {
-                testRunnerHelper.TemplateTreePersister = SaveTemplateTree;
-                testRunnerHelper.TemplateTreePersister = SaveTestTree;
+                testRunnerHelper.TemplateModelPersister = SaveTemplateTree;
+                testRunnerHelper.TestModelPersister = SaveTestTree;
                 testRunnerHelper.AddPluginDirectories(arguments.PluginDirectories);
                 testRunnerHelper.AddHintDirectories(arguments.HintDirectories);
                 testRunnerHelper.AddAssemblyFiles(arguments.Assemblies);
@@ -192,33 +192,22 @@ namespace MbUnit.Echo
             Console.WriteLine(CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments)));
         }
 
-        private void SaveTemplateTree(object root, IProgressMonitor progressMonitor)
+        private void SaveTemplateTree(TemplateModel templateModel, IProgressMonitor progressMonitor)
         {
             if (arguments.SaveTemplateTree != null)
             {
                 progressMonitor.BeginTask("Saving template tree to: " + arguments.SaveTemplateTree + ".", 1);
-                SaveToXml(root, arguments.SaveTemplateTree);
+                SerializationUtils.SaveToXml(templateModel, arguments.SaveTemplateTree);
             }
         }
 
-        private void SaveTestTree(object root, IProgressMonitor progressMonitor)
+        private void SaveTestTree(TestModel testModel, IProgressMonitor progressMonitor)
         {
             if (arguments.SaveTestTree != null)
             {
                 progressMonitor.BeginTask("Saving test tree to: " + arguments.SaveTestTree + ".", 1);
-                SaveToXml(root, arguments.SaveTestTree);
+                SerializationUtils.SaveToXml(testModel, arguments.SaveTestTree);
             }
-        }
-
-        private static void SaveToXml(object root, string filename)
-        {
-            XmlSerializer serializer = new XmlSerializer(root.GetType());
-
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-
-            using (XmlWriter writer = XmlWriter.Create(filename, settings))
-                serializer.Serialize(writer, root);
         }
 
         #region IDisposable Members

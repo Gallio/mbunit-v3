@@ -14,65 +14,47 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Serialization;
-using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Events;
-using System.Xml;
 
 namespace MbUnit.Core.Runner.Monitors
 {
     /// <summary>
-    /// Monitors <see cref="ITestRunner" /> events and writes messages to
-    /// an output stream for debugging.
+    /// Monitors <see cref="ITestRunner" /> events and writes debug messages to
+    /// an output stream.
     /// </summary>
-    /// <todo author="jeff">
-    /// Tentative.  Subject to change!!
-    /// Needs a lot of work anyways.
-    /// </todo>
     public class DebugMonitor : BaseTestRunnerMonitor
     {
         private TextWriter writer;
-        private TestSummaryMonitor summaryMonitor;
 
         /// <summary>
         /// Creates a console monitor.
         /// </summary>
         /// <param name="writer">The text writer for all output</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportMonitor" or
+        /// <paramref name="writer"/> is null</exception>
         public DebugMonitor(TextWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
             this.writer = writer;
-
-            summaryMonitor = new TestSummaryMonitor();
-        }
-
-        /// <summary>
-        /// Gets the associated test summary monitor.
-        /// </summary>
-        public TestSummaryMonitor SummaryMonitor
-        {
-            get { return summaryMonitor; }
         }
 
         protected override void OnAttach()
         {
             base.OnAttach();
 
-            summaryMonitor.Attach(Runner);
             Runner.EventDispatcher.Message += HandleMessageEvent;
             Runner.EventDispatcher.TestLifecycle += HandleTestLifecycleEvent;
+            Runner.EventDispatcher.TestExecutionLog += HandleTestExecutionLogEvent;
         }
 
         private void HandleMessageEvent(object sender, MessageEventArgs e)
         {
-            writer.WriteLine("[message({0})] - {1}\n", e.MessageType, e.Message);
+            writer.WriteLine("[Message: {0}] - {1}", e.MessageType, e.Message);
+            writer.WriteLine();
         }
 
         private void HandleTestLifecycleEvent(object sender, TestLifecycleEventArgs e)
@@ -82,40 +64,62 @@ namespace MbUnit.Core.Runner.Monitors
             switch (e.EventType)
             {
                 case TestLifecycleEventType.Start:
-                    writer.WriteLine("[start] - {0}\n", testInfo.Name);
-
-                    foreach (KeyValuePair<string, IList<string>> entry in testInfo.Metadata.Entries)
-                    {
-                        foreach (string value in entry.Value)
-                            writer.WriteLine("\t{0} = {1}", entry.Key, value);
-                    }
+                    writer.WriteLine("[Lifecycle: Start ({0})]", testInfo.Name);
                     break;
 
                 case TestLifecycleEventType.Step:
-                    writer.WriteLine("[step({0})] - {1}\n", e.StepName, testInfo.Name);
+                    writer.WriteLine("[Lifecycle: Step ({0})]", testInfo.Name);
+                    writer.WriteLine("\tStep Name: {0}", e.StepName);
                     break;
 
                 case TestLifecycleEventType.Finish:
-                    writer.WriteLine("[finish] - {0}", testInfo.Name);
-
-                    TestSummary summary = summaryMonitor.Summaries[e.TestId];
-                    writer.WriteLine("\tState: {0}", summary.Result.State);
-                    writer.WriteLine("\tOutcome: {0}", summary.Result.Outcome);
-                    writer.WriteLine("\tAsserts: {0}", summary.Result.AssertCount);
-                    writer.WriteLine("\tDuration: {0}", summary.Result.Duration);
-                    writer.WriteLine("\tExecution Log:");
-
-                    XmlSerializer serializer = new XmlSerializer(typeof(ExecutionLog));
-
-                    XmlWriterSettings settings = new XmlWriterSettings();
-                    settings.Indent = true;
-
-                    using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
-                        serializer.Serialize(xmlWriter, summary.ExecutionLog);
-
-                    writer.WriteLine();
+                    writer.WriteLine("[Lifecycle: Finish ({0})]", testInfo.Name);
+                    writer.WriteLine("\tState: {0}", e.Result.State);
+                    writer.WriteLine("\tOutcome: {0}", e.Result.Outcome);
+                    writer.WriteLine("\tAsserts: {0}", e.Result.AssertCount);
+                    writer.WriteLine("\tDuration: {0}", e.Result.Duration);
                     break;
             }
+
+            writer.WriteLine();
+        }
+
+        private void HandleTestExecutionLogEvent(object sender, TestExecutionLogEventArgs e)
+        {
+            TestInfo testInfo = Runner.TestModel.Tests[e.TestId];
+
+            switch (e.EventType)
+            {
+                case TestExecutionLogEventType.WriteText:
+                    writer.WriteLine("[Execution Log: Write Text ({0})]", testInfo.Name);
+                    writer.WriteLine("\tStream Name: {0}", e.StreamName);
+                    writer.WriteLine("\tText: {0}", e.Text);
+                    break;
+
+                case TestExecutionLogEventType.WriteAttachment:
+                    writer.WriteLine("[Execution Log: Write Attachment ({0})]", testInfo.Name);
+                    writer.WriteLine("\tStream Name: {0}", e.StreamName ?? "<null>");
+                    writer.WriteLine("\tAttachment Name: {0}", e.Attachment.Name);
+                    writer.WriteLine("\tAttachment Content Type: {0}", e.Attachment.ContentType);
+                    break;
+
+                case TestExecutionLogEventType.BeginSection:
+                    writer.WriteLine("[Execution Log: Being Section ({0})]", testInfo.Name);
+                    writer.WriteLine("\tStream Name: {0}", e.StreamName);
+                    writer.WriteLine("\tSection Name: {0}", e.SectionName);
+                    break;
+
+                case TestExecutionLogEventType.EndSection:
+                    writer.WriteLine("[Execution Log: End Section ({0})]", testInfo.Name);
+                    writer.WriteLine("\tStream Name: {0}", e.StreamName);
+                    break;
+
+                case TestExecutionLogEventType.Close:
+                    writer.WriteLine("[Execution Log: Close ({0})]", testInfo.Name);
+                    break;
+            }
+
+            writer.WriteLine();
         }
     }
 }

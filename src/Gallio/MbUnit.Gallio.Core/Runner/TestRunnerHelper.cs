@@ -25,6 +25,7 @@ using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Runner
@@ -43,8 +44,8 @@ namespace MbUnit.Core.Runner
         private readonly RuntimeSetup runtimeSetup;
         private readonly LevelFilteredLogger logger;
         private readonly Filter<ITest> filter;
-        private TreePersister templateTreePersister;
-        private TreePersister testTreePersister;
+        private Persister<TemplateModel> templateModelPersister;
+        private Persister<TestModel> testModelPersister;
         private Stopwatch stopWatch;
 
         #endregion
@@ -98,11 +99,9 @@ namespace MbUnit.Core.Runner
         #region Public Delegates
 
         /// <summary>
-        /// Defines a method capable of persisting a tree (template or test)
+        /// Defines a method capable of persisting a portion of the intermediate results.
         /// </summary>
-        /// <param name="root"></param>
-        /// <param name="progressMonitor"></param>
-        public delegate void TreePersister(object root, IProgressMonitor progressMonitor);
+        public delegate void Persister<T>(T data, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Defines a method that is able to create IProgressMonitor objects
@@ -117,19 +116,19 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// 
         /// </summary>
-        public TreePersister TemplateTreePersister
+        public Persister<TemplateModel> TemplateModelPersister
         {
-            get { return templateTreePersister; }
-            set { templateTreePersister = value; }
+            get { return templateModelPersister; }
+            set { templateModelPersister = value; }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public TreePersister TestTreePersister
+        public Persister<TestModel> TestModelPersister
         {
-            get { return testTreePersister; }
-            set { testTreePersister = value; }
+            get { return testModelPersister; }
+            set { testModelPersister = value; }
         }
 
         #endregion
@@ -153,11 +152,15 @@ namespace MbUnit.Core.Runner
                 if (!HasTestAssemblies())
                     return ResultCode.NoTests;
 
-                StringWriter debugWriter = new StringWriter();
-                new DebugMonitor(debugWriter).Attach(runner);
-                
-                TestStatisticMonitor tsm = new TestStatisticMonitor();
-                tsm.Attach(runner);
+                StringWriter debugWriter = null;
+                if (logger.IsDebugEnabled)
+                {
+                    debugWriter = new StringWriter();
+                    new DebugMonitor(debugWriter).Attach(runner);
+                }
+
+                ReportMonitor reportMonitor = new ReportMonitor();
+                reportMonitor.Attach(runner);
 
                 ApplyFilter(runner);
 
@@ -179,8 +182,10 @@ namespace MbUnit.Core.Runner
                 if (!RunTests(runner))
                     return ResultCode.Canceled;
 
-                logger.Debug(debugWriter.ToString());
-                logger.Info(tsm.Summary);
+                if (debugWriter != null)
+                    logger.Debug(debugWriter.ToString());
+
+                logger.Info(reportMonitor.Report.PackageRun.Statistics.FormatTestCaseResultSummary());
 
                 DisposeStopWatch();
 
@@ -537,11 +542,11 @@ namespace MbUnit.Core.Runner
 
         private bool PersistTemplateTree(ITestRunner runner)
         {
-            if (templateTreePersister != null)
+            if (templateModelPersister != null)
             {
                 using (IProgressMonitor progressMonitor = progressMonitorCreator())
                 {
-                    templateTreePersister(runner.TemplateModel.RootTemplate, progressMonitor);
+                    templateModelPersister(runner.TemplateModel, progressMonitor);
                     if (progressMonitor.IsCanceled)
                         return false;
                 }
@@ -551,11 +556,11 @@ namespace MbUnit.Core.Runner
 
         private bool PersistTestTree(ITestRunner runner)
         {
-            if (testTreePersister != null)
+            if (testModelPersister != null)
             {
                 using (IProgressMonitor progressMonitor = progressMonitorCreator())
                 {
-                    testTreePersister(runner.TestModel.RootTest, progressMonitor);
+                    testModelPersister(runner.TestModel, progressMonitor);
                     if (progressMonitor.IsCanceled)
                         return false;
                 }

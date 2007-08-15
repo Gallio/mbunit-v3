@@ -58,9 +58,9 @@ namespace MbUnit.Framework.Kernel.Results
         Failed,
 
         /// <summary>
-        /// The test was prematurely aborted by direct user intervention.
+        /// The test was prematurely canceled by direct user intervention.
         /// </summary>
-        [XmlEnum("aborted")]
-        Aborted
+        [XmlEnum("canceled")]
+        Canceled
     }
 }

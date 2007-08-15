@@ -64,7 +64,6 @@
     <Compile Include="Reporting\TestRun.cs" />
     <Compile Include="Runner\FilterParser.cs" />
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
-    <Compile Include="Runner\Monitors\TestStatisticMonitor.cs" />
     <Compile Include="Runner\RunnerProgressMonitor.cs" />
     <Compile Include="Utilities\VisualStudioDebugHelper.cs" />
     <Compile Include="Harness\AssemblyAddedEventArgs.cs" />
@@ -102,8 +101,6 @@
     <Compile Include="Runner\LocalTestDomain.cs" />
     <Compile Include="Runner\Monitors\ITestRunnerMonitor.cs" />
     <Compile Include="Runner\RemoteTestDomain.cs" />
-    <Compile Include="Runner\Monitors\TestSummary.cs" />
-    <Compile Include="Runner\Monitors\TestSummaryMonitor.cs" />
     <Compile Include="Runner\ResultCode.cs" />
     <Compile Include="Runner\TestRunnerHelper.cs" />
     <Compile Include="Runner\TextualProgressMonitor.cs" />
