@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Utilities;
 using NUnit.Core;
 
 namespace MbUnit.Plugin.NUnitAdapter.Core
@@ -112,12 +113,33 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
         private void BuildTests(NUnitTest parentTest, NUnit.Core.ITest nunitTest)
         {
-            // TODO: Get Type and Method information (how??)
-            //       Maybe we can parse it out of the TestNames.
+            string kind;
+            CodeReference codeReference;
+            switch (nunitTest.TestType)
+            {
+                case "Test Case":
+                    kind = ComponentKind.Test;
+                    codeReference = ParseTestCaseName(parentTest.CodeReference, nunitTest.TestName.FullName);
+                    break;
 
-            CodeReference codeRef = CodeReference.Unknown;
-            NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, codeRef, parentTest.Scope, nunitTest);
-            test.Kind = nunitTest.IsSuite ? ComponentKind.Suite : ComponentKind.Test;
+                case "Test Fixture":
+                    kind = ComponentKind.Fixture;
+                    codeReference = ParseTestFixtureName(parentTest.CodeReference, nunitTest.TestName.FullName);
+                    break;
+
+                case "Test Suite":
+                    kind = ComponentKind.Suite;
+                    codeReference = ParseCodeReferenceFromTestSuiteName(parentTest.CodeReference, nunitTest.TestName.FullName, ref kind);
+                    break;
+
+                default:
+                    kind = nunitTest.IsSuite ? ComponentKind.Suite : ComponentKind.Test;
+                    codeReference = CodeReference.Unknown;
+                    break;
+            }
+
+            NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, codeReference, parentTest.Scope, nunitTest);
+            test.Kind = kind;
             test.IsTestCase = !nunitTest.IsSuite;
 
             // Populate metadata
@@ -143,6 +165,116 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 foreach (NUnit.Core.ITest childNUnitTest in nunitTest.Tests)
                     BuildTests(test, childNUnitTest);
             }
+        }
+
+        /// <summary>
+        /// Parses a code reference from an NUnit test case name.
+        /// The name generally consists of the fixture type full-name followed by
+        /// a dot and the test method name.
+        /// </summary>
+        private static CodeReference ParseTestCaseName(CodeReference parent, string name)
+        {
+            if (parent.AssemblyName != null)
+            {
+                string namespaceName;
+                string typeName;
+                string methodName;
+                if (SplitMethodName(name, out namespaceName, out typeName, out methodName))
+                    return new CodeReference(parent.AssemblyName, namespaceName, typeName, methodName, null);
+            }
+
+            return new CodeReference(parent.AssemblyName, parent.NamespaceName, parent.TypeName, parent.MemberName, null);
+        }
+
+        /// <summary>
+        /// Parses a code reference from an NUnit test fixture name.
+        /// The name generally consists of the fixture type full-name.
+        /// </summary>
+        private CodeReference ParseTestFixtureName(CodeReference parent, string name)
+        {
+            if (parent.AssemblyName != null)
+            {
+                string namespaceName;
+                string typeName;
+                if (SplitTypeName(name, out namespaceName, out typeName))
+                    return new CodeReference(parent.AssemblyName, namespaceName, typeName, null, null);
+            }
+
+            return new CodeReference(parent.AssemblyName, parent.NamespaceName, parent.TypeName, null, null);
+        }
+
+        /// <summary>
+        /// Parses a code reference from an NUnit test suite name.
+        /// The name generally consists of the assembly filename or namespace name
+        /// but it might be user-generated also.
+        /// </summary>
+        private CodeReference ParseCodeReferenceFromTestSuiteName(CodeReference parent, string name, ref string kind)
+        {
+            Assembly assembly = ListUtils.Find(Assemblies, delegate(Assembly candidate)
+            {
+                return candidate.Location == name;
+            });
+
+            if (assembly != null)
+            {
+                kind = ComponentKind.Assembly;
+                return CodeReference.CreateFromAssembly(assembly);
+            }
+
+            if (parent.AssemblyName != null && IsProbableIdentifier(name))
+            {
+                kind = ComponentKind.Namespace;
+                return new CodeReference(parent.AssemblyName, name, null, null, null);
+            }
+
+            return new CodeReference(parent.AssemblyName, parent.NamespaceName, parent.TypeName, null, null);
+        }
+
+        private static bool SplitTypeName(string name, out string namespaceName, out string typeName)
+        {
+            if (IsProbableIdentifier(name))
+            {
+                int lastDot = name.LastIndexOf('.');
+                if (lastDot > 0 && lastDot < name.Length - 1)
+                {
+                    namespaceName = name.Substring(0, lastDot);
+                    typeName = name.Substring(lastDot + 1);
+                    return true;
+                }
+            }
+
+            namespaceName = null;
+            typeName = null;
+            return false;
+        }
+
+        private static bool SplitMethodName(string name, out string namespaceName,
+            out string typeName, out string methodName)
+        {
+            if (IsProbableIdentifier(name))
+            {
+                int lastDot = name.LastIndexOf('.');
+                if (lastDot > 0 && lastDot < name.Length - 1)
+                {
+                    string firstPart = name.Substring(0, lastDot);
+                    if (SplitTypeName(firstPart, out namespaceName, out typeName))
+                    {
+                        methodName = name.Substring(lastDot + 1);
+                        return true;
+                    }
+                }
+            }
+
+            namespaceName = null;
+            typeName = null;
+            methodName = null;
+            return false;
+
+        }
+
+        private static bool IsProbableIdentifier(string name)
+        {
+            return name.Length != 0 && !name.Contains(" ") && !name.StartsWith(".") && !name.EndsWith(".");
         }
     }
 }

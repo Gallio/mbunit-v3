@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace MbUnit.Framework.Kernel.Collections
 {
@@ -23,7 +24,7 @@ namespace MbUnit.Framework.Kernel.Collections
     /// A multi-map allows a list of values to be associated with a single key.
     /// </summary>
     [Serializable]
-    public class MultiMap<TKey, TValue> : ICollection<KeyValuePair<TKey, IList<TValue>>>
+    public class MultiMap<TKey, TValue> : IDictionary<TKey, IList<TValue>>
     {
         private IDictionary<TKey, IList<TValue>> entries;
 
@@ -49,8 +50,20 @@ namespace MbUnit.Framework.Kernel.Collections
             get { return false; }
         }
 
+        /// <inheritdoc />
+        public ICollection<TKey> Keys
+        {
+            get { return entries.Keys; }
+        }
+
+        /// <inheritdoc />
+        public ICollection<IList<TValue>> Values
+        {
+            get { return entries.Values; }
+        }
+
         /// <summary>
-        /// Gets the list of values associated with the specified key.
+        /// Gets or sets the list of values associated with the specified key.
         /// Returns an empty list if there are none.
         /// </summary>
         /// <param name="key">The key</param>
@@ -65,6 +78,58 @@ namespace MbUnit.Framework.Kernel.Collections
 
                 return EmptyArray<TValue>.Instance;
             }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                if (value.Count != 0)
+                    entries[key] = new ValueCollection(value);
+                else
+                    entries.Remove(key);
+            }
+        }
+
+        /// <summary>
+        /// Adds a value to the list of those associated with a key.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <param name="value">The value to associate</param>
+        public void Add(TKey key, TValue value)
+        {
+            IList<TValue> list;
+            ValueCollection valueCollection;
+            if (!entries.TryGetValue(key, out list))
+            {
+                valueCollection = new ValueCollection();
+                entries.Add(key, valueCollection);
+            }
+            else
+            {
+                valueCollection = (ValueCollection)list;
+            }
+
+            valueCollection.MutableList.Add(value);
+        }
+
+        /// <summary>
+        /// Adds all values in the pair to the specified key.
+        /// </summary>
+        /// <param name="item">The key and values pair</param>
+        public void Add(KeyValuePair<TKey, IList<TValue>> item)
+        {
+            Add(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// Adds all values in the pair to the specified key.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <param name="values">The values</param>
+        public void Add(TKey key, IList<TValue> values)
+        {
+            foreach (TValue value in values)
+                Add(key, value);
         }
 
         /// <summary>
@@ -81,85 +146,10 @@ namespace MbUnit.Framework.Kernel.Collections
                 Add(entry);
         }
 
-        /// <summary>
-        /// Adds a value to the list of those associated with a key.
-        /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to associate</param>
-        public void Add(TKey key, TValue value)
-        {
-            IList<TValue> list;
-            if (! entries.TryGetValue(key, out list))
-            {
-                list = new List<TValue>();
-                entries.Add(key, list);
-            }
-
-            list.Add(value);
-        }
-
-        /// <summary>
-        /// Adds all values in the pair to the specified key.
-        /// </summary>
-        /// <param name="item">The key and values pair</param>
-        public void Add(KeyValuePair<TKey, IList<TValue>> item)
-        {
-            foreach (TValue value in item.Value)
-                Add(item.Key, value);
-        }
-
-        /// <summary>
-        /// Removes a value from the list of those associated with a key.
-        /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to remove from the key</param>
-        /// <returns>True if the value was removed</returns>
-        public bool Remove(TKey key, TValue value)
-        {
-            IList<TValue> list;
-            return entries.TryGetValue(key, out list) && list.Remove(value);
-        }
-
-        /// <summary>
-        /// Removes all values in the pair from the specified key.
-        /// </summary>
-        /// <param name="item">The key and values pair</param>
-        /// <returns>True if at least one value was removed</returns>
-        public bool Remove(KeyValuePair<TKey, IList<TValue>> item)
-        {
-            bool removedOne = false;
-            foreach (TValue value in item.Value)
-                if (Remove(item.Key, value))
-                    removedOne = true;
-
-            return removedOne;
-        }
-
-        /// <summary>
-        /// Removes all values associated with the specified key.
-        /// </summary>
-        /// <param name="key">The key</param>
-        /// <returns>True if at least one value was removed</returns>
-        public bool RemoveKey(TKey key)
-        {
-            return entries.Remove(key);
-        }
-
         /// <inheritdoc />
         public void Clear()
         {
             entries.Clear();
-        }
-
-        /// <inheritdoc />
-        public IEnumerator<KeyValuePair<TKey, IList<TValue>>> GetEnumerator()
-        {
-            return entries.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         /// <summary>
@@ -187,10 +177,104 @@ namespace MbUnit.Framework.Kernel.Collections
             return true;
         }
 
+        /// <summary>
+        /// Returns true if the map contains at least one value associated with
+        /// the specified key.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <returns>True if there is at least one value associated with the key</returns>
+        public bool ContainsKey(TKey key)
+        {
+            return this[key].Count != 0;
+        }
+
         /// <inheritdoc />
         public void CopyTo(KeyValuePair<TKey, IList<TValue>>[] array, int arrayIndex)
         {
-            throw new NotImplementedException("YAGNI");
+            entries.CopyTo(array, arrayIndex);
+        }
+
+        /// <summary>
+        /// Removes all values associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <returns>True if the key existed and was removed</returns>
+        public bool Remove(TKey key)
+        {
+            return entries.Remove(key);
+        }
+
+        /// <summary>
+        /// Removes a value from the list of those associated with a key.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <param name="value">The value to remove from the key</param>
+        /// <returns>True if the value was removed</returns>
+        public bool Remove(TKey key, TValue value)
+        {
+            IList<TValue> list;
+            if (!entries.TryGetValue(key, out list))
+                return false;
+
+            ValueCollection valueCollection = (ValueCollection)list;
+            if (!valueCollection.MutableList.Remove(value))
+                return false;
+
+            if (valueCollection.Count == 0)
+                entries.Remove(key);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes all values in the pair from the specified key.
+        /// </summary>
+        /// <param name="item">The key and values pair</param>
+        /// <returns>True if at least one value was removed</returns>
+        public bool Remove(KeyValuePair<TKey, IList<TValue>> item)
+        {
+            bool removedOne = false;
+            foreach (TValue value in item.Value)
+                if (Remove(item.Key, value))
+                    removedOne = true;
+
+            return removedOne;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetValue(TKey key, out IList<TValue> value)
+        {
+            return entries.TryGetValue(key, out value);
+        }
+
+        /// <inheritdoc />
+        public IEnumerator<KeyValuePair<TKey, IList<TValue>>> GetEnumerator()
+        {
+            return entries.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return entries.GetEnumerator();
+        }
+
+        [Serializable]
+        private sealed class ValueCollection : ReadOnlyCollection<TValue>
+        {
+            public ValueCollection()
+                : base(new List<TValue>())
+            {
+            }
+
+            public ValueCollection(IEnumerable<TValue> originalValues)
+                : base(new List<TValue>(originalValues))
+            {
+            }
+
+            public IList<TValue> MutableList
+            {
+                get { return Items; }
+            }
         }
     }
 }

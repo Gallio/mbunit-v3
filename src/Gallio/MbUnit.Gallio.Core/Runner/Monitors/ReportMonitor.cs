@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Serialization;
 
 namespace MbUnit.Core.Runner.Monitors
 {
@@ -134,6 +135,7 @@ namespace MbUnit.Core.Runner.Monitors
                     case TestLifecycleEventType.Finish:
                         runData.Run.EndTime = DateTime.Now;
                         runData.Run.Result = e.Result;
+                        report.PackageRun.Statistics.MergeTestRunStatistics(runData.TestInfo, runData.Run);
 
                         runData.ExecutionLogWriter.Close(); // just in case
                         break;
@@ -177,7 +179,7 @@ namespace MbUnit.Core.Runner.Monitors
             TestRunData data;
             if (!testRunDataMap.TryGetValue(testId, out data))
             {
-                data = new TestRunData(testId);
+                data = new TestRunData(Runner.TestModel.Tests[testId]);
                 testRunDataMap.Add(testId, data);
             }
 
@@ -186,14 +188,17 @@ namespace MbUnit.Core.Runner.Monitors
 
         private sealed class TestRunData
         {
+            public readonly TestInfo TestInfo;
             public readonly TestRun Run;
             public readonly ExecutionLogWriter ExecutionLogWriter;
 
-            public TestRunData(string testId)
+            public TestRunData(TestInfo testInfo)
             {
+                this.TestInfo = testInfo;
+
                 ExecutionLogWriter = new ExecutionLogWriter();
 
-                Run = new TestRun(testId);
+                Run = new TestRun(testInfo.Id);
                 Run.ExecutionLog = ExecutionLogWriter.ExecutionLog;
             }
         }

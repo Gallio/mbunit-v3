@@ -225,3 +225,23 @@
     [Test]
     [StartAgent("Producer"), StartAgent("Consumer")]
     public void Test() { }
+
+* Support easy comparison of structures.  Most often we just want Assert.AreEqual
+  to be applied to most members.  We should be able to silently capture these cases
+  in a fluent abstraction.  eg.
+  
+  T a, b;
+  Assert.AreMembersEqual(a, b)
+      .For(T.Bar).CompareWith(CollectionAssert.AreEqual)
+      .For(T.Foo).Ignore();
+
+* Support easy testing of setters/getters.  Lots of implementations of this functionality
+  have been independently developed.  We should integrate something right into
+  Gallio, perhaps in the form of a custom attribute.
+  
+  [TestFixture]
+  [AutoTestProperties(typeof(Bar))]
+  public class F
+  {
+  }
+  

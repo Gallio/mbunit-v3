@@ -51,6 +51,11 @@ namespace MbUnit.Framework.Kernel.Metadata
         public const string Assembly = "Assembly";
 
         /// <summary>
+        /// The component describes the tests contained in a single test namespace.
+        /// </summary>
+        public const string Namespace = "Namespace";
+
+        /// <summary>
         /// The component describes a grouping of templates or tests for descriptive purposes.
         /// </summary>
         public const string Group = "Group";

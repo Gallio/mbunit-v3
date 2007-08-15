@@ -75,7 +75,7 @@ namespace MbUnit.Framework.Kernel.Metadata
         /// <param name="value">The new value, or null to remove the value</param>
         public void SetValue(string key, string value)
         {
-            entries.RemoveKey(key);
+            entries.Remove(key);
 
             if (value != null)
                 entries.Add(key, value);

@@ -40,16 +40,7 @@ namespace MbUnit.Core.Tests.Reporting
             serializer.Serialize(writer, report);
 
             Report deserializedReport = (Report) serializer.Deserialize(new StringReader(writer.ToString()));
-            AreEqual(report, deserializedReport);
-        }
-
-        public static void AreEqual(Report expected, Report actual)
-        {
-            if (expected == null)
-            {
-                Assert.IsNull(actual);
-                return;
-            }
+            CoreAssert.AreEqual(report, deserializedReport);
         }
     }
 }

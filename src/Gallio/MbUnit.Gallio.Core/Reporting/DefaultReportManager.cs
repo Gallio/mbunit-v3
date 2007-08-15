@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
 using Castle.Core;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Utilities;
@@ -29,8 +27,6 @@ namespace MbUnit.Core.Reporting
     [Singleton]
     public class DefaultReportManager : IReportManager
     {
-        private XmlSerializer serializer = new XmlSerializer(typeof(Report));
-
         /// <inheritdoc />
         public IList<string> GetFormatterNames()
         {
@@ -55,7 +51,7 @@ namespace MbUnit.Core.Reporting
         {
             using (progressMonitor)
             {
-                progressMonitor.BeginTask("Saving Report", 1);
+                progressMonitor.BeginTask("Saving report to: " + filename + ".", 1);
 
                 SerializationUtils.SaveToXml(report, filename);
             }
@@ -66,7 +62,7 @@ namespace MbUnit.Core.Reporting
         {
             using (progressMonitor)
             {
-                progressMonitor.BeginTask("Saving Report", 1);
+                progressMonitor.BeginTask("Loading report from: " + filename + ".", 1);
 
                 return SerializationUtils.LoadFromXml<Report>(filename);
             }

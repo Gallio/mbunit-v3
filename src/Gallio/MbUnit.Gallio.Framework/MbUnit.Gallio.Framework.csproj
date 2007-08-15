@@ -44,10 +44,15 @@
     <Compile Include="Block.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="DescriptionAttribute.cs" />
+    <Compile Include="KeyedPairwiseAssertion.cs" />
+    <Compile Include="Pair.cs" />
+    <Compile Include="PairwiseAssertion.cs" />
+    <Compile Include="Relation.cs" />
     <Compile Include="Exceptions\AssertionException.cs" />
     <Compile Include="ExpectedExceptionAttribute.cs" />
     <Compile Include="IAssemblyResolver.cs" />
     <Compile Include="ImportanceAttribute.cs" />
+    <Compile Include="InterimAssert.cs" />
     <Compile Include="Kernel\Attributes\AssemblyDecoratorPatternAttribute.cs" />
     <Compile Include="Kernel\Attributes\AssemblyPatternAttribute.cs" />
     <Compile Include="Kernel\Attributes\ConditionPatternAttribute.cs" />

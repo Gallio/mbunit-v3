@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseUnitTest.cs" />
+    <Compile Include="FrameworkAssert.cs" />
     <Compile Include="Kernel\Filters\AndFilterTest.cs" />
     <Compile Include="Kernel\Filters\AnyFilterTest.cs" />
     <Compile Include="Kernel\Filters\AssemblyFilterTest.cs" />
