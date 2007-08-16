@@ -15,6 +15,7 @@
 
 using System;
 using MbUnit.Core.Harness;
+using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Serialization;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework.Kernel.Events;

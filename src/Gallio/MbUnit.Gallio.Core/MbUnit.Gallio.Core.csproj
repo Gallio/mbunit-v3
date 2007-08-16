@@ -61,10 +61,13 @@
     <Compile Include="Reporting\Report.cs" />
     <Compile Include="Reporting\PackageRun.cs" />
     <Compile Include="Reporting\PackageRunStatistics.cs" />
+    <Compile Include="Reporting\ReportUtils.cs" />
     <Compile Include="Reporting\TestRun.cs" />
+    <Compile Include="Reporting\XmlReportFormatter.cs" />
     <Compile Include="Runner\FilterParser.cs" />
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
     <Compile Include="Runner\RunnerProgressMonitor.cs" />
+    <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Utilities\VisualStudioDebugHelper.cs" />
     <Compile Include="Harness\AssemblyAddedEventArgs.cs" />
     <Compile Include="Harness\DefaultTestHarness.cs" />
@@ -112,7 +115,6 @@
     <Compile Include="Reporting\ExecutionLogAttachmentEncoding.cs" />
     <Compile Include="Reporting\ExecutionLog.cs" />
     <Compile Include="Reporting\ExecutionLogAttachment.cs" />
-    <Compile Include="Reporting\ExecutionLogAttachmentSerializer.cs" />
     <Compile Include="Reporting\ExecutionLogStreamBodyTag.cs" />
     <Compile Include="Reporting\ExecutionLogStreamContainerTag.cs" />
     <Compile Include="Reporting\ExecutionLogStreamEmbedTag.cs" />

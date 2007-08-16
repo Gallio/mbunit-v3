@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using MbUnit.Framework.Kernel.Events;
 
@@ -35,6 +36,7 @@ namespace MbUnit.Core.Reporting
         /// </summary>
         /// <param name="name">The name of the report formatter, matched case-insensitively</param>
         /// <returns>The report formatter, or null if none exist with the specified name</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
         IReportFormatter GetFormatter(string name);
 
         /// <summary>
@@ -44,13 +46,14 @@ namespace MbUnit.Core.Reporting
         /// <seealso cref="IReportFormatter.Format"/> for important remarks.
         /// <param name="formatterName">The formatter name</param>
         /// <param name="report">The report to format</param>
-        /// <param name="outputFilename">The name of the file to write including its extension</param>
+        /// <param name="filename">The name of the file to write including its extension</param>
         /// <param name="options">Custom options for the report formatter</param>
+        /// <param name="filesWritten">If not null, the files written during the operation are appended to this list</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if any of the arguments are null</exception>
-        /// <returns>The complete list of files that were written</returns>
-        IList<string> Format(string formatterName, Report report, string outputFilename,
-            Dictionary<string, string> options, IProgressMonitor progressMonitor);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterName"/>, <paramref name="report"/>,
+        /// <paramref name="filename"/>, <paramref name="options"/> or <paramref name="progressMonitor"/> is null</exception>
+        void Format(string formatterName, Report report, string filename,
+            NameValueCollection options, IList<string> filesWritten, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Saves the report as XML to the specified file.

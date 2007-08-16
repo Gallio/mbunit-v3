@@ -238,5 +238,12 @@ namespace MbUnit.Framework.Kernel.Events
         /// <exception cref="InvalidOperationException">Thrown if the task is not running
         /// or if there is no current subtask</exception>
         void EndSubTask();
+
+        /// <summary>
+        /// Throws an <see cref="OperationCanceledException" /> if the operation
+        /// has been canceled.
+        /// </summary>
+        /// <exception cref="OperationCanceledException">Thrown if <see cref="IsCanceled"/> is true</exception>
+        void ThrowIfCanceled();
 	}
 }

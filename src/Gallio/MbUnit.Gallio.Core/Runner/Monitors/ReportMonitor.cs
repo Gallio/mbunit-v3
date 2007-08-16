@@ -126,6 +126,7 @@ namespace MbUnit.Core.Runner.Monitors
                 switch (e.EventType)
                 {
                     case TestLifecycleEventType.Start:
+                        report.PackageRun.TestRuns.Add(runData.Run);
                         runData.Run.StartTime = DateTime.Now;
                         break;
 

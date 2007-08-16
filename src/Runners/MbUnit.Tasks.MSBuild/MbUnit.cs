@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Core.Runner;
 using MbUnit.Framework.Kernel.Filters;
@@ -30,9 +31,9 @@ namespace MbUnit.Tasks.MSBuild
     {
         #region Private Members
 
-        private string[] assemblies;
-        private string[] pluginDirectories;
-        private string[] hintDirectories;
+        private TaskItem[] assemblies;
+        private TaskItem[] pluginDirectories;
+        private TaskItem[] hintDirectories;
         private string filter;
         private string[] reportTypes = new string[] { "html" };
         private string reportFileNameFormat = "mbunit-result-{0}{1}";
@@ -48,7 +49,7 @@ namespace MbUnit.Tasks.MSBuild
         /// The list of test assemblies to execute. This is required.
         /// </summary>
         [Required]
-        public string[] Assemblies
+        public TaskItem[] Assemblies
         {
             get { return assemblies; }
             set { assemblies = value; }
@@ -57,7 +58,7 @@ namespace MbUnit.Tasks.MSBuild
         /// <summary>
         /// The list of directories used for loading assemblies and other dependent resources.
         /// </summary>
-        public string[] HintDirectories
+        public TaskItem[] HintDirectories
         {
             get { return hintDirectories; }
             set { hintDirectories = value; }
@@ -66,7 +67,7 @@ namespace MbUnit.Tasks.MSBuild
         /// <summary>
         ///  Additional MbUnit plugin directories to search recursively.
         /// </summary>
-        public string[] PluginDirectories
+        public TaskItem[] PluginDirectories
         {
             get { return pluginDirectories; }
             set { pluginDirectories = value; }
@@ -162,10 +163,12 @@ namespace MbUnit.Tasks.MSBuild
                 new AnyFilter<ITest>()
                 ))
             {
-                runner.AddAssemblyFiles(Assemblies);
-                runner.AddHintDirectories(hintDirectories);
-                runner.AddPluginDirectories(pluginDirectories);
+                AddAllItemSpecs(runner.Package.AssemblyFiles, assemblies);
+                AddAllItemSpecs(runner.Package.HintDirectories, hintDirectories);
+                AddAllItemSpecs(runner.RuntimeSetup.PluginDirectories, pluginDirectories);
+
                 ExitCode = runner.Run();
+
                 //TODO: Maybe count ResultCode.NoTests as sucess too? 
                 if (ExitCode == ResultCode.Success || IgnoreFailures)
                     return true;
@@ -179,6 +182,12 @@ namespace MbUnit.Tasks.MSBuild
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Log.LogMessage(String.Format("MbUnit MSBuild Task - Version {0}.{1} build {2}",
                                          appVersion.Major, appVersion.Minor, appVersion.Build));
+        }
+
+        private static void AddAllItemSpecs(IList<string> collection, IList<TaskItem> items)
+        {
+            foreach (TaskItem item in items)
+                collection.Add(item.ItemSpec);
         }
         
         #endregion

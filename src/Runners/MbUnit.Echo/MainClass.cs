@@ -16,10 +16,10 @@
 using System;
 using System.Reflection;
 using Castle.Core.Logging;
+using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Echo
@@ -27,10 +27,6 @@ namespace MbUnit.Echo
     /// <summary>
     /// The main process.
     /// </summary>
-    /// <todo author="jeff">
-    /// Cancelation should be handled more intelligently.  For example, if the user
-    /// cancels the test run, we should still display summary results.
-    /// </todo>
     public sealed class MainClass : IDisposable
     {
         private string applicationTitle;
@@ -96,11 +92,19 @@ namespace MbUnit.Echo
                 arguments.GetFilter()
                 ))
             {
-                testRunnerHelper.TemplateModelPersister = SaveTemplateTree;
-                testRunnerHelper.TestModelPersister = SaveTestTree;
-                testRunnerHelper.AddPluginDirectories(arguments.PluginDirectories);
-                testRunnerHelper.AddHintDirectories(arguments.HintDirectories);
-                testRunnerHelper.AddAssemblyFiles(arguments.Assemblies);
+                testRunnerHelper.Package.EnableShadowCopy = arguments.ShadowCopyFiles;
+                testRunnerHelper.Package.ApplicationBase = arguments.AppBaseDirectory;
+                testRunnerHelper.Package.AssemblyFiles.AddRange(arguments.Assemblies);
+                testRunnerHelper.Package.HintDirectories.AddRange(arguments.HintDirectories);
+
+                testRunnerHelper.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
+
+                testRunnerHelper.ReportDirectory = arguments.ReportDirectory;
+                testRunnerHelper.ReportNameFormat = arguments.ReportNameFormat;
+                testRunnerHelper.ReportFormats.AddRange(arguments.ReportTypes);
+                testRunnerHelper.TemplateModelFilename = arguments.SaveTemplateTree;
+                testRunnerHelper.TestModelFilename = arguments.SaveTestTree;
+
                 return testRunnerHelper.Run();
             }
         }
@@ -190,23 +194,18 @@ namespace MbUnit.Echo
             Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine(CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments)));
-        }
 
-        private void SaveTemplateTree(TemplateModel templateModel, IProgressMonitor progressMonitor)
-        {
-            if (arguments.SaveTemplateTree != null)
+            // Print out options related to the currently available set of plugins.
+            RuntimeSetup setup = new RuntimeSetup();
+            if (arguments.PluginDirectories != null)
+                setup.PluginDirectories.AddRange(arguments.PluginDirectories);
+            using (AutoRunner runner = AutoRunner.CreateRunner(setup))
             {
-                progressMonitor.BeginTask("Saving template tree to: " + arguments.SaveTemplateTree + ".", 1);
-                SerializationUtils.SaveToXml(templateModel, arguments.SaveTemplateTree);
-            }
-        }
+                IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
 
-        private void SaveTestTree(TestModel testModel, IProgressMonitor progressMonitor)
-        {
-            if (arguments.SaveTestTree != null)
-            {
-                progressMonitor.BeginTask("Saving test tree to: " + arguments.SaveTestTree + ".", 1);
-                SerializationUtils.SaveToXml(testModel, arguments.SaveTestTree);
+                Console.WriteLine();
+                Console.WriteLine("Supported report types: {0}", 
+                    string.Join(",", ListUtils.CopyAllToArray(reportManager.GetFormatterNames())));
             }
         }
 

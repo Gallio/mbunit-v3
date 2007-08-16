@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using MbUnit.Framework.Kernel.Events;
 
@@ -33,6 +34,7 @@ namespace MbUnit.Core.Reporting
 
         /// <summary>
         /// Gets the preferred extension used by the formatter to save its reports.
+        /// eg. "xml".
         /// </summary>
         string PreferredExtension { get; }
 
@@ -42,18 +44,18 @@ namespace MbUnit.Core.Reporting
         /// </summary>
         /// <remarks>
         /// <para>
-        /// By convention the <paramref name="outputFilename"/> always refers to the
+        /// By convention the <paramref name="filename"/> always refers to the
         /// primary file written by the report formatter including its extension.
         /// Auxiliary resources may be written to the same directory in files with the same
-        /// base name as <paramref name="outputFilename"/> but with different extensions.
+        /// base name as <paramref name="filename"/> but with different extensions.
         /// If there are many auxiliary resources (such as linked images and execution log attachments)
         /// then they should be created in a directory with the same base name as
-        /// <paramref name="outputFilename"/>.
+        /// <paramref name="filename"/>.
         /// </para>
         /// <para>
         /// Example layout:
         /// <list type="bullet">
-        /// <item>Reports\IntegrationTests.html (the value of <paramref name="outputFilename"/></item>
+        /// <item>Reports\IntegrationTests.html (the value of <paramref name="filename"/></item>
         /// <item>Reports\IntegrationTests.css (an associated file, could also be put in the IntegrationTests folder)</item>
         /// <item>Reports\IntegrationTests\TestIcon.png (an image used in the report)</item>
         /// <item>Reports\IntegrationTests\FixtureIcon.png (another image used in the report)</item>
@@ -63,11 +65,11 @@ namespace MbUnit.Core.Reporting
         /// </para>
         /// </remarks>
         /// <param name="report">The report to format</param>
-        /// <param name="outputFilename">The name of the file to write including its extension</param>
+        /// <param name="filename">The name of the file to write including its extension</param>
         /// <param name="options">Custom options for the report formatter</param>
+        /// <param name="filesWritten">If not null, the files written during the operation are appended to this list</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <returns>The complete list of files that were written</returns>
-        IList<string> Format(Report report, string outputFilename, Dictionary<string, string> options,
-            IProgressMonitor progressMonitor);
+        void Format(Report report, string filename, NameValueCollection options,
+            IList<string> filesWritten, IProgressMonitor progressMonitor);
     }
 }

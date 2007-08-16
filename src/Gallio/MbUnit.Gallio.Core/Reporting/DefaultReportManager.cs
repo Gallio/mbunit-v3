@@ -15,9 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using Castle.Core;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Utilities;
+using MbUnit.Framework.Services.Runtime;
 
 namespace MbUnit.Core.Reporting
 {
@@ -27,45 +29,79 @@ namespace MbUnit.Core.Reporting
     [Singleton]
     public class DefaultReportManager : IReportManager
     {
+        private IRuntime runtime;
+
+        /// <summary>
+        /// Creates a report manager.
+        /// </summary>
+        /// <param name="runtime">The runtime</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
+        public DefaultReportManager(IRuntime runtime)
+        {
+            if (runtime == null)
+                throw new ArgumentNullException("runtime");
+
+            this.runtime = runtime;
+        }
+
         /// <inheritdoc />
         public IList<string> GetFormatterNames()
         {
-            throw new NotImplementedException();
+            List<string> names = new List<string>();
+            foreach (IReportFormatter formatter in runtime.ResolveAll<IReportFormatter>())
+            {
+                names.Add(formatter.Name);
+            }
+
+            return names;
         }
 
         /// <inheritdoc />
         public IReportFormatter GetFormatter(string name)
         {
-            throw new NotImplementedException();
+            if (name == null)
+                throw new ArgumentNullException("name");
+
+            foreach (IReportFormatter formatter in runtime.ResolveAll<IReportFormatter>())
+            {
+                if (String.Equals(name, formatter.Name, StringComparison.CurrentCultureIgnoreCase))
+                    return formatter;
+            }
+
+            return null;
         }
 
         /// <inheritdoc />
-        public IList<string> Format(string formatterName, Report report, string outputFilename,
-                                    Dictionary<string, string> options, IProgressMonitor progressMonitor)
+        public void Format(string formatterName, Report report, string filename,
+            NameValueCollection options, IList<string> filesWritten, IProgressMonitor progressMonitor)
         {
-            throw new NotImplementedException();
+            if (formatterName == null)
+                throw new ArgumentNullException("formatterName");
+            if (report == null)
+                throw new ArgumentNullException("report");
+            if (filename == null)
+                throw new ArgumentNullException("filename");
+            if (options == null)
+                throw new ArgumentNullException("options");
+            if (filesWritten == null)
+                throw new ArgumentNullException("filesWritten");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+
+            IReportFormatter formatter = GetFormatter(formatterName);
+            formatter.Format(report, filename, options, filesWritten, progressMonitor);
         }
 
         /// <inheritdoc />
         public void SaveReport(Report report, string filename, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
-            {
-                progressMonitor.BeginTask("Saving report to: " + filename + ".", 1);
-
-                SerializationUtils.SaveToXml(report, filename);
-            }
+            ReportUtils.SaveReport(report, filename, true, false, null, progressMonitor);
         }
 
         /// <inheritdoc />
         public Report LoadReport(string filename, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
-            {
-                progressMonitor.BeginTask("Loading report from: " + filename + ".", 1);
-
-                return SerializationUtils.LoadFromXml<Report>(filename);
-            }
+            return ReportUtils.LoadReport(filename, true, progressMonitor);
         }
     }
 }

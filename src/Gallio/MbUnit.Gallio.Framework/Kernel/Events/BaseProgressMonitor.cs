@@ -261,6 +261,13 @@ namespace MbUnit.Framework.Kernel.Events
             OnEndSubTask();
         }
 
+        /// <inheritdoc />
+        public void ThrowIfCanceled()
+        {
+            if (isCanceled)
+                throw new OperationCanceledException("The user canceled the operation.");
+        }
+
         /// <summary>
         /// Notifies that the task has actually been canceled.
         /// If this is the first time <see cref="NotifyCanceled" /> has been called,

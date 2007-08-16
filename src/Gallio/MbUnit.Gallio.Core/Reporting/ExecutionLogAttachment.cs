@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using System.Xml.Serialization;
@@ -34,19 +33,37 @@ namespace MbUnit.Core.Reporting
     /// </para>
     /// </summary>
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class ExecutionLogAttachment
+    public class ExecutionLogAttachment : IAttachmentVisitor
     {
         private string name;
         private string contentType;
         private ExecutionLogAttachmentEncoding encoding;
         private string innerText;
+        private string contentPath;
         private XmlElement[] innerXml;
+        private Attachment contents;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
         protected ExecutionLogAttachment()
         {
+        }
+
+        /// <summary>
+        /// Creates a fully initialized attachment.
+        /// </summary>
+        /// <param name="attachment">The attachment</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
+        public ExecutionLogAttachment(Attachment attachment)
+        {
+            if (attachment == null)
+                throw new ArgumentNullException("attachment");
+
+            this.contents = attachment;
+
+            name = attachment.Name;
+            contentType = attachment.ContentType;
         }
 
         /// <summary>
@@ -71,6 +88,20 @@ namespace MbUnit.Core.Reporting
             this.encoding = encoding;
             this.innerText = innerText;
             this.innerXml = innerXml;
+        }
+
+        /// <summary>
+        /// Gets or sets the deserialized attachment contents.
+        /// </summary>
+        [XmlIgnore]
+        public Attachment Contents
+        {
+            get
+            {
+                EnsureAttachmentDeserialized();
+                return contents;
+            }
+            set { contents = value; }
         }
 
         /// <summary>
@@ -112,8 +143,24 @@ namespace MbUnit.Core.Reporting
         [XmlAttribute("encoding")]
         public ExecutionLogAttachmentEncoding Encoding
         {
-            get { return encoding; }
+            get
+            {
+                EnsureAttachmentSerialized();
+                return encoding;
+            }
             set { encoding = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path of the attachment contents relative to
+        /// the directory that contains the Xml serialized report,
+        /// or null if the content is embedded.
+        /// </summary>
+        [XmlAttribute("contentPath")]
+        public string ContentPath
+        {
+            get { return contentPath; }
+            set { contentPath = value; }
         }
 
         /// <summary>
@@ -122,7 +169,11 @@ namespace MbUnit.Core.Reporting
         [XmlText]
         public string InnerText
         {
-            get { return innerText; }
+            get
+            {
+                EnsureAttachmentSerialized();
+                return innerText;
+            }
             set { innerText = value; }
         }
 
@@ -132,62 +183,85 @@ namespace MbUnit.Core.Reporting
         [XmlAnyElement]
         public XmlElement[] InnerXml
         {
-            get { return innerXml; }
+            get
+            {
+                EnsureAttachmentSerialized();
+                return innerXml;
+            }
             set { innerXml = value; }
         }
 
-        /// <summary>
-        /// Serializes the attachment to Xml.
-        /// </summary>
-        /// <returns>The Xml-serializable attachment</returns>
-        public static ExecutionLogAttachment XmlSerialize(Attachment attachment)
+        private void EnsureAttachmentSerialized()
         {
-            ExecutionLogAttachmentSerializer serializer = new ExecutionLogAttachmentSerializer();
-            attachment.Accept(serializer);
-            return serializer.SerializedAttachment;
+            if (innerXml == null && innerText == null)
+            {
+                if (contents == null)
+                    throw new InvalidOperationException("The attachment property is not initialized so its contents cannot be serialized.");
+
+                contents.Accept(this);
+            }
         }
 
-        /// <summary>
-        /// Deserializes the attachment from Xml.
-        /// </summary>
-        /// <param name="attachment">The Xml execution log attachment</param>
-        /// <returns>The deserialized form</returns>
-        public static Attachment XmlDeserialize(ExecutionLogAttachment attachment)
+        private void EnsureAttachmentDeserialized()
         {
-            if (attachment.Name == null)
-                throw new XmlException("The attachment is missing its name attribute.");
-            if (attachment.ContentType == null)
-                throw new XmlException("The attachment is missing its contentType attribute.");
-
-            switch (attachment.Encoding)
+            if (contents == null)
             {
-                case ExecutionLogAttachmentEncoding.Xml:
-                    {
-                        if (attachment.InnerXml == null || attachment.InnerXml.Length == 0)
-                            throw new XmlException("The xml attachment is missing its inner Xml content.");
+                if (name == null)
+                    throw new InvalidOperationException("The attachment is missing its name attribute.");
+                if (contentType == null)
+                    throw new InvalidOperationException("The attachment is missing its contentType attribute.");
+                if (innerText == null && innerXml == null)
+                    throw new InvalidOperationException("The attachment is missing its text or xml contents.");
 
-                        return new XmlAttachment(attachment.Name, attachment.ContentType, attachment.InnerXml[0]);
-                    }
+                switch (encoding)
+                {
+                    case ExecutionLogAttachmentEncoding.Xml:
+                        if (innerXml == null || innerXml.Length == 0)
+                            throw new XmlException("The xml encoded attachment is missing its xml contents.");
 
-                case ExecutionLogAttachmentEncoding.Text:
-                    {
-                        if (attachment.InnerText == null)
-                            throw new XmlException("The text attachment is missing its inner text content.");
+                        contents = new XmlAttachment(name, contentType, innerXml[0]);
+                        break;
 
-                        return new TextAttachment(attachment.Name, attachment.ContentType, attachment.InnerText);
-                    }
+                    case ExecutionLogAttachmentEncoding.Text:
+                        if (innerText == null)
+                            throw new XmlException("The text encoded attachment is missing its text contents.");
 
-                case ExecutionLogAttachmentEncoding.Base64:
-                    {
-                        if (attachment.InnerText == null)
-                            throw new XmlException("The base64 attachment is missing its inner text content.");
+                        contents = new TextAttachment(name, contentType, innerText);
+                        break;
 
-                        return new BinaryAttachment(attachment.Name, attachment.ContentType, Convert.FromBase64String(attachment.InnerText));
-                    }
+                    case ExecutionLogAttachmentEncoding.Base64:
+                        if (innerText == null)
+                            throw new XmlException("The base64 encoded attachment is missing its text contents.");
+
+                        contents = new BinaryAttachment(name, contentType, Convert.FromBase64String(innerText));
+                        break;
+
+                    default:
+                        throw new XmlException(String.Format(CultureInfo.CurrentCulture,
+                            "Unrecognized Xml content encoding '{0}'.", encoding));
+                }
             }
+        }
 
-            throw new XmlException(String.Format(CultureInfo.CurrentCulture,
-                "Unrecognized Xml content encoding '{0}'.", attachment.Encoding));
+        void IAttachmentVisitor.VisitTextAttachment(TextAttachment attachment)
+        {
+            encoding = ExecutionLogAttachmentEncoding.Text;
+            innerText = attachment.Text;
+            innerXml = null;
+        }
+
+        void IAttachmentVisitor.VisitXmlAttachment(XmlAttachment attachment)
+        {
+            encoding = ExecutionLogAttachmentEncoding.Xml;
+            innerText = null;
+            innerXml = new XmlElement[] { attachment.XmlElement };
+        }
+
+        void IAttachmentVisitor.VisitBinaryAttachment(BinaryAttachment attachment)
+        {
+            encoding = ExecutionLogAttachmentEncoding.Base64;
+            innerText = Convert.ToBase64String(attachment.Data, Base64FormattingOptions.None);
+            innerXml = null;
         }
     }
 }

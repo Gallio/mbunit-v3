@@ -24,6 +24,14 @@
                  service="MbUnit.Core.Runner.ITestDomainFactory, MbUnit.Gallio.Core"
                  type="MbUnit.Core.Runner.IsolatedTestDomainFactory, MbUnit.Gallio.Core" />
 
+      <component id="Core.ReportManager"
+                 service="MbUnit.Core.Reporting.IReportManager, MbUnit.Gallio.Core"
+                 type="MbUnit.Core.Reporting.DefaultReportManager, MbUnit.Gallio.Core" />
+      
+      <component id="Core.XmlReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio.Core"
+                 type="MbUnit.Core.Reporting.XmlReportFormatter, MbUnit.Gallio.Core" />
+
       <component id="Core.AssertionService"
                  service="MbUnit.Framework.Services.Assertions.IAssertionService, MbUnit.Gallio.Framework" 
                  type="MbUnit.Core.Services.Assertions.DefaultAssertionService, MbUnit.Gallio.Core" />

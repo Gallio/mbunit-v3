@@ -20,8 +20,10 @@ using System.IO;
 using System.Diagnostics;
 using Castle.Core.Logging;
 using MbUnit.Core.Harness;
+using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
 using MbUnit.Core.Services.Runtime;
+using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Events;
@@ -35,6 +37,9 @@ namespace MbUnit.Core.Runner
     /// way. This class tries to simplify this process by implementing a common
     /// pattern.
     /// </summary>
+    /// <todo>
+    /// More validation of arguments up front.  Particularly report formats.
+    /// </todo>
     public class TestRunnerHelper : IDisposable
     {
         #region Private Members
@@ -44,8 +49,15 @@ namespace MbUnit.Core.Runner
         private readonly RuntimeSetup runtimeSetup;
         private readonly LevelFilteredLogger logger;
         private readonly Filter<ITest> filter;
-        private Persister<TemplateModel> templateModelPersister;
-        private Persister<TestModel> testModelPersister;
+
+        private string templateModelFilename;
+        private string testModelFilename;
+
+        private string reportDirectory = "";
+        private string reportNameFormat = "mbunit-{0}-{1}";
+        private List<string> reportFormats;
+        private NameValueCollection reportFormatOptions;
+
         private Stopwatch stopWatch;
 
         #endregion
@@ -74,6 +86,9 @@ namespace MbUnit.Core.Runner
             this.progressMonitorCreator = progressMonitorCreator;
             this.filter = filter;
             this.logger = logger;
+
+            reportFormats = new List<string>();
+            reportFormatOptions = new NameValueCollection();
         }
 
         /// <summary>
@@ -99,11 +114,6 @@ namespace MbUnit.Core.Runner
         #region Public Delegates
 
         /// <summary>
-        /// Defines a method capable of persisting a portion of the intermediate results.
-        /// </summary>
-        public delegate void Persister<T>(T data, IProgressMonitor progressMonitor);
-
-        /// <summary>
         /// Defines a method that is able to create IProgressMonitor objects
         /// </summary>
         /// <returns></returns>
@@ -114,21 +124,76 @@ namespace MbUnit.Core.Runner
         #region Public Properties
 
         /// <summary>
-        /// 
+        /// Gets the test package.
         /// </summary>
-        public Persister<TemplateModel> TemplateModelPersister
+        public TestPackage Package
         {
-            get { return templateModelPersister; }
-            set { templateModelPersister = value; }
+            get { return package; }
         }
 
         /// <summary>
-        /// 
+        /// Gets the runtime setup.
         /// </summary>
-        public Persister<TestModel> TestModelPersister
+        public RuntimeSetup RuntimeSetup
         {
-            get { return testModelPersister; }
-            set { testModelPersister = value; }
+            get { return runtimeSetup; }
+        }
+
+        /// <summary>
+        /// The name of a file to which the template model should be persisted,
+        /// or null if none.
+        /// </summary>
+        public string TemplateModelFilename
+        {
+            get { return templateModelFilename; }
+            set { templateModelFilename = value; }
+        }
+
+        /// <summary>
+        /// The name of a file to which the test model should be persisted,
+        /// or null if none.
+        /// </summary>
+        public string TestModelFilename
+        {
+            get { return testModelFilename; }
+            set { testModelFilename = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the report directory.
+        /// Defaults to "".
+        /// </summary>
+        public string ReportDirectory
+        {
+            get { return reportDirectory; }
+            set { reportDirectory = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the report name format.
+        /// {0} is replaced by the date, {1} by the time.
+        /// Defaults to "mbunit-{0}-{1}".
+        /// </summary>
+        public string ReportNameFormat
+        {
+            get { return reportNameFormat; }
+            set { reportNameFormat = value; }
+        }
+
+        /// <summary>
+        /// Gets the list of report formats to generate.
+        /// </summary>
+        public List<string> ReportFormats
+        {
+            get { return reportFormats; }
+        }
+
+        /// <summary>
+        /// Gets the options for the report formatters.
+        /// </summary>
+        public NameValueCollection ReportFormatOptions
+        {
+            get { return reportFormatOptions; }
         }
 
         #endregion
@@ -141,14 +206,19 @@ namespace MbUnit.Core.Runner
         /// <returns>An integer representing the result of the execution.</returns>
         public int Run()
         {
+            Canonicalize();
+
             using (AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup))
             {
-                DisplayConfiguration();
+                IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
 
+                DisplayConfiguration();
                 CreateStopWatch();
 
-                VerifyAssemblies();
+                if (!Validate(reportManager))
+                    return ResultCode.InvalidArguments;
 
+                VerifyAssemblies();
                 if (!HasTestAssemblies())
                     return ResultCode.NoTests;
 
@@ -162,35 +232,85 @@ namespace MbUnit.Core.Runner
                 ReportMonitor reportMonitor = new ReportMonitor();
                 reportMonitor.Attach(runner);
 
-                ApplyFilter(runner);
-
-                if (!LoadProject(runner))
+                // Run the initial phases.
+                try
+                {
+                    ApplyFilter(runner);
+                    LoadProject(runner);
+                    BuildTemplates(runner);
+                    BuildTests(runner);
+                    PersistTemplateTree(runner);
+                    PersistTestTree(runner);
+                }
+                catch (OperationCanceledException)
+                {
                     return ResultCode.Canceled;
+                }
+                finally
+                {
+                    ConsoleCancelHandler.IsCanceled = false;
+                }
 
-                if (!BuildTemplates(runner))
-                    return ResultCode.Canceled;
+                // Run the tests.
+                bool runCanceled = false;
+                try
+                {
+                    RunTests(runner);
+                }
+                catch (OperationCanceledException)
+                {
+                    runCanceled = true;
+                }
+                finally
+                {
+                    ConsoleCancelHandler.IsCanceled = false;
+                }
 
-                if (!BuildTests(runner))
-                    return ResultCode.Canceled;
-
-                if (!PersistTemplateTree(runner))
-                    return ResultCode.Canceled;
-
-                if (!PersistTestTree(runner))
-                    return ResultCode.Canceled;
-
-                if (!RunTests(runner))
-                    return ResultCode.Canceled;
-
-                if (debugWriter != null)
-                    logger.Debug(debugWriter.ToString());
+                // Generate reports even if the test run is canceled, unless this step
+                // also gets canceled.
+                try
+                {
+                    GenerateReports(reportManager, reportMonitor.Report);
+                }
+                catch (OperationCanceledException)
+                {
+                    runCanceled = true;
+                }
+                finally
+                {
+                    ConsoleCancelHandler.IsCanceled = false;
+                }
 
                 logger.Info(reportMonitor.Report.PackageRun.Statistics.FormatTestCaseResultSummary());
-
                 DisposeStopWatch();
 
-                return ResultCode.Success;
+                // Make sure we write out debug log messages.
+                if (! runCanceled && debugWriter != null)
+                    logger.Debug(debugWriter.ToString());
+
+                return runCanceled ? ResultCode.Canceled : ResultCode.Success;
             }
+        }
+
+        private bool Validate(IReportManager reportManager)
+        {
+            foreach (string reportFormat in reportFormats)
+            {
+                IReportFormatter formatter = reportManager.GetFormatter(reportFormat);
+                if (formatter == null)
+                {
+                    logger.ErrorFormat("Unrecognized report format: '{0}'.", reportFormat);
+                    return false;
+                }
+            }
+
+            if (reportNameFormat.Length == 0)
+            {
+                logger.ErrorFormat("Report name format must not be empty.");
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -241,244 +361,31 @@ namespace MbUnit.Core.Runner
             }
         }
 
-        #region Utility Methods
-
-        /// <summary>
-        /// Adds a plugin directory
-        /// </summary>
-        /// <param name="pluginDirectory"></param>
-        public void AddPluginDirectory(string pluginDirectory)
-        {
-            AddPluginDirectory(pluginDirectory, true);
-        }
-
-        /// <summary>
-        /// Adds a plugin directory and optionally resolves the full path.
-        /// </summary>
-        /// <param name="pluginDirectory">The plugin directory to add</param>
-        /// <param name="resolvePath">A value indicating whether resolve the full path or not.</param>
-        public void AddPluginDirectory(string pluginDirectory, bool resolvePath)
-        {
-            string path = pluginDirectory;
-            if (resolvePath)
-            {
-                path = Path.GetFullPath(path);
-            }
-            runtimeSetup.PluginDirectories.Add(path);
-        }
-
-        /// <summary>
-        /// Adds zero or more plugin directories resolving the full path for each of them.
-        /// </summary>
-        /// <param name="pluginDirectories">A list of zero or more directories</param>
-        /// <remarks>The pluginDirectories parameter can be null.
-        /// </remarks>
-        public void AddPluginDirectories(IEnumerable<string> pluginDirectories)
-        {
-            AddPluginDirectories(pluginDirectories, true);
-        }
-
-        /// <summary>
-        /// Adds zero or more plugin directories resolving the full path for each of them.
-        /// </summary>
-        /// <param name="pluginDirectories">A list of zero or more directories</param>
-        /// <remarks>The pluginDirectories parameter can be null.
-        /// </remarks>
-        public void AddPluginDirectories(StringCollection pluginDirectories)
-        {
-            AddPluginDirectories(pluginDirectories, true);
-        }
-
-        /// <summary>
-        /// Adds zero or more plugin directories and optionally resolves the full path
-        /// for each of them.
-        /// </summary>
-        /// <param name="pluginDirectories">A collection of zero or more directories.</param>
-        /// <param name="resolvePaths">A value indicating whether resolve the full path or not.</param>
-        /// <remarks>The pluginDirectories parameter can be null.
-        /// </remarks>
-        public void AddPluginDirectories(IEnumerable<string> pluginDirectories, bool resolvePaths)
-        {
-            if (pluginDirectories != null)
-            {
-                foreach (string pluginDirectory in pluginDirectories)
-                {
-                    AddPluginDirectory(pluginDirectory, resolvePaths);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds zero or more plugin directories and optionally resolves the full path
-        /// for each of them.
-        /// </summary>
-        /// <param name="pluginDirectories">A collection of zero or more directories.</param>
-        /// <param name="resolvePaths">A value indicating whether resolve the full path or not.</param>
-        /// <remarks>The pluginDirectories parameter can be null.
-        /// </remarks>
-        public void AddPluginDirectories(StringCollection pluginDirectories, bool resolvePaths)
-        {
-            if (pluginDirectories != null)
-            {
-                foreach (string pluginDirectory in pluginDirectories)
-                {
-                    AddPluginDirectory(pluginDirectory, resolvePaths);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hintDirectory"></param>
-        public void AddHintDirectory(string hintDirectory)
-        {
-            AddHintDirectory(hintDirectory, true);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hintDirectory"></param>
-        /// <param name="resolvePath"></param>
-        public void AddHintDirectory(string hintDirectory, bool resolvePath)
-        {
-            string path = hintDirectory;
-            if (resolvePath)
-            {
-                path = Path.GetFullPath(path);
-            }
-            package.HintDirectories.Add(path);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hintDirectories"></param>
-        public void AddHintDirectories(IEnumerable<string> hintDirectories)
-        {
-            AddHintDirectories(hintDirectories, true);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hintDirectories"></param>
-        public void AddHintDirectories(StringCollection hintDirectories)
-        {
-            AddHintDirectories(hintDirectories, true);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hintDirectories"></param>
-        /// <param name="resolvePaths"></param>
-        public void AddHintDirectories(IEnumerable<string> hintDirectories, bool resolvePaths)
-        {
-            if (hintDirectories != null)
-            {
-                foreach (string hintDirectory in hintDirectories)
-                {
-                    AddHintDirectory(hintDirectory, resolvePaths);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hintDirectories"></param>
-        /// <param name="resolvePaths"></param>
-        public void AddHintDirectories(StringCollection hintDirectories, bool resolvePaths)
-        {
-            foreach (string hintDirectory in hintDirectories)
-            {
-                AddHintDirectory(hintDirectory, resolvePaths);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="assemblyFile"></param>
-        public void AddAssemblyFile(string assemblyFile)
-        {
-            AddAssemblyFile(assemblyFile, true);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="assemblyFile"></param>
-        /// <param name="resolvePath"></param>
-        public void AddAssemblyFile(string assemblyFile, bool resolvePath)
-        {
-            string path = assemblyFile;
-            if (resolvePath)
-            {
-                path = Path.GetFullPath(path);
-            }
-            package.AssemblyFiles.Add(path);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="assemblyFiles"></param>
-        public void AddAssemblyFiles(IEnumerable<string> assemblyFiles)
-        {
-            AddAssemblyFiles(assemblyFiles, true);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="assemblyFiles"></param>
-        public void AddAssemblyFiles(StringCollection assemblyFiles)
-        {
-            AddAssemblyFiles(assemblyFiles, true);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="assemblyFiles"></param>
-        /// <param name="resolvePaths"></param>
-        public void AddAssemblyFiles(IEnumerable<string> assemblyFiles, bool resolvePaths)
-        {
-            if (assemblyFiles == null)
-            {
-                throw new ArgumentNullException("assemblyFiles");
-            }
-            foreach (string assemblyFile in assemblyFiles)
-            {
-                AddAssemblyFile(assemblyFile, resolvePaths);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="assemblyFiles"></param>
-        /// <param name="resolvePaths"></param>
-        public void AddAssemblyFiles(StringCollection assemblyFiles, bool resolvePaths)
-        {
-            if (assemblyFiles == null)
-            {
-                throw new ArgumentNullException("assemblyFiles");
-            }
-            foreach (string assemblyFile in assemblyFiles)
-            {
-                AddAssemblyFile(assemblyFile, resolvePaths);
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Private Methods
+
+        private void Canonicalize()
+        {
+            package.ApplicationBase = CanonicalizePath(package.ApplicationBase);
+            CanonicalizePaths(package.AssemblyFiles);
+            CanonicalizePaths(package.HintDirectories);
+
+            CanonicalizePaths(runtimeSetup.PluginDirectories);
+        }
+
+        private static string CanonicalizePath(string path)
+        {
+            if (path == "")
+                path = ".";
+            return path == null ? null : Path.GetFullPath(path);
+        }
+
+        private static void CanonicalizePaths(IList<string> paths)
+        {
+            for (int i = 0; i < paths.Count; i++)
+                paths[i] = CanonicalizePath(paths[i]);
+        }
 
         private bool HasTestAssemblies()
         {
@@ -496,76 +403,93 @@ namespace MbUnit.Core.Runner
             runner.TestExecutionOptions.Filter = filter;
         }
 
-        private bool LoadProject(ITestRunner runner)
+        private void LoadProject(ITestRunner runner)
         {
             using (IProgressMonitor progressMonitor = progressMonitorCreator())
             {
+                progressMonitor.ThrowIfCanceled();
                 runner.LoadPackage(progressMonitor, package);
-                if (progressMonitor.IsCanceled)
-                    return false;
             }
-            return true;
         }
 
-        private bool BuildTemplates(ITestRunner runner)
+        private void BuildTemplates(ITestRunner runner)
         {
             using (IProgressMonitor progressMonitor = progressMonitorCreator())
             {
+                progressMonitor.ThrowIfCanceled();
                 runner.BuildTemplates(progressMonitor);
-                if (progressMonitor.IsCanceled)
-                    return false;
             }
-            return true;
         }
 
-        private bool BuildTests(ITestRunner runner)
+        private void BuildTests(ITestRunner runner)
         {
             using (IProgressMonitor progressMonitor = progressMonitorCreator())
             {
+                progressMonitor.ThrowIfCanceled();
                 runner.BuildTests(progressMonitor);
-                if (progressMonitor.IsCanceled)
-                    return false;
             }
-            return true;
         }
 
-        private bool RunTests(ITestRunner runner)
+        private void RunTests(ITestRunner runner)
         {
             using (IProgressMonitor progressMonitor = progressMonitorCreator())
             {
+                progressMonitor.ThrowIfCanceled();
                 runner.Run(progressMonitor);
-                if (progressMonitor.IsCanceled)
-                    return false;
             }
-            return true;
         }
 
-        private bool PersistTemplateTree(ITestRunner runner)
+        private void PersistTemplateTree(ITestRunner runner)
         {
-            if (templateModelPersister != null)
+            if (templateModelFilename != null)
             {
                 using (IProgressMonitor progressMonitor = progressMonitorCreator())
                 {
-                    templateModelPersister(runner.TemplateModel, progressMonitor);
-                    if (progressMonitor.IsCanceled)
-                        return false;
+                    progressMonitor.ThrowIfCanceled();
+                    progressMonitor.BeginTask("Saving template tree.", 1);
+                    progressMonitor.SetStatus(templateModelFilename);
+                    SerializationUtils.SaveToXml(runner.TemplateModel, templateModelFilename);
                 }
             }
-            return true;
         }
 
-        private bool PersistTestTree(ITestRunner runner)
+        private void PersistTestTree(ITestRunner runner)
         {
-            if (testModelPersister != null)
+            if (testModelFilename != null)
             {
                 using (IProgressMonitor progressMonitor = progressMonitorCreator())
                 {
-                    testModelPersister(runner.TestModel, progressMonitor);
-                    if (progressMonitor.IsCanceled)
-                        return false;
+                    progressMonitor.ThrowIfCanceled();
+                    progressMonitor.BeginTask("Saving test tree.", 1);
+                    progressMonitor.SetStatus(testModelFilename);
+                    SerializationUtils.SaveToXml(runner.TestModel, testModelFilename);
                 }
             }
-            return true;
+        }
+
+        private void GenerateReports(IReportManager reportManager, Report report)
+        {
+            foreach (string reportFormat in reportFormats)
+            {
+                IReportFormatter formatter = reportManager.GetFormatter(reportFormat);
+
+                string reportFileName = FileUtils.EncodeFileName(String.Format(reportNameFormat,
+                    report.PackageRun.StartTime.ToShortDateString(),
+                    report.PackageRun.EndTime.ToShortTimeString()));
+                string extension = formatter.PreferredExtension;
+                if (extension.Length != 0)
+                    reportFileName = String.Concat(reportFileName, ".", extension);
+                string reportPath = Path.Combine(reportDirectory, reportFileName);
+
+                using (IProgressMonitor progressMonitor = progressMonitorCreator())
+                {
+                    progressMonitor.ThrowIfCanceled();
+                    progressMonitor.BeginTask("Generating " + reportFormat + " report.", 1);
+
+                    formatter.Format(report, reportPath, reportFormatOptions, null,
+                        new SubProgressMonitor(progressMonitor, 1));
+                }
+            }
         }
 
         private static void CheckRequiredArgument(object argument, string argumentName)

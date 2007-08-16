@@ -84,7 +84,7 @@ namespace MbUnit.Core.Reporting
                 else
                 {
                     attachmentMap.Add(attachment.Name, attachment);
-                    executionLog.Attachments.Add(ExecutionLogAttachment.XmlSerialize(attachment));
+                    executionLog.Attachments.Add(new ExecutionLogAttachment(attachment));
                 }
 
                 if (streamName != null)

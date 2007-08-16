@@ -198,9 +198,11 @@ namespace MbUnit.Tasks.NAnt
 
         private void AddAssemblies(TestRunnerHelper runner)
         {
+
             foreach (FileSet fs in Assemblies)
             {
-                runner.AddAssemblyFiles(fs.FileNames);
+                foreach (string f in fs.FileNames)
+                    runner.Package.AssemblyFiles.Add(f);
             }
         }
 
@@ -210,7 +212,8 @@ namespace MbUnit.Tasks.NAnt
             {
                 foreach (DirSet ds in HintDirectories)
                 {
-                    runner.AddHintDirectories(ds.Includes);
+                    foreach (string d in ds.FileNames)
+                        runner.Package.HintDirectories.Add(d);
                 }
             }
         }
@@ -221,7 +224,8 @@ namespace MbUnit.Tasks.NAnt
             {
                 foreach (DirSet ds in pluginDirectories)
                 {
-                    runner.AddPluginDirectories(ds.Includes);
+                    foreach (string d in ds.FileNames)
+                        runner.RuntimeSetup.PluginDirectories.Add(d);
                 }
             }
         }

@@ -67,7 +67,9 @@ namespace MbUnit.AddIn
                 filter
                 ))
             {
-                testRunnerHelper.AddAssemblyFile(assembly.Location);
+                string location = new Uri(assembly.CodeBase).LocalPath;
+                testRunnerHelper.Package.AssemblyFiles.Add(location);
+
                 int result = testRunnerHelper.Run();
                 return GetTddResult(result);
             }

@@ -33,17 +33,17 @@ namespace MbUnit.Echo
         [DefaultCommandLineArgument(
             CommandLineArgumentType.MultipleUnique,
             LongName = "assemblies",
-            Description = "List of assemblies containing the tests"
+            Description = "List of assemblies containing the tests."
             )]
-        public string[] Assemblies = null;
+        public string[] Assemblies;
 
         [CommandLineArgument(
             CommandLineArgumentType.MultipleUnique,
-            ShortName = "ap",
+            ShortName = "hd",
             LongName = "hint-directories",
             Description = "The list of directories used for loading assemblies and other dependent resources."
             )]
-        public string[] HintDirectories = null;
+        public string[] HintDirectories;
 
         [CommandLineArgument(
             CommandLineArgumentType.MultipleUnique,
@@ -51,34 +51,42 @@ namespace MbUnit.Echo
             LongName = "plugin-directory",
             Description = "Additional MbUnit plugin directories to search recursively"
             )]
-        public string[] PluginDirectories; 
+        public string[] PluginDirectories;
+
+        [CommandLineArgument(
+            CommandLineArgumentType.AtMostOnce,
+            ShortName = "abd",
+            LongName = "application-base-directory",
+            Description = "The application base directory to set during test execution."
+            )]
+        public string AppBaseDirectory = "";
 
         #endregion
 
         #region Report Arguments
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
-             ShortName = "rf",
-             LongName = "report-folder",
-             Description = "Target output folder for the reports"
+             ShortName = "rd",
+             LongName = "report-directory",
+             Description = "Target output directory for the reports"
              )]
-        public String ReportFolder = "";
+        public string ReportDirectory = "";
 
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
              ShortName = "rnf",
              LongName = "report-name-format",
-             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.Default = mbunit-{0}{1}"
+             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}"
              )]
-        public string ReportNameFormat = "mbunit-{0}{1}";
+        public string ReportNameFormat = "mbunit-{0}-{1}";
 
         [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,
              ShortName = "rt",
              LongName = "report-type",
-            Description = "Report types supported: Xml, Html, Text"
+             Description = "Report types to generate.  See below for all supported types."
         )]
-        public ReportType[] ReportTypes = null;
+        public string[] ReportTypes;
 
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
@@ -86,7 +94,7 @@ namespace MbUnit.Echo
              LongName = "show-reports",
             Description = "Show generated reports in a window"
         )]
-        public bool ShowReports = false;
+        public bool ShowReports;
         #endregion
 
         #region Filter Arguments
@@ -97,7 +105,7 @@ namespace MbUnit.Echo
              LongName = "filter-category",
              Description = "Name of the filtered category"
              )]
-        public string[] FilterCategories = null;
+        public string[] FilterCategories;
 
         [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,
@@ -105,7 +113,7 @@ namespace MbUnit.Echo
              LongName = "filter-author",
              Description = "Name of the filtered author name"
              )]
-        public string[] FilterAuthors = null;
+        public string[] FilterAuthors;
 
         [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,
@@ -113,7 +121,7 @@ namespace MbUnit.Echo
              LongName = "filter-type",
              Description = "Name of the filtered type"
              )]
-        public string[] FilterTypes = null;
+        public string[] FilterTypes;
 
         [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,
@@ -121,7 +129,7 @@ namespace MbUnit.Echo
              LongName = "filter-namespace",
              Description = "Name of the filtered namespace"
              )]
-        public string[] FilterNamespaces = null;
+        public string[] FilterNamespaces;
 
         [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,
@@ -129,7 +137,7 @@ namespace MbUnit.Echo
              LongName = "filter-importance",
              Description = "Name of the filtered importance"
              )]
-        public TestImportance[] FilterImportances = null;
+        public TestImportance[] FilterImportances;
 
         #endregion
 
@@ -141,7 +149,7 @@ namespace MbUnit.Echo
              LongName = "help",
              Description = "Display this help text"
              )]
-        public bool Help = false;
+        public bool Help;
 
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
@@ -171,7 +179,7 @@ namespace MbUnit.Echo
              LongName = "shadow-copy-files",
              Description = "Enabled/disable shadow copying of the assemblies"
              )]
-        public bool ShadowCopyFiles = false;
+        public bool ShadowCopyFiles;
 
         #endregion
 
@@ -195,10 +203,9 @@ namespace MbUnit.Echo
                 sw.WriteLine("\t{0}", pluginDirectory);
             }
 
-            sw.WriteLine("Report folder: {0}", this.ReportFolder);
+            sw.WriteLine("Report folder: {0}", this.ReportDirectory);
             sw.WriteLine("Report Name Format: {0}", this.ReportNameFormat);
-            sw.WriteLine("Report types: {0}", String.Join(", ",
-                ListUtils.ConvertAllToArray<ReportType, string>(this.ReportTypes, delegate(ReportType reportType) { return reportType.ToString(); })));
+            sw.WriteLine("Report types: {0}", String.Join(", ", this.ReportTypes));
             sw.WriteLine("Show reports: {0}", this.ShowReports);
 
             sw.WriteLine("Filter Category: {0}", String.Join(", ", this.FilterCategories));
