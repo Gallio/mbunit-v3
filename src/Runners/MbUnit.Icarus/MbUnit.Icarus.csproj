@@ -49,6 +49,8 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="AdapterModel\MainOpAdapterModel.cs" />
+    <Compile Include="Adapter\MainOpAdapter.cs" />
     <Compile Include="Controls\Enums\CheckBoxState.cs" />
     <Compile Include="Controls\Enums\TestState.cs" />
     <Compile Include="Controls\TestStatusBar.cs">
@@ -58,6 +60,8 @@
     <Compile Include="Controls\TestTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Interfaces\IMainOpAdapterModel.cs" />
+    <Compile Include="Interfaces\IMainOpAdapterView.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,11 +130,6 @@
       <Project>{BADF6646-9750-4CFB-8867-5D2D4086412A}</Project>
       <Name>MbUnit.Icarus.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Adapter Model\" />
-    <Folder Include="Adapter\" />
-    <Folder Include="Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

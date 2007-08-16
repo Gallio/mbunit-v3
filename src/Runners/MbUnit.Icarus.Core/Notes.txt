@@ -33,3 +33,12 @@ They won't appear in the test tree when tests are enumerated.  However, when tes
 This is intended to support things like load testing where we might run a random assortment of tests for a specified duration.  So we won't know ahead of time how many iterations of each test we will run.  Each iteration will appear as a new "dynamic" test created at runtime.
 
 TestModel holds the root TestInfo, each TestInfo is recursive for the next (Array of TestInfo).
+
+using (progressMonitor)
+{
+    progressMonitor.BeginTask("Loading...", 10);
+
+    Step1(new SubProgressMonitor(progressMonitor, 2);
+    Step2(new SubProgressMonitor(progressMonitor, 7);
+    Step3(new SubProgressMonitor(progressMonitor, 1);
+}

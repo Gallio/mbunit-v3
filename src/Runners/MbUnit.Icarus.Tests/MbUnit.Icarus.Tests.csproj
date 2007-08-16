@@ -37,24 +37,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PresenterMainTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj">
-      <Project>{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E}</Project>
-      <Name>MbUnit.Gallio.Core.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
       <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
       <Name>MbUnit.Gallio.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj">
-      <Project>{0783AC75-ECD1-4846-B85A-70D7313BF1D9}</Project>
-      <Name>MbUnit.Gallio.Framework.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj">
+      <Project>{BADF6646-9750-4CFB-8867-5D2D4086412A}</Project>
+      <Name>MbUnit.Icarus.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\MbUnit.Icarus\MbUnit.Icarus.csproj">
       <Project>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</Project>
