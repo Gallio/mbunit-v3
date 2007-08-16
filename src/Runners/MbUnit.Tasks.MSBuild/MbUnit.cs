@@ -31,9 +31,9 @@ namespace MbUnit.Tasks.MSBuild
     {
         #region Private Members
 
-        private TaskItem[] assemblies;
-        private TaskItem[] pluginDirectories;
-        private TaskItem[] hintDirectories;
+        private ITaskItem[] assemblies;
+        private ITaskItem[] pluginDirectories;
+        private ITaskItem[] hintDirectories;
         private string filter;
         private string[] reportTypes = new string[] { "html" };
         private string reportFileNameFormat = "mbunit-result-{0}{1}";
@@ -49,7 +49,7 @@ namespace MbUnit.Tasks.MSBuild
         /// The list of test assemblies to execute. This is required.
         /// </summary>
         [Required]
-        public TaskItem[] Assemblies
+        public ITaskItem[] Assemblies
         {
             get { return assemblies; }
             set { assemblies = value; }
@@ -58,7 +58,7 @@ namespace MbUnit.Tasks.MSBuild
         /// <summary>
         /// The list of directories used for loading assemblies and other dependent resources.
         /// </summary>
-        public TaskItem[] HintDirectories
+        public ITaskItem[] HintDirectories
         {
             get { return hintDirectories; }
             set { hintDirectories = value; }
@@ -67,7 +67,7 @@ namespace MbUnit.Tasks.MSBuild
         /// <summary>
         ///  Additional MbUnit plugin directories to search recursively.
         /// </summary>
-        public TaskItem[] PluginDirectories
+        public ITaskItem[] PluginDirectories
         {
             get { return pluginDirectories; }
             set { pluginDirectories = value; }
@@ -184,9 +184,9 @@ namespace MbUnit.Tasks.MSBuild
                                          appVersion.Major, appVersion.Minor, appVersion.Build));
         }
 
-        private static void AddAllItemSpecs(IList<string> collection, IList<TaskItem> items)
+        private static void AddAllItemSpecs(IList<string> collection, IList<ITaskItem> items)
         {
-            foreach (TaskItem item in items)
+            foreach (ITaskItem item in items)
                 collection.Add(item.ItemSpec);
         }
         
