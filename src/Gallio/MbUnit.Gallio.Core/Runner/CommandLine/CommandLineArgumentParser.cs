@@ -40,6 +40,7 @@
 //		Author: Jonathan de Halleux
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Collections;
 using System.IO;
@@ -93,53 +94,51 @@ namespace MbUnit.Core.Runner.CommandLine
 		public CommandLineArgumentParser(Type argumentSpecification, ErrorReporter reporter)
 		{
 			this.reporter = reporter;
-			this.arguments = new ArrayList();
-			this.argumentMap = new Hashtable();
+			arguments = new List<Argument>();
+			argumentMap = new Hashtable();
             
 			foreach (FieldInfo field in argumentSpecification.GetFields())
 			{
 				if (!field.IsStatic && !field.IsInitOnly && !field.IsLiteral)
 				{
 					CommandLineArgumentAttribute attribute = GetAttribute(field);
-					if (attribute is DefaultCommandLineArgumentAttribute)
-					{
-						if (this.defaultArgument!=null)
-							ThrowError("More that one DefaultCommandLineArgument has been used");
-						this.defaultArgument = new Argument(attribute, field, reporter);
-					}
-					else
-					{
-						this.arguments.Add(new Argument(attribute, field, reporter));
-					}
+				    if (attribute is DefaultCommandLineArgumentAttribute)
+				    {
+				        if (defaultArgument != null)
+				            ThrowError("More that one DefaultCommandLineArgument has been used");
+				        defaultArgument = new Argument(attribute, field, reporter);
+				    }
+				    else
+				        arguments.Add(new Argument(attribute, field, reporter));
 				}
 			}
             
 			// add explicit names to map
-			foreach (Argument argument in this.arguments)
+			foreach (Argument argument in arguments)
 			{
 				if (argumentMap.ContainsKey(argument.LongName))
 					ThrowError("Argument {0} is duplicated",argument.LongName);
-				this.argumentMap[argument.LongName] = argument;
+				argumentMap[argument.LongName] = argument;
 				if (argument.ExplicitShortName && argument.ShortName != null && argument.ShortName.Length > 0)
 				{
-					if(this.argumentMap.ContainsKey(argument.ShortName))
+					if(argumentMap.ContainsKey(argument.ShortName))
 						ThrowError("Argument {0} is duplicated",argument.ShortName);
-					this.argumentMap[argument.ShortName] = argument;
+					argumentMap[argument.ShortName] = argument;
 				}
 			}
             
 			// add implicit names which don't collide to map
-			foreach (Argument argument in this.arguments)
+			foreach (Argument argument in arguments)
 			{
 				if (!argument.ExplicitShortName && argument.ShortName != null && argument.ShortName.Length > 0)
 				{
 					if (!argumentMap.ContainsKey(argument.ShortName))
-						this.argumentMap[argument.ShortName] = argument;
+						argumentMap[argument.ShortName] = argument;
 				}
 			}
 		}
         
-		private static CommandLineArgumentAttribute GetAttribute(FieldInfo field)
+		private static CommandLineArgumentAttribute GetAttribute(ICustomAttributeProvider field)
 		{
 			object[] attributes = field.GetCustomAttributes(typeof(CommandLineArgumentAttribute), false);
 			if (attributes.Length==0)
@@ -149,7 +148,7 @@ namespace MbUnit.Core.Runner.CommandLine
         
 		private void ReportUnrecognizedArgument(string argument)
 		{
-			this.reporter(string.Format("Unrecognized command line argument '{0}'", argument));
+			reporter(string.Format("Unrecognized command line argument '{0}'", argument));
 		}
 
 		private static void ThrowError(string message, params Object[] args)
@@ -163,64 +162,56 @@ namespace MbUnit.Core.Runner.CommandLine
 		/// <param name="args"></param>
 		/// <param name="destination"></param>
 		/// <returns> true if an error occurred </returns>
-		private bool ParseArgumentList(string[] args, object destination)
+		private bool ParseArgumentList(IEnumerable<string> args, object destination)
 		{
 			bool hadError = false;
 			if (args != null)
 			{
 				foreach (string argument in args)
 				{
-					if (argument.Length > 0)
-					{
-						switch (argument[0])
-						{
-							case '-':
-							case '/':
-								int endIndex = argument.IndexOfAny(new char[] {':', '+'}, 1);
-								string option = argument.Substring(1, endIndex == -1 ? argument.Length - 1 : endIndex - 1);
-								string optionArgument;
-								if (option.Length + 1 == argument.Length)
-								{
-									optionArgument = null;
-								}
-								else if (argument.Length > 1 + option.Length && argument[1 + option.Length] == ':')
-								{
-									optionArgument = argument.Substring(option.Length + 2);
-								}
-								else
-								{
-									optionArgument = argument.Substring(option.Length + 1);
-								}
-                                
-								Argument arg = (Argument) this.argumentMap[option];
-								if (arg == null)
-								{
-									ReportUnrecognizedArgument(argument);
-									hadError = true;
-								}
-								else
-								{
-									hadError |= !arg.SetValue(optionArgument, destination);
-								}
-								break;
-							case '@':
-								string[] nestedArguments;
-								hadError |= LexFileArguments(argument.Substring(1), out nestedArguments);
-								hadError |= ParseArgumentList(nestedArguments, destination);
-								break;
-							default:
-								if (this.defaultArgument != null)
-								{
-									hadError |= !this.defaultArgument.SetValue(argument, destination);
-								}
-								else
-								{
-									ReportUnrecognizedArgument(argument);
-									hadError = true;
-								}
-								break;
-						}
-					}
+				    if (argument != null && argument.Length > 0)
+				        {
+				            switch (argument[0])
+				            {
+				                case '-':
+				                case '/':
+				                    int endIndex = argument.IndexOfAny(new char[] {':', '+'}, 1);
+				                    string option = argument.Substring(1, endIndex == -1 ? argument.Length - 1 : endIndex - 1);
+				                    string optionArgument;
+				                    if (option.Length + 1 == argument.Length)
+				                        optionArgument = null;
+				                    else if (argument.Length > 1 + option.Length && argument[1 + option.Length] == ':')
+				                        optionArgument = argument.Substring(option.Length + 2);
+				                    else
+				                        optionArgument = argument.Substring(option.Length + 1);
+
+
+				                    Argument arg = (Argument) argumentMap[option];
+				                    if (arg == null)
+				                    {
+				                        ReportUnrecognizedArgument(argument);
+				                        hadError = true;
+				                    }
+				                    else
+				                        hadError |= !arg.SetValue(optionArgument, destination);
+
+				                    break;
+				                case '@':
+				                    string[] nestedArguments;
+				                    hadError |= LexFileArguments(argument.Substring(1), out nestedArguments);
+				                    hadError |= ParseArgumentList(nestedArguments, destination);
+				                    break;
+				                default:
+				                    if (defaultArgument != null)
+				                        hadError |= !defaultArgument.SetValue(argument, destination);
+				                    else
+				                    {
+				                        ReportUnrecognizedArgument(argument);
+				                        hadError = true;
+				                    }
+				                    break;
+				            }
+				        }
 				}
 			}
             
@@ -238,16 +229,13 @@ namespace MbUnit.Core.Runner.CommandLine
 			bool hadError = ParseArgumentList(args, destination);
 
 			// check for missing required arguments
-			foreach (Argument arg in this.arguments)
-			{
-				hadError |= arg.Finish(destination);
-			}
-			if (this.defaultArgument != null)
-			{
-				hadError |= this.defaultArgument.Finish(destination);
-			}
-            
-			return !hadError;
+		    foreach (Argument arg in arguments)
+		        hadError |= arg.Finish(destination);
+
+		    if (defaultArgument != null)
+		        hadError |= defaultArgument.Finish(destination);
+
+		    return !hadError;
 		}
         
         
@@ -261,7 +249,7 @@ namespace MbUnit.Core.Runner.CommandLine
 				StringBuilder builder = new StringBuilder();
                 
 				int oldLength;
-				foreach (Argument arg in this.arguments)
+				foreach (Argument arg in arguments)
 				{
 					oldLength = builder.Length;
                     
@@ -304,7 +292,7 @@ namespace MbUnit.Core.Runner.CommandLine
 						builder.Append('}');
 					}
                     
-					if (arg.ShortName != arg.LongName && this.argumentMap[arg.ShortName] == arg)
+					if (arg.ShortName != arg.LongName && argumentMap[arg.ShortName] == arg)
 					{
 						builder.Append(' ', IndentLength(builder.Length - oldLength));
 						builder.Append("short form /");
@@ -322,11 +310,10 @@ namespace MbUnit.Core.Runner.CommandLine
 				builder.Append("Read response file for more options");
 				builder.Append(CommandLineUtility.NewLine);
                 
-				if (this.defaultArgument != null)
+				if (defaultArgument != null)
 				{
-					oldLength = builder.Length;
-					builder.Append("    <");
-					builder.Append(this.defaultArgument.LongName);
+				    builder.Append("    <");
+					builder.Append(defaultArgument.LongName);
 					builder.Append(">");
 					builder.Append(CommandLineUtility.NewLine);
 				}
@@ -342,7 +329,7 @@ namespace MbUnit.Core.Runner.CommandLine
         
 		private bool LexFileArguments(string fileName, out string[] arguments)
 		{
-			string args  = null;
+			string args;
                     
 			try
 			{
@@ -353,7 +340,7 @@ namespace MbUnit.Core.Runner.CommandLine
 			}
 			catch (Exception e)
 			{
-				this.reporter(string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
+				reporter(string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
 				arguments = null;
 				return false;
 			}
@@ -430,12 +417,12 @@ namespace MbUnit.Core.Runner.CommandLine
 					currentArg.Length = 0;
 				}
 			}
-			catch (System.IndexOutOfRangeException)
+			catch (IndexOutOfRangeException)
 			{
 				// got EOF 
 				if (inQuotes)
 				{
-					this.reporter(string.Format("Error: Unbalanced '\"' in command line argument file '{0}'", fileName));
+					reporter(string.Format("Error: Unbalanced '\"' in command line argument file '{0}'", fileName));
 					hadError = true;
 				}
 				else if (currentArg.Length > 0)
@@ -501,23 +488,22 @@ namespace MbUnit.Core.Runner.CommandLine
 		{
 			public Argument(CommandLineArgumentAttribute attribute, FieldInfo field, ErrorReporter reporter)
 			{
-				this.longName = CommandLineArgumentParser.LongName(attribute, field);
-				this.explicitShortName = CommandLineArgumentParser.ExplicitShortName(attribute);
-				this.shortName = CommandLineArgumentParser.ShortName(attribute, field);
-				this.elementType = ElementType(field);
-				this.flags = Flags(attribute, field);
+				longName = CommandLineArgumentParser.LongName(attribute, field);
+				explicitShortName = CommandLineArgumentParser.ExplicitShortName(attribute);
+				shortName = CommandLineArgumentParser.ShortName(attribute, field);
+				elementType = ElementType(field);
+				flags = Flags(attribute, field);
 				this.field = field;
-				this.seenValue = false;
+				seenValue = false;
 				this.reporter = reporter;
-				this.isDefault = attribute != null && attribute is DefaultCommandLineArgumentAttribute;
-				this.description=attribute.Description;
-                
-				if (IsCollection)
-				{
-					this.collectionValues = new ArrayList();
-				}
-                
-				Debug.Assert(this.longName != null && this.longName.Length > 0);
+				isDefault = attribute != null && attribute is DefaultCommandLineArgumentAttribute;
+				description=attribute.Description;
+
+			    if (IsCollection)
+			        collectionValues = new ArrayList();
+
+
+			    Debug.Assert(longName != null && longName.Length > 0);
 				if (IsCollection && !AllowMultiple)
 					ThrowError("Collection arguments must have allow multiple");
 				Debug.Assert(!Unique || IsCollection, "Unique only applicable to collection arguments");
@@ -529,22 +515,21 @@ namespace MbUnit.Core.Runner.CommandLine
             
 			public bool Finish(object destination)
 			{
-				if (this.IsCollection)
-				{
-					this.field.SetValue(destination, this.collectionValues.ToArray(this.elementType));
-				}
-                
-				return ReportMissingRequiredArgument();
+			    if (IsCollection)
+			        field.SetValue(destination, collectionValues.ToArray(elementType));
+
+
+			    return ReportMissingRequiredArgument();
 			}
             
 			private bool ReportMissingRequiredArgument()
 			{
-				if (this.IsRequired && !this.SeenValue)
+				if (IsRequired && !SeenValue)
 				{
-					if (this.IsDefault)
-						reporter(string.Format("Missing required argument '<{0}>'.", this.LongName));
+					if (IsDefault)
+						reporter(string.Format("Missing required argument '<{0}>'.", LongName));
 					else
-						reporter(string.Format("Missing required argument '/{0}'.", this.LongName));
+						reporter(string.Format("Missing required argument '/{0}'.", LongName));
 					return true;
 				}
 				return false;
@@ -552,49 +537,46 @@ namespace MbUnit.Core.Runner.CommandLine
             
 			private void ReportDuplicateArgumentValue(string value)
 			{
-				this.reporter(string.Format("Duplicate '{0}' argument '{1}'", this.LongName, value));
+				reporter(string.Format("Duplicate '{0}' argument '{1}'", LongName, value));
 			}
             
 			public bool SetValue(string value, object destination)
 			{
 				if (SeenValue && !AllowMultiple)
 				{
-					this.reporter(string.Format("Duplicate '{0}' argument", this.LongName));
+					reporter(string.Format("Duplicate '{0}' argument", LongName));
 					return false;
 				}
-				this.seenValue = true;
+				seenValue = true;
                 
 				object newValue;
-				if (!ParseValue(this.ValueType, value, out newValue))
+				if (!ParseValue(ValueType, value, out newValue))
 					return false;
-				if (this.IsCollection)
-				{
-					if (this.Unique && this.collectionValues.Contains(newValue))
-					{
-						ReportDuplicateArgumentValue(value);
-						return false;
-					}
-					else
-					{
-						this.collectionValues.Add(newValue);
-					}
-				}
-				else
-				{
-					this.field.SetValue(destination, newValue);
-				}
-                
-				return true;
+			    if (IsCollection)
+			    {
+			        if (Unique && collectionValues.Contains(newValue))
+			        {
+			            ReportDuplicateArgumentValue(value);
+			            return false;
+			        }
+			        else
+			            collectionValues.Add(newValue);
+			    }
+			    else
+			        field.SetValue(destination, newValue);
+
+
+			    return true;
 			}
             
 			public Type ValueType
 			{
-				get { return this.IsCollection ? this.elementType : this.Type; }
+				get { return IsCollection ? elementType : Type; }
 			}
             
 			private void ReportBadArgumentValue(string value)
 			{
-				this.reporter(string.Format("'{0}' is not a valid value for the '{1}' command line option", value, this.LongName));
+				reporter(string.Format("'{0}' is not a valid value for the '{1}' command line option", value, LongName));
 			}
             
 			private bool ParseValue(Type type, string stringData, out object value)
@@ -653,37 +635,37 @@ namespace MbUnit.Core.Runner.CommandLine
             
 			public string LongName
 			{
-				get { return this.longName; }
+				get { return longName; }
 			}
 
 			public bool ExplicitShortName
 			{
-				get { return this.explicitShortName; }
+				get { return explicitShortName; }
 			}
             
 			public string ShortName
 			{
-				get { return this.shortName; }
+				get { return shortName; }
 			}
 
 			public bool IsRequired
 			{
-				get { return 0 != (this.flags & CommandLineArgumentType.Required); }
+				get { return 0 != (flags & CommandLineArgumentType.Required); }
 			}
             
 			public bool SeenValue
 			{
-				get { return this.seenValue; }
+				get { return seenValue; }
 			}
             
 			public bool AllowMultiple
 			{
-				get { return 0 != (this.flags & CommandLineArgumentType.Multiple); }
+				get { return 0 != (flags & CommandLineArgumentType.Multiple); }
 			}
             
 			public bool Unique
 			{
-				get { return 0 != (this.flags & CommandLineArgumentType.Unique); }
+				get { return 0 != (flags & CommandLineArgumentType.Unique); }
 			}
             
 			public Type Type
@@ -698,33 +680,30 @@ namespace MbUnit.Core.Runner.CommandLine
             
 			public bool IsDefault
 			{
-				get { return this.isDefault; }
+				get { return isDefault; }
 			}
 
 			public string Description
 			{
-				get
-				{
-					return this.description;
-				}
+				get { return description; }
 			}
             
-			private string longName;
-			private string shortName;
-			private bool explicitShortName;
+			private readonly string longName;
+			private readonly string shortName;
+			private readonly bool explicitShortName;
 			private bool seenValue;
-			private FieldInfo field;
-			private Type elementType;
-			private CommandLineArgumentType flags;
-			private ArrayList collectionValues;
-			private ErrorReporter reporter;
-			private bool isDefault;
-			private string description;
+			private readonly FieldInfo field;
+			private readonly Type elementType;
+			private readonly CommandLineArgumentType flags;
+			private readonly ArrayList collectionValues;
+			private readonly ErrorReporter reporter;
+			private readonly bool isDefault;
+			private readonly string description;
 		}
         
-		private ArrayList arguments;
-		private Hashtable argumentMap;
-		private Argument defaultArgument;
-		private ErrorReporter reporter;
+		private readonly List<Argument> arguments;
+		private readonly Hashtable argumentMap;
+		private readonly Argument defaultArgument;
+		private readonly ErrorReporter reporter;
 	}
 }
