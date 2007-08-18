@@ -331,6 +331,7 @@ namespace MbUnit.Core.Runner.CommandLine
             foreach (Argument arg in arguments)
             {
                 output.PrintArgumentName(arg.LongName, arg.ShortName);
+                output.PrintArgumentType(arg.ValueType);
                 output.NewLine();
                 output.PrintDescription(arg.Description);
                 output.NewLine();
