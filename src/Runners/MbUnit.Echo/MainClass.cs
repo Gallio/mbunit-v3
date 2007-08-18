@@ -193,7 +193,7 @@ namespace MbUnit.Echo
 
             Console.ResetColor();
             Console.WriteLine();
-            Console.WriteLine(CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments)));
+            CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments));
 
             // Print out options related to the currently available set of plugins.
             RuntimeSetup setup = new RuntimeSetup();
