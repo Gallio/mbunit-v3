@@ -64,6 +64,7 @@
     <Compile Include="Reporting\ReportUtils.cs" />
     <Compile Include="Reporting\TestRun.cs" />
     <Compile Include="Reporting\XmlReportFormatter.cs" />
+    <Compile Include="Runner\CommandLine\CommandLineOutput.cs" />
     <Compile Include="Runner\FilterParser.cs" />
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
     <Compile Include="Runner\RunnerProgressMonitor.cs" />
