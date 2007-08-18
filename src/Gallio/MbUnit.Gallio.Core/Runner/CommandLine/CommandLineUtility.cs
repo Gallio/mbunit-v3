@@ -95,11 +95,9 @@ namespace MbUnit.Core.Runner.CommandLine
         /// Use CommandLineArgumentAttributes to control parsing behaviour.
         /// </summary>
         /// <param name="argumentType"> The type of the arguments to display usage for. </param>
-        /// <returns> Printable string containing a user friendly description of command line arguments. </returns>
-        public static string CommandLineArgumentsUsage(Type argumentType)
+        public static void CommandLineArgumentsUsage(Type argumentType)
         {
-			CommandLineArgumentParser parser = new CommandLineArgumentParser(argumentType, null);
-			return parser.Usage;
+			new CommandLineArgumentParser(argumentType, null).ShowUsage();
         }
     }
 }

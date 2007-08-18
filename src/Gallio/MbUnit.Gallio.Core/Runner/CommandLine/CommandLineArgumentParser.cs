@@ -321,6 +321,27 @@ namespace MbUnit.Core.Runner.CommandLine
 				return builder.ToString();
 			}
 		}
+
+        ///<summary>
+        /// A user firendly usage string describing the command line argument syntax.
+        ///</summary>
+        public void ShowUsage()
+        {
+            CommandLineOutput output = new CommandLineOutput();
+            foreach (Argument arg in arguments)
+            {
+                output.PrintArgumentName(arg.LongName, arg.ShortName);
+                output.NewLine();
+                output.PrintDescription(arg.Description);
+                output.NewLine();
+            }
+            output.PrintText("@<file>", 2);
+            output.NewLine();
+            output.PrintDescription("Read response file for more options");
+            output.NewLine();
+            output.PrintText(string.Format("<{0}>", defaultArgument.LongName), 2);
+            output.NewLine();
+        }
             
 		private static int IndentLength(int lineLength)
 		{
