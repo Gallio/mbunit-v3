@@ -51,6 +51,7 @@
     <Compile Include="CoreAssert.cs" />
     <Compile Include="Reporting\ReportTest.cs" />
     <Compile Include="Runners\CommandLine\CommandLineArgumentParserTests.cs" />
+    <Compile Include="Runners\CommandLine\CommandLineOutputTests.cs" />
     <Compile Include="Runners\TestRunnerHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>

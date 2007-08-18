@@ -98,6 +98,14 @@ namespace MbUnit.Core.Tests.Runners.CommandLine
          Description = "Display this help text"
          )]
         public bool Help = false;
+
+        [CommandLineArgument(
+        CommandLineArgumentType.MultipleUnique,
+        ShortName = "hd",
+        LongName = "hint-directories",
+        Description = "The list of directories used for loading assemblies and other dependent resources."
+        )]
+        public string[] HintDirectories;
     }
 
     public class MainArgumentsDuplicateDefaultCommandLineArgumentStub : MainArguments
