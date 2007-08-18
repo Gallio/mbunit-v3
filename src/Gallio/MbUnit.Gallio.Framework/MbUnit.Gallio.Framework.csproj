@@ -44,6 +44,7 @@
     <Compile Include="Block.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="DescriptionAttribute.cs" />
+    <Compile Include="Kernel\Results\TestState.cs" />
     <Compile Include="KeyedPairwiseAssertion.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="PairwiseAssertion.cs" />
@@ -114,7 +115,6 @@
     </Compile>
     <Compile Include="Kernel\Results\TestOutcome.cs" />
     <Compile Include="Kernel\Results\TestResult.cs" />
-    <Compile Include="Kernel\Results\TestState.cs" />
     <Compile Include="Kernel\Filters\AndFilter.cs" />
     <Compile Include="Kernel\Filters\AnyFilter.cs" />
     <Compile Include="Kernel\Filters\AssemblyFilter.cs" />
@@ -173,16 +173,16 @@
     <Compile Include="Kernel\Model\TemplateTreeBuilder.cs" />
     <Compile Include="Kernel\Model\TestTreeBuilder.cs" />
     <Compile Include="Kernel\Model\ModelTreeBuilder.cs" />
-    <Compile Include="Kernel\Serialization\ModelComponentInfo.cs" />
+    <Compile Include="Kernel\Model\ModelComponentInfo.cs" />
     <Compile Include="Kernel\Utilities\SerializationUtils.cs" />
-    <Compile Include="Kernel\Serialization\TemplateComponentInfo.cs" />
-    <Compile Include="Kernel\Serialization\TemplateInfo.cs" />
-    <Compile Include="Kernel\Serialization\TemplateModel.cs" />
-    <Compile Include="Kernel\Serialization\TemplateParameterInfo.cs" />
-    <Compile Include="Kernel\Serialization\TemplateParameterSetInfo.cs" />
-    <Compile Include="Kernel\Serialization\TestComponentInfo.cs" />
-    <Compile Include="Kernel\Serialization\TestInfo.cs" />
-    <Compile Include="Kernel\Serialization\TestModel.cs" />
+    <Compile Include="Kernel\Model\TemplateComponentInfo.cs" />
+    <Compile Include="Kernel\Model\TemplateInfo.cs" />
+    <Compile Include="Kernel\Model\TemplateModel.cs" />
+    <Compile Include="Kernel\Model\TemplateParameterInfo.cs" />
+    <Compile Include="Kernel\Model\TemplateParameterSetInfo.cs" />
+    <Compile Include="Kernel\Model\TestComponentInfo.cs" />
+    <Compile Include="Kernel\Model\TestInfo.cs" />
+    <Compile Include="Kernel\Model\TestModel.cs" />
     <Compile Include="Kernel\Utilities\ListUtils.cs" />
     <Compile Include="Kernel\Utilities\ReflectionUtils.cs" />
     <Compile Include="Kernel\Utilities\StringUtils.cs" />

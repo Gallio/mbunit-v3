@@ -32,6 +32,20 @@ namespace MbUnit._Framework.Tests.Kernel.Model
     {
         private XmlSerializer serializer = new XmlSerializer(typeof(MetadataMap));
 
+        [Test]
+        public void Copy()
+        {
+            MetadataMap original = new MetadataMap();
+            original.Entries.Add("abc", "123");
+            original.Entries.Add("abc", "456");
+            original.Entries.Add("def", "");
+
+            MetadataMap copy = original.Copy();
+
+            Assert.AreNotSame(original, copy);
+            AssertAreEqual(original, copy);
+        }
+
         [RowTest]
         [Row(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <metadata xmlns=""http://www.mbunit.com/gallio"" />",

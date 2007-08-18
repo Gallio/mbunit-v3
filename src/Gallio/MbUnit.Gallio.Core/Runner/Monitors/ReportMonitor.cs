@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner.Monitors
 {

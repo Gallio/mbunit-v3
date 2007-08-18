@@ -18,52 +18,53 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Serialization
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// The test model captures the root of the test tree along with an index by id.
+    /// The template model captures the root of the template tree along with an index by id.
     /// </summary>
     /// <remarks>
     /// This class is safe for used by multiple threads.
     /// </remarks>
     [Serializable]
-    [XmlRoot("testModel", Namespace=SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public sealed class TestModel
+    [XmlRoot("templateModel", Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    public sealed class TemplateModel
     {
         [NonSerialized]
-        private Dictionary<string, TestInfo> tests;
+        private Dictionary<string, TemplateInfo> templates;
 
-        private TestInfo rootTest;
+        private TemplateInfo rootTemplate;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        private TestModel()
+        private TemplateModel()
         {
         }
 
         /// <summary>
-        /// Creates a test model.
+        /// Creates a template model.
         /// </summary>
-        /// <param name="rootTest">The root test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTest"/> is null</exception>
-        public TestModel(TestInfo rootTest)
+        /// <param name="rootTemplate">The root template</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTemplate"/> is null</exception>
+        public TemplateModel(TemplateInfo rootTemplate)
         {
-            if (rootTest == null)
-                throw new ArgumentNullException("rootTest");
+            if (rootTemplate == null)
+                throw new ArgumentNullException("rootTemplate");
 
-            this.rootTest = rootTest;
+            this.rootTemplate = rootTemplate;
         }
 
+
         /// <summary>
-        /// Gets or sets the root test in the model.
+        /// Gets the root template in the model.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("root", IsNullable = false)]
-        public TestInfo RootTest
+        [XmlElement("template", IsNullable = false)]
+        public TemplateInfo RootTemplate
         {
-            get { return rootTest; }
+            get { return rootTemplate; }
             set
             {
                 if (value == null)
@@ -71,39 +72,39 @@ namespace MbUnit.Framework.Kernel.Serialization
 
                 lock (this)
                 {
-                    rootTest = value;
-                    tests = null;
+                    rootTemplate = value;
+                    templates = null;
                 }
             }
         }
 
         /// <summary>
-        /// Gets a dictionary of tests indexed by id.
+        /// Gets a dictionary of templates indexed by id.
         /// </summary>
         [XmlIgnore]
-        public IDictionary<string, TestInfo> Tests
+        public IDictionary<string, TemplateInfo> Templates
         {
             get
             {
                 lock (this)
                 {
-                    if (tests == null)
+                    if (templates == null)
                     {
-                        tests = new Dictionary<string, TestInfo>();
-                        PopulateTests(rootTest);
+                        templates = new Dictionary<string, TemplateInfo>();
+                        PopulateTemplates(rootTemplate);
                     }
 
-                    return tests;
+                    return templates;
                 }
             }
         }
 
-        private void PopulateTests(TestInfo test)
+        private void PopulateTemplates(TemplateInfo template)
         {
-            tests[test.Id] = test;
+            templates[template.Id] = template;
 
-            foreach (TestInfo child in test.Children)
-                PopulateTests(child);
+            foreach (TemplateInfo child in template.Children)
+                PopulateTemplates(child);
         }
     }
 }

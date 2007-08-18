@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Serialization
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
     /// Describes a template parameter in a portable manner for serialization.
@@ -26,20 +26,37 @@ namespace MbUnit.Framework.Kernel.Serialization
     /// <seealso cref="ITemplateParameter"/>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class TemplateParameterInfo : TemplateComponentInfo
+    public sealed class TemplateParameterInfo : TemplateComponentInfo
     {
         private string typeName;
         private int index;
 
         /// <summary>
-        /// Creates an empty object.
+        /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        public TemplateParameterInfo()
+        private TemplateParameterInfo()
         {
         }
 
         /// <summary>
-        /// Creates an serializable description of a model object.
+        /// Creates an parameter info.
+        /// </summary>
+        /// <param name="id">The component id</param>
+        /// <param name="name">The component name</param>
+        /// <param name="typeName">The parameter type name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>.
+        /// <paramref name="name"/> or <paramref name="typeName"/> is null</exception>
+        public TemplateParameterInfo(string id, string name, string typeName)
+            : base(id, name)
+        {
+            if (typeName == null)
+                throw new ArgumentNullException("typeName");
+
+            this.typeName = typeName;
+        }
+
+        /// <summary>
+        /// Copies the contents of a template parameter.
         /// </summary>
         /// <param name="obj">The model object</param>
         public TemplateParameterInfo(ITemplateParameter obj)
@@ -50,14 +67,20 @@ namespace MbUnit.Framework.Kernel.Serialization
         }
 
         /// <summary>
-        /// Gets or sets the fully-qualified type name of the parameter's value type.  (non-null)
+        /// Gets or sets the fully-qualified type name of the parameter's value type.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         /// <seealso cref="ITemplateParameter.Type"/>
         [XmlAttribute("type")]
         public string TypeName
         {
             get { return typeName; }
-            set { typeName = value; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                typeName = value;
+            }
         }
 
         /// <summary>

@@ -72,15 +72,15 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <inheritdoc />
-        public void Format(string formatterName, Report report, string filename,
+        public void Format(string formatterName, Report report, string reportPath,
             NameValueCollection options, IList<string> filesWritten, IProgressMonitor progressMonitor)
         {
             if (formatterName == null)
                 throw new ArgumentNullException("formatterName");
             if (report == null)
                 throw new ArgumentNullException("report");
-            if (filename == null)
-                throw new ArgumentNullException("filename");
+            if (reportPath == null)
+                throw new ArgumentNullException("reportPath");
             if (options == null)
                 throw new ArgumentNullException("options");
             if (filesWritten == null)
@@ -89,19 +89,19 @@ namespace MbUnit.Core.Reporting
                 throw new ArgumentNullException("progressMonitor");
 
             IReportFormatter formatter = GetFormatter(formatterName);
-            formatter.Format(report, filename, options, filesWritten, progressMonitor);
+            formatter.Format(report, reportPath, options, filesWritten, progressMonitor);
         }
 
         /// <inheritdoc />
-        public void SaveReport(Report report, string filename, IProgressMonitor progressMonitor)
+        public void SaveReport(Report report, string reportPath, IProgressMonitor progressMonitor)
         {
-            ReportUtils.SaveReport(report, filename, true, false, null, progressMonitor);
+            ReportUtils.SaveReport(report, reportPath, true, false, null, progressMonitor);
         }
 
         /// <inheritdoc />
-        public Report LoadReport(string filename, IProgressMonitor progressMonitor)
+        public Report LoadReport(string reportPath, IProgressMonitor progressMonitor)
         {
-            return ReportUtils.LoadReport(filename, true, progressMonitor);
+            return ReportUtils.LoadReport(reportPath, true, progressMonitor);
         }
     }
 }

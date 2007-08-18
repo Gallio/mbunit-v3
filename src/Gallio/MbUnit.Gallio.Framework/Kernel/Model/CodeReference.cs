@@ -29,7 +29,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class CodeReference
+    public sealed class CodeReference
     {
         /// <summary>
         /// Gets an empty code reference used to indicate that the actual
@@ -135,6 +135,15 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get { return parameterName; }
             set { parameterName = value; }
+        }
+
+        /// <summary>
+        /// Creates a copy of the code reference.
+        /// </summary>
+        /// <returns>The copy</returns>
+        public CodeReference Copy()
+        {
+            return new CodeReference(assemblyName, namespaceName, typeName, memberName, parameterName);
         }
 
         /// <summary>

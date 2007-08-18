@@ -26,7 +26,8 @@ namespace MbUnit.Framework.Kernel.Results
     public enum TestState
     {
         /// <summary>
-        /// The test did not run or has not run.
+        /// The test did not run or has not yet run but it has not been
+        /// ignored, skipped or canceled.
         /// </summary>
         [XmlEnum("notRun")]
         NotRun,
@@ -44,23 +45,23 @@ namespace MbUnit.Framework.Kernel.Results
         Skipped,
 
         /// <summary>
-        /// The test ran to completion.  This does not imply that the test
-        /// passed, merely that nothing abnormal occurred as it ran.
+        /// The test ran.
         /// </summary>
-        [XmlEnum("completed")]
-        Completed,
+        [XmlEnum("executed")]
+        Executed,
 
         /// <summary>
-        /// The test failed to run to completion because its preconditions were
-        /// not satisfied or because the test runner encountered a fatal error.
-        /// </summary>
-        [XmlEnum("failed")]
-        Failed,
-
-        /// <summary>
-        /// The test was prematurely canceled by direct user intervention.
+        /// The test started execution but was canceled prematurely
+        /// by direct user intervention.
         /// </summary>
         [XmlEnum("canceled")]
-        Canceled
+        Canceled,
+
+        /// <summary>
+        /// A fatal error occurred that prevented the test runner from executing
+        /// the test to completion.
+        /// </summary>
+        [XmlEnum("error")]
+        Error
     }
 }

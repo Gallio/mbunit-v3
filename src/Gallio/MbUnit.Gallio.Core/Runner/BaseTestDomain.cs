@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MbUnit.Core.Harness;
-using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;

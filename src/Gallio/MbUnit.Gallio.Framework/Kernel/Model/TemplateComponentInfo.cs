@@ -18,28 +18,39 @@ using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Serialization
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Describes a test model component in a portable manner for serialization.
+    /// Describes a template model component in a portable manner for serialization.
     /// </summary>
-    /// <seealso cref="ITestComponent"/>
+    /// <seealso cref="ITemplateComponent"/>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class TestComponentInfo : ModelComponentInfo
+    public class TemplateComponentInfo : ModelComponentInfo, ITemplateComponent
     {
         /// <summary>
-        /// Creates an empty object.
+        /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        public TestComponentInfo()
+        protected TemplateComponentInfo()
         {
         }
 
         /// <summary>
-        /// Creates an serializable description of a model object.
+        /// Creates a template component.
+        /// </summary>
+        /// <param name="id">The component id</param>
+        /// <param name="name">The component name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
+        public TemplateComponentInfo(string id, string name)
+            : base(id, name)
+        {
+        }
+
+        /// <summary>
+        /// Copies the contents of a template component.
         /// </summary>
         /// <param name="obj">The model object</param>
-        public TestComponentInfo(ITestComponent obj) : base(obj)
+        public TemplateComponentInfo(ITemplateComponent obj) : base(obj)
         {
         }
     }

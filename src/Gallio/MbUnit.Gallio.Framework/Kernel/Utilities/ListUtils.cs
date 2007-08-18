@@ -43,6 +43,22 @@ namespace MbUnit.Framework.Kernel.Utilities
         }
 
         /// <summary>
+        /// Converts each element of the input collection and adds the result to the
+        /// output collection succession in the same order.
+        /// </summary>
+        /// <typeparam name="TInput">The input type</typeparam>
+        /// <typeparam name="TOutput">The output type</typeparam>
+        /// <param name="input">The input list</param>
+        /// <param name="output">The output list</param>
+        /// <param name="converter">The conversion function to apply to each element</param>
+        public static void ConvertAndAddAll<TInput, TOutput>(ICollection<TInput> input, ICollection<TOutput> output,
+            Converter<TInput, TOutput> converter)
+        {
+            foreach (TInput value in input)
+                output.Add(converter(value));
+        }
+
+        /// <summary>
         /// Converts each element of the input collection and returns the collected results as an array
         /// of the same size.
         /// </summary>

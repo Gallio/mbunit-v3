@@ -66,7 +66,7 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <inheritdoc />
-        public void Format(Report report, string filename, NameValueCollection options,
+        public void Format(Report report, string reportPath, NameValueCollection options,
             IList<string> filesWritten, IProgressMonitor progressMonitor)
         {
             bool saveAttachmentContents;
@@ -77,7 +77,7 @@ namespace MbUnit.Core.Reporting
             if (!bool.TryParse(options.Get("EmbedAttachmentContents"), out embedAttachmentContents))
                 embedAttachmentContents = false;
 
-            ReportUtils.SaveReport(report, filename, saveAttachmentContents, embedAttachmentContents,
+            ReportUtils.SaveReport(report, reportPath, saveAttachmentContents, embedAttachmentContents,
                 filesWritten, progressMonitor);
         }
     }

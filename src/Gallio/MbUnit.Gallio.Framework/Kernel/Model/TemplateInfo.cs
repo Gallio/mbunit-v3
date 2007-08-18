@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Serialization
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
     /// Describes a template in a portable manner for serialization.
@@ -28,59 +28,74 @@ namespace MbUnit.Framework.Kernel.Serialization
     [Serializable]
     [XmlRoot("template", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class TemplateInfo : TemplateComponentInfo
+    public sealed class TemplateInfo : TemplateComponentInfo
     {
-        private TemplateInfo[] children;
-        private TemplateParameterSetInfo[] parameterSets;
+        private List<TemplateInfo> children;
+        private List<TemplateParameterSetInfo> parameterSets;
 
         /// <summary>
-        /// Creates an empty object.
+        /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        public TemplateInfo()
+        private TemplateInfo()
         {
+            children = new List<TemplateInfo>();
+            parameterSets = new List<TemplateParameterSetInfo>();
         }
 
         /// <summary>
-        /// Creates an serializable description of a model object.
+        /// Creates a template info.
+        /// </summary>
+        /// <param name="id">The component id</param>
+        /// <param name="name">The component name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
+        public TemplateInfo(string id, string name)
+            : base(id, name)
+        {
+            children = new List<TemplateInfo>();
+            parameterSets = new List<TemplateParameterSetInfo>();
+        }
+
+        /// <summary>
+        /// Copies the contents of a tmplate.
         /// </summary>
         /// <param name="obj">The model object</param>
         public TemplateInfo(ITemplate obj)
             : base(obj)
         {
-            children = ListUtils.ConvertAllToArray<ITemplate, TemplateInfo>(obj.Children, delegate(ITemplate child)
+            children = new List<TemplateInfo>(obj.Children.Count);
+            parameterSets = new List<TemplateParameterSetInfo>(obj.ParameterSets.Count);
+
+            ListUtils.ConvertAndAddAll(obj.Children, children, delegate(ITemplate child)
             {
                 return new TemplateInfo(child);
             });
 
-            parameterSets = ListUtils.ConvertAllToArray<ITemplateParameterSet, TemplateParameterSetInfo>(obj.ParameterSets,
-                delegate(ITemplateParameterSet parameterSet)
-                {
-                    return new TemplateParameterSetInfo(parameterSet);
-                });
+            ListUtils.ConvertAndAddAll(obj.ParameterSets, parameterSets, delegate(ITemplateParameterSet parameterSet)
+            {
+                return new TemplateParameterSetInfo(parameterSet);
+            });
         }
 
         /// <summary>
-        /// Gets or sets the children.  (non-null but possibly empty)
+        /// Gets the mutable list of children.
         /// </summary>
         /// <seealso cref="ITemplate.Children"/>
         [XmlArray("children", IsNullable=false)]
         [XmlArrayItem("template", IsNullable=false)]
-        public TemplateInfo[] Children
+        public List<TemplateInfo> Children
         {
             get { return children; }
-            set { children = value; }
         }
 
         /// <summary>
-        /// Gets or sets the parameter sets.  (non-null but possibly empty)
+        /// Gets the mutable list of parameter sets.
         /// </summary>
         /// <seealso cref="ITemplate.ParameterSets"/>
         [XmlArray("parameterSets", IsNullable = false)]
         [XmlArrayItem("parameterSet", IsNullable = false)]
-        public TemplateParameterSetInfo[] ParameterSets
+        public List<TemplateParameterSetInfo> ParameterSets
         {
             get { return parameterSets; }
-            set { parameterSets = value; }
         }
     }
 }

@@ -29,3 +29,5 @@
 
 * The Gallio framework is obviously incomplete.  Interim stuff needs to be
   heavily refactored, integrated and polished.
+
+* HTML report XSLT needs to be redone for Gallio.

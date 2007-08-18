@@ -15,7 +15,7 @@
 
 using System;
 using System.IO;
-using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Core.Runner.Monitors

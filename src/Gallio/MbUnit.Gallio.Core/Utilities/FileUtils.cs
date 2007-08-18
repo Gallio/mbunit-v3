@@ -47,5 +47,36 @@ namespace MbUnit.Core.Utilities
 
             return fileName;
         }
+
+        /// <summary>
+        /// Copies the contents of a stream to a file.
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <param name="path">The path of the file to write</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/>
+        /// or <paramref name="path"/> is null</exception>
+        public static void CopyStreamToFile(Stream stream, string path)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+            if (path == null)
+                throw new ArgumentNullException("path");
+
+            using (stream)
+            {
+                using (Stream outputStream = File.OpenWrite(path))
+                {
+                    byte[] buffer = new byte[Math.Min(4096, stream.Length)];
+                    for (; ; )
+                    {
+                        int count = stream.Read(buffer, 0, buffer.Length);
+                        if (count == 0)
+                            return;
+
+                        outputStream.Write(buffer, 0, count);
+                    }
+                }
+            }
+        }
     }
 }

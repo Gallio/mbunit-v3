@@ -31,6 +31,12 @@
       <component id="Core.XmlReportFormatter"
                  service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio.Core"
                  type="MbUnit.Core.Reporting.XmlReportFormatter, MbUnit.Gallio.Core" />
+      <component id="Core.HtmlReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio.Core"
+                 type="MbUnit.Core.Reporting.HtmlReportFormatter, MbUnit.Gallio.Core" />
+      <component id="Core.TextReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio.Core"
+                 type="MbUnit.Core.Reporting.TextReportFormatter, MbUnit.Gallio.Core" />
 
       <component id="Core.AssertionService"
                  service="MbUnit.Framework.Services.Assertions.IAssertionService, MbUnit.Gallio.Framework" 

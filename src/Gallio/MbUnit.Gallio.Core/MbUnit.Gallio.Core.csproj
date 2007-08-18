@@ -56,14 +56,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Reporting\DefaultReportManager.cs" />
+    <Compile Include="Reporting\HtmlReportFormatter.cs" />
     <Compile Include="Reporting\IReportFormatter.cs" />
     <Compile Include="Reporting\IReportManager.cs" />
     <Compile Include="Reporting\Report.cs" />
     <Compile Include="Reporting\PackageRun.cs" />
     <Compile Include="Reporting\PackageRunStatistics.cs" />
     <Compile Include="Reporting\ReportUtils.cs" />
+    <Compile Include="Reporting\Resources\ReportingResources.cs" />
     <Compile Include="Reporting\TestRun.cs" />
+    <Compile Include="Reporting\TextReportFormatter.cs" />
     <Compile Include="Reporting\XmlReportFormatter.cs" />
+    <Compile Include="Reporting\XsltReportFormatter.cs" />
     <Compile Include="Runner\CommandLine\CommandLineOutput.cs" />
     <Compile Include="Runner\FilterParser.cs" />
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
@@ -145,6 +149,14 @@
     <None Include="MbUnit.Gallio.Core.plugin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reporting\Resources\Container.png" />
+    <EmbeddedResource Include="Reporting\Resources\Fixture.png" />
+    <EmbeddedResource Include="Reporting\Resources\MbUnit-Report.html.xsl" />
+    <EmbeddedResource Include="Reporting\Resources\MbUnit-Report.txt.xsl" />
+    <EmbeddedResource Include="Reporting\Resources\Logo.png" />
+    <EmbeddedResource Include="Reporting\Resources\Test.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

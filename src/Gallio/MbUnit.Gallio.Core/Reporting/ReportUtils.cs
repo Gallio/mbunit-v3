@@ -20,6 +20,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Xml.XPath;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Utilities;
@@ -33,40 +34,60 @@ namespace MbUnit.Core.Reporting
     public static class ReportUtils
     {
         /// <summary>
+        /// Gets the path of a directory in which to store content that
+        /// is associated with a report with the specified path.
+        /// </summary>
+        /// <param name="reportPath">The path of the report file</param>
+        /// <returns>The directory in which to store additional associated
+        /// report content</returns>
+        public static string GetContentDirectoryPath(string reportPath)
+        {
+            string contentDirectoryName = Path.GetFileNameWithoutExtension(reportPath);
+            if (contentDirectoryName == reportPath)
+                contentDirectoryName += ".content";
+
+            string reportDirectory = Path.GetDirectoryName(reportPath);
+            if (reportDirectory.Length == 0)
+                return contentDirectoryName;
+
+            return Path.Combine(reportDirectory, contentDirectoryName);
+        }
+
+        /// <summary>
         /// Saves the contents of an attachment to a file.
         /// Creates the directory containing the file if it does not exist yet.
         /// </summary>
         /// <param name="attachment">The attachment</param>
-        /// <param name="filename">The filename</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filename"/>
+        /// <param name="contentPath">The path of the content file to write</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentPath"/>
         /// or <paramref name="attachment"/> is null</exception>
-        public static void SaveAttachmentContents(ExecutionLogAttachment attachment, string filename)
+        public static void SaveAttachmentContents(ExecutionLogAttachment attachment, string contentPath)
         {
             if (attachment == null)
                 throw new ArgumentNullException("attachment");
-            if (filename == null)
-                throw new ArgumentNullException("filename");
+            if (contentPath == null)
+                throw new ArgumentNullException("contentPath");
 
-            string directory = Path.GetDirectoryName(filename);
+            string directory = Path.GetDirectoryName(contentPath);
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            attachment.Contents.Accept(new SaveAttachmentVisitor(filename));
+            attachment.Contents.Accept(new SaveAttachmentVisitor(contentPath));
         }
 
         /// <summary>
         /// Loads the contents of an attachment from a file.
         /// </summary>
         /// <param name="attachment">The attachment</param>
-        /// <param name="filename">The filename</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filename"/>
+        /// <param name="contentPath">The path of the content file to read</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentPath"/>
         /// or <paramref name="attachment"/> is null</exception>
-        public static void LoadAttachmentContents(ExecutionLogAttachment attachment, string filename)
+        public static void LoadAttachmentContents(ExecutionLogAttachment attachment, string contentPath)
         {
             if (attachment == null)
                 throw new ArgumentNullException("attachment");
-            if (filename == null)
-                throw new ArgumentNullException("filename");
+            if (contentPath == null)
+                throw new ArgumentNullException("contentPath");
 
             // TODO: How should we handle missing attachments?
             //       Currently we just throw an exception.
@@ -75,7 +96,7 @@ namespace MbUnit.Core.Reporting
                 switch (attachment.Encoding)
                 {
                     case ExecutionLogAttachmentEncoding.Text:
-                        using (StreamReader reader = new StreamReader(filename))
+                        using (StreamReader reader = new StreamReader(contentPath))
                         {
                             string text = reader.ReadToEnd();
                             attachment.Contents = new TextAttachment(attachment.Name, attachment.ContentType, text);
@@ -83,7 +104,7 @@ namespace MbUnit.Core.Reporting
                         break;
 
                     case ExecutionLogAttachmentEncoding.Xml:
-                        using (StreamReader reader = new StreamReader(filename))
+                        using (StreamReader reader = new StreamReader(contentPath))
                         {
                             string text = reader.ReadToEnd();
                             attachment.Contents = new XmlAttachment(attachment.Name, attachment.ContentType, text);
@@ -92,7 +113,7 @@ namespace MbUnit.Core.Reporting
 
                     case ExecutionLogAttachmentEncoding.Base64:
                         {
-                            byte[] data = File.ReadAllBytes(filename);
+                            byte[] data = File.ReadAllBytes(contentPath);
                             attachment.Contents = new BinaryAttachment(attachment.Name, attachment.ContentType, data);
                         }
                         break;
@@ -100,7 +121,7 @@ namespace MbUnit.Core.Reporting
             }
             catch (Exception ex)
             {
-                throw new IOException(String.Format(CultureInfo.CurrentCulture, "Unable to load report attachment from file: {0}.", filename), ex);
+                throw new IOException(String.Format(CultureInfo.CurrentCulture, "Unable to load report attachment from file: {0}.", contentPath), ex);
             }
         }
 
@@ -147,8 +168,7 @@ namespace MbUnit.Core.Reporting
         /// attachment files assuming the standard directory layout is used</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/>
         /// or <paramref name="report"/> is null</exception>
-        public static void SerializeReportToXml(XmlWriter writer, Report report,
-            bool embedAttachmentContents)
+        public static void SerializeReportToXml(Report report, XmlWriter writer, bool embedAttachmentContents)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
@@ -199,25 +219,43 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <summary>
+        /// Serializes a report to an XPath navigable document.
+        /// </summary>
+        /// <param name="report">The report</param>
+        /// <returns>The XPath navigable document</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> is null</exception>
+        public static IXPathNavigable SerializeReportToXPathNavigable(Report report)
+        {
+            if (report == null)
+                throw new ArgumentNullException("report");
+
+            // Surely there must be a better way that avoids the extra parsing step...
+            StringBuilder reportXml = new StringBuilder();
+            SerializeReportToXml(report, XmlWriter.Create(reportXml), false);
+
+            return new XPathDocument(XmlReader.Create(new StringReader(reportXml.ToString())));
+        }
+
+        /// <summary>
         /// Saves the report as XML to the specified file pretty printed and
         /// with embedded attachments.
         /// </summary>
         /// <param name="report">The report</param>
-        /// <param name="filename">The name of the file to save</param>
+        /// <param name="reportPath">The path of the report file to save</param>
         /// <param name="saveAttachmentContents">If true, saves the attachment contents</param>
         /// <param name="embedAttachmentContents">If true and <paramref name="saveAttachmentContents"/> is
         /// true, the contents are embedded in the report's Xml</param>
         /// <param name="filesWritten">If not null, the files written during the operation are appended to this list</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="filename"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="reportPath"/>,
         /// or <param name="progressMonitor" /> is null</exception>
-        public static void SaveReport(Report report, string filename, bool saveAttachmentContents,
+        public static void SaveReport(Report report, string reportPath, bool saveAttachmentContents,
             bool embedAttachmentContents, IList<string> filesWritten, IProgressMonitor progressMonitor)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
-            if (filename == null)
-                throw new ArgumentNullException("filename");
+            if (reportPath == null)
+                throw new ArgumentNullException("reportPath");
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
@@ -230,14 +268,14 @@ namespace MbUnit.Core.Reporting
                 settings.Indent = true;
 
                 progressMonitor.ThrowIfCanceled();
-                progressMonitor.SetStatus(filename);
+                progressMonitor.SetStatus(reportPath);
 
                 if (filesWritten != null)
-                    filesWritten.Add(filename);
-                using (XmlWriter writer = XmlWriter.Create(filename, settings))
+                    filesWritten.Add(reportPath);
+                using (XmlWriter writer = XmlWriter.Create(reportPath, settings))
                 {
                     progressMonitor.ThrowIfCanceled();
-                    SerializeReportToXml(writer, report, saveAttachmentContents && embedAttachmentContents);
+                    SerializeReportToXml(report, writer, saveAttachmentContents && embedAttachmentContents);
                 }
 
                 progressMonitor.Worked(1);
@@ -245,7 +283,7 @@ namespace MbUnit.Core.Reporting
                 if (saveAttachmentContents && !embedAttachmentContents && attachmentCount != 0)
                 {
                     progressMonitor.ThrowIfCanceled();
-                    SaveReportAttachments(Path.GetDirectoryName(filename), report,
+                    SaveReportAttachments(report, GetContentDirectoryPath(reportPath),
                         filesWritten, new SubProgressMonitor(progressMonitor, attachmentCount));
                 }
             }
@@ -255,17 +293,16 @@ namespace MbUnit.Core.Reporting
         /// Saves all attachments associated with test runs of a report to disk.
         /// Creates the directory if it does not exist yet.
         /// </summary>
-        /// <param name="directory">The directory</param>
+        /// <param name="contentDirectoryPath">The path of the content directory</param>
         /// <param name="report">The report</param>
         /// <param name="filesWritten">If not null, the files written during the operation are appended to this list</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="directory"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentDirectoryPath"/>
         /// or <paramref name="report"/> or <paramref name="progressMonitor"/> is null</exception>
-        public static void SaveReportAttachments(string directory, Report report,
-            IList<string> filesWritten, IProgressMonitor progressMonitor)
+        public static void SaveReportAttachments(Report report, string contentDirectoryPath, IList<string> filesWritten, IProgressMonitor progressMonitor)
         {
-            if (directory == null)
-                throw new ArgumentNullException("directory");
+            if (contentDirectoryPath == null)
+                throw new ArgumentNullException("contentDirectoryPath");
             if (report == null)
                 throw new ArgumentNullException("report");
             if (progressMonitor == null)
@@ -273,14 +310,15 @@ namespace MbUnit.Core.Reporting
 
             using (progressMonitor)
             {
-                if (report.PackageRun == null)
+                int attachmentCount = CountAttachments(report);
+                if (attachmentCount == 0)
                     return;
 
-                progressMonitor.BeginTask("Saving report attachments.", CountAttachments(report));
+                progressMonitor.BeginTask("Saving report attachments.", attachmentCount);
 
                 foreach (TestRun testRun in report.PackageRun.TestRuns)
                 {
-                    string testRunDirectory = Path.Combine(directory, GetTestRunDirectoryName(testRun.TestId));
+                    string testRunDirectory = Path.Combine(contentDirectoryPath, GetTestRunDirectoryName(testRun.TestId));
 
                     foreach (ExecutionLogAttachment attachment in testRun.ExecutionLog.Attachments)
                     {
@@ -302,15 +340,15 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Loads the report from XML from the specified file.
         /// </summary>
-        /// <param name="filename">The name of the file to load</param>
+        /// <param name="reportPath">The path of the report file to load</param>
         /// <param name="loadAttachmentContents">If true, loads attachment
         /// contents in referenced content files if they were not embedded</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filename"/> or <paramref name="progressMonitor "/> is null</exception>
-        public static Report LoadReport(string filename, bool loadAttachmentContents, IProgressMonitor progressMonitor)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportPath"/> or <paramref name="progressMonitor "/> is null</exception>
+        public static Report LoadReport(string reportPath, bool loadAttachmentContents, IProgressMonitor progressMonitor)
         {
-            if (filename == null)
-                throw new ArgumentNullException("filename");
+            if (reportPath == null)
+                throw new ArgumentNullException("reportPath");
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
@@ -319,14 +357,14 @@ namespace MbUnit.Core.Reporting
                 progressMonitor.BeginTask("Loading report.", 10);
 
                 progressMonitor.ThrowIfCanceled();
-                progressMonitor.SetStatus(filename);
-                Report report = SerializationUtils.LoadFromXml<Report>(filename);
+                progressMonitor.SetStatus(reportPath);
+                Report report = SerializationUtils.LoadFromXml<Report>(reportPath);
                 progressMonitor.Worked(1);
 
                 if (loadAttachmentContents)
                 {
                     progressMonitor.ThrowIfCanceled();
-                    LoadReportAttachments(report, Path.GetDirectoryName(filename),
+                    LoadReportAttachments(report, Path.GetDirectoryName(reportPath),
                         new SubProgressMonitor(progressMonitor, 9));
                 }
 
@@ -338,15 +376,15 @@ namespace MbUnit.Core.Reporting
         /// Loads referenced report attachments from the specified directory.
         /// </summary>
         /// <param name="report">The report</param>
-        /// <param name="directory">The directory that contains the attachments</param>
+        /// <param name="contentDirectoryPath">The path of the directory that contains the attachments</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report" />, <paramref name="directory"/> or <paramref name="progressMonitor "/> is null</exception>
-        public static void LoadReportAttachments(Report report, string directory, IProgressMonitor progressMonitor)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report" />, <paramref name="contentDirectoryPath"/> or <paramref name="progressMonitor "/> is null</exception>
+        public static void LoadReportAttachments(Report report, string contentDirectoryPath, IProgressMonitor progressMonitor)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
-            if (directory == null)
-                throw new ArgumentNullException("directory");
+            if (contentDirectoryPath == null)
+                throw new ArgumentNullException("contentDirectoryPath");
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
@@ -373,7 +411,7 @@ namespace MbUnit.Core.Reporting
                     if (attachment.ContentPath == null)
                         continue;
 
-                    string attachmentPath = Path.Combine(directory, attachment.ContentPath);
+                    string attachmentPath = Path.Combine(contentDirectoryPath, attachment.ContentPath);
                     progressMonitor.SetStatus(attachmentPath);
                     LoadAttachmentContents(attachment, attachmentPath);
                 }
@@ -395,29 +433,29 @@ namespace MbUnit.Core.Reporting
 
         private class SaveAttachmentVisitor : IAttachmentVisitor
         {
-            private readonly string fileName;
+            private readonly string path;
 
-            public SaveAttachmentVisitor(string fileName)
+            public SaveAttachmentVisitor(string path)
             {
-                this.fileName = fileName;
+                this.path = path;
             }
 
             public void VisitTextAttachment(TextAttachment attachment)
             {
-                using (StreamWriter writer = new StreamWriter(fileName))
+                using (StreamWriter writer = new StreamWriter(path))
                     writer.Write(attachment.Text);
             }
 
             public void VisitXmlAttachment(XmlAttachment attachment)
             {
-                using (StreamWriter writer = new StreamWriter(fileName))
+                using (StreamWriter writer = new StreamWriter(path))
                     writer.Write(attachment.XmlString);
             }
 
             public void VisitBinaryAttachment(BinaryAttachment attachment)
             {
                 byte[] bytes = attachment.Data;
-                using (Stream stream = File.OpenWrite(fileName))
+                using (Stream stream = File.OpenWrite(path))
                     stream.Write(bytes, 0, bytes.Length);
             }
         }

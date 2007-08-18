@@ -1,7 +1,7 @@
 using MbUnit.Core.Runner;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Icarus.Core.Model;
 
 namespace MbUnit.Icarus.Tests

@@ -285,7 +285,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 switch (nunitResult.RunState)
                 {
                     case RunState.Executed:
-                        result.State = TestState.Completed;
+                        result.State = TestState.Executed;
                         break;
 
                     case RunState.Skipped:

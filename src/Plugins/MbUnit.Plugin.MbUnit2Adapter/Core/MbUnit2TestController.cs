@@ -197,7 +197,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 // Note: MbUnit won't call RunAssemblyTearDown itself if the assembly setup fails
                 //       so we need to make sure we finish things up ourselves.
                 if (!success)
-                    HandleAssemblyFinish(TestState.Failed);
+                    HandleAssemblyFinish(TestOutcome.Failed);
 
                 progressMonitor.Worked(workUnit);
                 return success;
@@ -211,7 +211,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(assemblyTest.Id, TestStepConstants.TearDown));
 
                 bool success = base.RunAssemblyTearDown();
-                HandleAssemblyFinish(success ? TestState.Completed : TestState.Failed);
+                HandleAssemblyFinish(success ? TestOutcome.Passed : TestOutcome.Failed);
 
                 progressMonitor.Worked(workUnit);
                 return success;
@@ -344,15 +344,15 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 assemblyStopwatch = Stopwatch.StartNew();
             }
 
-            private void HandleAssemblyFinish(TestState state)
+            private void HandleAssemblyFinish(TestOutcome outcome)
             {
                 if (assemblyTest == null)
                     return;
 
                 TestResult result = new TestResult();
                 result.Duration = assemblyStopwatch.Elapsed.TotalSeconds;
-                result.State = state;
-                result.Outcome = state == TestState.Completed ? TestOutcome.Passed : TestOutcome.Failed;
+                result.State = TestState.Executed;
+                result.Outcome = outcome;
 
                 testStack.Pop();
                 listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateFinishEvent(assemblyTest.Id, result));
@@ -512,12 +512,12 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                         break;
 
                     case ReportRunResult.Success:
-                        result.State = TestState.Completed;
+                        result.State = TestState.Executed;
                         result.Outcome = TestOutcome.Passed;
                         break;
 
                     case ReportRunResult.Failure:
-                        result.State = TestState.Failed;
+                        result.State = TestState.Executed;
                         result.Outcome = TestOutcome.Failed;
                         break;
                 }

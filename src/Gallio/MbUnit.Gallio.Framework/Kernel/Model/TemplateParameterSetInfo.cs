@@ -14,11 +14,12 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Serialization
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
     /// Describes a template parameter set in a portable manner for serialization.
@@ -26,15 +27,28 @@ namespace MbUnit.Framework.Kernel.Serialization
     /// <seealso cref="ITemplateParameterSet"/>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class TemplateParameterSetInfo : TemplateComponentInfo
+    public sealed class TemplateParameterSetInfo : TemplateComponentInfo
     {
-        private TemplateParameterInfo[] parameters;
+        private List<TemplateParameterInfo> parameters;
 
         /// <summary>
-        /// Creates an empty object.
+        /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        public TemplateParameterSetInfo()
+        private TemplateParameterSetInfo()
         {
+            parameters = new List<TemplateParameterInfo>();
+        }
+
+        /// <summary>
+        /// Creates an empty parameter set info.
+        /// </summary>
+        /// <param name="id">The component id</param>
+        /// <param name="name">The component name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
+        public TemplateParameterSetInfo(string id, string name)
+            : base(id, name)
+        {
+            parameters = new List<TemplateParameterInfo>();
         }
 
         /// <summary>
@@ -44,23 +58,24 @@ namespace MbUnit.Framework.Kernel.Serialization
         public TemplateParameterSetInfo(ITemplateParameterSet obj)
             : base(obj)
         {
-            parameters = ListUtils.ConvertAllToArray<ITemplateParameter, TemplateParameterInfo>(obj.Parameters,
-                delegate(ITemplateParameter parameter)
-                {
-                    return new TemplateParameterInfo(parameter);
-                });
+            parameters = new List<TemplateParameterInfo>(obj.Parameters.Count);
+
+            ListUtils.ConvertAndAddAll(obj.Parameters, parameters,
+            delegate(ITemplateParameter parameter)
+            {
+                return new TemplateParameterInfo(parameter);
+            });
         }
 
         /// <summary>
-        /// Gets or sets the test parameters.  (non-null but possibly empty)
+        /// Gets the mutable list of parameters.
         /// </summary>
         /// <seealso cref="ITemplateParameterSet.Parameters"/>
         [XmlArray("parameters", IsNullable=false)]
         [XmlArrayItem("parameter", IsNullable=false)]
-        public TemplateParameterInfo[] Parameters
+        public List<TemplateParameterInfo> Parameters
         {
             get { return parameters; }
-            set { parameters = value; }
         }
     }
 }

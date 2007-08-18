@@ -19,7 +19,7 @@ using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Serialization
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
     /// Describes a model component in a portable manner for serialization.
@@ -27,7 +27,7 @@ namespace MbUnit.Framework.Kernel.Serialization
     /// <seealso cref="IModelComponent"/>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class ModelComponentInfo
+    public class ModelComponentInfo : IModelComponent
     {
         private string id;
         private string name;
@@ -35,66 +35,117 @@ namespace MbUnit.Framework.Kernel.Serialization
         private MetadataMap metadata;
 
         /// <summary>
-        /// Creates an empty object.
+        /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        public ModelComponentInfo()
+        protected ModelComponentInfo()
         {
         }
 
         /// <summary>
-        /// Creates an serializable description of a model object.
+        /// Creates a model component.
+        /// </summary>
+        /// <param name="id">The component id</param>
+        /// <param name="name">The component name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
+        public ModelComponentInfo(string id, string name)
+        {
+            if (id == null)
+                throw new ArgumentNullException("id");
+            if (name == null)
+                throw new ArgumentNullException("name");
+
+            this.id = id;
+            this.name = name;
+        }
+
+        /// <summary>
+        /// Copies the contents of a model component.
         /// </summary>
         /// <param name="obj">The model object</param>
         public ModelComponentInfo(IModelComponent obj)
         {
             id = obj.Id;
             name = obj.Name;
-            codeReference = obj.CodeReference;
-            metadata = obj.Metadata;
+            codeReference = obj.CodeReference.Copy();
+            metadata = obj.Metadata.Copy();
         }
 
         /// <summary>
         /// Gets or sets the test component id.  (non-null)
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         /// <seealso cref="IModelComponent.Id"/>
         [XmlAttribute("id")]
         public string Id
         {
             get { return id; }
-            set { id = value; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                id = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the test component name.  (non-null)
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         /// <seealso cref="IModelComponent.Name"/>
         [XmlAttribute("name")]
         public string Name
         {
             get { return name; }
-            set { name = value; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                name = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the code reference.  (non-null)
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         /// <seealso cref="IModelComponent.CodeReference"/>
         [XmlElement("codeReference", IsNullable=false)]
         public CodeReference CodeReference
         {
-            get { return codeReference; }
-            set { codeReference = value; }
+            get
+            {
+                if (codeReference == null)
+                    codeReference = new CodeReference();
+                return codeReference;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                codeReference = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the metadata map.  (non-null)
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         /// <seealso cref="IModelComponent.Metadata"/>
         [XmlElement("metadata", IsNullable=false)]
         public MetadataMap Metadata
         {
-            get { return metadata; }
-            set { metadata = value; }
+            get
+            {
+                if (metadata == null)
+                    metadata = new MetadataMap();
+                return metadata;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                metadata = value;
+            }
         }
     }
 }

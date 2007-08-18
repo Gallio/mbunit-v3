@@ -31,7 +31,7 @@ namespace MbUnit.Framework.Kernel.Metadata
     /// </summary>
     [Serializable]
     [XmlRoot("metadata", Namespace=SerializationUtils.XmlNamespace)]
-    public class MetadataMap : IXmlSerializable
+    public sealed class MetadataMap : IXmlSerializable
     {
         private MultiMap<string, string> entries;
 
@@ -50,6 +50,17 @@ namespace MbUnit.Framework.Kernel.Metadata
         public MultiMap<string, string> Entries
         {
             get { return entries; }
+        }
+
+        /// <summary>
+        /// Creates a copy of the metadata map.
+        /// </summary>
+        /// <returns>The copy</returns>
+        public MetadataMap Copy()
+        {
+            MetadataMap copy = new MetadataMap();
+            copy.Entries.AddAll(entries);
+            return copy;
         }
 
         /// <summary>

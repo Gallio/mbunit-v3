@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
 using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Icarus.Core.Interfaces;
 
 namespace MbUnit.Icarus.Core.Model

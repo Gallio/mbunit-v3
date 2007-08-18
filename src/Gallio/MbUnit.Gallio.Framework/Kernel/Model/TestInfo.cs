@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Serialization
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
     /// Describes a test in a portable manner for serialization.
@@ -28,31 +28,46 @@ namespace MbUnit.Framework.Kernel.Serialization
     [Serializable]
     [XmlRoot("test", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class TestInfo : TestComponentInfo
+    public sealed class TestInfo : TestComponentInfo
     {
         private bool isTestCase;
-        private TestInfo[] children;
+        private List<TestInfo> children;
 
         /// <summary>
-        /// Creates an empty object.
+        /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        public TestInfo()
+        private TestInfo()
         {
+            children = new List<TestInfo>();
         }
 
         /// <summary>
-        /// Creates an serializable description of a model object.
+        /// Creates a test info.
+        /// </summary>
+        /// <param name="id">The component id</param>
+        /// <param name="name">The component name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
+        public TestInfo(string id, string name)
+            : base(id, name)
+        {
+            children = new List<TestInfo>();
+        }
+
+        /// <summary>
+        /// Copies the contents of a test.
         /// </summary>
         /// <param name="obj">The model object</param>
         public TestInfo(ITest obj)
             : base(obj)
         {
-            isTestCase = obj.IsTestCase;
-            children = ListUtils.ConvertAllToArray<ITest, TestInfo>(obj.Children,
-                delegate(ITest child)
+            children = new List<TestInfo>();
+
+            ListUtils.ConvertAndAddAll(obj.Children, children, delegate(ITest child)
             {
                 return new TestInfo(child);
             });
+
+            isTestCase = obj.IsTestCase;
         }
 
         /// <summary>
@@ -66,15 +81,14 @@ namespace MbUnit.Framework.Kernel.Serialization
         }
 
         /// <summary>
-        /// Gets or sets the children.  (non-null but possibly empty)
+        /// Gets the mutable list of children.
         /// </summary>
         /// <seealso cref="ITest.Children"/>
         [XmlArray("children", IsNullable = false)]
         [XmlArrayItem("test", IsNullable = false)]
-        public TestInfo[] Children
+        public List<TestInfo> Children
         {
             get { return children; }
-            set { children = value; }
         }
     }
 }

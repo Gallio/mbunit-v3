@@ -27,7 +27,7 @@ using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Serialization;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Runner

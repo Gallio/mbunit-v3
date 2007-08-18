@@ -17,7 +17,9 @@ extern alias MbUnit2;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit.Core.Tests.Reporting
@@ -41,6 +43,54 @@ namespace MbUnit.Core.Tests.Reporting
 
             Report deserializedReport = (Report) serializer.Deserialize(new StringReader(writer.ToString()));
             CoreAssert.AreEqual(report, deserializedReport);
+        }
+
+        [Test]
+        public void GetAndSetTemplateModel()
+        {
+            Report report = new Report();
+
+            Assert.IsNull(report.TemplateModel);
+
+            TemplateModel value = MockTestDataFactory.CreateEmptyTemplateModel();
+            report.TemplateModel = value;
+            Assert.AreSame(value, report.TemplateModel);
+        }
+
+        [Test]
+        public void GetAndSetTestModel()
+        {
+            Report report = new Report();
+
+            Assert.IsNull(report.TestModel);
+
+            TestModel value = MockTestDataFactory.CreateEmptyTestModel();
+            report.TestModel = value;
+            Assert.AreSame(value, report.TestModel);
+        }
+
+        [Test]
+        public void GetAndSetPackage()
+        {
+            Report report = new Report();
+
+            Assert.IsNull(report.TestModel);
+
+            TestPackage value = new TestPackage();
+            report.Package = value;
+            Assert.AreSame(value, report.Package);
+        }
+
+        [Test]
+        public void GetAndSetPackageRun()
+        {
+            Report report = new Report();
+
+            Assert.IsNull(report.PackageRun);
+
+            PackageRun value = new PackageRun();
+            report.PackageRun = value;
+            Assert.AreSame(value, report.PackageRun);
         }
     }
 }

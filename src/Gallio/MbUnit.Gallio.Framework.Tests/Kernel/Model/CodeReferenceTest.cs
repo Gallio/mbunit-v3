@@ -55,6 +55,16 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         }
 
         [Test]
+        public void Copy()
+        {
+            CodeReference original = new CodeReference(assembly, @namespace, type, member, parameter);
+            CodeReference copy = original.Copy();
+
+            Assert.AreNotSame(original, copy);
+            Assert.AreEqual(original, copy);
+        }
+
+        [Test]
         public void CreateFromAssembly()
         {
             CodeReference r = CodeReference.CreateFromAssembly(assembly);

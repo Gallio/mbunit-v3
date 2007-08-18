@@ -205,7 +205,7 @@ namespace MbUnit.Echo
 
                 Console.WriteLine();
                 Console.WriteLine("Supported report types: {0}", 
-                    string.Join(",", ListUtils.CopyAllToArray(reportManager.GetFormatterNames())));
+                    string.Join(", ", ListUtils.CopyAllToArray(reportManager.GetFormatterNames())));
             }
         }
 
