@@ -35,11 +35,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IMainOpModel.cs" />
-    <Compile Include="Interfaces\IMainOpAdapter.cs" />
-    <Compile Include="Model\MainOpModel.cs" />
-    <Compile Include="Model\ProgressMonitorModel.cs" />
-    <Compile Include="Presenter\MainOpPresenter.cs" />
+    <Compile Include="Interfaces\ILogHistoryModel.cs" />
+    <Compile Include="Interfaces\IPreferencesModel.cs" />
+    <Compile Include="Interfaces\IReportHistoryModel.cs" />
+    <Compile Include="Interfaces\ITestRunnerModel.cs" />
+    <Compile Include="Interfaces\IProjectAdapter.cs" />
+    <Compile Include="Interfaces\ITestTreeModel.cs" />
+    <Compile Include="Model\TestRunnerModel.cs" />
+    <Compile Include="Presenter\ProjectPresenter.cs" />
+    <Compile Include="ProgressMonitorShower.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

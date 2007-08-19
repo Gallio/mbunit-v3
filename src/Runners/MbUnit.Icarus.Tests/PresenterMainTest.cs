@@ -1,3 +1,4 @@
+using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Services.Runtime;
 using MbUnit.Framework;
@@ -12,13 +13,15 @@ namespace MbUnit.Icarus.Tests
         [Test]
         public void LoadUpAssemblyAndGetTestTree_Test()
         {
-
             RuntimeSetup runtimeSetup = new RuntimeSetup();
             AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup);
 
-            MainOpModel main = new MainOpModel();
-
-            TestModel t = main.LoadUpAssembly(runner);
+            TestPackage testpackage = new TestPackage();
+            testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");
+            
+            TestRunnerModel main = new TestRunnerModel();
+            
+            TestModel t = main.LoadUpAssembly(runner, testpackage);
         }
 
     }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MbUnit.Icarus.Interfaces
 {
-    public interface IMainOpAdapterView
+    public interface IProjectAdapterModel
     {
     }
 }
