@@ -38,43 +38,39 @@ namespace MbUnit.Core.Tests.Runners.CommandLine
         }
 
         [Test]
+        public void DefaultConstractorTest()
+        {
+            CommandLineOutput output = new CommandLineOutput();
+            Console.WriteLine(output.Output.GetType());
+            Assert.AreEqual(Console.Out.GetType(), output.Output.GetType());
+        }
+
+        [Test]
         public void ConstractorWithTextWriterParameter()
         {
             CommandLineOutput output = new CommandLineOutput(_writer);
+            Console.WriteLine(output.Output.GetType());
+            Assert.AreEqual(typeof(StringWriter), output.Output.GetType());
         }
 
+        [RowTest]
+        [Row("help", "h", "Display this help text."
+            , "  /help              Display this help text. (Short form: /h)\r\n")]
+        [Row("very_long_argument", "vl", "Argument description."
+            , "  /very_long_argument\r\n                     Argument description. (Short form: /vl)\r\n")]
+         [Row("long_description", "ld", "It is a very long description. It is a very long description. It is a very long description. It is a very long description."
+           , "  /long_description  It is a very long description. It is a very long\r\n                     description. It is a very long description. It is a very\r\n                     long description. (Short form: /ld)\r\n")]
+        public void PringArgumentHelpTest(string longName, string shortName, string description, string expectedOutput)
+        {
+            _output.PrintArgumentHelp(longName, shortName, description);
+            Assert.AreEqual(expectedOutput, _sbOutput.ToString());
+        }
 
         [Test]
         public void PrintTextTest()
         {
             _output.PrintText("Some Text", 3);
-            Assert.AreEqual("   Some Text", _sbOutput.ToString());
-        }
-        
-        [Test]
-        public void PrintArgumentNameTest()
-        {
-            _output.PrintArgumentName("help", "h");
-            Assert.AreEqual("  [/help|/h]", _sbOutput.ToString());
-        }
-
-        [RowTest]
-        [Row(typeof(string), ":<string>")]
-        [Row(typeof(int), ":<int>")]
-        [Row(typeof(uint), ":<uint>")]
-        [Row(typeof(bool), "[+|-]")]
-        [Row(typeof(EnumTypeTest), ":{Test1|Test2|Test3}")]
-        public void PrintArgumentTypeTest(Type type, string expectedOutput)
-        {
-            _output.PrintArgumentType(type);
-            Assert.AreEqual(expectedOutput, _sbOutput.ToString());
-        }
-
-        [Test]
-        [ExpectedArgumentException]
-        public void PrintArgumentTypeWithUnexpectedType()
-        {
-            _output.PrintArgumentType(typeof(StringBuilder));
+            Assert.AreEqual("   Some Text\r\n", _sbOutput.ToString());
         }
 
         [Test]
@@ -82,18 +78,6 @@ namespace MbUnit.Core.Tests.Runners.CommandLine
         {
             _output.NewLine();
             Assert.AreEqual("\r\n", _sbOutput.ToString());
-        }
-
-        [RowTest]
-        [Row("A short description.", "    A short description.")]
-        [Row("The list of directories used for loading assemblies and other dependent resources."
-            , "    The list of directories used for loading assemblies and other dependent\r\n    resources.")]
-        [Row("A very very long description. A very very long description. A very very long description. A very very long description. A very very long description. A very very long description."
-           , "    A very very long description. A very very long description. A very very long\r\n    description. A very very long description. A very very long description. A\r\n    very very long description.")]
-        public void PrintDescriptionTest(string description, string expectedOutput)
-        {
-            _output.PrintDescription(description);
-            Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }
 
         private enum EnumTypeTest
