@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 
 namespace MbUnit.Core.Runner.CommandLine
 {
@@ -30,7 +31,7 @@ namespace MbUnit.Core.Runner.CommandLine
         ///</summary>
         public CommandLineOutput()
             : this(Console.Out)
-        { }
+        {}
 
         ///<summary>
         /// Initializes new instance of CommandLineOutput that outputs to specified stream.
@@ -42,47 +43,11 @@ namespace MbUnit.Core.Runner.CommandLine
         }
 
         ///<summary>
-        /// Outpus argument long and short names.
+        /// Output Stream
         ///</summary>
-        ///<param name="longName">Long name.</param>
-        ///<param name="shortName">Short name.</param>
-        public void PrintArgumentName(string longName, string shortName)
+        public TextWriter Output
         {
-            _output.Write(Space(2));
-            _output.Write("[/");
-            _output.Write(longName);
-            _output.Write("|/");
-            _output.Write(shortName);
-            _output.Write("]");
-        }
-
-        ///<summary>
-        /// Outputs argument type.
-        ///</summary>
-        ///<param name="type">Argument Type.</param>
-        public void PrintArgumentType(Type type)
-        {
-            switch (type.Name)
-            {
-                case "String":
-                    _output.Write(":<string>");
-                    break;
-                case "Int32":
-                    _output.Write(":<int>");
-                    break;
-                case "UInt32":
-                    _output.Write(":<uint>");
-                    break;
-                case "Boolean":
-                    _output.Write("[+|-]");
-                    break;
-                default:
-                    if (type.IsEnum)
-                        PrintEnumArgumentType(type);
-                    else
-                        throw new ArgumentException("Unexpected type.");
-                    break;
-            }
+            get { return _output; }
         }
 
         ///<summary>
@@ -91,15 +56,6 @@ namespace MbUnit.Core.Runner.CommandLine
         public void NewLine()
         {
             _output.WriteLine();
-        }
-
-        ///<summary>
-        /// Outputs argument description.
-        ///</summary>
-        ///<param name="description">Argument description.</param>
-        public void PrintDescription(string description)
-        {
-            PrintText(description, 4);
         }
 
         ///<summary>
@@ -119,7 +75,52 @@ namespace MbUnit.Core.Runner.CommandLine
                 text = text.Substring(pos + 1);
             }
             _output.Write(Space(indentation));
-            _output.Write(text);
+            _output.WriteLine(text);
+        }
+
+        ///<summary>
+        /// Outputs text with specified indentation.
+        ///</summary>
+        ///<param name="text">Text to output.</param>
+        ///<param name="firstLineIndent">Number of blank spaces before the start of the text.</param>
+        ///<param name="indentation">Number of blank spaces before the start of the text.</param>
+        private void PrintText(string text, int firstLineIndent, int indentation)
+        {
+            int maxLength = 80 - firstLineIndent;
+            if (text.Length > maxLength)
+            {
+                int pos = text.LastIndexOf(' ', maxLength + 1);
+                _output.Write(Space(firstLineIndent));
+                _output.Write(text.Substring(0, pos));
+                _output.WriteLine();
+                text = text.Substring(pos + 1);
+                PrintText(text, indentation);
+            }
+            else
+                PrintText(text, firstLineIndent);
+        }
+
+        ///<summary>
+        /// Output help for a specified argument.
+        ///</summary>
+        ///<param name="longName">Argument long name.</param>
+        ///<param name="shortName">Argument short name.</param>
+        ///<param name="description">Argument description.</param>
+        public void PrintArgumentHelp(string longName, string shortName, string description)
+        {
+            StringBuilder argumentHelp = new StringBuilder("/");
+            argumentHelp.Append(longName);
+            if (longName.Length > 17)
+            {
+                PrintText(argumentHelp.ToString(), 2);
+                PrintText(CreateDescriptionWithShortName(description, shortName), 21);
+            }
+            else
+            {
+                argumentHelp.Append(Space(18 - longName.Length));
+                argumentHelp.Append(CreateDescriptionWithShortName(description, shortName));
+                PrintText(argumentHelp.ToString(), 2, 21);
+            }
         }
 
         private void PrintEnumArgumentType(Type type)
@@ -138,6 +139,11 @@ namespace MbUnit.Core.Runner.CommandLine
         private static string Space(int spaceCount)
         {
             return new string(' ', spaceCount);
+        }
+
+        private static string CreateDescriptionWithShortName(string description, string shortName)
+        {
+            return string.Format("{0} (Short form: /{1})", description, shortName);
         }
     }
 }

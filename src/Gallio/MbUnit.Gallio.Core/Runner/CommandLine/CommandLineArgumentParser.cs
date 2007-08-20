@@ -238,90 +238,6 @@ namespace MbUnit.Core.Runner.CommandLine
 		    return !hadError;
 		}
         
-        
-		/// <summary>
-		/// A user firendly usage string describing the command line argument syntax.
-		/// </summary>
-		public string Usage
-		{
-			get
-			{
-				StringBuilder builder = new StringBuilder();
-                
-				int oldLength;
-				foreach (Argument arg in arguments)
-				{
-					oldLength = builder.Length;
-                    
-					builder.Append("    /");
-					builder.Append(arg.LongName);
-					Type valueType = arg.ValueType;
-					if (valueType == typeof(int))
-					{
-						builder.Append(":<int>");
-					}
-					else if (valueType == typeof(uint))
-					{
-						builder.Append(":<uint>");
-					}
-					else if (valueType == typeof(bool))
-					{
-						builder.Append("[+|-]");
-					}
-					else if (valueType == typeof(string))
-					{
-						builder.Append(":<string>");
-					}
-					else
-					{
-						Debug.Assert(valueType.IsEnum);
-                        
-						builder.Append(":{");
-						bool first = true;
-						foreach (FieldInfo field in valueType.GetFields())
-						{
-							if (field.IsStatic)
-							{
-								if (first)
-									first = false;
-								else
-									builder.Append('|');
-								builder.Append(field.Name);
-							}
-						}
-						builder.Append('}');
-					}
-                    
-					if (arg.ShortName != arg.LongName && argumentMap[arg.ShortName] == arg)
-					{
-						builder.Append(' ', IndentLength(builder.Length - oldLength));
-						builder.Append("short form /");
-						builder.Append(arg.ShortName);
-					}
-
-					if (arg.Description.Length>0)
-						builder.Append("\t"+arg.Description);
-					builder.Append(CommandLineUtility.NewLine);
-				}
-                
-				oldLength = builder.Length;
-				builder.Append("    @<file>");
-				builder.Append(' ', IndentLength(builder.Length - oldLength));
-				builder.Append("Read response file for more options");
-				builder.Append(CommandLineUtility.NewLine);
-                
-				if (defaultArgument != null)
-				{
-				    builder.Append("    <");
-					builder.Append(defaultArgument.LongName);
-					builder.Append(">");
-					builder.Append(CommandLineUtility.NewLine);
-				}
-                
-				return builder.ToString();
-			}
-		}
-
         ///<summary>
         /// A user firendly usage string describing the command line argument syntax.
         ///</summary>
@@ -330,24 +246,15 @@ namespace MbUnit.Core.Runner.CommandLine
             CommandLineOutput output = new CommandLineOutput();
             foreach (Argument arg in arguments)
             {
-                output.PrintArgumentName(arg.LongName, arg.ShortName);
-                output.PrintArgumentType(arg.ValueType);
+                output.PrintArgumentHelp(arg.LongName, arg.ShortName, arg.Description);
                 output.NewLine();
-                output.PrintDescription(arg.Description);
-                output.NewLine();
+                //                output.PrintArgumentType(arg.ValueType);
             }
-            output.PrintText("@<file>", 2);
-            output.NewLine();
-            output.PrintDescription("Read response file for more options");
+            output.PrintText("@<file>          Read response file for more options.", 2);
             output.NewLine();
             output.PrintText(string.Format("<{0}>", defaultArgument.LongName), 2);
             output.NewLine();
         }
-            
-		private static int IndentLength(int lineLength)
-		{
-			return Math.Max(4, 40 - lineLength);
-		}
         
 		private bool LexFileArguments(string fileName, out string[] arguments)
 		{
