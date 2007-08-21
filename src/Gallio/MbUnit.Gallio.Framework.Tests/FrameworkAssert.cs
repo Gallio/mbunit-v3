@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit._Framework.Tests

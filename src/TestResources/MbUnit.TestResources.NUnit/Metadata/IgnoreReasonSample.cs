@@ -13,9 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace MbUnit.Icarus.Core.Interfaces
+using System;
+using System.Collections.Generic;
+using System.Text;
+using NUnit.Framework;
+
+namespace MbUnit.TestResources.NUnit.Metadata
 {
-    interface ILogHistoryModel
+    [TestFixture]
+    public class IgnoreReasonSample
     {
+        [Test, Ignore("For testing purposes.")]
+        public void Ignored()
+        {
+        }
     }
 }

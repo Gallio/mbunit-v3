@@ -24,6 +24,7 @@ using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
+using TestPatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestPatternAttribute;
 using AuthorAttribute2 = MbUnit2::MbUnit.Framework.AuthorAttribute;
 using FixtureCategoryAttribute2 = MbUnit2::MbUnit.Framework.FixtureCategoryAttribute;
 using TestCategoryAttribute2 = MbUnit2::MbUnit.Framework.TestCategoryAttribute;
@@ -35,6 +36,7 @@ using MbUnit2::MbUnit.Core;
 using MbUnit2::MbUnit.Core.Remoting;
 using MbUnit2::MbUnit.Core.Filters;
 using MbUnit2::MbUnit.Core.Reports.Serialization;
+using MbUnit2::MbUnit.Core.Invokers;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Core
 {
@@ -154,7 +156,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             {
                 // Note: In principle we could eliminate the call to MapImportance because TestImportance is
                 //       defined the same way in Gallio as in MbUnit v2.  But there is no guarantee that will remain the case.
-                test.Metadata.Entries.Add(MetadataKey.TestsOn, MapImportance(attrib.Importance).ToString());
+                test.Metadata.Entries.Add(MetadataKey.Importance, MapImportance(attrib.Importance).ToString());
             }
             foreach (TestFixturePatternAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestFixturePatternAttribute2), true))
             {
@@ -168,12 +170,19 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
         private MbUnit2Test CreateTest(TestScope parentScope, RunPipe runPipe)
         {
-            MbUnit2Test test = new MbUnit2Test(runPipe.Name, CodeReference.CreateFromType(runPipe.FixtureType), parentScope, runPipe.Fixture, runPipe);
+            MemberInfo memberInfo = GuessMemberInfoFromRunPipe(runPipe);
+            CodeReference codeRef = memberInfo != null ? CodeReference.CreateFromMember(memberInfo) : CodeReference.CreateFromType(runPipe.FixtureType);
+
+            MbUnit2Test test = new MbUnit2Test(runPipe.Name, codeRef, parentScope, runPipe.Fixture, runPipe);
             test.Kind = ComponentKind.Test;
             test.IsTestCase = true;
 
-            // TODO: How can we populate the metadata?
-            //       We don't even know the MethodInfo!
+            // Populate metadata
+            foreach (TestPatternAttribute2 attrib in memberInfo.GetCustomAttributes(typeof(TestPatternAttribute2), true))
+            {
+                if (!String.IsNullOrEmpty(attrib.Description))
+                    test.Metadata.Entries.Add(MetadataKey.Description, attrib.Description);
+            }
 
             parentScope.ContainingTest.AddChild(test);
             return test;
@@ -199,6 +208,43 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 case TestImportance2.Default:
                     return TestImportance.Default;
             }
+        }
+
+        /// <summary>
+        /// MbUnit v2 does not expose the MemberInfo directly.  Arguably
+        /// that allows more general filtering rules than Gallio's simple
+        /// CodeReference but it is a bit of a nuisance for us here.
+        /// So to avoid breaking the MbUnit v2 API, we resort to a
+        /// hack based on guessing the right method.
+        /// </summary>
+        private MemberInfo GuessMemberInfoFromRunPipe(RunPipe runPipe)
+        {
+            foreach (RunInvokerVertex vertex in runPipe.Invokers)
+            {
+                if (! vertex.HasInvoker)
+                    continue;
+
+                IRunInvoker invoker = vertex.Invoker;
+                if (invoker.Generator.IsTest)
+                {
+                    // Note: This is the hack.
+                    //       We assume the run invoker's name matches the name of
+                    //       the actual member and that the member is public and is
+                    //       declared by the fixture type.  That should be true with
+                    //       all built-in MbUnit v2 invokers.  -- Jeff.
+                    Type fixtureType = runPipe.FixtureType;
+                    string probableMemberName = invoker.Name;
+
+                    foreach (MemberInfo member in fixtureType.GetMember(probableMemberName,
+                        BindingFlags.Public | BindingFlags.Instance))
+                    {
+                        if (invoker.ContainsMemberInfo(member))
+                            return member;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

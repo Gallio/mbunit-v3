@@ -22,7 +22,6 @@ using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Tests;
 using MbUnit2::MbUnit.Framework;
 

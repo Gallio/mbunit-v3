@@ -35,6 +35,10 @@
       <HintPath>..\..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
       <Aliases>MbUnit2</Aliases>
     </Reference>
+    <Reference Include="QuickGraph, Version=2.21.1.0, Culture=neutral, PublicKeyToken=975e84d0c8d6464d">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\MbUnit2\bin\QuickGraph.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />

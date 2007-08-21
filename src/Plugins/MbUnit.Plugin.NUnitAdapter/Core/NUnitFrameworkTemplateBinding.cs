@@ -62,15 +62,12 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         {
             LoadTestPackageIfNeeded();
 
-            NUnitTest frameworkTest = CreateFrameworkTest(Scope);
-            frameworkTest.Batch = new TestBatch("NUnit", delegate
-            {
-                return new NUnitTestController(runner);
-            });
-
+            // Note: The NUnit test tree when constructed this way
+            //       includes a root test node simply called "Tests".
+            //       There's no point showing this to the user do instead
+            //       we assimilate it in the framework-level test.
             NUnit.Core.ITest rootTest = runner.Test;
-            if (rootTest != null)
-                BuildTests(frameworkTest, rootTest);
+            BuildFrameworkTest(Scope, rootTest);
         }
 
         private void LoadTestPackageIfNeeded()
@@ -100,15 +97,18 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             }
         }
 
-        private NUnitTest CreateFrameworkTest(TestScope parentScope)
+        private void BuildFrameworkTest(TestScope parentScope, NUnit.Core.ITest nunitRootTest)
         {
-            NUnitTest test = new NUnitTest(Template.Name, CodeReference.Unknown, parentScope, null);
+            NUnitTest test = new NUnitTest(Template.Name, CodeReference.Unknown, parentScope, nunitRootTest);
             test.Kind = ComponentKind.Framework;
-
-            // TODO: Is there any useful framework metadata?
+            test.Batch = new TestBatch("NUnit", delegate
+            {
+                return new NUnitTestController(runner);
+            });
+            PopulateMetadata(test, nunitRootTest);
 
             parentScope.ContainingTest.AddChild(test);
-            return test;
+            BuildChildren(test);
         }
 
         private void BuildTests(NUnitTest parentTest, NUnit.Core.ITest nunitTest)
@@ -141,8 +141,23 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, codeReference, parentTest.Scope, nunitTest);
             test.Kind = kind;
             test.IsTestCase = !nunitTest.IsSuite;
+            PopulateMetadata(test, nunitTest);
 
-            // Populate metadata
+            parentTest.AddChild(test);
+            BuildChildren(test);
+        }
+
+        private void BuildChildren(NUnitTest test)
+        {
+            if (test.Test != null && test.Test.Tests != null)
+            {
+                foreach (NUnit.Core.ITest childNUnitTest in test.Test.Tests)
+                    BuildTests(test, childNUnitTest);
+            }
+        }
+
+        private void PopulateMetadata(NUnitTest test, NUnit.Core.ITest nunitTest)
+        {
             if (!String.IsNullOrEmpty(nunitTest.Description))
                 test.Metadata.Entries.Add(MetadataKey.Description, nunitTest.Description);
 
@@ -156,15 +171,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 test.Metadata.Entries.Add(entry.Key.ToString(), entry.Value != null ? entry.Value.ToString() : null);
 
             test.Metadata.Entries.Add(TestTypeMetadataKey, nunitTest.TestType);
-
-            parentTest.AddChild(test);
-
-            // Build children.
-            if (nunitTest.Tests != null)
-            {
-                foreach (NUnit.Core.ITest childNUnitTest in nunitTest.Tests)
-                    BuildTests(test, childNUnitTest);
-            }
         }
 
         /// <summary>
@@ -238,7 +244,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 if (lastDot > 0 && lastDot < name.Length - 1)
                 {
                     namespaceName = name.Substring(0, lastDot);
-                    typeName = name.Substring(lastDot + 1);
+                    typeName = name; //name.Substring(lastDot + 1);
                     return true;
                 }
             }

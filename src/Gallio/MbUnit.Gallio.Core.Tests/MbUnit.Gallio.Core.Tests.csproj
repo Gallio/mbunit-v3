@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harness\BaseTestFrameworkTest.cs" />
     <Compile Include="Harness\MbUnitTestFrameworkTest.cs" />
     <Compile Include="MockTestDataFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -141,6 +141,7 @@
 
   <Target Name="Test">
     <Exec Command="&quot;$(LibsDir)\MbUnit2\bin\MbUnit.Cons.exe&quot; /report-type:Html /report-folder:&quot;$(BuildReportsDir)&quot; /show-reports @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
+          WorkingDirectory="$(LibsDir)\MbUnit2\bin"
           IgnoreExitCode="true">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
     </Exec>

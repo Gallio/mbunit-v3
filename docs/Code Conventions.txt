@@ -1,0 +1,81 @@
+Code Conventions for MbUnit.
+============================
+
+These are some simple rules to keep in mind so that we can all play nicely
+together.  Thanks for your consideration and attention to detail.
+
+-- Jeff Brown.
+
+0. Above all else, try to make the code look consistent!  Though it
+   is the product of a community of developers, it should feel like it
+   was written by a single (very smart and omniscient) developer.
+   Inconsistencies is style make it more difficult for newcomers to
+   contribute to the project.  Moreover, it just looks sloppy.
+   So keep it beautiful.
+
+1. Follow the Microsoft conventions for class library developers.
+   Specific notes:
+   
+   - Do not prefix private member names in any way.
+   - Use camel-case for all identifiers including constants.
+   - Capitalize type, method, property and constant names.
+   
+2. Apply clear XML documentation comments to all public and protected types
+   and members in the MbUnit.Core and MbUnit.Framework namespaces clearly.
+   Choosing good identifiers is also important.  These types and members
+   are public API and we will generate HTML and CHM documentation from them
+   for consumption by testers, developers and system integrators.
+
+   Use <see cref="..." /> and <seealso cref="..." /> liberally to cross-reference
+   related concerns.
+   
+   Use <exception cref="...">...</exception> liberally to document exceptions
+   that may reasonably be thrown by a method.
+   
+   Do not leave empty XML documentation comments.  Strip them out if you
+   don't plan to fill them in immediately.  That way we can use the compiler
+   so find any missing bits by looking for code 1591 warnings.
+   
+3. Use a consistent naming policy for all unit tests.
+   If the class under test is MbUnit.Core.Blah.Foo, then the tests should
+   be in MbUnit.Core.Tests.Blah.FooTest.  Integration tests are exempt from
+   this rule because they involve many interacting components.  Not
+   all unit tests will have a single class under test.  In these cases,
+   use good judgement in arranging the tests so that it is still relatively
+   straightforward to locate them.
+
+4. TABs vs Spaces.  I don't care.  Modern editors assume 4 spaces to a tab
+   so it looks fine anywhere.  So there!  ;-)
+   
+5. Please use liberal vertical whitespace to make reading the code easier.
+   It's astonishingly helpful to have long functions broken down into
+   a series of phases like: validation, processing, and production of
+   the final result.
+
+6. Highlight broken, incomplete, tricky, or interesting bits in comments.
+   The following prefixes are recommended:
+     // FIXME:
+     // TODO:
+     // NOTE:
+
+7. Lightly validate all arguments in API functions.  Generally this
+   amounts to checking for nulls and basic bounds.  Don't bother
+   validating deep structural integrity rules unless the API function
+   constitutes a real security hazard.
+   
+   Also, just use the following pattern for checks at the beginning
+   of each function:
+   
+   if (argument == null)
+       throw new ArgumentNullException("argument");
+       
+   Please don't invent lots of new helpers for checking nullity:
+   they are slower than inline code, less intuitive, lead to
+   a proliferation of everyone's favority utility functions, and
+   don't benefit from special support offered by refactoring
+   tools like Resharper.
+
+8. All code files (except possibly designer generated code) begin with
+   the Gallio license boilerplate exactly as contained in the
+   CSLicenseBoilerplate.txt file.  This boilerplate can be added
+   automatically with the ApplyBoilerplace.bat script.

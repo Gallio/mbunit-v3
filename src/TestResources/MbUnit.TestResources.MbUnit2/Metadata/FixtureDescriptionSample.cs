@@ -13,9 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace MbUnit.Icarus.Core.Interfaces
+using System;
+using System.Collections.Generic;
+using System.Text;
+using MbUnit.Framework;
+
+namespace MbUnit.TestResources.MbUnit2.Metadata
 {
-    interface ILogHistoryModel
+    [TestFixture(Description="A sample description.")]
+    public class FixtureDescriptionSample
     {
     }
 }
