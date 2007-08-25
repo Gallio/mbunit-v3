@@ -44,7 +44,63 @@
     <Compile Include="Block.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="DescriptionAttribute.cs" />
+    <Compile Include="Kernel\Assertions\Assertion.cs" />
+    <Compile Include="Kernel\Assertions\AssertionCondition.cs" />
+    <Compile Include="Kernel\Assertions\AssertionResult.cs" />
+    <Compile Include="Kernel\Assertions\AssertionResultType.cs" />
+    <Compile Include="Kernel\Assertions\AssertionUtils.cs" />
+    <Compile Include="Kernel\Assertions\IAssertionService.cs" />
+    <Compile Include="Kernel\DataBinding\ConvertedDataFactory.cs" />
+    <Compile Include="Kernel\DataBinding\DataBinding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\DataBinding\DataBindingSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\DataBinding\DataSourceList.cs" />
+    <Compile Include="Kernel\DataBinding\IDataBinder.cs" />
+    <Compile Include="Kernel\DataBinding\IDataBindingContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\DataBinding\IDataRow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\DataBinding\IDataSource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Kernel\DataBinding\IDataSourceResolver.cs" />
+    <Compile Include="Kernel\DataBinding\ArrayDataRow.cs" />
+    <Compile Include="Kernel\Contexts\IContext.cs" />
+    <Compile Include="Kernel\Contexts\IContextManager.cs" />
+    <Compile Include="Kernel\Conversions\IConverter.cs" />
+    <Compile Include="Kernel\ExecutionLogs\Attachment.cs" />
+    <Compile Include="Kernel\ExecutionLogs\AttachmentUtils.cs" />
+    <Compile Include="Kernel\ExecutionLogs\BinaryAttachment.cs" />
+    <Compile Include="Kernel\ExecutionLogs\ContextualExecutionLogTextWriter.cs" />
+    <Compile Include="Kernel\ExecutionLogs\ContextualExecutionLogTraceListener.cs" />
+    <Compile Include="Kernel\ExecutionLogs\ExecutionLogStreams.cs" />
+    <Compile Include="Kernel\ExecutionLogs\IAttachmentVisitor.cs" />
+    <Compile Include="Kernel\ExecutionLogs\IExecutionLog.cs" />
+    <Compile Include="Kernel\ExecutionLogs\IExecutionLogService.cs" />
+    <Compile Include="Kernel\ExecutionLogs\IExecutionLogStream.cs" />
+    <Compile Include="Kernel\ExecutionLogs\IExecutionLogStreamCollection.cs" />
+    <Compile Include="Kernel\ExecutionLogs\IExecutionLogWriter.cs" />
+    <Compile Include="Kernel\ExecutionLogs\MimeTypes.cs" />
+    <Compile Include="Kernel\ExecutionLogs\RecordedExecutionLog.cs" />
+    <Compile Include="Kernel\ExecutionLogs\TextAttachment.cs" />
+    <Compile Include="Kernel\ExecutionLogs\XmlAttachment.cs" />
+    <Compile Include="Kernel\Formatting\IFormatter.cs" />
+    <Compile Include="Kernel\DataBinding\IDataFactory.cs" />
+    <Compile Include="Kernel\Model\BaseStep.cs" />
+    <Compile Include="Kernel\Model\IStep.cs" />
+    <Compile Include="Kernel\Model\MbUnitTest.cs" />
+    <Compile Include="Kernel\Model\MbUnitTestController.cs" />
+    <Compile Include="Kernel\Model\StepInfo.cs" />
+    <Compile Include="Kernel\Model\TemplateBindingScope.cs" />
     <Compile Include="Kernel\Results\TestState.cs" />
+    <Compile Include="Kernel\Runtime\IAssemblyResolverManager.cs" />
+    <Compile Include="Kernel\Runtime\IRuntime.cs" />
+    <Compile Include="Kernel\Runtime\RuntimeHolder.cs" />
     <Compile Include="KeyedPairwiseAssertion.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="PairwiseAssertion.cs" />
@@ -91,22 +147,22 @@
     <Compile Include="Kernel\Events\RemoteEventListener.cs" />
     <Compile Include="Kernel\Events\RemoteProgressMonitor.cs" />
     <Compile Include="Kernel\Events\SubProgressMonitor.cs" />
-    <Compile Include="Kernel\Events\TestEventArgs.cs">
+    <Compile Include="Kernel\Events\TestStepEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Kernel\Events\TestExecutionLogEventArgs.cs">
+    <Compile Include="Kernel\Events\ExecutionLogEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Kernel\Events\TestExecutionLogEventType.cs">
+    <Compile Include="Kernel\Events\ExecutionLogEventType.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Kernel\Events\TestLifecycleEventArgs.cs">
+    <Compile Include="Kernel\Events\LifecycleEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Kernel\Events\TestLifecycleEventType.cs">
+    <Compile Include="Kernel\Events\LifecycleEventType.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Kernel\Events\TestStepConstants.cs">
+    <Compile Include="Kernel\Events\LifecyclePhase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Kernel\Events\TrackingProgressMonitor.cs" />
@@ -139,7 +195,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Kernel\Model\BaseTemplateParameter.cs" />
-    <Compile Include="Kernel\Model\BaseTemplateParameterSet.cs" />
     <Compile Include="Kernel\Model\BaseTemplate.cs" />
     <Compile Include="Kernel\Model\BaseTest.cs" />
     <Compile Include="Kernel\Model\BaseTestComponent.cs" />
@@ -150,7 +205,6 @@
     <Compile Include="Kernel\Model\ITest.cs" />
     <Compile Include="Kernel\Model\ITemplateComponent.cs" />
     <Compile Include="Kernel\Model\ITemplateParameter.cs" />
-    <Compile Include="Kernel\Model\ITemplateParameterSet.cs" />
     <Compile Include="Kernel\Model\ITemplate.cs" />
     <Compile Include="Kernel\Model\TestBatch.cs" />
     <Compile Include="Kernel\Model\ITestComponent.cs" />
@@ -160,7 +214,6 @@
     <Compile Include="Kernel\Model\MbUnitMethodTemplate.cs" />
     <Compile Include="Kernel\Model\MbUnitTemplateBinding.cs" />
     <Compile Include="Kernel\Model\MbUnitTemplateParameter.cs" />
-    <Compile Include="Kernel\Model\MbUnitTemplateParameterSet.cs" />
     <Compile Include="Kernel\Model\MbUnitTemplate.cs" />
     <Compile Include="Kernel\Metadata\MetadataMap.cs" />
     <Compile Include="Kernel\Model\ModelException.cs" />
@@ -169,7 +222,6 @@
     <Compile Include="Kernel\Model\RootTemplateBinding.cs" />
     <Compile Include="Kernel\Model\RootTest.cs" />
     <Compile Include="Kernel\Model\Slot.cs" />
-    <Compile Include="Kernel\Model\TestScope.cs" />
     <Compile Include="Kernel\Model\TemplateTreeBuilder.cs" />
     <Compile Include="Kernel\Model\TestTreeBuilder.cs" />
     <Compile Include="Kernel\Model\ModelTreeBuilder.cs" />
@@ -179,7 +231,6 @@
     <Compile Include="Kernel\Model\TemplateInfo.cs" />
     <Compile Include="Kernel\Model\TemplateModel.cs" />
     <Compile Include="Kernel\Model\TemplateParameterInfo.cs" />
-    <Compile Include="Kernel\Model\TemplateParameterSetInfo.cs" />
     <Compile Include="Kernel\Model\TestComponentInfo.cs" />
     <Compile Include="Kernel\Model\TestInfo.cs" />
     <Compile Include="Kernel\Model\TestModel.cs" />
@@ -192,34 +243,8 @@
     <Compile Include="Log.cs" />
     <Compile Include="RowAttribute.cs" />
     <Compile Include="RowTestAttribute.cs" />
-    <Compile Include="Services\Assertions\Assertion.cs" />
-    <Compile Include="Services\Assertions\AssertionCondition.cs" />
-    <Compile Include="Services\Assertions\AssertionResult.cs" />
-    <Compile Include="Services\Assertions\AssertionResultType.cs" />
-    <Compile Include="Services\Assertions\AssertionUtils.cs" />
-    <Compile Include="Services\Assertions\IAssertionService.cs" />
-    <Compile Include="Services\Contexts\IContext.cs" />
-    <Compile Include="Services\Contexts\IContextManager.cs" />
-    <Compile Include="Services\ExecutionLogs\ExecutionLogStreams.cs" />
-    <Compile Include="Services\Runtime\IAssemblyResolverManager.cs" />
-    <Compile Include="Services\ExecutionLogs\Attachment.cs" />
-    <Compile Include="Services\ExecutionLogs\AttachmentUtils.cs" />
-    <Compile Include="Services\ExecutionLogs\BinaryAttachment.cs" />
-    <Compile Include="Services\ExecutionLogs\IAttachmentVisitor.cs" />
-    <Compile Include="Services\ExecutionLogs\MimeTypes.cs" />
-    <Compile Include="Services\ExecutionLogs\TextAttachment.cs" />
-    <Compile Include="Services\ExecutionLogs\XmlAttachment.cs" />
-    <Compile Include="Services\ExecutionLogs\ContextualExecutionLogTextWriter.cs" />
-    <Compile Include="Services\ExecutionLogs\ContextualExecutionLogTraceListener.cs" />
-    <Compile Include="Services\ExecutionLogs\RecordedExecutionLog.cs" />
-    <Compile Include="Services\ExecutionLogs\IExecutionLog.cs" />
-    <Compile Include="Services\ExecutionLogs\IExecutionLogService.cs" />
-    <Compile Include="Services\ExecutionLogs\IExecutionLogStream.cs" />
-    <Compile Include="Services\ExecutionLogs\IExecutionLogStreamCollection.cs" />
-    <Compile Include="Services\ExecutionLogs\IExecutionLogWriter.cs" />
-    <Compile Include="Services\Runtime\IRuntime.cs" />
-    <Compile Include="Services\Runtime\RuntimeHolder.cs" />
     <Compile Include="SetUpAttribute.cs" />
+    <Compile Include="Step.cs" />
     <Compile Include="TearDownAttribute.cs" />
     <Compile Include="TestAttribute.cs" />
     <Compile Include="TestFixtureAttribute.cs" />

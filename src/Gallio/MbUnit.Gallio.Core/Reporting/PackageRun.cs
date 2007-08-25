@@ -28,7 +28,7 @@ namespace MbUnit.Core.Reporting
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public class PackageRun
     {
-        private List<TestRun> testRuns;
+        private readonly List<TestRun> testRuns;
         private PackageRunStatistics statistics;
         private DateTime startTime;
         private DateTime endTime;
@@ -89,6 +89,20 @@ namespace MbUnit.Core.Reporting
                 if (value == null)
                     throw new ArgumentNullException("value");
                 statistics = value;
+            }
+        }
+
+        /// <summary>
+        /// Recursively enumerates all test run steps.
+        /// </summary>
+        [XmlIgnore]
+        public IEnumerable<StepRun> StepRuns
+        {
+            get
+            {
+                foreach (TestRun testRun in testRuns)
+                    foreach (StepRun stepRun in testRun.StepRuns)
+                        yield return stepRun;
             }
         }
     }

@@ -24,7 +24,7 @@ using MbUnit._Framework.Tests;
 using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Runtime;
 using MbUnit.Framework.Tests.Kernel.Runtime;
 
 namespace MbUnit.Core.Tests.Harness

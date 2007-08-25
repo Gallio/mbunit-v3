@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
-using MbUnit.Framework.Services.Assertions;
+using MbUnit.Framework.Kernel.Assertions;
 
 namespace MbUnit.Framework.Exceptions
 {

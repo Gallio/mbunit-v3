@@ -21,5 +21,16 @@ namespace MbUnit.Framework
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public sealed class RowAttribute : DataPatternAttribute
     {
+        private object[] values;
+
+        public RowAttribute(params object[] values)
+        {
+            this.values = values ?? new object[] { null };
+        }
+
+        public object[] Values
+        {
+            get { return values; }
+        }
     }
 }

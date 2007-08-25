@@ -16,7 +16,7 @@
 using System;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
-using MbUnit.Core.Services.Runtime;
+using MbUnit.Core.Runtime;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Icarus.Core.Interfaces;
 

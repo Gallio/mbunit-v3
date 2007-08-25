@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.DataBinding;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -33,17 +34,18 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Gets the scope in which the binding occurred.
         /// </summary>
-        TestScope Scope { get; }
+        TemplateBindingScope Scope { get; }
 
         /// <summary>
         /// Gets the actual argument values used to bind the template.
         /// </summary>
-        IDictionary<ITemplateParameter, object> Arguments { get; }
+        IDictionary<ITemplateParameter, IDataFactory> Arguments { get; }
 
         /// <summary>
         /// Builds tests from this template binding.
         /// </summary>
         /// <param name="builder">The test tree builder</param>
-        void BuildTests(TestTreeBuilder builder);
+        /// <param name="parent">The parent test</param>
+        void BuildTests(TestTreeBuilder builder, ITest parent);
     }
 }

@@ -28,10 +28,10 @@ namespace MbUnit.Framework.Kernel.Model
     [Serializable]
     [XmlRoot("test", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public sealed class TestInfo : TestComponentInfo
+    public sealed class TestInfo : TestComponentInfo, ITest
     {
+        private readonly List<TestInfo> children;
         private bool isTestCase;
-        private List<TestInfo> children;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -83,12 +83,51 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Gets the mutable list of children.
         /// </summary>
-        /// <seealso cref="ITest.Children"/>
+        /// <seealso cref="IModelTreeNode{T}.Children"/>
         [XmlArray("children", IsNullable = false)]
         [XmlArrayItem("test", IsNullable = false)]
         public List<TestInfo> Children
         {
             get { return children; }
         }
+
+        #region ITest implementation
+
+        ITemplateBinding ITest.TemplateBinding
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        IList<ITest> ITest.Dependencies
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        TestBatch ITest.Batch
+        {
+            get { throw new NotSupportedException(); }
+            set { throw new NotSupportedException(); }
+        }
+
+        ITest IModelTreeNode<ITest>.Parent
+        {
+            get { throw new NotSupportedException(); }
+            set { throw new NotSupportedException(); }
+        }
+
+        IList<ITest> IModelTreeNode<ITest>.Children
+        {
+            get
+            {
+                return ListUtils.CopyAllToArray(children);
+            }
+        }
+
+        void IModelTreeNode<ITest>.AddChild(ITest node)
+        {
+            children.Add((TestInfo)node);
+        }
+
+        #endregion
     }
 }

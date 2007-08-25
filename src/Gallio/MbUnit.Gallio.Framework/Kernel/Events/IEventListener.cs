@@ -31,15 +31,15 @@ namespace MbUnit.Framework.Kernel.Events
         void NotifyMessageEvent(MessageEventArgs e);
 
         /// <summary>
-        /// Notifes the listener about a test lifecycle event.
+        /// Notifes the listener about a lifecycle event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        void NotifyTestLifecycleEvent(TestLifecycleEventArgs e);
+        void NotifyLifecycleEvent(LifecycleEventArgs e);
 
         /// <summary>
-        /// Notifes the listener about a test execution log event.
+        /// Notifes the listener about an execution log event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        void NotifyTestExecutionLogEvent(TestExecutionLogEventArgs e);
+        void NotifyExecutionLogEvent(ExecutionLogEventArgs e);
     }
 }

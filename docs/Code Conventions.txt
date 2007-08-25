@@ -9,16 +9,24 @@ together.  Thanks for your consideration and attention to detail.
 0. Above all else, try to make the code look consistent!  Though it
    is the product of a community of developers, it should feel like it
    was written by a single (very smart and omniscient) developer.
-   Inconsistencies is style make it more difficult for newcomers to
-   contribute to the project.  Moreover, it just looks sloppy.
-   So keep it beautiful.
+   Inconsistencies in style make it more difficult for newcomers to
+   contribute to the project and produces endless arguments and irritation.
+   
+   Inconsistent style just looks sloppy.  So keep it beautiful.
 
-1. Follow the Microsoft conventions for class library developers.
-   Specific notes:
+1. For the most part, just follow the Microsoft "Design Guidelines for Developing
+   Class Libraries" (in MSDN) especially the "Guidelines for Names" section.
+   Before you start writing code, please read a bit of it to get a feel for the common
+   style being used by everyone else.
+   
+   Additional notes:
    
    - Do not prefix private member names in any way.
    - Use camel-case for all identifiers including constants.
    - Capitalize type, method, property and constant names.
+   - No Hungarian notation.
+   - Curly braces on their own lines.
+   - Do not write "if" statements all on one line.
    
 2. Apply clear XML documentation comments to all public and protected types
    and members in the MbUnit.Core and MbUnit.Framework namespaces clearly.

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Filters
@@ -37,7 +38,7 @@ namespace MbUnit.Framework.Kernel.Filters
         /// <list type="bullet">
         /// <item>Fully qualified by namespace and assembly as returned by <see cref="Type.AssemblyQualifiedName" /></item>
         /// <item>Qualified by namespace as returned by <see cref="Type.FullName" /></item>
-        /// <item>Unqualified as returned by <see cref="Type.Name" /></item>
+        /// <item>Unqualified as returned by the type's <see cref="MemberInfo.Name" /></item>
         /// </list>
         /// </param>
         /// <param name="includeDerivedTypes">If true, subclasses and interface implementations of the specified

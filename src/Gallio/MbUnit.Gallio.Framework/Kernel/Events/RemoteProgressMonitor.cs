@@ -71,26 +71,31 @@ namespace MbUnit.Framework.Kernel.Events
             forwarder.BeginSubTask(subTaskName);
         }
 
+        /// <inheritdoc />
         protected override void OnEndSubTask()
         {
             forwarder.EndSubTask();
         }
 
+        /// <inheritdoc />
         protected override void OnDone()
         {
             forwarder.Done();
         }
 
+        /// <inheritdoc />
         protected override void OnSetStatus(string status)
         {
             forwarder.SetStatus(status);
         }
 
+        /// <inheritdoc />
         protected override void OnWorked(double workUnits)
         {
             forwarder.Worked(workUnits);
         }
 
+        /// <inheritdoc />
         protected override void OnCancel()
         {
             forwarder.Cancel();

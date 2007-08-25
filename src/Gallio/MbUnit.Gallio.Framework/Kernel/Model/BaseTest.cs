@@ -28,12 +28,11 @@ namespace MbUnit.Framework.Kernel.Model
     /// </remarks>
     public class BaseTest : BaseTestComponent, ITest
     {
+        private readonly List<ITest> children;
+        private readonly List<ITest> dependencies;
+        private readonly ITemplateBinding templateBinding;
         private ITest parent;
         private bool isTestCase;
-        private List<ITest> children;
-        private List<ITest> dependencies;
-        private ITemplateBinding templateBinding;
-        private TestScope scope;
         private TestBatch batch;
 
         /// <summary>
@@ -41,13 +40,17 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition</param>
-        /// <param name="parentScope">The parent scope, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="codeReference"/> is null</exception>
-        public BaseTest(string name, CodeReference codeReference, TestScope parentScope)
+        /// <param name="templateBinding">The template binding that produced this test</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
+        /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
+        public BaseTest(string name, CodeReference codeReference, ITemplateBinding templateBinding)
             : base(name, codeReference)
         {
-            scope = new TestScope(parentScope, this);
+            if (templateBinding == null)
+                throw new ArgumentNullException("templateBinding");
+
+            this.templateBinding = templateBinding;
+
             dependencies = new List<ITest>();
             children = new List<ITest>();
 
@@ -72,7 +75,6 @@ namespace MbUnit.Framework.Kernel.Model
         public ITemplateBinding TemplateBinding
         {
             get { return templateBinding; }
-            set { templateBinding = value; }
         }
 
         /// <inheritdoc />
@@ -85,12 +87,6 @@ namespace MbUnit.Framework.Kernel.Model
         public IList<ITest> Dependencies
         {
             get { return dependencies; }
-        }
-
-        /// <inheritdoc />
-        public TestScope Scope
-        {
-            get { return scope; }
         }
 
         /// <inheritdoc />

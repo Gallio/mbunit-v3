@@ -19,8 +19,8 @@ using System.ComponentModel;
 using System.Text;
 using MbUnit.Framework.Exceptions;
 using System.Globalization;
-using MbUnit.Framework.Services.Assertions;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Assertions;
+using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Framework
 {

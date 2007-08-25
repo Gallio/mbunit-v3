@@ -23,7 +23,7 @@ using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Results;
-using MbUnit.Framework.Services.ExecutionLogs;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit2::MbUnit.Core;
 using MbUnit2::MbUnit.Core.Remoting;
 using MbUnit2::MbUnit.Core.Filters;
@@ -98,7 +98,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             private Stopwatch assemblyStopwatch;
             private Stopwatch fixtureStopwatch;
 
-            private Stack<ITest> testStack;
+            private Dictionary<MbUnit2Test, IStep> activeStepsByTest;
 
             private double workUnit;
 
@@ -134,6 +134,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 includedFixtureTypes = new Dictionary<Type, bool>();
                 fixtureTestsByFixture = new Dictionary<Fixture, MbUnit2Test>();
                 testsByRunPipe = new Dictionary<RunPipe, MbUnit2Test>();
+                activeStepsByTest = new Dictionary<MbUnit2Test, IStep>();
 
                 foreach (MbUnit2Test test in tests)
                 {
@@ -160,8 +161,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                         totalWork += 1;
                     }
                 }
-
-                testStack = new Stack<ITest>();
 
                 // Set options
                 IsExplicit = options.IsExplicit;
@@ -190,7 +189,10 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 HandleAssemblyStart();
 
                 if (Explorer.HasAssemblySetUp)
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(assemblyTest.Id, TestStepConstants.SetUp));
+                {
+                    IStep assemblyStep = activeStepsByTest[assemblyTest];
+                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(assemblyStep.Id, LifecyclePhase.SetUp));
+                }
 
                 bool success = base.RunAssemblySetUp();
 
@@ -208,7 +210,10 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 progressMonitor.SetStatus("Run assembly tear down: " + Explorer.AssemblyName + ".");
 
                 if (Explorer.HasAssemblyTearDown && assemblyTest != null)
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(assemblyTest.Id, TestStepConstants.TearDown));
+                {
+                    IStep assemblyStep = activeStepsByTest[assemblyTest];
+                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(assemblyStep.Id, LifecyclePhase.TearDown));
+                }
 
                 bool success = base.RunAssemblyTearDown();
                 HandleAssemblyFinish(success ? TestOutcome.Passed : TestOutcome.Failed);
@@ -224,9 +229,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 try
                 {
                     HandleFixtureStart(fixture);
-
-                    MbUnit2Test fixtureTest;
-                    fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest);
 
                     foreach (RunPipeStarter starter in fixture.Starters)
                         starter.Listeners.Add(this);
@@ -263,7 +265,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 MbUnit2Test fixtureTest;
                 if (fixture.HasSetUp && fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
                 {
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(fixtureTest.Id, TestStepConstants.SetUp));
+                    IStep fixtureStep = activeStepsByTest[fixtureTest];
+                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(fixtureStep.Id, LifecyclePhase.SetUp));
                 }
 
                 object result = base.RunFixtureSetUp(fixture, fixtureInstance);
@@ -281,7 +284,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 MbUnit2Test fixtureTest;
                 if (fixture.HasSetUp && fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
                 {
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStepEvent(fixtureTest.Id, TestStepConstants.TearDown));
+                    IStep fixtureStep = activeStepsByTest[fixtureTest];
+                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(fixtureStep.Id, LifecyclePhase.TearDown));
                 }
 
                 base.RunFixtureTearDown(fixture, fixtureInstance);
@@ -338,8 +342,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 if (assemblyTest == null)
                     return;
 
-                listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStartEvent(assemblyTest.Id));
-                testStack.Push(assemblyTest);
+                IStep assemblyStep = BaseStep.CreateRootStep(assemblyTest);
+                activeStepsByTest.Add(assemblyTest, assemblyStep);
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(assemblyStep)));
 
                 assemblyStopwatch = Stopwatch.StartNew();
             }
@@ -354,8 +359,10 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 result.State = TestState.Executed;
                 result.Outcome = outcome;
 
-                testStack.Pop();
-                listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateFinishEvent(assemblyTest.Id, result));
+                IStep assemblyStep = activeStepsByTest[assemblyTest];
+                activeStepsByTest.Remove(assemblyTest);
+
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(assemblyStep.Id, result));
             }
 
             private void HandleFixtureStart(Fixture fixture)
@@ -364,8 +371,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 if (!fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
                     return;
 
-                listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStartEvent(fixtureTest.Id));
-                testStack.Push(fixtureTest);
+                IStep fixtureStep = BaseStep.CreateRootStep(fixtureTest);
+                activeStepsByTest.Add(fixtureTest, fixtureStep);
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(fixtureStep)));
 
                 fixtureStopwatch = Stopwatch.StartNew();
             }
@@ -380,8 +388,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 result.Duration = fixtureStopwatch.Elapsed.TotalSeconds;
                 SetTestResultStateAndOutcomeFromReportRunResult(result, reportRunResult);
 
-                testStack.Pop();
-                listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateFinishEvent(fixtureTest.Id, result));
+                IStep fixtureStep = activeStepsByTest[fixtureTest];
+                activeStepsByTest.Remove(fixtureTest);
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(fixtureStep.Id, result));
             }
 
             private void HandleTestStart(RunPipe runPipe)
@@ -392,8 +401,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 if (!testsByRunPipe.TryGetValue(runPipe, out test))
                     return;
 
-                listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStartEvent(test.Id));
-                testStack.Push(test);
+                IStep step = BaseStep.CreateRootStep(test);
+                activeStepsByTest.Add(test, step);
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(step)));
             }
 
             private void HandleTestFinish(RunPipe runPipe, ReportRun reportRun)
@@ -401,6 +411,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 MbUnit2Test test;
                 if (testsByRunPipe.TryGetValue(runPipe, out test))
                 {
+                    IStep step = activeStepsByTest[test];
+                    activeStepsByTest.Remove(test);
+
                     // Produce the final result.
                     TestResult result = new TestResult();
                     result.Duration = reportRun.Duration / 1000;
@@ -411,34 +424,29 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     // Note: ReportRun.Asserts is not actually populated by MbUnit so we ignore it.
                     if (reportRun.ConsoleOut.Length != 0)
                     {
-                        listener.NotifyTestExecutionLogEvent(
-                            TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
+                        listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
                             ExecutionLogStreams.ConsoleOutput, reportRun.ConsoleOut));
                     }
                     if (reportRun.ConsoleError.Length != 0)
                     {
-                        listener.NotifyTestExecutionLogEvent(
-                            TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
+                        listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
                             ExecutionLogStreams.ConsoleError, reportRun.ConsoleError));
                     }
                     foreach (ReportWarning warning in reportRun.Warnings)
                     {
-                        listener.NotifyTestExecutionLogEvent(
-                            TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
+                        listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
                             ExecutionLogStreams.Warnings, warning.Text + "\n"));
                     }
                     if (reportRun.Exception != null)
                     {
-                        listener.NotifyTestExecutionLogEvent(
-                            TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id,
+                        listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
                             ExecutionLogStreams.Failures, FormatReportException(reportRun.Exception)));
                     }
 
-                    listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateCloseEvent(test.Id));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateCloseEvent(step.Id));
 
                     // Finish up...
-                    testStack.Pop();
-                    listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateFinishEvent(test.Id, result));
+                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(step.Id, result));
                 }
 
                 progressMonitor.Worked(workUnit);

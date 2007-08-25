@@ -22,7 +22,6 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class BaseTemplateParameter : BaseTemplateComponent, ITemplateParameter
     {
-        private ITemplateParameterSet parameterSet;
         private Type type;
         private int index;
 
@@ -31,33 +30,16 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition</param>
-        /// <param name="parameterSet">The parameter set to which the parameter belongs</param>
         /// <param name="type">The type of the parameter</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, <paramref name="codeReference"/>,
-        /// <paramref name="parameterSet"/> or <paramref name="type"/> is null</exception>
-        public BaseTemplateParameter(string name, CodeReference codeReference, ITemplateParameterSet parameterSet, Type type)
+        /// or <paramref name="type"/> is null</exception>
+        public BaseTemplateParameter(string name, CodeReference codeReference, Type type)
             : base(name, codeReference)
         {
-            if (parameterSet == null)
-                throw new ArgumentNullException("parameterSet");
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            this.parameterSet = parameterSet;
             this.type = type;
-        }
-
-        /// <inheritdoc />
-        public ITemplateParameterSet ParameterSet
-        {
-            get { return parameterSet; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                parameterSet = value;
-            }
         }
 
         /// <inheritdoc />
@@ -80,7 +62,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value < 0)
-                    throw new ArgumentOutOfRangeException("index");
+                    throw new ArgumentOutOfRangeException("value");
 
                 index = value;
             }

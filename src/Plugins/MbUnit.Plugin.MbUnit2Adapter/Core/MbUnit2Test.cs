@@ -29,21 +29,21 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
     /// </summary>
     public class MbUnit2Test : BaseTest
     {
-        private Fixture fixture;
-        private RunPipe runPipe;
+        private readonly Fixture fixture;
+        private readonly RunPipe runPipe;
 
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition</param>
-        /// <param name="parentScope">The parent scope, or null if none</param>
+        /// <param name="templateBinding">The template binding that produced this test</param>
         /// <param name="fixture">The MbUnit v2 fixture, or null if none</param>
         /// <param name="runPipe">The MbUnit v2 run pipe, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="codeReference"/> is null</exception>
-        public MbUnit2Test(string name, CodeReference codeReference, TestScope parentScope, Fixture fixture, RunPipe runPipe)
-            : base(name, codeReference, parentScope)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
+        /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
+        public MbUnit2Test(string name, CodeReference codeReference, ITemplateBinding templateBinding, Fixture fixture, RunPipe runPipe)
+            : base(name, codeReference, templateBinding)
         {
             this.fixture = fixture;
             this.runPipe = runPipe;

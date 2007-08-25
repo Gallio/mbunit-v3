@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 
@@ -52,7 +53,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         }
 
         /// <inheritdoc />
-        public override ITemplateBinding Bind(TestScope scope, IDictionary<ITemplateParameter, object> arguments)
+        public override ITemplateBinding Bind(TemplateBindingScope scope, IDictionary<ITemplateParameter, IDataFactory> arguments)
         {
             return new MbUnit2AssemblyTemplateBinding(this, scope, arguments);
         }

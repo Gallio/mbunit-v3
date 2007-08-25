@@ -25,9 +25,9 @@ namespace MbUnit.Framework.Kernel.Model
     /// A slot represents a field, property or parameter.  It is used to
     /// simplify the handling of data binding.
     /// </summary>
-    public class Slot
+    public sealed class Slot
     {
-        private ICustomAttributeProvider attributeProvider;
+        private readonly ICustomAttributeProvider attributeProvider;
 
         /// <summary>
         /// Initializes a slot from a field.

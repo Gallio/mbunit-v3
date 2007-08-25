@@ -15,12 +15,13 @@
 
 using System;
 using System.Collections.Generic;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Abstract base class for MbUnit-derived test method templates.
+    /// Abstract base class for MbUnit-derived templates.
     /// </summary>
     public abstract class MbUnitTemplate : BaseTemplate
     {
@@ -45,54 +46,8 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         public event Action<ITemplateBinding> ProcessBinding;
 
-        /// <summary>
-        /// Creates an anonymous parameter set associated with this template.
-        /// </summary>
-        /// <returns>The parameter set</returns>
-        public MbUnitTemplateParameterSet CreateAnonymousParameterSet()
-        {
-            MbUnitTemplateParameterSet parameterSet = new MbUnitTemplateParameterSet(this, "", CodeReference);
-            ParameterSets.Add(parameterSet);
-            return parameterSet;
-        }
-
-        /// <summary>
-        /// Sets the parameter set of a parameter by name.
-        /// Automatically creates a parameter set if none with the specified name exists.
-        /// Automatically deletes empty anonymous parameter sets.
-        /// </summary>
-        /// <param name="parameter">The parameter to move to a different parameter set</param>
-        /// <param name="parameterSetName">The parameter set name</param>
-        public void SetParameterSetName(MbUnitTemplateParameter parameter, string parameterSetName)
-        {
-            if (parameter.ParameterSet.Name == parameterSetName)
-                return;
-
-            if (!ParameterSets.Contains(parameter.ParameterSet))
-                throw new InvalidOperationException("The parameter does not belong to any of this template's parameter sets.");
-
-            // Remote the parameter from its old set.
-            if (!parameter.ParameterSet.Parameters.Remove(parameter))
-                throw new InvalidOperationException("The parameter does not belong to its own parameter set!");
-
-            // Remove old empty anonymous parameter sets created during intermediate
-            // stages of test enumeration.
-            if (parameter.ParameterSet.Name.Length == 0 && parameter.ParameterSet.Parameters.Count == 0)
-                ParameterSets.Remove(parameter.ParameterSet);
-
-            // Add the parameter to its new set.
-            ITemplateParameterSet parameterSet = GetParameterSetByName(parameterSetName);
-            if (parameterSet == null)
-            {
-                parameterSet = new MbUnitTemplateParameterSet(this, parameterSetName, CodeReference);
-                ParameterSets.Add(parameterSet);
-            }
-
-            parameterSet.Parameters.Add(parameter);
-        }
-
         /// <inheritdoc />
-        public override ITemplateBinding Bind(TestScope scope, IDictionary<ITemplateParameter, object> arguments)
+        public override ITemplateBinding Bind(TemplateBindingScope scope, IDictionary<ITemplateParameter, IDataFactory> arguments)
         {
             MbUnitTemplateBinding binding = new MbUnitTemplateBinding(this, scope, arguments);
 

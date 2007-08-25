@@ -20,7 +20,6 @@ using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
 {

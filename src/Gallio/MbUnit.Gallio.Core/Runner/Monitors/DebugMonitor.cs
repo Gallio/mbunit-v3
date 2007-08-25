@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Events;
@@ -26,14 +27,14 @@ namespace MbUnit.Core.Runner.Monitors
     /// </summary>
     public class DebugMonitor : BaseTestRunnerMonitor
     {
-        private TextWriter writer;
+        private readonly TextWriter writer;
+        private Dictionary<string, string> stepNames;
 
         /// <summary>
         /// Creates a console monitor.
         /// </summary>
         /// <param name="writer">The text writer for all output</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportMonitor" or
-        /// <paramref name="writer"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
         public DebugMonitor(TextWriter writer)
         {
             if (writer == null)
@@ -42,84 +43,107 @@ namespace MbUnit.Core.Runner.Monitors
             this.writer = writer;
         }
 
+        /// <inheritdoc />
         protected override void OnAttach()
         {
             base.OnAttach();
 
             Runner.EventDispatcher.Message += HandleMessageEvent;
-            Runner.EventDispatcher.TestLifecycle += HandleTestLifecycleEvent;
-            Runner.EventDispatcher.TestExecutionLog += HandleTestExecutionLogEvent;
+            Runner.EventDispatcher.Lifecycle += HandleLifecycleEvent;
+            Runner.EventDispatcher.ExecutionLog += HandleExecutionLogEvent;
         }
 
         private void HandleMessageEvent(object sender, MessageEventArgs e)
         {
-            writer.WriteLine("[Message: {0}] - {1}", e.MessageType, e.Message);
-            writer.WriteLine();
+            lock (this)
+            {
+                writer.WriteLine("[Message: {0}] - {1}", e.MessageType, e.Message);
+                writer.WriteLine();
+            }
         }
 
-        private void HandleTestLifecycleEvent(object sender, TestLifecycleEventArgs e)
+        private void HandleLifecycleEvent(object sender, LifecycleEventArgs e)
         {
-            TestInfo testInfo = Runner.TestModel.Tests[e.TestId];
-
-            switch (e.EventType)
+            lock (this)
             {
-                case TestLifecycleEventType.Start:
-                    writer.WriteLine("[Lifecycle: Start ({0})]", testInfo.Name);
-                    break;
+                string stepName = GetStepName(e.StepId);
 
-                case TestLifecycleEventType.Step:
-                    writer.WriteLine("[Lifecycle: Step ({0})]", testInfo.Name);
-                    writer.WriteLine("\tStep Name: {0}", e.StepName);
-                    break;
+                switch (e.EventType)
+                {
+                    case LifecycleEventType.Start:
+                        if (e.StepInfo.ParentId != null)
+                            stepName = GetStepName(e.StepInfo.ParentId) + " / " + e.StepInfo.Name;
+                        else
+                            stepName = Runner.TestModel.Tests[e.StepInfo.TestId].Name + ": " + e.StepInfo.Name;
 
-                case TestLifecycleEventType.Finish:
-                    writer.WriteLine("[Lifecycle: Finish ({0})]", testInfo.Name);
-                    writer.WriteLine("\tState: {0}", e.Result.State);
-                    writer.WriteLine("\tOutcome: {0}", e.Result.Outcome);
-                    writer.WriteLine("\tAsserts: {0}", e.Result.AssertCount);
-                    writer.WriteLine("\tDuration: {0}", e.Result.Duration);
-                    break;
+                        stepNames.Add(e.StepId, stepName);
+
+                        writer.WriteLine("[Lifecycle: Start ({0})]", stepName);
+                        break;
+
+                    case LifecycleEventType.EnterPhase:
+                        writer.WriteLine("[Lifecycle: Enter Phase ({0})]", stepName);
+                        writer.WriteLine("\tPhase Name: {0}", e.PhaseName);
+                        break;
+
+                    case LifecycleEventType.Finish:
+                        writer.WriteLine("[Lifecycle: Finish ({0})]", stepName);
+                        writer.WriteLine("\tState: {0}", e.Result.State);
+                        writer.WriteLine("\tOutcome: {0}", e.Result.Outcome);
+                        writer.WriteLine("\tAsserts: {0}", e.Result.AssertCount);
+                        writer.WriteLine("\tDuration: {0}", e.Result.Duration);
+                        break;
+                }
+
+                writer.WriteLine();
             }
-
-            writer.WriteLine();
         }
 
-        private void HandleTestExecutionLogEvent(object sender, TestExecutionLogEventArgs e)
+        private void HandleExecutionLogEvent(object sender, ExecutionLogEventArgs e)
         {
-            TestInfo testInfo = Runner.TestModel.Tests[e.TestId];
-
-            switch (e.EventType)
+            lock (this)
             {
-                case TestExecutionLogEventType.WriteText:
-                    writer.WriteLine("[Execution Log: Write Text ({0})]", testInfo.Name);
-                    writer.WriteLine("\tStream Name: {0}", e.StreamName);
-                    writer.WriteLine("\tText: {0}", e.Text);
-                    break;
+                string stepName = GetStepName(e.StepId);
 
-                case TestExecutionLogEventType.WriteAttachment:
-                    writer.WriteLine("[Execution Log: Write Attachment ({0})]", testInfo.Name);
-                    writer.WriteLine("\tStream Name: {0}", e.StreamName ?? "<null>");
-                    writer.WriteLine("\tAttachment Name: {0}", e.Attachment.Name);
-                    writer.WriteLine("\tAttachment Content Type: {0}", e.Attachment.ContentType);
-                    break;
+                switch (e.EventType)
+                {
+                    case ExecutionLogEventType.WriteText:
+                        writer.WriteLine("[Execution Log: Write Text ({0})]", stepName);
+                        writer.WriteLine("\tStream Name: {0}", e.StreamName);
+                        writer.WriteLine("\tText: {0}", e.Text);
+                        break;
 
-                case TestExecutionLogEventType.BeginSection:
-                    writer.WriteLine("[Execution Log: Being Section ({0})]", testInfo.Name);
-                    writer.WriteLine("\tStream Name: {0}", e.StreamName);
-                    writer.WriteLine("\tSection Name: {0}", e.SectionName);
-                    break;
+                    case ExecutionLogEventType.WriteAttachment:
+                        writer.WriteLine("[Execution Log: Write Attachment ({0})]", stepName);
+                        writer.WriteLine("\tStream Name: {0}", e.StreamName ?? "<null>");
+                        writer.WriteLine("\tAttachment Name: {0}", e.Attachment.Name);
+                        writer.WriteLine("\tAttachment Content Type: {0}", e.Attachment.ContentType);
+                        break;
 
-                case TestExecutionLogEventType.EndSection:
-                    writer.WriteLine("[Execution Log: End Section ({0})]", testInfo.Name);
-                    writer.WriteLine("\tStream Name: {0}", e.StreamName);
-                    break;
+                    case ExecutionLogEventType.BeginSection:
+                        writer.WriteLine("[Execution Log: Being Section ({0})]", stepName);
+                        writer.WriteLine("\tStream Name: {0}", e.StreamName);
+                        writer.WriteLine("\tSection Name: {0}", e.SectionName);
+                        break;
 
-                case TestExecutionLogEventType.Close:
-                    writer.WriteLine("[Execution Log: Close ({0})]", testInfo.Name);
-                    break;
+                    case ExecutionLogEventType.EndSection:
+                        writer.WriteLine("[Execution Log: End Section ({0})]", stepName);
+                        writer.WriteLine("\tStream Name: {0}", e.StreamName);
+                        break;
+
+                    case ExecutionLogEventType.Close:
+                        writer.WriteLine("[Execution Log: Close ({0})]", stepName);
+                        break;
+                }
+
+                writer.WriteLine();
             }
+        }
 
-            writer.WriteLine();
+        private string GetStepName(string stepId)
+        {
+            string stepName;
+            return stepNames.TryGetValue(stepId, out stepName) ? stepName : stepId;
         }
     }
 }

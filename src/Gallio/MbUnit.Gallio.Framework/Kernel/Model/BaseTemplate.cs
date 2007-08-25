@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -29,9 +30,9 @@ namespace MbUnit.Framework.Kernel.Model
     /// </remarks>
     public class BaseTemplate : BaseTemplateComponent, ITemplate
     {
+        private readonly List<ITemplate> children;
+        private readonly List<ITemplateParameter> parameters;
         private ITemplate parent;
-        private List<ITemplate> children;
-        private List<ITemplateParameterSet> parameterSets;
 
         /// <summary>
         /// Initializes a template initially without a parent.
@@ -44,7 +45,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(name, codeReference)
         {
             children = new List<ITemplate>();
-            parameterSets = new List<ITemplateParameterSet>();
+            parameters = new List<ITemplateParameter>();
 
             Kind = ComponentKind.Group;
         }
@@ -63,13 +64,13 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
-        public IList<ITemplateParameterSet> ParameterSets
+        public IList<ITemplateParameter> Parameters
         {
-            get { return parameterSets; }
+            get { return parameters; }
         }
 
         /// <inheritdoc />
-        public virtual ITemplateBinding Bind(TestScope scope, IDictionary<ITemplateParameter, object> arguments)
+        public virtual ITemplateBinding Bind(TemplateBindingScope scope, IDictionary<ITemplateParameter, IDataFactory> arguments)
         {
             return new BaseTemplateBinding(this, scope, arguments);
         }
@@ -81,21 +82,37 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Gets the parameter set with the specified name, or null if none.
-        /// Always returns null if the parameter set name is empty (anonymous).
+        /// Gets the parameter with the specified name, or null if none.
         /// </summary>
-        /// <param name="parameterSetName">The parameter set name</param>
-        /// <returns>The parameter set</returns>
-        public ITemplateParameterSet GetParameterSetByName(string parameterSetName)
+        /// <param name="parameterName">The parameter name</param>
+        /// <returns>The parameter</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameterName"/> is null</exception>
+        public ITemplateParameter GetParameterByName(string parameterName)
         {
-            if (parameterSetName.Length != 0)
-            {
-                foreach (ITemplateParameterSet parameterSet in parameterSets)
-                    if (parameterSet.Name == parameterSetName)
-                        return parameterSet;
-            }
+            if (parameterName == null)
+                throw new ArgumentNullException("parameterName");
 
-            return null;
+            return parameters.Find(delegate(ITemplateParameter parameter)
+            {
+                return parameter.Name == parameterName;
+            });
+        }
+
+        /// <summary>
+        /// Adds a parameter to the list of parameters.
+        /// </summary>
+        /// <param name="parameter">The parameter to add</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if a parameter with the same name already exists</exception>
+        public void AddParameter(ITemplateParameter parameter)
+        {
+            if (parameter == null)
+                throw new ArgumentNullException("parameter");
+
+            if (GetParameterByName(parameter.Name) != null)
+                throw new InvalidOperationException("The parameter list already contains a parameter named: " + parameter.Name);
+
+            parameters.Add(parameter);
         }
     }
 }

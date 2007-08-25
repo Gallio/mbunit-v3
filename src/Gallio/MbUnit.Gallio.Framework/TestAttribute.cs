@@ -15,6 +15,7 @@
 
 using System;
 using MbUnit.Framework.Kernel.Attributes;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework
 {
@@ -25,5 +26,10 @@ namespace MbUnit.Framework
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public sealed class TestAttribute : MethodPatternAttribute
     {
+        /// <override />
+        public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        {
+            base.Apply(builder, methodTemplate);
+        }
     }
 }

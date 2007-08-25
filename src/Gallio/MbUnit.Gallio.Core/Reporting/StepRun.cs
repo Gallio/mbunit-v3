@@ -1,0 +1,158 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Xml.Serialization;
+using MbUnit.Framework.Kernel.Results;
+using MbUnit.Framework.Kernel.Utilities;
+
+namespace MbUnit.Core.Reporting
+{
+    /// <summary>
+    /// Summarizes the execution of a single test step for reporting purposes.
+    /// </summary>
+    [Serializable]
+    [XmlRoot("stepRun", Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    public class StepRun
+    {
+        private readonly List<StepRun> children;
+        private string stepId;
+        private string stepName;
+        private DateTime startTime;
+        private DateTime endTime;
+        private TestResult result;
+        private ExecutionLog executionLog;
+
+        /// <summary>
+        /// Creates an uninitialized instance for Xml deserialization.
+        /// </summary>
+        private StepRun()
+        {
+            children = new List<StepRun>();
+        }
+
+        /// <summary>
+        /// Creates a test run step.
+        /// </summary>
+        /// <param name="stepId">The step id</param>
+        /// <param name="stepName">The step name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/> or
+        /// <paramref name="stepName"/> is null</exception>
+        public StepRun(string stepId, string stepName)
+        {
+            if (stepId == null)
+                throw new ArgumentNullException("stepId");
+            if (stepName == null)
+                throw new ArgumentNullException("stepName");
+
+            this.stepId = stepId;
+            this.stepName = stepName;
+
+            children = new List<StepRun>();
+        }
+
+        /// <summary>
+        /// Gets or sets the id of the step.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlAttribute("id")]
+        public string StepId
+        {
+            get { return stepId; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                stepId = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the name of the step.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlAttribute("name")]
+        public string StepName
+        {
+            get { return stepName; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                stepName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the list of child steps.
+        /// </summary>
+        [XmlArray("children", IsNullable=false)]
+        [XmlArrayItem("stepRun", IsNullable=false)]
+        public List<StepRun> Children
+        {
+            get { return children; }
+        }
+
+        /// <summary>
+        /// Gets or sets the time when the test run started.
+        /// </summary>
+        [XmlAttribute("startTime")]
+        public DateTime StartTime
+        {
+            get { return startTime; }
+            set { startTime = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the time when the test run ended.
+        /// </summary>
+        [XmlAttribute("endTime")]
+        public DateTime EndTime
+        {
+            get { return endTime; }
+            set { endTime = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the test result from the run.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("result", IsNullable = false)]
+        public TestResult Result
+        {
+            get
+            {
+                if (result == null)
+                    result = new TestResult();
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                result = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the execution log.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("executionLog", IsNullable = false)]
+        public ExecutionLog ExecutionLog
+        {
+            get
+            {
+                if (executionLog == null)
+                    executionLog = new ExecutionLog();
+                return executionLog;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                executionLog = value;
+            }
+        }
+    }
+}

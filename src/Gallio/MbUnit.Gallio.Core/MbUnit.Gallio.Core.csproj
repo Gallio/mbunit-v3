@@ -64,6 +64,7 @@
     <Compile Include="Reporting\PackageRunStatistics.cs" />
     <Compile Include="Reporting\ReportUtils.cs" />
     <Compile Include="Reporting\Resources\ReportingResources.cs" />
+    <Compile Include="Reporting\StepRun.cs" />
     <Compile Include="Reporting\TestRun.cs" />
     <Compile Include="Reporting\TextReportFormatter.cs" />
     <Compile Include="Reporting\XmlReportFormatter.cs" />
@@ -72,6 +73,10 @@
     <Compile Include="Runner\FilterParser.cs" />
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
     <Compile Include="Runner\RunnerProgressMonitor.cs" />
+    <Compile Include="Runtime\DefaultAssemblyResolverManager.cs" />
+    <Compile Include="Runtime\ICoreRuntime.cs" />
+    <Compile Include="Runtime\RuntimeSetup.cs" />
+    <Compile Include="Runtime\WindsorRuntime.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Utilities\VisualStudioDebugHelper.cs" />
     <Compile Include="Harness\AssemblyAddedEventArgs.cs" />
@@ -82,7 +87,6 @@
     <Compile Include="Harness\ITestHarnessContributor.cs" />
     <Compile Include="Harness\ITestHarnessFactory.cs" />
     <Compile Include="Harness\MbUnitTestFramework.cs" />
-    <Compile Include="Harness\MbUnitTestContext.cs" />
     <Compile Include="Harness\TestHarnessException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runner\AutoRunner.cs" />
@@ -128,11 +132,7 @@
     <Compile Include="Reporting\ExecutionLogStreamTag.cs" />
     <Compile Include="Reporting\ExecutionLogStreamTextTag.cs" />
     <Compile Include="Reporting\ExecutionLogWriter.cs" />
-    <Compile Include="Services\Runtime\DefaultAssemblyResolverManager.cs" />
     <Compile Include="Harness\TestPackage.cs" />
-    <Compile Include="Services\Runtime\ICoreRuntime.cs" />
-    <Compile Include="Services\Runtime\RuntimeSetup.cs" />
-    <Compile Include="Services\Runtime\WindsorRuntime.cs" />
     <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
     <Compile Include="Utilities\MonoSupport.cs" />
   </ItemGroup>

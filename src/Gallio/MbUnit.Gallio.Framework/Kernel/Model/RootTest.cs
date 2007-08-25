@@ -27,8 +27,10 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Creates the root test.
         /// </summary>
-        public RootTest()
-            : base("Root", CodeReference.Unknown, null)
+        /// <param name="templateBinding">The root template binding</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="templateBinding"/> is null</exception>
+        public RootTest(ITemplateBinding templateBinding)
+            : base("Root", CodeReference.Unknown, templateBinding)
         {
             // Note: The kind will be set by the RootTemplateBinding.
             Kind = null;

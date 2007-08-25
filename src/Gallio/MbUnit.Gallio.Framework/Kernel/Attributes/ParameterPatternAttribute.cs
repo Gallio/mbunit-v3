@@ -43,13 +43,13 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// create a new model object to represent it.
         /// </summary>
         /// <param name="builder">The template tree builder</param>
-        /// <param name="parameterSet">The parameter set</param>
+        /// <param name="template">The template</param>
         /// <param name="slot">The slot</param>
         /// <returns>The test parameter</returns>
         public virtual MbUnitTemplateParameter CreateParameter(TemplateTreeBuilder builder,
-            MbUnitTemplateParameterSet parameterSet, Slot slot)
+            MbUnitTemplate template, Slot slot)
         {
-            return new MbUnitTemplateParameter(parameterSet, slot);
+            return new MbUnitTemplateParameter(slot);
         }
 
         /// <summary>
@@ -76,9 +76,9 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// Processes a slot using reflection and attaches a test parameter to the template if applicable.
         /// </summary>
         /// <param name="builder">The template tree builder</param>
-        /// <param name="parameterSet">The default parameter set</param>
+        /// <param name="template">The template to which the parameter should be attached</param>
         /// <param name="slot">The slot to process</param>
-        public static void ProcessSlot(TemplateTreeBuilder builder, MbUnitTemplateParameterSet parameterSet, Slot slot)
+        public static void ProcessSlot(TemplateTreeBuilder builder, MbUnitTemplate template, Slot slot)
         {
             ParameterPatternAttribute parameterPatternAttribute = ReflectionUtils.GetAttribute<ParameterPatternAttribute>(slot.AttributeProvider);
 
@@ -99,8 +99,8 @@ namespace MbUnit.Framework.Kernel.Attributes
                 parameterPatternAttribute = DefaultInstance;
             }
 
-            MbUnitTemplateParameter parameter = parameterPatternAttribute.CreateParameter(builder, parameterSet, slot);
-            parameter.ParameterSet.Parameters.Add(parameter);
+            MbUnitTemplateParameter parameter = parameterPatternAttribute.CreateParameter(builder, template, slot);
+            template.AddParameter(parameter);
             parameterPatternAttribute.Apply(builder, parameter);
         }
 

@@ -21,23 +21,23 @@ using MbUnit.Framework.Kernel.Model;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// A test batch groups all tests within a <see cref="TestScope" /> into cohesive
-    /// work units that are to be executed by a single independent <see cref="ITestController" />.
-    /// Test batches cannot be nested.  Consequently, a test scope is either not associated
-    /// with a test batch, or the scope and all of its descendents are associated with
+    /// A test batch groups tests into work units that are executed by a single <see cref="ITestController" />.
+    /// Test batches cannot be nested.  Consequently, a test in the test tree is either not associated
+    /// with a test batch, or the test and all of its descendents are associated with
     /// the same test batch.
     /// </summary>
     /// <todo author="jeff">
     /// In principle, some test batches actually could be nested but difficulties
     /// arise when integrating 3rd party test frameworks.  If we can capture the moment
-    /// when the scope of a nested test batch is being entered then we could in fact
+    /// when the nested test batch is being entered then we could in fact
     /// suspend the execution of the current test controller and launch a test controller
-    /// for the nested test batch.  This is not always possible.
+    /// for the nested test batch.  This is not always possible and does not seem all
+    /// that useful.
     /// </todo>
     public class TestBatch
     {
-        private string description;
-        private TestControllerFactory controllerFactory;
+        private readonly string description;
+        private readonly TestControllerFactory controllerFactory;
 
         /// <summary>
         /// Creates a test batch.

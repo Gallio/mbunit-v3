@@ -23,24 +23,12 @@ namespace MbUnit.Framework.Kernel.Model
     /// <para>
     /// A template parameter describes a formal parameter of a <see cref="ITemplate" />
     /// to which a value be bound to produce a concrete instance of the template.
-    /// </para>
-    /// <para>
-    /// Data-driven tests are represented by <see cref="ITemplate"/>s with
-    /// at least one parameter.
-    /// </para>
-    /// <para>
-    /// Parameters may be grouped into parameter sets by use of a common
-    /// parameter set name.  A parameter set name can be used to select
+    /// This mechanism supports data-driven testing because each instance of a
+    /// template can build tests based on the values bound to the template's parameters.
     /// </para>
     /// </summary>
     public interface ITemplateParameter : ITemplateComponent
     {
-        /// <summary>
-        /// Gets or sets the parameter set to which the parameter belongs.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        ITemplateParameterSet ParameterSet { get; set; }
-
         /// <summary>
         /// Gets or sets the type of value that must be bound to the parameter.
         /// </summary>
@@ -53,17 +41,6 @@ namespace MbUnit.Framework.Kernel.Model
         /// (such as row-tests and headerless CSV files) to select the column to
         /// which the parameter will be bound.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The index does not necessarily correspond to the sequence in which
-        /// the parameter appears in its <see cref="ParameterSet" />.
-        /// </para>
-        /// <para>
-        /// Exotic data sources that do not bind by name or by index may use metadata
-        /// associated with the parameter to specify how data binding will occur.
-        /// For example, metadata containing an XPath expression could be used by XML data sources.
-        /// </para>
-        /// </remarks>
         /// <value>
         /// The default value is 0.
         /// </value>

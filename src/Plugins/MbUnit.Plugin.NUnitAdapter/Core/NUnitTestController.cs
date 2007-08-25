@@ -20,7 +20,7 @@ using System.Threading;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Results;
-using MbUnit.Framework.Services.ExecutionLogs;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 using NUnit.Core;
 
 using ITest = MbUnit.Framework.Kernel.Model.ITest;
@@ -82,7 +82,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             private IList<ITest> tests;
 
             private Dictionary<TestName, NUnitTest> testsByTestName;
-            private Stack<NUnitTest> testStack;
+            private Stack<IStep> stepStack;
 
             public RunMonitor(IProgressMonitor progressMonitor, TestRunner runner,
                 TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
@@ -140,7 +140,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                         testsByTestName[test.Test.TestName] = test;
                 }
 
-                testStack = new Stack<NUnitTest>();
+                stepStack = new Stack<IStep>();
             }
 
             #region EventListener Members
@@ -171,10 +171,10 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
             void EventListener.TestOutput(TestOutput testOutput)
             {
-                if (testStack.Count == 0)
+                if (stepStack.Count == 0)
                     return;
 
-                NUnitTest test = testStack.Peek();
+                IStep step = stepStack.Peek();
 
                 string streamName;
                 switch (testOutput.Type)
@@ -193,7 +193,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                         break;
                 }
 
-                listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id, streamName, testOutput.Text));
+                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, streamName, testOutput.Text));
             }
 
             void EventListener.SuiteStarted(TestName testName)
@@ -213,14 +213,14 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
             private void LogException(Exception exception)
             {
-                if (testStack.Count == 0)
+                if (stepStack.Count == 0)
                     return;
 
-                NUnitTest test = testStack.Peek();
+                IStep step = stepStack.Peek();
 
-                listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateBeginSectionEvent(test.Id, ExecutionLogStreams.Failures, "Unhandled Exception"));
-                listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id, ExecutionLogStreams.Failures, exception.ToString()));
-                listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateEndSectionEvent(test.Id, ExecutionLogStreams.Failures));
+                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreams.Failures, "Unhandled Exception"));
+                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreams.Failures, exception.ToString()));
+                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreams.Failures));
             }
 
             private void HandleTestOrSuiteStarted(TestName testName)
@@ -231,37 +231,43 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
                 progressMonitor.SetStatus("Run test: " + test.Name + ".");
 
-                testStack.Push(test);
-                listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateStartEvent(test.Id));
+                IStep step = BaseStep.CreateRootStep(test);
+                stepStack.Push(step);
+
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(step)));
             }
 
             private void HandleTestOrSuiteFinished(NUnit.Core.TestResult nunitResult)
             {
-                NUnitTest test;
-                if (!testsByTestName.TryGetValue(nunitResult.Test.TestName, out test))
+                if (stepStack.Count == 0)
                     return;
+
+                IStep step = stepStack.Peek();
+                NUnitTest test = (NUnitTest) step.Test;
+                if (test.Test.TestName != nunitResult.Test.TestName)
+                    return;
+
+                stepStack.Pop();
 
                 progressMonitor.Worked(1);
 
                 if (nunitResult.Message != null)
                 {
-                    listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateBeginSectionEvent(test.Id, ExecutionLogStreams.Failures, "Failure Message"));
-                    listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id, ExecutionLogStreams.Failures, nunitResult.Message));
-                    listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateEndSectionEvent(test.Id, ExecutionLogStreams.Failures));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreams.Failures, "Failure Message"));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreams.Failures, nunitResult.Message));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreams.Failures));
                 }
                 if (nunitResult.StackTrace != null)
                 {
-                    listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateBeginSectionEvent(test.Id, ExecutionLogStreams.Failures, "Failure Stack Trace"));
-                    listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateWriteTextEvent(test.Id, ExecutionLogStreams.Failures, nunitResult.StackTrace));
-                    listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateEndSectionEvent(test.Id, ExecutionLogStreams.Failures));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreams.Failures, "Failure Stack Trace"));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreams.Failures, nunitResult.StackTrace));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreams.Failures));
                 }
 
-                listener.NotifyTestExecutionLogEvent(TestExecutionLogEventArgs.CreateCloseEvent(test.Id));
+                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateCloseEvent(step.Id));
 
                 TestResult result = CreateTestResultFromNUnitTestResult(nunitResult);
-
-                testStack.Pop();
-                listener.NotifyTestLifecycleEvent(TestLifecycleEventArgs.CreateFinishEvent(test.Id, result));
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(step.Id, result));
             }
 
             private TestResult CreateTestResultFromNUnitTestResult(NUnit.Core.TestResult nunitResult)

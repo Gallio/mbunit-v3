@@ -53,22 +53,6 @@ namespace MbUnit._Framework.Tests
             AreEqual(expected.Metadata, actual.Metadata);
 
             MbUnit.Framework.InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
-            MbUnit.Framework.InterimAssert.WithPairs(expected.ParameterSets, actual.ParameterSets, AreEqual);
-        }
-
-        public static void AreEqual(TemplateParameterSetInfo expected, TemplateParameterSetInfo actual)
-        {
-            if (expected == null)
-            {
-                Assert.IsNull(actual);
-                return;
-            }
-
-            Assert.AreEqual(expected.Id, actual.Id);
-            Assert.AreEqual(expected.Name, actual.Name);
-            AreEqual(expected.CodeReference, actual.CodeReference);
-            AreEqual(expected.Metadata, actual.Metadata);
-
             MbUnit.Framework.InterimAssert.WithPairs(expected.Parameters, actual.Parameters, AreEqual);
         }
 

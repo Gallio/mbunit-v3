@@ -107,10 +107,9 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <param name="constructor">The constructor to process</param>
         protected virtual void ProcessConstructor(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, ConstructorInfo constructor)
         {
-            MbUnitTemplateParameterSet parameterSet = fixtureTemplate.CreateAnonymousParameterSet();
             foreach (ParameterInfo parameter in constructor.GetParameters())
             {
-                ParameterPatternAttribute.ProcessSlot(builder, parameterSet, new Slot(parameter));
+                ParameterPatternAttribute.ProcessSlot(builder, fixtureTemplate, new Slot(parameter));
             }
         }
 
@@ -135,7 +134,7 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <param name="field">The field to process</param>
         protected virtual void ProcessField(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, FieldInfo field)
         {
-            ParameterPatternAttribute.ProcessSlot(builder, fixtureTemplate.CreateAnonymousParameterSet(), new Slot(field));
+            ParameterPatternAttribute.ProcessSlot(builder, fixtureTemplate, new Slot(field));
         }
 
         /// <summary>
@@ -160,7 +159,7 @@ namespace MbUnit.Framework.Kernel.Attributes
         protected virtual void ProcessProperty(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, PropertyInfo property)
         {
             if (ReflectionUtils.CanGetAndSetNonStatic(property))
-                ParameterPatternAttribute.ProcessSlot(builder, fixtureTemplate.CreateAnonymousParameterSet(), new Slot(property));
+                ParameterPatternAttribute.ProcessSlot(builder, fixtureTemplate, new Slot(property));
         }
 
         /// <summary>

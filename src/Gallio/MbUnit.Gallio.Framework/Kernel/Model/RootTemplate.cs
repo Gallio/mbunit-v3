@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -35,7 +36,7 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
-        public override ITemplateBinding Bind(TestScope scope, IDictionary<ITemplateParameter, object> arguments)
+        public override ITemplateBinding Bind(TemplateBindingScope scope, IDictionary<ITemplateParameter, IDataFactory> arguments)
         {
             return new RootTemplateBinding(this, scope, arguments);
         }

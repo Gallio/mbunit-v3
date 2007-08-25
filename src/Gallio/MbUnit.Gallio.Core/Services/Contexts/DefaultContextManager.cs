@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework;
-using MbUnit.Framework.Services.Contexts;
+using MbUnit.Framework.Kernel.Contexts;
 
 namespace MbUnit.Core.Services.Contexts
 {

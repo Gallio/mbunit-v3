@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.DataBinding;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -34,8 +35,8 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="arguments">The template arguments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="template"/>,
         /// <paramref name="scope"/> or <paramref name="arguments"/> is null</exception>
-        public MbUnitTemplateBinding(ITemplate template, TestScope scope,
-            IDictionary<ITemplateParameter, object> arguments)
+        public MbUnitTemplateBinding(ITemplate template, TemplateBindingScope scope,
+            IDictionary<ITemplateParameter, IDataFactory> arguments)
             : base(template, scope, arguments)
         {
         }

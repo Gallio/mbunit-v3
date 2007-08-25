@@ -68,7 +68,9 @@ namespace MbUnit.Framework.Kernel.Attributes
         public virtual void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
             // FIXME: Should we apply decorators in two separate sorted batches or merge them
-            //        together to produce a single ordered collection?
+            //        together to produce a single ordered collection?  I think it's easier
+            //        to reason about decorators locally if they are only ordered based on the
+            //        site to which they are applied.
             MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method);
             MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method.ReflectedType);
             MetadataPatternAttribute.ProcessMetadata(builder, methodTemplate, methodTemplate.Method);
@@ -100,10 +102,9 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <param name="methodTemplate">The method template</param>
         protected virtual void ProcessParameters(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
-            MbUnitTemplateParameterSet parameterSet = methodTemplate.CreateAnonymousParameterSet();
             foreach (ParameterInfo parameter in methodTemplate.Method.GetParameters())
             {
-                ProcessParameter(builder, methodTemplate, parameterSet, parameter);
+                ProcessParameter(builder, methodTemplate, parameter);
             }
         }
 
@@ -112,12 +113,11 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// </summary>
         /// <param name="builder">The template tree builder</param>
         /// <param name="methodTemplate">The method template</param>
-        /// <param name="parameterSet">The default parameter set to use unless overridden</param>
         /// <param name="parameter">The parameter</param>
         protected virtual void ProcessParameter(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate,
-            MbUnitTemplateParameterSet parameterSet, ParameterInfo parameter)
+            ParameterInfo parameter)
         {
-            ParameterPatternAttribute.ProcessSlot(builder, parameterSet, new Slot(parameter));
+            ParameterPatternAttribute.ProcessSlot(builder, methodTemplate, new Slot(parameter));
         }
 
         private class DefaultImpl : MethodPatternAttribute

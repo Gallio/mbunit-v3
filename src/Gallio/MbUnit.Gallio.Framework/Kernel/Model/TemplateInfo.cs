@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
@@ -28,10 +29,10 @@ namespace MbUnit.Framework.Kernel.Model
     [Serializable]
     [XmlRoot("template", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public sealed class TemplateInfo : TemplateComponentInfo
+    public sealed class TemplateInfo : TemplateComponentInfo, ITemplate
     {
-        private List<TemplateInfo> children;
-        private List<TemplateParameterSetInfo> parameterSets;
+        private readonly List<TemplateInfo> children;
+        private readonly List<TemplateParameterInfo> parameters;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -39,7 +40,7 @@ namespace MbUnit.Framework.Kernel.Model
         private TemplateInfo()
         {
             children = new List<TemplateInfo>();
-            parameterSets = new List<TemplateParameterSetInfo>();
+            parameters = new List<TemplateParameterInfo>();
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(id, name)
         {
             children = new List<TemplateInfo>();
-            parameterSets = new List<TemplateParameterSetInfo>();
+            parameters = new List<TemplateParameterInfo>();
         }
 
         /// <summary>
@@ -63,23 +64,23 @@ namespace MbUnit.Framework.Kernel.Model
             : base(obj)
         {
             children = new List<TemplateInfo>(obj.Children.Count);
-            parameterSets = new List<TemplateParameterSetInfo>(obj.ParameterSets.Count);
+            parameters = new List<TemplateParameterInfo>(obj.Parameters.Count);
 
             ListUtils.ConvertAndAddAll(obj.Children, children, delegate(ITemplate child)
             {
                 return new TemplateInfo(child);
             });
 
-            ListUtils.ConvertAndAddAll(obj.ParameterSets, parameterSets, delegate(ITemplateParameterSet parameterSet)
+            ListUtils.ConvertAndAddAll(obj.Parameters, parameters, delegate(ITemplateParameter parameter)
             {
-                return new TemplateParameterSetInfo(parameterSet);
+                return new TemplateParameterInfo(parameter);
             });
         }
 
         /// <summary>
         /// Gets the mutable list of children.
         /// </summary>
-        /// <seealso cref="ITemplate.Children"/>
+        /// <seealso cref="IModelTreeNode{T}.Children"/>
         [XmlArray("children", IsNullable=false)]
         [XmlArrayItem("template", IsNullable=false)]
         public List<TemplateInfo> Children
@@ -88,14 +89,50 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Gets the mutable list of parameter sets.
+        /// Gets the mutable list of parameters.
         /// </summary>
-        /// <seealso cref="ITemplate.ParameterSets"/>
-        [XmlArray("parameterSets", IsNullable = false)]
-        [XmlArrayItem("parameterSet", IsNullable = false)]
-        public List<TemplateParameterSetInfo> ParameterSets
+        /// <seealso cref="ITemplate.Parameters"/>
+        [XmlArray("parameters", IsNullable = false)]
+        [XmlArrayItem("parameter", IsNullable = false)]
+        public List<TemplateParameterInfo> Parameters
         {
-            get { return parameterSets; }
+            get { return parameters; }
         }
+
+        #region ITemplate implementation
+
+        IList<ITemplateParameter> ITemplate.Parameters
+        {
+            get
+            {
+                return ListUtils.CopyAllToArray(parameters);
+            }
+        }
+
+        ITemplateBinding ITemplate.Bind(TemplateBindingScope scope, IDictionary<ITemplateParameter, IDataFactory> arguments)
+        {
+            throw new NotSupportedException();
+        }
+
+        ITemplate IModelTreeNode<ITemplate>.Parent
+        {
+            get { throw new NotSupportedException(); }
+            set { throw new NotSupportedException(); }
+        }
+
+        IList<ITemplate> IModelTreeNode<ITemplate>.Children
+        {
+            get
+            {
+                return ListUtils.CopyAllToArray(children);
+            }
+        }
+
+        void IModelTreeNode<ITemplate>.AddChild(ITemplate node)
+        {
+            children.Add((TemplateInfo)node);
+        }
+
+        #endregion
     }
 }

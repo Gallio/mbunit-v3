@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using MbUnit.Framework;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 
@@ -57,8 +58,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         /// <param name="arguments">The template arguments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="template"/>,
         /// <paramref name="scope"/> or <paramref name="arguments"/> is null</exception>
-        public MbUnit2AssemblyTemplateBinding(MbUnit2AssemblyTemplate template, TestScope scope,
-            IDictionary<ITemplateParameter, object> arguments)
+        public MbUnit2AssemblyTemplateBinding(MbUnit2AssemblyTemplate template, TemplateBindingScope scope,
+            IDictionary<ITemplateParameter, IDataFactory> arguments)
             : base(template, scope, arguments)
         {
         }
@@ -72,11 +73,11 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         }
 
         /// <inheritdoc />
-        public override void BuildTests(TestTreeBuilder builder)
+        public override void BuildTests(TestTreeBuilder builder, ITest parent)
         {
             RunFixtureExplorerIfNeeded();
 
-            MbUnit2Test assemblyTest = CreateAssemblyTest(Scope, Assembly);
+            MbUnit2Test assemblyTest = CreateAssemblyTest(parent, Assembly);
             assemblyTest.Batch = new TestBatch("MbUnit v2: " + Template.Name, delegate
             {
                 return new MbUnit2TestController(fixtureExplorer);
@@ -84,11 +85,11 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             foreach (Fixture fixture in fixtureExplorer.FixtureGraph.Fixtures)
             {
-                MbUnit2Test fixtureTest = CreateFixtureTest(assemblyTest.Scope, fixture);
+                MbUnit2Test fixtureTest = CreateFixtureTest(assemblyTest, fixture);
 
                 foreach (RunPipeStarter starter in fixture.Starters)
                 {
-                    MbUnit2Test test = CreateTest(fixtureTest.Scope, starter.Pipe);
+                    MbUnit2Test test = CreateTest(fixtureTest, starter.Pipe);
                 }
             }
 
@@ -117,21 +118,21 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             }
         }
 
-        private MbUnit2Test CreateAssemblyTest(TestScope parentScope, Assembly assembly)
+        private MbUnit2Test CreateAssemblyTest(ITest parent, Assembly assembly)
         {
-            MbUnit2Test test = new MbUnit2Test(assembly.FullName, CodeReference.CreateFromAssembly(assembly), parentScope, null, null);
+            MbUnit2Test test = new MbUnit2Test(assembly.FullName, CodeReference.CreateFromAssembly(assembly), this, null, null);
             test.Kind = ComponentKind.Assembly;
 
             // TODO: Is there any metadata on assemblies that we need?
 
-            parentScope.ContainingTest.AddChild(test);
+            parent.AddChild(test);
             return test;
         }
 
-        private MbUnit2Test CreateFixtureTest(TestScope parentScope, Fixture fixture)
+        private MbUnit2Test CreateFixtureTest(ITest parent, Fixture fixture)
         {
             Type fixtureType = fixture.Type;
-            MbUnit2Test test = new MbUnit2Test(fixture.Name, CodeReference.CreateFromType(fixtureType), parentScope, fixture, null);
+            MbUnit2Test test = new MbUnit2Test(fixture.Name, CodeReference.CreateFromType(fixtureType), this, fixture, null);
             test.Kind = ComponentKind.Fixture;
 
             // Populate metadata
@@ -164,27 +165,30 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     test.Metadata.Entries.Add(MetadataKey.Description, attrib.Description);
             }
 
-            parentScope.ContainingTest.AddChild(test);
+            parent.AddChild(test);
             return test;
         }
 
-        private MbUnit2Test CreateTest(TestScope parentScope, RunPipe runPipe)
+        private MbUnit2Test CreateTest(ITest parent, RunPipe runPipe)
         {
             MemberInfo memberInfo = GuessMemberInfoFromRunPipe(runPipe);
             CodeReference codeRef = memberInfo != null ? CodeReference.CreateFromMember(memberInfo) : CodeReference.CreateFromType(runPipe.FixtureType);
 
-            MbUnit2Test test = new MbUnit2Test(runPipe.Name, codeRef, parentScope, runPipe.Fixture, runPipe);
+            MbUnit2Test test = new MbUnit2Test(runPipe.Name, codeRef, this, runPipe.Fixture, runPipe);
             test.Kind = ComponentKind.Test;
             test.IsTestCase = true;
 
             // Populate metadata
-            foreach (TestPatternAttribute2 attrib in memberInfo.GetCustomAttributes(typeof(TestPatternAttribute2), true))
+            if (memberInfo != null)
             {
-                if (!String.IsNullOrEmpty(attrib.Description))
-                    test.Metadata.Entries.Add(MetadataKey.Description, attrib.Description);
+                foreach (TestPatternAttribute2 attrib in memberInfo.GetCustomAttributes(typeof(TestPatternAttribute2), true))
+                {
+                    if (!String.IsNullOrEmpty(attrib.Description))
+                        test.Metadata.Entries.Add(MetadataKey.Description, attrib.Description);
+                }
             }
 
-            parentScope.ContainingTest.AddChild(test);
+            parent.AddChild(test);
             return test;
         }
 
@@ -234,6 +238,11 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     //       all built-in MbUnit v2 invokers.  -- Jeff.
                     Type fixtureType = runPipe.FixtureType;
                     string probableMemberName = invoker.Name;
+
+                    // Strip off arguments from a RowTest's member name.  eg. FooMember(123, 456)
+                    int parenthesis = probableMemberName.IndexOf('(');
+                    if (parenthesis >= 0)
+                        probableMemberName = probableMemberName.Substring(0, parenthesis);
 
                     foreach (MemberInfo member in fixtureType.GetMember(probableMemberName,
                         BindingFlags.Public | BindingFlags.Instance))

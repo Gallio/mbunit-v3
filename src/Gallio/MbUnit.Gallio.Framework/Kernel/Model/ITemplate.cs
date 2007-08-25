@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.DataBinding;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -34,20 +35,16 @@ namespace MbUnit.Framework.Kernel.Model
     /// </para>
     /// <para>
     /// A template may have zero or more <see cref="ITemplateParameter" />s.
-    /// Furthermore, each <see cref="ITemplateParameter" /> belongs to a
-    /// <see cref="ITemplateParameterSet" />.  Values must be bound to each
-    /// parameter when templates are specialized during test enumeration.
-    /// The result of template specialization is a <see cref="ITemplateBinding" />
-    /// that contains the actual values that were bound to each parameter.
+    /// Values must be bound to each parameter to produce a fully-bound
+    /// <see cref="ITemplateBinding" /> from which tests can be built.
     /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
     /// During test enumeration, the template contributes <see cref="ITest" />s to a
     /// <see cref="TestTreeBuilder" />.  The template can inject its own contributions
-    /// in and around those of the templates by modifying the <see cref="TestScope" /> it passes
-    /// to the inner templates, or by instrumenting the <see cref="TestTreeBuilder" />
-    /// appropriates.  Thus a template can effect great control over test construction.
+    /// in and around those of the templates by modifying the <see cref="TemplateBindingScope" />
+    /// it passes to the inner templates.
     /// </para>
     /// <para>
     /// It can happen that a template is never asked to produce tests, possibly because
@@ -55,19 +52,15 @@ namespace MbUnit.Framework.Kernel.Model
     /// in the enclosing context.  In this case, the template does not contribute anything
     /// to the test tree but it will still be visible in the template tree.
     /// </para>
-    /// <para>
-    /// Refer to <see cref="TestScope" /> for information on how a <see cref="IDataProvider" />
-    /// can be used to provide values for template parameters.
-    /// </para>
     /// </remarks>
     public interface ITemplate : ITemplateComponent, IModelTreeNode<ITemplate>
     {
         /// <summary>
-        /// Gets the parameter sets that belong to this template.
-        /// Each parameter set must have a unique name.  The order in which
-        /// the parameter sets appear is not significant.
+        /// Gets the parameter that belong to this template.
+        /// Each parameter must have a unique name.  The order in which
+        /// the parameters appear is not significant.
         /// </summary>
-        IList<ITemplateParameterSet> ParameterSets { get; }
+        IList<ITemplateParameter> Parameters { get; }
 
         /// <summary>
         /// Binds a template to a particular scope with the specified arguments.
@@ -79,6 +72,6 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="scope">The scope in which the template was bound</param>
         /// <param name="arguments">The actual values for the template's parameters</param>
         /// <returns>The template binding</returns>
-        ITemplateBinding Bind(TestScope scope, IDictionary<ITemplateParameter, object> arguments);
+        ITemplateBinding Bind(TemplateBindingScope scope, IDictionary<ITemplateParameter, IDataFactory> arguments);
     }
 }

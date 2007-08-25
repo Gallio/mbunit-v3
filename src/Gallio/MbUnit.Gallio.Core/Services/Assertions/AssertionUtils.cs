@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Services.Assertions;
+using MbUnit.Framework.Kernel.Assertions;
 
 namespace MbUnit.Core.Services.Assertions
 {

@@ -35,12 +35,12 @@ namespace MbUnit.Framework.Kernel.Events
         /// <summary>
         /// The event fired when notified of a test lifecycle event.
         /// </summary>
-        public EventHandler<TestLifecycleEventArgs> TestLifecycle;
+        public EventHandler<LifecycleEventArgs> Lifecycle;
 
         /// <summary>
         /// The event fired when notified of a test execution log event.
         /// </summary>
-        public EventHandler<TestExecutionLogEventArgs> TestExecutionLog;
+        public EventHandler<ExecutionLogEventArgs> ExecutionLog;
 
         /// <summary>
         /// Gets a list of listeners to which events are forwarded in addition
@@ -68,25 +68,25 @@ namespace MbUnit.Framework.Kernel.Events
         }
 
         /// <inheritdoc />
-        public void NotifyTestExecutionLogEvent(TestExecutionLogEventArgs e)
+        public void NotifyExecutionLogEvent(ExecutionLogEventArgs e)
         {
-            if (TestExecutionLog != null)
-                TestExecutionLog(this, e);
+            if (ExecutionLog != null)
+                ExecutionLog(this, e);
 
             if (listeners != null)
                 foreach (IEventListener listener in listeners)
-                    listener.NotifyTestExecutionLogEvent(e);
+                    listener.NotifyExecutionLogEvent(e);
         }
 
         /// <inheritdoc />
-        public void NotifyTestLifecycleEvent(TestLifecycleEventArgs e)
+        public void NotifyLifecycleEvent(LifecycleEventArgs e)
         {
-            if (TestLifecycle != null)
-                TestLifecycle(this, e);
+            if (Lifecycle != null)
+                Lifecycle(this, e);
 
             if (listeners != null)
                 foreach (IEventListener listener in listeners)
-                    listener.NotifyTestLifecycleEvent(e);
+                    listener.NotifyLifecycleEvent(e);
         }
     }
 }

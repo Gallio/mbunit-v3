@@ -25,19 +25,19 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
     /// </summary>
     public class NUnitTest : BaseTest
     {
-        private NUnit.Core.ITest test;
+        private readonly NUnit.Core.ITest test;
 
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeReference">The point of definition</param>
-        /// <param name="parentScope">The parent scope, or null if none</param>
+        /// <param name="templateBinding">The template binding that produced this test</param>
         /// <param name="test">The NUnit test, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="codeReference"/> is null</exception>
-        public NUnitTest(string name, CodeReference codeReference, TestScope parentScope, NUnit.Core.ITest test)
-            : base(name, codeReference, parentScope)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
+        /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
+        public NUnitTest(string name, CodeReference codeReference, ITemplateBinding templateBinding, NUnit.Core.ITest test)
+            : base(name, codeReference, templateBinding)
         {
             this.test = test;
         }

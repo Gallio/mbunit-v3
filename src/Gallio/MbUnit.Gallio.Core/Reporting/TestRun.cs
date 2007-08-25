@@ -32,10 +32,7 @@ namespace MbUnit.Core.Reporting
     public class TestRun
     {
         private string testId;
-        private DateTime startTime;
-        private DateTime endTime;
-        private TestResult result;
-        private ExecutionLog executionLog;
+        private StepRun rootStepRun;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -48,13 +45,18 @@ namespace MbUnit.Core.Reporting
         /// Creates a test run.
         /// </summary>
         /// <param name="testId">The test id</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> is null</exception>
-        public TestRun(string testId)
+        /// <param name="rootStepRun">The root step</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> or
+        /// <paramref name="rootStepRun"/> is null</exception>
+        public TestRun(string testId, StepRun rootStepRun)
         {
             if (testId == null)
                 throw new ArgumentNullException("testId");
+            if (rootStepRun == null)
+                throw new ArgumentNullException("rootStepRun");
 
             this.testId = testId;
+            this.rootStepRun = rootStepRun;
         }
 
         /// <summary>
@@ -74,65 +76,41 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <summary>
-        /// Gets or sets the time when the test run started.
-        /// </summary>
-        [XmlAttribute("startTime")]
-        public DateTime StartTime
-        {
-            get { return startTime; }
-            set { startTime = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the time when the test run ended.
-        /// </summary>
-        [XmlAttribute("endTime")]
-        public DateTime EndTime
-        {
-            get { return endTime; }
-            set { endTime = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the test result from the run.
+        /// Gets or sets the root step of the test run.
+        /// The value cannot be null because a test run always has a root step.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("result", IsNullable = false)]
-        public TestResult Result
+        [XmlElement("stepRun", IsNullable = false)]
+        public StepRun RootStepRun
         {
-            get
-            {
-                if (result == null)
-                    result = new TestResult();
-                return result;
-            }
+            get { return rootStepRun; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
-                result = value;
+                rootStepRun = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets the execution log.
+        /// Recursively enumerates all test run steps.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("executionLog", IsNullable = false)]
-        public ExecutionLog ExecutionLog
+        [XmlIgnore]
+        public IEnumerable<StepRun> StepRuns
         {
             get
             {
-                if (executionLog == null)
-                    executionLog = new ExecutionLog();
-                return executionLog;
+                return EnumerateStepRunsRecursively(rootStepRun);
             }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                executionLog = value;
-            }
+        }
+
+        private static IEnumerable<StepRun> EnumerateStepRunsRecursively(StepRun parent)
+        {
+            yield return parent;
+
+            foreach (StepRun child in parent.Children)
+                foreach (StepRun stepRun in EnumerateStepRunsRecursively(child))
+                    yield return stepRun;
         }
     }
 }

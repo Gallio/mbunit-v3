@@ -59,6 +59,7 @@ namespace MbUnit.Framework
         /// </summary>
         /// <param name="authorName">The author's name</param>
         /// <param name="authorEmail">The author's email address</param>
+        /// <param name="authorHomepage">The author's home page</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/>,
         /// <paramref name="authorEmail "/> or <paramref name="authorHomepage"/> is null</exception>
         public AuthorAttribute(string authorName, string authorEmail, string authorHomepage)

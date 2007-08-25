@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using Castle.Core;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Harness
 {

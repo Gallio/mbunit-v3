@@ -27,8 +27,8 @@ namespace MbUnit.Core.Runner.Monitors
     /// </summary>
     public class ReportMonitor : BaseTestRunnerMonitor
     {
-        private Report report;
-        private Dictionary<string, TestRunData> testRunDataMap;
+        private readonly Report report;
+        private readonly Dictionary<string, StepData> stepDataMap;
 
         /// <summary>
         /// Creates a test summary tracker initially with no contents.
@@ -36,7 +36,7 @@ namespace MbUnit.Core.Runner.Monitors
         public ReportMonitor()
         {
             report = new Report();
-            testRunDataMap = new Dictionary<string, TestRunData>();
+            stepDataMap = new Dictionary<string, StepData>();
         }
 
         /// <summary>
@@ -51,6 +51,7 @@ namespace MbUnit.Core.Runner.Monitors
             get { return report; }
         }
 
+        /// <inheritdoc />
         protected override void OnAttach()
         {
             base.OnAttach();
@@ -61,8 +62,8 @@ namespace MbUnit.Core.Runner.Monitors
             Runner.RunStarting += HandleRunStarting;
             Runner.RunComplete += HandleRunComplete;
 
-            Runner.EventDispatcher.TestLifecycle += HandleTestLifecycleEvent;
-            Runner.EventDispatcher.TestExecutionLog += HandleTestExecutionLogEvent;
+            Runner.EventDispatcher.Lifecycle += HandleLifecycleEvent;
+            Runner.EventDispatcher.ExecutionLog += HandleExecutionLogEvent;
         }
 
         private void HandleLoadPackageComplete(object sender, EventArgs e)
@@ -99,7 +100,7 @@ namespace MbUnit.Core.Runner.Monitors
         {
             lock (report)
             {
-                testRunDataMap.Clear();
+                stepDataMap.Clear();
 
                 report.PackageRun = new PackageRun();
                 report.PackageRun.StartTime = DateTime.Now;
@@ -110,97 +111,107 @@ namespace MbUnit.Core.Runner.Monitors
         {
             lock (report)
             {
-                testRunDataMap.Clear();
+                stepDataMap.Clear();
 
                 report.PackageRun.EndTime = DateTime.Now;
                 report.PackageRun.Statistics.Duration = (report.PackageRun.EndTime - report.PackageRun.StartTime).TotalSeconds;
             }
         }
 
-        private void HandleTestLifecycleEvent(object sender, TestLifecycleEventArgs e)
+        private void HandleLifecycleEvent(object sender, LifecycleEventArgs e)
         {
             lock (report)
             {
-                TestRunData runData = GetOrCreateTestRunData(e.TestId);
+                switch (e.EventType)
+                {
+                    case LifecycleEventType.Start:
+                    {
+                        TestInfo testInfo = Runner.TestModel.Tests[e.StepInfo.TestId];
+                        StepRun stepRun = new StepRun(e.StepId, e.StepInfo.Name);
+                        StepData stepData = new StepData(testInfo, stepRun);
+                        stepDataMap.Add(e.StepId, stepData);
+
+                        if (e.StepInfo.ParentId == null)
+                        {
+                            TestRun run = new TestRun(e.StepInfo.TestId, stepRun);
+                            report.PackageRun.TestRuns.Add(run);
+                        }
+                        else
+                        {
+                            StepData parentStepData = GetStepData(e.StepInfo.ParentId);
+                            parentStepData.stepRun.Children.Add(stepRun);
+                        }
+
+                        stepRun.StartTime = DateTime.Now;
+                        break;
+                    }
+
+                    case LifecycleEventType.EnterPhase:
+                        break;
+
+                    case LifecycleEventType.Finish:
+                    {
+                        StepData stepData = GetStepData(e.StepId);
+                        stepData.stepRun.EndTime = DateTime.Now;
+                        stepData.stepRun.Result = e.Result;
+                        report.PackageRun.Statistics.MergeStepStatistics(stepData.stepRun, stepData.TestInfo.IsTestCase);
+
+                        stepData.ExecutionLogWriter.Close(); // just in case
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void HandleExecutionLogEvent(object sender, ExecutionLogEventArgs e)
+        {
+            lock (report)
+            {
+                StepData stepData = GetStepData(e.StepId);
 
                 switch (e.EventType)
                 {
-                    case TestLifecycleEventType.Start:
-                        report.PackageRun.TestRuns.Add(runData.Run);
-                        runData.Run.StartTime = DateTime.Now;
+                    case ExecutionLogEventType.WriteText:
+                        stepData.ExecutionLogWriter.WriteText(e.StreamName, e.Text);
                         break;
 
-                    case TestLifecycleEventType.Step:
+                    case ExecutionLogEventType.WriteAttachment:
+                        stepData.ExecutionLogWriter.WriteAttachment(e.StreamName, e.Attachment);
                         break;
 
-                    case TestLifecycleEventType.Finish:
-                        runData.Run.EndTime = DateTime.Now;
-                        runData.Run.Result = e.Result;
-                        report.PackageRun.Statistics.MergeTestRunStatistics(runData.TestInfo, runData.Run);
+                    case ExecutionLogEventType.BeginSection:
+                        stepData.ExecutionLogWriter.BeginSection(e.StreamName, e.SectionName);
+                        break;
 
-                        runData.ExecutionLogWriter.Close(); // just in case
+                    case ExecutionLogEventType.EndSection:
+                        stepData.ExecutionLogWriter.EndSection(e.StreamName);
+                        break;
+
+                    case ExecutionLogEventType.Close:
+                        stepData.ExecutionLogWriter.Close();
                         break;
                 }
             }
         }
 
-        private void HandleTestExecutionLogEvent(object sender, TestExecutionLogEventArgs e)
+        private StepData GetStepData(string stepId)
         {
-            lock (report)
-            {
-                TestRunData runData = GetOrCreateTestRunData(e.TestId);
-
-                switch (e.EventType)
-                {
-                    case TestExecutionLogEventType.WriteText:
-                        runData.ExecutionLogWriter.WriteText(e.StreamName, e.Text);
-                        break;
-
-                    case TestExecutionLogEventType.WriteAttachment:
-                        runData.ExecutionLogWriter.WriteAttachment(e.StreamName, e.Attachment);
-                        break;
-
-                    case TestExecutionLogEventType.BeginSection:
-                        runData.ExecutionLogWriter.BeginSection(e.StreamName, e.SectionName);
-                        break;
-
-                    case TestExecutionLogEventType.EndSection:
-                        runData.ExecutionLogWriter.EndSection(e.StreamName);
-                        break;
-
-                    case TestExecutionLogEventType.Close:
-                        runData.ExecutionLogWriter.Close();
-                        break;
-                }
-            }
+            return stepDataMap[stepId];
         }
 
-        private TestRunData GetOrCreateTestRunData(string testId)
-        {
-            TestRunData data;
-            if (!testRunDataMap.TryGetValue(testId, out data))
-            {
-                data = new TestRunData(Runner.TestModel.Tests[testId]);
-                testRunDataMap.Add(testId, data);
-            }
-
-            return data;
-        }
-
-        private sealed class TestRunData
+        private sealed class StepData
         {
             public readonly TestInfo TestInfo;
-            public readonly TestRun Run;
+            public readonly StepRun stepRun;
             public readonly ExecutionLogWriter ExecutionLogWriter;
 
-            public TestRunData(TestInfo testInfo)
+            public StepData(TestInfo testInfo, StepRun stepRun)
             {
                 this.TestInfo = testInfo;
+                this.stepRun = stepRun;
 
                 ExecutionLogWriter = new ExecutionLogWriter();
-
-                Run = new TestRun(testInfo.Id);
-                Run.ExecutionLog = ExecutionLogWriter.ExecutionLog;
+                stepRun.ExecutionLog = ExecutionLogWriter.ExecutionLog;
             }
         }
     }

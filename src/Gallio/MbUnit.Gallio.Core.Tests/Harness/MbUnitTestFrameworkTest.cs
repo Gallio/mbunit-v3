@@ -15,11 +15,11 @@
 
 extern alias MbUnit2;
 using MbUnit.Core.Harness;
-using MbUnit.Core.Services.Runtime;
+using MbUnit.Core.Runtime;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Metadata;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Runtime;
 using MbUnit.Framework.Kernel.Utilities;
 using MbUnit._Framework.Tests;
 using MbUnit.Framework.Tests.Kernel.Runtime;
@@ -90,7 +90,7 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual(ComponentKind.Assembly, assemblyTemplate.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTemplate.CodeReference);
             Assert.AreEqual(sampleAssembly, assemblyTemplate.Assembly);
-            Assert.GreaterEqualThan(1, assemblyTemplate.FixtureTemplates.Count);
+            Assert.GreaterEqualThan(assemblyTemplate.FixtureTemplates.Count, 1);
 
             MbUnitFixtureTemplate fixtureTemplate = ListUtils.Find(assemblyTemplate.FixtureTemplates, delegate(MbUnitFixtureTemplate template)
             {

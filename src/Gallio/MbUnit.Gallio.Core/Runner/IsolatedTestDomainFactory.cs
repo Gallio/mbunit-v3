@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.Services.Runtime;
+using MbUnit.Core.Runtime;
 
 namespace MbUnit.Core.Runner
 {

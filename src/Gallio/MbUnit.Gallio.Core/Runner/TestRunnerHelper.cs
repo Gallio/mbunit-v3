@@ -22,12 +22,11 @@ using Castle.Core.Logging;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
-using MbUnit.Core.Services.Runtime;
+using MbUnit.Core.Runtime;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Runner

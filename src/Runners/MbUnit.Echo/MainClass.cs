@@ -19,7 +19,7 @@ using Castle.Core.Logging;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
-using MbUnit.Core.Services.Runtime;
+using MbUnit.Core.Runtime;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Echo

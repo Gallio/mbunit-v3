@@ -24,7 +24,7 @@ using System.Xml.XPath;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Services.ExecutionLogs;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 
 namespace MbUnit.Core.Reporting
 {
@@ -144,17 +144,17 @@ namespace MbUnit.Core.Reporting
 
         /// <summary>
         /// Gets the name of a directory in which to store results associated
-        /// with a run of the specified test id.
+        /// with a run of the specified step id.
         /// </summary>
-        /// <param name="testId">The test id</param>
+        /// <param name="stepId">The step id</param>
         /// <returns>The directory name</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> is null</exception>
-        public static string GetTestRunDirectoryName(string testId)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/> is null</exception>
+        public static string GetStepRunDirectoryName(string stepId)
         {
-            if (testId == null)
-                throw new ArgumentNullException("testId");
+            if (stepId == null)
+                throw new ArgumentNullException("stepId");
 
-            return FileUtils.EncodeFileName(testId);
+            return FileUtils.EncodeFileName(stepId);
         }
 
         /// <summary>
@@ -193,15 +193,15 @@ namespace MbUnit.Core.Reporting
 
                     if (report.PackageRun != null)
                     {
-                        foreach (TestRun testRun in report.PackageRun.TestRuns)
+                        foreach (StepRun stepRun in report.PackageRun.StepRuns)
                         {
-                            string testRunDirectory = GetTestRunDirectoryName(testRun.TestId);
+                            string stepDirectory = GetStepRunDirectoryName(stepRun.StepId);
 
-                            foreach (ExecutionLogAttachment attachment in testRun.ExecutionLog.Attachments)
+                            foreach (ExecutionLogAttachment attachment in stepRun.ExecutionLog.Attachments)
                             {
                                 oldContentPaths.Add(attachment, attachment.ContentPath);
 
-                                string attachmentPath = Path.Combine(testRunDirectory, GetAttachmentFileName(attachment.Name));
+                                string attachmentPath = Path.Combine(stepDirectory, GetAttachmentFileName(attachment.Name));
                                 attachment.ContentPath = attachmentPath;
                             }
                         }
@@ -248,7 +248,7 @@ namespace MbUnit.Core.Reporting
         /// <param name="filesWritten">If not null, the files written during the operation are appended to this list</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="reportPath"/>,
-        /// or <param name="progressMonitor" /> is null</exception>
+        /// or <paramref name="progressMonitor" /> is null</exception>
         public static void SaveReport(Report report, string reportPath, bool saveAttachmentContents,
             bool embedAttachmentContents, IList<string> filesWritten, IProgressMonitor progressMonitor)
         {
@@ -272,6 +272,7 @@ namespace MbUnit.Core.Reporting
 
                 if (filesWritten != null)
                     filesWritten.Add(reportPath);
+
                 using (XmlWriter writer = XmlWriter.Create(reportPath, settings))
                 {
                     progressMonitor.ThrowIfCanceled();
@@ -316,13 +317,13 @@ namespace MbUnit.Core.Reporting
 
                 progressMonitor.BeginTask("Saving report attachments.", attachmentCount);
 
-                foreach (TestRun testRun in report.PackageRun.TestRuns)
+                foreach (StepRun stepRun in report.PackageRun.StepRuns)
                 {
-                    string testRunDirectory = Path.Combine(contentDirectoryPath, GetTestRunDirectoryName(testRun.TestId));
+                    string stepDirectory = Path.Combine(contentDirectoryPath, GetStepRunDirectoryName(stepRun.StepId));
 
-                    foreach (ExecutionLogAttachment attachment in testRun.ExecutionLog.Attachments)
+                    foreach (ExecutionLogAttachment attachment in stepRun.ExecutionLog.Attachments)
                     {
-                        string attachmentPath = Path.Combine(testRunDirectory, GetAttachmentFileName(attachment.Name));
+                        string attachmentPath = Path.Combine(stepDirectory, GetAttachmentFileName(attachment.Name));
 
                         progressMonitor.ThrowIfCanceled();
                         progressMonitor.SetStatus(attachmentPath);
@@ -394,10 +395,14 @@ namespace MbUnit.Core.Reporting
                     return;
 
                 List<ExecutionLogAttachment> attachmentsToLoad = new List<ExecutionLogAttachment>();
-                foreach (TestRun testRun in report.PackageRun.TestRuns)
-                    foreach (ExecutionLogAttachment attachment in testRun.ExecutionLog.Attachments)
+                foreach (StepRun stepRun in report.PackageRun.StepRuns)
+                {
+                    foreach (ExecutionLogAttachment attachment in stepRun.ExecutionLog.Attachments)
+                    {
                         if (attachment.ContentPath != null)
                             attachmentsToLoad.Add(attachment);
+                    }
+                }
 
                 if (attachmentsToLoad.Count == 0)
                     return;
@@ -424,8 +429,10 @@ namespace MbUnit.Core.Reporting
 
             if (report.PackageRun != null)
             {
-                foreach (TestRun testRun in report.PackageRun.TestRuns)
-                    count += testRun.ExecutionLog.Attachments.Count;
+                foreach (StepRun stepRun in report.PackageRun.StepRuns)
+                {
+                    count += stepRun.ExecutionLog.Attachments.Count;
+                }
             }
 
             return count;

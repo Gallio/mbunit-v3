@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Services.Contexts;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Contexts;
+using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Framework
 {
@@ -56,6 +56,14 @@ namespace MbUnit.Framework
         public static ITest CurrentTest
         {
             get { return CurrentContext.CurrentTest; }
+        }
+
+        /// <summary>
+        /// Gets the current step.
+        /// </summary>
+        public static IStep CurrentStep
+        {
+            get { return CurrentContext.CurrentStep; }
         }
 
         /// <summary>
@@ -186,13 +194,16 @@ namespace MbUnit.Framework
         /// Attaches a disposable resource to the context such that it will be disposed automatically
         /// when the context exits.
         /// </summary>
+        /// <remarks>
+        /// <para>
         /// A reference to the resource is maintained until detached or the context exits.
         /// This method is equivalent to calling <see cref="AttachResource{T}" /> with an 
         /// action that disposes the resource.
-        /// </summary>
-        /// <remarks>
+        /// </para>
+        /// <para>
         /// This method overrides the previous cleanup action if the resource is already attached
         /// to the current thread.
+        /// </para>
         /// </remarks>
         /// <param name="resource">The disposable resource to attach</param>
         public static void AttachResource(IDisposable resource)

@@ -31,10 +31,11 @@ namespace MbUnit.Framework.Kernel.Model
         /// Creates a test tree builder initially populated with
         /// a root test.
         /// </summary>
+        /// <param name="rootTest">The root test</param>
         /// <param name="options">The test enumeration options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <param name="options" /> is null</exception>
-        public TestTreeBuilder(TestEnumerationOptions options)
-            : base(new RootTest())
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTest"/> or <paramref name="options" /> is null</exception>
+        public TestTreeBuilder(RootTest rootTest, TestEnumerationOptions options)
+            : base(rootTest)
         {
             if (options == null)
                 throw new ArgumentNullException("options");

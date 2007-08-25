@@ -16,8 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Services.ExecutionLogs;
-using MbUnit.Framework.Services.Contexts;
+using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Kernel.Contexts;
 
 namespace MbUnit.Core.Services.ExecutionLogs
 {

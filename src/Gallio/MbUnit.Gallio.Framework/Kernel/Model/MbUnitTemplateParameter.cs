@@ -24,26 +24,19 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class MbUnitTemplateParameter : BaseTemplateParameter
     {
-        private Slot slot;
+        private readonly Slot slot;
 
         /// <summary>
         /// Initializes an MbUnit test parameter model object.
         /// </summary>
-        /// <param name="parameterSet">The parameter set</param>
-        /// <param name="slot">The slot, non-null</param>
-        public MbUnitTemplateParameter(MbUnitTemplateParameterSet parameterSet, Slot slot)
-            : base(slot.Name, slot.CodeReference, parameterSet, slot.ValueType)
+        /// <param name="slot">The slot</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="slot"/> is null</exception>
+        public MbUnitTemplateParameter(Slot slot)
+            : base(ValidateSlotArgument(slot).Name, slot.CodeReference, slot.ValueType)
         {
             this.slot = slot;
 
             Index = slot.Position;
-        }
-
-        /// <inheritdoc />
-        public new MbUnitTemplateParameterSet ParameterSet
-        {
-            get { return (MbUnitTemplateParameterSet) base.ParameterSet; }
-            set { base.ParameterSet = value; }
         }
 
         /// <summary>
@@ -53,5 +46,13 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get { return slot; }
         }
+
+        private static Slot ValidateSlotArgument(Slot slot)
+        {
+            if (slot == null)
+                throw new ArgumentNullException("slot");
+            return slot;
+        }
+
     }
 }

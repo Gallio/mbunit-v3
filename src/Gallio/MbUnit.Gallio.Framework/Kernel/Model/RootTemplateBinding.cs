@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using MbUnit.Framework.Kernel.DataBinding;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -31,18 +32,18 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="arguments">The template arguments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="template"/>,
         /// <paramref name="scope"/> or <paramref name="arguments"/> is null</exception>
-        public RootTemplateBinding(ITemplate template, TestScope scope,
-                                   IDictionary<ITemplateParameter, object> arguments)
+        public RootTemplateBinding(ITemplate template, TemplateBindingScope scope,
+                                   IDictionary<ITemplateParameter, IDataFactory> arguments)
             : base(template, scope, arguments)
         {
         }
 
         /// <inheritdoc />
-        public override void BuildTests(TestTreeBuilder builder)
+        public override void BuildTests(TestTreeBuilder builder, ITest parent)
         {
-            Scope.ContainingTest.Metadata.Entries.AddAll(Template.Metadata.Entries);
+            parent.Metadata.Entries.AddAll(Template.Metadata.Entries);
 
-            BuildTestsForChildren(Scope, builder);
+            BuildTestsForChildren(builder, parent);
         }
     }
 }

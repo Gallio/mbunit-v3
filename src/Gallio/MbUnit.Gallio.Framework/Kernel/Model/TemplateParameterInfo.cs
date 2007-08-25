@@ -26,7 +26,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// <seealso cref="ITemplateParameter"/>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public sealed class TemplateParameterInfo : TemplateComponentInfo
+    public sealed class TemplateParameterInfo : TemplateComponentInfo, ITemplateParameter
     {
         private string typeName;
         private int index;
@@ -92,6 +92,12 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get { return index; }
             set { index = value; }
+        }
+
+        Type ITemplateParameter.Type
+        {
+            get { return Type.GetType(typeName); }
+            set { typeName = value.FullName; }
         }
     }
 }

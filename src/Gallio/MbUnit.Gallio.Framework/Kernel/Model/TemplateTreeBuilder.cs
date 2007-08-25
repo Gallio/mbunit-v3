@@ -30,10 +30,11 @@ namespace MbUnit.Framework.Kernel.Model
         /// Creates a template tree builder initially populated with
         /// a root template.
         /// </summary>
+        /// <param name="rootTemplate">The root template</param>
         /// <param name="options">The template enumeration options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
-        public TemplateTreeBuilder(TemplateEnumerationOptions options)
-            : base(new RootTemplate())
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTemplate"/> or <paramref name="options"/> is null</exception>
+        public TemplateTreeBuilder(RootTemplate rootTemplate, TemplateEnumerationOptions options)
+            : base(rootTemplate)
         {
             if (options == null)
                 throw new ArgumentNullException("options");

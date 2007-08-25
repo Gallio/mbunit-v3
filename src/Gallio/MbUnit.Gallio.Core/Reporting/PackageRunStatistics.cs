@@ -141,24 +141,24 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <summary>
-        /// Merges statistics from a test run, incrementing the relevant counters.
+        /// Merges statistics from a test run step, incrementing the relevant counters.
         /// </summary>
-        /// <param name="testInfo">The test info</param>
-        /// <param name="testRun">The test run</param>
-        public void MergeTestRunStatistics(TestInfo testInfo, TestRun testRun)
+        /// <param name="stepRun">The test step</param>
+        /// <param name="isTestCase">True if the test is a test case</param>
+        public void MergeStepStatistics(StepRun stepRun, bool isTestCase)
         {
-            if (testRun == null)
-                throw new ArgumentNullException("testRun");
+            if (stepRun == null)
+                throw new ArgumentNullException("stepRun");
 
-            assertCount += testRun.Result.AssertCount;
+            assertCount += stepRun.Result.AssertCount;
 
-            if (!testInfo.IsTestCase)
+            if (!isTestCase)
                 return;
 
             testCount += 1;
 
             // Tally the various test run states.
-            switch (testRun.Result.State)
+            switch (stepRun.Result.State)
             {
                 case TestState.NotRun:
                     return;
@@ -178,7 +178,7 @@ namespace MbUnit.Core.Reporting
             }
 
             // If the test ran, tally the various outcomes.
-            switch (testRun.Result.Outcome)
+            switch (stepRun.Result.Outcome)
             {
                 case TestOutcome.Passed:
                     passCount += 1;

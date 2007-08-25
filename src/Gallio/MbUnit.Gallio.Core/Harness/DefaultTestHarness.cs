@@ -19,12 +19,13 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Harness
 {
@@ -285,7 +286,9 @@ namespace MbUnit.Core.Harness
                 progressMonitor.BeginTask("Building test templates.", 10);
 
                 testTreeBuilder = null;
-                templateTreeBuilder = new TemplateTreeBuilder(options);
+
+                RootTemplate rootTemplate = new RootTemplate();
+                templateTreeBuilder = new TemplateTreeBuilder(rootTemplate, options);
 
                 if (BuildingTemplates != null)
                     BuildingTemplates(this, EventArgs.Empty);
@@ -311,10 +314,12 @@ namespace MbUnit.Core.Harness
             {
                 progressMonitor.BeginTask("Building tests.", 10);
 
-                testTreeBuilder = new TestTreeBuilder(options);
+                TemplateBindingScope scope = new TemplateBindingScope(null);
+                ITemplateBinding rootBinding = templateTreeBuilder.Root.Bind(scope, EmptyDictionary<ITemplateParameter, IDataFactory>.Instance);
+                RootTest rootTest = new RootTest(rootBinding);
+                testTreeBuilder = new TestTreeBuilder(rootTest, options);
 
-                ITemplateBinding rootBinding = templateTreeBuilder.Root.Bind(testTreeBuilder.Root.Scope, EmptyDictionary<ITemplateParameter, object>.Instance);
-                rootBinding.BuildTests(testTreeBuilder);
+                rootBinding.BuildTests(testTreeBuilder, rootTest);
 
                 if (BuildingTests != null)
                     BuildingTests(this, EventArgs.Empty);

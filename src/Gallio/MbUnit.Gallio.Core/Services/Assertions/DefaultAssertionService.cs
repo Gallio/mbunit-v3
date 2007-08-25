@@ -20,8 +20,8 @@ using System.Threading;
 using MbUnit.Framework;
 using MbUnit.Framework.Exceptions;
 using MbUnit.Core.Services.Contexts;
-using MbUnit.Framework.Services.Assertions;
-using MbUnit.Framework.Services.Contexts;
+using MbUnit.Framework.Kernel.Assertions;
+using MbUnit.Framework.Kernel.Contexts;
 
 namespace MbUnit.Core.Services.Assertions
 {

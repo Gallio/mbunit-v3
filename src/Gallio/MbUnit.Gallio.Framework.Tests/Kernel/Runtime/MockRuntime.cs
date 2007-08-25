@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Framework.Tests.Kernel.Runtime
 {

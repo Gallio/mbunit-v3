@@ -17,10 +17,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 using NUnit.Core;
+using ITest = MbUnit.Framework.Kernel.Model.ITest;
 
 namespace MbUnit.Plugin.NUnitAdapter.Core
 {
@@ -31,7 +33,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
     /// </summary>
     public class NUnitFrameworkTemplateBinding : BaseTemplateBinding
     {
-        private string TestTypeMetadataKey = "NUnit.TestType";
+        private const string TestTypeMetadataKey = "NUnit.TestType";
 
         private TestRunner runner;
 
@@ -43,8 +45,8 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         /// <param name="arguments">The template arguments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="template"/>,
         /// <paramref name="scope"/> or <paramref name="arguments"/> is null</exception>
-        public NUnitFrameworkTemplateBinding(NUnitFrameworkTemplate template, TestScope scope,
-            IDictionary<ITemplateParameter, object> arguments)
+        public NUnitFrameworkTemplateBinding(NUnitFrameworkTemplate template, TemplateBindingScope scope,
+            IDictionary<ITemplateParameter, IDataFactory> arguments)
             : base(template, scope, arguments)
         {
         }
@@ -58,7 +60,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         }
 
         /// <inheritdoc />
-        public override void BuildTests(TestTreeBuilder builder)
+        public override void BuildTests(TestTreeBuilder builder, ITest parent)
         {
             LoadTestPackageIfNeeded();
 
@@ -67,7 +69,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             //       There's no point showing this to the user do instead
             //       we assimilate it in the framework-level test.
             NUnit.Core.ITest rootTest = runner.Test;
-            BuildFrameworkTest(Scope, rootTest);
+            BuildFrameworkTest(parent, rootTest);
         }
 
         private void LoadTestPackageIfNeeded()
@@ -97,9 +99,9 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             }
         }
 
-        private void BuildFrameworkTest(TestScope parentScope, NUnit.Core.ITest nunitRootTest)
+        private void BuildFrameworkTest(ITest parentTest, NUnit.Core.ITest nunitRootTest)
         {
-            NUnitTest test = new NUnitTest(Template.Name, CodeReference.Unknown, parentScope, nunitRootTest);
+            NUnitTest test = new NUnitTest(Template.Name, CodeReference.Unknown, this, nunitRootTest);
             test.Kind = ComponentKind.Framework;
             test.Batch = new TestBatch("NUnit", delegate
             {
@@ -107,7 +109,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             });
             PopulateMetadata(test, nunitRootTest);
 
-            parentScope.ContainingTest.AddChild(test);
+            parentTest.AddChild(test);
             BuildChildren(test);
         }
 
@@ -138,7 +140,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                     break;
             }
 
-            NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, codeReference, parentTest.Scope, nunitTest);
+            NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, codeReference, this, nunitTest);
             test.Kind = kind;
             test.IsTestCase = !nunitTest.IsSuite;
             PopulateMetadata(test, nunitTest);

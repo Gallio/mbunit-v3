@@ -15,8 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Core.Services.Runtime;
-using MbUnit.Framework.Services.Runtime;
+using MbUnit.Core.Runtime;
+using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Runner
 {

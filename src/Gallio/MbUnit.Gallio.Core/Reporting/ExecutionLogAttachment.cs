@@ -18,7 +18,7 @@ using System.Globalization;
 using System.Xml;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Services.ExecutionLogs;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 
 namespace MbUnit.Core.Reporting
 {

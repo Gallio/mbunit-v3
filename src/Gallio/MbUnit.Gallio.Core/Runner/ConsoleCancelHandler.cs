@@ -15,26 +15,38 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace MbUnit.Core.Runner
 {
     /// <summary>
     /// Encapsulates concerns relating to handling console-based
-    /// cancelation events.
+    /// cancelation events.  
     /// </summary>
-    /// <todo author="jeff">
-    /// Setup a rule so that repeated attempts to cancel the application
-    /// with Control+C within a short time-frame simply are eventually
-    /// answered by allowing the framework to terminate the application.
-    /// eg. 3 occurrences of Control+C within 0.5 secs.
-    /// </todo>
     public static class ConsoleCancelHandler
     {
+        /// <summary>
+        /// The application will forcibly terminate if the cancel key is pressed
+        /// <see cref="ForceQuitKeyPressRepetitions" /> times within no more than
+        /// <see cref="ForceQuitKeyPressTimeoutMilliseconds"/> milliseconds.
+        /// </summary>
+        public const int ForceQuitKeyPressRepetitions = 3;
+
+        /// <summary>
+        /// The application will forcibly terminate if the cancel key is pressed
+        /// <see cref="ForceQuitKeyPressRepetitions" /> times within no more than
+        /// <see cref="ForceQuitKeyPressTimeoutMilliseconds"/> milliseconds.
+        /// </summary>
+        public const int ForceQuitKeyPressTimeoutMilliseconds = 1000;
+
         private static readonly object syncRoot = new object();
 
         private static bool isCanceled;
         private static event EventHandler cancelHandlers;
+
+        private static Stopwatch repeatStart;
+        private static int repeatCount;
 
         /// <summary>
         /// Installs the handler.
@@ -110,7 +122,20 @@ namespace MbUnit.Core.Runner
 
         private static void HandleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
-            e.Cancel = true;
+            if (repeatCount != 0)
+            {
+                if (repeatStart.ElapsedMilliseconds > ForceQuitKeyPressTimeoutMilliseconds)
+                    repeatCount = 0;
+            }
+
+            if (repeatCount == 0)
+                repeatStart = Stopwatch.StartNew();
+
+            repeatCount += 1;
+
+            if (repeatCount < ForceQuitKeyPressRepetitions)
+                e.Cancel = true;
+
             IsCanceled = true;
         }
     }

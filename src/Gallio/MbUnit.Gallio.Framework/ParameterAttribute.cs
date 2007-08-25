@@ -29,7 +29,6 @@ namespace MbUnit.Framework
     public class ParameterAttribute : ParameterPatternAttribute
     {
         private string name;
-        private string set;
         private int? index;
 
         /// <summary>
@@ -44,19 +43,6 @@ namespace MbUnit.Framework
         {
             get { return name; }
             set { name = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the name of the parameter set to which the parameter belongs.
-        /// If set to null, the parameter belongs to an anonymous parameter set.
-        /// </summary>
-        /// <value>
-        /// The default value is null.
-        /// </value>
-        public string Set
-        {
-            get { return set; }
-            set { set = value; }
         }
 
         /// <summary>
@@ -98,9 +84,6 @@ namespace MbUnit.Framework
         {
             if (name != null)
                 parameter.Name = name;
-
-            if (set != null)
-                parameter.ParameterSet.Template.SetParameterSetName(parameter, set);
 
             if (index.HasValue)
                 parameter.Index = index.Value;

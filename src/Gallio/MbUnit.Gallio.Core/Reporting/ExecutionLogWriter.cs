@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using MbUnit.Framework.Services.ExecutionLogs;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 
 namespace MbUnit.Core.Reporting
 {

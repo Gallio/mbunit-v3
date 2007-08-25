@@ -68,10 +68,9 @@ namespace MbUnit.Framework.Kernel.Model
         bool IsTestCase { get; set; }
 
         /// <summary>
-        /// Gets or sets the template binding from which the test was produced,
-        /// or null if this test was not produced from any particular template.
+        /// Gets the template binding from which the test was produced.
         /// </summary>
-        ITemplateBinding TemplateBinding { get; set; }
+        ITemplateBinding TemplateBinding { get; }
 
         /// <summary>
         /// Gets the list of the dependencies of this test.
@@ -81,11 +80,6 @@ namespace MbUnit.Framework.Kernel.Model
         /// belongs to a different <see cref="TestBatch" />.
         /// </remarks>
         IList<ITest> Dependencies { get; }
-
-        /// <summary>
-        /// Gets the scope of this test.
-        /// </summary>
-        TestScope Scope { get; }
 
         /// <summary>
         /// Gets or sets the test batch to which the test belongs.

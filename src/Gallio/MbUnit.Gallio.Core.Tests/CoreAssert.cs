@@ -102,9 +102,24 @@ namespace MbUnit.Core.Tests
             }
 
             Assert.AreEqual(expected.TestId, actual.TestId);
+            AreEqual(expected.RootStepRun, actual.RootStepRun);
+        }
+
+        public static void AreEqual(StepRun expected, StepRun actual)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual);
+                return;
+            }
+
+            Assert.AreEqual(expected.StepId, actual.StepId);
+            Assert.AreEqual(expected.StepName, actual.StepName);
             Assert.AreEqual(expected.StartTime, actual.StartTime);
             Assert.AreEqual(expected.EndTime, actual.EndTime);
             // TODO: etc...
+
+            MbUnit.Framework.InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
         }
     }
 }

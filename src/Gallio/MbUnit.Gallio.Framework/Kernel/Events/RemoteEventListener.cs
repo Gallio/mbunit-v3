@@ -60,7 +60,7 @@ namespace MbUnit.Framework.Kernel.Events
         }
 
         /// <inheritdoc />
-        public void NotifyTestLifecycleEvent(TestLifecycleEventArgs e)
+        public void NotifyLifecycleEvent(LifecycleEventArgs e)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace MbUnit.Framework.Kernel.Events
         }
 
         /// <inheritdoc />
-        public void NotifyTestExecutionLogEvent(TestExecutionLogEventArgs e)
+        public void NotifyExecutionLogEvent(ExecutionLogEventArgs e)
         {
             try
             {
@@ -102,14 +102,14 @@ namespace MbUnit.Framework.Kernel.Events
                 listener.NotifyMessageEvent(e);
             }
 
-            public void NotifyTestLifecycleEvent(TestLifecycleEventArgs e)
+            public void NotifyTestLifecycleEvent(LifecycleEventArgs e)
             {
-                listener.NotifyTestLifecycleEvent(e);
+                listener.NotifyLifecycleEvent(e);
             }
 
-            public void NotifyTestExecutionLogEvent(TestExecutionLogEventArgs e)
+            public void NotifyTestExecutionLogEvent(ExecutionLogEventArgs e)
             {
-                listener.NotifyTestExecutionLogEvent(e);
+                listener.NotifyExecutionLogEvent(e);
             }
         }
     }

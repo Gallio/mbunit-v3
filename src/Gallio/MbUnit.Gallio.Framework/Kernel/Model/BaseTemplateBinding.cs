@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Collections;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -31,8 +32,8 @@ namespace MbUnit.Framework.Kernel.Model
     public class BaseTemplateBinding : ITemplateBinding
     {
         private ITemplate template;
-        private TestScope scope;
-        private IDictionary<ITemplateParameter, object> arguments;
+        private TemplateBindingScope scope;
+        private IDictionary<ITemplateParameter, IDataFactory> arguments;
 
         /// <summary>
         /// Creates a template binding.
@@ -42,8 +43,8 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="arguments">The template arguments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="template"/>,
         /// <paramref name="scope"/> or <paramref name="arguments"/> is null</exception>
-        public BaseTemplateBinding(ITemplate template, TestScope scope,
-            IDictionary<ITemplateParameter, object> arguments)
+        public BaseTemplateBinding(ITemplate template, TemplateBindingScope scope,
+            IDictionary<ITemplateParameter, IDataFactory> arguments)
         {
             if (template == null)
                 throw new ArgumentNullException("template");
@@ -64,43 +65,44 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
-        public TestScope Scope
+        public TemplateBindingScope Scope
         {
             get { return scope; }
         }
 
         /// <inheritdoc />
-        public IDictionary<ITemplateParameter, object> Arguments
+        public IDictionary<ITemplateParameter, IDataFactory> Arguments
         {
             get { return arguments; }
         }
 
         /// <inheritdoc />
-        public virtual void BuildTests(TestTreeBuilder builder)
+        public virtual void BuildTests(TestTreeBuilder builder, ITest parent)
         {
             // The base implementation builds a test node for the template and recurses
             // into the children.
-            BaseTest test = new BaseTest(template.Name, template.CodeReference, scope);
+            BaseTest test = new BaseTest(template.Name, template.CodeReference, this);
             test.Kind = null;
             test.Metadata.Entries.AddAll(template.Metadata.Entries);
 
-            scope.ContainingTest.AddChild(test);
+            parent.AddChild(test);
 
-            BuildTestsForChildren(test.Scope, builder);
+            BuildTestsForChildren(builder, test);
         }
 
         /// <summary>
         /// Builds tests for children templates.
         /// </summary>
-        /// <param name="parentScope">The containing scope for the tests created by the children</param>
         /// <param name="builder">The test tree builder</param>
-        protected virtual void BuildTestsForChildren(TestScope parentScope, TestTreeBuilder builder)
+        /// <param name="parent">The parent test for the children</param>
+        protected virtual void BuildTestsForChildren(TestTreeBuilder builder, ITest parent)
         {
             foreach (ITemplate child in template.Children)
             {
                 // Todo: get args from scope and use data providers
-                ITemplateBinding binding = child.Bind(parentScope, EmptyDictionary<ITemplateParameter, object>.Instance);
-                binding.BuildTests(builder);
+                ITemplateBinding binding = child.Bind(new TemplateBindingScope(scope),
+                    EmptyDictionary<ITemplateParameter, IDataFactory>.Instance);
+                binding.BuildTests(builder, parent);
             }
         }
     }
