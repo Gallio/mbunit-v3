@@ -185,9 +185,7 @@ namespace MbUnit.Echo
             Console.WriteLine(new string('-', 78));
 
             Console.ResetColor();
-            Console.WriteLine("Project Lead: Andrew Stopford");
-            Console.WriteLine("Contributors: Ben Hall, Graham Hay, Johan Appelgren, Joey Calisay,");
-            Console.WriteLine("              David Parkinson, Jeff Brown, Marc Stober, Mark Haley");
+            Console.WriteLine("  Available options:");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(new string('-', 78));
 
