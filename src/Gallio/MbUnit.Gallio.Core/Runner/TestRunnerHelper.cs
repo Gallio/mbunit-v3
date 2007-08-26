@@ -284,10 +284,15 @@ namespace MbUnit.Core.Runner
                 DisposeStopWatch();
 
                 // Make sure we write out debug log messages.
-                if (! runCanceled && debugWriter != null)
+                if (!runCanceled && debugWriter != null)
                     logger.Debug(debugWriter.ToString());
 
-                return runCanceled ? ResultCode.Canceled : ResultCode.Success;
+                if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
+                    return ResultCode.Failure;
+                if (runCanceled)
+                    return ResultCode.Canceled;
+
+                return ResultCode.Success;
             }
         }
 
@@ -343,11 +348,6 @@ namespace MbUnit.Core.Runner
             DisplayPaths(package.AssemblyFiles, "Test assemblies:");
             DisplayPaths(package.HintDirectories, "Hint Directories:");
             DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
-
-            //TODO: This will be un-commented and fixed once reporting is implemented
-            //Log(Level.Verbose, "ReportTypes: {0}", ReportTypes);
-            //Log(Level.Verbose, "ReportFileNameFormat: {0}", ReportFileNameFormat);
-            //Log(Level.Verbose, "ReportOutputDirectory: {0}", ReportOutputDirectory);
         }
 
         private void DisplayPaths(ICollection<string> paths, string name)
