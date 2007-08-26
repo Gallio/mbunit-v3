@@ -28,7 +28,7 @@ namespace MbUnit.Core.Runner.Monitors
     public class DebugMonitor : BaseTestRunnerMonitor
     {
         private readonly TextWriter writer;
-        private Dictionary<string, string> stepNames;
+        private readonly Dictionary<string, string> stepNames = new Dictionary<string, string>();
 
         /// <summary>
         /// Creates a console monitor.
