@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Yora", "MbUnit.Yora\MbUnit.Yora.csproj", "{8A5FCF47-473E-42A2-BE41-C7AC709637ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Yora.Core", "MbUnit.Yora.Core\MbUnit.Yora.Core.csproj", "{6B3C093B-F7EC-4B89-B6DB-6BF5A6ABD253}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A5FCF47-473E-42A2-BE41-C7AC709637ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A5FCF47-473E-42A2-BE41-C7AC709637ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A5FCF47-473E-42A2-BE41-C7AC709637ED}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A5FCF47-473E-42A2-BE41-C7AC709637ED}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{6B3C093B-F7EC-4B89-B6DB-6BF5A6ABD253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B3C093B-F7EC-4B89-B6DB-6BF5A6ABD253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B3C093B-F7EC-4B89-B6DB-6BF5A6ABD253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B3C093B-F7EC-4B89-B6DB-6BF5A6ABD253}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
