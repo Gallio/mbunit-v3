@@ -46,22 +46,15 @@
 				<ColumnDefinition Width="251.92"/>
 				<ColumnDefinition Width="8.257"/>
 			</Grid.ColumnDefinitions>
-			<Rectangle d:LayoutOverrides="HorizontalAlignment, GridBox" Stroke="#FF000000" RadiusX="15.5" RadiusY="15.5" Margin="8,8,0,8" Grid.Column="1">
+			<Rectangle d:LayoutOverrides="HorizontalAlignment, GridBox" Stroke="#FF5B5B5B" RadiusX="15.5" RadiusY="15.5" Margin="8,8,0,8" Grid.Column="1">
 				<Rectangle.Fill>
 					<LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-						<GradientStop Color="#FF000000" Offset="0"/>
-						<GradientStop Color="#FF242424" Offset="1"/>
+						<GradientStop Color="#FF2E2E2E" Offset="0.514"/>
+						<GradientStop Color="#FF3A3A3A" Offset="1"/>
 					</LinearGradientBrush>
 				</Rectangle.Fill>
 			</Rectangle>
-			<Rectangle d:LayoutOverrides="HorizontalAlignment, GridBox" Stroke="#FF000000" RadiusX="15.5" RadiusY="15.5" Margin="8,8,8,8" Grid.Column="3" Grid.ColumnSpan="2">
-				<Rectangle.Fill>
-					<LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-						<GradientStop Color="#FF000000" Offset="0"/>
-						<GradientStop Color="#FF242424" Offset="1"/>
-					</LinearGradientBrush>
-				</Rectangle.Fill>
-			</Rectangle>
+			<Rectangle d:LayoutOverrides="HorizontalAlignment, GridBox" Stroke="#FF000000" RadiusX="15.5" RadiusY="15.5" Margin="8,8,8,8" Grid.Column="3" Grid.ColumnSpan="2" Fill="#FF3A3A3A"/>
 			<Grid d:LayoutOverrides="GridBox" Margin="-88,236,88,0" VerticalAlignment="Top" Height="0"/>
 		</Grid>
 		<Rectangle Fill="#FF363636" Stroke="#FF000000" VerticalAlignment="Top" Height="56"/>
