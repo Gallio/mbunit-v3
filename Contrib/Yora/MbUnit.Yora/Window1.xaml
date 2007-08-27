@@ -62,7 +62,7 @@
 		<Label Content="Yora" FontFamily="Calibri" FontSize="48" FontWeight="Normal" Foreground="#FF7C7C7C" HorizontalAlignment="Left" Margin="159.053,-6,0,0" VerticalAlignment="Top"/>
 		<Rectangle Fill="#FF262626" Stroke="#FF000000" Margin="0,54,0,0" VerticalAlignment="Top" Height="24"/>
 		<Label HorizontalAlignment="Left" Margin="-1,56,0,0" x:Name="label" VerticalAlignment="Top" Width="56" Height="24" Content="File" Foreground="#FFFEFEFE"/>
-		<Menu RenderTransformOrigin="0.08,-0.688" HorizontalAlignment="Left" Margin="0,77,0,0" x:Name="menu" VerticalAlignment="Top" Width="72" Height="104" Background="#FF717171">
+		<Menu RenderTransformOrigin="0.08,-0.688" HorizontalAlignment="Left" Margin="0,77,0,0" x:Name="menu" VerticalAlignment="Top" Width="72" Height="22" Background="#FF000000">
 			<Menu.RenderTransform>
 				<TransformGroup>
 					<ScaleTransform ScaleX="1" ScaleY="1"/>
@@ -71,7 +71,7 @@
 					<TranslateTransform X="0" Y="0"/>
 				</TransformGroup>
 			</Menu.RenderTransform>
-			<MenuItem d:LayoutOverrides="Height" Header="MenuItem"/>
+			<MenuItem d:LayoutOverrides="Height" Header="Exit" Background="#000A0A0A" Foreground="#FFFDFDFD"/>
 		</Menu>
 		<Label HorizontalAlignment="Right" Margin="0,0,340,260" VerticalAlignment="Bottom" Width="16" Height="8" Content="Label"/>
 		<Image Opacity="0.1" Margin="342,238,350,142" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Source="MbSimple.ico"/>
