@@ -35,6 +35,8 @@ namespace MbUnit.Tasks.MSBuild
         /// log messages to.</param>
         public MSBuildLogger(TaskLoggingHelper taskLogger)
         {
+            if (taskLogger == null)
+                throw new ArgumentNullException("taskLogger");
             this.taskLogger = taskLogger;
             Level = LoggerLevel.Debug;
         }
@@ -75,6 +77,7 @@ namespace MbUnit.Tasks.MSBuild
         /// <inheritdoc />
         public override ILogger CreateChildLogger(string name)
         {
+            //TODO: Check why are we ignoring the name
             return new MSBuildLogger(taskLogger);
         }
     }

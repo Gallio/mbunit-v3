@@ -35,9 +35,9 @@ namespace MbUnit.Tasks.MSBuild
         private ITaskItem[] pluginDirectories;
         private ITaskItem[] hintDirectories;
         private string filter;
-        private string[] reportTypes = new string[] { "html" };
-        private string reportFileNameFormat = "mbunit-result-{0}{1}";
-        private string reportOutputDirectory = String.Empty;
+        private string[] reportTypes = new string[] { };
+        private string reportNameFormat = "mbunit-result-{0}{1}";
+        private string reportDirectory = String.Empty;
         private bool ignoreFailures = false;
         private int exitCode;
 
@@ -85,19 +85,19 @@ namespace MbUnit.Tasks.MSBuild
         /// <summary>
         /// A format string to use to generate the reports filename.
         /// </summary>
-        public string ReportFileNameFormat
+        public string ReportNameFormat
         {
-            get { return reportFileNameFormat; }
-            set { reportFileNameFormat = value; }
+            get { return reportNameFormat; }
+            set { reportNameFormat = value; }
         }
 
         /// <summary>
         /// The directory where the reports will be put.
         /// </summary>
-        public string ReportOutputDirectory
+        public string ReportDirectory
         {
-            get { return reportOutputDirectory; }
-            set { reportOutputDirectory = value; }
+            get { return reportDirectory; }
+            set { reportDirectory = value; }
         }       
 
         /// <summary>
@@ -160,12 +160,20 @@ namespace MbUnit.Tasks.MSBuild
                 (
                 delegate { return new RunnerProgressMonitor(logger); },
                 logger,
-                new AnyFilter<ITest>()
+                GetFilter()
                 ))
             {
                 AddAllItemSpecs(runner.Package.AssemblyFiles, assemblies);
                 AddAllItemSpecs(runner.Package.HintDirectories, hintDirectories);
                 AddAllItemSpecs(runner.RuntimeSetup.PluginDirectories, pluginDirectories);
+                                
+                runner.ReportDirectory = ReportDirectory;
+                runner.ReportNameFormat = ReportNameFormat;
+                runner.ReportFormats.AddRange(ReportTypes);
+
+                //TODO: Check whether this makes sense for this runner
+                //runner.TemplateModelFilename = SaveTemplateTree;
+                //runner.TestModelFilename = SaveTestTree;
 
                 ExitCode = runner.Run();
 
@@ -177,6 +185,15 @@ namespace MbUnit.Tasks.MSBuild
             return false;
         }
 
+        private Filter<ITest> GetFilter()
+        {
+            if (String.IsNullOrEmpty(filter))
+            {
+                return new AnyFilter<ITest>();
+            }
+            return FilterParser.ParseFilterList<ITest>(filter);
+        }
+
         private void DisplayVersion()
         {
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
@@ -186,8 +203,12 @@ namespace MbUnit.Tasks.MSBuild
 
         private static void AddAllItemSpecs(IList<string> collection, IList<ITaskItem> items)
         {
-            foreach (ITaskItem item in items)
-                collection.Add(item.ItemSpec);
+            //TODO: Check for nothing in the TestPackage and RuntimeSetup classes?
+            if (items != null)
+            {
+                foreach (ITaskItem item in items)
+                    collection.Add(item.ItemSpec);
+            }
         }
         
         #endregion
