@@ -30,7 +30,7 @@ namespace MbUnit.Echo
     public sealed class MainClass : IDisposable
     {
         private string applicationTitle;
-        private LevelFilteredLogger logger = new PrettyConsoleLogger();
+        private readonly LevelFilteredLogger logger = new PrettyConsoleLogger();
         private readonly MainArguments arguments = new MainArguments();
         private bool haltExecution = false;
         private int resultCode;
@@ -45,6 +45,7 @@ namespace MbUnit.Echo
         public void SetUp(string[] args)
         {
             SetApplicationTitle();
+            ShowBanner();
             InstallCancelHandler();
 
             if (!ParseArguments(args))
@@ -105,7 +106,19 @@ namespace MbUnit.Echo
                 testRunnerHelper.TemplateModelFilename = arguments.SaveTemplateTree;
                 testRunnerHelper.TestModelFilename = arguments.SaveTestTree;
 
-                return testRunnerHelper.Run();
+                int result = testRunnerHelper.Run();
+                switch (result)
+                {
+                    case ResultCode.Success:
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\nSuccess\n");
+                        break;
+                    case ResultCode.Failure:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\nFailure\n");
+                        break;
+                }
+                return result;
             }
         }
 
@@ -170,10 +183,9 @@ namespace MbUnit.Echo
             }
         }
 
-        private void ShowHelp()
+        private void ShowBanner()
         {
             Console.WriteLine();
-
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(applicationTitle);
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -181,10 +193,15 @@ namespace MbUnit.Echo
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("http://www.mbunit.com/");
             Console.WriteLine();
+            Console.ResetColor();
+        }
+
+        private void ShowHelp()
+        {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(new string('-', 78));
-
             Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("  Available options:");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(new string('-', 78));
@@ -202,7 +219,7 @@ namespace MbUnit.Echo
                 IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
 
                 Console.WriteLine();
-                Console.WriteLine("Supported report types: {0}", 
+                Console.WriteLine("Supported report types: {0}",
                     string.Join(", ", ListUtils.CopyAllToArray(reportManager.GetFormatterNames())));
             }
         }
