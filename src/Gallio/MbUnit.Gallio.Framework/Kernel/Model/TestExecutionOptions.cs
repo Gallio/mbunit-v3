@@ -41,7 +41,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 filter = value;
             }

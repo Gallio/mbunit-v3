@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
@@ -155,8 +154,7 @@ namespace MbUnit.Framework.Kernel.Model
             StringBuilder description = new StringBuilder();
 
             if (parameterName != null)
-                description.AppendFormat(CultureInfo.CurrentCulture,
-                    "Parameter '{0}' of ", parameterName);
+                description.AppendFormat(Resources.CodeReference_ToString_ParameterName, parameterName);
 
             if (typeName != null)
             {
@@ -173,7 +171,7 @@ namespace MbUnit.Framework.Kernel.Model
             if (assemblyName != null)
             {
                 if (description.Length != 0)
-                    description.Append(", ");
+                    description.Append(@", ");
 
                 description.Append(assemblyName);
             }
@@ -190,7 +188,7 @@ namespace MbUnit.Framework.Kernel.Model
         public static CodeReference CreateFromParameter(ParameterInfo parameter)
         {
             if (parameter == null)
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(@"parameter");
 
             MemberInfo member = parameter.Member;
             return new CodeReference(member.ReflectedType.Assembly, member.ReflectedType.Namespace,
@@ -206,7 +204,7 @@ namespace MbUnit.Framework.Kernel.Model
         public static CodeReference CreateFromMember(MemberInfo member)
         {
             if (member == null)
-                throw new ArgumentNullException("member");
+                throw new ArgumentNullException(@"member");
 
             return new CodeReference(member.ReflectedType.Assembly, member.ReflectedType.Namespace,
                 member.ReflectedType, member, null);
@@ -221,7 +219,7 @@ namespace MbUnit.Framework.Kernel.Model
         public static CodeReference CreateFromType(Type type)
         {
             if (type == null)
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(@"type");
 
             return new CodeReference(type.Assembly, type.Namespace, type, null, null);
         }
@@ -235,7 +233,7 @@ namespace MbUnit.Framework.Kernel.Model
         public static CodeReference CreateFromAssembly(Assembly assembly)
         {
             if (assembly == null)
-                throw new ArgumentNullException("assembly");
+                throw new ArgumentNullException(@"assembly");
 
             return new CodeReference(assembly, null, null, null, null);
         }

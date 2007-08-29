@@ -24,7 +24,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class TemplateTreeBuilder : ModelTreeBuilder<ITemplate>
     {
-        private TemplateEnumerationOptions options;
+        private readonly TemplateEnumerationOptions options;
 
         /// <summary>
         /// Creates a template tree builder initially populated with
@@ -37,7 +37,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(rootTemplate)
         {
             if (options == null)
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException(@"options");
 
             this.options = options;
         }

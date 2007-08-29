@@ -42,7 +42,7 @@ namespace MbUnit.Framework.Kernel.Model
         public ModelTreeBuilder(T root)
         {
             if (root == null)
-                throw new ArgumentNullException("root");
+                throw new ArgumentNullException(@"root");
 
             this.root = root;
 
@@ -82,9 +82,9 @@ namespace MbUnit.Framework.Kernel.Model
         public void RegisterNode(object key, T node)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(@"key");
             if (node == null)
-                throw new ArgumentNullException("node");
+                throw new ArgumentNullException(@"node");
 
             registry.Add(key, node);
         }
@@ -98,7 +98,7 @@ namespace MbUnit.Framework.Kernel.Model
         public T GetNode(string key)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(@"key");
 
             T node;
             return registry.TryGetValue(key, out node) ? node : null;

@@ -29,8 +29,8 @@ namespace MbUnit.Core.Harness
     [Singleton]
     public class DefaultTestHarnessFactory : ITestHarnessFactory
     {
-        private IRuntime runtime;
-        private List<ITestHarnessContributor> contributors;
+        private readonly IRuntime runtime;
+        private readonly List<ITestHarnessContributor> contributors;
 
         /// <summary>
         /// Creates a default test harness factory that adds all registered

@@ -25,8 +25,8 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class MbUnitFixtureTemplate : MbUnitTemplate
     {
-        private MbUnitAssemblyTemplate assemblyTemplate;
-        private Type fixtureType;
+        private readonly MbUnitAssemblyTemplate assemblyTemplate;
+        private readonly Type fixtureType;
 
         /// <summary>
         /// Initializes an MbUnit test fixture template model object.

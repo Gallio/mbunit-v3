@@ -28,6 +28,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.0.5, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="MbUnit.Framework, Version=1.0.2700.29885, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
@@ -43,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseUnitTest.cs" />
+    <Compile Include="Integration\BaseSampleTest.cs" />
+    <Compile Include="Integration\FixtureInheritanceTest.cs" />
     <Compile Include="FrameworkAssert.cs" />
     <Compile Include="Kernel\Filters\AndFilterTest.cs" />
     <Compile Include="Kernel\Filters\AnyFilterTest.cs" />
@@ -55,13 +73,19 @@
     <Compile Include="Kernel\Filters\NotFilterTest.cs" />
     <Compile Include="Kernel\Filters\OrFilterTest.cs" />
     <Compile Include="Kernel\Filters\TypeFilterTest.cs" />
+    <Compile Include="Kernel\Actions\ActionChainTest.cs" />
     <Compile Include="Kernel\Metadata\MetadataMapTest.cs" />
     <Compile Include="Kernel\Model\CodeReferenceTest.cs" />
     <Compile Include="Kernel\Runtime\MockRuntime.cs" />
     <Compile Include="Kernel\Utilities\ListUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Integration\SampleRunner.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
+      <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
+      <Name>MbUnit.Gallio.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>

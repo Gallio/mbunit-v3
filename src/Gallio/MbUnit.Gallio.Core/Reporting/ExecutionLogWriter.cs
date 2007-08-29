@@ -26,7 +26,7 @@ namespace MbUnit.Core.Reporting
     /// </summary>
     public class ExecutionLogWriter : IExecutionLogWriter
     {
-        private ExecutionLog executionLog;
+        private readonly ExecutionLog executionLog;
         private Dictionary<string, ExecutionLogStreamData> streamDataMap;
         private Dictionary<string, Attachment> attachmentMap;
 
@@ -162,9 +162,9 @@ namespace MbUnit.Core.Reporting
 
         private class ExecutionLogStreamData
         {
-            private ExecutionLogStream executionLogStream;
-            private Stack<ExecutionLogStreamContainerTag> containerStack;
-            private StringBuilder textBuilder;
+            private readonly ExecutionLogStream executionLogStream;
+            private readonly Stack<ExecutionLogStreamContainerTag> containerStack;
+            private readonly StringBuilder textBuilder;
 
             public ExecutionLogStreamData(string streamName)
             {

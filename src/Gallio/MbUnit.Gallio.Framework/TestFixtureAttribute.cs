@@ -15,12 +15,26 @@
 
 using System;
 using MbUnit.Framework.Kernel.Attributes;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Declares an MbUnit test fixture.
+    /// <para>
+    /// The test fixture attribute is applied to a class that contains a suite
+    /// of related test cases.  If an error occurs while initializing the fixture
+    /// or if at least one of the test cases within the fixture fails,
+    /// then the fixture itself will be deemed to have failed.  Otherwise the
+    /// fixture will pass.
+    /// Output from the fixture, such as text written to the console, is captured
+    /// by the framework and will be included in the test report.
+    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The class must have a public default constructor.  The class may not be static.
+    /// </para>
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public sealed class TestFixtureAttribute : FixturePatternAttribute
     {

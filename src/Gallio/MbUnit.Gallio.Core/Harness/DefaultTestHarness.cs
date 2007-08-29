@@ -36,7 +36,7 @@ namespace MbUnit.Core.Harness
     {
         private bool isDisposed;
         private IRuntime runtime;
-        private IList<Assembly> assemblies;
+        private List<Assembly> assemblies;
         private TestPackage package;
         private TemplateTreeBuilder templateTreeBuilder;
         private TestTreeBuilder testTreeBuilder;
@@ -76,6 +76,7 @@ namespace MbUnit.Core.Harness
                 testTreeBuilder = null;
                 assemblies = null;
                 runtime = null;
+                eventDispatcher = null;
             }
         }
 
@@ -207,7 +208,7 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public void LoadPackage(IProgressMonitor progressMonitor, TestPackage package)
+        public void LoadPackage(TestPackage package, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -269,7 +270,7 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public void BuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options)
+        public void BuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -298,7 +299,7 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public void BuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options)
+        public void BuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -315,7 +316,12 @@ namespace MbUnit.Core.Harness
                 progressMonitor.BeginTask("Building tests.", 10);
 
                 TemplateBindingScope scope = new TemplateBindingScope(null);
-                ITemplateBinding rootBinding = templateTreeBuilder.Root.Bind(scope, EmptyDictionary<ITemplateParameter, IDataFactory>.Instance);
+                List<ITemplateBinding> rootBindings = new List<ITemplateBinding>(scope.Bind(templateTreeBuilder.Root));
+
+                if (rootBindings.Count != 1)
+                    throw new InvalidOperationException("The root template did not yield exactly one root template binding when it was bound.");
+
+                ITemplateBinding rootBinding = rootBindings[0];
                 RootTest rootTest = new RootTest(rootBinding);
                 testTreeBuilder = new TestTreeBuilder(rootTest, options);
 
@@ -329,7 +335,7 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options)
+        public void RunTests(TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");

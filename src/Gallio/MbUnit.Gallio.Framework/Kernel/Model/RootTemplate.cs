@@ -13,9 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 
@@ -30,7 +28,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// Creates the root template.
         /// </summary>
         public RootTemplate()
-            : base("Root", CodeReference.Unknown)
+            : base(Resources.RootTemplate_RootTemplateName, CodeReference.Unknown)
         {
             Kind = ComponentKind.Root;
         }

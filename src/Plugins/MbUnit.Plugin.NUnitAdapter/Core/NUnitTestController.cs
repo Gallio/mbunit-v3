@@ -180,13 +180,13 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 switch (testOutput.Type)
                 {
                     case TestOutputType.Out:
-                        streamName = ExecutionLogStreams.ConsoleOutput;
+                        streamName = ExecutionLogStreamName.ConsoleOutput;
                         break;
                     case TestOutputType.Error:
-                        streamName = ExecutionLogStreams.ConsoleError;
+                        streamName = ExecutionLogStreamName.ConsoleError;
                         break;
                     case TestOutputType.Trace:
-                        streamName = ExecutionLogStreams.Trace;
+                        streamName = ExecutionLogStreamName.Trace;
                         break;
                     default:
                         streamName = "NUnit TestOutputType(" + testOutput.Type + ")";
@@ -218,9 +218,9 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
                 IStep step = stepStack.Peek();
 
-                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreams.Failures, "Unhandled Exception"));
-                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreams.Failures, exception.ToString()));
-                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreams.Failures));
+                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreamName.Failures, "Unhandled Exception"));
+                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreamName.Failures, exception.ToString()));
+                listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreamName.Failures));
             }
 
             private void HandleTestOrSuiteStarted(TestName testName)
@@ -253,15 +253,15 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
                 if (nunitResult.Message != null)
                 {
-                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreams.Failures, "Failure Message"));
-                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreams.Failures, nunitResult.Message));
-                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreams.Failures));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreamName.Failures, "Failure Message"));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreamName.Failures, nunitResult.Message));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreamName.Failures));
                 }
                 if (nunitResult.StackTrace != null)
                 {
-                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreams.Failures, "Failure Stack Trace"));
-                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreams.Failures, nunitResult.StackTrace));
-                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreams.Failures));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateBeginSectionEvent(step.Id, ExecutionLogStreamName.Failures, "Failure Stack Trace"));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id, ExecutionLogStreamName.Failures, nunitResult.StackTrace));
+                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateEndSectionEvent(step.Id, ExecutionLogStreamName.Failures));
                 }
 
                 listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateCloseEvent(step.Id));

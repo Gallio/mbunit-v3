@@ -61,9 +61,9 @@ namespace MbUnit.Core.Tests.Harness
 
         protected void PopulateTemplateTree()
         {
-            mockHarness.LoadPackage(new NullProgressMonitor(), new TestPackage());
+            mockHarness.LoadPackage(new TestPackage(), new NullProgressMonitor());
             mockHarness.AddAssembly(sampleAssembly);
-            mockHarness.BuildTemplates(new NullProgressMonitor(), new TemplateEnumerationOptions());
+            mockHarness.BuildTemplates(new TemplateEnumerationOptions(), new NullProgressMonitor());
 
             rootTemplate = mockHarness.TemplateTreeBuilder.Root;
         }
@@ -71,7 +71,7 @@ namespace MbUnit.Core.Tests.Harness
         protected void PopulateTestTree()
         {
             PopulateTemplateTree();
-            mockHarness.BuildTests(new NullProgressMonitor(), new TestEnumerationOptions());
+            mockHarness.BuildTests(new TestEnumerationOptions(), new NullProgressMonitor());
 
             rootTest = mockHarness.TestTreeBuilder.Root;
         }

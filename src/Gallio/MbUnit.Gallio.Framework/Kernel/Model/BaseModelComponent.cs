@@ -28,7 +28,7 @@ namespace MbUnit.Framework.Kernel.Model
         private string id;
         private string name;
         private CodeReference codeReference;
-        private MetadataMap metadata;
+        private readonly MetadataMap metadata;
 
         /// <summary>
         /// Initializes a test component.
@@ -37,12 +37,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="codeReference">The point of definition of the component</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="codeReference"/>
         /// is null</exception>
-        public BaseModelComponent(/*string id, */string name, CodeReference codeReference)
+        public BaseModelComponent(string name, CodeReference codeReference)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(@"name");
             if (codeReference == null)
-                throw new ArgumentNullException("codeReference");
+                throw new ArgumentNullException(@"codeReference");
 
             this.id = Guid.NewGuid().ToString(); // interim value until initialized to a stable identifier
             this.name = name;
@@ -57,7 +57,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 id = value;
             }
@@ -70,7 +70,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 name = value;
             }
@@ -89,7 +89,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 codeReference = value;
             }
@@ -104,7 +104,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </value>
         public string Kind
         {
-            get { return (string)Metadata.GetValue(MetadataKey.ComponentKind); }
+            get { return Metadata.GetValue(MetadataKey.ComponentKind); }
             set { Metadata.SetValue(MetadataKey.ComponentKind, value); }
         }
     }

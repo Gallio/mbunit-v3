@@ -29,7 +29,7 @@ namespace MbUnit.Icarus.Core.Model
         public TestModel LoadUpAssembly(ITestRunner runner, TestPackage testpackage)
         {
             ProgressMonitorShower p1 = new ProgressMonitorShower();
-            runner.LoadPackage(p1, testpackage);
+            runner.LoadPackage(testpackage, p1);
 
             ProgressMonitorShower p2 = new ProgressMonitorShower();
             runner.BuildTemplates(p2);

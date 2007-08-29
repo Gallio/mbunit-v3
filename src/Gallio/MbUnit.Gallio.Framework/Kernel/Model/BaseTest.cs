@@ -47,7 +47,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(name, codeReference)
         {
             if (templateBinding == null)
-                throw new ArgumentNullException("templateBinding");
+                throw new ArgumentNullException(@"templateBinding");
 
             this.templateBinding = templateBinding;
 

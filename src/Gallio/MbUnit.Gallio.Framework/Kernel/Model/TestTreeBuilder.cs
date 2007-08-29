@@ -25,7 +25,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class TestTreeBuilder : ModelTreeBuilder<ITest>
     {
-        private TestEnumerationOptions options;
+        private readonly TestEnumerationOptions options;
 
         /// <summary>
         /// Creates a test tree builder initially populated with
@@ -38,7 +38,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(rootTest)
         {
             if (options == null)
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException(@"options");
 
             this.options = options;
         }

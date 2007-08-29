@@ -14,7 +14,6 @@
 // limitations under the License.
 
 extern alias MbUnit2;
-using System.Threading;
 using MbUnit2::MbUnit.Framework;
 
 using System;

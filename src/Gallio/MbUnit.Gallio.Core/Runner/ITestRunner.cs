@@ -109,10 +109,10 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Loads a test package.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="package">The test package</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
-        void LoadPackage(IProgressMonitor progressMonitor, TestPackage package);
+        void LoadPackage(TestPackage package, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Builds the template tree using the current <see cref="TemplateEnumerationOptions" />.

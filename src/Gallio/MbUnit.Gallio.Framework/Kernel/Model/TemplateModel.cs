@@ -51,7 +51,7 @@ namespace MbUnit.Framework.Kernel.Model
         public TemplateModel(TemplateInfo rootTemplate)
         {
             if (rootTemplate == null)
-                throw new ArgumentNullException("rootTemplate");
+                throw new ArgumentNullException(@"rootTemplate");
 
             this.rootTemplate = rootTemplate;
         }
@@ -68,7 +68,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 lock (this)
                 {

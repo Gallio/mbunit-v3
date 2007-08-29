@@ -60,7 +60,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IExecutionLogStream ConsoleInput
         {
-            get { return Streams[ExecutionLogStreams.ConsoleInput]; }
+            get { return Streams[ExecutionLogStreamName.ConsoleInput]; }
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IExecutionLogStream ConsoleOutput
         {
-            get { return Streams[ExecutionLogStreams.ConsoleOutput]; }
+            get { return Streams[ExecutionLogStreamName.ConsoleOutput]; }
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IExecutionLogStream ConsoleError
         {
-            get { return Streams[ExecutionLogStreams.ConsoleError]; }
+            get { return Streams[ExecutionLogStreamName.ConsoleError]; }
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IExecutionLogStream Failures
         {
-            get { return Streams[ExecutionLogStreams.Failures]; }
+            get { return Streams[ExecutionLogStreamName.Failures]; }
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IExecutionLogStream Debug
         {
-            get { return Streams[ExecutionLogStreams.Debug]; }
+            get { return Streams[ExecutionLogStreamName.Debug]; }
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace MbUnit.Framework
         /// </summary>
         public static IExecutionLogStream Trace
         {
-            get { return Streams[ExecutionLogStreams.Trace]; }
+            get { return Streams[ExecutionLogStreamName.Trace]; }
         }
 
         /// <summary>

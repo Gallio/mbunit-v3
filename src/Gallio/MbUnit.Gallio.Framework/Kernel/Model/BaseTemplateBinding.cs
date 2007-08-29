@@ -15,9 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework.Kernel.DataBinding;
-using MbUnit.Framework.Kernel.Collections;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -31,9 +29,9 @@ namespace MbUnit.Framework.Kernel.Model
     /// </remarks>
     public class BaseTemplateBinding : ITemplateBinding
     {
-        private ITemplate template;
-        private TemplateBindingScope scope;
-        private IDictionary<ITemplateParameter, IDataFactory> arguments;
+        private readonly ITemplate template;
+        private readonly TemplateBindingScope scope;
+        private readonly IDictionary<ITemplateParameter, IDataFactory> arguments;
 
         /// <summary>
         /// Creates a template binding.
@@ -43,15 +41,19 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="arguments">The template arguments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="template"/>,
         /// <paramref name="scope"/> or <paramref name="arguments"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="arguments"/> does not
+        /// bind all template parameters</exception>
         public BaseTemplateBinding(ITemplate template, TemplateBindingScope scope,
             IDictionary<ITemplateParameter, IDataFactory> arguments)
         {
             if (template == null)
-                throw new ArgumentNullException("template");
+                throw new ArgumentNullException(@"template");
             if (scope == null)
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(@"scope");
             if (arguments == null)
-                throw new ArgumentNullException("arguments");
+                throw new ArgumentNullException(@"arguments");
+
+            ValidateArguments(template, arguments);
 
             this.template = template;
             this.scope = scope;
@@ -97,13 +99,27 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="parent">The parent test for the children</param>
         protected virtual void BuildTestsForChildren(TestTreeBuilder builder, ITest parent)
         {
-            foreach (ITemplate child in template.Children)
+            foreach (ITemplate childTemplate in template.Children)
             {
-                // Todo: get args from scope and use data providers
-                ITemplateBinding binding = child.Bind(new TemplateBindingScope(scope),
-                    EmptyDictionary<ITemplateParameter, IDataFactory>.Instance);
-                binding.BuildTests(builder, parent);
+                foreach (ITemplateBinding childBinding in scope.Bind(childTemplate))
+                {
+                    childBinding.BuildTests(builder, parent);
+                }
             }
+        }
+
+        private static void ValidateArguments(ITemplate template, IDictionary<ITemplateParameter, IDataFactory> arguments)
+        {
+            if (template.Parameters.Count != arguments.Count)
+                throw new ArgumentException(String.Format(
+                    Resources.BaseTemplateBinding_InvalidNumberOfTemplateArguments, template.Name,
+                    template.Parameters.Count, arguments.Count), @"arguments");
+
+            foreach (ITemplateParameter parameter in template.Parameters)
+                if (!arguments.ContainsKey(parameter))
+                    throw new ArgumentException(String.Format(
+                    Resources.BaseTemplateBinding_MissingArgumentForTemplateParameter,
+                    parameter.Name, template.Name), @"arguments");
         }
     }
 }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Kernel.Results;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -21,16 +22,53 @@ namespace MbUnit.Framework.Kernel.Model
         private ContextualExecutionLogTraceListener traceListener;
 
         /// <inheritdoc />
-        public void Run(IProgressMonitor progressMonitor, TestExecutionOptions options, IEventListener listener,
-            IList<ITest> tests)
+        public void Dispose()
         {
-            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        public void Dispose()
+        public void Run(IProgressMonitor progressMonitor, TestExecutionOptions options, IEventListener listener,
+            IList<ITest> tests)
         {
-            throw new NotImplementedException();
+            // HACK to get this running quickly...
+            foreach (MbUnitTest test in tests)
+            {
+                MbUnitMethodTemplate methodTemplate = test.TemplateBinding.Template as MbUnitMethodTemplate;
+                if (methodTemplate != null)
+                {
+                    MbUnitTestState state = new MbUnitTestState(test);
+                    state.FixtureInstance = Activator.CreateInstance(methodTemplate.FixtureTemplate.FixtureType);
+
+                    Execute(test, state, listener);
+                }
+            }
+        }
+
+        private void Execute(MbUnitTest test, MbUnitTestState state, IEventListener listener)
+        {
+            IStep step = BaseStep.CreateRootStep(test);
+            try
+            {
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(step)));
+                try
+                {
+                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(step.Id, LifecyclePhase.SetUp));
+                    test.SetUpChain.Action(state);
+
+                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(step.Id, LifecyclePhase.Execute));
+                    test.ExecuteChain.Action(state);
+                }
+                finally
+                {
+                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(step.Id, LifecyclePhase.TearDown));
+                    test.TearDownChain.Action(state);
+                }
+            }
+            finally
+            {
+                TestResult result = new TestResult();
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(step.Id, result));
+            }
         }
 
         private void SetUp()
@@ -41,8 +79,8 @@ namespace MbUnit.Framework.Kernel.Model
             oldConsoleError = Console.Error;
 
             // Inject debug and trace listeners.
-            debugListener = new ContextualExecutionLogTraceListener(ExecutionLogStreams.Debug);
-            traceListener = new ContextualExecutionLogTraceListener(ExecutionLogStreams.Trace);
+            debugListener = new ContextualExecutionLogTraceListener(ExecutionLogStreamName.Debug);
+            traceListener = new ContextualExecutionLogTraceListener(ExecutionLogStreamName.Trace);
             Debug.Listeners.Add(debugListener);
             Debug.AutoFlush = true;
 
@@ -50,7 +88,9 @@ namespace MbUnit.Framework.Kernel.Model
             Trace.AutoFlush = true;
 
             // Inject console streams.
-
+            Console.SetIn(TextReader.Null);
+            Console.SetOut(new ContextualExecutionLogTextWriter(ExecutionLogStreamName.ConsoleOutput));
+            Console.SetError(new ContextualExecutionLogTextWriter(ExecutionLogStreamName.ConsoleError));
         }
 
         private void TearDown()

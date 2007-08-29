@@ -81,30 +81,30 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Loads a test package into the test domain.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="package">The test package to load</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void LoadPackage(IProgressMonitor progressMonitor, TestPackage package);
+        void LoadPackage(TestPackage package, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Builds the tree of templates.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The template enumeration options</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="FatalRunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void BuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options);
+        void BuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Builds the tree of tests.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test enumeration options</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
-        void BuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options);
+        void BuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.

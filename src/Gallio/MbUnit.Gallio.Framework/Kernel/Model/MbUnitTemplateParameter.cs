@@ -50,7 +50,7 @@ namespace MbUnit.Framework.Kernel.Model
         private static Slot ValidateSlotArgument(Slot slot)
         {
             if (slot == null)
-                throw new ArgumentNullException("slot");
+                throw new ArgumentNullException(@"slot");
             return slot;
         }
 

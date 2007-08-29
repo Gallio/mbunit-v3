@@ -110,7 +110,7 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public void LoadPackage(IProgressMonitor progressMonitor, TestPackage package)
+        public void LoadPackage(TestPackage package, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -130,12 +130,12 @@ namespace MbUnit.Core.Runner
                 }
 
                 this.package = package;
-                InternalLoadPackage(progressMonitor, package);
+                InternalLoadPackage(package, progressMonitor);
             }
         }
 
         /// <inheritdoc />
-        public void BuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options)
+        public void BuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -147,12 +147,12 @@ namespace MbUnit.Core.Runner
             using (progressMonitor)
             {
                 progressMonitor.BeginTask("Building test templates.", 1);
-                InternalBuildTemplates(progressMonitor, options);
+                InternalBuildTemplates(options, progressMonitor);
             }
         }
 
         /// <inheritdoc />
-        public void BuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options)
+        public void BuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -164,7 +164,7 @@ namespace MbUnit.Core.Runner
             using (progressMonitor)
             {
                 progressMonitor.BeginTask("Building tests.", 1);
-                InternalBuildTests(progressMonitor, options);
+                InternalBuildTests(options, progressMonitor);
             }
         }
 
@@ -200,7 +200,7 @@ namespace MbUnit.Core.Runner
             using (progressMonitor)
             {
                 progressMonitor.BeginTask("Running tests.", 1);
-                InternalRunTests(progressMonitor, options);
+                InternalRunTests(options, progressMonitor);
             }
         }
 
@@ -212,30 +212,30 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Internal implementation of <see cref="LoadPackage" />.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <param name="package">The test package</param>
-        protected abstract void InternalLoadPackage(IProgressMonitor progressMonitor, TestPackage package);
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
+        protected abstract void InternalLoadPackage(TestPackage package, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Internal implementation of <see cref="BuildTemplates" />.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <param name="options">The template enumeration options</param>
-        protected abstract void InternalBuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options);
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
+        protected abstract void InternalBuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Internal implementation of <see cref="BuildTests" />.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <param name="options">The test enumeration options</param>
-        protected abstract void InternalBuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options);
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
+        protected abstract void InternalBuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Internal implementation of <see cref="RunTests" />.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <param name="options">The test execution options</param>
-        protected abstract void InternalRunTests(IProgressMonitor progressMonitor, TestExecutionOptions options);
+        /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
+        protected abstract void InternalRunTests(TestExecutionOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Internal implementation of <see cref="UnloadPackage" />.

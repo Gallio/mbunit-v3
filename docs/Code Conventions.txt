@@ -6,7 +6,10 @@ together.  Thanks for your consideration and attention to detail.
 
 -- Jeff Brown.
 
-0. Above all else, try to make the code look consistent!  Though it
+CODE STYLE
+==========
+
+1. Above all else, try to make the code look consistent!  Though it
    is the product of a community of developers, it should feel like it
    was written by a single (very smart and omniscient) developer.
    Inconsistencies in style make it more difficult for newcomers to
@@ -14,7 +17,7 @@ together.  Thanks for your consideration and attention to detail.
    
    Inconsistent style just looks sloppy.  So keep it beautiful.
 
-1. For the most part, just follow the Microsoft "Design Guidelines for Developing
+2. For the most part, just follow the Microsoft "Design Guidelines for Developing
    Class Libraries" (in MSDN) especially the "Guidelines for Names" section.
    Before you start writing code, please read a bit of it to get a feel for the common
    style being used by everyone else.
@@ -28,7 +31,25 @@ together.  Thanks for your consideration and attention to detail.
    - Curly braces on their own lines.
    - Do not write "if" statements all on one line.
    
-2. Apply clear XML documentation comments to all public and protected types
+3. TABs vs Spaces.  I don't care.  Modern editors assume 4 spaces to a tab
+   so it looks fine anywhere.  So there!  ;-)
+   
+4. Please use liberal vertical whitespace to make reading the code easier.
+   It's astonishingly helpful to have long functions broken down into
+   a series of phases like: validation, processing, and production of
+   the final result.
+
+5. Highlight broken, incomplete, tricky, or interesting bits in comments.
+   The following prefixes are recommended:
+     // FIXME:
+     // TODO:
+     // NOTE:
+   
+
+DOCUMENTATION
+=============
+
+1. Apply clear XML documentation comments to all public and protected types
    and members in the MbUnit.Core and MbUnit.Framework namespaces clearly.
    Choosing good identifiers is also important.  These types and members
    are public API and we will generate HTML and CHM documentation from them
@@ -43,30 +64,38 @@ together.  Thanks for your consideration and attention to detail.
    Do not leave empty XML documentation comments.  Strip them out if you
    don't plan to fill them in immediately.  That way we can use the compiler
    so find any missing bits by looking for code 1591 warnings.
+
+
+LOCALIZATION
+============
+
+1. All localizable strings in each Gallio assembly should be moved to resource
+   files.  For non-UI projects, this resource file is called "Resources.resx"
+   and lives in the root of the assembly.
    
-3. Use a consistent naming policy for all unit tests.
-   If the class under test is MbUnit.Core.Blah.Foo, then the tests should
-   be in MbUnit.Core.Tests.Blah.FooTest.  Integration tests are exempt from
-   this rule because they involve many interacting components.  Not
-   all unit tests will have a single class under test.  In these cases,
-   use good judgement in arranging the tests so that it is still relatively
-   straightforward to locate them.
-
-4. TABs vs Spaces.  I don't care.  Modern editors assume 4 spaces to a tab
-   so it looks fine anywhere.  So there!  ;-)
+   Resource strings should be named according to the following pattern based
+   on where they are used: "<TypeName>_<Description>".  The <TypeName> should
+   be the unqualified type name of the place where the resource string is used.
+   The <Description> should be a short descriptive phrase about the contents
+   of the resource string, such as the first few words it contains.
+ 
+   Strings that are not to be localized should use the verbatim literal syntax
+   with the '@' prefix (like @"foo") to help distinguish them from other strings
+   when doing code sweeps.  Alternately, RGreatEx can insert #pragma's to mark
+   strings not easily represented using '@'.
    
-5. Please use liberal vertical whitespace to make reading the code easier.
-   It's astonishingly helpful to have long functions broken down into
-   a series of phases like: validation, processing, and production of
-   the final result.
+   Tip: The RGreatEx plugin for Resharper greatly simplifies moving strings
+        into resource files.  It can be configured to automatically
+        generate resource keys according to our convention.  Likewise it can
+        be configured to suppress suggested string to resource refactorings
+        when the string is expressed using the verbatim syntax.
+        Using this tool (or something similar) is strongly recommended.
 
-6. Highlight broken, incomplete, tricky, or interesting bits in comments.
-   The following prefixes are recommended:
-     // FIXME:
-     // TODO:
-     // NOTE:
 
-7. Lightly validate all arguments in API functions.  Generally this
+DEFENSIVE CODING
+================
+
+1. Lightly validate all arguments in API functions.  Generally this
    amounts to checking for nulls and basic bounds.  Don't bother
    validating deep structural integrity rules unless the API function
    constitutes a real security hazard.
@@ -81,9 +110,25 @@ together.  Thanks for your consideration and attention to detail.
    they are slower than inline code, less intuitive, lead to
    a proliferation of everyone's favority utility functions, and
    don't benefit from special support offered by refactoring
-   tools like Resharper.
+   tools like Resharper or checking by FxCop.
 
-8. All code files (except possibly designer generated code) begin with
+
+UNIT TESTS
+==========
+
+1. Use a consistent naming policy for all unit tests.
+   If the class under test is MbUnit.Core.Blah.Foo, then the tests should
+   be in MbUnit.Core.Tests.Blah.FooTest.  Integration tests are exempt from
+   this rule because they involve many interacting components.  Not
+   all unit tests will have a single class under test.  In these cases,
+   use good judgement in arranging the tests so that it is still relatively
+   straightforward to locate them.
+
+
+LICENSE BOILERPLATE
+===================
+
+1. All code files (except possibly designer generated code) begin with
    the Gallio license boilerplate exactly as contained in the
    CSLicenseBoilerplate.txt file.  This boilerplate can be added
    automatically with the ApplyBoilerplace.bat script.

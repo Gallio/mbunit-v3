@@ -49,9 +49,9 @@ namespace MbUnit.Framework.Kernel.Model
         public TestBatch(string description, TestControllerFactory controllerFactory)
         {
             if (description == null)
-                throw new ArgumentNullException("description");
+                throw new ArgumentNullException(@"description");
             if (controllerFactory == null)
-                throw new ArgumentNullException("controllerFactory");
+                throw new ArgumentNullException(@"controllerFactory");
 
             this.description = description;
             this.controllerFactory = controllerFactory;

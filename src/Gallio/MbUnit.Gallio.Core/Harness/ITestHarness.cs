@@ -157,40 +157,40 @@ namespace MbUnit.Core.Harness
         /// Loads the test package into the test harness.
         /// Causes the <see cref="PackageLoaded" /> event to fire.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="package">The test package</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadPackage" /> has already been called once
         /// because this interface does not support unloading packages except by disposing the harness
         /// and recreating it</exception>
-        void LoadPackage(IProgressMonitor progressMonitor, TestPackage package);
+        void LoadPackage(TestPackage package, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Populates the template tree.
         /// Causes the <see cref="BuildingTemplates" /> event to fire.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The template enumeration options</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadPackage" /> has not been called yet</exception>
-        void BuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options);
+        void BuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Populates the test tree.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test enumeration options</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTemplates" /> has not been called yet</exception>
-        void BuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options);
+        void BuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test execution options</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTests" /> has not been called yet</exception>
-        void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options);
+        void RunTests(TestExecutionOptions options, IProgressMonitor progressMonitor);
     }
 }

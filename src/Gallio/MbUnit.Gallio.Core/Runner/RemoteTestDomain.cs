@@ -47,13 +47,13 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalLoadPackage(IProgressMonitor progressMonitor, TestPackage package)
+        protected override void InternalLoadPackage(TestPackage package, IProgressMonitor progressMonitor)
         {
             Connect(new SubProgressMonitor(progressMonitor, 0.1));
 
             try
             {
-                proxy.LoadPackage(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 0.9)), package);
+                proxy.LoadPackage(package, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 0.9)));
             }
             catch (Exception ex)
             {
@@ -62,12 +62,12 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options)
+        protected override void InternalBuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             try
             {
                 TemplateModel = null;
-                proxy.BuildTemplates(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)), options);
+                proxy.BuildTemplates(options, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)));
                 TemplateModel = proxy.TemplateModel;
             }
             catch (Exception ex)
@@ -77,12 +77,12 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options)
+        protected override void InternalBuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             try
             {
                 TestModel = null;
-                proxy.BuildTests(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)), options);
+                proxy.BuildTests(options, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)));
                 TestModel = proxy.TestModel;
             }
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests(IProgressMonitor progressMonitor, TestExecutionOptions options)
+        protected override void InternalRunTests(TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             try
             {

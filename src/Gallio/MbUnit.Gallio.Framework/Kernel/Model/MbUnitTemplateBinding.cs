@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework.Kernel.DataBinding;
+using MbUnit.Framework.Kernel.Actions;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -27,6 +28,8 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class MbUnitTemplateBinding : BaseTemplateBinding
     {
+        private ActionChain<MbUnitTest> processTestChain;
+
         /// <summary>
         /// Creates a template binding.
         /// </summary>
@@ -35,10 +38,44 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="arguments">The template arguments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="template"/>,
         /// <paramref name="scope"/> or <paramref name="arguments"/> is null</exception>
-        public MbUnitTemplateBinding(ITemplate template, TemplateBindingScope scope,
+        public MbUnitTemplateBinding(MbUnitTemplate template, TemplateBindingScope scope,
             IDictionary<ITemplateParameter, IDataFactory> arguments)
             : base(template, scope, arguments)
         {
+        }
+
+        /// <summary>
+        /// This chain of actions is invoked when a test is built from a template binding
+        /// derived from this template.  MbUnit framework attributes add behavior to
+        /// this chain to apply contributions to the test.
+        /// </summary>
+        /// <remarks>
+        /// The actions are invoked before the children of the test are constructed.
+        /// To perform actions after all tests have been constructed, it's necessary
+        /// to attach to the <see cref="TestTreeBuilder.PostProcess" /> event.
+        /// </remarks>
+        public ActionChain<MbUnitTest> ProcessTestChain
+        {
+            get
+            {
+                if (processTestChain == null)
+                    processTestChain = new ActionChain<MbUnitTest>();
+                return processTestChain;
+            }
+        }
+
+        /// <inheritdoc />
+        public override void BuildTests(TestTreeBuilder builder, ITest parent)
+        {
+            MbUnitTest test = new MbUnitTest(Template.Name, Template.CodeReference, this);
+            test.Kind = null;
+            test.Metadata.Entries.AddAll(Template.Metadata.Entries);
+            parent.AddChild(test);
+
+            if (processTestChain != null)
+                processTestChain.Action(test);
+
+            BuildTestsForChildren(builder, test);
         }
     }
 }

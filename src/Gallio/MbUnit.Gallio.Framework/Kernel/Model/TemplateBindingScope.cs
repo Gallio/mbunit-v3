@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Framework.Kernel.Collections;
+using MbUnit.Framework.Kernel.DataBinding;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -28,5 +31,27 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get { return parent; }
         }
+
+        /// <summary>
+        /// Produces bindings of a template by producing arguments for template parameters
+        /// based on the data sources available in the scope.
+        /// </summary>
+        /// <param name="template">The template to bind</param>
+        /// <returns>The bound templates</returns>
+        public IEnumerable<ITemplateBinding> Bind(ITemplate template)
+        {
+            TemplateBindingScope nestedScope = new TemplateBindingScope(this);
+
+            //DataBinding.DataBinding[] bindings = ListUtils.ConvertAllToArray<ITemplateParameter, DataBinding.DataBinding>(template.Parameters, CreateDataBindingFromParameter);
+
+            if (template.Parameters.Count == 0)
+                yield return template.Bind(nestedScope, EmptyDictionary<ITemplateParameter, IDataFactory>.Instance);
+        }
+
+        /*
+        private DataBinding.DataBinding CreateDataBindingFromParameter(ITemplateParameter parameter)
+        {
+        }
+         */
     }
 }

@@ -14,12 +14,47 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using MbUnit.Framework.Kernel.Attributes;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework
 {
+    /// <summary>
+    /// <para>
+    /// The test fixture set up attribute is applied to a method that is to be invoked when
+    /// a test fixture instance is being set up before any of its tests are executed.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The attribute may be applied to multiple methods within a fixture, however
+    /// the order in which they are processed is undefined.
+    /// </para>
+    /// <para>
+    /// The method to which this attribute is applied must be declared by the
+    /// fixture class and must not have any parameters.  The method may be static.
+    /// </para>
+    /// </remarks>
+    /// <todo author="jeff">
+    /// We should support explicit ordering of set up attributes based on
+    /// an Order property similar to decorators.
+    /// </todo>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public sealed class TestFixtureSetUpAttribute : MethodPatternAttribute
     {
+        /// <inheritdoc />
+        public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        {
+            base.Apply(builder, methodTemplate);
+
+            MethodInfo method = methodTemplate.Method;
+            ModelUtils.CheckMethodSignature(method);
+
+            methodTemplate.FixtureTemplate.ProcessTestChain.After(delegate(MbUnitTest fixtureTest)
+            {
+                fixtureTest.SetUpChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
+            });
+        }
     }
 }

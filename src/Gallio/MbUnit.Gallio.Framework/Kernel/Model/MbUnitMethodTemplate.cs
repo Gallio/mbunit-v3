@@ -26,8 +26,8 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class MbUnitMethodTemplate : MbUnitTemplate
     {
-        private MbUnitFixtureTemplate fixtureTemplate;
-        private MethodInfo method;
+        private readonly MbUnitFixtureTemplate fixtureTemplate;
+        private readonly MethodInfo method;
 
         /// <summary>
         /// Initializes an MbUnit test method template model object.
@@ -57,14 +57,6 @@ namespace MbUnit.Framework.Kernel.Model
         public MethodInfo Method
         {
             get { return method; }
-        }
-
-        /// <summary>
-        /// Adds a test method parameter.
-        /// </summary>
-        /// <param name="parameter">The parameter to add</param>
-        public void AddParameter(MbUnitTemplateParameter parameter)
-        {
         }
     }
 }

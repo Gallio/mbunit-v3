@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -30,7 +28,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="templateBinding">The root template binding</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="templateBinding"/> is null</exception>
         public RootTest(ITemplateBinding templateBinding)
-            : base("Root", CodeReference.Unknown, templateBinding)
+            : base(Resources.RootTest_RootTestName, CodeReference.Unknown, templateBinding)
         {
             // Note: The kind will be set by the RootTemplateBinding.
             Kind = null;

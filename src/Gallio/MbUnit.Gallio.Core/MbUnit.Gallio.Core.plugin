@@ -24,6 +24,10 @@
                  service="MbUnit.Core.Runner.ITestDomainFactory, MbUnit.Gallio.Core"
                  type="MbUnit.Core.Runner.IsolatedTestDomainFactory, MbUnit.Gallio.Core" />
 
+      <component id="Core.LocalTestDomainFactory"
+                 service="MbUnit.Core.Runner.LocalTestDomainFactory, MbUnit.Gallio.Core"
+                 type="MbUnit.Core.Runner.LocalTestDomainFactory, MbUnit.Gallio.Core" />
+
       <component id="Core.ReportManager"
                  service="MbUnit.Core.Reporting.IReportManager, MbUnit.Gallio.Core"
                  type="MbUnit.Core.Reporting.DefaultReportManager, MbUnit.Gallio.Core" />

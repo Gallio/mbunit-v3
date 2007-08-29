@@ -50,7 +50,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(id, name)
         {
             if (typeName == null)
-                throw new ArgumentNullException("typeName");
+                throw new ArgumentNullException(@"typeName");
 
             this.typeName = typeName;
         }
@@ -78,7 +78,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 typeName = value;
             }
         }

@@ -60,5 +60,18 @@ namespace MbUnit.Core.Reporting
         {
             get { return attachments; }
         }
+
+        /// <summary>
+        /// Gets a stream by name.
+        /// </summary>
+        /// <param name="name">The stream name</param>
+        /// <returns>The stream or null if not found</returns>
+        public ExecutionLogStream GetStream(string name)
+        {
+            return streams.Find(delegate(ExecutionLogStream stream)
+            {
+                return stream.Name == name;
+            });
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(name, codeReference)
         {
             if (type == null)
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(@"type");
 
             this.type = type;
         }
@@ -49,7 +49,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 type = value;
             }
@@ -62,7 +62,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value < 0)
-                    throw new ArgumentOutOfRangeException("value");
+                    throw new ArgumentOutOfRangeException(@"value");
 
                 index = value;
             }

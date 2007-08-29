@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using MbUnit.Framework.Kernel.Metadata;
-using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -26,18 +25,20 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class MbUnitFrameworkTemplate : MbUnitTemplate
     {
-        private Version version;
+        private readonly Version version;
 
         /// <summary>
         /// Initializes the MbUnit framework template model object.
         /// </summary>
         /// <param name="version">The MbUnit framework version</param>
         public MbUnitFrameworkTemplate(Version version)
-            : base("MbUnit Gallio v" + version, CodeReference.Unknown)
+            : base(String.Format(Resources.MbUnitFrameworkTemplate_MbUnitGallioFrameworkVersionFormat, version), CodeReference.Unknown)
         {
             this.version = version;
 
             Kind = ComponentKind.Framework;
+
+            ProcessTestChain.After(ApplyTestBatch);
         }
 
         /// <summary>
@@ -64,6 +65,17 @@ namespace MbUnit.Framework.Kernel.Model
         public void AddAssemblyTemplate(MbUnitAssemblyTemplate assemblyTemplate)
         {
             AddChild(assemblyTemplate);
+        }
+
+        private void ApplyTestBatch(MbUnitTest test)
+        {
+            TestBatch batch = new TestBatch(Name, CreateTestController);
+            test.Batch = batch;
+        }
+
+        private static MbUnitTestController CreateTestController()
+        {
+            return new MbUnitTestController();
         }
     }
 }

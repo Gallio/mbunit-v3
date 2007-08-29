@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 
@@ -90,7 +89,7 @@ namespace MbUnit.Framework.Kernel.Model
         public ITemplateParameter GetParameterByName(string parameterName)
         {
             if (parameterName == null)
-                throw new ArgumentNullException("parameterName");
+                throw new ArgumentNullException(@"parameterName");
 
             return parameters.Find(delegate(ITemplateParameter parameter)
             {
@@ -107,10 +106,10 @@ namespace MbUnit.Framework.Kernel.Model
         public void AddParameter(ITemplateParameter parameter)
         {
             if (parameter == null)
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(@"parameter");
 
             if (GetParameterByName(parameter.Name) != null)
-                throw new InvalidOperationException("The parameter list already contains a parameter named: " + parameter.Name);
+                throw new InvalidOperationException(String.Format(Resources.BaseTemplate_ParameterListAlreadyContainsParameterWithSameName, parameter.Name));
 
             parameters.Add(parameter);
         }

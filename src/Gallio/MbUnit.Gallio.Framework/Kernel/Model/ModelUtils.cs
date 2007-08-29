@@ -15,7 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
+using System.Reflection;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -34,7 +35,7 @@ namespace MbUnit.Framework.Kernel.Model
             where T : class, IModelTreeNode<T>
         {
             if (child.Parent != null)
-                throw new InvalidOperationException("The node to be added is already a child of another node.");
+                throw new InvalidOperationException(Resources.ModelUtils_NodeAlreadyHasAParent);
 
             child.Parent = parent;
             parent.Children.Add(child);
@@ -59,6 +60,49 @@ namespace MbUnit.Framework.Kernel.Model
             }
 
             return filteredChildren;
+        }
+
+        /// <summary>
+        /// Checks that the method has the specified signature otherwise throws a <see cref="ModelException" />.
+        /// </summary>
+        /// <param name="method">The method</param>
+        /// <param name="signature">The list of parameter types (all input parameters)</param>
+        /// <exception cref="ModelException">Thrown if the method has a different signature</exception>
+        public static void CheckMethodSignature(MethodInfo method, params Type[] signature)
+        {
+            ParameterInfo[] parameters = method.GetParameters();
+            if (parameters.Length == signature.Length)
+            {
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    ParameterInfo parameter = parameters[i];
+                    if (parameter.ParameterType != signature[i] || !parameter.IsIn || parameter.IsOut)
+                        goto Fail;
+                }
+
+                return;
+            }
+
+        Fail:
+            string[] expectedTypeNames = Array.ConvertAll<Type, string>(signature, delegate(Type parameterType)
+            {
+                return parameterType.FullName;
+            });
+            string[] actualTypeNames = Array.ConvertAll<ParameterInfo, string>(parameters, delegate(ParameterInfo parameter)
+            {
+                if (parameter.IsOut)
+                {
+                    string prefix = parameter.IsIn ? @"ref " : @"out ";
+                    return prefix + parameter.ParameterType.FullName;
+                }
+
+                return parameter.ParameterType.FullName;
+            });
+
+            throw new ModelException(String.Format(CultureInfo.CurrentCulture,
+                Resources.ModelUtils_InvalidSignature,
+                string.Join(@", ", expectedTypeNames),
+                string.Join(@", ", actualTypeNames)));
         }
     }
 }

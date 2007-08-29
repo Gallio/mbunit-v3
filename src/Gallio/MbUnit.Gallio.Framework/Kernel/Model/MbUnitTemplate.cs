@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using MbUnit.Framework.Kernel.DataBinding;
+using MbUnit.Framework.Kernel.Actions;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -25,6 +26,9 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public abstract class MbUnitTemplate : BaseTemplate
     {
+        private ActionChain<MbUnitTemplateBinding> processBindingChain;
+        private ActionChain<MbUnitTest> processTestChain;
+
         /// <summary>
         /// Initializes a template initially without a parent.
         /// </summary>
@@ -38,21 +42,54 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// This event is fired when a new template binding is created to allow
-        /// MbUnit framework attributes to contribute to the test construction
-        /// process performed by the binding.  Framework attributes will generally
-        /// hook this event to capture the binding process then hook additional
-        /// events on the bound template itself which is passed in as the parameter.
+        /// This chain of actions is invoked when a template binding is derived from
+        /// this template.  MbUnit framework attributes add behavior to this chain
+        /// to apply contributions to the binding in the correct sequence.
         /// </summary>
-        public event Action<ITemplateBinding> ProcessBinding;
+        /// <remarks>
+        /// The actions are invoked immediately after the template binding is
+        /// constructed.
+        /// </remarks>
+        public ActionChain<MbUnitTemplateBinding> ProcessBindingChain
+        {
+            get
+            {
+                if (processBindingChain == null)
+                    processBindingChain = new ActionChain<MbUnitTemplateBinding>();
+                return processBindingChain;
+            }
+        }
+
+        /// <summary>
+        /// This chain of actions is invoked when a test is built from a template binding
+        /// derived from this template.  MbUnit framework attributes add behavior to
+        /// this chain to apply contributions to the test.
+        /// </summary>
+        /// <remarks>
+        /// The actions are invoked before the children of the test are constructed.
+        /// To perform actions after all tests have been constructed, it's necessary
+        /// to attach to the <see cref="TestTreeBuilder.PostProcess" /> event.
+        /// </remarks>
+        public ActionChain<MbUnitTest> ProcessTestChain
+        {
+            get
+            {
+                if (processTestChain == null)
+                    processTestChain = new ActionChain<MbUnitTest>();
+                return processTestChain;
+            }
+        }
 
         /// <inheritdoc />
         public override ITemplateBinding Bind(TemplateBindingScope scope, IDictionary<ITemplateParameter, IDataFactory> arguments)
         {
             MbUnitTemplateBinding binding = new MbUnitTemplateBinding(this, scope, arguments);
 
-            if (ProcessBinding != null)
-                ProcessBinding(binding);
+            if (processTestChain != null)
+                binding.ProcessTestChain.Action = processTestChain.Action;
+
+            if (processBindingChain != null)
+                processBindingChain.Action(binding);
 
             return binding;
         }

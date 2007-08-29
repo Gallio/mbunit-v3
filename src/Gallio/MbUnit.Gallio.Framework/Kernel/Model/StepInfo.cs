@@ -35,11 +35,11 @@ namespace MbUnit.Framework.Kernel.Model
         public StepInfo(string id, string name, string testId)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(@"id");
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(@"name");
             if (testId == null)
-                throw new ArgumentNullException("testId");
+                throw new ArgumentNullException(@"testId");
 
             this.id = id;
             this.name = name;
@@ -54,7 +54,7 @@ namespace MbUnit.Framework.Kernel.Model
         public StepInfo(IStep obj)
         {
             if (obj == null)
-                throw new ArgumentNullException("obj");
+                throw new ArgumentNullException(@"obj");
 
             id = obj.Id;
             name = obj.Name;
@@ -75,7 +75,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 id = value;
             }
         }
@@ -91,7 +91,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 name = value;
             }
         }
@@ -117,7 +117,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 testId = value;
             }
         }

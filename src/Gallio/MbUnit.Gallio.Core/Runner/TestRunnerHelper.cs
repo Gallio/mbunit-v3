@@ -407,7 +407,7 @@ namespace MbUnit.Core.Runner
             using (IProgressMonitor progressMonitor = progressMonitorCreator())
             {
                 progressMonitor.ThrowIfCanceled();
-                runner.LoadPackage(progressMonitor, package);
+                runner.LoadPackage(package, progressMonitor);
             }
         }
 

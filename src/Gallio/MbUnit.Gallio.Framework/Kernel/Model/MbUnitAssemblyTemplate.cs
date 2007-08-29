@@ -75,15 +75,5 @@ namespace MbUnit.Framework.Kernel.Model
         {
             AddChild(fixtureTemplate);
         }
-
-        /*
-        public void AddAssemblySetUp()
-        {
-        }
-
-        public void AddAssemblyTearDown()
-        {
-        }
-         */
     }
 }

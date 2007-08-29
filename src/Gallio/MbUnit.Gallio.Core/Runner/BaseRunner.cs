@@ -23,13 +23,13 @@ using MbUnit.Framework.Kernel.Events;
 namespace MbUnit.Core.Runner
 {
     /// <summary>
-    /// Abstract base implementation of <see cref="ITestRunner" />.
+    /// Base implementation of <see cref="ITestRunner" />.
     /// </summary>
-    public abstract class BaseRunner : ITestRunner
+    public class BaseRunner : ITestRunner
     {
-        private EventDispatcher eventDispatcher;
+        private readonly EventDispatcher eventDispatcher;
+        private readonly ITestDomainFactory domainFactory;
         private ICoreRuntime runtime;
-        private ITestDomainFactory domainFactory;
 
         private TemplateEnumerationOptions templateEnumerationOptions;
         private TestEnumerationOptions testEnumerationOptions;
@@ -176,7 +176,7 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
-        public virtual void LoadPackage(IProgressMonitor progressMonitor, TestPackage package)
+        public virtual void LoadPackage(TestPackage package, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -185,7 +185,7 @@ namespace MbUnit.Core.Runner
 
             try
             {
-                Domain.LoadPackage(progressMonitor, package);
+                Domain.LoadPackage(package, progressMonitor);
             }
             finally
             {
@@ -202,7 +202,7 @@ namespace MbUnit.Core.Runner
 
             try
             {
-                Domain.BuildTemplates(progressMonitor, templateEnumerationOptions);
+                Domain.BuildTemplates(templateEnumerationOptions, progressMonitor);
             }
             finally
             {
@@ -219,7 +219,7 @@ namespace MbUnit.Core.Runner
 
             try
             {
-                Domain.BuildTests(progressMonitor, testEnumerationOptions);
+                Domain.BuildTests(testEnumerationOptions, progressMonitor);
             }
             finally
             {

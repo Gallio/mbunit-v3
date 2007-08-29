@@ -38,7 +38,7 @@ namespace MbUnit.Core.Runner.Monitors
         public DebugMonitor(TextWriter writer)
         {
             if (writer == null)
-                throw new ArgumentNullException("writer");
+                throw new ArgumentNullException(@"writer");
 
             this.writer = writer;
         }
@@ -52,6 +52,8 @@ namespace MbUnit.Core.Runner.Monitors
             Runner.EventDispatcher.Lifecycle += HandleLifecycleEvent;
             Runner.EventDispatcher.ExecutionLog += HandleExecutionLogEvent;
         }
+
+#pragma warning disable StringCouldBeMoveToResource
 
         private void HandleMessageEvent(object sender, MessageEventArgs e)
         {

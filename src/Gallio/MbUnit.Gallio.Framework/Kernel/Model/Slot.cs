@@ -33,8 +33,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// Initializes a slot from a field.
         /// </summary>
         /// <param name="field">The field</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="field"/> is null</exception>
         public Slot(FieldInfo field)
         {
+            if (field == null)
+                throw new ArgumentNullException(@"field");
+
             this.attributeProvider = field;
         }
 
@@ -42,8 +46,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// Initializes a slot from a property.
         /// </summary>
         /// <param name="property">The property</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="property"/> is null</exception>
         public Slot(PropertyInfo property)
         {
+            if (property == null)
+                throw new ArgumentNullException(@"property");
+
             this.attributeProvider = property;
         }
 
@@ -51,8 +59,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// Initializes a slot from a parameter.
         /// </summary>
         /// <param name="parameter">The parameter</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null</exception>
         public Slot(ParameterInfo parameter)
         {
+            if (parameter == null)
+                throw new ArgumentNullException(@"parameter");
+
             this.attributeProvider = parameter;
         }
 

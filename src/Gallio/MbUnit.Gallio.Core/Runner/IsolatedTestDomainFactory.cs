@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Castle.Core;
 using MbUnit.Core.Runtime;
 
 namespace MbUnit.Core.Runner
@@ -24,10 +25,11 @@ namespace MbUnit.Core.Runner
     /// A factory for <see cref="IsolatedTestDomain" /> that automatically applies
     /// all registered <see cref="IIsolatedTestDomainContributor" />s.
     /// </summary>
+    [Singleton]
     public class IsolatedTestDomainFactory : ITestDomainFactory
     {
-        private ICoreRuntime runtime;
-        private List<IIsolatedTestDomainContributor> contributors;
+        private readonly ICoreRuntime runtime;
+        private readonly List<IIsolatedTestDomainContributor> contributors;
 
         /// <summary>
         /// Creates an isolated test domain factory that adds all registered

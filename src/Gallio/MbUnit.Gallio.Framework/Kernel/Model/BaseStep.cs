@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -20,14 +18,14 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="name">The step name</param>
         /// <param name="test">The test to which the step belongs</param>
         /// <param name="parent">The parent step, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
         /// or <paramref name="test"/> is null</exception>
         public BaseStep(string name, ITest test, IStep parent)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(@"name");
             if (test == null)
-                throw new ArgumentNullException("test");
+                throw new ArgumentNullException(@"test");
 
             this.name = name;
             this.test = test;
@@ -69,9 +67,9 @@ namespace MbUnit.Framework.Kernel.Model
         public static BaseStep CreateRootStep(ITest test)
         {
             if (test == null)
-                throw new ArgumentNullException("test");
+                throw new ArgumentNullException(@"test");
 
-            return new BaseStep("Root", test, null);
+            return new BaseStep(Resources.BaseStep_RootStepName, test, null);
         }
     }
 }

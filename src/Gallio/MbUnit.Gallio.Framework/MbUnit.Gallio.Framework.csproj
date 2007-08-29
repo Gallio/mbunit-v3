@@ -54,6 +54,7 @@
     <Compile Include="Kernel\DataBinding\DataBinding.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Kernel\DataBinding\DataBindingException.cs" />
     <Compile Include="Kernel\DataBinding\DataBindingSet.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -78,7 +79,7 @@
     <Compile Include="Kernel\ExecutionLogs\BinaryAttachment.cs" />
     <Compile Include="Kernel\ExecutionLogs\ContextualExecutionLogTextWriter.cs" />
     <Compile Include="Kernel\ExecutionLogs\ContextualExecutionLogTraceListener.cs" />
-    <Compile Include="Kernel\ExecutionLogs\ExecutionLogStreams.cs" />
+    <Compile Include="Kernel\ExecutionLogs\ExecutionLogStreamName.cs" />
     <Compile Include="Kernel\ExecutionLogs\IAttachmentVisitor.cs" />
     <Compile Include="Kernel\ExecutionLogs\IExecutionLog.cs" />
     <Compile Include="Kernel\ExecutionLogs\IExecutionLogService.cs" />
@@ -91,10 +92,14 @@
     <Compile Include="Kernel\ExecutionLogs\XmlAttachment.cs" />
     <Compile Include="Kernel\Formatting\IFormatter.cs" />
     <Compile Include="Kernel\DataBinding\IDataFactory.cs" />
+    <Compile Include="Kernel\Actions\ActionDecorator.cs" />
     <Compile Include="Kernel\Model\BaseStep.cs" />
     <Compile Include="Kernel\Model\IStep.cs" />
+    <Compile Include="Kernel\Actions\ActionChain.cs" />
     <Compile Include="Kernel\Model\MbUnitTest.cs" />
     <Compile Include="Kernel\Model\MbUnitTestController.cs" />
+    <Compile Include="Kernel\Model\MbUnitTestUtils.cs" />
+    <Compile Include="Kernel\Model\MbUnitTestState.cs" />
     <Compile Include="Kernel\Model\StepInfo.cs" />
     <Compile Include="Kernel\Model\TemplateBindingScope.cs" />
     <Compile Include="Kernel\Results\TestState.cs" />
@@ -241,6 +246,11 @@
     <Compile Include="ParameterAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RowAttribute.cs" />
     <Compile Include="RowTestAttribute.cs" />
     <Compile Include="SetUpAttribute.cs" />
@@ -252,6 +262,13 @@
     <Compile Include="TestFixtureTearDownAttribute.cs" />
     <Compile Include="TestImportance.cs" />
     <Compile Include="TestsOnAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

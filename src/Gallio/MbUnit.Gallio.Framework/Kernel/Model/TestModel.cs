@@ -51,7 +51,7 @@ namespace MbUnit.Framework.Kernel.Model
         public TestModel(TestInfo rootTest)
         {
             if (rootTest == null)
-                throw new ArgumentNullException("rootTest");
+                throw new ArgumentNullException(@"rootTest");
 
             this.rootTest = rootTest;
         }
@@ -67,7 +67,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 lock (this)
                 {

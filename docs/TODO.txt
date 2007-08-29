@@ -31,3 +31,5 @@
   heavily refactored, integrated and polished.
 
 * HTML report XSLT needs to be redone for Gallio.
+
+* TestSequence should be deprecated in favor of Test(Order = n)

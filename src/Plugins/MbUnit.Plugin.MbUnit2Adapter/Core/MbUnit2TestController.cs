@@ -425,22 +425,22 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     if (reportRun.ConsoleOut.Length != 0)
                     {
                         listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
-                            ExecutionLogStreams.ConsoleOutput, reportRun.ConsoleOut));
+                            ExecutionLogStreamName.ConsoleOutput, reportRun.ConsoleOut));
                     }
                     if (reportRun.ConsoleError.Length != 0)
                     {
                         listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
-                            ExecutionLogStreams.ConsoleError, reportRun.ConsoleError));
+                            ExecutionLogStreamName.ConsoleError, reportRun.ConsoleError));
                     }
                     foreach (ReportWarning warning in reportRun.Warnings)
                     {
                         listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
-                            ExecutionLogStreams.Warnings, warning.Text + "\n"));
+                            ExecutionLogStreamName.Warnings, warning.Text + "\n"));
                     }
                     if (reportRun.Exception != null)
                     {
                         listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
-                            ExecutionLogStreams.Failures, FormatReportException(reportRun.Exception)));
+                            ExecutionLogStreamName.Failures, FormatReportException(reportRun.Exception)));
                     }
 
                     listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateCloseEvent(step.Id));

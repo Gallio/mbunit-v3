@@ -25,9 +25,15 @@ namespace MbUnit.Core.Runner
     /// A local implementation of a test domain that performs all processing
     /// with the current app-domain including loading assemblies.
     /// </summary>
+    /// <remarks>
+    /// When the test domain is created, the value of <see cref="RuntimeHolder.Instance" />
+    /// is set to the provided instance of <see cref="IRuntime" />.  On disposal,
+    /// the value of <see cref="RuntimeHolder.Instance" /> is restored to its
+    /// previous value.
+    /// </remarks>
     public class LocalTestDomain : BaseTestDomain
     {
-        private IRuntime runtime;
+        private IRuntime oldRuntime;
         private ITestHarnessFactory harnessFactory;
         private ITestHarness harness;
 
@@ -46,23 +52,25 @@ namespace MbUnit.Core.Runner
             if (harnessFactory == null)
                 throw new ArgumentNullException("harnessFactory");
 
-            this.runtime = runtime;
             this.harnessFactory = harnessFactory;
+
+            oldRuntime = RuntimeHolder.Instance;
+            RuntimeHolder.Instance = runtime;
         }
 
         /// <inheritdoc />
         protected override void InternalDispose()
         {
-            runtime = null;
+            RuntimeHolder.Instance = oldRuntime;
+            oldRuntime = null;
             harnessFactory = null;
         }
 
         /// <inheritdoc />
-        protected override void InternalLoadPackage(IProgressMonitor progressMonitor, TestPackage package)
+        protected override void InternalLoadPackage(TestPackage package, IProgressMonitor progressMonitor)
         {
             progressMonitor.SetStatus("Creating test harness.");
 
-            RuntimeHolder.Instance = runtime;
             harness = harnessFactory.CreateHarness();
 
             progressMonitor.Worked(0.1);
@@ -70,29 +78,29 @@ namespace MbUnit.Core.Runner
             if (Listener != null)
                 harness.EventDispatcher.Listeners.Add(Listener);
 
-            harness.LoadPackage(new SubProgressMonitor(progressMonitor, 0.9), package);
+            harness.LoadPackage(package, new SubProgressMonitor(progressMonitor, 0.9));
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTemplates(IProgressMonitor progressMonitor, TemplateEnumerationOptions options)
+        protected override void InternalBuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             TemplateModel = null;
-            harness.BuildTemplates(new SubProgressMonitor(progressMonitor, 1), options);
+            harness.BuildTemplates(options, new SubProgressMonitor(progressMonitor, 1));
             TemplateModel = new TemplateModel(new TemplateInfo(harness.TemplateTreeBuilder.Root));
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTests(IProgressMonitor progressMonitor, TestEnumerationOptions options)
+        protected override void InternalBuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             TestModel = null;
-            harness.BuildTests(new SubProgressMonitor(progressMonitor, 1), options);
+            harness.BuildTests(options, new SubProgressMonitor(progressMonitor, 1));
             TestModel = new TestModel(new TestInfo(harness.TestTreeBuilder.Root));
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests(IProgressMonitor progressMonitor, TestExecutionOptions options)
+        protected override void InternalRunTests(TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            harness.RunTests(new SubProgressMonitor(progressMonitor, 1), options);
+            harness.RunTests(options, new SubProgressMonitor(progressMonitor, 1));
         }
 
         /// <inheritdoc />
@@ -110,7 +118,6 @@ namespace MbUnit.Core.Runner
             finally
             {
                 harness = null;
-                RuntimeHolder.Instance = null;
             }
         }
     }

@@ -50,9 +50,9 @@ namespace MbUnit.Framework.Kernel.Model
         public ModelComponentInfo(string id, string name)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(@"id");
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(@"name");
 
             this.id = id;
             this.name = name;
@@ -82,7 +82,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 id = value;
             }
         }
@@ -99,7 +99,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 name = value;
             }
         }
@@ -121,7 +121,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 codeReference = value;
             }
         }
@@ -143,7 +143,7 @@ namespace MbUnit.Framework.Kernel.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 metadata = value;
             }
         }
