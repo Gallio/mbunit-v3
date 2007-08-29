@@ -18,6 +18,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
     [TestFixture]
     [Author("Julian Hidalgo")]
     [TestsOn(typeof(MbUnit))]
+    [TestCategory("IntegrationTests")]
     public class MbUnitTaskTests
     {
         private string MSBuildExecutablePath = null;
@@ -101,9 +102,13 @@ namespace MbUnit.Tasks.MSBuild.Tests
         private Process RunMSBuild(string buildFile, int expectedMbUnitExitCode)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo(MSBuildExecutablePath);
+            // This is yto avoid having a lot of windows popping up when running the tets
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
             startInfo.WorkingDirectory = workingDirectory;
             startInfo.Arguments = buildFile +
                 " /p:\"ExpectedMbUnitExitCode=" + expectedMbUnitExitCode + "\"";           
+            
             return Process.Start(startInfo);
         }
     }
