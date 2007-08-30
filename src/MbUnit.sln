@@ -44,10 +44,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Plugin.MbUnit2Adapte
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{70543B8E-DF83-4DA7-AA29-4B71CF333096}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 	ProjectSection(SolutionItems) = preProject
 		..\docs\Code Conventions.txt = ..\docs\Code Conventions.txt
 		..\docs\Gallio Ideas.txt = ..\docs\Gallio Ideas.txt
@@ -55,8 +51,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{70543B8E-D
 		..\docs\Mono Issues.txt = ..\docs\Mono Issues.txt
 		..\docs\TODO.txt = ..\docs\TODO.txt
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.AddIn", "Runners\MbUnit.AddIn\MbUnit.AddIn.csproj", "{53E13EE8-E19A-43DD-A623-55023BF74AD6}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -93,12 +87,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Core.Tests", 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Framework.Tests", "Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj", "{0783AC75-ECD1-4846-B85A-70D7313BF1D9}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Addin.Tests", "Runners\MbUnit.Addin.Tests\MbUnit.Addin.Tests.csproj", "{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -204,10 +192,6 @@ Global
 		{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53E13EE8-E19A-43DD-A623-55023BF74AD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53E13EE8-E19A-43DD-A623-55023BF74AD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53E13EE8-E19A-43DD-A623-55023BF74AD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53E13EE8-E19A-43DD-A623-55023BF74AD6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22AE34D9-185F-41A7-A48D-205BE68B1F7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22AE34D9-185F-41A7-A48D-205BE68B1F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22AE34D9-185F-41A7-A48D-205BE68B1F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -232,10 +216,6 @@ Global
 		{0783AC75-ECD1-4846-B85A-70D7313BF1D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0783AC75-ECD1-4846-B85A-70D7313BF1D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0783AC75-ECD1-4846-B85A-70D7313BF1D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{299970D4-781F-4778-BCF2-F53AE7D8B060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{299970D4-781F-4778-BCF2-F53AE7D8B060}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{299970D4-781F-4778-BCF2-F53AE7D8B060}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -278,14 +258,12 @@ Global
 		{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE} = {BB87DDC9-05EA-4ACC-A600-970CE841E9D4}
 		{22AE34D9-185F-41A7-A48D-205BE68B1F7D} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3} = {7314C58D-3714-4872-885D-309338F09FC1}
-		{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{299970D4-781F-4778-BCF2-F53AE7D8B060} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{A90A40C4-4D48-4D0B-BE9B-432510EB1057} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{76090B01-824D-4BAD-927B-E8EA19746F25} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{A8649D4C-0BFF-4F5B-A682-16092AE0B824} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{F457EC34-2ED6-4E08-81F8-E5099B7ED051} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{577EF614-60B3-4D09-B071-24B164D5321F} = {7314C58D-3714-4872-885D-309338F09FC1}
-		{53E13EE8-E19A-43DD-A623-55023BF74AD6} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{BADF6646-9750-4CFB-8867-5D2D4086412A} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{691E62B3-823F-4F1E-9585-58D0E00B72C3} = {00CE3107-C47F-4D2B-986B-763181832B51}
 		{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E} = {00CE3107-C47F-4D2B-986B-763181832B51}
