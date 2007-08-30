@@ -6,12 +6,12 @@
     <ProjectGuid>{53E13EE8-E19A-43DD-A623-55023BF74AD6}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <AssemblyName>MbUnit.AddIn</AssemblyName>
+    <AssemblyName>MbUnit.AddIn.TDNet</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>MbUnit.AddIn</RootNamespace>
+    <RootNamespace>MbUnit.AddIn.TDNet</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

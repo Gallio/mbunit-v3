@@ -12,15 +12,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+extern alias MbUnit2;
 
 using System;
 using MbUnit.AddIn;
 using TDF = TestDriven.Framework;
 
-namespace MbUnit.AddIn.Tests
+using MbUnit2::MbUnit.Framework;
+
+namespace MbUnit.AddIn.TDNet.Tests
 {
+    [TestFixture]
     public class TDDAddInTests
     {
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Test()
         {
             TDF.ITestRunner tr = new MbUnitTestRunner();

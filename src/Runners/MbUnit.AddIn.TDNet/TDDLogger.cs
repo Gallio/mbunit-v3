@@ -18,7 +18,7 @@ using Castle.Core.Logging;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
 
-namespace MbUnit.AddIn
+namespace MbUnit.AddIn.TDNet
 {
     internal class TDDLogger : ConsoleLogger
     {

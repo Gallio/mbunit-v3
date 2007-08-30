@@ -19,7 +19,7 @@ using MbUnit.Core.Runner;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
 
-namespace MbUnit.AddIn
+namespace MbUnit.AddIn.TDNet
 {
     /// <summary>
     /// MbUnit test runner for TestDriven.Net.

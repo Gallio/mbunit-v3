@@ -7,8 +7,8 @@
     <ProjectGuid>{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MbUnit.AddIn.Tests</RootNamespace>
-    <AssemblyName>MbUnit.AddIn.Tests</AssemblyName>
+    <RootNamespace>MbUnit.AddIn.TDNet.Tests</RootNamespace>
+    <AssemblyName>MbUnit.AddIn.TDNet.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,6 +28,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MbUnit.Framework, Version=1.0.2768.20906, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
+      <Aliases>MbUnit2</Aliases>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -56,6 +61,10 @@
     <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit.AddIn.TDNet\MbUnit.AddIn.TDNet.csproj">
+      <Project>{53E13EE8-E19A-43DD-A623-55023BF74AD6}</Project>
+      <Name>MbUnit.AddIn.TDNet</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
