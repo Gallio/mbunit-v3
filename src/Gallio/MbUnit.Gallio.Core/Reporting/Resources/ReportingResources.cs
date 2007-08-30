@@ -44,6 +44,11 @@ namespace MbUnit.Core.Reporting.Resources
         };
 
         /// <summary>
+        /// The name of the CSS stylesheet for HTML reports
+        /// </summary>
+        public static string StyleSheet = "MbUnit-Report.css";
+
+        /// <summary>
         /// Gets the reporting resource with the specified name.
         /// </summary>
         /// <param name="name">The resource name</param>

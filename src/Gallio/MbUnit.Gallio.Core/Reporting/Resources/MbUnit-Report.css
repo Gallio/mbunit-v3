@@ -1,0 +1,14 @@
+.passed
+{
+	background-color: Green;
+}
+
+.failed
+{
+	background-color: Red;
+}
+
+.inconclusive
+{
+	background-color: Yellow;
+}

@@ -69,21 +69,43 @@ namespace MbUnit.Core.Reporting
         {
             base.ApplyTransform(report, filename, options, filesWritten);
 
-            string contentDirectory = ReportUtils.GetContentDirectoryPath(filename);
-            if (! Directory.Exists(contentDirectory))
-                Directory.CreateDirectory(contentDirectory);
-
+            // copy required images to subfolder
+            string imageDirectory = GetDirectoryPath(filename, "img");
+            if (! Directory.Exists(imageDirectory))
+                Directory.CreateDirectory(imageDirectory);
             foreach (string imageResourceName in ReportingResources.Images)
             {
                 using (Stream stream = ReportingResources.GetResource(imageResourceName))
-                    FileUtils.CopyStreamToFile(stream, Path.Combine(contentDirectory, imageResourceName));
+                    FileUtils.CopyStreamToFile(stream, Path.Combine(imageDirectory, imageResourceName));
             }
+
+            // copy stylesheet to subfolder
+            string cssDirectory = GetDirectoryPath(filename, "css");
+            if (!Directory.Exists(cssDirectory))
+                Directory.CreateDirectory(cssDirectory);
+            using (Stream stream = ReportingResources.GetResource(ReportingResources.StyleSheet))
+                FileUtils.CopyStreamToFile(stream, Path.Combine(cssDirectory, ReportingResources.StyleSheet));
         }
 
         /// <inheritdoc />
         protected override XmlReader GetStylesheetReader()
         {
             return XmlReader.Create(ReportingResources.GetResource(ReportingResources.HtmlTemplate));
+        }
+
+        /// <summary>
+        /// Gets the path of a directory in which to store (shared) images 
+        /// for HTML reports.
+        /// </summary>
+        /// <param name="reportPath">The path of the report file</param>
+        /// <returns>The directory in which to store images</returns>
+        private static string GetDirectoryPath(string reportPath, string dir)
+        {
+            string reportDirectory = Path.GetDirectoryName(reportPath);
+            if (reportDirectory.Length == 0)
+                return dir;
+
+            return Path.Combine(reportDirectory, dir);
         }
     }
 }
