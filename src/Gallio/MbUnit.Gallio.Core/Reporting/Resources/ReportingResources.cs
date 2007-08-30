@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 
@@ -36,17 +37,17 @@ namespace MbUnit.Core.Reporting.Resources
         public const string TextTemplate = "MbUnit-Report.txt.xsl";
 
         /// <summary>
-        /// The names of the image resources.
-        /// </summary>
-        public static readonly string[] Images =
-        {
-            "Container.png", "Fixture.png", "Test.png", "Logo.png"
-        };
-
-        /// <summary>
         /// The name of the CSS stylesheet for HTML reports
         /// </summary>
-        public static string StyleSheet = "MbUnit-Report.css";
+        public const string StyleSheet = "MbUnit-Report.css";
+
+        /// <summary>
+        /// The names of the image resources.
+        /// </summary>
+        public static readonly IList<string> Images = new ReadOnlyCollection<string>(new string[]
+        {
+            @"Container.png", @"Fixture.png", @"Test.png", @"Logo.png"
+        });
 
         /// <summary>
         /// Gets the reporting resource with the specified name.
