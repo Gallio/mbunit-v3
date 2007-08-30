@@ -157,6 +157,8 @@
 
   <Target Name="Release"
           DependsOnTargets="Clean;Build;Test;BuildDotNetDocs" />
+          
+ <Target Name="BuildServer" DependsOnTargets="Clean;Build;BuildDotNetDocs" />
 
   <Target Name="Build-CSharpProjects"
           DependsOnTargets="CreateBuildDir">
