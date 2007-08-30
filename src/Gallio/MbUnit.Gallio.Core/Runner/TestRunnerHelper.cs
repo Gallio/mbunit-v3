@@ -474,7 +474,7 @@ namespace MbUnit.Core.Runner
 
                 string reportFileName = FileUtils.EncodeFileName(String.Format(reportNameFormat,
                     report.PackageRun.StartTime.ToShortDateString(),
-                    report.PackageRun.EndTime.ToShortTimeString()));
+                    report.PackageRun.EndTime.ToLongTimeString()));
                 string extension = formatter.PreferredExtension;
                 if (extension.Length != 0)
                     reportFileName = String.Concat(reportFileName, ".", extension);
