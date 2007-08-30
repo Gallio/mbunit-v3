@@ -33,6 +33,11 @@ Section "MbUnit Gallio" Section1
 
 	; Set Section properties
 	SetOverwrite on
+	
+	WriteRegStr HKCU "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnitGallio" "" "10"
+  WriteRegStr HKCU "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnitGallio" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\MbUnit.AddIn.TDNet.dll"
+  WriteRegStr HKCU "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnitGallio" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
+  WriteRegStr HKCU "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnitGallio" "TargetFrameworkAssemblyName" "MbUnit.Framework"
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\"
@@ -51,9 +56,6 @@ Section "MbUnit Gallio" Section1
 	File "build\bin\MbUnit.Gallio.Core.xml"
 	File "build\bin\MbUnit.Gallio.Framework.dll"
 	File "build\bin\MbUnit.Gallio.Framework.xml"
-	File "build\bin\MbUnit.Icarus.Core.dll"
-	File "build\bin\MbUnit.Icarus.exe"
-	File "build\bin\MbUnit.Icarus.exe.config"
 	File "build\bin\MbUnit.Tasks.MSBuild.dll"
 	File "build\bin\MbUnit.Tasks.MSBuild.xml"
 	File "build\bin\MbUnit.Tasks.NAnt.dll"
@@ -77,8 +79,13 @@ Section "MbUnit Gallio" Section1
 	File "build\bin\NUnit\nunit.core.interfaces.dll"
 	File "build\bin\NUnit\nunit.framework.dll"
 	File "build\bin\NUnit\nunit.framework.extensions.dll"
+	
 	CreateDirectory "$SMPROGRAMS\MbUnit Gallio"
-	CreateShortCut "$SMPROGRAMS\MbUnit Gallio\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+	
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" "$INSTDIR\MbUnit Offline Documentation.url"
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Online Documentation.lnk" "$INSTDIR\MbUnit Online Documentation.url"
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Website.lnk" "$INSTDIR\MbUnit.url"
 
 SectionEnd
 
@@ -107,7 +114,10 @@ Section Uninstall
 	Delete "$INSTDIR\uninstall.exe"
 
 	; Delete Shortcuts
-	Delete "$SMPROGRAMS\MbUnit Gallio\Uninstall.lnk"
+	Delete "$SMPROGRAMS\${APPNAME}\Uninstall.lnk"
+	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Website.lnk" 
+  Delete "$SMPROGRAMS\${APPNAME}\MbUnit Online Documentation.lnk" 
+  Delete "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" 
 
 	; Clean up MbUnit Gallio
 	Delete "$INSTDIR\ASL - Apache Software Foundation License.txt"
@@ -125,9 +135,6 @@ Section Uninstall
 	Delete "$INSTDIR\MbUnit.Gallio.Core.xml"
 	Delete "$INSTDIR\MbUnit.Gallio.Framework.dll"
 	Delete "$INSTDIR\MbUnit.Gallio.Framework.xml"
-	Delete "$INSTDIR\MbUnit.Icarus.Core.dll"
-	Delete "$INSTDIR\MbUnit.Icarus.exe"
-	Delete "$INSTDIR\MbUnit.Icarus.exe.config"
 	Delete "$INSTDIR\MbUnit.Tasks.MSBuild.dll"
 	Delete "$INSTDIR\MbUnit.Tasks.MSBuild.xml"
 	Delete "$INSTDIR\MbUnit.Tasks.NAnt.dll"
@@ -149,6 +156,8 @@ Section Uninstall
 	Delete "$INSTDIR\NUnit\nunit.core.interfaces.dll"
 	Delete "$INSTDIR\NUnit\nunit.framework.dll"
 	Delete "$INSTDIR\NUnit\nunit.framework.extensions.dll"
+	
+	DeleteRegKey HKCU "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnitGallio"
 
 	; Remove remaining directories
 	RMDir "$SMPROGRAMS\MbUnit Gallio"
