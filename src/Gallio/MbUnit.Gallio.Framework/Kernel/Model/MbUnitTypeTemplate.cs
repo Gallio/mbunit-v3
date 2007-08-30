@@ -21,23 +21,23 @@ using MbUnit.Framework.Kernel.Model;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Represents a template derived from an MbUnit test fixture.
+    /// Represents a template derived from an MbUnit type such as a fixture class.
     /// </summary>
-    public class MbUnitFixtureTemplate : MbUnitTemplate
+    public class MbUnitTypeTemplate : MbUnitTemplate
     {
         private readonly MbUnitAssemblyTemplate assemblyTemplate;
-        private readonly Type fixtureType;
+        private readonly Type type;
 
         /// <summary>
-        /// Initializes an MbUnit test fixture template model object.
+        /// Initializes an MbUnit type template model object.
         /// </summary>
         /// <param name="assemblyTemplate">The containing assembly template</param>
-        /// <param name="fixtureType">The test fixture type</param>
-        public MbUnitFixtureTemplate(MbUnitAssemblyTemplate assemblyTemplate, Type fixtureType)
-            : base(fixtureType.Name, CodeReference.CreateFromType(fixtureType))
+        /// <param name="type">The type from which the template was derived</param>
+        public MbUnitTypeTemplate(MbUnitAssemblyTemplate assemblyTemplate, Type type)
+            : base(type.Name, CodeReference.CreateFromType(type))
         {
             this.assemblyTemplate = assemblyTemplate;
-            this.fixtureType = fixtureType;
+            this.type = type;
 
             Kind = ComponentKind.Fixture;
         }
@@ -51,15 +51,15 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Gets the test fixture type.
+        /// Gets the type from which the template was derived.
         /// </summary>
-        public Type FixtureType
+        public Type Type
         {
-            get { return fixtureType; }
+            get { return type; }
         }
 
         /// <summary>
-        /// Gets the list of method templates.
+        /// Gets the list of method templates that are children of this template.
         /// </summary>
         public IList<MbUnitMethodTemplate> MethodTemplates
         {
@@ -67,9 +67,9 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Adds a test method template as a child of the fixture.
+        /// Adds a method template as a child of this template.
         /// </summary>
-        /// <param name="methodTemplate">The test method model</param>
+        /// <param name="methodTemplate">The method template</param>
         public void AddMethodTemplate(MbUnitMethodTemplate methodTemplate)
         {
             AddChild(methodTemplate);

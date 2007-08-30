@@ -21,15 +21,15 @@ namespace MbUnit.Framework.Kernel.Attributes
 {
     /// <summary>
     /// <para>
-    /// A test decorator pattern attribute applies various contributions to an
-    /// existing test method template model object.
+    /// A method decorator pattern attribute applies contributions to an
+    /// existing method template model object.
     /// </para>
     /// <para>
-    /// When the attribute is applied to a test fixture class, it affects each of the tests
-    /// within that fixture individually.
+    /// When the attribute is applied to a type, it affects each of the methods templates
+    /// within that type's template individually.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
     public abstract class MethodDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <summary>
@@ -49,7 +49,7 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
-        /// Processes all test decorators via reflection.
+        /// Processes all method decorators via reflection.
         /// </summary>
         /// <param name="builder">The template tree builder</param>
         /// <param name="methodTemplate">The method template</param>

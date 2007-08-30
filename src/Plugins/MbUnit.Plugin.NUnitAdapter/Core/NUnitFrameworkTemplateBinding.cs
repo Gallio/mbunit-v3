@@ -22,7 +22,7 @@ using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 using NUnit.Core;
-using ITest = MbUnit.Framework.Kernel.Model.ITest;
+using ITest=MbUnit.Framework.Kernel.Model.ITest;
 
 namespace MbUnit.Plugin.NUnitAdapter.Core
 {
@@ -83,14 +83,14 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 //       Interestingly we don't get any runtime errors if we forget...
                 CoreExtensions.Host.InitializeService();
 
-                TestPackage package = new TestPackage("Tests");
+                TestPackage package = new TestPackage(@"Tests");
                 foreach (Assembly assembly in Assemblies)
                     package.Assemblies.Add(assembly.Location);
 
                 //runner = new SimpleTestRunner();
                 runner = new RemoteTestRunner();
                 if (!runner.Load(package))
-                    throw new ModelException("Cannot load one or more NUnit test assemblies.");
+                    throw new ModelException(Resources.NUnitFrameworkTemplateBinding_CannotLoadNUnitTestAssemblies);
             }
             catch (Exception)
             {
@@ -103,7 +103,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         {
             NUnitTest test = new NUnitTest(Template.Name, CodeReference.Unknown, this, nunitRootTest);
             test.Kind = ComponentKind.Framework;
-            test.Batch = new TestBatch("NUnit", delegate
+            test.Batch = new TestBatch(Resources.NUnitFrameworkTemplateBinding_NUnitTestBatchName, delegate
             {
                 return new NUnitTestController(runner);
             });
@@ -119,17 +119,17 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             CodeReference codeReference;
             switch (nunitTest.TestType)
             {
-                case "Test Case":
+                case @"Test Case":
                     kind = ComponentKind.Test;
                     codeReference = ParseTestCaseName(parentTest.CodeReference, nunitTest.TestName.FullName);
                     break;
 
-                case "Test Fixture":
+                case @"Test Fixture":
                     kind = ComponentKind.Fixture;
                     codeReference = ParseTestFixtureName(parentTest.CodeReference, nunitTest.TestName.FullName);
                     break;
 
-                case "Test Suite":
+                case @"Test Suite":
                     kind = ComponentKind.Suite;
                     codeReference = ParseCodeReferenceFromTestSuiteName(parentTest.CodeReference, nunitTest.TestName.FullName, ref kind);
                     break;
@@ -158,7 +158,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             }
         }
 
-        private void PopulateMetadata(NUnitTest test, NUnit.Core.ITest nunitTest)
+        private static void PopulateMetadata(NUnitTest test, NUnit.Core.ITest nunitTest)
         {
             if (!String.IsNullOrEmpty(nunitTest.Description))
                 test.Metadata.Entries.Add(MetadataKey.Description, nunitTest.Description);
@@ -282,7 +282,10 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
         private static bool IsProbableIdentifier(string name)
         {
-            return name.Length != 0 && !name.Contains(" ") && !name.StartsWith(".") && !name.EndsWith(".");
+            return name.Length != 0
+                && !name.Contains(@" ")
+                && !name.StartsWith(@".")
+                && !name.EndsWith(@".");
         }
     }
 }

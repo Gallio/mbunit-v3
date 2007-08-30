@@ -22,18 +22,18 @@ using MbUnit.Framework.Kernel.Model;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Represents a template derived from an MbUnit test assembly.
+    /// Represents a template derived from an MbUnit assembly.
     /// </summary>
     public class MbUnitAssemblyTemplate : MbUnitTemplate
     {
-        private MbUnitFrameworkTemplate frameworkTemplate;
-        private Assembly assembly;
+        private readonly MbUnitFrameworkTemplate frameworkTemplate;
+        private readonly Assembly assembly;
 
         /// <summary>
-        /// Initializes an MbUnit test assembly template model object.
+        /// Initializes an MbUnit assembly template model object.
         /// </summary>
         /// <param name="frameworkTemplate">The containing framework template</param>
-        /// <param name="assembly">The test assembly</param>
+        /// <param name="assembly">The assembly from which the template was derived</param>
         public MbUnitAssemblyTemplate(MbUnitFrameworkTemplate frameworkTemplate, Assembly assembly)
             : base(assembly.GetName().Name, CodeReference.CreateFromAssembly(assembly))
         {
@@ -41,6 +41,7 @@ namespace MbUnit.Framework.Kernel.Model
             this.assembly = assembly;
 
             Kind = ComponentKind.Assembly;
+            IsGenerator = true;
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Gets the test assembly.
+        /// Gets the assembly from which the template was derived.
         /// </summary>
         public Assembly Assembly
         {
@@ -60,20 +61,20 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Gets the list of fixture templates.
+        /// Gets the list of type templates that are children of this template.
         /// </summary>
-        public IList<MbUnitFixtureTemplate> FixtureTemplates
+        public IList<MbUnitTypeTemplate> TypeTemplates
         {
-            get { return ModelUtils.FilterChildrenByType<ITemplate, MbUnitFixtureTemplate>(this); }
+            get { return ModelUtils.FilterChildrenByType<ITemplate, MbUnitTypeTemplate>(this); }
         }
 
         /// <summary>
-        /// Adds a test fixture template as a child of the assembly.
+        /// Adds a type template as a child of this template.
         /// </summary>
-        /// <param name="fixtureTemplate">The test fixture template</param>
-        public void AddFixtureTemplate(MbUnitFixtureTemplate fixtureTemplate)
+        /// <param name="typeTemplate">The type template</param>
+        public void AddTypeTemplate(MbUnitTypeTemplate typeTemplate)
         {
-            AddChild(fixtureTemplate);
+            AddChild(typeTemplate);
         }
     }
 }

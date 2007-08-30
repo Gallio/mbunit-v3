@@ -40,7 +40,7 @@ namespace MbUnit.Framework.Kernel.Attributes
     {
         /// <summary>
         /// Gets a default instance of the assembly pattern attribute to use
-        /// when none was specified.
+        /// when the attribute is elided from a test assembly.
         /// </summary>
         public static readonly AssemblyPatternAttribute DefaultInstance = new DefaultImpl();
 
@@ -117,7 +117,12 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <param name="type">The type</param>
         protected virtual void ProcessType(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate, Type type)
         {
-            FixturePatternAttribute.ProcessType(builder, assemblyTemplate, type);
+            TypePatternAttribute.ProcessType(builder, assemblyTemplate, type);
+
+            foreach (Type nestedType in type.GetNestedTypes())
+            {
+                ProcessType(builder, assemblyTemplate, nestedType);
+            }
         }
 
         private class DefaultImpl : AssemblyPatternAttribute

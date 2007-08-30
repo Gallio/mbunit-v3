@@ -42,16 +42,21 @@ namespace MbUnit.Core.Reporting
     [Singleton]
     public class TextReportFormatter : XsltReportFormatter
     {
+        /// <summary>
+        /// Gets the name of this formatter.
+        /// </summary>
+        public const string FormatterName = @"Text";
+
         /// <inheritdoc />
         public override string Name
         {
-            get { return "Text"; }
+            get { return FormatterName; }
         }
 
         /// <inheritdoc />
         public override string PreferredExtension
         {
-            get { return "txt"; }
+            get { return @"txt"; }
         }
 
         /// <inheritdoc />

@@ -31,6 +31,7 @@ namespace MbUnit.Framework.Kernel.Model
             : base(Resources.RootTemplate_RootTemplateName, CodeReference.Unknown)
         {
             Kind = ComponentKind.Root;
+            IsGenerator = true;
         }
 
         /// <inheritdoc />

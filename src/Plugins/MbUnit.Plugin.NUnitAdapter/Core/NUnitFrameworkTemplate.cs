@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
@@ -38,11 +37,12 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         /// <param name="frameworkVersion">The framework version</param>
         /// <param name="assemblies">The list of assemblies</param>
         public NUnitFrameworkTemplate(Version frameworkVersion, IList<Assembly> assemblies)
-            : base("NUnit v" + frameworkVersion, CodeReference.Unknown)
+            : base(String.Format(Resources.NUnitFrameworkTemplate_FrameworkTemplateName, frameworkVersion), CodeReference.Unknown)
         {
             this.assemblies = assemblies;
 
             Kind = ComponentKind.Framework;
+            IsGenerator = true;
         }
 
         /// <summary>

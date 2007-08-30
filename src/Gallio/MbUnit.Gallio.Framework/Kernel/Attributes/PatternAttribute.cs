@@ -21,6 +21,11 @@ namespace MbUnit.Framework.Kernel.Attributes
     /// Abstract base class of all MbUnit framework attributes.
     /// It uniquely identifies that the attribute belongs to MbUnit.
     /// </summary>
+    /// <remarks>
+    /// Pattern attribute subtypes participate in MbUnit's reflective infrastructure
+    /// by contributing to the MbUnit template tree construction process.  Refer
+    /// to each subtype for details on its use.
+    /// </remarks>
     public abstract class PatternAttribute : Attribute
     {
     }

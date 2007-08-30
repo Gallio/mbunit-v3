@@ -12,24 +12,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 extern alias MbUnit2;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using MbUnit.Framework;
+using MbUnit.Core;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Results;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using TestState=MbUnit.Framework.Kernel.Results.TestState;
+
 using MbUnit2::MbUnit.Core;
 using MbUnit2::MbUnit.Core.Remoting;
 using MbUnit2::MbUnit.Core.Filters;
 using MbUnit2::MbUnit.Core.Reports.Serialization;
-
-using TestState = MbUnit.Framework.Kernel.Results.TestState;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Core
 {
@@ -63,13 +62,13 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             using (progressMonitor)
             {
-                progressMonitor.BeginTask("Running MbUnit v2 tests.", 1);
+                progressMonitor.BeginTask(Resources.MbUnit2TestController_RunningMbUnitTests, 1);
 
                 if (progressMonitor.IsCanceled)
                     return;
 
                 using (InstrumentedFixtureRunner fixtureRunner = new InstrumentedFixtureRunner(fixtureExplorer,
-                    progressMonitor, options, listener, tests))
+                    options, listener, tests, progressMonitor))
                 {
                     fixtureRunner.Run();
                 }
@@ -79,16 +78,16 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         private void ThrowIfDisposed()
         {
             if (fixtureExplorer == null)
-                throw new ObjectDisposedException("The test controller has been disposed.");
+                throw new ObjectDisposedException(Resources.MbUnit2TestController_ControlledWasDisposedException);
         }
 
         private class InstrumentedFixtureRunner : DependencyFixtureRunner, IDisposable, IFixtureFilter, IRunPipeFilter, IRunPipeListener
         {
-            private FixtureExplorer fixtureExplorer;
-            private IProgressMonitor progressMonitor;
-            private TestExecutionOptions options;
-            private IEventListener listener;
-            private IList<ITest> tests;
+            private readonly FixtureExplorer fixtureExplorer;
+            private readonly TestExecutionOptions options;
+            private readonly IEventListener listener;
+            private readonly IList<ITest> tests;
+            private readonly IProgressMonitor progressMonitor;
 
             private Dictionary<Type, bool> includedFixtureTypes;
             private Dictionary<Fixture, MbUnit2Test> fixtureTestsByFixture;
@@ -102,8 +101,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             private double workUnit;
 
-            public InstrumentedFixtureRunner(FixtureExplorer fixtureExplorer, IProgressMonitor progressMonitor,
-                TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
+            public InstrumentedFixtureRunner(FixtureExplorer fixtureExplorer,
+                TestExecutionOptions options, IEventListener listener,
+                IList<ITest> tests, IProgressMonitor progressMonitor)
             {
                 this.fixtureExplorer = fixtureExplorer;
                 this.progressMonitor = progressMonitor;
@@ -122,7 +122,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             private void Initialize()
             {
                 progressMonitor.Canceled += HandleCanceled;
-                progressMonitor.SetStatus("Initializing MbUnit v2 test runner.");
+                progressMonitor.SetStatus(Resources.MbUnit2TestController_InitializingMbUnitTestRunner);
 
                 int totalWork = 1;
                 if (fixtureExplorer.HasAssemblySetUp)
@@ -184,7 +184,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             {
                 CheckCanceled();
 
-                progressMonitor.SetStatus("Run assembly set up: " + Explorer.AssemblyName + ".");
+                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningAssemblySetUp, Explorer.AssemblyName));
 
                 HandleAssemblyStart();
 
@@ -207,7 +207,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             protected override bool RunAssemblyTearDown()
             {
-                progressMonitor.SetStatus("Run assembly tear down: " + Explorer.AssemblyName + ".");
+                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningAssemblyTearDown, Explorer.AssemblyName));
 
                 if (Explorer.HasAssemblyTearDown && assemblyTest != null)
                 {
@@ -260,7 +260,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             {
                 CheckCanceled();
 
-                progressMonitor.SetStatus("Run fixture set up: " + fixture.Name + ".");
+                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningFixtureSetUp, fixture.Name));
 
                 MbUnit2Test fixtureTest;
                 if (fixture.HasSetUp && fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
@@ -279,7 +279,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             {
                 CheckCanceled();
 
-                progressMonitor.SetStatus("Run fixture tear down: " + fixture.Name + ".");
+                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningFixtureTearDown, fixture.Name));
 
                 MbUnit2Test fixtureTest;
                 if (fixture.HasSetUp && fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
@@ -395,7 +395,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             private void HandleTestStart(RunPipe runPipe)
             {
-                progressMonitor.SetStatus("Run test: " + runPipe.ShortName + ".");
+                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningTest, runPipe.ShortName));
 
                 MbUnit2Test test;
                 if (!testsByRunPipe.TryGetValue(runPipe, out test))
@@ -482,14 +482,16 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 result.Append(ex.Type);
 
                 if (ex.Message.Length != 0)
-                    result.Append(": ").Append(ex.Message);
+                    result.Append(@": ").Append(ex.Message);
 
                 if (ex.Exception != null)
                 {
-                    result.Append(" ---> ")
+                    result.Append(@" ---> ")
                         .Append(FormatReportException(ex.Exception))
                         .Append(Environment.NewLine)
-                        .Append("   --- End of inner exception stack trace ---"); // TODO: Localize me!
+                        .Append(@"   --- ")
+                        .Append(Resources.MbUnit2TestController_EndOfInnerExceptionStackTrace)
+                        .Append(@" ---");
                 }
 
                 if (ex.StackTrace.Length != 0)

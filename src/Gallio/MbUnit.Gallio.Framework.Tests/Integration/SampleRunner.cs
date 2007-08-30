@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using MbUnit.Core.Harness;
@@ -80,6 +81,21 @@ namespace MbUnit._Framework.Tests.Integration
 
                 runner.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
                 runner.Run(new NullProgressMonitor());
+
+                IReportManager reportManager = RuntimeHolder.Instance.Resolve<IReportManager>();
+                NameValueCollection options = new NameValueCollection();
+                options.Add(TextReportFormatter.SaveAttachmentContentsOption, @"false");
+
+                string reportPath = Path.GetTempFileName();
+                try
+                {
+                    reportManager.GetFormatter(TextReportFormatter.FormatterName).Format(report, reportPath, options, null, new NullProgressMonitor());
+                    Console.WriteLine(File.ReadAllText(reportPath));
+                }
+                finally
+                {
+                    File.Delete(reportPath);
+                }
             }
         }
 

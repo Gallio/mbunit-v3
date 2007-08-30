@@ -46,7 +46,8 @@ namespace MbUnit._Framework.Tests.Integration
             codeReference.MemberName = "BaseTest";
 
             Assert.AreEqual(TestOutcome.Passed, GetTestRun(codeReference).RootStepRun.Result.Outcome);
-            Assert.AreEqual("", GetStreamText(codeReference, ExecutionLogStreamName.ConsoleOutput));
+            Assert.AreEqual("BaseTestFixtureSetUp\nBaseSetUp\nBaseTest\nBaseTearDown\nBaseTestFixtureTearDown\n",
+                GetStreamText(codeReference, ExecutionLogStreamName.ConsoleOutput));
         }
 
         [Test]
@@ -56,7 +57,8 @@ namespace MbUnit._Framework.Tests.Integration
             codeReference.MemberName = "DerivedTest";
 
             Assert.AreEqual(TestOutcome.Passed, GetTestRun(codeReference).RootStepRun.Result.Outcome);
-            Assert.AreEqual("", GetStreamText(codeReference, ExecutionLogStreamName.ConsoleOutput));
+            Assert.AreEqual("BaseTestFixtureSetUp\nDerivedTestFixtureSetUp\nBaseSetUp\nDerivedSetUp\nDerivedTest\nDerivedTearDown\nBaseTearDown\nDerivedTestFixtureTearDown\nBaseTestFixtureTearDown\n",
+                GetStreamText(codeReference, ExecutionLogStreamName.ConsoleOutput));
         }
     }
 }

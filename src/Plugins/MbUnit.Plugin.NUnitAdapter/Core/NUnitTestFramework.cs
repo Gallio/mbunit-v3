@@ -30,7 +30,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         /// <inheritdoc />
         public string Name
         {
-            get { return "NUnit"; }
+            get { return Resources.NUnitTestFramework_NUnitFrameworkName; }
         }
 
         /// <inheritdoc />
@@ -39,9 +39,9 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             harness.BuildingTemplates += harness_BuildingTemplates;
         }
 
-        void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
+        private static void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
         {
-            MultiMap<Version, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, "nunit.framework");
+            MultiMap<Version, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, @"nunit.framework");
             foreach (KeyValuePair<Version, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the

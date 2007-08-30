@@ -50,6 +50,8 @@
     <Compile Include="Kernel\Assertions\AssertionResultType.cs" />
     <Compile Include="Kernel\Assertions\AssertionUtils.cs" />
     <Compile Include="Kernel\Assertions\IAssertionService.cs" />
+    <Compile Include="Kernel\Attributes\TestPatternAttribute.cs" />
+    <Compile Include="Kernel\Attributes\TypePatternAttribute.cs" />
     <Compile Include="Kernel\DataBinding\ConvertedDataFactory.cs" />
     <Compile Include="Kernel\DataBinding\DataBinding.cs">
       <SubType>Code</SubType>
@@ -121,7 +123,7 @@
     <Compile Include="Kernel\Attributes\DataPatternAttribute.cs" />
     <Compile Include="Kernel\Attributes\DecoratorOrderComparer.cs" />
     <Compile Include="Kernel\Attributes\DecoratorPatternAttribute.cs" />
-    <Compile Include="Kernel\Attributes\FixtureDecoratorPatternAttribute.cs" />
+    <Compile Include="Kernel\Attributes\TypeDecoratorPatternAttribute.cs" />
     <Compile Include="Kernel\Attributes\FixturePatternAttribute.cs" />
     <Compile Include="Kernel\Attributes\MetadataPatternAttribute.cs" />
     <Compile Include="Kernel\Attributes\MethodDecoratorPatternAttribute.cs" />
@@ -214,7 +216,7 @@
     <Compile Include="Kernel\Model\TestBatch.cs" />
     <Compile Include="Kernel\Model\ITestComponent.cs" />
     <Compile Include="Kernel\Model\MbUnitAssemblyTemplate.cs" />
-    <Compile Include="Kernel\Model\MbUnitFixtureTemplate.cs" />
+    <Compile Include="Kernel\Model\MbUnitTypeTemplate.cs" />
     <Compile Include="Kernel\Model\MbUnitFrameworkTemplate.cs" />
     <Compile Include="Kernel\Model\MbUnitMethodTemplate.cs" />
     <Compile Include="Kernel\Model\MbUnitTemplateBinding.cs" />

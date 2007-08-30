@@ -32,6 +32,7 @@ namespace MbUnit.Framework.Kernel.Model
         private readonly List<ITemplate> children;
         private readonly List<ITemplateParameter> parameters;
         private ITemplate parent;
+        private bool isGenerator;
 
         /// <summary>
         /// Initializes a template initially without a parent.
@@ -60,6 +61,13 @@ namespace MbUnit.Framework.Kernel.Model
         public virtual IList<ITemplate> Children
         {
             get { return children; }
+        }
+
+        /// <inheritdoc />
+        public bool IsGenerator
+        {
+            get { return isGenerator; }
+            set { isGenerator = value; }
         }
 
         /// <inheritdoc />

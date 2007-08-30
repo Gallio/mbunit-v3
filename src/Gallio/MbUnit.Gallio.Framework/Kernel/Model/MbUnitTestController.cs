@@ -52,7 +52,7 @@ namespace MbUnit.Framework.Kernel.Model
                 if (methodTemplate != null)
                 {
                     MbUnitTestState state = new MbUnitTestState(test);
-                    state.FixtureInstance = Activator.CreateInstance(methodTemplate.FixtureTemplate.FixtureType);
+                    state.FixtureInstance = Activator.CreateInstance(methodTemplate.TypeTemplate.Type);
 
                     Execute(test, state, listener);
                 }

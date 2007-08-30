@@ -37,6 +37,7 @@ namespace MbUnit.Framework.Kernel.Model
             this.version = version;
 
             Kind = ComponentKind.Framework;
+            IsGenerator = true;
 
             ProcessTestChain.After(ApplyTestBatch);
         }
@@ -50,16 +51,15 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Gets the list of assembly templates.
+        /// Gets the list of assembly templates that are children of this template.
         /// </summary>
-        /// <returns>The assembly templates</returns>
         public IList<MbUnitAssemblyTemplate> AssemblyTemplates
         {
             get { return ModelUtils.FilterChildrenByType<ITemplate, MbUnitAssemblyTemplate>(this); }
         }
 
         /// <summary>
-        /// Adds an assembly template to the framework.
+        /// Adds an assembly template as a child of this template.
         /// </summary>
         /// <param name="assemblyTemplate">The assembly template</param>
         public void AddAssemblyTemplate(MbUnitAssemblyTemplate assemblyTemplate)

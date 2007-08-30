@@ -26,8 +26,8 @@ namespace MbUnit.Framework.Kernel.Filters
     [Serializable]
     public class TypeFilter<T> : Filter<T> where T : IModelComponent
     {
-        private string typeName;
-        private bool includeDerivedTypes;
+        private readonly string typeName;
+        private readonly bool includeDerivedTypes;
 
         /// <summary>
         /// Creates a type filter.
@@ -47,7 +47,7 @@ namespace MbUnit.Framework.Kernel.Filters
         public TypeFilter(string typeName, bool includeDerivedTypes)
         {
             if (typeName == null)
-                throw new ArgumentNullException("typeName");
+                throw new ArgumentNullException(@"typeName");
 
             this.typeName = typeName;
             this.includeDerivedTypes = includeDerivedTypes;
@@ -67,7 +67,7 @@ namespace MbUnit.Framework.Kernel.Filters
             //       old string comparisons.  Naturally we won't be able to
             //       handle includeDerivedTypes.
 
-            Type type = Type.GetType(typeName + ", " + assemblyName, false);
+            Type type = Type.GetType(typeName + @", " + assemblyName, false);
             if (type == null)
                 return false;
 

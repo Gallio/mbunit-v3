@@ -51,7 +51,7 @@ namespace MbUnit.Framework
             MethodInfo method = methodTemplate.Method;
             ModelUtils.CheckMethodSignature(method);
 
-            methodTemplate.FixtureTemplate.ProcessTestChain.After(delegate(MbUnitTest fixtureTest)
+            methodTemplate.TypeTemplate.ProcessTestChain.After(delegate(MbUnitTest fixtureTest)
             {
                 fixtureTest.BeforeChildChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
             });

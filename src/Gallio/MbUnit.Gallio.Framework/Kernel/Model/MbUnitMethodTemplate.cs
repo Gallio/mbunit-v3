@@ -22,33 +22,33 @@ using MbUnit.Framework.Kernel.Model;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Represents a template derived from an MbUnit test method.
+    /// Represents a template derived from an MbUnit method such as a test case.
     /// </summary>
     public class MbUnitMethodTemplate : MbUnitTemplate
     {
-        private readonly MbUnitFixtureTemplate fixtureTemplate;
+        private readonly MbUnitTypeTemplate typeTemplate;
         private readonly MethodInfo method;
 
         /// <summary>
         /// Initializes an MbUnit test method template model object.
         /// </summary>
-        /// <param name="fixtureTemplate">The containing fixture template</param>
-        /// <param name="method">The test method</param>
-        public MbUnitMethodTemplate(MbUnitFixtureTemplate fixtureTemplate, MethodInfo method)
+        /// <param name="typeTemplate">The containing type template</param>
+        /// <param name="method">The method from which the template was derived</param>
+        public MbUnitMethodTemplate(MbUnitTypeTemplate typeTemplate, MethodInfo method)
             : base(method.Name, CodeReference.CreateFromMember(method))
         {
-            this.fixtureTemplate = fixtureTemplate;
+            this.typeTemplate = typeTemplate;
             this.method = method;
 
             Kind = ComponentKind.Test;
         }
 
         /// <summary>
-        /// Gets the containing fixture template.
+        /// Gets the containing type template.
         /// </summary>
-        public MbUnitFixtureTemplate FixtureTemplate
+        public MbUnitTypeTemplate TypeTemplate
         {
-            get { return fixtureTemplate; }
+            get { return typeTemplate; }
         }
 
         /// <summary>

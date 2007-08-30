@@ -56,6 +56,19 @@ namespace MbUnit.Framework.Kernel.Model
     public interface ITemplate : ITemplateComponent, IModelTreeNode<ITemplate>
     {
         /// <summary>
+        /// <para>
+        /// Gets or sets whether the template generates tests all on its own.
+        /// </para>
+        /// <para>
+        /// This value should be set to false when a template describes some other
+        /// declarative component of a test that should not be automatically bound
+        /// and used to construct child tests.  A non-generative template may still
+        /// be used to construct tests as part of some other explicit binding process.
+        /// </para>
+        /// </summary>
+        bool IsGenerator { get; set; }
+
+        /// <summary>
         /// Gets the parameter that belong to this template.
         /// Each parameter must have a unique name.  The order in which
         /// the parameters appear is not significant.

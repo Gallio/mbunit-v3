@@ -41,7 +41,7 @@ namespace MbUnit.Framework
     /// TestSequence attribute.
     /// </todo>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public sealed class TestAttribute : MethodPatternAttribute
+    public sealed class TestAttribute : TestPatternAttribute
     {
         /// <override />
         public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)

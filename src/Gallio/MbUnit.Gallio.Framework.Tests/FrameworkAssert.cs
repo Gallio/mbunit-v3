@@ -51,6 +51,7 @@ namespace MbUnit._Framework.Tests
             Assert.AreEqual(expected.Name, actual.Name);
             AreEqual(expected.CodeReference, actual.CodeReference);
             AreEqual(expected.Metadata, actual.Metadata);
+            Assert.AreEqual(expected.IsGenerator, actual.IsGenerator);
 
             MbUnit.Framework.InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
             MbUnit.Framework.InterimAssert.WithPairs(expected.Parameters, actual.Parameters, AreEqual);

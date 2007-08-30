@@ -101,7 +101,7 @@ namespace MbUnit._Framework.Tests.Integration
             return contents.ToString();
         }
 
-        protected void AppendText(StringBuilder contents, ExecutionLogStreamTag tag)
+        private static void AppendText(StringBuilder contents, ExecutionLogStreamTag tag)
         {
             ExecutionLogStreamTextTag textTag = tag as ExecutionLogStreamTextTag;
             if (textTag != null)

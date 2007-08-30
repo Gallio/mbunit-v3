@@ -89,21 +89,25 @@ namespace MbUnit.Framework.Kernel.Model
 
             parent.AddChild(test);
 
-            BuildTestsForChildren(builder, test);
+            BuildTestsForGenerativeChildren(builder, test);
         }
 
         /// <summary>
-        /// Builds tests for children templates.
+        /// Builds tests for children templates for all children with <see cref="ITemplate.IsGenerator" />
+        /// set to true.
         /// </summary>
         /// <param name="builder">The test tree builder</param>
         /// <param name="parent">The parent test for the children</param>
-        protected virtual void BuildTestsForChildren(TestTreeBuilder builder, ITest parent)
+        protected virtual void BuildTestsForGenerativeChildren(TestTreeBuilder builder, ITest parent)
         {
             foreach (ITemplate childTemplate in template.Children)
             {
-                foreach (ITemplateBinding childBinding in scope.Bind(childTemplate))
+                if (childTemplate.IsGenerator)
                 {
-                    childBinding.BuildTests(builder, parent);
+                    foreach (ITemplateBinding childBinding in scope.Bind(childTemplate))
+                    {
+                        childBinding.BuildTests(builder, parent);
+                    }
                 }
             }
         }

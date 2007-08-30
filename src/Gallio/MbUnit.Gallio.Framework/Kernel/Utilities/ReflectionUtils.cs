@@ -125,7 +125,7 @@ namespace MbUnit.Framework.Kernel.Utilities
         /// <returns>True if the type can be instantiated</returns>
         public static bool CanInstantiate(Type type)
         {
-            return !type.IsAbstract && type.IsClass && type.IsPublic
+            return !type.IsAbstract && type.IsClass && type.IsVisible
                    && !type.HasElementType && type.GetConstructors().Length != 0;
         }
 

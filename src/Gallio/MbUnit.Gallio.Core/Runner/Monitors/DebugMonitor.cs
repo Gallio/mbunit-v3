@@ -53,13 +53,11 @@ namespace MbUnit.Core.Runner.Monitors
             Runner.EventDispatcher.ExecutionLog += HandleExecutionLogEvent;
         }
 
-#pragma warning disable StringCouldBeMoveToResource
-
         private void HandleMessageEvent(object sender, MessageEventArgs e)
         {
             lock (this)
             {
-                writer.WriteLine("[Message: {0}] - {1}", e.MessageType, e.Message);
+                writer.WriteLine(@"[Message: {0}] - {1}", e.MessageType, e.Message);
                 writer.WriteLine();
             }
         }
@@ -74,22 +72,22 @@ namespace MbUnit.Core.Runner.Monitors
                 {
                     case LifecycleEventType.Start:
                         if (e.StepInfo.ParentId != null)
-                            stepName = GetStepName(e.StepInfo.ParentId) + " / " + e.StepInfo.Name;
+                            stepName = GetStepName(e.StepInfo.ParentId) + @" / " + e.StepInfo.Name;
                         else
-                            stepName = Runner.TestModel.Tests[e.StepInfo.TestId].Name + ": " + e.StepInfo.Name;
+                            stepName = Runner.TestModel.Tests[e.StepInfo.TestId].Name + @": " + e.StepInfo.Name;
 
                         stepNames.Add(e.StepId, stepName);
 
-                        writer.WriteLine("[Lifecycle: Start ({0})]", stepName);
+                        writer.WriteLine(@"[Lifecycle: Start ({0})]", stepName);
                         break;
 
                     case LifecycleEventType.EnterPhase:
-                        writer.WriteLine("[Lifecycle: Enter Phase ({0})]", stepName);
+                        writer.WriteLine(@"[Lifecycle: Enter Phase ({0})]", stepName);
                         writer.WriteLine("\tPhase Name: {0}", e.PhaseName);
                         break;
 
                     case LifecycleEventType.Finish:
-                        writer.WriteLine("[Lifecycle: Finish ({0})]", stepName);
+                        writer.WriteLine(@"[Lifecycle: Finish ({0})]", stepName);
                         writer.WriteLine("\tState: {0}", e.Result.State);
                         writer.WriteLine("\tOutcome: {0}", e.Result.Outcome);
                         writer.WriteLine("\tAsserts: {0}", e.Result.AssertCount);
@@ -110,31 +108,31 @@ namespace MbUnit.Core.Runner.Monitors
                 switch (e.EventType)
                 {
                     case ExecutionLogEventType.WriteText:
-                        writer.WriteLine("[Execution Log: Write Text ({0})]", stepName);
+                        writer.WriteLine(@"[Execution Log: Write Text ({0})]", stepName);
                         writer.WriteLine("\tStream Name: {0}", e.StreamName);
                         writer.WriteLine("\tText: {0}", e.Text);
                         break;
 
                     case ExecutionLogEventType.WriteAttachment:
-                        writer.WriteLine("[Execution Log: Write Attachment ({0})]", stepName);
-                        writer.WriteLine("\tStream Name: {0}", e.StreamName ?? "<null>");
+                        writer.WriteLine(@"[Execution Log: Write Attachment ({0})]", stepName);
+                        writer.WriteLine("\tStream Name: {0}", e.StreamName ?? @"<null>");
                         writer.WriteLine("\tAttachment Name: {0}", e.Attachment.Name);
                         writer.WriteLine("\tAttachment Content Type: {0}", e.Attachment.ContentType);
                         break;
 
                     case ExecutionLogEventType.BeginSection:
-                        writer.WriteLine("[Execution Log: Being Section ({0})]", stepName);
+                        writer.WriteLine(@"[Execution Log: Being Section ({0})]", stepName);
                         writer.WriteLine("\tStream Name: {0}", e.StreamName);
                         writer.WriteLine("\tSection Name: {0}", e.SectionName);
                         break;
 
                     case ExecutionLogEventType.EndSection:
-                        writer.WriteLine("[Execution Log: End Section ({0})]", stepName);
+                        writer.WriteLine(@"[Execution Log: End Section ({0})]", stepName);
                         writer.WriteLine("\tStream Name: {0}", e.StreamName);
                         break;
 
                     case ExecutionLogEventType.Close:
-                        writer.WriteLine("[Execution Log: Close ({0})]", stepName);
+                        writer.WriteLine(@"[Execution Log: Close ({0})]", stepName);
                         break;
                 }
 

@@ -33,6 +33,7 @@ namespace MbUnit.Framework.Kernel.Model
     {
         private readonly List<TemplateInfo> children;
         private readonly List<TemplateParameterInfo> parameters;
+        private bool isGenerator;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -63,6 +64,7 @@ namespace MbUnit.Framework.Kernel.Model
         public TemplateInfo(ITemplate obj)
             : base(obj)
         {
+            isGenerator = obj.IsGenerator;
             children = new List<TemplateInfo>(obj.Children.Count);
             parameters = new List<TemplateParameterInfo>(obj.Parameters.Count);
 
@@ -99,7 +101,13 @@ namespace MbUnit.Framework.Kernel.Model
             get { return parameters; }
         }
 
-        #region ITemplate implementation
+        /// <inheritdoc />
+        [XmlAttribute("isGenerator")]
+        public bool IsGenerator
+        {
+            get { return isGenerator; }
+            set { isGenerator = value; }
+        }
 
         IList<ITemplateParameter> ITemplate.Parameters
         {
@@ -132,7 +140,5 @@ namespace MbUnit.Framework.Kernel.Model
         {
             children.Add((TemplateInfo)node);
         }
-
-        #endregion
     }
 }

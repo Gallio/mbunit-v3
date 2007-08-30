@@ -20,16 +20,23 @@ using MbUnit.Framework.Kernel.Model;
 namespace MbUnit.Framework.Kernel.Attributes
 {
     /// <summary>
-    /// A fixture decorator pattern attribute applies various contributions to an
-    /// existing fixture template model object.
+    /// <para>
+    /// A type decorator pattern attribute applies various contributions to an
+    /// existing type template.
+    /// </para>
+    /// <para>
+    /// When the attribute is applied to an assembly, it affects each of the type templates
+    /// within that assembly's template individually.
+    /// </para>
     /// </summary>
-    /// <seealso cref="FixturePatternAttribute"/>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public abstract class FixtureDecoratorPatternAttribute : DecoratorPatternAttribute
+    /// <seealso cref="TypePatternAttribute"/>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Assembly,
+        AllowMultiple = true, Inherited = true)]
+    public abstract class TypeDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <summary>
-        /// Applies contributions to an fixture template.
-        /// This method is called after the contributions of the <see cref="FixturePatternAttribute"/>
+        /// Applies contributions to a type template.
+        /// This method is called after the contributions of the <see cref="TypePatternAttribute"/>
         /// have been applied but before any further processing takes place.
         /// </summary>
         /// <remarks>
@@ -38,25 +45,25 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// declarative metadata derived via reflection.
         /// </remarks>
         /// <param name="builder">The template tree builder</param>
-        /// <param name="fixtureTemplate">The fixture template</param>
-        public virtual void Apply(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate)
+        /// <param name="typeTemplate">The type template</param>
+        public virtual void Apply(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
         {
         }
 
         /// <summary>
-        /// Processes all fixture decorators via reflection.
+        /// Processes all type decorators via reflection.
         /// </summary>
         /// <param name="builder">The template tree builder</param>
-        /// <param name="fixtureTemplate">The fixture template</param>
+        /// <param name="typeTemplate">The type template</param>
         /// <param name="attributeProvider">The attribute provider to scan</param>
-        public static void ProcessDecorators(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, ICustomAttributeProvider attributeProvider)
+        public static void ProcessDecorators(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, ICustomAttributeProvider attributeProvider)
         {
-            object[] decorators = attributeProvider.GetCustomAttributes(typeof(FixtureDecoratorPatternAttribute), true);
+            object[] decorators = attributeProvider.GetCustomAttributes(typeof(TypeDecoratorPatternAttribute), true);
             Sort(decorators);
 
-            foreach (FixtureDecoratorPatternAttribute decoratorAttribute in decorators)
+            foreach (TypeDecoratorPatternAttribute decoratorAttribute in decorators)
             {
-                decoratorAttribute.Apply(builder, fixtureTemplate);
+                decoratorAttribute.Apply(builder, typeTemplate);
             }
         }
     }

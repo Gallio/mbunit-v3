@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Collections;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Core
@@ -32,7 +32,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         /// <inheritdoc />
         public string Name
         {
-            get { return "MbUnit v2"; }
+            get { return Resources.MbUnit2TestFramework_FrameworkName; }
         }
 
         /// <inheritdoc />
@@ -41,9 +41,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             harness.BuildingTemplates += harness_BuildingTemplates;
         }
 
-        private void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
+        private static void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
         {
-            MultiMap<Version, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, "MbUnit.Framework");
+            MultiMap<Version, Assembly> map = ReflectionUtils.GetReverseAssemblyReferenceMap(harness.Assemblies, @"MbUnit.Framework");
             foreach (KeyValuePair<Version, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
@@ -51,8 +51,11 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 // template because we can't perform any interesting meta-operations
                 // on them like binding test parameters or composing tests.
                 Version frameworkVersion = entry.Key;
-                BaseTemplate frameworkTemplate = new BaseTemplate("MbUnit v" + frameworkVersion, CodeReference.Unknown);
+                BaseTemplate frameworkTemplate = new BaseTemplate(
+                    String.Format(Resources.MbUnit2TestFramework_FrameworkTemplateName, frameworkVersion),
+                    CodeReference.Unknown);
                 frameworkTemplate.Kind = ComponentKind.Framework;
+                frameworkTemplate.IsGenerator = true;
                 harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
 
                 foreach (Assembly assembly in entry.Value)

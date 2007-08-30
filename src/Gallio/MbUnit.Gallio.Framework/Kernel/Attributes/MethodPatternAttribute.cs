@@ -22,41 +22,35 @@ namespace MbUnit.Framework.Kernel.Attributes
 {
     /// <summary>
     /// <para>
-    /// Declares that a method in a fixture class represents an MbUnit test method.
-    /// Subclasses of this attribute can customize how template enumeration takes
-    /// place within a fixture.
+    /// Generates a method template from the annotated method.
+    /// Subclasses of this attribute can control what happens with the method.
+    /// The method might not necessarily represent a test.
     /// </para>
     /// <para>
-    /// At most one attribute of this type may appear on any given class.
+    /// At most one attribute of this type may appear on any given method.
     /// </para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public abstract class MethodPatternAttribute : PatternAttribute
     {
         /// <summary>
-        /// Gets a default instance of the test pattern attribute to use
-        /// when none was specified.
-        /// </summary>
-        public static readonly MethodPatternAttribute DefaultInstance = new DefaultImpl();
-
-        /// <summary>
-        /// Creates a test method template.
-        /// This method is called when a test method is discovered via reflection to
+        /// Creates a method template.
+        /// This method is called when a method is discovered via reflection to
         /// create a new model object to represent it.
         /// </summary>
         /// <param name="builder">The template tree builder</param>
-        /// <param name="fixtureTemplate">The containing fixture template</param>
+        /// <param name="typeTemplate">The containing type template</param>
         /// <param name="methodInfo">The test method</param>
         /// <returns>The test method template</returns>
         public virtual MbUnitMethodTemplate CreateTemplate(TemplateTreeBuilder builder,
-            MbUnitFixtureTemplate fixtureTemplate, MethodInfo methodInfo)
+            MbUnitTypeTemplate typeTemplate, MethodInfo methodInfo)
         {
-            return new MbUnitMethodTemplate(fixtureTemplate, methodInfo);
+            return new MbUnitMethodTemplate(typeTemplate, methodInfo);
         }
 
         /// <summary>
         /// Applies contributions to a method template.
-        /// This method is called after the test method template is linked to the template tree.
+        /// This method is called after the method template is linked to the template tree.
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model
@@ -79,19 +73,19 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
-        /// Processes a method using reflection to populate tests and other executable components.
+        /// Processes a method using reflection to populate the template tree.
         /// </summary>
         /// <param name="builder">The template tree builder</param>
-        /// <param name="fixtureTemplate">The fixture template</param>
+        /// <param name="typeTemplate">The type template</param>
         /// <param name="method">The method to process</param>
-        public static void ProcessMethod(TemplateTreeBuilder builder, MbUnitFixtureTemplate fixtureTemplate, MethodInfo method)
+        public static void ProcessMethod(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, MethodInfo method)
         {
             MethodPatternAttribute methodPatternAttribute = ReflectionUtils.GetAttribute<MethodPatternAttribute>(method);
             if (methodPatternAttribute == null)
                 return;
 
-            MbUnitMethodTemplate methodTemplate = methodPatternAttribute.CreateTemplate(builder, fixtureTemplate, method);
-            fixtureTemplate.AddMethodTemplate(methodTemplate);
+            MbUnitMethodTemplate methodTemplate = methodPatternAttribute.CreateTemplate(builder, typeTemplate, method);
+            typeTemplate.AddMethodTemplate(methodTemplate);
             methodPatternAttribute.Apply(builder, methodTemplate);
         }
 
@@ -118,10 +112,6 @@ namespace MbUnit.Framework.Kernel.Attributes
             ParameterInfo parameter)
         {
             ParameterPatternAttribute.ProcessSlot(builder, methodTemplate, new Slot(parameter));
-        }
-
-        private class DefaultImpl : MethodPatternAttribute
-        {
         }
     }
 }

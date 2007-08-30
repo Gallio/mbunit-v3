@@ -43,7 +43,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             parent.Metadata.Entries.AddAll(Template.Metadata.Entries);
 
-            BuildTestsForChildren(builder, parent);
+            BuildTestsForGenerativeChildren(builder, parent);
         }
     }
 }

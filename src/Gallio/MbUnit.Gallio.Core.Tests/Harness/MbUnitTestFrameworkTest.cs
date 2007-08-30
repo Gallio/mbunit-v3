@@ -90,37 +90,37 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual(ComponentKind.Assembly, assemblyTemplate.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTemplate.CodeReference);
             Assert.AreEqual(sampleAssembly, assemblyTemplate.Assembly);
-            Assert.GreaterEqualThan(assemblyTemplate.FixtureTemplates.Count, 1);
+            Assert.GreaterEqualThan(assemblyTemplate.TypeTemplates.Count, 1);
 
-            MbUnitFixtureTemplate fixtureTemplate = ListUtils.Find(assemblyTemplate.FixtureTemplates, delegate(MbUnitFixtureTemplate template)
+            MbUnitTypeTemplate typeTemplate = ListUtils.Find(assemblyTemplate.TypeTemplates, delegate(MbUnitTypeTemplate template)
             {
-                return template.FixtureType == typeof(SimpleTest);
+                return template.Type == typeof(SimpleTest);
             });
-            Assert.IsNotNull(fixtureTemplate, "Could not find the SimpleTest fixture.");
-            Assert.AreSame(assemblyTemplate, fixtureTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Fixture, fixtureTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), fixtureTemplate.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest), fixtureTemplate.FixtureType);
-            Assert.AreEqual("SimpleTest", fixtureTemplate.Name);
-            Assert.AreEqual(2, fixtureTemplate.MethodTemplates.Count);
+            Assert.IsNotNull(typeTemplate, "Could not find the SimpleTest fixture.");
+            Assert.AreSame(assemblyTemplate, typeTemplate.Parent);
+            Assert.AreEqual(ComponentKind.Fixture, typeTemplate.Kind);
+            Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), typeTemplate.CodeReference);
+            Assert.AreEqual(typeof(SimpleTest), typeTemplate.Type);
+            Assert.AreEqual("SimpleTest", typeTemplate.Name);
+            Assert.AreEqual(2, typeTemplate.MethodTemplates.Count);
 
-            MbUnitMethodTemplate passTemplate = ListUtils.Find(fixtureTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
+            MbUnitMethodTemplate passTemplate = ListUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
             {
                 return template.Name == "Pass";
             });
             Assert.IsNotNull(passTemplate, "Could not find the Pass test.");
-            Assert.AreSame(fixtureTemplate, passTemplate.Parent);
+            Assert.AreSame(typeTemplate, passTemplate.Parent);
             Assert.AreEqual(ComponentKind.Test, passTemplate.Kind);
             Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")), passTemplate.CodeReference);
             Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), passTemplate.Method);
             Assert.AreEqual("Pass", passTemplate.Name);
 
-            MbUnitMethodTemplate failTemplate = ListUtils.Find(fixtureTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
+            MbUnitMethodTemplate failTemplate = ListUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
             {
                 return template.Name == "Fail";
             });
             Assert.IsNotNull(failTemplate, "Could not find the Fail test.");
-            Assert.AreSame(fixtureTemplate, failTemplate.Parent);
+            Assert.AreSame(typeTemplate, failTemplate.Parent);
             Assert.AreEqual(ComponentKind.Test, failTemplate.Kind);
             Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")), failTemplate.CodeReference);
             Assert.AreEqual(typeof(SimpleTest).GetMethod("Fail"), failTemplate.Method);

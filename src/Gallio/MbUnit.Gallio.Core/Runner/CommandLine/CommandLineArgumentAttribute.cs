@@ -75,6 +75,9 @@ namespace MbUnit.Core.Runner.CommandLine
             set { this.longName = value; }
         }
 
+        /// <summary>
+        /// The description of the argument.
+        /// </summary>
 		public string Description
 		{
 			get

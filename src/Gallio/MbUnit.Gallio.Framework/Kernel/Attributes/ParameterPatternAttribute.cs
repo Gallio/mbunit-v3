@@ -21,19 +21,30 @@ using MbUnit.Framework.Kernel.Utilities;
 namespace MbUnit.Framework.Kernel.Attributes
 {
     /// <summary>
-    /// Declares that a property, field or parameter is a test parameter and
-    /// specifies its properties.  At most one attribute of this type may appear on
-    /// any given test fixture property or field.  If the attribute is omitted from
-    /// test method parameters and test fixture constructor parameters the parameter
-    /// will be declared with default values (which are usually just fine).
+    /// <para>
+    /// Generates a parameter template from the annotated property, field or
+    /// method parameter.  Subclasses of this attribute can control how the
+    /// parameter template is manipulated by the system.
+    /// </para>
+    /// <para>
+    /// At most one attribute of this type may appear on any given property,
+    /// field or parameter declaration.
+    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// In some cases, as with method parameters, parameter templates will be
+    /// generated automatically by the system even if this attribute has
+    /// not been applied.
+    /// </para>
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter,
         AllowMultiple = false, Inherited = true)]
     public abstract class ParameterPatternAttribute : PatternAttribute
     {
         /// <summary>
-        /// Gets a default instance of the parameter pattern attribute to use
-        /// when none was specified.
+        /// Gets a default instance of a parameter pattern attribute to use when
+        /// the attribute is elided from a method parameter declaration.
         /// </summary>
         public static readonly ParameterPatternAttribute DefaultInstance = new DefaultImpl();
 

@@ -42,6 +42,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             this.assembly = assembly;
 
             Kind = ComponentKind.Assembly;
+            IsGenerator = true;
         }
 
         /// <summary>

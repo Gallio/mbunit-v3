@@ -74,6 +74,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.IsNull(rootTemplate.Parent);
             Assert.AreEqual(ComponentKind.Root, rootTemplate.Kind);
             Assert.AreEqual(CodeReference.Unknown, rootTemplate.CodeReference);
+            Assert.IsTrue(rootTemplate.IsGenerator);
             Assert.AreEqual(1, rootTemplate.Children.Count);
 
             BaseTemplate frameworkTemplate = (BaseTemplate)rootTemplate.Children[0];
@@ -81,6 +82,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
             Assert.AreEqual(CodeReference.Unknown, frameworkTemplate.CodeReference);
             Assert.AreEqual("NUnit v" + expectedVersion, frameworkTemplate.Name);
+            Assert.IsTrue(frameworkTemplate.IsGenerator);
             Assert.AreEqual(0, frameworkTemplate.Children.Count);
         }
 

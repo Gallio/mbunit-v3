@@ -53,16 +53,32 @@ namespace MbUnit.Core.Reporting
     [Singleton]
     public class XmlReportFormatter : IReportFormatter
     {
+        /// <summary>
+        /// Gets the name of this formatter.
+        /// </summary>
+        public const string FormatterName = @"XML";
+
+        /// <summary>
+        /// Gets the name of the option that controls whether attachments are saved.
+        /// </summary>
+        public const string SaveAttachmentContentsOption = @"SaveAttachmentContents";
+
+        /// <summary>
+        /// Gets the name of the option that controls whether attachment contents
+        /// are embedded within the report Xml or saved to individual files.
+        /// </summary>
+        public const string EmbedAttachmentContentsOption = @"EmbedAttachmentContents";
+
         /// <inheritdoc />
         public string Name
         {
-            get { return "XML"; }
+            get { return FormatterName; }
         }
 
         /// <inheritdoc />
         public string PreferredExtension
         {
-            get { return "xml"; }
+            get { return @"xml"; }
         }
 
         /// <inheritdoc />
@@ -70,11 +86,11 @@ namespace MbUnit.Core.Reporting
             IList<string> filesWritten, IProgressMonitor progressMonitor)
         {
             bool saveAttachmentContents;
-            if (!bool.TryParse(options.Get("SaveAttachmentContents"), out saveAttachmentContents))
+            if (!bool.TryParse(options.Get(SaveAttachmentContentsOption), out saveAttachmentContents))
                 saveAttachmentContents = true;
 
             bool embedAttachmentContents;
-            if (!bool.TryParse(options.Get("EmbedAttachmentContents"), out embedAttachmentContents))
+            if (!bool.TryParse(options.Get(EmbedAttachmentContentsOption), out embedAttachmentContents))
                 embedAttachmentContents = false;
 
             ReportUtils.SaveReport(report, reportPath, saveAttachmentContents, embedAttachmentContents,

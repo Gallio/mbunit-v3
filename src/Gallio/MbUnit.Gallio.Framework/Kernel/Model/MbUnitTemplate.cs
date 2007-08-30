@@ -22,7 +22,13 @@ using MbUnit.Framework.Kernel.Model;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Abstract base class for MbUnit-derived templates.
+    /// <para>
+    /// Abstract base class for MbUnit templates.
+    /// </para>
+    /// <para>
+    /// Subclasses of this type define all of the kinds of templates that
+    /// MbUnit uses as part of its reflective infrastructure.
+    /// </para>
     /// </summary>
     public abstract class MbUnitTemplate : BaseTemplate
     {
@@ -68,7 +74,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <remarks>
         /// The actions are invoked before the children of the test are constructed.
         /// To perform actions after all tests have been constructed, it's necessary
-        /// to attach to the <see cref="TestTreeBuilder.PostProcess" /> event.
+        /// to attach to the <see cref="ModelTreeBuilder{T}.PostProcess" /> event.
         /// </remarks>
         public ActionChain<MbUnitTest> ProcessTestChain
         {

@@ -49,6 +49,11 @@ namespace MbUnit.Core.Reporting
     {
         private XslCompiledTransform transform;
 
+        /// <summary>
+        /// Gets the name of the option that controls whether attachments are saved.
+        /// </summary>
+        public const string SaveAttachmentContentsOption = @"SaveAttachmentContents";
+
         /// <inheritdoc />
         public abstract string Name { get; }
 
@@ -66,7 +71,7 @@ namespace MbUnit.Core.Reporting
             IList<string> filesWritten, IProgressMonitor progressMonitor)
         {
             bool saveAttachmentContents;
-            if (!bool.TryParse(options.Get("SaveAttachmentContents"), out saveAttachmentContents))
+            if (!bool.TryParse(options.Get(SaveAttachmentContentsOption), out saveAttachmentContents))
                 saveAttachmentContents = true;
 
             using (progressMonitor)

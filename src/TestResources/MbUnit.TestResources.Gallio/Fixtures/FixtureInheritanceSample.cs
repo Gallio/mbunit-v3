@@ -24,6 +24,9 @@ namespace MbUnit.TestResources.Gallio.Fixtures
     /// This fixture is used to ensure that test fixtures with inherited attributes
     /// compose in the desired manner.
     /// </summary>
+    /// <remarks>
+    /// This is also a useful sample for testing fixtures in nested types.
+    /// </remarks>
     [TestFixture]
     public class FixtureInheritanceSample
     {

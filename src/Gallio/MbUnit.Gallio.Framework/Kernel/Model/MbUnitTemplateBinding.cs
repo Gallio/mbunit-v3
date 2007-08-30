@@ -52,7 +52,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <remarks>
         /// The actions are invoked before the children of the test are constructed.
         /// To perform actions after all tests have been constructed, it's necessary
-        /// to attach to the <see cref="TestTreeBuilder.PostProcess" /> event.
+        /// to attach to the <see cref="ModelTreeBuilder{T}.PostProcess" /> event.
         /// </remarks>
         public ActionChain<MbUnitTest> ProcessTestChain
         {
@@ -75,7 +75,7 @@ namespace MbUnit.Framework.Kernel.Model
             if (processTestChain != null)
                 processTestChain.Action(test);
 
-            BuildTestsForChildren(builder, test);
+            BuildTestsForGenerativeChildren(builder, test);
         }
     }
 }

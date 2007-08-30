@@ -78,7 +78,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             RunFixtureExplorerIfNeeded();
 
             MbUnit2Test assemblyTest = CreateAssemblyTest(parent, Assembly);
-            assemblyTest.Batch = new TestBatch("MbUnit v2: " + Template.Name, delegate
+            assemblyTest.Batch = new TestBatch(
+                String.Format(Resources.MbUnit2AssemblyTemplateBinding_TestBatchNameFormat, Template.Name),
+                delegate
             {
                 return new MbUnit2TestController(fixtureExplorer);
             });
@@ -89,7 +91,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
                 foreach (RunPipeStarter starter in fixture.Starters)
                 {
-                    MbUnit2Test test = CreateTest(fixtureTest, starter.Pipe);
+                    CreateTest(fixtureTest, starter.Pipe);
                 }
             }
 
@@ -140,9 +142,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             {
                 if (! String.IsNullOrEmpty(attrib.Name))
                     test.Metadata.Entries.Add(MetadataKey.AuthorName, attrib.Name);
-                if (! String.IsNullOrEmpty(attrib.EMail) && attrib.EMail != "unspecified")
+                if (! String.IsNullOrEmpty(attrib.EMail) && attrib.EMail != @"unspecified")
                     test.Metadata.Entries.Add(MetadataKey.AuthorEmail, attrib.EMail);
-                if (!String.IsNullOrEmpty(attrib.HomePage) && attrib.HomePage != "unspecified")
+                if (!String.IsNullOrEmpty(attrib.HomePage) && attrib.HomePage != @"unspecified")
                     test.Metadata.Entries.Add(MetadataKey.AuthorHomepage, attrib.HomePage);
             }
             foreach (FixtureCategoryAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(FixtureCategoryAttribute2), true))
