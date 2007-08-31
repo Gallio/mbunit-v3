@@ -57,7 +57,12 @@ namespace MbUnit.Core.Runner
         private List<string> reportFormats;
         private NameValueCollection reportFormatOptions;
 
+        private readonly Dictionary<string, string> generatedReportFilenames = new Dictionary<string, string>();
+        private string resultSummary;
+        private PackageRunStatistics statistics;
         private Stopwatch stopWatch;
+        private ReportMonitor reportMonitor;
+        private StringWriter debugWriter;
 
         #endregion
 
@@ -195,51 +200,53 @@ namespace MbUnit.Core.Runner
             get { return reportFormatOptions; }
         }
 
+        /// <summary>
+        /// A short summary with the number of test that passed, failed and so on.
+        /// </summary>
+        public string ResultSummary
+        {
+            get { return resultSummary; }
+        }
+
+        /// <summary>
+        /// The statistics of the execution.
+        /// </summary>
+        public PackageRunStatistics Statistics
+        {
+            get { return statistics; }
+        }
+
         #endregion
 
         #region Public Methods
 
         /// <summary>
-        /// Runs a project
+        /// Runs a project.
         /// </summary>
         /// <returns>An integer representing the result of the execution.</returns>
         public int Run()
         {
             Canonicalize();
+            DisplayConfiguration();
+            
+            VerifyAssemblies();
+            if (!HasTestAssemblies())
+                return ResultCode.NoTests;
 
             using (AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup))
             {
-                IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
-
-                DisplayConfiguration();
                 CreateStopWatch();
-
+                
+                IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
                 if (!Validate(reportManager))
                     return ResultCode.InvalidArguments;
+                                
+                CreateDebugMonitor(runner);
+                CreateReportMonitor(runner);
 
-                VerifyAssemblies();
-                if (!HasTestAssemblies())
-                    return ResultCode.NoTests;
-
-                StringWriter debugWriter = null;
-                if (logger.IsDebugEnabled)
-                {
-                    debugWriter = new StringWriter();
-                    new DebugMonitor(debugWriter).Attach(runner);
-                }
-
-                ReportMonitor reportMonitor = new ReportMonitor();
-                reportMonitor.Attach(runner);
-
-                // Run the initial phases.
                 try
                 {
-                    ApplyFilter(runner);
-                    LoadProject(runner);
-                    BuildTemplates(runner);
-                    BuildTests(runner);
-                    PersistTemplateTree(runner);
-                    PersistTestTree(runner);
+                    RunInitialPhases(runner);
                 }
                 catch (OperationCanceledException)
                 {
@@ -280,7 +287,8 @@ namespace MbUnit.Core.Runner
                     ConsoleCancelHandler.IsCanceled = false;
                 }
 
-                logger.Info(reportMonitor.Report.PackageRun.Statistics.FormatTestCaseResultSummary());
+                statistics = reportMonitor.Report.PackageRun.Statistics;
+                resultSummary = reportMonitor.Report.PackageRun.Statistics.FormatTestCaseResultSummary();
                 DisposeStopWatch();
 
                 // Make sure we write out debug log messages.
@@ -293,6 +301,58 @@ namespace MbUnit.Core.Runner
                     return ResultCode.Canceled;
 
                 return ResultCode.Success;
+            }
+        }
+
+        /// <summary>
+        /// Returns the filename of the generated report for the given report type.
+        /// </summary>
+        /// <param name="reportType">The report type whose generated report's filename
+        /// wants to be retrieved.</param>
+        /// <returns>The full filename of the generated report, or null if no report
+        /// was generated for the given report type.</returns>
+        public string GetReportFilename(string reportType)
+        {
+            if (String.IsNullOrEmpty(reportType))
+            {
+                throw new ArgumentNullException("reportType");
+            }
+
+            string loweredReportType = reportType.ToLower();
+            if (generatedReportFilenames.ContainsKey(loweredReportType))
+            {
+                return generatedReportFilenames[loweredReportType];
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void RunInitialPhases(ITestRunner runner)
+        {
+            ApplyFilter(runner);
+            LoadProject(runner);
+            BuildTemplates(runner);
+            BuildTests(runner);
+            PersistTemplateTree(runner);
+            PersistTestTree(runner);
+        }
+
+        private void CreateReportMonitor(AutoRunner runner)
+        {
+            reportMonitor = new ReportMonitor();
+            reportMonitor.Attach(runner);
+        }
+
+        private void CreateDebugMonitor(AutoRunner runner)
+        {
+            if (logger.IsDebugEnabled)
+            {
+                debugWriter = new StringWriter();
+                new DebugMonitor(debugWriter).Attach(runner);
             }
         }
 
@@ -359,10 +419,6 @@ namespace MbUnit.Core.Runner
                     logger.Info("\t{0}", path);
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void Canonicalize()
         {
@@ -480,6 +536,7 @@ namespace MbUnit.Core.Runner
                     reportFileName = String.Concat(reportFileName, ".", extension);
                 string reportPath = Path.Combine(reportDirectory, reportFileName);
 
+                generatedReportFilenames.Add(reportFormat.ToLower(), reportPath);
                 using (IProgressMonitor progressMonitor = progressMonitorCreator())
                 {
                     progressMonitor.ThrowIfCanceled();
