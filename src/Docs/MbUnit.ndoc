@@ -12,7 +12,7 @@
             <property name="GenerateCollectionFiles" value="True" />
             <property name="PlugInNamespace" value="ms.vsipcc" />
             <property name="AllLinksWithinVSHelpCollection" value="True" />
-            <property name="OutputDirectory" value="..\..\build\docs\api\" />
+            <property name="OutputDirectory" value="..\..\build\docs\vs2005\" />
             <property name="HtmlHelpName" value="MbUnit" />
             <property name="Title" value="MbUnit API" />
             <property name="UseAssemblyShadowCache" value="False" />
@@ -23,7 +23,7 @@
             <property name="CleanIntermediates" value="True" />
         </documenter>
         <documenter name="MSDN-CHM">
-            <property name="OutputDirectory" value="..\..\build\docs\api\" />
+            <property name="OutputDirectory" value="..\..\build\docs\chm\" />
             <property name="HtmlHelpName" value="MbUnit" />
             <property name="Title" value="MbUnit API" />
             <property name="UseAssemblyShadowCache" value="False" />
@@ -39,7 +39,7 @@
         </documenter>
         <documenter name="MSDN-Web">
             <property name="RootPageContainsNamespaces" value="True" />
-            <property name="OutputDirectory" value="..\..\build\docs\api\" />
+            <property name="OutputDirectory" value="..\..\build\docs\html\" />
             <property name="HtmlHelpName" value="MbUnit" />
             <property name="Title" value="MbUnit API" />
             <property name="UseAssemblyShadowCache" value="False" />

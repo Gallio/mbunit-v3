@@ -9,6 +9,10 @@
     <SourceDir>$(RootDir)\src</SourceDir>
 
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
+
+    <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
+    <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
+    <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -149,18 +153,6 @@
              Condition="'$(MbUnitExitCode)'!='0'" />
   </Target>
 
-  <Target Name="BuildAPIDocs">
-    <!-- Produce the CHM and HTML Help 2 docs. -->
-    <Error Text="Microsoft HTML Help Workshop must be installed so that CHM documentation can be generated.  Look in libs\Setup Files for the installer."
-           Condition="! Exists('$(ProgramFiles)\HTML Help Workshop\hhc.exe')" />
-    <Error Text="Visual Studio 2005 SDK must be installed so that HxS documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the installer."
-           Condition="! Exists('$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2')" />
-
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-CHM -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-Help2 -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
-    <Delete Files="$(BuildDocsDir)\ndoc_qa.log;$(BuildDocsDir)\ndoc_build.log" />
-  </Target>
-
   <Target Name="Release"
           DependsOnTargets="Clean;Build;Test;BuildAPIDocs;BuildInstaller" />
           
@@ -185,12 +177,32 @@
              " />
   </Target>
 
+  <Target Name="BuildAPIDocs"
+          DependsOnTargets="BuildAPIDocs-CHM;BuildAPIDocs-HxS" />
+
+  <Target Name="BuildAPIDocs-CHM">
+    <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in libs\Setup Files for the installer."
+             Condition="! Exists('$(HTMLHelpCompilerPath)')" />
+
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-CHM -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;"
+          Condition="Exists('$(HTMLHelpCompilerPath)')" />
+  </Target>
+
+  <Target Name="BuildAPIDocs-HxS">
+    <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (Hxs) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the installer."
+           Condition="! Exists('$(VS2005SDKHelpPath)')" />
+
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-Help2 -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;"
+          Condition="Exists('$(VS2005SDKHelpPath)')" />
+  </Target>
+
   <Target Name="BuildInstaller"
           DependsOnTargets="CreateBuildDir">
-    <Error Text="The NSIS tools must be installed to generate the MbUnit Gallio installer.  Look in libs\Setup Files for the installer."
-           Condition="! Exists('$(ProgramFiles)\NSIS\makensis.exe')" />
+    <Warning Text="The NSIS tools must be installed to generate the MbUnit Gallio installer.  Look in libs\Setup Files for the installer."
+             Condition="! Exists('$(NSISPath)')" />
 
-    <Exec Command="&quot;$(ProgramFiles)\NSIS\makensis.exe&quot; /V2 /NOCONFIG &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;" />
+    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;"
+          Condition="Exists('$(NSISPath)')" />
   </Target>
 
   <Target Name="CreateBuildDir">

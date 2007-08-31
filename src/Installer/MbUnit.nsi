@@ -31,6 +31,23 @@ OutFile "${BUILDDIR}\MbUnit-Setup.exe"
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_RESERVEFILE_LANGDLL
 
+; Detect whether any components are missing
+!tempfile DETECT_TEMP
+!system 'if not exist "${BUILDDIR}\docs\chm\MbUnit.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
+!system 'if not exist "${BUILDDIR}\docs\vs2005\MbUnit.HxS" echo !define MISSING_VS2005_HELP >> "${DETECT_TEMP}"'
+!include "${DETECT_TEMP}"
+!delfile "${DETECT_TEMP}"
+
+; Emit warnings if any components are missing
+!ifdef MISSING_CHM_HELP
+	!warning "Missing MbUnit.chm file."
+!endif
+
+!ifdef MISSING_VS2005_HELP
+	!warning "Missing VS2005 help collection."
+!endif
+
+; Define sections
 Section "!MbUnit Gallio" GallioSection
 	; Set Section properties
 	SectionIn RO
@@ -42,7 +59,6 @@ Section "!MbUnit Gallio" GallioSection
 	File "${BUILDDIR}\bin\MbUnit License.txt"
 	File "MbUnit Website.url"
 	File "MbUnit Online Documentation.url"
-	File "MbUnit Offline Documentation.lnk"
 
 	SetOutPath "$INSTDIR\bin"
 	File "${BUILDDIR}\bin\Castle.Core.dll"
@@ -63,21 +79,15 @@ Section "!MbUnit Gallio" GallioSection
 	File "${BUILDDIR}\bin\MbUnit.Tasks.NAnt.xml"
 	File "${BUILDDIR}\bin\ZedGraph.dll"
 
-	SetOutPath "$INSTDIR\docs"
-	File "${BUILDDIR}\docs\api\MbUnit.chm"
-
 	; Create Shortcuts
 	CreateDirectory "$SMPROGRAMS\MbUnit Gallio"
 	
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
-	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" "$INSTDIR\MbUnit Offline Documentation.lnk"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Online Documentation.lnk" "$INSTDIR\MbUnit Online Documentation.url"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Website.lnk" "$INSTDIR\MbUnit.url"
-
 SectionEnd
 
 Section "MbUnit v2 Plugin" MbUnit2PluginSection
-
 	; Set Section properties
 	SetOverwrite on
 	
@@ -91,11 +101,9 @@ Section "MbUnit v2 Plugin" MbUnit2PluginSection
 	File "${BUILDDIR}\bin\MbUnit2\QuickGraph.dll"
 	File "${BUILDDIR}\bin\MbUnit2\Refly.dll"
 	File "${BUILDDIR}\bin\MbUnit2\TestFu.dll"
-
 SectionEnd
 
 Section "NUnit Plugin" NUnitPluginSection
-
 	; Set Section properties
 	SetOverwrite on
 	
@@ -109,11 +117,9 @@ Section "NUnit Plugin" NUnitPluginSection
 	File "${BUILDDIR}\bin\NUnit\nunit.core.interfaces.dll"
 	File "${BUILDDIR}\bin\NUnit\nunit.framework.dll"
 	File "${BUILDDIR}\bin\NUnit\nunit.framework.extensions.dll"
-
 SectionEnd
 
 Section "TestDriven.Net AddIn" TDNetAddInSection
-
 	; Set Section properties
 	SetOverwrite on
 	
@@ -136,30 +142,45 @@ Section "TestDriven.Net AddIn" TDNetAddInSection
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
 	File "${BUILDDIR}\bin\MbUnit.AddIn.TDNet.dll"
-
 SectionEnd
 
-Section "Visual Studio Help" VSHelpSection
-
+!ifndef MISSING_CHM_HELP
+Section "Standalone Help Docs" CHMHelpSection
 	; Set Section properties
 	SetOverwrite on
 	
 	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR"
+	File "MbUnit Offline Documentation.lnk"
+
 	SetOutPath "$INSTDIR\docs"
-	File "${BUILDDIR}\docs\api\MbUnit.Hx?"
-	File "${BUILDDIR}\docs\api\MbUnitCollection.*"
+	File "${BUILDDIR}\docs\chm\MbUnit.chm"
+
+	; Create Shortcuts
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" "$INSTDIR\MbUnit Offline Documentation.lnk"
+SectionEnd
+!endif
+
+!ifndef MISSING_VS2005_HELP
+Section "Visual Studio 2005 Help Docs" VS2005HelpSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\docs\vs2005"
+	File "${BUILDDIR}\docs\vs2005\MbUnit.Hx?"
+	File "${BUILDDIR}\docs\vs2005\MbUnitCollection.*"
 
 	SetOutPath "$INSTDIR\utils"
 	File "${LIBSDIR}\H2Reg\H2Reg.exe"
 	File "${LIBSDIR}\H2Reg\H2Reg.ini"
 
 	; Merge the collection
-	ExecWait '"$INSTDIR\utils\H2Reg.exe" -r CmdFile="$INSTDIR\docs\MbUnitCollection.h2reg.ini"'
-
+	ExecWait '"$INSTDIR\utils\H2Reg.exe" -r CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
 SectionEnd
+!endif
 
 Section -FinishSection
-
 	WriteRegStr HKLM "Software\${APPNAME}" "" "$INSTDIR"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$INSTDIR\uninstall.exe"
@@ -171,7 +192,6 @@ Section -FinishSection
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoModify" "1"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoRepair" "1"
 	WriteUninstaller "$INSTDIR\uninstall.exe"
-
 SectionEnd
 
 ; Modern install component descriptions
@@ -180,19 +200,25 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit2PluginSection} "Installs the MbUnit v2 plugin.  Enables Gallio to run MbUnit v2 tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${NUnitPluginSection} "Installs the NUnit plugin.  Enables Gallio to run NUnit tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in for MbUnit Gallio."
-	!insertmacro MUI_DESCRIPTION_TEXT ${VSHelpSection} "Installs the MbUnit help documentation for Visual Studio."
+
+	!ifndef MISSING_CHM_HELP
+		!insertmacro MUI_DESCRIPTION_TEXT ${CHMHelpSection} "Installs the MbUnit standalone help documentation CHM file."
+	!endif
+
+	!ifndef MISSING_VS2005_HELP
+		!insertmacro MUI_DESCRIPTION_TEXT ${VS2005HelpSection} "Installs the MbUnit integrated help documentation for Visual Studio 2005.  Enables access to the MbUnit help documentation using F1 help."
+	!endif
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;Uninstall section
 Section Uninstall
-
 	; Remove from registry...
 	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
 	DeleteRegKey HKLM "SOFTWARE\${APPNAME}"
 
 	; Install the help collection
-	IfFileExists "$INSTDIR\docs\MbUnitCollection.h2reg.ini" 0 +2
-		ExecWait '"$INSTDIR\utils\H2Reg.exe" -u CmdFile="$INSTDIR\docs\MbUnitCollection.h2reg.ini"'
+	IfFileExists "$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini" 0 +2
+		ExecWait '"$INSTDIR\utils\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
 
 	; Delete self
 	Delete "$INSTDIR\uninstall.exe"
@@ -248,8 +274,8 @@ Section Uninstall
 	Delete "$INSTDIR\bin\NUnit\nunit.framework.extensions.dll"
 
 	Delete "$INSTDIR\docs\MbUnit.chm"
-	Delete "$INSTDIR\docs\MbUnit.HxS"
-	Delete "$INSTDIR\docs\MbUnitCollection.*"
+	Delete "$INSTDIR\docs\vs2005\MbUnit.HxS"
+	Delete "$INSTDIR\docs\vs2005\MbUnitCollection.*"
 
 	Delete "$INSTDIR\utils\H2Reg.exe"
 	Delete "$INSTDIR\utils\H2Reg.ini"
@@ -260,6 +286,7 @@ Section Uninstall
 	RMDir "$INSTDIR\bin\MbUnit2"
 	RMDir "$INSTDIR\bin\NUnit"
 	RMDir "$INSTDIR\bin"
+	RMDir "$INSTDIR\docs\vs2005"
 	RMDir "$INSTDIR\docs"
 	RMDir "$INSTDIR\utils"
 	RMDir "$INSTDIR"
@@ -268,7 +295,6 @@ Section Uninstall
 	DeleteRegKey SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio"
 	DeleteRegKey SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit"
 	DeleteRegKey SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit"
-
 SectionEnd
 
 BrandingText "mbunit.com"
