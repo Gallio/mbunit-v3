@@ -149,16 +149,22 @@
              Condition="'$(MbUnitExitCode)'!='0'" />
   </Target>
 
-  <Target Name="BuildDotNetDocs">
+  <Target Name="BuildAPIDocs">
     <!-- Produce the CHM and HTML Help 2 docs. -->
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-CHM -documenter=MSDN-Help2 -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
+    <Error Text="Microsoft HTML Help Workshop must be installed so that CHM documentation can be generated.  Look in libs\Setup Files for the installer."
+           Condition="! Exists('$(ProgramFiles)\HTML Help Workshop\hhc.exe')" />
+    <Error Text="Visual Studio 2005 SDK must be installed so that HxS documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the installer."
+           Condition="! Exists('$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2')" />
+
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-CHM -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-Help2 -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
     <Delete Files="$(BuildDocsDir)\ndoc_qa.log;$(BuildDocsDir)\ndoc_build.log" />
   </Target>
 
   <Target Name="Release"
-          DependsOnTargets="Clean;Build;Test;BuildDotNetDocs;BuildInstaller" />
+          DependsOnTargets="Clean;Build;Test;BuildAPIDocs;BuildInstaller" />
           
-  <Target Name="BuildServer" DependsOnTargets="Clean;Build;BuildDotNetDocs;BuildInstaller" />
+  <Target Name="BuildServer" DependsOnTargets="Clean;Build;BuildAPIDocs;BuildInstaller" />
 
   <Target Name="BuildCSharpProjects"
           DependsOnTargets="CreateBuildDir">
@@ -181,7 +187,10 @@
 
   <Target Name="BuildInstaller"
           DependsOnTargets="CreateBuildDir">
-    <Exec Command="&quot;$(LibsDir)\NSIS\makensis.exe&quot; /V2 /NOCONFIG &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;" />
+    <Error Text="The NSIS tools must be installed to generate the MbUnit Gallio installer.  Look in libs\Setup Files for the installer."
+           Condition="! Exists('$(ProgramFiles)\NSIS\makensis.exe')" />
+
+    <Exec Command="&quot;$(ProgramFiles)\NSIS\makensis.exe&quot; /V2 /NOCONFIG &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;" />
   </Target>
 
   <Target Name="CreateBuildDir">

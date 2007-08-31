@@ -1,0 +1,4 @@
+The SDK is required for generating HxS help files for integration into Visual Studio.
+
+Version 4.0:
+http://www.microsoft.com/downloads/details.aspx?familyid=51a5c65b-c020-4e08-8ac0-3eb9c06996f4&displaylang=en
