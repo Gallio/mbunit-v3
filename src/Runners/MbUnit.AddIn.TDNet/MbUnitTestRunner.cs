@@ -143,7 +143,7 @@ namespace MbUnit.AddIn.TDNet
                 int result = testRunnerHelper.Run();
 
                 // This will generate a link to the generated report
-                Uri uri = new Uri("file:" + testRunnerHelper.GetReportFileName(reportType).Replace(@"\", "/"));
+                Uri uri = new Uri("file:" + testRunnerHelper.GetReportFilename(reportType).Replace(@"\", "/"));
                 listener.TestResultsUrl(uri.AbsoluteUri);
 
                 return GetTDNetResult(testRunnerHelper, listener, result);
