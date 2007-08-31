@@ -124,17 +124,17 @@
   </ItemGroup>
 
   <Target Name="Build"
-          DependsOnTargets="Build-CSharpProjects">
+          DependsOnTargets="BuildCSharpProjects">
     <Copy SourceFiles="@(Binary)"
           DestinationFolder="$(BuildBinDir)\%(Binary.Folder)" />
 
     <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=Intellisense -project=&quot;$(SourceDir)\MbUnit.ndoc&quot;" />
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=Intellisense -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
     <Delete Files="$(BuildBinDir)\ndoc_qa.log;$(BuildBinDir)\ndoc_build.log" />
   </Target>
 
   <Target Name="Clean"
-          DependsOnTargets="Clean-CSharpProjects">
+          DependsOnTargets="CleanCSharpProjects">
     <RemoveDir Directories="$(BuildDir)"
                Condition="Exists('$(BuildDir)')" />
   </Target>
@@ -150,17 +150,17 @@
   </Target>
 
   <Target Name="BuildDotNetDocs">
-    <!-- Produce the HTML docs. -->
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-Web -project=&quot;$(SourceDir)\MbUnit.ndoc&quot;" />
+    <!-- Produce the CHM and HTML Help 2 docs. -->
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-CHM -documenter=MSDN-Help2 -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
     <Delete Files="$(BuildDocsDir)\ndoc_qa.log;$(BuildDocsDir)\ndoc_build.log" />
   </Target>
 
   <Target Name="Release"
-          DependsOnTargets="Clean;Build;Test;BuildDotNetDocs" />
+          DependsOnTargets="Clean;Build;Test;BuildDotNetDocs;BuildInstaller" />
           
- <Target Name="BuildServer" DependsOnTargets="Clean;Build;BuildDotNetDocs" />
+  <Target Name="BuildServer" DependsOnTargets="Clean;Build;BuildDotNetDocs;BuildInstaller" />
 
-  <Target Name="Build-CSharpProjects"
+  <Target Name="BuildCSharpProjects"
           DependsOnTargets="CreateBuildDir">
     <MSBuild Projects="@(CSharpProject)"
              Targets="Build"
@@ -171,12 +171,17 @@
              " />
   </Target>
 
-  <Target Name="Clean-CSharpProjects">
+  <Target Name="CleanCSharpProjects">
     <MSBuild Projects="@(CSharpProject)"
              Targets="Clean"
              Properties="
                Configuration=Release;
              " />
+  </Target>
+
+  <Target Name="BuildInstaller"
+          DependsOnTargets="CreateBuildDir">
+    <Exec Command="&quot;$(LibsDir)\NSIS\makensis.exe&quot; /V2 /NOCONFIG &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;" />
   </Target>
 
   <Target Name="CreateBuildDir">
