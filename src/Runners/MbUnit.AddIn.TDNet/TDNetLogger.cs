@@ -20,12 +20,19 @@ using TDF = TestDriven.Framework;
 
 namespace MbUnit.AddIn.TDNet
 {
-    internal class TDDLogger : ConsoleLogger
+    internal class TDNetLogger : ConsoleLogger
     {
         private readonly ITestListener tddLogger = null;
-        public TDDLogger(ITestListener testListener)
-        {            
+        public TDNetLogger(ITestListener testListener)
+            : this(testListener, "TDNetLogger")
+        {
+        }
+
+        public TDNetLogger(ITestListener testListener, string name)
+            : base(name)
+        {
             tddLogger = testListener;
+            Level = LoggerLevel.Info;
         }
 
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
@@ -52,6 +59,12 @@ namespace MbUnit.AddIn.TDNet
 
             if (exception != null)
                 tddLogger.WriteLine(exception.ToString(), Category.Error);
+        }
+
+        public override ILogger CreateChildLogger(string newName)
+        {
+            //TODO: Check if this is OK
+            return new TDNetLogger(tddLogger, newName);
         }
     }
 }
