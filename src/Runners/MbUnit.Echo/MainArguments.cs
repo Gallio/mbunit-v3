@@ -78,7 +78,7 @@ namespace MbUnit.Echo
              LongName = "report-name-format",
              Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}"
              )]
-        public string ReportNameFormat = "mbunit-{0}-{1}";
+        public string ReportNameFormat = "mbunit-result-{0}{1}";
 
         [CommandLineArgument(
              CommandLineArgumentType.MultipleUnique,

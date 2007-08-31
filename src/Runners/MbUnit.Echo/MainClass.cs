@@ -103,23 +103,29 @@ namespace MbUnit.Echo
                 testRunnerHelper.ReportDirectory = arguments.ReportDirectory;
                 testRunnerHelper.ReportNameFormat = arguments.ReportNameFormat;
                 testRunnerHelper.ReportFormats.AddRange(arguments.ReportTypes);
+
                 testRunnerHelper.TemplateModelFilename = arguments.SaveTemplateTree;
                 testRunnerHelper.TestModelFilename = arguments.SaveTestTree;
 
                 int result = testRunnerHelper.Run();
-                switch (result)
-                {
-                    case ResultCode.Success:
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\nSuccess\n");
-                        break;
-                    case ResultCode.Failure:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\nFailure\n");
-                        break;
-                }
+                DisplayResultSummary(testRunnerHelper, result);
+
                 return result;
             }
+        }
+
+        private static void DisplayResultSummary(TestRunnerHelper testRunnerHelper, int result)
+        {
+            switch (result)
+            {
+                case ResultCode.Success:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+                case ResultCode.Failure:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+            }
+            Console.WriteLine("\n" + testRunnerHelper.ResultSummary + "\n");
         }
 
         private void SetUpLogger()
