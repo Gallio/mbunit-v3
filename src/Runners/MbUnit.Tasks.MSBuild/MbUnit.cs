@@ -175,7 +175,17 @@ namespace MbUnit.Tasks.MSBuild
                 //runner.TemplateModelFilename = SaveTemplateTree;
                 //runner.TestModelFilename = SaveTestTree;
 
-                ExitCode = runner.Run();
+                exitCode = runner.Run();
+
+                switch(exitCode)
+                {
+                    case ResultCode.Success:
+                        logger.Info(runner.ResultSummary);
+                        break;
+                    case ResultCode.Failure:
+                        logger.Error(runner.ResultSummary);
+                        break;
+                }
 
                 //TODO: Maybe count ResultCode.NoTests as sucess too? 
                 if (ExitCode == ResultCode.Success || IgnoreFailures)
