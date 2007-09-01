@@ -165,7 +165,7 @@ SectionEnd
 Section "Visual Studio 2005 Help Docs" VS2005HelpSection
 	; Set Section properties
 	SetOverwrite on
-	
+
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\docs\vs2005"
 	File "${BUILDDIR}\docs\vs2005\MbUnit.Hx?"
@@ -209,6 +209,21 @@ SectionEnd
 		!insertmacro MUI_DESCRIPTION_TEXT ${VS2005HelpSection} "Installs the MbUnit integrated help documentation for Visual Studio 2005.  Enables access to the MbUnit help documentation using F1 help."
 	!endif
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+; Initialization code
+!define SF_RO 16
+Function .onInit
+	!ifndef MISSING_VS2005_HELP
+	; Check if VS 2005 Standard or above is installed.
+	; Specifically exclude Express editions.
+        ClearErrors
+	ReadRegDWORD $0 HKLM "Software\Microsoft\DevDiv\VS\Servicing\8.0" "SP"
+	IfErrors 0 +3
+		SectionSetFlags ${VS2005HelpSection} ${SF_RO}
+		SectionSetText ${VS2005HelpSection} "The MbUnit integrated help documentation for Visual Studio 2005 requires Visual Studio 2005 Standard Edition or higher to be installed.  Visual Studio 2005 Express Edition is not supported."
+	!endif
+FunctionEnd
+
 
 ;Uninstall section
 Section Uninstall
