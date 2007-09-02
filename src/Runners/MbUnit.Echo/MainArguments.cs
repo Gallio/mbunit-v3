@@ -16,13 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.CommandLine;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Echo
 {
@@ -41,7 +39,8 @@ namespace MbUnit.Echo
             CommandLineArgumentType.MultipleUnique,
             ShortName = "hd",
             LongName = "hint-directories",
-            Description = "The list of directories used for loading assemblies and other dependent resources."
+            Description = "The list of directories used for loading assemblies and other dependent resources.",
+            ArgumentValueType = "dirs"
             )]
         public string[] HintDirectories;
 
@@ -49,7 +48,8 @@ namespace MbUnit.Echo
             CommandLineArgumentType.MultipleUnique,
             ShortName = "pd",
             LongName = "plugin-directory",
-            Description = "Additional MbUnit plugin directories to search recursively"
+            Description = "Additional MbUnit plugin directories to search recursively",
+            ArgumentValueType = "dirs"
             )]
         public string[] PluginDirectories;
 
@@ -57,7 +57,8 @@ namespace MbUnit.Echo
             CommandLineArgumentType.AtMostOnce,
             ShortName = "abd",
             LongName = "application-base-directory",
-            Description = "The application base directory to set during test execution."
+            Description = "The application base directory to set during test execution.",
+            ArgumentValueType = "path"
             )]
         public string AppBaseDirectory = "";
 
@@ -68,7 +69,8 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "rd",
              LongName = "report-directory",
-             Description = "Target output directory for the reports"
+            Description = "Target output directory for the reports",
+            ArgumentValueType = "path"
              )]
         public string ReportDirectory = "";
 
@@ -76,7 +78,8 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "rnf",
              LongName = "report-name-format",
-             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}"
+             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}",
+             ArgumentValueType = "pattern"
              )]
         public string ReportNameFormat = "mbunit-result-{0}{1}";
 
@@ -84,7 +87,8 @@ namespace MbUnit.Echo
              CommandLineArgumentType.MultipleUnique,
              ShortName = "rt",
              LongName = "report-type",
-             Description = "Report types to generate.  See below for all supported types."
+             Description = "Report types to generate.  See below for all supported types.",
+             ArgumentValueType = "type"
         )]
         public string[] ReportTypes;
 
@@ -158,7 +162,7 @@ namespace MbUnit.Echo
              Description = "Controls the level of detail of the information to display"
              )]
         public Verbosity Verbosity = Verbosity.Normal;
-               
+
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
              LongName = "save-template-tree",
@@ -188,7 +192,7 @@ namespace MbUnit.Echo
             StringWriter sw = new StringWriter();
             sw.WriteLine("-- Parsed Arguments");
             sw.WriteLine("Assemblies:");
-            foreach (string file in this.Assemblies)
+            foreach (string file in Assemblies)
                 sw.WriteLine("\t{0}", file);
 
             sw.WriteLine("Hint Directories:");
@@ -198,25 +202,25 @@ namespace MbUnit.Echo
             }
 
             sw.WriteLine("Plugin Directories:");
-            foreach (string pluginDirectory in this.PluginDirectories)
+            foreach (string pluginDirectory in PluginDirectories)
             {
                 sw.WriteLine("\t{0}", pluginDirectory);
             }
 
-            sw.WriteLine("Report folder: {0}", this.ReportDirectory);
-            sw.WriteLine("Report Name Format: {0}", this.ReportNameFormat);
-            sw.WriteLine("Report types: {0}", String.Join(", ", this.ReportTypes));
-            sw.WriteLine("Show reports: {0}", this.ShowReports);
+            sw.WriteLine("Report folder: {0}", ReportDirectory);
+            sw.WriteLine("Report Name Format: {0}", ReportNameFormat);
+            sw.WriteLine("Report types: {0}", String.Join(", ", ReportTypes));
+            sw.WriteLine("Show reports: {0}", ShowReports);
 
-            sw.WriteLine("Filter Category: {0}", String.Join(", ", this.FilterCategories));
-            sw.WriteLine("Filter Author: {0}", String.Join(", ", this.FilterAuthors));
-            sw.WriteLine("Filter Namespace: {0}", String.Join(", ", this.FilterNamespaces));
-            sw.WriteLine("Filter Type: {0}", String.Join(", ", this.FilterTypes));
+            sw.WriteLine("Filter Category: {0}", String.Join(", ", FilterCategories));
+            sw.WriteLine("Filter Author: {0}", String.Join(", ", FilterAuthors));
+            sw.WriteLine("Filter Namespace: {0}", String.Join(", ", FilterNamespaces));
+            sw.WriteLine("Filter Type: {0}", String.Join(", ", FilterTypes));
 
-            sw.WriteLine("Verbosity: {0}", this.Verbosity);
-            sw.WriteLine("Save Template Tree: {0}", this.SaveTemplateTree);
-            sw.WriteLine("Save Test Tree: {0}", this.SaveTestTree);
-            sw.WriteLine("ShadowCopyFiles: {0}", this.ShadowCopyFiles);
+            sw.WriteLine("Verbosity: {0}", Verbosity);
+            sw.WriteLine("Save Template Tree: {0}", SaveTemplateTree);
+            sw.WriteLine("Save Test Tree: {0}", SaveTestTree);
+            sw.WriteLine("ShadowCopyFiles: {0}", ShadowCopyFiles);
             return sw.ToString();
         }
 

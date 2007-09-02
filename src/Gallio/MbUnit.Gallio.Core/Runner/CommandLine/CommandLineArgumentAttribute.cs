@@ -45,34 +45,34 @@ namespace MbUnit.Core.Runner.CommandLine
         /// </summary>
         public CommandLineArgumentType Type
         {
-            get { return this.type; }
+            get { return type; }
         }
         /// <summary>
         /// Returns true if the argument did not have an explicit short name specified.
         /// </summary>
-        public bool DefaultShortName    { get { return null == this.shortName; } }
+        public bool DefaultShortName    { get { return null == shortName; } }
         
         /// <summary>
         /// The short name of the argument.
         /// </summary>
         public string ShortName
         {
-            get { return this.shortName; }
-            set { this.shortName = value; }
+            get { return shortName; }
+            set { shortName = value; }
         }
 
         /// <summary>
         /// Returns true if the argument did not have an explicit long name specified.
         /// </summary>
-        public bool DefaultLongName     { get { return null == this.longName; } }
+        public bool DefaultLongName     { get { return null == longName; } }
         
         /// <summary>
         /// The long name of the argument.
         /// </summary>
         public string LongName
         {
-            get { Debug.Assert(!this.DefaultLongName); return this.longName; }
-            set { this.longName = value; }
+            get { Debug.Assert(!DefaultLongName); return longName; }
+            set { longName = value; }
         }
 
         /// <summary>
@@ -82,18 +82,29 @@ namespace MbUnit.Core.Runner.CommandLine
 		{
 			get
 			{
-				return this.description;
+				return description;
 			}
 			set
 			{
-				this.description=value;
+				description=value;
 			}
 		}
+
+        ///<summary>
+        /// The description of the argument value type.
+        ///</summary>
+        public string ArgumentValueType
+        {
+            get { return _argValueType; }
+            set { _argValueType = value; }
+        }
+
         
         private string shortName;
         private string longName;
 		private string description="";
-        private CommandLineArgumentType type;
+        private string _argValueType;
+        private readonly CommandLineArgumentType type;
     }
 }
 

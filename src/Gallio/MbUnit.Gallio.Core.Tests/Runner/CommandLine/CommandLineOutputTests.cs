@@ -54,15 +54,17 @@ namespace MbUnit.Core.Tests.Runner.CommandLine
         }
 
         [RowTest]
-        [Row("help", "h", "Display this help text."
+        [Row("help", "h", "Display this help text.", ""
             , "  /help              Display this help text. (Short form: /h)\r\n")]
+        [Row("help", "h", "Display this help text.", "test"
+            , "  /help:<test>              Display this help text. (Short form: /h)\r\n")]
         [Row("very_long_argument", "vl", "Argument description."
             , "  /very_long_argument\r\n                     Argument description. (Short form: /vl)\r\n")]
          [Row("long_description", "ld", "It is a very long description. It is a very long description. It is a very long description. It is a very long description."
            , "  /long_description  It is a very long description. It is a very long\r\n                     description. It is a very long description. It is a very\r\n                     long description. (Short form: /ld)\r\n")]
-        public void PringArgumentHelpTest(string longName, string shortName, string description, string expectedOutput)
+        public void PringArgumentHelpTest(string longName, string shortName, string description, string valueType, string expectedOutput)
         {
-            _output.PrintArgumentHelp(longName, shortName, description);
+            _output.PrintArgumentHelp(longName, shortName, description, valueType);
             Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }
 

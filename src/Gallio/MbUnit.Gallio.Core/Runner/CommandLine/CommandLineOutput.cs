@@ -65,7 +65,7 @@ namespace MbUnit.Core.Runner.CommandLine
         ///<param name="indentation">Number of blank spaces before the start of the text.</param>
         public void PrintText(string text, int indentation)
         {
-            int maxLength = 80 - indentation;
+            int maxLength = 79 - indentation;
             while (text.Length > maxLength)
             {
                 int pos = text.LastIndexOf(' ', maxLength + 1);
@@ -106,11 +106,18 @@ namespace MbUnit.Core.Runner.CommandLine
         ///<param name="longName">Argument long name.</param>
         ///<param name="shortName">Argument short name.</param>
         ///<param name="description">Argument description.</param>
-        public void PrintArgumentHelp(string longName, string shortName, string description)
+        ///<param name="valueType">Argument value type.</param>
+        public void PrintArgumentHelp(string longName, string shortName, string description, string valueType)
         {
             StringBuilder argumentHelp = new StringBuilder("/");
             argumentHelp.Append(longName);
-            if (longName.Length > 17)
+            if (!string.IsNullOrEmpty(valueType))
+            {
+                argumentHelp.Append(":<");
+                argumentHelp.Append(valueType);
+                argumentHelp.Append(">");
+            }
+            if (argumentHelp.Length > 17)
             {
                 PrintText(argumentHelp.ToString(), 2);
                 PrintText(CreateDescriptionWithShortName(description, shortName), 21);

@@ -219,7 +219,7 @@ namespace MbUnit.Core.Runner.CommandLine
             CommandLineOutput output = new CommandLineOutput();
             foreach (Argument arg in arguments)
             {
-                output.PrintArgumentHelp(arg.LongName, arg.ShortName, arg.Description);
+                output.PrintArgumentHelp(arg.LongName, arg.ShortName, arg.Description, arg.ArgumentValueType);
                 output.NewLine();
                 //                output.PrintArgumentType(arg.ValueType);
             }
@@ -352,7 +352,7 @@ namespace MbUnit.Core.Runner.CommandLine
 		{
 			return (attribute != null && !attribute.DefaultShortName);
 		}
-        
+
 		private static Type ElementType(FieldInfo field)
 		{
 			if (IsCollectionType(field.FieldType))
@@ -398,9 +398,12 @@ namespace MbUnit.Core.Runner.CommandLine
 				this.field = field;
 				seenValue = false;
 				this.reporter = reporter;
-				isDefault = attribute != null && attribute is DefaultCommandLineArgumentAttribute;
-				description=attribute.Description;
-
+                if (attribute != null)
+                {
+                    isDefault = attribute is DefaultCommandLineArgumentAttribute;
+                    description = attribute.Description;
+                    argValueType = attribute.ArgumentValueType;
+                }
 			    if (IsCollection)
 			        collectionValues = new ArrayList();
 
@@ -550,6 +553,11 @@ namespace MbUnit.Core.Runner.CommandLine
 				get { return shortName; }
 			}
 
+		    public string ArgumentValueType
+		    {
+                get { return argValueType;  }
+		    }
+
 			public bool IsRequired
 			{
 				get { return 0 != (flags & CommandLineArgumentType.Required); }
@@ -593,6 +601,7 @@ namespace MbUnit.Core.Runner.CommandLine
 			private readonly string longName;
 			private readonly string shortName;
 			private readonly bool explicitShortName;
+		    private string argValueType;
 			private bool seenValue;
 			private readonly FieldInfo field;
 			private readonly Type elementType;
