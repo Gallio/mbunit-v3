@@ -54,8 +54,8 @@ namespace MbUnit.Core.Runner
 
         private string reportDirectory = "";
         private string reportNameFormat = "mbunit-{0}-{1}";
-        private List<string> reportFormats;
-        private NameValueCollection reportFormatOptions;
+        private readonly List<string> reportFormats;
+        private readonly NameValueCollection reportFormatOptions;
 
         private readonly Dictionary<string, string> generatedReportFilenames = new Dictionary<string, string>();
         private string resultSummary;
@@ -63,6 +63,7 @@ namespace MbUnit.Core.Runner
         private Stopwatch stopWatch;
         private ReportMonitor reportMonitor;
         private StringWriter debugWriter;
+        private readonly List<ITestRunnerMonitor> customMonitors = new List<ITestRunnerMonitor>();
 
         #endregion
 
@@ -216,6 +217,14 @@ namespace MbUnit.Core.Runner
             get { return statistics; }
         }
 
+        /// <summary>
+        /// A list of custom ITestRunnerMonitor objects.
+        /// </summary>
+        public List<ITestRunnerMonitor> CustomMonitors
+        {
+            get { return customMonitors; }
+        }
+
         #endregion
 
         #region Public Methods
@@ -228,7 +237,7 @@ namespace MbUnit.Core.Runner
         {
             Canonicalize();
             DisplayConfiguration();
-            
+
             VerifyAssemblies();
             if (!HasTestAssemblies())
                 return ResultCode.NoTests;
@@ -236,13 +245,14 @@ namespace MbUnit.Core.Runner
             using (AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup))
             {
                 CreateStopWatch();
-                
+
                 IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
                 if (!Validate(reportManager))
                     return ResultCode.InvalidArguments;
-                                
+
                 CreateDebugMonitor(runner);
                 CreateReportMonitor(runner);
+                AttachCustomMonitors(runner);
 
                 try
                 {
@@ -304,6 +314,14 @@ namespace MbUnit.Core.Runner
             }
         }
 
+        private void AttachCustomMonitors(ITestRunner runner)
+        {
+            foreach(ITestRunnerMonitor monitor in customMonitors)
+            {
+                monitor.Attach(runner);
+            }
+        }
+
         /// <summary>
         /// Returns the filename of the generated report for the given report type.
         /// </summary>
@@ -341,13 +359,13 @@ namespace MbUnit.Core.Runner
             PersistTestTree(runner);
         }
 
-        private void CreateReportMonitor(AutoRunner runner)
+        private void CreateReportMonitor(ITestRunner runner)
         {
             reportMonitor = new ReportMonitor();
             reportMonitor.Attach(runner);
         }
 
-        private void CreateDebugMonitor(AutoRunner runner)
+        private void CreateDebugMonitor(ITestRunner runner)
         {
             if (logger.IsDebugEnabled)
             {
@@ -556,15 +574,16 @@ namespace MbUnit.Core.Runner
 
         private void DisposeStopWatch()
         {
-            logger.InfoFormat("\nStop time: {0}", DateTime.Now.ToShortTimeString());
-            logger.InfoFormat("Total execution time: {0:#0.000}s", stopWatch.Elapsed.TotalSeconds);
+            logger.InfoFormat("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
+                DateTime.Now.ToShortTimeString(),
+                stopWatch.Elapsed.TotalSeconds);
             stopWatch = null;
         }
 
         private void CreateStopWatch()
         {
             stopWatch = Stopwatch.StartNew();
-            logger.InfoFormat("\nStart time: {0}\n", DateTime.Now.ToShortTimeString());
+            logger.InfoFormat("Start time: {0}", DateTime.Now.ToShortTimeString());
         }
 
         #endregion

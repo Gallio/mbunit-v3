@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TDNetLogger.cs" />
+    <Compile Include="TDNetLogMonitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Snippets\CodeSmith\AdjacencyGraph.cst" />

@@ -13,25 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Framework;
+extern alias MbUnit2;
+using MbUnit.Core.Runner.Monitors;
+using MbUnit2::MbUnit.Framework;
 
-namespace MbUnit.TestResources.MbUnit2
+namespace MbUnit.Core.Tests.Runner
 {
-    /// <summary>
-    /// This class is used by the MSBuild task tests. Please don't modify it.
-    /// </summary>
     [TestFixture]
-    public class FailingFixture
+    public class LogMonitorTests
     {
         [Test]
-        public void Pass()
+        public void Instantiate()
         {
+            new TestLogMonitor();
         }
 
-        [Test]
-        public void Fail()
+        private class TestLogMonitor : LogMonitor
         {
-            Assert.Fail("Boom");
+            
         }
     }
+
+    
 }

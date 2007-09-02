@@ -20,51 +20,69 @@ using TDF = TestDriven.Framework;
 
 namespace MbUnit.AddIn.TDNet
 {
+    /// <summary>
+    /// An ILogger implementation that writes messages to a ITestListener
+    /// object.
+    /// </summary>
     internal class TDNetLogger : ConsoleLogger
     {
-        private readonly ITestListener tddLogger = null;
+        private readonly ITestListener tdNetLogger = null;
+
+        /// <summary>
+        /// Initializes a new instance of the TDNetLogger class.
+        /// </summary>
+        /// <param name="testListener">An ITestListener object where the
+        /// messages will be written to.</param>
         public TDNetLogger(ITestListener testListener)
             : this(testListener, "TDNetLogger")
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the TDNetLogger class.
+        /// </summary>
+        /// <param name="testListener">An ITestListener object where the
+        /// messages will be written to.</param>
+        /// <param name="name">The name of the logger.</param>
         public TDNetLogger(ITestListener testListener, string name)
             : base(name)
         {
-            tddLogger = testListener;
+            tdNetLogger = testListener;
             Level = LoggerLevel.Info;
         }
 
+        /// <inheritdoc />
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
             switch (level)
             {
                 case LoggerLevel.Fatal:
                 case LoggerLevel.Error:
-                    tddLogger.WriteLine(message, Category.Error);
+                    tdNetLogger.WriteLine(message, Category.Error);
                     break;
 
                 case LoggerLevel.Warn:
-                    tddLogger.WriteLine(message, Category.Warning);
+                    tdNetLogger.WriteLine(message, Category.Warning);
                     break;
 
                 case LoggerLevel.Info:
-                    tddLogger.WriteLine(message, Category.Info);
+                    tdNetLogger.WriteLine(message, Category.Info);
                     break;
 
                 case LoggerLevel.Debug:
-                    tddLogger.WriteLine(message, Category.Debug);
+                    tdNetLogger.WriteLine(message, Category.Debug);
                     break;
             }
 
             if (exception != null)
-                tddLogger.WriteLine(exception.ToString(), Category.Error);
+                tdNetLogger.WriteLine(exception.ToString(), Category.Error);
         }
 
+        /// <inheritdoc />
         public override ILogger CreateChildLogger(string newName)
         {
             //TODO: Check if this is OK
-            return new TDNetLogger(tddLogger, newName);
+            return new TDNetLogger(tdNetLogger, newName);
         }
     }
 }

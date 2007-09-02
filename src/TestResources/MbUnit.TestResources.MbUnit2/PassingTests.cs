@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using MbUnit.Framework;
 
 namespace MbUnit.TestResources.MbUnit2
@@ -27,6 +26,15 @@ namespace MbUnit.TestResources.MbUnit2
         [Test]
         public void Pass()
         {
+        }
+
+        [RowTest]
+        [Row("Row1")]
+        [Row("Row2")]
+        [Row("Row3")]
+        public void ARowTest(string row)
+        {
+            
         }
     }
 }

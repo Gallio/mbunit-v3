@@ -54,6 +54,7 @@
     <Compile Include="Reporting\ReportTest.cs" />
     <Compile Include="Runner\CommandLine\CommandLineArgumentParserTests.cs" />
     <Compile Include="Runner\CommandLine\CommandLineOutputTests.cs" />
+    <Compile Include="Runner\LogMonitorTests.cs" />
     <Compile Include="Runner\TestRunnerHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -17,21 +17,21 @@ using MbUnit.Framework;
 
 namespace MbUnit.TestResources.MbUnit2
 {
-    /// <summary>
-    /// This class is used by the MSBuild task tests. Please don't modify it.
-    /// </summary>
     [TestFixture]
-    public class FailingFixture
+    public class IgnoredTests
     {
         [Test]
-        public void Pass()
+        [Ignore("Won't run")]
+        public void IgnoredTest1()
         {
+            Assert.Fail("Should never get here");   
         }
 
         [Test]
-        public void Fail()
+        public void IgnoredTest2()
         {
-            Assert.Fail("Boom");
+            Assert.Ignore("Should stop here");
+            Assert.Fail("Should never get here");
         }
     }
 }

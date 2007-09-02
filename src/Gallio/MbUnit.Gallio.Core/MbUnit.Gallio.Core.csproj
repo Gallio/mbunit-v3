@@ -73,6 +73,7 @@
     <Compile Include="Runner\FilterParser.cs" />
     <Compile Include="Runner\LocalRunner.cs" />
     <Compile Include="Runner\LocalTestDomainFactory.cs" />
+    <Compile Include="Runner\Monitors\LogMonitor.cs" />
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
     <Compile Include="Runner\RunnerProgressMonitor.cs" />
     <Compile Include="Runtime\DefaultAssemblyResolverManager.cs" />

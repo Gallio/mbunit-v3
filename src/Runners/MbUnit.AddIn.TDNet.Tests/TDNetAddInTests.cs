@@ -14,11 +14,13 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System;
+using System.IO;
 using System.Reflection;
 using MbUnit2::MbUnit.Framework;
-using System;
 using MbUnit.AddIn.TDNet;
 using Rhino.Mocks;
+using TestDriven.Framework;
 using TDF = TestDriven.Framework;
 
 namespace MbUnit.AddIn.TDNet.Tests
@@ -28,19 +30,34 @@ namespace MbUnit.AddIn.TDNet.Tests
     [Author("Julian Hidalgo")]
     public class TDNetAddInTests
     {
-        private TDF.ITestListener stubbedITestListener = null;
+        #region Private Members
+
+        private ITestListener stubbedITestListener = null;
+        private Assembly testAssembly = null;
+
+        #endregion
+
+        #region SetUp and TearDown
 
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
             stubbedITestListener = MockRepository.GenerateStub<TDF.ITestListener>();
+            testAssembly =
+                Assembly.LoadFile(Path.GetFullPath(@"..\..\..\TestResources\MbUnit.TestResources.MbUnit2\bin\MbUnit.TestResources.MbUnit2.dll"));
         }
+
+        #endregion
+
+        #region Tests
+
+        #region Instantiation
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunAssembly_NullITestListener()
         {
-            TDF.ITestRunner tr = new MbUnitTestRunner();
+            ITestRunner tr = new MbUnitTestRunner();
             tr.RunAssembly(null, null);
         }
 
@@ -49,7 +66,7 @@ namespace MbUnit.AddIn.TDNet.Tests
         public void RunAssembly_NullAssembly()
         {
 
-            TDF.ITestRunner tr = new MbUnitTestRunner();
+            ITestRunner tr = new MbUnitTestRunner();
             tr.RunAssembly(stubbedITestListener, null);
         }
 
@@ -57,7 +74,7 @@ namespace MbUnit.AddIn.TDNet.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunNamespace_NullITestListener()
         {
-            TDF.ITestRunner tr = new MbUnitTestRunner();
+            ITestRunner tr = new MbUnitTestRunner();
             tr.RunNamespace(null, null, null);
         }
 
@@ -73,7 +90,7 @@ namespace MbUnit.AddIn.TDNet.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunNamespace_NullNamespace()
         {
-            TDF.ITestRunner tr = new MbUnitTestRunner();
+            ITestRunner tr = new MbUnitTestRunner();
             tr.RunNamespace(stubbedITestListener, Assembly.GetExecutingAssembly(), null);
         }
 
@@ -81,7 +98,7 @@ namespace MbUnit.AddIn.TDNet.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunMember_NullITestListener()
         {
-            TDF.ITestRunner tr = new MbUnitTestRunner();
+            ITestRunner tr = new MbUnitTestRunner();
             tr.RunMember(null, null, null);
         }
 
@@ -89,7 +106,7 @@ namespace MbUnit.AddIn.TDNet.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunMember_NullAssembly()
         {
-            TDF.ITestRunner tr = new MbUnitTestRunner();
+            ITestRunner tr = new MbUnitTestRunner();
             tr.RunMember(stubbedITestListener, null, null);
         }
 
@@ -97,8 +114,80 @@ namespace MbUnit.AddIn.TDNet.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunMember_NullMember()
         {
-            TDF.ITestRunner tr = new MbUnitTestRunner();
+            ITestRunner tr = new MbUnitTestRunner();
             tr.RunMember(stubbedITestListener, Assembly.GetExecutingAssembly(), null);
         }
+
+        [Test]
+        public void RunAssembly_NoTests()
+        {
+            ITestRunner tr = new MbUnitTestRunner();
+            TestRunState result = tr.RunAssembly(stubbedITestListener, Assembly.GetAssembly(typeof(MbUnitTestRunner)));
+            Assert.AreEqual(result, TestRunState.NoTests);
+        }
+
+        #endregion
+
+        #region Run*
+
+        [Test]
+        public void RunAssembly()
+        {
+            ITestRunner tr = new MbUnitTestRunner();
+            TestRunState result = tr.RunAssembly(stubbedITestListener, testAssembly);
+            Assert.AreEqual(result, TestRunState.Failure);
+        }
+
+        [Test]
+        public void RunMember_IgnoredTests()
+        {
+            ITestRunner tr = new MbUnitTestRunner();
+            Type t = testAssembly.GetType("MbUnit.TestResources.MbUnit2.IgnoredTests");
+            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, t);
+            Assert.AreEqual(result, TestRunState.Success);
+        }
+
+        [Test]
+        public void RunMember_PassingTests()
+        {
+            ITestRunner tr = new MbUnitTestRunner();
+            Type t = testAssembly.GetType("MbUnit.TestResources.MbUnit2.PassingTests");
+            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, t);
+            Assert.AreEqual(result, TestRunState.Success);
+        }
+
+        [Test]
+        public void RunMember_InvalidMember()
+        {
+            ITestRunner tr = new MbUnitTestRunner();
+            Type t = testAssembly.GetType("MbUnit.TestResources.MbUnit2.PassingTests");
+            ConstructorInfo memberInfo = t.GetConstructors()[0];
+            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, memberInfo);
+            Assert.AreEqual(result, TestRunState.NoTests);
+        }
+
+        [Test]
+        public void RunMember_RunPassingTest()
+        {
+            ITestRunner tr = new MbUnitTestRunner();
+            Type t = testAssembly.GetType("MbUnit.TestResources.MbUnit2.PassingTests");
+            MethodInfo memberInfo = t.GetMethod("Pass");
+            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, memberInfo);
+            Assert.AreEqual(result, TestRunState.Success);
+        }
+
+        [Test]
+        public void RunMember_RunFailingTest()
+        {
+            ITestRunner tr = new MbUnitTestRunner();
+            Type t = testAssembly.GetType("MbUnit.TestResources.MbUnit2.FailingFixture");
+            MethodInfo memberInfo = t.GetMethod("Fail");
+            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, memberInfo);
+            Assert.AreEqual(result, TestRunState.Failure);
+        }
+
+        #endregion
+
+        #endregion
     }
 }

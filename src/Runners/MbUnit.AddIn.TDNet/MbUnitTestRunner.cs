@@ -31,7 +31,6 @@ namespace MbUnit.AddIn.TDNet
     [Serializable]
     public class MbUnitTestRunner : TDF.ITestRunner
     {
-        private readonly TestResult testResult = new TestResult();
         private readonly string reportType = "html";
         private TDNetLogger logger = null;
 
@@ -46,7 +45,6 @@ namespace MbUnit.AddIn.TDNet
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
-            testResult.Name = assembly.FullName;
             return Run(testListener, assembly, new AssemblyFilter<ITest>(assembly.FullName));
         }
 
@@ -69,7 +67,6 @@ namespace MbUnit.AddIn.TDNet
                     Type type = (Type)member;
                     // FIXME: Should we always include derived types?
                     filters.Add(new TypeFilter<ITest>(type.FullName, true));
-                    testResult.Name = type.FullName;
                     break;
                 case MemberTypes.Method:
                     MethodInfo methodInfo = (MethodInfo)member;
@@ -79,12 +76,10 @@ namespace MbUnit.AddIn.TDNet
                     // FIXME: Should we always include derived types?
                     filters.Add(new TypeFilter<ITest>(declaringType.FullName, false));
                     filters.Add(new MemberFilter<ITest>(member.Name));
-                    testResult.Name = declaringType.FullName + "::" + member.Name;
                     break;
                 default:
-                    // This is not something we can run so just ignored it
-                    testResult.State = TestState.Ignored;
-                    testListener.TestFinished(testResult);
+                    // This is not something we can run so just ignore it
+                    InformNoTestsWereRun(testListener, member.Name + " is not a test");
                     return TestRunState.NoTests;
             }
 
@@ -112,14 +107,14 @@ namespace MbUnit.AddIn.TDNet
 
         #region Private Methods
 
-        private TestRunState Run(ITestListener listener, Assembly assembly, Filter<ITest> filter)
+        private TestRunState Run(ITestListener testListener, Assembly assembly, Filter<ITest> filter)
         {
-            if (listener == null)
-                throw new ArgumentNullException("listener");
+            if (testListener == null)
+                throw new ArgumentNullException("testListener");
             if (filter == null)
                 throw new ArgumentNullException("filter");
 
-            logger = new TDNetLogger(listener);
+            logger = new TDNetLogger(testListener);
             LogAddInVersion();
 
             using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper
@@ -129,6 +124,9 @@ namespace MbUnit.AddIn.TDNet
                 filter
                 ))
             {
+                // This monitor will inform the user in real-time what's going on
+                testRunnerHelper.CustomMonitors.Add(new TDNetLogMonitor(testListener));
+
                 string location = new Uri(assembly.CodeBase).LocalPath;
                 testRunnerHelper.Package.AssemblyFiles.Add(location);
 
@@ -144,9 +142,9 @@ namespace MbUnit.AddIn.TDNet
 
                 // This will generate a link to the generated report
                 Uri uri = new Uri("file:" + testRunnerHelper.GetReportFilename(reportType).Replace(@"\", "/"));
-                listener.TestResultsUrl(uri.AbsoluteUri);
+                testListener.TestResultsUrl(uri.AbsoluteUri);
 
-                return GetTDNetResult(testRunnerHelper, listener, result);
+                return GetTDNetResult(testRunnerHelper, testListener, result);
             }
         }
 
@@ -171,8 +169,7 @@ namespace MbUnit.AddIn.TDNet
             }
             catch(Exception e)
             {
-                testResult.Message = e.Message;
-                testResult.StackTrace = e.StackTrace;
+                logger.Error(e.ToString());
                 return null;
             }
         }
@@ -182,10 +179,10 @@ namespace MbUnit.AddIn.TDNet
         /// for TDNet.
         /// </summary>
         /// <param name="testRunnerHelper">The TestRunnerHelper instance that was used to run the tests.</param>
-        /// <param name="listener">The ITestListener object that TDNet used to call us.</param>
+        /// <param name="testListener">An ITestListener object to write the message to.</param>
         /// <param name="result">The result code given by MbUnit.</param>
         /// <returns>The TestRunState value that should be returned to TDNet.</returns>
-        private TestRunState GetTDNetResult(TestRunnerHelper testRunnerHelper, ITestListener listener, int result)
+        private static TestRunState GetTDNetResult(TestRunnerHelper testRunnerHelper, ITestListener testListener, int result)
         {
             TestRunState state;
 
@@ -194,41 +191,53 @@ namespace MbUnit.AddIn.TDNet
                 case ResultCode.FatalException:
                 case ResultCode.InvalidArguments:
                     state = TestRunState.Error;
-                    testResult.State = TestState.Failed;
                     break;
                 case ResultCode.Failure:
                     state = TestRunState.Failure;
-                    testResult.State = TestState.Failed;
                     break;
                 case ResultCode.NoTests:
                     state = TestRunState.NoTests;
-                    testResult.State = TestState.Ignored;
+                    InformNoTestsWereRun(testListener, "Found 0 tests");
                     break;
                 default:
                     state = TestRunState.Success;
-                    testResult.State = TestState.Passed;
-                    testResult.Message = "All Passed!";
                     break;
             }
 
-            if (testRunnerHelper.Statistics.FailureCount > 0)
+            //TODO: Check if TestCount may be 0 for another reason?
+            if (testRunnerHelper.Statistics.TestCount == 0)
             {
-                //TODO: Use the stack trace of the failing tests
-                testResult.Message = String.Format("{0} test(s) failed.", testRunnerHelper.Statistics.FailureCount);
+                state = TestRunState.NoTests;
+                InformNoTestsWereRun(testListener, "");
             }
-            else
-            {
-                testResult.Message = testRunnerHelper.ResultSummary;
-            }
-            listener.TestFinished(testResult);
-            
+
             return state;
+        }
+
+        /// <summary>
+        /// Inform the user that no tests were run and the reason for it. TD.NET displays
+        /// a message like "0 Passed, 0 Failed, 0 Skipped" but it does it in the status bar,
+        /// which may be harder to notice for the user. Be aware that this message will
+        /// only be displayed when the user runs an individual test or fixture (TD.NET
+        /// ignores the messages we send when it's running an entire assembly).
+        /// </summary>
+        /// <param name="testListener">An ITestListener object to write the message to.</param>
+        /// <param name="reason">The reason no tests were run for.</param>
+        private static void InformNoTestsWereRun(ITestListener testListener, string reason)
+        {
+            string message = "** NO TESTS WERE RUN";
+            if (!String.IsNullOrEmpty(reason))
+            {
+                message += " (" + reason + ")";
+            }
+            message += " **";
+            testListener.WriteLine(message, Category.Warning);
         }
 
         private void LogAddInVersion()
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            logger.Info(String.Format("MbUnit.AddIn.TDNet - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build));
+            logger.Info(String.Format("MbUnit.AddIn.TDNet - Version {0}.{1} build {2}\n", appVersion.Major, appVersion.Minor, appVersion.Build));
         }
 
         #endregion

@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FailingFixture.cs" />
+    <Compile Include="IgnoredTests.cs" />
     <Compile Include="Metadata\AuthorSamples.cs" />
     <Compile Include="Metadata\FixtureDescriptionSample.cs" />
     <Compile Include="Metadata\FixtureCategorySample.cs" />
