@@ -207,7 +207,7 @@ namespace MbUnit.Core.Runner.Monitors
 
             public StepData(TestInfo testInfo, StepRun stepRun)
             {
-                this.TestInfo = testInfo;
+                TestInfo = testInfo;
                 this.stepRun = stepRun;
 
                 ExecutionLogWriter = new ExecutionLogWriter();
