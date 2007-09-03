@@ -28,9 +28,9 @@ namespace MbUnit.Tasks.MSBuild.Tests
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void InstantiateLogeerWithNullArgument()
+        public void InstantiateLoggerWithNullArgument()
         {
-            MSBuildLogger logger = new MSBuildLogger(null);
+            new MSBuildLogger(null);
         }
 
         [Test]

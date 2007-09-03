@@ -21,12 +21,15 @@ using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using ILogger=Castle.Core.Logging.ILogger;
 
 namespace MbUnit.Tasks.MSBuild
 {
     /// <summary>
     /// A MSBuild Task implementation that allows to run MbUnit.
     /// </summary>
+    /// <example>
+    /// </example>
     public class MbUnit : Task
     {
         #region Private Members
@@ -40,6 +43,15 @@ namespace MbUnit.Tasks.MSBuild
         private string reportDirectory = String.Empty;
         private bool ignoreFailures = false;
         private int exitCode;
+        private int testCount;
+        private int passCount;
+        private int failureCount;
+        private int ignoreCount;
+        private int inconclusiveCount;
+        private int runCount;
+        private int skipCount;
+        private double duration;
+        private int assertCount;
 
         #endregion
 
@@ -98,7 +110,17 @@ namespace MbUnit.Tasks.MSBuild
         {
             get { return reportDirectory; }
             set { reportDirectory = value; }
-        }       
+        }
+
+        /// <summary>
+        /// The filter to apply in the format "property=value;property=value;..."
+        /// If left empty the "Any" filter will be applied.
+        /// </summary>
+        public string Filter
+        {
+            get { return filter; }
+            set { filter = value; }
+        }
 
         /// <summary>
         /// Whether or not to halt on failure.
@@ -117,19 +139,99 @@ namespace MbUnit.Tasks.MSBuild
         {
             get { return exitCode; }
             set { exitCode = value; }
-        } 
-
-        #endregion
+        }
 
         /// <summary>
-        /// The filter to apply in the format "property=value;property=value;..."
-        /// If left empty the "Any" filter will be applied.
+        /// The total number of test cases.
         /// </summary>
-        public string Filter
+        [Output]
+        public int TestCount
         {
-            get { return filter; }
-            set { filter = value; }
+            get { return testCount; }
+            set { testCount = value; }
         }
+
+        /// <summary>
+        /// The total number of test cases that were run and passed.
+        /// </summary>
+        [Output]
+        public int PassCount
+        {
+            get { return passCount; }
+            set { passCount = value; }
+        }
+
+        /// <summary>
+        /// The total number of test cases that were run and failed.
+        /// </summary>
+        [Output]
+        public int FailureCount
+        {
+            get { return failureCount; }
+            set { failureCount = value; }
+        }
+
+        /// <summary>
+        /// The total number of test cases that did not run because they were ignored.
+        /// </summary>
+        [Output]
+        public int IgnoreCount
+        {
+            get { return ignoreCount; }
+            set { ignoreCount = value; }
+        }
+
+        /// <summary>
+        /// The total number of test cases that ran and were inconclusive.
+        /// </summary>
+        [Output]
+        public int InconclusiveCount
+        {
+            get { return inconclusiveCount; }
+            set { inconclusiveCount = value; }
+        }
+
+        /// <summary>
+        /// The total number of test cases that were run.
+        /// </summary>
+        [Output]
+        public int RunCount
+        {
+            get { return runCount; }
+            set { runCount = value; }
+        }
+
+        /// <summary>
+        /// The total number of test cases that did not run because they were skipped.
+        /// </summary>
+        [Output]
+        public int SkipCount
+        {
+            get { return skipCount; }
+            set { skipCount = value; }
+        }
+
+        /// <summary>
+        /// Duration of the tests execution in seconds.
+        /// </summary>
+        [Output]
+        public double Duration
+        {
+            get { return duration; }
+            set { duration = value; }
+        }
+
+        /// <summary>
+        /// Number of assertions evaluated.
+        /// </summary>
+        [Output]
+        public int AssertCount
+        {
+            get { return assertCount; }
+            set { assertCount = value; }
+        }
+
+        #endregion
 
         #region Public Methods
 
@@ -143,7 +245,7 @@ namespace MbUnit.Tasks.MSBuild
             catch (Exception ex)
             {
                 Log.LogError("Unexpected failure during MbUnit execution");
-                Log.LogErrorFromException(ex,true);
+                Log.LogErrorFromException(ex, true);
                 return IgnoreFailures;
             }
         }
@@ -166,33 +268,52 @@ namespace MbUnit.Tasks.MSBuild
                 AddAllItemSpecs(runner.Package.AssemblyFiles, assemblies);
                 AddAllItemSpecs(runner.Package.HintDirectories, hintDirectories);
                 AddAllItemSpecs(runner.RuntimeSetup.PluginDirectories, pluginDirectories);
-                                
+
                 runner.ReportDirectory = ReportDirectory;
                 runner.ReportNameFormat = ReportNameFormat;
-                runner.ReportFormats.AddRange(ReportTypes);
-
-                //TODO: Check whether this makes sense for this runner
-                //runner.TemplateModelFilename = SaveTemplateTree;
-                //runner.TestModelFilename = SaveTestTree;
+                if (ReportTypes != null)
+                    runner.ReportFormats.AddRange(ReportTypes);
 
                 exitCode = runner.Run();
+                LogResultSummary(logger, runner);
+                GetStatistics(runner);
 
-                switch(exitCode)
-                {
-                    case ResultCode.Success:
-                        logger.Info(runner.ResultSummary);
-                        break;
-                    case ResultCode.Failure:
-                        logger.Error(runner.ResultSummary);
-                        break;
-                }
-
-                //TODO: Maybe count ResultCode.NoTests as sucess too? 
-                if (ExitCode == ResultCode.Success || IgnoreFailures)
+                if (ExitCode == ResultCode.Success ||
+                    ExitCode == ResultCode.NoTests ||
+                    IgnoreFailures)
                     return true;
             }
 
             return false;
+        }
+
+        private void GetStatistics(TestRunnerHelper runner)
+        {
+            if (runner.Statistics != null)
+            {
+                testCount = runner.Statistics.TestCount;
+                passCount = runner.Statistics.PassCount;
+                failureCount = runner.Statistics.FailureCount;
+                ignoreCount = runner.Statistics.IgnoreCount;
+                inconclusiveCount = runner.Statistics.InconclusiveCount;
+                runCount = runner.Statistics.RunCount;
+                skipCount = runner.Statistics.SkipCount;
+                Duration = runner.Statistics.Duration;
+                AssertCount = runner.Statistics.AssertCount;
+            }
+        }
+
+        private void LogResultSummary(ILogger logger, TestRunnerHelper runner)
+        {
+            switch (exitCode)
+            {
+                case ResultCode.Success:
+                    logger.Info(runner.ResultSummary);
+                    break;
+                case ResultCode.Failure:
+                    logger.Error(runner.ResultSummary);
+                    break;
+            }
         }
 
         private Filter<ITest> GetFilter()
@@ -211,16 +332,15 @@ namespace MbUnit.Tasks.MSBuild
                                          appVersion.Major, appVersion.Minor, appVersion.Build));
         }
 
-        private static void AddAllItemSpecs(IList<string> collection, IList<ITaskItem> items)
+        private static void AddAllItemSpecs(ICollection<string> collection, IEnumerable<ITaskItem> items)
         {
-            //TODO: Check for nothing in the TestPackage and RuntimeSetup classes?
             if (items != null)
             {
                 foreach (ITaskItem item in items)
                     collection.Add(item.ItemSpec);
             }
         }
-        
+
         #endregion
     }
 }
