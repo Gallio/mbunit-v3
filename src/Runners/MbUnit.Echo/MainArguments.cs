@@ -220,7 +220,7 @@ namespace MbUnit.Echo
             sw.WriteLine("Verbosity: {0}", Verbosity);
             sw.WriteLine("Save Template Tree: {0}", SaveTemplateTree);
             sw.WriteLine("Save Test Tree: {0}", SaveTestTree);
-            sw.WriteLine("ShadowCopyFiles: {0}", ShadowCopyFiles);
+            sw.WriteLine("Shadow Copy Files: {0}", ShadowCopyFiles);
             return sw.ToString();
         }
 
