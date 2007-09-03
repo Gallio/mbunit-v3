@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
 using MbUnit.Core.Reporting;
@@ -109,6 +110,7 @@ namespace MbUnit.Echo
 
                 int result = testRunnerHelper.Run();
                 DisplayResultSummary(testRunnerHelper, result);
+                OpenReports(testRunnerHelper);
 
                 return result;
             }
@@ -126,6 +128,18 @@ namespace MbUnit.Echo
                     break;
             }
             Console.WriteLine("\n" + testRunnerHelper.ResultSummary + "\n");
+        }
+
+        private void OpenReports(TestRunnerHelper testRunnerHelper)
+        {
+            if (arguments.ShowReports)
+            {
+                Console.WriteLine("Opening reports.");
+                foreach (string reportType in arguments.ReportTypes)
+                {
+                    Process.Start(testRunnerHelper.GetReportFilename(reportType));
+                }
+            }
         }
 
         private void SetUpLogger()
