@@ -34,7 +34,7 @@ namespace MbUnit.Core.Tests.Runner.CommandLine
         {
             _sbOutput = new StringBuilder();
             _writer = new StringWriter(_sbOutput);
-            _output = new CommandLineOutput(_writer);
+            _output = new CommandLineOutput(_writer, 80);
         }
 
         [Test]
@@ -58,12 +58,22 @@ namespace MbUnit.Core.Tests.Runner.CommandLine
             , "  /help              Display this help text. (Short form: /h)\r\n")]
         [Row("help", "h", "Display this help text.", "test"
             , "  /help:<test>              Display this help text. (Short form: /h)\r\n")]
-        [Row("very_long_argument", "vl", "Argument description."
+        [Row("very_long_argument", "vl", "Argument description.", ""
             , "  /very_long_argument\r\n                     Argument description. (Short form: /vl)\r\n")]
-         [Row("long_description", "ld", "It is a very long description. It is a very long description. It is a very long description. It is a very long description."
+         [Row("long_description", "ld", "It is a very long description. It is a very long description. It is a very long description. It is a very long description.", ""
            , "  /long_description  It is a very long description. It is a very long\r\n                     description. It is a very long description. It is a very\r\n                     long description. (Short form: /ld)\r\n")]
         public void PringArgumentHelpTest(string longName, string shortName, string description, string valueType, string expectedOutput)
         {
+            _output.PrintArgumentHelp(longName, shortName, description, valueType);
+            Assert.AreEqual(expectedOutput, _sbOutput.ToString());
+        }
+
+        [RowTest]
+        [Row("long_description", "ld", "It is a kind of long description.", ""
+     , "  /long_description  It is a kind of long\r\n                     description. (Short\r\n                     form: /ld)\r\n")]
+        public void PrintArgumentHelpWidth40Chars(string longName, string shortName, string description, string valueType, string expectedOutput)
+        {
+            _output.LineLength = 40;
             _output.PrintArgumentHelp(longName, shortName, description, valueType);
             Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }

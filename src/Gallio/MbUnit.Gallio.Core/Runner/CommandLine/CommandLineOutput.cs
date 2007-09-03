@@ -25,13 +25,16 @@ namespace MbUnit.Core.Runner.CommandLine
     public class CommandLineOutput
     {
         private readonly TextWriter _output;
+        private int _lineLength;
 
         ///<summary>
         /// Initializes new instance of CommandLineOutput.
         ///</summary>
         public CommandLineOutput()
             : this(Console.Out)
-        {}
+        {
+            _lineLength = (Console.LargestWindowWidth > 0) ? Console.WindowWidth : 80;
+        }
 
         ///<summary>
         /// Initializes new instance of CommandLineOutput that outputs to specified stream.
@@ -40,6 +43,17 @@ namespace MbUnit.Core.Runner.CommandLine
         public CommandLineOutput(TextWriter output)
         {
             _output = output;
+            _lineLength = 80;
+        }
+
+        ///<summary>
+        ///</summary>
+        ///<param name="output"></param>
+        ///<param name="width"></param>
+        public CommandLineOutput(TextWriter output, int width)
+        {
+            _output = output;
+            _lineLength = width;
         }
 
         ///<summary>
@@ -49,6 +63,16 @@ namespace MbUnit.Core.Runner.CommandLine
         {
             get { return _output; }
         }
+
+        ///<summary>
+        /// Maximum line length allowed before the text will be wraped.
+        ///</summary>
+        public int LineLength
+        {
+            get { return _lineLength; }
+            set { _lineLength = value; }
+        }
+
 
         ///<summary>
         /// Prints out a new line.
@@ -65,10 +89,10 @@ namespace MbUnit.Core.Runner.CommandLine
         ///<param name="indentation">Number of blank spaces before the start of the text.</param>
         public void PrintText(string text, int indentation)
         {
-            int maxLength = 79 - indentation;
+            int maxLength = _lineLength - indentation;
             while (text.Length > maxLength)
             {
-                int pos = text.LastIndexOf(' ', maxLength + 1);
+                int pos = text.LastIndexOf(' ', maxLength);
                 _output.Write(Space(indentation));
                 _output.Write(text.Substring(0, pos));
                 NewLine();
@@ -86,7 +110,7 @@ namespace MbUnit.Core.Runner.CommandLine
         ///<param name="indentation">Number of blank spaces before the start of the text.</param>
         private void PrintText(string text, int firstLineIndent, int indentation)
         {
-            int maxLength = 80 - firstLineIndent;
+            int maxLength = _lineLength - firstLineIndent;
             if (text.Length > maxLength)
             {
                 int pos = text.LastIndexOf(' ', maxLength + 1);
@@ -120,6 +144,7 @@ namespace MbUnit.Core.Runner.CommandLine
             if (argumentHelp.Length > 17)
             {
                 PrintText(argumentHelp.ToString(), 2);
+//                Debugger.Break();
                 PrintText(CreateDescriptionWithShortName(description, shortName), 21);
             }
             else
