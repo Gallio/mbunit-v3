@@ -109,8 +109,8 @@ namespace MbUnit.Echo
                 testRunnerHelper.TestModelFilename = arguments.SaveTestTree;
 
                 int result = testRunnerHelper.Run();
-                DisplayResultSummary(testRunnerHelper, result);
                 OpenReports(testRunnerHelper);
+                DisplayResultSummary(testRunnerHelper, result);
 
                 return result;
             }
@@ -134,7 +134,9 @@ namespace MbUnit.Echo
         {
             if (arguments.ShowReports)
             {
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Opening reports.");
+                Console.ResetColor();
                 foreach (string reportType in arguments.ReportTypes)
                 {
                     Process.Start(testRunnerHelper.GetReportFilename(reportType));
