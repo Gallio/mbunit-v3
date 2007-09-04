@@ -1,14 +1,19 @@
 .passed
 {
-	background-color: Green;
+	background-color: #C0FFC0;
 }
 
 .failed
 {
-	background-color: Red;
+	background-color: #FF4500;
 }
 
 .inconclusive
 {
 	background-color: Yellow;
+}
+
+div.Fixture
+{
+	background-color: #B0B0FF;
 }
