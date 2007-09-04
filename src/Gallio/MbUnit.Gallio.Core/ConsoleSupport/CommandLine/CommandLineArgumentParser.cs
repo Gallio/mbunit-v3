@@ -20,7 +20,7 @@ using System.IO;
 using System.Text;
 using System.Diagnostics;
 
-namespace MbUnit.Core.Runner.CommandLine
+namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
 	/// <summary>
 	/// Parser for command line arguments.

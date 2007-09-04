@@ -24,8 +24,8 @@ namespace MbUnit.Framework.Kernel.Events
     /// </summary>
     public abstract class TrackingProgressMonitor : BaseProgressMonitor
     {
-        private string taskName = "";
-        private string status = "";
+        private string taskName = @"";
+        private string status = @"";
         private Stack<string> subTaskNames;
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace MbUnit.Framework.Kernel.Events
         {
             get
             {
-                return subTaskNames == null || subTaskNames.Count == 0 ? "" : subTaskNames.Peek();
+                return subTaskNames == null || subTaskNames.Count == 0 ? @"" : subTaskNames.Peek();
             }
         }
 
@@ -79,14 +79,14 @@ namespace MbUnit.Framework.Kernel.Events
         /// <inheritdoc />
         protected override void OnBeginSubTask(string subTaskName)
         {
-            status = "";
+            status = @"";
             SubTaskNames.Push(subTaskName);
         }
 
         /// <inheritdoc />
         protected override void OnEndSubTask()
         {
-            status = "";
+            status = @"";
             SubTaskNames.Pop();
         }
 

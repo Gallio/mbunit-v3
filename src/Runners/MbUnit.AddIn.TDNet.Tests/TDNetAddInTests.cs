@@ -17,6 +17,7 @@ extern alias MbUnit2;
 using System;
 using System.IO;
 using System.Reflection;
+using MbUnit.TestResources.MbUnit2;
 using MbUnit2::MbUnit.Framework;
 using MbUnit.AddIn.TDNet;
 using Rhino.Mocks;
@@ -43,8 +44,7 @@ namespace MbUnit.AddIn.TDNet.Tests
         public void FixtureSetUp()
         {
             stubbedITestListener = MockRepository.GenerateStub<TDF.ITestListener>();
-            testAssembly =
-                Assembly.LoadFile(Path.GetFullPath(@"..\..\..\TestResources\MbUnit.TestResources.MbUnit2\bin\MbUnit.TestResources.MbUnit2.dll"));
+            testAssembly = typeof(SimpleTest).Assembly;
         }
 
         #endregion

@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="css/MbUnit-Report.css" />
       </head>
       <body>
-        <img src="img/logo.png" alt="MbUnit Logo" />
+        <img src="img/Logo.png" alt="MbUnit Logo" />
         <h1>MbUnit Test Report</h1>
         <xsl:apply-templates select="g:package/g:assemblyFiles" />
         <xsl:apply-templates select="g:packageRun/g:statistics" />
@@ -127,36 +127,59 @@
   </xsl:template>
 
   <xsl:template match="g:testRun">
-    <xsl:param name="id" select="@id" />
+    <xsl:apply-templates select="g:stepRun">
+      <xsl:with-param name="testId" select="@id" />
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="g:stepRun">
+    <xsl:param name="testId" />
+    <xsl:variable name="test" select="//g:testModel//g:test[@id=$testId]" />
+    
     <li>
       <span>
-        <xsl:attribute name="id"><xsl:value-of select="$id" /></xsl:attribute>
-        <xsl:attribute name="class">
-          <xsl:if test="g:stepRun/g:result/@state != 'ignored'">
-            <xsl:value-of select="g:stepRun/g:result/@outcome" />
-           </xsl:if>
+        <xsl:attribute name="testId">
+          <xsl:value-of select="$testId" />
         </xsl:attribute>
+        <xsl:attribute name="stepId">
+          <xsl:value-of select="@id" />
+        </xsl:attribute>
+        <xsl:attribute name="class">
+          <xsl:if test="g:result/@state != 'ignored'">
+            <xsl:value-of select="g:result/@outcome" />
+          </xsl:if>
+        </xsl:attribute>
+        
         <xsl:choose>
-          <xsl:when test="//g:testModel//g:test[@id=$id]/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Assembly'">
+          <xsl:when test="$test/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Assembly'">
             <img src="img/Container.png" alt="Container icon" />
-            <xsl:value-of select="//g:testModel//g:test[@id=$id]/@name" />
           </xsl:when>
-          <xsl:when test="//g:testModel//g:test[@id=$id]/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Fixture'">
+          <xsl:when test="$test/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Fixture'">
             <img src="img/Fixture.png" alt="Fixture icon" />
-            <xsl:value-of select="//g:testModel//g:test[@id=$id]/@name" />
           </xsl:when>
-          <xsl:when test="//g:testModel//g:test[@id=$id]/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Test'">
+          <xsl:when test="$test/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Test'">
             <img src="img/Test.png" alt="Test icon" />
-            <xsl:value-of select="//g:testModel//g:test[@id=$id]/@name" />
-            <xsl:text> (Duration: </xsl:text>
-            <xsl:value-of select="g:stepRun/g:result/@duration" />
-            <xsl:text>, Assertions: </xsl:text>
-            <xsl:value-of select="g:stepRun/g:result/@assertCount" />
-            <xsl:text>)</xsl:text>
           </xsl:when>
+          <xsl:otherwise>
+            <img src="img/Container.png" alt="Container icon" />
+          </xsl:otherwise>
         </xsl:choose>
+        
+        <xsl:value-of select="@fullName" />
+        
+        <xsl:if test="$test/@isTestCase">
+          <xsl:text> (Duration: </xsl:text>
+          <xsl:value-of select="g:result/@duration" />
+          <xsl:text>, Assertions: </xsl:text>
+          <xsl:value-of select="g:result/@assertCount" />
+          <xsl:text>)</xsl:text>
+        </xsl:if>
       </span>
     </li>
-</xsl:template>
+
+    <xsl:apply-templates select="g:stepRuns">
+      <xsl:with-param name="testId" select="$testId" />
+    </xsl:apply-templates>
+  </xsl:template>
   
 </xsl:stylesheet>

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Core.Reporting;
 
@@ -25,7 +26,7 @@ namespace MbUnit.Core.Reporting
     /// </summary>
     public abstract class ExecutionLogStreamContainerTag : ExecutionLogStreamTag
     {
-        private List<ExecutionLogStreamTag> contents;
+        private readonly List<ExecutionLogStreamTag> contents;
 
         /// <summary>
         /// Creates an empty container tag.
@@ -45,6 +46,16 @@ namespace MbUnit.Core.Reporting
         public List<ExecutionLogStreamTag> Contents
         {
             get { return contents; }
+        }
+
+        /// <summary>
+        /// Invokes the appropriate visitor method each element contained within this tag.
+        /// </summary>
+        /// <param name="visitor">The visitor</param>
+        public void AcceptContents(IExecutionLogStreamTagVisitor visitor)
+        {
+            foreach (ExecutionLogStreamTag content in contents)
+                content.Accept(visitor);
         }
     }
 }

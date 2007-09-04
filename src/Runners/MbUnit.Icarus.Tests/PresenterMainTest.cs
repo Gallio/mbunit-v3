@@ -19,6 +19,7 @@ using MbUnit.Core.Runtime;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Icarus.Core.Model;
+using MbUnit.TestResources.MbUnit2;
 
 namespace MbUnit.Icarus.Tests
 {
@@ -32,7 +33,7 @@ namespace MbUnit.Icarus.Tests
             AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup);
 
             TestPackage testpackage = new TestPackage();
-            testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");
+            testpackage.AssemblyFiles.Add(typeof(SimpleTest).Assembly.Location);
             
             TestRunnerModel main = new TestRunnerModel();
             

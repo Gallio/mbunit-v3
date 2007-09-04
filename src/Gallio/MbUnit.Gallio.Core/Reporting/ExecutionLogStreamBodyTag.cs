@@ -28,5 +28,10 @@ namespace MbUnit.Core.Reporting
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class ExecutionLogStreamBodyTag : ExecutionLogStreamContainerTag
     {
+        /// <inheritdoc />
+        public override void Accept(IExecutionLogStreamTagVisitor visitor)
+        {
+            visitor.VisitBodyTag(this);
+        }
     }
 }

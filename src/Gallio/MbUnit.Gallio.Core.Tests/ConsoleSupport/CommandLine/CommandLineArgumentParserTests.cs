@@ -15,10 +15,10 @@
 
 extern alias MbUnit2;
 using System;
-using MbUnit.Core.Runner.CommandLine;
+using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit2::MbUnit.Framework;
 
-namespace MbUnit.Core.Tests.Runner.CommandLine
+namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
 {
     [TestFixture]
     public class CommandLineArgumentParserTests

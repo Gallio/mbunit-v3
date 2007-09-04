@@ -342,7 +342,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 if (assemblyTest == null)
                     return;
 
-                IStep assemblyStep = BaseStep.CreateRootStep(assemblyTest);
+                IStep assemblyStep = new BaseStep(assemblyTest);
                 activeStepsByTest.Add(assemblyTest, assemblyStep);
                 listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(assemblyStep)));
 
@@ -371,7 +371,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 if (!fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
                     return;
 
-                IStep fixtureStep = BaseStep.CreateRootStep(fixtureTest);
+                IStep fixtureStep = new BaseStep(fixtureTest);
                 activeStepsByTest.Add(fixtureTest, fixtureStep);
                 listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(fixtureStep)));
 
@@ -401,7 +401,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 if (!testsByRunPipe.TryGetValue(runPipe, out test))
                     return;
 
-                IStep step = BaseStep.CreateRootStep(test);
+                IStep step = new BaseStep(test);
                 activeStepsByTest.Add(test, step);
                 listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(step)));
             }
@@ -494,7 +494,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                         .Append(@" ---");
                 }
 
-                if (ex.StackTrace.Length != 0)
+                if (! String.IsNullOrEmpty(ex.StackTrace))
                 {
                     result.Append(Environment.NewLine).Append(ex.StackTrace);
                 }

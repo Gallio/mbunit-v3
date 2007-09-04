@@ -17,9 +17,10 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
-using MbUnit.Core.Runner.CommandLine;
+using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Core.Runtime;
 using MbUnit.Framework.Kernel.Utilities;
 
@@ -31,7 +32,7 @@ namespace MbUnit.Echo
     public sealed class MainClass : IDisposable
     {
         private string applicationTitle;
-        private readonly LevelFilteredLogger logger = new PrettyConsoleLogger();
+        private readonly LevelFilteredLogger logger = new SharedConsoleLogger();
         private readonly MainArguments arguments = new MainArguments();
         private bool haltExecution = false;
         private int resultCode;
@@ -89,7 +90,7 @@ namespace MbUnit.Echo
         {
             using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper
                 (
-                delegate { return new ConsoleProgressMonitor(); },
+                delegate { return new SharedConsoleProgressMonitor(); },
                 logger,
                 arguments.GetFilter()
                 ))
@@ -107,6 +108,8 @@ namespace MbUnit.Echo
 
                 testRunnerHelper.TemplateModelFilename = arguments.SaveTemplateTree;
                 testRunnerHelper.TestModelFilename = arguments.SaveTestTree;
+
+                testRunnerHelper.EchoResults = arguments.EchoResults;
 
                 int result = testRunnerHelper.Run();
                 OpenReports(testRunnerHelper);
@@ -155,7 +158,7 @@ namespace MbUnit.Echo
             // Disable ordinary cancelation handling.
             // We handle cancelation directly in ways that should result in the user
             // losing less data than if the OS just kills the process.
-            ConsoleCancelHandler.Install();
+            SharedConsole.InstallCancelationHandler();
         }
 
         private void CheckResultCode()
@@ -193,9 +196,11 @@ namespace MbUnit.Echo
             switch (arguments.Verbosity)
             {
                 case Verbosity.Quiet:
-                    logger.Level = LoggerLevel.Warn;
+                    logger.Level = LoggerLevel.Error;
                     break;
                 case Verbosity.Normal:
+                    logger.Level = LoggerLevel.Warn;
+                    break;
                 case Verbosity.Verbose:
                     logger.Level = LoggerLevel.Info;
                     break;

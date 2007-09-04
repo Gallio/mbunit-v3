@@ -55,8 +55,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleSupport\CommandLine\CommandLineArgumentAttribute.cs" />
+    <Compile Include="ConsoleSupport\CommandLine\CommandLineArgumentParser.cs" />
+    <Compile Include="ConsoleSupport\CommandLine\CommandLineArgumentType.cs" />
+    <Compile Include="ConsoleSupport\CommandLine\CommandLineOutput.cs" />
+    <Compile Include="ConsoleSupport\CommandLine\CommandLineUtility.cs" />
+    <Compile Include="ConsoleSupport\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
+    <Compile Include="ConsoleSupport\CommandLine\ErrorReporter.cs" />
+    <Compile Include="ConsoleSupport\SharedConsole.cs" />
+    <Compile Include="ConsoleSupport\SharedConsoleProgressMonitor.cs" />
+    <Compile Include="ConsoleSupport\SharedConsoleLogger.cs" />
     <Compile Include="Reporting\DefaultReportManager.cs" />
+    <Compile Include="Reporting\ExecutionLogStreamTextFormatter.cs" />
     <Compile Include="Reporting\HtmlReportFormatter.cs" />
+    <Compile Include="Reporting\IExecutionLogStreamTagVisitor.cs" />
     <Compile Include="Reporting\IReportFormatter.cs" />
     <Compile Include="Reporting\IReportManager.cs" />
     <Compile Include="Reporting\Report.cs" />
@@ -69,12 +81,17 @@
     <Compile Include="Reporting\TextReportFormatter.cs" />
     <Compile Include="Reporting\XmlReportFormatter.cs" />
     <Compile Include="Reporting\XsltReportFormatter.cs" />
-    <Compile Include="Runner\CommandLine\CommandLineOutput.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Runner\FilterParser.cs" />
     <Compile Include="Runner\LocalRunner.cs" />
     <Compile Include="Runner\LocalTestDomainFactory.cs" />
     <Compile Include="Runner\Monitors\LogMonitor.cs" />
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
+    <Compile Include="Runner\Monitors\ReportStepEventArgs.cs" />
     <Compile Include="Runner\RunnerProgressMonitor.cs" />
     <Compile Include="Runtime\DefaultAssemblyResolverManager.cs" />
     <Compile Include="Runtime\ICoreRuntime.cs" />
@@ -96,14 +113,6 @@
     <Compile Include="Runner\BaseRunner.cs" />
     <Compile Include="Runner\BaseTestDomain.cs" />
     <Compile Include="Runner\Bootstrapper.cs" />
-    <Compile Include="Runner\CommandLine\CommandLineArgumentAttribute.cs" />
-    <Compile Include="Runner\CommandLine\CommandLineArgumentParser.cs" />
-    <Compile Include="Runner\CommandLine\CommandLineArgumentType.cs" />
-    <Compile Include="Runner\CommandLine\CommandLineUtility.cs" />
-    <Compile Include="Runner\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
-    <Compile Include="Runner\CommandLine\ErrorReporter.cs" />
-    <Compile Include="Runner\ConsoleCancelHandler.cs" />
-    <Compile Include="Runner\ConsoleProgressMonitor.cs" />
     <Compile Include="Runner\Monitors\BaseTestRunnerMonitor.cs" />
     <Compile Include="Runner\Monitors\DebugMonitor.cs" />
     <Compile Include="Runner\FatalRunnerException.cs" />
@@ -163,6 +172,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Reporting\Resources\MbUnit-Report.css" />
+    <EmbeddedResource Include="Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

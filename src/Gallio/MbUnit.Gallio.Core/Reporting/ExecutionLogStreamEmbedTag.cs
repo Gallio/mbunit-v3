@@ -45,7 +45,7 @@ namespace MbUnit.Core.Reporting
         public ExecutionLogStreamEmbedTag(string attachmentName)
         {
             if (attachmentName == null)
-                throw new ArgumentNullException("attachmentName");
+                throw new ArgumentNullException(@"attachmentName");
 
             this.attachmentName = attachmentName;
         }
@@ -61,9 +61,15 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 attachmentName = value;
             }
+        }
+
+        /// <inheritdoc />
+        public override void Accept(IExecutionLogStreamTagVisitor visitor)
+        {
+            visitor.VisitEmbedTag(this);
         }
     }
 }

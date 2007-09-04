@@ -68,6 +68,10 @@
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TestResources\MbUnit.TestResources.MbUnit2\MbUnit.TestResources.MbUnit2.csproj">
+      <Project>{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}</Project>
+      <Name>MbUnit.TestResources.MbUnit2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MbUnit.AddIn.TDNet\MbUnit.AddIn.TDNet.csproj">
       <Project>{53E13EE8-E19A-43DD-A623-55023BF74AD6}</Project>
       <Name>MbUnit.AddIn.TDNet</Name>

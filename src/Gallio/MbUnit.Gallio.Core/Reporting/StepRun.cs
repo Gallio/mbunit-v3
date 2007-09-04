@@ -33,6 +33,7 @@ namespace MbUnit.Core.Reporting
         private readonly List<StepRun> children;
         private string stepId;
         private string stepName;
+        private string stepFullName;
         private DateTime startTime;
         private DateTime endTime;
         private TestResult result;
@@ -50,18 +51,22 @@ namespace MbUnit.Core.Reporting
         /// Creates a test run step.
         /// </summary>
         /// <param name="stepId">The step id</param>
-        /// <param name="stepName">The step name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/> or
-        /// <paramref name="stepName"/> is null</exception>
-        public StepRun(string stepId, string stepName)
+        /// <param name="stepName">The name of the step</param>
+        /// <param name="stepFullName">The full name of the step</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/>,
+        /// <paramref name="stepName"/> or <paramref name="stepFullName"/> is null</exception>
+        public StepRun(string stepId, string stepName, string stepFullName)
         {
             if (stepId == null)
-                throw new ArgumentNullException("stepId");
+                throw new ArgumentNullException(@"stepId");
             if (stepName == null)
-                throw new ArgumentNullException("stepName");
+                throw new ArgumentNullException(@"stepName");
+            if (stepFullName == null)
+                throw new ArgumentNullException(@"stepFullName");
 
             this.stepId = stepId;
             this.stepName = stepName;
+            this.stepFullName = stepFullName;
 
             children = new List<StepRun>();
         }
@@ -77,7 +82,7 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 stepId = value;
             }
         }
@@ -93,8 +98,24 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 stepName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the full name of the step.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlAttribute("fullName")]
+        public string StepFullName
+        {
+            get { return stepFullName; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                stepFullName = value;
             }
         }
 
@@ -144,7 +165,7 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 result = value;
             }
         }
@@ -165,7 +186,7 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 executionLog = value;
             }
         }

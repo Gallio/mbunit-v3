@@ -34,5 +34,10 @@ namespace MbUnit.Core.Runner.Monitors
         /// <param name="runner">The test runner</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="runner"/> is null</exception>
         void Attach(ITestRunner runner);
+
+        /// <summary>
+        /// Detaches the monitor.
+        /// </summary>
+        void Detach();
     }
 }

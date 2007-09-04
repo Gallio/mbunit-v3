@@ -84,21 +84,12 @@
     <xsl:text>[</xsl:text>
     <xsl:value-of select="$test/gallio:metadata/gallio:entry[@key='ComponentKind']/gallio:value" />
     <xsl:text>] </xsl:text>
-    <xsl:value-of select="$test/@name" />
-    <xsl:apply-templates select="." mode="print-recursive-step-name" />
+    <xsl:value-of select="@fullName" />
     <xsl:text>&#xA;</xsl:text>
     <xsl:apply-templates select="gallio:executionLog" />
     <xsl:text>&#xA;</xsl:text>
 
     <xsl:apply-templates select="gallio:children/gallio:stepRun" />
-  </xsl:template>
-
-  <xsl:template match="gallio:stepRun" mode="print-recursive-step-name">
-    <xsl:if test="parent::gallio:stepRun">
-      <xsl:apply-templates select="parent::gallio:stepRun" mode="print-recursive-step-name" />
-      <xsl:text> / </xsl:text>
-      <xsl:value-of select="@name"/>
-    </xsl:if>
   </xsl:template>
 
   <xsl:template match="gallio:executionLog">

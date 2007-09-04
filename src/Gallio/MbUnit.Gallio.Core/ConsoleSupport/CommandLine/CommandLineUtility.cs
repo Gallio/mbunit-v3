@@ -14,7 +14,7 @@
 // limitations under the License.
 using System;
 
-namespace MbUnit.Core.Runner.CommandLine
+namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
     /// <summary>
     /// Useful Stuff.

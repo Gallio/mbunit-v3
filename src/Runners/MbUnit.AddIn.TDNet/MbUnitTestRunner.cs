@@ -125,7 +125,7 @@ namespace MbUnit.AddIn.TDNet
                 ))
             {
                 // This monitor will inform the user in real-time what's going on
-                testRunnerHelper.CustomMonitors.Add(new TDNetLogMonitor(testListener));
+                testRunnerHelper.CustomMonitors.Add(new TDNetLogMonitor(testListener, testRunnerHelper.ReportMonitor));
 
                 string location = new Uri(assembly.CodeBase).LocalPath;
                 testRunnerHelper.Package.AssemblyFiles.Add(location);

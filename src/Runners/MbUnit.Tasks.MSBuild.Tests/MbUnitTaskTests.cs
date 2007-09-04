@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System;
 using MbUnit2::MbUnit.Framework;
 using System.Reflection;
 using MbUnit.Core.Runner;
@@ -44,7 +45,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         {
             string frameworkPath = RuntimeEnvironment.GetRuntimeDirectory();
             MSBuildExecutablePath = frameworkPath + @"MSBuild.exe";
-            workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            workingDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
         }
 
         [Test]

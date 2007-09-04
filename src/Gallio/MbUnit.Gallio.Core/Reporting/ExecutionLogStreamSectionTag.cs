@@ -47,7 +47,7 @@ namespace MbUnit.Core.Reporting
         public ExecutionLogStreamSectionTag(string name)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(@"name");
             this.name = name;
         }
 
@@ -62,9 +62,15 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 name = value;
             }
+        }
+
+        /// <inheritdoc />
+        public override void Accept(IExecutionLogStreamTagVisitor visitor)
+        {
+            visitor.VisitSectionTag(this);
         }
     }
 }

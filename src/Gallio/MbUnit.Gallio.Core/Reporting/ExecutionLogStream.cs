@@ -44,7 +44,7 @@ namespace MbUnit.Core.Reporting
         public ExecutionLogStream(string name)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(@"name");
 
             this.name = name;
         }
@@ -60,7 +60,7 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 name = value;
             }
         }
@@ -81,9 +81,18 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 body = value;
             }
+        }
+
+        /// <summary>
+        /// Formats the stream using a <see cref="ExecutionLogStreamTextFormatter" />.
+        /// </summary>
+        /// <returns>The formatted text</returns>
+        public override string ToString()
+        {
+            return body.ToString();
         }
     }
 }

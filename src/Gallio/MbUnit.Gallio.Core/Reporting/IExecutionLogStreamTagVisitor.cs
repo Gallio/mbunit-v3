@@ -16,31 +16,37 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace MbUnit.Core.Reporting
 {
     /// <summary>
-    /// A tag is an Xml-serializable object that is included
-    /// in the body of an execution log stream and describes its contents.
+    /// Visits an <see cref="ExecutionLogStreamTag" />.
     /// </summary>
-    public abstract class ExecutionLogStreamTag
+    public interface IExecutionLogStreamTagVisitor
     {
         /// <summary>
-        /// Invokes the appropriate visitor method for this tag type.
+        /// Visits a body tag.
         /// </summary>
-        /// <param name="visitor">The visitor</param>
-        public abstract void Accept(IExecutionLogStreamTagVisitor visitor);
+        /// <param name="tag">The tag to visit</param>
+        void VisitBodyTag(ExecutionLogStreamBodyTag tag);
 
         /// <summary>
-        /// Formats the tag using a <see cref="ExecutionLogStreamTextFormatter" />.
+        /// Visits a section tag.
         /// </summary>
-        /// <returns>The formatted text</returns>
-        public override string ToString()
-        {
-            ExecutionLogStreamTextFormatter formatter = new ExecutionLogStreamTextFormatter();
-            Accept(formatter);
-            return formatter.Text;
-        }
+        /// <param name="tag">The tag to visit</param>
+        /// <returns>True if the visitor should be called again for each child of the section tag</returns>
+        void VisitSectionTag(ExecutionLogStreamSectionTag tag);
+
+        /// <summary>
+        /// Visits an embedded attachment tag.
+        /// </summary>
+        /// <param name="tag">The tag to visit</param>
+        void VisitEmbedTag(ExecutionLogStreamEmbedTag tag);
+
+        /// <summary>
+        /// Visits a text tag.
+        /// </summary>
+        /// <param name="tag">The tag to visit</param>
+        void VisitTextTag(ExecutionLogStreamTextTag tag);
     }
 }

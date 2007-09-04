@@ -14,47 +14,52 @@
 // limitations under the License.
 
 using System;
+using MbUnit.Core.Runner;
 
-namespace MbUnit.Core.Runner
+namespace MbUnit.Core.ConsoleSupport
 {
     /// <summary>
     /// A console progress monitor displays a simple tally of the amount of work
-    /// to be done on the main task as a bar chart.
+    /// to be done on the main task as a bar chart.  The progress monitor responds
+    /// to cancelation events at the console.
     /// </summary>
-    /// <remarks author="jeff">
-    /// This is an initial hack to provide an example for development of MbUnit Echo.
-    /// Feel free to rip it apart then remove this remark.
-    /// </remarks>
-    public class ConsoleProgressMonitor : TextualProgressMonitor
+    public class SharedConsoleProgressMonitor : TextualProgressMonitor
     {
         private int newlinesWritten;
 
         /// <summary>
         /// Creates a console progress monitor.
         /// </summary>
-        public ConsoleProgressMonitor()
+        public SharedConsoleProgressMonitor()
         {
-            ConsoleCancelHandler.Cancel += HandleCancel;
+            SharedConsole.Cancel += HandleCancel;
         }
 
         /// <inheritdoc />
         protected override void OnDone()
         {
-            ConsoleCancelHandler.Cancel -= HandleCancel;
+            SharedConsole.Cancel -= HandleCancel;
             base.OnDone();
         }
 
         /// <inheritdoc />
         protected override void UpdateDisplay()
         {
-            lock (this)
+            // Don't try to show progress if output is redirected.  It won't work!
+            if (SharedConsole.IsRedirected)
+                return;
+
+            if (IsDone)
+                SharedConsole.SetFooter(null, null);
+            else
+                SharedConsole.SetFooter(ShowFooter, HideFooter);
+        }
+
+        private void ShowFooter()
+        {
+            lock (SharedConsole.SyncRoot)
             {
-                EraseLine();
-                for (; newlinesWritten > 0; newlinesWritten -= 1)
-                {
-                    Console.CursorTop -= 1;
-                    EraseLine();
-                }
+                NewLine();
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(TrimMessageWithEllipses(TaskName, Console.BufferWidth - 20).PadRight(Console.BufferWidth - 19));
@@ -66,14 +71,15 @@ namespace MbUnit.Core.Runner
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     Console.Write(new string('=', (int)Math.Round(CompletedWorkUnits * 10 / TotalWorkUnits)).PadRight(10));
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write(']');
-                    Console.Write(" {0}%", Math.Floor(CompletedWorkUnits * 100 / TotalWorkUnits));
+                    Console.Write(@"] ");
+                    Console.Write(Math.Floor(CompletedWorkUnits * 100 / TotalWorkUnits));
+                    Console.Write('%');
                     NewLine();
 
                     if (CurrentSubTaskName.Length != 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        Console.Write("  ");
+                        Console.Write(@"  ");
                         Console.Write(TrimMessageWithEllipses(CurrentSubTaskName, Console.BufferWidth - 3));
                         NewLine();
                     }
@@ -81,7 +87,7 @@ namespace MbUnit.Core.Runner
                     if (Status.Length != 0)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.Write("  ");
+                        Console.Write(@"  ");
                         Console.Write(TrimMessageWithEllipses(Status, Console.BufferWidth - 3));
                         NewLine();
                     }
@@ -94,11 +100,25 @@ namespace MbUnit.Core.Runner
                 if (IsCanceled)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(IsDone ? "    --- CANCELED ---" : "    >>> CANCELING <<<");
+                    Console.Write(@"    ");
+                    Console.Write(IsDone ? Resources.ConsoleProgressMonitor_CanceledBanner : Resources.ConsoleProgressMonitor_CancelingBanner);
                     NewLine();
                 }
 
                 Console.ResetColor();
+            }
+        }
+
+        private void HideFooter()
+        {
+            lock (SharedConsole.SyncRoot)
+            {
+                EraseLine();
+                for (; newlinesWritten > 0; newlinesWritten -= 1)
+                {
+                    Console.CursorTop -= 1;
+                    EraseLine();
+                }
             }
         }
 
@@ -111,7 +131,7 @@ namespace MbUnit.Core.Runner
         private static string TrimMessageWithEllipses(string str, int length)
         {
             if (str.Length > length)
-                return str.Substring(0, length - 3) + "...";
+                return str.Substring(0, length - 3) + @"...";
 
             return str;
         }

@@ -15,20 +15,37 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner.Monitors
 {
     /// <summary>
-    /// A test summary monitor tracks <see cref="ITestRunner" /> events and builds
+    /// <para>
+    /// A report monitor tracks <see cref="ITestRunner" /> events and builds
     /// a <see cref="Report" />.
+    /// </para>
+    /// <para>
+    /// The report monitor also provides reinterpreted events regarding the lifecycle of
+    /// tests in terms of report elements that have been generated.
+    /// For example, to obtain the stack traces associated with a test failure, a test runner
+    /// can listen for <
+    /// 
+    /// examine
+    /// the contents of the <see cref="ExecutionLogStreamName.Failures" /> execution
+    /// log stream.  Likewise, console output can be derived in this manner.
+    /// </para>
     /// </summary>
     public class ReportMonitor : BaseTestRunnerMonitor
     {
         private readonly Report report;
         private readonly Dictionary<string, StepData> stepDataMap;
+
+        private EventHandler<ReportStepEventArgs> stepStarting;
+        private EventHandler<ReportStepEventArgs> stepFinished;
 
         /// <summary>
         /// Creates a test summary tracker initially with no contents.
@@ -43,12 +60,40 @@ namespace MbUnit.Core.Runner.Monitors
         /// Gets the generated report.
         /// </summary>
         /// <remarks>
-        /// The report should be locked if it is being accessed while tests are
+        /// The report instance should be locked if it is being accessed while tests are
         /// running to avoid possible collisions among concurrent threads.
         /// </remarks>
         public Report Report
         {
             get { return report; }
+        }
+
+        /// <summary>
+        /// The event fired when a step is starting.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="Report" /> instance is locked for the duration of this
+        /// event to prevent race conditions.  Do not perform long-running operations
+        /// when processing this event.  Also beware of potential deadlocks!
+        /// </remarks>
+        public event EventHandler<ReportStepEventArgs> StepStarting
+        {
+            add { lock (report) stepStarting += value; }
+            remove { lock (report) stepStarting -= value; }
+        }
+
+        /// <summary>
+        /// The event fired when a step is finished.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="Report" /> instance is locked for the duration of this
+        /// event to prevent race conditions.  Do not perform long-running operations
+        /// when processing this event.  Also beware of potential deadlocks!
+        /// </remarks>
+        public event EventHandler<ReportStepEventArgs> StepFinished
+        {
+            add { lock (report) stepFinished += value; }
+            remove { lock (report) stepFinished -= value; }
         }
 
         /// <inheritdoc />
@@ -61,9 +106,22 @@ namespace MbUnit.Core.Runner.Monitors
             Runner.BuildTestsComplete += HandleBuildTestsComplete;
             Runner.RunStarting += HandleRunStarting;
             Runner.RunComplete += HandleRunComplete;
-
             Runner.EventDispatcher.Lifecycle += HandleLifecycleEvent;
             Runner.EventDispatcher.ExecutionLog += HandleExecutionLogEvent;
+        }
+
+        /// <inheritdoc />
+        protected override void OnDetach()
+        {
+            base.OnDetach();
+
+            Runner.LoadPackageComplete -= HandleLoadPackageComplete;
+            Runner.BuildTemplatesComplete -= HandleBuildTemplatesComplete;
+            Runner.BuildTestsComplete -= HandleBuildTestsComplete;
+            Runner.RunStarting -= HandleRunStarting;
+            Runner.RunComplete -= HandleRunComplete;
+            Runner.EventDispatcher.Lifecycle -= HandleLifecycleEvent;
+            Runner.EventDispatcher.ExecutionLog -= HandleExecutionLogEvent;
         }
 
         private void HandleLoadPackageComplete(object sender, EventArgs e)
@@ -127,22 +185,27 @@ namespace MbUnit.Core.Runner.Monitors
                     case LifecycleEventType.Start:
                     {
                         TestInfo testInfo = Runner.TestModel.Tests[e.StepInfo.TestId];
-                        StepRun stepRun = new StepRun(e.StepId, e.StepInfo.Name);
-                        StepData stepData = new StepData(testInfo, stepRun);
-                        stepDataMap.Add(e.StepId, stepData);
+                        StepRun stepRun = new StepRun(e.StepId, e.StepInfo.Name, e.StepInfo.FullName);
 
+                        StepData stepData;
                         if (e.StepInfo.ParentId == null)
                         {
-                            TestRun run = new TestRun(e.StepInfo.TestId, stepRun);
-                            report.PackageRun.TestRuns.Add(run);
+                            TestRun testRun = new TestRun(e.StepInfo.TestId, stepRun);
+                            report.PackageRun.TestRuns.Add(testRun);
+
+                            stepData = new StepData(testInfo, testRun, stepRun);
                         }
                         else
                         {
                             StepData parentStepData = GetStepData(e.StepInfo.ParentId);
-                            parentStepData.stepRun.Children.Add(stepRun);
-                        }
+                            parentStepData.StepRun.Children.Add(stepRun);
 
+                            stepData = new StepData(testInfo, parentStepData.TestRun, stepRun);
+                        }
+                        stepDataMap.Add(e.StepId, stepData);
                         stepRun.StartTime = DateTime.Now;
+
+                        NotifyStepStarting(stepData);
                         break;
                     }
 
@@ -152,11 +215,13 @@ namespace MbUnit.Core.Runner.Monitors
                     case LifecycleEventType.Finish:
                     {
                         StepData stepData = GetStepData(e.StepId);
-                        stepData.stepRun.EndTime = DateTime.Now;
-                        stepData.stepRun.Result = e.Result;
-                        report.PackageRun.Statistics.MergeStepStatistics(stepData.stepRun, stepData.TestInfo.IsTestCase);
+                        stepData.StepRun.EndTime = DateTime.Now;
+                        stepData.StepRun.Result = e.Result;
+                        report.PackageRun.Statistics.MergeStepStatistics(stepData.StepRun, stepData.TestInfo.IsTestCase);
 
                         stepData.ExecutionLogWriter.Close(); // just in case
+
+                        NotifyStepFinished(stepData);
                         break;
                     }
                 }
@@ -199,16 +264,48 @@ namespace MbUnit.Core.Runner.Monitors
             return stepDataMap[stepId];
         }
 
+        private void NotifyStepStarting(StepData stepData)
+        {
+            if (stepStarting != null)
+            {
+                try
+                {
+                    stepStarting(this, new ReportStepEventArgs(report, stepData.TestRun, stepData.StepRun));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(String.Format("Step starting event handler threw an exception: {0}", ex));
+                }
+            }
+        }
+
+        private void NotifyStepFinished(StepData stepData)
+        {
+            if (stepFinished != null)
+            {
+                try
+                {
+                    stepFinished(this, new ReportStepEventArgs(report, stepData.TestRun, stepData.StepRun));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(String.Format("Step finished event handler threw an exception: {0}", ex));
+                }
+            }
+        }
+
         private sealed class StepData
         {
             public readonly TestInfo TestInfo;
-            public readonly StepRun stepRun;
+            public readonly TestRun TestRun;
+            public readonly StepRun StepRun;
             public readonly ExecutionLogWriter ExecutionLogWriter;
 
-            public StepData(TestInfo testInfo, StepRun stepRun)
+            public StepData(TestInfo testInfo, TestRun testRun, StepRun stepRun)
             {
                 TestInfo = testInfo;
-                this.stepRun = stepRun;
+                this.TestRun = testRun;
+                this.StepRun = stepRun;
 
                 ExecutionLogWriter = new ExecutionLogWriter();
                 stepRun.ExecutionLog = ExecutionLogWriter.ExecutionLog;

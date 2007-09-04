@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MbUnit.Core.Runner.CommandLine;
+using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Metadata;
@@ -69,8 +69,8 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "rd",
              LongName = "report-directory",
-            Description = "Target output directory for the reports",
-            ArgumentValueType = "path"
+             Description = "Target output directory for the reports.",
+             ArgumentValueType = "path"
              )]
         public string ReportDirectory = "";
 
@@ -78,7 +78,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "rnf",
              LongName = "report-name-format",
-             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}",
+             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}.",
              ArgumentValueType = "pattern"
              )]
         public string ReportNameFormat = "mbunit-result-{0}{1}";
@@ -96,7 +96,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "sr",
              LongName = "show-reports",
-            Description = "Show generated reports in a window"
+            Description = "Show generated reports in a window using the default system application registered to the report file type."
         )]
         public bool ShowReports;
         #endregion
@@ -107,7 +107,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.MultipleUnique,
              ShortName = "fc",
              LongName = "filter-category",
-             Description = "Name of the filtered category"
+             Description = "Name of the filtered category."
              )]
         public string[] FilterCategories;
 
@@ -115,7 +115,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.MultipleUnique,
              ShortName = "fa",
              LongName = "filter-author",
-             Description = "Name of the filtered author name"
+             Description = "Name of the filtered author name."
              )]
         public string[] FilterAuthors;
 
@@ -123,7 +123,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.MultipleUnique,
              ShortName = "ft",
              LongName = "filter-type",
-             Description = "Name of the filtered type"
+             Description = "Name of the filtered type."
              )]
         public string[] FilterTypes;
 
@@ -131,7 +131,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.MultipleUnique,
              ShortName = "fn",
              LongName = "filter-namespace",
-             Description = "Name of the filtered namespace"
+             Description = "Name of the filtered namespace."
              )]
         public string[] FilterNamespaces;
 
@@ -159,21 +159,29 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "v",
              LongName = "verbosity",
-             Description = "Controls the level of detail of the information to display"
+             Description = "Controls the level of detail of the information to display.  The available options are 'Quiet', 'Normal', 'Verbose', and 'Debug'."
              )]
         public Verbosity Verbosity = Verbosity.Normal;
 
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
+             ShortName = "e",
+             LongName = "echo-results",
+             Description = "Echo test results to the screen as tests finish.  Tests that passed are not shown unless the verbosity level is at least 'Verbose'."
+             )]
+        public bool EchoResults;
+
+        [CommandLineArgument(
+             CommandLineArgumentType.AtMostOnce,
              LongName = "save-template-tree",
-             Description = "Saves the template tree to a file as XML"
+             Description = "Save the template tree to a file as XML."
              )]
         public string SaveTemplateTree;
 
         [CommandLineArgument(
              CommandLineArgumentType.AtMostOnce,
              LongName = "save-test-tree",
-             Description = "Saves the test tree to a file as XML"
+             Description = "Save the test tree to a file as XML."
              )]
         public string SaveTestTree;
 
@@ -181,7 +189,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "sc",
              LongName = "shadow-copy-files",
-             Description = "Enabled/disable shadow copying of the assemblies"
+             Description = "Enable shadow copying of the assemblies.  Shadow copying allows the original assemblies to be modified while the tests are running.  However, shadow copying may occasionally some tests to fail if they depend on their original location."
              )]
         public bool ShadowCopyFiles;
 
@@ -218,6 +226,7 @@ namespace MbUnit.Echo
             sw.WriteLine("Filter Type: {0}", String.Join(", ", FilterTypes));
 
             sw.WriteLine("Verbosity: {0}", Verbosity);
+            sw.WriteLine("Echo Results: {0}", EchoResults);
             sw.WriteLine("Save Template Tree: {0}", SaveTemplateTree);
             sw.WriteLine("Save Test Tree: {0}", SaveTestTree);
             sw.WriteLine("Shadow Copy Files: {0}", ShadowCopyFiles);

@@ -52,11 +52,21 @@ namespace MbUnit.Core.Runner.Monitors
             Runner.EventDispatcher.ExecutionLog += HandleExecutionLogEvent;
         }
 
+        /// <inheritdoc />
+        protected override void OnDetach()
+        {
+            base.OnDetach();
+
+            Runner.EventDispatcher.Message -= HandleMessageEvent;
+            Runner.EventDispatcher.Lifecycle -= HandleLifecycleEvent;
+            Runner.EventDispatcher.ExecutionLog -= HandleExecutionLogEvent;
+        }
+
         private void HandleMessageEvent(object sender, MessageEventArgs e)
         {
             lock (this)
             {
-                writer.WriteLine(@"[Message: {0}] - {1}", e.MessageType, e.Message);
+                writer.WriteLine(Resources.DebugMonitor_MessageEvent_EventFormat, e.MessageType, e.Message);
                 writer.WriteLine();
             }
         }
@@ -70,27 +80,23 @@ namespace MbUnit.Core.Runner.Monitors
                 switch (e.EventType)
                 {
                     case LifecycleEventType.Start:
-                        if (e.StepInfo.ParentId != null)
-                            stepName = GetStepName(e.StepInfo.ParentId) + @" / " + e.StepInfo.Name;
-                        else
-                            stepName = Runner.TestModel.Tests[e.StepInfo.TestId].Name + @": " + e.StepInfo.Name;
-
+                        stepName = e.StepInfo.FullName;
                         stepNames.Add(e.StepId, stepName);
 
-                        writer.WriteLine(@"[Lifecycle: Start ({0})]", stepName);
+                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Start_EventFormat, stepName);
                         break;
 
                     case LifecycleEventType.EnterPhase:
-                        writer.WriteLine(@"[Lifecycle: Enter Phase ({0})]", stepName);
-                        writer.WriteLine("\tPhase Name: {0}", e.PhaseName);
+                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Phase_EventFormat, stepName);
+                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Phase_NameFormat, e.PhaseName);
                         break;
 
                     case LifecycleEventType.Finish:
-                        writer.WriteLine(@"[Lifecycle: Finish ({0})]", stepName);
-                        writer.WriteLine("\tState: {0}", e.Result.State);
-                        writer.WriteLine("\tOutcome: {0}", e.Result.Outcome);
-                        writer.WriteLine("\tAsserts: {0}", e.Result.AssertCount);
-                        writer.WriteLine("\tDuration: {0}", e.Result.Duration);
+                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_EventFormat, stepName);
+                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_StateFormat, e.Result.State);
+                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_OutcomeFormat, e.Result.Outcome);
+                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_AssertCountFormat, e.Result.AssertCount);
+                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_DurationFormat, e.Result.Duration);
                         break;
                 }
 
@@ -107,31 +113,31 @@ namespace MbUnit.Core.Runner.Monitors
                 switch (e.EventType)
                 {
                     case ExecutionLogEventType.WriteText:
-                        writer.WriteLine(@"[Execution Log: Write Text ({0})]", stepName);
-                        writer.WriteLine("\tStream Name: {0}", e.StreamName);
-                        writer.WriteLine("\tText: {0}", e.Text);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_WriteText_EventFormat, stepName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_StreamNameFormat, e.StreamName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_TextFormat, e.Text);
                         break;
 
                     case ExecutionLogEventType.WriteAttachment:
-                        writer.WriteLine(@"[Execution Log: Write Attachment ({0})]", stepName);
-                        writer.WriteLine("\tStream Name: {0}", e.StreamName ?? @"<null>");
-                        writer.WriteLine("\tAttachment Name: {0}", e.Attachment.Name);
-                        writer.WriteLine("\tAttachment Content Type: {0}", e.Attachment.ContentType);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_WriteAttachment_EventFormat, stepName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_StreamNameFormat, e.StreamName ?? @"<null>");
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_WriteAttachment_AttachmentNameFormat, e.Attachment.Name);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_WriteAttachment_ContentTypeFormat, e.Attachment.ContentType);
                         break;
 
                     case ExecutionLogEventType.BeginSection:
-                        writer.WriteLine(@"[Execution Log: Being Section ({0})]", stepName);
-                        writer.WriteLine("\tStream Name: {0}", e.StreamName);
-                        writer.WriteLine("\tSection Name: {0}", e.SectionName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat, stepName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_StreamNameFormat, e.StreamName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_BeginSection_SectionNameFormat, e.SectionName);
                         break;
 
                     case ExecutionLogEventType.EndSection:
-                        writer.WriteLine(@"[Execution Log: End Section ({0})]", stepName);
-                        writer.WriteLine("\tStream Name: {0}", e.StreamName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_EndSection_EventFormat, stepName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_StreamNameFormat, e.StreamName);
                         break;
 
                     case ExecutionLogEventType.Close:
-                        writer.WriteLine(@"[Execution Log: Close ({0})]", stepName);
+                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_Close_EventFormat, stepName);
                         break;
                 }
 

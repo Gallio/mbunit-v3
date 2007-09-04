@@ -229,7 +229,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
 
                 progressMonitor.SetStatus(String.Format(Resources.NUnitTestController_StatusMessages_RunningTest, test.Name));
 
-                IStep step = BaseStep.CreateRootStep(test);
+                IStep step = new BaseStep(test);
                 stepStack.Push(step);
 
                 listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(step)));

@@ -41,7 +41,7 @@ namespace MbUnit.Core.Runner.Monitors
         public void Attach(ITestRunner runner)
         {
             if (runner == null)
-                throw new ArgumentNullException("runner");
+                throw new ArgumentNullException(@"runner");
 
             if (this.runner != null)
                 throw new InvalidOperationException("The monitor is already attached to a different runner.");
@@ -50,11 +50,29 @@ namespace MbUnit.Core.Runner.Monitors
             OnAttach();
         }
 
+        /// <inheritdoc />
+        public void Detach()
+        {
+            if (runner != null)
+            {
+                OnDetach();
+                runner = null;
+            }
+        }
+
         /// <summary>
         /// Called when the monitor is attached to allow subclasses to perform any
         /// necessary processing.
         /// </summary>
         protected virtual void OnAttach()
+        {
+        }
+
+        /// <summary>
+        /// Called when the monitor is detached to allow subclasses to perform any
+        /// necessary processing.
+        /// </summary>
+        protected virtual void OnDetach()
         {
         }
     }

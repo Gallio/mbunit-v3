@@ -31,8 +31,8 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class ModelTreeBuilder<T> where T : class, IModelTreeNode<T>
     {
-        private T root;
-        private Dictionary<object, T> registry;
+        private readonly T root;
+        private readonly Dictionary<string, T> registry;
 
         /// <summary>
         /// Creates a tree builder initially populated with the specified root node.
@@ -46,7 +46,7 @@ namespace MbUnit.Framework.Kernel.Model
 
             this.root = root;
 
-            registry = new Dictionary<object, T>();
+            registry = new Dictionary<string, T>();
         }
 
         /// <summary>
@@ -72,14 +72,18 @@ namespace MbUnit.Framework.Kernel.Model
         public event EventHandler<EventArgs> PostProcess;
 
         /// <summary>
-        /// Registers a given node with a given key (such as a type).
-        /// This allows the node to be referenced elsewhere.
+        /// Registers a node with a given key (such as a unique identifier).
+        /// This allows the node to be referenced in contexts that are disconnected
+        /// from the producer of the node.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.  The value for the key should be chosen so as
+        /// to be sufficiently unique as to not conflict with keys used by other
+        /// components.  The simplest solution is to prefix the key with a token that
+        /// uniquely identifies the context in which the key in meaningful, such as "SomeFrameworkComponent:MyKey"</param>
         /// <param name="node">The node to register</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or
         /// <paramref name="node"/> is null</exception>
-        public void RegisterNode(object key, T node)
+        public void RegisterNode(string key, T node)
         {
             if (key == null)
                 throw new ArgumentNullException(@"key");

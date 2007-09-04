@@ -52,6 +52,7 @@ Section "!MbUnit Gallio" GallioSection
 	; Set Section properties
 	SectionIn RO
 	SetOverwrite on
+	SetShellVarContext all
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR"
@@ -124,20 +125,20 @@ Section "TestDriven.Net AddIn" TDNetAddInSection
 	SetOverwrite on
 	
 	; Registry Keys
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio" "" "15"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\MbUnit.AddIn.TDNet.dll"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio" "TargetFrameworkAssemblyName" "MbUnit.Gallio.Framework"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio" "" "15"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\bin\MbUnit.AddIn.TDNet.dll"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio" "TargetFrameworkAssemblyName" "MbUnit.Gallio.Framework"
 
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit2" "" "20"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit2" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\MbUnit.AddIn.TDNet.dll"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit2" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit2" "TargetFrameworkAssemblyName" "MbUnit.Framework"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit2" "" "20"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit2" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\bin\MbUnit.AddIn.TDNet.dll"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit2" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit2" "TargetFrameworkAssemblyName" "MbUnit.Framework"
 
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "" "20"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\MbUnit.AddIn.TDNet.dll"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "TargetFrameworkAssemblyName" "nunit.framework"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "" "20"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\bin\MbUnit.AddIn.TDNet.dll"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "TargetFrameworkAssemblyName" "nunit.framework"
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
@@ -148,6 +149,7 @@ SectionEnd
 Section "Standalone Help Docs" CHMHelpSection
 	; Set Section properties
 	SetOverwrite on
+	SetShellVarContext all
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR"
@@ -227,6 +229,8 @@ FunctionEnd
 
 ;Uninstall section
 Section Uninstall
+	SetShellVarContext all
+
 	; Remove from registry...
 	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
 	DeleteRegKey HKLM "SOFTWARE\${APPNAME}"
@@ -307,9 +311,9 @@ Section Uninstall
 	RMDir "$INSTDIR"
 
 	; Remove registry keys
-	DeleteRegKey SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio"
-	DeleteRegKey SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit"
-	DeleteRegKey SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit"
+	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio"
+	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit"
+	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit"
 SectionEnd
 
 BrandingText "mbunit.com"

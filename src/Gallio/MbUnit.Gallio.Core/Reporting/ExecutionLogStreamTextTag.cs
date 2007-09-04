@@ -45,7 +45,7 @@ namespace MbUnit.Core.Reporting
         public ExecutionLogStreamTextTag(string text)
         {
             if (text == null)
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException(@"text");
             this.text = text;
         }
 
@@ -60,9 +60,15 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 text = value;
             }
+        }
+
+        /// <inheritdoc />
+        public override void Accept(IExecutionLogStreamTagVisitor visitor)
+        {
+            visitor.VisitTextTag(this);
         }
     }
 }

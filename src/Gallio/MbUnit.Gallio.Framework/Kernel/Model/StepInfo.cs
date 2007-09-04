@@ -29,6 +29,7 @@ namespace MbUnit.Framework.Kernel.Model
     {
         private string id;
         private string name;
+        private string fullName;
         private string parentId;
         private string testId;
 
@@ -44,20 +45,24 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="id">The step id</param>
         /// <param name="name">The step name</param>
+        /// <param name="fullName">The full name of the step</param>
         /// <param name="testId">The test id</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
-        /// or <paramref name="testId"/> is null</exception>
-        public StepInfo(string id, string name, string testId)
+        /// <paramref name="fullName"/> or <paramref name="testId"/> is null</exception>
+        public StepInfo(string id, string name, string fullName, string testId)
         {
             if (id == null)
                 throw new ArgumentNullException(@"id");
             if (name == null)
                 throw new ArgumentNullException(@"name");
+            if (fullName == null)
+                throw new ArgumentNullException(@"fullName");
             if (testId == null)
                 throw new ArgumentNullException(@"testId");
 
             this.id = id;
             this.name = name;
+            this.fullName = fullName;
             this.testId = testId;
         }
 
@@ -73,6 +78,7 @@ namespace MbUnit.Framework.Kernel.Model
 
             id = obj.Id;
             name = obj.Name;
+            fullName = obj.FullName;
             testId = obj.Test.Id;
 
             if (obj.Parent != null)
@@ -108,6 +114,22 @@ namespace MbUnit.Framework.Kernel.Model
                 if (value == null)
                     throw new ArgumentNullException(@"value");
                 name = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the full name of the step.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlAttribute("fullName")]
+        public string FullName
+        {
+            get { return fullName; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                fullName = value;
             }
         }
 

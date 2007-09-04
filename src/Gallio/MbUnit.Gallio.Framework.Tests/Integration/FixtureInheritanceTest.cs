@@ -30,7 +30,7 @@ using System.Text;
 
 namespace MbUnit._Framework.Tests.Integration
 {
-    [TestFixture, Explicit]
+    [TestFixture]
     public class FixtureInheritanceTest : BaseSampleTest
     {
         [TestFixtureSetUp]

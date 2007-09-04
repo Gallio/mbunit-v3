@@ -13,26 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
-using MbUnit.Core.Runner.Monitors;
-using MbUnit2::MbUnit.Framework;
-
-namespace MbUnit.Core.Tests.Runner
+namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
-    [TestFixture]
-    public class LogMonitorTests
-    {
-        [Test]
-        public void Instantiate()
-        {
-            new TestLogMonitor();
-        }
-
-        private class TestLogMonitor : LogMonitor
-        {
-            
-        }
-    }
-
-    
+	/// <summary>
+	/// A delegate used in error reporting.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Command line parsing code from Peter Halam, 
+	/// http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e
+	/// </para>
+	/// </remarks>
+	public delegate void ErrorReporter(string message);
 }

@@ -17,10 +17,10 @@ extern alias MbUnit2;
 using System;
 using System.IO;
 using System.Text;
-using MbUnit.Core.Runner.CommandLine;
+using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit2::MbUnit.Framework;
 
-namespace MbUnit.Core.Tests.Runner.CommandLine
+namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
 {
     [TestFixture]
     public class CommandLineOutputTests

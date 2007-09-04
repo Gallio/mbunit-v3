@@ -144,8 +144,7 @@
   </Target>
 
   <Target Name="Test">
-    <Exec Command="&quot;$(LibsDir)\MbUnit2\bin\MbUnit.Cons.exe&quot; /report-type:Html /report-folder:&quot;$(BuildReportsDir)&quot; /show-reports @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
-          WorkingDirectory="$(LibsDir)\MbUnit2\bin"
+    <Exec Command="&quot;$(BuildBinDir)\MbUnit.Echo.exe&quot; /report-type:Html /report-type:Text /report-directory:&quot;$(BuildReportsDir)&quot; /show-reports @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
           IgnoreExitCode="true">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
     </Exec>

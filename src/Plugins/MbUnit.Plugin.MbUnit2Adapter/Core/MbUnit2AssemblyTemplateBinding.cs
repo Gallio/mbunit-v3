@@ -48,6 +48,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
     /// </summary>
     public class MbUnit2AssemblyTemplateBinding : BaseTemplateBinding
     {
+        private const string MbUnitAssemblyNamePrefix = "MbUnit2.AssemblyName:";
         private FixtureExplorer fixtureExplorer;
 
         /// <summary>
@@ -95,7 +96,17 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 }
             }
 
-            // TODO: Use GetDependentAssemblies() to handle assembly dependencies
+            // Register the root assembly test so that dependencies can be resolved later.
+            builder.RegisterNode(MbUnitAssemblyNamePrefix + fixtureExplorer.AssemblyName, assemblyTest);
+            builder.ResolveReferences += delegate
+            {
+                foreach (string assemblyName in fixtureExplorer.GetDependentAssemblies())
+                {
+                    ITest test = builder.GetNode(MbUnitAssemblyNamePrefix + assemblyName);
+                    if (test != null)
+                        assemblyTest.Dependencies.Add(test);
+                }
+            };
         }
 
         private void RunFixtureExplorerIfNeeded()

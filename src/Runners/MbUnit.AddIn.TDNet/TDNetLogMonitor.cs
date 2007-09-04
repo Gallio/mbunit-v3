@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Results;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
@@ -27,42 +29,62 @@ namespace MbUnit.AddIn.TDNet
     /// An ITestRunnerMonitor implementation that informs TD.NET (and therefore the user)
     /// in real-time what's going with the tests.
     /// </summary>
-    internal class TDNetLogMonitor : LogMonitor
+    internal class TDNetLogMonitor : BaseTestRunnerMonitor
     {
         private readonly ITestListener testListener;
+        private readonly ReportMonitor reportMonitor;
 
-        public TDNetLogMonitor(ITestListener testListener)
+        public TDNetLogMonitor(ITestListener testListener, ReportMonitor reportMonitor)
         {
             if (testListener == null)
-                throw new ArgumentNullException("testListener");
+                throw new ArgumentNullException(@"testListener");
+            if (reportMonitor == null)
+                throw new ArgumentNullException(@"reportMonitor");
 
             this.testListener = testListener;
+            this.reportMonitor = reportMonitor;
         }
 
-        protected override void OnTestCaseFinished(string testName, string stackTrace, Framework.Kernel.Results.TestResult testResult)
+        protected override void OnAttach()
+        {
+            base.OnAttach();
+
+            reportMonitor.StepFinished += HandleStepFinished;
+        }
+
+        protected override void OnDetach()
+        {
+            base.OnDetach();
+
+            reportMonitor.StepFinished -= HandleStepFinished;
+        }
+
+        private void HandleStepFinished(object sender, ReportStepEventArgs e)
         {
             // A TestResult with State == TestState.Passed won't be displayed in the
             // output window (TD.NET just diplays "[TestName] passed" in the status bar.
             // Since that can be harder to notice, and also is lost when the following
             // test finishes, we print a message in the output window so the user can 
             // progressively see if the tests are passing or failing.
-            if (testResult.Outcome == TestOutcome.Passed)
+            if (e.StepRun.Result.Outcome == TestOutcome.Passed)
             {
-                string message = @"TestCase '{0}' passed [{1} Asserts, Took {2} seconds]";
-                string formattedMessage = String.Format(message, testName, testResult.AssertCount, testResult.Duration);
-                testListener.WriteLine(formattedMessage, Category.Info);
+                testListener.WriteLine(String.Format("TestCase '{0}' passed.", e.StepRun.StepFullName), Category.Info);
             }
 
             // Inform TD.NET what happened 
             TestResult result = new TestResult();
-            result.Name = testName;
+            result.Name = e.StepRun.StepFullName;
+
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line
-            if (stackTrace != null)
-                result.StackTrace = stackTrace;
+            ExecutionLogStream failureStream = e.StepRun.ExecutionLog.GetStream(ExecutionLogStreamName.Failures);
+            if (failureStream != null)
+                result.StackTrace = failureStream.ToString();
+
             // TD.NET will automatically count the number of passed, ignored and failed tests
             // provided we call the TestFinished method with the right State
-            result.State = GetTestState(testResult.Outcome);
+            result.State = GetTestState(e.StepRun.Result.Outcome);
+
             testListener.TestFinished(result);
         }
 

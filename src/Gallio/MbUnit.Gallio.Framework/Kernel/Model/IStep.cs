@@ -39,6 +39,28 @@ namespace MbUnit.Framework.Kernel.Model
         string Name { get; }
 
         /// <summary>
+        /// <para>
+        /// Gets the full name of the step.  The full name is derived from the name
+        /// of the test that contains the step and from all of the parent steps.
+        /// </para>
+        /// <para>
+        /// The full name of the root step is simply the name of the test itself.
+        /// The name of a child step is the full name of the parent step followed by a
+        /// colon if the parent step was the root or a slash otherwise and finally followed
+        /// by the name of the step itself.
+        /// </para>
+        /// <para>
+        /// Examples:
+        /// <list type="bullet">
+        /// <item><term>SomeTest</term><description>The root step of SomeTest</description></item>
+        /// <item><term>SomeTest:ChildStep</term><description>A child step of the root step of SomeTest</description></item>
+        /// <item><term>SomeTest:ChildStep/GrandchildStep/BabyStep</term><description>A deeply nested descendent step</description></item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        string FullName { get; }
+
+        /// <summary>
         /// Gets the step that contains this one, or null if this instance represents the
         /// root step of a test.
         /// </summary>

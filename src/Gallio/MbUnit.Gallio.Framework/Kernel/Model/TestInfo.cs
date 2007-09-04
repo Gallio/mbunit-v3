@@ -74,6 +74,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// Gets or sets whether this node is a test case.
         /// </summary>
         /// <seealso cref="ITest.IsTestCase"/>
+        [XmlAttribute("isTestCase")]
         public bool IsTestCase
         {
             get { return isTestCase; }

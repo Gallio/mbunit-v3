@@ -15,7 +15,7 @@
 using System;
 using System.Diagnostics;
 
-namespace MbUnit.Core.Runner.CommandLine
+namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
     /// <summary>
     /// Allows control of command line parsing.

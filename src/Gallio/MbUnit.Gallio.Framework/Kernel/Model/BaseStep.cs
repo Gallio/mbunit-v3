@@ -22,31 +22,50 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public class BaseStep : IStep
     {
-        private string id;
-        private string name;
-        private IStep parent;
-        private ITest test;
+        private readonly string id;
+        private readonly string name;
+        private readonly string fullName;
+        private readonly IStep parent;
+        private readonly ITest test;
+
+        /// <summary>
+        /// Creates a root step for a test.
+        /// </summary>
+        /// <param name="test">The test</param>
+        /// <returns>The root step</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        public BaseStep(ITest test)
+            : this(test, null, Resources.BaseStep_RootStepName)
+        {
+        }
 
         /// <summary>
         /// Creates a step.
         /// </summary>
-        /// <param name="name">The step name</param>
         /// <param name="test">The test to which the step belongs</param>
         /// <param name="parent">The parent step, or null if none</param>
+        /// <param name="name">The step name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
         /// or <paramref name="test"/> is null</exception>
-        public BaseStep(string name, ITest test, IStep parent)
+        public BaseStep(ITest test, IStep parent, string name)
         {
-            if (name == null)
-                throw new ArgumentNullException(@"name");
             if (test == null)
                 throw new ArgumentNullException(@"test");
+            if (name == null)
+                throw new ArgumentNullException(@"name");
 
             this.name = name;
             this.test = test;
             this.parent = parent;
 
             id = Guid.NewGuid().ToString();
+
+            if (parent == null)
+                fullName = test.Name;
+            else if (parent.Parent == null)
+                fullName = parent.FullName + @":" + name;
+            else
+                fullName = parent.FullName + @"/" + name;
         }
 
         /// <inheritdoc />
@@ -62,6 +81,12 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <inheritdoc />
+        public string FullName
+        {
+            get { return fullName; }
+        }
+
+        /// <inheritdoc />
         public IStep Parent
         {
             get { return parent; }
@@ -71,20 +96,6 @@ namespace MbUnit.Framework.Kernel.Model
         public ITest Test
         {
             get { return test; }
-        }
-
-        /// <summary>
-        /// Creates a root step for a test.
-        /// </summary>
-        /// <param name="test">The test</param>
-        /// <returns>The root step</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
-        public static BaseStep CreateRootStep(ITest test)
-        {
-            if (test == null)
-                throw new ArgumentNullException(@"test");
-
-            return new BaseStep(Resources.BaseStep_RootStepName, test, null);
         }
     }
 }

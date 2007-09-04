@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Diagnostics;
 using Castle.Core.Logging;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
@@ -46,9 +47,10 @@ namespace MbUnit.Core.Runner
         private readonly TestPackage package;
         private readonly ProgressMonitorCreator progressMonitorCreator;
         private readonly RuntimeSetup runtimeSetup;
-        private readonly LevelFilteredLogger logger;
+        private readonly ILogger logger;
         private readonly Filter<ITest> filter;
 
+        private bool echoResults;
         private string templateModelFilename;
         private string testModelFilename;
 
@@ -78,7 +80,7 @@ namespace MbUnit.Core.Runner
         /// <param name="filter">The filter to apply to the tests.</param>
         public TestRunnerHelper(
             ProgressMonitorCreator progressMonitorCreator,
-            LevelFilteredLogger logger,
+            ILogger logger,
             Filter<ITest> filter)
         {
             CheckRequiredArgument(progressMonitorCreator, "progressMonitorCreator");
@@ -94,6 +96,8 @@ namespace MbUnit.Core.Runner
 
             reportFormats = new List<string>();
             reportFormatOptions = new NameValueCollection();
+
+            reportMonitor = new ReportMonitor();
         }
 
         /// <summary>
@@ -106,7 +110,7 @@ namespace MbUnit.Core.Runner
         /// the tests.</param>
         public TestRunnerHelper(
             ProgressMonitorCreator progressMonitorCreator,
-            LevelFilteredLogger logger,
+            ILogger logger,
             string filter)
             : this(progressMonitorCreator,
                    logger,
@@ -142,6 +146,16 @@ namespace MbUnit.Core.Runner
         public RuntimeSetup RuntimeSetup
         {
             get { return runtimeSetup; }
+        }
+
+        /// <summary>
+        /// If set to true, the test runner will echo results to the <see cref="ILogger" />
+        /// as each test finished.
+        /// </summary>
+        public bool EchoResults
+        {
+            get { return echoResults; }
+            set { echoResults = value; }
         }
 
         /// <summary>
@@ -218,6 +232,14 @@ namespace MbUnit.Core.Runner
         }
 
         /// <summary>
+        /// Gets the test runner's report monitor.
+        /// </summary>
+        public ReportMonitor ReportMonitor
+        {
+            get { return reportMonitor; }
+        }
+
+        /// <summary>
         /// A list of custom ITestRunnerMonitor objects.
         /// </summary>
         public List<ITestRunnerMonitor> CustomMonitors
@@ -250,8 +272,9 @@ namespace MbUnit.Core.Runner
                 if (!Validate(reportManager))
                     return ResultCode.InvalidArguments;
 
-                CreateDebugMonitor(runner);
-                CreateReportMonitor(runner);
+                reportMonitor.Attach(runner);
+                AttachDebugMonitorIfNeeded(runner);
+                AttachLogMonitorIfNeeded(runner);
                 AttachCustomMonitors(runner);
 
                 try
@@ -264,7 +287,7 @@ namespace MbUnit.Core.Runner
                 }
                 finally
                 {
-                    ConsoleCancelHandler.IsCanceled = false;
+                    SharedConsole.IsCanceled = false;
                 }
 
                 // Run the tests.
@@ -279,7 +302,7 @@ namespace MbUnit.Core.Runner
                 }
                 finally
                 {
-                    ConsoleCancelHandler.IsCanceled = false;
+                    SharedConsole.IsCanceled = false;
                 }
 
                 // Generate reports even if the test run is canceled, unless this step
@@ -294,7 +317,7 @@ namespace MbUnit.Core.Runner
                 }
                 finally
                 {
-                    ConsoleCancelHandler.IsCanceled = false;
+                    SharedConsole.IsCanceled = false;
                 }
 
                 statistics = reportMonitor.Report.PackageRun.Statistics;
@@ -359,18 +382,21 @@ namespace MbUnit.Core.Runner
             PersistTestTree(runner);
         }
 
-        private void CreateReportMonitor(ITestRunner runner)
-        {
-            reportMonitor = new ReportMonitor();
-            reportMonitor.Attach(runner);
-        }
-
-        private void CreateDebugMonitor(ITestRunner runner)
+        private void AttachDebugMonitorIfNeeded(ITestRunner runner)
         {
             if (logger.IsDebugEnabled)
             {
                 debugWriter = new StringWriter();
                 new DebugMonitor(debugWriter).Attach(runner);
+            }
+        }
+
+        private void AttachLogMonitorIfNeeded(ITestRunner runner)
+        {
+            if (echoResults)
+            {
+                LogMonitor logMonitor = new LogMonitor(logger, reportMonitor);
+                logMonitor.Attach(runner);
             }
         }
 

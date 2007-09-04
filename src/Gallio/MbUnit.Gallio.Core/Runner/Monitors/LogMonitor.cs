@@ -13,114 +13,156 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using MbUnit.Framework.Kernel.Events;
+using System;
+using System.Text;
+using Castle.Core.Logging;
+using MbUnit.Core.Reporting;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Results;
 
 namespace MbUnit.Core.Runner.Monitors
 {
     /// <summary>
-    /// An <see cref="ITestRunnerMonitor" /> implementation that listens to
-    /// <see cref="ITestRunner" /> events and makes easier to keep track of
-    /// executed test cases and their stack traces if they fail.
+    /// A log monitor writes a summary of test execution progress to an <see cref="ILogger" />
+    /// so the user can monitor what's going on.  Passing tests are recorded with severity
+    /// <see cref="LoggerLevel.Info" />, warnings are recorded with severity <see cref="LoggerLevel.Warn" />
+    /// and failures are recorded with severity <see cref="LoggerLevel.Error" />.
     /// </summary>
-    public abstract class LogMonitor : BaseTestRunnerMonitor
+    public class LogMonitor : BaseTestRunnerMonitor
     {
-        private readonly object lockObject = new object();
-        private readonly Dictionary<string, string> stepNames = new Dictionary<string, string>();
-        // A dictionary with the test cases and maybe a stack trace if they fail
-        private readonly Dictionary<string, string> testCases = new Dictionary<string, string>();
+        private readonly ReportMonitor reportMonitor;
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// Creates a log monitor.
+        /// </summary>
+        /// <param name="logger">The logger to which messages should be written</param>
+        /// <param name="reportMonitor">The report monitor to use to obtain test results</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/>
+        /// or <paramref name="reportMonitor"/> is null</exception>
+        public LogMonitor(ILogger logger, ReportMonitor reportMonitor)
+        {
+            if (logger == null)
+                throw new ArgumentNullException(@"logger");
+            if (reportMonitor == null)
+                throw new ArgumentNullException(@"reportMonitor");
+
+            this.logger = logger;
+            this.reportMonitor = reportMonitor;
+        }
 
         /// <inheritdoc />
         protected override void OnAttach()
         {
             base.OnAttach();
 
-            Runner.EventDispatcher.Lifecycle += HandleLifecycleEvent;
-            Runner.EventDispatcher.ExecutionLog += HandleExecutionLogEvent;
+            reportMonitor.StepStarting += HandleStepStarting;
+            reportMonitor.StepFinished += HandleStepFinished;
         }
 
-        private void HandleLifecycleEvent(object sender, LifecycleEventArgs e)
+        /// <inheritdoc />
+        protected override void OnDetach()
         {
-            lock (lockObject)
-            {
-                switch (e.EventType)
-                {
-                    case LifecycleEventType.Start:
-                        ProcessStartEvent(e);
-                        break;
+            base.OnDetach();
 
-                    case LifecycleEventType.Finish:
-                        // We are only interested in test cases
-                        if (!testCases.ContainsKey(e.StepId))
-                            return;
-                        ProcessFinishEvent(e);
-                        break;
-                }
+            reportMonitor.StepStarting -= HandleStepStarting;
+            reportMonitor.StepFinished -= HandleStepFinished;
+        }
+
+        private void HandleStepStarting(object sender, ReportStepEventArgs e)
+        {
+            logger.DebugFormat(Resources.LogMonitor_HeaderFormat,
+                Resources.LogMonitor_Status_Starting, e.StepRun.StepFullName);
+        }
+
+        private void HandleStepFinished(object sender, ReportStepEventArgs e)
+        {
+            LoggerLevel level;
+            string status = GetFinishedMessageStatus(e.StepRun.Result.Outcome, e.StepRun.Result.State, out level);
+            string warnings = FormatStream(e.StepRun, ExecutionLogStreamName.Warnings);
+            string failures = FormatStream(e.StepRun, ExecutionLogStreamName.Failures);
+
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.AppendFormat(Resources.LogMonitor_HeaderFormat, status, e.StepRun.StepFullName);
+
+            if (warnings.Length != 0)
+            {
+                if (level < LoggerLevel.Warn)
+                    level = LoggerLevel.Warn;
+
+                messageBuilder.Append(warnings);
+                messageBuilder.AppendLine();
+            }
+
+            if (failures.Length != 0)
+            {
+                if (level < LoggerLevel.Error)
+                    level = LoggerLevel.Error;
+
+                messageBuilder.Append(failures);
+                messageBuilder.AppendLine();
+            }
+
+            Log(level, messageBuilder.ToString());
+        }
+
+        private void Log(LoggerLevel level, string message)
+        {
+            switch (level)
+            {
+                case LoggerLevel.Info:
+                    logger.Info(message);
+                    break;
+                case LoggerLevel.Warn:
+                    logger.Warn(message);
+                    break;
+                case LoggerLevel.Error:
+                    logger.Error(message);
+                    break;
             }
         }
 
-        private void ProcessStartEvent(LifecycleEventArgs e)
+        private static string FormatStream(StepRun stepRun, string streamName)
         {
-            // Construct the test name
-            string stepName;
-            if (e.StepInfo.ParentId != null)
-                stepName = GetStepName(e.StepInfo.ParentId) + @" / " + e.StepInfo.Name;
-            else
-                stepName = Runner.TestModel.Tests[e.StepInfo.TestId].Name;
-            stepNames.Add(e.StepId, stepName);
+            ExecutionLogStream stream = stepRun.ExecutionLog.GetStream(streamName);
+            return stream != null ? stream.ToString() : @"";
+        }
 
-            // We maintain a list of the tests cases so we can show only them in the
-            // output. e.StepInfo is null on the Finish event so we have to check here.
-            if (Runner.TestModel.Tests[e.StepInfo.TestId].IsTestCase)
+        private static string GetFinishedMessageStatus(TestOutcome outcome, TestState state, out LoggerLevel level)
+        {
+            switch (outcome)
             {
-                testCases.Add(e.StepId, null);
-                OnTestCaseStart();
+                case TestOutcome.Passed:
+                    level = LoggerLevel.Info;
+                    return Resources.LogMonitor_Status_Passed;
+
+                case TestOutcome.Failed:
+                    level = LoggerLevel.Error;
+                    return Resources.LogMonitor_Status_Failed;
+
+                case TestOutcome.Inconclusive:
+                    level = LoggerLevel.Info;
+
+                    switch (state)
+                    {
+                        case TestState.Canceled:
+                            return Resources.LogMonitor_Status_Canceled;
+                        case TestState.Error:
+                            return Resources.LogMonitor_Status_Error;
+                        case TestState.Executed:
+                            return Resources.LogMonitor_Status_Inconclusive;
+                        case TestState.Ignored:
+                            return Resources.LogMonitor_Status_Ignored;
+                        case TestState.NotRun:
+                            return Resources.LogMonitor_Status_NotRun;
+                        case TestState.Skipped:
+                            return Resources.LogMonitor_Status_Skipped;
+                    }
+                    break;
             }
-        }
 
-        private void ProcessFinishEvent(LifecycleEventArgs e)
-        {
-            string stepName = GetStepName(e.StepId);
-            string stackTrace = null;
-
-            // If testCases[e.StepId] is not null, then it contains the stack trace
-            // associated with this test
-            if (testCases.ContainsKey(e.StepId) && testCases[e.StepId] != null)
-            {
-                stackTrace = testCases[e.StepId];
-            }
-            OnTestCaseFinished(stepName, stackTrace, e.Result);
-        }
-
-        private void HandleExecutionLogEvent(object sender, ExecutionLogEventArgs e)
-        {
-            lock (lockObject)
-            {
-                // Save the stack trace
-                if (testCases.ContainsKey(e.StepId)
-                    && e.EventType == ExecutionLogEventType.WriteText
-                    && e.StreamName.CompareTo("Failures") == 0)
-                {
-                    testCases[e.StepId] = e.Text;
-                }
-            }
-        }
-
-        protected virtual void OnTestCaseStart()
-        {
-
-        }
-
-        protected virtual void OnTestCaseFinished(string testName, string stackTrace, TestResult testResult)
-        {
-            
-        }
-
-        private string GetStepName(string stepId)
-        {
-            string stepName;
-            return stepNames.TryGetValue(stepId, out stepName) ? stepName : stepId;
+            level = LoggerLevel.Error;
+            return Resources.LogMonitor_Status_Unknown;
         }
     }
 }
