@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Diagnostics;
+using System.Text;
 using Castle.Core.Logging;
 using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.Harness;
@@ -449,7 +450,7 @@ namespace MbUnit.Core.Runner
 
         private void DisplayConfiguration()
         {
-            DisplayPaths(package.AssemblyFiles, "Test assemblies:");
+            DisplayPaths(package.AssemblyFiles, "Test Assemblies:");
             DisplayPaths(package.HintDirectories, "Hint Directories:");
             DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
         }
@@ -458,9 +459,14 @@ namespace MbUnit.Core.Runner
         {
             if (paths != null && paths.Count > 0)
             {
-                logger.Info(name);
+                StringBuilder message = new StringBuilder();
+                message.Append(name);
+
                 foreach (string path in paths)
-                    logger.Info("\t{0}", path);
+                    message.Append("\n\t").Append(path);
+                message.AppendLine();
+
+                logger.Info(message.ToString());
             }
         }
 

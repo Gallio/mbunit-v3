@@ -26,6 +26,7 @@ namespace MbUnit.Core.ConsoleSupport
     public class SharedConsoleProgressMonitor : TextualProgressMonitor
     {
         private int newlinesWritten;
+        private bool bannerPrinted;
 
         /// <summary>
         /// Creates a console progress monitor.
@@ -45,80 +46,93 @@ namespace MbUnit.Core.ConsoleSupport
         /// <inheritdoc />
         protected override void UpdateDisplay()
         {
-            // Don't try to show progress if output is redirected.  It won't work!
-            if (SharedConsole.IsRedirected)
-                return;
+            lock (SharedConsole.SyncRoot)
+            {
+                ShowTaskBeginningBanner();
 
-            if (IsDone)
-                SharedConsole.SetFooter(null, null);
-            else
-                SharedConsole.SetFooter(ShowFooter, HideFooter);
+                // Don't try to show real-time progress if output is redirected.
+                // It can't work because we can't erase previously written text.
+                if (SharedConsole.IsRedirected)
+                    return;
+
+                if (IsDone)
+                    SharedConsole.SetFooter(null, null);
+                else
+                    SharedConsole.SetFooter(ShowFooter, HideFooter);
+            }
+        }
+
+        private void ShowTaskBeginningBanner()
+        {
+            // Just print the task name once.
+            if (!bannerPrinted)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(TrimMessageWithEllipses(TaskName, Console.BufferWidth - 1));
+                Console.ResetColor();
+
+                bannerPrinted = true;
+            }
         }
 
         private void ShowFooter()
         {
-            lock (SharedConsole.SyncRoot)
+            NewLine();
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(TrimMessageWithEllipses(TaskName, Console.BufferWidth - 20).PadRight(Console.BufferWidth - 19));
+
+            if (!IsDone && !double.IsNaN(TotalWorkUnits))
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write('[');
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write(new string('=', (int)Math.Round(CompletedWorkUnits * 10 / TotalWorkUnits)).PadRight(10));
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(@"] ");
+                Console.Write(Math.Floor(CompletedWorkUnits * 100 / TotalWorkUnits));
+                Console.Write('%');
                 NewLine();
 
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(TrimMessageWithEllipses(TaskName, Console.BufferWidth - 20).PadRight(Console.BufferWidth - 19));
-
-                if (!IsDone && !double.IsNaN(TotalWorkUnits))
+                if (CurrentSubTaskName.Length != 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write('[');
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.Write(new string('=', (int)Math.Round(CompletedWorkUnits * 10 / TotalWorkUnits)).PadRight(10));
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write(@"] ");
-                    Console.Write(Math.Floor(CompletedWorkUnits * 100 / TotalWorkUnits));
-                    Console.Write('%');
-                    NewLine();
-
-                    if (CurrentSubTaskName.Length != 0)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                        Console.Write(@"  ");
-                        Console.Write(TrimMessageWithEllipses(CurrentSubTaskName, Console.BufferWidth - 3));
-                        NewLine();
-                    }
-
-                    if (Status.Length != 0)
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.Write(@"  ");
-                        Console.Write(TrimMessageWithEllipses(Status, Console.BufferWidth - 3));
-                        NewLine();
-                    }
-                }
-                else
-                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write(@"  ");
+                    Console.Write(TrimMessageWithEllipses(CurrentSubTaskName, Console.BufferWidth - 3));
                     NewLine();
                 }
 
-                if (IsCanceled)
+                if (Status.Length != 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(@"    ");
-                    Console.Write(IsDone ? Resources.ConsoleProgressMonitor_CanceledBanner : Resources.ConsoleProgressMonitor_CancelingBanner);
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write(@"  ");
+                    Console.Write(TrimMessageWithEllipses(Status, Console.BufferWidth - 3));
                     NewLine();
                 }
-
-                Console.ResetColor();
             }
+            else
+            {
+                NewLine();
+            }
+
+            if (IsCanceled)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(@"    ");
+                Console.Write(IsDone ? Resources.ConsoleProgressMonitor_CanceledBanner : Resources.ConsoleProgressMonitor_CancelingBanner);
+                NewLine();
+            }
+
+            Console.ResetColor();
         }
 
         private void HideFooter()
         {
-            lock (SharedConsole.SyncRoot)
+            EraseLine();
+            for (; newlinesWritten > 0; newlinesWritten -= 1)
             {
+                Console.CursorTop -= 1;
                 EraseLine();
-                for (; newlinesWritten > 0; newlinesWritten -= 1)
-                {
-                    Console.CursorTop -= 1;
-                    EraseLine();
-                }
             }
         }
 
