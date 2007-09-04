@@ -39,7 +39,7 @@ namespace MbUnit.Core.Runner.CommandLine
         ///<summary>
         /// Initializes new instance of CommandLineOutput that outputs to specified stream.
         ///</summary>
-        ///<param name="output"></param>
+        ///<param name="output">Output stream</param>
         public CommandLineOutput(TextWriter output)
         {
             _output = output;
@@ -47,9 +47,10 @@ namespace MbUnit.Core.Runner.CommandLine
         }
 
         ///<summary>
+        /// Initializes new instance of CommandLineOutput that outputs to specified stream.
         ///</summary>
-        ///<param name="output"></param>
-        ///<param name="width"></param>
+        ///<param name="output">Output stream</param>
+        ///<param name="width">Maximun width before the text will be wraped.</param>
         public CommandLineOutput(TextWriter output, int width)
         {
             _output = output;
@@ -144,7 +145,6 @@ namespace MbUnit.Core.Runner.CommandLine
             if (argumentHelp.Length > 17)
             {
                 PrintText(argumentHelp.ToString(), 2);
-//                Debugger.Break();
                 PrintText(CreateDescriptionWithShortName(description, shortName), 21);
             }
             else
