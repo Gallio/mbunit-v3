@@ -81,7 +81,7 @@ namespace MbUnit.Echo
             }
             catch (Exception ex)
             {
-                logger.FatalFormat(ex, "A fatal exception occurred.");
+                logger.FatalFormat(ex, Resources.MainClass_FatalException);
                 return ResultCode.FatalException;
             }
         }

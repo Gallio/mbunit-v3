@@ -17,6 +17,7 @@ using System;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
 using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Results;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
@@ -61,6 +62,11 @@ namespace MbUnit.AddIn.TDNet
 
         private void HandleStepFinished(object sender, ReportStepEventArgs e)
         {
+            // Ignore tests that aren't test cases.
+            TestInfo testInfo = e.Report.TestModel.Tests[e.TestRun.TestId];
+            if (!testInfo.IsTestCase)
+                return;
+
             // A TestResult with State == TestState.Passed won't be displayed in the
             // output window (TD.NET just diplays "[TestName] passed" in the status bar.
             // Since that can be harder to notice, and also is lost when the following
