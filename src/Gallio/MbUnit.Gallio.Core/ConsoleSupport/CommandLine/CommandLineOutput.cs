@@ -30,10 +30,10 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///<summary>
         /// Initializes new instance of CommandLineOutput.
         ///</summary>
-        public CommandLineOutput()
-            : this(Console.Out)
+        ///<param name="console">The console</param>
+        public CommandLineOutput(IRichConsole console)
+            : this(console.Out, console.Width)
         {
-            _lineLength = (Console.LargestWindowWidth > 0) ? Console.WindowWidth : 80;
         }
 
         ///<summary>

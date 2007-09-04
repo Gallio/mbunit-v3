@@ -13,41 +13,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Castle.Core.Logging;
 using MbUnit.Core.Runner;
+using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Core.Runner
 {
     /// <summary>
-    /// Implementation of a IProgressMonitor that logs messages to a ConsoleLogger
-    /// instance.
+    /// Implementation of <see cref="IProgressMonitor" />
+    /// that logs messages to an <see cref="ILogger" />.
     /// </summary>
-    public class RunnerProgressMonitor : TextualProgressMonitor
+    public class LogProgressMonitor : TextualProgressMonitor
     {
-        private readonly ILogger tddLogger = null;
+        private readonly ILogger logger;
+        private string previousTaskName = string.Empty;
 
         /// <summary>
-        /// Initializes a new instance of the RunnerProgressMonitor class.
+        /// Create a logged progress monitor.
         /// </summary>
-        /// <param name="logger">A logger instance where log messages will be
-        /// channeled to.</param>
-        public RunnerProgressMonitor(ILogger logger)
+        /// <param name="logger">A logger instance to which messages will be written</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        public LogProgressMonitor(ILogger logger)
         {
-            tddLogger = logger;
-        }
+            if (logger == null)
+                throw new ArgumentNullException(@"logger");
 
-        private string previousTaskName = string.Empty;
+            this.logger = logger;
+        }
 
         /// <inheritdoc />
         protected override void UpdateDisplay()
         {
-            // We can't show progress in a convenient way when running 
-            // within Visual Studio, so just inform when a new task
-            // has begun.
             if (previousTaskName.CompareTo(TaskName) != 0)
             {
                 previousTaskName = TaskName;
-                tddLogger.Info(TaskName);
+                logger.Info(TaskName);
             }
         }
     }

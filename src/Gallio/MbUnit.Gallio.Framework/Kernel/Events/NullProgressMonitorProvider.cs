@@ -20,11 +20,28 @@ using System.Text;
 namespace MbUnit.Framework.Kernel.Events
 {
     /// <summary>
-    /// A progress monitor that simply validates its parameters but does
-    /// not perform any processing.
+    /// Runs tasks with <see cref="NullProgressMonitor" />.
     /// </summary>
-    /// <seealso cref="IProgressMonitor"/> for important thread-safety and usage remarks.
-    public sealed class NullProgressMonitor : BaseProgressMonitor
+    public sealed class NullProgressMonitorProvider : IProgressMonitorProvider
     {
+        private static readonly NullProgressMonitorProvider instance = new NullProgressMonitorProvider();
+
+        /// <summary>
+        /// Gets the singleton instance of the provider.
+        /// </summary>
+        public static NullProgressMonitorProvider Instance
+        {
+            get { return instance; }
+        }
+
+        private NullProgressMonitorProvider()
+        {
+        }
+
+        /// <inheritdoc />
+        public void Run(TaskWithProgress task)
+        {
+            task(new NullProgressMonitor());
+        }
     }
 }

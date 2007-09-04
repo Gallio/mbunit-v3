@@ -31,21 +31,28 @@ namespace MbUnit.Echo
     /// </summary>
     public sealed class MainClass : IDisposable
     {
-        private string applicationTitle;
-        private readonly LevelFilteredLogger logger = new SharedConsoleLogger();
         private readonly MainArguments arguments = new MainArguments();
+        private readonly IRichConsole console;
+        private readonly RichConsoleLogger logger;
+
+        private string applicationTitle;
         private bool haltExecution = false;
         private int resultCode;
 
-        public MainClass(string[] args)
+        public MainClass(IRichConsole console)
         {
-            if (args == null)
-                throw new ArgumentNullException("args");
-            SetUp(args);
+            if (console == null)
+                throw new ArgumentNullException(@"console");
+
+            this.console = console;
+            this.logger = new RichConsoleLogger(console);
         }
 
         public void SetUp(string[] args)
         {
+            if (args == null)
+                throw new ArgumentNullException(@"args");
+
             SetApplicationTitle();
             ShowBanner();
             InstallCancelHandler();
@@ -88,13 +95,16 @@ namespace MbUnit.Echo
 
         private int RunTests()
         {
-            using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper
-                (
-                delegate { return new SharedConsoleProgressMonitor(); },
-                logger,
-                arguments.GetFilter()
-                ))
+            console.ForegroundColor = ConsoleColor.White;
+            console.WriteLine("Initializing the test runner and loading plugins.");
+            console.ResetColor();
+
+            using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper(
+                new RichConsoleProgressMonitorProvider(console),
+                logger))
             {
+                testRunnerHelper.Filter = arguments.GetFilter();
+
                 testRunnerHelper.Package.EnableShadowCopy = arguments.ShadowCopyFiles;
                 testRunnerHelper.Package.ApplicationBase = arguments.AppBaseDirectory;
                 testRunnerHelper.Package.AssemblyFiles.AddRange(arguments.Assemblies);
@@ -119,27 +129,28 @@ namespace MbUnit.Echo
             }
         }
 
-        private static void DisplayResultSummary(TestRunnerHelper testRunnerHelper, int result)
+        private void DisplayResultSummary(TestRunnerHelper testRunnerHelper, int result)
         {
             switch (result)
             {
                 case ResultCode.Success:
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    console.ForegroundColor = ConsoleColor.Green;
                     break;
                 case ResultCode.Failure:
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    console.ForegroundColor = ConsoleColor.Red;
                     break;
             }
-            Console.WriteLine("\n" + testRunnerHelper.ResultSummary + "\n");
+            console.WriteLine("\n" + testRunnerHelper.ResultSummary + "\n");
         }
 
         private void OpenReports(TestRunnerHelper testRunnerHelper)
         {
             if (arguments.ShowReports)
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Opening reports.");
-                Console.ResetColor();
+                console.ForegroundColor = ConsoleColor.White;
+                console.WriteLine("Opening reports.");
+                console.ResetColor();
+
                 foreach (string reportType in arguments.ReportTypes)
                 {
                     Process.Start(testRunnerHelper.GetReportFilename(reportType));
@@ -153,12 +164,12 @@ namespace MbUnit.Echo
             logger.Debug(arguments.ToString());
         }
 
-        private static void InstallCancelHandler()
+        private void InstallCancelHandler()
         {
             // Disable ordinary cancelation handling.
             // We handle cancelation directly in ways that should result in the user
             // losing less data than if the OS just kills the process.
-            SharedConsole.InstallCancelationHandler();
+            console.IsCancelationEnabled = true;
         }
 
         private void CheckResultCode()
@@ -188,7 +199,9 @@ namespace MbUnit.Echo
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             applicationTitle = string.Format("MbUnit Echo - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build);
-            Console.Title = applicationTitle;
+
+            if (!console.IsRedirected)
+                console.Title = applicationTitle;
         }
 
         private void SetVerbosityLevel()
@@ -212,30 +225,30 @@ namespace MbUnit.Echo
 
         private void ShowBanner()
         {
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(applicationTitle);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("Get the latest version at ");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("http://www.mbunit.com/");
-            Console.WriteLine();
-            Console.ResetColor();
+            console.WriteLine();
+            console.ForegroundColor = ConsoleColor.White;
+            console.WriteLine(applicationTitle);
+            console.ForegroundColor = ConsoleColor.Cyan;
+            console.Write("Get the latest version at ");
+            console.ForegroundColor = ConsoleColor.Blue;
+            console.WriteLine("http://www.mbunit.com/");
+            console.WriteLine();
+            console.ResetColor();
         }
 
         private void ShowHelp()
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(new string('-', 78));
-            Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("  Available options:");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(new string('-', 78));
+            console.ForegroundColor = ConsoleColor.Yellow;
+            console.WriteLine(new string('-', 78));
+            console.ResetColor();
+            console.ForegroundColor = ConsoleColor.White;
+            console.WriteLine("  Available options:");
+            console.ForegroundColor = ConsoleColor.Yellow;
+            console.WriteLine(new string('-', 78));
 
-            Console.ResetColor();
-            Console.WriteLine();
-            CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments));
+            console.ResetColor();
+            console.WriteLine();
+            CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments), console);
 
             // Print out options related to the currently available set of plugins.
             RuntimeSetup setup = new RuntimeSetup();
@@ -245,9 +258,9 @@ namespace MbUnit.Echo
             {
                 IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
 
-                Console.WriteLine();
-                Console.WriteLine("Supported report types: {0}",
-                    string.Join(", ", ListUtils.CopyAllToArray(reportManager.GetFormatterNames())));
+                console.WriteLine();
+                console.WriteLine(String.Format("Supported report types: {0}",
+                    string.Join(", ", ListUtils.CopyAllToArray(reportManager.GetFormatterNames()))));
             }
         }
 

@@ -211,17 +211,16 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 		    return !hadError;
 		}
         
-        ///<summary>
+        /// <summary>
         /// A user firendly usage string describing the command line argument syntax.
-        ///</summary>
-        public void ShowUsage()
+        /// </summary>
+        /// <param name="output">The command line output</param>
+        public void ShowUsage(CommandLineOutput output)
         {
-            CommandLineOutput output = new CommandLineOutput();
             foreach (Argument arg in arguments)
             {
                 output.PrintArgumentHelp(arg.LongName, arg.ShortName, arg.Description, arg.ArgumentValueType);
                 output.NewLine();
-                //                output.PrintArgumentType(arg.ValueType);
             }
             output.PrintText("@<file>          Read response file for more options.", 2);
             output.NewLine();

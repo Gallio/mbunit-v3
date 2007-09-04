@@ -20,11 +20,8 @@ using System.Text;
 namespace MbUnit.Framework.Kernel.Events
 {
     /// <summary>
-    /// A progress monitor that simply validates its parameters but does
-    /// not perform any processing.
+    /// Represents a task to be executed with a progress monitor.
     /// </summary>
-    /// <seealso cref="IProgressMonitor"/> for important thread-safety and usage remarks.
-    public sealed class NullProgressMonitor : BaseProgressMonitor
-    {
-    }
+    /// <param name="progressMonitor">The progress monitor, never null</param>
+    public delegate void TaskWithProgress(IProgressMonitor progressMonitor);
 }

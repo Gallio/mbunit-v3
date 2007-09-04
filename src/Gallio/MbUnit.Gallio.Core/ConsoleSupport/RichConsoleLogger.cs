@@ -22,63 +22,78 @@ namespace MbUnit.Core.ConsoleSupport
     /// A logger that sends all output to the console and displays messages in color
     /// according to their status.
     /// </summary>
-    public class SharedConsoleLogger : LevelFilteredLogger
+    public class RichConsoleLogger : LevelFilteredLogger
     {
+        private readonly IRichConsole console;
+
+        /// <summary>
+        /// Creates a logger.
+        /// </summary>
+        /// <param name="console">The console</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="console"/> is null</exception>
+        public RichConsoleLogger(IRichConsole console)
+        {
+            if (console == null)
+                throw new ArgumentNullException(@"console");
+
+            this.console = console;
+        }
+
         /// <inheritdoc />
         public override ILogger CreateChildLogger(string name)
         {
-            return new SharedConsoleLogger();
+            return new RichConsoleLogger(console);
         }
 
         /// <inheritdoc />
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
-            lock (SharedConsole.SyncRoot)
+            lock (console.SyncRoot)
             {
-                bool oldFooterVisible = SharedConsole.FooterVisible;
+                bool oldFooterVisible = console.FooterVisible;
                 try
                 {
-                    SharedConsole.FooterVisible = false;
+                    console.FooterVisible = false;
 
-                    if (!SharedConsole.IsRedirected)
+                    if (!console.IsRedirected)
                     {
                         switch (level)
                         {
                             case LoggerLevel.Fatal:
-                                Console.ForegroundColor = ConsoleColor.DarkRed;
+                                console.ForegroundColor = ConsoleColor.DarkRed;
                                 break;
 
                             case LoggerLevel.Error:
-                                Console.ForegroundColor = ConsoleColor.Red;
+                                console.ForegroundColor = ConsoleColor.Red;
                                 break;
 
                             case LoggerLevel.Warn:
-                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                console.ForegroundColor = ConsoleColor.Yellow;
                                 break;
 
                             case LoggerLevel.Info:
-                                Console.ForegroundColor = ConsoleColor.Gray;
+                                console.ForegroundColor = ConsoleColor.Gray;
                                 break;
 
                             case LoggerLevel.Debug:
-                                Console.ForegroundColor = ConsoleColor.DarkGray;
+                                console.ForegroundColor = ConsoleColor.DarkGray;
                                 break;
                         }
                     }
 
-                    Console.WriteLine(message);
+                    console.WriteLine(message);
 
                     if (exception != null)
-                        Console.WriteLine(Indent(exception.ToString()));
+                        console.WriteLine(Indent(exception.ToString()));
 
-                    if (!SharedConsole.IsRedirected)
+                    if (!console.IsRedirected)
                     {
-                        Console.ResetColor();
+                        console.ResetColor();
                     }
                 }
                 finally
                 {
-                    SharedConsole.FooterVisible = oldFooterVisible;
+                    console.FooterVisible = oldFooterVisible;
                 }
             }
         }

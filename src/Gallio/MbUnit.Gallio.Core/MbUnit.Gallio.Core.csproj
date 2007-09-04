@@ -62,9 +62,11 @@
     <Compile Include="ConsoleSupport\CommandLine\CommandLineUtility.cs" />
     <Compile Include="ConsoleSupport\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
     <Compile Include="ConsoleSupport\CommandLine\ErrorReporter.cs" />
-    <Compile Include="ConsoleSupport\SharedConsole.cs" />
-    <Compile Include="ConsoleSupport\SharedConsoleProgressMonitor.cs" />
-    <Compile Include="ConsoleSupport\SharedConsoleLogger.cs" />
+    <Compile Include="ConsoleSupport\IRichConsole.cs" />
+    <Compile Include="ConsoleSupport\RichConsoleProgressMonitorProvider.cs" />
+    <Compile Include="ConsoleSupport\SystemConsole.cs" />
+    <Compile Include="ConsoleSupport\RichConsoleProgressMonitor.cs" />
+    <Compile Include="ConsoleSupport\RichConsoleLogger.cs" />
     <Compile Include="Reporting\DefaultReportManager.cs" />
     <Compile Include="Reporting\ExecutionLogStreamTextFormatter.cs" />
     <Compile Include="Reporting\HtmlReportFormatter.cs" />
@@ -89,10 +91,11 @@
     <Compile Include="Runner\FilterParser.cs" />
     <Compile Include="Runner\LocalRunner.cs" />
     <Compile Include="Runner\LocalTestDomainFactory.cs" />
+    <Compile Include="Runner\LogProgressMonitorProvider.cs" />
     <Compile Include="Runner\Monitors\LogMonitor.cs" />
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
     <Compile Include="Runner\Monitors\ReportStepEventArgs.cs" />
-    <Compile Include="Runner\RunnerProgressMonitor.cs" />
+    <Compile Include="Runner\LogProgressMonitor.cs" />
     <Compile Include="Runtime\DefaultAssemblyResolverManager.cs" />
     <Compile Include="Runtime\ICoreRuntime.cs" />
     <Compile Include="Runtime\RuntimeSetup.cs" />

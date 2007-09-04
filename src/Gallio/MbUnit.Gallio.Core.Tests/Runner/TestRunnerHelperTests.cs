@@ -29,27 +29,24 @@ namespace MbUnit.Core.Tests.Runner
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestInstantiation_NullProgressMonitorMonitor()
+        public void TestInstantiation_NullProgressMonitor()
         {
-            new TestRunnerHelper(null, null, "");
+            new TestRunnerHelper(null, NullLogger.Instance);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestInstantiation_NullLogger()
         {
-            new TestRunnerHelper(
-                delegate { return new NullProgressMonitor(); },
-                null, "");
+            new TestRunnerHelper(NullProgressMonitorProvider.Instance, null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestInstantiation_NullFilter()
+        public void SetFilterToNull()
         {
-            new TestRunnerHelper(
-                delegate { return new NullProgressMonitor(); },
-                new ConsoleLogger(), (string) null);
+            TestRunnerHelper helper = new TestRunnerHelper(NullProgressMonitorProvider.Instance, NullLogger.Instance);
+            helper.Filter = null;
         }
     }
 }

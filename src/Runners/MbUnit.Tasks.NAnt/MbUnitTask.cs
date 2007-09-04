@@ -150,13 +150,12 @@ namespace MbUnit.Tasks.NAnt
             DisplayVersion();
             DisplaySpecificTaskConfiguration();
             NAntLogger logger = new NAntLogger(this);
-            using (TestRunnerHelper runner = new TestRunnerHelper
-                (
-                delegate { return new RunnerProgressMonitor(logger); },
-                logger,
-                new AnyFilter<ITest>()
-                ))
+            using (TestRunnerHelper runner = new TestRunnerHelper(
+                new LogProgressMonitorProvider(logger),
+                logger))
             {
+                // runner.Filter = ...
+
                 AddAssemblies(runner);
                 AddHintDirectories(runner);
                 AddPluginDirectories(runner);

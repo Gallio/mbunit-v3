@@ -80,12 +80,18 @@ namespace MbUnit.AddIn.TDNet
             // Inform TD.NET what happened 
             TestResult result = new TestResult();
             result.Name = e.StepRun.StepFullName;
+            result.TimeSpan = TimeSpan.FromSeconds(e.StepRun.Result.Duration);
+            result.TestRunner = "MbUnit Gallio";
 
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line
             ExecutionLogStream failureStream = e.StepRun.ExecutionLog.GetStream(ExecutionLogStreamName.Failures);
             if (failureStream != null)
                 result.StackTrace = failureStream.ToString();
+
+            ExecutionLogStream warningStream = e.StepRun.ExecutionLog.GetStream(ExecutionLogStreamName.Warnings);
+            if (warningStream != null)
+                result.Message = String.Format("Warnings:\n{0}", warningStream);
 
             // TD.NET will automatically count the number of passed, ignored and failed tests
             // provided we call the TestFinished method with the right State

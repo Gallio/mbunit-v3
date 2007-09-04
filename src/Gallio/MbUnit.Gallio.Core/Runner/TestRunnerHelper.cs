@@ -20,7 +20,6 @@ using System.IO;
 using System.Diagnostics;
 using System.Text;
 using Castle.Core.Logging;
-using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
@@ -46,10 +45,11 @@ namespace MbUnit.Core.Runner
         #region Private Members
 
         private readonly TestPackage package;
-        private readonly ProgressMonitorCreator progressMonitorCreator;
+        private readonly IProgressMonitorProvider progressMonitorProvider;
         private readonly RuntimeSetup runtimeSetup;
         private readonly ILogger logger;
-        private readonly Filter<ITest> filter;
+
+        private Filter<ITest> filter = new AnyFilter<ITest>();
 
         private bool echoResults;
         private string templateModelFilename;
@@ -75,24 +75,18 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Initializes a new instance of the TestRunnerHelper class.
         /// </summary>
-        /// <param name="progressMonitorCreator">A delegate to a rutine that will be
-        /// called to create progress monitors</param>
-        /// <param name="logger">A LevelFilteredLogger instance to log messages to.</param>
-        /// <param name="filter">The filter to apply to the tests.</param>
-        public TestRunnerHelper(
-            ProgressMonitorCreator progressMonitorCreator,
-            ILogger logger,
-            Filter<ITest> filter)
+        /// <param name="progressMonitorProvider">The progress monitor provider</param>
+        /// <param name="logger">The logger to which messages should be written</param>
+        public TestRunnerHelper(IProgressMonitorProvider progressMonitorProvider,
+            ILogger logger)
         {
-            CheckRequiredArgument(progressMonitorCreator, "progressMonitorCreator");
-            CheckRequiredArgument(filter, "filter");
+            CheckRequiredArgument(progressMonitorProvider, "progressMonitorProvider");
             CheckRequiredArgument(logger, "logger");
 
             runtimeSetup = new RuntimeSetup();
             package = new TestPackage();
 
-            this.progressMonitorCreator = progressMonitorCreator;
-            this.filter = filter;
+            this.progressMonitorProvider = progressMonitorProvider;
             this.logger = logger;
 
             reportFormats = new List<string>();
@@ -101,37 +95,25 @@ namespace MbUnit.Core.Runner
             reportMonitor = new ReportMonitor();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the TestRunnerHelper class.
-        /// </summary>
-        /// <param name="progressMonitorCreator">A delegate to a rutine that will be
-        /// called to create progress monitors</param>
-        /// <param name="logger">A LevelFilteredLogger instance to log messages to.</param>
-        /// <param name="filter">A string representation of the filter to apply to
-        /// the tests.</param>
-        public TestRunnerHelper(
-            ProgressMonitorCreator progressMonitorCreator,
-            ILogger logger,
-            string filter)
-            : this(progressMonitorCreator,
-                   logger,
-                   FilterParser.ParseFilterList<ITest>(filter))
-        {
-        }
-
-        #endregion
-
-        #region Public Delegates
-
-        /// <summary>
-        /// Defines a method that is able to create IProgressMonitor objects
-        /// </summary>
-        /// <returns></returns>
-        public delegate IProgressMonitor ProgressMonitorCreator();
-
         #endregion
 
         #region Public Properties
+
+        /// <summary>
+        /// Gets or sets the filter to apply.
+        /// Defaults to an instance of <see cref="AnyFilter{T}" />.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public Filter<ITest> Filter
+        {
+            get { return filter; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                filter = value;
+            }
+        }
 
         /// <summary>
         /// Gets the test package.
@@ -286,10 +268,6 @@ namespace MbUnit.Core.Runner
                 {
                     return ResultCode.Canceled;
                 }
-                finally
-                {
-                    SharedConsole.IsCanceled = false;
-                }
 
                 // Run the tests.
                 bool runCanceled = false;
@@ -301,10 +279,6 @@ namespace MbUnit.Core.Runner
                 {
                     runCanceled = true;
                 }
-                finally
-                {
-                    SharedConsole.IsCanceled = false;
-                }
 
                 // Generate reports even if the test run is canceled, unless this step
                 // also gets canceled.
@@ -315,10 +289,6 @@ namespace MbUnit.Core.Runner
                 catch (OperationCanceledException)
                 {
                     runCanceled = true;
-                }
-                finally
-                {
-                    SharedConsole.IsCanceled = false;
                 }
 
                 statistics = reportMonitor.Report.PackageRun.Statistics;
@@ -427,7 +397,7 @@ namespace MbUnit.Core.Runner
         /// </summary>
         private void VerifyAssemblies()
         {
-            using (IProgressMonitor progressMonitor = progressMonitorCreator())
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 progressMonitor.BeginTask("Verifying assembly names.", 1);
 
@@ -445,7 +415,7 @@ namespace MbUnit.Core.Runner
                 // Remove invalid assemblies
                 foreach (string assemblyName in assembliesToRemove)
                     package.AssemblyFiles.Remove(assemblyName);
-            }
+            });
         }
 
         private void DisplayConfiguration()
@@ -510,51 +480,51 @@ namespace MbUnit.Core.Runner
 
         private void LoadProject(ITestRunner runner)
         {
-            using (IProgressMonitor progressMonitor = progressMonitorCreator())
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 progressMonitor.ThrowIfCanceled();
                 runner.LoadPackage(package, progressMonitor);
-            }
+            });
         }
 
         private void BuildTemplates(ITestRunner runner)
         {
-            using (IProgressMonitor progressMonitor = progressMonitorCreator())
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 progressMonitor.ThrowIfCanceled();
                 runner.BuildTemplates(progressMonitor);
-            }
+            });
         }
 
         private void BuildTests(ITestRunner runner)
         {
-            using (IProgressMonitor progressMonitor = progressMonitorCreator())
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 progressMonitor.ThrowIfCanceled();
                 runner.BuildTests(progressMonitor);
-            }
+            });
         }
 
         private void RunTests(ITestRunner runner)
         {
-            using (IProgressMonitor progressMonitor = progressMonitorCreator())
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 progressMonitor.ThrowIfCanceled();
                 runner.Run(progressMonitor);
-            }
+            });
         }
 
         private void PersistTemplateTree(ITestRunner runner)
         {
             if (templateModelFilename != null)
             {
-                using (IProgressMonitor progressMonitor = progressMonitorCreator())
+                progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
                 {
                     progressMonitor.ThrowIfCanceled();
                     progressMonitor.BeginTask("Saving template tree.", 1);
                     progressMonitor.SetStatus(templateModelFilename);
                     SerializationUtils.SaveToXml(runner.TemplateModel, templateModelFilename);
-                }
+                });
             }
         }
 
@@ -562,13 +532,13 @@ namespace MbUnit.Core.Runner
         {
             if (testModelFilename != null)
             {
-                using (IProgressMonitor progressMonitor = progressMonitorCreator())
+                progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
                 {
                     progressMonitor.ThrowIfCanceled();
                     progressMonitor.BeginTask("Saving test tree.", 1);
                     progressMonitor.SetStatus(testModelFilename);
                     SerializationUtils.SaveToXml(runner.TestModel, testModelFilename);
-                }
+                });
             }
         }
 
@@ -587,14 +557,14 @@ namespace MbUnit.Core.Runner
                 string reportPath = Path.Combine(reportDirectory, reportFileName);
 
                 generatedReportFilenames.Add(reportFormat.ToLower(), reportPath);
-                using (IProgressMonitor progressMonitor = progressMonitorCreator())
+                progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
                 {
                     progressMonitor.ThrowIfCanceled();
                     progressMonitor.BeginTask("Generating " + reportFormat + " report.", 1);
 
                     formatter.Format(report, reportPath, reportFormatOptions, null,
                         new SubProgressMonitor(progressMonitor, 1));
-                }
+                });
             }
         }
 

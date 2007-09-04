@@ -76,6 +76,9 @@
     <Compile Include="Kernel\Contexts\IContext.cs" />
     <Compile Include="Kernel\Contexts\IContextManager.cs" />
     <Compile Include="Kernel\Conversions\IConverter.cs" />
+    <Compile Include="Kernel\Events\IProgressMonitorProvider.cs" />
+    <Compile Include="Kernel\Events\NullProgressMonitorProvider.cs" />
+    <Compile Include="Kernel\Events\TaskWithProgress.cs" />
     <Compile Include="Kernel\ExecutionLogs\Attachment.cs" />
     <Compile Include="Kernel\ExecutionLogs\AttachmentUtils.cs" />
     <Compile Include="Kernel\ExecutionLogs\BinaryAttachment.cs" />

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Core.ConsoleSupport;
 
 namespace MbUnit.Echo
 {
@@ -28,16 +29,19 @@ namespace MbUnit.Echo
         [LoaderOptimization(LoaderOptimization.MultiDomain)]
         public static int Main(string[] args)
         {
+            IRichConsole console = SystemConsole.Instance;
+
             try
             {
-                using (MainClass main = new MainClass(args))
+                using (MainClass main = new MainClass(console))
                 {
+                    main.SetUp(args);
                     return main.Run();
                 }
             }
             finally
             {
-                Console.ResetColor();
+                console.ResetColor();
             }
         }
     }

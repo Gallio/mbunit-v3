@@ -25,7 +25,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
     /// http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e
     /// </para>
     /// </remarks>
-    public sealed class CommandLineUtility
+    public static class CommandLineUtility
     {
         /// <summary>
         /// The System Defined new line string.
@@ -33,20 +33,16 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         public const string NewLine = "\r\n";
         
         /// <summary>
-        /// Don't ever call this.
-        /// </summary>
-        private CommandLineUtility() {}
-        
-        /// <summary>
         /// Parses Command Line Arguments. 
-        /// Errors are output on Console.Error.
+        /// Errors are output on SharedConsole.Error.
         /// Use CommandLineArgumentAttributes to control parsing behaviour.
         /// </summary>
         /// <param name="arguments"> The actual arguments. </param>
         /// <param name="destination"> The resulting parsed arguments. </param>
-        public static void ParseCommandLineArguments(string [] arguments, object destination)
+        /// <param name="console">The console</param>
+        public static void ParseCommandLineArguments(string [] arguments, object destination, IRichConsole console)
         {
-            ParseCommandLineArguments(arguments, destination, new ErrorReporter(Console.Error.WriteLine));
+            ParseCommandLineArguments(arguments, destination, console.Error.WriteLine);
         }
         
         /// <summary>
@@ -68,9 +64,10 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         /// Use CommandLineArgumentAttributes to control parsing behaviour.
         /// </summary>
         /// <param name="argumentType"> The type of the arguments to display usage for. </param>
-        public static void CommandLineArgumentsUsage(Type argumentType)
+        /// <param name="console">The console</param>
+        public static void CommandLineArgumentsUsage(Type argumentType, IRichConsole console)
         {
-			new CommandLineArgumentParser(argumentType, null).ShowUsage();
+			new CommandLineArgumentParser(argumentType, null).ShowUsage(new CommandLineOutput(console));
         }
     }
 }

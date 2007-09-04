@@ -117,13 +117,12 @@ namespace MbUnit.AddIn.TDNet
             logger = new TDNetLogger(testListener);
             LogAddInVersion();
 
-            using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper
-                (
-                delegate { return new RunnerProgressMonitor(logger); },
-                logger,
-                filter
-                ))
+            using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper(
+                new LogProgressMonitorProvider(logger),
+                logger))
             {
+                testRunnerHelper.Filter = filter;
+
                 // This monitor will inform the user in real-time what's going on
                 testRunnerHelper.CustomMonitors.Add(new TDNetLogMonitor(testListener, testRunnerHelper.ReportMonitor));
 
@@ -141,7 +140,7 @@ namespace MbUnit.AddIn.TDNet
                 int result = testRunnerHelper.Run();
 
                 // This will generate a link to the generated report
-                Uri uri = new Uri("file:" + testRunnerHelper.GetReportFilename(reportType).Replace(@"\", "/"));
+                Uri uri = new Uri(testRunnerHelper.GetReportFilename(reportType)); // yes, this really works.
                 testListener.TestResultsUrl(uri.AbsoluteUri);
 
                 return GetTDNetResult(testRunnerHelper, testListener, result);

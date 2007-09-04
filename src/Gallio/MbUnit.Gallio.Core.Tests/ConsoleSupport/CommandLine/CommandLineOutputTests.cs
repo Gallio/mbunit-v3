@@ -17,6 +17,7 @@ extern alias MbUnit2;
 using System;
 using System.IO;
 using System.Text;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit2::MbUnit.Framework;
 
@@ -38,15 +39,14 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         }
 
         [Test]
-        public void DefaultConstractorTest()
+        public void ConstructorWithConsoleTest()
         {
-            CommandLineOutput output = new CommandLineOutput();
-            Console.WriteLine(output.Output.GetType());
-            Assert.AreEqual(Console.Out.GetType(), output.Output.GetType());
+            CommandLineOutput output = new CommandLineOutput(SystemConsole.Instance);
+            Assert.AreEqual(SystemConsole.Instance.Out.GetType(), output.Output.GetType());
         }
 
         [Test]
-        public void ConstractorWithTextWriterParameter()
+        public void ConstructorWithTextWriterParameter()
         {
             CommandLineOutput output = new CommandLineOutput(_writer);
             Console.WriteLine(output.Output.GetType());

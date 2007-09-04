@@ -23,42 +23,54 @@ namespace MbUnit.Core.ConsoleSupport
     /// to be done on the main task as a bar chart.  The progress monitor responds
     /// to cancelation events at the console.
     /// </summary>
-    public class SharedConsoleProgressMonitor : TextualProgressMonitor
+    public class RichConsoleProgressMonitor : TextualProgressMonitor
     {
+        private readonly IRichConsole console;
         private int newlinesWritten;
         private bool bannerPrinted;
+        private int width;
 
         /// <summary>
         /// Creates a console progress monitor.
         /// </summary>
-        public SharedConsoleProgressMonitor()
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="console"/> is null</exception>
+        public RichConsoleProgressMonitor(IRichConsole console)
         {
-            SharedConsole.Cancel += HandleCancel;
+            if (console == null)
+                throw new ArgumentNullException(@"console");
+
+            this.console = console;
+
+            console.Cancel += HandleCancel;
         }
 
         /// <inheritdoc />
         protected override void OnDone()
         {
-            SharedConsole.Cancel -= HandleCancel;
+            console.Cancel -= HandleCancel;
+
+            if (IsCanceled)
+                console.IsCanceled = false;
+
             base.OnDone();
         }
 
         /// <inheritdoc />
         protected override void UpdateDisplay()
         {
-            lock (SharedConsole.SyncRoot)
+            lock (console.SyncRoot)
             {
                 ShowTaskBeginningBanner();
 
                 // Don't try to show real-time progress if output is redirected.
                 // It can't work because we can't erase previously written text.
-                if (SharedConsole.IsRedirected)
+                if (console.IsRedirected)
                     return;
 
                 if (IsDone)
-                    SharedConsole.SetFooter(null, null);
+                    console.SetFooter(null, null);
                 else
-                    SharedConsole.SetFooter(ShowFooter, HideFooter);
+                    console.SetFooter(ShowFooter, HideFooter);
             }
         }
 
@@ -67,9 +79,11 @@ namespace MbUnit.Core.ConsoleSupport
             // Just print the task name once.
             if (!bannerPrinted)
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(TrimMessageWithEllipses(TaskName, Console.BufferWidth - 1));
-                Console.ResetColor();
+                width = console.Width;
+
+                console.ForegroundColor = ConsoleColor.White;
+                console.WriteLine(TrimMessageWithEllipses(TaskName, width - 1));
+                console.ResetColor();
 
                 bannerPrinted = true;
             }
@@ -79,34 +93,34 @@ namespace MbUnit.Core.ConsoleSupport
         {
             NewLine();
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(TrimMessageWithEllipses(TaskName, Console.BufferWidth - 20).PadRight(Console.BufferWidth - 19));
+            console.ForegroundColor = ConsoleColor.White;
+            console.Write(TrimMessageWithEllipses(TaskName, width - 20).PadRight(width - 19));
 
             if (!IsDone && !double.IsNaN(TotalWorkUnits))
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write('[');
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.Write(new string('=', (int)Math.Round(CompletedWorkUnits * 10 / TotalWorkUnits)).PadRight(10));
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(@"] ");
-                Console.Write(Math.Floor(CompletedWorkUnits * 100 / TotalWorkUnits));
-                Console.Write('%');
+                console.ForegroundColor = ConsoleColor.Yellow;
+                console.Write('[');
+                console.ForegroundColor = ConsoleColor.DarkYellow;
+                console.Write(new string('=', (int)Math.Round(CompletedWorkUnits * 10 / TotalWorkUnits)).PadRight(10));
+                console.ForegroundColor = ConsoleColor.Yellow;
+                console.Write(@"] ");
+                console.Write(Math.Floor(CompletedWorkUnits * 100 / TotalWorkUnits).ToString());
+                console.Write('%');
                 NewLine();
 
                 if (CurrentSubTaskName.Length != 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.Write(@"  ");
-                    Console.Write(TrimMessageWithEllipses(CurrentSubTaskName, Console.BufferWidth - 3));
+                    console.ForegroundColor = ConsoleColor.Gray;
+                    console.Write(@"  ");
+                    console.Write(TrimMessageWithEllipses(CurrentSubTaskName, width - 3));
                     NewLine();
                 }
 
                 if (Status.Length != 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(@"  ");
-                    Console.Write(TrimMessageWithEllipses(Status, Console.BufferWidth - 3));
+                    console.ForegroundColor = ConsoleColor.DarkGreen;
+                    console.Write(@"  ");
+                    console.Write(TrimMessageWithEllipses(Status, width - 3));
                     NewLine();
                 }
             }
@@ -117,13 +131,13 @@ namespace MbUnit.Core.ConsoleSupport
 
             if (IsCanceled)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write(@"    ");
-                Console.Write(IsDone ? Resources.ConsoleProgressMonitor_CanceledBanner : Resources.ConsoleProgressMonitor_CancelingBanner);
+                console.ForegroundColor = ConsoleColor.Red;
+                console.Write(@"    ");
+                console.Write(IsDone ? Resources.ConsoleProgressMonitor_CanceledBanner : Resources.ConsoleProgressMonitor_CancelingBanner);
                 NewLine();
             }
 
-            Console.ResetColor();
+            console.ResetColor();
         }
 
         private void HideFooter()
@@ -131,7 +145,7 @@ namespace MbUnit.Core.ConsoleSupport
             EraseLine();
             for (; newlinesWritten > 0; newlinesWritten -= 1)
             {
-                Console.CursorTop -= 1;
+                console.CursorTop -= 1;
                 EraseLine();
             }
         }
@@ -139,7 +153,7 @@ namespace MbUnit.Core.ConsoleSupport
         private void NewLine()
         {
             newlinesWritten += 1;
-            Console.WriteLine();
+            console.WriteLine();
         }
 
         private static string TrimMessageWithEllipses(string str, int length)
@@ -150,12 +164,12 @@ namespace MbUnit.Core.ConsoleSupport
             return str;
         }
 
-        private static void EraseLine()
+        private void EraseLine()
         {
-            Console.CursorLeft = 0;
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.CursorLeft = 0;
-            Console.CursorTop -= 1;
+            console.CursorLeft = 0;
+            console.Write(new string(' ', width));
+            console.CursorLeft = 0;
+            console.CursorTop -= 1;
         }
 
         private void HandleCancel(object sender, EventArgs e)

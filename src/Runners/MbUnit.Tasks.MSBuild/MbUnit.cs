@@ -258,13 +258,12 @@ namespace MbUnit.Tasks.MSBuild
         {
             DisplayVersion();
             MSBuildLogger logger = new MSBuildLogger(Log);
-            using (TestRunnerHelper runner = new TestRunnerHelper
-                (
-                delegate { return new RunnerProgressMonitor(logger); },
-                logger,
-                GetFilter()
-                ))
+            using (TestRunnerHelper runner = new TestRunnerHelper(
+                new LogProgressMonitorProvider(logger),
+                logger))
             {
+                runner.Filter = GetFilter();
+
                 AddAllItemSpecs(runner.Package.AssemblyFiles, assemblies);
                 AddAllItemSpecs(runner.Package.HintDirectories, hintDirectories);
                 AddAllItemSpecs(runner.RuntimeSetup.PluginDirectories, pluginDirectories);
