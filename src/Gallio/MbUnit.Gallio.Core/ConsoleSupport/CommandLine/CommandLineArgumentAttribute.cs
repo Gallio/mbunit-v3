@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
-using System.Diagnostics;
 
 namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
@@ -71,7 +70,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         /// </summary>
         public string LongName
         {
-            get { Debug.Assert(!DefaultLongName); return longName; }
+            get { return longName; }
             set { longName = value; }
         }
 
