@@ -123,8 +123,8 @@ namespace MbUnit.Tasks.NAnt.Tests
         {
             ProcessStartInfo startInfo = new ProcessStartInfo(nantExecutablePath);
             // This is to avoid having a lot of windows popping up when running the tets
-            //startInfo.UseShellExecute = false;
-            //startInfo.CreateNoWindow = true;
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
             startInfo.WorkingDirectory = workingDirectory;
             startInfo.Arguments = "/f:" + buildFile +
                 " /D:ExpectedMbUnitExitCode=" + expectedMbUnitExitCode;
