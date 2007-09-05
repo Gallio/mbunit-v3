@@ -64,17 +64,30 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
            , "  /long_description  It is a very long description. It is a very long\r\n                     description. It is a very long description. It is a very\r\n                     long description. (Short form: /ld)\r\n")]
         public void PringArgumentHelpTest(string longName, string shortName, string description, string valueType, string expectedOutput)
         {
-            _output.PrintArgumentHelp(longName, shortName, description, valueType);
+            _output.PrintArgumentHelp(longName, shortName, description, valueType, typeof(string));
             Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }
 
         [RowTest]
         [Row("long_description", "ld", "It is a kind of long description.", ""
-     , "  /long_description  It is a kind of long\r\n                     description. (Short\r\n                     form: /ld)\r\n")]
+   , "  /long_description  It is a kind of\r\n                     long description.\r\n                     (Short form: /ld)\r\n")]
         public void PrintArgumentHelpWidth40Chars(string longName, string shortName, string description, string valueType, string expectedOutput)
         {
             _output.LineLength = 40;
-            _output.PrintArgumentHelp(longName, shortName, description, valueType);
+            _output.PrintArgumentHelp(longName, shortName, description, valueType, typeof(string));
+            Assert.AreEqual(expectedOutput, _sbOutput.ToString());
+        }
+
+        [Test]
+        public void PrintArgumentWithEnumType()
+        {
+            string longName = "enum_argument";
+            string shortName = "ea";
+            string description = "desc";
+            string valueType = "enum";
+            string expectedOutput =
+                "  /enum_argument:<enum>\r\n                     desc The available options are 'Test1', 'Test2', 'Test3'.\r\n                     (Short form: /ea)\r\n";
+            _output.PrintArgumentHelp(longName, shortName, description, valueType, typeof(EnumTypeTest));
             Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }
 

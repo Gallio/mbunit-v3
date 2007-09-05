@@ -89,7 +89,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///<param name="indentation">Number of blank spaces before the start of the text.</param>
         public void PrintText(string text, int indentation)
         {
-            int maxLength = _lineLength - indentation;
+            int maxLength = _lineLength - indentation - 1;
             while (text.Length > maxLength)
             {
                 int pos = text.LastIndexOf(' ', maxLength);
@@ -110,10 +110,10 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///<param name="indentation">Number of blank spaces before the start of the text.</param>
         private void PrintText(string text, int firstLineIndent, int indentation)
         {
-            int maxLength = _lineLength - firstLineIndent;
+            int maxLength = _lineLength - firstLineIndent - 1;
             if (text.Length > maxLength)
             {
-                int pos = text.LastIndexOf(' ', maxLength + 1);
+                int pos = text.LastIndexOf(' ', maxLength);
                 _output.Write(Space(firstLineIndent));
                 _output.Write(text.Substring(0, pos));
                 _output.WriteLine();
@@ -131,7 +131,8 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///<param name="shortName">Argument short name.</param>
         ///<param name="description">Argument description.</param>
         ///<param name="valueType">Argument value type.</param>
-        public void PrintArgumentHelp(string longName, string shortName, string description, string valueType)
+        ///<param name="argumentType"></param>
+        public void PrintArgumentHelp(string longName, string shortName, string description, string valueType, Type argumentType)
         {
             StringBuilder argumentHelp = new StringBuilder("/");
             argumentHelp.Append(longName);
@@ -144,28 +145,35 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
             if (argumentHelp.Length > 17)
             {
                 PrintText(argumentHelp.ToString(), 2);
-//                Debugger.Break();
-                PrintText(CreateDescriptionWithShortName(description, shortName), 21);
+                PrintText(CreateDescriptionWithShortName(description, shortName, argumentType), 21);
             }
             else
             {
                 argumentHelp.Append(Space(18 - longName.Length));
-                argumentHelp.Append(CreateDescriptionWithShortName(description, shortName));
+                argumentHelp.Append(CreateDescriptionWithShortName(description, shortName, argumentType));
                 PrintText(argumentHelp.ToString(), 2, 21);
             }
         }
 
-        private void PrintEnumArgumentType(Type type)
+        private static string AddEnumerationValues(Type type)
         {
-            string[] enumValues = Enum.GetNames(type);
-            _output.Write(":{");
-            for (int ndx = 0; ndx < enumValues.Length; ndx++)
+            StringBuilder enumDescription = new StringBuilder();
+            if (type.IsArray)
+                type = type.GetElementType();
+
+            if (type.IsEnum)
             {
-                if (ndx > 0)
-                    _output.Write("|");
-                _output.Write(enumValues[ndx]);
+                enumDescription.Append(" The available options are ");
+                string[] enumValues = Enum.GetNames(type);
+                for (int ndx = 0; ndx < enumValues.Length; ndx++)
+                {
+                    enumDescription.Append("'");
+                    enumDescription.Append(enumValues[ndx]);
+                    enumDescription.Append("', ");
+                }
+                enumDescription.Replace(", ", ".", enumDescription.Length - 2, 2);
             }
-            _output.Write("}");
+            return enumDescription.ToString();
         }
 
         private static string Space(int spaceCount)
@@ -173,9 +181,9 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
             return new string(' ', spaceCount);
         }
 
-        private static string CreateDescriptionWithShortName(string description, string shortName)
+        private static string CreateDescriptionWithShortName(string description, string shortName, Type argType)
         {
-            return string.Format("{0} (Short form: /{1})", description, shortName);
+            return string.Format("{0}{1} (Short form: /{2})", description, AddEnumerationValues(argType), shortName);
         }
     }
 }

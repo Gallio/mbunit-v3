@@ -131,7 +131,8 @@ namespace MbUnit.Echo
              CommandLineArgumentType.MultipleUnique,
              ShortName = "fn",
              LongName = "filter-namespace",
-             Description = "Name of the filtered namespace."
+             Description = "Name of the filtered namespace.",
+             ArgumentValueType = "namespace"
              )]
         public string[] FilterNamespaces;
 
@@ -139,7 +140,8 @@ namespace MbUnit.Echo
              CommandLineArgumentType.MultipleUnique,
              ShortName = "fi",
              LongName = "filter-importance",
-             Description = "Name of the filtered importance"
+             Description = "Name of the filtered importance.",
+             ArgumentValueType = "importance"
              )]
         public TestImportance[] FilterImportances;
 
@@ -151,7 +153,7 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "h",
              LongName = "help",
-             Description = "Display this help text"
+             Description = "Display this help text."
              )]
         public bool Help;
 
@@ -159,7 +161,8 @@ namespace MbUnit.Echo
              CommandLineArgumentType.AtMostOnce,
              ShortName = "v",
              LongName = "verbosity",
-             Description = "Controls the level of detail of the information to display.  The available options are 'Quiet', 'Normal', 'Verbose', and 'Debug'."
+             Description = "Controls the level of detail of the information to display.",
+             ArgumentValueType = "level"
              )]
         public Verbosity Verbosity = Verbosity.Normal;
 

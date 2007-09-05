@@ -219,7 +219,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         {
             foreach (Argument arg in arguments)
             {
-                output.PrintArgumentHelp(arg.LongName, arg.ShortName, arg.Description, arg.ArgumentValueType);
+                output.PrintArgumentHelp(arg.LongName, arg.ShortName, arg.Description, arg.ArgumentValueType, arg.Type);
                 output.NewLine();
             }
             output.PrintText("@<file>          Read response file for more options.", 2);
@@ -228,7 +228,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
             output.NewLine();
         }
         
-		private bool LexFileArguments(string fileName, out string[] arguments)
+		private bool LexFileArguments(string fileName, out string[] nestedArguments)
 		{
 			string args;
                     
@@ -242,7 +242,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 			catch (Exception e)
 			{
 				reporter(string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
-				arguments = null;
+				nestedArguments = null;
 				return false;
 			}
 
@@ -333,7 +333,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 				}
 			}
             
-			arguments = (string[]) argArray.ToArray(typeof (string));
+			nestedArguments = (string[]) argArray.ToArray(typeof (string));
 			return hadError;
 		}
         
@@ -600,7 +600,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 			private readonly string longName;
 			private readonly string shortName;
 			private readonly bool explicitShortName;
-		    private string argValueType;
+		    private readonly string argValueType;
 			private bool seenValue;
 			private readonly FieldInfo field;
 			private readonly Type elementType;
