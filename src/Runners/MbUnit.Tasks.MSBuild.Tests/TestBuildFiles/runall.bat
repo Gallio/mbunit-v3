@@ -1,7 +1,7 @@
 cls
 @echo off
 
-' We asume MSBuild is in the PATH
+REM We asume MSBuild is in the PATH
 
 MSBuild NoTests.xml /p:"ExpectedMbUnitExitCode=16"
 echo ============================================================

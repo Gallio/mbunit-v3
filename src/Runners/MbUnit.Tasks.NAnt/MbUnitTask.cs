@@ -34,10 +34,10 @@ namespace MbUnit.Tasks.NAnt
         #region Private Members
 
         private FileSet[] assemblies;
-        private DirSet[] hintDirectories;
         private DirSet[] pluginDirectories;
+        private DirSet[] hintDirectories;
         private string filter;
-        private string reportTypes = "html";
+        private string reportTypes = "";
         private string reportFileNameFormat = "mbunit-result-{0}{1}";
         private string reportOutputDirectory = String.Empty;
         private bool ignoreFailures = false;
@@ -134,6 +134,7 @@ namespace MbUnit.Tasks.NAnt
         /// The filter to apply in the format "property=value;property=value;..."
         /// If left empty the "Any" filter will be applied.
         /// </summary>
+        [TaskAttribute("filter")]
         public string Filter
         {
             get { return filter; }
@@ -147,20 +148,49 @@ namespace MbUnit.Tasks.NAnt
         /// <inheritdoc />
         protected override void ExecuteTask()
         {
-            DisplayVersion();
-            DisplaySpecificTaskConfiguration();
-            NAntLogger logger = new NAntLogger(this);
-            using (TestRunnerHelper runner = new TestRunnerHelper(
-                new LogProgressMonitorProvider(logger),
-                logger))
+            try
             {
-                // runner.Filter = ...
-
-                AddAssemblies(runner);
-                AddHintDirectories(runner);
-                AddPluginDirectories(runner);
-                int resultCode = runner.Run();
-                ProcessResultCode(resultCode);
+                DisplayVersion();
+                DisplaySpecificTaskConfiguration();
+                NAntLogger logger = new NAntLogger(this);
+                using (TestRunnerHelper runner = new TestRunnerHelper(
+                    new LogProgressMonitorProvider(logger),
+                    logger))
+                {
+                    runner.Filter = GetFilter();
+                    AddAssemblies(runner);
+                    AddHintDirectories(runner);
+                    AddPluginDirectories(runner);
+                    int resultCode = runner.Run();
+                    SetResultCode(resultCode);
+                    if (!IgnoreFailures)
+                    {
+                        if (resultCode != ResultCode.Success && resultCode != ResultCode.NoTests)
+                        {
+                            // The only way to make the task fail is to throw an exception
+                            throw new BuildException("MbUnit Tests Execution Failed");
+                        }
+                    }
+                }
+            }
+            catch (BuildException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (IgnoreFailures)
+                {
+                    // This is an unexpected exception, but if are ignoring failures
+                    // then we only log it
+                    Log(Level.Error, "Unexpected failure during MbUnit execution");
+                    Log(Level.Error, ex.ToString());
+                }
+                else
+                {
+                    // Throw it so it fails
+                    throw;
+                }
             }
         }
 
@@ -168,25 +198,27 @@ namespace MbUnit.Tasks.NAnt
 
         #region Private Methods
 
+        private Filter<ITest> GetFilter()
+        {
+            if (String.IsNullOrEmpty(filter))
+            {
+                return new AnyFilter<ITest>();
+            }
+            return FilterParser.ParseFilterList<ITest>(filter);
+        }
+
         /// <summary>
-        /// Checks the result code of the tests exceution and performs the
+        /// Checks the result code of the tests execution and performs the
         /// corresponding action
         /// </summary>
         /// <param name="resultCode"></param>
-        private void ProcessResultCode(int resultCode)
+        private void SetResultCode(int resultCode)
         {
             if (!String.IsNullOrEmpty(ResultProperty))
             {
                 Properties[ResultProperty] = resultCode.ToString(CultureInfo.InvariantCulture);
             }
-            if (IgnoreFailures)
-            {
-                //TODO: Maybe count ResultCode.NoTests as sucess too?
-                if (resultCode != ResultCode.Success)
-                {
-                    throw new BuildException("MbUnit Tests Execution Failed");
-                }
-            }
+
         }
 
         private void DisplayVersion()

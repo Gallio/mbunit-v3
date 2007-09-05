@@ -32,6 +32,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\NAnt\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MbUnit.Framework, Version=1.0.2768.20906, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
+      <Aliases>MbUnit2</Aliases>
+    </Reference>
     <Reference Include="NAnt.Core, Version=0.85.1932.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\NAnt\NAnt.Core.dll</HintPath>
@@ -41,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NAntTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +70,19 @@
       <Project>{76090B01-824D-4BAD-927B-E8EA19746F25}</Project>
       <Name>MbUnit.Tasks.NAnt</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestBuildFiles\NoTests.build" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestBuildFiles\FailingTests-FailuresIgnored.build" />
+    <None Include="TestBuildFiles\FailingTests.build" />
+    <None Include="TestBuildFiles\NoFilter.build" />
+    <None Include="TestBuildFiles\PassingTests.build" />
+    <None Include="TestBuildFiles\runall.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestBuildFiles\Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

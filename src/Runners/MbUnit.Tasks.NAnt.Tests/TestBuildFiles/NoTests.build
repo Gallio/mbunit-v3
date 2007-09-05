@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<project name="TestProject" default="RunMbUnit">
+  
+  <loadtasks assembly="..\bin\MbUnit.Tasks.NAnt.dll" />
+
+  <target name="RunMbUnit">
+    <mbunit result-property="ExitCode" ignore-failures="true">
+      <assemblies>
+      </assemblies>
+    </mbunit>
+    <fail if="${ExitCode != ExpectedMbUnitExitCode}" >The return code should have been ${ExpectedMbUnitExitCode}!</fail>
+  </target>
+
+</project>

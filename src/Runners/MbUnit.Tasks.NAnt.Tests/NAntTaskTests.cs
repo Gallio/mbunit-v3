@@ -16,93 +16,89 @@
 extern alias MbUnit2;
 using MbUnit2::MbUnit.Framework;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using MbUnit.Core.Runner;
-using System.IO;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 
-namespace MbUnit.Tasks.MSBuild.Tests
+namespace MbUnit.Tasks.NAnt.Tests
 {
     /// <summary>
-    /// These are basically integration tests that call the MSBuild executable and
+    /// These are basically integration tests that call the NAnt executable and
     /// verify the MbUnit's Exit Code and the process' Exit Code.
     /// </summary>
-    /// <comments>
-    /// The tests are very similar, so it's tempting to refactor them as a single
-    /// RowTest, but that would hurt the readability, so it's adviced not to do it. 
-    /// </comments>
     /// <todo>
     /// Add clean up code to clear the logs created by MbUnit when running these tests.
     /// </todo>
     [TestFixture]
     [Author("Julian Hidalgo")]
-    [TestsOn(typeof(MbUnit))]
+    [TestsOn(typeof(MbUnitTask))]
     [TestCategory("IntegrationTests")]
-    public class MbUnitTaskTests
+    public class NAntTaskTests
     {
-        private string MSBuildExecutablePath = null;
-        string workingDirectory = null;
+        private string nantExecutablePath = null;
+        private string workingDirectory = null;
 
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            string frameworkPath = RuntimeEnvironment.GetRuntimeDirectory();
-            MSBuildExecutablePath = frameworkPath + @"MSBuild.exe";
-            if (!File.Exists(MSBuildExecutablePath))
+            nantExecutablePath =
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)
+                    + @"\nant\bin\NAnt.exe";
+            if (!File.Exists(nantExecutablePath))
             {
-                Assert.Fail("Cannot find the MSBuild executable!");
+                Assert.Fail("Cannot find the NAnt executable!");
             }
             workingDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
         }
 
         [Test]
-        public void RunMSBuild_NoTests()
+        public void RunNAnt_NoTests()
         {
-            Process p = RunMSBuild(@"..\TestBuildFiles\NoTests.xml", ResultCode.NoTests);
+            Process p = RunNAnt(@"..\TestBuildFiles\NoTests.build", ResultCode.NoTests);
             p.WaitForExit();
-            // There are not test assemblies specified in the NoTests.xml build file,
+            // There are not test assemblies specified in the NoTests.build file,
             // so the task should have set the ExitCode property to ResultCode.NoTests.
-            // We are ignoring failures in the build file so MSBuild should always
+            // We are ignoring failures in the build file so NAnt should always
             // return true unless the condition ExitCode=ResultCode.NoTests is false.
-            Assert.AreEqual(p.ExitCode, 0, " There are not test assemblies in this build file so it should have succeeded.");
+            Assert.AreEqual(p.ExitCode, 0, " This build should have succeeded.");
             p.Close();
         }
 
         [Test]
-        public void RunMSBuild_PassingTests()
+        public void RunNAnt_PassingTests()
         {
-            Process p = RunMSBuild(@"..\TestBuildFiles\PassingTests.xml", ResultCode.Success);
+            Process p = RunNAnt(@"..\TestBuildFiles\PassingTests.build", ResultCode.Success);
             p.WaitForExit();
             // MbUnit.TestResources.PassingTests only contains tests that pass,
             // so the task should have set the ExitCode property to ResultCode.Success.
-            // We are ignoring failures in the build file so MSBuild should always
+            // We are ignoring failures in the build file so NAnt should always
             // return true unless the condition ExitCode=ResultCode.Success is false.
             Assert.AreEqual(p.ExitCode, 0, "This build should have succeeded.");
             p.Close();
         }
 
         [Test]
-        public void RunMSBuild_FailingTests_FailuresIgnored()
+        public void RunNAnt_FailingTests_FailuresIgnored()
         {
-            Process p = RunMSBuild(@"..\TestBuildFiles\FailingTests-FailuresIgnored.xml", ResultCode.Failure);
+            Process p = RunNAnt(@"..\TestBuildFiles\FailingTests-FailuresIgnored.build", ResultCode.Failure);
             p.WaitForExit();
             // MbUnit.TestResources.FailingTests only contains tests that fail,
             // so the task should have set the ExitCode property to ResultCode.Failure.
-            // We are ignoring failures in the build file so MSBuild should always
+            // We are ignoring failures in the build file so NAnt should always
             // return true unless the condition ExitCode=ResultCode.Failure is false
             Assert.AreEqual(p.ExitCode, 0, "This build should have succeeded.");
             p.Close();
         }
 
         [Test]
-        public void RunMSBuild_FailingTests()
+        public void RunNAnt_FailingTests()
         {
-            Process p = RunMSBuild(@"..\TestBuildFiles\FailingTests.xml", ResultCode.Failure);
+            Process p = RunNAnt(@"..\TestBuildFiles\FailingTests.build", ResultCode.Failure);
             p.WaitForExit();
             // MbUnit.TestResources.FailingTests only contains tests that fail,
             // so the task should have set the ExitCode property to ResultCode.Failure.
-            // We are NOT ignoring failures in the build file so MSBuild should
+            // We are NOT ignoring failures in the build file so NAnt should
             // return 1.
             Assert.AreEqual(p.ExitCode, 1, "This build should have failed.");
             p.Close();
@@ -113,26 +109,26 @@ namespace MbUnit.Tasks.MSBuild.Tests
         /// specified.
         /// </summary>
         [Test]
-        public void RunMSBuild_NoFilter()
+        public void RunNAnt_NoFilter()
         {
-            Process p = RunMSBuild(@"..\TestBuildFiles\NoFilter.xml", ResultCode.Failure);
+            Process p = RunNAnt(@"..\TestBuildFiles\NoFilter.build", ResultCode.Failure);
             p.WaitForExit();
-            // We are not ignoring failures in the build file so MSBuild should
+            // We are not ignoring failures in the build file so NAnt should
             // return true.
             Assert.AreEqual(p.ExitCode, 0, "This build should have succeeded.");
             p.Close();
         }
 
-        private Process RunMSBuild(string buildFile, int expectedMbUnitExitCode)
+        private Process RunNAnt(string buildFile, int expectedMbUnitExitCode)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo(MSBuildExecutablePath);
+            ProcessStartInfo startInfo = new ProcessStartInfo(nantExecutablePath);
             // This is to avoid having a lot of windows popping up when running the tets
-            startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
+            //startInfo.UseShellExecute = false;
+            //startInfo.CreateNoWindow = true;
             startInfo.WorkingDirectory = workingDirectory;
-            startInfo.Arguments = buildFile +
-                " /p:\"ExpectedMbUnitExitCode=" + expectedMbUnitExitCode + "\"";           
-            
+            startInfo.Arguments = "/f:" + buildFile +
+                " /D:ExpectedMbUnitExitCode=" + expectedMbUnitExitCode;
+
             return Process.Start(startInfo);
         }
     }
