@@ -3,6 +3,9 @@
   <xsl:output method="xml" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
               doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" indent="yes" />
 
+  <xsl:key name="outcome" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@outcome" />
+  <xsl:key name="state" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@state" />
+  
   <xsl:template match="g:report">
     <html>
       <head>
@@ -84,7 +87,7 @@
           <xsl:value-of select="@assertCount" />
         </td>
         <td>
-          <xsl:value-of select="@duration" />
+          <xsl:value-of select="format-number(@duration, '#.00')" />s
         </td>
       </tr>
     </table>
@@ -123,9 +126,16 @@
         </xsl:attribute>
         <xsl:value-of select="@name" />
       </a>
-      <xsl:variable name="tests" select="count(descendant::g:test[@isTestCase='true'])" />
-      (<xsl:value-of select="$tests" />)
-      <xsl:variable name="passed" select="/g:report/g:packageRun/g:testRuns/g:testRun/g:stepRun/g:result[@outcome='passed']" />
+      <xsl:variable name="tests" select="descendant-or-self::g:test[@isTestCase='true']" />
+      <xsl:variable name="run" select="$tests[@id = key('state', 'executed')/@id]" />
+      <xsl:variable name="passed" select="$tests[@id = key('outcome', 'passed')/@id]" />
+      <xsl:variable name="failed" select="$tests[@id = key('outcome', 'failed')/@id]" />
+      <xsl:variable name="inconclusive" select="$tests[@id = key('outcome', 'inconclusive')/@id]" />
+      <xsl:variable name="ignored" select="$tests[@id = key('state', 'ignored')/@id]" />
+      <xsl:variable name="skipped" select="$tests[@id = key('state', 'skipped')/@id]" />
+      <xsl:variable name="assertions" select="key('state', 'executed')[@id = $tests/@id]/g:stepRun/g:result/@assertCount" />
+      <xsl:variable name="duration" select="/g:report/g:packageRun/g:testRuns/g:testRun[@id = $id]/g:stepRun/g:result/@duration" />
+      (<xsl:value-of select="count($tests)" />/<xsl:value-of select="count($run)" />/<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />/<xsl:value-of select="count($ignored)" />/<xsl:value-of select="count($skipped)" />/<xsl:value-of select="sum($assertions)" />/<xsl:value-of select="format-number($duration, '#.00')" />)
       <xsl:if test="count(g:children/g:test) > 0 and g:metadata/g:entry[@key='ComponentKind']/g:value != 'Fixture'">
         <ul>
           <xsl:apply-templates select="g:children/g:test" />
