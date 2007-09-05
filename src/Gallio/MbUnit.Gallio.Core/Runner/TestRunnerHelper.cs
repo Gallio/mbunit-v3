@@ -482,7 +482,6 @@ namespace MbUnit.Core.Runner
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                progressMonitor.ThrowIfCanceled();
                 runner.LoadPackage(package, progressMonitor);
             });
         }
@@ -491,7 +490,6 @@ namespace MbUnit.Core.Runner
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                progressMonitor.ThrowIfCanceled();
                 runner.BuildTemplates(progressMonitor);
             });
         }
@@ -500,7 +498,6 @@ namespace MbUnit.Core.Runner
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                progressMonitor.ThrowIfCanceled();
                 runner.BuildTests(progressMonitor);
             });
         }
@@ -509,7 +506,6 @@ namespace MbUnit.Core.Runner
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                progressMonitor.ThrowIfCanceled();
                 runner.Run(progressMonitor);
             });
         }
@@ -520,7 +516,6 @@ namespace MbUnit.Core.Runner
             {
                 progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
                 {
-                    progressMonitor.ThrowIfCanceled();
                     progressMonitor.BeginTask("Saving template tree.", 1);
                     progressMonitor.SetStatus(templateModelFilename);
                     SerializationUtils.SaveToXml(runner.TemplateModel, templateModelFilename);
@@ -534,7 +529,6 @@ namespace MbUnit.Core.Runner
             {
                 progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
                 {
-                    progressMonitor.ThrowIfCanceled();
                     progressMonitor.BeginTask("Saving test tree.", 1);
                     progressMonitor.SetStatus(testModelFilename);
                     SerializationUtils.SaveToXml(runner.TestModel, testModelFilename);
@@ -559,7 +553,6 @@ namespace MbUnit.Core.Runner
                 generatedReportFilenames.Add(reportFormat.ToLower(), reportPath);
                 progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
                 {
-                    progressMonitor.ThrowIfCanceled();
                     progressMonitor.BeginTask("Generating " + reportFormat + " report.", 1);
 
                     formatter.Format(report, reportPath, reportFormatOptions, null,
