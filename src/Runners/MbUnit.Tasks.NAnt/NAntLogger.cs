@@ -14,23 +14,24 @@
 // limitations under the License.
 
 using System;
-using NAnt.Core;
 using Castle.Core.Logging;
 
 namespace MbUnit.Tasks.NAnt
 {
     /// <summary>
-    /// Logs messages to a Task instance.
+    /// An ILogger implementation that logs messages to a INAntLogger object.
     /// </summary>
     public class NAntLogger : LevelFilteredLogger
     {
-        private readonly Task task;
+        private readonly INAntLogger task;
 
         /// <summary>
-        /// Creates a NAnt logger for a task.
+        /// Initializes a new instance of the NAntLogger class using
+        /// a custom INAntLogger instance.
         /// </summary>
-        /// <param name="task">The NAnt task</param>
-        public NAntLogger(Task task)
+        /// <param name="task">The INAntLogger where the messages will be channeled
+        /// to.</param>
+        public NAntLogger(INAntLogger task)
         {
             this.task = task;
             Level = LoggerLevel.Debug;

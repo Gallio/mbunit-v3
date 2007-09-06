@@ -4,9 +4,9 @@
   <loadtasks assembly="..\bin\MbUnit.Tasks.NAnt.dll" />
 
   <target name="RunMbUnit">
-    <mbunit result-property="ExitCode" ignore-failures="true" filter="Type=FailingFixture;Member=Fail" >
+    <mbunit result-property="ExitCode" failonerror="false" filter="Type=FailingFixture;Member=Fail" >
       <assemblies>
-        <include name="..\..\..\TestResources\MbUnit.TestResources.MbUnit2\bin\MbUnit.TestResources.MbUnit2.dll" />
+        <include name="${TestAssembly}" />
       </assemblies>
     </mbunit>
     <fail if="${ExitCode != ExpectedMbUnitExitCode}" >The return code should have been ${ExpectedMbUnitExitCode}!</fail>

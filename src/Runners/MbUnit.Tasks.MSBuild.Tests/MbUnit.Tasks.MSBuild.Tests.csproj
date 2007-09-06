@@ -48,9 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MbUnitTaskTests.cs" />
-    <Compile Include="MbUnitTaskUnitTests.cs" />
     <Compile Include="MSBuildLoggerTests.cs" />
+    <Compile Include="MSBuildTaskTests.cs" />
+    <Compile Include="MSBuildTaskUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +69,10 @@
     <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
       <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
       <Name>MbUnit.Gallio.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TestResources\MbUnit.TestResources.MbUnit2\MbUnit.TestResources.MbUnit2.csproj">
+      <Project>{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}</Project>
+      <Name>MbUnit.TestResources.MbUnit2</Name>
     </ProjectReference>
     <ProjectReference Include="..\MbUnit.Tasks.MSBuild\MbUnit.Tasks.MSBuild.csproj">
       <Project>{F457EC34-2ED6-4E08-81F8-E5099B7ED051}</Project>

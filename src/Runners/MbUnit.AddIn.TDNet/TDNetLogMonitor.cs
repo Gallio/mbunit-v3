@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using MbUnit.AddIn.TDNet.Properties;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
 using MbUnit.Framework.Kernel.ExecutionLogs;
@@ -27,8 +28,8 @@ using TestState = TestDriven.Framework.TestState;
 namespace MbUnit.AddIn.TDNet
 {
     /// <summary>
-    /// An ITestRunnerMonitor implementation that informs TD.NET (and therefore the user)
-    /// in real-time what's going with the tests.
+    /// An <see cref="ITestRunnerMonitor" /> implementation that informs TD.NET (and therefore
+    /// the user) in real-time what's going with the tests.
     /// </summary>
     internal class TDNetLogMonitor : BaseTestRunnerMonitor
     {
@@ -74,14 +75,24 @@ namespace MbUnit.AddIn.TDNet
             // progressively see if the tests are passing or failing.
             if (e.StepRun.Result.Outcome == TestOutcome.Passed)
             {
-                testListener.WriteLine(String.Format("TestCase '{0}' passed.", e.StepRun.StepFullName), Category.Info);
+                testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed, 
+                    e.StepRun.StepFullName), Category.Info);
             }
 
             // Inform TD.NET what happened 
             TestResult result = new TestResult();
             result.Name = e.StepRun.StepFullName;
             result.TimeSpan = TimeSpan.FromSeconds(e.StepRun.Result.Duration);
-            result.TestRunner = "MbUnit Gallio";
+            try
+            {
+                // This could crash in older versions of TD.NET with a MissingFieldException
+                // For some reason the exception its always thrown regardless of the catch
+                // block so we have to comment it out for now
+                //result.TestRunner = "MbUnit Gallio";
+            }
+            catch (MissingFieldException)
+            {
+            }
 
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line
@@ -91,7 +102,7 @@ namespace MbUnit.AddIn.TDNet
 
             ExecutionLogStream warningStream = e.StepRun.ExecutionLog.GetStream(ExecutionLogStreamName.Warnings);
             if (warningStream != null)
-                result.Message = String.Format("Warnings:\n{0}", warningStream);
+                result.Message = String.Format(Resources.TDNetLogMonitor_Warnings, warningStream);
 
             // TD.NET will automatically count the number of passed, ignored and failed tests
             // provided we call the TestFinished method with the right State

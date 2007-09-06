@@ -21,8 +21,8 @@ using TDF = TestDriven.Framework;
 namespace MbUnit.AddIn.TDNet
 {
     /// <summary>
-    /// An ILogger implementation that writes messages to a ITestListener
-    /// object.
+    /// An <see cref="ILogger" /> implementation that writes messages to a
+    /// <see cref="ITestListener" /> object.
     /// </summary>
     internal class TDNetLogger : ConsoleLogger
     {
@@ -39,9 +39,9 @@ namespace MbUnit.AddIn.TDNet
         }
 
         /// <summary>
-        /// Initializes a new instance of the TDNetLogger class.
+        /// Initializes a new instance of the <see cref="TDNetLogger" /> class.
         /// </summary>
-        /// <param name="testListener">An ITestListener object where the
+        /// <param name="testListener">An <see cref="ITestListener" /> object where the
         /// messages will be written to.</param>
         /// <param name="name">The name of the logger.</param>
         public TDNetLogger(ITestListener testListener, string name)

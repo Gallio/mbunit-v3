@@ -15,7 +15,6 @@
 
 extern alias MbUnit2;
 using System;
-using System.IO;
 using System.Reflection;
 using MbUnit.TestResources.MbUnit2;
 using MbUnit2::MbUnit.Framework;

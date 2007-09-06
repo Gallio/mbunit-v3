@@ -19,9 +19,10 @@ using System.Reflection;
 using MbUnit.Core.Runner;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Tasks.MSBuild.Properties;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using ILogger=Castle.Core.Logging.ILogger;
+using ILogger = Castle.Core.Logging.ILogger;
 
 namespace MbUnit.Tasks.MSBuild
 {
@@ -32,6 +33,9 @@ namespace MbUnit.Tasks.MSBuild
     /// </example>
     public class MbUnit : Task
     {
+        /// Internal comment. In the MSBuild the class name is also the custom task
+        /// name, so we named this class "MbUnit" to be more friendly to the user.
+
         #region Private Members
 
         private ITaskItem[] assemblies;
@@ -39,7 +43,7 @@ namespace MbUnit.Tasks.MSBuild
         private ITaskItem[] hintDirectories;
         private string filter;
         private string[] reportTypes = new string[] { };
-        private string reportNameFormat = "mbunit-result-{0}{1}";
+        private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
         private bool ignoreFailures = false;
         private int exitCode;
@@ -244,7 +248,7 @@ namespace MbUnit.Tasks.MSBuild
             }
             catch (Exception ex)
             {
-                Log.LogError("Unexpected failure during MbUnit execution");
+                Log.LogError(Resources.UnexpectedFailureDuringMbUnitExecution);
                 Log.LogErrorFromException(ex, true);
                 return IgnoreFailures;
             }
@@ -297,8 +301,8 @@ namespace MbUnit.Tasks.MSBuild
                 inconclusiveCount = runner.Statistics.InconclusiveCount;
                 runCount = runner.Statistics.RunCount;
                 skipCount = runner.Statistics.SkipCount;
-                Duration = runner.Statistics.Duration;
-                AssertCount = runner.Statistics.AssertCount;
+                duration = runner.Statistics.Duration;
+                assertCount = runner.Statistics.AssertCount;
             }
         }
 
@@ -327,7 +331,7 @@ namespace MbUnit.Tasks.MSBuild
         private void DisplayVersion()
         {
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            Log.LogMessage(String.Format("MbUnit MSBuild Task - Version {0}.{1} build {2}",
+            Log.LogMessage(String.Format(Resources.TaskNameAndVersion,
                                          appVersion.Major, appVersion.Minor, appVersion.Build));
         }
 

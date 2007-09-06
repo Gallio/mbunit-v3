@@ -14,18 +14,28 @@
 // limitations under the License.
 
 extern alias MbUnit2;
-using System.IO;
-using MbUnit.Core.Runner;
 using MbUnit2::MbUnit.Framework;
+using System;
+using MbUnit.TestResources.MbUnit2;
+using MbUnit.Core.Runner;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Rhino.Mocks;
 
 namespace MbUnit.Tasks.MSBuild.Tests
 {
+    /// <summary>
+    /// A set of unit tests for the MbUnit class (a custom MbUnit task for MSBuild).
+    /// </summary>
+    /// <remarks>
+    /// If you modify these tests please make sure to review the tests in the
+    /// NAntTasksUnitTests fixture, since the both the tasks for NAnt and MSBuild
+    /// should exhibit a similar behavior and features set.
+    /// </remarks>
     [TestFixture]
     [Author("Julian Hidalgo")]
     [TestsOn(typeof(MbUnit))]
+    [TestCategory("UnitTests")]
     public class MbUnitTaskUnitTests
     {
         #region Private Members
@@ -41,9 +51,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         public void FixtureSetUp()
         {
             stubbedBuildEngine = MockRepository.GenerateStub<IBuildEngine>();
-            string testAssemblyPath =
-                Path.GetFullPath(
-                    @"..\..\..\TestResources\MbUnit.TestResources.MbUnit2\bin\MbUnit.TestResources.MbUnit2.dll");
+            string testAssemblyPath = new Uri(typeof(SimpleTest).Assembly.CodeBase).LocalPath;
             TaskItem ti = new TaskItem(testAssemblyPath);
             assemblies = new ITaskItem[] {ti};
         }
@@ -58,7 +66,15 @@ namespace MbUnit.Tasks.MSBuild.Tests
             MbUnit task = CreateTask();
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.NoTests);
+            // If nothing ran then all the statistics properties should be set to zero
             Assert.AreEqual(task.TestCount, 0);
+            Assert.AreEqual(task.FailureCount, 0);
+            Assert.AreEqual(task.IgnoreCount, 0);
+            Assert.AreEqual(task.InconclusiveCount, 0);
+            Assert.AreEqual(task.RunCount, 0);
+            Assert.AreEqual(task.SkipCount, 0);
+            Assert.AreEqual(task.AssertCount, 0);
+            Assert.AreEqual(task.Duration, 0, 0.1);
         }
 
         [Test]
@@ -66,6 +82,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         {
             MbUnit task = CreateTask();
             task.ReportTypes = null;
+            // Just make sure it doesn't crash
             Assert.IsTrue(task.Execute());
         }
 
@@ -74,6 +91,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         {
             MbUnit task = CreateTask();
             task.ReportDirectory = null;
+            // Just make sure it doesn't crash
             Assert.IsTrue(task.Execute());
         }
 
@@ -82,6 +100,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         {
             MbUnit task = CreateTask();
             task.ReportNameFormat = null;
+            // Just make sure it doesn't crash
             Assert.IsTrue(task.Execute());
         }
 
@@ -116,9 +135,11 @@ namespace MbUnit.Tasks.MSBuild.Tests
             Assert.AreEqual(task.ExitCode, ResultCode.Success);
             Assert.AreEqual(task.TestCount, 4);
             Assert.AreEqual(task.PassCount, 4);
+            Assert.AreEqual(task.FailureCount, 0);
             Assert.GreaterThan(task.Duration, 0);
-            // The assert count is not reliable
-            //Assert.AreEqual(task.AssertCount, 0);
+            // The assert count is not reliable but we should be fine with simple
+            // asserts
+            Assert.AreEqual(task.AssertCount, 3);
         }
 
         [Test]
@@ -130,10 +151,12 @@ namespace MbUnit.Tasks.MSBuild.Tests
             Assert.IsFalse(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Failure);
             Assert.AreEqual(task.TestCount, 2);
+            Assert.AreEqual(task.PassCount, 1);
             Assert.AreEqual(task.FailureCount, 1);
             Assert.GreaterThan(task.Duration, 0);
-            // The assert count is not reliable
-            //Assert.AreEqual(task.AssertCount, 1);
+            // The assert count is not reliable but we should be fine with simple
+            // asserts
+            Assert.AreEqual(task.AssertCount, 0);
         }
 
         [Test]
@@ -148,8 +171,9 @@ namespace MbUnit.Tasks.MSBuild.Tests
             Assert.AreEqual(task.PassCount, 1);
             Assert.AreEqual(task.FailureCount, 0);
             Assert.GreaterThan(task.Duration, 0);
-            // The assert count is not reliable
-            //Assert.AreEqual(task.AssertCount, 1);
+            // The assert count is not reliable but we should be fine with simple
+            // asserts
+            Assert.AreEqual(task.AssertCount, 3);
         }
 
         [Test]
@@ -164,8 +188,9 @@ namespace MbUnit.Tasks.MSBuild.Tests
             Assert.AreEqual(task.PassCount, 0);
             Assert.AreEqual(task.FailureCount, 1);
             Assert.GreaterThan(task.Duration, 0);
-            // The assert count is not reliable
-            //Assert.AreEqual(task.AssertCount, 1);
+            // The assert count is not reliable but we should be fine with simple
+            // asserts
+            Assert.AreEqual(task.AssertCount, 0);
         }
 
         [Test]

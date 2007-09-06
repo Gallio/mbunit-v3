@@ -26,6 +26,9 @@ namespace MbUnit.TestResources.MbUnit2
         [Test]
         public void Pass()
         {
+            Assert.AreEqual(1, 0 + 1);
+            Assert.AreEqual(2, 1 + 1);
+            Assert.AreEqual(3, 2 + 1);
         }
 
         [RowTest]
@@ -34,7 +37,7 @@ namespace MbUnit.TestResources.MbUnit2
         [Row("Row3")]
         public void ARowTest(string row)
         {
-            
+
         }
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using MbUnit.TestResources.MbUnit2;
 using MbUnit2::MbUnit.Framework;
 using System;
 using System.Diagnostics;
@@ -32,12 +33,13 @@ namespace MbUnit.Tasks.NAnt.Tests
     /// </todo>
     [TestFixture]
     [Author("Julian Hidalgo")]
-    [TestsOn(typeof(MbUnitTask))]
+    [TestsOn(typeof(MbUnitNAntTask))]
     [TestCategory("IntegrationTests")]
-    public class NAntTaskTests
+    public class MbUnitNAntTaskTests
     {
         private string nantExecutablePath = null;
         private string workingDirectory = null;
+        string testAssemblyPath = null;
 
         [TestFixtureSetUp]
         public void FixtureSetUp()
@@ -49,11 +51,12 @@ namespace MbUnit.Tasks.NAnt.Tests
             {
                 Assert.Fail("Cannot find the NAnt executable!");
             }
+            testAssemblyPath = new Uri(typeof(SimpleTest).Assembly.CodeBase).LocalPath;
             workingDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
         }
 
         [Test]
-        public void RunNAnt_NoTests()
+        public void RunNAnt_NoTestAssembly()
         {
             Process p = RunNAnt(@"..\TestBuildFiles\NoTests.build", ResultCode.NoTests);
             p.WaitForExit();
@@ -118,7 +121,7 @@ namespace MbUnit.Tasks.NAnt.Tests
             Assert.AreEqual(p.ExitCode, 0, "This build should have succeeded.");
             p.Close();
         }
-
+                
         private Process RunNAnt(string buildFile, int expectedMbUnitExitCode)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo(nantExecutablePath);
@@ -128,6 +131,10 @@ namespace MbUnit.Tasks.NAnt.Tests
             startInfo.WorkingDirectory = workingDirectory;
             startInfo.Arguments = "/f:" + buildFile +
                 " /D:ExpectedMbUnitExitCode=" + expectedMbUnitExitCode;
+            if (!String.IsNullOrEmpty(testAssemblyPath))
+            {
+                startInfo.Arguments += " /D:TestAssembly=\"" + testAssemblyPath + "\"";
+            }
 
             return Process.Start(startInfo);
         }

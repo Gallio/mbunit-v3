@@ -22,16 +22,16 @@ using ILogger=Castle.Core.Logging.ILogger;
 namespace MbUnit.Tasks.MSBuild
 {
     /// <summary>
-    /// Logs messages to a TaskLoggingHelper instance.
+    /// Logs messages to a <see cref="TaskLoggingHelper" /> instance.
     /// </summary>
     public class MSBuildLogger : LevelFilteredLogger
     {
         private readonly TaskLoggingHelper taskLogger;
         
         /// <summary>
-        /// Initializes a new instance of the MSBuildLogger class.
+        /// Initializes a new instance of the <see cref="MSBuildLogger" /> class.
         /// </summary>
-        /// <param name="taskLogger">The TaskLoggingHelper instance to channel
+        /// <param name="taskLogger">The <see cref="TaskLoggingHelper" /> instance to channel
         /// log messages to.</param>
         public MSBuildLogger(TaskLoggingHelper taskLogger)
         {

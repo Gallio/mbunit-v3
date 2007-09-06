@@ -1,13 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask AssemblyFile="..\bin\MbUnit.Tasks.MSBuild.dll"
              TaskName="MbUnit" />
-  <ItemGroup>
-    <TestAssemblies Include="..\..\..\TestResources\MbUnit.TestResources.MbUnit2\bin\MbUnit.TestResources.MbUnit2.dll" />
-  </ItemGroup>
   
   <Target Name="MyTarget">
     <MbUnit IgnoreFailures="true" Filter="Type=FailingFixture;Member=Fail"
-      Assemblies="@(TestAssemblies)"
+      Assemblies="$(TestAssembly)"
     >
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode"/>
     </MbUnit>

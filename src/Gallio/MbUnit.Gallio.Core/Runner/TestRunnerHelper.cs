@@ -64,7 +64,7 @@ namespace MbUnit.Core.Runner
         private string resultSummary;
         private PackageRunStatistics statistics;
         private Stopwatch stopWatch;
-        private ReportMonitor reportMonitor;
+        private readonly ReportMonitor reportMonitor;
         private StringWriter debugWriter;
         private readonly List<ITestRunnerMonitor> customMonitors = new List<ITestRunnerMonitor>();
 

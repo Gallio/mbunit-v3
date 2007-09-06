@@ -4,7 +4,7 @@
   
   <Target Name="MyTarget">
     <MbUnit IgnoreFailures="true"
-      Assemblies="@(TestAssemblies)"
+      Assemblies=""
     >
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode"/>
     </MbUnit>

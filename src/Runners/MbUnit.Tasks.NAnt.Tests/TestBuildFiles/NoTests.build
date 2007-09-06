@@ -4,7 +4,7 @@
   <loadtasks assembly="..\bin\MbUnit.Tasks.NAnt.dll" />
 
   <target name="RunMbUnit">
-    <mbunit result-property="ExitCode" ignore-failures="true">
+    <mbunit result-property="ExitCode" failonerror="false">
       <assemblies>
       </assemblies>
     </mbunit>

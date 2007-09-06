@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using MbUnit.TestResources.MbUnit2;
 using MbUnit2::MbUnit.Framework;
 using System;
 using System.Reflection;
@@ -43,6 +44,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
     {
         private string MSBuildExecutablePath = null;
         string workingDirectory = null;
+        string testAssemblyPath = null;
 
         [TestFixtureSetUp]
         public void FixtureSetUp()
@@ -53,11 +55,12 @@ namespace MbUnit.Tasks.MSBuild.Tests
             {
                 Assert.Fail("Cannot find the MSBuild executable!");
             }
+            testAssemblyPath = new Uri(typeof(SimpleTest).Assembly.CodeBase).LocalPath;
             workingDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
         }
 
         [Test]
-        public void RunMSBuild_NoTests()
+        public void RunMSBuild_NoTestAssembly()
         {
             Process p = RunMSBuild(@"..\TestBuildFiles\NoTests.xml", ResultCode.NoTests);
             p.WaitForExit();
@@ -130,8 +133,12 @@ namespace MbUnit.Tasks.MSBuild.Tests
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             startInfo.WorkingDirectory = workingDirectory;
-            startInfo.Arguments = buildFile +
-                " /p:\"ExpectedMbUnitExitCode=" + expectedMbUnitExitCode + "\"";           
+            startInfo.Arguments = "\"" + buildFile + "\"" +
+                " /p:\"ExpectedMbUnitExitCode=" + expectedMbUnitExitCode + "\"";
+            if (!String.IsNullOrEmpty(testAssemblyPath))
+            {
+                startInfo.Arguments += " /p:\"TestAssembly=" + testAssemblyPath + "\"";
+            }
             
             return Process.Start(startInfo);
         }

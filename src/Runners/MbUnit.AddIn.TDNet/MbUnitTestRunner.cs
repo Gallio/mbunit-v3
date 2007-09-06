@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using MbUnit.AddIn.TDNet.Properties;
 using MbUnit.Core.Runner;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
@@ -31,7 +32,7 @@ namespace MbUnit.AddIn.TDNet
     [Serializable]
     public class MbUnitTestRunner : TDF.ITestRunner
     {
-        private readonly string reportType = "html";
+        private readonly string reportType = @"html";
         private TDNetLogger logger = null;
 
         #region TDF.ITestRunner Members
@@ -43,7 +44,7 @@ namespace MbUnit.AddIn.TDNet
         TestRunState TDF.ITestRunner.RunAssembly(ITestListener testListener, Assembly assembly)
         {
             if (assembly == null)
-                throw new ArgumentNullException("assembly");
+                throw new ArgumentNullException(@"assembly");
 
             return Run(testListener, assembly, new AssemblyFilter<ITest>(assembly.FullName));
         }
@@ -55,9 +56,9 @@ namespace MbUnit.AddIn.TDNet
         TestRunState TDF.ITestRunner.RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
         {
             if (assembly == null)
-                throw new ArgumentNullException("assembly");
+                throw new ArgumentNullException(@"assembly");
             if (member == null)
-                throw new ArgumentNullException("member");
+                throw new ArgumentNullException(@"member");
 
             List<Filter<ITest>> filters = new List<Filter<ITest>>();
             filters.Add(new AssemblyFilter<ITest>(assembly.FullName));
@@ -79,7 +80,7 @@ namespace MbUnit.AddIn.TDNet
                     break;
                 default:
                     // This is not something we can run so just ignore it
-                    InformNoTestsWereRun(testListener, member.Name + " is not a test");
+                    InformNoTestsWereRun(testListener, String.Format(Resources.MbUnitTestRunner_MemberIsNotATest, member.Name));
                     return TestRunState.NoTests;
             }
 
@@ -92,9 +93,9 @@ namespace MbUnit.AddIn.TDNet
         TestRunState TDF.ITestRunner.RunNamespace(ITestListener testListener, Assembly assembly, string ns)
         {
             if (assembly == null)
-                throw new ArgumentNullException("assembly");
+                throw new ArgumentNullException(@"assembly");
             if (String.IsNullOrEmpty(ns))
-                throw new ArgumentNullException("ns");
+                throw new ArgumentNullException(@"ns");
 
             List<Filter<ITest>> filters = new List<Filter<ITest>>();
             filters.Add(new AssemblyFilter<ITest>(assembly.FullName));
@@ -110,9 +111,9 @@ namespace MbUnit.AddIn.TDNet
         private TestRunState Run(ITestListener testListener, Assembly assembly, Filter<ITest> filter)
         {
             if (testListener == null)
-                throw new ArgumentNullException("testListener");
+                throw new ArgumentNullException(@"testListener");
             if (filter == null)
-                throw new ArgumentNullException("filter");
+                throw new ArgumentNullException(@"filter");
 
             logger = new TDNetLogger(testListener);
             LogAddInVersion();
@@ -166,7 +167,7 @@ namespace MbUnit.AddIn.TDNet
 
                 return reportDirectory.FullName;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Error(e.ToString());
                 return null;
@@ -196,7 +197,7 @@ namespace MbUnit.AddIn.TDNet
                     break;
                 case ResultCode.NoTests:
                     state = TestRunState.NoTests;
-                    InformNoTestsWereRun(testListener, "Found 0 tests");
+                    InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
                     break;
                 default:
                     state = TestRunState.Success;
@@ -207,7 +208,7 @@ namespace MbUnit.AddIn.TDNet
             if (testRunnerHelper.Statistics.TestCount == 0)
             {
                 state = TestRunState.NoTests;
-                InformNoTestsWereRun(testListener, "");
+                InformNoTestsWereRun(testListener, String.Empty);
             }
 
             return state;
@@ -224,7 +225,7 @@ namespace MbUnit.AddIn.TDNet
         /// <param name="reason">The reason no tests were run for.</param>
         private static void InformNoTestsWereRun(ITestListener testListener, string reason)
         {
-            string message = "** NO TESTS WERE RUN";
+            string message = String.Format("** {0}", Resources.MbUnitTestRunner_NoTestsWereRun);
             if (!String.IsNullOrEmpty(reason))
             {
                 message += " (" + reason + ")";
@@ -236,7 +237,8 @@ namespace MbUnit.AddIn.TDNet
         private void LogAddInVersion()
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            logger.Info(String.Format("MbUnit.AddIn.TDNet - Version {0}.{1} build {2}\n", appVersion.Major, appVersion.Minor, appVersion.Build));
+            logger.Info(String.Format(Resources.RunnerNameAndVersion + "\n",
+                appVersion.Major, appVersion.Minor, appVersion.Build));
         }
 
         #endregion
