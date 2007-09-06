@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
+using MbUnit.Framework.Properties;
 
 namespace MbUnit.Framework.Kernel.Model
 {

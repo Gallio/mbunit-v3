@@ -251,7 +251,7 @@
     <Compile Include="ParameterAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -269,7 +269,7 @@
     <Compile Include="TestsOnAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

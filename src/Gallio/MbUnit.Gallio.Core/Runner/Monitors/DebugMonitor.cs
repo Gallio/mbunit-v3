@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MbUnit.Core.Properties;
 using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Core.Runner.Monitors

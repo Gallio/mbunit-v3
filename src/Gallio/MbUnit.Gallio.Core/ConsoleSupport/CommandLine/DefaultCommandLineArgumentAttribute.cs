@@ -32,9 +32,9 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 		/// <summary>
 		/// Indicates that this argument is the default argument.
 		/// </summary>
-		/// <param name="type"> Specifies the error checking to be done on the argument. </param>
-		public DefaultCommandLineArgumentAttribute(CommandLineArgumentType type)
-			: base (type)
+		/// <param name="flags"> Specifies the error checking to be done on the argument. </param>
+		public DefaultCommandLineArgumentAttribute(CommandLineArgumentFlags flags)
+			: base (flags)
 		{
 		}
 	}

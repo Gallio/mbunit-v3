@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Security.Permissions;
 
 namespace MbUnit.Core.Utilities
 {
@@ -48,7 +49,8 @@ namespace MbUnit.Core.Utilities
 	public class LongLivingMarshalByRefObject : MarshalByRefObject
 	{
         /// <inheritdoc />
-		public override Object InitializeLifetimeService()
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override Object InitializeLifetimeService()
 		{
 			return null;
 		}

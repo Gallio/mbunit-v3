@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using MbUnit.Framework.Properties;
 
 namespace MbUnit.Framework.Kernel.Model
 {

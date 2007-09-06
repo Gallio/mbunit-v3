@@ -29,14 +29,14 @@ namespace MbUnit.Echo
         #region Files and Directories
 
         [DefaultCommandLineArgument(
-            CommandLineArgumentType.MultipleUnique,
+            CommandLineArgumentFlags.MultipleUnique,
             LongName = "assemblies",
             Description = "List of assemblies containing the tests."
             )]
         public string[] Assemblies;
 
         [CommandLineArgument(
-            CommandLineArgumentType.MultipleUnique,
+            CommandLineArgumentFlags.MultipleUnique,
             ShortName = "hd",
             LongName = "hint-directories",
             Description = "The list of directories used for loading assemblies and other dependent resources.",
@@ -45,7 +45,7 @@ namespace MbUnit.Echo
         public string[] HintDirectories;
 
         [CommandLineArgument(
-            CommandLineArgumentType.MultipleUnique,
+            CommandLineArgumentFlags.MultipleUnique,
             ShortName = "pd",
             LongName = "plugin-directory",
             Description = "Additional MbUnit plugin directories to search recursively",
@@ -54,7 +54,7 @@ namespace MbUnit.Echo
         public string[] PluginDirectories;
 
         [CommandLineArgument(
-            CommandLineArgumentType.AtMostOnce,
+            CommandLineArgumentFlags.AtMostOnce,
             ShortName = "abd",
             LongName = "application-base-directory",
             Description = "The application base directory to set during test execution.",
@@ -66,7 +66,7 @@ namespace MbUnit.Echo
 
         #region Report Arguments
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "rd",
              LongName = "report-directory",
              Description = "Target output directory for the reports.",
@@ -75,7 +75,7 @@ namespace MbUnit.Echo
         public string ReportDirectory = "";
 
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "rnf",
              LongName = "report-name-format",
              Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}.",
@@ -84,7 +84,7 @@ namespace MbUnit.Echo
         public string ReportNameFormat = "mbunit-result-{0}{1}";
 
         [CommandLineArgument(
-             CommandLineArgumentType.MultipleUnique,
+             CommandLineArgumentFlags.MultipleUnique,
              ShortName = "rt",
              LongName = "report-type",
              Description = "Report types to generate.  See below for all supported types.",
@@ -93,7 +93,7 @@ namespace MbUnit.Echo
         public string[] ReportTypes;
 
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "sr",
              LongName = "show-reports",
             Description = "Show generated reports in a window using the default system application registered to the report file type."
@@ -104,7 +104,7 @@ namespace MbUnit.Echo
         #region Filter Arguments
 
         [CommandLineArgument(
-             CommandLineArgumentType.MultipleUnique,
+             CommandLineArgumentFlags.MultipleUnique,
              ShortName = "fc",
              LongName = "filter-category",
              Description = "Name of the filtered category."
@@ -112,7 +112,7 @@ namespace MbUnit.Echo
         public string[] FilterCategories;
 
         [CommandLineArgument(
-             CommandLineArgumentType.MultipleUnique,
+             CommandLineArgumentFlags.MultipleUnique,
              ShortName = "fa",
              LongName = "filter-author",
              Description = "Name of the filtered author name."
@@ -120,7 +120,7 @@ namespace MbUnit.Echo
         public string[] FilterAuthors;
 
         [CommandLineArgument(
-             CommandLineArgumentType.MultipleUnique,
+             CommandLineArgumentFlags.MultipleUnique,
              ShortName = "ft",
              LongName = "filter-type",
              Description = "Name of the filtered type."
@@ -128,7 +128,7 @@ namespace MbUnit.Echo
         public string[] FilterTypes;
 
         [CommandLineArgument(
-             CommandLineArgumentType.MultipleUnique,
+             CommandLineArgumentFlags.MultipleUnique,
              ShortName = "fn",
              LongName = "filter-namespace",
              Description = "Name of the filtered namespace.",
@@ -137,7 +137,7 @@ namespace MbUnit.Echo
         public string[] FilterNamespaces;
 
         [CommandLineArgument(
-             CommandLineArgumentType.MultipleUnique,
+             CommandLineArgumentFlags.MultipleUnique,
              ShortName = "fi",
              LongName = "filter-importance",
              Description = "Name of the filtered importance.",
@@ -150,7 +150,7 @@ namespace MbUnit.Echo
         #region Misc arguments
 
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "h",
              LongName = "help",
              Description = "Display this help text."
@@ -158,7 +158,7 @@ namespace MbUnit.Echo
         public bool Help;
 
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "v",
              LongName = "verbosity",
              Description = "Controls the level of detail of the information to display.",
@@ -167,7 +167,7 @@ namespace MbUnit.Echo
         public Verbosity Verbosity = Verbosity.Normal;
 
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "e",
              LongName = "echo-results",
              Description = "Echo test results to the screen as tests finish.  Tests that passed are not shown unless the verbosity level is at least 'Verbose'."
@@ -175,21 +175,21 @@ namespace MbUnit.Echo
         public bool EchoResults;
 
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              LongName = "save-template-tree",
              Description = "Save the template tree to a file as XML."
              )]
         public string SaveTemplateTree;
 
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              LongName = "save-test-tree",
              Description = "Save the test tree to a file as XML."
              )]
         public string SaveTestTree;
 
         [CommandLineArgument(
-             CommandLineArgumentType.AtMostOnce,
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "sc",
              LongName = "shadow-copy-files",
              Description = "Enable shadow copying of the assemblies.  Shadow copying allows the original assemblies to be modified while the tests are running.  However, shadow copying may occasionally some tests to fail if they depend on their original location."

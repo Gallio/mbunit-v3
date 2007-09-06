@@ -71,7 +71,7 @@ LOCALIZATION
 
 1. All localizable strings in each Gallio assembly should be moved to resource
    files.  For non-UI projects, this resource file is called "Resources.resx"
-   and lives in the root of the assembly.
+   and lives in the Properties folder (and namespace) of the assembly.
    
    Resource strings should be named according to the following pattern based
    on where they are used: "<TypeName>_<Description>".  The <TypeName> should
@@ -81,15 +81,24 @@ LOCALIZATION
  
    Strings that are not to be localized should use the verbatim literal syntax
    with the '@' prefix (like @"foo") to help distinguish them from other strings
-   when doing code sweeps.  Alternately, RGreatEx can insert #pragma's to mark
-   strings not easily represented using '@'.
-   
+   when doing code sweeps.
+
+   Please use the automatically generated typesafe accessors to refer to
+   resources whenever possible: they are more robust during refactoring.
+
    Tip: The RGreatEx plugin for Resharper greatly simplifies moving strings
         into resource files.  It can be configured to automatically
         generate resource keys according to our convention.  Likewise it can
         be configured to suppress suggested string to resource refactorings
         when the string is expressed using the verbatim syntax.
         Using this tool (or something similar) is strongly recommended.
+
+   Caveat: RGreatEx can insert custom #pragma's to mark strings not easily
+           represented using '@'.  Do not use this feature.  The non-standard
+           pragmas generate compiler warnings and may confuse the uninitiated.
+           Instead I've mailed a suggestion to the RGreatEx team to support
+           marking non-externalizable strings with // $NON-NLS-x$ style
+           comments much like the Eclipse NLS tool.
 
 
 DEFENSIVE CODING

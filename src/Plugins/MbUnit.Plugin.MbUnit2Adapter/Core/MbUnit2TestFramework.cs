@@ -21,6 +21,7 @@ using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
+using MbUnit.Plugin.MbUnit2Adapter.Properties;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Core
 {

@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -37,3 +38,10 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("6ac245bd-f802-475a-8cc4-6ba291064618")]
+
+// Don't care about CLS compliance for this assembly.
+[assembly: CLSCompliant(false)]
+
+// The neutral resources language is US English.
+// Telling the system that this is the case yields a small performance improvement during startup.
+[assembly: NeutralResourcesLanguage("en-US")]

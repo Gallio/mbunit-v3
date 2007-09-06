@@ -19,6 +19,7 @@ using Castle.Core.Logging;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Results;
+using MbUnit.Core.Properties;
 
 namespace MbUnit.Core.Runner.Monitors
 {

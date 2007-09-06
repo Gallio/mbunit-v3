@@ -19,6 +19,7 @@ using System.Reflection;
 using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Kernel.Utilities;
+using MbUnit.Plugin.NUnitAdapter.Properties;
 
 namespace MbUnit.Plugin.NUnitAdapter.Core
 {

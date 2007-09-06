@@ -23,6 +23,7 @@ using MbUnit.Core.Runner;
 using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Core.Runtime;
 using MbUnit.Framework.Kernel.Utilities;
+using MbUnit.Echo.Properties;
 
 namespace MbUnit.Echo
 {

@@ -339,7 +339,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         
 		private static string LongName(CommandLineArgumentAttribute attribute, FieldInfo field)
 		{
-			return (attribute == null || attribute.DefaultLongName) ? field.Name : attribute.LongName;
+			return (attribute == null || attribute.IsDefaultLongName) ? field.Name : attribute.LongName;
 		}
         
 		private static string ShortName(CommandLineArgumentAttribute attribute, FieldInfo field)
@@ -349,7 +349,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         
 		private static bool ExplicitShortName(CommandLineArgumentAttribute attribute)
 		{
-			return (attribute != null && !attribute.DefaultShortName);
+			return (attribute != null && !attribute.IsDefaultShortName);
 		}
 
 		private static Type ElementType(FieldInfo field)
@@ -360,14 +360,14 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 				return null;
 		}
         
-		private static CommandLineArgumentType Flags(CommandLineArgumentAttribute attribute, FieldInfo field)
+		private static CommandLineArgumentFlags Flags(CommandLineArgumentAttribute attribute, FieldInfo field)
 		{
 			if (attribute != null)
-				return attribute.Type;
+				return attribute.Flags;
 			else if (IsCollectionType(field.FieldType))
-				return CommandLineArgumentType.MultipleUnique;
+				return CommandLineArgumentFlags.MultipleUnique;
 			else
-				return CommandLineArgumentType.AtMostOnce;
+				return CommandLineArgumentFlags.AtMostOnce;
 		}
         
 		private static bool IsCollectionType(Type type)
@@ -559,7 +559,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 
 			public bool IsRequired
 			{
-				get { return 0 != (flags & CommandLineArgumentType.Required); }
+				get { return 0 != (flags & CommandLineArgumentFlags.Required); }
 			}
             
 			public bool SeenValue
@@ -569,12 +569,12 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
             
 			public bool AllowMultiple
 			{
-				get { return 0 != (flags & CommandLineArgumentType.Multiple); }
+				get { return 0 != (flags & CommandLineArgumentFlags.Multiple); }
 			}
             
 			public bool Unique
 			{
-				get { return 0 != (flags & CommandLineArgumentType.Unique); }
+				get { return 0 != (flags & CommandLineArgumentFlags.Unique); }
 			}
             
 			public Type Type
@@ -604,7 +604,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 			private bool seenValue;
 			private readonly FieldInfo field;
 			private readonly Type elementType;
-			private readonly CommandLineArgumentType flags;
+			private readonly CommandLineArgumentFlags flags;
 			private readonly ArrayList collectionValues;
 			private readonly ErrorReporter reporter;
 			private readonly bool isDefault;

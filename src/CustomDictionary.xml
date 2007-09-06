@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Custom dictionary words for use with the various FxCop spelling features -->
+<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>Gallio</Word>
+      <Word>MbUnit</Word>
+      <Word>Bootstrapper</Word>
+      <Word>Pairwise</Word>
+      <Word>Utils</Word>
+      <Word>NAnt</Word>
+      <Word>MSBuild</Word>
+      <Word>Plugin</Word>
+      <Word>Cancelation</Word>
+      <Word>Importances</Word>
+      <Word>MultiMap</Word>
+      <Word>Png</Word>
+      <Word>Dox</Word>
+    </Recognized>
+  </Words>
+</Dictionary>
+

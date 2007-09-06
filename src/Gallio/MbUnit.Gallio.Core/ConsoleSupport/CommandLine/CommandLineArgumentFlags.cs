@@ -26,18 +26,20 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 	/// </para>
 	/// </remarks>
 	[Flags]    
-	public enum CommandLineArgumentType
+	public enum CommandLineArgumentFlags
 	{
 		/// <summary>
 		/// Indicates that this field is required. An error will be displayed
 		/// if it is not present when parsing arguments.
 		/// </summary>
 		Required    = 0x01,
+
 		/// <summary>
 		/// Only valid in conjunction with Multiple.
 		/// Duplicate values will result in an error.
 		/// </summary>
 		Unique      = 0x02,
+
 		/// <summary>
 		/// Inidicates that the argument may be specified more than once.
 		/// Only valid if the argument is a collection
@@ -55,7 +57,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 		/// once no error is reported and the value of the argument is the last
 		/// value which occurs in the argument list.
 		/// </summary>
-		LastOccurenceWins = Multiple,
+		LastOccurrenceWins = Multiple,
 
 		/// <summary>
 		/// The default type for collection arguments.

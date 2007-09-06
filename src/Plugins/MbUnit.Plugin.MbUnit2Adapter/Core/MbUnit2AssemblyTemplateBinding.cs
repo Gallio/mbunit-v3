@@ -38,6 +38,7 @@ using MbUnit2::MbUnit.Core.Remoting;
 using MbUnit2::MbUnit.Core.Filters;
 using MbUnit2::MbUnit.Core.Reports.Serialization;
 using MbUnit2::MbUnit.Core.Invokers;
+using MbUnit.Plugin.MbUnit2Adapter.Properties;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Core
 {

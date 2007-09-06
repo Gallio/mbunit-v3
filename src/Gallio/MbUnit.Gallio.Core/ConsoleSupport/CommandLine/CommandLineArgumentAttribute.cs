@@ -30,26 +30,36 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
     [AttributeUsage(AttributeTargets.Field,AllowMultiple=false,Inherited=true)]
     public class CommandLineArgumentAttribute : Attribute
     {
+        private readonly CommandLineArgumentFlags flags;
+        private string shortName;
+        private string longName;
+        private string description = "";
+        private string argumentValueType;
+
         /// <summary>
         /// Allows control of command line parsing.
         /// </summary>
-        /// <param name="type"> Specifies the error checking to be done on the argument. </param>
-        public CommandLineArgumentAttribute(CommandLineArgumentType type)
+        /// <param name="flags"> Specifies the error checking to be done on the argument. </param>
+        public CommandLineArgumentAttribute(CommandLineArgumentFlags flags)
         {
-            this.type = type;
+            this.flags = flags;
         }
         
         /// <summary>
         /// The error checking to be done on the argument.
         /// </summary>
-        public CommandLineArgumentType Type
+        public CommandLineArgumentFlags Flags
         {
-            get { return type; }
+            get { return flags; }
         }
+
         /// <summary>
         /// Returns true if the argument did not have an explicit short name specified.
         /// </summary>
-        public bool DefaultShortName    { get { return null == shortName; } }
+        public bool IsDefaultShortName
+        {
+            get { return null == shortName; }
+        }
         
         /// <summary>
         /// The short name of the argument.
@@ -63,7 +73,10 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         /// <summary>
         /// Returns true if the argument did not have an explicit long name specified.
         /// </summary>
-        public bool DefaultLongName     { get { return null == longName; } }
+        public bool IsDefaultLongName
+        {
+            get { return null == longName; }
+        }
         
         /// <summary>
         /// The long name of the argument.
@@ -79,14 +92,8 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         /// </summary>
 		public string Description
 		{
-			get
-			{
-				return description;
-			}
-			set
-			{
-				description=value;
-			}
+			get { return description; }
+			set { description = value; }
 		}
 
         ///<summary>
@@ -94,16 +101,9 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///</summary>
         public string ArgumentValueType
         {
-            get { return _argValueType; }
-            set { _argValueType = value; }
+            get { return argumentValueType; }
+            set { argumentValueType = value; }
         }
-
-        
-        private string shortName;
-        private string longName;
-		private string description="";
-        private string _argValueType;
-        private readonly CommandLineArgumentType type;
     }
 }
 

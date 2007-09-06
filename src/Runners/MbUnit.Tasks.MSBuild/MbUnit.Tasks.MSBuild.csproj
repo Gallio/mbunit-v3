@@ -43,8 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Formatter.cs" />
-    <Compile Include="FormatterType.cs" />
     <Compile Include="MbUnit.cs" />
     <Compile Include="MSBuildLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

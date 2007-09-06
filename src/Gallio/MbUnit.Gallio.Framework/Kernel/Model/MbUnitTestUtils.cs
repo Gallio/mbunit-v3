@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using MbUnit.Framework.Properties;
 
 namespace MbUnit.Framework.Kernel.Model
 {

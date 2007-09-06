@@ -85,14 +85,14 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
     public class MainArguments
     {
         [DefaultCommandLineArgument(
-            CommandLineArgumentType.MultipleUnique,
+            CommandLineArgumentFlags.MultipleUnique,
             LongName = "assemblies",
             Description = "List of assemblies containing the tests."
             )]
         public string[] Assemblies;
 
         [CommandLineArgument(
-         CommandLineArgumentType.AtMostOnce,
+         CommandLineArgumentFlags.AtMostOnce,
          ShortName = "h",
          LongName = "help",
          Description = "Display this help text"
@@ -100,7 +100,7 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         public bool Help = false;
 
         [CommandLineArgument(
-        CommandLineArgumentType.MultipleUnique,
+        CommandLineArgumentFlags.MultipleUnique,
         ShortName = "hd",
         LongName = "hint-directories",
         Description = "The list of directories used for loading assemblies and other dependent resources."
@@ -111,7 +111,7 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
     public class MainArgumentsDuplicateDefaultCommandLineArgumentStub : MainArguments
     {
         [DefaultCommandLineArgument(
-            CommandLineArgumentType.MultipleUnique,
+            CommandLineArgumentFlags.MultipleUnique,
             LongName = "duplicate",
             Description = "duplicated default command line argument"
             )]
@@ -121,7 +121,7 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
     public class MainArgumentsDuplicateLongNameStub : MainArguments
     {
         [CommandLineArgument(
-            CommandLineArgumentType.MultipleUnique,
+            CommandLineArgumentFlags.MultipleUnique,
             ShortName = "unique",
            LongName = "help",
            Description = "Duplicated long name."
@@ -132,7 +132,7 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
     public class MainArgumentsDuplicateShortNameStub : MainArguments
     {
         [CommandLineArgument(
-            CommandLineArgumentType.MultipleUnique,
+            CommandLineArgumentFlags.MultipleUnique,
            ShortName = "h",
             LongName = "long name",
             Description = "Duplicated short name."

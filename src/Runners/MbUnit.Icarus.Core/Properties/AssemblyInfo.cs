@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -36,3 +38,10 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("5ace939f-7264-4d46-94d1-c1ecc091aefc")]
+
+// Don't care about CLS compliance for this assembly.
+[assembly: CLSCompliant(false)]
+
+// The neutral resources language is US English.
+// Telling the system that this is the case yields a small performance improvement during startup.
+[assembly: NeutralResourcesLanguage("en-US")]

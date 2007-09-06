@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.IO;
 using System.Diagnostics;
 using System.Text;
@@ -330,7 +331,7 @@ namespace MbUnit.Core.Runner
                 throw new ArgumentNullException("reportType");
             }
 
-            string loweredReportType = reportType.ToLower();
+            string loweredReportType = reportType.ToLower(CultureInfo.InvariantCulture);
             if (generatedReportFilenames.ContainsKey(loweredReportType))
             {
                 return generatedReportFilenames[loweredReportType];
@@ -451,8 +452,8 @@ namespace MbUnit.Core.Runner
 
         private static string CanonicalizePath(string path)
         {
-            if (path == "")
-                path = ".";
+            if (path.Length == 0)
+                path = @".";
             return path == null ? null : Path.GetFullPath(path);
         }
 
@@ -547,13 +548,13 @@ namespace MbUnit.Core.Runner
                     report.PackageRun.EndTime.ToLongTimeString()));
                 string extension = formatter.PreferredExtension;
                 if (extension.Length != 0)
-                    reportFileName = String.Concat(reportFileName, ".", extension);
+                    reportFileName = String.Concat(reportFileName, @".", extension);
                 string reportPath = Path.Combine(reportDirectory, reportFileName);
 
-                generatedReportFilenames.Add(reportFormat.ToLower(), reportPath);
+                generatedReportFilenames.Add(reportFormat.ToLower(CultureInfo.InvariantCulture), reportPath);
                 progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
                 {
-                    progressMonitor.BeginTask("Generating " + reportFormat + " report.", 1);
+                    progressMonitor.BeginTask(String.Format("Generating {0} report.", reportFormat), 1);
 
                     formatter.Format(report, reportPath, reportFormatOptions, null,
                         new SubProgressMonitor(progressMonitor, 1));

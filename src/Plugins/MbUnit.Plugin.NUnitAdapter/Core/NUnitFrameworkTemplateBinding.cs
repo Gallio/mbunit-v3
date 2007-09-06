@@ -21,6 +21,7 @@ using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
+using MbUnit.Plugin.NUnitAdapter.Properties;
 using NUnit.Core;
 using ITest=MbUnit.Framework.Kernel.Model.ITest;
 

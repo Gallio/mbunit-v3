@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using MbUnit.Core.Properties;
 using MbUnit.Core.Runner;
 
 namespace MbUnit.Core.ConsoleSupport

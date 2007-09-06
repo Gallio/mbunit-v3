@@ -23,6 +23,7 @@ using MbUnit.Framework.Kernel.Results;
 using NUnit.Core;
 using ITest=MbUnit.Framework.Kernel.Model.ITest;
 using TestResult=NUnit.Core.TestResult;
+using MbUnit.Plugin.NUnitAdapter.Properties;
 
 namespace MbUnit.Plugin.NUnitAdapter.Core
 {

@@ -13,9 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -36,3 +39,18 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("e59e2250-578a-44a0-a947-c46a2c5b003f")]
+
+// Ensure CLS compliance for as much of the framework as possible.
+// We will individually mark certain constructs non-compliant as needed
+// but setting this attribute on the assembly lets the compiler help us.
+[assembly: CLSCompliant(true)]
+
+// Allow partially trusted callers to use the MbUnit framework.
+// This isn't enough to ensure that we properly support partially trusted
+// contexts but it's a beginning.  We also need to carefully review security
+// demands throughout the framework and especially calls back into core services.
+[assembly: AllowPartiallyTrustedCallers]
+
+// The neutral resources language is US English.
+// Telling the system that this is the case yields a small performance improvement during startup.
+[assembly: NeutralResourcesLanguage("en-US")]
