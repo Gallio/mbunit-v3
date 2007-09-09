@@ -60,9 +60,6 @@ namespace MbUnit.Core.ConsoleSupport
                         switch (level)
                         {
                             case LoggerLevel.Fatal:
-                                console.ForegroundColor = ConsoleColor.DarkRed;
-                                break;
-
                             case LoggerLevel.Error:
                                 console.ForegroundColor = ConsoleColor.Red;
                                 break;

@@ -59,7 +59,12 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 	/// </remarks>
 	public class CommandLineArgumentParser
 	{
-		/// <summary>
+        private readonly List<Argument> arguments;
+        private readonly Hashtable argumentMap;
+        private readonly Argument defaultArgument;
+        private readonly ErrorReporter reporter;
+       
+        /// <summary>
 		/// Creates a new command line argument parser.
 		/// </summary>
 		/// <param name="argumentSpecification"> The type of object to  parse. </param>
@@ -400,7 +405,20 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         
 		private class Argument
 		{
-			public Argument(CommandLineArgumentAttribute attribute, FieldInfo field, ErrorReporter reporter)
+            private readonly string longName;
+            private readonly string shortName;
+            private readonly bool explicitShortName;
+            private readonly string argValueType;
+            private bool seenValue;
+            private readonly FieldInfo field;
+            private readonly Type elementType;
+            private readonly CommandLineArgumentFlags flags;
+            private readonly ArrayList collectionValues;
+            private readonly ErrorReporter reporter;
+            private readonly bool isDefault;
+            private readonly string description;
+
+            public Argument(CommandLineArgumentAttribute attribute, FieldInfo field, ErrorReporter reporter)
 			{
 				longName = CommandLineArgumentParser.LongName(attribute, field);
 				explicitShortName = CommandLineArgumentParser.ExplicitShortName(attribute);
@@ -609,24 +627,6 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 			{
 				get { return description; }
 			}
-            
-			private readonly string longName;
-			private readonly string shortName;
-			private readonly bool explicitShortName;
-		    private readonly string argValueType;
-			private bool seenValue;
-			private readonly FieldInfo field;
-			private readonly Type elementType;
-			private readonly CommandLineArgumentFlags flags;
-			private readonly ArrayList collectionValues;
-			private readonly ErrorReporter reporter;
-			private readonly bool isDefault;
-			private readonly string description;
 		}
-        
-		private readonly List<Argument> arguments;
-		private readonly Hashtable argumentMap;
-		private readonly Argument defaultArgument;
-		private readonly ErrorReporter reporter;
 	}
 }

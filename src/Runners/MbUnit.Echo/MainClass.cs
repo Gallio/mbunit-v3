@@ -46,7 +46,9 @@ namespace MbUnit.Echo
                 throw new ArgumentNullException(@"console");
 
             this.console = console;
-            this.logger = new RichConsoleLogger(console);
+
+            logger = new RichConsoleLogger(console);
+            logger.Level = LoggerLevel.Warn; // temporary setting until arguments are parsed
         }
 
         public void SetUp(string[] args)

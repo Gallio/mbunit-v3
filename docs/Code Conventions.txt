@@ -29,7 +29,18 @@ CODE STYLE
    - Capitalize type, method, property and constant names.
    - No Hungarian notation.
    - Curly braces on their own lines.
-   - Do not write "if" statements all on one line.
+   - Do not write control structures such as "if" statements all on one line.
+   - Place all field declarations at the top of the class rather than interspersed with
+     with the properties or at the end.  Seeing these declarations up-front provides
+     powerful hints that are useful for reading the rest of the code.
+   - Avoid unnecessary field initialization with zeros or nulls.
+   - Place local variable declarations closest to their usage and preferably at
+     their point of initialization.  Do not unnecessarily clump them together at the
+     beginning of the function (as when writing code in C style).
+   - Put each type into its own file.  This includes enumerations and delegates.
+     They're a lot easier to find that way.  The filesystem is your friend.
+     
+   When in doubt, imitate the style predominantly used by the rest of the code.
    
 3. TABs vs Spaces.  I don't care.  Modern editors assume 4 spaces to a tab
    so it looks fine anywhere.  So there!  ;-)
