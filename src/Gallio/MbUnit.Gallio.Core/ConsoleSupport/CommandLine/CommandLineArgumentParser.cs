@@ -239,11 +239,17 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 					args = (new StreamReader(file)).ReadToEnd();
 				}
 			}
+            catch (FileNotFoundException)
+            {
+                reporter(string.Format("ERROR: Response file does not exist.\r\nSwitch: @{0}", fileName));
+                nestedArguments = null;
+                return true;
+            }
 			catch (Exception e)
 			{
 				reporter(string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
 				nestedArguments = null;
-				return false;
+				return true;
 			}
 
 			bool hadError = false;                    

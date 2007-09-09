@@ -80,6 +80,29 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
             Assert.AreEqual(false, parser.Parse(new string[] { arg1, arg2 }, arguments));
             Assert.AreEqual("Duplicate 'help' argument", errorMsg);
         }
+
+        [Test]
+        public void ParseResourceFile_InvalidFileTest()
+        {
+            string errorMsg = string.Empty;
+            MainArguments arguments = new MainArguments();
+            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), delegate(string message)
+            { errorMsg = message; });
+            Assert.AreEqual(false, parser.Parse(new string[] { "@InvalidFile" }, arguments));
+            Assert.Contains(errorMsg, "ERROR: Response file does not exist.\r\nSwitch: @InvalidFile");
+            Console.WriteLine(errorMsg);
+        }
+
+        [Test]
+        public void ParseResourceFile()
+        {
+            string errorMsg = string.Empty;
+            MainArguments arguments = new MainArguments();
+            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), delegate(string message)
+            { errorMsg = message; });
+            Assert.AreEqual(true, parser.Parse(new string[] { "@ConsoleSupport\\CommandLine\\ResourceFile.txt" }, arguments));
+            Console.WriteLine(errorMsg);
+        }
     }
 
     public class MainArguments
