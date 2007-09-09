@@ -90,7 +90,6 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
             { errorMsg = message; });
             Assert.AreEqual(false, parser.Parse(new string[] { "@InvalidFile" }, arguments));
             Assert.Contains(errorMsg, "ERROR: Response file does not exist.\r\nSwitch: @InvalidFile");
-            Console.WriteLine(errorMsg);
         }
 
         [Test]

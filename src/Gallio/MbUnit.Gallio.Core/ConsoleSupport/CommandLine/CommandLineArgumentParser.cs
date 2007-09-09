@@ -230,120 +230,127 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         
 		private bool LexFileArguments(string fileName, out string[] nestedArguments)
 		{
-			string args;
-                    
-			try
-			{
-				using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-				{
-					args = (new StreamReader(file)).ReadToEnd();
-				}
-			}
-            catch (FileNotFoundException)
-            {
-                reporter(string.Format("ERROR: Response file does not exist.\r\nSwitch: @{0}", fileName));
-                nestedArguments = null;
-                return true;
-            }
-			catch (Exception e)
-			{
-				reporter(string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
-				nestedArguments = null;
-				return true;
-			}
+            nestedArguments = null;
+            bool hadError = false;
+            string args = GetResponseFileContext(fileName);
 
-			bool hadError = false;                    
-			ArrayList argArray = new ArrayList();
-			StringBuilder currentArg = new StringBuilder();
-			bool inQuotes = false;
-			int index = 0;
-            
-			// while (index < args.Length)
-			try
-			{
-				while (true)
-				{
-					// skip whitespace
-					while (char.IsWhiteSpace(args[index]))
-					{
-						index += 1;
-					}
-                    
-					// # - comment to end of line
-					if (args[index] == '#')
-					{
-						index += 1;
-						while (args[index] != '\n')
-						{
-							index += 1;
-						}
-						continue;
-					}
-                    
-					// do one argument
-					do
-					{
-						if (args[index] == '\\')
-						{
-							int cSlashes = 1;
-							index += 1;
-							while (index == args.Length && args[index] == '\\')
-							{
-								cSlashes += 1;
-							}
+            if (args == null) hadError = true;
 
-							if (index == args.Length || args[index] != '"')
-							{
-								currentArg.Append('\\', cSlashes);
-							}
-							else
-							{
-								currentArg.Append('\\', (cSlashes >> 1));
-								if (0 != (cSlashes & 1))
-								{
-									currentArg.Append('"');
-								}
-								else
-								{
-									inQuotes = !inQuotes;
-								}
-							}
-						}
-						else if (args[index] == '"')
-						{
-							inQuotes = !inQuotes;
-							index += 1;
-						}
-						else
-						{
-							currentArg.Append(args[index]);
-							index += 1;
-						}
-					} while (!char.IsWhiteSpace(args[index]) || inQuotes);
-					argArray.Add(currentArg.ToString());
-					currentArg.Length = 0;
-				}
-			}
-			catch (IndexOutOfRangeException)
-			{
-				// got EOF 
-				if (inQuotes)
-				{
-					reporter(string.Format("Error: Unbalanced '\"' in command line argument file '{0}'", fileName));
-					hadError = true;
-				}
-				else if (currentArg.Length > 0)
-				{
-					// valid argument can be terminated by EOF
-					argArray.Add(currentArg.ToString());
-				}
-			}
+		    if (!string.IsNullOrEmpty(args))
+		    {
+		        ArrayList argArray = new ArrayList();
+		        StringBuilder currentArg = new StringBuilder();
+		        bool inQuotes = false;
+		        int index = 0;
             
-			nestedArguments = (string[]) argArray.ToArray(typeof (string));
-			return hadError;
+		        // while (index < args.Length)
+		        try
+		        {
+		            while (true)
+		            {
+		                // skip whitespace
+		                while (char.IsWhiteSpace(args[index]))
+		                {
+		                    index += 1;
+		                }
+                    
+		                // # - comment to end of line
+		                if (args[index] == '#')
+		                {
+		                    index += 1;
+		                    while (args[index] != '\n')
+		                    {
+		                        index += 1;
+		                    }
+		                    continue;
+		                }
+                    
+		                // do one argument
+		                do
+		                {
+		                    if (args[index] == '\\')
+		                    {
+		                        int cSlashes = 1;
+		                        index += 1;
+		                        while (index == args.Length && args[index] == '\\')
+		                        {
+		                            cSlashes += 1;
+		                        }
+
+		                        if (index == args.Length || args[index] != '"')
+		                        {
+		                            currentArg.Append('\\', cSlashes);
+		                        }
+		                        else
+		                        {
+		                            currentArg.Append('\\', (cSlashes >> 1));
+		                            if (0 != (cSlashes & 1))
+		                            {
+		                                currentArg.Append('"');
+		                            }
+		                            else
+		                            {
+		                                inQuotes = !inQuotes;
+		                            }
+		                        }
+		                    }
+		                    else if (args[index] == '"')
+		                    {
+		                        inQuotes = !inQuotes;
+		                        index += 1;
+		                    }
+		                    else
+		                    {
+		                        currentArg.Append(args[index]);
+		                        index += 1;
+		                    }
+		                } while (!char.IsWhiteSpace(args[index]) || inQuotes);
+		                argArray.Add(currentArg.ToString());
+		                currentArg.Length = 0;
+		            }
+		        }
+		        catch (IndexOutOfRangeException)
+		        {
+		            // got EOF 
+		            if (inQuotes)
+		            {
+		                reporter(string.Format("Error: Unbalanced '\"' in command line argument file '{0}'", fileName));
+		                hadError = true;
+		            }
+		            else if (currentArg.Length > 0)
+		            {
+		                // valid argument can be terminated by EOF
+		                argArray.Add(currentArg.ToString());
+		            }
+		        }
+            
+		        nestedArguments = (string[]) argArray.ToArray(typeof (string));
+		    }
+		    return hadError;
 		}
-        
-		private static string LongName(CommandLineArgumentAttribute attribute, FieldInfo field)
+
+	    private string GetResponseFileContext(string fileName)
+	    {
+	        string args = null;
+	        try
+	        {
+	            using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+	            {
+	                args = (new StreamReader(file)).ReadToEnd();
+	            }
+	        }
+	        catch (FileNotFoundException)
+	        {
+	            reporter(string.Format("ERROR: Response file does not exist.\r\nSwitch: @{0}", fileName));
+	        }
+	        catch (Exception e)
+	        {
+	            reporter(string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
+	        }
+	        return args;
+	    }
+
+	    private static string LongName(CommandLineArgumentAttribute attribute, FieldInfo field)
 		{
 			return (attribute == null || attribute.IsDefaultLongName) ? field.Name : attribute.LongName;
 		}
