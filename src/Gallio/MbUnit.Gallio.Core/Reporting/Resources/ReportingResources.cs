@@ -42,11 +42,16 @@ namespace MbUnit.Core.Reporting.Resources
         public const string StyleSheet = "MbUnit-Report.css";
 
         /// <summary>
+        /// The name of the js file for HTML reports
+        /// </summary>
+        public const string ScriptFile = "MbUnit-Report.js";
+
+        /// <summary>
         /// The names of the image resources.
         /// </summary>
         public static readonly IList<string> Images = new ReadOnlyCollection<string>(new string[]
         {
-            @"Container.png", @"Fixture.png", @"Test.png", @"Logo.png"
+            @"Container.png", @"Fixture.png", @"Test.png", @"Logo.png", @"Plus.gif", @"Minus.gif", @"FullStop.gif"
         });
 
         /// <summary>

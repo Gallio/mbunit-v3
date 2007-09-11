@@ -66,3 +66,20 @@ div.Fixture
 	margin-left: 15%;
 	width: 85%;
 }
+
+#Summary ul
+{
+	list-style-type: none;
+}
+
+.plus
+{
+	cursor: pointer;
+	background: url(img/Plus.gif);
+}
+
+.minus
+{
+	cursor: pointer;
+	background: url(img/Minus.gif);
+}

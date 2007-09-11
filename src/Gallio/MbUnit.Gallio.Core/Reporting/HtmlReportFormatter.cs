@@ -85,6 +85,16 @@ namespace MbUnit.Core.Reporting
                 Directory.CreateDirectory(cssDirectory);
             using (Stream stream = ReportingResources.GetResource(ReportingResources.StyleSheet))
                 FileUtils.CopyStreamToFile(stream, Path.Combine(cssDirectory, ReportingResources.StyleSheet));
+
+            // copy script file to subfolder
+            string jsDirectory = GetDirectoryPath(filename, "js");
+            if (!Directory.Exists(jsDirectory))
+                Directory.CreateDirectory(jsDirectory);
+            string file = Path.Combine(jsDirectory, ReportingResources.ScriptFile);
+            if (File.Exists(file))
+                File.Delete(file);
+            using (Stream stream = ReportingResources.GetResource(ReportingResources.ScriptFile))
+                FileUtils.CopyStreamToFile(stream, file);
         }
 
         /// <inheritdoc />

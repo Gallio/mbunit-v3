@@ -11,6 +11,9 @@
       <head>
         <title>MbUnit Test Report</title>
         <link rel="stylesheet" type="text/css" href="css/MbUnit-Report.css" />
+        <script language="javascript" type="text/javascript" src="js/MbUnit-Report.js">
+          <xsl:comment> comment inserted for Internet Explorer </xsl:comment>
+        </script>
       </head>
       <body>
         <img src="img/Logo.png" alt="MbUnit Logo" />
@@ -120,6 +123,17 @@
     <li>
       <span>
         <xsl:choose>
+          <xsl:when test="count(g:children/g:test) > 0 and g:metadata/g:entry[@key='ComponentKind']/g:value != 'Fixture'">
+            <img src="img/Minus.gif" class="minus">
+              <xsl:attribute name="id">toggle<xsl:value-of select="$id" /></xsl:attribute>
+              <xsl:attribute name="onclick">toggle('<xsl:value-of select="$id" />');</xsl:attribute>
+            </img>
+          </xsl:when>
+          <xsl:otherwise>
+            <img src="img/FullStop.gif" />
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:choose>
           <xsl:when test="g:metadata/g:entry[@key='ComponentKind']/g:value = 'Fixture'">
             <img src="img/Fixture.png" alt="Fixture icon" />
           </xsl:when>
@@ -160,6 +174,7 @@
       </span>
       <xsl:if test="count(g:children/g:test) > 0 and g:metadata/g:entry[@key='ComponentKind']/g:value != 'Fixture'">
         <ul>
+          <xsl:attribute name="id">list<xsl:value-of select="$id" /></xsl:attribute>
           <xsl:apply-templates select="g:children/g:test" />
         </ul>
       </xsl:if>
@@ -183,26 +198,21 @@
     <xsl:param name="failed" />
     <xsl:param name="inconclusive" />
     <div class="progressBar">
-      <xsl:attribute name="style">
-        width:<xsl:value-of select="$width" />px; height:<xsl:value-of select="$height" />px;
-      </xsl:attribute>
+      <xsl:attribute name="style">width:<xsl:value-of select="$width" />px; height:<xsl:value-of select="$height" />px;</xsl:attribute>
       <!-- passed -->
       <xsl:if test="$passed > 0">
         <div class="progressPassed">
-          <xsl:attribute name="style">
-            height: <xsl:value-of select="$height" />px; width: <xsl:call-template name="scale">
+          <xsl:attribute name="style">height: <xsl:value-of select="$height" />px; width: <xsl:call-template name="scale">
               <xsl:with-param name="origLength" select="$run" />
               <xsl:with-param name="targetLength" select="$width" />
               <xsl:with-param name="value" select="$passed" />
-            </xsl:call-template>px;
-          </xsl:attribute>
+            </xsl:call-template>px;</xsl:attribute>
         </div>
       </xsl:if>
       <!-- failed -->
       <xsl:if test="$failed > 0">
         <div class="progressFailed">
-          <xsl:attribute name="style">
-            left:<xsl:call-template name="scale">
+          <xsl:attribute name="style">left:<xsl:call-template name="scale">
               <xsl:with-param name="origLength" select="$run" />
               <xsl:with-param name="targetLength" select="$width" />
               <xsl:with-param name="value" select="$passed" />
@@ -210,15 +220,13 @@
               <xsl:with-param name="origLength" select="$run" />
               <xsl:with-param name="targetLength" select="$width" />
               <xsl:with-param name="value" select="$failed" />
-            </xsl:call-template>px;
-          </xsl:attribute>
+            </xsl:call-template>px;</xsl:attribute>
         </div>
       </xsl:if>
       <!-- inconclusive -->
       <xsl:if test="$inconclusive > 0">
         <div class="progressInconclusive">
-          <xsl:attribute name="style">
-            left:<xsl:call-template name="scale">
+          <xsl:attribute name="style">left:<xsl:call-template name="scale">
               <xsl:with-param name="origLength" select="$run" />
               <xsl:with-param name="targetLength" select="$width" />
               <xsl:with-param name="value" select="$passed + $failed" />
@@ -226,8 +234,7 @@
               <xsl:with-param name="origLength" select="$run" />
               <xsl:with-param name="targetLength" select="$width" />
               <xsl:with-param name="value" select="$inconclusive" />
-            </xsl:call-template>px;
-          </xsl:attribute>
+            </xsl:call-template>px;</xsl:attribute>
         </div>
       </xsl:if>
     </div>
