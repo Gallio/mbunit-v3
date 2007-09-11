@@ -1,19 +1,68 @@
 .passed
 {
-	background-color: #C0FFC0;
+	background-color: green;
 }
 
 .failed
 {
-	background-color: #FF4500;
+	background-color: red;
 }
 
 .inconclusive
 {
-	background-color: Yellow;
+	background-color: yellow;
 }
 
 div.Fixture
 {
 	background-color: #B0B0FF;
+}
+
+#Stats
+{
+	text-align: center;
+}
+
+.progressBar
+{
+	position: relative;
+	background-color: #DDDDDD;
+	border-color: black;
+}
+
+.progressPassed
+{
+	position: absolute;
+	left: 0px;
+	background-color: green;
+}
+
+.progressFailed
+{
+	position: absolute;
+	background-color: red;
+}
+
+.progressInconclusive
+{
+	position: absolute;
+	background-color: yellow;
+}
+
+.Fixture
+{
+	margin-left: 5%;
+	width: 95%;
+}
+
+.Test
+{
+	margin-left: 10%;
+	width: 90%;
+}
+
+.executionLog
+{
+	margin-left: 15%;
+	width: 85%;
 }
