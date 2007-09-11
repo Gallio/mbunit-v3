@@ -61,6 +61,204 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collection arguments must have AllowMultiple flag..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_CollectionArgumentsMustAllowMultipleValues {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_CollectionArgumentsMustAllowMultipleValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate &apos;{0}&apos; argument..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_DuplicateArgument {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_DuplicateArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate &apos;{0}&apos; argument value &apos;{1}&apos;, expected unique values..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_DuplicateArgumentValueExpectedUnique {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_DuplicateArgumentValueExpectedUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid &apos;{0}&apos; argument value &apos;{1}&apos;..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_InvalidArgumentValue {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_InvalidArgumentValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unique flag only applicable to collection arguments..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_InvalidUsageOfUniqueFlag {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_InvalidUsageOfUniqueFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument long name must be specified..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_MissingLongName {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_MissingLongName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing required argument &apos;/{0}&apos;..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_MissingRequiredArgument {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_MissingRequiredArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing required default argument..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_MissingRequiredDefaultArgument {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_MissingRequiredDefaultArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported value type..
+        /// </summary>
+        internal static string CommandLineArgumentParser_Argument_UnsupportedValueType {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_Argument_UnsupportedValueType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsed argument object is not of the correct type..
+        /// </summary>
+        internal static string CommandLineArgumentParser_ArgumentObjectIsOfIncorrectType {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_ArgumentObjectIsOfIncorrectType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate argument name &apos;{0}&apos;..
+        /// </summary>
+        internal static string CommandLineArgumentParser_DuplicateArgumentName {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_DuplicateArgumentName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error opening response file &apos;{0}&apos;: {1}..
+        /// </summary>
+        internal static string CommandLineArgumentParser_ErrorOpeningResponseFile {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_ErrorOpeningResponseFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A fatal exception occurred while parsing arguments: {0}.
+        /// </summary>
+        internal static string CommandLineArgumentParser_ExceptionWhileParsing {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_ExceptionWhileParsing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mismatched quotes in response file &apos;{0}&apos;.
+        /// </summary>
+        internal static string CommandLineArgumentParser_MismatchedQuotedInResponseFile {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_MismatchedQuotedInResponseFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More than one default command line argument has been defined..
+        /// </summary>
+        internal static string CommandLineArgumentParser_MoreThanOneDefaultCommandLineArgumentDefined {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_MoreThanOneDefaultCommandLineArgumentDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No fields tagged with CommandLineArgumentAttribute..
+        /// </summary>
+        internal static string CommandLineArgumentParser_NoArgumentFields {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_NoArgumentFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read response file for more options..
+        /// </summary>
+        internal static string CommandLineArgumentParser_ResponseFileDescription {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_ResponseFileDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response file &apos;0&apos; does not exist..
+        /// </summary>
+        internal static string CommandLineArgumentParser_ResponseFileDoesNotExist {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_ResponseFileDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to file.
+        /// </summary>
+        internal static string CommandLineArgumentParser_ResponseFileValueLabel {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_ResponseFileValueLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrecognized argument &apos;{0}&apos;..
+        /// </summary>
+        internal static string CommandLineArgumentParser_UnrecognizedArgument {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentParser_UnrecognizedArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The available options are: .
+        /// </summary>
+        internal static string CommandLineOutput_AvailableOptions {
+            get {
+                return ResourceManager.GetString("CommandLineOutput_AvailableOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Short form: {0}).
+        /// </summary>
+        internal static string CommandLineOutput_ShortForm {
+            get {
+                return ResourceManager.GetString("CommandLineOutput_ShortForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to --- CANCELED ---.
         /// </summary>
         internal static string ConsoleProgressMonitor_CanceledBanner {
@@ -79,20 +277,13 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Execution Log: Begin Section ({0})].
+        ///   Looks up a localized string similar to [Execution Log: Begin Section ({0})]
+        ///	Stream Name: {1}
+        ///	Section Name: {2}.
         /// </summary>
         internal static string DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat {
             get {
                 return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 	Section Name: {0}.
-        /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_BeginSection_SectionNameFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_BeginSection_SectionNameFormat", resourceCulture);
             }
         }
         
@@ -106,7 +297,8 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Execution Log: End Section ({0})].
+        ///   Looks up a localized string similar to [Execution Log: End Section ({0})]
+        ///	Stream Name: {1}.
         /// </summary>
         internal static string DebugMonitor_ExecutionLogEvent_EndSection_EventFormat {
             get {
@@ -115,43 +307,10 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 	Stream Name: {0}.
-        /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_StreamNameFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_StreamNameFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 	Text: {0}.
-        /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_TextFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_TextFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 	Attachment Name: {0}.
-        /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_WriteAttachment_AttachmentNameFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_WriteAttachment_AttachmentNameFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 	Attachment Content Type: {0}.
-        /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_WriteAttachment_ContentTypeFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_WriteAttachment_ContentTypeFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [Execution Log: Write Attachment ({0})].
+        ///   Looks up a localized string similar to [Execution Log: Write Attachment ({0})]
+        ///	Stream Name: {1}
+        ///	Attachment Name: {2}
+        ///	Attachment Content Type: {3}.
         /// </summary>
         internal static string DebugMonitor_ExecutionLogEvent_WriteAttachment_EventFormat {
             get {
@@ -160,7 +319,9 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Execution Log: Write Text ({0})].
+        ///   Looks up a localized string similar to [Execution Log: Write Text ({0})]
+        ///	Stream Name: {1}
+        ///	Text: {2}.
         /// </summary>
         internal static string DebugMonitor_ExecutionLogEvent_WriteText_EventFormat {
             get {
@@ -169,25 +330,11 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 	Asserts: {0}.
-        /// </summary>
-        internal static string DebugMonitor_LifecycleEvent_Finish_AssertCountFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_Finish_AssertCountFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 	Duration: {0}.
-        /// </summary>
-        internal static string DebugMonitor_LifecycleEvent_Finish_DurationFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_Finish_DurationFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [Lifecycle: Finish ({0})].
+        ///   Looks up a localized string similar to [Lifecycle: Finish ({0})]
+        ///	State: {1}
+        ///	Outcome: {2}
+        ///	Asserts: {3}
+        ///	Duration: {4}.
         /// </summary>
         internal static string DebugMonitor_LifecycleEvent_Finish_EventFormat {
             get {
@@ -196,38 +343,12 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 	Outcome: {0}.
-        /// </summary>
-        internal static string DebugMonitor_LifecycleEvent_Finish_OutcomeFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_Finish_OutcomeFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 	State: {0}.
-        /// </summary>
-        internal static string DebugMonitor_LifecycleEvent_Finish_StateFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_Finish_StateFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [Lifecycle: Enter Phase ({0})].
+        ///   Looks up a localized string similar to [Lifecycle: Enter Phase ({0})]
+        ///	Phase Name: {1}.
         /// </summary>
         internal static string DebugMonitor_LifecycleEvent_Phase_EventFormat {
             get {
                 return ResourceManager.GetString("DebugMonitor_LifecycleEvent_Phase_EventFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 	Phase Name: {0}.
-        /// </summary>
-        internal static string DebugMonitor_LifecycleEvent_Phase_NameFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_Phase_NameFormat", resourceCulture);
             }
         }
         

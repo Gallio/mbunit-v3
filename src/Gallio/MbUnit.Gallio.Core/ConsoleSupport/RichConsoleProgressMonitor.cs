@@ -30,6 +30,7 @@ namespace MbUnit.Core.ConsoleSupport
         private int newlinesWritten;
         private bool bannerPrinted;
         private int width;
+        private bool footerInitialized;
 
         /// <summary>
         /// Creates a console progress monitor.
@@ -69,9 +70,19 @@ namespace MbUnit.Core.ConsoleSupport
                     return;
 
                 if (IsDone)
+                {
+                    footerInitialized = false;
                     console.SetFooter(null, null);
-                else
+                }
+                else if (!footerInitialized)
+                {
+                    footerInitialized = true;
                     console.SetFooter(ShowFooter, HideFooter);
+                }
+                else if (console.FooterVisible)
+                {
+                    RedrawFooter(true);
+                }
             }
         }
 
@@ -92,8 +103,43 @@ namespace MbUnit.Core.ConsoleSupport
 
         private void ShowFooter()
         {
-            NewLine();
+            RedrawFooter(false);
+        }
 
+        private void HideFooter()
+        {
+            if (newlinesWritten > 0)
+            {
+                console.CursorTop -= newlinesWritten;
+
+                for (int i = 0; i < newlinesWritten; i++)
+                    EraseLine();
+
+                console.CursorTop -= newlinesWritten;
+                newlinesWritten = 0;
+            }
+        }
+
+        private void RedrawFooter(bool inplace)
+        {
+            // Scroll enough new lines into view for the text we might want to write.
+            // This helps to reduce flickering of the progress monitor.
+            // We should still do much better than this if we improve the console API
+            // to handle scrolling of independent regions.
+            int oldNewlinesWritten = newlinesWritten;
+            if (inplace)
+            {
+                console.CursorTop -= newlinesWritten - 1;
+            }
+            else
+            {
+                for (int i = 0; i < 5; i++)
+                    console.WriteLine();
+                console.CursorTop -= 4;
+            }
+            newlinesWritten = 1;
+
+            // Write the progress monitor.
             console.ForegroundColor = ConsoleColor.White;
             console.Write(TrimMessageWithEllipses(TaskName, width - 20).PadRight(width - 19));
 
@@ -107,14 +153,14 @@ namespace MbUnit.Core.ConsoleSupport
                 console.Write(@"] ");
                 console.Write(Math.Floor(CompletedWorkUnits * 100 / TotalWorkUnits).ToString());
                 console.Write('%');
-                NewLine();
+                NewLine(inplace);
 
                 if (CurrentSubTaskName.Length != 0)
                 {
                     console.ForegroundColor = ConsoleColor.Gray;
                     console.Write(@"  ");
                     console.Write(TrimMessageWithEllipses(CurrentSubTaskName, width - 3));
-                    NewLine();
+                    NewLine(inplace);
                 }
 
                 if (Status.Length != 0)
@@ -122,39 +168,53 @@ namespace MbUnit.Core.ConsoleSupport
                     console.ForegroundColor = ConsoleColor.DarkGreen;
                     console.Write(@"  ");
                     console.Write(TrimMessageWithEllipses(Status, width - 3));
-                    NewLine();
+                    NewLine(inplace);
                 }
             }
             else
-            {
-                NewLine();
-            }
+                NewLine(inplace);
 
             if (IsCanceled)
             {
                 console.ForegroundColor = ConsoleColor.Red;
                 console.Write(@"    ");
                 console.Write(IsDone ? Resources.ConsoleProgressMonitor_CanceledBanner : Resources.ConsoleProgressMonitor_CancelingBanner);
-                NewLine();
+                NewLine(inplace);
             }
 
             console.ResetColor();
-        }
 
-        private void HideFooter()
-        {
-            EraseLine();
-            for (; newlinesWritten > 0; newlinesWritten -= 1)
+            // Clear out the remaining dirty lines in place.
+            if (inplace && oldNewlinesWritten > newlinesWritten)
             {
-                console.CursorTop -= 1;
-                EraseLine();
+                int dirtyLines = oldNewlinesWritten - newlinesWritten;
+                for (int i = 0; i < dirtyLines; i++)
+                    EraseLine();
+
+                console.CursorTop -= dirtyLines;
             }
         }
 
-        private void NewLine()
+        private void NewLine(bool inplace)
         {
             newlinesWritten += 1;
-            console.WriteLine();
+
+            if (inplace)
+                console.Write(new string(' ', width - console.CursorLeft));
+            else
+                console.WriteLine();
+        }
+
+        private void EraseLine()
+        {
+            console.CursorLeft = 0;
+            console.Write(new string(' ', width));
+        }
+
+        private void HandleCancel(object sender, EventArgs e)
+        {
+            NotifyCanceled();
+            UpdateDisplay();
         }
 
         private static string TrimMessageWithEllipses(string str, int length)
@@ -163,20 +223,6 @@ namespace MbUnit.Core.ConsoleSupport
                 return str.Substring(0, length - 3) + @"...";
 
             return str;
-        }
-
-        private void EraseLine()
-        {
-            console.CursorLeft = 0;
-            console.Write(new string(' ', width));
-            console.CursorLeft = 0;
-            console.CursorTop -= 1;
-        }
-
-        private void HandleCancel(object sender, EventArgs e)
-        {
-            NotifyCanceled();
-            UpdateDisplay();
         }
     }
 }

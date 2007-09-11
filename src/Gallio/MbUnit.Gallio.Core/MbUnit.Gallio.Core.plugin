@@ -41,16 +41,6 @@
       <component id="Core.TextReportFormatter"
                  service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio.Core"
                  type="MbUnit.Core.Reporting.TextReportFormatter, MbUnit.Gallio.Core" />
-
-      <component id="Core.AssertionService"
-                 service="MbUnit.Framework.Kernel.Assertions.IAssertionService, MbUnit.Gallio.Framework" 
-                 type="MbUnit.Core.Services.Assertions.DefaultAssertionService, MbUnit.Gallio.Core" />
-      <component id="Core.ContextManager"
-                 service="MbUnit.Framework.Kernel.Contexts.IContextManager, MbUnit.Gallio.Framework"
-                 type="MbUnit.Core.Services.Contexts.DefaultContextManager, MbUnit.Gallio.Core" />
-      <component id="Core.ExecutionLogService"
-                 service="MbUnit.Framework.Kernel.ExecutionLogs.IExecutionLogService, MbUnit.Gallio.Framework"
-                 type="MbUnit.Core.Services.ExecutionLogs.DefaultExecutionLogService, MbUnit.Gallio.Core" />
     </components>
   </castle>
 </configuration>

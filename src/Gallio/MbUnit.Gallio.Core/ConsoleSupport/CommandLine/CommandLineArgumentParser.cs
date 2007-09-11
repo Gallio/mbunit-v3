@@ -14,11 +14,13 @@
 // limitations under the License.
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Collections;
-using System.IO;
-using System.Text;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using MbUnit.Core.Properties;
+using MbUnit.Framework.Kernel.Collections;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
@@ -59,282 +61,301 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 	/// </remarks>
 	public class CommandLineArgumentParser
 	{
-        private readonly List<Argument> arguments;
-        private readonly Hashtable argumentMap;
-        private readonly Argument defaultArgument;
-        private readonly ErrorReporter reporter;
+        private Type argumentSpecification;
+        private List<Argument> arguments;
+        private Dictionary<string, Argument> argumentMap;
+        private Argument defaultArgument;
        
         /// <summary>
 		/// Creates a new command line argument parser.
 		/// </summary>
-		/// <param name="argumentSpecification"> The type of object to  parse. </param>
-		/// <param name="reporter"> The destination for parse errors. </param>
-		public CommandLineArgumentParser(Type argumentSpecification, ErrorReporter reporter)
+		/// <param name="argumentSpecification">The argument type containing fields decorated
+        /// with <see cref="CommandLineArgumentAttribute" /></param>
+		public CommandLineArgumentParser(Type argumentSpecification)
 		{
-			this.reporter = reporter;
-			arguments = new List<Argument>();
-			argumentMap = new Hashtable();
-            
-			foreach (FieldInfo field in argumentSpecification.GetFields())
-			{
-				if (!field.IsStatic && !field.IsInitOnly && !field.IsLiteral)
-				{
-					CommandLineArgumentAttribute attribute = GetAttribute(field);
-				    if (attribute is DefaultCommandLineArgumentAttribute)
-				    {
-				        if (defaultArgument != null)
-				            ThrowError("More that one DefaultCommandLineArgument has been used");
-				        defaultArgument = new Argument(attribute, field, reporter);
-				    }
-				    else
-				        arguments.Add(new Argument(attribute, field, reporter));
-				}
-			}
-            
-			// add explicit names to map
-			foreach (Argument argument in arguments)
-			{
-				if (argumentMap.ContainsKey(argument.LongName))
-					ThrowError("Argument {0} is duplicated",argument.LongName);
-				argumentMap[argument.LongName] = argument;
-				if (argument.ExplicitShortName && argument.ShortName != null && argument.ShortName.Length > 0)
-				{
-					if(argumentMap.ContainsKey(argument.ShortName))
-						ThrowError("Argument {0} is duplicated",argument.ShortName);
-					argumentMap[argument.ShortName] = argument;
-				}
-			}
-            
-			// add implicit names which don't collide to map
-			foreach (Argument argument in arguments)
-			{
-				if (!argument.ExplicitShortName && argument.ShortName != null && argument.ShortName.Length > 0)
-				{
-					if (!argumentMap.ContainsKey(argument.ShortName))
-						argumentMap[argument.ShortName] = argument;
-				}
-			}
-		}
-        
-		private static CommandLineArgumentAttribute GetAttribute(ICustomAttributeProvider field)
-		{
-			object[] attributes = field.GetCustomAttributes(typeof(CommandLineArgumentAttribute), false);
-			if (attributes.Length==0)
-				ThrowError("No fields tagged with CommandLineArgumentAttribute");
-			return (CommandLineArgumentAttribute) attributes[0];
-		}
-        
-		private void ReportUnrecognizedArgument(string argument)
-		{
-			reporter(string.Format("Unrecognized command line argument '{0}'", argument));
+            if (argumentSpecification == null)
+                throw new ArgumentNullException(@"argumentSpecification");
+
+            this.argumentSpecification = argumentSpecification;
+
+			PopulateArgumentMap();
 		}
 
-		private static void ThrowError(string message, params Object[] args)
-		{
-			throw new InvalidOperationException(String.Format(message,args));
-		}
-        
-		/// <summary>
-		/// Parses an argument list into an object
-		/// </summary>
-		/// <param name="args"></param>
-		/// <param name="destination"></param>
-		/// <returns> true if an error occurred </returns>
-		private bool ParseArgumentList(IEnumerable<string> args, object destination)
-		{
-			bool hadError = false;
-			if (args != null)
-			{
-				foreach (string argument in args)
-				{
-				    if (argument != null && argument.Length > 0)
-				        {
-				            switch (argument[0])
-				            {
-				                case '-':
-				                case '/':
-				                    int endIndex = argument.IndexOfAny(new char[] {':', '+'}, 1);
-				                    string option = argument.Substring(1, endIndex == -1 ? argument.Length - 1 : endIndex - 1);
-				                    string optionArgument;
-				                    if (option.Length + 1 == argument.Length)
-				                        optionArgument = null;
-				                    else if (argument.Length > 1 + option.Length && argument[1 + option.Length] == ':')
-				                        optionArgument = argument.Substring(option.Length + 2);
-				                    else
-				                        optionArgument = argument.Substring(option.Length + 1);
-
-
-				                    Argument arg = (Argument) argumentMap[option];
-				                    if (arg == null)
-				                    {
-				                        ReportUnrecognizedArgument(argument);
-				                        hadError = true;
-				                    }
-				                    else
-				                        hadError |= !arg.SetValue(optionArgument, destination);
-
-				                    break;
-				                case '@':
-				                    string[] nestedArguments;
-				                    hadError |= LexFileArguments(argument.Substring(1), out nestedArguments);
-				                    hadError |= ParseArgumentList(nestedArguments, destination);
-				                    break;
-				                default:
-				                    if (defaultArgument != null)
-				                        hadError |= !defaultArgument.SetValue(argument, destination);
-				                    else
-				                    {
-				                        ReportUnrecognizedArgument(argument);
-				                        hadError = true;
-				                    }
-				                    break;
-				            }
-				        }
-				}
-			}
-            
-			return hadError;
-		}
-        
 		/// <summary>
 		/// Parses an argument list.
 		/// </summary>
-		/// <param name="args"> The arguments to parse. </param>
-		/// <param name="destination"> The destination of the parsed arguments. </param>
-		/// <returns> true if no parse errors were encountered. </returns>
-		public bool Parse(string[] args, object destination)
+		/// <param name="args">The arguments to parse.</param>
+		/// <param name="destination">The destination of the parsed arguments.</param>
+        /// <param name="reporter">The error reporter</param>
+		/// <returns>True if no parse errors were encountered.</returns>
+		public bool Parse(string[] args, object destination, CommandLineErrorReporter reporter)
 		{
-			bool hadError = ParseArgumentList(args, destination);
+            if (args == null || Array.IndexOf(args, null) >= 0)
+                throw new ArgumentNullException(@"args");
+            if (destination == null)
+                throw new ArgumentNullException(@"destination");
+            if (!argumentSpecification.IsInstanceOfType(destination))
+                throw new ArgumentException(Resources.CommandLineArgumentParser_ArgumentObjectIsOfIncorrectType, @"destination");
+            if (reporter == null)
+                throw new ArgumentNullException(@"reporter");
 
-			// check for missing required arguments
-		    foreach (Argument arg in arguments)
-		        hadError |= arg.Finish(destination);
+            MultiMap<Argument, object> argumentValues = new MultiMap<Argument, object>();
+            try
+            {
+                bool hadError = ParseArgumentList(args, argumentValues, reporter);
 
-		    if (defaultArgument != null)
-		        hadError |= defaultArgument.Finish(destination);
+                // Finished assigning values.
+                foreach (Argument arg in arguments)
+                    hadError |= arg.AssignValue(destination, argumentValues, reporter);
 
-		    return !hadError;
+                if (defaultArgument != null)
+                    hadError |= defaultArgument.AssignValue(destination, argumentValues, reporter);
+
+                return !hadError;
+            }
+            catch (Exception ex)
+            {
+                reporter(string.Format(Resources.CommandLineArgumentParser_ExceptionWhileParsing, ex.Message));
+                return false;
+            }
 		}
         
         /// <summary>
-        /// A user firendly usage string describing the command line argument syntax.
+        /// Prints a user friendly usage string describing the command line argument syntax.
         /// </summary>
         /// <param name="output">The command line output</param>
         public void ShowUsage(CommandLineOutput output)
         {
+            if (output == null)
+                throw new ArgumentNullException(@"output");
+
             foreach (Argument arg in arguments)
             {
-                output.PrintArgumentHelp(arg.LongName, arg.ShortName, arg.Description, arg.ArgumentValueType, arg.Type);
+                output.PrintArgumentHelp(@"/", arg.LongName, arg.ShortName,
+                    arg.Description, arg.ValueLabel, arg.ValueType);
                 output.NewLine();
             }
-            output.PrintText("@<file>          Read response file for more options.", 2);
+
+            output.PrintArgumentHelp(@"@", null, null, Resources.CommandLineArgumentParser_ResponseFileDescription,
+                Resources.CommandLineArgumentParser_ResponseFileValueLabel, typeof(string));
             output.NewLine();
-            output.PrintText(string.Format("<{0}>", defaultArgument.LongName), 2);
+
+            output.PrintArgumentHelp(null, null, null, defaultArgument.Description, defaultArgument.ValueLabel, defaultArgument.ValueType);
             output.NewLine();
         }
-        
-		private bool LexFileArguments(string fileName, out string[] nestedArguments)
+
+        private void PopulateArgumentMap()
+        {
+            arguments = new List<Argument>();
+            argumentMap = new Dictionary<string, Argument>();
+
+            foreach (FieldInfo field in argumentSpecification.GetFields())
+            {
+                if (!field.IsStatic && !field.IsInitOnly && !field.IsLiteral)
+                {
+                    CommandLineArgumentAttribute attribute = GetAttribute(field);
+                    if (attribute is DefaultCommandLineArgumentAttribute)
+                    {
+                        if (defaultArgument != null)
+                            ThrowError(Resources.CommandLineArgumentParser_MoreThanOneDefaultCommandLineArgumentDefined);
+
+                        defaultArgument = new Argument(attribute, field);
+                    }
+                    else
+                    {
+                        arguments.Add(new Argument(attribute, field));
+                    }
+                }
+            }
+
+            // add explicit names to map
+            foreach (Argument argument in arguments)
+            {
+                AddArgumentToMap(argument.LongName, argument);
+
+                if (!string.IsNullOrEmpty(argument.ShortName))
+                    AddArgumentToMap(argument.ShortName, argument);
+
+                foreach (string synonym in argument.Synonyms)
+                    AddArgumentToMap(synonym, argument);
+            }
+        }
+
+        private void AddArgumentToMap(string argumentName, Argument argument)
+        {
+            if (argumentMap.ContainsKey(argumentName))
+                ThrowError(Resources.CommandLineArgumentParser_DuplicateArgumentName, argumentName);
+
+            argumentMap.Add(argumentName, argument);
+        }
+
+        private bool ParseArgumentList(IEnumerable<string> args, MultiMap<Argument, object> argumentValues,
+            CommandLineErrorReporter reporter)
+        {
+            bool hadError = false;
+
+            foreach (string argument in args)
+            {
+                if (argument.Length == 0)
+                    continue;
+
+                switch (argument[0])
+                {
+                    case '-':
+                    case '/':
+                        int endIndex = argument.IndexOfAny(new char[] { ':', '+' }, 1);
+                        string option = argument.Substring(1, endIndex == -1 ? argument.Length - 1 : endIndex - 1);
+                        string optionArgument;
+                        if (option.Length + 1 == argument.Length)
+                            optionArgument = null;
+                        else if (argument.Length > 1 + option.Length && argument[1 + option.Length] == ':')
+                            optionArgument = argument.Substring(option.Length + 2);
+                        else
+                            optionArgument = argument.Substring(option.Length + 1);
+
+                        Argument arg;
+                        if (argumentMap.TryGetValue(option, out arg))
+                        {
+                            hadError |= !arg.AddValue(optionArgument, argumentValues, reporter);
+                        }
+                        else
+                        {
+                            ReportUnrecognizedArgument(reporter, argument);
+                            hadError = true;
+                        }
+
+                        break;
+
+                    case '@':
+                        string[] nestedArguments;
+                        hadError |= LexFileArguments(argument.Substring(1), reporter, out nestedArguments);
+
+                        if (nestedArguments != null)
+                            hadError |= ParseArgumentList(nestedArguments, argumentValues, reporter);
+                        break;
+
+                    default:
+                        if (defaultArgument != null)
+                        {
+                            hadError |= !defaultArgument.AddValue(argument, argumentValues, reporter);
+                        }
+                        else
+                        {
+                            ReportUnrecognizedArgument(reporter, argument);
+                            hadError = true;
+                        }
+                        break;
+                }
+            }
+
+            return hadError;
+        }
+
+        private static void ReportUnrecognizedArgument(CommandLineErrorReporter reporter, string argument)
+        {
+            reporter(string.Format(Resources.CommandLineArgumentParser_UnrecognizedArgument, argument));
+        }
+
+		private static bool LexFileArguments(string fileName, CommandLineErrorReporter reporter, out string[] nestedArguments)
 		{
             nestedArguments = null;
+            string args = GetResponseFileContext(fileName, reporter);
+            if (args == null)
+                return true;
+
             bool hadError = false;
-            string args = GetResponseFileContext(fileName);
 
-            if (args == null) hadError = true;
+            List<string> argArray = new List<string>();
+            StringBuilder currentArg = new StringBuilder();
+            bool inQuotes = false;
+            int index = 0;
+            try
+	        {
 
-		    if (!string.IsNullOrEmpty(args))
-		    {
-		        ArrayList argArray = new ArrayList();
-		        StringBuilder currentArg = new StringBuilder();
-		        bool inQuotes = false;
-		        int index = 0;
-            
-		        // while (index < args.Length)
-		        try
-		        {
-		            while (true)
-		            {
-		                // skip whitespace
-		                while (char.IsWhiteSpace(args[index]))
-		                {
-		                    index += 1;
-		                }
-                    
-		                // # - comment to end of line
-		                if (args[index] == '#')
-		                {
-		                    index += 1;
-		                    while (args[index] != '\n')
-		                    {
-		                        index += 1;
-		                    }
-		                    continue;
-		                }
-                    
-		                // do one argument
-		                do
-		                {
-		                    if (args[index] == '\\')
-		                    {
-		                        int cSlashes = 1;
-		                        index += 1;
-		                        while (index == args.Length && args[index] == '\\')
-		                        {
-		                            cSlashes += 1;
-		                        }
+                for (; ; )
+                {
+                    // skip whitespace
+                    while (char.IsWhiteSpace(args[index]))
+                    {
+                        index += 1;
+                    }
 
-		                        if (index == args.Length || args[index] != '"')
-		                        {
-		                            currentArg.Append('\\', cSlashes);
-		                        }
-		                        else
-		                        {
-		                            currentArg.Append('\\', (cSlashes >> 1));
-		                            if (0 != (cSlashes & 1))
-		                            {
-		                                currentArg.Append('"');
-		                            }
-		                            else
-		                            {
-		                                inQuotes = !inQuotes;
-		                            }
-		                        }
-		                    }
-		                    else if (args[index] == '"')
-		                    {
-		                        inQuotes = !inQuotes;
-		                        index += 1;
-		                    }
-		                    else
-		                    {
-		                        currentArg.Append(args[index]);
-		                        index += 1;
-		                    }
-		                } while (!char.IsWhiteSpace(args[index]) || inQuotes);
-		                argArray.Add(currentArg.ToString());
-		                currentArg.Length = 0;
-		            }
-		        }
-		        catch (IndexOutOfRangeException)
-		        {
-		            // got EOF 
-		            if (inQuotes)
-		            {
-		                reporter(string.Format("Error: Unbalanced '\"' in command line argument file '{0}'", fileName));
-		                hadError = true;
-		            }
-		            else if (currentArg.Length > 0)
-		            {
-		                // valid argument can be terminated by EOF
-		                argArray.Add(currentArg.ToString());
-		            }
-		        }
-            
-		        nestedArguments = (string[]) argArray.ToArray(typeof (string));
-		    }
+                    // # - comment to end of line
+                    if (args[index] == '#')
+                    {
+                        index += 1;
+                        while (args[index] != '\n')
+                        {
+                            index += 1;
+                        }
+                        continue;
+                    }
+
+                    // do one argument
+                    do
+                    {
+                        if (args[index] == '\\')
+                        {
+                            int cSlashes = 1;
+                            index += 1;
+                            while (index == args.Length && args[index] == '\\')
+                            {
+                                cSlashes += 1;
+                            }
+
+                            if (index == args.Length || args[index] != '"')
+                            {
+                                currentArg.Append('\\', cSlashes);
+                            }
+                            else
+                            {
+                                currentArg.Append('\\', (cSlashes >> 1));
+                                if (0 != (cSlashes & 1))
+                                {
+                                    currentArg.Append('"');
+                                }
+                                else
+                                {
+                                    inQuotes = !inQuotes;
+                                }
+                            }
+                        }
+                        else if (args[index] == '"')
+                        {
+                            inQuotes = !inQuotes;
+                            index += 1;
+                        }
+                        else
+                        {
+                            currentArg.Append(args[index]);
+                            index += 1;
+                        }
+                    } while (!char.IsWhiteSpace(args[index]) || inQuotes);
+
+                    argArray.Add(currentArg.ToString());
+                    currentArg.Length = 0;
+                }
+	        }
+	        catch (IndexOutOfRangeException)
+	        {
+	            // got EOF 
+	            if (inQuotes)
+	            {
+	                reporter(string.Format(Resources.CommandLineArgumentParser_MismatchedQuotedInResponseFile, fileName));
+	                hadError = true;
+	            }
+	            else if (currentArg.Length > 0)
+	            {
+	                // valid argument can be terminated by EOF
+	                argArray.Add(currentArg.ToString());
+	            }
+	        }
+        
+	        nestedArguments = argArray.ToArray();
 		    return hadError;
 		}
 
-	    private string GetResponseFileContext(string fileName)
+	    private static string GetResponseFileContext(string fileName, CommandLineErrorReporter reporter)
 	    {
 	        string args = null;
 	        try
@@ -346,175 +367,137 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 	        }
 	        catch (FileNotFoundException)
 	        {
-	            reporter(string.Format("ERROR: Response file does not exist.\r\nSwitch: @{0}", fileName));
+	            reporter(string.Format(Resources.CommandLineArgumentParser_ResponseFileDoesNotExist, fileName));
 	        }
 	        catch (Exception e)
 	        {
-	            reporter(string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
+	            reporter(string.Format(Resources.CommandLineArgumentParser_ErrorOpeningResponseFile, fileName, e.Message));
 	        }
+
 	        return args;
 	    }
 
-	    private static string LongName(CommandLineArgumentAttribute attribute, FieldInfo field)
-		{
-			return (attribute == null || attribute.IsDefaultLongName) ? field.Name : attribute.LongName;
-		}
-        
-		private static string ShortName(CommandLineArgumentAttribute attribute, FieldInfo field)
-		{
-			return !ExplicitShortName(attribute) ? LongName(attribute, field).Substring(0,1) : attribute.ShortName;
-		}
-        
-		private static bool ExplicitShortName(CommandLineArgumentAttribute attribute)
-		{
-			return (attribute != null && !attribute.IsDefaultShortName);
-		}
+        private static CommandLineArgumentAttribute GetAttribute(ICustomAttributeProvider field)
+        {
+            object[] attributes = field.GetCustomAttributes(typeof(CommandLineArgumentAttribute), false);
+            if (attributes.Length == 0)
+                ThrowError(Resources.CommandLineArgumentParser_NoArgumentFields);
 
-		private static Type ElementType(FieldInfo field)
-		{
-			if (IsCollectionType(field.FieldType))
-				return field.FieldType.GetElementType();
-			else
-				return null;
-		}
-        
-		private static CommandLineArgumentFlags Flags(CommandLineArgumentAttribute attribute, FieldInfo field)
-		{
-			if (attribute != null)
-				return attribute.Flags;
-			else if (IsCollectionType(field.FieldType))
-				return CommandLineArgumentFlags.MultipleUnique;
-			else
-				return CommandLineArgumentFlags.AtMostOnce;
-		}
-        
-		private static bool IsCollectionType(Type type)
-		{
-			return type.IsArray;
-		}
-            
-		private static bool IsValidElementType(Type type)
-		{
-			return type != null && (
-				type == typeof(int) ||
-				type == typeof(uint) ||
-				type == typeof(string) ||
-				type == typeof(bool) ||
-				type.IsEnum);
-		}
-        
+            return (CommandLineArgumentAttribute)attributes[0];
+        }
+
+        private static void ThrowError(string message, params Object[] args)
+        {
+            throw new InvalidOperationException(String.Format(message, args));
+        }
+
 		private class Argument
 		{
+            private readonly FieldInfo field;
+
             private readonly string longName;
             private readonly string shortName;
-            private readonly bool explicitShortName;
-            private readonly string argValueType;
-            private bool seenValue;
-            private readonly FieldInfo field;
-            private readonly Type elementType;
+            private readonly string valueLabel;
             private readonly CommandLineArgumentFlags flags;
-            private readonly ArrayList collectionValues;
-            private readonly ErrorReporter reporter;
-            private readonly bool isDefault;
+            private readonly Type valueType;
             private readonly string description;
+            private readonly string[] synonyms;
 
-            public Argument(CommandLineArgumentAttribute attribute, FieldInfo field, ErrorReporter reporter)
+            private readonly bool isDefault;
+
+            public Argument(CommandLineArgumentAttribute attribute, FieldInfo field)
 			{
-				longName = CommandLineArgumentParser.LongName(attribute, field);
-				explicitShortName = CommandLineArgumentParser.ExplicitShortName(attribute);
-				shortName = CommandLineArgumentParser.ShortName(attribute, field);
-				elementType = ElementType(field);
-				flags = Flags(attribute, field);
-				this.field = field;
-				seenValue = false;
-				this.reporter = reporter;
+                this.field = field;
+
+                longName = GetLongName(attribute, field);
+				shortName = GetShortName(attribute, field);
+				valueType = GetValueType(field);
+				flags = GetFlags(attribute, field);
+
                 if (attribute != null)
                 {
                     isDefault = attribute is DefaultCommandLineArgumentAttribute;
                     description = attribute.Description;
-                    argValueType = attribute.ArgumentValueType;
+                    valueLabel = attribute.ValueLabel;
+                    synonyms = attribute.Synonyms;
                 }
-			    if (IsCollection)
-			        collectionValues = new ArrayList();
+                else
+                {
+                    synonyms = EmptyArray<string>.Instance;
+                }
 
-
-			    Debug.Assert(longName != null && longName.Length > 0);
-				if (IsCollection && !AllowMultiple)
-					ThrowError("Collection arguments must have allow multiple");
-				Debug.Assert(!Unique || IsCollection, "Unique only applicable to collection arguments");
-				Debug.Assert(IsValidElementType(Type) ||
-					IsCollectionType(Type));
-				Debug.Assert((IsCollection && IsValidElementType(elementType)) ||
-					(!IsCollection && elementType == null));
+                if (IsCollection && !AllowMultiple)
+                    ThrowError(Resources.CommandLineArgumentParser_Argument_CollectionArgumentsMustAllowMultipleValues);
+                if (string.IsNullOrEmpty(longName))
+                    ThrowError(Resources.CommandLineArgumentParser_Argument_MissingLongName);
+                if (Unique && ! IsCollection)
+                    ThrowError(Resources.CommandLineArgumentParser_Argument_InvalidUsageOfUniqueFlag);
+                if (! IsValidElementType(valueType))
+                    ThrowError(Resources.CommandLineArgumentParser_Argument_UnsupportedValueType);
 			}
-            
-			public bool Finish(object destination)
-			{
-			    if (IsCollection)
-			        field.SetValue(destination, collectionValues.ToArray(elementType));
 
-
-			    return ReportMissingRequiredArgument();
-			}
-            
-			private bool ReportMissingRequiredArgument()
+			public bool AssignValue(object destination, MultiMap<Argument, object> argumentValues,
+                CommandLineErrorReporter reporter)
 			{
-				if (IsRequired && !SeenValue)
-				{
+                IList<object> values = argumentValues[this];
+
+                if (IsCollection)
+                {
+                    Array array = Array.CreateInstance(valueType, values.Count);
+                    for (int i = 0; i < values.Count; i++)
+                        array.SetValue(values[i], i);
+
+                    field.SetValue(destination, array);
+                }
+                else if (values.Count != 0)
+                {
+                    field.SetValue(destination, values[0]);
+                }
+                else if (IsRequired)
+                {
 					if (IsDefault)
-						reporter(string.Format("Missing required argument '<{0}>'.", LongName));
+						reporter(Resources.CommandLineArgumentParser_Argument_MissingRequiredDefaultArgument);
 					else
-						reporter(string.Format("Missing required argument '/{0}'.", LongName));
+						reporter(string.Format(Resources.CommandLineArgumentParser_Argument_MissingRequiredArgument, LongName));
+
 					return true;
-				}
-				return false;
+                }
+
+			    return false;
 			}
-            
-			private void ReportDuplicateArgumentValue(string value)
+
+            public bool AddValue(string value, MultiMap<Argument, object> argumentValues,
+                CommandLineErrorReporter reporter)
 			{
-				reporter(string.Format("Duplicate '{0}' argument '{1}'", LongName, value));
-			}
-            
-			public bool SetValue(string value, object destination)
-			{
-				if (SeenValue && !AllowMultiple)
-				{
-					reporter(string.Format("Duplicate '{0}' argument", LongName));
-					return false;
-				}
-				seenValue = true;
-                
+                if (!AllowMultiple && argumentValues.ContainsKey(this))
+                {
+                    reporter(string.Format(Resources.CommandLineArgumentParser_Argument_DuplicateArgument, LongName));
+                    return false;
+                }
+
 				object newValue;
-				if (!ParseValue(ValueType, value, out newValue))
-					return false;
-			    if (IsCollection)
-			    {
-			        if (Unique && collectionValues.Contains(newValue))
-			        {
-			            ReportDuplicateArgumentValue(value);
-			            return false;
-			        }
-			        else
-			            collectionValues.Add(newValue);
-			    }
-			    else
-			        field.SetValue(destination, newValue);
+                if (!ParseValue(ValueType, value, out newValue))
+                {
+                    reporter(string.Format(Resources.CommandLineArgumentParser_Argument_InvalidArgumentValue, LongName, value));
+                    return false;
+                }
 
+                if (Unique && argumentValues.Contains(this, newValue))
+                {
+                    reporter(string.Format(Resources.CommandLineArgumentParser_Argument_DuplicateArgumentValueExpectedUnique, LongName, value));
+                    return false;
+                }
 
+                argumentValues.Add(this, newValue);
 			    return true;
 			}
             
 			public Type ValueType
 			{
-				get { return IsCollection ? elementType : Type; }
+				get { return IsCollection ? valueType : Type; }
 			}
             
-			private void ReportBadArgumentValue(string value)
-			{
-				reporter(string.Format("'{0}' is not a valid value for the '{1}' command line option", value, LongName));
-			}
-            
-			private bool ParseValue(Type type, string stringData, out object value)
+			private static bool ParseValue(Type type, string stringData, out object value)
 			{
 				// null is only valid for bool variables
 				// empty string is never valid
@@ -529,12 +512,12 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 						}
 						else if (type == typeof(bool))
 						{
-							if (stringData == null || stringData == "+")
+							if (stringData == null || stringData == @"+")
 							{
 								value = true;
 								return true;
 							}
-							else if (stringData == "-")
+							else if (stringData == @"-")
 							{
 								value = false;
 								return true;
@@ -563,7 +546,6 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 					}
 				}
                                 
-				ReportBadArgumentValue(stringData);
 				value = null;
 				return false;
 			}
@@ -573,29 +555,24 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 				get { return longName; }
 			}
 
-			public bool ExplicitShortName
-			{
-				get { return explicitShortName; }
-			}
-            
 			public string ShortName
 			{
 				get { return shortName; }
 			}
 
-		    public string ArgumentValueType
+            public string[] Synonyms
+            {
+                get { return synonyms; }
+            }
+
+		    public string ValueLabel
 		    {
-                get { return argValueType;  }
+                get { return valueLabel;  }
 		    }
 
 			public bool IsRequired
 			{
 				get { return 0 != (flags & CommandLineArgumentFlags.Required); }
-			}
-            
-			public bool SeenValue
-			{
-				get { return seenValue; }
 			}
             
 			public bool AllowMultiple
@@ -627,6 +604,49 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 			{
 				get { return description; }
 			}
+
+            private static string GetLongName(CommandLineArgumentAttribute attribute, FieldInfo field)
+            {
+                return attribute == null || attribute.IsDefaultLongName ? field.Name : attribute.LongName;
+            }
+
+            private static string GetShortName(CommandLineArgumentAttribute attribute, FieldInfo field)
+            {
+                return attribute == null || attribute.IsDefaultShortName ? GetLongName(attribute, field).Substring(0, 1) : attribute.ShortName;
+            }
+
+            private static Type GetValueType(FieldInfo field)
+            {
+                if (IsCollectionType(field.FieldType))
+                    return field.FieldType.GetElementType();
+                else
+                    return field.FieldType;
+            }
+
+            private static CommandLineArgumentFlags GetFlags(CommandLineArgumentAttribute attribute, FieldInfo field)
+            {
+                if (attribute != null)
+                    return attribute.Flags;
+                else if (IsCollectionType(field.FieldType))
+                    return CommandLineArgumentFlags.MultipleUnique;
+                else
+                    return CommandLineArgumentFlags.AtMostOnce;
+            }
+
+            private static bool IsCollectionType(Type type)
+            {
+                return type.IsArray;
+            }
+
+            private static bool IsValidElementType(Type type)
+            {
+                return type != null && (
+                    type == typeof(int) ||
+                    type == typeof(uint) ||
+                    type == typeof(string) ||
+                    type == typeof(bool) ||
+                    type.IsEnum);
+            }
 		}
 	}
 }

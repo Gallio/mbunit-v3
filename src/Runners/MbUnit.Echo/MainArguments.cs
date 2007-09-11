@@ -30,8 +30,8 @@ namespace MbUnit.Echo
 
         [DefaultCommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,
-            LongName = "assemblies",
-            Description = "List of assemblies containing the tests."
+            Description = "List of assemblies containing the tests.",
+            ValueLabel = "assemblies"
             )]
         public string[] Assemblies;
 
@@ -40,7 +40,7 @@ namespace MbUnit.Echo
             ShortName = "hd",
             LongName = "hint-directories",
             Description = "The list of directories used for loading assemblies and other dependent resources.",
-            ArgumentValueType = "dirs"
+            ValueLabel = "dir"
             )]
         public string[] HintDirectories;
 
@@ -49,7 +49,7 @@ namespace MbUnit.Echo
             ShortName = "pd",
             LongName = "plugin-directory",
             Description = "Additional MbUnit plugin directories to search recursively",
-            ArgumentValueType = "dirs"
+            ValueLabel = "dir"
             )]
         public string[] PluginDirectories;
 
@@ -58,7 +58,7 @@ namespace MbUnit.Echo
             ShortName = "abd",
             LongName = "application-base-directory",
             Description = "The application base directory to set during test execution.",
-            ArgumentValueType = "path"
+            ValueLabel = "dir"
             )]
         public string AppBaseDirectory = "";
 
@@ -70,7 +70,7 @@ namespace MbUnit.Echo
              ShortName = "rd",
              LongName = "report-directory",
              Description = "Target output directory for the reports.",
-             ArgumentValueType = "path"
+             ValueLabel = "dir"
              )]
         public string ReportDirectory = "";
 
@@ -79,7 +79,7 @@ namespace MbUnit.Echo
              ShortName = "rnf",
              LongName = "report-name-format",
              Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}.",
-             ArgumentValueType = "pattern"
+             ValueLabel = "pattern"
              )]
         public string ReportNameFormat = "mbunit-result-{0}{1}";
 
@@ -88,7 +88,7 @@ namespace MbUnit.Echo
              ShortName = "rt",
              LongName = "report-type",
              Description = "Report types to generate.  See below for all supported types.",
-             ArgumentValueType = "type"
+             ValueLabel = "type"
         )]
         public string[] ReportTypes;
 
@@ -96,7 +96,7 @@ namespace MbUnit.Echo
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "sr",
              LongName = "show-reports",
-            Description = "Show generated reports in a window using the default system application registered to the report file type."
+             Description = "Show generated reports in a window using the default system application registered to the report file type."
         )]
         public bool ShowReports;
         #endregion
@@ -107,7 +107,8 @@ namespace MbUnit.Echo
              CommandLineArgumentFlags.MultipleUnique,
              ShortName = "fc",
              LongName = "filter-category",
-             Description = "Name of the filtered category."
+             Description = "Name of the filtered category.",
+             ValueLabel = "category"
              )]
         public string[] FilterCategories;
 
@@ -115,7 +116,8 @@ namespace MbUnit.Echo
              CommandLineArgumentFlags.MultipleUnique,
              ShortName = "fa",
              LongName = "filter-author",
-             Description = "Name of the filtered author name."
+             Description = "Name of the filtered author name.",
+             ValueLabel = "author"
              )]
         public string[] FilterAuthors;
 
@@ -123,7 +125,8 @@ namespace MbUnit.Echo
              CommandLineArgumentFlags.MultipleUnique,
              ShortName = "ft",
              LongName = "filter-type",
-             Description = "Name of the filtered type."
+             Description = "Full or partial name of the filtered type.",
+             ValueLabel = "type"
              )]
         public string[] FilterTypes;
 
@@ -132,7 +135,7 @@ namespace MbUnit.Echo
              ShortName = "fn",
              LongName = "filter-namespace",
              Description = "Name of the filtered namespace.",
-             ArgumentValueType = "namespace"
+             ValueLabel = "namespace"
              )]
         public string[] FilterNamespaces;
 
@@ -141,7 +144,7 @@ namespace MbUnit.Echo
              ShortName = "fi",
              LongName = "filter-importance",
              Description = "Name of the filtered importance.",
-             ArgumentValueType = "importance"
+             ValueLabel = "importance"
              )]
         public TestImportance[] FilterImportances;
 
@@ -153,7 +156,8 @@ namespace MbUnit.Echo
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "h",
              LongName = "help",
-             Description = "Display this help text."
+             Description = "Display this help text.",
+             Synonyms = new string[] { "?" }
              )]
         public bool Help;
 
@@ -162,7 +166,7 @@ namespace MbUnit.Echo
              ShortName = "v",
              LongName = "verbosity",
              Description = "Controls the level of detail of the information to display.",
-             ArgumentValueType = "level"
+             ValueLabel = "level"
              )]
         public Verbosity Verbosity = Verbosity.Normal;
 
@@ -176,15 +180,19 @@ namespace MbUnit.Echo
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
+             ShortName= "",
              LongName = "save-template-tree",
-             Description = "Save the template tree to a file as XML."
+             Description = "Save the template tree to a file as XML.",
+             ValueLabel = "file"
              )]
         public string SaveTemplateTree;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "",
              LongName = "save-test-tree",
-             Description = "Save the test tree to a file as XML."
+             Description = "Save the test tree to a file as XML.",
+             ValueLabel = "file"
              )]
         public string SaveTestTree;
 

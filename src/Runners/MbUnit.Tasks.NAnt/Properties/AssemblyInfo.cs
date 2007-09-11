@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
@@ -45,3 +46,6 @@ using System.Runtime.InteropServices;
 // The neutral resources language is US English.
 // Telling the system that this is the case yields a small performance improvement during startup.
 [assembly: NeutralResourcesLanguage("en-US")]
+
+// Can't strong-name the task because NAnt isn't strong-named.
+[assembly: SuppressMessage("Microsoft.Design", "CA2210:AssembliesShouldHaveValidStrongNames")]

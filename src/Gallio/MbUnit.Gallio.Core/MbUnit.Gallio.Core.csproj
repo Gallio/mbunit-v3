@@ -59,9 +59,8 @@
     <Compile Include="ConsoleSupport\CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineArgumentFlags.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineOutput.cs" />
-    <Compile Include="ConsoleSupport\CommandLine\CommandLineUtility.cs" />
     <Compile Include="ConsoleSupport\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
-    <Compile Include="ConsoleSupport\CommandLine\ErrorReporter.cs" />
+    <Compile Include="ConsoleSupport\CommandLine\CommandLineErrorReporter.cs" />
     <Compile Include="ConsoleSupport\IRichConsole.cs" />
     <Compile Include="ConsoleSupport\RichConsoleProgressMonitorProvider.cs" />
     <Compile Include="ConsoleSupport\SystemConsole.cs" />
@@ -131,11 +130,6 @@
     <Compile Include="Runner\ResultCode.cs" />
     <Compile Include="Runner\TestRunnerHelper.cs" />
     <Compile Include="Runner\TextualProgressMonitor.cs" />
-    <Compile Include="Services\Assertions\AssertionUtils.cs" />
-    <Compile Include="Services\Assertions\DefaultAssertionService.cs" />
-    <Compile Include="Services\Contexts\DefaultContext.cs" />
-    <Compile Include="Services\Contexts\DefaultContextManager.cs" />
-    <Compile Include="Services\ExecutionLogs\DefaultExecutionLogService.cs" />
     <Compile Include="Reporting\ExecutionLogAttachmentEncoding.cs" />
     <Compile Include="Reporting\ExecutionLog.cs" />
     <Compile Include="Reporting\ExecutionLogAttachment.cs" />

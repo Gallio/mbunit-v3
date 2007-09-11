@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
+using Castle.Core.Logging;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
@@ -72,8 +73,9 @@ namespace MbUnit._Framework.Tests.Integration
                 reportMonitor.Attach(runner);
                 report = reportMonitor.Report;
 
-                DebugMonitor debugMonitor = new DebugMonitor(Console.Out);
-                debugMonitor.Attach(runner);
+                ILogger logger = new ConsoleLogger(LoggerLevel.Debug);
+                new DebugMonitor(logger).Attach(runner);
+                new LogMonitor(logger, reportMonitor).Attach(runner);
 
                 runner.LoadPackage(package, new NullProgressMonitor());
                 runner.BuildTemplates(new NullProgressMonitor());

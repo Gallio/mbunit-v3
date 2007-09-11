@@ -35,8 +35,7 @@ namespace MbUnit.Echo
             {
                 using (MainClass main = new MainClass(console))
                 {
-                    main.SetUp(args);
-                    return main.Run();
+                    return main.Run(args);
                 }
             }
             finally

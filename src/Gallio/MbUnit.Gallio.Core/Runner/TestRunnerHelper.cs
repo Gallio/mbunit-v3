@@ -66,7 +66,6 @@ namespace MbUnit.Core.Runner
         private PackageRunStatistics statistics;
         private Stopwatch stopWatch;
         private readonly ReportMonitor reportMonitor;
-        private StringWriter debugWriter;
         private readonly List<ITestRunnerMonitor> customMonitors = new List<ITestRunnerMonitor>();
 
         #endregion
@@ -296,14 +295,11 @@ namespace MbUnit.Core.Runner
                 resultSummary = reportMonitor.Report.PackageRun.Statistics.FormatTestCaseResultSummary();
                 DisposeStopWatch();
 
-                // Make sure we write out debug log messages.
-                if (!runCanceled && debugWriter != null)
-                    logger.Debug(debugWriter.ToString());
+                if (runCanceled)
+                    return ResultCode.Canceled;
 
                 if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
                     return ResultCode.Failure;
-                if (runCanceled)
-                    return ResultCode.Canceled;
 
                 return ResultCode.Success;
             }
@@ -357,10 +353,7 @@ namespace MbUnit.Core.Runner
         private void AttachDebugMonitorIfNeeded(ITestRunner runner)
         {
             if (logger.IsDebugEnabled)
-            {
-                debugWriter = new StringWriter();
-                new DebugMonitor(debugWriter).Attach(runner);
-            }
+                new DebugMonitor(logger).Attach(runner);
         }
 
         private void AttachLogMonitorIfNeeded(ITestRunner runner)
@@ -408,8 +401,7 @@ namespace MbUnit.Core.Runner
                     if (!File.Exists(assemblyName))
                     {
                         assembliesToRemove.Add(assemblyName);
-                        logger.Error("Test assembly {0} cannot be found", assemblyName);
-                        logger.Error("Full name: {0}", Path.GetFullPath(assemblyName));
+                        logger.Error("Cannot find assembly: {0}", assemblyName);
                     }
                 }
 

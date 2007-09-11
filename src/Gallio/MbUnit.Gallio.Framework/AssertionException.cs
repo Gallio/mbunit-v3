@@ -14,12 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using MbUnit.Framework.Kernel.Assertions;
 
-namespace MbUnit.Framework.Exceptions
+namespace MbUnit.Framework
 {
     /// <summary>
     /// The exception type used to signal MbUnit assertion failures.
@@ -63,6 +60,7 @@ namespace MbUnit.Framework.Exceptions
         {
         }
 
+        /*
         /// <summary>
         /// Creates an assertion exception to signal a failure of the specified
         /// assertion yielding a particular result.
@@ -82,5 +80,6 @@ namespace MbUnit.Framework.Exceptions
             get { return assertionResult; }
         }
         private AssertionResult assertionResult;
+         */
     }
 }

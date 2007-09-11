@@ -18,12 +18,12 @@ using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
 using MbUnit.Core.ConsoleSupport;
+using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
-using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Core.Runtime;
-using MbUnit.Framework.Kernel.Utilities;
 using MbUnit.Echo.Properties;
+using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Echo
 {
@@ -32,13 +32,13 @@ namespace MbUnit.Echo
     /// </summary>
     public sealed class MainClass : IDisposable
     {
+        private static readonly CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(MainArguments));
+
         private readonly MainArguments arguments = new MainArguments();
         private readonly IRichConsole console;
         private readonly RichConsoleLogger logger;
 
         private string applicationTitle;
-        private bool haltExecution = false;
-        private int resultCode;
 
         public MainClass(IRichConsole console)
         {
@@ -51,43 +51,17 @@ namespace MbUnit.Echo
             logger.Level = LoggerLevel.Warn; // temporary setting until arguments are parsed
         }
 
-        public void SetUp(string[] args)
-        {
-            if (args == null)
-                throw new ArgumentNullException(@"args");
-
-            SetApplicationTitle();
-            ShowBanner();
-            InstallCancelHandler();
-
-            if (!ParseArguments(args))
-            {
-                haltExecution = true;
-                resultCode = ResultCode.InvalidArguments;
-            }
-
-            if (arguments.Help)
-            {
-                ShowHelp();
-                haltExecution = true;
-                resultCode = ResultCode.Success;
-            }
-
-            if (resultCode == ResultCode.Success)
-                SetUpLogger();
-        }
-
-        public int Run()
+        /// <summary>
+        /// Parses the arguments and runs the program.
+        /// </summary>
+        public int Run(string[] args)
         {
             try
             {
-                if (haltExecution)
-                {
-                    return resultCode;
-                }
-                resultCode = RunTests();
-                CheckResultCode();
-                return resultCode;
+                if (args == null)
+                    throw new ArgumentNullException(@"args");
+
+                return RunMain(args);
             }
             catch (Exception ex)
             {
@@ -96,10 +70,37 @@ namespace MbUnit.Echo
             }
         }
 
+        private int RunMain(string[] args)
+        {
+            SetApplicationTitle();
+            ShowBanner();
+            InstallCancelHandler();
+
+            if (!argumentParser.Parse(args, arguments, PrintArgumentErrorMessage))
+            {
+                ShowHelp();
+                return ResultCode.InvalidArguments;
+            }
+
+            if (arguments.Help)
+            {
+                ShowHelp();
+                return ResultCode.Success;
+            }
+
+            SetUpLogger();
+
+            int resultCode = RunTests();
+            if (resultCode == ResultCode.Canceled)
+                logger.Warn(Resources.MainClass_Canceled);
+
+            return resultCode;
+        }
+
         private int RunTests()
         {
             console.ForegroundColor = ConsoleColor.White;
-            console.WriteLine("Initializing the test runner and loading plugins.");
+            console.WriteLine(Resources.MainClass_Initializing);
             console.ResetColor();
 
             using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper(
@@ -143,7 +144,10 @@ namespace MbUnit.Echo
                     console.ForegroundColor = ConsoleColor.Red;
                     break;
             }
-            console.WriteLine("\n" + testRunnerHelper.ResultSummary + "\n");
+
+            console.WriteLine();
+            console.WriteLine(testRunnerHelper.ResultSummary);
+            console.WriteLine();
         }
 
         private void OpenReports(TestRunnerHelper testRunnerHelper)
@@ -151,12 +155,20 @@ namespace MbUnit.Echo
             if (arguments.ShowReports)
             {
                 console.ForegroundColor = ConsoleColor.White;
-                console.WriteLine("Opening reports.");
+                console.WriteLine(Resources.MainClass_OpeningReports);
                 console.ResetColor();
 
                 foreach (string reportType in arguments.ReportTypes)
                 {
-                    Process.Start(testRunnerHelper.GetReportFilename(reportType));
+                    string filename = testRunnerHelper.GetReportFilename(reportType);
+                    try
+                    {
+                        Process.Start(filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.FatalFormat("Could not open report '{0}' for display.", filename, ex);
+                    }
                 }
             }
         }
@@ -175,33 +187,11 @@ namespace MbUnit.Echo
             console.IsCancelationEnabled = true;
         }
 
-        private void CheckResultCode()
-        {
-            if (resultCode == ResultCode.Canceled)
-                logger.Warn("Canceled!");
-        }
-
-        private bool ParseArguments(string[] args)
-        {
-            try
-            {
-                CommandLineUtility.ParseCommandLineArguments(args, arguments, delegate(string message)
-                {
-                    logger.FatalFormat("Error: {0}", message);
-                });
-            }
-            catch (Exception)
-            {
-                ShowHelp();
-                return false;
-            }
-            return true;
-        }
-
         private void SetApplicationTitle()
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            applicationTitle = string.Format("MbUnit Echo - Version {0}.{1} build {2}", appVersion.Major, appVersion.Minor, appVersion.Build);
+            applicationTitle = string.Format(Resources.MainClass_ApplicationTitle,
+                appVersion.Major, appVersion.Minor, appVersion.Build);
 
             if (!console.IsRedirected)
                 console.Title = applicationTitle;
@@ -232,26 +222,35 @@ namespace MbUnit.Echo
             console.ForegroundColor = ConsoleColor.White;
             console.WriteLine(applicationTitle);
             console.ForegroundColor = ConsoleColor.Cyan;
-            console.Write("Get the latest version at ");
+            console.Write(Resources.MainClass_GetTheLatestVersionBanner);
             console.ForegroundColor = ConsoleColor.Blue;
-            console.WriteLine("http://www.mbunit.com/");
+            console.WriteLine(Resources.MainClass_MbUnitUrl);
             console.WriteLine();
             console.ResetColor();
+        }
+
+        private void PrintArgumentErrorMessage(string message)
+        {
+            console.ForegroundColor = ConsoleColor.Red;
+            console.WriteLine(String.Format(Resources.MainClass_CommandLineArgumentErrorMessageFormat, message));
+            console.ResetColor();
+            console.WriteLine();
         }
 
         private void ShowHelp()
         {
             console.ForegroundColor = ConsoleColor.Yellow;
-            console.WriteLine(new string('-', 78));
+            console.WriteLine(new string('-', console.Width - 2));
             console.ResetColor();
             console.ForegroundColor = ConsoleColor.White;
-            console.WriteLine("  Available options:");
+            console.Write(@"  ");
+            console.WriteLine(Resources.MainClass_AvailableOptionsHeader);
             console.ForegroundColor = ConsoleColor.Yellow;
-            console.WriteLine(new string('-', 78));
+            console.WriteLine(new string('-', console.Width - 2));
 
             console.ResetColor();
             console.WriteLine();
-            CommandLineUtility.CommandLineArgumentsUsage(typeof(MainArguments), console);
+            argumentParser.ShowUsage(new CommandLineOutput(console));
 
             // Print out options related to the currently available set of plugins.
             RuntimeSetup setup = new RuntimeSetup();
@@ -262,8 +261,8 @@ namespace MbUnit.Echo
                 IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
 
                 console.WriteLine();
-                console.WriteLine(String.Format("Supported report types: {0}",
-                    string.Join(", ", ListUtils.CopyAllToArray(reportManager.GetFormatterNames()))));
+                console.WriteLine(String.Format(Resources.MainClass_SupportedReportTypesMessage,
+                    string.Join(@", ", ListUtils.CopyAllToArray(reportManager.GetFormatterNames()))));
             }
         }
 

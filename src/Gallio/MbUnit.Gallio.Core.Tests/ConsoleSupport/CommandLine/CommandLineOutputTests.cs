@@ -55,16 +55,16 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
 
         [RowTest]
         [Row("help", "h", "Display this help text.", ""
-            , "  /help              Display this help text. (Short form: /h)\r\n")]
+           , "  /help              Display this help text.  (Short form: /h)\r\n")]
         [Row("help", "h", "Display this help text.", "test"
-            , "  /help:<test>              Display this help text. (Short form: /h)\r\n")]
+           , "  /help:<test>       Display this help text.  (Short form: /h)\r\n")]
         [Row("very_long_argument", "vl", "Argument description.", ""
-            , "  /very_long_argument\r\n                     Argument description. (Short form: /vl)\r\n")]
+            , "  /very_long_argument\r\n                     Argument description.  (Short form: /vl)\r\n")]
          [Row("long_description", "ld", "It is a very long description. It is a very long description. It is a very long description. It is a very long description.", ""
-           , "  /long_description  It is a very long description. It is a very long\r\n                     description. It is a very long description. It is a very\r\n                     long description. (Short form: /ld)\r\n")]
+           , "  /long_description  It is a very long description. It is a very long\r\n                     description. It is a very long description. It is a very\r\n                     long description.  (Short form: /ld)\r\n")]
         public void PringArgumentHelpTest(string longName, string shortName, string description, string valueType, string expectedOutput)
         {
-            _output.PrintArgumentHelp(longName, shortName, description, valueType, typeof(string));
+            _output.PrintArgumentHelp("/", longName, shortName, description, valueType, typeof(string));
             Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }
 
@@ -74,7 +74,7 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         public void PrintArgumentHelpWidth40Chars(string longName, string shortName, string description, string valueType, string expectedOutput)
         {
             _output.LineLength = 40;
-            _output.PrintArgumentHelp(longName, shortName, description, valueType, typeof(string));
+            _output.PrintArgumentHelp("/", longName, shortName, description, valueType, typeof(string));
             Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }
 
@@ -86,8 +86,8 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
             string description = "desc";
             string valueType = "enum";
             string expectedOutput =
-                "  /enum_argument:<enum>\r\n                     desc The available options are 'Test1', 'Test2', 'Test3'.\r\n                     (Short form: /ea)\r\n";
-            _output.PrintArgumentHelp(longName, shortName, description, valueType, typeof(EnumTypeTest));
+                "  /enum_argument:<enum>\r\n                     desc  The available options are: 'Test1', 'Test2',\r\n                     'Test3'.  (Short form: /ea)\r\n";
+            _output.PrintArgumentHelp("/", longName, shortName, description, valueType, typeof(EnumTypeTest));
             Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }
 

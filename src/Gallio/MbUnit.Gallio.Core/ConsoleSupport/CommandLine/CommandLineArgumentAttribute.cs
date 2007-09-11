@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
+using MbUnit.Framework.Kernel.Collections;
 
 namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
@@ -33,8 +34,9 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         private readonly CommandLineArgumentFlags flags;
         private string shortName;
         private string longName;
-        private string description = "";
-        private string argumentValueType;
+        private string description = @"";
+        private string valueLabel;
+        private string[] synonyms = EmptyArray<string>.Instance;
 
         /// <summary>
         /// Allows control of command line parsing.
@@ -97,12 +99,21 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 		}
 
         ///<summary>
-        /// The description of the argument value type.
+        /// The description of the argument value.
         ///</summary>
-        public string ArgumentValueType
+        public string ValueLabel
         {
-            get { return argumentValueType; }
-            set { argumentValueType = value; }
+            get { return valueLabel; }
+            set { valueLabel = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets an array of additional synonyms that are silently accepted.
+        /// </summary>
+        public string[] Synonyms
+        {
+            get { return synonyms; }
+            set { synonyms = value; }
         }
     }
 }

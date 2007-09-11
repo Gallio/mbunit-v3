@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using MbUnit.Framework.Exceptions;
 
 namespace MbUnit.Framework
 {

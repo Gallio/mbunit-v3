@@ -44,15 +44,13 @@ namespace MbUnit.Tasks.NAnt.Tests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            nantExecutablePath =
-                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)
-                    + @"\nant\bin\NAnt.exe";
-            if (!File.Exists(nantExecutablePath))
-            {
-                Assert.Fail("Cannot find the NAnt executable!");
-            }
-            testAssemblyPath = new Uri(typeof(SimpleTest).Assembly.CodeBase).LocalPath;
             workingDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+            nantExecutablePath = Path.Combine(workingDirectory, @"..\..\..\..\libs\NAnt\NAnt.exe");
+
+            if (!File.Exists(nantExecutablePath))
+                Assert.Fail("Cannot find the NAnt executable in {0}!", nantExecutablePath);
+
+            testAssemblyPath = new Uri(typeof(SimpleTest).Assembly.CodeBase).LocalPath;
         }
 
         [Test]

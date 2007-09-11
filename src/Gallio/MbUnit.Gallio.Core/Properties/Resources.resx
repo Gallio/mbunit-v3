@@ -163,54 +163,103 @@
     <value>[Lifecycle: Start ({0})]</value>
   </data>
   <data name="DebugMonitor_LifecycleEvent_Phase_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Enter Phase ({0})]</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_Phase_NameFormat" xml:space="preserve">
-    <value>	Phase Name: {0}</value>
+    <value>[Lifecycle: Enter Phase ({0})]
+	Phase Name: {1}</value>
   </data>
   <data name="DebugMonitor_LifecycleEvent_Finish_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Finish ({0})]</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_Finish_StateFormat" xml:space="preserve">
-    <value>	State: {0}</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_Finish_OutcomeFormat" xml:space="preserve">
-    <value>	Outcome: {0}</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_Finish_AssertCountFormat" xml:space="preserve">
-    <value>	Asserts: {0}</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_Finish_DurationFormat" xml:space="preserve">
-    <value>	Duration: {0}</value>
+    <value>[Lifecycle: Finish ({0})]
+	State: {1}
+	Outcome: {2}
+	Asserts: {3}
+	Duration: {4}</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_WriteText_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Write Text ({0})]</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_StreamNameFormat" xml:space="preserve">
-    <value>	Stream Name: {0}</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_TextFormat" xml:space="preserve">
-    <value>	Text: {0}</value>
+    <value>[Execution Log: Write Text ({0})]
+	Stream Name: {1}
+	Text: {2}</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_WriteAttachment_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Write Attachment ({0})]</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_WriteAttachment_AttachmentNameFormat" xml:space="preserve">
-    <value>	Attachment Name: {0}</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_WriteAttachment_ContentTypeFormat" xml:space="preserve">
-    <value>	Attachment Content Type: {0}</value>
+    <value>[Execution Log: Write Attachment ({0})]
+	Stream Name: {1}
+	Attachment Name: {2}
+	Attachment Content Type: {3}</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Begin Section ({0})]</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_BeginSection_SectionNameFormat" xml:space="preserve">
-    <value>	Section Name: {0}</value>
+    <value>[Execution Log: Begin Section ({0})]
+	Stream Name: {1}
+	Section Name: {2}</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_EndSection_EventFormat" xml:space="preserve">
-    <value>[Execution Log: End Section ({0})]</value>
+    <value>[Execution Log: End Section ({0})]
+	Stream Name: {1}</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_Close_EventFormat" xml:space="preserve">
     <value>[Execution Log: Close ({0})]</value>
+  </data>
+  <data name="CommandLineOutput_ShortForm" xml:space="preserve">
+    <value>(Short form: {0})</value>
+  </data>
+  <data name="CommandLineOutput_AvailableOptions" xml:space="preserve">
+    <value>The available options are: </value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_MissingRequiredDefaultArgument" xml:space="preserve">
+    <value>Missing required default argument.</value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_MissingRequiredArgument" xml:space="preserve">
+    <value>Missing required argument '/{0}'.</value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_DuplicateArgument" xml:space="preserve">
+    <value>Duplicate '{0}' argument.</value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_InvalidArgumentValue" xml:space="preserve">
+    <value>Invalid '{0}' argument value '{1}'.</value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_DuplicateArgumentValueExpectedUnique" xml:space="preserve">
+    <value>Duplicate '{0}' argument value '{1}', expected unique values.</value>
+  </data>
+  <data name="CommandLineArgumentParser_ResponseFileDescription" xml:space="preserve">
+    <value>Read response file for more options.</value>
+  </data>
+  <data name="CommandLineArgumentParser_ResponseFileValueLabel" xml:space="preserve">
+    <value>file</value>
+  </data>
+  <data name="CommandLineArgumentParser_MoreThanOneDefaultCommandLineArgumentDefined" xml:space="preserve">
+    <value>More than one default command line argument has been defined.</value>
+  </data>
+  <data name="CommandLineArgumentParser_DuplicateArgumentName" xml:space="preserve">
+    <value>Duplicate argument name '{0}'.</value>
+  </data>
+  <data name="CommandLineArgumentParser_UnrecognizedArgument" xml:space="preserve">
+    <value>Unrecognized argument '{0}'.</value>
+  </data>
+  <data name="CommandLineArgumentParser_MismatchedQuotedInResponseFile" xml:space="preserve">
+    <value>Mismatched quotes in response file '{0}'</value>
+  </data>
+  <data name="CommandLineArgumentParser_ResponseFileDoesNotExist" xml:space="preserve">
+    <value>Response file '0' does not exist.</value>
+  </data>
+  <data name="CommandLineArgumentParser_ErrorOpeningResponseFile" xml:space="preserve">
+    <value>Error opening response file '{0}': {1}.</value>
+  </data>
+  <data name="CommandLineArgumentParser_NoArgumentFields" xml:space="preserve">
+    <value>No fields tagged with CommandLineArgumentAttribute.</value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_CollectionArgumentsMustAllowMultipleValues" xml:space="preserve">
+    <value>Collection arguments must have AllowMultiple flag.</value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_InvalidUsageOfUniqueFlag" xml:space="preserve">
+    <value>Unique flag only applicable to collection arguments.</value>
+  </data>
+  <data name="CommandLineArgumentParser_ExceptionWhileParsing" xml:space="preserve">
+    <value>A fatal exception occurred while parsing arguments: {0}</value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_MissingLongName" xml:space="preserve">
+    <value>Argument long name must be specified.</value>
+  </data>
+  <data name="CommandLineArgumentParser_Argument_UnsupportedValueType" xml:space="preserve">
+    <value>Unsupported value type.</value>
+  </data>
+  <data name="CommandLineArgumentParser_ArgumentObjectIsOfIncorrectType" xml:space="preserve">
+    <value>Parsed argument object is not of the correct type.</value>
   </data>
 </root>

@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Text;
+using MbUnit.Core.Properties;
 
 namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
@@ -24,8 +25,12 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
     ///</summary>
     public class CommandLineOutput
     {
-        private readonly TextWriter _output;
-        private int _lineLength;
+        private const int LeftMargin = 2;
+        private const int HangingIndent = 19;
+        private const int Gutter = 2;
+
+        private readonly TextWriter output;
+        private int lineLength;
 
         ///<summary>
         /// Initializes new instance of CommandLineOutput.
@@ -42,8 +47,8 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///<param name="output"></param>
         public CommandLineOutput(TextWriter output)
         {
-            _output = output;
-            _lineLength = 80;
+            this.output = output;
+            lineLength = 80;
         }
 
         ///<summary>
@@ -52,8 +57,8 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///<param name="width"></param>
         public CommandLineOutput(TextWriter output, int width)
         {
-            _output = output;
-            _lineLength = width;
+            this.output = output;
+            lineLength = width;
         }
 
         ///<summary>
@@ -61,7 +66,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///</summary>
         public TextWriter Output
         {
-            get { return _output; }
+            get { return output; }
         }
 
         ///<summary>
@@ -69,121 +74,146 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         ///</summary>
         public int LineLength
         {
-            get { return _lineLength; }
-            set { _lineLength = value; }
+            get { return lineLength; }
+            set { lineLength = value; }
         }
-
 
         ///<summary>
         /// Prints out a new line.
         ///</summary>
         public void NewLine()
         {
-            _output.WriteLine();
+            output.WriteLine();
         }
 
-        ///<summary>
+        /// <summary>
         /// Outputs text with specified indentation.
-        ///</summary>
-        ///<param name="text">Text to output.</param>
-        ///<param name="indentation">Number of blank spaces before the start of the text.</param>
+        /// </summary>
+        /// <param name="text">Text to output possibly including newlines.</param>
+        /// <param name="indentation">Number of blank spaces to indent the first line.</param>
         public void PrintText(string text, int indentation)
         {
-            int maxLength = _lineLength - indentation - 1;
-            while (text.Length > maxLength)
-            {
-                int pos = text.LastIndexOf(' ', maxLength);
-                _output.Write(Space(indentation));
-                _output.Write(text.Substring(0, pos));
-                NewLine();
-                text = text.Substring(pos + 1);
-            }
-            _output.Write(Space(indentation));
-            _output.WriteLine(text);
+            PrintText(text, indentation, indentation);
         }
 
-        ///<summary>
+        /// <summary>
         /// Outputs text with specified indentation.
-        ///</summary>
-        ///<param name="text">Text to output.</param>
-        ///<param name="firstLineIndent">Number of blank spaces before the start of the text.</param>
-        ///<param name="indentation">Number of blank spaces before the start of the text.</param>
-        private void PrintText(string text, int firstLineIndent, int indentation)
+        /// </summary>
+        /// <param name="text">Text to output possibly including newlines.</param>
+        /// <param name="indentation">Number of blank spaces to indent all but the first line.</param>
+        /// <param name="firstLineIndent">Number of blank spaces to indent the first line.</param>
+        public void PrintText(string text, int indentation, int firstLineIndent)
         {
-            int maxLength = _lineLength - firstLineIndent - 1;
-            if (text.Length > maxLength)
-            {
-                int pos = text.LastIndexOf(' ', maxLength);
-                _output.Write(Space(firstLineIndent));
-                _output.Write(text.Substring(0, pos));
-                _output.WriteLine();
-                text = text.Substring(pos + 1);
-                PrintText(text, indentation);
-            }
-            else
-                PrintText(text, firstLineIndent);
-        }
+            int currentIndentation = firstLineIndent;
 
-        ///<summary>
-        /// Output help for a specified argument.
-        ///</summary>
-        ///<param name="longName">Argument long name.</param>
-        ///<param name="shortName">Argument short name.</param>
-        ///<param name="description">Argument description.</param>
-        ///<param name="valueType">Argument value type.</param>
-        ///<param name="argumentType"></param>
-        public void PrintArgumentHelp(string longName, string shortName, string description, string valueType, Type argumentType)
-        {
-            StringBuilder argumentHelp = new StringBuilder("/");
-            argumentHelp.Append(longName);
-            if (!string.IsNullOrEmpty(valueType))
+            text = text.Trim();
+            while (text.Length != 0)
             {
-                argumentHelp.Append(":<");
-                argumentHelp.Append(valueType);
-                argumentHelp.Append(">");
-            }
-            if (argumentHelp.Length > 17)
-            {
-                PrintText(argumentHelp.ToString(), 2);
-                PrintText(CreateDescriptionWithShortName(description, shortName, argumentType), 21);
-            }
-            else
-            {
-                argumentHelp.Append(Space(18 - longName.Length));
-                argumentHelp.Append(CreateDescriptionWithShortName(description, shortName, argumentType));
-                PrintText(argumentHelp.ToString(), 2, 21);
-            }
-        }
+                int maxLength = lineLength - currentIndentation - 1;
 
-        private static string AddEnumerationValues(Type type)
-        {
-            StringBuilder enumDescription = new StringBuilder();
-            if (type.IsArray)
-                type = type.GetElementType();
-
-            if (type.IsEnum)
-            {
-                enumDescription.Append(" The available options are ");
-                string[] enumValues = Enum.GetNames(type);
-                for (int ndx = 0; ndx < enumValues.Length; ndx++)
+                int pos = text.IndexOf('\n');
+                if (pos < 0)
                 {
-                    enumDescription.Append("'");
-                    enumDescription.Append(enumValues[ndx]);
-                    enumDescription.Append("', ");
+                    if (text.Length <= maxLength)
+                    {
+                        output.Write(Space(currentIndentation));
+                        output.WriteLine(text);
+                        break;
+                    }
+                    else
+                    {
+                        pos = text.LastIndexOf(' ', maxLength);
+                        if (pos < 0)
+                            pos = maxLength;
+                    }
                 }
-                enumDescription.Replace(", ", ".", enumDescription.Length - 2, 2);
+
+                output.Write(Space(currentIndentation));
+                output.WriteLine(text.Substring(0, pos).TrimEnd());
+
+                if (pos == text.Length - 1)
+                    break;
+
+                text = text.Substring(pos + 1).TrimStart();
+                currentIndentation = indentation;
             }
-            return enumDescription.ToString();
+        }
+
+        /// <summary>
+        /// Prints help for a specified argument.
+        /// </summary>
+        /// <param name="prefix">The argument prefix, such as "/", or null or empty if none.</param>
+        /// <param name="longName">The argument's long name, or null or empty if none.</param>
+        /// <param name="shortName">The argument's short short name, or null or empty if none.</param>
+        /// <param name="description">The argument's description, or null or empty if none.</param>
+        /// <param name="valueLabel">The argument's value label such as "path", or null or empty if none.</param>
+        /// <param name="valueType">The argument's value type, or null if none.</param>
+        public void PrintArgumentHelp(string prefix, string longName, string shortName, string description, string valueLabel, Type valueType)
+        {
+            StringBuilder argumentHelp = new StringBuilder();
+
+            if (!string.IsNullOrEmpty(prefix))
+                argumentHelp.Append(prefix);
+
+            if (! string.IsNullOrEmpty(longName))
+            {
+                argumentHelp.Append(longName);
+
+                if (! string.IsNullOrEmpty(valueLabel))
+                    argumentHelp.Append(':');
+            }
+
+            if (! string.IsNullOrEmpty(valueLabel))
+            {
+                argumentHelp.Append('<');
+                argumentHelp.Append(valueLabel);
+                argumentHelp.Append('>');
+            }
+
+            if (argumentHelp.Length > HangingIndent - Gutter)
+                argumentHelp.Append('\n');
+            else
+                argumentHelp.Append(Space(HangingIndent - argumentHelp.Length));
+
+            if (! string.IsNullOrEmpty(description))
+                argumentHelp.Append(description);
+
+            if (valueType != null && valueType.IsEnum)
+            {
+                argumentHelp.Append(@"  ");
+                AppendEnumerationValues(argumentHelp, valueType);
+            }
+
+            if (!string.IsNullOrEmpty(shortName))
+            {
+                argumentHelp.Append(@"  ");
+                argumentHelp.AppendFormat(Resources.CommandLineOutput_ShortForm, (prefix ?? @"") + shortName);
+            }
+
+            PrintText(argumentHelp.ToString(), HangingIndent + LeftMargin, LeftMargin);
+        }
+
+        private static void AppendEnumerationValues(StringBuilder builder, Type valueType)
+        {
+            builder.Append(Resources.CommandLineOutput_AvailableOptions);
+
+            string[] values = Enum.GetNames(valueType);
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (i != 0)
+                    builder.Append(@", ");
+
+                builder.Append(@"'");
+                builder.Append(values[i]);
+                builder.Append(@"'");
+            }
+
+            builder.Append('.');
         }
 
         private static string Space(int spaceCount)
         {
             return new string(' ', spaceCount);
-        }
-
-        private static string CreateDescriptionWithShortName(string description, string shortName, Type argType)
-        {
-            return string.Format("{0}{1} (Short form: /{2})", description, AddEnumerationValues(argType), shortName);
         }
     }
 }

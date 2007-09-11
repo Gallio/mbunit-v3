@@ -100,4 +100,31 @@
   <data name="MainClass_FatalException" xml:space="preserve">
     <value>A fatal exception occurred.</value>
   </data>
+  <data name="MainClass_Canceled" xml:space="preserve">
+    <value>Canceled!</value>
+  </data>
+  <data name="MainClass_Initializing" xml:space="preserve">
+    <value>Initializing the test runner and loading plugins.</value>
+  </data>
+  <data name="MainClass_OpeningReports" xml:space="preserve">
+    <value>Opening reports.</value>
+  </data>
+  <data name="MainClass_ApplicationTitle" xml:space="preserve">
+    <value>MbUnit Echo - Version {0}.{1} build {2}</value>
+  </data>
+  <data name="MainClass_GetTheLatestVersionBanner" xml:space="preserve">
+    <value>Get the latest version at </value>
+  </data>
+  <data name="MainClass_MbUnitUrl" xml:space="preserve">
+    <value>http://www.mbunit.com/</value>
+  </data>
+  <data name="MainClass_CommandLineArgumentErrorMessageFormat" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="MainClass_AvailableOptionsHeader" xml:space="preserve">
+    <value>Available options:</value>
+  </data>
+  <data name="MainClass_SupportedReportTypesMessage" xml:space="preserve">
+    <value>Supported report types: {0}</value>
+  </data>
 </root>

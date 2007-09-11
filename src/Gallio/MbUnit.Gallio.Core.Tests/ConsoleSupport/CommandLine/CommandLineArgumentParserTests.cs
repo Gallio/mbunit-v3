@@ -27,21 +27,21 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         [ExpectedException(typeof(InvalidOperationException))]
         public void OnlyOneDefaultCommandLineArgumentIsAllowed()
         {
-            new CommandLineArgumentParser(new MainArgumentsDuplicateDefaultCommandLineArgumentStub().GetType(), null);
+            new CommandLineArgumentParser(new MainArgumentsDuplicateDefaultCommandLineArgumentStub().GetType());
         }
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void CommandLineArgumentOnlyWithUniqueShortNameIsAllowed()
         {
-            new CommandLineArgumentParser(new MainArgumentsDuplicateShortNameStub().GetType(), null);
+            new CommandLineArgumentParser(new MainArgumentsDuplicateShortNameStub().GetType());
         }
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void CommandLineArgumentOnlyWithUniqueLongNameIsAllowed()
         {
-            new CommandLineArgumentParser(new MainArgumentsDuplicateLongNameStub().GetType(), null);
+            new CommandLineArgumentParser(new MainArgumentsDuplicateLongNameStub().GetType());
         }
 
         [RowTest]
@@ -51,10 +51,11 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         {
             string errorMsg = string.Empty;
             MainArguments arguments = new MainArguments();
-            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), delegate(string message)
-            { errorMsg = message; });
-            Assert.AreEqual(false, parser.Parse(new string[] { arg }, arguments));
-            Assert.AreEqual(string.Format("Unrecognized command line argument '{0}'", arg), errorMsg);
+            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType());
+            
+            Assert.AreEqual(false, parser.Parse(new string[] { arg }, arguments,
+                delegate(string message) { errorMsg = message; }));
+            Assert.AreEqual(string.Format("Unrecognized argument '{0}'.", arg), errorMsg);
         }
 
         [Test]
@@ -62,10 +63,11 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         {
             string errorMsg = string.Empty;
             MainArguments arguments = new MainArguments();
-            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), delegate(string message)
-            { errorMsg = message; });
-            Assert.AreEqual(false, parser.Parse(new string[] { "/help:bad" }, arguments));
-            Assert.AreEqual("'bad' is not a valid value for the 'help' command line option", errorMsg);
+            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType());
+
+            Assert.AreEqual(false, parser.Parse(new string[] { "/help:bad" }, arguments,
+                delegate(string message) { errorMsg = message; }));
+            Assert.AreEqual("Invalid 'help' argument value 'bad'.", errorMsg);
         }
 
         [RowTest]
@@ -75,10 +77,11 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         {
             string errorMsg = string.Empty;
             MainArguments arguments = new MainArguments();
-            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), delegate(string message)
-            { errorMsg = message; });
-            Assert.AreEqual(false, parser.Parse(new string[] { arg1, arg2 }, arguments));
-            Assert.AreEqual("Duplicate 'help' argument", errorMsg);
+            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType());
+
+            Assert.AreEqual(false, parser.Parse(new string[] { arg1, arg2 }, arguments,
+                delegate(string message) { errorMsg = message; }));
+            Assert.AreEqual("Duplicate 'help' argument.", errorMsg);
         }
 
         [Test]
@@ -86,10 +89,11 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         {
             string errorMsg = string.Empty;
             MainArguments arguments = new MainArguments();
-            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), delegate(string message)
-            { errorMsg = message; });
-            Assert.AreEqual(false, parser.Parse(new string[] { "@InvalidFile" }, arguments));
-            Assert.Contains(errorMsg, "ERROR: Response file does not exist.\r\nSwitch: @InvalidFile");
+            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType());
+
+            Assert.AreEqual(false, parser.Parse(new string[] { "@InvalidFile" }, arguments,
+                delegate(string message) { errorMsg = message; }));
+            Assert.Contains(errorMsg, "Response file '0' does not exist.");
         }
 
         [Test]
@@ -97,9 +101,10 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         {
             string errorMsg = string.Empty;
             MainArguments arguments = new MainArguments();
-            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), delegate(string message)
-            { errorMsg = message; });
-            Assert.AreEqual(true, parser.Parse(new string[] { "@ConsoleSupport\\CommandLine\\ResourceFile.txt" }, arguments));
+            CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType());
+
+            Assert.AreEqual(true, parser.Parse(new string[] { "@ConsoleSupport\\CommandLine\\ResourceFile.txt" },
+                arguments, delegate(string message) { errorMsg = message; }));
             Console.WriteLine(errorMsg);
         }
     }

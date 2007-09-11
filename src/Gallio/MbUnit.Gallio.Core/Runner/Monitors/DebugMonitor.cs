@@ -16,31 +16,31 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Castle.Core.Logging;
 using MbUnit.Core.Properties;
 using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Core.Runner.Monitors
 {
     /// <summary>
-    /// Monitors <see cref="ITestRunner" /> events and writes debug messages to
-    /// an output stream.
+    /// Monitors <see cref="ITestRunner" /> events and writes debug messages to a logger.
     /// </summary>
     public class DebugMonitor : BaseTestRunnerMonitor
     {
-        private readonly TextWriter writer;
+        private readonly ILogger logger;
         private readonly Dictionary<string, string> stepNames = new Dictionary<string, string>();
 
         /// <summary>
         /// Creates a console monitor.
         /// </summary>
-        /// <param name="writer">The text writer for all output</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
-        public DebugMonitor(TextWriter writer)
+        /// <param name="logger">The logger for writing debug output</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        public DebugMonitor(ILogger logger)
         {
-            if (writer == null)
-                throw new ArgumentNullException(@"writer");
+            if (logger == null)
+                throw new ArgumentNullException(@"logger");
 
-            this.writer = writer;
+            this.logger = logger;
         }
 
         /// <inheritdoc />
@@ -65,91 +65,77 @@ namespace MbUnit.Core.Runner.Monitors
 
         private void HandleMessageEvent(object sender, MessageEventArgs e)
         {
-            lock (this)
-            {
-                writer.WriteLine(Resources.DebugMonitor_MessageEvent_EventFormat, e.MessageType, e.Message);
-                writer.WriteLine();
-            }
+            if (!logger.IsDebugEnabled)
+                return;
+
+            logger.DebugFormat(Resources.DebugMonitor_MessageEvent_EventFormat, e.MessageType, e.Message);
         }
 
         private void HandleLifecycleEvent(object sender, LifecycleEventArgs e)
         {
-            lock (this)
-            {
-                string stepName = GetStepName(e.StepId);
+            string stepName = GetStepName(e.StepId);
 
-                switch (e.EventType)
-                {
-                    case LifecycleEventType.Start:
-                        stepName = e.StepInfo.FullName;
+            switch (e.EventType)
+            {
+                case LifecycleEventType.Start:
+                    stepName = e.StepInfo.FullName;
+                    lock (stepNames)
                         stepNames.Add(e.StepId, stepName);
 
-                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Start_EventFormat, stepName);
-                        break;
+                    logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_Start_EventFormat, stepName);
+                    break;
 
-                    case LifecycleEventType.EnterPhase:
-                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Phase_EventFormat, stepName);
-                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Phase_NameFormat, e.PhaseName);
-                        break;
+                case LifecycleEventType.EnterPhase:
+                    logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_Phase_EventFormat, stepName, e.PhaseName);
+                    break;
 
-                    case LifecycleEventType.Finish:
-                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_EventFormat, stepName);
-                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_StateFormat, e.Result.State);
-                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_OutcomeFormat, e.Result.Outcome);
-                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_AssertCountFormat, e.Result.AssertCount);
-                        writer.WriteLine(Resources.DebugMonitor_LifecycleEvent_Finish_DurationFormat, e.Result.Duration);
-                        break;
-                }
-
-                writer.WriteLine();
+                case LifecycleEventType.Finish:
+                    logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_Finish_EventFormat,
+                        stepName, e.Result.State, e.Result.Outcome, e.Result.AssertCount, e.Result.Duration);
+                    break;
             }
         }
 
         private void HandleExecutionLogEvent(object sender, ExecutionLogEventArgs e)
         {
-            lock (this)
+            string stepName = GetStepName(e.StepId);
+
+            switch (e.EventType)
             {
-                string stepName = GetStepName(e.StepId);
+                case ExecutionLogEventType.WriteText:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_WriteText_EventFormat,
+                        stepName, e.StreamName, e.Text);
+                    break;
 
-                switch (e.EventType)
-                {
-                    case ExecutionLogEventType.WriteText:
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_WriteText_EventFormat, stepName);
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_StreamNameFormat, e.StreamName);
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_TextFormat, e.Text);
-                        break;
+                case ExecutionLogEventType.WriteAttachment:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_WriteAttachment_EventFormat,
+                        stepName, e.StreamName ?? @"<null>", e.Attachment.Name, e.Attachment.ContentType);
+                    break;
 
-                    case ExecutionLogEventType.WriteAttachment:
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_WriteAttachment_EventFormat, stepName);
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_StreamNameFormat, e.StreamName ?? @"<null>");
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_WriteAttachment_AttachmentNameFormat, e.Attachment.Name);
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_WriteAttachment_ContentTypeFormat, e.Attachment.ContentType);
-                        break;
+                case ExecutionLogEventType.BeginSection:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat,
+                        stepName, e.StreamName, e.SectionName);
+                    break;
 
-                    case ExecutionLogEventType.BeginSection:
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat, stepName);
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_StreamNameFormat, e.StreamName);
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_BeginSection_SectionNameFormat, e.SectionName);
-                        break;
+                case ExecutionLogEventType.EndSection:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_EndSection_EventFormat,
+                        stepName, e.StreamName);
+                    break;
 
-                    case ExecutionLogEventType.EndSection:
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_EndSection_EventFormat, stepName);
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_StreamNameFormat, e.StreamName);
-                        break;
-
-                    case ExecutionLogEventType.Close:
-                        writer.WriteLine(Resources.DebugMonitor_ExecutionLogEvent_Close_EventFormat, stepName);
-                        break;
-                }
-
-                writer.WriteLine();
+                case ExecutionLogEventType.Close:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_Close_EventFormat,
+                        stepName);
+                    break;
             }
         }
 
         private string GetStepName(string stepId)
         {
-            string stepName;
-            return stepNames.TryGetValue(stepId, out stepName) ? stepName : stepId;
+            lock (stepNames)
+            {
+                string stepName;
+                return stepNames.TryGetValue(stepId, out stepName) ? stepName : stepId;
+            }
         }
     }
 }

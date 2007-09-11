@@ -24,5 +24,5 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 	/// http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e
 	/// </para>
 	/// </remarks>
-	public delegate void ErrorReporter(string message);
+	public delegate void CommandLineErrorReporter(string message);
 }
