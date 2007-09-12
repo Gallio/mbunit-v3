@@ -418,6 +418,8 @@ namespace MbUnit.Plugin.CecilInstrumentation
         {
             foreach (CustomAttribute attribute in attributes)
             {
+                attribute.Resolve();
+
                 ConstructorInfo constructor = ResolveConstructor(attribute.Constructor);
                 object[] constructorArgs = CollectionUtils.ToArray<object>(attribute.ConstructorParameters);
                 Type attributeType = constructor.ReflectedType;
@@ -464,16 +466,6 @@ namespace MbUnit.Plugin.CecilInstrumentation
         /// </summary>
         private void WorkaroundCecilBug82814(ref object[] values, Type[] types)
         {
-            if (values.Length != types.Length)
-            {
-                // FIXME: Cecil sometimes fails to read metadata for enum-valued attributes.
-                // http://bugzilla.ximian.com/show_bug.cgi?id=82820
-                values = new object[types.Length];
-                for (int i = 0; i < values.Length; i++)
-                    values[i] = Activator.CreateInstance(types[i]);
-                return;
-            }
-
             for (int i = 0; i < values.Length; i++)
             {
                 Type elementType = types[i];
