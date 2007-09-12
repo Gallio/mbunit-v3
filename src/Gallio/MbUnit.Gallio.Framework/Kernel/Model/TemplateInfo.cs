@@ -68,12 +68,12 @@ namespace MbUnit.Framework.Kernel.Model
             children = new List<TemplateInfo>(obj.Children.Count);
             parameters = new List<TemplateParameterInfo>(obj.Parameters.Count);
 
-            ListUtils.ConvertAndAddAll(obj.Children, children, delegate(ITemplate child)
+            GenericUtils.ConvertAndAddAll(obj.Children, children, delegate(ITemplate child)
             {
                 return new TemplateInfo(child);
             });
 
-            ListUtils.ConvertAndAddAll(obj.Parameters, parameters, delegate(ITemplateParameter parameter)
+            GenericUtils.ConvertAndAddAll(obj.Parameters, parameters, delegate(ITemplateParameter parameter)
             {
                 return new TemplateParameterInfo(parameter);
             });
@@ -113,7 +113,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get
             {
-                return ListUtils.CopyAllToArray(parameters);
+                return GenericUtils.ToArray(parameters);
             }
         }
 
@@ -132,7 +132,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get
             {
-                return ListUtils.CopyAllToArray(children);
+                return GenericUtils.ToArray(children);
             }
         }
 

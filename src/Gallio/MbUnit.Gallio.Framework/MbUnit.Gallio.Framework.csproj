@@ -110,6 +110,7 @@
     <Compile Include="Kernel\Runtime\IAssemblyResolverManager.cs" />
     <Compile Include="Kernel\Runtime\IRuntime.cs" />
     <Compile Include="Kernel\Runtime\RuntimeHolder.cs" />
+    <Compile Include="Kernel\Utilities\CollectionUtils.cs" />
     <Compile Include="KeyedPairwiseAssertion.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="PairwiseAssertion.cs" />
@@ -242,7 +243,7 @@
     <Compile Include="Kernel\Model\TestComponentInfo.cs" />
     <Compile Include="Kernel\Model\TestInfo.cs" />
     <Compile Include="Kernel\Model\TestModel.cs" />
-    <Compile Include="Kernel\Utilities\ListUtils.cs" />
+    <Compile Include="Kernel\Utilities\GenericUtils.cs" />
     <Compile Include="Kernel\Utilities\ReflectionUtils.cs" />
     <Compile Include="Kernel\Utilities\StringUtils.cs" />
     <Compile Include="Kernel\Utilities\TypedEventHandler.cs" />

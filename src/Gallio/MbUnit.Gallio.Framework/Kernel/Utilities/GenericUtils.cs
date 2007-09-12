@@ -14,15 +14,16 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MbUnit.Framework.Kernel.Utilities
 {
     /// <summary>
-    /// Utility functions for manipulating lists.
+    /// Utility functions for manipulating generic collections.
     /// </summary>
-    public static class ListUtils
+    public static class GenericUtils
     {
         /// <summary>
         /// Converts each element of the input collection and stores the result in the
@@ -35,7 +36,7 @@ namespace MbUnit.Framework.Kernel.Utilities
         /// <param name="output">The output list</param>
         /// <param name="converter">The conversion function to apply to each element</param>
         public static void ConvertAndCopyAll<TInput, TOutput>(ICollection<TInput> input, IList<TOutput> output,
-                                                              Converter<TInput, TOutput> converter)
+            Converter<TInput, TOutput> converter)
         {
             int i = 0;
             foreach (TInput value in input)
@@ -68,7 +69,7 @@ namespace MbUnit.Framework.Kernel.Utilities
         /// <param name="converter">The conversion function to apply to each element</param>
         /// <returns>The output array</returns>
         public static TOutput[] ConvertAllToArray<TInput, TOutput>(ICollection<TInput> input,
-                                                                   Converter<TInput, TOutput> converter)
+            Converter<TInput, TOutput> converter)
         {
             TOutput[] output = new TOutput[input.Count];
             ConvertAndCopyAll(input, output, converter);
@@ -78,15 +79,15 @@ namespace MbUnit.Framework.Kernel.Utilities
         /// <summary>
         /// Copies all of the elements of the input collection to an array.
         /// </summary>
-        /// <typeparam name="T">The input type</typeparam>
-        /// <param name="input">the input collection</param>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="collection">The input collection</param>
         /// <returns>The output array</returns>
-        public static T[] CopyAllToArray<T>(ICollection<T> input)
+        public static T[] ToArray<T>(ICollection<T> collection)
         {
-            T[] output = new T[input.Count];
+            T[] output = new T[collection.Count];
 
             int i = 0;
-            foreach (T value in input)
+            foreach (T value in collection)
                 output[i++] = value;
 
             return output;
@@ -96,13 +97,13 @@ namespace MbUnit.Framework.Kernel.Utilities
         /// Returns the first element of the input enumeration for which the specified
         /// predicate returns true.
         /// </summary>
-        /// <typeparam name="T">The input type</typeparam>
-        /// <param name="input">The input collection</param>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="enumeration">The input enumeration</param>
         /// <param name="predicate">The predicate</param>
         /// <returns>The first matching value or the default for the type if not found</returns>
-        public static T Find<T>(IEnumerable<T> input, Predicate<T> predicate)
+        public static T Find<T>(IEnumerable<T> enumeration, Predicate<T> predicate)
         {
-            foreach (T value in input)
+            foreach (T value in enumeration)
                 if (predicate(value))
                     return value;
 

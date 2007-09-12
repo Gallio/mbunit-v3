@@ -33,7 +33,7 @@ namespace MbUnit._Framework.Tests.Kernel.Filters
         [Row(false, new bool[] { false, false, false })]
         public void IsMatchCombinations(bool expectedMatch, bool[] states)
         {
-            Filter<object>[] filters = ListUtils.ConvertAllToArray<bool, Filter<object>>(states, delegate(bool state)
+            Filter<object>[] filters = GenericUtils.ConvertAllToArray<bool, Filter<object>>(states, delegate(bool state)
             {
                 return state ? (Filter<object>)new AnyFilter<object>() : new NoneFilter<object>();
             });

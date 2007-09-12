@@ -44,7 +44,7 @@ namespace MbUnit.Core.Runner
                 throw new ArgumentNullException("filterListDescription");
 
             string[] filterDescriptions = filterListDescription.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            Filter<T>[] filters = ListUtils.ConvertAllToArray<string, Filter<T>>(filterDescriptions, ParseFilter<T>);
+            Filter<T>[] filters = GenericUtils.ConvertAllToArray<string, Filter<T>>(filterDescriptions, ParseFilter<T>);
 
             return new AndFilter<T>(filters);
         }
@@ -100,7 +100,7 @@ namespace MbUnit.Core.Runner
             if (filterValues == null)
                 throw new ArgumentNullException("filterValues");
 
-            Filter<T>[] filters = ListUtils.ConvertAllToArray<string, Filter<T>>(filterValues, delegate(string filterValue)
+            Filter<T>[] filters = GenericUtils.ConvertAllToArray<string, Filter<T>>(filterValues, delegate(string filterValue)
             {
                 return BuildFilter<T>(filterKey, filterValue);
             });

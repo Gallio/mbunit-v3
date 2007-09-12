@@ -262,7 +262,7 @@ namespace MbUnit.Echo
 
                 console.WriteLine();
                 console.WriteLine(String.Format(Resources.MainClass_SupportedReportTypesMessage,
-                    string.Join(@", ", ListUtils.CopyAllToArray(reportManager.GetFormatterNames()))));
+                    string.Join(@", ", GenericUtils.ToArray(reportManager.GetFormatterNames()))));
             }
         }
 

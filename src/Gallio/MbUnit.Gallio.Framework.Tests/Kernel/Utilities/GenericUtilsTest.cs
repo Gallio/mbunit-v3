@@ -21,9 +21,9 @@ using MbUnit.Framework.Kernel.Utilities;
 namespace MbUnit._Framework.Tests.Kernel.Utilities
 {
     [TestFixture]
-    [TestsOn(typeof(ListUtils))]
+    [TestsOn(typeof(GenericUtils))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class ListUtilsTest
+    public class GenericUtilsTest
     {
         [RowTest]
         [Row(new int[] { 1, 2, 3 }, 3, new string[] { "1", "2", "3" })]
@@ -31,7 +31,7 @@ namespace MbUnit._Framework.Tests.Kernel.Utilities
         {
             string[] output = new string[outputLength];
 
-            ListUtils.ConvertAndCopyAll<int, string>(input, output, delegate(int value)
+            GenericUtils.ConvertAndCopyAll<int, string>(input, output, delegate(int value)
             {
                 return value.ToString();
             });
@@ -43,7 +43,7 @@ namespace MbUnit._Framework.Tests.Kernel.Utilities
         [Row(new int[] { 1, 2, 3 }, new string[] { "1", "2", "3" })]
         public void ConvertAllToArray(int[] input, string[] expectedOutput)
         {
-            string[] output = ListUtils.ConvertAllToArray<int, string>(input, delegate(int value)
+            string[] output = GenericUtils.ConvertAllToArray<int, string>(input, delegate(int value)
             {
                 return value.ToString();
             });

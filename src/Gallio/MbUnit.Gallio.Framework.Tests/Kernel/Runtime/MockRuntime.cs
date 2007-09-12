@@ -48,7 +48,7 @@ namespace MbUnit.Framework.Tests.Kernel.Runtime
 
         public T[] ResolveAll<T>()
         {
-            return ListUtils.ConvertAllToArray<object, T>(components[typeof(T)], delegate(object component)
+            return GenericUtils.ConvertAllToArray<object, T>(components[typeof(T)], delegate(object component)
             {
                 return (T) component;
             });

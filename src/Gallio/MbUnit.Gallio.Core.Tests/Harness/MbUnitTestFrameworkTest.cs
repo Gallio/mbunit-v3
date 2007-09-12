@@ -92,7 +92,7 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual(sampleAssembly, assemblyTemplate.Assembly);
             Assert.GreaterEqualThan(assemblyTemplate.TypeTemplates.Count, 1);
 
-            MbUnitTypeTemplate typeTemplate = ListUtils.Find(assemblyTemplate.TypeTemplates, delegate(MbUnitTypeTemplate template)
+            MbUnitTypeTemplate typeTemplate = GenericUtils.Find(assemblyTemplate.TypeTemplates, delegate(MbUnitTypeTemplate template)
             {
                 return template.Type == typeof(SimpleTest);
             });
@@ -104,7 +104,7 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual("SimpleTest", typeTemplate.Name);
             Assert.AreEqual(2, typeTemplate.MethodTemplates.Count);
 
-            MbUnitMethodTemplate passTemplate = ListUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
+            MbUnitMethodTemplate passTemplate = GenericUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
             {
                 return template.Name == "Pass";
             });
@@ -115,7 +115,7 @@ namespace MbUnit.Core.Tests.Harness
             Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), passTemplate.Method);
             Assert.AreEqual("Pass", passTemplate.Name);
 
-            MbUnitMethodTemplate failTemplate = ListUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
+            MbUnitMethodTemplate failTemplate = GenericUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
             {
                 return template.Name == "Fail";
             });

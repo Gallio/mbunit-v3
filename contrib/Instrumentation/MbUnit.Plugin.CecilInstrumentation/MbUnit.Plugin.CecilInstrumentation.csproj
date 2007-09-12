@@ -1,0 +1,81 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3C688DB8-1F74-4C55-A149-974996E830C2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit.Plugin.CecilInstrumentation</RootNamespace>
+    <AssemblyName>MbUnit.Plugin.CecilInstrumentation</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Mono.Cecil\bin\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CecilUtils.cs" />
+    <Compile Include="DynamicAssembly.cs" />
+    <Compile Include="DynamicAssemblyBuilder.cs" />
+    <Compile Include="DynamicConstructor.cs" />
+    <Compile Include="DynamicInstrumentor.cs" />
+    <Compile Include="DynamicMethodBuilder.cs" />
+    <Compile Include="DynamicModule.cs" />
+    <Compile Include="DynamicResourceBuilder.cs" />
+    <Compile Include="DynamicType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StaticInterceptorStub.cs" />
+    <Compile Include="StaticInvocation.cs" />
+    <Compile Include="StaticModuleRewriter.cs" />
+    <Compile Include="StaticInstrumentor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
+      <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
+      <Name>MbUnit.Gallio.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
+      <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
+      <Name>MbUnit.Gallio.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit.Instrumentation\MbUnit.Instrumentation.csproj">
+      <Project>{48C7F679-DB54-44A0-A062-2E99A8E9FF89}</Project>
+      <Name>MbUnit.Instrumentation</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

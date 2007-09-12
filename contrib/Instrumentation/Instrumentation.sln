@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Instrumentation", "MbUnit.Instrumentation\MbUnit.Instrumentation.csproj", "{48C7F679-DB54-44A0-A062-2E99A8E9FF89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Plugin.CecilInstrumentation", "MbUnit.Plugin.CecilInstrumentation\MbUnit.Plugin.CecilInstrumentation.csproj", "{3C688DB8-1F74-4C55-A149-974996E830C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Plugin.CecilInstrumentation.Tests", "MbUnit.Plugin.CecilInstrumentation.Tests\MbUnit.Plugin.CecilInstrumentation.Tests.csproj", "{84FD8E4B-ABAD-437F-B94D-E8FF8882E0BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Core", "..\..\src\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj", "{B1843915-598A-4F80-9E47-BA890F879262}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Framework", "..\..\src\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj", "{691E62B3-823F-4F1E-9585-58D0E00B72C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gallio", "Gallio", "{A7257DD1-3968-41C1-A391-49EF6DC7C4EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48C7F679-DB54-44A0-A062-2E99A8E9FF89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48C7F679-DB54-44A0-A062-2E99A8E9FF89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48C7F679-DB54-44A0-A062-2E99A8E9FF89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48C7F679-DB54-44A0-A062-2E99A8E9FF89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C688DB8-1F74-4C55-A149-974996E830C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C688DB8-1F74-4C55-A149-974996E830C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C688DB8-1F74-4C55-A149-974996E830C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C688DB8-1F74-4C55-A149-974996E830C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84FD8E4B-ABAD-437F-B94D-E8FF8882E0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84FD8E4B-ABAD-437F-B94D-E8FF8882E0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84FD8E4B-ABAD-437F-B94D-E8FF8882E0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84FD8E4B-ABAD-437F-B94D-E8FF8882E0BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1843915-598A-4F80-9E47-BA890F879262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1843915-598A-4F80-9E47-BA890F879262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1843915-598A-4F80-9E47-BA890F879262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1843915-598A-4F80-9E47-BA890F879262}.Release|Any CPU.Build.0 = Release|Any CPU
+		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B1843915-598A-4F80-9E47-BA890F879262} = {A7257DD1-3968-41C1-A391-49EF6DC7C4EF}
+		{691E62B3-823F-4F1E-9585-58D0E00B72C3} = {A7257DD1-3968-41C1-A391-49EF6DC7C4EF}
+	EndGlobalSection
+EndGlobal

@@ -219,7 +219,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         /// </summary>
         private CodeReference ParseCodeReferenceFromTestSuiteName(CodeReference parent, string name, ref string kind)
         {
-            Assembly assembly = ListUtils.Find(Assemblies, delegate(Assembly candidate)
+            Assembly assembly = GenericUtils.Find(Assemblies, delegate(Assembly candidate)
             {
                 return candidate.Location == name;
             });

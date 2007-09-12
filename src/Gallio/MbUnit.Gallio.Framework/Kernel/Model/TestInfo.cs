@@ -62,7 +62,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             children = new List<TestInfo>();
 
-            ListUtils.ConvertAndAddAll(obj.Children, children, delegate(ITest child)
+            GenericUtils.ConvertAndAddAll(obj.Children, children, delegate(ITest child)
             {
                 return new TestInfo(child);
             });
@@ -120,7 +120,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get
             {
-                return ListUtils.CopyAllToArray(children);
+                return GenericUtils.ToArray(children);
             }
         }
 
