@@ -22,17 +22,21 @@ using System.Threading;
 using System.Windows.Forms;
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Controls.Enums;
+using MbUnit.Icarus.Core.CustomEventArgs;
+using MbUnit.Icarus.Interfaces;
 using MbUnit.Icarus.Properties;
 using ZedGraph;
 
 namespace MbUnit.Icarus
 {
-    public partial class Main : Form
+    public partial class Main : Form, IProjectAdapterView
     {
+        private TreeNode[] testTreeCollection;
+
         public Main()
         {
             InitializeComponent();
-
+                    
             // Set the application version in the window title.
             GraphPane graphPane = zedGraphControl1.GraphPane;
             graphPane.Title.Text = "Total Test Results";
@@ -93,52 +97,6 @@ namespace MbUnit.Icarus
 
             testTree.Sort();
             testTree.TestStateImageList = stateImages;
-
-            TestTreeNode project = new TestTreeNode("Test Project 1.0", 0, 0);
-            //project.TestState = TestState.Failed;
-            testTree.Nodes.Add(project);
-
-            TestTreeNode namespaces = new TestTreeNode("MbUnit.Gallio.Core.Tests", 1, 1);
-            //namespaces.TestState = TestState.Failed;
-            project.Nodes.Add(namespaces);
-
-            TestTreeNode ns = new TestTreeNode("TestNamespace", 2, 2);
-            //ns.TestState = TestState.Failed;
-            namespaces.Nodes.Add(ns);
-
-            TestTreeNode cl = new TestTreeNode("Class1", 3, 3);
-            //cl.TestState = TestState.Success;
-            ns.Nodes.Add(cl);
-
-            TestTreeNode m1 = new TestTreeNode("TestMethod()", 4, 4);
-            //m1.TestState = TestState.Success;
-            cl.Nodes.Add(m1);
-
-            TestTreeNode m2 = new TestTreeNode("AnotherMethod()", 4, 4);
-            //m2.TestState = TestState.Success;
-            cl.Nodes.Add(m2);
-
-            TestTreeNode cl2 = new TestTreeNode("Class2", 3, 3);
-            //cl2.TestState = TestState.Failed;
-            ns.Nodes.Add(cl2);
-
-            TestTreeNode m3 = new TestTreeNode("MethodThatsIgnored()", 4, 4);
-            //m3.TestState = TestState.Ignored;
-            cl2.Nodes.Add(m3);
-
-            TestTreeNode m4 = new TestTreeNode("DoesntWork()", 4, 4);
-            //m4.TestState = TestState.Failed;
-            cl2.Nodes.Add(m4);
-
-            TestTreeNode m5 = new TestTreeNode("DoGetProgress()", 4, 4);
-            //m5.TestState = TestState.Success;
-            cl2.Nodes.Add(m5);
-
-            TestTreeNode m6 = new TestTreeNode("BuildTree()", 4, 4);
-            //m6.TestState = 
-            cl2.Nodes.Add(m6);
-
-            project.ExpandAll();
         }
 
         private void fileExit_Click(object sender, EventArgs e)
@@ -253,8 +211,12 @@ namespace MbUnit.Icarus
         {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.Filter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
-            openFile.ShowDialog();
+            if(openFile.ShowDialog() == DialogResult.OK)
+            {
+                GetTheTestTree(openFile.FileName);
+            }
         }
+
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
@@ -354,5 +316,29 @@ namespace MbUnit.Icarus
         }
 
         #endregion
+
+        public event EventHandler<ProjectLoadEventArgs> GetTestTree;
+
+        public void GetTheTestTree(string assembly)
+        {
+            ProjectLoadEventArgs loadeventargs = new ProjectLoadEventArgs(assembly);
+
+            EventHandler<ProjectLoadEventArgs> getTestTree = GetTestTree;
+            if (getTestTree != null)
+            {
+                getTestTree(this, loadeventargs);
+                //bind test tree to control
+            }
+        }
+
+        public TreeNode[] TestTreeCollection
+        {
+            set { testTreeCollection = value; }
+        }
+
+        public void DataBind()
+        {
+            testTree.Nodes.AddRange(testTreeCollection);
+        }
     }
 }

@@ -14,14 +14,21 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Kernel.Model;
-using MbUnit.Icarus.Core.CustomEventArgs;
 
-namespace MbUnit.Icarus.Core.Interfaces
+namespace MbUnit.Icarus.Core.CustomEventArgs 
 {
-    public interface IProjectAdapter
+    public class ProjectLoadEventArgs : EventArgs
     {
-        event EventHandler<ProjectEventArgs> GetTestTree; 
-        TestModel TestCollection { set;}
-        void DataBind();}
+        private readonly string _assembly;
+
+        public ProjectLoadEventArgs(string assembly)
+        {
+            _assembly = assembly;
+        }
+
+        public string assembly
+        {
+            get { return _assembly; }
+        }
+    }
 }

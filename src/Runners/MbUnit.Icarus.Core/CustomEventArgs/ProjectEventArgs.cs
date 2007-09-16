@@ -14,14 +14,22 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Kernel.Model;
-using MbUnit.Icarus.Core.CustomEventArgs;
+using MbUnit.Core.Harness;
 
-namespace MbUnit.Icarus.Core.Interfaces
+namespace MbUnit.Icarus.Core.CustomEventArgs 
 {
-    public interface IProjectAdapter
+    public class ProjectEventArgs : EventArgs
     {
-        event EventHandler<ProjectEventArgs> GetTestTree; 
-        TestModel TestCollection { set;}
-        void DataBind();}
+        private readonly TestPackage _localTestPackage;
+
+        public ProjectEventArgs(TestPackage localTestPackage)
+        {
+            _localTestPackage = localTestPackage;
+        }
+        
+        public TestPackage LocalTestPackage
+        {
+            get { return _localTestPackage; }
+        }
+    }
 }

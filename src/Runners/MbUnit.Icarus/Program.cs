@@ -15,6 +15,10 @@
 
 using System;
 using System.Windows.Forms;
+using MbUnit.Icarus.Adapter;
+using MbUnit.Icarus.AdapterModel;
+using MbUnit.Icarus.Core.Model;
+using MbUnit.Icarus.Core.Presenter;
 
 namespace MbUnit.Icarus
 {
@@ -30,7 +34,12 @@ namespace MbUnit.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(new Main());
+            Main main = new Main();
+
+            ProjectAdapter pa = new ProjectAdapter(main, new ProjectAdapterModel());
+            ProjectPresenter p = new ProjectPresenter(pa, new TestRunnerModel());
+
+            Application.Run(main);
         }
 
     }

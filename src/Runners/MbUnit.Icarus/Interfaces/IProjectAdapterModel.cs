@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Windows.Forms;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Icarus.Interfaces
 {
     public interface IProjectAdapterModel
     {
+        TreeNode[] BuildTestTree(TestModel testModel);
     }
 }

@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Icarus.Interfaces;
 
@@ -23,30 +25,44 @@ namespace MbUnit.Icarus.Adapter
     public class ProjectAdapter : IProjectAdapter
     {
 
-        private IProjectAdapterView _View;
-        private IProjectAdapterModel _Model;
-        private TestModel testCollection;
-   
+        private readonly IProjectAdapterView _View;
+        private readonly IProjectAdapterModel _Model;
+        private TestModel _testCollection;
+        public event EventHandler<ProjectEventArgs> GetTestTree;
+      
+
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
             _View = view;
             _Model = model;
+
+            _View.GetTestTree += _View_GetTestTree;
         }
 
-        event EventHandler<EventArgs> IProjectAdapter.GetTestTree
+        void _View_GetTestTree(object sender, ProjectLoadEventArgs e)
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            TestPackage testpackage = new TestPackage();
+            //testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");
+            testpackage.AssemblyFiles.Add(e.assembly);
+
+            ProjectEventArgs pa = new ProjectEventArgs(testpackage);
+
+            EventHandler<ProjectEventArgs> getTestTree = GetTestTree;
+            if (getTestTree != null)
+            {
+                getTestTree(this, pa);
+            }
         }
 
         public TestModel TestCollection
         {
-            set { testCollection = value; }
+            set { _testCollection = value; }
         }
 
         public void DataBind()
         {
-            throw new NotImplementedException();
+            _View.TestTreeCollection = _Model.BuildTestTree(_testCollection);
+            _View.DataBind();
         }
     }
 }

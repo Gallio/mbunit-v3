@@ -14,12 +14,15 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Windows.Forms;
+using MbUnit.Icarus.Core.CustomEventArgs;
 
 namespace MbUnit.Icarus.Interfaces
 {
     public interface IProjectAdapterView
     {
+        event EventHandler<ProjectLoadEventArgs> GetTestTree;
+        TreeNode[] TestTreeCollection { set;}
+        void DataBind();
     }
 }

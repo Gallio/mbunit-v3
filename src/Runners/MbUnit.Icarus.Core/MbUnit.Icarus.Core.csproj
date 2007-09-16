@@ -35,6 +35,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomEventArgs\ProjectEventArgs.cs" />
+    <Compile Include="CustomEventArgs\ProjectLoadEventArgs.cs" />
     <Compile Include="Interfaces\ILogHistoryModel.cs" />
     <Compile Include="Interfaces\IPreferencesModel.cs" />
     <Compile Include="Interfaces\IReportHistoryModel.cs" />

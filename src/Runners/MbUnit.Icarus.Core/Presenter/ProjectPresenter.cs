@@ -17,7 +17,7 @@ using System;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runtime;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 
 namespace MbUnit.Icarus.Core.Presenter
@@ -39,13 +39,13 @@ namespace MbUnit.Icarus.Core.Presenter
 
         }
 
-        private void GetTestTree(object sender, EventArgs e)
+        private void GetTestTree(object sender, ProjectEventArgs e)
         {
-            TestPackage testpackage = new TestPackage();
-            testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");
+            //TestPackage testpackage = new TestPackage();
+            //testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");
             // "C:\\MbUnit\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.Gallio\\bin\\MbUnit.TestResources.Gallio.dll");
 
-            _View.TestCollection = _TestRunnerModel.LoadUpAssembly(runner, testpackage);
+            _View.TestCollection = _TestRunnerModel.LoadUpAssembly(runner, e.LocalTestPackage);
             _View.DataBind();
         }
     }
