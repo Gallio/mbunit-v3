@@ -99,7 +99,9 @@
     <Compile Include="Runtime\ICoreRuntime.cs" />
     <Compile Include="Runtime\RuntimeSetup.cs" />
     <Compile Include="Runtime\WindsorRuntime.cs" />
+    <Compile Include="Utilities\FileManager.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
+    <Compile Include="Utilities\IFileManager.cs" />
     <Compile Include="Utilities\VisualStudioDebugHelper.cs" />
     <Compile Include="Harness\AssemblyAddedEventArgs.cs" />
     <Compile Include="Harness\DefaultTestHarness.cs" />

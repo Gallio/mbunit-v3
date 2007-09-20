@@ -19,8 +19,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using MbUnit.Core.Properties;
+using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Collections;
-using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.ConsoleSupport.CommandLine
 {
@@ -61,27 +61,39 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 	/// </remarks>
 	public class CommandLineArgumentParser
 	{
-        private Type argumentSpecification;
+        private readonly Type argumentSpecification;
         private List<Argument> arguments;
         private Dictionary<string, Argument> argumentMap;
         private Argument defaultArgument;
+	    private readonly IFileManager resourceFileMgr;
        
         /// <summary>
 		/// Creates a new command line argument parser.
 		/// </summary>
 		/// <param name="argumentSpecification">The argument type containing fields decorated
         /// with <see cref="CommandLineArgumentAttribute" /></param>
-		public CommandLineArgumentParser(Type argumentSpecification)
+		public CommandLineArgumentParser(Type argumentSpecification) : this(argumentSpecification, new FileManager())
 		{
+		}
+
+        /// <summary>
+        /// Creates a new command line argument parser.
+        /// </summary>
+        /// <param name="argumentSpecification">The argument type containing fields decorated
+        /// with <see cref="CommandLineArgumentAttribute" /></param>
+        /// <param name="fileManager">Object to process resource file.</param>
+        public CommandLineArgumentParser(Type argumentSpecification, IFileManager fileManager)
+        {
             if (argumentSpecification == null)
                 throw new ArgumentNullException(@"argumentSpecification");
 
             this.argumentSpecification = argumentSpecification;
+            resourceFileMgr = fileManager;
 
-			PopulateArgumentMap();
-		}
+            PopulateArgumentMap();
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Parses an argument list.
 		/// </summary>
 		/// <param name="args">The arguments to parse.</param>
@@ -256,7 +268,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
             reporter(string.Format(Resources.CommandLineArgumentParser_UnrecognizedArgument, argument));
         }
 
-		private static bool LexFileArguments(string fileName, CommandLineErrorReporter reporter, out string[] nestedArguments)
+		private bool LexFileArguments(string fileName, CommandLineErrorReporter reporter, out string[] nestedArguments)
 		{
             nestedArguments = null;
             string args = GetResponseFileContext(fileName, reporter);
@@ -355,15 +367,12 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 		    return hadError;
 		}
 
-	    private static string GetResponseFileContext(string fileName, CommandLineErrorReporter reporter)
+	    private string GetResponseFileContext(string fileName, CommandLineErrorReporter reporter)
 	    {
 	        string args = null;
 	        try
 	        {
-	            using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-	            {
-	                args = (new StreamReader(file)).ReadToEnd();
-	            }
+	            args = resourceFileMgr.GetFileContent(fileName);
 	        }
 	        catch (FileNotFoundException)
 	        {
