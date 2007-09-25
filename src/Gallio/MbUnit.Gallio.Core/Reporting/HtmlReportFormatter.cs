@@ -81,18 +81,17 @@ namespace MbUnit.Core.Reporting
 
             // copy stylesheet to subfolder
             string cssDirectory = GetDirectoryPath(filename, "css");
-            if (!Directory.Exists(cssDirectory))
-                Directory.CreateDirectory(cssDirectory);
+            if (!Directory.Exists(cssDirectory)) Directory.CreateDirectory(cssDirectory);
+            string file = Path.Combine(cssDirectory, ReportingResources.StyleSheet);
+            if (File.Exists(file)) File.Delete(file);
             using (Stream stream = ReportingResources.GetResource(ReportingResources.StyleSheet))
                 FileUtils.CopyStreamToFile(stream, Path.Combine(cssDirectory, ReportingResources.StyleSheet));
 
             // copy script file to subfolder
             string jsDirectory = GetDirectoryPath(filename, "js");
-            if (!Directory.Exists(jsDirectory))
-                Directory.CreateDirectory(jsDirectory);
-            string file = Path.Combine(jsDirectory, ReportingResources.ScriptFile);
-            if (File.Exists(file))
-                File.Delete(file);
+            if (!Directory.Exists(jsDirectory)) Directory.CreateDirectory(jsDirectory);
+            file = Path.Combine(jsDirectory, ReportingResources.ScriptFile);
+            if (File.Exists(file)) File.Delete(file);
             using (Stream stream = ReportingResources.GetResource(ReportingResources.ScriptFile))
                 FileUtils.CopyStreamToFile(stream, file);
         }

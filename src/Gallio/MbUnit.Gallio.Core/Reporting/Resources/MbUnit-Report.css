@@ -3,7 +3,7 @@
 	background-color: green;
 }
 
-.failed
+.failed, .Failures
 {
 	background-color: red;
 }
@@ -13,12 +13,23 @@
 	background-color: yellow;
 }
 
-div.Fixture
+.Assembly
 {
-	background-color: #B0B0FF;
+	margin-bottom: 0.5%;
 }
 
-#Stats
+.Fixture
+{
+	background-color: #B0B0FF;
+	margin-top: 1%;
+}
+
+.Test
+{
+	margin-bottom: 0.5%;
+}
+
+table#Stats
 {
 	text-align: center;
 }
@@ -49,37 +60,18 @@ div.Fixture
 	background-color: yellow;
 }
 
-.Fixture
-{
-	margin-left: 5%;
-	width: 95%;
-}
-
-.Test
-{
-	margin-left: 10%;
-	width: 90%;
-}
-
-.executionLog
-{
-	margin-left: 15%;
-	width: 85%;
-}
-
 #Summary ul
 {
 	list-style-type: none;
 }
 
-.plus
+.executionLog
 {
-	cursor: pointer;
-	background: url(img/Plus.gif);
+	margin-left: 1%;
+	width: 99%;
 }
 
-.minus
+.toggle
 {
 	cursor: pointer;
-	background: url(img/Minus.gif);
 }
