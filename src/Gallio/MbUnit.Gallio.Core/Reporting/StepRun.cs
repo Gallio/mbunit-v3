@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Results;
 using MbUnit.Framework.Kernel.Utilities;
@@ -28,9 +27,9 @@ namespace MbUnit.Core.Reporting
     [Serializable]
     [XmlRoot("stepRun", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class StepRun
+    public class StepRun : IStepRun
     {
-        private readonly List<StepRun> children;
+        private readonly List<IStepRun> children;
         private string stepId;
         private string stepName;
         private string stepFullName;
@@ -44,7 +43,7 @@ namespace MbUnit.Core.Reporting
         /// </summary>
         private StepRun()
         {
-            children = new List<StepRun>();
+            children = new List<IStepRun>();
         }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace MbUnit.Core.Reporting
             this.stepName = stepName;
             this.stepFullName = stepFullName;
 
-            children = new List<StepRun>();
+            children = new List<IStepRun>();
         }
 
         /// <summary>
@@ -124,7 +123,7 @@ namespace MbUnit.Core.Reporting
         /// </summary>
         [XmlArray("children", IsNullable=false)]
         [XmlArrayItem("stepRun", IsNullable=false)]
-        public List<StepRun> Children
+        public List<IStepRun> Children
         {
             get { return children; }
         }

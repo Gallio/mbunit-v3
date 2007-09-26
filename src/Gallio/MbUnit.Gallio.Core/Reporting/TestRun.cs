@@ -32,7 +32,7 @@ namespace MbUnit.Core.Reporting
     public class TestRun
     {
         private string testId;
-        private StepRun rootStepRun;
+        private IStepRun rootStepRun;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -48,7 +48,7 @@ namespace MbUnit.Core.Reporting
         /// <param name="rootStepRun">The root step</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> or
         /// <paramref name="rootStepRun"/> is null</exception>
-        public TestRun(string testId, StepRun rootStepRun)
+        public TestRun(string testId, IStepRun rootStepRun)
         {
             if (testId == null)
                 throw new ArgumentNullException(@"testId");
@@ -81,7 +81,7 @@ namespace MbUnit.Core.Reporting
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlElement("stepRun", IsNullable = false)]
-        public StepRun RootStepRun
+        public IStepRun RootStepRun
         {
             get { return rootStepRun; }
             set
@@ -96,7 +96,7 @@ namespace MbUnit.Core.Reporting
         /// Recursively enumerates all test run steps.
         /// </summary>
         [XmlIgnore]
-        public IEnumerable<StepRun> StepRuns
+        public IEnumerable<IStepRun> StepRuns
         {
             get
             {
@@ -104,12 +104,12 @@ namespace MbUnit.Core.Reporting
             }
         }
 
-        private static IEnumerable<StepRun> EnumerateStepRunsRecursively(StepRun parent)
+        private static IEnumerable<IStepRun> EnumerateStepRunsRecursively(IStepRun parent)
         {
             yield return parent;
 
-            foreach (StepRun child in parent.Children)
-                foreach (StepRun stepRun in EnumerateStepRunsRecursively(child))
+            foreach (IStepRun child in parent.Children)
+                foreach (IStepRun stepRun in EnumerateStepRunsRecursively(child))
                     yield return stepRun;
         }
     }

@@ -61,6 +61,7 @@
     <Compile Include="ConsoleSupport\CommandLine\CommandLineOutput.cs" />
     <Compile Include="ConsoleSupport\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineErrorReporter.cs" />
+    <Compile Include="ConsoleSupport\CommandLine\ResponseFile.cs" />
     <Compile Include="ConsoleSupport\IRichConsole.cs" />
     <Compile Include="ConsoleSupport\RichConsoleProgressMonitorProvider.cs" />
     <Compile Include="ConsoleSupport\SystemConsole.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Reporting\IExecutionLogStreamTagVisitor.cs" />
     <Compile Include="Reporting\IReportFormatter.cs" />
     <Compile Include="Reporting\IReportManager.cs" />
+    <Compile Include="Reporting\IStepRun.cs" />
     <Compile Include="Reporting\Report.cs" />
     <Compile Include="Reporting\PackageRun.cs" />
     <Compile Include="Reporting\PackageRunStatistics.cs" />

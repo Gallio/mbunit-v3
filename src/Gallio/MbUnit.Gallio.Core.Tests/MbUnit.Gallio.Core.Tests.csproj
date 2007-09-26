@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleSupport\CommandLine\ResponseFileTests.cs" />
     <Compile Include="Harness\BaseTestFrameworkTest.cs" />
     <Compile Include="Harness\MbUnitTestFrameworkTest.cs" />
     <Compile Include="MockTestDataFactory.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="ConsoleSupport\CommandLine\CommandLineArgumentParserTests.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineOutputTests.cs" />
     <Compile Include="Reporting\StepRunTests.cs" />
+    <Compile Include="Reporting\TestRunTests.cs" />
     <Compile Include="Runner\TestRunnerHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
