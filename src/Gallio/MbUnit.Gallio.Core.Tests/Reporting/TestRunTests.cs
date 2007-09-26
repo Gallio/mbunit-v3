@@ -86,24 +86,20 @@ namespace MbUnit.Core.Tests.Reporting
         }
 
         [Test]
-        public void StepRunsWithOneChildTest()
+        public void StepRunsWithOneChildNoMockingTest()
         {
-            List<IStepRun> children = new List<IStepRun>();
-            IStepRun stepRunChild = MockRepository.GenerateStub<IStepRun>();
-            stepRunChild.StepId = "childId";
-            stepRunChild.StepName = "childStepName";
-            children.Add(stepRunChild);
-            Expect.Call(_stepRunMock.StepId).PropertyBehavior();
-            Expect.Call(_stepRunMock.StepName).PropertyBehavior();
-            Expect.Call(_stepRunMock.Children).Return(children);
-            _mocks.ReplayAll();
-            _stepRunMock.StepId = "newStepId";
-            _stepRunMock.StepName = "mockStepName";
-            foreach (IStepRun step in _testRun.StepRuns)
+            List<IStepRun> stepRunList = new List<IStepRun>();
+            StepRun parentStepRun = new StepRun("mainId", "mainName", "");
+            StepRun stepRunChild = new StepRun("childId", "child", "fullName");
+            parentStepRun.Children.Add(stepRunChild);
+            TestRun testRun = new TestRun("tstRun", parentStepRun);
+            foreach (IStepRun step in testRun.StepRuns)
             {
+                stepRunList.Add(step);
                 Console.WriteLine(step.StepId);
             }
-            _mocks.VerifyAll();
+            Assert.AreEqual("mainId", stepRunList[0].StepId);
+            Assert.AreEqual("childId", stepRunList[1].StepId);
         }
     }
 }
