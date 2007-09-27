@@ -38,6 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayAssert.cs" />
     <Compile Include="AssemblyResolverAttribute.cs" />
     <Compile Include="Assert.cs">
       <SubType>Code</SubType>
@@ -47,8 +48,15 @@
     </Compile>
     <Compile Include="AuthorAttribute.cs" />
     <Compile Include="Block.cs" />
+    <Compile Include="CollectionAssert.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="DescriptionAttribute.cs" />
+    <Compile Include="ExpectedArgumentExceptionAttribute.cs" />
+    <Compile Include="ExpectedArgumentNullExceptionAttribute.cs" />
+    <Compile Include="ExpectedArgumentOutOfRangeExceptionAttribute.cs" />
+    <Compile Include="FileAssert.cs" />
+    <Compile Include="GenericAssert.cs" />
+    <Compile Include="IgnoreAttribute.cs" />
     <Compile Include="Kernel\Attributes\TestPatternAttribute.cs" />
     <Compile Include="Kernel\Attributes\TypePatternAttribute.cs" />
     <Compile Include="Kernel\DataBinding\ConvertedDataFactory.cs" />
@@ -112,8 +120,11 @@
     <Compile Include="Kernel\Runtime\RuntimeHolder.cs" />
     <Compile Include="Kernel\Utilities\CollectionUtils.cs" />
     <Compile Include="KeyedPairwiseAssertion.cs" />
-    <Compile Include="Pair.cs" />
     <Compile Include="PairwiseAssertion.cs" />
+    <Compile Include="ReflectionAssert.cs" />
+    <Compile Include="Reflection\ReflectionException.cs" />
+    <Compile Include="Reflection\ReflectorInstance.cs" />
+    <Compile Include="Reflection\ReflectorStatic.cs" />
     <Compile Include="Relation.cs" />
     <Compile Include="ExpectedExceptionAttribute.cs" />
     <Compile Include="IAssemblyResolver.cs" />
@@ -257,8 +268,10 @@
     </Compile>
     <Compile Include="RowAttribute.cs" />
     <Compile Include="RowTestAttribute.cs" />
+    <Compile Include="SecurityAssert.cs" />
     <Compile Include="SetUpAttribute.cs" />
     <Compile Include="Step.cs" />
+    <Compile Include="StringAssert.cs" />
     <Compile Include="TearDownAttribute.cs" />
     <Compile Include="TestAttribute.cs" />
     <Compile Include="TestFixtureAttribute.cs" />
@@ -266,6 +279,7 @@
     <Compile Include="TestFixtureTearDownAttribute.cs" />
     <Compile Include="TestImportance.cs" />
     <Compile Include="TestsOnAttribute.cs" />
+    <Compile Include="Xml\XmlSerializationAssert.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -273,9 +287,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Kernel\Assertions\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -73,7 +73,6 @@
     <Compile Include="Reporting\IExecutionLogStreamTagVisitor.cs" />
     <Compile Include="Reporting\IReportFormatter.cs" />
     <Compile Include="Reporting\IReportManager.cs" />
-    <Compile Include="Reporting\IStepRun.cs" />
     <Compile Include="Reporting\Report.cs" />
     <Compile Include="Reporting\PackageRun.cs" />
     <Compile Include="Reporting\PackageRunStatistics.cs" />

@@ -21,7 +21,10 @@ namespace MbUnit.Framework
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public sealed class RowAttribute : DataPatternAttribute
     {
-        private object[] values;
+        // TODO.
+        private readonly object[] values;
+        private Type expectedException;
+        private string description;
 
         public RowAttribute(params object[] values)
         {
@@ -31,6 +34,18 @@ namespace MbUnit.Framework
         public object[] Values
         {
             get { return values; }
+        }
+
+        public string Description
+        {
+            get { return description; }
+            set { description = value; }
+        }
+
+        public Type ExpectedException
+        {
+            get { return expectedException; }
+            set { expectedException = value; }
         }
     }
 }

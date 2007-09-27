@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using MbUnit.Core.Reporting;
 using MbUnit2::MbUnit.Framework;
-using Rhino.Mocks;
 
 namespace MbUnit.Core.Tests.Reporting
 {
@@ -27,16 +26,14 @@ namespace MbUnit.Core.Tests.Reporting
     [Author("Vadim")]
     public class TestRunTests
     {
-        private MockRepository _mocks;
-        private IStepRun _stepRunMock;
-        private TestRun _testRun;
+        private StepRun rootStepRun;
+        private TestRun testRun;
 
         [SetUp]
         public void TestStart()
         {
-            _mocks = new MockRepository();
-            _stepRunMock = _mocks.CreateMock<IStepRun>();
-            _testRun = new TestRun("id", _stepRunMock);
+            rootStepRun = new StepRun("root", "root", "root");
+            testRun = new TestRun("id", rootStepRun);
         }
 
         [RowTest]
@@ -44,7 +41,7 @@ namespace MbUnit.Core.Tests.Reporting
         [Row("newId")]
         public void ConstructorTest(string testId)
         {
-            TestRun testRun = new TestRun(testId, _stepRunMock);
+            TestRun testRun = new TestRun(testId, rootStepRun);
             Assert.AreEqual(testId, testRun.TestId);
         }
 
@@ -60,46 +57,36 @@ namespace MbUnit.Core.Tests.Reporting
         [Row("newId")]
         public void TestIdSetTest(string testId)
         {
-            _testRun.TestId = testId;
-            Assert.AreEqual(testId, _testRun.TestId);
+            testRun.TestId = testId;
+            Assert.AreEqual(testId, testRun.TestId);
         }
 
         [Test]
         public void RootStepRunTest()
         {
-            SetupResult.For(_stepRunMock.StepId).PropertyBehavior();
-            SetupResult.For(_stepRunMock.StepName).PropertyBehavior();
-            _mocks.ReplayAll();
-            _stepRunMock.StepId = "newStepId";
-            _stepRunMock.StepName = "mockStepName";
-            _testRun.RootStepRun = _stepRunMock;
-            Assert.AreEqual("newStepId", _testRun.RootStepRun.StepId);
-            Assert.AreEqual("mockStepName", _testRun.RootStepRun.StepName);
-            _mocks.VerifyAll();
+            Assert.AreSame(rootStepRun, testRun.RootStepRun);
+
+            StepRun newRoot = new StepRun("other", "other", "other");
+            testRun.RootStepRun = newRoot;
+
+            Assert.AreSame(newRoot, testRun.RootStepRun);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void RootStepRunNullTest()
         {
-            _testRun.RootStepRun = null;
+            testRun.RootStepRun = null;
         }
 
         [Test]
-        public void StepRunsWithOneChildNoMockingTest()
+        public void StepRunsEnumerationTest()
         {
-            List<IStepRun> stepRunList = new List<IStepRun>();
-            StepRun parentStepRun = new StepRun("mainId", "mainName", "");
             StepRun stepRunChild = new StepRun("childId", "child", "fullName");
-            parentStepRun.Children.Add(stepRunChild);
-            TestRun testRun = new TestRun("tstRun", parentStepRun);
-            foreach (IStepRun step in testRun.StepRuns)
-            {
-                stepRunList.Add(step);
-                Console.WriteLine(step.StepId);
-            }
-            Assert.AreEqual("mainId", stepRunList[0].StepId);
-            Assert.AreEqual("childId", stepRunList[1].StepId);
+            rootStepRun.Children.Add(stepRunChild);
+
+            CollectionAssert.AreElementsEqual(new StepRun[] { rootStepRun, stepRunChild },
+                testRun.StepRuns);
         }
     }
 }

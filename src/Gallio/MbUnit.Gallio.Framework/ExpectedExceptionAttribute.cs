@@ -19,7 +19,34 @@ using MbUnit.Framework.Kernel.Attributes;
 namespace MbUnit.Framework
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public sealed class ExpectedExceptionAttribute : MethodDecoratorPatternAttribute
+    public class ExpectedExceptionAttribute : MethodDecoratorPatternAttribute
     {
+        // TODO.
+        private readonly Type exceptionType;
+        private string message;
+
+        public ExpectedExceptionAttribute(Type exceptionType)
+            : this(exceptionType, null)
+        {
+        }
+
+        public ExpectedExceptionAttribute(Type exceptionType, string message)
+        {
+            this.exceptionType = exceptionType;
+            this.message = message;
+        }
+
+        public Type ExceptionType
+        {
+            get { return exceptionType; }
+        }
+
+        /// <summary>
+        /// Gets the expected exception message, or null if none specified.
+        /// </summary>
+        public string Message
+        {
+            get { return message; }
+        }
     }
 }

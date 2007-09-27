@@ -58,6 +58,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayAssertTest.cs" />
+    <Compile Include="AssertTest.cs" />
+    <Compile Include="CollectionAssertTest.cs" />
+    <Compile Include="FileAssertTest.cs" />
+    <Compile Include="GenericAssertTest.cs" />
+    <Compile Include="AssertWithReflectionTest.cs" />
+    <Compile Include="Xml\XmlSerializationAssertTest.cs" />
+    <Compile Include="StringAssertTest.cs" />
+    <Compile Include="AssertWithTypeTest.cs" />
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Integration\BaseSampleTest.cs" />
     <Compile Include="Integration\FixtureInheritanceTest.cs" />
@@ -80,6 +89,12 @@
     <Compile Include="Kernel\Utilities\GenericUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Integration\SampleRunner.cs" />
+    <Compile Include="Reflection\BaseSample.cs" />
+    <Compile Include="Reflection\InstanceTests.cs" />
+    <Compile Include="Reflection\Reflector.cs" />
+    <Compile Include="Reflection\SampleClass.cs" />
+    <Compile Include="Reflection\StaticTests.cs" />
+    <Compile Include="Reflection\TestSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">

@@ -33,6 +33,40 @@ namespace MbUnit.Framework
     /// </remarks>
     public static class InterimAssert
     {
+        /// <summary>
+        /// Asserts that the specified block of code does not throw an exception.
+        /// </summary>
+        /// <param name="block">The block of code to run</param>
+        public static void DoesNotThrow(Block block)
+        {
+            DoesNotThrow(block, "");
+        }
+
+        /// <summary>
+        /// Asserts that the specified block of code does not throw an exception.
+        /// </summary>
+        /// <param name="block">The block of code to run</param>
+        public static void DoesNotThrow(Block block, string message)
+        {
+            try
+            {
+                block();
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("The block threw an exception: " + ex + "\n" + message);
+            }
+        }
+
+        /// <summary>
+        /// Asserts that the specified block of code does not throw an exception.
+        /// </summary>
+        /// <param name="block">The block of code to run</param>
+        public static void DoesNotThrow(Block block, string messageFormat, params object[] messageArgs)
+        {
+            DoesNotThrow(block, String.Format(messageFormat, messageArgs));
+        }
+
         public static void AreElementsEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual,
             Relation<T> equivalenceRelation)
         {

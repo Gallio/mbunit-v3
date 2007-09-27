@@ -24,6 +24,8 @@ namespace MbUnit.Framework
     [Serializable]
     public class AssertionException : Exception
     {
+        //private readonly AssertionFailure assertionFailure;
+
         /// <summary>
         /// Creates an exception.
         /// </summary>
@@ -62,24 +64,23 @@ namespace MbUnit.Framework
 
         /*
         /// <summary>
-        /// Creates an assertion exception to signal a failure of the specified
-        /// assertion yielding a particular result.
+        /// Creates an assertion exception to signal an assertion failure.
         /// </summary>
-        /// <param name="assertionResult">The assertion result, must not be null</param>
-        public AssertionException(AssertionResult assertionResult)
-            : base(assertionResult.ResultMessage, assertionResult.ResultException)
+        /// <param name="assertionFailure">The assertion failure, or null if none</param>
+        public AssertionException(AssertionFailure assertionFailure)
+            : base(assertionFailure != null ? assertionFailure.ToString() : null,
+                assertionFailure != null ? assertionFailure.Exception : null)
         {
-            this.assertionResult = assertionResult;
+            this.assertionFailure = assertionFailure;
         }
 
         /// <summary>
-        /// Gets the associated assertion result or null if none was supplied during construction.
+        /// Gets the associated assertion failure or null if none was supplied during construction.
         /// </summary>
-        public AssertionResult AssertionResult
+        public AssertionFailure AssertionFailure
         {
-            get { return assertionResult; }
+            get { return assertionFailure; }
         }
-        private AssertionResult assertionResult;
          */
     }
 }

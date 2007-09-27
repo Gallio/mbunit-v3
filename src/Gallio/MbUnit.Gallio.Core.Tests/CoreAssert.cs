@@ -105,7 +105,7 @@ namespace MbUnit.Core.Tests
             AreEqual(expected.RootStepRun, actual.RootStepRun);
         }
 
-        public static void AreEqual(IStepRun expected, IStepRun actual)
+        public static void AreEqual(StepRun expected, StepRun actual)
         {
             if (expected == null)
             {

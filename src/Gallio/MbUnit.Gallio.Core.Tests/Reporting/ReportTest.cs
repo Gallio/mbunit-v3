@@ -20,6 +20,7 @@ using System.Xml.Serialization;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Xml;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit.Core.Tests.Reporting
@@ -29,6 +30,12 @@ namespace MbUnit.Core.Tests.Reporting
     [Author("Jeff", "jeff@ingenio.com")]
     public class ReportTests
     {
+        [Test]
+        public void ReportTypeIsXmlSerializable()
+        {
+            XmlSerializationAssert.IsXmlSerializable(typeof(Report));
+        }
+
         [Test]
         public void RoundTripXmlSerialization()
         {
