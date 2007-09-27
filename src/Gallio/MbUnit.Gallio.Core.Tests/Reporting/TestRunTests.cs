@@ -15,8 +15,10 @@
 
 extern alias MbUnit2;
 using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Xml.Serialization;
 using MbUnit.Core.Reporting;
+using MbUnit.Framework.Xml;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit.Core.Tests.Reporting
@@ -88,5 +90,23 @@ namespace MbUnit.Core.Tests.Reporting
             CollectionAssert.AreElementsEqual(new StepRun[] { rootStepRun, stepRunChild },
                 testRun.StepRuns);
         }
+
+        [Test]
+        public void ReportTypeIsXmlSerializable()
+        {
+            XmlSerializationAssert.IsXmlSerializable(testRun.GetType());
+        }
+
+        [Test]
+        public void RoundTripXmlSerialization()
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(TestRun));
+            StringWriter writer = new StringWriter();
+            testRun.RootStepRun.Children.Add(new StepRun("childId", "childName", "fullName"));
+            serializer.Serialize(writer, testRun);
+            TestRun deserializedTestRun = (TestRun)serializer.Deserialize(new StringReader(writer.ToString()));
+            CoreAssert.AreEqual(testRun, deserializedTestRun);
+        }
+
     }
 }

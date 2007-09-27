@@ -52,6 +52,7 @@
     <Compile Include="MockTestDataFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CoreAssert.cs" />
+    <Compile Include="Reporting\PackageRunTests.cs" />
     <Compile Include="Reporting\ReportTest.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineArgumentParserTests.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineOutputTests.cs" />
