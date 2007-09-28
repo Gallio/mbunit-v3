@@ -20,6 +20,8 @@ using System.IO;
 using System.Text;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit.Framework.Kernel.Results;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -85,7 +87,7 @@ namespace MbUnit.Framework.Kernel.Model
             {
                 MbUnitTestState state = new MbUnitTestState(test);
 
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(step)));
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(step)));
                 try
                 {
                     listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(step.Id, LifecyclePhase.SetUp));

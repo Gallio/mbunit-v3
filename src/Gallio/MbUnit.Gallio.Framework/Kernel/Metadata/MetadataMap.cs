@@ -33,7 +33,7 @@ namespace MbUnit.Framework.Kernel.Metadata
     [XmlRoot("metadata", Namespace=SerializationUtils.XmlNamespace)]
     public sealed class MetadataMap : IXmlSerializable
     {
-        private MultiMap<string, string> entries;
+        private readonly MultiMap<string, string> entries;
 
         /// <summary>
         /// Creates an empty metadata map.

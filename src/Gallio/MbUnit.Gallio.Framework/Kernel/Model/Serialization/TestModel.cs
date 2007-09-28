@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
-    /// The test model captures the root of the test tree along with an index by id.
+    /// The test model captures the root of the test data tree along with an index by id.
     /// </summary>
     /// <remarks>
     /// This class is safe for used by multiple threads.
@@ -32,9 +32,9 @@ namespace MbUnit.Framework.Kernel.Model
     public sealed class TestModel
     {
         [NonSerialized]
-        private Dictionary<string, TestInfo> tests;
+        private Dictionary<string, TestData> tests;
 
-        private TestInfo rootTest;
+        private TestData rootTest;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -48,7 +48,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="rootTest">The root test</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTest"/> is null</exception>
-        public TestModel(TestInfo rootTest)
+        public TestModel(TestData rootTest)
         {
             if (rootTest == null)
                 throw new ArgumentNullException(@"rootTest");
@@ -61,7 +61,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlElement("test", IsNullable = false)]
-        public TestInfo RootTest
+        public TestData RootTest
         {
             get { return rootTest; }
             set
@@ -81,7 +81,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// Gets a dictionary of tests indexed by id.
         /// </summary>
         [XmlIgnore]
-        public IDictionary<string, TestInfo> Tests
+        public IDictionary<string, TestData> Tests
         {
             get
             {
@@ -89,7 +89,7 @@ namespace MbUnit.Framework.Kernel.Model
                 {
                     if (tests == null)
                     {
-                        tests = new Dictionary<string, TestInfo>();
+                        tests = new Dictionary<string, TestData>();
                         PopulateTests(rootTest);
                     }
 
@@ -98,11 +98,11 @@ namespace MbUnit.Framework.Kernel.Model
             }
         }
 
-        private void PopulateTests(TestInfo test)
+        private void PopulateTests(TestData test)
         {
             tests[test.Id] = test;
 
-            foreach (TestInfo child in test.Children)
+            foreach (TestData child in test.Children)
                 PopulateTests(child);
         }
     }

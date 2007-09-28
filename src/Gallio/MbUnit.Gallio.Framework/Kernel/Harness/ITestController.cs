@@ -19,7 +19,7 @@ using System.Text;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Harness
 {
     /// <summary>
     /// A test controller runs a batch of tests.

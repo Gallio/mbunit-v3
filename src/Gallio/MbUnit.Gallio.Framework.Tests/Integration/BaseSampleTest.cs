@@ -18,6 +18,7 @@ using System;
 using System.Text;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit.Framework.Tests;
 using MbUnit.TestResources.Gallio.Fixtures;
 using MbUnit2::MbUnit.Framework;
@@ -59,9 +60,9 @@ namespace MbUnit._Framework.Tests.Integration
             runner.Run();
         }
 
-        protected TestInfo GetTestInfo(CodeReference codeReference)
+        protected TestData GetTestInfo(CodeReference codeReference)
         {
-            foreach (TestInfo info in Report.TestModel.Tests.Values)
+            foreach (TestData info in Report.TestModel.Tests.Values)
             {
                 if (info.CodeReference.Equals(codeReference))
                     return info;
@@ -72,12 +73,12 @@ namespace MbUnit._Framework.Tests.Integration
 
         protected TestRun GetTestRun(CodeReference codeReference)
         {
-            TestInfo info = GetTestInfo(codeReference);
-            if (info != null)
+            TestData data = GetTestInfo(codeReference);
+            if (data != null)
             {
                 return Report.PackageRun.TestRuns.Find(delegate(TestRun run)
                 {
-                    return run.TestId == info.Id;
+                    return run.TestId == data.Id;
                 });
             }
 

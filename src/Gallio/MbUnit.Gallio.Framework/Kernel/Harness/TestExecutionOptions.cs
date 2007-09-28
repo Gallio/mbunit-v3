@@ -14,12 +14,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Harness
 {
     /// <summary>
     /// Provides options that control how test execution occurs.

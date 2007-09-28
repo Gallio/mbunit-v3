@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Harness;
 
 namespace MbUnit.Framework.Kernel.Model
 {

@@ -78,7 +78,7 @@ namespace MbUnit.Core.Runner.Monitors
             switch (e.EventType)
             {
                 case LifecycleEventType.Start:
-                    stepName = e.StepInfo.FullName;
+                    stepName = e.StepData.FullName;
                     lock (stepNames)
                         stepNames.Add(e.StepId, stepName);
 

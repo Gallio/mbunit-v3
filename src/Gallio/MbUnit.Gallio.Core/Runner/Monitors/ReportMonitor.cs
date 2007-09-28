@@ -19,7 +19,7 @@ using System.Diagnostics;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.ExecutionLogs;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 
 namespace MbUnit.Core.Runner.Monitors
 {
@@ -42,7 +42,7 @@ namespace MbUnit.Core.Runner.Monitors
     public class ReportMonitor : BaseTestRunnerMonitor
     {
         private readonly Report report;
-        private readonly Dictionary<string, StepData> stepDataMap;
+        private readonly Dictionary<string, StepState> stepDataMap;
 
         private EventHandler<ReportStepEventArgs> stepStarting;
         private EventHandler<ReportStepEventArgs> stepFinished;
@@ -53,7 +53,7 @@ namespace MbUnit.Core.Runner.Monitors
         public ReportMonitor()
         {
             report = new Report();
-            stepDataMap = new Dictionary<string, StepData>();
+            stepDataMap = new Dictionary<string, StepState>();
         }
 
         /// <summary>
@@ -184,28 +184,28 @@ namespace MbUnit.Core.Runner.Monitors
                 {
                     case LifecycleEventType.Start:
                     {
-                        TestInfo testInfo = Runner.TestModel.Tests[e.StepInfo.TestId];
-                        StepRun stepRun = new StepRun(e.StepId, e.StepInfo.Name, e.StepInfo.FullName);
+                        TestData testData = Runner.TestModel.Tests[e.StepData.TestId];
+                        StepRun stepRun = new StepRun(e.StepId, e.StepData.Name, e.StepData.FullName);
 
-                        StepData stepData;
-                        if (e.StepInfo.ParentId == null)
+                        StepState stepState;
+                        if (e.StepData.ParentId == null)
                         {
-                            TestRun testRun = new TestRun(e.StepInfo.TestId, stepRun);
+                            TestRun testRun = new TestRun(e.StepData.TestId, stepRun);
                             report.PackageRun.TestRuns.Add(testRun);
 
-                            stepData = new StepData(testInfo, testRun, stepRun);
+                            stepState = new StepState(testData, testRun, stepRun);
                         }
                         else
                         {
-                            StepData parentStepData = GetStepData(e.StepInfo.ParentId);
-                            parentStepData.StepRun.Children.Add(stepRun);
+                            StepState parentStepState = GetStepData(e.StepData.ParentId);
+                            parentStepState.StepRun.Children.Add(stepRun);
 
-                            stepData = new StepData(testInfo, parentStepData.TestRun, stepRun);
+                            stepState = new StepState(testData, parentStepState.TestRun, stepRun);
                         }
-                        stepDataMap.Add(e.StepId, stepData);
+                        stepDataMap.Add(e.StepId, stepState);
                         stepRun.StartTime = DateTime.Now;
 
-                        NotifyStepStarting(stepData);
+                        NotifyStepStarting(stepState);
                         break;
                     }
 
@@ -214,14 +214,14 @@ namespace MbUnit.Core.Runner.Monitors
 
                     case LifecycleEventType.Finish:
                     {
-                        StepData stepData = GetStepData(e.StepId);
-                        stepData.StepRun.EndTime = DateTime.Now;
-                        stepData.StepRun.Result = e.Result;
-                        report.PackageRun.Statistics.MergeStepStatistics(stepData.StepRun, stepData.TestInfo.IsTestCase);
+                        StepState stepState = GetStepData(e.StepId);
+                        stepState.StepRun.EndTime = DateTime.Now;
+                        stepState.StepRun.Result = e.Result;
+                        report.PackageRun.Statistics.MergeStepStatistics(stepState.StepRun, stepState.TestData.IsTestCase);
 
-                        stepData.ExecutionLogWriter.Close(); // just in case
+                        stepState.ExecutionLogWriter.Close(); // just in case
 
-                        NotifyStepFinished(stepData);
+                        NotifyStepFinished(stepState);
                         break;
                     }
                 }
@@ -232,45 +232,45 @@ namespace MbUnit.Core.Runner.Monitors
         {
             lock (report)
             {
-                StepData stepData = GetStepData(e.StepId);
+                StepState stepState = GetStepData(e.StepId);
 
                 switch (e.EventType)
                 {
                     case ExecutionLogEventType.WriteText:
-                        stepData.ExecutionLogWriter.WriteText(e.StreamName, e.Text);
+                        stepState.ExecutionLogWriter.WriteText(e.StreamName, e.Text);
                         break;
 
                     case ExecutionLogEventType.WriteAttachment:
-                        stepData.ExecutionLogWriter.WriteAttachment(e.StreamName, e.Attachment);
+                        stepState.ExecutionLogWriter.WriteAttachment(e.StreamName, e.Attachment);
                         break;
 
                     case ExecutionLogEventType.BeginSection:
-                        stepData.ExecutionLogWriter.BeginSection(e.StreamName, e.SectionName);
+                        stepState.ExecutionLogWriter.BeginSection(e.StreamName, e.SectionName);
                         break;
 
                     case ExecutionLogEventType.EndSection:
-                        stepData.ExecutionLogWriter.EndSection(e.StreamName);
+                        stepState.ExecutionLogWriter.EndSection(e.StreamName);
                         break;
 
                     case ExecutionLogEventType.Close:
-                        stepData.ExecutionLogWriter.Close();
+                        stepState.ExecutionLogWriter.Close();
                         break;
                 }
             }
         }
 
-        private StepData GetStepData(string stepId)
+        private StepState GetStepData(string stepId)
         {
             return stepDataMap[stepId];
         }
 
-        private void NotifyStepStarting(StepData stepData)
+        private void NotifyStepStarting(StepState stepState)
         {
             if (stepStarting != null)
             {
                 try
                 {
-                    stepStarting(this, new ReportStepEventArgs(report, stepData.TestRun, stepData.StepRun));
+                    stepStarting(this, new ReportStepEventArgs(report, stepState.TestRun, stepState.StepRun));
                 }
                 catch (Exception ex)
                 {
@@ -279,13 +279,13 @@ namespace MbUnit.Core.Runner.Monitors
             }
         }
 
-        private void NotifyStepFinished(StepData stepData)
+        private void NotifyStepFinished(StepState stepState)
         {
             if (stepFinished != null)
             {
                 try
                 {
-                    stepFinished(this, new ReportStepEventArgs(report, stepData.TestRun, stepData.StepRun));
+                    stepFinished(this, new ReportStepEventArgs(report, stepState.TestRun, stepState.StepRun));
                 }
                 catch (Exception ex)
                 {
@@ -294,16 +294,16 @@ namespace MbUnit.Core.Runner.Monitors
             }
         }
 
-        private sealed class StepData
+        private sealed class StepState
         {
-            public readonly TestInfo TestInfo;
+            public readonly TestData TestData;
             public readonly TestRun TestRun;
             public readonly StepRun StepRun;
             public readonly ExecutionLogWriter ExecutionLogWriter;
 
-            public StepData(TestInfo testInfo, TestRun testRun, StepRun stepRun)
+            public StepState(TestData testData, TestRun testRun, StepRun stepRun)
             {
-                TestInfo = testInfo;
+                this.TestData = testData;
                 this.TestRun = testRun;
                 this.StepRun = stepRun;
 

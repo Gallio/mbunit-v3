@@ -52,6 +52,8 @@ namespace MbUnit._Framework.Tests.Kernel.Model
             Assert.IsNull(CodeReference.Unknown.TypeName);
             Assert.IsNull(CodeReference.Unknown.MemberName);
             Assert.IsNull(CodeReference.Unknown.ParameterName);
+
+            Assert.AreEqual(CodeReferenceKind.Unknown, CodeReference.Unknown.Kind);
         }
 
         [Test]
@@ -65,6 +67,23 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         }
 
         [Test]
+        public void CreateByNameAndResolve()
+        {
+            CodeReference r = new CodeReference(assembly.FullName, type.Namespace, type.FullName, member.Name, parameter.Name);
+            Assert.AreEqual(assembly.FullName, r.AssemblyName);
+            Assert.AreEqual(type.Namespace, r.NamespaceName);
+            Assert.AreEqual(type.FullName, r.TypeName);
+            Assert.AreEqual(member.Name, r.MemberName);
+            Assert.AreEqual(parameter.Name, r.ParameterName);
+
+            Assert.AreEqual(CodeReferenceKind.Parameter, r.Kind);
+            Assert.AreEqual(assembly, r.ResolveAssembly());
+            Assert.AreEqual(type, r.ResolveType());
+            Assert.AreEqual(member, r.ResolveMember());
+            Assert.AreEqual(parameter, r.ResolveParameter());
+        }
+
+        [Test]
         public void CreateFromAssembly()
         {
             CodeReference r = CodeReference.CreateFromAssembly(assembly);
@@ -73,6 +92,9 @@ namespace MbUnit._Framework.Tests.Kernel.Model
             Assert.IsNull(r.TypeName);
             Assert.IsNull(r.MemberName);
             Assert.IsNull(r.ParameterName);
+
+            Assert.AreEqual(CodeReferenceKind.Assembly, r.Kind);
+            Assert.AreEqual(assembly, r.ResolveAssembly());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
@@ -90,6 +112,10 @@ namespace MbUnit._Framework.Tests.Kernel.Model
             Assert.AreEqual(type.FullName, r.TypeName);
             Assert.IsNull(r.MemberName);
             Assert.IsNull(r.ParameterName);
+
+            Assert.AreEqual(CodeReferenceKind.Type, r.Kind);
+            Assert.AreEqual(assembly, r.ResolveAssembly());
+            Assert.AreEqual(type, r.ResolveType());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
@@ -107,6 +133,11 @@ namespace MbUnit._Framework.Tests.Kernel.Model
             Assert.AreEqual(type.FullName, r.TypeName);
             Assert.AreEqual(member.Name, r.MemberName);
             Assert.IsNull(r.ParameterName);
+
+            Assert.AreEqual(CodeReferenceKind.Member, r.Kind);
+            Assert.AreEqual(assembly, r.ResolveAssembly());
+            Assert.AreEqual(type, r.ResolveType());
+            Assert.AreEqual(member, r.ResolveMember());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
@@ -124,6 +155,12 @@ namespace MbUnit._Framework.Tests.Kernel.Model
             Assert.AreEqual(type.FullName, r.TypeName);
             Assert.AreEqual(member.Name, r.MemberName);
             Assert.AreEqual(parameter.Name, r.ParameterName);
+
+            Assert.AreEqual(CodeReferenceKind.Parameter, r.Kind);
+            Assert.AreEqual(assembly, r.ResolveAssembly());
+            Assert.AreEqual(type, r.ResolveType());
+            Assert.AreEqual(member, r.ResolveMember());
+            Assert.AreEqual(parameter, r.ResolveParameter());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]

@@ -28,28 +28,23 @@ namespace MbUnit.Framework.Kernel.Model
     /// <para>
     /// A test may depend on one or more other tests.  When a test
     /// fails, the tests that depend on it are also automatically
-    /// considered failures.  Moreover, the test runner ensures
+    /// considered failures.  Moreover, the test harness ensures
     /// that a test will only run once all of its dependencies have
     /// completed execution successfully.  A run-time error will
     /// occur when the system detects the presence of circular test dependencies
     /// or attempts to execute a test concurrently with its dependencies.
     /// </para>
     /// <para>
-    /// A test may be decomposed into a tree of subtests.  The subtests
-    /// encapsulate logical units of processing within a test.  This feature
-    /// makes it easier to isolate individual verification activities that
-    /// are performed as part of some larger scenario.  Subtests are executed
-    /// in dependency order just like ordinary tests.
+    /// A test contain child tests.  The children of a test are executed
+    /// in dependency order within the scope of the parent test.  Thus the parent
+    /// test may setup/teardown the execution environment used to execute
+    /// its children.  Tests that belong to different subtrees are executed in
+    /// relative isolation within the common environment established by their common parent.
     /// </para>
     /// <para>
-    /// A test is executed in isolation of other tests only insofar as they belong
-    /// to disjoint (and mutually exclusive) scopes.  Thus tests belonging to the same
-    /// assembly-level scope will not be executed in pure isolation; instead, they
-    /// will share the environment established by their common ancestor as part of
-    /// setup/teardown activities.  For example, if the common ancestor includes rules to
-    /// set up and tear down a temporary database, then descendent tests may share the
-    /// same database whereas tests in different assembly-level scopes generally will
-    /// not (unless there are side-effects).
+    /// The object model distinguishes between tests that represent individual test cases
+    /// and other test containers.  Test containers are skipped if they do not
+    /// contain any test cases or if none of their test cases have been selected for execution.
     /// </para>
     /// </summary>
     public interface ITest : ITestComponent, IModelTreeNode<ITest>
@@ -62,8 +57,13 @@ namespace MbUnit.Framework.Kernel.Model
         /// to constrain output statistics to test cases only.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// Not all test cases are leaf nodes in the test tree and vice-versa.       
+        /// </para>
+        /// <para>
         /// This value is defined as a property rather than as a metadata key because it
-        /// can modify the semantics of test execution.
+        /// significantly changes the semantics of test execution.
+        /// </para>
         /// </remarks>
         bool IsTestCase { get; set; }
 

@@ -16,10 +16,9 @@
 using System;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Metadata;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
     /// Describes a model component in a portable manner for serialization.
@@ -27,7 +26,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// <seealso cref="IModelComponent"/>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class ModelComponentInfo : IModelComponent
+    public class ModelComponentData
     {
         private string id;
         private string name;
@@ -37,7 +36,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        protected ModelComponentInfo()
+        protected ModelComponentData()
         {
         }
 
@@ -47,7 +46,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="id">The component id</param>
         /// <param name="name">The component name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
-        public ModelComponentInfo(string id, string name)
+        public ModelComponentData(string id, string name)
         {
             if (id == null)
                 throw new ArgumentNullException(@"id");
@@ -61,13 +60,16 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Copies the contents of a model component.
         /// </summary>
-        /// <param name="obj">The model object</param>
-        public ModelComponentInfo(IModelComponent obj)
+        /// <param name="source">The model object</param>
+        public ModelComponentData(IModelComponent source)
         {
-            id = obj.Id;
-            name = obj.Name;
-            codeReference = obj.CodeReference.Copy();
-            metadata = obj.Metadata.Copy();
+            if (source == null)
+                throw new ArgumentNullException(@"source");
+
+            id = source.Id;
+            name = source.Name;
+            codeReference = source.CodeReference.Copy();
+            metadata = source.Metadata.Copy();
         }
 
         /// <summary>

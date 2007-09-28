@@ -15,42 +15,43 @@
 
 using System;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
-    /// Describes a test model component in a portable manner for serialization.
+    /// Describes a template model component in a portable manner for serialization.
     /// </summary>
-    /// <seealso cref="ITestComponent"/>
+    /// <seealso cref="ITemplateComponent"/>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class TestComponentInfo : ModelComponentInfo, ITestComponent
+    public abstract class TemplateComponentData : ModelComponentData
     {
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        protected TestComponentInfo()
+        protected TemplateComponentData()
         {
         }
 
         /// <summary>
-        /// Creates a test component.
+        /// Creates a template component.
         /// </summary>
         /// <param name="id">The component id</param>
         /// <param name="name">The component name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
-        public TestComponentInfo(string id, string name)
+        public TemplateComponentData(string id, string name)
             : base(id, name)
         {
         }
 
         /// <summary>
-        /// Copies the contents of a test component.
+        /// Copies the contents of a template component.
         /// </summary>
-        /// <param name="obj">The model object</param>
-        public TestComponentInfo(ITestComponent obj) : base(obj)
+        /// <param name="source">The source model object</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        public TemplateComponentData(ITemplateComponent source)
+            : base(source)
         {
         }
     }

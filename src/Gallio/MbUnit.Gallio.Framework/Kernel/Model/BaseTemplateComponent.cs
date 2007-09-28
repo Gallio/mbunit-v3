@@ -22,7 +22,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Base implementation of <see cref="ITemplateComponent" />.
     /// </summary>
-    public class BaseTemplateComponent : BaseModelComponent, ITemplateComponent
+    public abstract class BaseTemplateComponent : BaseModelComponent, ITemplateComponent
     {
         /// <summary>
         /// Initializes a component initially without a parent.

@@ -46,6 +46,15 @@ namespace MbUnit.Framework.Kernel.Model
         private string memberName;
         private string parameterName;
 
+        [NonSerialized]
+        private Assembly cachedAssembly;
+        [NonSerialized]
+        private Type cachedType;
+        [NonSerialized]
+        private MemberInfo cachedMember;
+        [NonSerialized]
+        private ParameterInfo cachedParameter;
+
         /// <summary>
         /// Creates an empty code reference.
         /// </summary>
@@ -85,6 +94,31 @@ namespace MbUnit.Framework.Kernel.Model
                 member != null ? member.Name : null,
                 parameter != null ? parameter.Name : null)
         {
+            cachedAssembly = assembly;
+            cachedType = type;
+            cachedMember = member;
+            cachedParameter = parameter;
+        }
+
+        /// <summary>
+        /// Gets the kind of code element specified by the code reference.
+        /// </summary>
+        public CodeReferenceKind Kind
+        {
+            get
+            {
+                if (assemblyName == null)
+                    return CodeReferenceKind.Unknown;
+                if (namespaceName == null)
+                    return CodeReferenceKind.Assembly;
+                if (typeName == null)
+                    return CodeReferenceKind.Namespace;
+                if (memberName == null)
+                    return CodeReferenceKind.Type;
+                if (parameterName == null)
+                    return CodeReferenceKind.Member;
+                return CodeReferenceKind.Parameter;
+            }
         }
 
         /// <summary>
@@ -94,7 +128,11 @@ namespace MbUnit.Framework.Kernel.Model
         public string AssemblyName
         {
             get { return assemblyName; }
-            set { assemblyName = value; }
+            set
+            {
+                ClearCache();
+                assemblyName = value;
+            }
         }
 
         /// <summary>
@@ -104,7 +142,11 @@ namespace MbUnit.Framework.Kernel.Model
         public string NamespaceName
         {
             get { return namespaceName; }
-            set { namespaceName = value; }
+            set
+            {
+                ClearCache();
+                namespaceName = value;
+            }
         }
 
         /// <summary>
@@ -114,7 +156,11 @@ namespace MbUnit.Framework.Kernel.Model
         public string TypeName
         {
             get { return typeName; }
-            set { typeName = value; }
+            set
+            {
+                ClearCache();
+                typeName = value;
+            }
         }
 
         /// <summary>
@@ -124,7 +170,11 @@ namespace MbUnit.Framework.Kernel.Model
         public string MemberName
         {
             get { return memberName; }
-            set { memberName = value; }
+            set
+            {
+                ClearCache();
+                memberName = value;
+            }
         }
 
         /// <summary>
@@ -134,7 +184,11 @@ namespace MbUnit.Framework.Kernel.Model
         public string ParameterName
         {
             get { return parameterName; }
-            set { parameterName = value; }
+            set
+            {
+                ClearCache();
+                parameterName = value;
+            }
         }
 
         /// <summary>
@@ -143,7 +197,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <returns>The copy</returns>
         public CodeReference Copy()
         {
-            return new CodeReference(assemblyName, namespaceName, typeName, memberName, parameterName);
+            CodeReference copy = new CodeReference(assemblyName, namespaceName, typeName, memberName, parameterName);
+            copy.cachedAssembly = cachedAssembly;
+            copy.cachedType = cachedType;
+            copy.cachedMember = cachedMember;
+            copy.cachedParameter = cachedParameter;
+            return copy;
         }
 
         /// <summary>
@@ -178,6 +237,95 @@ namespace MbUnit.Framework.Kernel.Model
             }
 
             return description.ToString();
+        }
+
+        /// <summary>
+        /// Resolves the code reference's <see cref="Assembly" />.
+        /// </summary>
+        /// <returns>The resolved assembly</returns>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="AssemblyName"/> is null</exception>
+        public Assembly ResolveAssembly()
+        {
+            if (cachedAssembly == null)
+            {
+                if (assemblyName == null)
+                    throw new InvalidOperationException("The code reference does not contain assembly information.");
+
+                cachedAssembly = Assembly.Load(assemblyName);
+            }
+
+            return cachedAssembly;
+        }
+
+        /// <summary>
+        /// Resolves the code reference's <see cref="Type" />.
+        /// </summary>
+        /// <returns>The resolved type</returns>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="TypeName"/> is null</exception>
+        public Type ResolveType()
+        {
+            if (cachedType == null)
+            {
+                if (typeName == null)
+                    throw new InvalidOperationException("The code reference does not contain type information.");
+
+                cachedType = ResolveAssembly().GetType(typeName, true);
+            }
+
+            return cachedType;
+        }
+
+        /// <summary>
+        /// Resolves the code reference's <see cref="MemberInfo" />.
+        /// </summary>
+        /// <returns>The resolved member</returns>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="MemberName"/> is null</exception>
+        public MemberInfo ResolveMember()
+        {
+            if (cachedMember == null)
+            {
+                if (memberName == null)
+                    throw new InvalidOperationException("The code reference does not contain member information.");
+                MemberInfo[] members = ResolveType().GetMember(memberName,
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+                // TODO: Handle overloading by signature.
+                if (members.Length == 0)
+                    throw new InvalidOperationException("The named member could not be found.");
+                if (members.Length != 1)
+                    throw new NotImplementedException("Cannot resolve overloaded members because the complete signature is not available.");
+
+                cachedMember = members[0];
+            }
+
+            return cachedMember;
+        }
+
+        /// <summary>
+        /// Resolves the code reference's <see cref="ParameterInfo" />.
+        /// </summary>
+        /// <returns>The resolved parameter</returns>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="ParameterName"/> is null</exception>
+        public ParameterInfo ResolveParameter()
+        {
+            if (cachedParameter == null)
+            {
+                if (parameterName == null)
+                    throw new InvalidOperationException("The code reference does not contain parameter information.");
+
+                MethodBase method = ResolveMember() as MethodBase;
+                if (method == null)
+                    throw new InvalidOperationException("The code reference refers to a member that is not a method or constructor, consequently it does not have parameters.");
+
+                cachedParameter = Array.Find(method.GetParameters(), delegate(ParameterInfo parameter)
+                {
+                    return parameter.Name == parameterName;
+                });
+                if (cachedParameter == null)
+                    throw new InvalidOperationException("The named parameter could not be found.");
+            }
+
+            return cachedParameter;
         }
 
         /// <summary>
@@ -259,6 +407,14 @@ namespace MbUnit.Framework.Kernel.Model
                 ^ (typeName != null ? typeName.GetHashCode() : 0)
                 ^ (memberName != null ? memberName.GetHashCode() : 0)
                 ^ (parameterName != null ? parameterName.GetHashCode() : 0);
+        }
+
+        private void ClearCache()
+        {
+            cachedAssembly = null;
+            cachedType = null;
+            cachedMember = null;
+            cachedParameter = null;
         }
     }
 }

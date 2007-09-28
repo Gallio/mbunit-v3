@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner

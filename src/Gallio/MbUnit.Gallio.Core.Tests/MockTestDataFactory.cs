@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 
 namespace MbUnit.Core.Tests
 {
@@ -27,13 +27,13 @@ namespace MbUnit.Core.Tests
     {
         public static TemplateModel CreateEmptyTemplateModel()
         {
-            TemplateInfo root = new TemplateInfo("root", "root");
+            TemplateData root = new TemplateData("root", "root");
             return new TemplateModel(root);
         }
 
         public static TestModel CreateEmptyTestModel()
         {
-            TestInfo root = new TestInfo("root", "root");
+            TestData root = new TestData("root", "root");
             return new TestModel(root);
         }
     }

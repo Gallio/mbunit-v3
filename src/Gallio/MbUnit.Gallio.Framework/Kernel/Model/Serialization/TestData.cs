@@ -16,10 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
     /// Describes a test in a portable manner for serialization.
@@ -28,17 +27,17 @@ namespace MbUnit.Framework.Kernel.Model
     [Serializable]
     [XmlRoot("test", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public sealed class TestInfo : TestComponentInfo, ITest
+    public sealed class TestData : TestComponentData
     {
-        private readonly List<TestInfo> children;
+        private readonly List<TestData> children;
         private bool isTestCase;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        private TestInfo()
+        private TestData()
         {
-            children = new List<TestInfo>();
+            children = new List<TestData>();
         }
 
         /// <summary>
@@ -47,27 +46,28 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="id">The component id</param>
         /// <param name="name">The component name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
-        public TestInfo(string id, string name)
+        public TestData(string id, string name)
             : base(id, name)
         {
-            children = new List<TestInfo>();
+            children = new List<TestData>();
         }
 
         /// <summary>
         /// Copies the contents of a test.
         /// </summary>
-        /// <param name="obj">The model object</param>
-        public TestInfo(ITest obj)
-            : base(obj)
+        /// <param name="source">The source model object</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        public TestData(ITest source)
+            : base(source)
         {
-            children = new List<TestInfo>();
+            children = new List<TestData>();
 
-            GenericUtils.ConvertAndAddAll(obj.Children, children, delegate(ITest child)
+            GenericUtils.ConvertAndAddAll(source.Children, children, delegate(ITest child)
             {
-                return new TestInfo(child);
+                return new TestData(child);
             });
 
-            isTestCase = obj.IsTestCase;
+            isTestCase = source.IsTestCase;
         }
 
         /// <summary>
@@ -87,48 +87,9 @@ namespace MbUnit.Framework.Kernel.Model
         /// <seealso cref="IModelTreeNode{T}.Children"/>
         [XmlArray("children", IsNullable = false)]
         [XmlArrayItem("test", IsNullable = false)]
-        public List<TestInfo> Children
+        public List<TestData> Children
         {
             get { return children; }
         }
-
-        #region ITest implementation
-
-        ITemplateBinding ITest.TemplateBinding
-        {
-            get { throw new NotSupportedException(); }
-        }
-
-        IList<ITest> ITest.Dependencies
-        {
-            get { throw new NotSupportedException(); }
-        }
-
-        TestBatch ITest.Batch
-        {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
-        }
-
-        ITest IModelTreeNode<ITest>.Parent
-        {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
-        }
-
-        IList<ITest> IModelTreeNode<ITest>.Children
-        {
-            get
-            {
-                return GenericUtils.ToArray(children);
-            }
-        }
-
-        void IModelTreeNode<ITest>.AddChild(ITest node)
-        {
-            children.Add((TestInfo)node);
-        }
-
-        #endregion
     }
 }

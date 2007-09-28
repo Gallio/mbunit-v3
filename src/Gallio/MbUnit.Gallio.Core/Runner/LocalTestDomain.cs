@@ -16,7 +16,9 @@
 using System;
 using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Runner
@@ -86,7 +88,7 @@ namespace MbUnit.Core.Runner
         {
             TemplateModel = null;
             harness.BuildTemplates(options, new SubProgressMonitor(progressMonitor, 1));
-            TemplateModel = new TemplateModel(new TemplateInfo(harness.TemplateTreeBuilder.Root));
+            TemplateModel = new TemplateModel(new TemplateData(harness.TemplateTreeBuilder.Root));
         }
 
         /// <inheritdoc />
@@ -94,7 +96,7 @@ namespace MbUnit.Core.Runner
         {
             TestModel = null;
             harness.BuildTests(options, new SubProgressMonitor(progressMonitor, 1));
-            TestModel = new TestModel(new TestInfo(harness.TestTreeBuilder.Root));
+            TestModel = new TestModel(new TestData(harness.TestTreeBuilder.Root));
         }
 
         /// <inheritdoc />

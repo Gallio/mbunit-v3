@@ -15,10 +15,9 @@
 
 using System;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
     /// Describes a template parameter in a portable manner for serialization.
@@ -26,7 +25,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// <seealso cref="ITemplateParameter"/>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public sealed class TemplateParameterInfo : TemplateComponentInfo, ITemplateParameter
+    public sealed class TemplateParameterData : TemplateComponentData
     {
         private string typeName;
         private int index;
@@ -34,7 +33,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        private TemplateParameterInfo()
+        private TemplateParameterData()
         {
         }
 
@@ -46,7 +45,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="typeName">The parameter type name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>.
         /// <paramref name="name"/> or <paramref name="typeName"/> is null</exception>
-        public TemplateParameterInfo(string id, string name, string typeName)
+        public TemplateParameterData(string id, string name, string typeName)
             : base(id, name)
         {
             if (typeName == null)
@@ -58,12 +57,13 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Copies the contents of a template parameter.
         /// </summary>
-        /// <param name="obj">The model object</param>
-        public TemplateParameterInfo(ITemplateParameter obj)
-            : base(obj)
+        /// <param name="source">The source model object</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        public TemplateParameterData(ITemplateParameter source)
+            : base(source)
         {
-            typeName = obj.Type.FullName;
-            index = obj.Index;
+            typeName = source.Type.FullName;
+            index = source.Index;
         }
 
         /// <summary>
@@ -92,12 +92,6 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get { return index; }
             set { index = value; }
-        }
-
-        Type ITemplateParameter.Type
-        {
-            get { return Type.GetType(typeName); }
-            set { typeName = value.FullName; }
         }
     }
 }

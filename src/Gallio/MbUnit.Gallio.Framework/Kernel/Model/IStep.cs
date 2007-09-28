@@ -20,12 +20,26 @@ using System.Text;
 namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// A step is a delimited region of a test.  Each step appears in the report as
-    /// if it were a dynamically generated test nested within the body of the test
-    /// (or some other step) that spawned it.  The step has its own execution log,
-    /// pass/fail/inconclusive result and in all other respects behaves much like
-    /// an ordinary test would.
+    /// <para>
+    /// A step is a delimited region of a test defined at run-time.
+    /// Each test that is executed consists of at least one step: the "root" step.
+    /// During execution, each test may spawn additional nested steps that may run in
+    /// parallel or in series with one another to delimit portions of its execution.
+    /// </para>
+    /// <para>
+    /// Each step has its own execution log and test result (pass/fail/inconclusive).
+    /// Therefore a multi-step test may possess multiple execution logs and test results.
+    /// This is deliberate.  Think of a <see cref="ITest" /> as being the declarative component
+    /// of a test that specifies which test method to invoke and its arguments.  An
+    /// <see cref="IStep" /> is the runtime counterpart of the <see cref="ITest" /> that
+    /// captures output and control flow information about part or all of the test.
+    /// </para>
     /// </summary>
+    /// <todo author="jeff">
+    /// Consider whether <see cref="IStep" /> should be a <see cref="IModelComponent" />.
+    /// The main difference is that it would have metadata and a code reference.
+    /// Seems useful.
+    /// </todo>
     public interface IStep
     {
         /// <summary>

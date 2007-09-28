@@ -21,7 +21,9 @@ using System.Text;
 using MbUnit.Core;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit.Framework.Kernel.Results;
 using TestState=MbUnit.Framework.Kernel.Results.TestState;
 
@@ -345,7 +347,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
                 IStep assemblyStep = new BaseStep(assemblyTest);
                 activeStepsByTest.Add(assemblyTest, assemblyStep);
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(assemblyStep)));
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(assemblyStep)));
 
                 assemblyStopwatch = Stopwatch.StartNew();
             }
@@ -374,7 +376,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
                 IStep fixtureStep = new BaseStep(fixtureTest);
                 activeStepsByTest.Add(fixtureTest, fixtureStep);
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(fixtureStep)));
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(fixtureStep)));
 
                 fixtureStopwatch = Stopwatch.StartNew();
             }
@@ -404,7 +406,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
                 IStep step = new BaseStep(test);
                 activeStepsByTest.Add(test, step);
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(step)));
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(step)));
             }
 
             private void HandleTestFinish(RunPipe runPipe, ReportRun reportRun)

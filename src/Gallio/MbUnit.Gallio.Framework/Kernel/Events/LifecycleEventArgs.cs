@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit.Framework.Kernel.Results;
 
 namespace MbUnit.Framework.Kernel.Events
@@ -27,7 +27,7 @@ namespace MbUnit.Framework.Kernel.Events
     public class LifecycleEventArgs : TestStepEventArgs
     {
         private readonly LifecycleEventType eventType;
-        private StepInfo stepInfo;
+        private StepData stepData;
         private string phaseName;
         private TestResult result;
 
@@ -54,9 +54,9 @@ namespace MbUnit.Framework.Kernel.Events
         /// <item><see cref="LifecycleEventType.Start" />, non-null</item>
         /// </list>
         /// </remarks>
-        public StepInfo StepInfo
+        public StepData StepData
         {
-            get { return stepInfo; }
+            get { return stepData; }
         }
 
         /// <summary>
@@ -90,15 +90,15 @@ namespace MbUnit.Framework.Kernel.Events
         /// <summary>
         /// Creates a <see cref="LifecycleEventType.Start" /> event.
         /// </summary>
-        /// <param name="stepInfo">Information about the step that is about to start</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepInfo"/> is null</exception>
-        public static LifecycleEventArgs CreateStartEvent(StepInfo stepInfo)
+        /// <param name="stepData">Information about the step that is about to start</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepData"/> is null</exception>
+        public static LifecycleEventArgs CreateStartEvent(StepData stepData)
         {
-            if (stepInfo == null)
-                throw new ArgumentNullException("stepInfo");
+            if (stepData == null)
+                throw new ArgumentNullException("stepData");
 
-            LifecycleEventArgs e = new LifecycleEventArgs(stepInfo.Id, LifecycleEventType.Start);
-            e.stepInfo = stepInfo;
+            LifecycleEventArgs e = new LifecycleEventArgs(stepData.Id, LifecycleEventType.Start);
+            e.stepData = stepData;
             return e;
         }
 

@@ -15,42 +15,43 @@
 
 using System;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
-    /// Describes a template model component in a portable manner for serialization.
+    /// Describes a test model component in a portable manner for serialization.
     /// </summary>
-    /// <seealso cref="ITemplateComponent"/>
+    /// <seealso cref="ITestComponent"/>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class TemplateComponentInfo : ModelComponentInfo, ITemplateComponent
+    public abstract class TestComponentData : ModelComponentData
     {
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        protected TemplateComponentInfo()
+        protected TestComponentData()
         {
         }
 
         /// <summary>
-        /// Creates a template component.
+        /// Creates a test component.
         /// </summary>
         /// <param name="id">The component id</param>
         /// <param name="name">The component name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
-        public TemplateComponentInfo(string id, string name)
+        public TestComponentData(string id, string name)
             : base(id, name)
         {
         }
 
         /// <summary>
-        /// Copies the contents of a template component.
+        /// Copies the contents of a test component.
         /// </summary>
-        /// <param name="obj">The model object</param>
-        public TemplateComponentInfo(ITemplateComponent obj) : base(obj)
+        /// <param name="source">The source model object</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        public TestComponentData(ITestComponent source)
+            : base(source)
         {
         }
     }

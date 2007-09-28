@@ -17,7 +17,7 @@ using System;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
     /// Describes a step in a portable manner for serialization.
@@ -25,7 +25,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// <seealso cref="IStep"/>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public sealed class StepInfo : IStep
+    public sealed class StepData
     {
         private string id;
         private string name;
@@ -36,7 +36,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        private StepInfo()
+        private StepData()
         {
         }
 
@@ -49,7 +49,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="testId">The test id</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
         /// <paramref name="fullName"/> or <paramref name="testId"/> is null</exception>
-        public StepInfo(string id, string name, string fullName, string testId)
+        public StepData(string id, string name, string fullName, string testId)
         {
             if (id == null)
                 throw new ArgumentNullException(@"id");
@@ -69,20 +69,20 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Copies the contents of a test component.
         /// </summary>
-        /// <param name="obj">The model object</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public StepInfo(IStep obj)
+        /// <param name="source">The source model object</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        public StepData(IStep source)
         {
-            if (obj == null)
-                throw new ArgumentNullException(@"obj");
+            if (source == null)
+                throw new ArgumentNullException(@"source");
 
-            id = obj.Id;
-            name = obj.Name;
-            fullName = obj.FullName;
-            testId = obj.Test.Id;
+            id = source.Id;
+            name = source.Name;
+            fullName = source.FullName;
+            testId = source.Test.Id;
 
-            if (obj.Parent != null)
-                parentId = obj.Parent.Id;
+            if (source.Parent != null)
+                parentId = source.Parent.Id;
         }
 
         /// <summary>
@@ -157,16 +157,6 @@ namespace MbUnit.Framework.Kernel.Model
                     throw new ArgumentNullException(@"value");
                 testId = value;
             }
-        }
-
-        IStep IStep.Parent
-        {
-            get { throw new NotSupportedException(); }
-        }
-
-        ITest IStep.Test
-        {
-            get { throw new NotSupportedException(); }
         }
     }
 }

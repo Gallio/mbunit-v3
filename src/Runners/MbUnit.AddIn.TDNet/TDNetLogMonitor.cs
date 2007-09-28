@@ -18,7 +18,7 @@ using MbUnit.AddIn.TDNet.Properties;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
 using MbUnit.Framework.Kernel.ExecutionLogs;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit.Framework.Kernel.Results;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
@@ -64,8 +64,8 @@ namespace MbUnit.AddIn.TDNet
         private void HandleStepFinished(object sender, ReportStepEventArgs e)
         {
             // Ignore tests that aren't test cases.
-            TestInfo testInfo = e.Report.TestModel.Tests[e.TestRun.TestId];
-            if (!testInfo.IsTestCase)
+            TestData testData = e.Report.TestModel.Tests[e.TestRun.TestId];
+            if (!testData.IsTestCase)
                 return;
 
             // A TestResult with State == TestState.Passed won't be displayed in the

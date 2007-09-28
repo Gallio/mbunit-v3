@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
-    /// The template model captures the root of the template tree along with an index by id.
+    /// The template model captures the root of the template data tree along with an index by id.
     /// </summary>
     /// <remarks>
     /// This class is safe for used by multiple threads.
@@ -32,9 +32,9 @@ namespace MbUnit.Framework.Kernel.Model
     public sealed class TemplateModel
     {
         [NonSerialized]
-        private Dictionary<string, TemplateInfo> templates;
+        private Dictionary<string, TemplateData> templates;
 
-        private TemplateInfo rootTemplate;
+        private TemplateData rootTemplate;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -48,7 +48,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <param name="rootTemplate">The root template</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTemplate"/> is null</exception>
-        public TemplateModel(TemplateInfo rootTemplate)
+        public TemplateModel(TemplateData rootTemplate)
         {
             if (rootTemplate == null)
                 throw new ArgumentNullException(@"rootTemplate");
@@ -62,7 +62,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlElement("template", IsNullable = false)]
-        public TemplateInfo RootTemplate
+        public TemplateData RootTemplate
         {
             get { return rootTemplate; }
             set
@@ -82,7 +82,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// Gets a dictionary of templates indexed by id.
         /// </summary>
         [XmlIgnore]
-        public IDictionary<string, TemplateInfo> Templates
+        public IDictionary<string, TemplateData> Templates
         {
             get
             {
@@ -90,7 +90,7 @@ namespace MbUnit.Framework.Kernel.Model
                 {
                     if (templates == null)
                     {
-                        templates = new Dictionary<string, TemplateInfo>();
+                        templates = new Dictionary<string, TemplateData>();
                         PopulateTemplates(rootTemplate);
                     }
 
@@ -99,11 +99,11 @@ namespace MbUnit.Framework.Kernel.Model
             }
         }
 
-        private void PopulateTemplates(TemplateInfo template)
+        private void PopulateTemplates(TemplateData template)
         {
             templates[template.Id] = template;
 
-            foreach (TemplateInfo child in template.Children)
+            foreach (TemplateData child in template.Children)
                 PopulateTemplates(child);
         }
     }

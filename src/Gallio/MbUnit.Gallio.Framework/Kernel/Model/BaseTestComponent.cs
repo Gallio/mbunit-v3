@@ -20,7 +20,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Base implementation of <see cref="ITestComponent" />.
     /// </summary>
-    public class BaseTestComponent : BaseModelComponent, ITestComponent
+    public abstract class BaseTestComponent : BaseModelComponent, ITestComponent
     {
         /// <summary>
         /// Initializes a component initially without a parent.

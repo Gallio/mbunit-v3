@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Windows.Forms;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Interfaces;
 
@@ -33,7 +33,7 @@ namespace MbUnit.Icarus.AdapterModel
         public TreeNode[] BuildTestTree(TestModel testModel)
         {
             TreeNode[] tnode1 = new TreeNode[1];
-            TestInfo tr = testModel.RootTest;
+            TestData tr = testModel.RootTest;
             TestTreeNode ttnode1 = new TestTreeNode(tr.Name, 0, 0);
             ttnode1.ExpandAll();
             ttnode1.Name = tr.Id;

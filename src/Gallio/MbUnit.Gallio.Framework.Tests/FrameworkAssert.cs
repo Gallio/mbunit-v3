@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit._Framework.Tests
@@ -39,7 +40,7 @@ namespace MbUnit._Framework.Tests
             AreEqual(expected.RootTemplate, actual.RootTemplate);
         }
 
-        public static void AreEqual(TemplateInfo expected, TemplateInfo actual)
+        public static void AreEqual(TemplateData expected, TemplateData actual)
         {
             if (expected == null)
             {
@@ -57,7 +58,7 @@ namespace MbUnit._Framework.Tests
             MbUnit.Framework.InterimAssert.WithPairs(expected.Parameters, actual.Parameters, AreEqual);
         }
 
-        public static void AreEqual(TemplateParameterInfo expected, TemplateParameterInfo actual)
+        public static void AreEqual(TemplateParameterData expected, TemplateParameterData actual)
         {
             if (expected == null)
             {
@@ -84,7 +85,7 @@ namespace MbUnit._Framework.Tests
             AreEqual(expected.RootTest, actual.RootTest);
         }
 
-        public static void AreEqual(TestInfo expected, TestInfo actual)
+        public static void AreEqual(TestData expected, TestData actual)
         {
             if (expected == null)
             {

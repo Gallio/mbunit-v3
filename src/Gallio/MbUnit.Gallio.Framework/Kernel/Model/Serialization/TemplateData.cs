@@ -16,11 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.DataBinding;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Framework.Kernel.Model
+namespace MbUnit.Framework.Kernel.Model.Serialization
 {
     /// <summary>
     /// Describes a template in a portable manner for serialization.
@@ -29,19 +27,19 @@ namespace MbUnit.Framework.Kernel.Model
     [Serializable]
     [XmlRoot("template", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public sealed class TemplateInfo : TemplateComponentInfo, ITemplate
+    public sealed class TemplateData : TemplateComponentData
     {
-        private readonly List<TemplateInfo> children;
-        private readonly List<TemplateParameterInfo> parameters;
+        private readonly List<TemplateData> children;
+        private readonly List<TemplateParameterData> parameters;
         private bool isGenerator;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        private TemplateInfo()
+        private TemplateData()
         {
-            children = new List<TemplateInfo>();
-            parameters = new List<TemplateParameterInfo>();
+            children = new List<TemplateData>();
+            parameters = new List<TemplateParameterData>();
         }
 
         /// <summary>
@@ -50,32 +48,33 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="id">The component id</param>
         /// <param name="name">The component name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
-        public TemplateInfo(string id, string name)
+        public TemplateData(string id, string name)
             : base(id, name)
         {
-            children = new List<TemplateInfo>();
-            parameters = new List<TemplateParameterInfo>();
+            children = new List<TemplateData>();
+            parameters = new List<TemplateParameterData>();
         }
 
         /// <summary>
         /// Copies the contents of a tmplate.
         /// </summary>
-        /// <param name="obj">The model object</param>
-        public TemplateInfo(ITemplate obj)
-            : base(obj)
+        /// <param name="source">The source model object</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        public TemplateData(ITemplate source)
+            : base(source)
         {
-            isGenerator = obj.IsGenerator;
-            children = new List<TemplateInfo>(obj.Children.Count);
-            parameters = new List<TemplateParameterInfo>(obj.Parameters.Count);
+            isGenerator = source.IsGenerator;
+            children = new List<TemplateData>(source.Children.Count);
+            parameters = new List<TemplateParameterData>(source.Parameters.Count);
 
-            GenericUtils.ConvertAndAddAll(obj.Children, children, delegate(ITemplate child)
+            GenericUtils.ConvertAndAddAll(source.Children, children, delegate(ITemplate child)
             {
-                return new TemplateInfo(child);
+                return new TemplateData(child);
             });
 
-            GenericUtils.ConvertAndAddAll(obj.Parameters, parameters, delegate(ITemplateParameter parameter)
+            GenericUtils.ConvertAndAddAll(source.Parameters, parameters, delegate(ITemplateParameter parameter)
             {
-                return new TemplateParameterInfo(parameter);
+                return new TemplateParameterData(parameter);
             });
         }
 
@@ -85,7 +84,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <seealso cref="IModelTreeNode{T}.Children"/>
         [XmlArray("children", IsNullable=false)]
         [XmlArrayItem("template", IsNullable=false)]
-        public List<TemplateInfo> Children
+        public List<TemplateData> Children
         {
             get { return children; }
         }
@@ -96,7 +95,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <seealso cref="ITemplate.Parameters"/>
         [XmlArray("parameters", IsNullable = false)]
         [XmlArrayItem("parameter", IsNullable = false)]
-        public List<TemplateParameterInfo> Parameters
+        public List<TemplateParameterData> Parameters
         {
             get { return parameters; }
         }
@@ -107,38 +106,6 @@ namespace MbUnit.Framework.Kernel.Model
         {
             get { return isGenerator; }
             set { isGenerator = value; }
-        }
-
-        IList<ITemplateParameter> ITemplate.Parameters
-        {
-            get
-            {
-                return GenericUtils.ToArray(parameters);
-            }
-        }
-
-        ITemplateBinding ITemplate.Bind(TemplateBindingScope scope, IDictionary<ITemplateParameter, IDataFactory> arguments)
-        {
-            throw new NotSupportedException();
-        }
-
-        ITemplate IModelTreeNode<ITemplate>.Parent
-        {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
-        }
-
-        IList<ITemplate> IModelTreeNode<ITemplate>.Children
-        {
-            get
-            {
-                return GenericUtils.ToArray(children);
-            }
-        }
-
-        void IModelTreeNode<ITemplate>.AddChild(ITemplate node)
-        {
-            children.Add((TemplateInfo)node);
         }
     }
 }

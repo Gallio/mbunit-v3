@@ -18,7 +18,9 @@ using System.Collections.Generic;
 using System.Threading;
 using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Model.Serialization;
 using MbUnit.Framework.Kernel.Results;
 using NUnit.Core;
 using ITest=MbUnit.Framework.Kernel.Model.ITest;
@@ -233,7 +235,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 IStep step = new BaseStep(test);
                 stepStack.Push(step);
 
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepInfo(step)));
+                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(step)));
             }
 
             private void HandleTestOrSuiteFinished(TestResult nunitResult)

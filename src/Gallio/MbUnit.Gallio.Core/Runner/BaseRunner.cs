@@ -16,9 +16,11 @@
 using System;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
+using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Runtime;
 using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework.Kernel.Model.Serialization;
 
 namespace MbUnit.Core.Runner
 {
