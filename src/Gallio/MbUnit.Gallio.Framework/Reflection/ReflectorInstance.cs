@@ -13,26 +13,55 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
-using System.ComponentModel;
 
 namespace MbUnit.Framework.Reflection
 {
-    public enum MemberType { Method, Field, Property }
+    ///<summary>
+    /// Member types of a class.
+    ///</summary>
+    public enum MemberType
+    {
+        ///<summary>
+        /// Method
+        ///</summary>
+        Method, 
+        /// <summary>
+        /// Field or variable
+        /// </summary>
+        Field, 
+        ///<summary>
+        /// Property
+        ///</summary>
+        Property
+    }
+
+    ///<summary>
+    /// Access modifier of a class or class member.
+    ///</summary>
     public enum AccessModifier
     { 
+        ///<summary>
+        /// public
+        ///</summary>
         Public = BindingFlags.Public, 
+        ///<summary>
+        /// protected, internal, private
+        ///</summary>
         NonPublic = BindingFlags.NonPublic, 
+        /// <summary>
+        /// static
+        /// </summary>
         Static  = BindingFlags.Static,
+        /// <summary>
+        /// default that includes public, protected, internal, private, and static
+        /// </summary>
         Default = Public | NonPublic | Static
     }
 
     public partial class Reflector
     {
-        object _obj;
+        readonly object _obj;
 
         #region Constructors
         /// <summary>
@@ -49,7 +78,7 @@ namespace MbUnit.Framework.Reflection
         /// Use this constructor if you plan to test default constructor of a non-public class.
         /// </summary>
         /// <param name="assemblyName"></param>
-        /// <param name="className"></param>
+        /// <param name="typeName"></param>
         public Reflector(string assemblyName, string typeName)
             : this(assemblyName, typeName, null)
         {
@@ -58,8 +87,9 @@ namespace MbUnit.Framework.Reflection
         /// <summary>
         /// Use this constructor if you plan to test constructor with arguments of a non-public class.
         /// </summary>
-        /// <param name="assemblyName"></param>
-        /// <param name="className"></param>
+        /// <param name="assemblyName">Assembly name</param>
+        /// <param name="typeName">Type name</param>
+        /// <param name="args">Parameters for a constructor.</param>
         public Reflector(string assemblyName, string typeName, params object[] args)
         {
             _obj = CreateInstance(assemblyName, typeName, args);
@@ -158,8 +188,8 @@ namespace MbUnit.Framework.Reflection
         /// <summary>
         /// Set Property value.
         /// </summary>
-        /// <param name="fieldName">Property Name.</param>
-        /// <param name="fieldValue">Property Value.</param>
+        /// <param name="propertyName">Property Name.</param>
+        /// <param name="propertyValue">Property Value.</param>
         public void SetProperty(string propertyName, object propertyValue)
         {
             SetProperty(AccessModifier.Default, _obj, propertyName, propertyValue);
@@ -169,8 +199,8 @@ namespace MbUnit.Framework.Reflection
         /// Set Property value.
         /// </summary>
         /// <param name="access">Specify property access modifier.</param>
-        /// <param name="fieldName">Property Name.</param>
-        /// <param name="fieldValue">Property Value.</param>
+        /// <param name="propertyName">Property Name.</param>
+        /// <param name="propertyValue">Property Value.</param>
         public void SetProperty(AccessModifier access, string propertyName, object propertyValue)
         {
             SetProperty(access, _obj, propertyName, propertyValue);
@@ -207,106 +237,6 @@ namespace MbUnit.Framework.Reflection
         public object InvokeMethod(AccessModifier access, string methodName, params object[] methodParams)
         {
             return InvokeMethod(access, _obj, methodName, methodParams);
-        }
-
-        #region Obsolete Members
-
-        /// <summary>
-        /// Gets value of NonPublic property
-        /// </summary>
-        /// <param name="propName">Property name</param>
-        /// <returns>Property value</returns>
-        [Obsolete("Use GetProperty instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public object GetNonPublicProperty(string propName)
-        {
-            PropertyInfo pi = _obj.GetType().GetProperty(propName, BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
-            IsMember(pi, propName, MemberType.Property);
-            return pi.GetValue(_obj, null);
-        }
-
-        /// <summary>
-        /// Gets value of NonPublic field.
-        /// </summary>
-        /// <param name="fieldName">NonPublic field name</param>
-        /// <returns>Field value</returns>
-        [Obsolete("Use GetField instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public object GetNonPublicField(string fieldName)
-        {
-            FieldInfo fi = _obj.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
-            IsMember(fi, fieldName, MemberType.Field);
-            return fi.GetValue(_obj);
-        }
-
-        /// <summary>
-        /// Get the value from a NonPublic variable or field.
-        /// </summary>
-        /// <param name="obj">Object which contains field</param>
-        /// <param name="variableName">Field Name</param>
-        /// <returns></returns>
-        [Obsolete("Use GetField instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public object GetPrivateVariable(string variableName)
-        {
-            Type objType = _obj.GetType();
-
-            FieldInfo variableInfo = objType.GetField(variableName, BindingFlags.NonPublic |
-                                                                        BindingFlags.Instance |
-                                                                        BindingFlags.Public |
-                                                                        BindingFlags.Static);
-
-            return variableInfo.GetValue(_obj);
-        }
-
-        /// <summary>
-        /// Execute a NonPublic method without arguments on a object
-        /// </summary>
-        /// <param name="obj">Object to call method on</param>
-        /// <param name="methodName">Method to call</param>
-        /// <returns>The object the method should return.</returns>
-        [Obsolete("Use InvokeMethod instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public object RunPrivateMethod(string methodName)
-        {
-            return RunPrivateMethod(methodName, null);
-        }
-
-        /// <summary>
-        /// Execute a NonPublic method with arguments on a object
-        /// </summary>
-        /// <param name="obj">Object to call method on</param>
-        /// <param name="methodName">Method to call</param>
-        /// <returns>The object the method should return.</returns>
-        [Obsolete("Use InvokeMethod instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public object RunPrivateMethod(string methodName, params object[] methodParams)
-        {
-            Type[] paramTypes = null;
-
-            if (methodParams != null)
-            {
-                paramTypes = new Type[methodParams.Length];
-
-                for (int ndx = 0; ndx < methodParams.Length; ndx++)
-                    paramTypes[ndx] = methodParams[ndx].GetType();
-            }
-            else
-                paramTypes = new Type[0];
-
-            MethodInfo mi = _obj.GetType().GetMethod(methodName
-                    , BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance
-                    , null, paramTypes, null);
-
-            IsMember(mi, methodName, MemberType.Method);
-            return mi.Invoke(_obj, methodParams);
-        }
-
-        #endregion
-
-        private void IsMember(object member, string memberName, MemberType type)
-        {
-            IsMember(_obj, member, memberName, type);
         }
     }
 }

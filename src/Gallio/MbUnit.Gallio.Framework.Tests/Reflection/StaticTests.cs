@@ -13,16 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+extern alias MbUnit2;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using MbUnit.Framework;
 using MbUnit.Framework.Reflection;
+using MbUnit2::MbUnit.Framework;
 
 
 namespace MbUnit.Framework.Tests.Reflection
 {
     [TestFixture]
+    [TestsOn(typeof(Reflector))]
+    [Author("Vadim")]
     public class ReflectorStaticTests
     {
         public static readonly string MSCorLibAssembly = Environment.GetEnvironmentVariable("SystemRoot")
@@ -61,27 +62,27 @@ namespace MbUnit.Framework.Tests.Reflection
         [Test]
         public void GetPublicField_DefaultAccessibility()
         {
-            Assert.AreEqual("MbUnit Rocks!!!", Reflector.GetField(_sampleObject, "publicString"));
+            Assert.AreEqual("MbUnit Rocks!!!", Reflector.GetField(new TestSample(), "publicString"));
         }
 
         [Test]
         public void GetPrivateFieldFromBaseClass()
         {
-            Assert.AreEqual("Base var", Reflector.GetField(_sampleObject, "_baseString"));
+            Assert.AreEqual("Base var", Reflector.GetField(new TestSample(), "_baseString"));
         }
 
         [Test]
         [ExpectedException(typeof(ReflectionException))]
         public void TryToGetBaseClassFieldButSettingLookInBaseToFalse()
         {
-            Reflector.GetField(AccessModifier.NonPublic, _sampleObject, "_baseString", false);
+            Reflector.GetField(AccessModifier.NonPublic, new TestSample(), "_baseString", false);
         }
 
         [Test]
         public void SetPrivateFieldInBaseClass()
         {
             Reflector.SetField(_sampleObject, "_baseString", "test base field");
-            Assert.AreEqual("test base field", Reflector.GetField(_sampleObject, "_baseString"));
+            Assert.AreEqual("test base field", Reflector.GetField(new TestSample(), "_baseString"));
         }
 
         [Test]
@@ -97,21 +98,21 @@ namespace MbUnit.Framework.Tests.Reflection
         [Test]
         public void GetPrivatePropertyFromBaseClass()
         {
-            Assert.AreEqual(12, Reflector.GetProperty(_sampleObject, "BaseInteger"));
+            Assert.AreEqual(12, Reflector.GetProperty(new TestSample(), "BaseInteger"));
         }
 
         [Test]
         [ExpectedException(typeof(ReflectionException))]
         public void TryToGetBaseClassPropertyButSettingLookInBaseToFalse()
         {
-            Reflector.GetProperty(AccessModifier.NonPublic, _sampleObject, "BaseInteger", false);
+            Reflector.GetProperty(AccessModifier.NonPublic, new TestSample(), "BaseInteger", false);
         }
 
         [Test]
         public void SetPrivatePropertyInBaseClass()
         {
             Reflector.SetProperty(_sampleObject, "BaseInteger", 7);
-            Assert.AreEqual(7, Reflector.GetProperty(_sampleObject, "BaseInteger"));
+            Assert.AreEqual(7, Reflector.GetProperty(new TestSample(), "BaseInteger"));
         }
         #endregion
 
@@ -119,20 +120,20 @@ namespace MbUnit.Framework.Tests.Reflection
         [Test]
         public void IvokePrivateMethodWithoutParametersFromBaseClass()
         {
-            Assert.AreEqual("Wow!", Reflector.InvokeMethod(_sampleObject, "Wow"));
+            Assert.AreEqual("Wow!", Reflector.InvokeMethod(new TestSample(), "Wow"));
         }
 
         [Test]
         public void IvokePrivateMethodWithParameterFromBaseClass()
         {
-            Assert.AreEqual("MbUnit. Oh, Yhea!", Reflector.InvokeMethod(_sampleObject, "OhYhea", "MbUnit."));
+            Assert.AreEqual("MbUnit. Oh, Yhea!", Reflector.InvokeMethod(new TestSample(), "OhYhea", "MbUnit."));
         }
 
         [Test]
         [ExpectedException(typeof(ReflectionException))]
         public void TryToInvokeBaseClassMethodButLookInBaseIsFalse()
         {
-            Reflector.InvokeMethod(AccessModifier.NonPublic, _sampleObject, "OhYhea", false, "Fail");
+            Reflector.InvokeMethod(AccessModifier.NonPublic, new TestSample(), "OhYhea", false, "Fail");
         }
         #endregion
     }

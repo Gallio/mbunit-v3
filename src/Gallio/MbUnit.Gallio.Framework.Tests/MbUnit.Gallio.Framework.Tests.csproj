@@ -91,7 +91,6 @@
     <Compile Include="Integration\SampleRunner.cs" />
     <Compile Include="Reflection\BaseSample.cs" />
     <Compile Include="Reflection\InstanceTests.cs" />
-    <Compile Include="Reflection\Reflector.cs" />
     <Compile Include="Reflection\SampleClass.cs" />
     <Compile Include="Reflection\StaticTests.cs" />
     <Compile Include="Reflection\TestSample.cs" />
