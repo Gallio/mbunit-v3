@@ -57,6 +57,7 @@
     <Compile Include="Reporting\ReportTest.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineArgumentParserTests.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineOutputTests.cs" />
+    <Compile Include="Reporting\ReportUtilsTests.cs" />
     <Compile Include="Reporting\StepRunTests.cs" />
     <Compile Include="Reporting\TestRunTests.cs" />
     <Compile Include="Runner\TestRunnerHelperTests.cs" />

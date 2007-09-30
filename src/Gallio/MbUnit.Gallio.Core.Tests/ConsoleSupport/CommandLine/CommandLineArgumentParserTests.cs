@@ -129,7 +129,7 @@ namespace MbUnit.Core.Tests.ConsoleSupport.CommandLine
         public void ParseResourceFile()
         {
             string errorMsg = string.Empty;
-            string fileContent = "C:\file.dll /v";
+            string fileContent = "C:\\file.dll";
             MainArguments arguments = new MainArguments();
             Expect.Call(_resourceFileMock.GetFileContent("ResourceFile")).Return(fileContent);
             CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), _resourceFileMock);
