@@ -14,11 +14,10 @@
 // limitations under the License.
 
 extern alias MbUnit2;
-using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit2::MbUnit.Framework;
 
 using MbUnit.Framework.Kernel.Filters;
-using MbUnit.Framework.Kernel.Model;
 using Rhino.Mocks;
 
 namespace MbUnit._Framework.Tests.Kernel.Filters

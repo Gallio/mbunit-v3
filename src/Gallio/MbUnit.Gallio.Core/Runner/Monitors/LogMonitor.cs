@@ -16,9 +16,9 @@
 using System;
 using System.Text;
 using Castle.Core.Logging;
+using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.ExecutionLogs;
-using MbUnit.Framework.Kernel.Results;
 using MbUnit.Core.Properties;
 
 namespace MbUnit.Core.Runner.Monitors
@@ -79,9 +79,9 @@ namespace MbUnit.Core.Runner.Monitors
         private void HandleStepFinished(object sender, ReportStepEventArgs e)
         {
             LoggerLevel level;
-            string status = GetFinishedMessageStatus(e.StepRun.Result.Outcome, e.StepRun.Result.State, out level);
-            string warnings = FormatStream(e.StepRun, ExecutionLogStreamName.Warnings);
-            string failures = FormatStream(e.StepRun, ExecutionLogStreamName.Failures);
+            string status = GetFinishedMessageStatus(e.StepRun.Result.Outcome, e.StepRun.Result.Status, out level);
+            string warnings = FormatStream(e.StepRun, LogStreamNames.Warnings);
+            string failures = FormatStream(e.StepRun, LogStreamNames.Failures);
 
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.AppendFormat(Resources.LogMonitor_HeaderFormat, status, e.StepRun.StepFullName);
@@ -91,6 +91,7 @@ namespace MbUnit.Core.Runner.Monitors
                 if (level < LoggerLevel.Warn)
                     level = LoggerLevel.Warn;
 
+                messageBuilder.AppendLine();
                 messageBuilder.Append(warnings);
                 messageBuilder.AppendLine();
             }
@@ -100,6 +101,7 @@ namespace MbUnit.Core.Runner.Monitors
                 if (level < LoggerLevel.Error)
                     level = LoggerLevel.Error;
 
+                messageBuilder.AppendLine();
                 messageBuilder.Append(failures);
                 messageBuilder.AppendLine();
             }
@@ -129,7 +131,7 @@ namespace MbUnit.Core.Runner.Monitors
             return stream != null ? stream.ToString() : @"";
         }
 
-        private static string GetFinishedMessageStatus(TestOutcome outcome, TestState state, out LoggerLevel level)
+        private static string GetFinishedMessageStatus(TestOutcome outcome, TestStatus status, out LoggerLevel level)
         {
             switch (outcome)
             {
@@ -144,19 +146,19 @@ namespace MbUnit.Core.Runner.Monitors
                 case TestOutcome.Inconclusive:
                     level = LoggerLevel.Info;
 
-                    switch (state)
+                    switch (status)
                     {
-                        case TestState.Canceled:
+                        case TestStatus.Canceled:
                             return Resources.LogMonitor_Status_Canceled;
-                        case TestState.Error:
+                        case TestStatus.Error:
                             return Resources.LogMonitor_Status_Error;
-                        case TestState.Executed:
+                        case TestStatus.Executed:
                             return Resources.LogMonitor_Status_Inconclusive;
-                        case TestState.Ignored:
+                        case TestStatus.Ignored:
                             return Resources.LogMonitor_Status_Ignored;
-                        case TestState.NotRun:
+                        case TestStatus.NotRun:
                             return Resources.LogMonitor_Status_NotRun;
-                        case TestState.Skipped:
+                        case TestStatus.Skipped:
                             return Resources.LogMonitor_Status_Skipped;
                     }
                     break;

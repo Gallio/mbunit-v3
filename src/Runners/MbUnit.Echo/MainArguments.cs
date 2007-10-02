@@ -19,7 +19,6 @@ using System.IO;
 using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Filters;
-using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Echo
@@ -172,11 +171,11 @@ namespace MbUnit.Echo
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
-             ShortName = "e",
-             LongName = "echo-results",
-             Description = "Echo test results to the screen as tests finish.  Tests that passed are not shown unless the verbosity level is at least 'Verbose'."
+             ShortName = "ne",
+             LongName = "no-echo-results",
+             Description = "Do not echo results to the screen as tests finish.  Unless this option is specified, test results are echoed to the console in varying detail depending on the current verbosity level."
              )]
-        public bool EchoResults;
+        public bool NoEchoResults;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
@@ -237,7 +236,7 @@ namespace MbUnit.Echo
             sw.WriteLine("Filter Type: {0}", String.Join(", ", FilterTypes));
 
             sw.WriteLine("Verbosity: {0}", Verbosity);
-            sw.WriteLine("Echo Results: {0}", EchoResults);
+            sw.WriteLine("No Echo Results: {0}", NoEchoResults);
             sw.WriteLine("Save Template Tree: {0}", SaveTemplateTree);
             sw.WriteLine("Save Test Tree: {0}", SaveTestTree);
             sw.WriteLine("Shadow Copy Files: {0}", ShadowCopyFiles);
@@ -253,7 +252,7 @@ namespace MbUnit.Echo
                 List<Filter<ITest>> categoryFilters = new List<Filter<ITest>>();
 
                 foreach (string category in FilterCategories)
-                    categoryFilters.Add(new MetadataFilter<ITest>(MetadataKey.CategoryName, category));
+                    categoryFilters.Add(new MetadataFilter<ITest>(MetadataKeys.CategoryName, category));
 
                 filters.Add(new OrFilter<ITest>(categoryFilters.ToArray()));
             }
@@ -263,7 +262,7 @@ namespace MbUnit.Echo
                 List<Filter<ITest>> authorFilters = new List<Filter<ITest>>();
 
                 foreach (string author in FilterAuthors)
-                    authorFilters.Add(new MetadataFilter<ITest>(MetadataKey.AuthorName, author));
+                    authorFilters.Add(new MetadataFilter<ITest>(MetadataKeys.AuthorName, author));
 
                 filters.Add(new OrFilter<ITest>(authorFilters.ToArray()));
             }
@@ -273,7 +272,7 @@ namespace MbUnit.Echo
                 List<Filter<ITest>> importanceFilters = new List<Filter<ITest>>();
 
                 foreach (TestImportance importance in FilterImportances)
-                    importanceFilters.Add(new MetadataFilter<ITest>(MetadataKey.Importance, importance.ToString()));
+                    importanceFilters.Add(new MetadataFilter<ITest>(MetadataKeys.Importance, importance.ToString()));
 
                 filters.Add(new OrFilter<ITest>(importanceFilters.ToArray()));
             }

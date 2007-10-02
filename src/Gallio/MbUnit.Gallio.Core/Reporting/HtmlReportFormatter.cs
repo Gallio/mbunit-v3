@@ -20,7 +20,7 @@ using System.Xml;
 using Castle.Core;
 using MbUnit.Core.Reporting.Resources;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Core.Harness;
 
 namespace MbUnit.Core.Reporting
 {
@@ -107,14 +107,15 @@ namespace MbUnit.Core.Reporting
         /// for HTML reports.
         /// </summary>
         /// <param name="reportPath">The path of the report file</param>
+        /// <param name="dirName">The subdirectory name</param>
         /// <returns>The directory in which to store images</returns>
-        private static string GetDirectoryPath(string reportPath, string dir)
+        private static string GetDirectoryPath(string reportPath, string dirName)
         {
             string reportDirectory = Path.GetDirectoryName(reportPath);
             if (reportDirectory.Length == 0)
-                return dir;
+                return dirName;
 
-            return Path.Combine(reportDirectory, dir);
+            return Path.Combine(reportDirectory, dirName);
         }
     }
 }

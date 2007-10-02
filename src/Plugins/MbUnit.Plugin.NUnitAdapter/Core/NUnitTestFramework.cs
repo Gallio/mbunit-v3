@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Core.Harness;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Kernel.Collections;
 using MbUnit.Framework.Kernel.Utilities;
 using MbUnit.Plugin.NUnitAdapter.Properties;

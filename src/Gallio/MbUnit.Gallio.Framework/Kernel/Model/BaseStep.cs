@@ -30,21 +30,18 @@ namespace MbUnit.Framework.Kernel.Model
         private readonly ITest test;
 
         /// <summary>
-        /// Creates a root step for a test.
+        /// Gets the localized name of the root step.
         /// </summary>
-        /// <param name="test">The test</param>
-        /// <returns>The root step</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
-        public BaseStep(ITest test)
-            : this(test, null, Resources.BaseStep_RootStepName)
+        public static string RootStepName
         {
+            get { return Resources.BaseStep_RootStepName; }
         }
 
         /// <summary>
         /// Creates a step.
         /// </summary>
         /// <param name="test">The test to which the step belongs</param>
-        /// <param name="parent">The parent step, or null if none</param>
+        /// <param name="parent">The parent step, or null if creating a root step</param>
         /// <param name="name">The step name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
         /// or <paramref name="test"/> is null</exception>
@@ -97,6 +94,12 @@ namespace MbUnit.Framework.Kernel.Model
         public ITest Test
         {
             get { return test; }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return String.Format("[Step] {0}", fullName);
         }
     }
 }

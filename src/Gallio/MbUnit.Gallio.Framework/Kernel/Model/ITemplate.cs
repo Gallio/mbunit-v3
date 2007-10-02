@@ -60,10 +60,17 @@ namespace MbUnit.Framework.Kernel.Model
         /// Gets or sets whether the template generates tests all on its own.
         /// </para>
         /// <para>
-        /// This value should be set to false when a template describes some other
-        /// declarative component of a test that should not be automatically bound
-        /// and used to construct child tests.  A non-generative template may still
-        /// be used to construct tests as part of some other explicit binding process.
+        /// When processing a generative template, a binding will automatically
+        /// be created for the template within the scope if its containing template.
+        /// So for example, a test fixture class can stand on its own so its template
+        /// is generative.
+        /// </para>
+        /// <para>
+        /// On the other hand, a non-generative template is not
+        /// automatically bound.  It is anticipated that a non-generative template
+        /// will be used in some other fashion.  So for example, a test fixture mixin does
+        /// not mean anything on its own and cannot produce tests all by itself.  It must be
+        /// explicitly bound in a particular context.
         /// </para>
         /// </summary>
         bool IsGenerator { get; set; }

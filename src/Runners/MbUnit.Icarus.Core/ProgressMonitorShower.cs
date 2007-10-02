@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Core.ProgressMonitoring;
 
 namespace MbUnit.Icarus.Core
 {

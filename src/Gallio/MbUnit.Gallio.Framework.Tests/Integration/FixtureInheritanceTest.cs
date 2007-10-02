@@ -14,11 +14,11 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runtime;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Results;
 using MbUnit.Framework.Kernel.Runtime;
 using MbUnit.Framework.Tests;
 using MbUnit.TestResources.Gallio.Fixtures;
@@ -36,29 +36,47 @@ namespace MbUnit._Framework.Tests.Integration
         [TestFixtureSetUp]
         public void RunSample()
         {
-            RunFixtures(typeof(FixtureInheritanceSample.DerivedFixture));
+            RunFixtures(typeof(FixtureInheritanceSample), typeof(FixtureInheritanceSample.DerivedFixture));
         }
 
         [Test]
-        public void BaseTestIncludesBaseFixtureContributionsFirst()
+        public void BaseTestOnBaseFixture()
         {
-            CodeReference codeReference = CodeReference.CreateFromType(typeof(FixtureInheritanceSample.DerivedFixture));
-            codeReference.MemberName = "BaseTest";
-
-            Assert.AreEqual(TestOutcome.Passed, GetTestRun(codeReference).RootStepRun.Result.Outcome);
-            Assert.AreEqual("BaseTestFixtureSetUp\nBaseSetUp\nBaseTest\nBaseTearDown\nBaseTestFixtureTearDown\n",
-                GetStreamText(codeReference, ExecutionLogStreamName.ConsoleOutput));
+            AssertOutput("BaseTestFixtureSetUp\nBaseTestFixtureTearDown\n",
+                typeof(FixtureInheritanceSample), null);
+            AssertOutput("BaseSetUp\nBaseTest\nBaseTearDown\n",
+                typeof(FixtureInheritanceSample), "BaseTest");
         }
 
         [Test]
-        public void DerivedTestIncludesBaseFixtureContributionsFirst()
+        public void BaseTestOnDerivedFixtureIncludesBaseFixtureContributionsFirst()
         {
-            CodeReference codeReference = CodeReference.CreateFromType(typeof(FixtureInheritanceSample.DerivedFixture));
-            codeReference.MemberName = "DerivedTest";
+            AssertOutput("BaseTestFixtureSetUp\nDerivedTestFixtureSetUp\nDerivedTestFixtureTearDown\nBaseTestFixtureTearDown\n",
+                typeof(FixtureInheritanceSample.DerivedFixture), null);
+            AssertOutput("BaseSetUp\nDerivedSetUp\nBaseTest\nDerivedTearDown\nBaseTearDown\n",
+                typeof(FixtureInheritanceSample.DerivedFixture), "BaseTest");
+        }
 
-            Assert.AreEqual(TestOutcome.Passed, GetTestRun(codeReference).RootStepRun.Result.Outcome);
-            Assert.AreEqual("BaseTestFixtureSetUp\nDerivedTestFixtureSetUp\nBaseSetUp\nDerivedSetUp\nDerivedTest\nDerivedTearDown\nBaseTearDown\nDerivedTestFixtureTearDown\nBaseTestFixtureTearDown\n",
-                GetStreamText(codeReference, ExecutionLogStreamName.ConsoleOutput));
+        [Test]
+        public void DerivedTestOnDerivedFixtureIncludesBaseFixtureContributionsFirst()
+        {
+            AssertOutput("BaseTestFixtureSetUp\nDerivedTestFixtureSetUp\nDerivedTestFixtureTearDown\nBaseTestFixtureTearDown\n",
+                typeof(FixtureInheritanceSample.DerivedFixture), null);
+            AssertOutput("BaseSetUp\nDerivedSetUp\nDerivedTest\nDerivedTearDown\nBaseTearDown\n",
+                typeof(FixtureInheritanceSample.DerivedFixture), "DerivedTest");
+        }
+
+        private void AssertOutput(string expectedOutput, Type fixtureType, string memberName)
+        {
+            CodeReference codeReference = CodeReference.CreateFromType(fixtureType);
+            codeReference.MemberName = memberName;
+
+            TestRun testRun = GetTestRun(codeReference);
+            Assert.AreEqual(TestOutcome.Passed, testRun.RootStepRun.Result.Outcome);
+            Assert.AreEqual(TestStatus.Executed, testRun.RootStepRun.Result.Status);
+
+            string actualOutput = testRun.RootStepRun.ExecutionLog.GetStream(LogStreamNames.ConsoleOutput).ToString();
+            Assert.AreEqual(expectedOutput, actualOutput);
         }
     }
 }

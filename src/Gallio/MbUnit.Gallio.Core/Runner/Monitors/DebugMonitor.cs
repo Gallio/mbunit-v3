@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Castle.Core.Logging;
+using MbUnit.Core.Model.Events;
 using MbUnit.Core.Properties;
-using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Core.Runner.Monitors
 {
@@ -85,46 +85,46 @@ namespace MbUnit.Core.Runner.Monitors
                     logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_Start_EventFormat, stepName);
                     break;
 
-                case LifecycleEventType.EnterPhase:
-                    logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_Phase_EventFormat, stepName, e.PhaseName);
+                case LifecycleEventType.SetPhase:
+                    logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_SetPhase_EventFormat, stepName, e.PhaseName);
                     break;
 
                 case LifecycleEventType.Finish:
                     logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_Finish_EventFormat,
-                        stepName, e.Result.State, e.Result.Outcome, e.Result.AssertCount, e.Result.Duration);
+                        stepName, e.Result.Status, e.Result.Outcome, e.Result.AssertCount, e.Result.Duration);
                     break;
             }
         }
 
-        private void HandleExecutionLogEvent(object sender, ExecutionLogEventArgs e)
+        private void HandleExecutionLogEvent(object sender, LogEventArgs e)
         {
             string stepName = GetStepName(e.StepId);
 
             switch (e.EventType)
             {
-                case ExecutionLogEventType.WriteText:
-                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_WriteText_EventFormat,
+                case LogEventType.Attach:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_Attach_EventFormat,
+                        stepName, e.Attachment.Name, e.Attachment.ContentType);
+                    break;
+
+                case LogEventType.EmbedExisting:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_EmbedExisting_EventFormat,
+                        stepName, e.StreamName, e.AttachmentName);
+                    break;
+
+                case LogEventType.Write:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_Write_EventFormat,
                         stepName, e.StreamName, e.Text);
                     break;
 
-                case ExecutionLogEventType.WriteAttachment:
-                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_WriteAttachment_EventFormat,
-                        stepName, e.StreamName ?? @"<null>", e.Attachment.Name, e.Attachment.ContentType);
-                    break;
-
-                case ExecutionLogEventType.BeginSection:
+                case LogEventType.BeginSection:
                     logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat,
                         stepName, e.StreamName, e.SectionName);
                     break;
 
-                case ExecutionLogEventType.EndSection:
+                case LogEventType.EndSection:
                     logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_EndSection_EventFormat,
                         stepName, e.StreamName);
-                    break;
-
-                case ExecutionLogEventType.Close:
-                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_Close_EventFormat,
-                        stepName);
                     break;
             }
         }

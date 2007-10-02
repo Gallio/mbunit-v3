@@ -18,7 +18,7 @@ using System;
 using System.Text;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Tests;
 using MbUnit.TestResources.Gallio.Fixtures;
 using MbUnit2::MbUnit.Framework;

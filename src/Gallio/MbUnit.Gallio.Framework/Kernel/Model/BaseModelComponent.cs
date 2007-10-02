@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -96,7 +96,7 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
-        /// Gets or sets the value of the <see cref="MetadataKey.ComponentKind" />
+        /// Gets or sets the value of the <see cref="MetadataKeys.ComponentKind" />
         /// metadata entry.  (This is a convenience method.)
         /// </summary>
         /// <value>
@@ -104,8 +104,14 @@ namespace MbUnit.Framework.Kernel.Model
         /// </value>
         public string Kind
         {
-            get { return Metadata.GetValue(MetadataKey.ComponentKind); }
-            set { Metadata.SetValue(MetadataKey.ComponentKind, value); }
+            get { return Metadata.GetValue(MetadataKeys.ComponentKind); }
+            set { Metadata.SetValue(MetadataKeys.ComponentKind, value); }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return String.Format("[{0}] {1}", Kind, name);
         }
     }
 }

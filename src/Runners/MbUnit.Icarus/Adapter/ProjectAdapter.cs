@@ -15,7 +15,7 @@
 
 using System;
 using MbUnit.Core.Harness;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Icarus.Interfaces;

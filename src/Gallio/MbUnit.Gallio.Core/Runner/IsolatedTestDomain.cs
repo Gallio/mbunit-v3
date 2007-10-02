@@ -19,9 +19,9 @@ using System.IO;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Runtime;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Runner

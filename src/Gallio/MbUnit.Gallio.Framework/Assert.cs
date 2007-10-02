@@ -3470,7 +3470,7 @@ namespace MbUnit.Framework
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            Log.Streams[ExecutionLogStreamName.Warnings].WriteLine(message);
+            Log.Writer[LogStreamNames.Warnings].WriteLine(message);
         }
         #endregion
 

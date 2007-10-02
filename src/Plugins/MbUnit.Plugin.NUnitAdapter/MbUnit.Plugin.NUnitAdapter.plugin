@@ -6,7 +6,7 @@
 
     <components>
       <component id="NUnitAdapter.TestFramework"
-                 service="MbUnit.Core.Harness.ITestFramework, MbUnit.Gallio.Core"
+                 service="MbUnit.Core.Model.ITestFramework, MbUnit.Gallio.Core"
                  type="MbUnit.Plugin.NUnitAdapter.Core.NUnitTestFramework, MbUnit.Plugin.NUnitAdapter" />
     </components>
   </castle>

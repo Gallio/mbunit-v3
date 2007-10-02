@@ -15,17 +15,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using System.Text;
-using MbUnit.Framework.Kernel.DataBinding;
-using MbUnit.Framework.Kernel.Collections;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Filters;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Core.Model;
+using MbUnit.Core.Model.Events;
+using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Core.Runtime;
+using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Utilities;
 using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Harness
@@ -35,28 +32,35 @@ namespace MbUnit.Core.Harness
     /// </summary>
     public class DefaultTestHarness : ITestHarness
     {
-        private bool isDisposed;
         private IRuntime runtime;
+        private ITestPlanFactory testPlanFactory;
+
+        private bool isDisposed;
         private List<Assembly> assemblies;
         private TestPackage package;
         private TemplateTreeBuilder templateTreeBuilder;
         private TestTreeBuilder testTreeBuilder;
-        private EventDispatcher eventDispatcher;
+        private TestEventDispatcher eventDispatcher;
 
         /// <summary>
         /// Creates a test harness.
         /// </summary>
         /// <param name="runtime">The runtime</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
-        public DefaultTestHarness(IRuntime runtime)
+        /// <param name="testPlanFactory">The test plan factory</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> 
+        /// or <paramref name="testPlanFactory"/> is null</exception>
+        public DefaultTestHarness(IRuntime runtime, ITestPlanFactory testPlanFactory)
         {
             if (runtime == null)
-                throw new ArgumentNullException("runtime");
+                throw new ArgumentNullException(@"runtime");
+            if (testPlanFactory == null)
+                throw new ArgumentNullException(@"testPlanFactory");
 
             this.runtime = runtime;
+            this.testPlanFactory = testPlanFactory;
 
             assemblies = new List<Assembly>();
-            eventDispatcher = new EventDispatcher();
+            eventDispatcher = new TestEventDispatcher();
         }
 
         /// <inheritdoc />
@@ -77,6 +81,7 @@ namespace MbUnit.Core.Harness
                 testTreeBuilder = null;
                 assemblies = null;
                 runtime = null;
+                testPlanFactory = null;
                 eventDispatcher = null;
             }
         }
@@ -108,7 +113,7 @@ namespace MbUnit.Core.Harness
         }
 
         /// <inheritdoc />
-        public EventDispatcher EventDispatcher
+        public TestEventDispatcher EventDispatcher
         {
             get { return eventDispatcher; }
         }
@@ -352,58 +357,22 @@ namespace MbUnit.Core.Harness
             {
                 progressMonitor.BeginTask("Running tests.", 100);
 
-                progressMonitor.SetStatus("Sorting tests.");
+                ITestPlan plan = testPlanFactory.CreateTestPlan(eventDispatcher);
 
-                Dictionary<ITest, TestBatch> filteredTests = new Dictionary<ITest, TestBatch>();
-                PopulateClosureOfFilteredTests(testTreeBuilder.Root, options.Filter, filteredTests, null);
-
-                MultiMap<TestBatch, ITest> batches = new MultiMap<TestBatch, ITest>();
-                foreach (ITest test in filteredTests.Keys)
+                try
                 {
-                    TestBatch batch = test.Batch;
-                    if (batch != null)
-                        batches.Add(batch, test);
+                    plan.ScheduleTests(new SubProgressMonitor(progressMonitor, 5), testTreeBuilder.Root, options);
+
+                    using (TestEnvironment.Enter())
+                    {
+                        plan.RunTests(new SubProgressMonitor(progressMonitor, 90));
+                    }
                 }
-
-                progressMonitor.Worked(1);
-
-                int testCount = 0;
-                foreach (KeyValuePair<TestBatch, IList<ITest>> batch in batches)
+                finally
                 {
-                    testCount += batch.Value.Count;
-                }
-
-                foreach (KeyValuePair<TestBatch, IList<ITest>> batch in batches)
-                {
-                    IList<ITest> tests = batch.Value;
-                    ITestController controller = batch.Key.CreateController();
-
-                    controller.Run(new SubProgressMonitor(progressMonitor, testCount == 0 ? double.NaN : tests.Count * 99.0 / testCount),
-                        options, eventDispatcher, tests);
+                    plan.CleanUpTests(new SubProgressMonitor(progressMonitor, 5));
                 }
             }
-        }
-
-        private static bool PopulateClosureOfFilteredTests(ITest test, Filter<ITest> filter, Dictionary<ITest, TestBatch> filteredTests, TestBatch parentBatch)
-        {
-            TestBatch batch = test.Batch;
-            if (parentBatch != null && batch != parentBatch)
-                throw new TestHarnessException("Detected nested test batches in the test tree!");
-
-            bool childWasIncluded = false;
-            foreach (ITest child in test.Children)
-                if (PopulateClosureOfFilteredTests(child, filter, filteredTests, batch))
-                    childWasIncluded = true;
-
-            // Ensure that we include the parent test if one of its children was matched by the filter
-            // and included in the list of filtered tests.
-            if (childWasIncluded || filter.IsMatch(test))
-            {
-                filteredTests.Add(test, batch);
-                return true;
-            }
-
-            return false;
         }
 
         private void ThrowIfDisposed()

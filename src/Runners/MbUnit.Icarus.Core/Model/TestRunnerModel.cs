@@ -16,8 +16,7 @@
 
 using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Icarus.Core.Interfaces;
 
 namespace MbUnit.Icarus.Core.Model

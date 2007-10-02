@@ -14,8 +14,8 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.Results;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit.Core.Tests.Reporting
@@ -54,19 +54,19 @@ namespace MbUnit.Core.Tests.Reporting
         }
 
         [RowTest]
-        [Row(TestState.NotRun, TestOutcome.Failed, false, 3, 8, 4, 6, 7, 2, 3, 4, 5)]
-        [Row(TestState.NotRun, TestOutcome.Passed, true, 3, 8, 5, 6, 7, 2, 3, 4, 5)]
-        [Row(TestState.Ignored, TestOutcome.Passed, true, 3, 8, 5, 7, 7, 2, 3, 4, 5)]
-        [Row(TestState.Skipped, TestOutcome.Passed, true, 3, 8, 5, 6, 8, 2, 3, 4, 5)]
-        [Row(TestState.Executed, TestOutcome.Passed, true, 3, 8, 5, 6, 7, 3, 4, 4, 5)]
-        [Row(TestState.Canceled, TestOutcome.Failed, true, 3, 8, 5, 6, 7, 3, 3, 5, 5)]
-        [Row(TestState.Canceled, TestOutcome.Inconclusive, true, 3, 8, 5, 6, 7, 3, 3, 4, 6)]
-        public void MergeStepStatisticsTest(MbUnit.Framework.Kernel.Results.TestState state, TestOutcome outcome, bool isTestCase, int stepRunAsrtCnt
+        [Row(TestStatus.NotRun, TestOutcome.Failed, false, 3, 8, 4, 6, 7, 2, 3, 4, 5)]
+        [Row(TestStatus.NotRun, TestOutcome.Passed, true, 3, 8, 5, 6, 7, 2, 3, 4, 5)]
+        [Row(TestStatus.Ignored, TestOutcome.Passed, true, 3, 8, 5, 7, 7, 2, 3, 4, 5)]
+        [Row(TestStatus.Skipped, TestOutcome.Passed, true, 3, 8, 5, 6, 8, 2, 3, 4, 5)]
+        [Row(TestStatus.Executed, TestOutcome.Passed, true, 3, 8, 5, 6, 7, 3, 4, 4, 5)]
+        [Row(TestStatus.Canceled, TestOutcome.Failed, true, 3, 8, 5, 6, 7, 3, 3, 5, 5)]
+        [Row(TestStatus.Canceled, TestOutcome.Inconclusive, true, 3, 8, 5, 6, 7, 3, 3, 4, 6)]
+        public void MergeStepStatisticsTest(TestStatus status, TestOutcome outcome, bool isTestCase, int stepRunAsrtCnt
             , int asrtCnt, int tstCnt, int ignrCnt, int skipCnt, int runCnt, int passCnt, int failCnt, int inclsvCnt)
         {
             SetPackageRunStaticsProperties();
             StepRun stepRun = new StepRun("stepId", "stepName", "fullName");
-            stepRun.Result.State = state;
+            stepRun.Result.Status = status;
             stepRun.Result.Outcome = outcome;
             stepRun.Result.AssertCount = stepRunAsrtCnt;
             _prStat.MergeStepStatistics(stepRun, isTestCase);

@@ -60,8 +60,17 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
+        /// <para>
         /// Applies contributions to an assembly template.
         /// This method is called after the assembly template is linked to the template tree.
+        /// </para>
+        /// <para>
+        /// Contributions are applied in a very specific order:
+        /// <list type="bullet">
+        /// <item>Assembly decorator attributes declared by the assembly</item>
+        /// <item>Metadata attributes declared by the assembly</item>
+        /// </list>
+        /// </para>
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model

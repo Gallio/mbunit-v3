@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Properties;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -39,8 +39,6 @@ namespace MbUnit.Framework.Kernel.Model
 
             Kind = ComponentKind.Framework;
             IsGenerator = true;
-
-            ProcessTestChain.After(ApplyTestBatch);
         }
 
         /// <summary>
@@ -66,17 +64,6 @@ namespace MbUnit.Framework.Kernel.Model
         public void AddAssemblyTemplate(MbUnitAssemblyTemplate assemblyTemplate)
         {
             AddChild(assemblyTemplate);
-        }
-
-        private void ApplyTestBatch(MbUnitTest test)
-        {
-            TestBatch batch = new TestBatch(Name, CreateTestController);
-            test.Batch = batch;
-        }
-
-        private static MbUnitTestController CreateTestController()
-        {
-            return new MbUnitTestController();
         }
     }
 }

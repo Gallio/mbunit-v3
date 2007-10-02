@@ -18,6 +18,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\MbUnit.Gallio.Core.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -26,6 +28,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\MbUnit.Gallio.Core.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
@@ -47,8 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleSupport\CommandLine\ResponseFileTests.cs" />
-    <Compile Include="Harness\BaseTestFrameworkTest.cs" />
-    <Compile Include="Harness\MbUnitTestFrameworkTest.cs" />
+    <Compile Include="Model\BaseTestFrameworkTest.cs" />
+    <Compile Include="Model\MbUnitTestFrameworkTest.cs" />
     <Compile Include="MockTestDataFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CoreAssert.cs" />
@@ -61,6 +65,7 @@
     <Compile Include="Reporting\StepRunTests.cs" />
     <Compile Include="Reporting\TestRunTests.cs" />
     <Compile Include="Runner\TestRunnerHelperTests.cs" />
+    <Compile Include="Runtime\DefaultXmlDocumentationResolverTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">

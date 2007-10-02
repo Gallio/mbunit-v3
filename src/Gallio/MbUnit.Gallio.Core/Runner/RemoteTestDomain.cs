@@ -14,11 +14,11 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using MbUnit.Core.Harness;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Core.Model;
+using MbUnit.Core.Model.Events;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Runner
@@ -146,7 +146,7 @@ namespace MbUnit.Core.Runner
                     proxy = InternalConnect(progressMonitor);
 
                     if (Listener != null)
-                        proxy.SetEventListener(new RemoteEventListener(Listener));
+                        proxy.SetTestListener(new RemoteTestListener(Listener));
                 }
             }
             catch (Exception ex)

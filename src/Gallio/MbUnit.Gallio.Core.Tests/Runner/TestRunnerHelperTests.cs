@@ -15,8 +15,8 @@
 
 extern alias MbUnit2;
 using System;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Runner;
-using MbUnit.Framework.Kernel.Events;
 using Castle.Core.Logging;
 using MbUnit2::MbUnit.Framework;
 

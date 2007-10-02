@@ -18,6 +18,7 @@ extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Kernel.Model;
 
 using MbUnit2::MbUnit.Core;
@@ -27,7 +28,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
     /// <summary>
     /// Wraps an MbUnit v2 test.
     /// </summary>
-    public class MbUnit2Test : BaseTest
+    public class MbUnit2Test : BaseTest, IMasterTest
     {
         private readonly Fixture fixture;
         private readonly RunPipe runPipe;
@@ -42,7 +43,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         /// <param name="runPipe">The MbUnit v2 run pipe, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
         /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
-        public MbUnit2Test(string name, CodeReference codeReference, ITemplateBinding templateBinding, Fixture fixture, RunPipe runPipe)
+        public MbUnit2Test(string name, CodeReference codeReference, MbUnit2AssemblyTemplateBinding templateBinding, Fixture fixture, RunPipe runPipe)
             : base(name, codeReference, templateBinding)
         {
             this.fixture = fixture;
@@ -63,6 +64,20 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         public RunPipe RunPipe
         {
             get { return runPipe; }
+        }
+
+        /// <summary>
+        /// Gets the binding.
+        /// </summary>
+        new public MbUnit2AssemblyTemplateBinding TemplateBinding
+        {
+            get { return (MbUnit2AssemblyTemplateBinding)base.TemplateBinding; }
+        }
+
+        /// <inheritdoc />
+        public ITestController CreateTestController()
+        {
+            return new MbUnit2TestController(TemplateBinding.FixtureExplorer);
         }
     }
 }

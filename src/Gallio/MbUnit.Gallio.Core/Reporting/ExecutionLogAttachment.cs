@@ -79,9 +79,9 @@ namespace MbUnit.Core.Reporting
             ExecutionLogAttachmentEncoding encoding, string innerText, XmlElement[] innerXml)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(@"name");
             if (contentType == null)
-                throw new ArgumentNullException("contentType");
+                throw new ArgumentNullException(@"contentType");
 
             this.name = name;
             this.contentType = contentType;
@@ -115,7 +115,7 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 name = value;
             }
         }
@@ -131,7 +131,7 @@ namespace MbUnit.Core.Reporting
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
                 contentType = value;
             }
         }

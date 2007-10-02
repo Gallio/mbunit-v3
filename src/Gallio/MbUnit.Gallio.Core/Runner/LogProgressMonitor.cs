@@ -15,8 +15,8 @@
 
 using System;
 using Castle.Core.Logging;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Runner;
-using MbUnit.Framework.Kernel.Events;
 
 namespace MbUnit.Core.Runner
 {

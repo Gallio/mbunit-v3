@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Runtime;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework;
 
 namespace MbUnit.Core.Runner
 {
@@ -29,9 +29,9 @@ namespace MbUnit.Core.Runner
     public class LocalRunner : BaseRunner
     {
         /// <summary>
-        /// Creates a local runner using the current runtime stored in <see cref="RuntimeHolder.Instance" />.
+        /// Creates a local runner using the current runtime stored in <see cref="Framework.Runtime.Instance" />.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="RuntimeHolder.Instance" /> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Framework.Runtime.Instance" /> is null</exception>
         public LocalRunner()
             : this(GetRuntime())
         {
@@ -48,7 +48,7 @@ namespace MbUnit.Core.Runner
 
         private static ICoreRuntime GetRuntime()
         {
-            ICoreRuntime runtime = RuntimeHolder.Instance as ICoreRuntime;
+            ICoreRuntime runtime = Framework.Runtime.Instance as ICoreRuntime;
             if (runtime == null)
                 throw new InvalidOperationException("The framework's runtime holder has not been initialized.");
 

@@ -277,8 +277,19 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [Execution Log: Attach ({0})]
+        ///	Attachment Name:         {1}
+        ///	Attachment Content Type: {2}.
+        /// </summary>
+        internal static string DebugMonitor_ExecutionLogEvent_Attach_EventFormat {
+            get {
+                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_Attach_EventFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [Execution Log: Begin Section ({0})]
-        ///	Stream Name: {1}
+        ///	Stream Name:  {1}
         ///	Section Name: {2}.
         /// </summary>
         internal static string DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat {
@@ -288,11 +299,13 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Execution Log: Close ({0})].
+        ///   Looks up a localized string similar to [Execution Log: Embed Existing ({0})]
+        ///	Stream Name:     {1}
+        ///	Attachment Name: {2}.
         /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_Close_EventFormat {
+        internal static string DebugMonitor_ExecutionLogEvent_EmbedExisting_EventFormat {
             get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_Close_EventFormat", resourceCulture);
+                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_EmbedExisting_EventFormat", resourceCulture);
             }
         }
         
@@ -307,34 +320,22 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Execution Log: Write Attachment ({0})]
+        ///   Looks up a localized string similar to [Execution Log: Write ({0})]
         ///	Stream Name: {1}
-        ///	Attachment Name: {2}
-        ///	Attachment Content Type: {3}.
+        ///	Text:        {2}.
         /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_WriteAttachment_EventFormat {
+        internal static string DebugMonitor_ExecutionLogEvent_Write_EventFormat {
             get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_WriteAttachment_EventFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [Execution Log: Write Text ({0})]
-        ///	Stream Name: {1}
-        ///	Text: {2}.
-        /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_WriteText_EventFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_WriteText_EventFormat", resourceCulture);
+                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_Write_EventFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to [Lifecycle: Finish ({0})]
-        ///	State: {1}
-        ///	Outcome: {2}
-        ///	Asserts: {3}
-        ///	Duration: {4}.
+        ///	State:    {1}
+        ///	Outcome:  {2}
+        ///	Asserts:  {3}
+        ///	Duration: {4:0.000}s.
         /// </summary>
         internal static string DebugMonitor_LifecycleEvent_Finish_EventFormat {
             get {
@@ -343,12 +344,12 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Lifecycle: Enter Phase ({0})]
+        ///   Looks up a localized string similar to [Lifecycle: Set Phase ({0})]
         ///	Phase Name: {1}.
         /// </summary>
-        internal static string DebugMonitor_LifecycleEvent_Phase_EventFormat {
+        internal static string DebugMonitor_LifecycleEvent_SetPhase_EventFormat {
             get {
-                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_Phase_EventFormat", resourceCulture);
+                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_SetPhase_EventFormat", resourceCulture);
             }
         }
         

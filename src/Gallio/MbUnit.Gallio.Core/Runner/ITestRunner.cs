@@ -15,11 +15,10 @@
 
 using System;
 using MbUnit.Core.Harness;
-using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Core.Model.Events;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -73,7 +72,7 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Gets the event dispatcher for the test runner.
         /// </summary>
-        EventDispatcher EventDispatcher { get; }
+        TestEventDispatcher EventDispatcher { get; }
 
         /// <summary>
         /// Gets or sets the template enumeration options.

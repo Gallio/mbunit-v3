@@ -45,7 +45,7 @@ namespace MbUnit.Framework.Kernel.Utilities
                 return (T)attribs[0];
             else
                 throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture,
-                                                                  "There are multiple instances of attribute '{0}'.", typeof(T).FullName)); 
+                    "There are multiple instances of attribute '{0}'.", typeof(T).FullName)); 
         }
 
         /// <summary>
@@ -150,6 +150,35 @@ namespace MbUnit.Framework.Kernel.Utilities
             return property.CanRead && property.CanWrite
                    && CanInvokeNonStatic(property.GetGetMethod())
                    && CanInvokeNonStatic(property.GetSetMethod());
+        }
+
+        /// <summary>
+        /// Sorts an array of members that all belong to the same type
+        /// such that the members declared by supertypes appear before those
+        /// declared by subtypes.
+        /// </summary>
+        /// <example>
+        /// If type A derives from types B and C then given methods
+        /// A.Foo, A.Bar, B.Foo, C.Quux one possible sorted order will be:
+        /// B.Foo, C.Quux, A.Bar, A.Foo.  The members are not sorted by name or
+        /// by any other criterion except by relative specificity of the
+        /// declaring types.
+        /// </example>
+        public static void SortMembersBySubTypes<T>(T[] members)
+            where T : MemberInfo
+        {
+            Array.Sort(members, delegate(T a, T b)
+            {
+                Type ta = a.DeclaringType, tb = b.DeclaringType;
+                if (ta != tb)
+                {
+                    if (ta.IsAssignableFrom(tb))
+                        return -1;
+                    if (tb.IsAssignableFrom(ta))
+                        return 1;
+                }
+                return 0;
+            });
         }
     }
 }

@@ -123,7 +123,7 @@ namespace MbUnit.Echo
                 testRunnerHelper.TemplateModelFilename = arguments.SaveTemplateTree;
                 testRunnerHelper.TestModelFilename = arguments.SaveTestTree;
 
-                testRunnerHelper.EchoResults = arguments.EchoResults;
+                testRunnerHelper.EchoResults = ! arguments.NoEchoResults;
 
                 int result = testRunnerHelper.Run();
                 OpenReports(testRunnerHelper);

@@ -35,11 +35,11 @@
 	</xsl:template>
   
 	<xsl:template match="gallio:testRuns">
-    <xsl:variable name="passed" select="descendant::gallio:stepRun[gallio:result/@state='executed' and gallio:result/@outcome='passed']" />
-    <xsl:variable name="failed" select="descendant::gallio:stepRun[gallio:result/@state='executed' and gallio:result/@outcome='failed']" />
-    <xsl:variable name="inconclusive" select="descendant::gallio:stepRun[gallio:result/@state='executed' and gallio:result/@outcome='inconclusive']" />
-    <xsl:variable name="ignored" select="descendant::gallio:stepRun[gallio:result/@state='ignored']" />
-    <xsl:variable name="skipped" select="descendant::gallio:stepRun[gallio:result/@state='skipped']" />
+    <xsl:variable name="passed" select="descendant::gallio:stepRun[gallio:result/@status='executed' and gallio:result/@outcome='passed']" />
+    <xsl:variable name="failed" select="descendant::gallio:stepRun[gallio:result/@status='executed' and gallio:result/@outcome='failed']" />
+    <xsl:variable name="inconclusive" select="descendant::gallio:stepRun[gallio:result/@status='executed' and gallio:result/@outcome='inconclusive']" />
+    <xsl:variable name="ignored" select="descendant::gallio:stepRun[gallio:result/@status='ignored']" />
+    <xsl:variable name="skipped" select="descendant::gallio:stepRun[gallio:result/@status='skipped']" />
 
     <xsl:if test="$show-passed-tests and $passed">
       <xsl:text>* Passed:&#xA;&#xA;</xsl:text>

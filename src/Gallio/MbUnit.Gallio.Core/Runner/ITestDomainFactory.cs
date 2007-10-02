@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Core.Harness;
 
 namespace MbUnit.Core.Runner
 {

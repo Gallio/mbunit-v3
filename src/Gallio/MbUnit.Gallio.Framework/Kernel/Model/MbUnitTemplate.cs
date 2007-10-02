@@ -99,5 +99,19 @@ namespace MbUnit.Framework.Kernel.Model
 
             return binding;
         }
+
+        /// <summary>
+        /// Creates an MbUnit test instance.
+        /// </summary>
+        /// <param name="name">The name of the component</param>
+        /// <param name="codeReference">The point of definition</param>
+        /// <param name="templateBinding">The template binding that produced this test</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
+        /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
+        /// <returns>The new test</returns>
+        public virtual MbUnitTest CreateMbUnitTest(string name, CodeReference codeReference, MbUnitTemplateBinding templateBinding)
+        {
+            return new MbUnitTest(name, codeReference, templateBinding);
+        }
     }
 }

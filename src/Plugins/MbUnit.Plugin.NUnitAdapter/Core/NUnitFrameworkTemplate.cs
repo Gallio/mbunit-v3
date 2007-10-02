@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Framework.Kernel.DataBinding;
-using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Plugin.NUnitAdapter.Properties;
 

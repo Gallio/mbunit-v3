@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Runtime
 {
@@ -59,13 +58,17 @@ namespace MbUnit.Core.Runtime
             {
                 List<string> directories = new List<string>();
 
-                try
+                Uri assemblyUri = new Uri(typeof(DefaultAssemblyResolverManager).Assembly.CodeBase);
+                if (assemblyUri.IsFile)
                 {
-                    directories.Add(Path.GetDirectoryName(new Uri(typeof(DefaultAssemblyResolverManager).Assembly.CodeBase).LocalPath));
-                }
-                catch (InvalidOperationException)
-                {
-                    // Ignore problems getting the local directory
+                    try
+                    {
+                        directories.Add(assemblyUri.LocalPath);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Ignore problems getting the local directory
+                    }
                 }
 
                 return directories;

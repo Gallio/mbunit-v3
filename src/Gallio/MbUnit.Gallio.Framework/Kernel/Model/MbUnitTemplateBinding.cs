@@ -45,6 +45,15 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
+        /// Gets the MbUnit template.
+        /// </summary>
+        /// <seealso cref="ITemplateBinding.Template"/>
+        new public MbUnitTemplate Template
+        {
+            get { return (MbUnitTemplate) base.Template; }
+        }
+
+        /// <summary>
         /// This chain of actions is invoked when a test is built from a template binding
         /// derived from this template.  MbUnit framework attributes add behavior to
         /// this chain to apply contributions to the test.
@@ -67,7 +76,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public override void BuildTests(TestTreeBuilder builder, ITest parent)
         {
-            MbUnitTest test = new MbUnitTest(Template.Name, Template.CodeReference, this);
+            MbUnitTest test = Template.CreateMbUnitTest(Template.Name, Template.CodeReference, this);
             test.Kind = null;
             test.Metadata.Entries.AddAll(Template.Metadata.Entries);
             parent.AddChild(test);

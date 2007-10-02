@@ -16,19 +16,14 @@
 extern alias MbUnit2;
 using System.Threading;
 using MbUnit._Framework.Tests;
-using MbUnit.Core.Harness;
-using MbUnit.Core.Tests.Harness;
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Core.Model;
+using MbUnit.Core.Tests.Model;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Kernel.Runtime;
-using MbUnit.Framework.Tests.Kernel.Runtime;
 using MbUnit.TestResources.NUnit;
 using MbUnit.TestResources.NUnit.Metadata;
 using MbUnit2::MbUnit.Framework;
 
 using System.Reflection;
-using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Plugin.NUnitAdapter.Core;
 
 using System;
@@ -96,7 +91,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(ComponentKind.Root, rootTest.Kind);
             Assert.AreEqual(CodeReference.Unknown, rootTest.CodeReference);
             Assert.IsFalse(rootTest.IsTestCase);
-            Assert.IsNull(rootTest.Batch);
             Assert.AreEqual(1, rootTest.Children.Count);
 
             BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
@@ -105,8 +99,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(CodeReference.Unknown, frameworkTest.CodeReference);
             Assert.AreEqual("NUnit v" + expectedVersion, frameworkTest.Name);
             Assert.IsFalse(frameworkTest.IsTestCase);
-            Assert.IsNotNull(frameworkTest.Batch);
-            TestBatch nunitBatch = frameworkTest.Batch;
             Assert.AreEqual(1, frameworkTest.Children.Count);
 
             NUnitTest assemblyTest = (NUnitTest)frameworkTest.Children[0];
@@ -115,7 +107,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeReference);
             Assert.AreEqual(sampleAssembly.Location, assemblyTest.Name);
             Assert.IsFalse(assemblyTest.IsTestCase);
-            Assert.AreSame(nunitBatch, assemblyTest.Batch);
             Assert.AreEqual(1, assemblyTest.Children.Count);
 
             NUnitTest namespaceTest = (NUnitTest)assemblyTest.Children[0];
@@ -124,7 +115,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit", null, null, null), namespaceTest.CodeReference);
             Assert.AreEqual("MbUnit", namespaceTest.Name);
             Assert.IsFalse(namespaceTest.IsTestCase);
-            Assert.AreSame(nunitBatch, namespaceTest.Batch);
             Assert.AreEqual(1, namespaceTest.Children.Count);
 
             NUnitTest namespaceTest2 = (NUnitTest)namespaceTest.Children[0];
@@ -133,7 +123,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources", null, null, null), namespaceTest2.CodeReference);
             Assert.AreEqual("MbUnit.TestResources", namespaceTest2.Name);
             Assert.IsFalse(namespaceTest2.IsTestCase);
-            Assert.AreSame(nunitBatch, namespaceTest2.Batch);
             Assert.AreEqual(1, namespaceTest2.Children.Count);
 
             NUnitTest namespaceTest3 = (NUnitTest)namespaceTest2.Children[0];
@@ -142,7 +131,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.NUnit", null, null, null), namespaceTest3.CodeReference);
             Assert.AreEqual("MbUnit.TestResources.NUnit", namespaceTest3.Name);
             Assert.IsFalse(namespaceTest3.IsTestCase);
-            Assert.AreSame(nunitBatch, namespaceTest3.Batch);
             Assert.GreaterEqualThan(namespaceTest3.Children.Count, 1);
 
             NUnitTest fixtureTest = (NUnitTest)GetDescendantByName(namespaceTest3, "MbUnit.TestResources.NUnit.SimpleTest");
@@ -151,7 +139,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.NUnit", "MbUnit.TestResources.NUnit.SimpleTest", null, null), fixtureTest.CodeReference);
             Assert.AreEqual("MbUnit.TestResources.NUnit.SimpleTest", fixtureTest.Name);
             Assert.IsFalse(fixtureTest.IsTestCase);
-            Assert.AreSame(nunitBatch, fixtureTest.Batch);
             Assert.AreEqual(2, fixtureTest.Children.Count);
 
             NUnitTest passTest = (NUnitTest)GetDescendantByName(fixtureTest, "MbUnit.TestResources.NUnit.SimpleTest.Pass");
@@ -162,7 +149,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.NUnit", "MbUnit.TestResources.NUnit.SimpleTest", "Pass", null), passTest.CodeReference);
             Assert.AreEqual("MbUnit.TestResources.NUnit.SimpleTest.Pass", passTest.Name);
             Assert.IsTrue(passTest.IsTestCase);
-            Assert.AreSame(nunitBatch, passTest.Batch);
             Assert.AreEqual(0, passTest.Children.Count);
 
             Assert.AreSame(fixtureTest, failTest.Parent);
@@ -170,8 +156,21 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.NUnit", "MbUnit.TestResources.NUnit.SimpleTest", "Fail", null), failTest.CodeReference);
             Assert.AreEqual("MbUnit.TestResources.NUnit.SimpleTest.Fail", failTest.Name);
             Assert.IsTrue(failTest.IsTestCase);
-            Assert.AreSame(nunitBatch, failTest.Batch);
             Assert.AreEqual(0, failTest.Children.Count);
+        }
+
+        [Test]
+        public void MetadataImport_XmlDocumentation()
+        {
+            PopulateTestTree();
+
+            NUnitTest test = (NUnitTest)GetDescendantByName(rootTest, typeof(SimpleTest).FullName);
+            NUnitTest passTest = (NUnitTest)GetDescendantByName(test, "MbUnit.TestResources.NUnit.SimpleTest.Pass");
+            NUnitTest failTest = (NUnitTest)GetDescendantByName(test, "MbUnit.TestResources.NUnit.SimpleTest.Fail");
+
+            Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+            Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+            Assert.AreEqual("<summary>\nA failing test.\n</summary>", failTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
         }
 
         [Test]
@@ -180,7 +179,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             PopulateTestTree();
 
             NUnitTest test = (NUnitTest)GetDescendantByName(rootTest, typeof(DescriptionSample).FullName);
-            Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKey.Description));
+            Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
         }
 
         [Test]
@@ -189,7 +188,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             PopulateTestTree();
 
             NUnitTest test = (NUnitTest)GetDescendantByName(rootTest, typeof(CategorySample).FullName);
-            Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKey.CategoryName));
+            Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.CategoryName));
         }
 
         [Test]
@@ -199,7 +198,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
 
             NUnitTest fixture = (NUnitTest)GetDescendantByName(rootTest, typeof(IgnoreReasonSample).FullName);
             NUnitTest test = (NUnitTest)fixture.Children[0];
-            Assert.AreEqual("For testing purposes.", test.Metadata.GetValue(MetadataKey.IgnoreReason));
+            Assert.AreEqual("For testing purposes.", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
         }
 
         [Test]

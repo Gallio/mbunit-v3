@@ -4,7 +4,7 @@
               doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" indent="yes" />
 
   <xsl:key name="outcome" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@outcome" />
-  <xsl:key name="state" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@state" />
+  <xsl:key name="status" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@status" />
 
   <xsl:template match="g:report">
     <html>
@@ -114,13 +114,13 @@
   <xsl:template match="g:children/g:test">
     <xsl:variable name="id" select="@id" />
     <xsl:variable name="tests" select="descendant-or-self::g:test[@isTestCase='true']" />
-    <xsl:variable name="run" select="$tests[@id = key('state', 'executed')/@id]" />
+    <xsl:variable name="run" select="$tests[@id = key('status', 'executed')/@id]" />
     <xsl:variable name="passed" select="$tests[@id = key('outcome', 'passed')/@id]" />
     <xsl:variable name="failed" select="$tests[@id = key('outcome', 'failed')/@id]" />
     <xsl:variable name="inconclusive" select="$tests[@id = key('outcome', 'inconclusive')/@id]" />
-    <xsl:variable name="ignored" select="$tests[@id = key('state', 'ignored')/@id]" />
-    <xsl:variable name="skipped" select="$tests[@id = key('state', 'skipped')/@id]" />
-    <xsl:variable name="assertions" select="key('state', 'executed')[@id = $tests/@id]/g:stepRun/g:result/@assertCount" />
+    <xsl:variable name="ignored" select="$tests[@id = key('status', 'ignored')/@id]" />
+    <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/@id]" />
+    <xsl:variable name="assertions" select="key('status', 'executed')[@id = $tests/@id]/g:stepRun/g:result/@assertCount" />
     <xsl:variable name="duration" select="/g:report/g:packageRun/g:testRuns/g:testRun[@id = $id]/g:stepRun/g:result/@duration" />
     <li>
       <span>
@@ -261,19 +261,19 @@
     <xsl:param name="testId" />
     <xsl:variable name="test" select="//g:testModel//g:test[@id=$testId]" />
     <xsl:variable name="tests" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
-    <xsl:variable name="run" select="$tests[@id = key('state', 'executed')/@id]" />
+    <xsl:variable name="run" select="$tests[@id = key('status', 'executed')/@id]" />
     <xsl:variable name="passed" select="$tests[@id = key('outcome', 'passed')/@id]" />
     <xsl:variable name="failed" select="$tests[@id = key('outcome', 'failed')/@id]" />
     <xsl:variable name="inconclusive" select="$tests[@id = key('outcome', 'inconclusive')/@id]" />
-    <xsl:variable name="ignored" select="$tests[@id = key('state', 'ignored')/@id]" />
-    <xsl:variable name="skipped" select="$tests[@id = key('state', 'skipped')/@id]" />
-    <xsl:variable name="assertions" select="key('state', 'executed')[@id = $tests/@id]/g:stepRun/g:result/@assertCount" />
+    <xsl:variable name="ignored" select="$tests[@id = key('status', 'ignored')/@id]" />
+    <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/@id]" />
+    <xsl:variable name="assertions" select="key('status', 'executed')[@id = $tests/@id]/g:stepRun/g:result/@assertCount" />
 
     <div>
       <xsl:attribute name="id"><xsl:value-of select="$testId" /></xsl:attribute>
       <xsl:attribute name="stepId"><xsl:value-of select="@id" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$test/g:metadata/g:entry[@key='ComponentKind']/g:value" />
-        <xsl:if test="$test/@isTestCase = 'true' and g:result/@state != 'ignored'">
+        <xsl:if test="$test/@isTestCase = 'true' and g:result/@status != 'ignored'">
           <xsl:text> </xsl:text>
           <xsl:value-of select="g:result/@outcome" />
         </xsl:if>

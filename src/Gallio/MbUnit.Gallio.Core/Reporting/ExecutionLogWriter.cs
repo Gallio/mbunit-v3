@@ -15,8 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 
 namespace MbUnit.Core.Reporting
@@ -24,11 +24,10 @@ namespace MbUnit.Core.Reporting
     /// <summary>
     /// Writes execution logs to an Xml-serializable format.
     /// </summary>
-    public class ExecutionLogWriter : IExecutionLogWriter
+    public sealed class ExecutionLogWriter : TrackingLogWriter
     {
         private readonly ExecutionLog executionLog;
-        private Dictionary<string, ExecutionLogStreamData> streamDataMap;
-        private Dictionary<string, Attachment> attachmentMap;
+        private Dictionary<string, ExecutionLogStreamWriter> streamWriters;
 
         /// <summary>
         /// Creates an execution log writer that builds a new execution log.
@@ -36,8 +35,6 @@ namespace MbUnit.Core.Reporting
         public ExecutionLogWriter()
         {
             executionLog = new ExecutionLog();
-            streamDataMap = new Dictionary<string, ExecutionLogStreamData>();
-            attachmentMap = new Dictionary<string, Attachment>();
         }
 
         /// <summary>
@@ -49,125 +46,77 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <inheritdoc />
-        public void WriteText(string streamName, string text)
+        protected override LogStreamWriter GetLogStreamWriterImpl(string streamName)
         {
-            if (streamName == null)
-                throw new ArgumentNullException("streamName");
-            if (text == null)
-                throw new ArgumentNullException("text");
-
-            lock (this)
+            lock (executionLog)
             {
                 ThrowIfClosed();
 
-                GetStreamData(streamName).WriteText(text);
-            }
-        }
-
-        /// <inheritdoc />
-        public void WriteAttachment(string streamName, Attachment attachment)
-        {
-            if (attachment == null)
-                throw new ArgumentNullException("attachment");
-
-            lock (this)
-            {
-                ThrowIfClosed();
-
-                Attachment existingAttachment;
-                if (attachmentMap.TryGetValue(attachment.Name, out existingAttachment))
+                ExecutionLogStreamWriter streamWriter;
+                if (streamWriters != null)
                 {
-                    if (attachment != existingAttachment)
-                        throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                            "Attempted to add a different attachment instance with the name '{0}'.", attachment.Name));
+                    if (streamWriters.TryGetValue(streamName, out streamWriter))
+                        return streamWriter;
                 }
                 else
                 {
-                    attachmentMap.Add(attachment.Name, attachment);
-                    executionLog.Attachments.Add(new ExecutionLogAttachment(attachment));
+                    streamWriters = new Dictionary<string, ExecutionLogStreamWriter>();
                 }
 
-                if (streamName != null)
+                streamWriter = new ExecutionLogStreamWriter(this, streamName);
+                streamWriters.Add(streamName, streamWriter);
+
+                executionLog.Streams.Add(streamWriter.ExecutionLogStream);
+                return streamWriter;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void AttachImpl(Attachment attachment)
+        {
+            lock (executionLog)
+            {
+                ThrowIfClosed();
+
+                InternalAttach(attachment);
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            lock (executionLog)
+            {
+                base.Dispose(disposing);
+
+                if (streamWriters != null)
                 {
-                    GetStreamData(streamName).WriteAttachment(attachment.Name);
+                    foreach (ExecutionLogStreamWriter writer in streamWriters.Values)
+                        writer.InternalFlush();
+
+                    streamWriters = null;
                 }
             }
         }
 
-        /// <inheritdoc />
-        public void BeginSection(string streamName, string sectionName)
+        private void InternalAttach(Attachment attachment)
         {
-            if (streamName == null)
-                throw new ArgumentNullException("streamName");
-            if (sectionName == null)
-                throw new ArgumentNullException("sectionName");
-
-            lock (this)
-            {
-                ThrowIfClosed();
-
-                GetStreamData(streamName).BeginSection(sectionName);
-            }
+            if (TrackAttachment(attachment))
+                executionLog.Attachments.Add(new ExecutionLogAttachment(attachment));
         }
 
-        /// <inheritdoc />
-        public void EndSection(string streamName)
+        private sealed class ExecutionLogStreamWriter : LogStreamWriter
         {
-            if (streamName == null)
-                throw new ArgumentNullException("streamName");
-
-            lock (this)
-            {
-                ThrowIfClosed();
-
-                GetStreamData(streamName).EndSection();
-            }
-        }
-
-        /// <inheritdoc />
-        public void Close()
-        {
-            lock (this)
-            {
-                if (streamDataMap == null)
-                    return; // already closed
-
-                foreach (ExecutionLogStreamData entry in streamDataMap.Values)
-                    entry.Flush();
-
-                streamDataMap = null;
-                attachmentMap = null;
-            }
-        }
-
-        private ExecutionLogStreamData GetStreamData(string streamName)
-        {
-            ExecutionLogStreamData streamData;
-            if (!streamDataMap.TryGetValue(streamName, out streamData))
-            {
-                streamData = new ExecutionLogStreamData(streamName);
-                streamDataMap.Add(streamName, streamData);
-
-                executionLog.Streams.Add(streamData.ExecutionLogStream);
-            }
-
-            return streamData;
-        }
-
-        private void ThrowIfClosed()
-        {
-            if (streamDataMap == null)
-                throw new InvalidOperationException("Cannot perform this operation because the execution log writer has been closed.");
-        }
-
-        private class ExecutionLogStreamData
-        {
+            private readonly ExecutionLogWriter logWriter;
             private readonly ExecutionLogStream executionLogStream;
             private readonly Stack<ExecutionLogStreamContainerTag> containerStack;
             private readonly StringBuilder textBuilder;
 
-            public ExecutionLogStreamData(string streamName)
+            public ExecutionLogStreamWriter(ExecutionLogWriter logWriter, string streamName)
+                : base(streamName)
             {
+                this.logWriter = logWriter;
+
                 executionLogStream = new ExecutionLogStream(streamName);
                 containerStack = new Stack<ExecutionLogStreamContainerTag>();
                 textBuilder = new StringBuilder();
@@ -180,43 +129,86 @@ namespace MbUnit.Core.Reporting
                 get { return executionLogStream; }
             }
 
-            public void Flush()
+            protected override void FlushImpl()
+            {
+                lock (logWriter.executionLog)
+                {
+                    logWriter.ThrowIfClosed();
+                    InternalFlush();
+                }
+            }
+
+            protected override void WriteImpl(string text)
+            {
+                lock (logWriter.executionLog)
+                {
+                    logWriter.ThrowIfClosed();
+                    textBuilder.Append(text);
+                }
+            }
+
+            protected override void BeginSectionImpl(string sectionName)
+            {
+                lock (logWriter.executionLog)
+                {
+                    logWriter.ThrowIfClosed();
+                    InternalFlush();
+
+                    ExecutionLogStreamSectionTag tag = new ExecutionLogStreamSectionTag(sectionName);
+                    containerStack.Peek().Contents.Add(tag);
+                    containerStack.Push(tag);
+                }
+            }
+
+            protected override void EndSectionImpl()
+            {
+                lock (logWriter.executionLog)
+                {
+                    logWriter.ThrowIfClosed();
+
+                    if (containerStack.Count == 1)
+                        throw new InvalidOperationException("There is no current section to be ended.");
+
+                    InternalFlush();
+                    containerStack.Pop();
+                }
+            }
+
+            protected override void EmbedImpl(Attachment attachment)
+            {
+                lock (logWriter.executionLog)
+                {
+                    logWriter.ThrowIfClosed();
+                    logWriter.InternalAttach(attachment);
+
+                    InternalEmbedExisting(attachment.Name);
+                }
+            }
+
+            protected override void EmbedExistingImpl(string attachmentName)
+            {
+                lock (logWriter.executionLog)
+                {
+                    logWriter.ThrowIfClosed();
+                    logWriter.VerifyAttachmentExists(attachmentName);
+
+                    InternalEmbedExisting(attachmentName);
+                }
+            }
+
+            private void InternalEmbedExisting(string attachmentName)
+            {
+                InternalFlush();
+                containerStack.Peek().Contents.Add(new ExecutionLogStreamEmbedTag(attachmentName));
+            }
+
+            public void InternalFlush()
             {
                 if (textBuilder.Length != 0)
                 {
                     containerStack.Peek().Contents.Add(new ExecutionLogStreamTextTag(textBuilder.ToString()));
                     textBuilder.Length = 0;
                 }
-            }
-
-            public void WriteText(string text)
-            {
-                textBuilder.Append(text);
-            }
-
-            public void WriteAttachment(string attachmentName)
-            {
-                Flush();
-
-                containerStack.Peek().Contents.Add(new ExecutionLogStreamEmbedTag(attachmentName));
-            }
-
-            public void BeginSection(string sectionName)
-            {
-                Flush();
-
-                ExecutionLogStreamSectionTag tag = new ExecutionLogStreamSectionTag(sectionName);
-                containerStack.Peek().Contents.Add(tag);
-                containerStack.Push(tag);
-            }
-
-            public void EndSection()
-            {
-                if (containerStack.Count == 1)
-                    throw new InvalidOperationException("There is no current section to be ended.");
-
-                Flush();
-                containerStack.Pop();
             }
         }
     }

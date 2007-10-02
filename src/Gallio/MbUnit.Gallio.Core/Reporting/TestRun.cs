@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.Results;
+using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Reporting

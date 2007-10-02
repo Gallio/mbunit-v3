@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Plugin.NUnitAdapter.Core
@@ -23,7 +24,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
     /// <summary>
     /// Wraps an NUnit test.
     /// </summary>
-    public class NUnitTest : BaseTest
+    public class NUnitTest : BaseTest, IMasterTest
     {
         private readonly NUnit.Core.ITest test;
 
@@ -36,7 +37,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         /// <param name="test">The NUnit test, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
         /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
-        public NUnitTest(string name, CodeReference codeReference, ITemplateBinding templateBinding, NUnit.Core.ITest test)
+        public NUnitTest(string name, CodeReference codeReference, NUnitFrameworkTemplateBinding templateBinding, NUnit.Core.ITest test)
             : base(name, codeReference, templateBinding)
         {
             this.test = test;
@@ -48,6 +49,20 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         public NUnit.Core.ITest Test
         {
             get { return test; }
+        }
+
+        /// <summary>
+        /// Gets the binding.
+        /// </summary>
+        new public NUnitFrameworkTemplateBinding TemplateBinding
+        {
+            get { return (NUnitFrameworkTemplateBinding)base.TemplateBinding; }
+        }
+
+        /// <inheritdoc />
+        public ITestController CreateTestController()
+        {
+            return new NUnitTestController(TemplateBinding.Runner);
         }
     }
 }

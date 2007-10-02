@@ -14,13 +14,14 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework
 {
     /// <summary>
+    /// <para>
+    /// Provides functions for manipulating test steps.
+    /// </para>
     /// <para>
     /// A step is a delimited region of a test.  Each step appears in the report as
     /// if it were a dynamically generated test nested within the body of the test
@@ -98,15 +99,15 @@ namespace MbUnit.Framework
     public static class Step
     {
         /// <summary>
-        /// Gets the current step.
+        /// Gets reflection information about the current step.
         /// </summary>
-        public static IStep CurrentStep
+        public static StepInfo CurrentStep
         {
             get { return Context.CurrentStep; }
         }
 
         /// <summary>
-        /// Runs a block of code as a step.
+        /// Runs a block of code as a new step.
         /// </summary>
         /// <remarks>
         /// This method may be called recursively to create nested steps or concurrently
@@ -117,16 +118,10 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="block"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
+        /// <exception cref="Exception">Any exception thrown by the block</exception>
         public static void Run(string name, Block block)
         {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (name.Length == 0)
-                throw new ArgumentException("Name must not be empty.", "name");
-            if (block == null)
-                throw new ArgumentNullException("block");
-
-            throw new NotImplementedException();
+            Context.CurrentContext.RunStep(name, block);
         }
     }
 }

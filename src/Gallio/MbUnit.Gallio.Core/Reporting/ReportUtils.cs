@@ -21,8 +21,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Utilities;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 

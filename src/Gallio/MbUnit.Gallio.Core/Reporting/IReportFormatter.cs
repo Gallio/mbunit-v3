@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Core.ProgressMonitoring;
 
 namespace MbUnit.Core.Reporting
 {

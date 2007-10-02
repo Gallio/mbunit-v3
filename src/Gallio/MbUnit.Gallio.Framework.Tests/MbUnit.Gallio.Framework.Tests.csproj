@@ -18,6 +18,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\MbUnit.Gallio.Framework.Tests.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -26,6 +28,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\MbUnit.Gallio.Framework.Tests.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
@@ -61,6 +65,7 @@
     <Compile Include="ArrayAssertTest.cs" />
     <Compile Include="AssertTest.cs" />
     <Compile Include="CollectionAssertTest.cs" />
+    <Compile Include="ContextTest.cs" />
     <Compile Include="FileAssertTest.cs" />
     <Compile Include="GenericAssertTest.cs" />
     <Compile Include="AssertWithReflectionTest.cs" />
@@ -83,7 +88,7 @@
     <Compile Include="Kernel\Filters\OrFilterTest.cs" />
     <Compile Include="Kernel\Filters\TypeFilterTest.cs" />
     <Compile Include="Kernel\Actions\ActionChainTest.cs" />
-    <Compile Include="Kernel\Metadata\MetadataMapTest.cs" />
+    <Compile Include="Kernel\Model\MetadataMapTest.cs" />
     <Compile Include="Kernel\Model\CodeReferenceTest.cs" />
     <Compile Include="Kernel\Runtime\MockRuntime.cs" />
     <Compile Include="Kernel\Utilities\GenericUtilsTest.cs" />

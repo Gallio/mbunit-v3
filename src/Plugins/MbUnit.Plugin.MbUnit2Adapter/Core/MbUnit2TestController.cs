@@ -19,14 +19,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using MbUnit.Core;
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Framework;
 using MbUnit.Framework.Kernel.ExecutionLogs;
-using MbUnit.Framework.Kernel.Harness;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Model.Serialization;
-using MbUnit.Framework.Kernel.Results;
-using TestState=MbUnit.Framework.Kernel.Results.TestState;
-
+using MbUnit.Core.Model;
+using MbUnit.Framework.Kernel.Utilities;
 using MbUnit2::MbUnit.Core;
 using MbUnit2::MbUnit.Core.Remoting;
 using MbUnit2::MbUnit.Core.Filters;
@@ -58,8 +56,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         }
 
         /// <inheritdoc />
-        public void Run(IProgressMonitor progressMonitor,
-            TestExecutionOptions options, IEventListener listener, IList<ITest> tests)
+        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor)
         {
             ThrowIfDisposed();
 
@@ -70,8 +67,10 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 if (progressMonitor.IsCanceled)
                     return;
 
+                IList<ITestMonitor> testMonitors = rootTestMonitor.GetAllMonitors();
+
                 using (InstrumentedFixtureRunner fixtureRunner = new InstrumentedFixtureRunner(fixtureExplorer,
-                    options, listener, tests, progressMonitor))
+                    testMonitors, progressMonitor))
                 {
                     fixtureRunner.Run();
                 }
@@ -87,32 +86,25 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         private class InstrumentedFixtureRunner : DependencyFixtureRunner, IDisposable, IFixtureFilter, IRunPipeFilter, IRunPipeListener
         {
             private readonly FixtureExplorer fixtureExplorer;
-            private readonly TestExecutionOptions options;
-            private readonly IEventListener listener;
-            private readonly IList<ITest> tests;
+            private readonly IList<ITestMonitor> testMonitors;
             private readonly IProgressMonitor progressMonitor;
 
             private Dictionary<Type, bool> includedFixtureTypes;
-            private Dictionary<Fixture, MbUnit2Test> fixtureTestsByFixture;
-            private Dictionary<RunPipe, MbUnit2Test> testsByRunPipe;
-            private MbUnit2Test assemblyTest;
 
-            private Stopwatch assemblyStopwatch;
-            private Stopwatch fixtureStopwatch;
+            private ITestMonitor assemblyTestMonitor;
+            private Dictionary<Fixture, ITestMonitor> fixtureTestMonitors;
+            private Dictionary<RunPipe, ITestMonitor> runPipeTestMonitors;
 
-            private Dictionary<MbUnit2Test, IStep> activeStepsByTest;
+            private Dictionary<ITestMonitor, IStepMonitor> activeStepMonitors;
 
             private double workUnit;
 
             public InstrumentedFixtureRunner(FixtureExplorer fixtureExplorer,
-                TestExecutionOptions options, IEventListener listener,
-                IList<ITest> tests, IProgressMonitor progressMonitor)
+                IList<ITestMonitor> testMonitors, IProgressMonitor progressMonitor)
             {
                 this.fixtureExplorer = fixtureExplorer;
                 this.progressMonitor = progressMonitor;
-                this.options = options;
-                this.listener = listener;
-                this.tests = tests;
+                this.testMonitors = testMonitors;
 
                 Initialize();
             }
@@ -135,23 +127,28 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
                 // Build a reverse mapping from types and run-pipes to tests.
                 includedFixtureTypes = new Dictionary<Type, bool>();
-                fixtureTestsByFixture = new Dictionary<Fixture, MbUnit2Test>();
-                testsByRunPipe = new Dictionary<RunPipe, MbUnit2Test>();
-                activeStepsByTest = new Dictionary<MbUnit2Test, IStep>();
+                fixtureTestMonitors = new Dictionary<Fixture, ITestMonitor>();
+                runPipeTestMonitors = new Dictionary<RunPipe, ITestMonitor>();
+                activeStepMonitors = new Dictionary<ITestMonitor, IStepMonitor>();
 
-                foreach (MbUnit2Test test in tests)
+                bool isExplicit = false;
+                foreach (ITestMonitor testMonitor in testMonitors)
                 {
+                    if (testMonitor.IsExplicit)
+                        isExplicit = true;
+
+                    MbUnit2Test test = (MbUnit2Test)testMonitor.Test;
                     Fixture fixture = test.Fixture;
                     RunPipe runPipe = test.RunPipe;
 
                     if (fixture == null)
                     {
-                        assemblyTest = test;
+                        assemblyTestMonitor = testMonitor;
                     }
                     else if (runPipe == null)
                     {
                         includedFixtureTypes[fixture.Type] = true;
-                        fixtureTestsByFixture[fixture] = test;
+                        fixtureTestMonitors[fixture] = testMonitor;
 
                         if (fixture.HasSetUp)
                             totalWork += 1;
@@ -160,13 +157,13 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                     }
                     else
                     {
-                        testsByRunPipe[runPipe] = test;
+                        runPipeTestMonitors[runPipe] = testMonitor;
                         totalWork += 1;
                     }
                 }
 
                 // Set options
-                IsExplicit = options.IsExplicit;
+                IsExplicit = isExplicit;
                 FixtureFilter = this;
                 RunPipeFilter = this;
 
@@ -193,8 +190,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
                 if (Explorer.HasAssemblySetUp)
                 {
-                    IStep assemblyStep = activeStepsByTest[assemblyTest];
-                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(assemblyStep.Id, LifecyclePhase.SetUp));
+                    IStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
+                    assemblyStepMonitor.LifecyclePhase = LifecyclePhases.SetUp;
                 }
 
                 bool success = base.RunAssemblySetUp();
@@ -212,10 +209,10 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             {
                 progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningAssemblyTearDown, Explorer.AssemblyName));
 
-                if (Explorer.HasAssemblyTearDown && assemblyTest != null)
+                if (Explorer.HasAssemblyTearDown && assemblyTestMonitor != null)
                 {
-                    IStep assemblyStep = activeStepsByTest[assemblyTest];
-                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(assemblyStep.Id, LifecyclePhase.TearDown));
+                    IStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
+                    assemblyStepMonitor.LifecyclePhase = LifecyclePhases.TearDown;
                 }
 
                 bool success = base.RunAssemblyTearDown();
@@ -244,7 +241,10 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 finally
                 {
                     foreach (RunPipeStarter starter in fixture.Starters)
-                        starter.Listeners.Remove(this);
+                    {
+                        if (starter.Listeners.Contains(this))
+                            starter.Listeners.Remove(this);
+                    }
                 }
             }
 
@@ -265,11 +265,11 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
                 progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningFixtureSetUp, fixture.Name));
 
-                MbUnit2Test fixtureTest;
-                if (fixture.HasSetUp && fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
+                ITestMonitor fixtureTestMonitor;
+                if (fixture.HasSetUp && fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                 {
-                    IStep fixtureStep = activeStepsByTest[fixtureTest];
-                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(fixtureStep.Id, LifecyclePhase.SetUp));
+                    IStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
+                    fixtureStepMonitor.LifecyclePhase = LifecyclePhases.SetUp;
                 }
 
                 object result = base.RunFixtureSetUp(fixture, fixtureInstance);
@@ -284,11 +284,11 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
                 progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningFixtureTearDown, fixture.Name));
 
-                MbUnit2Test fixtureTest;
-                if (fixture.HasSetUp && fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
+                ITestMonitor fixtureTestMonitor;
+                if (fixture.HasSetUp && fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                 {
-                    IStep fixtureStep = activeStepsByTest[fixtureTest];
-                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreatePhaseEvent(fixtureStep.Id, LifecyclePhase.TearDown));
+                    IStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
+                    fixtureStepMonitor.LifecyclePhase = LifecyclePhases.TearDown;
                 }
 
                 base.RunFixtureTearDown(fixture, fixtureInstance);
@@ -307,7 +307,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             #region IRunPipeFilter
             bool IRunPipeFilter.Filter(RunPipe runPipe)
             {
-                return testsByRunPipe.ContainsKey(runPipe);
+                return runPipeTestMonitors.ContainsKey(runPipe);
             }
             #endregion
 
@@ -342,114 +342,92 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
 
             private void HandleAssemblyStart()
             {
-                if (assemblyTest == null)
+                if (assemblyTestMonitor == null)
                     return;
 
-                IStep assemblyStep = new BaseStep(assemblyTest);
-                activeStepsByTest.Add(assemblyTest, assemblyStep);
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(assemblyStep)));
-
-                assemblyStopwatch = Stopwatch.StartNew();
+                IStepMonitor assemblyStepMonitor = assemblyTestMonitor.StartRootStep();
+                activeStepMonitors.Add(assemblyTestMonitor, assemblyStepMonitor);
             }
 
             private void HandleAssemblyFinish(TestOutcome outcome)
             {
-                if (assemblyTest == null)
+                if (assemblyTestMonitor == null)
                     return;
 
-                TestResult result = new TestResult();
-                result.Duration = assemblyStopwatch.Elapsed.TotalSeconds;
-                result.State = TestState.Executed;
-                result.Outcome = outcome;
+                IStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
+                activeStepMonitors.Remove(assemblyTestMonitor);
 
-                IStep assemblyStep = activeStepsByTest[assemblyTest];
-                activeStepsByTest.Remove(assemblyTest);
-
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(assemblyStep.Id, result));
+                assemblyStepMonitor.FinishStep(TestStatus.Executed, outcome);
             }
 
             private void HandleFixtureStart(Fixture fixture)
             {
-                MbUnit2Test fixtureTest;
-                if (!fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
+                ITestMonitor fixtureTestMonitor;
+                if (!fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                     return;
 
-                IStep fixtureStep = new BaseStep(fixtureTest);
-                activeStepsByTest.Add(fixtureTest, fixtureStep);
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(fixtureStep)));
-
-                fixtureStopwatch = Stopwatch.StartNew();
+                IStepMonitor fixtureStepMonitor = fixtureTestMonitor.StartRootStep();
+                activeStepMonitors.Add(fixtureTestMonitor, fixtureStepMonitor);
             }
 
             private void HandleFixtureFinish(Fixture fixture, ReportRunResult reportRunResult)
             {
-                MbUnit2Test fixtureTest;
-                if (!fixtureTestsByFixture.TryGetValue(fixture, out fixtureTest))
+                ITestMonitor fixtureTestMonitor;
+                if (!fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                     return;
 
-                TestResult result = new TestResult();
-                result.Duration = fixtureStopwatch.Elapsed.TotalSeconds;
-                SetTestResultStateAndOutcomeFromReportRunResult(result, reportRunResult);
+                IStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
+                activeStepMonitors.Remove(fixtureTestMonitor);
 
-                IStep fixtureStep = activeStepsByTest[fixtureTest];
-                activeStepsByTest.Remove(fixtureTest);
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(fixtureStep.Id, result));
+                FinishStepWithReportRunResult(fixtureStepMonitor, reportRunResult);
             }
 
             private void HandleTestStart(RunPipe runPipe)
             {
                 progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningTest, runPipe.ShortName));
 
-                MbUnit2Test test;
-                if (!testsByRunPipe.TryGetValue(runPipe, out test))
+                ITestMonitor runPipeTestMonitor;
+                if (!runPipeTestMonitors.TryGetValue(runPipe, out runPipeTestMonitor))
                     return;
 
-                IStep step = new BaseStep(test);
-                activeStepsByTest.Add(test, step);
-                listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(step)));
+                IStepMonitor runPipeStepMonitor = runPipeTestMonitor.StartRootStep();
+                activeStepMonitors.Add(runPipeTestMonitor, runPipeStepMonitor);
             }
 
             private void HandleTestFinish(RunPipe runPipe, ReportRun reportRun)
             {
-                MbUnit2Test test;
-                if (testsByRunPipe.TryGetValue(runPipe, out test))
+                ITestMonitor runPipeTestMonitor;
+                if (runPipeTestMonitors.TryGetValue(runPipe, out runPipeTestMonitor))
                 {
-                    IStep step = activeStepsByTest[test];
-                    activeStepsByTest.Remove(test);
-
-                    // Produce the final result.
-                    TestResult result = new TestResult();
-                    result.Duration = reportRun.Duration / 1000;
-                    result.AssertCount = reportRun.AssertCount;
-                    SetTestResultStateAndOutcomeFromReportRunResult(result, reportRun.Result);
+                    IStepMonitor stepMonitor = activeStepMonitors[runPipeTestMonitor];
+                    activeStepMonitors.Remove(runPipeTestMonitor);
 
                     // Output all execution log contents.
                     // Note: ReportRun.Asserts is not actually populated by MbUnit so we ignore it.
                     if (reportRun.ConsoleOut.Length != 0)
                     {
-                        listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
-                            ExecutionLogStreamName.ConsoleOutput, reportRun.ConsoleOut));
+                        stepMonitor.LogWriter[LogStreamNames.ConsoleOutput].Write(reportRun.ConsoleOut);
                     }
                     if (reportRun.ConsoleError.Length != 0)
                     {
-                        listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
-                            ExecutionLogStreamName.ConsoleError, reportRun.ConsoleError));
+                        stepMonitor.LogWriter[LogStreamNames.ConsoleError].Write(reportRun.ConsoleError);
                     }
                     foreach (ReportWarning warning in reportRun.Warnings)
                     {
-                        listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
-                            ExecutionLogStreamName.Warnings, warning.Text + "\n"));
+                        stepMonitor.LogWriter[LogStreamNames.Warnings].BeginSection("Warning");
+                        stepMonitor.LogWriter[LogStreamNames.Warnings].WriteLine(warning.Text);
+                        stepMonitor.LogWriter[LogStreamNames.Warnings].EndSection();
                     }
                     if (reportRun.Exception != null)
                     {
-                        listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateWriteTextEvent(step.Id,
-                            ExecutionLogStreamName.Failures, FormatReportException(reportRun.Exception)));
+                        stepMonitor.LogWriter[LogStreamNames.Failures].BeginSection("Exception");
+                        stepMonitor.LogWriter[LogStreamNames.Failures].Write(FormatReportException(reportRun.Exception));
+                        stepMonitor.LogWriter[LogStreamNames.Failures].EndSection();
                     }
 
-                    listener.NotifyExecutionLogEvent(ExecutionLogEventArgs.CreateCloseEvent(step.Id));
-
                     // Finish up...
-                    listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(step.Id, result));
+                    stepMonitor.Context.AddAssertCount(reportRun.AssertCount);
+                    FinishStepWithReportRunResult(stepMonitor, reportRun.Result);
                 }
 
                 progressMonitor.Worked(workUnit);
@@ -505,33 +483,28 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 return result.ToString();
             }
 
-            private static void SetTestResultStateAndOutcomeFromReportRunResult(TestResult result, ReportRunResult reportRunResult)
+            private static void FinishStepWithReportRunResult(IStepMonitor stepMonitor, ReportRunResult reportRunResult)
             {
                 switch (reportRunResult)
                 {
                     case ReportRunResult.NotRun:
-                        result.State = TestState.NotRun;
-                        result.Outcome = TestOutcome.Inconclusive;
+                        stepMonitor.FinishStep(TestStatus.NotRun, TestOutcome.Inconclusive);
                         break;
 
                     case ReportRunResult.Skip:
-                        result.State = TestState.Skipped;
-                        result.Outcome = TestOutcome.Inconclusive;
+                        stepMonitor.FinishStep(TestStatus.Skipped, TestOutcome.Inconclusive);
                         break;
 
                     case ReportRunResult.Ignore:
-                        result.State = TestState.Ignored;
-                        result.Outcome = TestOutcome.Inconclusive;
+                        stepMonitor.FinishStep(TestStatus.Ignored, TestOutcome.Inconclusive);
                         break;
 
                     case ReportRunResult.Success:
-                        result.State = TestState.Executed;
-                        result.Outcome = TestOutcome.Passed;
+                        stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Passed);
                         break;
 
                     case ReportRunResult.Failure:
-                        result.State = TestState.Executed;
-                        result.Outcome = TestOutcome.Failed;
+                        stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed);
                         break;
                 }
             }

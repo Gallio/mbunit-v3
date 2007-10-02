@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Framework.Kernel.Metadata;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -33,7 +33,6 @@ namespace MbUnit.Framework.Kernel.Model
         private readonly ITemplateBinding templateBinding;
         private ITest parent;
         private bool isTestCase;
-        private TestBatch batch;
 
         /// <summary>
         /// Initializes a test initially without a parent.
@@ -87,22 +86,6 @@ namespace MbUnit.Framework.Kernel.Model
         public IList<ITest> Dependencies
         {
             get { return dependencies; }
-        }
-
-        /// <inheritdoc />
-        public TestBatch Batch
-        {
-            get
-            {
-                if (batch == null && parent != null)
-                    batch = parent.Batch;
-
-                return batch;
-            }
-            set
-            {
-                batch = value;
-            }
         }
 
         /// <inheritdoc />

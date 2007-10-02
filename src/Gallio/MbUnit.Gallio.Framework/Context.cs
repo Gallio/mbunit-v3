@@ -16,278 +16,504 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Contexts;
 using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// The context class provides services for manipulating the test execution
-    /// context.  When a test runs, a certain amount of information is made available
-    /// to the test framework so that it can reflect upon the state of its own execution,
-    /// track its progress across multiple threads and better manage its resources.
-    /// Exposing the context enables a greater degree of integration for custom test
-    /// framework code embedded within the MbUnit runtime.
+    /// <para>
+    /// The context provides information about the environment in which
+    /// a test is executing.  A new context is created each time a test or
+    /// test step begins execution.
+    /// </para>
+    /// <para>
+    /// Contexts are arranged in a hierarchy
+    /// that mirrors the containment relationship among test assemblies,
+    /// fixtures, methods, steps and other test components.  Thus it is
+    /// possible to access information about the containing test fixture or
+    /// test assembly from within a test.
+    /// </para>
+    /// <para>
+    /// Arbitrary user data can be associated with a context.  Furthermore, an
+    /// event is dispatched when the context is disposed (because the test is exiting).
+    /// The <see cref="Disposed" /> event can be used to implement robust resource
+    /// reclamation rules that do not depend on direct framework support or the use
+    /// of tear-down methods.
+    /// </para>
     /// </summary>
-    public static class Context
+    public abstract class Context
     {
-        private const string AttachedResourcesKey = "$$AttachedResources$$";
+        private readonly Context parent;
+
+        private Dictionary<string, object> data;
+
+        private bool isDisposed;
+        private event EventHandler disposedHandlers;
+        private int assertCount;
 
         /// <summary>
-        /// Gets the singleton context manager.
+        /// Creates a context.
         /// </summary>
-        public static IContextManager ContextManager
+        /// <param name="parent">The parent context, or null if this is the root context</param>
+        protected Context(Context parent)
         {
-            get { return RuntimeHolder.Instance.Resolve<IContextManager>(); }
+            this.parent = parent;
         }
 
         /// <summary>
-        /// Gets the context of the current thread.
+        /// Gets the context manager.
         /// </summary>
-        public static IContext CurrentContext
+        public static IContextManager ContextManager
+        {
+            get { return Runtime.ContextManager; }
+        }
+
+        /// <summary>
+        /// Gets the context of the current thread, or null if there is no
+        /// current context.
+        /// </summary>
+        public static Context CurrentContext
         {
             get { return ContextManager.CurrentContext; }
         }
 
         /// <summary>
-        /// Gets the current test.
+        /// Gets the root context of the environment, or null if there is no
+        /// root context.
         /// </summary>
-        public static ITest CurrentTest
+        public static Context RootContext
         {
-            get { return CurrentContext.CurrentTest; }
+            get { return ContextManager.RootContext; }
         }
 
         /// <summary>
-        /// Gets the current step.
+        /// Gets reflection information about the current test.
         /// </summary>
-        public static IStep CurrentStep
+        public static TestInfo CurrentTest
         {
-            get { return CurrentContext.CurrentStep; }
+            get { return CurrentContext.Test; }
         }
 
         /// <summary>
-        /// The exited event is raised when the context is about to be exited.
+        /// Gets reflection information about the  current step.
+        /// </summary>
+        public static StepInfo CurrentStep
+        {
+            get { return CurrentContext.Step; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets the default context for the specified thread.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default context for a thread is <see cref="RootContext" /> unless the thread's
+        /// default context has been overridden with <see cref="SetThreadDefaultContext" />.
+        /// </para>
+        /// <para>
+        /// Changing the default context of a thread is useful for capturing existing threads created
+        /// outside of a test into a particular context.  Among other things, this ensures that side-effects
+        /// of the thread, such as writing text to the console, are recorded as part of the step
+        /// represented by the specified context.
+        /// </para>
+        /// </remarks>
+        /// <param name="thread">The thread</param>
+        /// <param name="context">The context to associate with the thread, or null to reset the
+        /// thread's default context to the root context</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
+        public static void SetThreadDefaultContext(Thread thread, Context context)
+        {
+            ContextManager.SetThreadDefaultContext(thread, context);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the default context for the specified thread.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default context for a thread is <see cref="RootContext" /> unless the thread's
+        /// default context has been overridden with <see cref="SetThreadDefaultContext" />.
+        /// </para>
+        /// <para>
+        /// Changing the default context of a thread is useful for capturing existing threads created
+        /// outside of a test into a particular context.  Among other things, this ensures that side-effects
+        /// of the thread, such as writing text to the console, are recorded as part of the step
+        /// represented by the specified context.
+        /// </para>
+        /// </remarks>
+        /// <param name="thread">The thread</param>
+        /// <returns>The default context</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
+        public static Context GetThreadDefaultContext(Thread thread)
+        {
+            return ContextManager.GetThreadDefaultContext(thread);
+        }
+
+        /// <summary>
+        /// Gets the parent of this context or null if this is the root context.
+        /// </summary>
+        public Context Parent
+        {
+            get { return parent; }
+        }
+
+        /// <summary>
+        /// Gets the test associated with the context.
+        /// </summary>
+        public abstract TestInfo Test { get; }
+
+        /// <summary>
+        /// Gets the test step associated with the context.
+        /// </summary>
+        public abstract StepInfo Step { get; }
+
+        /// <summary>
+        /// <para>
+        /// Gets the log writer for this context.
+        /// </para>
+        /// <para>
+        /// Each test step gets its own log writer that is distinct from those
+        /// of other steps.  So the log write returned by this property is
+        /// particular to the step represented by this test context.
+        /// </para>
+        /// </summary>
+        public abstract LogWriter LogWriter { get; }
+
+        /// <summary>
+        /// Gets or sets the lifecycle phase the context is in.
+        /// </summary>
+        /// <seealso cref="LifecyclePhases"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public abstract string LifecyclePhase { get; set; }
+
+        /// <summary>
+        /// Gets the current assertion count.
+        /// </summary>
+        public int AssertCount
+        {
+            get { return assertCount; }
+        }
+
+        /// <summary>
+        /// Returns true if the context has been disposed.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The context is disposed when the step that it represents finishes execution.
+        /// The properties and methods of a disposed context can still be accessed
+        /// as usual while cleanup activities are in progress.
+        /// </para>
+        /// </remarks>
+        public bool IsDisposed
+        {
+            get { return isDisposed; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// The disposed event is raised when the context has been disposed.
+        /// The context is disposed when the step that it represents finishes execution.
+        /// </para>
+        /// <para>
+        /// The context is disposed when the step that it represents finishes execution.
+        /// The properties and methods of a disposed context can still be accessed
+        /// as usual while cleanup activities are in progress.
+        /// </para>
+        /// <para>
         /// Clients may attach handlers to this event to perform cleanup
-        /// activities and other tasks as needed.
+        /// activities and other tasks as needed.  If a new event handler is
+        /// added and the context has already been disposed, the handler
+        /// is immediately invoked.
+        /// </para>
         /// </summary>
-        public static event EventHandler Exiting
+        public event EventHandler Disposed
         {
-            add { CurrentContext.Exiting += value; }
-            remove { CurrentContext.Exiting -= value; }
-        }
-        
-        /// <summary>
-        /// Creates a new thread, attaches it to the current context but does not start it.
-        /// The thread will be automatically aborted when the context exits.
-        /// <seealso cref="AttachThread"/>, <seealso cref="SpawnThread"/>.
-        /// </summary>
-        /// <param name="name">The name of the thread</param>
-        /// <param name="threadStart">The delegate to run when the thread is started</param>
-        /// <returns>The new thread, initially not started</returns>
-        public static Thread CreateThread(string name, ThreadStart threadStart)
-        {
-            IContext ownerContext = CurrentContext;
-            Thread thread = new Thread((ThreadStart) delegate
+            add
             {
-                RunWithContext(ownerContext, delegate
+                lock (this)
                 {
-                    try
+                    if (!isDisposed)
                     {
-                        threadStart();
+                        disposedHandlers += value;
+                        return;
                     }
-                    catch (Exception ex)
-                    {
-                        if (! AppDomain.CurrentDomain.IsFinalizingForUnload())
-                            Assert.Warning("An exception bubbled up to the entry point of a thread created by the test.\n{0}", ex);
-                    }
-                });
-            });
-            thread.IsBackground = true;
-            thread.Name = name;
+                }
 
-            return thread;
+                value(this, EventArgs.Empty);
+            }
+            remove
+            {
+                lock (this)
+                    disposedHandlers -= value;
+            }
         }
 
         /// <summary>
-        /// Creates a new thread, attaches it to the current context and starts it.
-        /// The thread will be automatically aborted when the context exits.
-        /// <seealso cref="AttachThread"/>, <seealso cref="CreateThread"/>.
+        /// Gets the context that represents the initial (root) step of the
+        /// execution of the test associated with this context.
         /// </summary>
-        /// <param name="name">The name of the thread</param>
-        /// <param name="threadStart">The delegate to run when the thread is started</param>
-        /// <returns>The new thread, has been started</returns>
-        public static Thread SpawnThread(ThreadStart threadStart, string name)
+        /// <returns>The initial context of the test associated with this context</returns>
+        public Context GetInitialContext()
         {
-            Thread thread = CreateThread(name, threadStart);
-            thread.Start();
+            Context context = this;
+            TestInfo test = Test;
+            for (;;)
+            {
+                Context parent = context.Parent;
 
-            return thread;
+                if (parent == null || parent.Test != test)
+                    return context;
+
+                context = parent;
+            }
         }
 
         /// <summary>
-        /// Runs a block of code within the specified context.
-        /// The thread's current context is switched to that which is specified
-        /// for the duration of the block then restored to what it was before.
+        /// Gets the context that represents the initial (root) step of the
+        /// execution of the parent of the test associated with this context.
         /// </summary>
-        /// <param name="context">The context</param>
+        /// <returns>The initial context of the parent of the test associated
+        /// with this context, or null if there is no parent test</returns>
+        public Context GetInitialContextOfParentTest()
+        {
+            Context parent = GetInitialContext().Parent;
+            return parent == null ? null : parent.GetInitialContext();
+        }
+
+        /// <summary>
+        /// Gets the value from the context with the specified key.
+        /// </summary>
+        /// <remarks>
+        /// This method can still be used after the context has been disposed.
+        /// </remarks>
+        /// <param name="key">The context data key</param>
+        /// <returns>The associated value, or null if none</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
+        public object GetData(string key)
+        {
+            lock (this)
+            {
+                if (data == null)
+                    return null;
+
+                object value;
+                data.TryGetValue(key, out value);
+                return value;
+            }
+        }
+
+        /// <summary>
+        /// Sets the value of the context data with the specified key.
+        /// </summary>
+        /// <remarks>
+        /// This method can still be used after the context has been disposed.
+        /// </remarks>
+        /// <param name="key">The context data key</param>
+        /// <param name="value">The value to store or null to remove it</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
+        public void SetData(string key, object value)
+        {
+            lock (this)
+            {
+                if (data == null)
+                {
+                    if (value != null)
+                    {
+                        data = new Dictionary<string, object>();
+                        data[key] = value;
+                    }
+                }
+                else
+                {
+                    if (value == null)
+                        data.Remove(key);
+                    else
+                        data[key] = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Runs a block of code with this context.
+        /// </summary>
+        /// <remarks>
+        /// Conceptually this method pushes this test context onto the context stack
+        /// of the current thread so that it becomes the current context, runs the block,
+        /// then unwinds the context stack for the current thread until this test context
+        /// is again popped off the top.
+        /// </remarks>
         /// <param name="block">The block to run</param>
-        public static void RunWithContext(IContext context, Block block)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
+        /// <exception cref="Exception">Any exception thrown by the block</exception>
+        public void Run(Block block)
         {
-            ContextManager.RunWithContext(context, block);
+            if (block == null)
+                throw new ArgumentNullException(@"block");
+
+            using (Enter())
+                block();
         }
 
         /// <summary>
-        /// Sets the context of the specified thread, overriding any that it
-        /// might normally have inherited from its environment.
-        /// Context information becomes accessible to code running on that thread
-        /// so that assertion failures and execution log messages generated by the
-        /// thread are captured by the context and included in the output.
-        /// If the context is null, resets the context of the thread to just that it
-        /// would otherwise have acquired.
-        /// Unlike <see cref="AttachThread" /> the thread is not attached to the context,
-        /// so it will not be aborted automatically when the context exits.
+        /// Runs a block of code with this context using <see cref="ThreadPool.QueueUserWorkItem(WaitCallback)" />.
         /// </summary>
-        /// <param name="thread">The thread whose context is to be set</param>
-        /// <param name="context">The context to associate with the thread, or null to reset to the default</param>
-        public static void SetThreadContext(Thread thread, IContext context)
+        /// <param name="block">The block to run</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
+        public void RunBackground(Block block)
         {
-            ContextManager.SetThreadContext(thread, context);
-        }
+            if (block == null)
+                throw new ArgumentNullException(@"block");
 
-        /// <summary>
-        /// Sets the context of the specified thread and attaches it to the current context
-        /// so that it will be aborted automatically when the current context exits.
-        /// Current context information becomes accessible to code running on that thread.
-        /// <seealso cref="SetThreadContext"/>
-        /// </summary>
-        /// <remarks>
-        /// A reference to the thread is maintained until detached or the context exits.
-        /// A thread should be attached to at most one context at a time.
-        /// This method is equivalent to setting the thread context and attaching the thread
-        /// to the current context as a resource with a cleanup action to abort the thread.
-        /// </remarks>
-        /// <param name="thread">The thread to attach.</param>
-        public static void AttachThread(Thread thread)
-        {
-            SetThreadContext(thread, CurrentContext);
-            AttachResource(thread, AbortThread);
-        }
-
-        /// <summary>
-        /// Resets the context of the specified thread and detaches it from the current context.
-        /// Current context information becomes inaccessible to core running on that thread.
-        /// </summary>
-        /// <remarks>
-        /// This method does nothing if the thread is not attached to the current context.
-        /// This method is requivalent to resetting the thread context and detaching the
-        /// thread from the current context as a resource.
-        /// </remarks>
-        /// <param name="thread">The thread to detach</param>
-        public static void DetachThread(Thread thread)
-        {
-            SetThreadContext(thread, null);
-            DetachResource(thread);
-        }
-
-        /// <summary>
-        /// Attaches a disposable resource to the context such that it will be disposed automatically
-        /// when the context exits.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// A reference to the resource is maintained until detached or the context exits.
-        /// This method is equivalent to calling <see cref="AttachResource{T}" /> with an 
-        /// action that disposes the resource.
-        /// </para>
-        /// <para>
-        /// This method overrides the previous cleanup action if the resource is already attached
-        /// to the current thread.
-        /// </para>
-        /// </remarks>
-        /// <param name="resource">The disposable resource to attach</param>
-        public static void AttachResource(IDisposable resource)
-        {
-            AttachResource(resource, DisposeResource);
-        }
-
-        /// <summary>
-        /// Attaches a resource to the context such that it will be cleaned up automatically
-        /// when the context exits.
-        /// A reference to the resource is maintained until detached or the context exits.
-        /// </summary>
-        /// <remarks>
-        /// This method overrides the previous cleanup action if the resource is already attached
-        /// to the current thread.
-        /// </remarks>
-        /// <param name="resource">The resource to attach</param>
-        /// <param name="cleanupAction">The cleanup action to apply to the resource when the context exits</param>
-        public static void AttachResource<T>(T resource, Action<T> cleanupAction)
-        {
-            lock (CurrentContext.SyncRoot)
+            ThreadPool.QueueUserWorkItem(delegate
             {
-                IDictionary<object, Block> resources;
-                if (! CurrentContext.TryGetData(AttachedResourcesKey, out resources))
-                {
-                    resources = new Dictionary<object, Block>();
-                    CurrentContext.SetData(AttachedResourcesKey, resources);
-                    CurrentContext.Exiting += CleanupAttachedResources;
-                }
+                using (Enter())
+                    block();
+            });
+        }
 
-                resources[resource] = delegate
-                {
-                    cleanupAction(resource);
-                };
+        /// <summary>
+        /// Runs a block of code with this context asynchronously.
+        /// </summary>
+        /// <param name="block">The block to run</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
+        public IAsyncResult RunAsync(Block block)
+        {
+            return RunAsync(block, null, null);
+        }
+
+        /// <summary>
+        /// Runs a block of code with this context asynchronously.
+        /// </summary>
+        /// <param name="block">The block to run</param>
+        /// <param name="callback">The asynchronous callback, or null if none</param>
+        /// <param name="state">The asynchronous state object, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
+        public IAsyncResult RunAsync(Block block, AsyncCallback callback, object state)
+        {
+            if (block == null)
+                throw new ArgumentNullException(@"block");
+
+            Block wrappedBlock = delegate
+            {
+                using (Enter())
+                    block();
+            };
+
+            return wrappedBlock.BeginInvoke(callback, state);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Runs a block of code as a new step within the current context.
+        /// </para>
+        /// <para>
+        /// This method creates a new child context to represent the <see cref="Step" />,
+        /// enters the child context, runs the block of code, then exits the child context.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This method may be called recursively to create nested steps or concurrently
+        /// to create parallel steps.
+        /// </remarks>
+        /// <param name="name">The name of the step</param>
+        /// <param name="block">The block of code to run</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
+        /// <paramref name="block"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
+        /// <exception cref="Exception">Any exception thrown by the block</exception>
+        public abstract void RunStep(string name, Block block);
+
+        /// <summary>
+        /// Enters this context with the current thread.
+        /// </summary>
+        /// <remarks>
+        /// Conceptually this method pushes the specified context onto the context
+        /// stack for the current thread.  It then returns a cookie that can be used
+        /// to restore the current thread's context to its previous value.
+        /// </remarks>
+        /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
+        /// <seealso cref="ContextCookie"/>
+        public abstract ContextCookie Enter();
+
+        /// <summary>
+        /// Increments the assert count atomically.
+        /// </summary>
+        public void IncrementAssertCount()
+        {
+            Interlocked.Increment(ref assertCount);
+        }
+
+        /// <summary>
+        /// Adds the specified amount to the assert count atomically.
+        /// </summary>
+        /// <param name="value">The amount to add to the assert count</param>
+        public void AddAssertCount(int value)
+        {
+            Interlocked.Add(ref assertCount, value);
+        }
+
+        /// <summary>
+        /// Completes the initialization of the context after it has been instantiated.
+        /// </summary>
+        protected virtual void Initialize()
+        {
+            if (parent != null)
+                parent.Disposed += OnParentDisposed;
+        }
+
+        /// <summary>
+        /// Disposes of the context.
+        /// </summary>
+        /// <param name="disposing">True if disposing</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            LifecyclePhase = LifecyclePhases.Dispose;
+
+            if (parent != null)
+                parent.Disposed -= OnParentDisposed;
+
+            EventHandler oldDisposedHandlers;
+            lock (this)
+            {
+                if (isDisposed)
+                    return;
+
+                isDisposed = true;
+                oldDisposedHandlers = disposedHandlers;
+                disposedHandlers = null;
             }
-        }
 
-        /// <summary>
-        /// Detaches a disposable resource from the context such that it will no longer
-        /// be cleaned up automatically when the context exits.
-        /// </summary>
-        /// <remarks>
-        /// This method does nothing if the resource is not attached to the current context.
-        /// </remarks>
-        /// <param name="resource">The resource to detach</param>
-        public static void DetachResource(object resource)
-        {
-            lock (CurrentContext.SyncRoot)
+            if (oldDisposedHandlers != null)
             {
-                IDictionary<object, Block> resources;
-                if (CurrentContext.TryGetData(AttachedResourcesKey, out resources))
+                // Run all of the disposed handlers inside the context.
+                // Log any exceptions that occur.
+                using (Enter())
                 {
-                    resources.Remove(resource);
-
-                    if (resources.Count == 0)
+                    foreach (EventHandler handler in oldDisposedHandlers.GetInvocationList())
                     {
-                        CurrentContext.RemoveData(AttachedResourcesKey);
-                        CurrentContext.Exiting -= CleanupAttachedResources;
+                        try
+                        {
+                            handler(this, EventArgs.Empty);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogWriter[LogStreamNames.Failures].WriteLine(
+                                "An exception occurred while executing a Context Dispose handler:\n{0}", ex);
+                        }
                     }
                 }
             }
         }
 
-        private static void CleanupAttachedResources(object sender, EventArgs e)
+        private void OnParentDisposed(object sender, EventArgs e)
         {
-            lock (CurrentContext.SyncRoot)
-            {
-                IDictionary<object, Block> resources;
-                if (CurrentContext.TryGetData(AttachedResourcesKey, out resources))
-                {
-                    foreach (Block cleanupAction in resources.Values)
-                        cleanupAction();
-                }
-            }
-        }
-
-        private static void DisposeResource(IDisposable resource)
-        {
-            resource.Dispose();
-        }
-
-        private static void AbortThread(Thread thread)
-        {
-            thread.Abort();
+            Dispose(true);
         }
     }
 }

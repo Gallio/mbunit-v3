@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Castle.Core;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Runtime;
 
@@ -30,6 +31,7 @@ namespace MbUnit.Core.Harness
     public class DefaultTestHarnessFactory : ITestHarnessFactory
     {
         private readonly IRuntime runtime;
+        private readonly ITestPlanFactory testPlanFactory;
         private readonly List<ITestHarnessContributor> contributors;
 
         /// <summary>
@@ -38,13 +40,18 @@ namespace MbUnit.Core.Harness
         /// services to the test harness as contributors.
         /// </summary>
         /// <param name="runtime">The runtime</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
-        public DefaultTestHarnessFactory(IRuntime runtime)
+        /// <param name="testPlanFactory">The test plan factory</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> or
+        /// <paramref name="testPlanFactory"/> is null</exception>
+        public DefaultTestHarnessFactory(IRuntime runtime, ITestPlanFactory testPlanFactory)
         {
             if (runtime == null)
-                throw new ArgumentNullException("runtime");
+                throw new ArgumentNullException(@"runtime");
+            if (testPlanFactory == null)
+                throw new ArgumentNullException(@"testPlanFactory");
 
             this.runtime = runtime;
+            this.testPlanFactory = testPlanFactory;
 
             contributors = new List<ITestHarnessContributor>();
             contributors.AddRange(runtime.ResolveAll<ITestFramework>());
@@ -54,7 +61,7 @@ namespace MbUnit.Core.Harness
         /// <inheritdoc />
         public ITestHarness CreateHarness()
         {
-            DefaultTestHarness harness = new DefaultTestHarness(runtime);
+            DefaultTestHarness harness = new DefaultTestHarness(runtime, testPlanFactory);
 
             foreach (ITestHarnessContributor contributor in contributors)
                 harness.AddContributor(contributor);

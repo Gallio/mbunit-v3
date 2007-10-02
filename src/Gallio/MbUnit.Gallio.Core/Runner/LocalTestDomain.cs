@@ -15,10 +15,10 @@
 
 using System;
 using MbUnit.Core.Harness;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Runner
@@ -28,9 +28,9 @@ namespace MbUnit.Core.Runner
     /// with the current app-domain including loading assemblies.
     /// </summary>
     /// <remarks>
-    /// When the test domain is created, the value of <see cref="RuntimeHolder.Instance" />
+    /// When the test domain is created, the value of <see cref="Framework.Runtime.Instance" />
     /// is set to the provided instance of <see cref="IRuntime" />.  On disposal,
-    /// the value of <see cref="RuntimeHolder.Instance" /> is restored to its
+    /// the value of <see cref="Framework.Runtime.Instance" /> is restored to its
     /// previous value.
     /// </remarks>
     public class LocalTestDomain : BaseTestDomain
@@ -43,27 +43,27 @@ namespace MbUnit.Core.Runner
         /// Creates a local test domain using the specified resolver manager.
         /// </summary>
         /// <param name="runtime">The runtime environment for tests (will be set in
-        /// <see cref="RuntimeHolder" /> during test execution)</param>
+        /// <see cref="Runtime" /> during test execution)</param>
         /// <param name="harnessFactory">The test harness factory</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> or
         /// <paramref name="harnessFactory"/> is null</exception>
         public LocalTestDomain(IRuntime runtime, ITestHarnessFactory harnessFactory)
         {
             if (runtime == null)
-                throw new ArgumentNullException("runtime");
+                throw new ArgumentNullException(@"runtime");
             if (harnessFactory == null)
-                throw new ArgumentNullException("harnessFactory");
+                throw new ArgumentNullException(@"harnessFactory");
 
             this.harnessFactory = harnessFactory;
 
-            oldRuntime = RuntimeHolder.Instance;
-            RuntimeHolder.Instance = runtime;
+            oldRuntime = Framework.Runtime.Instance;
+            Framework.Runtime.Instance = runtime;
         }
 
         /// <inheritdoc />
         protected override void InternalDispose()
         {
-            RuntimeHolder.Instance = oldRuntime;
+            Framework.Runtime.Instance = oldRuntime;
             oldRuntime = null;
             harnessFactory = null;
         }

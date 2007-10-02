@@ -21,7 +21,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Castle.Core;
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Core.ProgressMonitoring;
 
 namespace MbUnit.Core.Reporting
 {

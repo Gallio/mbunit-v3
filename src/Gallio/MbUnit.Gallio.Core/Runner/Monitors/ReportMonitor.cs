@@ -16,10 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MbUnit.Core.Model.Events;
 using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.ExecutionLogs;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Runner.Monitors
 {
@@ -31,12 +31,9 @@ namespace MbUnit.Core.Runner.Monitors
     /// <para>
     /// The report monitor also provides reinterpreted events regarding the lifecycle of
     /// tests in terms of report elements that have been generated.
-    /// For example, to obtain the stack traces associated with a test failure, a test runner
-    /// can listen for <
-    /// 
-    /// examine
-    /// the contents of the <see cref="ExecutionLogStreamName.Failures" /> execution
-    /// log stream.  Likewise, console output can be derived in this manner.
+    /// For example, to obtain the result associated with a test failure, a test runner
+    /// can listen for the <see cref="StepFinished"/> event which will include the test
+    /// result as part of its <see cref="ReportStepEventArgs" />.
     /// </para>
     /// </summary>
     public class ReportMonitor : BaseTestRunnerMonitor
@@ -209,7 +206,7 @@ namespace MbUnit.Core.Runner.Monitors
                         break;
                     }
 
-                    case LifecycleEventType.EnterPhase:
+                    case LifecycleEventType.SetPhase:
                         break;
 
                     case LifecycleEventType.Finish:
@@ -219,7 +216,7 @@ namespace MbUnit.Core.Runner.Monitors
                         stepState.StepRun.Result = e.Result;
                         report.PackageRun.Statistics.MergeStepStatistics(stepState.StepRun, stepState.TestData.IsTestCase);
 
-                        stepState.ExecutionLogWriter.Close(); // just in case
+                        stepState.ExecutionLogWriter.Close();
 
                         NotifyStepFinished(stepState);
                         break;
@@ -228,34 +225,13 @@ namespace MbUnit.Core.Runner.Monitors
             }
         }
 
-        private void HandleExecutionLogEvent(object sender, ExecutionLogEventArgs e)
+        private void HandleExecutionLogEvent(object sender, LogEventArgs e)
         {
             lock (report)
             {
                 StepState stepState = GetStepData(e.StepId);
 
-                switch (e.EventType)
-                {
-                    case ExecutionLogEventType.WriteText:
-                        stepState.ExecutionLogWriter.WriteText(e.StreamName, e.Text);
-                        break;
-
-                    case ExecutionLogEventType.WriteAttachment:
-                        stepState.ExecutionLogWriter.WriteAttachment(e.StreamName, e.Attachment);
-                        break;
-
-                    case ExecutionLogEventType.BeginSection:
-                        stepState.ExecutionLogWriter.BeginSection(e.StreamName, e.SectionName);
-                        break;
-
-                    case ExecutionLogEventType.EndSection:
-                        stepState.ExecutionLogWriter.EndSection(e.StreamName);
-                        break;
-
-                    case ExecutionLogEventType.Close:
-                        stepState.ExecutionLogWriter.Close();
-                        break;
-                }
+                e.ApplyToLogWriter(stepState.ExecutionLogWriter);
             }
         }
 

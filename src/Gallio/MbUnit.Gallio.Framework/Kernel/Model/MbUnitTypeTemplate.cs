@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Framework.Kernel.Metadata;
-using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -40,6 +38,10 @@ namespace MbUnit.Framework.Kernel.Model
             this.type = type;
 
             Kind = ComponentKind.Fixture;
+
+            string xmlDocumentation = Framework.Runtime.XmlDocumentationResolver.GetXmlDocumentation(type);
+            if (xmlDocumentation != null)
+                Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }
 
         /// <summary>

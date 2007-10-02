@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Actions;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -76,8 +74,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <remarks>
         /// The actions in the chain are executed as part of the
-        /// <see cref="LifecyclePhase.SetUp" /> lifecycle phase
-        /// of the test.
+        /// setup lifecycle phase of the test.
         /// </remarks>
         public ActionChain<MbUnitTestState> SetUpChain
         {
@@ -91,8 +88,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <remarks>
         /// The actions in the chain are executed as part of the
-        /// <see cref="LifecyclePhase.Execute" /> lifecycle phase
-        /// of the test.
+        /// execute lifecycle phase of the test.
         /// </remarks>
         public ActionChain<MbUnitTestState> ExecuteChain
         {
@@ -106,8 +102,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <remarks>
         /// The actions in the chain are executed as part of the
-        /// <see cref="LifecyclePhase.TearDown" /> lifecycle phase
-        /// of the test.
+        /// tear down lifecycle phase of the test.
         /// </remarks>
         public ActionChain<MbUnitTestState> TearDownChain
         {
@@ -120,8 +115,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <remarks>
         /// The actions in the chain are executed as part of the
-        /// <see cref="LifecyclePhase.SetUp" /> lifecycle phase
-        /// of the nested test before the test's own <see cref="SetUpChain" /> runs.
+        /// set up lifecycle phase of the nested test before the test's own <see cref="SetUpChain" /> runs.
         /// </remarks>
         public ActionChain<MbUnitTestState> BeforeChildChain
         {
@@ -134,8 +128,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// </summary>
         /// <remarks>
         /// The actions in the chain are executed as part of the
-        /// <see cref="LifecyclePhase.TearDown" /> lifecycle phase
-        /// of the nested test after the test's own <see cref="TearDownChain" /> runs.
+        /// tear down lifecycle phase of the nested test after the test's own <see cref="TearDownChain" /> runs.
         /// </remarks>
         public ActionChain<MbUnitTestState> AfterChildChain
         {

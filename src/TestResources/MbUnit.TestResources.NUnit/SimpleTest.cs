@@ -20,14 +20,23 @@ using NUnit.Framework;
 
 namespace MbUnit.TestResources.NUnit
 {
+    /// <summary>
+    /// A simple test fixture.
+    /// </summary>
     [TestFixture]
     public class SimpleTest
     {
+        /// <summary>
+        /// A passing test.
+        /// </summary>
         [Test]
         public void Pass()
         {
         }
 
+        /// <summary>
+        /// A failing test.
+        /// </summary>
         [Test]
         public void Fail()
         {

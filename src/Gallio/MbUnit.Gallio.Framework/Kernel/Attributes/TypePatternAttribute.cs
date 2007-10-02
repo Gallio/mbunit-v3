@@ -55,21 +55,32 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
+        /// <para>
         /// Applies contributions to a type template.
         /// This method is called after the type template is linked to the template tree.
+        /// </para>
+        /// <para>
+        /// Contributions are applied in a very specific order:
+        /// <list type="bullet">
+        /// <item>Type decorator attributes declared by the containing assembly</item>
+        /// <item>Type decorator attributes declared by the type</item>
+        /// <item>Metadata attributes declared by the type</item>
+        /// <item>Fields, properties, methods and events declared by supertypes before
+        /// those declared by subtypes</item>
+        /// <item>Constructors</item>
+        /// </list>
+        /// </para>
         /// </summary>
         /// <param name="builder">The template tree builder</param>
         /// <param name="typeTemplate">The type template</param>
         public virtual void Apply(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
         {
-            TypeDecoratorPatternAttribute.ProcessDecorators(builder, typeTemplate, typeTemplate.Type);
             TypeDecoratorPatternAttribute.ProcessDecorators(builder, typeTemplate, typeTemplate.Type.Assembly);
+            TypeDecoratorPatternAttribute.ProcessDecorators(builder, typeTemplate, typeTemplate.Type);
             MetadataPatternAttribute.ProcessMetadata(builder, typeTemplate, typeTemplate.Type);
 
+            ProcessMembers(builder, typeTemplate);
             ProcessConstructors(builder, typeTemplate);
-            ProcessFields(builder, typeTemplate);
-            ProcessProperties(builder, typeTemplate);
-            ProcessMethods(builder, typeTemplate);
         }
 
         /// <summary>
@@ -109,16 +120,37 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
-        /// Processes all public fields using reflection to populate the
-        /// type template's parameters derived from fields.
+        /// Processes all public fields, properties, methods and events using reflection in order
+        /// such that those declared by supertypes are processed before those declared by subtypes
         /// </summary>
         /// <param name="builder">The template tree builder</param>
         /// <param name="typeTemplate">The type template</param>
-        protected virtual void ProcessFields(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
+        protected virtual void ProcessMembers(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
         {
-            foreach (FieldInfo field in typeTemplate.Type.GetFields())
+            MemberInfo[] members = typeTemplate.Type.FindMembers(MemberTypes.Field | MemberTypes.Property | MemberTypes.Method | MemberTypes.Event,
+                BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, null, null);
+            ReflectionUtils.SortMembersBySubTypes(members);
+
+            foreach (MemberInfo member in members)
             {
-                ProcessField(builder, typeTemplate, field);
+                switch (member.MemberType)
+                {
+                    case MemberTypes.Field:
+                        ProcessField(builder, typeTemplate, (FieldInfo)member);
+                        break;
+
+                    case MemberTypes.Property:
+                        ProcessProperty(builder, typeTemplate, (PropertyInfo)member);
+                        break;
+
+                    case MemberTypes.Method:
+                        ProcessMethod(builder, typeTemplate, (MethodInfo)member);
+                        break;
+
+                    case MemberTypes.Event:
+                        ProcessEvent(builder, typeTemplate, (EventInfo)member);
+                        break;
+                }
             }
         }
 
@@ -135,20 +167,6 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
-        /// Processes all public properties using reflection to populate the
-        /// type template's parameters derived from properties.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="typeTemplate">The type template</param>
-        protected virtual void ProcessProperties(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
-        {
-            foreach (PropertyInfo property in typeTemplate.Type.GetProperties())
-            {
-                ProcessProperty(builder, typeTemplate, property);
-            }
-        }
-
-        /// <summary>
         /// Processes a property using reflection to populate the
         /// type template's parameters derived from properties.
         /// </summary>
@@ -162,17 +180,16 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
-        /// Processes all public methods using reflection to populate tests and other
-        /// executable components.
+        /// Processes an event using reflection.  The default implementation does nothing.
         /// </summary>
+        /// <todo author="jeff">
+        /// What kinds of neat things can we do with events?
+        /// </todo>
         /// <param name="builder">The template tree builder</param>
         /// <param name="typeTemplate">The type template</param>
-        protected virtual void ProcessMethods(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
+        /// <param name="event">The event to process</param>
+        protected virtual void ProcessEvent(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, EventInfo @event)
         {
-            foreach (MethodInfo method in typeTemplate.Type.GetMethods())
-            {
-                ProcessMethod(builder, typeTemplate, method);
-            }
         }
 
         /// <summary>

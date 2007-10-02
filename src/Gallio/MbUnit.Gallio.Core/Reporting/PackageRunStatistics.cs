@@ -15,7 +15,7 @@
 
 using System;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.Results;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Reporting
@@ -155,21 +155,21 @@ namespace MbUnit.Core.Reporting
             testCount += 1;
 
             // Tally the various test run states.
-            switch (stepRun.Result.State)
+            switch (stepRun.Result.Status)
             {
-                case TestState.NotRun:
+                case TestStatus.NotRun:
                     return;
 
-                case TestState.Ignored:
+                case TestStatus.Ignored:
                     ignoreCount += 1;
                     return;
 
-                case TestState.Skipped:
+                case TestStatus.Skipped:
                     skipCount += 1;
                     return;
 
-                case TestState.Executed:
-                case TestState.Canceled:
+                case TestStatus.Executed:
+                case TestStatus.Canceled:
                     runCount += 1;
                     break;
             }

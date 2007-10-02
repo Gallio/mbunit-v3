@@ -64,8 +64,17 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
+        /// <para>
         /// Applies contributions to a parameter.
         /// This method is called after the parameter is linked to the template tree.
+        /// </para>
+        /// <para>
+        /// Contributions are applied in a very specific order:
+        /// <list type="bullet">
+        /// <item>Parameter decorator attributes declared by the slot</item>
+        /// <item>Metadata attributes declared by the slot</item>
+        /// </list>
+        /// </para>
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model
@@ -77,6 +86,7 @@ namespace MbUnit.Framework.Kernel.Attributes
         public virtual void Apply(TemplateTreeBuilder builder, MbUnitTemplateParameter parameter)
         {
             ICustomAttributeProvider attributeProvider = parameter.Slot.AttributeProvider;
+
             ParameterDecoratorPatternAttribute.ProcessDecorators(builder, parameter, attributeProvider);
             MetadataPatternAttribute.ProcessMetadata(builder, parameter, attributeProvider);
 

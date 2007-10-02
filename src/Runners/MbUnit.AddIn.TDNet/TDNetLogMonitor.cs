@@ -18,8 +18,7 @@ using MbUnit.AddIn.TDNet.Properties;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
 using MbUnit.Framework.Kernel.ExecutionLogs;
-using MbUnit.Framework.Kernel.Model.Serialization;
-using MbUnit.Framework.Kernel.Results;
+using MbUnit.Core.Model;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
 using TestResult = TestDriven.Framework.TestResult;
@@ -96,11 +95,11 @@ namespace MbUnit.AddIn.TDNet
 
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line
-            ExecutionLogStream failureStream = e.StepRun.ExecutionLog.GetStream(ExecutionLogStreamName.Failures);
+            ExecutionLogStream failureStream = e.StepRun.ExecutionLog.GetStream(LogStreamNames.Failures);
             if (failureStream != null)
                 result.StackTrace = failureStream.ToString();
 
-            ExecutionLogStream warningStream = e.StepRun.ExecutionLog.GetStream(ExecutionLogStreamName.Warnings);
+            ExecutionLogStream warningStream = e.StepRun.ExecutionLog.GetStream(LogStreamNames.Warnings);
             if (warningStream != null)
                 result.Message = String.Format(Resources.TDNetLogMonitor_Warnings, warningStream);
 

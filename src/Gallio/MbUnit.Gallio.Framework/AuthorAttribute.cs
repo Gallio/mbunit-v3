@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Kernel.Metadata;
-using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Attributes;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework
 {
@@ -104,11 +103,11 @@ namespace MbUnit.Framework
         public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
         {
             if (authorName.Length != 0)
-                component.Metadata.Entries.Add(MetadataKey.AuthorName, authorName);
+                component.Metadata.Entries.Add(MetadataKeys.AuthorName, authorName);
             if (authorEmail.Length != 0)
-                component.Metadata.Entries.Add(MetadataKey.AuthorEmail, authorEmail);
+                component.Metadata.Entries.Add(MetadataKeys.AuthorEmail, authorEmail);
             if (authorHomepage.Length != 0)
-                component.Metadata.Entries.Add(MetadataKey.AuthorHomepage, authorHomepage);
+                component.Metadata.Entries.Add(MetadataKeys.AuthorHomepage, authorHomepage);
         }
     }
 }

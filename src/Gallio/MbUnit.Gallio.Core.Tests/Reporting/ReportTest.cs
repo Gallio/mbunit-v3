@@ -19,7 +19,7 @@ using System.IO;
 using System.Xml.Serialization;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Framework.Xml;
 using MbUnit2::MbUnit.Framework;
 

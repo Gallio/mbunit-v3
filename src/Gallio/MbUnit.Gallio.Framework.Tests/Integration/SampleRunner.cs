@@ -20,14 +20,14 @@ using System.IO;
 using System.Text;
 using Castle.Core.Logging;
 using MbUnit.Core.Harness;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.Monitors;
 using MbUnit.Core.Runtime;
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit._Framework.Tests.Integration
 {
@@ -67,15 +67,17 @@ namespace MbUnit._Framework.Tests.Integration
         {
             InitializeRuntimeHack();
 
+            TextWriter consoleOutput = Console.Out;
+
             using (LocalRunner runner = new LocalRunner())
             {
                 ReportMonitor reportMonitor = new ReportMonitor();
                 reportMonitor.Attach(runner);
                 report = reportMonitor.Report;
 
-                ILogger logger = new ConsoleLogger(LoggerLevel.Debug);
+                ILogger logger = new DebugLogger(consoleOutput);
                 new DebugMonitor(logger).Attach(runner);
-                new LogMonitor(logger, reportMonitor).Attach(runner);
+                //new LogMonitor(logger, reportMonitor).Attach(runner);
 
                 runner.LoadPackage(package, new NullProgressMonitor());
                 runner.BuildTemplates(new NullProgressMonitor());
@@ -84,7 +86,7 @@ namespace MbUnit._Framework.Tests.Integration
                 runner.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
                 runner.Run(new NullProgressMonitor());
 
-                IReportManager reportManager = RuntimeHolder.Instance.Resolve<IReportManager>();
+                IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
                 NameValueCollection options = new NameValueCollection();
                 options.Add(TextReportFormatter.SaveAttachmentContentsOption, @"false");
 
@@ -92,7 +94,8 @@ namespace MbUnit._Framework.Tests.Integration
                 try
                 {
                     reportManager.GetFormatter(TextReportFormatter.FormatterName).Format(report, reportPath, options, null, new NullProgressMonitor());
-                    Console.WriteLine(File.ReadAllText(reportPath));
+                    consoleOutput.Write("\n\n==== TEXT REPORT ====\n\n");
+                    consoleOutput.WriteLine(File.ReadAllText(reportPath));
                 }
                 finally
                 {
@@ -106,7 +109,7 @@ namespace MbUnit._Framework.Tests.Integration
         /// </summary>
         private static void InitializeRuntimeHack()
         {
-            if (RuntimeHolder.Instance == null)
+            if (Runtime.Instance == null)
             {
                 RuntimeSetup runtimeSetup = new RuntimeSetup();
                 DefaultAssemblyResolverManager assemblyResolverManager = new DefaultAssemblyResolverManager();
@@ -115,7 +118,37 @@ namespace MbUnit._Framework.Tests.Integration
                 WindsorRuntime runtime = new WindsorRuntime(assemblyResolverManager, runtimeSetup);
                 runtime.Initialize();
 
-                RuntimeHolder.Instance = runtime;
+                Runtime.Instance = runtime;
+            }
+        }
+
+        /// <summary>
+        /// Castle's StreamLogger doesn't accept arbitrary TextWriters!
+        /// </summary>
+        private sealed class DebugLogger : LevelFilteredLogger
+        {
+            private readonly TextWriter writer;
+
+            public DebugLogger(TextWriter writer)
+            {
+                this.writer = writer;
+                Level = LoggerLevel.Debug;
+            }
+
+            public override ILogger CreateChildLogger(string name)
+            {
+                return this;
+            }
+
+            protected override void Log(LoggerLevel level, string name, string message, Exception exception)
+            {
+                writer.WriteLine(message);
+
+                if (exception != null)
+                {
+                    writer.Write(">>> ");
+                    writer.WriteLine(exception);
+                }
             }
         }
     }

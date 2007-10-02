@@ -17,8 +17,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using MbUnit.Framework;
 using MbUnit.Framework.Kernel.DataBinding;
-using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 using MbUnit.Plugin.NUnitAdapter.Properties;
@@ -50,6 +50,14 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             IDictionary<ITemplateParameter, IDataFactory> arguments)
             : base(template, scope, arguments)
         {
+        }
+
+        /// <summary>
+        /// Gets the test runner.
+        /// </summary>
+        public TestRunner Runner
+        {
+            get { return runner; }
         }
 
         /// <summary>
@@ -104,10 +112,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         {
             NUnitTest test = new NUnitTest(Template.Name, CodeReference.Unknown, this, nunitRootTest);
             test.Kind = ComponentKind.Framework;
-            test.Batch = new TestBatch(Resources.NUnitFrameworkTemplateBinding_NUnitTestBatchName, delegate
-            {
-                return new NUnitTestController(runner);
-            });
             PopulateMetadata(test, nunitRootTest);
 
             parentTest.AddChild(test);
@@ -162,18 +166,45 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         private static void PopulateMetadata(NUnitTest test, NUnit.Core.ITest nunitTest)
         {
             if (!String.IsNullOrEmpty(nunitTest.Description))
-                test.Metadata.Entries.Add(MetadataKey.Description, nunitTest.Description);
+                test.Metadata.Entries.Add(MetadataKeys.Description, nunitTest.Description);
 
             if (!String.IsNullOrEmpty(nunitTest.IgnoreReason))
-                test.Metadata.Entries.Add(MetadataKey.IgnoreReason, nunitTest.IgnoreReason);
+                test.Metadata.Entries.Add(MetadataKeys.IgnoreReason, nunitTest.IgnoreReason);
 
             foreach (string category in nunitTest.Categories)
-                test.Metadata.Entries.Add(MetadataKey.CategoryName, category);
+                test.Metadata.Entries.Add(MetadataKeys.CategoryName, category);
 
             foreach (DictionaryEntry entry in nunitTest.Properties)
                 test.Metadata.Entries.Add(entry.Key.ToString(), entry.Value != null ? entry.Value.ToString() : null);
 
             test.Metadata.Entries.Add(TestTypeMetadataKey, nunitTest.TestType);
+
+            string xmlDocumentation = GetXmlDocumentation(test);
+            if (xmlDocumentation != null)
+                test.Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+        }
+
+        private static string GetXmlDocumentation(NUnitTest test)
+        {
+            try
+            {
+                switch (test.CodeReference.Kind)
+                {
+                    case CodeReferenceKind.Type:
+                        Type type = test.CodeReference.ResolveType();
+                        return Runtime.XmlDocumentationResolver.GetXmlDocumentation(type);
+
+                    case CodeReferenceKind.Member:
+                        MemberInfo member = test.CodeReference.ResolveMember();
+                        return Runtime.XmlDocumentationResolver.GetXmlDocumentation(member);
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore any problems.  We don't care if this fails.
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -278,7 +309,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             typeName = null;
             methodName = null;
             return false;
-
         }
 
         private static bool IsProbableIdentifier(string name)

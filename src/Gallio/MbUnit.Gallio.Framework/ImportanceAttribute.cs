@@ -13,9 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using MbUnit.Framework.Kernel.Attributes;
-using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework
@@ -48,7 +46,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
         {
-            component.Metadata.Entries.Add(MetadataKey.Description, importance.ToString());
+            component.Metadata.Entries.Add(MetadataKeys.Description, importance.ToString());
         }
     }
 

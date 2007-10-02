@@ -21,7 +21,6 @@ using System.Reflection;
 using System.Text;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.DataBinding;
-using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Framework.Kernel.Model;
 
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
@@ -74,18 +73,24 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             get { return ((MbUnit2AssemblyTemplate) Template).Assembly; }
         }
 
+        /// <summary>
+        /// Gets the fixture explorer.
+        /// </summary>
+        public FixtureExplorer FixtureExplorer
+        {
+            get
+            {
+                RunFixtureExplorerIfNeeded();
+                return fixtureExplorer;
+            }
+        }
+
         /// <inheritdoc />
         public override void BuildTests(TestTreeBuilder builder, ITest parent)
         {
             RunFixtureExplorerIfNeeded();
 
             MbUnit2Test assemblyTest = CreateAssemblyTest(parent, Assembly);
-            assemblyTest.Batch = new TestBatch(
-                String.Format(Resources.MbUnit2AssemblyTemplateBinding_TestBatchNameFormat, Template.Name),
-                delegate
-            {
-                return new MbUnit2TestController(fixtureExplorer);
-            });
 
             foreach (Fixture fixture in fixtureExplorer.FixtureGraph.Fixtures)
             {
@@ -153,31 +158,35 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             foreach (AuthorAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(AuthorAttribute2), true))
             {
                 if (! String.IsNullOrEmpty(attrib.Name))
-                    test.Metadata.Entries.Add(MetadataKey.AuthorName, attrib.Name);
+                    test.Metadata.Entries.Add(MetadataKeys.AuthorName, attrib.Name);
                 if (! String.IsNullOrEmpty(attrib.EMail) && attrib.EMail != @"unspecified")
-                    test.Metadata.Entries.Add(MetadataKey.AuthorEmail, attrib.EMail);
+                    test.Metadata.Entries.Add(MetadataKeys.AuthorEmail, attrib.EMail);
                 if (!String.IsNullOrEmpty(attrib.HomePage) && attrib.HomePage != @"unspecified")
-                    test.Metadata.Entries.Add(MetadataKey.AuthorHomepage, attrib.HomePage);
+                    test.Metadata.Entries.Add(MetadataKeys.AuthorHomepage, attrib.HomePage);
             }
             foreach (FixtureCategoryAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(FixtureCategoryAttribute2), true))
             {
-                test.Metadata.Entries.Add(MetadataKey.CategoryName, attrib.Category);
+                test.Metadata.Entries.Add(MetadataKeys.CategoryName, attrib.Category);
             }
             foreach (TestsOnAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestsOnAttribute2), true))
             {
-                test.Metadata.Entries.Add(MetadataKey.TestsOn, attrib.TestedType.AssemblyQualifiedName);
+                test.Metadata.Entries.Add(MetadataKeys.TestsOn, attrib.TestedType.AssemblyQualifiedName);
             }
             foreach (ImportanceAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(ImportanceAttribute2), true))
             {
                 // Note: In principle we could eliminate the call to MapImportance because TestImportance is
                 //       defined the same way in Gallio as in MbUnit v2.  But there is no guarantee that will remain the case.
-                test.Metadata.Entries.Add(MetadataKey.Importance, MapImportance(attrib.Importance).ToString());
+                test.Metadata.Entries.Add(MetadataKeys.Importance, MapImportance(attrib.Importance).ToString());
             }
             foreach (TestFixturePatternAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestFixturePatternAttribute2), true))
             {
                 if (! String.IsNullOrEmpty(attrib.Description))
-                    test.Metadata.Entries.Add(MetadataKey.Description, attrib.Description);
+                    test.Metadata.Entries.Add(MetadataKeys.Description, attrib.Description);
             }
+
+            string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(fixtureType);
+            if (xmlDocumentation != null)
+                test.Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
             parent.AddChild(test);
             return test;
@@ -198,8 +207,12 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 foreach (TestPatternAttribute2 attrib in memberInfo.GetCustomAttributes(typeof(TestPatternAttribute2), true))
                 {
                     if (!String.IsNullOrEmpty(attrib.Description))
-                        test.Metadata.Entries.Add(MetadataKey.Description, attrib.Description);
+                        test.Metadata.Entries.Add(MetadataKeys.Description, attrib.Description);
                 }
+
+                string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(memberInfo);
+                if (xmlDocumentation != null)
+                    test.Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
             }
 
             parent.AddChild(test);

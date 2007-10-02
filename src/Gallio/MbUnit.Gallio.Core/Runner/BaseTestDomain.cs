@@ -14,14 +14,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Core.Harness;
-using MbUnit.Framework.Kernel.Harness;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Core.Model.Events;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Framework.Kernel.Model;
+using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -35,7 +33,7 @@ namespace MbUnit.Core.Runner
     public abstract class BaseTestDomain : LongLivingMarshalByRefObject, ITestDomain
     {
         private bool disposed;
-        private IEventListener listener;
+        private ITestListener listener;
         private TestPackage package;
         private TemplateModel templateModel;
         private TestModel testModel;
@@ -100,13 +98,13 @@ namespace MbUnit.Core.Runner
         /// <summary>
         /// Gets the event listener, or null if none was set.
         /// </summary>
-        protected IEventListener Listener
+        protected ITestListener Listener
         {
             get { return listener; }
         }
 
         /// <inheritdoc />
-        public void SetEventListener(IEventListener listener)
+        public void SetTestListener(ITestListener listener)
         {
             this.listener = listener;
         }

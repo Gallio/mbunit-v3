@@ -14,28 +14,24 @@
 // limitations under the License.
 
 extern alias MbUnit2;
-using MbUnit.Core.Tests.Harness;
+using MbUnit.Core.Model;
+using MbUnit.Core.Tests.Model;
 using MbUnit.TestResources.MbUnit2;
 using MbUnit.TestResources.MbUnit2.Metadata;
 using MbUnit2::MbUnit.Framework;
 
 using MbUnit._Framework.Tests;
-using MbUnit.Core.Harness;
-using MbUnit.Framework.Kernel.Events;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 using MbUnit.Framework.Kernel.Runtime;
 using MbUnit.Framework.Tests.Kernel.Runtime;
 
 using System.Reflection;
-using MbUnit.Framework.Kernel.Metadata;
 using MbUnit.Plugin.MbUnit2Adapter.Core;
 
 using System;
 using System.Collections.Generic;
 using System.Text;
-
-using TestImportance = global::MbUnit.Framework.TestImportance;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
 {
@@ -107,7 +103,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             Assert.AreEqual(ComponentKind.Root, rootTest.Kind);
             Assert.AreEqual(CodeReference.Unknown, rootTest.CodeReference);
             Assert.IsFalse(rootTest.IsTestCase);
-            Assert.IsNull(rootTest.Batch);
             Assert.AreEqual(1, rootTest.Children.Count);
 
             BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
@@ -116,7 +111,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             Assert.AreEqual(CodeReference.Unknown, frameworkTest.CodeReference);
             Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
             Assert.IsFalse(frameworkTest.IsTestCase);
-            Assert.IsNull(frameworkTest.Batch);
             Assert.GreaterEqualThan(frameworkTest.Children.Count, 1);
 
             MbUnit2Test assemblyTest = (MbUnit2Test)frameworkTest.Children[0];
@@ -125,8 +119,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeReference);
             Assert.AreEqual(sampleAssembly.FullName, assemblyTest.Name);
             Assert.IsFalse(assemblyTest.IsTestCase);
-            Assert.IsNotNull(assemblyTest.Batch);
-            TestBatch mbunitBatch = assemblyTest.Batch;
             Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
 
             MbUnit2Test fixtureTest = (MbUnit2Test)GetDescendantByName(assemblyTest, typeof(SimpleTest).Name);
@@ -136,7 +128,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             Assert.AreEqual("SimpleTest", fixtureTest.Name);
             Assert.AreEqual("SimpleTest", fixtureTest.Name);
             Assert.IsFalse(fixtureTest.IsTestCase);
-            Assert.AreSame(mbunitBatch, fixtureTest.Batch);
             Assert.AreEqual(2, fixtureTest.Children.Count);
 
             MbUnit2Test passTest = (MbUnit2Test)GetDescendantByName(fixtureTest, "SimpleTest.Pass");
@@ -147,7 +138,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.MbUnit2", "MbUnit.TestResources.MbUnit2.SimpleTest", "Pass", null), passTest.CodeReference);
             Assert.AreEqual("SimpleTest.Pass", passTest.Name);
             Assert.IsTrue(passTest.IsTestCase);
-            Assert.AreSame(mbunitBatch, passTest.Batch);
             Assert.AreEqual(0, passTest.Children.Count);
 
             Assert.AreSame(fixtureTest, failTest.Parent);
@@ -155,8 +145,21 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.MbUnit2", "MbUnit.TestResources.MbUnit2.SimpleTest", "Fail", null), failTest.CodeReference);
             Assert.AreEqual("SimpleTest.Fail", failTest.Name);
             Assert.IsTrue(failTest.IsTestCase);
-            Assert.AreSame(mbunitBatch, failTest.Batch);
             Assert.AreEqual(0, failTest.Children.Count);
+        }
+
+        [Test]
+        public void MetadataImport_XmlDocumentation()
+        {
+            PopulateTestTree();
+
+            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(SimpleTest).Name);
+            MbUnit2Test passTest = (MbUnit2Test)GetDescendantByName(test, "SimpleTest.Pass");
+            MbUnit2Test failTest = (MbUnit2Test)GetDescendantByName(test, "SimpleTest.Fail");
+
+            Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+            Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+            Assert.AreEqual("<summary>\nA failing test.\n</summary>", failTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
         }
 
         [Test]
@@ -165,9 +168,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test) GetDescendantByName(rootTest, typeof(AuthorNameSample).Name);
-            Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKey.AuthorName));
-            Assert.AreEqual(null, test.Metadata.GetValue(MetadataKey.AuthorEmail));
-            Assert.AreEqual(null, test.Metadata.GetValue(MetadataKey.AuthorHomepage));
+            Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKeys.AuthorName));
+            Assert.AreEqual(null, test.Metadata.GetValue(MetadataKeys.AuthorEmail));
+            Assert.AreEqual(null, test.Metadata.GetValue(MetadataKeys.AuthorHomepage));
         }
 
         [Test]
@@ -176,9 +179,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(AuthorNameAndEmailSample).Name);
-            Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKey.AuthorName));
-            Assert.AreEqual("joe@example.com", test.Metadata.GetValue(MetadataKey.AuthorEmail));
-            Assert.AreEqual(null, test.Metadata.GetValue(MetadataKey.AuthorHomepage));
+            Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKeys.AuthorName));
+            Assert.AreEqual("joe@example.com", test.Metadata.GetValue(MetadataKeys.AuthorEmail));
+            Assert.AreEqual(null, test.Metadata.GetValue(MetadataKeys.AuthorHomepage));
         }
 
         [Test]
@@ -187,9 +190,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(AuthorNameAndEmailAndHomepageSample).Name);
-            Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKey.AuthorName));
-            Assert.AreEqual("joe@example.com", test.Metadata.GetValue(MetadataKey.AuthorEmail));
-            Assert.AreEqual("http://www.example.com/", test.Metadata.GetValue(MetadataKey.AuthorHomepage));
+            Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKeys.AuthorName));
+            Assert.AreEqual("joe@example.com", test.Metadata.GetValue(MetadataKeys.AuthorEmail));
+            Assert.AreEqual("http://www.example.com/", test.Metadata.GetValue(MetadataKeys.AuthorHomepage));
         }
 
         [Test]
@@ -198,7 +201,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(FixtureCategorySample).Name);
-            Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKey.CategoryName));
+            Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.CategoryName));
         }
 
         [Test]
@@ -207,7 +210,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(ImportanceSample).Name);
-            Assert.AreEqual(TestImportance.Critical.ToString(), test.Metadata.GetValue(MetadataKey.Importance));
+            Assert.AreEqual(TestImportance.Critical.ToString(), test.Metadata.GetValue(MetadataKeys.Importance));
         }
 
         [Test]
@@ -216,7 +219,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(TestsOnSample).Name);
-            Assert.AreEqual(typeof(TestsOnAttribute).AssemblyQualifiedName, test.Metadata.GetValue(MetadataKey.TestsOn));
+            Assert.AreEqual(typeof(TestsOnAttribute).AssemblyQualifiedName, test.Metadata.GetValue(MetadataKeys.TestsOn));
         }
 
         [Test]
@@ -225,7 +228,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(FixtureDescriptionSample).Name);
-            Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKey.Description));
+            Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
         }
 
         [Test]
@@ -235,7 +238,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
 
             MbUnit2Test fixture = (MbUnit2Test)GetDescendantByName(rootTest, typeof(TestDescriptionSample).Name);
             MbUnit2Test test = (MbUnit2Test)fixture.Children[0];
-            Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKey.Description));
+            Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
         }
     }
 }

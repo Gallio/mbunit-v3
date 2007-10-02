@@ -15,10 +15,10 @@
 
 using System;
 using MbUnit.Core.Harness;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Core.Model.Events;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -75,10 +75,10 @@ namespace MbUnit.Core.Runner
         TestModel TestModel { get; }
 
         /// <summary>
-        /// Sets the event listener for the domain.
+        /// Sets the test listener for the domain.
         /// </summary>
         /// <param name="listener">The listener</param>
-        void SetEventListener(IEventListener listener);
+        void SetTestListener(ITestListener listener);
 
         /// <summary>
         /// Loads a test package into the test domain.

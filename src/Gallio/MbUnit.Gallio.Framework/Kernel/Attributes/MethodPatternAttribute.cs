@@ -49,8 +49,18 @@ namespace MbUnit.Framework.Kernel.Attributes
         }
 
         /// <summary>
+        /// <para>
         /// Applies contributions to a method template.
         /// This method is called after the method template is linked to the template tree.
+        /// </para>
+        /// <para>
+        /// Contributions are applied in a very specific order:
+        /// <list type="bullet">
+        /// <item>Method decorator attributes declared by the reflected type</item>
+        /// <item>Method decorator attributes declared by the method</item>
+        /// <item>Metadata attributes declared by the method</item>
+        /// </list>
+        /// </para>
         /// </summary>
         /// <remarks>
         /// A typical use of this method is to apply additional metadata to model
@@ -61,12 +71,8 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <param name="methodTemplate">The method template</param>
         public virtual void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
-            // FIXME: Should we apply decorators in two separate sorted batches or merge them
-            //        together to produce a single ordered collection?  I think it's easier
-            //        to reason about decorators locally if they are only ordered based on the
-            //        site to which they are applied.
-            MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method);
             MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method.ReflectedType);
+            MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method);
             MetadataPatternAttribute.ProcessMetadata(builder, methodTemplate, methodTemplate.Method);
 
             ProcessParameters(builder, methodTemplate);

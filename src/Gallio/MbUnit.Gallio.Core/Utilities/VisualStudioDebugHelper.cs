@@ -20,7 +20,6 @@ using System.IO;
 using System.Text;
 using Castle.Core;
 using MbUnit.Core.Runtime;
-using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Utilities
 {

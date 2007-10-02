@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Castle.Core;
-using MbUnit.Framework.Kernel.Events;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Reporting

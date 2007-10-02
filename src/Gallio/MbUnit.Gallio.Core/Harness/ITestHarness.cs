@@ -16,10 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Harness;
+using MbUnit.Core.Model;
+using MbUnit.Core.Model.Events;
+using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Core.Runtime;
+using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Utilities;
 using MbUnit.Framework.Kernel.Runtime;
 
 namespace MbUnit.Core.Harness
@@ -51,7 +53,7 @@ namespace MbUnit.Core.Harness
         /// <summary>
         /// Gets the event dispatcher.
         /// </summary>
-        EventDispatcher EventDispatcher { get; }
+        TestEventDispatcher EventDispatcher { get; }
 
         /// <summary>
         /// Gets the package loaded in the test harness, or null if none.

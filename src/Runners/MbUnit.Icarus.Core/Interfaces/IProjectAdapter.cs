@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Icarus.Core.CustomEventArgs;
 
 namespace MbUnit.Icarus.Core.Interfaces

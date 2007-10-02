@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Tests
 {

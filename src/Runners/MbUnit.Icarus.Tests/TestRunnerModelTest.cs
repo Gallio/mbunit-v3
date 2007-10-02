@@ -17,7 +17,7 @@ using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runtime;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Icarus.Core.Model;
 
 namespace MbUnit.Icarus.Tests

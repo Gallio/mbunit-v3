@@ -23,6 +23,9 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Captures the run-time state of a test.
     /// </summary>
+    /// <todo author="jeff">
+    /// Roll this stuff into the Context possibly or create new interfaces for it.
+    /// </todo>
     public class MbUnitTestState
     {
         private MbUnitTest test;

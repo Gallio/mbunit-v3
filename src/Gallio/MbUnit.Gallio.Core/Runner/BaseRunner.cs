@@ -15,12 +15,11 @@
 
 using System;
 using MbUnit.Core.Harness;
-using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.Harness;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Core.Model.Events;
+using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Runtime;
-using MbUnit.Framework.Kernel.Events;
-using MbUnit.Framework.Kernel.Model.Serialization;
+using MbUnit.Framework.Kernel.Model;
+using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Runner
 {
@@ -29,7 +28,7 @@ namespace MbUnit.Core.Runner
     /// </summary>
     public class BaseRunner : ITestRunner
     {
-        private readonly EventDispatcher eventDispatcher;
+        private readonly TestEventDispatcher eventDispatcher;
         private readonly ITestDomainFactory domainFactory;
         private ICoreRuntime runtime;
 
@@ -56,7 +55,7 @@ namespace MbUnit.Core.Runner
             this.runtime = runtime;
             this.domainFactory = domainFactory;
 
-            eventDispatcher = new EventDispatcher();
+            eventDispatcher = new TestEventDispatcher();
             templateEnumerationOptions = new TemplateEnumerationOptions();
             testEnumerationOptions = new TestEnumerationOptions();
             testExecutionOptions = new TestExecutionOptions();
@@ -81,7 +80,7 @@ namespace MbUnit.Core.Runner
                 if (domain == null)
                 {
                     domain = domainFactory.CreateDomain();
-                    domain.SetEventListener(eventDispatcher);
+                    domain.SetTestListener(eventDispatcher);
                 }
 
                 return domain;
@@ -115,7 +114,7 @@ namespace MbUnit.Core.Runner
         public event EventHandler RunComplete;
 
         /// <inheritdoc />
-        public EventDispatcher EventDispatcher
+        public TestEventDispatcher EventDispatcher
         {
             get { return eventDispatcher; }
         }
