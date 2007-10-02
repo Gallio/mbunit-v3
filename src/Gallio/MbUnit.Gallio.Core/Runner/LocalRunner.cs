@@ -14,11 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Core.Harness;
-using MbUnit.Core.Runtime;
-using MbUnit.Framework;
+using MbUnit.Core.RuntimeSupport;
 
 namespace MbUnit.Core.Runner
 {
@@ -48,7 +45,7 @@ namespace MbUnit.Core.Runner
 
         private static ICoreRuntime GetRuntime()
         {
-            ICoreRuntime runtime = Framework.Runtime.Instance as ICoreRuntime;
+            ICoreRuntime runtime = CoreRuntimeHolder.Instance;
             if (runtime == null)
                 throw new InvalidOperationException("The framework's runtime holder has not been initialized.");
 

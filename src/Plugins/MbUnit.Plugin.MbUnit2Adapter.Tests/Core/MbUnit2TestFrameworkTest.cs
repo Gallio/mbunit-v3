@@ -23,8 +23,8 @@ using MbUnit2::MbUnit.Framework;
 using MbUnit._Framework.Tests;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Kernel.Runtime;
-using MbUnit.Framework.Tests.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
+using MbUnit.Framework.Tests.Kernel.RuntimeSupport;
 
 using System.Reflection;
 using MbUnit.Plugin.MbUnit2Adapter.Core;

@@ -20,10 +20,10 @@ using System.Reflection;
 using MbUnit.Core.Model;
 using MbUnit.Core.Model.Events;
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
 namespace MbUnit.Core.Harness
 {

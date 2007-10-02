@@ -13,22 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
-using Castle.Core.Logging;
-using MbUnit.Core.Model;
-using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Runtime;
-using MbUnit.Framework.Kernel.Runtime;
-using MbUnit2::MbUnit.Framework;
-
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using MbUnit._Framework.Tests;
 using MbUnit.Core.Harness;
+using MbUnit.Core.Model;
+using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Tests.Kernel.Runtime;
 
 namespace MbUnit.Core.Tests.Model
 {
@@ -39,8 +30,6 @@ namespace MbUnit.Core.Tests.Model
         protected RootTemplate rootTemplate;
         protected RootTest rootTest;
 
-        private MockRuntime mockRuntime;
-        private IAssemblyResolverManager mockAssemblyResolverManager;
         private ITestHarness harness;
 
         protected abstract Assembly GetSampleAssembly();
@@ -53,22 +42,7 @@ namespace MbUnit.Core.Tests.Model
 
             sampleAssembly = GetSampleAssembly();
 
-            mockRuntime = new MockRuntime();
-            mockAssemblyResolverManager = Mocks.CreateMock<IAssemblyResolverManager>();
-            mockRuntime.Components.Add(typeof(IAssemblyResolverManager), mockAssemblyResolverManager);
-
-            DefaultXmlDocumentationResolver xmlDocumentationResolver = new DefaultXmlDocumentationResolver();
-            xmlDocumentationResolver.Logger = new ConsoleLogger();
-            mockRuntime.Components.Add(typeof(IXmlDocumentationResolver), xmlDocumentationResolver);
-
-            DefaultContextManager contextManager = new DefaultContextManager();
-            mockRuntime.Components.Add(typeof(IContextManager), contextManager);
-
-            DependencyTestPlanFactory testPlanFactory = new DependencyTestPlanFactory(contextManager);
-
-            MbUnit.Framework.Runtime.Instance = mockRuntime;
-
-            harness = new DefaultTestHarness(mockRuntime, testPlanFactory);
+            harness = new DefaultTestHarness(Runtime.Instance, Runtime.Instance.Resolve<ITestPlanFactory>());
 
             framework = CreateFramework();
             harness.AddContributor(framework);
@@ -76,9 +50,13 @@ namespace MbUnit.Core.Tests.Model
 
         public override void TearDown()
         {
-            base.TearDown();
+            if (harness != null)
+            {
+                harness.Dispose();
+                harness = null;
+            }
 
-            MbUnit.Framework.Runtime.Instance = null;
+            base.TearDown();
         }
 
         protected void PopulateTemplateTree()

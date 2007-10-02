@@ -20,9 +20,9 @@ using System.Reflection;
 using System.Security.Policy;
 using System.Text;
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
 namespace MbUnit.Core.Runner
 {

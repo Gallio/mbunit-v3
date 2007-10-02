@@ -25,9 +25,9 @@ using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 using MbUnit.Core.Utilities;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
-namespace MbUnit.Core.Runtime
+namespace MbUnit.Core.RuntimeSupport
 {
     /// <summary>
     /// Default implementation of <see cref="IRuntime" /> based on the

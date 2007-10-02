@@ -19,7 +19,7 @@ using System.Text;
 using Castle.Core;
 using MbUnit.Core.Model;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
 namespace MbUnit.Core.Harness
 {

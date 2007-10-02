@@ -47,12 +47,12 @@
                  type="MbUnit.Core.Model.DependencyTestPlanFactory, MbUnit.Gallio.Core" />
 
       <component id="Core.XmlDocumentationResolver"
-                 service="MbUnit.Framework.Kernel.Runtime.IXmlDocumentationResolver, MbUnit.Gallio.Framework"
-                 type="MbUnit.Core.Runtime.DefaultXmlDocumentationResolver, MbUnit.Gallio.Core" />
+                 service="MbUnit.Framework.Kernel.RuntimeSupport.IXmlDocumentationResolver, MbUnit.Gallio.Framework"
+                 type="MbUnit.Core.RuntimeSupport.DefaultXmlDocumentationResolver, MbUnit.Gallio.Core" />
 
       <component id="Core.ContextManager"
-                 service="MbUnit.Framework.Kernel.Runtime.IContextManager, MbUnit.Gallio.Framework"
-                 type="MbUnit.Core.Runtime.DefaultContextManager, MbUnit.Gallio.Core" />
+                 service="MbUnit.Framework.Kernel.RuntimeSupport.IContextManager, MbUnit.Gallio.Framework"
+                 type="MbUnit.Core.RuntimeSupport.DefaultContextManager, MbUnit.Gallio.Core" />
     </components>
   </castle>
 </configuration>

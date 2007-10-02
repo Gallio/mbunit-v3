@@ -17,19 +17,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Text;
 using Castle.Core.Logging;
 using MbUnit.Core.Harness;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.Monitors;
-using MbUnit.Core.Runtime;
-using MbUnit.Framework;
+using MbUnit.Core.RuntimeSupport;
+using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
 
-namespace MbUnit._Framework.Tests.Integration
+namespace MbUnit.Framework.Tests.Integration
 {
     /// <summary>
     /// Runs a list of sample test fixtures and provides the results back
@@ -65,9 +64,7 @@ namespace MbUnit._Framework.Tests.Integration
 
         public void Run()
         {
-            InitializeRuntimeHack();
-
-            TextWriter consoleOutput = Console.Out;
+            LogStreamWriter logStreamWriter = Log.ConsoleOutput;
 
             using (LocalRunner runner = new LocalRunner())
             {
@@ -75,7 +72,7 @@ namespace MbUnit._Framework.Tests.Integration
                 reportMonitor.Attach(runner);
                 report = reportMonitor.Report;
 
-                ILogger logger = new DebugLogger(consoleOutput);
+                ILogger logger = new DebugLogger(logStreamWriter);
                 new DebugMonitor(logger).Attach(runner);
                 //new LogMonitor(logger, reportMonitor).Attach(runner);
 
@@ -94,31 +91,13 @@ namespace MbUnit._Framework.Tests.Integration
                 try
                 {
                     reportManager.GetFormatter(TextReportFormatter.FormatterName).Format(report, reportPath, options, null, new NullProgressMonitor());
-                    consoleOutput.Write("\n\n==== TEXT REPORT ====\n\n");
-                    consoleOutput.WriteLine(File.ReadAllText(reportPath));
+                    logStreamWriter.Write("\n\n==== TEXT REPORT ====\n\n");
+                    logStreamWriter.WriteLine(File.ReadAllText(reportPath));
                 }
                 finally
                 {
                     File.Delete(reportPath);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Temporary hack until we start running these tests with Gallio.
-        /// </summary>
-        private static void InitializeRuntimeHack()
-        {
-            if (Runtime.Instance == null)
-            {
-                RuntimeSetup runtimeSetup = new RuntimeSetup();
-                DefaultAssemblyResolverManager assemblyResolverManager = new DefaultAssemblyResolverManager();
-                assemblyResolverManager.AddMbUnitDirectories();
-
-                WindsorRuntime runtime = new WindsorRuntime(assemblyResolverManager, runtimeSetup);
-                runtime.Initialize();
-
-                Runtime.Instance = runtime;
             }
         }
 

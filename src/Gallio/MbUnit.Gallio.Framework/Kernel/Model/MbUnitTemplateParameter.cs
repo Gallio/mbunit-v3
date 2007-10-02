@@ -37,6 +37,14 @@ namespace MbUnit.Framework.Kernel.Model
             this.slot = slot;
 
             Index = slot.Position;
+
+            MemberInfo member = slot.Member;
+            if (member != null)
+            {
+                string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(member);
+                if (xmlDocumentation != null)
+                    Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+            }
         }
 
         /// <summary>

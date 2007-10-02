@@ -73,7 +73,7 @@
     <Compile Include="Model\IStepMonitor.cs" />
     <Compile Include="Model\ITestPlanFactory.cs" />
     <Compile Include="Model\RootTestController.cs" />
-    <Compile Include="Runtime\DefaultContextManager.cs" />
+    <Compile Include="RuntimeSupport\DefaultContextManager.cs" />
     <Compile Include="Harness\ContextualLogStreamTextWriter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -94,7 +94,7 @@
     <Compile Include="Model\TestComponentData.cs" />
     <Compile Include="Model\TestData.cs" />
     <Compile Include="Model\TestModel.cs" />
-    <Compile Include="Runtime\DefaultXmlDocumentationResolver.cs" />
+    <Compile Include="RuntimeSupport\DefaultXmlDocumentationResolver.cs" />
     <Compile Include="Model\TestListenerLogWriter.cs" />
     <Compile Include="Model\TestOutcome.cs" />
     <Compile Include="Model\TestResult.cs" />
@@ -151,13 +151,14 @@
     <Compile Include="Runner\Monitors\ReportMonitor.cs" />
     <Compile Include="Runner\Monitors\ReportStepEventArgs.cs" />
     <Compile Include="Runner\LogProgressMonitor.cs" />
-    <Compile Include="Runtime\DefaultAssemblyResolverManager.cs" />
-    <Compile Include="Runtime\IAssemblyResolverManager.cs" />
-    <Compile Include="Runtime\ICoreContextManager.cs" />
-    <Compile Include="Runtime\ICoreContextServiceProvider.cs" />
-    <Compile Include="Runtime\ICoreRuntime.cs" />
-    <Compile Include="Runtime\RuntimeSetup.cs" />
-    <Compile Include="Runtime\WindsorRuntime.cs" />
+    <Compile Include="RuntimeSupport\DefaultAssemblyResolverManager.cs" />
+    <Compile Include="RuntimeSupport\IAssemblyResolverManager.cs" />
+    <Compile Include="RuntimeSupport\ICoreContextManager.cs" />
+    <Compile Include="RuntimeSupport\ICoreContextServiceProvider.cs" />
+    <Compile Include="RuntimeSupport\ICoreRuntime.cs" />
+    <Compile Include="RuntimeSupport\CoreRuntimeHolder.cs" />
+    <Compile Include="RuntimeSupport\RuntimeSetup.cs" />
+    <Compile Include="RuntimeSupport\WindsorRuntime.cs" />
     <Compile Include="Utilities\FileManager.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Utilities\IFileManager.cs" />

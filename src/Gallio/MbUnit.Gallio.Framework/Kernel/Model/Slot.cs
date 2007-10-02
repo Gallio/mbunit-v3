@@ -90,6 +90,14 @@ namespace MbUnit.Framework.Kernel.Model
         }
 
         /// <summary>
+        /// Gets the associated member, or null if not applicable.
+        /// </summary>
+        public MemberInfo Member
+        {
+            get { return attributeProvider as MemberInfo; }
+        }
+
+        /// <summary>
         /// Gets the associated parameter, or null if not applicable.
         /// </summary>
         public ParameterInfo Parameter

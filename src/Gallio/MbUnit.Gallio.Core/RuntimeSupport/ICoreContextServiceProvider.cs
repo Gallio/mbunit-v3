@@ -20,7 +20,7 @@ using MbUnit.Framework;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
 
-namespace MbUnit.Core.Runtime
+namespace MbUnit.Core.RuntimeSupport
 {
     /// <summary>
     /// A core context service provider grants access to resources that a context needs

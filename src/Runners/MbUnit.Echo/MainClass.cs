@@ -21,7 +21,7 @@ using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Echo.Properties;
 using MbUnit.Framework.Kernel.Utilities;
 

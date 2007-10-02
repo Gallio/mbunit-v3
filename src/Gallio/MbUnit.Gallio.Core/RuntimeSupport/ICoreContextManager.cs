@@ -19,9 +19,9 @@ using System.Text;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
-namespace MbUnit.Core.Runtime
+namespace MbUnit.Core.RuntimeSupport
 {
     /// <summary>
     /// The core context manager extends <see cref="IContextManager" /> with methods

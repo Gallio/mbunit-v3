@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Castle.Core;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 
 namespace MbUnit.Core.Utilities
 {

@@ -38,7 +38,7 @@ namespace MbUnit.Framework.Kernel.Model
 
             Kind = ComponentKind.Test;
 
-            string xmlDocumentation = Framework.Runtime.XmlDocumentationResolver.GetXmlDocumentation(method);
+            string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(method);
             if (xmlDocumentation != null)
                 Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }

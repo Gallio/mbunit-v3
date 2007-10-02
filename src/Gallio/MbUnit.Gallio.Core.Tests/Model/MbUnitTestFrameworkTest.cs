@@ -13,16 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
-using MbUnit.Core.Model;
-using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Utilities;
-using MbUnit._Framework.Tests;
-using MbUnit.TestResources.Gallio;
-using MbUnit2::MbUnit.Framework;
-
 using System;
 using System.Reflection;
+using MbUnit.Core.Model;
+using MbUnit.Framework;
+using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Kernel.Utilities;
+using MbUnit.TestResources.Gallio;
 
 namespace MbUnit.Core.Tests.Model
 {
@@ -136,5 +133,17 @@ namespace MbUnit.Core.Tests.Model
             Assert.AreEqual("<summary>\nA failing test.\n</summary>", failTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
         }
 
+        [Test]
+        public void MetadataImport_XmlDocumentation_TemplateParameters()
+        {
+            PopulateTemplateTree();
+
+            MbUnitTemplate template = (MbUnitTemplate)GetDescendantByName(rootTemplate, typeof(ParameterizedTest).Name);
+            MbUnitTemplateParameter fieldParameter = (MbUnitTemplateParameter) template.GetParameterByName("FieldParameter");
+            MbUnitTemplateParameter propertyParameter = (MbUnitTemplateParameter) template.GetParameterByName("PropertyParameter");
+
+            Assert.AreEqual("<summary>\nA field parameter.\n</summary>", fieldParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+            Assert.AreEqual("<summary>\nA property parameter.\n</summary>", propertyParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+        }
     }
 }

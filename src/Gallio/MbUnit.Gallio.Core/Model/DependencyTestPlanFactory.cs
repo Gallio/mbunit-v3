@@ -15,8 +15,8 @@
 
 using System;
 using MbUnit.Core.Model.Events;
-using MbUnit.Core.Runtime;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Core.RuntimeSupport;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
 namespace MbUnit.Core.Model
 {

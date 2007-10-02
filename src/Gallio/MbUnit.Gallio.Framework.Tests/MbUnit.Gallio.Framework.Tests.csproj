@@ -90,7 +90,7 @@
     <Compile Include="Kernel\Actions\ActionChainTest.cs" />
     <Compile Include="Kernel\Model\MetadataMapTest.cs" />
     <Compile Include="Kernel\Model\CodeReferenceTest.cs" />
-    <Compile Include="Kernel\Runtime\MockRuntime.cs" />
+    <Compile Include="Kernel\RuntimeSupport\MockRuntime.cs" />
     <Compile Include="Kernel\Utilities\GenericUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Integration\SampleRunner.cs" />

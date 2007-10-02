@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 
-namespace MbUnit.Framework.Kernel.Runtime
+namespace MbUnit.Framework.Kernel.RuntimeSupport
 {
     /// <summary>
     /// Resolves members to XML documentation contents.

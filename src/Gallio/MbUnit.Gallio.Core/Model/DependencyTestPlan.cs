@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Threading;
 using MbUnit.Core.Model.Events;
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;

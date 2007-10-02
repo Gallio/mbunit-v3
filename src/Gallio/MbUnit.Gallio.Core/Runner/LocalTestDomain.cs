@@ -16,10 +16,11 @@
 using System;
 using MbUnit.Core.Harness;
 using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Model;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
 namespace MbUnit.Core.Runner
 {
@@ -35,7 +36,7 @@ namespace MbUnit.Core.Runner
     /// </remarks>
     public class LocalTestDomain : BaseTestDomain
     {
-        private IRuntime oldRuntime;
+        private ICoreRuntime oldRuntime;
         private ITestHarnessFactory harnessFactory;
         private ITestHarness harness;
 
@@ -47,7 +48,7 @@ namespace MbUnit.Core.Runner
         /// <param name="harnessFactory">The test harness factory</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> or
         /// <paramref name="harnessFactory"/> is null</exception>
-        public LocalTestDomain(IRuntime runtime, ITestHarnessFactory harnessFactory)
+        public LocalTestDomain(ICoreRuntime runtime, ITestHarnessFactory harnessFactory)
         {
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");
@@ -56,14 +57,14 @@ namespace MbUnit.Core.Runner
 
             this.harnessFactory = harnessFactory;
 
-            oldRuntime = Framework.Runtime.Instance;
-            Framework.Runtime.Instance = runtime;
+            oldRuntime = CoreRuntimeHolder.Instance;
+            CoreRuntimeHolder.Instance = runtime;
         }
 
         /// <inheritdoc />
         protected override void InternalDispose()
         {
-            Framework.Runtime.Instance = oldRuntime;
+            CoreRuntimeHolder.Instance = oldRuntime;
             oldRuntime = null;
             harnessFactory = null;
         }

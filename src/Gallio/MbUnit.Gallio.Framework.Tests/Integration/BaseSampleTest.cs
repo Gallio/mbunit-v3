@@ -13,17 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.Text;
+using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Core.Model;
-using MbUnit.Framework.Tests;
-using MbUnit.TestResources.Gallio.Fixtures;
-using MbUnit2::MbUnit.Framework;
 
-namespace MbUnit._Framework.Tests.Integration
+namespace MbUnit.Framework.Tests.Integration
 {
     /// <summary>
     /// Abstract base class for integration tests based on test samples.

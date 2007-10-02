@@ -13,10 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
 namespace MbUnit.Framework
 {
@@ -33,18 +30,31 @@ namespace MbUnit.Framework
         private static IContextManager cachedContextManager;
 
         /// <summary>
-        /// Gets or sets the runtime instance.
-        /// May be null if the runtime has not been initialized yet.
+        /// Gets the runtime instance.
         /// </summary>
+        /// <remarks>
+        /// This value is never null while tests are executing but it may be null at
+        /// other times when the framework is not fully initialized.
+        /// </remarks>
         public static IRuntime Instance
         {
             get { return instance; }
-            set
-            {
-                instance = value;
-                cachedXmlDocumentationResolver = null;
-                cachedContextManager = null;
-            }
+        }
+
+        /// <summary>
+        /// Sets the runtime instance.
+        /// </summary>
+        /// <remarks>
+        /// This setter is deliberately hidden from normal user code which should have no business
+        /// ever setting the runtime instance.  Refer to the CoreRuntimeHolder in MbUnit.Gallio.Core
+        /// for a supported mechanism for setting the runtime instance.
+        /// </remarks>
+        /// <param name="instance">The runtime instance, or null if none</param>
+        internal static void SetInstance(IRuntime instance)
+        {
+            Runtime.instance = instance;
+            cachedXmlDocumentationResolver = null;
+            cachedContextManager = null;
         }
 
         /// <summary>

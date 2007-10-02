@@ -17,7 +17,7 @@ using System;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Model.Events;
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Core.Model;
 

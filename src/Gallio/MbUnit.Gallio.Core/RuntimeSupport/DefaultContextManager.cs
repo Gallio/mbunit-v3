@@ -21,7 +21,7 @@ using MbUnit.Framework;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
 
-namespace MbUnit.Core.Runtime
+namespace MbUnit.Core.RuntimeSupport
 {
     /// <summary>
     /// The default context manager tracks the current context by way

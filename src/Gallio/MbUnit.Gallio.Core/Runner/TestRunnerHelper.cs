@@ -25,7 +25,7 @@ using MbUnit.Core.Harness;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner.Monitors;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Filters;

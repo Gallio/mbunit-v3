@@ -20,9 +20,9 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using Castle.Core.Logging;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 
-namespace MbUnit.Core.Runtime
+namespace MbUnit.Core.RuntimeSupport
 {
     /// <summary>
     /// The default XML documentation resolver reads XML documentation files on

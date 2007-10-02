@@ -21,12 +21,12 @@ using System.Reflection;
 using System.Text;
 using Castle.Core.Logging;
 using MbUnit._Framework.Tests;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.TestResources.Gallio;
 using MbUnit2::MbUnit.Framework;
 using Rhino.Mocks;
 
-namespace MbUnit.Core.Tests.Runtime
+namespace MbUnit.Core.Tests.RuntimeSupport
 {
     [TestFixture]
     [Author("Jeff")]

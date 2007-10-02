@@ -48,11 +48,13 @@ namespace MbUnit._Framework.Tests
         }
 
         [SetUp]
+        [global::MbUnit.Framework.SetUp]
         public virtual void SetUp()
         {
         }
 
         [TearDown]
+        [global::MbUnit.Framework.TearDown]
         public virtual void TearDown()
         {
             if (mocks != null)

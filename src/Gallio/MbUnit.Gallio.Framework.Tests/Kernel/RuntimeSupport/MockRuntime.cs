@@ -14,17 +14,19 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework.Kernel.Collections;
+using MbUnit.Framework.Kernel.RuntimeSupport;
 using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Kernel.Runtime;
 
-namespace MbUnit.Framework.Tests.Kernel.Runtime
+namespace MbUnit.Framework.Tests.Kernel.RuntimeSupport
 {
+    /// <summary>
+    /// A simple mock implementation of a <see cref="IRuntime" /> component
+    /// registry.
+    /// </summary>
     public class MockRuntime : IRuntime
     {
-        private MultiMap<Type, object> components;
+        private readonly MultiMap<Type, object> components;
 
         public MockRuntime()
         {

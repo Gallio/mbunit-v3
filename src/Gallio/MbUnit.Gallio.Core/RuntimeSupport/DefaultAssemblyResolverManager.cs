@@ -19,7 +19,7 @@ using System.Reflection;
 using System.IO;
 using MbUnit.Framework;
 
-namespace MbUnit.Core.Runtime
+namespace MbUnit.Core.RuntimeSupport
 {
     /// <summary>
     /// Resolves assemblies using hint paths and custom resolvers.

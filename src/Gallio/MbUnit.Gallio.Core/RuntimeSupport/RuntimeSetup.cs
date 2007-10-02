@@ -19,7 +19,7 @@ using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.Utilities;
 
-namespace MbUnit.Core.Runtime
+namespace MbUnit.Core.RuntimeSupport
 {
     /// <summary>
     /// Provides configuration parameters for setting up the runtime.

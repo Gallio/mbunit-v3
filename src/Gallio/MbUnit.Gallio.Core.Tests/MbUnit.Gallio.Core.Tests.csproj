@@ -65,7 +65,7 @@
     <Compile Include="Reporting\StepRunTests.cs" />
     <Compile Include="Reporting\TestRunTests.cs" />
     <Compile Include="Runner\TestRunnerHelperTests.cs" />
-    <Compile Include="Runtime\DefaultXmlDocumentationResolverTest.cs" />
+    <Compile Include="RuntimeSupport\DefaultXmlDocumentationResolverTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">

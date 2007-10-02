@@ -14,11 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
-namespace MbUnit.Framework.Kernel.Runtime
+namespace MbUnit.Framework.Kernel.RuntimeSupport
 {
     /// <summary>
     /// The context manager tracks the <see cref="Context" /> associated with the current thread.

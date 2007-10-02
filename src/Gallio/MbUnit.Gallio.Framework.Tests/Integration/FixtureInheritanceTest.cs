@@ -13,22 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
+using System;
 using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
-using MbUnit.Core.Runtime;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Runtime;
-using MbUnit.Framework.Tests;
 using MbUnit.TestResources.Gallio.Fixtures;
-using MbUnit2::MbUnit.Framework;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MbUnit._Framework.Tests.Integration
+namespace MbUnit.Framework.Tests.Integration
 {
     [TestFixture]
     public class FixtureInheritanceTest : BaseSampleTest

@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Castle.Core;
-using MbUnit.Core.Runtime;
+using MbUnit.Core.RuntimeSupport;
 
 namespace MbUnit.Core.Runner
 {

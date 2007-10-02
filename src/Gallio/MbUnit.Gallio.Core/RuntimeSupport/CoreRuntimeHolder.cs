@@ -13,24 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using MbUnit.Framework.Kernel.Runtime;
+using MbUnit.Framework;
 
-namespace MbUnit.Core.Runtime
+namespace MbUnit.Core.RuntimeSupport
 {
     /// <summary>
-    /// An additional interface implemented by runtimes that is only
-    /// visible to the core.  This interface provides services that the
-    /// MbUnit framework shouldn't know about.
+    /// Provides support for manipulating the core runtime.
     /// </summary>
-    public interface ICoreRuntime : IRuntime
+    public static class CoreRuntimeHolder
     {
         /// <summary>
-        /// Gets a deep copy of the runtime setup used to configure this runtime.
+        /// Gets or sets the core runtime instance.  May be null if not initialized.
         /// </summary>
-        /// <returns>The runtime setup</returns>
-        RuntimeSetup GetRuntimeSetup();
+        public static ICoreRuntime Instance
+        {
+            get { return (ICoreRuntime) Runtime.Instance; }
+            set { Runtime.SetInstance(value); }
+        }
     }
 }
