@@ -106,9 +106,16 @@
   <xsl:template match="g:testModel/g:test" mode="summary">
     <div id="Summary">
       <h2>Summary</h2>
-      <ul>
-        <xsl:apply-templates select="g:children/g:test" mode="summary" />
-      </ul>
+      <xsl:choose>
+        <xsl:when test="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]">
+          <ul>
+            <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="summary" />
+          </ul>
+        </xsl:when>
+        <xsl:otherwise>
+          <em>This report does not contain any test runs.</em>
+        </xsl:otherwise>
+      </xsl:choose>
     </div>
   </xsl:template>
 
@@ -166,10 +173,10 @@
         (<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />)
       </span>
       
-      <xsl:if test="g:children/g:test and $kind != 'Fixture'">
+      <xsl:if test="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id] and $kind != 'Fixture' ">
         <ul>
           <xsl:attribute name="id">testChildrenPanel-<xsl:value-of select="$id" /></xsl:attribute>
-          <xsl:apply-templates select="g:children/g:test" mode="summary" />
+          <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="summary" />
         </ul>
       </xsl:if>
     </li>
@@ -243,15 +250,20 @@
   <!-- Pretty print date time values -->
   <xsl:template name="format-datetime">
     <xsl:param name="datetime" />
-    <xsl:value-of select="substring($datetime, 12, 8)" />
-    (<xsl:value-of select="substring($datetime, 28)" />)
-    <xsl:value-of select="substring($datetime, 1, 10)" />
+    <xsl:value-of select="substring($datetime, 12, 8)" />, <xsl:value-of select="substring($datetime, 1, 10)" />
   </xsl:template>
 
   <xsl:template match="g:testModel/g:test" mode="details">
     <div id="Details">
       <h2>Details</h2>
-      <xsl:apply-templates select="g:children/g:test" mode="details" />
+      <xsl:choose>
+        <xsl:when test="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]">
+          <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="details" />
+        </xsl:when>
+        <xsl:otherwise>
+          <em>This report does not contain any test runs.</em>
+        </xsl:otherwise>
+      </xsl:choose>
     </div>
   </xsl:template>
 
@@ -266,7 +278,7 @@
     <xsl:variable name="inconclusive" select="$tests[@id = key('outcome', 'inconclusive')/@id]" />
     <xsl:variable name="ignored" select="$tests[@id = key('status', 'ignored')/@id]" />
     <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/@id]" />
-
+    
     <xsl:variable name="testRun" select="/g:report/g:packageRun/g:testRuns/g:testRun[@id=$testId]" />
     <xsl:variable name="rootStepResult" select="$testRun/g:stepRun/g:result" />
     <xsl:variable name="allStepResults" select="$rootStepResult/descendant-or-self::g:result" />
@@ -336,9 +348,9 @@
 
         <xsl:apply-templates select="g:metadata" />
 
-        <xsl:apply-templates select="/g:report/g:packageRun/g:testRuns/g:testRun[@id=$testId]/g:stepRun" />
+        <xsl:apply-templates select="$testRun/g:stepRun" />
 
-        <xsl:apply-templates select="g:children/g:test" mode="details" />
+        <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="details" />
       </div>
     </div>
   </xsl:template>

@@ -181,7 +181,7 @@
   </Target>
 
   <Target Name="Test">
-    <Exec Command="&quot;$(BuildBinDir)\MbUnit.Echo.exe&quot; /report-type:Html /report-type:Text /report-directory:&quot;$(BuildReportsDir)&quot; /show-reports @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
+    <Exec Command="&quot;$(BuildBinDir)\MbUnit.Echo.exe&quot; /report-type:Html /report-directory:&quot;$(BuildReportsDir)&quot; /show-reports @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
           IgnoreExitCode="true">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
     </Exec>
