@@ -50,11 +50,22 @@ table#Stats
 	cursor: pointer;
 }
 
+.toggleAbs
+{
+	cursor: pointer;
+	position: absolute;
+	left: -30px;
+}
+
+.toggleMargin
+{
+	margin-left: 20px;
+}
+
 /* Styles for test runs, including customized varieties per component kind */
 .testRun
 {
 	margin-top: 12pt;
-	margin-left: 0px;
 	font-size: medium;
 }
 
@@ -62,6 +73,7 @@ table#Stats
 {
 	font-weight:bold;
 	font-size:medium;
+	position:relative;
 }
 
 .testRunHeading-Framework
@@ -83,16 +95,6 @@ table#Stats
 {
 }
 
-.testRunPanel
-{
-	margin-left: 20px;
-}
-
-.testRunChildren
-{
-	margin-left: 24px;
-}
-
 /* Styles for step runs */
 .stepRun
 {
@@ -102,16 +104,7 @@ table#Stats
 .stepRunHeading
 {
 	font-weight:bold;
-}
-
-.stepRunPanel
-{
-	margin-left: 20px;
-}
-
-.stepRunChildren
-{
-	margin-left: 24px;
+	position:relative;
 }
 
 /* Styles used for coloring steps with different outcomes */

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:g="http://www.mbunit.com/gallio">
-  <xsl:output method="xml" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
-              doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" indent="yes" />
+  <xsl:output method="html" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+              doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" indent="yes" encoding="utf-8" />
   <xsl:param name="contentRoot" />
 
   <xsl:key name="outcome" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@outcome" />
   <xsl:key name="status" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@status" />
 
   <xsl:template match="g:report">
-    <html>
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
       <head>
         <title>MbUnit Test Report</title>
         <link rel="stylesheet" type="text/css" href="css/MbUnit-Report.css" />
@@ -127,7 +127,7 @@
     <li>
       <span>
         <xsl:choose>
-          <xsl:when test="count(g:children/g:test) > 0 and $kind != 'Fixture'">
+          <xsl:when test="g:children/g:test and $kind != 'Fixture'">
             <img src="img/Minus.gif" class="toggle">
               <xsl:attribute name="id">toggle-testChildrenPanel-<xsl:value-of select="$id" /></xsl:attribute>
               <xsl:attribute name="onclick">toggle('testChildrenPanel-<xsl:value-of select="$id" />');</xsl:attribute>
@@ -166,7 +166,7 @@
         (<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />)
       </span>
       
-      <xsl:if test="count(g:children/g:test) > 0 and $kind != 'Fixture'">
+      <xsl:if test="g:children/g:test and $kind != 'Fixture'">
         <ul>
           <xsl:attribute name="id">testChildrenPanel-<xsl:value-of select="$id" /></xsl:attribute>
           <xsl:apply-templates select="g:children/g:test" mode="summary" />
@@ -272,13 +272,14 @@
     <xsl:variable name="allStepResults" select="$rootStepResult/descendant-or-self::g:result" />
     <xsl:variable name="assertions" select="sum($allStepResults/@assertionCount)" />
 
-    <div class="testRun">
+    <div>
       <xsl:attribute name="id">testRun-<xsl:value-of select="$testId" /></xsl:attribute>
-      
+      <xsl:attribute name="class">testRun toggleMargin outcome outcome-<xsl:value-of select="$rootStepResult/@outcome" /></xsl:attribute>
+
       <span>
         <xsl:attribute name="class">testRunHeading testRunHeading-<xsl:value-of select="$kind"/></xsl:attribute>
 
-        <img src="img/Minus.gif" class="toggle">
+        <img src="img/Minus.gif" class="toggleAbs">
           <xsl:attribute name="id">toggle-testRunPanel-<xsl:value-of select="$testId" /></xsl:attribute>
           <xsl:attribute name="onclick">toggle('testRunPanel-<xsl:value-of select="$testId" />');</xsl:attribute>
         </img>
@@ -288,7 +289,7 @@
 
         <xsl:value-of select="@name" />
 
-        <xsl:if test="count(g:children) != 0">
+        <xsl:if test="g:children/g:test">
           <xsl:call-template name="progressBar">
             <xsl:with-param name="width">100</xsl:with-param>
             <xsl:with-param name="height">10</xsl:with-param>
@@ -311,7 +312,7 @@
 
       <div>
         <xsl:attribute name="id">testRunPanel-<xsl:value-of select="$testId" /></xsl:attribute>
-        <xsl:attribute name="class">testRunPanel outcome outcome-<xsl:value-of select="$rootStepResult/@outcome" /></xsl:attribute>
+        <xsl:attribute name="class">testRunPanel</xsl:attribute>
 
         <xsl:choose>
           <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
@@ -337,9 +338,7 @@
 
         <xsl:apply-templates select="/g:report/g:packageRun/g:testRuns/g:testRun[@id=$testId]/g:stepRun" />
 
-        <div class="testRunChildren">
-          <xsl:apply-templates select="g:children/g:test" mode="details" />
-        </div>
+        <xsl:apply-templates select="g:children/g:test" mode="details" />
       </div>
     </div>
   </xsl:template>
@@ -354,10 +353,10 @@
 
       <xsl:choose>
         <xsl:when test="parent::g:children">
-          <xsl:attribute name="class">stepRun outcome outcome-<xsl:value-of select="g:result/@outcome" /></xsl:attribute>
+          <xsl:attribute name="class">stepRun toggleMargin outcome outcome-<xsl:value-of select="g:result/@outcome" /></xsl:attribute>
           
           <span class="stepRunHeading">
-            <img src="img/Minus.gif" class="toggle">
+            <img src="img/Minus.gif" class="toggleAbs">
               <xsl:attribute name="id">toggle-stepRunPanel-<xsl:value-of select="$stepId" /></xsl:attribute>
               <xsl:attribute name="onclick">toggle('stepRunPanel-<xsl:value-of select="$stepId" />');</xsl:attribute>
             </img>
@@ -371,7 +370,7 @@
         </xsl:otherwise>
       </xsl:choose>
 
-      <div class="stepRunPanel">
+      <div>
         <xsl:attribute name="id">stepRunPanel-<xsl:value-of select="$stepId" /></xsl:attribute>
 
         <xsl:apply-templates select="g:metadata" />
@@ -380,15 +379,13 @@
           <xsl:with-param name="stepId" select="$stepId" />
         </xsl:apply-templates>
 
-        <div class="stepRunChildren">
-          <xsl:apply-templates select="g:children/g:stepRun" />
-        </div>
+        <xsl:apply-templates select="g:children/g:stepRun" />
       </div>
     </div>
   </xsl:template>
 
   <xsl:template match="g:metadata">
-    <xsl:if test="count(g:entry[@key != 'ComponentKind']) != 0">
+    <xsl:if test="g:entry[@key != 'ComponentKind']">
       <ul class="metadata">
         <xsl:apply-templates select="g:entry[@key != 'ComponentKind']" />
       </ul>
@@ -403,14 +400,18 @@
 
   <xsl:template match="g:executionLog">
     <xsl:param name="stepId" />
-    
-    <div class="log">
-      <xsl:attribute name="id">log-<xsl:value-of select="$stepId" /></xsl:attribute>
 
-      <xsl:apply-templates select="g:streams/g:stream" mode="stream">
-        <xsl:with-param name="attachments" select="g:attachments" />
-      </xsl:apply-templates>
-    </div>
+    <xsl:if test="g:streams/g:stream">
+      <div class="log">
+        <xsl:attribute name="id">
+          log-<xsl:value-of select="$stepId" />
+        </xsl:attribute>
+
+        <xsl:apply-templates select="g:streams/g:stream" mode="stream">
+          <xsl:with-param name="attachments" select="g:attachments" />
+        </xsl:apply-templates>
+      </div>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="g:streams/g:stream" mode="stream">

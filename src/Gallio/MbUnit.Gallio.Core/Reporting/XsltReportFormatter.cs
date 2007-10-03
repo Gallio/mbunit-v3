@@ -119,7 +119,7 @@ namespace MbUnit.Core.Reporting
             PopulateArguments(arguments, report, reportPath, options);
 
             IXPathNavigable reportDoc = ReportUtils.SerializeReportToXPathNavigable(report);
-            using (StreamWriter writer = new StreamWriter(reportPath))
+            using (StreamWriter writer = new StreamWriter(reportPath, false, Encoding.UTF8))
             {
                 transform.Transform(reportDoc, arguments, writer);
             }
