@@ -153,13 +153,16 @@ namespace MbUnit.Framework
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="text">The text to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
-        public static TextAttachment AttachPlainText(string text)
+        public static TextAttachment AttachPlainText(string attachmentName, string text)
         {
-            return Writer.AttachPlainText(text);
+            return Writer.AttachPlainText(attachmentName, text);
         }
 
         /// <summary>
@@ -169,13 +172,16 @@ namespace MbUnit.Framework
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="html">The HTML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
-        public static TextAttachment AttachHtml(string html)
+        public static TextAttachment AttachHtml(string attachmentName, string html)
         {
-            return Writer.AttachHtml(html);
+            return Writer.AttachHtml(attachmentName, html);
         }
 
         /// <summary>
@@ -185,13 +191,16 @@ namespace MbUnit.Framework
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="xhtml">The XHTML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
-        public static XmlAttachment AttachXHtml(string xhtml)
+        public static XmlAttachment AttachXHtml(string attachmentName, string xhtml)
         {
-            return Writer.AttachXHtml(xhtml);
+            return Writer.AttachXHtml(attachmentName, xhtml);
         }
 
         /// <summary>
@@ -201,13 +210,16 @@ namespace MbUnit.Framework
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="xml">The XML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
-        public static XmlAttachment AttachXml(string xml)
+        public static XmlAttachment AttachXml(string attachmentName, string xml)
         {
-            return Writer.AttachXml(xml);
+            return Writer.AttachXml(attachmentName, xml);
         }
 
         /// <summary>
@@ -217,13 +229,16 @@ namespace MbUnit.Framework
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="image">The image to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
-        public static BinaryAttachment AttachImage(Image image)
+        public static BinaryAttachment AttachImage(string attachmentName, Image image)
         {
-            return Writer.AttachImage(image);
+            return Writer.AttachImage(attachmentName, image);
         }
 
         /// <summary>
@@ -234,13 +249,16 @@ namespace MbUnit.Framework
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment AttachObjectAsXml(object obj)
+        public static XmlAttachment AttachObjectAsXml(string attachmentName, object obj)
         {
-            return Writer.AttachObjectAsXml(obj);
+            return Writer.AttachObjectAsXml(attachmentName, obj);
         }
 
         /// <summary>
@@ -251,15 +269,18 @@ namespace MbUnit.Framework
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment AttachObjectAsXml(object obj, XmlSerializer xmlSerializer)
+        public static XmlAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
-            return Writer.AttachObjectAsXml(obj, xmlSerializer);
+            return Writer.AttachObjectAsXml(attachmentName, obj, xmlSerializer);
         }
         #endregion
 
@@ -545,13 +566,16 @@ namespace MbUnit.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="text">The text to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
-        public static TextAttachment EmbedPlainText(string text)
+        public static TextAttachment EmbedPlainText(string attachmentName, string text)
         {
-            return Default.EmbedPlainText(text);
+            return Default.EmbedPlainText(attachmentName, text);
         }
 
         /// <summary>
@@ -561,13 +585,16 @@ namespace MbUnit.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="html">The HTML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
-        public static TextAttachment EmbedHtml(string html)
+        public static TextAttachment EmbedHtml(string attachmentName, string html)
         {
-            return Default.EmbedHtml(html);
+            return Default.EmbedHtml(attachmentName, html);
         }
 
         /// <summary>
@@ -577,13 +604,16 @@ namespace MbUnit.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="xhtml">The XHTML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
-        public static XmlAttachment EmbedXHtml(string xhtml)
+        public static XmlAttachment EmbedXHtml(string attachmentName, string xhtml)
         {
-            return Default.EmbedXHtml(xhtml);
+            return Default.EmbedXHtml(attachmentName, xhtml);
         }
 
         /// <summary>
@@ -593,13 +623,16 @@ namespace MbUnit.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="xml">The XML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
-        public static XmlAttachment EmbedXml(string xml)
+        public static XmlAttachment EmbedXml(string attachmentName, string xml)
         {
-            return Default.EmbedXml(xml);
+            return Default.EmbedXml(attachmentName, xml);
         }
 
         /// <summary>
@@ -609,13 +642,16 @@ namespace MbUnit.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="image">The image to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
-        public static BinaryAttachment EmbedImage(Image image)
+        public static BinaryAttachment EmbedImage(string attachmentName, Image image)
         {
-            return Default.EmbedImage(image);
+            return Default.EmbedImage(attachmentName, image);
         }
 
         /// <summary>
@@ -626,13 +662,16 @@ namespace MbUnit.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachObjectAsXml(object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment EmbedObjectAsXml(object obj)
+        public static XmlAttachment EmbedObjectAsXml(string attachmentName, object obj)
         {
-            return Default.EmbedObjectAsXml(obj);
+            return Default.EmbedObjectAsXml(attachmentName, obj);
         }
 
         /// <summary>
@@ -643,15 +682,18 @@ namespace MbUnit.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachObjectAsXml(object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment EmbedObjectAsXml(object obj, XmlSerializer xmlSerializer)
+        public static XmlAttachment EmbedObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
-            return Default.EmbedObjectAsXml(obj, xmlSerializer);
+            return Default.EmbedObjectAsXml(attachmentName, obj, xmlSerializer);
         }
         #endregion
     }

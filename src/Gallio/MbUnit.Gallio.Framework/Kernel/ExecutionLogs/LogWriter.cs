@@ -90,89 +90,110 @@ namespace MbUnit.Framework.Kernel.ExecutionLogs
         /// <summary>
         /// Attaches an plain text attachment with mime-type <see cref="MimeTypes.PlainText" />.
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="text">The text to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
-        public TextAttachment AttachPlainText(string text)
+        public TextAttachment AttachPlainText(string attachmentName, string text)
         {
-            return (TextAttachment)Attach(AttachmentUtils.CreatePlainTextAttachment(null, text));
+            return (TextAttachment)Attach(AttachmentUtils.CreatePlainTextAttachment(attachmentName, text));
         }
 
         /// <summary>
         /// Attaches an HTML attachment with mime-type <see cref="MimeTypes.Html" />.
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="html">The HTML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
-        public TextAttachment AttachHtml(string html)
+        public TextAttachment AttachHtml(string attachmentName, string html)
         {
-            return (TextAttachment)Attach(AttachmentUtils.CreateHtmlAttachment(null, html));
+            return (TextAttachment)Attach(AttachmentUtils.CreateHtmlAttachment(attachmentName, html));
         }
 
         /// <summary>
         /// Attaches an XHTML attachment with mime-type <see cref="MimeTypes.XHtml" />.
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="xhtml">The XHTML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
-        public XmlAttachment AttachXHtml(string xhtml)
+        public XmlAttachment AttachXHtml(string attachmentName, string xhtml)
         {
-            return (XmlAttachment)Attach(AttachmentUtils.CreateXHtmlAttachment(null, xhtml));
+            return (XmlAttachment)Attach(AttachmentUtils.CreateXHtmlAttachment(attachmentName, xhtml));
         }
 
         /// <summary>
         /// Attaches an XML attachment with mime-type <see cref="MimeTypes.Xml" />.
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="xml">The XML to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
-        public XmlAttachment AttachXml(string xml)
+        public XmlAttachment AttachXml(string attachmentName, string xml)
         {
-            return (XmlAttachment)Attach(AttachmentUtils.CreateXmlAttachment(null, xml));
+            return (XmlAttachment)Attach(AttachmentUtils.CreateXmlAttachment(attachmentName, xml));
         }
 
         /// <summary>
         /// Attaches an image attachment with a mime-type compatible with its internal representation.
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="image">The image to attach</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
-        public BinaryAttachment AttachImage(Image image)
+        public BinaryAttachment AttachImage(string attachmentName, Image image)
         {
-            return (BinaryAttachment)Attach(AttachmentUtils.CreateImageAttachment(null, image));
+            return (BinaryAttachment)Attach(AttachmentUtils.CreateImageAttachment(attachmentName, image));
         }
 
         /// <summary>
         /// Attaches an XML-serialized object as an XML attachment with mime-type <see cref="MimeTypes.Xml" />
         /// using the default <see cref="XmlSerializer" /> for the object's type.
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public XmlAttachment AttachObjectAsXml(object obj)
+        public XmlAttachment AttachObjectAsXml(string attachmentName, object obj)
         {
-            return AttachObjectAsXml(obj, null);
+            return AttachObjectAsXml(attachmentName, obj, null);
         }
 
         /// <summary>
         /// Attaches an XML-serialized object as an XML attachment with mime-type <see cref="MimeTypes.Xml" />
         /// using the specified <see cref="XmlSerializer" />.
         /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the scope of the
+        /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public XmlAttachment AttachObjectAsXml(object obj, XmlSerializer xmlSerializer)
+        public XmlAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
-            return (XmlAttachment)Attach(AttachmentUtils.CreateObjectAsXmlAttachment(null, obj, xmlSerializer));
+            return (XmlAttachment)Attach(AttachmentUtils.CreateObjectAsXmlAttachment(attachmentName, obj, xmlSerializer));
         }
 
         /// <summary>

@@ -24,13 +24,14 @@ namespace MbUnit.Framework.Kernel.ExecutionLogs
     [Serializable]
     public abstract class Attachment
     {
-        private string name;
-        private string contentType;
+        private readonly string name;
+        private readonly string contentType;
 
         /// <summary>
         /// Creates an attachment.
         /// </summary>
-        /// <param name="name">The name of attachment, or null to automatically assign one</param>
+        /// <param name="name">The name of attachment, or null to automatically assign one.  The attachment
+        /// name must be unique within the scope of the currently executing test step.</param>
         /// <param name="contentType">The content type, not null</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> is null</exception>
         protected Attachment(string name, string contentType)

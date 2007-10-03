@@ -38,7 +38,7 @@ namespace MbUnit.TestResources.Gallio
             MbUnitRocks.WriteLine();
 
             MbUnitRocks.WriteLine("You can embed images.");
-            MbUnitRocks.EmbedImage(Resources.MbUnitLogo);
+            MbUnitRocks.EmbedImage("MbUnit Logo", Resources.MbUnitLogo);
             MbUnitRocks.WriteLine();
 
             MbUnitRocks.WriteLine("You can write out your own log streams.");
