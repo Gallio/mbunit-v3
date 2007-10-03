@@ -54,10 +54,21 @@ namespace MbUnit.Core.RuntimeSupport
         /// </remarks>
         /// <param name="name">The name of the step</param>
         /// <param name="block">The block of code to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="block"/> is null</exception>
+        /// <param name="codeReference">The code reference</param>
+        /// <returns>The context of the step that ran</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
+        /// <paramref name="block"/> or <paramref name="codeReference "/>is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
-        void RunStep(string name, Block block);
+        Context RunStep(string name, Block block, CodeReference codeReference);
+
+        /// <summary>
+        /// Adds metadata to the step.
+        /// </summary>
+        /// <param name="metadataKey">The metadata key</param>
+        /// <param name="metadataValue">The metadata value</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
+        /// or <paramref name="metadataValue"/> is null</exception>
+        void AddMetadata(string metadataKey, string metadataValue);
     }
 }

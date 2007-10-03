@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
@@ -385,6 +386,50 @@ namespace MbUnit.Framework.Kernel.Model
                 throw new ArgumentNullException(@"assembly");
 
             return new CodeReference(assembly, null, null, null, null);
+        }
+
+        /// <summary>
+        /// Creates a code reference from the executing method.
+        /// </summary>
+        /// <returns>The code reference</returns>
+        public static CodeReference CreateFromExecutingMethod()
+        {
+            return CreateFromStackFrame(1);
+        }
+
+        /// <summary>
+        /// Creates a code reference from the caller of the executing method.
+        /// </summary>
+        /// <returns>The code reference</returns>
+        public static CodeReference CreateFromCallingMethod()
+        {
+            return CreateFromStackFrame(2);
+        }
+
+        /// <summary>
+        /// Creates a code reference from a stack frame.
+        /// </summary>
+        /// <param name="stackFrame">The stack frame</param>
+        /// <returns>The code reference</returns>
+        public static CodeReference CreateFromStackFrame(StackFrame stackFrame)
+        {
+            if (stackFrame == null)
+                throw new ArgumentNullException(@"stackFrame");
+
+            return CreateFromMember(stackFrame.GetMethod());
+        }
+
+        /// <summary>
+        /// Creates a code reference from a particular frame on the current stack.
+        /// </summary>
+        /// <param name="framesToSkip">The number of frames to skip.  If this number is 0,
+        /// the code reference will refer to the direct caller of this method;
+        /// if it is 1, it will refer to the caller's caller, and so on.</param>
+        /// <returns>The code reference</returns>
+        public static CodeReference CreateFromStackFrame(int framesToSkip)
+        {
+            StackTrace stackTrace = new StackTrace(framesToSkip + 1, false);
+            return CreateFromStackFrame(stackTrace.GetFrame(0));
         }
 
         /// <inheritdoc />

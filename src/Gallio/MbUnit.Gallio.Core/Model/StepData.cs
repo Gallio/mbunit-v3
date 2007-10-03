@@ -25,11 +25,10 @@ namespace MbUnit.Core.Model
     /// </summary>
     /// <seealso cref="IStep"/>
     [Serializable]
+    [XmlRoot("step", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public sealed class StepData
+    public sealed class StepData : ModelComponentData
     {
-        private string id;
-        private string name;
         private string fullName;
         private string parentId;
         private string testId;
@@ -51,18 +50,13 @@ namespace MbUnit.Core.Model
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
         /// <paramref name="fullName"/> or <paramref name="testId"/> is null</exception>
         public StepData(string id, string name, string fullName, string testId)
+            : base(id, name)
         {
-            if (id == null)
-                throw new ArgumentNullException(@"id");
-            if (name == null)
-                throw new ArgumentNullException(@"name");
             if (fullName == null)
                 throw new ArgumentNullException(@"fullName");
             if (testId == null)
                 throw new ArgumentNullException(@"testId");
 
-            this.id = id;
-            this.name = name;
             this.fullName = fullName;
             this.testId = testId;
         }
@@ -73,49 +67,13 @@ namespace MbUnit.Core.Model
         /// <param name="source">The source model object</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
         public StepData(IStep source)
+            : base(source)
         {
-            if (source == null)
-                throw new ArgumentNullException(@"source");
-
-            id = source.Id;
-            name = source.Name;
             fullName = source.FullName;
             testId = source.Test.Id;
 
             if (source.Parent != null)
                 parentId = source.Parent.Id;
-        }
-
-        /// <summary>
-        /// Gets or sets the id of the step.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlAttribute("id")]
-        public string Id
-        {
-            get { return id; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                id = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the name of the step.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlAttribute("name")]
-        public string Name
-        {
-            get { return name; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                name = value;
-            }
         }
 
         /// <summary>

@@ -20,6 +20,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.Plugin.MbUnit2Adapter.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.Plugin.MbUnit2Adapter.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MbUnit.Framework, Version=1.0.2700.29885, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
@@ -47,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\MbUnit2TestFrameworkTest.cs" />
+    <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

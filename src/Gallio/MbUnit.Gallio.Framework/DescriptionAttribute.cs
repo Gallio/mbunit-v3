@@ -26,7 +26,7 @@ namespace MbUnit.Framework
     /// </summary>
     public class DescriptionAttribute : MetadataPatternAttribute
     {
-        private string description;
+        private readonly string description;
 
         /// <summary>
         /// Associates a description with the test component annotated by this attribute.

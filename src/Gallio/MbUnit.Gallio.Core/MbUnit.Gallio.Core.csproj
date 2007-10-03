@@ -21,6 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.Gallio.Core.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.Gallio.Core.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
@@ -61,7 +63,6 @@
     <Compile Include="ConsoleSupport\CommandLine\CommandLineOutput.cs" />
     <Compile Include="ConsoleSupport\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
     <Compile Include="ConsoleSupport\CommandLine\CommandLineErrorReporter.cs" />
-    <Compile Include="ConsoleSupport\CommandLine\ResponseFile.cs" />
     <Compile Include="ConsoleSupport\IRichConsole.cs" />
     <Compile Include="ConsoleSupport\RichConsoleProgressMonitorProvider.cs" />
     <Compile Include="ConsoleSupport\SystemConsole.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Model\IStepMonitor.cs" />
     <Compile Include="Model\ITestPlanFactory.cs" />
     <Compile Include="Model\RootTestController.cs" />
+    <Compile Include="Reporting\Resources\ReportingResources.cs" />
     <Compile Include="RuntimeSupport\DefaultContextManager.cs" />
     <Compile Include="Harness\ContextualLogStreamTextWriter.cs">
       <SubType>Code</SubType>
@@ -132,7 +134,6 @@
     <Compile Include="Reporting\PackageRun.cs" />
     <Compile Include="Reporting\PackageRunStatistics.cs" />
     <Compile Include="Reporting\ReportUtils.cs" />
-    <Compile Include="Reporting\Resources\ReportingResources.cs" />
     <Compile Include="Reporting\StepRun.cs" />
     <Compile Include="Reporting\TestRun.cs" />
     <Compile Include="Reporting\TextReportFormatter.cs" />

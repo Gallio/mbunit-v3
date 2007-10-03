@@ -182,7 +182,7 @@ namespace MbUnit.Core.Runner.Monitors
                     case LifecycleEventType.Start:
                     {
                         TestData testData = Runner.TestModel.Tests[e.StepData.TestId];
-                        StepRun stepRun = new StepRun(e.StepId, e.StepData.Name, e.StepData.FullName);
+                        StepRun stepRun = new StepRun(e.StepData);
 
                         StepState stepState;
                         if (e.StepData.ParentId == null)
@@ -208,6 +208,13 @@ namespace MbUnit.Core.Runner.Monitors
 
                     case LifecycleEventType.SetPhase:
                         break;
+
+                    case LifecycleEventType.AddMetadata:
+                    {
+                        StepState stepState = GetStepData(e.StepId);
+                        stepState.StepRun.Step.Metadata.Entries.Add(e.MetadataKey, e.MetadataValue);
+                        break;
+                    }
 
                     case LifecycleEventType.Finish:
                     {

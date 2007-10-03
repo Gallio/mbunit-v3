@@ -14,24 +14,15 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System;
+using System.Reflection;
 using MbUnit.Core.Model;
 using MbUnit.Core.Tests.Model;
+using MbUnit.Framework;
+using MbUnit.Framework.Kernel.Model;
+using MbUnit.Plugin.MbUnit2Adapter.Core;
 using MbUnit.TestResources.MbUnit2;
 using MbUnit.TestResources.MbUnit2.Metadata;
-using MbUnit2::MbUnit.Framework;
-
-using MbUnit._Framework.Tests;
-using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Kernel.RuntimeSupport;
-using MbUnit.Framework.Tests.Kernel.RuntimeSupport;
-
-using System.Reflection;
-using MbUnit.Plugin.MbUnit2Adapter.Core;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
 {
@@ -219,7 +210,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(TestsOnSample).Name);
-            Assert.AreEqual(typeof(TestsOnAttribute).AssemblyQualifiedName, test.Metadata.GetValue(MetadataKeys.TestsOn));
+            Assert.AreEqual(typeof(TestsOnSample).AssemblyQualifiedName, test.Metadata.GetValue(MetadataKeys.TestsOn));
         }
 
         [Test]
@@ -239,6 +230,27 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Core
             MbUnit2Test fixture = (MbUnit2Test)GetDescendantByName(rootTest, typeof(TestDescriptionSample).Name);
             MbUnit2Test test = (MbUnit2Test)fixture.Children[0];
             Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
+        }
+
+        [Test]
+        public void MetadataImport_AssemblyAttributes()
+        {
+            PopulateTemplateTree();
+
+            BaseTemplate frameworkTemplate = (BaseTemplate)rootTemplate.Children[0];
+            MbUnit2AssemblyTemplate assemblyTemplate = (MbUnit2AssemblyTemplate)frameworkTemplate.Children[0];
+
+            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Company));
+            Assert.AreEqual("Test", assemblyTemplate.Metadata.GetValue(MetadataKeys.Configuration));
+            StringAssert.Contains(assemblyTemplate.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
+            Assert.AreEqual("A sample test assembly.", assemblyTemplate.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("MbUnit.TestResources.MbUnit2", assemblyTemplate.Metadata.GetValue(MetadataKeys.Product));
+            Assert.AreEqual("MbUnit.TestResources.MbUnit2", assemblyTemplate.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Trademark));
+
+            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.InformationalVersion));
+            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.FileVersion));
+            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.Version));
         }
     }
 }

@@ -21,10 +21,8 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Base implementation of <see cref="IStep"/>.
     /// </summary>
-    public class BaseStep : IStep
+    public class BaseStep : BaseModelComponent, IStep
     {
-        private readonly string id;
-        private readonly string name;
         private readonly string fullName;
         private readonly IStep parent;
         private readonly ITest test;
@@ -40,42 +38,21 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Creates a step.
         /// </summary>
+        /// <param name="name">The step name</param>
+        /// <param name="codeReference">The code reference</param>
         /// <param name="test">The test to which the step belongs</param>
         /// <param name="parent">The parent step, or null if creating a root step</param>
-        /// <param name="name">The step name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// or <paramref name="test"/> is null</exception>
-        public BaseStep(ITest test, IStep parent, string name)
+        /// <paramref name="codeReference"/> or <paramref name="test"/> is null</exception>
+        public BaseStep(string name, CodeReference codeReference, ITest test, IStep parent)
+            : base(name, codeReference)
         {
-            if (test == null)
-                throw new ArgumentNullException(@"test");
             if (name == null)
                 throw new ArgumentNullException(@"name");
 
-            this.name = name;
             this.test = test;
             this.parent = parent;
-
-            id = Guid.NewGuid().ToString();
-
-            if (parent == null)
-                fullName = test.Name;
-            else if (parent.Parent == null)
-                fullName = parent.FullName + @":" + name;
-            else
-                fullName = parent.FullName + @"/" + name;
-        }
-
-        /// <inheritdoc />
-        public string Id
-        {
-            get { return id; }
-        }
-
-        /// <inheritdoc />
-        public string Name
-        {
-            get { return name; }
+            fullName = GenerateFullName();
         }
 
         /// <inheritdoc />
@@ -100,6 +77,16 @@ namespace MbUnit.Framework.Kernel.Model
         public override string ToString()
         {
             return String.Format("[Step] {0}", fullName);
+        }
+
+        private string GenerateFullName()
+        {
+            if (parent == null)
+                return test.Name;
+            else if (parent.Parent == null)
+                return parent.FullName + @":" + Name;
+            else
+                return parent.FullName + @"/" + Name;
         }
     }
 }

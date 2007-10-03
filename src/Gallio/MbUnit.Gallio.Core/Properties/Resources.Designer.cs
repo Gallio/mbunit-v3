@@ -331,6 +331,17 @@ namespace MbUnit.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [Lifecycle: Add Metadata ({0})]
+        ///	Metadata Key:   {1}
+        ///	Metadata Value: {2}.
+        /// </summary>
+        internal static string DebugMonitor_LifecycleEvent_AddMetadata_EventFormat {
+            get {
+                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_AddMetadata_EventFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [Lifecycle: Finish ({0})]
         ///	State:    {1}
         ///	Outcome:  {2}

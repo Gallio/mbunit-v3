@@ -61,15 +61,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MbUnit v2: {0}.
-        /// </summary>
-        internal static string MbUnit2AssemblyTemplateBinding_TestBatchNameFormat {
-            get {
-                return ResourceManager.GetString("MbUnit2AssemblyTemplateBinding_TestBatchNameFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The test controller has been disposed..
         /// </summary>
         internal static string MbUnit2TestController_ControlledWasDisposedException {

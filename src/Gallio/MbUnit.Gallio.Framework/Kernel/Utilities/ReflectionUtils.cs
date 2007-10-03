@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using MbUnit.Framework.Kernel.Collections;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Utilities
 {
@@ -179,6 +180,77 @@ namespace MbUnit.Framework.Kernel.Utilities
                 }
                 return 0;
             });
+        }
+
+        /// <summary>
+        /// <para>
+        /// Populates the provided metadata map with asembly-level metadata derived
+        /// from custom attributes.
+        /// </para>
+        /// <para>
+        /// Currently recognized attributes:
+        /// <list type="bullet">
+        /// <item><see cref="AssemblyCompanyAttribute" /></item>
+        /// <item><see cref="AssemblyConfigurationAttribute" /></item>
+        /// <item><see cref="AssemblyCopyrightAttribute" /></item>
+        /// <item><see cref="AssemblyDescriptionAttribute" /></item>
+        /// <item><see cref="AssemblyFileVersionAttribute" /></item>
+        /// <item><see cref="AssemblyInformationalVersionAttribute" /></item>
+        /// <item><see cref="AssemblyProductAttribute" /></item>
+        /// <item><see cref="AssemblyTitleAttribute" /></item>
+        /// <item><see cref="AssemblyTrademarkAttribute" /></item>
+        /// <item><see cref="AssemblyVersionAttribute" /></item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        /// <param name="assembly">The assembly</param>
+        /// <param name="metadataMap">The metadata map</param>
+        public static void PopulateMetadataFromAssembly(Assembly assembly, MetadataMap metadataMap)
+        {
+            AssemblyCompanyAttribute companyAttribute = GetAttribute<AssemblyCompanyAttribute>(assembly);
+            if (companyAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Company, companyAttribute.Company);
+
+            AssemblyConfigurationAttribute configurationAttribute = GetAttribute<AssemblyConfigurationAttribute>(assembly);
+            if (configurationAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Configuration, configurationAttribute.Configuration);
+
+            AssemblyCopyrightAttribute copyrightAttribute = GetAttribute<AssemblyCopyrightAttribute>(assembly);
+            if (copyrightAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Copyright, copyrightAttribute.Copyright);
+
+            AssemblyDescriptionAttribute descriptionAttribute = GetAttribute<AssemblyDescriptionAttribute>(assembly);
+            if (descriptionAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Description, descriptionAttribute.Description);
+
+            AssemblyFileVersionAttribute fileVersionAttribute = GetAttribute<AssemblyFileVersionAttribute>(assembly);
+            if (fileVersionAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.FileVersion, fileVersionAttribute.Version);
+
+            AssemblyInformationalVersionAttribute informationalVersionAttribute = GetAttribute<AssemblyInformationalVersionAttribute>(assembly);
+            if (informationalVersionAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.InformationalVersion, informationalVersionAttribute.InformationalVersion);
+
+            AssemblyProductAttribute productAttribute = GetAttribute<AssemblyProductAttribute>(assembly);
+            if (productAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Product, productAttribute.Product);
+
+            AssemblyTitleAttribute titleAttribute = GetAttribute<AssemblyTitleAttribute>(assembly);
+            if (titleAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Title, titleAttribute.Title);
+
+            AssemblyTrademarkAttribute trademarkAttribute = GetAttribute<AssemblyTrademarkAttribute>(assembly);
+            if (trademarkAttribute != null)
+                AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Trademark, trademarkAttribute.Trademark);
+
+            // Note: AssemblyVersionAttribute cannot be accessed directly via reflection.  It gets baked into the assembly name.
+            metadataMap.Entries.Add(MetadataKeys.Version, assembly.GetName().Version.ToString());
+        }
+
+        private static void AddMetadataIfNotEmptyOrNull(MetadataMap metadataMap, string key, string value)
+        {
+            if (! string.IsNullOrEmpty(value))
+                metadataMap.Entries.Add(key, value);
         }
     }
 }

@@ -13,15 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework;
 
 namespace MbUnit.TestResources.MbUnit2.Metadata
 {
     [TestFixture]
-    [TestsOn(typeof(TestsOnAttribute))]
+    [TestsOn(typeof(TestsOnSample))]
     public class TestsOnSample
     {
     }

@@ -388,7 +388,7 @@ namespace MbUnit.Core.Model
 
                     hasStarted = true;
 
-                    StepMonitor stepMonitor = new StepMonitor(testPlan, new BaseStep(test, null, BaseStep.RootStepName), null);
+                    StepMonitor stepMonitor = new StepMonitor(testPlan, CreateRootStep(), null);
                     testPlan.inUse.ReleaseReaderLock();
 
                     // Start the monitor outside the lock.
@@ -409,7 +409,7 @@ namespace MbUnit.Core.Model
 
                 hasStarted = true;
 
-                StepData stepData = new StepData(new BaseStep(test, null, BaseStep.RootStepName));
+                StepData stepData = new StepData(CreateRootStep());
                 testPlan.listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(stepData));
 
                 TestResult result = new TestResult();
@@ -422,6 +422,11 @@ namespace MbUnit.Core.Model
             {
                 if (hasStarted)
                     throw new InvalidOperationException("The test has already started execution.");
+            }
+
+            private IStep CreateRootStep()
+            {
+                return new BaseStep(BaseStep.RootStepName, test.CodeReference, test, null);
             }
         }
 
@@ -511,25 +516,56 @@ namespace MbUnit.Core.Model
                 }
             }
 
-            public void RunStep(string name, Block block)
+            public Context RunStep(string name, Block block, CodeReference codeReference)
             {
                 if (block == null)
                     throw new ArgumentNullException(@"block");
 
-                StartChildStepImpl(name).RunBlock(block);
+                StepMonitor childStepMonitor = StartChildStepImpl(name, codeReference);
+                childStepMonitor.RunBlock(block);
+                return childStepMonitor.context;
             }
 
-            public IStepMonitor StartChildStep(string name)
+            public void AddMetadata(string metadataKey, string metadataValue)
             {
-                return StartChildStepImpl(name);
+                if (metadataKey == null)
+                    throw new ArgumentNullException(@"metadataKey");
+                if (metadataValue == null)
+                    throw new ArgumentNullException(@"metadataValue");
+
+                try
+                {
+                    testPlan.inUse.AcquireReaderLock(Timeout.Infinite);
+
+                    testPlan.VerifyGenerationWithReaderLock(generation);
+
+                    lock (this)
+                    {
+                        VerifyNotFinishedWithLocalLock();
+
+                        testPlan.listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateAddMetadataEvent(step.Id, metadataKey, metadataValue));
+                    }
+                }
+                finally
+                {
+                    if (testPlan.inUse.IsReaderLockHeld)
+                        testPlan.inUse.ReleaseReaderLock();
+                }
             }
 
-            private StepMonitor StartChildStepImpl(string name)
+            public IStepMonitor StartChildStep(string name, CodeReference codeReference)
+            {
+                return StartChildStepImpl(name, codeReference);
+            }
+
+            private StepMonitor StartChildStepImpl(string name, CodeReference codeReference)
             {
                 if (name == null)
                     throw new ArgumentNullException(@"name");
                 if (name.Length == 0)
-                    throw new ArgumentException("Name must not be empty.", "name");
+                    throw new ArgumentException("Name must not be empty.", @"name");
+                if (codeReference == null)
+                    throw new ArgumentNullException(@"codeReference");
 
                 try
                 {
@@ -543,7 +579,8 @@ namespace MbUnit.Core.Model
                     {
                         VerifyNotFinishedWithLocalLock();
 
-                        stepMonitor = new StepMonitor(testPlan, new BaseStep(step.Test, step, name), this);
+                        IStep childStep = new BaseStep(name, codeReference, step.Test, step);
+                        stepMonitor = new StepMonitor(testPlan, childStep, this);
                     }
 
                     testPlan.inUse.ReleaseReaderLock();
@@ -559,7 +596,7 @@ namespace MbUnit.Core.Model
                 }
             }
 
-            public void FinishStep(TestStatus status, TestOutcome outcome)
+            public void FinishStep(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration)
             {
                 // Dispose of the context and send the event notification inside
                 // the reader lock.  The reason we do this is to allow the CleanUpTests
@@ -587,7 +624,7 @@ namespace MbUnit.Core.Model
                     }
 
                     // Send the final notification.
-                    DispatchFinishEvent(status, outcome);
+                    DispatchFinishEvent(status, outcome, actualDuration);
                 }
                 finally
                 {
@@ -613,7 +650,7 @@ namespace MbUnit.Core.Model
                         contextCookie = null;
 
                         logWriter[LogStreamNames.Failures].WriteLine("The test step was orphaned by the test runner!");
-                        DispatchFinishEvent(TestStatus.Error, TestOutcome.Failed);
+                        DispatchFinishEvent(TestStatus.Error, TestOutcome.Failed, null);
                     }
                 }
             }
@@ -623,11 +660,11 @@ namespace MbUnit.Core.Model
                 testPlan.listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new StepData(step)));
             }
 
-            private void DispatchFinishEvent(TestStatus status, TestOutcome outcome)
+            private void DispatchFinishEvent(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration)
             {
                 TestResult result = new TestResult();
                 result.AssertCount = context.AssertCount;
-                result.Duration = stopwatch.Elapsed.TotalSeconds;
+                result.Duration = actualDuration.GetValueOrDefault(stopwatch.Elapsed).TotalSeconds;
                 result.Status = status;
                 result.Outcome = outcome;
 
@@ -642,14 +679,14 @@ namespace MbUnit.Core.Model
 
                     block();
 
-                    FinishStep(TestStatus.Executed, TestOutcome.Passed);
+                    FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
                 }
                 catch (Exception ex)
                 {
                     // TODO: Other exception types might signal ignored or inconclusive states.
                     logWriter[LogStreamNames.Failures].Write(ex);
 
-                    FinishStep(TestStatus.Executed, TestOutcome.Failed);
+                    FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
 
                     // Allow the exception to bubble up out of the block.
                     throw;

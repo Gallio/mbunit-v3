@@ -20,14 +20,20 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MbUnit.Tests.Resources.NUnit")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MbUnit.Tests.Resources.NUnit")]
+[assembly: AssemblyTitle("MbUnit.TestResources.NUnit")]
+[assembly: AssemblyDescription("A sample test assembly.")]
+[assembly: AssemblyConfiguration("Test")]
+[assembly: AssemblyCompany("MbUnit")]
+[assembly: AssemblyProduct("MbUnit.TestResources.NUnit")]
 [assembly: AssemblyCopyright("Copyright © 2007 MbUnit Project - http://www.mbunit.com/")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("MbUnit")]
 [assembly: AssemblyCulture("")]
+
+#if DEBUG
+[assembly: AssemblyInformationalVersion("1.2.3.4")]
+[assembly: AssemblyFileVersion("1.2.3.4")]
+[assembly: AssemblyVersion("1.2.3.4")]
+#endif
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

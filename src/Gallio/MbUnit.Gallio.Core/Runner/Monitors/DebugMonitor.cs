@@ -89,6 +89,10 @@ namespace MbUnit.Core.Runner.Monitors
                     logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_SetPhase_EventFormat, stepName, e.PhaseName);
                     break;
 
+                case LifecycleEventType.AddMetadata:
+                    logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_AddMetadata_EventFormat, stepName, e.MetadataKey, e.MetadataValue);
+                    break;
+
                 case LifecycleEventType.Finish:
                     logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_Finish_EventFormat,
                         stepName, e.Result.Status, e.Result.Outcome, e.Result.AssertCount, e.Result.Duration);

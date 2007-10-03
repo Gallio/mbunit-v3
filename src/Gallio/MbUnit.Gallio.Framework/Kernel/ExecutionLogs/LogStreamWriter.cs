@@ -92,6 +92,10 @@ namespace MbUnit.Framework.Kernel.ExecutionLogs
         /// <summary>
         /// Writes an exception to the log within its own section with the name "Exception".
         /// </summary>
+        /// <remarks>
+        /// If the exception is a <see cref="ClientException" /> then only its message and
+        /// inner exception are written.
+        /// </remarks>
         /// <param name="exception">The exception to write</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
         public void WriteException(Exception exception)
@@ -102,6 +106,10 @@ namespace MbUnit.Framework.Kernel.ExecutionLogs
         /// <summary>
         /// Writes an exception to the log within its own section with the specified name.
         /// </summary>
+        /// <remarks>
+        /// If the exception is a <see cref="ClientException" /> then only its message and
+        /// inner exception are written.
+        /// </remarks>
         /// <param name="exception">The exception to write</param>
         /// <param name="sectionName">The section name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>,
@@ -114,13 +122,30 @@ namespace MbUnit.Framework.Kernel.ExecutionLogs
                 throw new ArgumentNullException(@"sectionName");
 
             BeginSectionImpl(sectionName);
-            WriteImpl(exception.ToString());
+
+            ClientException clientException = exception as ClientException;
+            if (clientException != null)
+            {
+                WriteLine(clientException.Message);
+
+                if (clientException.InnerException != null)
+                    WriteImpl(clientException.InnerException.ToString());
+            }
+            else
+            {
+                WriteImpl(exception.ToString());
+            }
+
             EndSectionImpl();
         }
 
         /// <summary>
         /// Writes an exception to the log within its own section with the specified name.
         /// </summary>
+        /// <remarks>
+        /// If the exception is a <see cref="ClientException" /> then only its message and
+        /// inner exception are written.
+        /// </remarks>
         /// <param name="exception">The exception to write</param>
         /// <param name="sectionNameFormat">The section name format string</param>
         /// <param name="sectionNameArgs">The section name arguments</param>

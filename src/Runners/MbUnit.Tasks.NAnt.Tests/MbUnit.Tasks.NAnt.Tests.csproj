@@ -20,6 +20,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.Tasks.NAnt.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.Tasks.NAnt.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.1.40796, Culture=neutral, PublicKeyToken=aaa0f432407c68df">

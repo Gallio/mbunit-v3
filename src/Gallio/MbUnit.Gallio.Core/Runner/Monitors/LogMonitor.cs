@@ -73,7 +73,7 @@ namespace MbUnit.Core.Runner.Monitors
         private void HandleStepStarting(object sender, ReportStepEventArgs e)
         {
             logger.DebugFormat(Resources.LogMonitor_HeaderFormat,
-                Resources.LogMonitor_Status_Starting, e.StepRun.StepFullName);
+                Resources.LogMonitor_Status_Starting, e.StepRun.Step.FullName);
         }
 
         private void HandleStepFinished(object sender, ReportStepEventArgs e)
@@ -84,7 +84,7 @@ namespace MbUnit.Core.Runner.Monitors
             string failures = FormatStream(e.StepRun, LogStreamNames.Failures);
 
             StringBuilder messageBuilder = new StringBuilder();
-            messageBuilder.AppendFormat(Resources.LogMonitor_HeaderFormat, status, e.StepRun.StepFullName);
+            messageBuilder.AppendFormat(Resources.LogMonitor_HeaderFormat, status, e.StepRun.Step.FullName);
 
             if (warnings.Length != 0)
             {

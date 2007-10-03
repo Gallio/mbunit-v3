@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using MbUnit.Framework.Kernel.ExecutionLogs;
 using MbUnit.Framework.Kernel.Model;
@@ -190,7 +191,16 @@ namespace MbUnit.Framework
         /// </summary>
         /// <seealso cref="LifecyclePhases"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        public abstract string LifecyclePhase { get; set; }
+        public string LifecyclePhase
+        {
+            get { return LifecyclePhaseImpl; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                LifecyclePhaseImpl = value;
+            }
+        }
 
         /// <summary>
         /// Gets the current assertion count.
@@ -410,7 +420,8 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// <para>
-        /// Runs a block of code as a new step within the current context.
+        /// Runs a block of code as a new step within the current context and associates
+        /// it with the caller's code reference.
         /// </para>
         /// <para>
         /// This method creates a new child context to represent the <see cref="Step" />,
@@ -425,9 +436,48 @@ namespace MbUnit.Framework
         /// <param name="block">The block of code to run</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="block"/> is null</exception>
+        /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
-        public abstract void RunStep(string name, Block block);
+        public Context RunStep(string name, Block block)
+        {
+            return RunStep(name, block, CodeReference.CreateFromCallingMethod());
+        }
+
+        /// <summary>
+        /// <para>
+        /// Runs a block of code as a new step within the current context and associates it
+        /// with the specified code reference.
+        /// </para>
+        /// <para>
+        /// This method creates a new child context to represent the <see cref="Step" />,
+        /// enters the child context, runs the block of code, then exits the child context.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This method may be called recursively to create nested steps or concurrently
+        /// to create parallel steps.
+        /// </remarks>
+        /// <param name="name">The name of the step</param>
+        /// <param name="block">The block of code to run</param>
+        /// <param name="codeReference">The code reference, or null to use the calling method
+        /// as the code reference.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
+        /// <paramref name="block"/> is null</exception>
+        /// <returns>The context of the step that ran</returns>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
+        /// <exception cref="Exception">Any exception thrown by the block</exception>
+        public Context RunStep(string name, Block block, CodeReference codeReference)
+        {
+            if (name == null)
+                throw new ArgumentNullException(@"name");
+            if (block == null)
+                throw new ArgumentNullException(@"block");
+            if (codeReference == null)
+                codeReference = CodeReference.CreateFromCallingMethod();
+
+            return RunStepImpl(name, block, codeReference);
+        }
 
         /// <summary>
         /// Enters this context with the current thread.
@@ -456,6 +506,23 @@ namespace MbUnit.Framework
         public void AddAssertCount(int value)
         {
             Interlocked.Add(ref assertCount, value);
+        }
+
+        /// <summary>
+        /// Adds metadata to the step that is running in the context.
+        /// </summary>
+        /// <param name="metadataKey">The metadata key</param>
+        /// <param name="metadataValue">The metadata value</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
+        /// or <paramref name="metadataValue"/> is null</exception>
+        public void AddMetadata(string metadataKey, string metadataValue)
+        {
+            if (metadataKey == null)
+                throw new ArgumentNullException(@"metadataKey");
+            if (metadataValue == null)
+                throw new ArgumentNullException(@"metadataValue");
+
+            AddMetadataImpl(metadataKey, metadataValue);
         }
 
         /// <summary>
@@ -515,5 +582,29 @@ namespace MbUnit.Framework
         {
             Dispose(true);
         }
+
+        /// <summary>
+        /// Implementation of <see cref="LifecyclePhase" />.
+        /// </summary>
+        /// <remarks>
+        /// The arguments will already have been validated is called and will all be non-null.
+        /// </remarks>
+        protected abstract string LifecyclePhaseImpl { get; set; }
+
+        /// <summary>
+        /// Implementation of <see cref="RunStep(string, Block, CodeReference)" />.
+        /// </summary>
+        /// <remarks>
+        /// The arguments will already have been validated is called and will all be non-null.
+        /// </remarks>
+        protected abstract Context RunStepImpl(string name, Block block, CodeReference codeReference);
+
+        /// <summary>
+        /// Adds metadata to the step that is running in the context.
+        /// </summary>
+        /// <remarks>
+        /// The arguments will already have been validated is called and will all be non-null.
+        /// </remarks>
+        protected abstract void AddMetadataImpl(string metadataKey, string metadataValue);
     }
 }

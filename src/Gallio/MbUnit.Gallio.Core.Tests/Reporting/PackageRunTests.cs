@@ -16,6 +16,7 @@
 extern alias MbUnit2;
 using System.IO;
 using System.Xml.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Xml;
 using MbUnit2::MbUnit.Framework;
@@ -73,7 +74,7 @@ namespace MbUnit.Core.Tests.Reporting
         {
             XmlSerializer serializer = new XmlSerializer(typeof(PackageRun));
             StringWriter writer = new StringWriter();
-            _packageRun.TestRuns.Add(new TestRun("testId", new StepRun("stepId", "stepName", "stepFullName")));
+            _packageRun.TestRuns.Add(new TestRun("testId", new StepRun(new StepData("stepId", "stepName", "stepFullName", "testId"))));
             serializer.Serialize(writer, _packageRun);
 
             PackageRun deserializedPackageRun = (PackageRun)serializer.Deserialize(new StringReader(writer.ToString()));
@@ -83,8 +84,8 @@ namespace MbUnit.Core.Tests.Reporting
         [Test]
         public void StepRuns()
         {
-            StepRun stepRun = new StepRun("stepId", "stepName", "stepFullName");
-            stepRun.Children.Add(new StepRun("childId", "child", "fullName"));
+            StepRun stepRun = new StepRun(new StepData("stepId", "stepName", "stepFullName", "testId"));
+            stepRun.Children.Add(new StepRun(new StepData("childId", "childName", "childFullName", "testId")));
             TestRun testRun = new TestRun("testId", stepRun);
             _packageRun.TestRuns.Add(testRun);
 

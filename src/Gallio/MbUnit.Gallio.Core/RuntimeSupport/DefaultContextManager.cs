@@ -385,33 +385,25 @@ namespace MbUnit.Core.RuntimeSupport
                 get { return serviceProvider.LogWriter; }
             }
 
-            public override string LifecyclePhase
+            protected override string LifecyclePhaseImpl
             {
                 get { return serviceProvider.LifecyclePhase; }
-                set
-                {
-                    if (value == null)
-                        throw new ArgumentNullException(@"value");
-
-                    serviceProvider.LifecyclePhase = value;
-                }
-            }
-
-            public override void RunStep(string name, Block block)
-            {
-                if (name == null)
-                    throw new ArgumentNullException("name");
-                if (name.Length == 0)
-                    throw new ArgumentException("Name must not be empty.", "name");
-                if (block == null)
-                    throw new ArgumentNullException("block");
-
-                serviceProvider.RunStep(name, block);
+                set { serviceProvider.LifecyclePhase = value; }
             }
 
             public override ContextCookie Enter()
             {
                 return contextManager.EnterContext(this);
+            }
+
+            protected override Context RunStepImpl(string name, Block block, CodeReference codeReference)
+            {
+                return serviceProvider.RunStep(name, block, codeReference);
+            }
+
+            protected override void AddMetadataImpl(string metadataKey, string metadataValue)
+            {
+                serviceProvider.AddMetadata(metadataKey, metadataValue);
             }
         }
     }

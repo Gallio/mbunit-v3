@@ -34,24 +34,13 @@ namespace MbUnit.Framework.Kernel.Model
     /// <see cref="IStep" /> is the runtime counterpart of the <see cref="ITest" /> that
     /// captures output and control flow information about part or all of the test.
     /// </para>
+    /// <para>
+    /// A step also has metadata that can be update at run-time to carry additional
+    /// declarative information about the step.
+    /// </para>
     /// </summary>
-    /// <todo author="jeff">
-    /// Consider whether <see cref="IStep" /> should be a <see cref="IModelComponent" />.
-    /// The main difference is that it would have metadata and a code reference.
-    /// Seems useful.
-    /// </todo>
-    public interface IStep
+    public interface IStep : IModelComponent
     {
-        /// <summary>
-        /// Gets the unique identifier of the step.
-        /// </summary>
-        string Id { get; }
-
-        /// <summary>
-        /// Gets the name of the step.
-        /// </summary>
-        string Name { get; }
-
         /// <summary>
         /// <para>
         /// Gets the full name of the step.  The full name is derived from the name

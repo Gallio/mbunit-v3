@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System.Diagnostics;
 using MbUnit2::MbUnit.Framework;
 using Assert = MbUnit2::MbUnit.Framework.Assert;
 
@@ -167,6 +168,50 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         public void CreateFromParameter_ThrowsIfNull()
         {
             CodeReference.CreateFromParameter(null);
+        }
+
+        [Test, ExpectedException(typeof(ArgumentNullException))]
+        public void CreateFromStackFrame_ThrowsIfNull()
+        {
+            CodeReference.CreateFromStackFrame(null);
+        }
+
+        [Test]
+        public void CreateFromStackFrame()
+        {
+            CodeReference r = CodeReference.CreateFromStackFrame(new StackTrace(0).GetFrame(0));
+            Assert.AreEqual("CreateFromStackFrame", r.MemberName);
+        }
+
+        [Test]
+        public void CreateFromStackFrame_WithFrameCount()
+        {
+            CodeReference r = CreateFromStackFrame_WithFrameCount_Helper();
+            Assert.AreEqual("CreateFromStackFrame_WithFrameCount", r.MemberName);
+        }
+
+        private CodeReference CreateFromStackFrame_WithFrameCount_Helper()
+        {
+            return CodeReference.CreateFromStackFrame(1);
+        }
+
+        [Test]
+        public void CreateFromCallingMethod()
+        {
+            CodeReference r = CreateFromCallingMethod_Helper();
+            Assert.AreEqual("CreateFromCallingMethod", r.MemberName);
+        }
+
+        private CodeReference CreateFromCallingMethod_Helper()
+        {
+            return CodeReference.CreateFromCallingMethod();
+        }
+
+        [Test]
+        public void CreateFromExecutingMethod()
+        {
+            CodeReference r = CodeReference.CreateFromExecutingMethod();
+            Assert.AreEqual("CreateFromExecutingMethod", r.MemberName);
         }
 
         [Test]

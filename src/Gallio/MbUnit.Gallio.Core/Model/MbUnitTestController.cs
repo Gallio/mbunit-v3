@@ -76,14 +76,14 @@ namespace MbUnit.Core.Model
                     passed &= RunTearDown(stepMonitor, state, parentState);
                 }
 
-                stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed);
+                stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
                 return passed;
             }
             catch (Exception ex)
             {
                 stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex, "A fatal test runner exception occurred.");
 
-                stepMonitor.FinishStep(TestStatus.Error, TestOutcome.Failed);
+                stepMonitor.FinishStep(TestStatus.Error, TestOutcome.Failed, null);
                 return false;
             }
             finally

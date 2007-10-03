@@ -296,7 +296,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 }
 
                 stepMonitor.Context.AddAssertCount(nunitResult.AssertCount);
-                stepMonitor.FinishStep(status, outcome);
+                stepMonitor.FinishStep(status, outcome, null);
             }
             #endregion
 

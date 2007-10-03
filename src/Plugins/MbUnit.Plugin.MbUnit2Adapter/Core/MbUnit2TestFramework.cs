@@ -63,6 +63,9 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 {
                     MbUnit2AssemblyTemplate assemblyTemplate = new MbUnit2AssemblyTemplate(assembly);
                     frameworkTemplate.AddChild(assemblyTemplate);
+
+                    // Add assembly-level metadata.
+                    ReflectionUtils.PopulateMetadataFromAssembly(assembly, assemblyTemplate.Metadata);
                 }
             }
         }

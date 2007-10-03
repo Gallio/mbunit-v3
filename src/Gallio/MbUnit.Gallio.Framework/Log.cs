@@ -430,6 +430,53 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Writes an exception to the log within its own section with the name "Exception".
+        /// </summary>
+        /// <remarks>
+        /// If the exception is a <see cref="ClientException" /> then only its message and
+        /// inner exception are written.
+        /// </remarks>
+        /// <param name="exception">The exception to write</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
+        public static void WriteException(Exception exception)
+        {
+            Default.WriteException(exception);
+        }
+
+        /// <summary>
+        /// Writes an exception to the log within its own section with the specified name.
+        /// </summary>
+        /// <remarks>
+        /// If the exception is a <see cref="ClientException" /> then only its message and
+        /// inner exception are written.
+        /// </remarks>
+        /// <param name="exception">The exception to write</param>
+        /// <param name="sectionName">The section name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>,
+        /// or <paramref name="sectionName"/> is null</exception>
+        public static void WriteException(Exception exception, string sectionName)
+        {
+            Default.WriteException(exception, sectionName);
+        }
+
+        /// <summary>
+        /// Writes an exception to the log within its own section with the specified name.
+        /// </summary>
+        /// <remarks>
+        /// If the exception is a <see cref="ClientException" /> then only its message and
+        /// inner exception are written.
+        /// </remarks>
+        /// <param name="exception">The exception to write</param>
+        /// <param name="sectionNameFormat">The section name format string</param>
+        /// <param name="sectionNameArgs">The section name arguments</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>,
+        /// <paramref name="sectionNameFormat"/> or <paramref name="sectionNameArgs"/> is null</exception>
+        public static void WriteException(Exception exception, string sectionNameFormat, params object[] sectionNameArgs)
+        {
+            Default.WriteException(exception, sectionNameFormat, sectionNameArgs);
+        }
+
+        /// <summary>
         /// Begins a section with the specified name.
         /// Execution log sections may be nested.
         /// <para>

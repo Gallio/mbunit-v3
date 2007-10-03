@@ -75,12 +75,12 @@ namespace MbUnit.AddIn.TDNet
             if (e.StepRun.Result.Outcome == TestOutcome.Passed)
             {
                 testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed, 
-                    e.StepRun.StepFullName), Category.Info);
+                    e.StepRun.Step.FullName), Category.Info);
             }
 
             // Inform TD.NET what happened 
             TestResult result = new TestResult();
-            result.Name = e.StepRun.StepFullName;
+            result.Name = e.StepRun.Step.FullName;
             result.TimeSpan = TimeSpan.FromSeconds(e.StepRun.Result.Duration);
             try
             {

@@ -65,7 +65,7 @@ namespace MbUnit.Core.Tests.Reporting
             , int asrtCnt, int tstCnt, int ignrCnt, int skipCnt, int runCnt, int passCnt, int failCnt, int inclsvCnt)
         {
             SetPackageRunStaticsProperties();
-            StepRun stepRun = new StepRun("stepId", "stepName", "fullName");
+            StepRun stepRun = new StepRun(new StepData("stepId", "stepName", "fullName", "testId"));
             stepRun.Result.Status = status;
             stepRun.Result.Outcome = outcome;
             stepRun.Result.AssertCount = stepRunAsrtCnt;

@@ -195,7 +195,7 @@ namespace MbUnit.Core.Reporting
                     {
                         foreach (StepRun stepRun in report.PackageRun.StepRuns)
                         {
-                            string stepDirectory = GetStepRunDirectoryName(stepRun.StepId);
+                            string stepDirectory = GetStepRunDirectoryName(stepRun.Step.Id);
 
                             foreach (ExecutionLogAttachment attachment in stepRun.ExecutionLog.Attachments)
                             {
@@ -319,7 +319,7 @@ namespace MbUnit.Core.Reporting
 
                 foreach (StepRun stepRun in report.PackageRun.StepRuns)
                 {
-                    string stepDirectory = Path.Combine(contentDirectoryPath, GetStepRunDirectoryName(stepRun.StepId));
+                    string stepDirectory = Path.Combine(contentDirectoryPath, GetStepRunDirectoryName(stepRun.Step.Id));
 
                     foreach (ExecutionLogAttachment attachment in stepRun.ExecutionLog.Attachments)
                     {

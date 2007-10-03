@@ -79,15 +79,6 @@ namespace MbUnit.Plugin.NUnitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NUnit.
-        /// </summary>
-        internal static string NUnitFrameworkTemplateBinding_NUnitTestBatchName {
-            get {
-                return ResourceManager.GetString("NUnitFrameworkTemplateBinding_NUnitTestBatchName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The test controller has been disposed..
         /// </summary>
         internal static string NUnitTestController_ControllerWasDisposedException {

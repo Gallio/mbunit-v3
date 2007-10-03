@@ -17,6 +17,7 @@ extern alias MbUnit2;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework.Xml;
 using MbUnit2::MbUnit.Framework;
@@ -34,7 +35,7 @@ namespace MbUnit.Core.Tests.Reporting
         [SetUp]
         public void TestStart()
         {
-            rootStepRun = new StepRun("root", "root", "root");
+            rootStepRun = new StepRun(new StepData("root", "root", "test", "testId"));
             testRun = new TestRun("id", rootStepRun);
         }
 
@@ -68,7 +69,7 @@ namespace MbUnit.Core.Tests.Reporting
         {
             Assert.AreSame(rootStepRun, testRun.RootStepRun);
 
-            StepRun newRoot = new StepRun("other", "other", "other");
+            StepRun newRoot = new StepRun(new StepData("other", "other", "other", "other"));
             testRun.RootStepRun = newRoot;
 
             Assert.AreSame(newRoot, testRun.RootStepRun);
@@ -84,7 +85,7 @@ namespace MbUnit.Core.Tests.Reporting
         [Test]
         public void StepRunsEnumerationTest()
         {
-            StepRun stepRunChild = new StepRun("childId", "child", "fullName");
+            StepRun stepRunChild = new StepRun(new StepData("childId", "child", "fullName", "testId"));
             rootStepRun.Children.Add(stepRunChild);
 
             CollectionAssert.AreElementsEqual(new StepRun[] { rootStepRun, stepRunChild },
@@ -102,7 +103,7 @@ namespace MbUnit.Core.Tests.Reporting
         {
             XmlSerializer serializer = new XmlSerializer(typeof(TestRun));
             StringWriter writer = new StringWriter();
-            testRun.RootStepRun.Children.Add(new StepRun("childId", "childName", "fullName"));
+            testRun.RootStepRun.Children.Add(new StepRun(new StepData("childId", "childName", "fullName", "testId")));
             serializer.Serialize(writer, testRun);
             TestRun deserializedTestRun = (TestRun)serializer.Deserialize(new StringReader(writer.ToString()));
             CoreAssert.AreEqual(testRun, deserializedTestRun);

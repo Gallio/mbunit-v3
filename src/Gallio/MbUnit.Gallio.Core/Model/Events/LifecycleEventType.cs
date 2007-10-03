@@ -34,6 +34,11 @@ namespace MbUnit.Core.Model.Events
         SetPhase,
 
         /// <summary>
+        /// The test step is receiving additional metadata.
+        /// </summary>
+        AddMetadata,
+
+        /// <summary>
         /// The test step is finished.
         /// </summary>
         Finish

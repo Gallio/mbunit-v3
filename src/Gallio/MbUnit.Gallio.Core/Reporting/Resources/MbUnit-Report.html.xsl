@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:g="http://www.mbunit.com/gallio">
   <xsl:output method="xml" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
               doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" indent="yes" />
+  <xsl:param name="contentRoot" />
 
   <xsl:key name="outcome" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@outcome" />
   <xsl:key name="status" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@status" />
@@ -20,8 +21,8 @@
         <h1>MbUnit Test Report</h1>
         <xsl:apply-templates select="g:package/g:assemblyFiles" />
         <xsl:apply-templates select="g:packageRun" />
-        <xsl:apply-templates select="g:testModel/g:test" />
-        <xsl:apply-templates select="g:packageRun/g:testRuns" />
+        <xsl:apply-templates select="g:testModel/g:test" mode="summary"/>
+        <xsl:apply-templates select="g:testModel/g:test" mode="details"/>
       </body>
     </html>
   </xsl:template>
@@ -102,17 +103,18 @@
     </table>
   </xsl:template>
 
-  <xsl:template match="g:testModel/g:test">
+  <xsl:template match="g:testModel/g:test" mode="summary">
     <div id="Summary">
       <h2>Summary</h2>
       <ul>
-        <xsl:apply-templates select="g:children/g:test" />
+        <xsl:apply-templates select="g:children/g:test" mode="summary" />
       </ul>
     </div>
   </xsl:template>
 
-  <xsl:template match="g:children/g:test">
+  <xsl:template match="g:children/g:test" mode="summary">
     <xsl:variable name="id" select="@id" />
+    <xsl:variable name="kind" select="g:metadata/g:entry[@key='ComponentKind']/g:value" />
     <xsl:variable name="tests" select="descendant-or-self::g:test[@isTestCase='true']" />
     <xsl:variable name="run" select="$tests[@id = key('status', 'executed')/@id]" />
     <xsl:variable name="passed" select="$tests[@id = key('outcome', 'passed')/@id]" />
@@ -125,25 +127,26 @@
     <li>
       <span>
         <xsl:choose>
-          <xsl:when test="count(g:children/g:test) > 0 and g:metadata/g:entry[@key='ComponentKind']/g:value != 'Fixture'">
+          <xsl:when test="count(g:children/g:test) > 0 and $kind != 'Fixture'">
             <img src="img/Minus.gif" class="toggle">
-              <xsl:attribute name="id">toggle<xsl:value-of select="$id" /></xsl:attribute>
-              <xsl:attribute name="onclick">toggle('<xsl:value-of select="$id" />');</xsl:attribute>
+              <xsl:attribute name="id">toggle-testChildrenPanel-<xsl:value-of select="$id" /></xsl:attribute>
+              <xsl:attribute name="onclick">toggle('testChildrenPanel-<xsl:value-of select="$id" />');</xsl:attribute>
             </img>
           </xsl:when>
           <xsl:otherwise>
             <img src="img/FullStop.gif" />
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:choose>
-          <xsl:when test="g:metadata/g:entry[@key='ComponentKind']/g:value = 'Fixture'">
-            <img src="img/Fixture.png" alt="Fixture icon" />
-          </xsl:when>
-          <xsl:otherwise>
-            <img src="img/Container.png" alt="Container icon" />
-          </xsl:otherwise>
-        </xsl:choose>
-        <a><xsl:attribute name="href"><xsl:text>#</xsl:text><xsl:value-of select="@id" /></xsl:attribute><xsl:value-of select="@name" /></a>
+        
+        <xsl:call-template name="icon">
+          <xsl:with-param name="kind" select="$kind" />
+        </xsl:call-template>
+        
+        <a>
+          <xsl:attribute name="href">#testRun-<xsl:value-of select="@id" /></xsl:attribute>
+          <xsl:value-of select="@name" />
+        </a>
+        
         <xsl:call-template name="progressBar">
           <xsl:with-param name="width">100</xsl:with-param>
           <xsl:with-param name="height">10</xsl:with-param>
@@ -162,10 +165,11 @@
         </xsl:call-template>
         (<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />)
       </span>
-      <xsl:if test="count(g:children/g:test) > 0 and g:metadata/g:entry[@key='ComponentKind']/g:value != 'Fixture'">
+      
+      <xsl:if test="count(g:children/g:test) > 0 and $kind != 'Fixture'">
         <ul>
-          <xsl:attribute name="id">list<xsl:value-of select="$id" /></xsl:attribute>
-          <xsl:apply-templates select="g:children/g:test" />
+          <xsl:attribute name="id">testChildrenPanel-<xsl:value-of select="$id" /></xsl:attribute>
+          <xsl:apply-templates select="g:children/g:test" mode="summary" />
         </ul>
       </xsl:if>
     </li>
@@ -244,61 +248,47 @@
     <xsl:value-of select="substring($datetime, 1, 10)" />
   </xsl:template>
 
-  <xsl:template match="g:packageRun/g:testRuns">
+  <xsl:template match="g:testModel/g:test" mode="details">
     <div id="Details">
       <h2>Details</h2>
-      <xsl:apply-templates select="g:testRun" />
+      <xsl:apply-templates select="g:children/g:test" mode="details" />
     </div>
   </xsl:template>
 
-  <xsl:template match="g:testRun">
-    <xsl:apply-templates select="g:stepRun">
-      <xsl:with-param name="testId" select="@id" />
-    </xsl:apply-templates>
-  </xsl:template>
-
-  <xsl:template match="g:stepRun">
-    <xsl:param name="testId" />
-    <xsl:variable name="test" select="//g:testModel//g:test[@id=$testId]" />
-    <xsl:variable name="tests" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
+  <xsl:template match="g:children/g:test" mode="details">
+    <xsl:variable name="testId" select="@id" />
+    <xsl:variable name="kind" select="g:metadata/g:entry[@key='ComponentKind']/g:value" />
+    
+    <xsl:variable name="tests" select="descendant-or-self::g:test[@isTestCase='true']" />
     <xsl:variable name="run" select="$tests[@id = key('status', 'executed')/@id]" />
     <xsl:variable name="passed" select="$tests[@id = key('outcome', 'passed')/@id]" />
     <xsl:variable name="failed" select="$tests[@id = key('outcome', 'failed')/@id]" />
     <xsl:variable name="inconclusive" select="$tests[@id = key('outcome', 'inconclusive')/@id]" />
     <xsl:variable name="ignored" select="$tests[@id = key('status', 'ignored')/@id]" />
     <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/@id]" />
-    <xsl:variable name="assertions" select="key('status', 'executed')[@id = $tests/@id]/g:stepRun/g:result/@assertCount" />
 
-    <div>
-      <xsl:attribute name="id"><xsl:value-of select="$testId" /></xsl:attribute>
-      <xsl:attribute name="stepId"><xsl:value-of select="@id" /></xsl:attribute>
-      <xsl:attribute name="class"><xsl:value-of select="$test/g:metadata/g:entry[@key='ComponentKind']/g:value" />
-        <xsl:if test="$test/@isTestCase = 'true' and g:result/@status != 'ignored'">
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="g:result/@outcome" />
-        </xsl:if>
-      </xsl:attribute>
+    <xsl:variable name="testRun" select="/g:report/g:packageRun/g:testRuns/g:testRun[@id=$testId]" />
+    <xsl:variable name="rootStepResult" select="$testRun/g:stepRun/g:result" />
+    <xsl:variable name="allStepResults" select="$rootStepResult/descendant-or-self::g:result" />
+    <xsl:variable name="assertions" select="sum($allStepResults/@assertionCount)" />
 
-      <xsl:choose>
-        <xsl:when test="$test/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Assembly'">
-          <h3>
-            <img src="img/Container.png" alt="Container icon" />
-            <xsl:value-of select="@fullName" />
-          </h3>
-          <ul>
-            <li>
-              <b>Results: </b><xsl:value-of select="count($run)" /> run, <xsl:value-of select="count($passed)" /> passed, <xsl:value-of select="count($failed)" /> failed, <xsl:value-of select="count($inconclusive)" /> inconclusive (<xsl:value-of select="count($ignored)" /> ignored/<xsl:value-of select="count($skipped)" /> skipped), <xsl:value-of select="count($assertions)" /> assertions.<br />
-            </li>
-            <li>
-              <b>Duration: </b><xsl:value-of select="format-number(g:result/@duration, '0.00')" />s
-            </li>
-          </ul>
-        </xsl:when>
-        <xsl:when test="$test/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Fixture'">
-          <img src="img/Fixture.png" alt="Fixture icon" />
-          <b>
-            <xsl:value-of select="@fullName" /> (<xsl:value-of select="format-number(g:result/@duration, '0.00')" />s)
-          </b>
+    <div class="testRun">
+      <xsl:attribute name="id">testRun-<xsl:value-of select="$testId" /></xsl:attribute>
+      
+      <span>
+        <xsl:attribute name="class">testRunHeading testRunHeading-<xsl:value-of select="$kind"/></xsl:attribute>
+
+        <img src="img/Minus.gif" class="toggle">
+          <xsl:attribute name="id">toggle-testRunPanel-<xsl:value-of select="$testId" /></xsl:attribute>
+          <xsl:attribute name="onclick">toggle('testRunPanel-<xsl:value-of select="$testId" />');</xsl:attribute>
+        </img>
+        <xsl:call-template name="icon">
+          <xsl:with-param name="kind" select="$kind" />
+        </xsl:call-template>
+
+        <xsl:value-of select="@name" />
+
+        <xsl:if test="count(g:children) != 0">
           <xsl:call-template name="progressBar">
             <xsl:with-param name="width">100</xsl:with-param>
             <xsl:with-param name="height">10</xsl:with-param>
@@ -316,62 +306,250 @@
             </xsl:with-param>
           </xsl:call-template>
           (<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />)
-          <xsl:if test="count($test/g:metadata/g:entry) > 1">
-            <ul>
-              <xsl:apply-templates select="$test/g:metadata/g:entry" />
-            </ul>
-          </xsl:if>
-        </xsl:when>
-        <xsl:when test="$test/g:metadata/g:entry[@key='ComponentKind']/g:value = 'Test'">
-          <xsl:choose>
-            <xsl:when test="count(g:executionLog/g:streams/g:stream) > 0">
-              <img src="img/Minus.gif" class="toggle">
-                <xsl:attribute name="id">toggle<xsl:value-of select="$testId" /></xsl:attribute>
-                <xsl:attribute name="onclick">toggle('<xsl:value-of select="$testId" />');</xsl:attribute>
-              </img>
-            </xsl:when>
-            <xsl:otherwise>
-              <img src="img/FullStop.gif" />
-            </xsl:otherwise>
-          </xsl:choose>
-          <img src="img/Test.png" alt="Test icon" />
-          <xsl:value-of select="@fullName" />
-          (Duration: <xsl:value-of select="format-number(g:result/@duration * 1000, '0.000')" />ms, Assertions: <xsl:value-of select="g:result/@assertCount" />)
-        </xsl:when>
-      </xsl:choose>
+        </xsl:if>
+      </span>
 
-      <xsl:apply-templates select="g:executionLog/g:streams/g:stream">
-        <xsl:with-param name="testId" select="$testId" />
-      </xsl:apply-templates>
-
-      <xsl:apply-templates select="g:stepRun">
-        <xsl:with-param name="testId" select="$testId" />
-      </xsl:apply-templates>
-
-    </div>
-
-  </xsl:template>
-
-  <xsl:template match="//g:test/g:metadata/g:entry">
-    <xsl:if test="@key!='ComponentKind'">
-      <li>
-        <xsl:value-of select="@key" />: <xsl:value-of select="g:value" />
-      </li>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template match="g:executionLog/g:streams/g:stream">
-    <xsl:param name="testId" />
-    <div class="executionLog">
-      <xsl:attribute name="id">executionLog<xsl:value-of select="$testId" /></xsl:attribute>
-      <b>
-        <xsl:value-of select="@name" />
-      </b>
       <div>
-        <xsl:attribute name="class"><xsl:value-of select="@name" /></xsl:attribute>
-        <xsl:value-of select="g:body/g:contents/g:text" />
+        <xsl:attribute name="id">testRunPanel-<xsl:value-of select="$testId" /></xsl:attribute>
+        <xsl:attribute name="class">testRunPanel outcome outcome-<xsl:value-of select="$rootStepResult/@outcome" /></xsl:attribute>
+
+        <xsl:choose>
+          <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
+            <b>Results: </b>
+            <xsl:value-of select="count($run)" /> run,
+            <xsl:value-of select="count($passed)" /> passed,
+            <xsl:value-of select="count($failed)" /> failed,
+            <xsl:value-of select="count($inconclusive)" /> inconclusive (<xsl:value-of select="count($ignored)" /> ignored / <xsl:value-of select="count($skipped)" /> skipped).
+            <br/>
+            <b>Duration: </b>
+            <xsl:value-of select="format-number($rootStepResult/@duration, '0.00')" />s.
+            <br/>
+            <b>Assertions: </b>
+            <xsl:value-of select="$assertions" />.
+          </xsl:when>
+          <xsl:otherwise>
+            Duration: <xsl:value-of select="format-number($rootStepResult/@duration, '0.00')" />s,
+            Assertions: <xsl:value-of select="$assertions"/>.
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <xsl:apply-templates select="g:metadata" />
+
+        <xsl:apply-templates select="/g:report/g:packageRun/g:testRuns/g:testRun[@id=$testId]/g:stepRun" />
+
+        <div class="testRunChildren">
+          <xsl:apply-templates select="g:children/g:test" mode="details" />
+        </div>
       </div>
     </div>
   </xsl:template>
 
+  <xsl:template match="g:stepRun">
+    <xsl:variable name="stepId" select="g:step/@id" />
+    <xsl:variable name="allStepResults" select="descendant-or-self::g:result" />
+    <xsl:variable name="assertions" select="sum($allStepResults/@assertionCount)" />
+
+    <div>
+      <xsl:attribute name="id">stepRun-<xsl:value-of select="g:step/@id" /></xsl:attribute>
+
+      <xsl:choose>
+        <xsl:when test="parent::g:children">
+          <xsl:attribute name="class">stepRun outcome outcome-<xsl:value-of select="g:result/@outcome" /></xsl:attribute>
+          
+          <span class="stepRunHeading">
+            <img src="img/Minus.gif" class="toggle">
+              <xsl:attribute name="id">toggle-stepRunPanel-<xsl:value-of select="$stepId" /></xsl:attribute>
+              <xsl:attribute name="onclick">toggle('stepRunPanel-<xsl:value-of select="$stepId" />');</xsl:attribute>
+            </img>
+
+            <xsl:value-of select="g:step/@fullName" />
+            (Duration: <xsl:value-of select="format-number(g:result/@duration, '0.00')" />s, Assertions: <xsl:value-of select="$assertions"/>)
+          </span>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="class">stepRun</xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+
+      <div class="stepRunPanel">
+        <xsl:attribute name="id">stepRunPanel-<xsl:value-of select="$stepId" /></xsl:attribute>
+
+        <xsl:apply-templates select="g:metadata" />
+
+        <xsl:apply-templates select="g:executionLog">
+          <xsl:with-param name="stepId" select="$stepId" />
+        </xsl:apply-templates>
+
+        <div class="stepRunChildren">
+          <xsl:apply-templates select="g:children/g:stepRun" />
+        </div>
+      </div>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="g:metadata">
+    <xsl:if test="count(g:entry[@key != 'ComponentKind']) != 0">
+      <ul class="metadata">
+        <xsl:apply-templates select="g:entry[@key != 'ComponentKind']" />
+      </ul>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="g:entry">
+    <li>
+      <xsl:value-of select="@key" />: <xsl:value-of select="g:value" />
+    </li>
+  </xsl:template>
+
+  <xsl:template match="g:executionLog">
+    <xsl:param name="stepId" />
+    
+    <div class="log">
+      <xsl:attribute name="id">log-<xsl:value-of select="$stepId" /></xsl:attribute>
+
+      <xsl:apply-templates select="g:streams/g:stream" mode="stream">
+        <xsl:with-param name="attachments" select="g:attachments" />
+      </xsl:apply-templates>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="g:streams/g:stream" mode="stream">
+    <xsl:param name="attachments" />
+    
+    <div>
+      <xsl:attribute name="class">logStream logStream-<xsl:value-of select="@name" /></xsl:attribute>
+      
+      <span class="logStreamHeading">
+        <xsl:value-of select="@name" />
+      </span>
+      
+      <xsl:apply-templates select="g:body" mode="stream">
+        <xsl:with-param name="attachments" select="$attachments" />
+      </xsl:apply-templates>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="g:body" mode="stream">
+    <xsl:param name="attachments" />
+
+    <div class="logStreamBody">
+      <xsl:apply-templates select="g:contents" mode="stream">
+        <xsl:with-param name="attachments" select="$attachments" />
+      </xsl:apply-templates>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="g:section" mode="stream">
+    <xsl:param name="attachments" />
+    
+    <div class="logStreamSection">
+      <span class="logStreamSectionHeading">
+        <xsl:value-of select="@name"/>
+      </span>
+      <div>
+        <xsl:apply-templates select="g:contents" mode="stream">
+          <xsl:with-param name="attachments" select="$attachments" />
+        </xsl:apply-templates>
+      </div>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="g:contents" mode="stream">
+    <xsl:param name="attachments" />
+    
+    <xsl:apply-templates select="child::node()[self::g:text or self::g:section or self::g:embed]" mode="stream">
+      <xsl:with-param name="attachments" select="$attachments" />
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="g:text" mode="stream">
+    <xsl:param name="attachments" />
+    
+    <div>
+      <xsl:call-template name="print-text-with-line-breaks">
+        <xsl:with-param name="text" select="text()" />
+      </xsl:call-template>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="g:embed" mode="stream">
+    <xsl:param name="attachments" />
+    <xsl:variable name="attachmentName" select="@attachmentName" />
+    <xsl:variable name="attachment" select="$attachments/g:attachment[@name=$attachmentName]" />
+
+    <div class="logAttachment">
+      <xsl:choose>
+        <xsl:when test="$attachment/@contentPath">
+          <xsl:choose>
+            <xsl:when test="starts-with($attachment/@contentType, 'image/')">
+              <img>
+                <xsl:attribute name="src">
+                  <xsl:value-of select="$contentRoot"/>
+                  <xsl:text>/</xsl:text>
+                  <xsl:value-of select="$attachment/@contentPath"/>
+                </xsl:attribute>
+                <xsl:attribute name="alt"><xsl:value-of select="$attachmentName"/></xsl:attribute>
+              </img>
+            </xsl:when>
+            <xsl:otherwise>
+              <em>Attachment: </em>
+              <a>
+                <xsl:attribute name="href">
+                  <xsl:value-of select="$contentRoot"/>
+                  <xsl:text>/</xsl:text>
+                  <xsl:value-of select="$attachment/@contentPath"/>
+                </xsl:attribute>
+                <xsl:value-of select="$attachmentName" />
+              </a>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <em>Attachment: </em>
+          <xsl:value-of select="$attachmentName" />
+          (content not available)
+        </xsl:otherwise>
+      </xsl:choose>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="print-text-with-line-breaks">
+    <xsl:param name="text" />
+    <xsl:variable name="tail" select="substring-after($text, '&#10;')" />
+
+    <xsl:choose>
+      <xsl:when test="$tail!=''">
+        <xsl:value-of select="substring-before($text, '&#10;')" />
+        <br/>
+        <xsl:call-template name="print-text-with-line-breaks">
+          <xsl:with-param name="text" select="$tail" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$text" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="icon">
+    <xsl:param name="kind" />
+
+    <img>
+      <xsl:choose>
+        <xsl:when test="$kind = 'Fixture'">
+          <xsl:attribute name="src">img/Fixture.png</xsl:attribute>
+          <xsl:attribute name="alt">Fixture Icon</xsl:attribute>
+        </xsl:when>
+        <xsl:when test="$kind = 'Test'">
+          <xsl:attribute name="src">img/Test.png</xsl:attribute>
+          <xsl:attribute name="alt">Test Icon</xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="src">img/Container.png</xsl:attribute>
+          <xsl:attribute name="alt">Container Icon</xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+    </img>
+  </xsl:template>
+  
 </xsl:stylesheet>

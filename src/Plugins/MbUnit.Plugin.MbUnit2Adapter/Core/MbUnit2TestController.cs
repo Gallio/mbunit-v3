@@ -357,7 +357,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 IStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
                 activeStepMonitors.Remove(assemblyTestMonitor);
 
-                assemblyStepMonitor.FinishStep(TestStatus.Executed, outcome);
+                assemblyStepMonitor.FinishStep(TestStatus.Executed, outcome, null);
             }
 
             private void HandleFixtureStart(Fixture fixture)
@@ -442,7 +442,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             /// MbUnit's handling of Abort() isn't very robust.  It is susceptible to
             /// race conditions in various placed.  For example, the fixture runner resets
             /// its AbortPending flag when Run is invoked.  It is possible that this
-            //  will prevent the abort from succeeding if it happens too early.
+            /// will prevent the abort from succeeding if it happens too early.
             /// </summary>
             private void CheckCanceled()
             {
@@ -488,23 +488,23 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 switch (reportRunResult)
                 {
                     case ReportRunResult.NotRun:
-                        stepMonitor.FinishStep(TestStatus.NotRun, TestOutcome.Inconclusive);
+                        stepMonitor.FinishStep(TestStatus.NotRun, TestOutcome.Inconclusive, null);
                         break;
 
                     case ReportRunResult.Skip:
-                        stepMonitor.FinishStep(TestStatus.Skipped, TestOutcome.Inconclusive);
+                        stepMonitor.FinishStep(TestStatus.Skipped, TestOutcome.Inconclusive, null);
                         break;
 
                     case ReportRunResult.Ignore:
-                        stepMonitor.FinishStep(TestStatus.Ignored, TestOutcome.Inconclusive);
+                        stepMonitor.FinishStep(TestStatus.Ignored, TestOutcome.Inconclusive, null);
                         break;
 
                     case ReportRunResult.Success:
-                        stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Passed);
+                        stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
                         break;
 
                     case ReportRunResult.Failure:
-                        stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed);
+                        stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
                         break;
                 }
             }

@@ -13,12 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using Castle.Core;
 using MbUnit.Core.RuntimeSupport;
 
 namespace MbUnit.Core.Utilities
@@ -36,7 +32,7 @@ namespace MbUnit.Core.Utilities
             // Add plugin bin directories assuming the user is running inside Visual Studio.
             foreach (string mbunitDirectory in assemblyResolverManager.MbUnitDirectories)
             {
-                DirectoryInfo pluginProjectDir = new DirectoryInfo(Path.GetFullPath(Path.Combine(mbunitDirectory, @"..\..\..\Plugins")));
+                DirectoryInfo pluginProjectDir = new DirectoryInfo(Path.GetFullPath(Path.Combine(mbunitDirectory, @"..\..\..\..\Plugins")));
                 if (pluginProjectDir.Exists)
                 {
                     foreach (DirectoryInfo projectDir in pluginProjectDir.GetDirectories())

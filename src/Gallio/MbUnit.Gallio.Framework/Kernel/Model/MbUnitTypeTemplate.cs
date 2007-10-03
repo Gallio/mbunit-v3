@@ -32,7 +32,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="assemblyTemplate">The containing assembly template</param>
         /// <param name="type">The type from which the template was derived</param>
         public MbUnitTypeTemplate(MbUnitAssemblyTemplate assemblyTemplate, Type type)
-            : base(type.Name, CodeReference.CreateFromType(type))
+            : base(MakeTemplateName(type), CodeReference.CreateFromType(type))
         {
             this.assemblyTemplate = assemblyTemplate;
             this.type = type;
@@ -75,6 +75,13 @@ namespace MbUnit.Framework.Kernel.Model
         public void AddMethodTemplate(MbUnitMethodTemplate methodTemplate)
         {
             AddChild(methodTemplate);
+        }
+
+        private static string MakeTemplateName(Type type)
+        {
+            if (type.IsNested)
+                return MakeTemplateName(type.DeclaringType) + "." + type.Name;
+            return type.Name;
         }
     }
 }

@@ -29,6 +29,8 @@ namespace MbUnit.Core.Model.Events
         private StepData stepData;
         private string phaseName;
         private TestResult result;
+        private string metadataKey;
+        private string metadataValue;
 
         private LifecycleEventArgs(string stepId, LifecycleEventType eventType)
             : base(stepId)
@@ -87,6 +89,34 @@ namespace MbUnit.Core.Model.Events
         }
 
         /// <summary>
+        /// Gets the metadata key.
+        /// </summary>
+        /// <remarks>
+        /// Valid for events of the following types:
+        /// <list type="bullet">
+        /// <item><see cref="LifecycleEventType.AddMetadata" />, non-null</item>
+        /// </list>
+        /// </remarks>
+        public string MetadataKey
+        {
+            get { return metadataKey; }
+        }
+
+        /// <summary>
+        /// Gets the metadata value.
+        /// </summary>
+        /// <remarks>
+        /// Valid for events of the following types:
+        /// <list type="bullet">
+        /// <item><see cref="LifecycleEventType.AddMetadata" />, non-null</item>
+        /// </list>
+        /// </remarks>
+        public string MetadataValue
+        {
+            get { return metadataValue; }
+        }
+
+        /// <summary>
         /// Creates a <see cref="LifecycleEventType.Start" /> event.
         /// </summary>
         /// <param name="stepData">Information about the step that is about to start</param>
@@ -116,6 +146,29 @@ namespace MbUnit.Core.Model.Events
 
             LifecycleEventArgs e = new LifecycleEventArgs(stepId, LifecycleEventType.SetPhase);
             e.phaseName = phaseName;
+            return e;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="LifecycleEventType.AddMetadata" /> event.
+        /// </summary>
+        /// <seealso cref="LifecyclePhases"/>
+        /// <param name="stepId">The id of the test step this event is about</param>
+        /// <param name="metadataKey">The metadata key</param>
+        /// <param name="metadataValue">The metadata value</param>
+        /// <returns>The event</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/>,
+        /// <paramref name="metadataKey"/> or <paramref name="metadataValue" /> is null</exception>
+        public static LifecycleEventArgs CreateAddMetadataEvent(string stepId, string metadataKey, string metadataValue)
+        {
+            if (metadataKey == null)
+                throw new ArgumentNullException(@"metadataKey");
+            if (metadataValue == null)
+                throw new ArgumentNullException(@"metadataValue");
+
+            LifecycleEventArgs e = new LifecycleEventArgs(stepId, LifecycleEventType.AddMetadata);
+            e.metadataKey = metadataKey;
+            e.metadataValue = metadataValue;
             return e;
         }
 

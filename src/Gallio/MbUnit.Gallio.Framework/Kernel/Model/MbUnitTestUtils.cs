@@ -27,6 +27,10 @@ namespace MbUnit.Framework.Kernel.Model
         /// <summary>
         /// Creates an action that invokes a method on the fixture without parameters.
         /// </summary>
+        /// <remarks>
+        /// If the method throws an exception when the action runs, it is wrapped up 
+        /// and rethrown within a <see cref="ClientException" />.
+        /// </remarks>
         /// <param name="method">The method to invoke</param>
         /// <returns>The action</returns>
         public static Action<MbUnitTestState> CreateFixtureMethodInvoker(MethodInfo method)
@@ -36,17 +40,24 @@ namespace MbUnit.Framework.Kernel.Model
 
             return delegate(MbUnitTestState state)
             {
-                if (method.IsStatic)
+                try
                 {
-                    method.Invoke(null, null);
-                }
-                else
-                {
-                    object instance = state.FixtureInstance;
-                    if (instance == null)
-                        throw new ModelException(Resources.MbUnitTestUtils_ExpectedToInvokeAnInstanceMethod);
+                    if (method.IsStatic)
+                    {
+                        method.Invoke(null, null);
+                    }
+                    else
+                    {
+                        object instance = state.FixtureInstance;
+                        if (instance == null)
+                            throw new ModelException(Resources.MbUnitTestUtils_ExpectedToInvokeAnInstanceMethod);
 
-                    method.Invoke(instance, null);
+                        method.Invoke(instance, null);
+                    }
+                }
+                catch (TargetInvocationException ex)
+                {
+                    throw new ClientException("A fixture method threw an exception.", ex.InnerException);
                 }
             };
         }

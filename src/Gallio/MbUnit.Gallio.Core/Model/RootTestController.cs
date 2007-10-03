@@ -73,7 +73,7 @@ namespace MbUnit.Core.Model
                 }
                 finally
                 {
-                    stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Passed);
+                    stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
 
                     progressMonitor.Worked(1);
                 }

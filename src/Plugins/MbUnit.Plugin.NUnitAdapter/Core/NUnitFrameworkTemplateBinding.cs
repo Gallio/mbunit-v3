@@ -182,6 +182,10 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
             string xmlDocumentation = GetXmlDocumentation(test);
             if (xmlDocumentation != null)
                 test.Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+
+            // Add assembly-level metadata.
+            if (test.CodeReference.Kind == CodeReferenceKind.Assembly)
+                ReflectionUtils.PopulateMetadataFromAssembly(test.CodeReference.ResolveAssembly(), test.Metadata);
         }
 
         private static string GetXmlDocumentation(NUnitTest test)

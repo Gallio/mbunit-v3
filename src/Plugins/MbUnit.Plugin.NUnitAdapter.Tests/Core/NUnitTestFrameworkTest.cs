@@ -13,20 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
-using System.Threading;
-using MbUnit._Framework.Tests;
+using System;
+using System.Reflection;
 using MbUnit.Core.Model;
 using MbUnit.Core.Tests.Model;
+using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Plugin.NUnitAdapter.Core;
 using MbUnit.TestResources.NUnit;
 using MbUnit.TestResources.NUnit.Metadata;
-using MbUnit2::MbUnit.Framework;
 
-using System.Reflection;
-using MbUnit.Plugin.NUnitAdapter.Core;
-
-using System;
+using Assert=MbUnit.Framework.Assert;
+using StringAssert=MbUnit.Framework.StringAssert;
 
 namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
 {
@@ -209,6 +207,27 @@ namespace MbUnit.Plugin.NUnitAdapter.Tests.Core
             NUnitTest test = (NUnitTest)GetDescendantByName(rootTest, typeof(PropertySample).FullName);
             Assert.AreEqual("customvalue-1", test.Metadata.GetValue("customkey-1"));
             Assert.AreEqual("customvalue-2", test.Metadata.GetValue("customkey-2"));
+        }
+
+        [Test]
+        public void MetadataImport_AssemblyAttributes()
+        {
+            PopulateTestTree();
+
+            BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
+            NUnitTest assemblyTest = (NUnitTest)frameworkTest.Children[0];
+
+            Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
+            Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
+            StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
+            Assert.AreEqual("A sample test assembly.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("MbUnit.TestResources.NUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
+            Assert.AreEqual("MbUnit.TestResources.NUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
+
+            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));
+            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
+            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
         }
     }
 }

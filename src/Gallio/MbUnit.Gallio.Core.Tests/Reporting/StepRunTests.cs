@@ -31,53 +31,23 @@ namespace MbUnit.Core.Tests.Reporting
         [SetUp]
         public void TestStart()
         {
-            _stepRun = new StepRun("id", "name", "fullName");
+            _stepRun = new StepRun(new StepData("id", "name", "fullName", "testId"));
         }
 
-        [RowTest]
-        [Row(null, "name", "fullName", ExpectedException = typeof(ArgumentNullException))]
-        [Row("id", null, "fullName", ExpectedException = typeof(ArgumentNullException))]
-        [Row("id", "name", null, ExpectedException = typeof(ArgumentNullException))]
-        public void ConstructorExceptionTest(string id, string name, string fullName)
+        [Test]
+        [ExpectedArgumentNullException]
+        public void ConstructorExceptionTest()
         {
-            new StepRun(id, name, fullName);
+            new StepRun(null);
         }
 
         [Test]
         public void ConstructorTest()
         {
-            StepRun stepRun = new StepRun("id", "name", "fullName");
-            Assert.AreEqual("id", stepRun.StepId);
-            Assert.AreEqual("name", stepRun.StepName);
-            Assert.AreEqual("fullName", stepRun.StepFullName);
+            StepData step = new StepData("id", "name", "fullName", "testId");
+            StepRun stepRun = new StepRun(step);
+            Assert.AreSame(step, stepRun.Step);
             Assert.AreEqual(0, stepRun.Children.Count);
-        }
-
-        [RowTest]
-        [Row("newId")]
-        [Row(null, ExpectedException = typeof(ArgumentNullException))]
-        public void StepIdSetTest(string stepId)
-        {
-            _stepRun.StepId = stepId;
-            Assert.AreEqual(stepId, _stepRun.StepId);
-        }
-
-        [RowTest]
-        [Row("newName")]
-        [Row(null, ExpectedException = typeof(ArgumentNullException))]
-        public void StepNameSetTest(string stepName)
-        {
-            _stepRun.StepName = stepName;
-            Assert.AreEqual(stepName, _stepRun.StepName);
-        }
-
-        [RowTest]
-        [Row("newFullName")]
-        [Row(null, ExpectedException = typeof(ArgumentNullException))]
-        public void StepFullNameSetTest(string stepFullName)
-        {
-            _stepRun.StepFullName = stepFullName;
-            Assert.AreEqual(stepFullName, _stepRun.StepFullName);
         }
 
         [Test]
@@ -98,6 +68,26 @@ namespace MbUnit.Core.Tests.Reporting
         public void ResultGetTest()
         {
             Assert.IsNotNull(_stepRun.Result);
+        }
+
+        [Test]
+        public void StepSetTest()
+        {
+            _stepRun.Step = new StepData("stepId", "stepName", "fullName", "testId");
+            Assert.IsNotNull(_stepRun.Step);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void StepSetExceptionTest()
+        {
+            _stepRun.Step = null;
+        }
+
+        [Test]
+        public void StepGetTest()
+        {
+            Assert.IsNotNull(_stepRun.Step);
         }
 
         [Test]

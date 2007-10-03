@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using MbUnit.Core.Model;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Reporting
@@ -30,9 +31,7 @@ namespace MbUnit.Core.Reporting
     public class StepRun
     {
         private readonly List<StepRun> children;
-        private string stepId;
-        private string stepName;
-        private string stepFullName;
+        private StepData step;
         private DateTime startTime;
         private DateTime endTime;
         private TestResult result;
@@ -49,72 +48,31 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Creates a test run step.
         /// </summary>
-        /// <param name="stepId">The step id</param>
-        /// <param name="stepName">The name of the step</param>
-        /// <param name="stepFullName">The full name of the step</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/>,
-        /// <paramref name="stepName"/> or <paramref name="stepFullName"/> is null</exception>
-        public StepRun(string stepId, string stepName, string stepFullName)
+        /// <param name="step">Information about the step</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="step" /> is null</exception>
+        public StepRun(StepData step)
         {
-            if (stepId == null)
-                throw new ArgumentNullException(@"stepId");
-            if (stepName == null)
-                throw new ArgumentNullException(@"stepName");
-            if (stepFullName == null)
-                throw new ArgumentNullException(@"stepFullName");
+            if (step == null)
+                throw new ArgumentNullException(@"step");
 
-            this.stepId = stepId;
-            this.stepName = stepName;
-            this.stepFullName = stepFullName;
+            this.step = step;
 
             children = new List<StepRun>();
         }
 
         /// <summary>
-        /// Gets or sets the id of the step.
+        /// Gets or sets information about the step.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlAttribute("id")]
-        public string StepId
+        [XmlElement("step")]
+        public StepData Step
         {
-            get { return stepId; }
+            get { return step; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                stepId = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the name of the step.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlAttribute("name")]
-        public string StepName
-        {
-            get { return stepName; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                stepName = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the full name of the step.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlAttribute("fullName")]
-        public string StepFullName
-        {
-            get { return stepFullName; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                stepFullName = value;
+                step = value;
             }
         }
 

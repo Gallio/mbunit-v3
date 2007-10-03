@@ -117,11 +117,52 @@ namespace MbUnit.Framework
         /// <param name="block">The block of code to run</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="block"/> is null</exception>
+        /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
-        public static void Run(string name, Block block)
+        public static Context Run(string name, Block block)
         {
-            Context.CurrentContext.RunStep(name, block);
+            return Run(name, block, CodeReference.CreateFromCallingMethod());
+        }
+
+        /// <summary>
+        /// <para>
+        /// Runs a block of code as a new step within the current context and associates it
+        /// with the specified code reference.
+        /// </para>
+        /// <para>
+        /// This method creates a new child context to represent the <see cref="Step" />,
+        /// enters the child context, runs the block of code, then exits the child context.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This method may be called recursively to create nested steps or concurrently
+        /// to create parallel steps.
+        /// </remarks>
+        /// <param name="name">The name of the step</param>
+        /// <param name="block">The block of code to run</param>
+        /// <param name="codeReference">The code reference, or null to use the calling method
+        /// as the code reference.</param>
+        /// <returns>The context of the step that ran</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
+        /// <paramref name="block"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
+        /// <exception cref="Exception">Any exception thrown by the block</exception>
+        public static Context Run(string name, Block block, CodeReference codeReference)
+        {
+            return Context.CurrentContext.RunStep(name, block, codeReference);
+        }
+
+        /// <summary>
+        /// Adds metadata to the step that is currently running.
+        /// </summary>
+        /// <param name="metadataKey">The metadata key</param>
+        /// <param name="metadataValue">The metadata value</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
+        /// or <paramref name="metadataValue"/> is null</exception>
+        public static void AddMetadata(string metadataKey, string metadataValue)
+        {
+            Context.CurrentContext.AddMetadata(metadataKey, metadataValue);
         }
     }
 }

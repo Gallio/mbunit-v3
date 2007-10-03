@@ -21,7 +21,9 @@ namespace MbUnit.Framework.Tests.Reflection
 {
     public class BaseSample
     {
+#pragma warning disable 0414
         private string _baseString = "Base var";
+#pragma warning restore 0414
 
         private int _baseInt = 12;
 

@@ -112,27 +112,27 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Applies the transform to produce a report.
         /// </summary>
-        protected virtual void ApplyTransform(Report report, string filename,
+        protected virtual void ApplyTransform(Report report, string reportPath,
             NameValueCollection options, IList<string> filesWritten)
         {
             XsltArgumentList arguments = new XsltArgumentList();
-            PopulateArguments(arguments, report, filename, options);
+            PopulateArguments(arguments, report, reportPath, options);
 
             IXPathNavigable reportDoc = ReportUtils.SerializeReportToXPathNavigable(report);
-            using (StreamWriter writer = new StreamWriter(filename))
+            using (StreamWriter writer = new StreamWriter(reportPath))
             {
                 transform.Transform(reportDoc, arguments, writer);
             }
 
             if (filesWritten != null)
-                filesWritten.Add(filename);
+                filesWritten.Add(reportPath);
         }
 
         /// <summary>
         /// Populates the arguments for the XSL template processing.
         /// </summary>
         protected virtual void PopulateArguments(XsltArgumentList arguments,
-            Report report, string filename, NameValueCollection options)
+            Report report, string reportPath, NameValueCollection options)
         {
         }
 

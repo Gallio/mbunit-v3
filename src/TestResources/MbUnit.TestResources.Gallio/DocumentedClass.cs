@@ -64,7 +64,9 @@ namespace MbUnit.TestResources.Gallio
         /// <summary>
         /// A documented event.
         /// </summary>
+#pragma warning disable 0067
         public event EventHandler DocumentedEvent;
+#pragma warning restore 0067
 
         /// <summary>
         /// A documented indexer.
@@ -115,7 +117,9 @@ namespace MbUnit.TestResources.Gallio
 
             public int UndocumentedProperty { get { return 0; } }
 
+#pragma warning disable 0067
             public event EventHandler UndocumentedEvent;
+#pragma warning restore 0067
 
             public void UndocumentedMethod()
             {

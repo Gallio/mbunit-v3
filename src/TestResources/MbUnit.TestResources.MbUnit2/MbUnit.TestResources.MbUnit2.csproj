@@ -20,6 +20,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.TestResources.MbUnit2.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.TestResources.MbUnit2.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MbUnit.Framework, Version=1.0.2768.20906, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">

@@ -18,26 +18,37 @@
   <ItemGroup>
     <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj" />
     <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj" />
+
     <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.Gallio\MbUnit.TestResources.Gallio.csproj" />
     <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.MbUnit2\MbUnit.TestResources.MbUnit2.csproj" />
     <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.NUnit\MbUnit.TestResources.NUnit.csproj" />
+    <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.Xunit\MbUnit.TestResources.Xunit.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj" />
 
     <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj" />
     <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\MbUnit.Plugin.NUnitAdapter.csproj" />
     <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter.Tests\MbUnit.Plugin.NUnitAdapter.Tests.csproj" />
 
+    <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\MbUnit.Plugin.XunitAdapter.csproj" />
+    <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter.Tests\MbUnit.Plugin.XunitAdapter.Tests.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.AddIn.TDNet\MbUnit.AddIn.TDNet.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.AddIn.TDNet.Tests\MbUnit.AddIn.TDNet.Tests.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Echo\MbUnit.Echo.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Echo.Tests\MbUnit.Echo.Tests.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Icarus\MbUnit.Icarus.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Icarus.Tests\MbUnit.Icarus.Tests.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild\MbUnit.Tasks.MSBuild.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild.Tests\MbUnit.Tasks.MSBuild.Tests.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.NAnt\MbUnit.Tasks.NAnt.csproj" />
     <CSharpProject Include="$(SourceDir)\Runners\MbUnit.Tasks.NAnt.Tests\MbUnit.Tasks.NAnt.Tests.csproj" />
 
@@ -55,6 +66,9 @@
     <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.dll" />
     <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.plugin" />
 
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\Readme.txt">
+        <Folder>MbUnit2</Folder>
+    </Binary>
     <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll">
         <Folder>MbUnit2</Folder>
     </Binary>
@@ -80,6 +94,9 @@
         <Folder>MbUnit2</Folder>
     </Binary>
 
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\Readme.txt">
+        <Folder>NUnit</Folder>
+    </Binary>
     <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.dll">
         <Folder>NUnit</Folder>
     </Binary>
@@ -105,6 +122,25 @@
         <Folder>NUnit</Folder>
     </Binary>
 
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\Readme.txt">
+        <Folder>Xunit</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\bin\MbUnit.Plugin.XunitAdapter.dll">
+        <Folder>Xunit</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\bin\MbUnit.Plugin.XunitAdapter.plugin">
+        <Folder>Xunit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\Xunit\Microsoft Permissive License.txt">
+        <Folder>Xunit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\Xunit\xunit.dll">
+        <Folder>Xunit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\Xunit\xunit.extensions.dll">
+        <Folder>Xunit</Folder>
+    </Binary>
+
     <Binary Include="$(SourceDir)\Runners\MbUnit.AddIn.TDNet\bin\MbUnit.AddIn.TDNet.dll" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Echo\bin\MbUnit.Echo.exe" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Echo\bin\MbUnit.Echo.exe.config" />
@@ -119,6 +155,7 @@
 
     <TestAssembly Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter.Tests\bin\MbUnit.Plugin.MbUnit2Adapter.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter.Tests\bin\MbUnit.Plugin.NUnitAdapter.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter.Tests\bin\MbUnit.Plugin.XunitAdapter.Tests.dll" />
 
     <TestAssembly Include="$(SourceDir)\Runners\MbUnit.AddIn.TDNet.Tests\bin\MbUnit.AddIn.TDNet.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Runners\MbUnit.Echo.Tests\bin\MbUnit.Echo.Tests.dll" />

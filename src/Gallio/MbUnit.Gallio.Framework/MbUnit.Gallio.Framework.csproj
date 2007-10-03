@@ -48,6 +48,8 @@
     </Compile>
     <Compile Include="AuthorAttribute.cs" />
     <Compile Include="Block.cs" />
+    <Compile Include="CategoryAttribute.cs" />
+    <Compile Include="ClientException.cs" />
     <Compile Include="CollectionAssert.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="DescriptionAttribute.cs" />

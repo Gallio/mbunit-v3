@@ -103,6 +103,9 @@ namespace MbUnit.Framework.Kernel.Attributes
             MbUnitAssemblyTemplate assemblyTemplate = assemblyPatternAttribute.CreateTemplate(builder, frameworkTemplate, assembly);
             frameworkTemplate.AddAssemblyTemplate(assemblyTemplate);
             assemblyPatternAttribute.Apply(builder, assemblyTemplate);
+
+            // Add assembly-level metadata.
+            ReflectionUtils.PopulateMetadataFromAssembly(assembly, assemblyTemplate.Metadata);
         }
 
         /// <summary>
@@ -112,7 +115,7 @@ namespace MbUnit.Framework.Kernel.Attributes
         /// <param name="assemblyTemplate">The assembly template</param>
         protected virtual void ProcessPublicTypes(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate)
         {
-            foreach (Type type in assemblyTemplate.Assembly.GetTypes())
+            foreach (Type type in assemblyTemplate.Assembly.GetExportedTypes())
             {
                 ProcessType(builder, assemblyTemplate, type);
             }
@@ -127,11 +130,6 @@ namespace MbUnit.Framework.Kernel.Attributes
         protected virtual void ProcessType(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate, Type type)
         {
             TypePatternAttribute.ProcessType(builder, assemblyTemplate, type);
-
-            foreach (Type nestedType in type.GetNestedTypes())
-            {
-                ProcessType(builder, assemblyTemplate, nestedType);
-            }
         }
 
         private class DefaultImpl : AssemblyPatternAttribute

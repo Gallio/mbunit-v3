@@ -1,34 +1,3 @@
-.passed
-{
-	background-color: green;
-}
-
-.failed, .Failures
-{
-	background-color: red;
-}
-
-.inconclusive
-{
-	background-color: yellow;
-}
-
-.Assembly
-{
-	margin-bottom: 0.5%;
-}
-
-.Fixture
-{
-	background-color: #B0B0FF;
-	margin-top: 1%;
-}
-
-.Test
-{
-	margin-bottom: 0.5%;
-}
-
 table#Stats
 {
 	text-align: center;
@@ -38,26 +7,26 @@ table#Stats
 {
 	position: relative;
 	background-color: #DDDDDD;
-	border-color: black;
+	border-color: #000000;
 }
 
 .progressPassed
 {
 	position: absolute;
 	left: 0px;
-	background-color: green;
+	background-color: #008000;
 }
 
 .progressFailed
 {
 	position: absolute;
-	background-color: red;
+	background-color: #ff0000;
 }
 
 .progressInconclusive
 {
 	position: absolute;
-	background-color: yellow;
+	background-color: #808000;
 }
 
 #Summary ul
@@ -65,13 +34,164 @@ table#Stats
 	list-style-type: none;
 }
 
-.executionLog
+.metadata
 {
-	margin-left: 1%;
-	width: 99%;
+	margin: 5px 0px 5px 0px;
+	padding: 5px 5px 5px 5px;
+	list-style-type: none;
+	
+	border: solid 1px #909090;
+	background: #f0f0f0;
+	font-size: smaller;
 }
 
 .toggle
 {
 	cursor: pointer;
+}
+
+/* Styles for test runs, including customized varieties per component kind */
+.testRun
+{
+	margin-top: 12pt;
+	margin-left: 0px;
+	font-size: medium;
+}
+
+.testRunHeading
+{
+	font-weight:bold;
+	font-size:medium;
+}
+
+.testRunHeading-Framework
+{
+	font-size:x-large;
+}
+
+.testRunHeading-Assembly
+{
+	font-size:larger;
+}
+
+.testRunHeading-Namespace .testRunHeading-Group .testRunHeading-Suite .testRunHeading-Fixture
+{
+	font-size:large;
+}
+
+.testRunHeading-Test
+{
+}
+
+.testRunPanel
+{
+	margin-left: 20px;
+}
+
+.testRunChildren
+{
+	margin-left: 24px;
+}
+
+/* Styles for step runs */
+.stepRun
+{
+	font-size:small;
+}
+
+.stepRunHeading
+{
+	font-weight:bold;
+}
+
+.stepRunPanel
+{
+	margin-left: 20px;
+}
+
+.stepRunChildren
+{
+	margin-left: 24px;
+}
+
+/* Styles used for coloring steps with different outcomes */
+.outcome
+{
+	padding-left: 6px;
+	border-left-style: solid;
+	border-left-width: 3px;
+}
+
+.outcome-passed
+{
+	border-left-color: #008000;
+}
+
+.outcome-failed
+{
+	border-left-color: #ff0000;
+}
+
+.outcome-inconclusive
+{
+	border-left-color: #808000;
+}
+
+/* Styles used for execution logs */
+.log
+{
+	margin: 5px 0px 5px 0px;
+}
+
+.logAttachment
+{
+	font-size: medium;
+}
+
+.logStream
+{
+	background-color: #f0f0f0;
+	border: dashed 1px #909090;
+	padding: 5px 5px 5px 5px;
+}
+
+.logStreamHeading
+{
+	font-weight:bold;
+	font-size:medium;
+	text-decoration: underline;
+}
+
+.logStreamBody
+{
+	font-size: small;
+	border-style: none;
+}
+
+.logStreamSection
+{
+	margin-top: 12pt;
+	margin-bottom: 12pt;
+	padding-left: 6px;
+	border-left: solid 3px black;
+}
+
+.logStreamSectionHeading
+{
+	font-size:small;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+/* Styles used for coloring different named streams */
+.logStream-Failures
+{
+	background-color: #ffe0e0;
+	border: dashed 1px #ff9090;
+}
+
+.logStream-Warnings
+{
+	background-color: #ffffe0;
+	border: dashed 1px #ffff90;
 }

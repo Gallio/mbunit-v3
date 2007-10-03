@@ -15,6 +15,7 @@
 
 using System.Xml;
 using Castle.Core;
+using MbUnit.Core.Properties;
 using MbUnit.Core.Reporting.Resources;
 
 namespace MbUnit.Core.Reporting

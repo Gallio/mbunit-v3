@@ -263,4 +263,9 @@
 	Stream Name:     {1}
 	Attachment Name: {2}</value>
   </data>
+  <data name="DebugMonitor_LifecycleEvent_AddMetadata_EventFormat" xml:space="preserve">
+    <value>[Lifecycle: Add Metadata ({0})]
+	Metadata Key:   {1}
+	Metadata Value: {2}</value>
+  </data>
 </root>

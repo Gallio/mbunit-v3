@@ -145,5 +145,26 @@ namespace MbUnit.Core.Tests.Model
             Assert.AreEqual("<summary>\nA field parameter.\n</summary>", fieldParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
             Assert.AreEqual("<summary>\nA property parameter.\n</summary>", propertyParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
         }
+
+        [Test]
+        public void MetadataImport_AssemblyAttributes()
+        {
+            PopulateTemplateTree();
+
+            MbUnitFrameworkTemplate frameworkTemplate = (MbUnitFrameworkTemplate)rootTemplate.Children[0];
+            MbUnitAssemblyTemplate assemblyTemplate = frameworkTemplate.AssemblyTemplates[0];
+
+            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Company));
+            Assert.AreEqual("Test", assemblyTemplate.Metadata.GetValue(MetadataKeys.Configuration));
+            StringAssert.Contains(assemblyTemplate.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
+            Assert.AreEqual("A sample test assembly.", assemblyTemplate.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("MbUnit.TestResources.Gallio", assemblyTemplate.Metadata.GetValue(MetadataKeys.Product));
+            Assert.AreEqual("MbUnit.TestResources.Gallio", assemblyTemplate.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Trademark));
+
+            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.InformationalVersion));
+            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.FileVersion));
+            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.Version));
+        }
     }
 }

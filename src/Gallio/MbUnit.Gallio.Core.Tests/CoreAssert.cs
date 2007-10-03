@@ -112,8 +112,7 @@ namespace MbUnit.Core.Tests
                 return;
             }
 
-            Assert.AreEqual(expected.StepId, actual.StepId);
-            Assert.AreEqual(expected.StepName, actual.StepName);
+            FrameworkAssert.AreEqual(expected.Step, actual.Step);
             Assert.AreEqual(expected.StartTime, actual.StartTime);
             Assert.AreEqual(expected.EndTime, actual.EndTime);
             // TODO: etc...

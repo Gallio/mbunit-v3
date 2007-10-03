@@ -94,6 +94,7 @@ Section "MbUnit v2 Plugin" MbUnit2PluginSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin\MbUnit2"
+	File "${BUILDDIR}\bin\MbUnit2\Readme.txt"
 	File "${BUILDDIR}\bin\MbUnit2\MbUnit.Framework.2.0.dll"
 	File "${BUILDDIR}\bin\MbUnit2\MbUnit.Framework.dll"
 	File "${BUILDDIR}\bin\MbUnit2\MbUnit.Plugin.MbUnit2Adapter.dll"
@@ -111,6 +112,7 @@ Section "NUnit Plugin" NUnitPluginSection
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin\NUnit"
 	File "${BUILDDIR}\bin\NUnit\license.txt"
+	File "${BUILDDIR}\bin\NUnit\Readme.txt"
 	File "${BUILDDIR}\bin\NUnit\MbUnit.Plugin.NUnitAdapter.dll"
 	File "${BUILDDIR}\bin\NUnit\MbUnit.Plugin.NUnitAdapter.plugin"
 	File "${BUILDDIR}\bin\NUnit\nunit.core.dll"
@@ -118,6 +120,20 @@ Section "NUnit Plugin" NUnitPluginSection
 	File "${BUILDDIR}\bin\NUnit\nunit.core.interfaces.dll"
 	File "${BUILDDIR}\bin\NUnit\nunit.framework.dll"
 	File "${BUILDDIR}\bin\NUnit\nunit.framework.extensions.dll"
+SectionEnd
+
+Section "Xunit Plugin" XunitPluginSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\bin\Xunit"
+	File "${BUILDDIR}\bin\Xunit\Microsoft Permissive License.txt"
+	File "${BUILDDIR}\bin\Xunit\Readme.txt"
+	File "${BUILDDIR}\bin\Xunit\MbUnit.Plugin.XunitAdapter.dll"
+	File "${BUILDDIR}\bin\Xunit\MbUnit.Plugin.XunitAdapter.plugin"
+	File "${BUILDDIR}\bin\Xunit\xunit.dll"
+	File "${BUILDDIR}\bin\Xunit\xunit.extensions.dll"
 SectionEnd
 
 Section "TestDriven.Net AddIn" TDNetAddInSection
@@ -139,6 +155,11 @@ Section "TestDriven.Net AddIn" TDNetAddInSection
 	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\bin\MbUnit.AddIn.TDNet.dll"
 	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
 	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit" "TargetFrameworkAssemblyName" "nunit.framework"
+
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_Xunit" "" "20"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_Xunit" "AssemblyPath" "$PROGRAMFILES\MbUnit Gallio\bin\MbUnit.AddIn.TDNet.dll"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_Xunit" "TypeName" "MbUnit.AddIn.TDNet.MbUnitTestRunner"
+	WriteRegStr HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_Xunit" "TargetFrameworkAssemblyName" "xunit"
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
@@ -201,6 +222,7 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${GallioSection} "Installs the MbUnit Gallio framework components, test runners and documentation."
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit2PluginSection} "Installs the MbUnit v2 plugin.  Enables Gallio to run MbUnit v2 tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${NUnitPluginSection} "Installs the NUnit plugin.  Enables Gallio to run NUnit tests."
+	!insertmacro MUI_DESCRIPTION_TEXT ${XunitPluginSection} "Installs the Xunit plugin.  Enables Gallio to run Xunit tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in for MbUnit Gallio."
 
 	!ifndef MISSING_CHM_HELP
@@ -274,6 +296,7 @@ Section Uninstall
 	Delete "$INSTDIR\bin\MbUnit.Tasks.NAnt.xml"
 	Delete "$INSTDIR\bin\ZedGraph.dll"
 
+	Delete "$INSTDIR\bin\MbUnit2\Readme.txt"
 	Delete "$INSTDIR\bin\MbUnit2\MbUnit.Framework.2.0.dll"
 	Delete "$INSTDIR\bin\MbUnit2\MbUnit.Framework.dll"
 	Delete "$INSTDIR\bin\MbUnit2\MbUnit.Plugin.MbUnit2Adapter.dll"
@@ -284,6 +307,7 @@ Section Uninstall
 	Delete "$INSTDIR\bin\MbUnit2\TestFu.dll"
 
 	Delete "$INSTDIR\bin\NUnit\license.txt"
+	Delete "$INSTDIR\bin\NUnit\Readme.txt"
 	Delete "$INSTDIR\bin\NUnit\MbUnit.Plugin.NUnitAdapter.dll"
 	Delete "$INSTDIR\bin\NUnit\MbUnit.Plugin.NUnitAdapter.plugin"
 	Delete "$INSTDIR\bin\NUnit\nunit.core.dll"
@@ -291,6 +315,13 @@ Section Uninstall
 	Delete "$INSTDIR\bin\NUnit\nunit.core.interfaces.dll"
 	Delete "$INSTDIR\bin\NUnit\nunit.framework.dll"
 	Delete "$INSTDIR\bin\NUnit\nunit.framework.extensions.dll"
+
+	Delete "$INSTDIR\bin\Xunit\Microsoft Permissive License.txt"
+	Delete "$INSTDIR\bin\Xunit\Readme.txt"
+	Delete "$INSTDIR\bin\Xunit\MbUnit.Plugin.XunitAdapter.dll"
+	Delete "$INSTDIR\bin\Xunit\MbUnit.Plugin.XunitAdapter.plugin"
+	Delete "$INSTDIR\bin\Xunit\xunit.dll"
+	Delete "$INSTDIR\bin\Xunit\xunit.extensions.dll"
 
 	Delete "$INSTDIR\docs\MbUnit.chm"
 	Delete "$INSTDIR\docs\vs2005\MbUnit.HxS"
@@ -304,6 +335,7 @@ Section Uninstall
 	RMDir "$SMPROGRAMS\MbUnit Gallio"
 	RMDir "$INSTDIR\bin\MbUnit2"
 	RMDir "$INSTDIR\bin\NUnit"
+	RMDir "$INSTDIR\bin\Xunit"
 	RMDir "$INSTDIR\bin"
 	RMDir "$INSTDIR\docs\vs2005"
 	RMDir "$INSTDIR\docs"
@@ -314,6 +346,7 @@ Section Uninstall
 	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio"
 	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit"
 	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit"
+	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_Xunit"
 SectionEnd
 
 BrandingText "mbunit.com"

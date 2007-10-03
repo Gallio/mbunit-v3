@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -26,64 +27,155 @@ namespace MbUnit.Framework.Kernel.Model
     {
         /// <summary>
         /// The metadata key for the author's email.
-        /// The associated value should be the author's email as a string.
         /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AuthorAttribute" />.
+        /// </remarks>
         public const string AuthorEmail = "AuthorEmail";
 
         /// <summary>
         /// The metadata key for the author's name.
-        /// The associated value should be the author's name as a string.
         /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AuthorAttribute" />.
+        /// </remarks>
         public const string AuthorName = "AuthorName";
 
         /// <summary>
         /// The metadata key for the author's homepage.
-        /// The associated value should be the author's homepage as a string.
         /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AuthorAttribute" />.
+        /// </remarks>
         public const string AuthorHomepage = "AuthorHomepage";
 
         /// <summary>
         /// The metadata key for the name of a category to which a test belongs.
-        /// The associated value should be the category name as a string.
         /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="CategoryAttribute" />.
+        /// </remarks>
         public const string CategoryName = "CategoryName";
 
         /// <summary>
-        /// The metadata key used to describe the kind of a component.
-        /// The associated value should be one of the <see cref="Model.ComponentKind" /> string constants.
+        /// The metadata key for the name of the company associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyCompanyAttribute" />.
+        /// </remarks>
+        public const string Company = "Company";
+
+        /// <summary>
+        /// The metadata key used to describe the kind of a component as the
+        /// string representation of one of the <see cref="Model.ComponentKind" /> constants.
         /// </summary>
         public const string ComponentKind = "ComponentKind";
 
         /// <summary>
-        /// The metadata key for the description of a test component.
-        /// The associated value should be the description as a string.
+        /// The metadata key for build/release configuration information associated with a test.
+        /// It describes the target environment or usage for the test.
         /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyConfigurationAttribute" />.
+        /// </remarks>
+        public const string Configuration = "Configuration";
+
+        /// <summary>
+        /// The metadata key for a copyright associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyCopyrightAttribute" />.
+        /// </remarks>
+        public const string Copyright = "Copyright";
+
+        /// <summary>
+        /// The metadata key for the description of a test component.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyDescriptionAttribute" />
+        /// or <see cref="DescriptionAttribute" />.
+        /// </remarks>
         public const string Description = "Description";
 
         /// <summary>
-        /// The metadata key for the ignore reason of a test component.
-        /// The associated value should describe the reason the test is being ignored.
+        /// The metadata key for a file version number associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyFileVersionAttribute" />.
+        /// </remarks>
+        public const string FileVersion = "FileVersion";
+
+        /// <summary>
+        /// The metadata key that describes the reason that a test is being ignored.
         /// (Tests may of course be ignored without a declared reason.)
         /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="IgnoreAttribute" />.
+        /// </remarks>
         public const string IgnoreReason = "IgnoreReason";
 
         /// <summary>
-        /// The metadata key for the importance of a test component.
-        /// The associated value should be one of those from <see cref="TestImportance" /> represented as a string.
+        /// The metadata key for the importance of a test component as the
+        /// string representation of one of the <see cref="TestImportance" /> constants.
         /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="ImportanceAttribute" />.
+        /// </remarks>
         public const string Importance = "Importance";
+
+        /// <summary>
+        /// The metadata key for an informational version number associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyInformationalVersionAttribute" />.
+        /// </remarks>
+        public const string InformationalVersion = "InformationalVersion";
+
+        /// <summary>
+        /// The metadata key for a product associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyProductAttribute" />.
+        /// </remarks>
+        public const string Product = "Product";
 
         /// <summary>
         /// The metadata key for the name of the type being tested.
         /// The associated value should be the full name of the type from <see cref="Type.FullName" />
         /// or the assembly qualified name of the type from <see cref="Type.AssemblyQualifiedName" />.
         /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="TestsOnAttribute" />.
+        /// </remarks>
         public const string TestsOn = "TestsOn";
 
         /// <summary>
-        /// The metadata key for the XML documentation of the test.
-        /// The associated value should be the contents of the XML documentation contents
-        /// associated with the test class or method.
+        /// The metadata key for a title associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyTitleAttribute" />.
+        /// </remarks>
+        public const string Title = "Title";
+
+        /// <summary>
+        /// The metadata key for a trademark associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyTrademarkAttribute" />.
+        /// </remarks>
+        public const string Trademark = "Trademark";
+
+        /// <summary>
+        /// The metadata key for a version number associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <see cref="AssemblyVersionAttribute" />.
+        /// </remarks>
+        public const string Version = "Version";
+
+        /// <summary>
+        /// The metadata key for the XML documentation of the test derived from
+        /// XML code documentation comments.
         /// </summary>
         public const string XmlDocumentation = "XmlDocumentation";
     }

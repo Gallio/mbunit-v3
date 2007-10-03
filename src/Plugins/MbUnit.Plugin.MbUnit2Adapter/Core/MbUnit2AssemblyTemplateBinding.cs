@@ -22,7 +22,7 @@ using System.Text;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.DataBinding;
 using MbUnit.Framework.Kernel.Model;
-
+using MbUnit.Framework.Kernel.Utilities;
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
 using TestPatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestPatternAttribute;
 using AuthorAttribute2 = MbUnit2::MbUnit.Framework.AuthorAttribute;
@@ -141,8 +141,6 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
         {
             MbUnit2Test test = new MbUnit2Test(assembly.FullName, CodeReference.CreateFromAssembly(assembly), this, null, null);
             test.Kind = ComponentKind.Assembly;
-
-            // TODO: Is there any metadata on assemblies that we need?
 
             parent.AddChild(test);
             return test;

@@ -20,7 +20,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// A read-only implementation of <see cref="IStep" /> for reflection.
     /// </summary>
-    public sealed class StepInfo : BaseInfo, IStep
+    public sealed class StepInfo : ModelComponentInfo, IStep
     {
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
@@ -30,18 +30,6 @@ namespace MbUnit.Framework.Kernel.Model
         public StepInfo(IStep source)
             : base(source)
         {
-        }
-
-        /// <inheritdoc />
-        public string Id
-        {
-            get { return Source.Id; }
-        }
-
-        /// <inheritdoc />
-        public string Name
-        {
-            get { return Source.Name; }
         }
 
         /// <inheritdoc />

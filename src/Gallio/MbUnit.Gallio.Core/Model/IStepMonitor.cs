@@ -41,11 +41,12 @@ namespace MbUnit.Core.Model
         /// test step that is starting.
         /// </remarks>
         /// <param name="name">The name of the step</param>
+        /// <param name="codeReference">The code reference of the step</param>
         /// <returns>The monitor for the child step</returns>
         /// <exception cref="InvalidOperationException">Thrown if the step has finished</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="codeReference"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        IStepMonitor StartChildStep(string name);
+        IStepMonitor StartChildStep(string name, CodeReference codeReference);
 
         /// <summary>
         /// Finishes a step and submits its final result.
@@ -56,6 +57,8 @@ namespace MbUnit.Core.Model
         /// </remarks>
         /// <param name="status">The final test status</param>
         /// <param name="outcome">The final test outcome</param>
-        void FinishStep(TestStatus status, TestOutcome outcome);
+        /// <param name="actualDuration">The actual duration of the step, if null the step monitor
+        /// will record the duration as the total amount of time since the step monitor was started</param>
+        void FinishStep(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration);
     }
 }

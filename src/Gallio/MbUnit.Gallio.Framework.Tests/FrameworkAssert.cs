@@ -126,5 +126,22 @@ namespace MbUnit._Framework.Tests
             Assert.AreEqual(expected.MemberName, actual.MemberName);
             Assert.AreEqual(expected.ParameterName, actual.ParameterName);
         }
+
+        public static void AreEqual(StepData expected, StepData actual)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual);
+                return;
+            }
+
+            Assert.AreEqual(expected.Id, actual.Id);
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.FullName, actual.FullName);
+            Assert.AreEqual(expected.ParentId, actual.ParentId);
+            Assert.AreEqual(expected.TestId, actual.TestId);
+            AreEqual(expected.CodeReference, actual.CodeReference);
+            AreEqual(expected.Metadata, actual.Metadata);
+        }
     }
 }

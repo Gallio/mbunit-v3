@@ -44,7 +44,7 @@ namespace MbUnit.Core.Tests.Reporting
 
             Report report = new Report();
             report.PackageRun = new PackageRun();
-            report.PackageRun.TestRuns.Add(new TestRun("123", new StepRun("456", "abc", "456:abc")));
+            report.PackageRun.TestRuns.Add(new TestRun("123", new StepRun(new StepData("456", "abc", "456:abc", "testId"))));
 
             serializer.Serialize(writer, report);
 

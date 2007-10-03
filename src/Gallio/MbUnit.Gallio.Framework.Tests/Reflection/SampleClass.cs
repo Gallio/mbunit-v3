@@ -23,7 +23,9 @@ namespace MbUnit.Framework.Tests.Reflection
     {
         #region Fields
 
+#pragma warning disable 0414
         private int privateInt = 7;
+#pragma warning restore 0414
 
         #endregion
 

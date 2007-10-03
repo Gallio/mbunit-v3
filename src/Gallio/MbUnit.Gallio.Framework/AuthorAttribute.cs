@@ -25,9 +25,9 @@ namespace MbUnit.Framework
     /// </summary>
     public class AuthorAttribute : MetadataPatternAttribute
     {
-        private string authorName;
-        private string authorEmail;
-        private string authorHomepage;
+        private readonly string authorName;
+        private readonly string authorEmail;
+        private readonly string authorHomepage;
 
         /// <summary>
         /// Associates the author's name with the test component annotated

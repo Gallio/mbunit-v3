@@ -17,10 +17,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
+using System.Xml.Xsl;
 using Castle.Core;
 using MbUnit.Core.Reporting.Resources;
 using MbUnit.Core.Utilities;
-using MbUnit.Core.Harness;
 
 namespace MbUnit.Core.Reporting
 {
@@ -65,12 +65,12 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <inheritdoc />
-        protected override void ApplyTransform(Report report, string filename, NameValueCollection options, IList<string> filesWritten)
+        protected override void ApplyTransform(Report report, string reportPath, NameValueCollection options, IList<string> filesWritten)
         {
-            base.ApplyTransform(report, filename, options, filesWritten);
+            base.ApplyTransform(report, reportPath, options, filesWritten);
 
             // copy required images to subfolder
-            string imageDirectory = GetDirectoryPath(filename, "img");
+            string imageDirectory = GetDirectoryPath(reportPath, @"img");
             if (! Directory.Exists(imageDirectory))
                 Directory.CreateDirectory(imageDirectory);
             foreach (string imageResourceName in ReportingResources.Images)
@@ -80,7 +80,7 @@ namespace MbUnit.Core.Reporting
             }
 
             // copy stylesheet to subfolder
-            string cssDirectory = GetDirectoryPath(filename, "css");
+            string cssDirectory = GetDirectoryPath(reportPath, @"css");
             if (!Directory.Exists(cssDirectory)) Directory.CreateDirectory(cssDirectory);
             string file = Path.Combine(cssDirectory, ReportingResources.StyleSheet);
             if (File.Exists(file)) File.Delete(file);
@@ -88,7 +88,7 @@ namespace MbUnit.Core.Reporting
                 FileUtils.CopyStreamToFile(stream, Path.Combine(cssDirectory, ReportingResources.StyleSheet));
 
             // copy script file to subfolder
-            string jsDirectory = GetDirectoryPath(filename, "js");
+            string jsDirectory = GetDirectoryPath(reportPath, @"js");
             if (!Directory.Exists(jsDirectory)) Directory.CreateDirectory(jsDirectory);
             file = Path.Combine(jsDirectory, ReportingResources.ScriptFile);
             if (File.Exists(file)) File.Delete(file);
@@ -100,6 +100,12 @@ namespace MbUnit.Core.Reporting
         protected override XmlReader GetStylesheetReader()
         {
             return XmlReader.Create(ReportingResources.GetResource(ReportingResources.HtmlTemplate));
+        }
+
+        /// <inheritdoc />
+        protected override void PopulateArguments(XsltArgumentList arguments, Report report, string reportPath, NameValueCollection options)
+        {
+            arguments.AddParam(@"contentRoot", @"", GetContentRootRelativePath(reportPath));
         }
 
         /// <summary>
@@ -116,6 +122,11 @@ namespace MbUnit.Core.Reporting
                 return dirName;
 
             return Path.Combine(reportDirectory, dirName);
+        }
+
+        private static string GetContentRootRelativePath(string reportPath)
+        {
+            return Path.GetFileName(ReportUtils.GetContentDirectoryPath(reportPath));
         }
     }
 }
