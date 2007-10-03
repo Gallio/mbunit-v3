@@ -484,11 +484,20 @@ namespace MbUnit.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
+        /// <code>
+        /// using (Log.BeginSection("Doing something interesting"))
+        /// {
+        ///     Log.WriteLine("Ah ha!");
+        /// }
+        /// </code>
+        /// </example>
         /// <param name="sectionName">The name of the section</param>
+        /// <returns>A Disposable object that calls <see cref="EndSection" /> when disposed.  This
+        /// is a convenience for using the C# "using" statement to contain log stream sections.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sectionName"/> is null</exception>
-        public static void BeginSection(string sectionName)
+        public static IDisposable BeginSection(string sectionName)
         {
-            Default.BeginSection(sectionName);
+            return Default.BeginSection(sectionName);
         }
 
         /// <summary>

@@ -160,14 +160,26 @@ namespace MbUnit.Framework.Kernel.ExecutionLogs
         /// Begins a section with the specified name.
         /// Execution log sections may be nested.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// using (Log.BeginSection("Doing something interesting"))
+        /// {
+        ///     Log.WriteLine("Ah ha!");
+        /// }
+        /// </code>
+        /// </example>
         /// <param name="sectionName">The name of the section</param>
+        /// <returns>A Disposable object that calls <see cref="EndSection" /> when disposed.  This
+        /// is a convenience for using the C# "using" statement to contain log stream sections.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sectionName"/> is null</exception>
-        public void BeginSection(string sectionName)
+        public IDisposable BeginSection(string sectionName)
         {
             if (sectionName == null)
                 throw new ArgumentNullException(@"sectionName");
 
             BeginSectionImpl(sectionName);
+
+            return new SectionCookie(this);
         }
 
         /// <summary>
@@ -395,5 +407,20 @@ namespace MbUnit.Framework.Kernel.ExecutionLogs
         {
         }
         #endregion
+
+        private sealed class SectionCookie : IDisposable
+        {
+            private readonly LogStreamWriter writer;
+
+            public SectionCookie(LogStreamWriter writer)
+            {
+                this.writer = writer;
+            }
+
+            public void Dispose()
+            {
+                writer.EndSection();
+            }
+        }
     }
 }

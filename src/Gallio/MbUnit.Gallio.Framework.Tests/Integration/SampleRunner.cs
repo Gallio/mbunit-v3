@@ -72,16 +72,19 @@ namespace MbUnit.Framework.Tests.Integration
                 reportMonitor.Attach(runner);
                 report = reportMonitor.Report;
 
-                ILogger logger = new DebugLogger(logStreamWriter);
-                new DebugMonitor(logger).Attach(runner);
-                //new LogMonitor(logger, reportMonitor).Attach(runner);
+                using (logStreamWriter.BeginSection("Debug Output"))
+                {
+                    ILogger logger = new DebugLogger(logStreamWriter);
+                    new DebugMonitor(logger).Attach(runner);
+                    //new LogMonitor(logger, reportMonitor).Attach(runner);
 
-                runner.LoadPackage(package, new NullProgressMonitor());
-                runner.BuildTemplates(new NullProgressMonitor());
-                runner.BuildTests(new NullProgressMonitor());
+                    runner.LoadPackage(package, new NullProgressMonitor());
+                    runner.BuildTemplates(new NullProgressMonitor());
+                    runner.BuildTests(new NullProgressMonitor());
 
-                runner.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
-                runner.Run(new NullProgressMonitor());
+                    runner.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
+                    runner.Run(new NullProgressMonitor());
+                }
 
                 IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
                 NameValueCollection options = new NameValueCollection();
@@ -91,8 +94,11 @@ namespace MbUnit.Framework.Tests.Integration
                 try
                 {
                     reportManager.GetFormatter(TextReportFormatter.FormatterName).Format(report, reportPath, options, null, new NullProgressMonitor());
-                    logStreamWriter.Write("\n\n==== TEXT REPORT ====\n\n");
-                    logStreamWriter.WriteLine(File.ReadAllText(reportPath));
+
+                    using (logStreamWriter.BeginSection("Text Report"))
+                    {
+                        logStreamWriter.WriteLine(File.ReadAllText(reportPath));
+                    }
                 }
                 finally
                 {
