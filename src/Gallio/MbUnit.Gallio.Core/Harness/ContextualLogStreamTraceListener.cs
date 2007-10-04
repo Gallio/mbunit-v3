@@ -53,6 +53,12 @@ namespace MbUnit.Core.Harness
             CurrentLogStreamWriter.WriteLine(message);
         }
 
+        /// <inheritdoc />
+        public override bool IsThreadSafe
+        {
+            get { return true; }
+        }
+
         private LogStreamWriter CurrentLogStreamWriter
         {
             get { return Log.Writer[streamName]; }

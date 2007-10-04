@@ -49,7 +49,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RichExecutionLogTest.cs" />
+    <Compile Include="RichExecutionLogSample.cs" />
     <Compile Include="Fixtures\FixtureInheritanceSample.cs" />
     <Compile Include="ParameterizedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

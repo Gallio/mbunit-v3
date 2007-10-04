@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace MbUnit.Framework.Kernel.ExecutionLogs
@@ -25,32 +26,28 @@ namespace MbUnit.Framework.Kernel.ExecutionLogs
     public static class LogStreamNames
     {
         /// <summary>
-        /// The name of the built-in log stream where the
-        /// console input stream for the test is recorded.
+        /// The name of the built-in log stream where the <see cref="Console.In" />
+        /// stream for the test is recorded.
         /// </summary>
         public const string ConsoleInput = "ConsoleInput";
 
         /// <summary>
-        /// The name of the built-in log stream where the
-        /// console output stream from the test is recorded.
+        /// The name of the built-in log stream where the <see cref="Console.Out" />
+        /// stream from the test is recorded.
         /// </summary>
         public const string ConsoleOutput = "ConsoleOutput";
 
         /// <summary>
-        /// The name of the built-in log stream where the
-        /// console error stream from the test is recorded.
+        /// The name of the built-in log stream where the <see cref="Console.Error" />
+        /// stream from the test is recorded.
         /// </summary>
         public const string ConsoleError = "ConsoleError";
 
         /// <summary>
-        /// The name of the built-in log stream where debug information is recorded.
+        /// The name of the built-in log stream log stream where diagnostic <see cref="Debug" />
+        /// and <see cref="Trace" /> information is recorded.
         /// </summary>
-        public const string Debug = "Debug";
-
-        /// <summary>
-        /// The name of the built-in log stream where diagnostic trace information is recorded.
-        /// </summary>
-        public const string Trace = "Trace";
+        public const string DebugTrace = "DebugTrace";
 
         /// <summary>
         /// The name of the built-in log stream where warnings are recorded.

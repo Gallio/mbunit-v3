@@ -15,38 +15,81 @@
 
 using System;
 using MbUnit.Framework.Kernel.Attributes;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework
 {
+    /// <summary>
+    /// Declares that the associated test method is expected to throw an exception of
+    /// a particular type.  The expected contents of the exception message may optionally
+    /// be specified.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class ExpectedExceptionAttribute : MethodDecoratorPatternAttribute
     {
-        // TODO.
         private readonly Type exceptionType;
         private string message;
 
+        /// <summary>
+        /// Declares that the associated test method is expected to throw an exception of
+        /// a particular type.
+        /// </summary>
+        /// <param name="exceptionType">The expected exception type</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null</exception>
         public ExpectedExceptionAttribute(Type exceptionType)
             : this(exceptionType, null)
         {
         }
 
+        /// <summary>
+        /// Declares that the associated test method is expected to throw an exception of
+        /// a particular type.  The expected contents of the exception message may also
+        /// optionally be specified.
+        /// </summary>
+        /// <param name="exceptionType">The expected exception type</param>
+        /// <param name="message">The expected exception message, or null if not specified</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null</exception>
         public ExpectedExceptionAttribute(Type exceptionType, string message)
         {
+            if (exceptionType == null)
+                throw new ArgumentNullException(@"exceptionType");
+
             this.exceptionType = exceptionType;
             this.message = message;
         }
 
+        /// <summary>
+        /// Gets the expected exception type.
+        /// </summary>
         public Type ExceptionType
         {
             get { return exceptionType; }
         }
 
         /// <summary>
-        /// Gets the expected exception message, or null if none specified.
+        /// Gets or sets the expected exception message, or null if none specified.
         /// </summary>
         public string Message
         {
             get { return message; }
+            set { message = value; }
+        }
+
+        /// <inheritdoc />
+        public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        {
+            methodTemplate.ProcessTestChain.After(delegate(MbUnitTest test)
+            {
+                test.ExecuteChain.Around(delegate(MbUnitTestState state, Action<MbUnitTestState> innerAction)
+                {
+                    InterimAssert.Throws(exceptionType, delegate
+                    {
+                        innerAction(state);
+                    });
+                });
+            });
+
+            base.Apply(builder, methodTemplate);
         }
     }
 }

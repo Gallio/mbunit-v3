@@ -67,6 +67,32 @@ namespace MbUnit.Framework
             DoesNotThrow(block, String.Format(messageFormat, messageArgs));
         }
 
+        public static void Throws<T>(Block block)
+            where T : Exception
+        {
+            Throws(typeof(T), block);
+        }
+
+        public static void Throws(Type exceptionType, Block block)
+        {
+            try
+            {
+                block();
+            }
+            catch (Exception ex)
+            {
+                if (ex is ClientException && ex.InnerException != null)
+                    ex = ex.InnerException;
+
+                if (exceptionType.IsInstanceOfType(ex))
+                    return;
+
+                Assert.Fail("Expected the block to throw an exception of type '{0}' but it actually threw:\n{1}", exceptionType.FullName, ex);
+            }
+
+            Assert.Fail("Expected the block to throw an exception of type '{0}'.", exceptionType.FullName);
+        }
+
         public static void AreElementsEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual,
             Relation<T> equivalenceRelation)
         {

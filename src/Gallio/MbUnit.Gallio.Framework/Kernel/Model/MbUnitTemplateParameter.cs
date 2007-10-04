@@ -43,7 +43,7 @@ namespace MbUnit.Framework.Kernel.Model
             {
                 string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(member);
                 if (xmlDocumentation != null)
-                    Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                    Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
             }
         }
 

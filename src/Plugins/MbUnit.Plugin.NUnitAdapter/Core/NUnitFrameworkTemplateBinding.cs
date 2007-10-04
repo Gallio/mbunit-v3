@@ -34,7 +34,11 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
     /// </summary>
     public class NUnitFrameworkTemplateBinding : BaseTemplateBinding
     {
-        private const string TestTypeMetadataKey = "NUnit.TestType";
+        /// <summary>
+        /// The metadata key used for recording NUnit's internal test type
+        /// when it couldn't be mapped to one of the standard types.
+        /// </summary>
+        private const string NUnitTestTypeKey = "NUnit:TestType";
 
         private TestRunner runner;
 
@@ -122,6 +126,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         {
             string kind;
             CodeReference codeReference;
+            bool unrecognizedTestType = false;
             switch (nunitTest.TestType)
             {
                 case @"Test Case":
@@ -142,12 +147,17 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                 default:
                     kind = nunitTest.IsSuite ? ComponentKind.Suite : ComponentKind.Test;
                     codeReference = CodeReference.Unknown;
+                    unrecognizedTestType = true;
                     break;
             }
 
             NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, codeReference, this, nunitTest);
             test.Kind = kind;
             test.IsTestCase = !nunitTest.IsSuite;
+
+            if (unrecognizedTestType)
+                test.Metadata.Add(NUnitTestTypeKey, nunitTest.TestType);
+
             PopulateMetadata(test, nunitTest);
 
             parentTest.AddChild(test);
@@ -166,22 +176,20 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
         private static void PopulateMetadata(NUnitTest test, NUnit.Core.ITest nunitTest)
         {
             if (!String.IsNullOrEmpty(nunitTest.Description))
-                test.Metadata.Entries.Add(MetadataKeys.Description, nunitTest.Description);
+                test.Metadata.Add(MetadataKeys.Description, nunitTest.Description);
 
             if (!String.IsNullOrEmpty(nunitTest.IgnoreReason))
-                test.Metadata.Entries.Add(MetadataKeys.IgnoreReason, nunitTest.IgnoreReason);
+                test.Metadata.Add(MetadataKeys.IgnoreReason, nunitTest.IgnoreReason);
 
             foreach (string category in nunitTest.Categories)
-                test.Metadata.Entries.Add(MetadataKeys.CategoryName, category);
+                test.Metadata.Add(MetadataKeys.CategoryName, category);
 
             foreach (DictionaryEntry entry in nunitTest.Properties)
-                test.Metadata.Entries.Add(entry.Key.ToString(), entry.Value != null ? entry.Value.ToString() : null);
-
-            test.Metadata.Entries.Add(TestTypeMetadataKey, nunitTest.TestType);
+                test.Metadata.Add(entry.Key.ToString(), entry.Value != null ? entry.Value.ToString() : null);
 
             string xmlDocumentation = GetXmlDocumentation(test);
             if (xmlDocumentation != null)
-                test.Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
             // Add assembly-level metadata.
             if (test.CodeReference.Kind == CodeReferenceKind.Assembly)

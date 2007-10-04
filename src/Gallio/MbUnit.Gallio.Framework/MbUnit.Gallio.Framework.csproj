@@ -63,6 +63,8 @@
     <Compile Include="Kernel\Attributes\TestPatternAttribute.cs" />
     <Compile Include="Kernel\Attributes\TypePatternAttribute.cs" />
     <Compile Include="Kernel\Collections\ContravariantList.cs" />
+    <Compile Include="Kernel\Collections\IMultiMap.cs" />
+    <Compile Include="Kernel\Collections\ReadOnlyMultiMap.cs" />
     <Compile Include="Kernel\Model\LifecyclePhases.cs" />
     <Compile Include="Kernel\RuntimeSupport\IContextManager.cs" />
     <Compile Include="Kernel\DataBinding\ConvertedDataFactory.cs" />
@@ -129,6 +131,7 @@
     <Compile Include="Kernel\RuntimeSupport\IXmlDocumentationResolver.cs" />
     <Compile Include="Kernel\Utilities\CollectionUtils.cs" />
     <Compile Include="KeyedPairwiseAssertion.cs" />
+    <Compile Include="MetadataAttribute.cs" />
     <Compile Include="PairwiseAssertion.cs" />
     <Compile Include="ReflectionAssert.cs" />
     <Compile Include="Reflection\ReflectionException.cs" />

@@ -156,35 +156,35 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
             foreach (AuthorAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(AuthorAttribute2), true))
             {
                 if (! String.IsNullOrEmpty(attrib.Name))
-                    test.Metadata.Entries.Add(MetadataKeys.AuthorName, attrib.Name);
+                    test.Metadata.Add(MetadataKeys.AuthorName, attrib.Name);
                 if (! String.IsNullOrEmpty(attrib.EMail) && attrib.EMail != @"unspecified")
-                    test.Metadata.Entries.Add(MetadataKeys.AuthorEmail, attrib.EMail);
+                    test.Metadata.Add(MetadataKeys.AuthorEmail, attrib.EMail);
                 if (!String.IsNullOrEmpty(attrib.HomePage) && attrib.HomePage != @"unspecified")
-                    test.Metadata.Entries.Add(MetadataKeys.AuthorHomepage, attrib.HomePage);
+                    test.Metadata.Add(MetadataKeys.AuthorHomepage, attrib.HomePage);
             }
             foreach (FixtureCategoryAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(FixtureCategoryAttribute2), true))
             {
-                test.Metadata.Entries.Add(MetadataKeys.CategoryName, attrib.Category);
+                test.Metadata.Add(MetadataKeys.CategoryName, attrib.Category);
             }
             foreach (TestsOnAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestsOnAttribute2), true))
             {
-                test.Metadata.Entries.Add(MetadataKeys.TestsOn, attrib.TestedType.AssemblyQualifiedName);
+                test.Metadata.Add(MetadataKeys.TestsOn, attrib.TestedType.AssemblyQualifiedName);
             }
             foreach (ImportanceAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(ImportanceAttribute2), true))
             {
                 // Note: In principle we could eliminate the call to MapImportance because TestImportance is
                 //       defined the same way in Gallio as in MbUnit v2.  But there is no guarantee that will remain the case.
-                test.Metadata.Entries.Add(MetadataKeys.Importance, MapImportance(attrib.Importance).ToString());
+                test.Metadata.Add(MetadataKeys.Importance, MapImportance(attrib.Importance).ToString());
             }
             foreach (TestFixturePatternAttribute2 attrib in fixtureType.GetCustomAttributes(typeof(TestFixturePatternAttribute2), true))
             {
                 if (! String.IsNullOrEmpty(attrib.Description))
-                    test.Metadata.Entries.Add(MetadataKeys.Description, attrib.Description);
+                    test.Metadata.Add(MetadataKeys.Description, attrib.Description);
             }
 
             string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(fixtureType);
             if (xmlDocumentation != null)
-                test.Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
             parent.AddChild(test);
             return test;
@@ -205,12 +205,12 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Core
                 foreach (TestPatternAttribute2 attrib in memberInfo.GetCustomAttributes(typeof(TestPatternAttribute2), true))
                 {
                     if (!String.IsNullOrEmpty(attrib.Description))
-                        test.Metadata.Entries.Add(MetadataKeys.Description, attrib.Description);
+                        test.Metadata.Add(MetadataKeys.Description, attrib.Description);
                 }
 
                 string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(memberInfo);
                 if (xmlDocumentation != null)
-                    test.Metadata.Entries.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                    test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
             }
 
             parent.AddChild(test);

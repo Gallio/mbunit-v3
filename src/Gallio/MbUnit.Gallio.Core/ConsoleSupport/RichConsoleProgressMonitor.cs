@@ -141,7 +141,7 @@ namespace MbUnit.Core.ConsoleSupport
 
             // Write the progress monitor.
             console.ForegroundColor = ConsoleColor.White;
-            console.Write(TrimMessageWithEllipses(TaskName, width - 20).PadRight(width - 19));
+            console.Write(TrimMessageWithEllipses(Sanitize(TaskName), width - 20).PadRight(width - 19));
 
             if (!IsDone && !double.IsNaN(TotalWorkUnits))
             {
@@ -155,19 +155,21 @@ namespace MbUnit.Core.ConsoleSupport
                 console.Write('%');
                 NewLine(inplace);
 
-                if (CurrentSubTaskName.Length != 0)
+                string sanitizedSubTaskName = Sanitize(CurrentSubTaskName);
+                if (sanitizedSubTaskName.Length != 0)
                 {
                     console.ForegroundColor = ConsoleColor.Gray;
                     console.Write(@"  ");
-                    console.Write(TrimMessageWithEllipses(CurrentSubTaskName, width - 3));
+                    console.Write(TrimMessageWithEllipses(sanitizedSubTaskName, width - 3));
                     NewLine(inplace);
                 }
 
-                if (Status.Length != 0)
+                string sanitizedStatus = Sanitize(Status);
+                if (sanitizedStatus.Length != 0)
                 {
                     console.ForegroundColor = ConsoleColor.DarkGreen;
                     console.Write(@"  ");
-                    console.Write(TrimMessageWithEllipses(Status, width - 3));
+                    console.Write(TrimMessageWithEllipses(sanitizedStatus, width - 3));
                     NewLine(inplace);
                 }
             }
@@ -223,6 +225,16 @@ namespace MbUnit.Core.ConsoleSupport
                 return str.Substring(0, length - 3) + @"...";
 
             return str;
+        }
+
+        /// <summary>
+        /// It can happen that we'll receive all kinds of weird input because
+        /// task names and status messages can be derived from user-data.
+        /// Make sure it doesn't corrupt the display integrity.
+        /// </summary>
+        private static string Sanitize(string str)
+        {
+            return str.Replace('\n', ' ').Replace("\r", @"");
         }
     }
 }

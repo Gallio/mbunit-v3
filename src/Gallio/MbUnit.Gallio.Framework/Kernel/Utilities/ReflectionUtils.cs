@@ -244,13 +244,13 @@ namespace MbUnit.Framework.Kernel.Utilities
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Trademark, trademarkAttribute.Trademark);
 
             // Note: AssemblyVersionAttribute cannot be accessed directly via reflection.  It gets baked into the assembly name.
-            metadataMap.Entries.Add(MetadataKeys.Version, assembly.GetName().Version.ToString());
+            metadataMap.Add(MetadataKeys.Version, assembly.GetName().Version.ToString());
         }
 
         private static void AddMetadataIfNotEmptyOrNull(MetadataMap metadataMap, string key, string value)
         {
             if (! string.IsNullOrEmpty(value))
-                metadataMap.Entries.Add(key, value);
+                metadataMap.Add(key, value);
         }
     }
 }

@@ -334,8 +334,7 @@ namespace MbUnit.Core.RuntimeSupport
             private readonly DefaultContextManager contextManager;
             private readonly ICoreContextServiceProvider serviceProvider;
 
-            private TestInfo testInfo;
-            private StepInfo stepInfo;
+            private StepInfo cachedStepInfo;
 
             public InternalContext(DefaultContextManager contextManager,
                 InternalContext parent, ICoreContextServiceProvider serviceProvider)
@@ -362,21 +361,16 @@ namespace MbUnit.Core.RuntimeSupport
 
             public override TestInfo Test
             {
-                get
-                {
-                    if (testInfo == null)
-                        testInfo = new TestInfo(serviceProvider.Step.Test);
-                    return testInfo;
-                }
+                get { return Step.Test; }
             }
 
             public override StepInfo Step
             {
                 get
                 {
-                    if (stepInfo == null)
-                        stepInfo = new StepInfo(serviceProvider.Step);
-                    return stepInfo;
+                    if (cachedStepInfo == null)
+                        Interlocked.CompareExchange(ref cachedStepInfo, new StepInfo(serviceProvider.Step), null);
+                    return cachedStepInfo;
                 }
             }
 

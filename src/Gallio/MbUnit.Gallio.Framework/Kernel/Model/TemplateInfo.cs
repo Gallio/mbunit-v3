@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using MbUnit.Framework.Kernel.DataBinding;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -24,6 +25,10 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public sealed class TemplateInfo : ModelComponentInfo, ITemplate
     {
+        private TemplateInfo cachedParent;
+        private TemplateParameterInfoList cachedParameters;
+        private TemplateInfoList cachedChildren;
+
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
         /// </summary>
@@ -48,7 +53,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public TemplateParameterInfoList Parameters
         {
-            get { return new TemplateParameterInfoList(Source.Parameters); }
+            get
+            {
+                if (cachedParameters == null)
+                    Interlocked.CompareExchange(ref cachedParameters, new TemplateParameterInfoList(Source.Parameters), null);
+                return cachedParameters;
+            }
         }
         IList<ITemplateParameter> ITemplate.Parameters
         {
@@ -58,7 +68,13 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public TemplateInfo Parent
         {
-            get { return Source.Parent != null ? new TemplateInfo(Source.Parent) : null; }
+            get
+            {
+                if (cachedParent == null && Source.Parent != null)
+                    Interlocked.CompareExchange(ref cachedParent, new TemplateInfo(Source.Parent), null);
+
+                return cachedParent;
+            }
         }
         ITemplate IModelTreeNode<ITemplate>.Parent
         {
@@ -69,7 +85,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public TemplateInfoList Children
         {
-            get { return new TemplateInfoList(Source.Children); }
+            get
+            {
+                if (cachedChildren == null)
+                    Interlocked.CompareExchange(ref cachedChildren, new TemplateInfoList(Source.Children), null);
+                return cachedChildren;
+            }
         }
         IList<ITemplate> IModelTreeNode<ITemplate>.Children
         {

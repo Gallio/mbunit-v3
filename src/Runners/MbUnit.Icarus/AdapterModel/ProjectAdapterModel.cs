@@ -63,7 +63,7 @@ namespace MbUnit.Icarus.AdapterModel
                     for (int i2 = 0; i2 < kids3; i2++)
                     {
                         //string componentKind =
-                        //    tr.Children[ia].Children[i].Children[i2].Metadata.Entries["ComponentKind"][0];
+                        //    tr.Children[ia].Children[i].Children[i2].Metadata["ComponentKind"][0];
 
                         //if (componentKind == "Fixture")
                         //{

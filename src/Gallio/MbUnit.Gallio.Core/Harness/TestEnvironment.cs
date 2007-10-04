@@ -31,9 +31,7 @@ namespace MbUnit.Core.Harness
         private TextReader oldConsoleIn;
         private TextWriter oldConsoleOut;
         private TextWriter oldConsoleError;
-
-        private ContextualLogStreamTraceListener debugListener;
-        private ContextualLogStreamTraceListener traceListener;
+        private ContextualLogStreamTraceListener debugTraceListener;
 
         private TestEnvironment()
         {
@@ -68,13 +66,9 @@ namespace MbUnit.Core.Harness
             oldConsoleOut = Console.Out;
             oldConsoleError = Console.Error;
 
-            // Inject debug and trace listeners.
-            debugListener = new ContextualLogStreamTraceListener(LogStreamNames.Debug);
-            traceListener = new ContextualLogStreamTraceListener(LogStreamNames.Trace);
-            Debug.Listeners.Add(debugListener);
-            Debug.AutoFlush = true;
-
-            Trace.Listeners.Add(traceListener);
+            // Inject a trace listener for debug or trace messages.
+            debugTraceListener = new ContextualLogStreamTraceListener(LogStreamNames.DebugTrace);
+            Trace.Listeners.Add(debugTraceListener);
             Trace.AutoFlush = true;
 
             // Inject console streams.
@@ -85,9 +79,8 @@ namespace MbUnit.Core.Harness
 
         private void TearDown()
         {
-            // Remove debug and trace listeners.
-            Debug.Listeners.Remove(debugListener);
-            Trace.Listeners.Remove(traceListener);
+            // Remove trace listener.
+            Trace.Listeners.Remove(debugTraceListener);
 
             // Restore the old console streams.
             Console.SetIn(oldConsoleIn);

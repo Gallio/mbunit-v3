@@ -33,9 +33,10 @@ namespace MbUnit.Plugin.XunitAdapter.Core
     public class XunitTestController : ITestController
     {
         /// <summary>
-        /// The metadata key used for recording the Xunit method name with a step.
+        /// The metadata key used for recording Xunit's internal test name with a step
+        /// when it differs from what MbUnit derived.
         /// </summary>
-        private const string XunitMethodNameKey = "Xunit.MethodName";
+        private const string XunitTestNameKey = "Xunit:TestName";
 
         /// <inheritdoc />
         public void Dispose()
@@ -143,7 +144,17 @@ namespace MbUnit.Plugin.XunitAdapter.Core
 
         private static bool RunTestMethod(IStepMonitor stepMonitor, MethodInfo methodInfo)
         {
-            List<ITestCommand> commands = new List<ITestCommand>(TestCommandFactory.Make(methodInfo));
+            List<ITestCommand> commands;
+            try
+            {
+                commands = new List<ITestCommand>(TestCommandFactory.Make(methodInfo));
+            }
+            catch (Exception ex)
+            {
+                // Xunit can throw exceptions when making commands if the test is malformed.
+                stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
+                return false;
+            }
 
             // For simple tests, run them as one step.
             if (commands.Count == 1)
@@ -168,20 +179,45 @@ namespace MbUnit.Plugin.XunitAdapter.Core
 
         private static bool RunTestCommand(ITestCommand command, IStepMonitor stepMonitor)
         {
-            MethodResult result = command.Execute();
-
-            // Record the method name.
-            stepMonitor.AddMetadata(XunitMethodNameKey, result.MethodName);
-
-            // Record the failure message if any.
-            FailedResult failedResult = result as FailedResult;
-            if (failedResult != null)
+            try
             {
-                stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(failedResult.Exception);
-                return false;
+                MethodResult result = command.Execute();
+
+                // Record the method name.
+                string xunitTestName = result.MethodName;
+                if (xunitTestName != stepMonitor.Step.Test.Name)
+                    stepMonitor.AddMetadata(XunitTestNameKey, xunitTestName);
+
+                // Get the failure exception if any.
+                FailedResult failedResult = result as FailedResult;
+                if (failedResult == null)
+                    return true;
+
+                LogStreamWriter failureStream = stepMonitor.LogWriter[LogStreamNames.Failures];
+                if (failedResult.Exception != null)
+                {
+                    failureStream.WriteException(failedResult.Exception);
+                }
+                else
+                {
+                    using (failureStream.BeginSection("Exception"))
+                    {
+                        if (failedResult.Message != null)
+                            failureStream.WriteLine(failedResult.Message);
+
+                        if (failedResult.StackTrace != null)
+                            failureStream.Write(failedResult.StackTrace);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xunit probably shouldn't throw an exception in a test command.
+                // But just in case...
+                stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
             }
 
-            return true;
+            return false;
         }
     }
 }

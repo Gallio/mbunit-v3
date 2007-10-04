@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -23,6 +24,11 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public sealed class TestInfo : ModelComponentInfo, ITest
     {
+        private TemplateBindingInfo cachedTemplateBinding;
+        private TestInfoList cachedDependencies;
+        private TestInfo cachedParent;
+        private TestInfoList cachedChildren;
+
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
         /// </summary>
@@ -47,7 +53,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public TemplateBindingInfo TemplateBinding
         {
-            get { return new TemplateBindingInfo(Source.TemplateBinding); }
+            get
+            {
+                if (cachedTemplateBinding == null)
+                    Interlocked.CompareExchange(ref cachedTemplateBinding, new TemplateBindingInfo(Source.TemplateBinding), null);
+                return cachedTemplateBinding;
+            }
         }
         ITemplateBinding ITest.TemplateBinding
         {
@@ -57,7 +68,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public TestInfoList Dependencies
         {
-            get { return new TestInfoList(Source.Dependencies); }
+            get
+            {
+                if (cachedDependencies == null)
+                    Interlocked.CompareExchange(ref cachedDependencies, new TestInfoList(Source.Dependencies), null);
+                return cachedDependencies;
+            }
         }
         IList<ITest> ITest.Dependencies
         {
@@ -67,7 +83,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public ITest Parent
         {
-            get { return Source.Parent != null ? new TestInfo(Source.Parent) : null; }
+            get
+            {
+                if (cachedParent == null && Source.Parent != null)
+                    Interlocked.CompareExchange(ref cachedParent, new TestInfo(Source.Parent), null);
+                return cachedParent;
+            }
         }
         ITest IModelTreeNode<ITest>.Parent
         {
@@ -78,7 +99,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public TestInfoList Children
         {
-            get { return new TestInfoList(Source.Children); }
+            get
+            {
+                if (cachedChildren == null)
+                    Interlocked.CompareExchange(ref cachedChildren, new TestInfoList(Source.Children), null);
+                return cachedChildren;
+            }
         }
         IList<ITest> IModelTreeNode<ITest>.Children
         {

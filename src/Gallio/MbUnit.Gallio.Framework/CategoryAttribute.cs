@@ -29,7 +29,7 @@ namespace MbUnit.Framework
         private readonly string categoryName;
 
         /// <summary>
-        /// Associates a cateogry name with the test component annotated by this attribute.
+        /// Associates a category name with the test component annotated by this attribute.
         /// </summary>
         /// <param name="categoryName">The category name to associate</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="categoryName"/> is null</exception>
@@ -42,7 +42,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets or sets the category name.
+        /// Gets the category name.
         /// </summary>
         public string CategoryName
         {
@@ -52,7 +52,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
         {
-            component.Metadata.Entries.Add(MetadataKeys.CategoryName, categoryName);
+            component.Metadata.Add(MetadataKeys.CategoryName, categoryName);
         }
     }
 }

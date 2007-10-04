@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 
 namespace MbUnit.Framework.Kernel.Model
 {
@@ -22,6 +23,9 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public sealed class StepInfo : ModelComponentInfo, IStep
     {
+        private StepInfo cachedParent;
+        private TestInfo cachedTest;
+
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
         /// </summary>
@@ -41,7 +45,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public StepInfo Parent
         {
-            get { return Source.Parent != null ? new StepInfo(Source.Parent) : null; }
+            get
+            {
+                if (cachedParent == null && Source.Parent != null)
+                    Interlocked.CompareExchange(ref cachedParent, new StepInfo(Source.Parent), null);
+                return cachedParent;
+            }
         }
         IStep IStep.Parent
         {
@@ -51,7 +60,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public TestInfo Test
         {
-            get { return new TestInfo(Source.Test); }
+            get
+            {
+                if (cachedTest == null)
+                    Interlocked.CompareExchange(ref cachedTest, new TestInfo(Source.Test), null);
+                return cachedTest;
+            }
         }
         ITest IStep.Test
         {

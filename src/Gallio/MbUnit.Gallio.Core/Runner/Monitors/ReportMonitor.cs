@@ -212,7 +212,7 @@ namespace MbUnit.Core.Runner.Monitors
                     case LifecycleEventType.AddMetadata:
                     {
                         StepState stepState = GetStepData(e.StepId);
-                        stepState.StepRun.Step.Metadata.Entries.Add(e.MetadataKey, e.MetadataValue);
+                        stepState.StepRun.Step.Metadata.Add(e.MetadataKey, e.MetadataValue);
                         break;
                     }
 

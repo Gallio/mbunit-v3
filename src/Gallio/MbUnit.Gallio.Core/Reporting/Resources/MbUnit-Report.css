@@ -1,8 +1,31 @@
-table#Stats
+body
 {
-	text-align: center;
+	font-family: Cambria Arial Verdana;
+	font-size: 12pt;
 }
 
+h1
+{
+	font-size: 28pt;
+}
+
+h2
+{
+	font-size: 22pt;
+	text-decoration: underline;
+}
+
+h3
+{
+	font-size: 20pt;
+}
+
+ul
+{
+	list-style-type: none;
+}
+
+/* Progress bars */
 .progressBar
 {
 	position: relative;
@@ -29,22 +52,7 @@ table#Stats
 	background-color: #808000;
 }
 
-#Summary ul
-{
-	list-style-type: none;
-}
-
-.metadata
-{
-	margin: 5px 0px 5px 0px;
-	padding: 5px 5px 5px 5px;
-	list-style-type: none;
-	
-	border: solid 1px #909090;
-	background: #f0f0f0;
-	font-size: smaller;
-}
-
+/* Toggles */
 .toggle
 {
 	cursor: pointer;
@@ -66,39 +74,51 @@ table#Stats
 .testRun
 {
 	margin-top: 12pt;
-	font-size: medium;
+	font-size: 12pt;
 }
 
 .testRunHeading
 {
 	font-weight:bold;
-	font-size:medium;
+	font-size:12pt;
 	position:relative;
 }
 
-.testRunHeading-Framework
+.testRunHeading-Level1
 {
-	font-size:x-large;
+	font-size:18pt;
 }
 
-.testRunHeading-Assembly
+.testRunHeading-Level2
 {
-	font-size:larger;
+	font-size:16pt;
 }
 
-.testRunHeading-Namespace .testRunHeading-Group .testRunHeading-Suite .testRunHeading-Fixture
+.testRunHeading-Level3
 {
-	font-size:large;
+	font-size:14pt;
 }
 
-.testRunHeading-Test
+.testRunHeading-Level4
 {
+	font-size:12pt;
+}
+
+/* Styles for metadata entries */
+.metadata
+{
+	margin: 5px 0px 5px 0px;
+	padding: 5px 5px 5px 5px;
+	
+	border: solid 1px #505090;
+	background: #ececff;
+	font-size: 10pt;
 }
 
 /* Styles for step runs */
 .stepRun
 {
-	font-size:small;
+	font-size:10pt;
 }
 
 .stepRunHeading
@@ -138,26 +158,27 @@ table#Stats
 
 .logAttachment
 {
-	font-size: medium;
+	font-size: 10pt;
 }
 
 .logStream
 {
 	background-color: #f0f0f0;
-	border: dashed 1px #909090;
+	border: dotted 1px #505050;
+	margin: 5px 0px 5px 0px;
 	padding: 5px 5px 5px 5px;
 }
 
 .logStreamHeading
 {
 	font-weight:bold;
-	font-size:medium;
+	font-size: 12pt;
 	text-decoration: underline;
 }
 
 .logStreamBody
 {
-	font-size: small;
+	font-size: 10pt;
 	border-style: none;
 }
 
@@ -171,7 +192,7 @@ table#Stats
 
 .logStreamSectionHeading
 {
-	font-size:small;
+	font-size: 10pt;
 	font-weight: bold;
 	text-decoration: underline;
 }
@@ -179,12 +200,12 @@ table#Stats
 /* Styles used for coloring different named streams */
 .logStream-Failures
 {
-	background-color: #ffe0e0;
-	border: dashed 1px #ff9090;
+	background-color: #ffd8d8;
+	border: dotted 1px #905050;
 }
 
 .logStream-Warnings
 {
-	background-color: #ffffe0;
-	border: dashed 1px #ffff90;
+	background-color: #ffffc8;
+	border: dotted 1px #909050;
 }

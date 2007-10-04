@@ -424,7 +424,7 @@ namespace MbUnit.Core.Model
                     throw new InvalidOperationException("The test has already started execution.");
             }
 
-            private IStep CreateRootStep()
+            private BaseStep CreateRootStep()
             {
                 return new BaseStep(BaseStep.RootStepName, test.CodeReference, test, null);
             }
@@ -434,7 +434,7 @@ namespace MbUnit.Core.Model
         {
             private readonly int generation;
             private readonly DependencyTestPlan testPlan;
-            private readonly IStep step;
+            private readonly BaseStep step;
             private readonly LogWriter logWriter;
             private readonly Stopwatch stopwatch;
             private readonly Context context;
@@ -442,7 +442,7 @@ namespace MbUnit.Core.Model
             private ContextCookie contextCookie;
             private string lifecyclePhase = @"";
 
-            public StepMonitor(DependencyTestPlan testPlan, IStep step, StepMonitor parentStepMonitor)
+            public StepMonitor(DependencyTestPlan testPlan, BaseStep step, StepMonitor parentStepMonitor)
             {
                 this.generation = testPlan.currentGeneration;
                 this.testPlan = testPlan;
@@ -545,6 +545,8 @@ namespace MbUnit.Core.Model
 
                         testPlan.listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateAddMetadataEvent(step.Id, metadataKey, metadataValue));
                     }
+
+                    step.Metadata.CopyOnWriteAdd(metadataKey, metadataValue);
                 }
                 finally
                 {
@@ -579,7 +581,7 @@ namespace MbUnit.Core.Model
                     {
                         VerifyNotFinishedWithLocalLock();
 
-                        IStep childStep = new BaseStep(name, codeReference, step.Test, step);
+                        BaseStep childStep = new BaseStep(name, codeReference, step.Test, step);
                         stepMonitor = new StepMonitor(testPlan, childStep, this);
                     }
 
@@ -625,6 +627,9 @@ namespace MbUnit.Core.Model
 
                     // Send the final notification.
                     DispatchFinishEvent(status, outcome, actualDuration);
+                    
+                    // Now that we're done, unregister this step monitor.
+                    testPlan.UnregisterStepMonitorWithReaderLock(this);
                 }
                 finally
                 {

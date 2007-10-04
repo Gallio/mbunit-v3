@@ -13,37 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework;
 
 namespace MbUnit.Framework.Tests
 {
     [TestFixture]
-    [TestsOn(typeof(Context))]
-    public class ContextTest
+    public class StepTest
     {
         [Test]
-        public void CurrentTestHasCorrectTestName()
+        public void MetadataAdditionsAreVisibleInStepInfo()
         {
-            Assert.AreEqual("CurrentTestHasCorrectTestName", Context.CurrentTest.Name);
-        }
+            Assert.IsNull(Context.CurrentStep.Metadata.GetValue("New"));
 
-        [Test]
-        public void CurrentStepHasCorrectTestName()
-        {
-            Assert.AreEqual("CurrentStepHasCorrectTestName", Context.CurrentStep.FullName);
+            Step.AddMetadata("New", "And improved!");
+            Assert.AreEqual("And improved!", Context.CurrentStep.Metadata.GetValue("New"));
 
-            Step.Run("Step1", delegate
-            {
-                Assert.AreEqual("CurrentStepHasCorrectTestName:Step1", Context.CurrentStep.FullName);
-
-                Step.Run("Step2", delegate
-                {
-                    Assert.AreEqual("CurrentStepHasCorrectTestName:Step1/Step2", Context.CurrentStep.FullName);
-                });
-            });
+            Step.AddMetadata("New", "Now with less sugar.");
+            CollectionAssert.AreElementsEqual(new string[] { "And improved!", "Now with less sugar." },
+                Context.CurrentStep.Metadata["New"]);
         }
     }
 }

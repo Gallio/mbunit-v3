@@ -122,7 +122,7 @@ namespace MbUnit.Plugin.XunitAdapter.Core
             {
                 foreach (KeyValuePair<string, string> entry in MethodReflectionUtilities.GetProperties(methodInfo))
                 {
-                    methodTest.Metadata.Entries.Add(entry.Key ?? @"", entry.Value ?? @"");
+                    methodTest.Metadata.Add(entry.Key ?? @"", entry.Value ?? @"");
                 }
             }
 

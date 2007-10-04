@@ -14,8 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -31,25 +32,21 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     [Serializable]
     [XmlRoot("metadata", Namespace=SerializationUtils.XmlNamespace)]
-    public sealed class MetadataMap : IXmlSerializable
+    public sealed class MetadataMap : IMultiMap<string, string>, IXmlSerializable
     {
-        private readonly MultiMap<string, string> entries;
+        private IMultiMap<string, string> contents;
+
+        private MetadataMap(IMultiMap<string, string> contents)
+        {
+            this.contents = contents;
+        }
 
         /// <summary>
         /// Creates an empty metadata map.
         /// </summary>
         public MetadataMap()
+            : this(new MultiMap<string, string>())
         {
-            entries = new MultiMap<string, string>();
-        }
-
-        /// <summary>
-        /// Gets the multi-valued dictionary of metadata entries.
-        /// </summary>
-        [XmlIgnore]
-        public MultiMap<string, string> Entries
-        {
-            get { return entries; }
         }
 
         /// <summary>
@@ -59,8 +56,19 @@ namespace MbUnit.Framework.Kernel.Model
         public MetadataMap Copy()
         {
             MetadataMap copy = new MetadataMap();
-            copy.Entries.AddAll(entries);
+            copy.AddAll(this);
             return copy;
+        }
+
+        /// <summary>
+        /// Creates a read-only view of the metadata map.
+        /// </summary>
+        /// <returns>The read-only view</returns>
+        public MetadataMap AsReadOnly()
+        {
+            if (contents.IsReadOnly)
+                return this;
+            return new MetadataMap(MultiMap<string, string>.ReadOnly(this));
         }
 
         /// <summary>
@@ -71,7 +79,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <returns>The value, or null if none</returns>
         public string GetValue(string key)
         {
-            IList<string> values = entries[key];
+            IList<string> values = this[key];
             if (values.Count == 0)
                 return null;
 
@@ -86,12 +94,166 @@ namespace MbUnit.Framework.Kernel.Model
         /// <param name="value">The new value, or null to remove the value</param>
         public void SetValue(string key, string value)
         {
-            entries.Remove(key);
+            Remove(key);
 
             if (value != null)
-                entries.Add(key, value);
+                Add(key, value);
         }
 
+        /// <summary>
+        /// Adds metadata in a thread-safe manner by performing an atomic copy-on-write of the
+        /// internal storage collection.  This method must be used when a component's metadata
+        /// is updated while tests are in flight and may potentially be accessed concurrently.
+        /// </summary>
+        /// <param name="metadataKey">The metadata key</param>
+        /// <param name="metadataValue">The metadata value</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
+        /// or <paramref name="metadataValue"/> is null</exception>
+        internal void CopyOnWriteAdd(string metadataKey, string metadataValue)
+        {
+            if (metadataKey == null)
+                throw new ArgumentNullException(@"metadataKey");
+            if (metadataValue == null)
+                throw new ArgumentNullException(@"metadataValue");
+            if (IsReadOnly)
+                throw new NotSupportedException("The metadata is read-only.");
+
+            for (; ; )
+            {
+                IMultiMap<string, string> original = contents;
+                IMultiMap<string, string> copy = new MultiMap<string, string>();
+                copy.AddAll(original);
+                copy.Add(metadataKey, metadataValue);
+
+                if (Interlocked.CompareExchange(ref contents, copy, original) == original)
+                    return;
+            }
+        }
+
+        #region MultiMap delegating methods
+        /// <inheritdoc />
+        public void Add(string key, string value)
+        {
+            contents.Add(key, value);
+        }
+
+        /// <inheritdoc />
+        public void AddAll(IMultiMap<string, string> map)
+        {
+            contents.AddAll(map);
+        }
+
+        /// <inheritdoc />
+        public bool Contains(string key, string value)
+        {
+            return contents.Contains(key, value);
+        }
+
+        /// <inheritdoc />
+        public bool Remove(string key, string value)
+        {
+            return contents.Remove(key, value);
+        }
+
+        /// <inheritdoc />
+        public bool ContainsKey(string key)
+        {
+            return contents.ContainsKey(key);
+        }
+
+        /// <inheritdoc />
+        public void Add(string key, IList<string> value)
+        {
+            contents.Add(key, value);
+        }
+
+        /// <inheritdoc />
+        public bool Remove(string key)
+        {
+            return contents.Remove(key);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetValue(string key, out IList<string> value)
+        {
+            return contents.TryGetValue(key, out value);
+        }
+
+        /// <inheritdoc />
+        public IList<string> this[string key]
+        {
+            get { return contents[key]; }
+            set { contents[key] = value; }
+        }
+
+        /// <inheritdoc />
+        public ICollection<string> Keys
+        {
+            get { return contents.Keys; }
+        }
+
+        /// <inheritdoc />
+        public ICollection<IList<string>> Values
+        {
+            get { return contents.Values; }
+        }
+
+        /// <inheritdoc />
+        public void Add(KeyValuePair<string, IList<string>> item)
+        {
+            contents.Add(item);
+        }
+
+        /// <inheritdoc />
+        public void Clear()
+        {
+            contents.Clear();
+        }
+
+        /// <inheritdoc />
+        public bool Contains(KeyValuePair<string, IList<string>> item)
+        {
+            return contents.Contains(item);
+        }
+
+        /// <inheritdoc />
+        public void CopyTo(KeyValuePair<string, IList<string>>[] array, int arrayIndex)
+        {
+            contents.CopyTo(array, arrayIndex);
+        }
+
+        /// <inheritdoc />
+        public bool Remove(KeyValuePair<string, IList<string>> item)
+        {
+            return contents.Remove(item);
+        }
+
+        /// <inheritdoc />
+        public int Count
+        {
+            get { return contents.Count; }
+        }
+
+        /// <inheritdoc />
+        public bool IsReadOnly
+        {
+            get { return contents.IsReadOnly; }
+        }
+
+        /// <inheritdoc />
+        public IEnumerator<KeyValuePair<string, IList<string>>> GetEnumerator()
+        {
+            return contents.GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return contents.GetEnumerator();
+        }
+        #endregion
+
+        #region Xml Serialization
         XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
@@ -99,13 +261,13 @@ namespace MbUnit.Framework.Kernel.Model
 
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
-            reader.ReadStartElement("metadata");
+            reader.ReadStartElement(@"metadata");
 
             while (reader.MoveToContent() == XmlNodeType.Element)
             {
                 bool isEmpty = reader.IsEmptyElement;
-                string key = reader.GetAttribute("key");
-                reader.ReadStartElement("entry");
+                string key = reader.GetAttribute(@"key");
+                reader.ReadStartElement(@"entry");
 
                 if (key == null)
                     throw new XmlException("Expected key attribute.");
@@ -114,11 +276,11 @@ namespace MbUnit.Framework.Kernel.Model
                 {
                     while (reader.MoveToContent() == XmlNodeType.Element)
                     {
-                        if (reader.LocalName != "value")
+                        if (reader.LocalName != @"value")
                             throw new XmlException("Expected <value> element");
 
                         string value = reader.ReadElementContentAsString();
-                        entries.Add(key, value);
+                        Add(key, value);
                     }
 
                     if (reader.NodeType == XmlNodeType.EndElement)
@@ -132,17 +294,17 @@ namespace MbUnit.Framework.Kernel.Model
 
         void IXmlSerializable.WriteXml(XmlWriter writer)
         {
-            foreach (KeyValuePair<string, IList<string>> entry in entries)
+            foreach (KeyValuePair<string, IList<string>> entry in this)
             {
-                writer.WriteStartElement("entry");
-                writer.WriteAttributeString("key", entry.Key);
+                writer.WriteStartElement(@"entry");
+                writer.WriteAttributeString(@"key", entry.Key);
 
                 foreach (string value in entry.Value)
                 {
                     if (value == null)
                         throw new InvalidOperationException("The metadata map contains an invalid null value.");
 
-                    writer.WriteStartElement("value");
+                    writer.WriteStartElement(@"value");
                     writer.WriteValue(value);
                     writer.WriteEndElement();
                 }
@@ -150,5 +312,6 @@ namespace MbUnit.Framework.Kernel.Model
                 writer.WriteEndElement();
             }
         }
+        #endregion
     }
 }

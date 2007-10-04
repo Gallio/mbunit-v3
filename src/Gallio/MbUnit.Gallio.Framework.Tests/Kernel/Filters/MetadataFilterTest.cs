@@ -35,7 +35,7 @@ namespace MbUnit._Framework.Tests.Kernel.Filters
         {
             MetadataMap metadata = new MetadataMap();
             foreach (string value in values)
-                metadata.Entries.Add("key", value);
+                metadata.Add("key", value);
 
             IModelComponent component = Mocks.CreateMock<IModelComponent>();
             SetupResult.For(component.Metadata).Return(metadata);

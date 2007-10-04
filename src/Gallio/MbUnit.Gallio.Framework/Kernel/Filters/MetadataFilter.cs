@@ -46,7 +46,7 @@ namespace MbUnit.Framework.Kernel.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            return value.Metadata.Entries[key].Contains(this.value);
+            return value.Metadata[key].Contains(this.value);
         }
     }
 }

@@ -36,9 +36,9 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         public void Copy()
         {
             MetadataMap original = new MetadataMap();
-            original.Entries.Add("abc", "123");
-            original.Entries.Add("abc", "456");
-            original.Entries.Add("def", "");
+            original.Add("abc", "123");
+            original.Add("abc", "456");
+            original.Add("def", "");
 
             MetadataMap copy = original.Copy();
 
@@ -65,7 +65,7 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         {
             MetadataMap map = new MetadataMap();
             for (int i = 0; i < keyValuePairs.Length; i += 2)
-                map.Entries.Add(keyValuePairs[i], keyValuePairs[i + 1]);
+                map.Add(keyValuePairs[i], keyValuePairs[i + 1]);
 
             StringWriter writer = new StringWriter();
             serializer.Serialize(writer, map);
@@ -101,19 +101,33 @@ namespace MbUnit._Framework.Tests.Kernel.Model
         {
             MetadataMap expectedMap = new MetadataMap();
             for (int i = 0; i < expectedKeyValuePairs.Length; i += 2)
-                expectedMap.Entries.Add(expectedKeyValuePairs[i], expectedKeyValuePairs[i + 1]);
+                expectedMap.Add(expectedKeyValuePairs[i], expectedKeyValuePairs[i + 1]);
 
             MetadataMap actualMap = (MetadataMap) serializer.Deserialize(new StringReader(xml));
             AssertAreEqual(expectedMap, actualMap);
         }
 
+        [Test]
+        public void AsReadOnly()
+        {
+            MetadataMap original = new MetadataMap();
+            original.Add("abc", "123");
+
+            MetadataMap readOnly = original.AsReadOnly();
+            Assert.IsTrue(readOnly.IsReadOnly);
+            AssertAreEqual(original, readOnly);
+
+            MbUnit.Framework.InterimAssert.Throws<NotSupportedException>(delegate { readOnly.Add("def", "456"); });
+            MbUnit.Framework.InterimAssert.Throws<NotSupportedException>(delegate { readOnly["abc"].Add("456"); });
+        }
+
         private static void AssertAreEqual(MetadataMap expected, MetadataMap actual)
         {
-            Assert.AreEqual(expected.Entries.Count, actual.Entries.Count);
+            Assert.AreEqual(expected.Count, actual.Count);
 
-            foreach (KeyValuePair<string, IList<string>> entry in expected.Entries)
+            foreach (KeyValuePair<string, IList<string>> entry in expected)
             {
-                Assert.IsTrue(actual.Entries.Contains(entry));
+                Assert.IsTrue(actual.Contains(entry));
             }
         }
     }

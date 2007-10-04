@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using MbUnit.Framework.Kernel.DataBinding;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -24,6 +25,8 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public sealed class TemplateBindingInfo : BaseInfo, ITemplateBinding
     {
+        private TemplateInfo cachedTemplateInfo;
+
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
         /// </summary>
@@ -37,7 +40,12 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public TemplateInfo Template
         {
-            get { return new TemplateInfo(Source.Template); }
+            get
+            {
+                if (cachedTemplateInfo == null)
+                    Interlocked.CompareExchange(ref cachedTemplateInfo, new TemplateInfo(Source.Template), null);
+                return cachedTemplateInfo;
+            }
         }
         ITemplate ITemplateBinding.Template
         {

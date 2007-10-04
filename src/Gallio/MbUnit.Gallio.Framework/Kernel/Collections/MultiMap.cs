@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace MbUnit.Framework.Kernel.Collections
 {
@@ -24,9 +25,9 @@ namespace MbUnit.Framework.Kernel.Collections
     /// A multi-map allows a list of values to be associated with a single key.
     /// </summary>
     [Serializable]
-    public class MultiMap<TKey, TValue> : IDictionary<TKey, IList<TValue>>
+    public class MultiMap<TKey, TValue> : IMultiMap<TKey, TValue>
     {
-        private IDictionary<TKey, IList<TValue>> entries;
+        private readonly IDictionary<TKey, IList<TValue>> entries;
 
         /// <summary>
         /// Creates an empty multi-map.
@@ -81,7 +82,7 @@ namespace MbUnit.Framework.Kernel.Collections
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 if (value.Count != 0)
                     entries[key] = new ValueCollection(value);
@@ -137,10 +138,10 @@ namespace MbUnit.Framework.Kernel.Collections
         /// </summary>
         /// <param name="map">The map</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null</exception>
-        public void AddAll(MultiMap<TKey, TValue> map)
+        public void AddAll(IMultiMap<TKey, TValue> map)
         {
             if (map == null)
-                throw new ArgumentNullException("map");
+                throw new ArgumentNullException(@"map");
 
             foreach (KeyValuePair<TKey, IList<TValue>> entry in map)
                 Add(entry);
@@ -256,6 +257,16 @@ namespace MbUnit.Framework.Kernel.Collections
         IEnumerator IEnumerable.GetEnumerator()
         {
             return entries.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Obtains a read-only view of another multi-map.
+        /// </summary>
+        /// <param name="map">The multi-map</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null</exception>
+        public static IMultiMap<TKey, TValue> ReadOnly(IMultiMap<TKey, TValue> map)
+        {
+            return new ReadOnlyMultiMap<TKey, TValue>(map);
         }
 
         [Serializable]

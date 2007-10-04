@@ -19,20 +19,29 @@ using System.Text;
 
 namespace MbUnit.Framework
 {
+    /// <summary>
+    /// Declares that the associated test method is expected to throw an <see cref="ArgumentNullException" />.
+    /// The expected contents of the exception message may optionally be specified.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class ExpectedArgumentNullExceptionAttribute : ExpectedExceptionAttribute
     {
-        // TODO.
-
+        /// <summary>
+        /// Declares that the associated test method is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         public ExpectedArgumentNullExceptionAttribute()
             : base(typeof(ArgumentNullException))
         {
         }
 
+        /// <summary>
+        /// Declares that the associated test method is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+        /// The expected contents of the exception message may also optionally be specified.
+        /// </summary>
+        /// <param name="message">The expected exception message, or null if not specified</param>
         public ExpectedArgumentNullExceptionAttribute(string message)
             : base(typeof(ArgumentException), message)
         {
         }
-
     }
 }

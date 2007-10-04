@@ -78,7 +78,7 @@ namespace MbUnit.Framework.Kernel.Model
         {
             MbUnitTest test = Template.CreateMbUnitTest(Template.Name, Template.CodeReference, this);
             test.Kind = null;
-            test.Metadata.Entries.AddAll(Template.Metadata.Entries);
+            test.Metadata.AddAll(Template.Metadata);
             parent.AddChild(test);
 
             if (processTestChain != null)

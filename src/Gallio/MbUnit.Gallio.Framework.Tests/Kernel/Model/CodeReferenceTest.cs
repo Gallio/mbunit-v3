@@ -13,16 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System.Diagnostics;
-using MbUnit2::MbUnit.Framework;
-using Assert = MbUnit2::MbUnit.Framework.Assert;
 
 using System;
 using System.Reflection;
 using MbUnit.Framework.Kernel.Model;
 
-namespace MbUnit._Framework.Tests.Kernel.Model
+namespace MbUnit.Framework.Tests.Kernel.Model
 {
     [TestFixture]
     [TestsOn(typeof(CodeReference))]
@@ -65,6 +62,22 @@ namespace MbUnit._Framework.Tests.Kernel.Model
 
             Assert.AreNotSame(original, copy);
             Assert.AreEqual(original, copy);
+        }
+
+        [Test]
+        public void ReadOnlyCopy()
+        {
+            CodeReference original = new CodeReference(assembly, @namespace, type, member, parameter);
+            CodeReference copy = original.ReadOnlyCopy();
+
+            Assert.AreNotSame(original, copy);
+            Assert.AreEqual(original, copy);
+
+            InterimAssert.Throws<InvalidOperationException>(delegate { copy.AssemblyName = ""; });
+            InterimAssert.Throws<InvalidOperationException>(delegate { copy.NamespaceName = ""; });
+            InterimAssert.Throws<InvalidOperationException>(delegate { copy.TypeName = ""; });
+            InterimAssert.Throws<InvalidOperationException>(delegate { copy.MemberName = ""; });
+            InterimAssert.Throws<InvalidOperationException>(delegate { copy.ParameterName = ""; });
         }
 
         [Test]

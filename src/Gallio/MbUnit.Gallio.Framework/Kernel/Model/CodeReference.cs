@@ -30,7 +30,7 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public sealed class CodeReference
+    public class CodeReference
     {
         /// <summary>
         /// Gets an empty code reference used to indicate that the actual
@@ -131,7 +131,7 @@ namespace MbUnit.Framework.Kernel.Model
             get { return assemblyName; }
             set
             {
-                ClearCache();
+                CheckReadOnlyAndClearCache();
                 assemblyName = value;
             }
         }
@@ -145,7 +145,7 @@ namespace MbUnit.Framework.Kernel.Model
             get { return namespaceName; }
             set
             {
-                ClearCache();
+                CheckReadOnlyAndClearCache();
                 namespaceName = value;
             }
         }
@@ -159,7 +159,7 @@ namespace MbUnit.Framework.Kernel.Model
             get { return typeName; }
             set
             {
-                ClearCache();
+                CheckReadOnlyAndClearCache();
                 typeName = value;
             }
         }
@@ -173,7 +173,7 @@ namespace MbUnit.Framework.Kernel.Model
             get { return memberName; }
             set
             {
-                ClearCache();
+                CheckReadOnlyAndClearCache();
                 memberName = value;
             }
         }
@@ -187,7 +187,7 @@ namespace MbUnit.Framework.Kernel.Model
             get { return parameterName; }
             set
             {
-                ClearCache();
+                CheckReadOnlyAndClearCache();
                 parameterName = value;
             }
         }
@@ -198,12 +198,16 @@ namespace MbUnit.Framework.Kernel.Model
         /// <returns>The copy</returns>
         public CodeReference Copy()
         {
-            CodeReference copy = new CodeReference(assemblyName, namespaceName, typeName, memberName, parameterName);
-            copy.cachedAssembly = cachedAssembly;
-            copy.cachedType = cachedType;
-            copy.cachedMember = cachedMember;
-            copy.cachedParameter = cachedParameter;
-            return copy;
+            return new CodeReference().InitializeFrom(this);
+        }
+
+        /// <summary>
+        /// Creates a read-only copy of the code reference.
+        /// </summary>
+        /// <returns>The read-only copy</returns>
+        public CodeReference ReadOnlyCopy()
+        {
+            return new ReadOnlyCodeReference().InitializeFrom(this);
         }
 
         /// <summary>
@@ -454,12 +458,35 @@ namespace MbUnit.Framework.Kernel.Model
                 ^ (parameterName != null ? parameterName.GetHashCode() : 0);
         }
 
-        private void ClearCache()
+        protected internal virtual void CheckReadOnlyAndClearCache()
         {
             cachedAssembly = null;
             cachedType = null;
             cachedMember = null;
             cachedParameter = null;
+        }
+
+        private CodeReference InitializeFrom(CodeReference other)
+        {
+            assemblyName = other.assemblyName;
+            namespaceName = other.namespaceName;
+            typeName = other.typeName;
+            memberName = other.memberName;
+            parameterName = other.parameterName;
+
+            cachedAssembly = other.cachedAssembly;
+            cachedType = other.cachedType;
+            cachedMember = other.cachedMember;
+            cachedParameter = other.cachedParameter;
+            return this;
+        }
+
+        private sealed class ReadOnlyCodeReference : CodeReference
+        {
+            protected internal override void CheckReadOnlyAndClearCache()
+            {
+                throw new InvalidOperationException("The code reference is read-only.");
+            }
         }
     }
 }

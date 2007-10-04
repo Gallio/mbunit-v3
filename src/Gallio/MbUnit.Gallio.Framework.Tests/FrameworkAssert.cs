@@ -109,7 +109,7 @@ namespace MbUnit._Framework.Tests
                 return;
             }
 
-            MbUnit.Framework.InterimAssert.WithKeyedPairs(expected.Entries, actual.Entries, CollectionAssert.AreElementsEqual);
+            MbUnit.Framework.InterimAssert.WithKeyedPairs(expected, actual, CollectionAssert.AreElementsEqual);
         }
 
         public static void AreEqual(CodeReference expected, CodeReference actual)

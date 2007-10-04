@@ -8,7 +8,7 @@
   <xsl:key name="status" match="/g:report/g:packageRun/g:testRuns/g:testRun" use="g:stepRun/g:result/@status" />
 
   <xsl:template match="g:report">
-    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+    <html xml:lang="en" lang="en" dir="ltr">
       <head>
         <title>MbUnit Test Report</title>
         <link rel="stylesheet" type="text/css" href="css/MbUnit-Report.css" />
@@ -43,12 +43,12 @@
   <xsl:template match="g:packageRun">
     <div id="Statistics">
       <h2>Statistics</h2>
-      <xsl:text>Start time: </xsl:text>
+      <b>Start time: </b>
       <xsl:call-template name="format-datetime">
         <xsl:with-param name="datetime" select="@startTime" />
       </xsl:call-template>
       <br />
-      <xsl:text> End time: </xsl:text>
+      <b> End time: </b>
       <xsl:call-template name="format-datetime">
         <xsl:with-param name="datetime" select="@endTime" />
       </xsl:call-template>
@@ -59,48 +59,20 @@
   </xsl:template>
 
   <xsl:template match="g:statistics">
-    <table id="Stats" border="1">
-      <tr>
-        <th>Tests</th>
-        <th>Run</th>
-        <th>Passed</th>
-        <th>Failed</th>
-        <th>Inconclusive</th>
-        <th>Ignored</th>
-        <th>Skipped</th>
-        <th>Asserts</th>
-        <th>Duration</th>
-      </tr>
-      <tr>
-        <td>
-          <xsl:value-of select="@testCount" />
-        </td>
-        <td>
-          <xsl:value-of select="@runCount" />
-        </td>
-        <td>
-          <xsl:value-of select="@passCount" />
-        </td>
-        <td>
-          <xsl:value-of select="@failureCount" />
-        </td>
-        <td>
-          <xsl:value-of select="@inconclusiveCount" />
-        </td>
-        <td>
-          <xsl:value-of select="@ignoreCount" />
-        </td>
-        <td>
-          <xsl:value-of select="@skipCount" />
-        </td>
-        <td>
-          <xsl:value-of select="@assertCount" />
-        </td>
-        <td>
-          <xsl:value-of select="format-number(@duration, '0.00')" />s
-        </td>
-      </tr>
-    </table>
+    <b>Tests: </b>
+    <xsl:value-of select="@testCount" />.
+    <br/>
+    <b>Results: </b>
+    <xsl:value-of select="@runCount" /> run,
+    <xsl:value-of select="@passCount" /> passed,
+    <xsl:value-of select="@failureCount" /> failed,
+    <xsl:value-of select="@inconclusiveCount" /> inconclusive (<xsl:value-of select="@ignoreCount" /> ignored / <xsl:value-of select="@skipCount" /> skipped).
+    <br/>
+    <b>Duration: </b>
+    <xsl:value-of select="format-number(@duration, '0.00')" />s.
+    <br/>
+    <b>Assertions: </b>
+    <xsl:value-of select="@assertCount" />.
   </xsl:template>
 
   <xsl:template match="g:testModel/g:test" mode="summary">
@@ -129,8 +101,7 @@
     <xsl:variable name="inconclusive" select="$tests[@id = key('outcome', 'inconclusive')/@id]" />
     <xsl:variable name="ignored" select="$tests[@id = key('status', 'ignored')/@id]" />
     <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/@id]" />
-    <xsl:variable name="assertions" select="key('status', 'executed')[@id = $tests/@id]/g:stepRun/g:result/@assertCount" />
-    <xsl:variable name="duration" select="/g:report/g:packageRun/g:testRuns/g:testRun[@id = $id]/g:stepRun/g:result/@duration" />
+    
     <li>
       <span>
         <xsl:choose>
@@ -198,6 +169,7 @@
     <xsl:param name="passed" />
     <xsl:param name="failed" />
     <xsl:param name="inconclusive" />
+
     <table style="display: inline;">
       <tr>
         <td>
@@ -280,16 +252,21 @@
     <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/@id]" />
     
     <xsl:variable name="testRun" select="/g:report/g:packageRun/g:testRuns/g:testRun[@id=$testId]" />
-    <xsl:variable name="rootStepResult" select="$testRun/g:stepRun/g:result" />
-    <xsl:variable name="allStepResults" select="$rootStepResult/descendant-or-self::g:result" />
-    <xsl:variable name="assertions" select="sum($allStepResults/@assertionCount)" />
+    <xsl:variable name="rootStepRun" select="$testRun/g:stepRun" />
+    <xsl:variable name="rootStepResult" select="$rootStepRun/g:result" />
+
+    <xsl:variable name="allTestAndFixtures" select="descendant-or-self::g:test" />
+    <xsl:variable name="resultsForAllDescendants" select="/g:report/g:packageRun/g:testRuns/g:testRun[@id = $allTestAndFixtures/@id]//g:stepRun/g:result" />
+    <xsl:variable name="assertions" select="sum($resultsForAllDescendants/@assertCount)" />
+
+    <xsl:variable name="nestingLevel" select="count(ancestor::g:test)" />
 
     <div>
       <xsl:attribute name="id">testRun-<xsl:value-of select="$testId" /></xsl:attribute>
       <xsl:attribute name="class">testRun toggleMargin outcome outcome-<xsl:value-of select="$rootStepResult/@outcome" /></xsl:attribute>
 
       <span>
-        <xsl:attribute name="class">testRunHeading testRunHeading-<xsl:value-of select="$kind"/></xsl:attribute>
+        <xsl:attribute name="class">testRunHeading testRunHeading-Level<xsl:value-of select="$nestingLevel"/></xsl:attribute>
 
         <img src="img/Minus.gif" class="toggleAbs">
           <xsl:attribute name="id">toggle-testRunPanel-<xsl:value-of select="$testId" /></xsl:attribute>
@@ -339,6 +316,7 @@
             <br/>
             <b>Assertions: </b>
             <xsl:value-of select="$assertions" />.
+            <br/>
           </xsl:when>
           <xsl:otherwise>
             Duration: <xsl:value-of select="format-number($rootStepResult/@duration, '0.00')" />s,
@@ -346,9 +324,11 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <xsl:apply-templates select="g:metadata" />
+        <xsl:call-template name="print-metadata-entries">
+          <xsl:with-param name="entries" select="g:metadata/g:entry|$rootStepRun/g:step/g:metadata/g:entry" />
+        </xsl:call-template>
 
-        <xsl:apply-templates select="$testRun/g:stepRun" />
+        <xsl:apply-templates select="$rootStepRun" />
 
         <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="details" />
       </div>
@@ -357,14 +337,16 @@
 
   <xsl:template match="g:stepRun">
     <xsl:variable name="stepId" select="g:step/@id" />
+    <xsl:variable name="isChildStep" select="parent::g:children" />
+    
     <xsl:variable name="allStepResults" select="descendant-or-self::g:result" />
-    <xsl:variable name="assertions" select="sum($allStepResults/@assertionCount)" />
+    <xsl:variable name="assertions" select="sum($allStepResults/@assertCount)" />
 
     <div>
       <xsl:attribute name="id">stepRun-<xsl:value-of select="g:step/@id" /></xsl:attribute>
 
       <xsl:choose>
-        <xsl:when test="parent::g:children">
+        <xsl:when test="$isChildStep">
           <xsl:attribute name="class">stepRun toggleMargin outcome outcome-<xsl:value-of select="g:result/@outcome" /></xsl:attribute>
           
           <span class="stepRunHeading">
@@ -385,7 +367,9 @@
       <div>
         <xsl:attribute name="id">stepRunPanel-<xsl:value-of select="$stepId" /></xsl:attribute>
 
-        <xsl:apply-templates select="g:metadata" />
+        <xsl:if test="$isChildStep">
+          <xsl:apply-templates select="g:step/g:metadata" />
+        </xsl:if>
 
         <xsl:apply-templates select="g:executionLog">
           <xsl:with-param name="stepId" select="$stepId" />
@@ -397,9 +381,21 @@
   </xsl:template>
 
   <xsl:template match="g:metadata">
-    <xsl:if test="g:entry[@key != 'ComponentKind']">
+    <xsl:call-template name="print-metadata-entries">
+      <xsl:with-param name="entries" select="g:entry" />
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template name="print-metadata-entries">
+    <xsl:param name="entries" />
+    <xsl:variable name="visibleEntries" select="$entries[@key != 'ComponentKind']" />
+
+    <xsl:if test="$visibleEntries">
       <ul class="metadata">
-        <xsl:apply-templates select="g:entry[@key != 'ComponentKind']" />
+        <xsl:apply-templates select="$visibleEntries">
+          <xsl:sort select="translate(@key, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" lang="en" data-type="text" />
+          <xsl:sort select="translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" lang="en" data-type="text" />
+        </xsl:apply-templates>
       </ul>
     </xsl:if>
   </xsl:template>

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -23,6 +24,9 @@ namespace MbUnit.Framework.Kernel.Model
     /// </summary>
     public abstract class ModelComponentInfo : BaseInfo, IModelComponent
     {
+        private MetadataMap cachedMetadata;
+        private CodeReference cachedCodeReference;
+
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
         /// </summary>
@@ -58,13 +62,23 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public MetadataMap Metadata
         {
-            get { return Source.Metadata.Copy(); }
+            get
+            {
+                if (cachedMetadata == null)
+                    Interlocked.CompareExchange(ref cachedMetadata, Source.Metadata.AsReadOnly(), null);
+                return cachedMetadata;
+            }
         }
 
         /// <inheritdoc />
         public CodeReference CodeReference
         {
-            get { return Source.CodeReference.Copy(); }
+            get
+            {
+                if (cachedCodeReference == null)
+                    Interlocked.CompareExchange(ref cachedCodeReference, Source.CodeReference.ReadOnlyCopy(), null);
+                return cachedCodeReference;
+            }
         }
         CodeReference IModelComponent.CodeReference
         {

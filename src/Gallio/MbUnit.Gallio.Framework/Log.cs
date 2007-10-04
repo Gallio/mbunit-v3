@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
 using MbUnit.Framework.Kernel.ExecutionLogs;
@@ -59,7 +60,7 @@ namespace MbUnit.Framework
 
         #region Current log writer stream accessors
         /// <summary>
-        /// Gets the current stream writer for the built-in log stream where the console input
+        /// Gets the current stream writer for the built-in log stream where the <see cref="Console.In" />
         /// stream for the test is recorded.
         /// </summary>
         public static LogStreamWriter ConsoleInput
@@ -68,7 +69,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets the current stream writer built-in log stream where the console output
+        /// Gets the current stream writer for the built-in log stream where the <see cref="Console.Out" />
         /// stream for the test is recorded.
         /// </summary>
         public static LogStreamWriter ConsoleOutput
@@ -77,7 +78,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets the current stream writer built-in log stream where the console error
+        /// Gets the current stream writer for the built-in log stream where the <see cref="Console.Error" />
         /// stream for the test is recorded.
         /// </summary>
         public static LogStreamWriter ConsoleError
@@ -86,7 +87,16 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets the current stream writer built-in log stream where assertion failures,
+        /// Gets the current stream writer for the built-in log stream where diagnostic <see cref="Debug" />
+        /// and <see cref="Trace" /> information is recorded.
+        /// </summary>
+        public static LogStreamWriter DebugTrace
+        {
+            get { return Writer[LogStreamNames.DebugTrace]; }
+        }
+
+        /// <summary>
+        /// Gets the current stream writer for the built-in log stream where assertion failures,
         /// exceptions and other failure data are recorded.
         /// </summary>
         public static LogStreamWriter Failures
@@ -95,23 +105,15 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets the current stream writer built-in log stream where debug information is recorded.
+        /// Gets the current stream writer for the built-in log stream where warnings are recorded.
         /// </summary>
-        public static LogStreamWriter Debug
+        public static LogStreamWriter Warnings
         {
-            get { return Writer[LogStreamNames.Debug]; }
+            get { return Writer[LogStreamNames.Warnings]; }
         }
 
         /// <summary>
-        /// Gets the current stream writer built-in log stream where diagnostic trace information is recorded.
-        /// </summary>
-        public static LogStreamWriter Trace
-        {
-            get { return Writer[LogStreamNames.Trace]; }
-        }
-
-        /// <summary>
-        /// Gets the current stream writer built-in log stream where the output from the convenience methods
+        /// Gets the current stream writer for the built-in log stream where the output from the convenience methods
         /// of the <see cref="Log" /> class is recorded.
         /// </summary>
         public static LogStreamWriter Default

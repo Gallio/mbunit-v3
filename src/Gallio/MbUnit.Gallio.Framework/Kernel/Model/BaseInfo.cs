@@ -50,7 +50,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <returns>True if the objects are equal</returns>
         public bool Equals(BaseInfo other)
         {
-            return other != null && source.Equals(other.source);
+            return ReferenceEquals(this, other) || ! ReferenceEquals(other, null) && source.Equals(other.source);
         }
 
         /// <inheritdoc />
@@ -71,7 +71,8 @@ namespace MbUnit.Framework.Kernel.Model
         /// <returns>True if they are equal</returns>
         public static bool operator ==(BaseInfo a, BaseInfo b)
         {
-            return a == null ? b == null : a.Equals(b);
+            return ReferenceEquals(a, b) ||
+                ! ReferenceEquals(a, null) && ! ReferenceEquals(b, null) && a.source.Equals(b.source);
         }
 
         /// <summary>

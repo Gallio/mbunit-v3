@@ -41,7 +41,7 @@ namespace MbUnit.Framework.Kernel.Model
         /// <inheritdoc />
         public override void BuildTests(TestTreeBuilder builder, ITest parent)
         {
-            parent.Metadata.Entries.AddAll(Template.Metadata.Entries);
+            parent.Metadata.AddAll(Template.Metadata);
 
             BuildTestsForGenerativeChildren(builder, parent);
         }

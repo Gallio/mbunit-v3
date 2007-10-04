@@ -46,8 +46,6 @@ namespace MbUnit.Framework
         /// <override />
         public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
-            base.Apply(builder, methodTemplate);
-
             MethodInfo method = methodTemplate.Method;
             ModelUtils.CheckMethodSignature(method);
 
@@ -56,6 +54,8 @@ namespace MbUnit.Framework
                 test.IsTestCase = true;
                 test.ExecuteChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
             });
+
+            base.Apply(builder, methodTemplate);
         }
     }
 }

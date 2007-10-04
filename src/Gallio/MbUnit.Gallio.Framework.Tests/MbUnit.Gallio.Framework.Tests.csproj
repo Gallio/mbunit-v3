@@ -71,6 +71,7 @@
     <Compile Include="FileAssertTest.cs" />
     <Compile Include="GenericAssertTest.cs" />
     <Compile Include="AssertWithReflectionTest.cs" />
+    <Compile Include="StepTest.cs" />
     <Compile Include="Xml\XmlSerializationAssertTest.cs" />
     <Compile Include="StringAssertTest.cs" />
     <Compile Include="AssertWithTypeTest.cs" />

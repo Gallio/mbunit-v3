@@ -86,7 +86,7 @@ namespace MbUnit.Framework.Kernel.Model
             // into the children.
             BaseTest test = new BaseTest(template.Name, template.CodeReference, this);
             test.Kind = null;
-            test.Metadata.Entries.AddAll(template.Metadata.Entries);
+            test.Metadata.AddAll(template.Metadata);
 
             parent.AddChild(test);
 

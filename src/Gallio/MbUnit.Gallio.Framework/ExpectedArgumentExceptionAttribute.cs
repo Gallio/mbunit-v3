@@ -17,16 +17,26 @@ using System;
 
 namespace MbUnit.Framework
 {
+    /// <summary>
+    /// Declares that the associated test method is expected to throw an <see cref="ArgumentException" />.
+    /// The expected contents of the exception message may optionally be specified.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class ExpectedArgumentExceptionAttribute : ExpectedExceptionAttribute
     {
-        // TODO.
-
+        /// <summary>
+        /// Declares that the associated test method is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         public ExpectedArgumentExceptionAttribute()
             : base(typeof(ArgumentException))
         {
         }
 
+        /// <summary>
+        /// Declares that the associated test method is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+        /// The expected contents of the exception message may also optionally be specified.
+        /// </summary>
+        /// <param name="message">The expected exception message, or null if not specified</param>
         public ExpectedArgumentExceptionAttribute(string message)
             : base(typeof(ArgumentException), message)
         {

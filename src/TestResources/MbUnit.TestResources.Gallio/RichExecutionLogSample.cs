@@ -13,9 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Drawing;
+using System;
+using System.Diagnostics;
 using MbUnit.Framework;
 using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.TestResources.Gallio.Properties;
 
 namespace MbUnit.TestResources.Gallio
@@ -24,15 +26,20 @@ namespace MbUnit.TestResources.Gallio
     /// Generates an execution log with all sorts of rich content.
     /// </summary>
     [TestFixture]
-    public class RichExecutionLogTest
+    public class RichExecutionLogSample
     {
-        private LogStreamWriter MbUnitRocks
+        private static LogStreamWriter MbUnitRocks
         {
             get { return Log.Writer["MbUnit Rocks"]; }
         }
 
+        /// <summary>
+        /// Demonstrate all of the basic logging features.
+        /// </summary>
         [Test]
-        public void GenerateRichLog()
+        [Description("Shows off MbUnit execution logs.")]
+        [Metadata("Gimmick", "We don't need any gimmicks!")]
+        public void FeatureDemo()
         {
             MbUnitRocks.WriteLine("MbUnit Rocks!");
             MbUnitRocks.WriteLine();
@@ -43,13 +50,23 @@ namespace MbUnit.TestResources.Gallio
 
             MbUnitRocks.WriteLine("You can write out your own log streams.");
 
-            MbUnitRocks.BeginSection("My section!");
+            using (MbUnitRocks.BeginSection("My section!"))
+            {
+                MbUnitRocks.WriteLine("And break them into sections.");
 
-            MbUnitRocks.WriteLine("And break them into sections.");
-            MbUnitRocks.WriteLine("So you can see what's happening.");
-            MbUnitRocks.WriteLine("Just in here.");
+                using (MbUnitRocks.BeginSection("And"))
+                using (MbUnitRocks.BeginSection("Even"))
+                using (MbUnitRocks.BeginSection("Nest"))
+                {
+                    using (MbUnitRocks.BeginSection("Them"))
+                    {
+                        MbUnitRocks.WriteLine("So you can see what's happening.");
+                        MbUnitRocks.WriteLine("Just in here.");
+                    }
 
-            MbUnitRocks.EndSection();
+                    MbUnitRocks.WriteLine("Or here...");
+                }
+            }
 
             Step.Run("Lemmings!", delegate
             {
@@ -65,13 +82,18 @@ namespace MbUnit.TestResources.Gallio
                 {
                     Step.Run("Uh oh!", delegate
                     {
-                        Assert.Fail("*POP*");
+                        Step.AddMetadata(MetadataKeys.Description, "The untimely death of a Blocker Lemming.");
+                        Step.AddMetadata("Epitaph", "Did not follow the herd."); 
+
+                        Assert.IsTrue(false, "*POP*");
                     });
                 }
                 catch (AssertionException)
                 {
                 }
             });
+
+            Step.AddMetadata("Highlight", "It's dynamic!");
 
             Step.Run("Tag Line", delegate
             {
@@ -80,6 +102,28 @@ namespace MbUnit.TestResources.Gallio
 
                 MbUnitRocks.WriteLine("Welcome to MbUnit Gallio!");
             });
+        }
+
+        /// <summary>
+        /// Demonstrate the use of multiple streams.
+        /// </summary>
+        [Test]
+        public void MultipleStreams()
+        {
+            Console.Error.WriteLine("Console error messages go here.");
+
+            Console.Out.WriteLine("Console output messages go here.");
+
+            Debug.WriteLine("Debug...");
+            Trace.WriteLine("... and Trace messages go here.");
+
+            Log.Warnings.WriteLine("Warnings go here.");
+
+            Log.Failures.WriteLine("Failures go here.");
+
+            Log.WriteLine("Log messages go here by default.");
+
+            Log.Writer["My Custom Log"].WriteLine("Log messages can also go here or to any other custom stream of your choice.");
         }
     }
 }

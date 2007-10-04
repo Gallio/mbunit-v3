@@ -186,7 +186,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Core
                         streamName = LogStreamNames.ConsoleError;
                         break;
                     case TestOutputType.Trace:
-                        streamName = LogStreamNames.Trace;
+                        streamName = LogStreamNames.DebugTrace;
                         break;
                 }
 
