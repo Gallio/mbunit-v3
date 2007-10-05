@@ -1,23 +1,50 @@
 body
 {
-	font-family: Cambria Arial Verdana;
-	font-size: 12pt;
+	margin: 0;
+	padding: 0;
+	font-family: Verdana, Arial, Helvetica, Helv, sans-serif;
+	font-size: 71%;
 }
-
+div#header
+{
+	margin: 0;
+	padding: 0;
+	background-color: #95b0be;
+	background-image: url(../img/header-background.gif);
+	background-repeat: repeat-y;
+	width: 100%;
+	height: 64px;/*border: solid 1px red;*/
+}
 h1
 {
-	font-size: 28pt;
+	font-size: 18pt;
+	letter-spacing: 0.2em;
+	font-weight: normal;
+	width: 100%;
+	height: 60px;
+	background-image: url(../img/MbUnitLogo.png);
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	color: White;
+	text-indent: 110px;/*border: solid 1px white;*/
+	padding-top: 15px;
 }
 
 h2
 {
-	font-size: 22pt;
-	text-decoration: underline;
+	font-size: 10pt;
+	letter-spacing: 0.3em;
+	color: #1f1f1f;
+	/*text-decoration: underline;*/
+	/*font-weight: normal;*/
+	/*padding: 8px;*/
+	padding: 0;
+	margin: 0 0 3px 0;
 }
 
 h3
 {
-	font-size: 20pt;
+	font-size: 10pt;
 }
 
 ul
@@ -74,51 +101,51 @@ ul
 .testRun
 {
 	margin-top: 12pt;
-	font-size: 12pt;
+	font-size: 10pt;
 }
 
 .testRunHeading
 {
 	font-weight:bold;
-	font-size:12pt;
+	font-size:10pt;
 	position:relative;
 }
 
 .testRunHeading-Level1
 {
-	font-size:18pt;
+	font-size:11pt;
 }
 
 .testRunHeading-Level2
 {
-	font-size:16pt;
+	font-size:10pt;
 }
 
 .testRunHeading-Level3
 {
-	font-size:14pt;
+	font-size:10pt;
 }
 
 .testRunHeading-Level4
 {
-	font-size:12pt;
+	font-size:10pt;
 }
 
 /* Styles for metadata entries */
 .metadata
 {
-	margin: 5px 0px 5px 0px;
+	margin: 5px 5px 5px 0px;
 	padding: 5px 5px 5px 5px;
 	
-	border: solid 1px #505090;
-	background: #ececff;
+	/*border: solid 1px #505090;*/
+	background: #f4f4ff;
 	font-size: 10pt;
 }
 
 /* Styles for step runs */
 .stepRun
 {
-	font-size:10pt;
+	font-size:9pt;
 }
 
 .stepRunHeading
@@ -131,8 +158,8 @@ ul
 .outcome
 {
 	padding-left: 6px;
-	border-left-style: solid;
-	border-left-width: 3px;
+	/*border-left-style: solid;
+	border-left-width: 3px;*/
 }
 
 .outcome-passed
@@ -164,15 +191,17 @@ ul
 .logStream
 {
 	background-color: #f0f0f0;
-	border: dotted 1px #505050;
-	margin: 5px 0px 5px 0px;
+	/*border: dotted 1px #505050;*/
+	border-bottom: solid 1px #c6c6c6;
+	border-right: solid 1px #c6c6c6;
+	margin: 5px 5px 5px 0px;
 	padding: 5px 5px 5px 5px;
 }
 
 .logStreamHeading
 {
 	font-weight:bold;
-	font-size: 12pt;
+	font-size: 9pt;
 	text-decoration: underline;
 }
 
@@ -208,4 +237,44 @@ ul
 {
 	background-color: #ffffc8;
 	border: dotted 1px #909050;
+}
+div.section
+{
+	background-color: #ebeaea;
+	margin: 5px;
+	padding: 10px;
+	border-bottom: solid 1px #dcdcdc;
+	border-right: solid 1px #dcdcdc;
+}
+div.section-content
+{
+	background-color: #fbfbfb;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+table.statistics-table
+{
+	width: 99%;
+	margin: 0 20px 0 0;
+	/*border: solid 1px red;*/
+	border-collapse: collapse;
+}
+table.statistics-table td.statistics-label-cell
+{
+	font-weight: bolder;
+	color: #646464;
+	padding: 0 10x 0 10px;
+	/*text-align: right;*/
+}
+div#statistics-section-content
+{
+	padding: 10px 20px 10px 20px;
+}
+div#statistics-section-content table.statistics-table
+{
+	width: 100%;
+}
+table.statistics-table tr.alternate-row td
+{
+	background-color: #f2f2f2;
 }

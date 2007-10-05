@@ -51,7 +51,7 @@ namespace MbUnit.Core.Reporting.Resources
         /// </summary>
         public static readonly IList<string> Images = new ReadOnlyCollection<string>(new string[]
         {
-            @"Container.png", @"Fixture.png", @"Test.png", @"Logo.png", @"Plus.gif", @"Minus.gif", @"FullStop.gif"
+            @"Container.png", @"Fixture.png", @"Test.png", @"Logo.png", @"Plus.gif", @"Minus.gif", @"FullStop.gif", @"MbUnitLogo.png", @"header-background.gif"
         });
 
         /// <summary>
