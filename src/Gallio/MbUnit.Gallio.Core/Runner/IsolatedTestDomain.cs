@@ -95,35 +95,14 @@ namespace MbUnit.Core.Runner
         /// <inheritdoc />
         protected override ITestDomain InternalConnect(IProgressMonitor progressMonitor)
         {
-            try
-            {
-                progressMonitor.SetStatus("Creating the isolated AppDomain.");
+            progressMonitor.SetStatus("Creating the isolated AppDomain.");
+            CreateAppDomain();
+            progressMonitor.Worked(0.7);
 
-                CreateAppDomain();
-
-                progressMonitor.Worked(0.7);
-            }
-            catch (Exception ex)
-            {
-                throw new FatalRunnerException("Could not create the isolated AppDomain.", ex);
-            }
-
-            try
-            {
-                progressMonitor.SetStatus("Initializing the test runner.");
-
-                bootstrapper = CreateRemoteInstance<Bootstrapper>();
-                bootstrapper.Initialize(runtime.GetRuntimeSetup());
-
-                ITestDomain testDomain = bootstrapper.CreateTestDomain();
-
-                progressMonitor.Worked(0.3);
-                return testDomain;
-            }
-            catch (Exception ex)
-            {
-                throw new FatalRunnerException("Could not initialize the isolated runtime environment.", ex);
-            }
+            progressMonitor.SetStatus("Initializing the test runner.");
+            ITestDomain testDomain = InitializeBootstrapper();
+            progressMonitor.Worked(0.3);
+            return testDomain;
         }
 
         /// <inheritdoc />
@@ -131,26 +110,58 @@ namespace MbUnit.Core.Runner
         {
             try
             {
-                try
+                progressMonitor.SetStatus("Shutting down the test runner.");
+                ShutdownBootstrapper();
+                progressMonitor.Worked(0.3);
+            }
+            finally
+            {
+                progressMonitor.SetStatus("Unloading the isolated AppDomain.");
+                UnloadAppDomain();
+                progressMonitor.Worked(0.7);
+            }
+        }
+
+        private void CreateAppDomain()
+        {
+            try
+            {
+                AppDomainSetup setup = new AppDomainSetup();
+
+                if (Package.ApplicationBase.Length == 0
+                    || !Path.IsPathRooted(Package.ApplicationBase))
+                    setup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Package.ApplicationBase);
+                else
+                    setup.ApplicationBase = Package.ApplicationBase;
+
+                setup.ApplicationName = "IsolatedTestDomain";
+
+                if (Package.EnableShadowCopy)
                 {
-                    progressMonitor.SetStatus("Shutting down the test runner.");
-
-                    if (bootstrapper != null)
-                        bootstrapper.Shutdown();
-
-                    progressMonitor.Worked(0.3);
+                    setup.ShadowCopyFiles = @"true";
+                    setup.ShadowCopyDirectories = Package.ApplicationBase;
+                    // FIXME: should we also shadow-copy all assembly reference paths?
                 }
-                finally
-                {
-                    progressMonitor.SetStatus("Unloading the isolate AppDomain.");
 
-                    bootstrapper = null;
+                // NOTE: Loader optimization and override configuration not supported by Mono.
+                if (!MonoSupport.IsUsingMonoRuntime)
+                    ConfigureAppDomainSetupForCLR(setup);
 
-                    if (appDomain != null)
-                        AppDomain.Unload(appDomain);
+                Evidence evidence = new Evidence(AppDomain.CurrentDomain.Evidence); // FIXME: should be more careful here
+                appDomain = AppDomain.CreateDomain("IsolatedTestDomain", evidence, setup);
+            }
+            catch (Exception ex)
+            {
+                throw new FatalRunnerException("Could not create the isolated AppDomain.", ex);
+            }
+        }
 
-                    progressMonitor.Worked(0.7);
-                }
+        private void UnloadAppDomain()
+        {
+            try
+            {
+                if (appDomain != null)
+                    AppDomain.Unload(appDomain);
             }
             catch (Exception ex)
             {
@@ -162,31 +173,36 @@ namespace MbUnit.Core.Runner
             }
         }
 
-        private void CreateAppDomain()
+        private ITestDomain InitializeBootstrapper()
         {
-            AppDomainSetup setup = new AppDomainSetup();
-
-            if (Package.ApplicationBase.Length == 0
-                || !Path.IsPathRooted(Package.ApplicationBase))
-                setup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Package.ApplicationBase);
-            else
-                setup.ApplicationBase = Package.ApplicationBase;
-
-            setup.ApplicationName = "IsolatedTestDomain";
-
-            if (Package.EnableShadowCopy)
+            try
             {
-                setup.ShadowCopyFiles = "true";
-                setup.ShadowCopyDirectories = Package.ApplicationBase;
-                // FIXME: should we also shadow-copy all assembly reference paths?
+                bootstrapper = CreateRemoteInstance<Bootstrapper>();
+                bootstrapper.Initialize(runtime.GetRuntimeSetup());
+
+                return bootstrapper.CreateTestDomain();
             }
+            catch (Exception ex)
+            {
+                throw new FatalRunnerException("Could not initialize the isolated runtime environment.", ex);
+            }
+        }
 
-            // NOTE: Loader optimization and override configuration not supported by Mono.
-            if (!MonoSupport.IsUsingMonoRuntime)
-                ConfigureAppDomainSetupForCLR(setup);
-
-            Evidence evidence = new Evidence(AppDomain.CurrentDomain.Evidence); // FIXME: should be more careful here
-            appDomain = AppDomain.CreateDomain("IsolatedTestDomain", evidence, setup);
+        private void ShutdownBootstrapper()
+        {
+            try
+            {
+                if (bootstrapper != null)
+                    bootstrapper.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                throw new FatalRunnerException("Could not cleanly shutdown the isolated runtime environment.", ex);
+            }
+            finally
+            {
+                bootstrapper = null;
+            }
         }
 
         private void ConfigureAppDomainSetupForCLR(AppDomainSetup setup)

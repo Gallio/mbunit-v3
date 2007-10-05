@@ -48,9 +48,9 @@ namespace MbUnit.Core.Runner
         public BaseRunner(ICoreRuntime runtime, ITestDomainFactory domainFactory)
         {
             if (runtime == null)
-                throw new ArgumentNullException("runtime");
+                throw new ArgumentNullException(@"runtime");
             if (domainFactory == null)
-                throw new ArgumentNullException("domainFactory");
+                throw new ArgumentNullException(@"domainFactory");
 
             this.runtime = runtime;
             this.domainFactory = domainFactory;
@@ -126,7 +126,7 @@ namespace MbUnit.Core.Runner
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 templateEnumerationOptions = value;
             }
@@ -139,7 +139,7 @@ namespace MbUnit.Core.Runner
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 testEnumerationOptions = value;
             }
@@ -152,7 +152,7 @@ namespace MbUnit.Core.Runner
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(@"value");
 
                 testExecutionOptions = value;
             }
@@ -180,9 +180,9 @@ namespace MbUnit.Core.Runner
         public virtual void LoadPackage(TestPackage package, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
+                throw new ArgumentNullException(@"progressMonitor");
             if (package == null)
-                throw new ArgumentNullException("package");
+                throw new ArgumentNullException(@"package");
 
             try
             {
@@ -199,7 +199,7 @@ namespace MbUnit.Core.Runner
         public virtual void BuildTemplates(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
+                throw new ArgumentNullException(@"progressMonitor");
 
             try
             {
@@ -216,7 +216,7 @@ namespace MbUnit.Core.Runner
         public virtual void BuildTests(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
+                throw new ArgumentNullException(@"progressMonitor");
 
             try
             {
@@ -233,7 +233,7 @@ namespace MbUnit.Core.Runner
         public virtual void Run(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
+                throw new ArgumentNullException(@"progressMonitor");
 
             try
             {

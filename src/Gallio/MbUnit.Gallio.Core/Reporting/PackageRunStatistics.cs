@@ -37,6 +37,7 @@ namespace MbUnit.Core.Reporting
         private int skipCount;
         private int passCount;
         private int testCount;
+        private int stepCount;
 
         /// <summary>
         /// Gets or sets the number of assertions evaluated.
@@ -129,6 +130,16 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <summary>
+        /// Gets or sets the total number of test steps.
+        /// </summary>
+        [XmlAttribute("stepCount")]
+        public int StepCount
+        {
+            get { return stepCount; }
+            set { stepCount = value; }
+        }
+
+        /// <summary>
         /// Formats a single line of text summarizing test case results.
         /// </summary>
         public string FormatTestCaseResultSummary()
@@ -148,6 +159,7 @@ namespace MbUnit.Core.Reporting
                 throw new ArgumentNullException("stepRun");
 
             assertCount += stepRun.Result.AssertCount;
+            stepCount += 1;
 
             if (!isTestCase)
                 return;

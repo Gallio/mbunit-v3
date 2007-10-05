@@ -1,20 +1,22 @@
 body
 {
-	margin: 0;
-	padding: 0;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
 	font-family: Verdana, Arial, Helvetica, Helv, sans-serif;
-	font-size: 71%;
+	font-size: 10pt;
 }
+
 div#header
 {
-	margin: 0;
-	padding: 0;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
 	background-color: #95b0be;
 	background-image: url(../img/header-background.gif);
 	background-repeat: repeat-y;
 	width: 100%;
 	height: 64px;/*border: solid 1px red;*/
 }
+
 h1
 {
 	font-size: 18pt;
@@ -32,14 +34,15 @@ h1
 
 h2
 {
-	font-size: 10pt;
-	letter-spacing: 0.3em;
+	font-size: 13pt;
+	letter-spacing: 0.15em;
 	color: #1f1f1f;
 	/*text-decoration: underline;*/
-	/*font-weight: normal;*/
+	/* font-weight: normal;*/
 	/*padding: 8px;*/
 	padding: 0;
 	margin: 0 0 3px 0;
+	text-indent: 8px;
 }
 
 h3
@@ -50,51 +53,95 @@ h3
 ul
 {
 	list-style-type: none;
+	padding-left: 0px;
+	margin-left: 24px;
 }
+
+ul.testRunContainer, ul.stepRunContainer
+{
+	margin-left: 12px;
+}
+
 
 /* Progress bars */
-.progressBar
+table.progressBar
 {
-	position: relative;
-	background-color: #DDDDDD;
-	border-color: #000000;
+	display: inline;
+	vertical-align: middle;
 }
 
-.progressPassed
+div.progressBar
 {
-	position: absolute;
-	left: 0px;
+	overflow: hidden;
+	
+	background-color: #DDDDDD;
+	border: solid 1px #000000;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+	
+	height: 8px;
+	width: 72px;
+}
+
+.progress-passed
+{
+	height:100%;
+	float:left;
 	background-color: #008000;
 }
 
-.progressFailed
+.progress-failed
 {
-	position: absolute;
+	height:100%;
+	float:left;
 	background-color: #ff0000;
 }
 
-.progressInconclusive
+.progress-inconclusive
 {
-	position: absolute;
-	background-color: #808000;
+	height:100%;
+	float:left;
+	background-color: #ffff00;
+}
+
+/* Outcome bar */
+table.outcomeBar
+{
+	display: inline;
+	vertical-align: middle;
+}
+
+div.outcomeBar
+{
+	overflow: hidden;
+	
+	border: solid 1px #000000;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+	
+	height: 6px;
+	width: 20px;
+}
+
+.outcome-passed
+{
+	background-color: #008000;
+}
+
+.outcome-failed
+{
+	background-color: #ff0000;
+}
+
+.outcome-inconclusive
+{
+	background-color: #ffff00;
 }
 
 /* Toggles */
 .toggle
 {
 	cursor: pointer;
-}
-
-.toggleAbs
-{
-	cursor: pointer;
-	position: absolute;
-	left: -30px;
-}
-
-.toggleMargin
-{
-	margin-left: 20px;
 }
 
 /* Styles for test runs, including customized varieties per component kind */
@@ -131,6 +178,11 @@ ul
 	font-size:10pt;
 }
 
+.testRunPanel
+{
+	margin-left: 12pt;
+}
+
 /* Styles for metadata entries */
 .metadata
 {
@@ -139,7 +191,7 @@ ul
 	
 	/*border: solid 1px #505090;*/
 	background: #f4f4ff;
-	font-size: 10pt;
+	font-size: 9pt;
 }
 
 /* Styles for step runs */
@@ -154,27 +206,9 @@ ul
 	position:relative;
 }
 
-/* Styles used for coloring steps with different outcomes */
-.outcome
+.stepRunPanel
 {
-	padding-left: 6px;
-	/*border-left-style: solid;
-	border-left-width: 3px;*/
-}
-
-.outcome-passed
-{
-	border-left-color: #008000;
-}
-
-.outcome-failed
-{
-	border-left-color: #ff0000;
-}
-
-.outcome-inconclusive
-{
-	border-left-color: #808000;
+	margin-left: 12pt;
 }
 
 /* Styles used for execution logs */
@@ -238,6 +272,8 @@ ul
 	background-color: #ffffc8;
 	border: dotted 1px #909050;
 }
+
+
 div.section
 {
 	background-color: #ebeaea;
@@ -246,12 +282,14 @@ div.section
 	border-bottom: solid 1px #dcdcdc;
 	border-right: solid 1px #dcdcdc;
 }
+
 div.section-content
 {
 	background-color: #fbfbfb;
 	padding-top: 3px;
 	padding-bottom: 3px;
 }
+
 table.statistics-table
 {
 	width: 99%;
@@ -259,6 +297,7 @@ table.statistics-table
 	/*border: solid 1px red;*/
 	border-collapse: collapse;
 }
+
 table.statistics-table td.statistics-label-cell
 {
 	font-weight: bolder;
@@ -266,15 +305,18 @@ table.statistics-table td.statistics-label-cell
 	padding: 0 10x 0 10px;
 	/*text-align: right;*/
 }
+
+table.statistics-table tr.alternate-row td
+{
+	background-color: #f2f2f2;
+}
+
 div#statistics-section-content
 {
 	padding: 10px 20px 10px 20px;
 }
+
 div#statistics-section-content table.statistics-table
 {
 	width: 100%;
-}
-table.statistics-table tr.alternate-row td
-{
-	background-color: #f2f2f2;
 }

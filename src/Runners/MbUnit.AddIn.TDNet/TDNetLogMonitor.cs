@@ -63,8 +63,9 @@ namespace MbUnit.AddIn.TDNet
         private void HandleStepFinished(object sender, ReportStepEventArgs e)
         {
             // Ignore tests that aren't test cases.
+            // Also ignore nested test steps.
             TestData testData = e.Report.TestModel.Tests[e.TestRun.TestId];
-            if (!testData.IsTestCase)
+            if (!testData.IsTestCase || e.StepRun.Step.ParentId != null)
                 return;
 
             // A TestResult with State == TestState.Passed won't be displayed in the
@@ -82,16 +83,7 @@ namespace MbUnit.AddIn.TDNet
             TestResult result = new TestResult();
             result.Name = e.StepRun.Step.FullName;
             result.TimeSpan = TimeSpan.FromSeconds(e.StepRun.Result.Duration);
-            try
-            {
-                // This could crash in older versions of TD.NET with a MissingFieldException
-                // For some reason the exception its always thrown regardless of the catch
-                // block so we have to comment it out for now
-                //result.TestRunner = "MbUnit Gallio";
-            }
-            catch (MissingFieldException)
-            {
-            }
+            // result.TestRunner = "MbUnit Gallio"; // note: can crash in older versions of TD.Net with MissingFieldException
 
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line

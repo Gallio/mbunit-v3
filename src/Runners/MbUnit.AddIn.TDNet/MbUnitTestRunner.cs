@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Castle.Core.Logging;
 using MbUnit.AddIn.TDNet.Properties;
 using MbUnit.Core.Runner;
 using MbUnit.Framework.Kernel.Filters;
@@ -33,7 +34,6 @@ namespace MbUnit.AddIn.TDNet
     public class MbUnitTestRunner : TDF.ITestRunner
     {
         private readonly string reportType = @"html";
-        private TDNetLogger logger = null;
 
         #region TDF.ITestRunner Members
 
@@ -115,8 +115,8 @@ namespace MbUnit.AddIn.TDNet
             if (filter == null)
                 throw new ArgumentNullException(@"filter");
 
-            logger = new TDNetLogger(testListener);
-            LogAddInVersion();
+            TDNetLogger logger = new TDNetLogger(testListener);
+            LogAddInVersion(logger);
 
             using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper(
                 new LogProgressMonitorProvider(logger),
@@ -127,12 +127,14 @@ namespace MbUnit.AddIn.TDNet
                 // This monitor will inform the user in real-time what's going on
                 testRunnerHelper.CustomMonitors.Add(new TDNetLogMonitor(testListener, testRunnerHelper.ReportMonitor));
 
+                testRunnerHelper.Package.EnableShadowCopy = true;
+
                 string location = new Uri(assembly.CodeBase).LocalPath;
                 testRunnerHelper.Package.AssemblyFiles.Add(location);
 
                 testRunnerHelper.ReportFormats.Add(reportType);
                 testRunnerHelper.ReportNameFormat = Path.GetFileName(location);
-                testRunnerHelper.ReportDirectory = GetReportDirectory();
+                testRunnerHelper.ReportDirectory = GetReportDirectory(logger);
                 if (String.IsNullOrEmpty(testRunnerHelper.ReportDirectory))
                 {
                     return TestRunState.Failure;
@@ -151,8 +153,9 @@ namespace MbUnit.AddIn.TDNet
         /// <summary>
         /// Gets a temporary folder to store the HTML report.
         /// </summary>
+        /// <param name="logger">The logger</param>
         /// <returns>The full name of the folder or null if it could not be created.</returns>
-        private string GetReportDirectory()
+        private string GetReportDirectory(ILogger logger)
         {
             try
             {
@@ -169,7 +172,7 @@ namespace MbUnit.AddIn.TDNet
             }
             catch (Exception e)
             {
-                logger.Error(e.ToString());
+                logger.Error("Could not create the report directory.", e);
                 return null;
             }
         }
@@ -234,7 +237,7 @@ namespace MbUnit.AddIn.TDNet
             testListener.WriteLine(message, Category.Warning);
         }
 
-        private void LogAddInVersion()
+        private void LogAddInVersion(ILogger logger)
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             logger.Info(String.Format(Resources.RunnerNameAndVersion + "\n",

@@ -29,7 +29,7 @@ namespace MbUnit.Icarus.Tests
         public void LoadUpAssemblyAndGetTestTree_Test()
         {
             RuntimeSetup runtimeSetup = new RuntimeSetup();
-            AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup);
+            StandaloneRunner runner = StandaloneRunner.CreateRunner(runtimeSetup);
 
             TestPackage testpackage = new TestPackage();
             testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");

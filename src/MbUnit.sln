@@ -167,6 +167,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Plugin.XunitAdapter.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.Xunit", "TestResources\MbUnit.TestResources.Xunit\MbUnit.TestResources.Xunit.csproj", "{70015C50-93E8-4D17-86B0-69F030911C98}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{B14BBC7E-B010-496E-B98F-0984D856D5D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "Samples\MbUnit.Samples\MbUnit.Samples.csproj", "{27378CEB-7271-4BDA-8B5F-70816286FC80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -273,6 +277,10 @@ Global
 		{70015C50-93E8-4D17-86B0-69F030911C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70015C50-93E8-4D17-86B0-69F030911C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70015C50-93E8-4D17-86B0-69F030911C98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27378CEB-7271-4BDA-8B5F-70816286FC80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27378CEB-7271-4BDA-8B5F-70816286FC80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27378CEB-7271-4BDA-8B5F-70816286FC80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27378CEB-7271-4BDA-8B5F-70816286FC80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -303,5 +311,6 @@ Global
 		{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E} = {00CE3107-C47F-4D2B-986B-763181832B51}
 		{0783AC75-ECD1-4846-B85A-70D7313BF1D9} = {00CE3107-C47F-4D2B-986B-763181832B51}
 		{B1843915-598A-4F80-9E47-BA890F879262} = {00CE3107-C47F-4D2B-986B-763181832B51}
+		{27378CEB-7271-4BDA-8B5F-70816286FC80} = {B14BBC7E-B010-496E-B98F-0984D856D5D3}
 	EndGlobalSection
 EndGlobal

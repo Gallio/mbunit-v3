@@ -221,7 +221,8 @@ namespace MbUnit.Core.Runner.Monitors
                         StepState stepState = GetStepData(e.StepId);
                         stepState.StepRun.EndTime = DateTime.Now;
                         stepState.StepRun.Result = e.Result;
-                        report.PackageRun.Statistics.MergeStepStatistics(stepState.StepRun, stepState.TestData.IsTestCase);
+                        report.PackageRun.Statistics.MergeStepStatistics(stepState.StepRun,
+                            stepState.StepRun.Step.ParentId == null && stepState.TestData.IsTestCase);
 
                         stepState.ExecutionLogWriter.Close();
 

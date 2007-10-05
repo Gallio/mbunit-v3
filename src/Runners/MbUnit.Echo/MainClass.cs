@@ -256,7 +256,7 @@ namespace MbUnit.Echo
             RuntimeSetup setup = new RuntimeSetup();
             if (arguments.PluginDirectories != null)
                 setup.PluginDirectories.AddRange(arguments.PluginDirectories);
-            using (AutoRunner runner = AutoRunner.CreateRunner(setup))
+            using (StandaloneRunner runner = StandaloneRunner.CreateRunner(setup))
             {
                 IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
 

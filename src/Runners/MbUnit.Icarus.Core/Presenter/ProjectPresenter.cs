@@ -26,7 +26,7 @@ namespace MbUnit.Icarus.Core.Presenter
     {
         private readonly IProjectAdapter _View;
         private readonly ITestRunnerModel _TestRunnerModel;
-        private readonly AutoRunner runner;
+        private readonly StandaloneRunner runner;
 
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
         {
@@ -34,7 +34,7 @@ namespace MbUnit.Icarus.Core.Presenter
             _TestRunnerModel = testrunnermodel;
 
             RuntimeSetup runtimeSetup = new RuntimeSetup();
-            runner = AutoRunner.CreateRunner(runtimeSetup);
+            runner = StandaloneRunner.CreateRunner(runtimeSetup);
             _View.GetTestTree += GetTestTree;
 
         }

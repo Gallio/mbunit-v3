@@ -76,7 +76,8 @@ namespace MbUnit.Plugin.XunitAdapter.Core
 
             foreach (Type typeInfo in assembly.GetExportedTypes())
             {
-                if (TypeReflectionUtilities.ContainsTestMethods(typeInfo))
+                if (TypeReflectionUtilities.ContainsTestMethods(typeInfo)
+                    || TypeReflectionUtilities.HasRunWith(typeInfo))
                     BuildTypeTest(assemblyTest, typeInfo);
             }
 
@@ -90,9 +91,25 @@ namespace MbUnit.Plugin.XunitAdapter.Core
             typeTest.Kind = ComponentKind.Fixture;
             assemblyTest.AddChild(typeTest);
 
-            foreach (MethodInfo methodInfo in TypeReflectionUtilities.GetTestMethods(typeInfo))
+            if (TypeReflectionUtilities.HasRunWith(typeInfo))
             {
-                BuildMethodTest(typeTest, methodInfo);
+                // The ITestClassCommand produced by a RunWith command does
+                // not allow us to derive as much declarative information ahead
+                // of time.  Consequently we can only generate a test node for
+                // the fixture, not its methods.  The internal processing of
+                // the RunWith will occur in a series of nested test Steps
+                // created at runtime on demand.
+                typeTest.IsTestCase = true;
+            }
+            else
+            {
+                // Special support for typical Xunit tests.
+                // We exploit the additional declarative information we have
+                // to provide a better user experience in this case.
+                foreach (MethodInfo methodInfo in TypeReflectionUtilities.GetTestMethods(typeInfo))
+                {
+                    BuildMethodTest(typeTest, methodInfo);
+                }
             }
 
             // Add XML documentation.

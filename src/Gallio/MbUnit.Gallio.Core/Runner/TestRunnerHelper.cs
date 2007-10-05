@@ -35,7 +35,7 @@ namespace MbUnit.Core.Runner
 {
     /// <summary>
     /// Running tests with Gallio involves creating specific objects in a predefined
-    /// way. This class tries to simplify this process by implementing a common
+    /// way.  This class tries to simplify this process by implementing a common
     /// pattern.
     /// </summary>
     /// <todo>
@@ -247,7 +247,7 @@ namespace MbUnit.Core.Runner
             if (!HasTestAssemblies())
                 return ResultCode.NoTests;
 
-            using (AutoRunner runner = AutoRunner.CreateRunner(runtimeSetup))
+            using (StandaloneRunner runner = StandaloneRunner.CreateRunner(runtimeSetup))
             {
                 CreateStopWatch();
 

@@ -46,7 +46,7 @@
   <xsl:template match="g:packageRun">
     <div id="Statistics" class="section">
       <h2>Statistics</h2>
-      <div id="statistics-section-content"  class="section-content">
+      <div id="statistics-section-content" class="section-content">
         <table class="statistics-table">
           <tr>
             <td class="statistics-label-cell">
@@ -80,7 +80,7 @@
         Tests:
       </td>
       <td>
-        <xsl:value-of select="@testCount" />
+        <xsl:value-of select="@testCount" /> (<xsl:value-of select="@stepCount" /> steps)
       </td>
     </tr>
     <tr class="alternate-row">
@@ -146,12 +146,8 @@
         <xsl:choose>
           <xsl:when test="g:children/g:test and $kind != 'Fixture'">
             <img src="img/Minus.gif" class="toggle">
-              <xsl:attribute name="id">
-                toggle-testChildrenPanel-<xsl:value-of select="$id" />
-              </xsl:attribute>
-              <xsl:attribute name="onclick">
-                toggle('testChildrenPanel-<xsl:value-of select="$id" />');
-              </xsl:attribute>
+              <xsl:attribute name="id">toggle-testChildrenPanel-<xsl:value-of select="$id" /></xsl:attribute>
+              <xsl:attribute name="onclick">toggle('testChildrenPanel-<xsl:value-of select="$id" />');</xsl:attribute>
             </img>
           </xsl:when>
           <xsl:otherwise>
@@ -164,18 +160,11 @@
         </xsl:call-template>
 
         <a>
-          <xsl:attribute name="href">
-            #testRun-<xsl:value-of select="@id" />
-          </xsl:attribute>
+          <xsl:attribute name="href">#testRun-<xsl:value-of select="@id" /></xsl:attribute>
           <xsl:value-of select="@name" />
         </a>
 
         <xsl:call-template name="progressBar">
-          <xsl:with-param name="width">100</xsl:with-param>
-          <xsl:with-param name="height">10</xsl:with-param>
-          <xsl:with-param name="run">
-            <xsl:value-of select="count($run)" />
-          </xsl:with-param>
           <xsl:with-param name="passed">
             <xsl:value-of select="count($passed)" />
           </xsl:with-param>
@@ -191,93 +180,11 @@
 
       <xsl:if test="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id] and $kind != 'Fixture' ">
         <ul>
-          <xsl:attribute name="id">
-            testChildrenPanel-<xsl:value-of select="$id" />
-          </xsl:attribute>
+          <xsl:attribute name="id">testChildrenPanel-<xsl:value-of select="$id" /></xsl:attribute>
           <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="summary" />
         </ul>
       </xsl:if>
     </li>
-  </xsl:template>
-
-  <!-- Scale value -->
-  <xsl:template name="scale">
-    <xsl:param name="origLength" />
-    <xsl:param name="targetLength" />
-    <xsl:param name="value" />
-    <xsl:value-of select="($value div $origLength) * $targetLength" />
-  </xsl:template>
-
-  <!-- Progress bar -->
-  <xsl:template name="progressBar">
-    <xsl:param name="width" />
-    <xsl:param name="height" />
-    <xsl:param name="run" />
-    <xsl:param name="passed" />
-    <xsl:param name="failed" />
-    <xsl:param name="inconclusive" />
-
-    <table style="display: inline;">
-      <tr>
-        <td>
-          <div class="progressBar">
-            <xsl:attribute name="style">
-              width:<xsl:value-of select="$width" />px; height:<xsl:value-of select="$height" />px;
-            </xsl:attribute>
-            <!-- passed -->
-            <xsl:if test="$passed > 0">
-              <div class="progressPassed">
-                <xsl:attribute name="style">
-                  height: <xsl:value-of select="$height" />px; width: <xsl:call-template name="scale">
-                    <xsl:with-param name="origLength" select="$run" />
-                    <xsl:with-param name="targetLength" select="$width" />
-                    <xsl:with-param name="value" select="$passed" />
-                  </xsl:call-template>px;
-                </xsl:attribute>
-              </div>
-            </xsl:if>
-            <!-- failed -->
-            <xsl:if test="$failed > 0">
-              <div class="progressFailed">
-                <xsl:attribute name="style">
-                  left:<xsl:call-template name="scale">
-                    <xsl:with-param name="origLength" select="$run" />
-                    <xsl:with-param name="targetLength" select="$width" />
-                    <xsl:with-param name="value" select="$passed" />
-                  </xsl:call-template>px; height:<xsl:value-of select="$height" />px; width:<xsl:call-template name="scale">
-                    <xsl:with-param name="origLength" select="$run" />
-                    <xsl:with-param name="targetLength" select="$width" />
-                    <xsl:with-param name="value" select="$failed" />
-                  </xsl:call-template>px;
-                </xsl:attribute>
-              </div>
-            </xsl:if>
-            <!-- inconclusive -->
-            <xsl:if test="$inconclusive > 0">
-              <div class="progressInconclusive">
-                <xsl:attribute name="style">
-                  left:<xsl:call-template name="scale">
-                    <xsl:with-param name="origLength" select="$run" />
-                    <xsl:with-param name="targetLength" select="$width" />
-                    <xsl:with-param name="value" select="$passed + $failed" />
-                  </xsl:call-template>px; height:<xsl:value-of select="$height" />px; width:<xsl:call-template name="scale">
-                    <xsl:with-param name="origLength" select="$run" />
-                    <xsl:with-param name="targetLength" select="$width" />
-                    <xsl:with-param name="value" select="$inconclusive" />
-                  </xsl:call-template>px;
-                </xsl:attribute>
-              </div>
-            </xsl:if>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </xsl:template>
-
-  <!-- Pretty print date time values -->
-  <xsl:template name="format-datetime">
-    <xsl:param name="datetime" />
-    <xsl:value-of select="substring($datetime, 12, 8)" />, <xsl:value-of select="substring($datetime, 1, 10)" />
   </xsl:template>
 
   <xsl:template match="g:testModel/g:test" mode="details">
@@ -286,7 +193,9 @@
       <div class="section-content">
         <xsl:choose>
           <xsl:when test="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]">
-            <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="details" />
+            <ul class="testRunContainer">
+              <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="details" />
+            </ul>
           </xsl:when>
           <xsl:otherwise>
             <em>This report does not contain any test runs.</em>
@@ -318,26 +227,15 @@
 
     <xsl:variable name="nestingLevel" select="count(ancestor::g:test)" />
 
-    <div>
-      <xsl:attribute name="id">
-        testRun-<xsl:value-of select="$testId" />
-      </xsl:attribute>
-      <xsl:attribute name="class">
-        testRun toggleMargin outcome outcome-<xsl:value-of select="$rootStepResult/@outcome" />
-      </xsl:attribute>
+    <li name="testRun">
+      <xsl:attribute name="id">testRun-<xsl:value-of select="$testId" /></xsl:attribute>
 
       <span>
-        <xsl:attribute name="class">
-          testRunHeading testRunHeading-Level<xsl:value-of select="$nestingLevel"/>
-        </xsl:attribute>
+        <xsl:attribute name="class">testRunHeading testRunHeading-Level<xsl:value-of select="$nestingLevel"/></xsl:attribute>
 
         <img src="img/Minus.gif" class="toggleAbs">
-          <xsl:attribute name="id">
-            toggle-testRunPanel-<xsl:value-of select="$testId" />
-          </xsl:attribute>
-          <xsl:attribute name="onclick">
-            toggle('testRunPanel-<xsl:value-of select="$testId" />');
-          </xsl:attribute>
+          <xsl:attribute name="id">toggle-testRunPanel-<xsl:value-of select="$testId" /></xsl:attribute>
+          <xsl:attribute name="onclick">toggle('testRunPanel-<xsl:value-of select="$testId" />');</xsl:attribute>
         </img>
         <xsl:call-template name="icon">
           <xsl:with-param name="kind" select="$kind" />
@@ -345,13 +243,9 @@
 
         <xsl:value-of select="@name" />
 
-        <xsl:if test="g:children/g:test">
+        <xsl:choose>
+          <xsl:when test="g:children/g:test">
           <xsl:call-template name="progressBar">
-            <xsl:with-param name="width">100</xsl:with-param>
-            <xsl:with-param name="height">10</xsl:with-param>
-            <xsl:with-param name="run">
-              <xsl:value-of select="count($run)" />
-            </xsl:with-param>
             <xsl:with-param name="passed">
               <xsl:value-of select="count($passed)" />
             </xsl:with-param>
@@ -363,14 +257,17 @@
             </xsl:with-param>
           </xsl:call-template>
           (<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />)
-        </xsl:if>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="outcomeBar">
+              <xsl:with-param name="outcome" select="$rootStepResult/@outcome" />
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </span>
 
-      <div>
-        <xsl:attribute name="id">
-          testRunPanel-<xsl:value-of select="$testId" />
-        </xsl:attribute>
-        <xsl:attribute name="class">testRunPanel</xsl:attribute>
+      <div class="testRunPanel">
+        <xsl:attribute name="id">testRunPanel-<xsl:value-of select="$testId" /></xsl:attribute>
 
         <xsl:choose>
           <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
@@ -410,66 +307,62 @@
           <xsl:with-param name="entries" select="g:metadata/g:entry|$rootStepRun/g:step/g:metadata/g:entry" />
         </xsl:call-template>
 
-        <xsl:apply-templates select="$rootStepRun" />
+        <div class="stepRun">
+          <xsl:attribute name="id">stepRun-<xsl:value-of select="g:step/@id" /></xsl:attribute>
+          <xsl:apply-templates select="$rootStepRun" mode="details-content" />
+        </div>
 
-        <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="details" />
+        <xsl:if test="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]">
+          <ul class="testRunContainer">
+            <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testRuns/g:testRun/@id]" mode="details" />
+          </ul>
+        </xsl:if>
       </div>
-    </div>
+    </li>
   </xsl:template>
 
-  <xsl:template match="g:stepRun">
-    <xsl:variable name="stepId" select="g:step/@id" />
-    <xsl:variable name="isChildStep" select="parent::g:children" />
+  <xsl:template match="g:stepRun" mode="details-content">
+    <xsl:apply-templates select="g:executionLog">
+      <xsl:with-param name="stepId" select="g:step/@id" />
+    </xsl:apply-templates>
 
+    <xsl:if test="g:children/g:stepRun">
+      <ul class="stepRunContainer">
+        <xsl:apply-templates select="g:children/g:stepRun" mode="details" />
+      </ul>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="g:stepRun" mode="details">
     <xsl:variable name="allStepResults" select="descendant-or-self::g:result" />
     <xsl:variable name="assertions" select="sum($allStepResults/@assertCount)" />
 
-    <div>
-      <xsl:attribute name="id">
-        stepRun-<xsl:value-of select="g:step/@id" />
-      </xsl:attribute>
+    <li class="stepRun">
+      <xsl:attribute name="id">stepRun-<xsl:value-of select="g:step/@id" /></xsl:attribute>
 
-      <xsl:choose>
-        <xsl:when test="$isChildStep">
-          <xsl:attribute name="class">
-            stepRun toggleMargin outcome outcome-<xsl:value-of select="g:result/@outcome" />
-          </xsl:attribute>
+      <span class="stepRunHeading">
+        <img src="img/Minus.gif" class="toggleAbs">
+          <xsl:attribute name="id">toggle-stepRunPanel-<xsl:value-of select="g:step/@id" /></xsl:attribute>
+          <xsl:attribute name="onclick">toggle('stepRunPanel-<xsl:value-of select="g:step/@id" />');</xsl:attribute>
+        </img>
 
-          <span class="stepRunHeading">
-            <img src="img/Minus.gif" class="toggleAbs">
-              <xsl:attribute name="id">
-                toggle-stepRunPanel-<xsl:value-of select="$stepId" />
-              </xsl:attribute>
-              <xsl:attribute name="onclick">
-                toggle('stepRunPanel-<xsl:value-of select="$stepId" />');
-              </xsl:attribute>
-            </img>
+        <xsl:value-of select="g:step/@fullName" />
+        
+        <xsl:call-template name="outcomeBar">
+          <xsl:with-param name="outcome" select="g:result/@outcome" />
+        </xsl:call-template>
+        
+        (Duration: <xsl:value-of select="format-number(g:result/@duration, '0.00')" />s, Assertions: <xsl:value-of select="$assertions"/>)
+      </span>
 
-            <xsl:value-of select="g:step/@fullName" />
-            (Duration: <xsl:value-of select="format-number(g:result/@duration, '0.00')" />s, Assertions: <xsl:value-of select="$assertions"/>)
-          </span>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="class">stepRun</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
+      <div class="stepRunPanel">
+        <xsl:attribute name="id">stepRunPanel-<xsl:value-of select="g:step/@id" /></xsl:attribute>
 
-      <div>
-        <xsl:attribute name="id">
-          stepRunPanel-<xsl:value-of select="$stepId" />
-        </xsl:attribute>
-
-        <xsl:if test="$isChildStep">
-          <xsl:apply-templates select="g:step/g:metadata" />
-        </xsl:if>
-
-        <xsl:apply-templates select="g:executionLog">
-          <xsl:with-param name="stepId" select="$stepId" />
-        </xsl:apply-templates>
-
-        <xsl:apply-templates select="g:children/g:stepRun" />
+        <xsl:apply-templates select="g:step/g:metadata" />
+        
+        <xsl:apply-templates select="." mode="details-content" />
       </div>
-    </div>
+    </li>
   </xsl:template>
 
   <xsl:template match="g:metadata">
@@ -503,9 +396,7 @@
 
     <xsl:if test="g:streams/g:stream">
       <div class="log">
-        <xsl:attribute name="id">
-          log-<xsl:value-of select="$stepId" />
-        </xsl:attribute>
+        <xsl:attribute name="id">log-<xsl:value-of select="$stepId" /></xsl:attribute>
 
         <xsl:apply-templates select="g:streams/g:stream" mode="stream">
           <xsl:with-param name="attachments" select="g:attachments" />
@@ -518,9 +409,7 @@
     <xsl:param name="attachments" />
 
     <div>
-      <xsl:attribute name="class">
-        logStream logStream-<xsl:value-of select="@name" />
-      </xsl:attribute>
+      <xsl:attribute name="class">logStream logStream-<xsl:value-of select="@name" /></xsl:attribute>
 
       <span class="logStreamHeading">
         <xsl:value-of select="@name" />
@@ -586,24 +475,14 @@
           <xsl:choose>
             <xsl:when test="starts-with($attachment/@contentType, 'image/')">
               <img>
-                <xsl:attribute name="src">
-                  <xsl:value-of select="$contentRoot"/>
-                  <xsl:text>/</xsl:text>
-                  <xsl:value-of select="$attachment/@contentPath"/>
-                </xsl:attribute>
-                <xsl:attribute name="alt">
-                  <xsl:value-of select="$attachmentName"/>
-                </xsl:attribute>
+                <xsl:attribute name="src"><xsl:value-of select="$contentRoot"/><xsl:text>/</xsl:text><xsl:value-of select="$attachment/@contentPath"/></xsl:attribute>
+                <xsl:attribute name="alt"><xsl:value-of select="$attachmentName"/></xsl:attribute>
               </img>
             </xsl:when>
             <xsl:otherwise>
               <em>Attachment: </em>
               <a>
-                <xsl:attribute name="href">
-                  <xsl:value-of select="$contentRoot"/>
-                  <xsl:text>/</xsl:text>
-                  <xsl:value-of select="$attachment/@contentPath"/>
-                </xsl:attribute>
+                <xsl:attribute name="href"><xsl:value-of select="$contentRoot"/><xsl:text>/</xsl:text><xsl:value-of select="$attachment/@contentPath"/></xsl:attribute>
                 <xsl:value-of select="$attachmentName" />
               </a>
             </xsl:otherwise>
@@ -657,4 +536,60 @@
     </img>-->
   </xsl:template>
 
+  <!-- Outcome bar -->
+  <xsl:template name="outcomeBar">
+    <xsl:param name="outcome" />
+
+    <table class="outcomeBar">
+      <tr>
+        <td>
+          <div>
+            <xsl:attribute name="class">outcomeBar outcome-<xsl:value-of select="$outcome" /></xsl:attribute>
+            <xsl:text> </xsl:text>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </xsl:template>
+  
+  <!-- Progress bar -->
+  <xsl:template name="progressBar">
+    <xsl:param name="passed" select="0"/>
+    <xsl:param name="failed" select="0"/>
+    <xsl:param name="inconclusive" select="0"/>
+    <xsl:param name="class" select="''" />
+
+    <xsl:variable name="total" select="$passed + $failed + $inconclusive" />
+
+    <table class="progressBar">
+      <tr>
+        <td>
+          <div>
+            <xsl:attribute name="class">progressBar $class</xsl:attribute>
+            <xsl:if test="$passed > 0">
+              <div class="progress-passed">
+                <xsl:attribute name="style">width:<xsl:value-of select="100.0 * $passed div $total"/>%</xsl:attribute>
+              </div>
+            </xsl:if>
+            <xsl:if test="$failed > 0">
+              <div class="progress-failed">
+                <xsl:attribute name="style">width:<xsl:value-of select="100.0 * $failed div $total"/>%</xsl:attribute>
+              </div>
+            </xsl:if>
+            <xsl:if test="$inconclusive > 0">
+              <div class="progress-inconclusive" style="width:50%">
+                <xsl:attribute name="style">width:<xsl:value-of select="100.0 * $inconclusive div $total"/>%</xsl:attribute>
+              </div>
+            </xsl:if>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </xsl:template>
+
+  <!-- Pretty print date time values -->
+  <xsl:template name="format-datetime">
+    <xsl:param name="datetime" />
+    <xsl:value-of select="substring($datetime, 12, 8)" />, <xsl:value-of select="substring($datetime, 1, 10)" />
+  </xsl:template>
 </xsl:stylesheet>
