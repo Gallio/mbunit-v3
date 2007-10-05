@@ -21,7 +21,7 @@ using MbUnit.Core.Model.Events;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.RuntimeSupport;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Model
@@ -441,6 +441,7 @@ namespace MbUnit.Core.Model
 
             private ContextCookie contextCookie;
             private string lifecyclePhase = @"";
+            private TestOutcome outcome = TestOutcome.Passed;
 
             public StepMonitor(DependencyTestPlan testPlan, BaseStep step, StepMonitor parentStepMonitor)
             {
@@ -514,6 +515,11 @@ namespace MbUnit.Core.Model
                             testPlan.inUse.ReleaseReaderLock();
                     }
                 }
+            }
+
+            public TestOutcome Outcome
+            {
+                get { return outcome; }
             }
 
             public Context RunStep(string name, Block block, CodeReference codeReference)
@@ -623,6 +629,7 @@ namespace MbUnit.Core.Model
 
                         contextCookie.ExitContext();
                         contextCookie = null;
+                        this.outcome = outcome;
                     }
 
                     // Send the final notification.
@@ -635,6 +642,16 @@ namespace MbUnit.Core.Model
                 {
                     if (testPlan.inUse.IsReaderLockHeld)
                         testPlan.inUse.ReleaseReaderLock();
+                }
+            }
+
+            public void SetInterimOutcome(TestOutcome outcome)
+            {
+                lock (this)
+                {
+                    VerifyNotFinishedWithLocalLock();
+
+                    this.outcome = outcome;
                 }
             }
 

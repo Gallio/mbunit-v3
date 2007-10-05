@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Samples.Properties;
 

@@ -17,7 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.RuntimeSupport;
 
 namespace MbUnit.Framework

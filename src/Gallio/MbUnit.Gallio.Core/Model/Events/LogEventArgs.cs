@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 
 namespace MbUnit.Core.Model.Events
 {

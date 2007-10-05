@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.RuntimeSupport;
 
@@ -209,6 +209,18 @@ namespace MbUnit.Framework
         {
             get { return assertCount; }
         }
+
+        /// <summary>
+        /// Gets the step's outcome.  Ths value of this property is initially
+        /// <see cref="TestOutcome.Passed" /> but may change over the course of execution
+        /// depending on how particular lifecycle phases behave.  The step's outcome value
+        /// becomes frozen once the step finishes.
+        /// </summary>
+        /// <remarks>
+        /// For example, this property enables code running in a tear down method to
+        /// determine whether the test failed and to perform different actions in that case.
+        /// </remarks>
+        public abstract TestOutcome Outcome { get; }
 
         /// <summary>
         /// Returns true if the context has been disposed.

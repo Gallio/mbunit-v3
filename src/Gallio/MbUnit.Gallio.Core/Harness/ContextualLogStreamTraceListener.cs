@@ -15,7 +15,7 @@
 
 using System.Diagnostics;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 
 namespace MbUnit.Core.Harness
 {

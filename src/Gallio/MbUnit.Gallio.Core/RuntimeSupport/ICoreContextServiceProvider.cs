@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.RuntimeSupport
@@ -44,6 +44,18 @@ namespace MbUnit.Core.RuntimeSupport
         /// <seealso cref="LifecyclePhases"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         string LifecyclePhase { get; set; }
+
+        /// <summary>
+        /// Gets the step's outcome.  Ths value of this property is initially
+        /// <see cref="TestOutcome.Passed" /> but may change over the course of execution
+        /// depending on how particular lifecycle phases behave.  The step's outcome value
+        /// becomes frozen once the step finishes.
+        /// </summary>
+        /// <remarks>
+        /// For example, this property enables code running in a tear down method to
+        /// determine whether the test failed and to perform different actions in that case.
+        /// </remarks>
+        TestOutcome Outcome { get; }
 
         /// <summary>
         /// Runs a block of code as a new step.

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace MbUnit.Core.Model
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
     /// Describes whether the test ran and how it terminated.

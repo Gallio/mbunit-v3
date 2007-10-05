@@ -13,38 +13,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+using MbUnit.Framework;
 
-namespace MbUnit.TestResources.Xunit
+namespace MbUnit.TestResources.Gallio.Fixtures
 {
     /// <summary>
-    /// A test fixture with before/after sections.
+    /// A sample test fixture with failing setup.
     /// </summary>
-    public class BeforeAndAfterSample : ITestFixture
+    [TestFixture]
+    public class ContextOutcomePassingTestSample
     {
-        public void BeforeAllTests()
+        private Context previousContext;
+
+        [SetUp]
+        public void SetUp()
         {
-            Console.WriteLine("Before");
+            previousContext = Context.CurrentContext;
+            Log.WriteLine(Context.CurrentContext.Outcome);
         }
 
         [Test]
-        public void Test1()
+        public void Test()
         {
-            Console.WriteLine("Test1");
+            Log.WriteLine(Context.CurrentContext.Outcome);
         }
 
-        [Test]
-        public void Test2()
+        [TearDown]
+        public void TearDown()
         {
-            Console.WriteLine("Test2");
+            Log.WriteLine(Context.CurrentContext.Outcome);
         }
 
-        public void AfterAllTests()
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
         {
-            Console.WriteLine("After");
-        }
+            Log.WriteLine(previousContext.Outcome);
+        }    
     }
 }

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.RuntimeSupport
@@ -383,6 +383,11 @@ namespace MbUnit.Core.RuntimeSupport
             {
                 get { return serviceProvider.LifecyclePhase; }
                 set { serviceProvider.LifecyclePhase = value; }
+            }
+
+            public override TestOutcome Outcome
+            {
+                get { return serviceProvider.Outcome; }
             }
 
             public override ContextCookie Enter()

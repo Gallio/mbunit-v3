@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MbUnit.Core.Model;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 
 namespace MbUnit.Core.Reporting
 {

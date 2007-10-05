@@ -98,9 +98,7 @@
     <Compile Include="Model\TestModel.cs" />
     <Compile Include="RuntimeSupport\DefaultXmlDocumentationResolver.cs" />
     <Compile Include="Model\TestListenerLogWriter.cs" />
-    <Compile Include="Model\TestOutcome.cs" />
     <Compile Include="Model\TestResult.cs" />
-    <Compile Include="Model\TestStatus.cs" />
     <Compile Include="Model\TrackingLogWriter.cs" />
     <Compile Include="ProgressMonitoring\BaseProgressMonitor.cs" />
     <Compile Include="Model\Events\TestEventDispatcher.cs" />

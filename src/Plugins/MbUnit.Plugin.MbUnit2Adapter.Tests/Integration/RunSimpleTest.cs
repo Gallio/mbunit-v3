@@ -14,13 +14,12 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
-using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Tests.Integration;
 using MbUnit.TestResources.MbUnit2;
+using MbUnit.Framework;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Integration
 {

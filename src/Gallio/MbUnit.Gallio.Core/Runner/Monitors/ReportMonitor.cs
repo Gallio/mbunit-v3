@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using MbUnit.Core.Model.Events;
 using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Core.Model;
 
 namespace MbUnit.Core.Runner.Monitors

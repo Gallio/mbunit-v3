@@ -16,6 +16,7 @@
 extern alias MbUnit2;
 using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit.Core.Tests.Reporting

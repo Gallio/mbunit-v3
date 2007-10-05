@@ -13,34 +13,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using System.Xml.Serialization;
 
-namespace MbUnit.Framework.Kernel.ExecutionLogs
+namespace MbUnit.Framework.Kernel.Model
 {
     /// <summary>
-    /// Visits attachments of various types.
+    /// Describes the outcome of a test.
     /// </summary>
-    public interface IAttachmentVisitor
+    public enum TestOutcome
     {
         /// <summary>
-        /// Visits a <see cref="TextAttachment" />.
+        /// The test passed.
         /// </summary>
-        /// <param name="attachment">The attachment</param>
-        void VisitTextAttachment(TextAttachment attachment);
+        [XmlEnum("passed")]
+        Passed,
 
         /// <summary>
-        /// Visits a <see cref="XmlAttachment" />.
+        /// The test failed.
         /// </summary>
-        /// <param name="attachment">The attachment</param>
-        void VisitXmlAttachment(XmlAttachment attachment);
+        [XmlEnum("failed")]
+        Failed,
 
         /// <summary>
-        /// Visits a <see cref="BinaryAttachment" />.
+        /// The test result was inconclusive because the test was ignored, skipped, aborted,
+        /// did not run, or did not produce reliable results.
         /// </summary>
-        /// <param name="attachment">The attachment</param>
-        void VisitBinaryAttachment(BinaryAttachment attachment);
+        [XmlEnum("inconclusive")]
+        Inconclusive
     }
 }

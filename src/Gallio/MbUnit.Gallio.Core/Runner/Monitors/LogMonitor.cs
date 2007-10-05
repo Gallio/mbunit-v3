@@ -16,9 +16,9 @@
 using System;
 using System.Text;
 using Castle.Core.Logging;
-using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Logging;
 using MbUnit.Core.Properties;
 
 namespace MbUnit.Core.Runner.Monitors

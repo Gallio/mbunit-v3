@@ -16,7 +16,7 @@
 using System;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Model
@@ -151,6 +151,7 @@ namespace MbUnit.Core.Model
             catch (Exception ex)
             {
                 stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex, failureHeading);
+                stepMonitor.SetInterimOutcome(TestOutcome.Failed);
                 return false;
             }
         }

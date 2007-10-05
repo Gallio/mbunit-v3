@@ -18,9 +18,9 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 
-namespace MbUnit.Framework.Kernel.ExecutionLogs
+namespace MbUnit.Framework.Logging
 {
     /// <summary>
     /// A log stream writer provides methods for writing text and embedded attachments to

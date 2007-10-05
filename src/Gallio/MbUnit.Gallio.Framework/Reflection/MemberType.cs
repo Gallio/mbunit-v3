@@ -13,38 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
-
-namespace MbUnit.TestResources.Xunit
+namespace MbUnit.Framework.Reflection
 {
-    /// <summary>
-    /// A test fixture with before/after sections.
-    /// </summary>
-    public class BeforeAndAfterSample : ITestFixture
+    ///<summary>
+    /// Member types of a class.
+    ///</summary>
+    public enum MemberType
     {
-        public void BeforeAllTests()
-        {
-            Console.WriteLine("Before");
-        }
-
-        [Test]
-        public void Test1()
-        {
-            Console.WriteLine("Test1");
-        }
-
-        [Test]
-        public void Test2()
-        {
-            Console.WriteLine("Test2");
-        }
-
-        public void AfterAllTests()
-        {
-            Console.WriteLine("After");
-        }
+        ///<summary>
+        /// Method
+        ///</summary>
+        Method, 
+        /// <summary>
+        /// Field or variable
+        /// </summary>
+        Field, 
+        ///<summary>
+        /// Property
+        ///</summary>
+        Property
     }
 }

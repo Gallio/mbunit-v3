@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using MbUnit.Core.RuntimeSupport;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Model
@@ -60,5 +60,23 @@ namespace MbUnit.Core.Model
         /// <param name="actualDuration">The actual duration of the step, if null the step monitor
         /// will record the duration as the total amount of time since the step monitor was started</param>
         void FinishStep(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration);
+
+        /// <summary>
+        /// Sets the interim value of the step's outcome.  The interim outcome
+        /// is exposed to the client by the <see cref="ICoreContextServiceProvider.Outcome" />
+        /// property which can use it to perform different actions based on whether
+        /// the test is known to be failing, for example.  The initial value of
+        /// the outcome is <see cref="TestOutcome.Passed" />.
+        /// </summary>
+        /// <remarks>
+        /// When <see cref="FinishStep" /> is called, the value of
+        /// the <see cref="ICoreContextServiceProvider.Outcome" /> will be overridden
+        /// and frozen.  Consequently there is no need to call this method
+        /// to set the final outcome of a step.
+        /// </remarks>
+        /// <param name="outcome">The new interim outcome for the step</param>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="FinishStep" />
+        /// has already been called.</exception>
+        void SetInterimOutcome(TestOutcome outcome);
     }
 }

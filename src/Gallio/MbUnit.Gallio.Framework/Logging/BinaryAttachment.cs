@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MbUnit.Framework.Kernel.ExecutionLogs
+namespace MbUnit.Framework.Logging
 {
     /// <summary>
     /// Represents a binary-encoded attachments.

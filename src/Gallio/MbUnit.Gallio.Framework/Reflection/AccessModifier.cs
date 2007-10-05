@@ -13,35 +13,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
+using System.Reflection;
 
-namespace MbUnit.Core.Model
+namespace MbUnit.Framework.Reflection
 {
-    /// <summary>
-    /// Describes the outcome of a test.
-    /// </summary>
-    public enum TestOutcome
-    {
+    ///<summary>
+    /// Access modifier of a class or class member.
+    ///</summary>
+    public enum AccessModifier
+    { 
+        ///<summary>
+        /// public
+        ///</summary>
+        Public = BindingFlags.Public, 
+        ///<summary>
+        /// protected, internal, private
+        ///</summary>
+        NonPublic = BindingFlags.NonPublic, 
         /// <summary>
-        /// The test passed.
+        /// static
         /// </summary>
-        [XmlEnum("passed")]
-        Passed,
-
+        Static  = BindingFlags.Static,
         /// <summary>
-        /// The test failed.
+        /// default that includes public, protected, internal, private, and static
         /// </summary>
-        [XmlEnum("failed")]
-        Failed,
-
-        /// <summary>
-        /// The test result was inconclusive because the test was ignored, skipped, aborted,
-        /// did not run, or did not produce reliable results.
-        /// </summary>
-        [XmlEnum("inconclusive")]
-        Inconclusive
+        Default = Public | NonPublic | Static
     }
 }

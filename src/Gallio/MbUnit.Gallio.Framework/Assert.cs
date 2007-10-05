@@ -17,7 +17,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 
 namespace MbUnit.Framework
 {

@@ -19,7 +19,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace MbUnit.Framework.Kernel.ExecutionLogs
+namespace MbUnit.Framework.Logging
 {
     /// <summary>
     /// Provides utilities for manipulating attachments.

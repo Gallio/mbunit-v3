@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace MbUnit.Framework.Kernel.ExecutionLogs
+namespace MbUnit.Framework.Logging
 {
     /// <summary>
     /// Represents a XML-encoded attachment.

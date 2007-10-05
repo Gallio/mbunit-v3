@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using MbUnit.Framework;
+using MbUnit.Framework.Kernel.Model;
+using MbUnit.Framework.Logging;
 using WatiN.Core;
 using WatiN.Core.Interfaces;
 using WatiN.Core.Logging;
@@ -40,31 +42,64 @@ namespace MbUnit.Samples
         [TearDown]
         public void DisposeBrowser()
         {
-            Snapshot("Final Screen");
+            if (Context.CurrentContext.Outcome == TestOutcome.Failed)
+                Snapshot("Final screen when failure occurred.", LogStreamNames.Failures);
 
             if (ie != null)
                 ie.Dispose();
         }
 
         [Test]
-        public void Demo()
+        public void DemoCaptureOnFailure()
         {
-            using (Log.BeginSection("Go to home page and sign in."))
-            {
-                ie.GoTo("http://www.ether.com");
+            IE.Settings.WaitForCompleteTimeOut = 5;
 
-                //ie.Link(Find.ByText("Sign In")).Click();
+            using (Log.BeginSection("Go to Google, enter MbUnit as a search term and click I'm Feeling Lucky"))
+            {
+                ie.GoTo("http://www.google.com");
+
+                ie.TextField(Find.ByName("q")).TypeText("MbUnit");
+                ie.Button(Find.ByName("btnI")).Click();
             }
 
-            using (Log.BeginSection("Sign out."))
-            {
-                //ie.Link("Sign Out").Click();
-            }
+            // Of course this is ridiculous, we'll be on the MbUnit homepage...
+            Assert.IsTrue(ie.ContainsText("NUnit"), "Expected to find NUnit on the page.");
         }
 
-        private void Snapshot(string attachmentName)
+        [Test]
+        public void DemoNoCaptureOnSuccess()
         {
-            Log.EmbedImage(attachmentName, new CaptureWebPage(ie).CaptureWebPageImage(false, false, 100));
+            IE.Settings.WaitForCompleteTimeOut = 5;
+
+            using (Log.BeginSection("Go to Google, enter MbUnit as a search term and click I'm Feeling Lucky"))
+            {
+                ie.GoTo("http://www.google.com");
+
+                ie.TextField(Find.ByName("q")).TypeText("MbUnit");
+                ie.Button(Find.ByName("btnI")).Click();
+            }
+
+            using (Log.BeginSection("Click on About."))
+            {
+                Assert.IsTrue(ie.ContainsText("MbUnit"));
+                ie.Link(Find.ByUrl(new Regex(@"About\.aspx"))).Click();
+            }
+
+            Snapshot("About the MbUnit project.");
+        }
+
+        private void Snapshot(string caption)
+        {
+            Snapshot(caption, LogStreamNames.Default);
+        }
+
+        private void Snapshot(string caption, string logStreamName)
+        {
+            using (Log.Writer[logStreamName].BeginSection(caption))
+            {
+                Log.Writer[logStreamName].WriteLine("Url: {0}", ie.Url);
+                Log.Writer[logStreamName].EmbedImage(null, new CaptureWebPage(ie).CaptureWebPageImage(false, false, 100));
+            }
         }
 
         private class WatiNStreamLogger : ILogWriter

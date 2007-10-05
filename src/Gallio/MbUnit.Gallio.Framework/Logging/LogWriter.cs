@@ -17,7 +17,7 @@ using System;
 using System.Drawing;
 using System.Xml.Serialization;
 
-namespace MbUnit.Framework.Kernel.ExecutionLogs
+namespace MbUnit.Framework.Logging
 {
     /// <summary>
     /// <para>

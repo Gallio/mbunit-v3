@@ -24,7 +24,7 @@ using System.Xml.XPath;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Core.Utilities;
 using MbUnit.Framework.Kernel.Utilities;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 
 namespace MbUnit.Core.Reporting
 {

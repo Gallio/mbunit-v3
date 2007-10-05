@@ -15,7 +15,7 @@
 
 using System;
 
-namespace MbUnit.Framework.Kernel.ExecutionLogs
+namespace MbUnit.Framework.Logging
 {
     /// <summary>
     /// An attachment is an embedded object in an execution log.  An attachment must specify a

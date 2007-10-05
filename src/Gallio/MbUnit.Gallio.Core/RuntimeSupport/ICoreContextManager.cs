@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.RuntimeSupport;
 

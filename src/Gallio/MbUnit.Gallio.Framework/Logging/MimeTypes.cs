@@ -14,37 +14,37 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
 
-namespace MbUnit.TestResources.Xunit
+namespace MbUnit.Framework.Logging
 {
     /// <summary>
-    /// A test fixture with before/after sections.
+    /// Defines constants for commonly used mime types in MbUnit.
     /// </summary>
-    public class BeforeAndAfterSample : ITestFixture
+    public static class MimeTypes
     {
-        public void BeforeAllTests()
-        {
-            Console.WriteLine("Before");
-        }
+        /// <summary>
+        /// Plain text data.
+        /// </summary>
+        public const string PlainText = "text/plain";
 
-        [Test]
-        public void Test1()
-        {
-            Console.WriteLine("Test1");
-        }
+        /// <summary>
+        /// Xml data.
+        /// </summary>
+        public const string Xml = "text/xml";
+        
+        /// <summary>
+        /// HTML.
+        /// </summary>
+        public const string Html = "text/html";
 
-        [Test]
-        public void Test2()
-        {
-            Console.WriteLine("Test2");
-        }
+        /// <summary>
+        /// Well-formed XHTML.
+        /// </summary>
+        public const string XHtml = "text/xhtml+xml";
 
-        public void AfterAllTests()
-        {
-            Console.WriteLine("After");
-        }
+        /// <summary>
+        /// PNG image.
+        /// </summary>
+        public const string Png = "image/png";
     }
 }

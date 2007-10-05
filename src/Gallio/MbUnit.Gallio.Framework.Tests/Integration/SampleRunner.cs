@@ -24,7 +24,7 @@ using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
 using MbUnit.Core.Runner.Monitors;
 using MbUnit.Core.RuntimeSupport;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Filters;
 using MbUnit.Framework.Kernel.Model;
 

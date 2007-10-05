@@ -66,6 +66,7 @@
     <Compile Include="Kernel\Collections\IMultiMap.cs" />
     <Compile Include="Kernel\Collections\ReadOnlyMultiMap.cs" />
     <Compile Include="Kernel\Model\LifecyclePhases.cs" />
+    <Compile Include="Kernel\Model\TestStatus.cs" />
     <Compile Include="Kernel\RuntimeSupport\IContextManager.cs" />
     <Compile Include="Kernel\DataBinding\ConvertedDataFactory.cs" />
     <Compile Include="Kernel\DataBinding\DataBinding.cs">
@@ -89,16 +90,16 @@
     <Compile Include="Kernel\DataBinding\IDataSourceResolver.cs" />
     <Compile Include="Kernel\DataBinding\ArrayDataRow.cs" />
     <Compile Include="Kernel\Conversions\IConverter.cs" />
-    <Compile Include="Kernel\ExecutionLogs\Attachment.cs" />
-    <Compile Include="Kernel\ExecutionLogs\AttachmentUtils.cs" />
-    <Compile Include="Kernel\ExecutionLogs\BinaryAttachment.cs" />
-    <Compile Include="Kernel\ExecutionLogs\LogWriter.cs" />
-    <Compile Include="Kernel\ExecutionLogs\LogStreamWriter.cs" />
-    <Compile Include="Kernel\ExecutionLogs\LogStreamNames.cs" />
-    <Compile Include="Kernel\ExecutionLogs\IAttachmentVisitor.cs" />
-    <Compile Include="Kernel\ExecutionLogs\MimeTypes.cs" />
-    <Compile Include="Kernel\ExecutionLogs\TextAttachment.cs" />
-    <Compile Include="Kernel\ExecutionLogs\XmlAttachment.cs" />
+    <Compile Include="Logging\Attachment.cs" />
+    <Compile Include="Logging\AttachmentUtils.cs" />
+    <Compile Include="Logging\BinaryAttachment.cs" />
+    <Compile Include="Logging\LogWriter.cs" />
+    <Compile Include="Logging\LogStreamWriter.cs" />
+    <Compile Include="Logging\LogStreamNames.cs" />
+    <Compile Include="Logging\IAttachmentVisitor.cs" />
+    <Compile Include="Logging\MimeTypes.cs" />
+    <Compile Include="Logging\TextAttachment.cs" />
+    <Compile Include="Logging\XmlAttachment.cs" />
     <Compile Include="Kernel\Formatting\IFormatter.cs" />
     <Compile Include="Kernel\DataBinding\IDataFactory.cs" />
     <Compile Include="Kernel\Actions\ActionDecorator.cs" />
@@ -134,9 +135,10 @@
     <Compile Include="MetadataAttribute.cs" />
     <Compile Include="PairwiseAssertion.cs" />
     <Compile Include="ReflectionAssert.cs" />
+    <Compile Include="Reflection\AccessModifier.cs" />
+    <Compile Include="Reflection\MemberType.cs" />
     <Compile Include="Reflection\ReflectionException.cs" />
-    <Compile Include="Reflection\ReflectorInstance.cs" />
-    <Compile Include="Reflection\ReflectorStatic.cs" />
+    <Compile Include="Reflection\Reflector.cs" />
     <Compile Include="Relation.cs" />
     <Compile Include="ExpectedExceptionAttribute.cs" />
     <Compile Include="IAssemblyResolver.cs" />
@@ -238,6 +240,7 @@
     <Compile Include="TestFixtureSetUpAttribute.cs" />
     <Compile Include="TestFixtureTearDownAttribute.cs" />
     <Compile Include="TestImportance.cs" />
+    <Compile Include="Kernel\Model\TestOutcome.cs" />
     <Compile Include="TestsOnAttribute.cs" />
     <Compile Include="Xml\XmlSerializationAssert.cs" />
   </ItemGroup>

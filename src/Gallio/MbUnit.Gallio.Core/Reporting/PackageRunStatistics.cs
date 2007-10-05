@@ -15,7 +15,7 @@
 
 using System;
 using System.Xml.Serialization;
-using MbUnit.Core.Model;
+using MbUnit.Framework.Kernel.Model;
 using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Core.Reporting

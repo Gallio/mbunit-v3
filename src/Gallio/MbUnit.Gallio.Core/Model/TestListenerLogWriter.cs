@@ -15,7 +15,7 @@
 
 using System;
 using MbUnit.Core.Model.Events;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 
 namespace MbUnit.Core.Model
 {

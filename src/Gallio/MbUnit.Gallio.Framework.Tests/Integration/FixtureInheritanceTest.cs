@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Core.Model;
 using MbUnit.Core.Reporting;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.TestResources.Gallio.Fixtures;
 

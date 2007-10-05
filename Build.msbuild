@@ -24,6 +24,8 @@
     <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.NUnit\MbUnit.TestResources.NUnit.csproj" />
     <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.Xunit\MbUnit.TestResources.Xunit.csproj" />
 
+    <CSharpProject Include="$(SourceDir)\Samples\MbUnit.Samples\MbUnit.Samples.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj" />
     <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj" />
 
@@ -141,6 +143,34 @@
         <Folder>Xunit</Folder>
     </Binary>
 
+    <Binary Include="$(SourceDir)\Samples\Samples.sln">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Samples\**\*.cs" Exclude="$(SourceDir)\Samples\**\AdditionalAssemblyInfo.cs">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Samples\**\*.resx">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Samples\**\*.png">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Samples\**\*.csproj">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Samples\MbUnit.Samples\bin\MbUnit.Samples.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\WatiN\bin\Interop.SHDocVw.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\WatiN\bin\Microsoft.mshtml.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\WatiN\bin\WatiN.Core.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+
     <Binary Include="$(SourceDir)\Runners\MbUnit.AddIn.TDNet\bin\MbUnit.AddIn.TDNet.dll" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Echo\bin\MbUnit.Echo.exe" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Echo\bin\MbUnit.Echo.exe.config" />
@@ -165,14 +195,7 @@
   </ItemGroup>
 
   <Target Name="Build"
-          DependsOnTargets="BuildCSharpProjects">
-    <Copy SourceFiles="@(Binary)"
-          DestinationFolder="$(BuildBinDir)\%(Binary.Folder)" />
-
-    <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=Intellisense -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
-    <Delete Files="$(BuildBinDir)\ndoc_qa.log;$(BuildBinDir)\ndoc_build.log" />
-  </Target>
+          DependsOnTargets="BuildCSharpProjects;CopyBinaries;BuildXMLDocs" />
 
   <Target Name="Clean"
           DependsOnTargets="CleanCSharpProjects">
@@ -211,6 +234,17 @@
              Properties="
                Configuration=Release;
              " />
+  </Target>
+
+  <Target Name="CopyBinaries">
+    <Copy SourceFiles="@(Binary)"
+          DestinationFolder="$(BuildBinDir)\%(Binary.Folder)\%(RecursiveDir)" />
+  </Target>
+
+  <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
+  <Target Name="BuildXMLDocs">
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=Intellisense -project=&quot;$(SourceDir)\Docs\MbUnit.ndoc&quot;" />
+    <Delete Files="$(BuildBinDir)\ndoc_qa.log;$(BuildBinDir)\ndoc_build.log" />
   </Target>
 
   <Target Name="BuildAPIDocs"

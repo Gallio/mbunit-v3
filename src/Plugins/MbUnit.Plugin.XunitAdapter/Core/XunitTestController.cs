@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Core.Model;
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Framework.Kernel.ExecutionLogs;
+using MbUnit.Framework.Logging;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Plugin.XunitAdapter.Properties;
 using Xunit;

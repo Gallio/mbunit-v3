@@ -14,37 +14,33 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
+using MbUnit.Framework.Logging;
 
-namespace MbUnit.Framework.Kernel.ExecutionLogs
+namespace MbUnit.Framework.Logging
 {
     /// <summary>
-    /// Defines constants for commonly used mime types in MbUnit.
+    /// Visits attachments of various types.
     /// </summary>
-    public static class MimeTypes
+    public interface IAttachmentVisitor
     {
         /// <summary>
-        /// Plain text data.
+        /// Visits a <see cref="TextAttachment" />.
         /// </summary>
-        public const string PlainText = "text/plain";
+        /// <param name="attachment">The attachment</param>
+        void VisitTextAttachment(TextAttachment attachment);
 
         /// <summary>
-        /// Xml data.
+        /// Visits a <see cref="XmlAttachment" />.
         /// </summary>
-        public const string Xml = "text/xml";
-        
-        /// <summary>
-        /// HTML.
-        /// </summary>
-        public const string Html = "text/html";
+        /// <param name="attachment">The attachment</param>
+        void VisitXmlAttachment(XmlAttachment attachment);
 
         /// <summary>
-        /// Well-formed XHTML.
+        /// Visits a <see cref="BinaryAttachment" />.
         /// </summary>
-        public const string XHtml = "text/xhtml+xml";
-
-        /// <summary>
-        /// PNG image.
-        /// </summary>
-        public const string Png = "image/png";
+        /// <param name="attachment">The attachment</param>
+        void VisitBinaryAttachment(BinaryAttachment attachment);
     }
 }

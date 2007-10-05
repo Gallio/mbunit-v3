@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Framework.Kernel.Model;
 
 namespace MbUnit.Core.Model
 {
