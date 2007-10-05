@@ -52,8 +52,6 @@ namespace MbUnit.Samples
         [Test]
         public void DemoCaptureOnFailure()
         {
-            IE.Settings.WaitForCompleteTimeOut = 5;
-
             using (Log.BeginSection("Go to Google, enter MbUnit as a search term and click I'm Feeling Lucky"))
             {
                 ie.GoTo("http://www.google.com");
@@ -69,8 +67,6 @@ namespace MbUnit.Samples
         [Test]
         public void DemoNoCaptureOnSuccess()
         {
-            IE.Settings.WaitForCompleteTimeOut = 5;
-
             using (Log.BeginSection("Go to Google, enter MbUnit as a search term and click I'm Feeling Lucky"))
             {
                 ie.GoTo("http://www.google.com");
