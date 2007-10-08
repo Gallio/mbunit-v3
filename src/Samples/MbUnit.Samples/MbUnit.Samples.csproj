@@ -54,12 +54,6 @@
     <Compile Include="WatiNDemo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
-      <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
-      <Name>MbUnit.Gallio.Framework</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\MbUnitLogo.png" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +65,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>MbUnit.Gallio</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

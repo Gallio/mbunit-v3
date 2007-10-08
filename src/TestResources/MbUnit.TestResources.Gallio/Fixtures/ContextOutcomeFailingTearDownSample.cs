@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using MbUnit.Contexts;
 using MbUnit.Framework;
+using MbUnit.Logging;
 
 namespace MbUnit.TestResources.Gallio.Fixtures
 {

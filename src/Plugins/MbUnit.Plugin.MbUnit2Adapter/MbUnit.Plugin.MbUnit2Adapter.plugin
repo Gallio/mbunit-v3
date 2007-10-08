@@ -6,12 +6,12 @@
 
     <components>
       <component id="MbUnit2Adapter.TestFramework"
-                 service="MbUnit.Core.Model.ITestFramework, MbUnit.Gallio.Core"
-                 type="MbUnit.Plugin.MbUnit2Adapter.Core.MbUnit2TestFramework, MbUnit.Plugin.MbUnit2Adapter" />
+                 service="MbUnit.Model.ITestFramework, MbUnit.Gallio"
+                 type="MbUnit.Plugin.MbUnit2Adapter.Model.MbUnit2TestFramework, MbUnit.Plugin.MbUnit2Adapter" />
 
       <component id="MbUnit2Adapter.AssemblyBindingRedirect"
-                 service="MbUnit.Core.Runner.IIsolatedTestDomainContributor, MbUnit.Gallio.Core"
-                 type="MbUnit.Plugin.MbUnit2Adapter.Core.MbUnit2AssemblyBindingRedirect, MbUnit.Plugin.MbUnit2Adapter" />
+                 service="MbUnit.Core.Runner.IIsolatedTestDomainContributor, MbUnit.Gallio"
+                 type="MbUnit.Plugin.MbUnit2Adapter.Model.MbUnit2AssemblyBindingRedirect, MbUnit.Plugin.MbUnit2Adapter" />
     </components>
   </castle>
 </configuration>

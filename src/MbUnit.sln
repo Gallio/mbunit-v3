@@ -67,30 +67,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Icarus", "Runners\Mb
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Core", "Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj", "{B1843915-598A-4F80-9E47-BA890F879262}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Framework", "Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj", "{691E62B3-823F-4F1E-9585-58D0E00B72C3}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Core.Tests", "Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj", "{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Framework.Tests", "Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj", "{0783AC75-ECD1-4846-B85A-70D7313BF1D9}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Echo.Tests", "Runners\MbUnit.Echo.Tests\MbUnit.Echo.Tests.csproj", "{299970D4-781F-4778-BCF2-F53AE7D8B060}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
@@ -171,6 +147,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{B14B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "Samples\MbUnit.Samples\MbUnit.Samples.csproj", "{27378CEB-7271-4BDA-8B5F-70816286FC80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio", "Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Gallio.Tests", "Gallio\MbUnit.Gallio.Tests\MbUnit.Gallio.Tests.csproj", "{111FD89D-58A1-4445-B4A4-8A50D65DB714}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -213,22 +193,6 @@ Global
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B1843915-598A-4F80-9E47-BA890F879262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1843915-598A-4F80-9E47-BA890F879262}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1843915-598A-4F80-9E47-BA890F879262}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1843915-598A-4F80-9E47-BA890F879262}.Release|Any CPU.Build.0 = Release|Any CPU
-		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{691E62B3-823F-4F1E-9585-58D0E00B72C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0783AC75-ECD1-4846-B85A-70D7313BF1D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0783AC75-ECD1-4846-B85A-70D7313BF1D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0783AC75-ECD1-4846-B85A-70D7313BF1D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0783AC75-ECD1-4846-B85A-70D7313BF1D9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{299970D4-781F-4778-BCF2-F53AE7D8B060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{299970D4-781F-4778-BCF2-F53AE7D8B060}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{299970D4-781F-4778-BCF2-F53AE7D8B060}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -281,6 +245,14 @@ Global
 		{27378CEB-7271-4BDA-8B5F-70816286FC80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27378CEB-7271-4BDA-8B5F-70816286FC80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27378CEB-7271-4BDA-8B5F-70816286FC80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{111FD89D-58A1-4445-B4A4-8A50D65DB714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{111FD89D-58A1-4445-B4A4-8A50D65DB714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{111FD89D-58A1-4445-B4A4-8A50D65DB714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{111FD89D-58A1-4445-B4A4-8A50D65DB714}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -307,10 +279,8 @@ Global
 		{BADF6646-9750-4CFB-8867-5D2D4086412A} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{53E13EE8-E19A-43DD-A623-55023BF74AD6} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6} = {7314C58D-3714-4872-885D-309338F09FC1}
-		{691E62B3-823F-4F1E-9585-58D0E00B72C3} = {00CE3107-C47F-4D2B-986B-763181832B51}
-		{E909C2A9-BB46-4AB5-8F2C-5D00AAE7D70E} = {00CE3107-C47F-4D2B-986B-763181832B51}
-		{0783AC75-ECD1-4846-B85A-70D7313BF1D9} = {00CE3107-C47F-4D2B-986B-763181832B51}
-		{B1843915-598A-4F80-9E47-BA890F879262} = {00CE3107-C47F-4D2B-986B-763181832B51}
+		{6CAB7735-05DA-480D-9A04-50615B00F886} = {00CE3107-C47F-4D2B-986B-763181832B51}
+		{111FD89D-58A1-4445-B4A4-8A50D65DB714} = {00CE3107-C47F-4D2B-986B-763181832B51}
 		{27378CEB-7271-4BDA-8B5F-70816286FC80} = {B14BBC7E-B010-496E-B98F-0984D856D5D3}
 	EndGlobalSection
 EndGlobal

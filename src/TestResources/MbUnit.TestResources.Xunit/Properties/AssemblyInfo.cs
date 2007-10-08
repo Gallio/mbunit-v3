@@ -13,9 +13,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2007 MbUnit Project - http://www.mbunit.com/")]
 [assembly: AssemblyTrademark("MbUnit")]
 [assembly: AssemblyCulture("")]
-
-#if DEBUG
 [assembly: AssemblyInformationalVersion("1.2.3.4")]
+
+#if ! HAVE_ASSEMBLY_VERSION
 [assembly: AssemblyFileVersion("1.2.3.4")]
 [assembly: AssemblyVersion("1.2.3.4")]
 #endif

@@ -16,8 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj" />
-    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj" />
 
     <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.Gallio\MbUnit.TestResources.Gallio.csproj" />
     <CSharpProject Include="$(SourceDir)\TestResources\MbUnit.TestResources.MbUnit2\MbUnit.TestResources.MbUnit2.csproj" />
@@ -26,8 +25,7 @@
 
     <CSharpProject Include="$(SourceDir)\Samples\MbUnit.Samples\MbUnit.Samples.csproj" />
 
-    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework.Tests\MbUnit.Gallio.Framework.Tests.csproj" />
-    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core.Tests\MbUnit.Gallio.Core.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Tests\MbUnit.Gallio.Tests.csproj" />
 
     <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj" />
     <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
@@ -64,9 +62,8 @@
     <Binary Include="$(LibsDir)\Components\ZedGraph.dll" />
     <Binary Include="$(LibsDir)\Components\ICSharpCode.TextEditor.dll" />
 
-    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework\bin\MbUnit.Gallio.Framework.dll" />
-    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.dll" />
-    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core\bin\MbUnit.Gallio.Core.plugin" />
+    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio\bin\MbUnit.Gallio.dll" />
+    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio\bin\MbUnit.Gallio.plugin" />
 
     <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\Readme.txt">
         <Folder>MbUnit2</Folder>
@@ -180,8 +177,7 @@
     <Binary Include="$(SourceDir)\Runners\MbUnit.Tasks.MSBuild\bin\MbUnit.Tasks.MSBuild.dll" />
     <Binary Include="$(SourceDir)\Runners\MbUnit.Tasks.NAnt\bin\MbUnit.Tasks.NAnt.dll" />
 
-    <TestAssembly Include="$(SourceDir)\Gallio\MbUnit.Gallio.Framework.Tests\bin\MbUnit.Gallio.Framework.Tests.dll" />
-    <TestAssembly Include="$(SourceDir)\Gallio\MbUnit.Gallio.Core.Tests\bin\MbUnit.Gallio.Core.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Gallio\MbUnit.Gallio.Tests\bin\MbUnit.Gallio.Tests.dll" />
 
     <TestAssembly Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter.Tests\bin\MbUnit.Plugin.MbUnit2Adapter.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter.Tests\bin\MbUnit.Plugin.NUnitAdapter.Tests.dll" />

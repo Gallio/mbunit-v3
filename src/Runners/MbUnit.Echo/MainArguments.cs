@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.IO;
 using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Framework;
-using MbUnit.Framework.Kernel.Filters;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Model.Filters;
+using MbUnit.Model;
 
 namespace MbUnit.Echo
 {

@@ -16,9 +16,9 @@
 using System;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework;
-using MbUnit.Framework.Logging;
-using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Tests.Integration;
+using MbUnit.Logging;
+using MbUnit.Model;
+using MbUnit.Tests.Integration;
 using MbUnit.TestResources.NUnit;
 
 namespace MbUnit.Plugin.NUnitAdapter.Tests.Integration

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <castle>
+    <facilities>
+      <!-- The Startable facility enables components that implement the IStartable
+           interface to be automatically started when the IoC container is
+           initialized and then automatically stopped when the IoC container is
+           shut down.  So if you have a component that you want to ensure is
+           initialized when the application starts, just make it implement IStartable. -->
+      <facility id="Startable"
+                type="Castle.Facilities.Startable.StartableFacility, Castle.MicroKernel" />
+    </facilities>
+
+    <components>
+      <component id="Core.MbUnitTestFramework"
+                 service="MbUnit.Model.ITestFramework, MbUnit.Gallio"
+                 type="MbUnit.Framework.Kernel.Model.MbUnitTestFramework, MbUnit.Gallio" />
+
+      <component id="Core.TestHarnessFactory"
+                 service="MbUnit.Core.Harness.ITestHarnessFactory, MbUnit.Gallio"
+                 type="MbUnit.Core.Harness.DefaultTestHarnessFactory, MbUnit.Gallio" />
+
+      <component id="Core.IsolatedTestDomainFactory"
+                 service="MbUnit.Core.Runner.ITestDomainFactory, MbUnit.Gallio"
+                 type="MbUnit.Core.Runner.IsolatedTestDomainFactory, MbUnit.Gallio" />
+
+      <component id="Core.LocalTestDomainFactory"
+                 service="MbUnit.Core.Runner.LocalTestDomainFactory, MbUnit.Gallio"
+                 type="MbUnit.Core.Runner.LocalTestDomainFactory, MbUnit.Gallio" />
+
+      <component id="Core.ReportManager"
+                 service="MbUnit.Core.Reporting.IReportManager, MbUnit.Gallio"
+                 type="MbUnit.Core.Reporting.DefaultReportManager, MbUnit.Gallio" />
+      
+      <component id="Core.XmlReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Core.Reporting.XmlReportFormatter, MbUnit.Gallio" />
+      <component id="Core.HtmlReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Core.Reporting.HtmlReportFormatter, MbUnit.Gallio" />
+      <component id="Core.TextReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Core.Reporting.TextReportFormatter, MbUnit.Gallio" />
+
+      <component id="Core.TestPlanFactory"
+                 service="MbUnit.Model.Execution.ITestPlanFactory, MbUnit.Gallio"
+                 type="MbUnit.Model.Execution.DependencyTestPlanFactory, MbUnit.Gallio" />
+
+      <component id="Core.XmlDocumentationResolver"
+                 service="MbUnit.Core.RuntimeSupport.IXmlDocumentationResolver, MbUnit.Gallio"
+                 type="MbUnit.Core.RuntimeSupport.DefaultXmlDocumentationResolver, MbUnit.Gallio" />
+
+      <component id="Core.ContextManager"
+                 service="MbUnit.Contexts.IContextManager, MbUnit.Gallio"
+                 type="MbUnit.Contexts.DefaultContextManager, MbUnit.Gallio" />
+    </components>
+  </castle>
+</configuration>

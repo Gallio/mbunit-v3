@@ -1,0 +1,438 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit</RootNamespace>
+    <AssemblyName>MbUnit.Gallio</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+    <DocumentationFile>bin\MbUnit.Gallio.xml</DocumentationFile>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\MbUnit.Gallio.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.0.5, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\ConsoleSupport\CommandLine\CommandLineArgumentAttribute.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLine\CommandLineArgumentFlags.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLine\CommandLineArgumentParser.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLine\CommandLineErrorReporter.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLine\CommandLineOutput.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
+    <Compile Include="Core\ConsoleSupport\IRichConsole.cs" />
+    <Compile Include="Core\ConsoleSupport\RichConsoleLogger.cs" />
+    <Compile Include="Core\ConsoleSupport\RichConsoleProgressMonitor.cs" />
+    <Compile Include="Core\ConsoleSupport\RichConsoleProgressMonitorProvider.cs" />
+    <Compile Include="Core\ConsoleSupport\SystemConsole.cs" />
+    <Compile Include="Core\Harness\AssemblyAddedEventArgs.cs" />
+    <Compile Include="Core\Harness\ContextualLogStreamTextWriter.cs" />
+    <Compile Include="Core\Harness\ContextualLogStreamTraceListener.cs" />
+    <Compile Include="Core\Harness\DefaultTestHarness.cs" />
+    <Compile Include="Core\Harness\DefaultTestHarnessFactory.cs" />
+    <Compile Include="Core\Harness\ITestHarness.cs" />
+    <Compile Include="Core\Harness\ITestHarnessContributor.cs" />
+    <Compile Include="Core\Harness\ITestHarnessFactory.cs" />
+    <Compile Include="Core\Harness\TestEnvironment.cs" />
+    <Compile Include="Core\Harness\TestHarnessException.cs" />
+    <Compile Include="Core\Harness\TestPackage.cs" />
+    <Compile Include="Model\Execution\DependencyTestPlan.cs" />
+    <Compile Include="Model\Execution\DependencyTestPlanFactory.cs" />
+    <Compile Include="Model\Events\ITestListener.cs" />
+    <Compile Include="Model\Events\LifecycleEventArgs.cs" />
+    <Compile Include="Model\Events\LifecycleEventType.cs" />
+    <Compile Include="Model\Events\LogEventArgs.cs" />
+    <Compile Include="Model\Events\LogEventType.cs" />
+    <Compile Include="Model\Events\MessageEventArgs.cs" />
+    <Compile Include="Model\Events\MessageType.cs" />
+    <Compile Include="Model\Events\RemoteTestListener.cs" />
+    <Compile Include="Model\Events\StepEventArgs.cs" />
+    <Compile Include="Model\Events\TestEventDispatcher.cs" />
+    <Compile Include="Model\Execution\IStepMonitor.cs" />
+    <Compile Include="Model\Execution\ITestController.cs" />
+    <Compile Include="Model\ITestFramework.cs" />
+    <Compile Include="Model\Execution\ITestMonitor.cs" />
+    <Compile Include="Model\Execution\ITestPlan.cs" />
+    <Compile Include="Model\Execution\ITestPlanFactory.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTestController.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTestFramework.cs" />
+    <Compile Include="Model\Serialization\ModelComponentData.cs" />
+    <Compile Include="Model\Execution\RootTestController.cs" />
+    <Compile Include="Model\Serialization\StepData.cs" />
+    <Compile Include="Model\Serialization\TemplateComponentData.cs" />
+    <Compile Include="Model\Serialization\TemplateData.cs" />
+    <Compile Include="Model\Serialization\TemplateModel.cs" />
+    <Compile Include="Model\Serialization\TemplateParameterData.cs" />
+    <Compile Include="Model\Serialization\TestComponentData.cs" />
+    <Compile Include="Model\Serialization\TestData.cs" />
+    <Compile Include="Model\Execution\TestExecutionOptions.cs" />
+    <Compile Include="Model\Execution\TestListenerLogWriter.cs" />
+    <Compile Include="Model\Serialization\TestModel.cs" />
+    <Compile Include="Model\Execution\TestResult.cs" />
+    <Compile Include="Model\Execution\TrackingLogWriter.cs" />
+    <Compile Include="Core\ProgressMonitoring\BaseProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\IProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\IProgressMonitorProvider.cs" />
+    <Compile Include="Core\ProgressMonitoring\NullProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\NullProgressMonitorProvider.cs" />
+    <Compile Include="Core\ProgressMonitoring\RemoteProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\SubProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\TaskWithProgress.cs" />
+    <Compile Include="Core\ProgressMonitoring\TrackingProgressMonitor.cs" />
+    <Compile Include="Core\Reporting\DefaultReportManager.cs" />
+    <Compile Include="Core\Reporting\ExecutionLog.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogAttachment.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogAttachmentEncoding.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogStream.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogStreamBodyTag.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogStreamContainerTag.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogStreamEmbedTag.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogStreamSectionTag.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogStreamTag.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogStreamTextFormatter.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogStreamTextTag.cs" />
+    <Compile Include="Core\Reporting\ExecutionLogWriter.cs" />
+    <Compile Include="Core\Reporting\HtmlReportFormatter.cs" />
+    <Compile Include="Core\Reporting\IExecutionLogStreamTagVisitor.cs" />
+    <Compile Include="Core\Reporting\IReportFormatter.cs" />
+    <Compile Include="Core\Reporting\IReportManager.cs" />
+    <Compile Include="Core\Reporting\PackageRun.cs" />
+    <Compile Include="Core\Reporting\PackageRunStatistics.cs" />
+    <Compile Include="Core\Reporting\Report.cs" />
+    <Compile Include="Core\Reporting\ReportUtils.cs" />
+    <Compile Include="Core\Reporting\Resources\ReportingResources.cs" />
+    <Compile Include="Core\Reporting\StepRun.cs" />
+    <Compile Include="Core\Reporting\TestRun.cs" />
+    <Compile Include="Core\Reporting\TextReportFormatter.cs" />
+    <Compile Include="Core\Reporting\XmlReportFormatter.cs" />
+    <Compile Include="Core\Reporting\XsltReportFormatter.cs" />
+    <Compile Include="Core\Runner\BaseRunner.cs" />
+    <Compile Include="Core\Runner\BaseTestDomain.cs" />
+    <Compile Include="Core\Runner\Bootstrapper.cs" />
+    <Compile Include="Core\Runner\FatalRunnerException.cs" />
+    <Compile Include="Core\Runner\FilterParser.cs" />
+    <Compile Include="Core\Runner\IIsolatedTestDomainContributor.cs" />
+    <Compile Include="Core\Runner\IsolatedTestDomain.cs" />
+    <Compile Include="Core\Runner\IsolatedTestDomainFactory.cs" />
+    <Compile Include="Core\Runner\ITestDomain.cs" />
+    <Compile Include="Core\Runner\ITestDomainFactory.cs" />
+    <Compile Include="Core\Runner\ITestRunner.cs" />
+    <Compile Include="Core\Runner\LocalRunner.cs" />
+    <Compile Include="Core\Runner\LocalTestDomain.cs" />
+    <Compile Include="Core\Runner\LocalTestDomainFactory.cs" />
+    <Compile Include="Core\Runner\LogProgressMonitor.cs" />
+    <Compile Include="Core\Runner\LogProgressMonitorProvider.cs" />
+    <Compile Include="Core\Runner\Monitors\BaseTestRunnerMonitor.cs" />
+    <Compile Include="Core\Runner\Monitors\DebugMonitor.cs" />
+    <Compile Include="Core\Runner\Monitors\ITestRunnerMonitor.cs" />
+    <Compile Include="Core\Runner\Monitors\LogMonitor.cs" />
+    <Compile Include="Core\Runner\Monitors\ReportMonitor.cs" />
+    <Compile Include="Core\Runner\Monitors\ReportStepEventArgs.cs" />
+    <Compile Include="Core\Runner\RemoteTestDomain.cs" />
+    <Compile Include="Core\Runner\ResultCode.cs" />
+    <Compile Include="Core\Runner\StandaloneRunner.cs" />
+    <Compile Include="Core\Runner\TestRunnerHelper.cs" />
+    <Compile Include="Core\Runner\TextualProgressMonitor.cs" />
+    <Compile Include="Core\RuntimeSupport\DefaultAssemblyResolverManager.cs" />
+    <Compile Include="Contexts\DefaultContextManager.cs" />
+    <Compile Include="Core\RuntimeSupport\DefaultXmlDocumentationResolver.cs" />
+    <Compile Include="Core\RuntimeSupport\IAssemblyResolverManager.cs" />
+    <Compile Include="Contexts\IContextServiceProvider.cs" />
+    <Compile Include="Core\RuntimeSupport\RuntimeSetup.cs" />
+    <Compile Include="Core\RuntimeSupport\WindsorRuntime.cs" />
+    <Compile Include="Core\Utilities\FileManager.cs" />
+    <Compile Include="Core\Utilities\FileUtils.cs" />
+    <Compile Include="Core\Utilities\IFileManager.cs" />
+    <Compile Include="Core\Utilities\LongLivingMarshalByRefObject.cs" />
+    <Compile Include="Core\Utilities\MonoSupport.cs" />
+    <Compile Include="Core\Utilities\TypedEventHandler.cs" />
+    <Compile Include="Core\Utilities\VisualStudioDebugHelper.cs" />
+    <Compile Include="Framework\ArrayAssert.cs" />
+    <Compile Include="Framework\AssemblyResolverAttribute.cs" />
+    <Compile Include="Framework\Assert.cs" />
+    <Compile Include="Framework\AssertionException.cs" />
+    <Compile Include="Framework\AuthorAttribute.cs" />
+    <Compile Include="Model\Block.cs" />
+    <Compile Include="Framework\CategoryAttribute.cs" />
+    <Compile Include="Framework\ClientException.cs" />
+    <Compile Include="Framework\CollectionAssert.cs" />
+    <Compile Include="Contexts\Context.cs" />
+    <Compile Include="Contexts\ContextCookie.cs" />
+    <Compile Include="Framework\DescriptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentNullExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentOutOfRangeExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedExceptionAttribute.cs" />
+    <Compile Include="Framework\FileAssert.cs" />
+    <Compile Include="Framework\GenericAssert.cs" />
+    <Compile Include="Framework\IAssemblyResolver.cs" />
+    <Compile Include="Framework\IgnoreAttribute.cs" />
+    <Compile Include="Framework\ImportanceAttribute.cs" />
+    <Compile Include="Framework\InterimAssert.cs" />
+    <Compile Include="Model\Actions\ActionChain.cs" />
+    <Compile Include="Model\Actions\ActionDecorator.cs" />
+    <Compile Include="Framework\Kernel\Attributes\AssemblyDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\AssemblyPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\ConditionPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\DataPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\DecoratorOrderComparer.cs" />
+    <Compile Include="Framework\Kernel\Attributes\DecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\FixturePatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\MetadataPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\MethodDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\MethodPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\ParameterDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\ParameterPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\PatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\TestPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\TypeDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Kernel\Attributes\TypePatternAttribute.cs" />
+    <Compile Include="Collections\ContravariantList.cs" />
+    <Compile Include="Collections\EmptyArray.cs" />
+    <Compile Include="Collections\EmptyDictionary.cs" />
+    <Compile Include="Collections\IMultiMap.cs" />
+    <Compile Include="Collections\MultiMap.cs" />
+    <Compile Include="Collections\ReadOnlyMultiMap.cs" />
+    <Compile Include="Model\Data\IConverter.cs" />
+    <Compile Include="Model\Data\ArrayDataRow.cs" />
+    <Compile Include="Model\Data\ConvertedDataFactory.cs" />
+    <Compile Include="Model\Data\DataBinding.cs" />
+    <Compile Include="Model\Data\DataBindingException.cs" />
+    <Compile Include="Model\Data\DataBindingSet.cs" />
+    <Compile Include="Model\Data\DataSourceList.cs" />
+    <Compile Include="Model\Data\IDataBinder.cs" />
+    <Compile Include="Model\Data\IDataBindingContext.cs" />
+    <Compile Include="Model\Data\IDataFactory.cs" />
+    <Compile Include="Model\Data\IDataRow.cs" />
+    <Compile Include="Model\Data\IDataSource.cs" />
+    <Compile Include="Model\Data\IDataSourceResolver.cs" />
+    <Compile Include="Model\Filters\AndFilter.cs" />
+    <Compile Include="Model\Filters\AnyFilter.cs" />
+    <Compile Include="Model\Filters\AssemblyFilter.cs" />
+    <Compile Include="Model\Filters\Filter.cs" />
+    <Compile Include="Model\Filters\IdFilter.cs" />
+    <Compile Include="Model\Filters\MemberFilter.cs" />
+    <Compile Include="Model\Filters\MetadataFilter.cs" />
+    <Compile Include="Model\Filters\NamespaceFilter.cs" />
+    <Compile Include="Model\Filters\NoneFilter.cs" />
+    <Compile Include="Model\Filters\NotFilter.cs" />
+    <Compile Include="Model\Filters\OrFilter.cs" />
+    <Compile Include="Model\Filters\TypeFilter.cs" />
+    <Compile Include="Model\Data\IFormatter.cs" />
+    <Compile Include="Model\BaseInfo.cs" />
+    <Compile Include="Model\BaseInfoList.cs" />
+    <Compile Include="Model\BaseModelComponent.cs" />
+    <Compile Include="Model\BaseStep.cs" />
+    <Compile Include="Model\BaseTemplate.cs" />
+    <Compile Include="Model\BaseTemplateBinding.cs" />
+    <Compile Include="Model\BaseTemplateComponent.cs" />
+    <Compile Include="Model\BaseTemplateParameter.cs" />
+    <Compile Include="Model\BaseTest.cs" />
+    <Compile Include="Model\BaseTestComponent.cs" />
+    <Compile Include="Model\CodeReference.cs" />
+    <Compile Include="Model\CodeReferenceKind.cs" />
+    <Compile Include="Model\ComponentKind.cs" />
+    <Compile Include="Model\IModelComponent.cs" />
+    <Compile Include="Model\IModelTreeNode.cs" />
+    <Compile Include="Model\IStep.cs" />
+    <Compile Include="Model\ITemplate.cs" />
+    <Compile Include="Model\ITemplateBinding.cs" />
+    <Compile Include="Model\ITemplateComponent.cs" />
+    <Compile Include="Model\ITemplateParameter.cs" />
+    <Compile Include="Model\ITest.cs" />
+    <Compile Include="Model\ITestComponent.cs" />
+    <Compile Include="Model\LifecyclePhases.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitAssemblyTemplate.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitFrameworkTemplate.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitMethodTemplate.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTemplate.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTemplateBinding.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTemplateParameter.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTest.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTestState.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTestUtils.cs" />
+    <Compile Include="Framework\Kernel\Model\MbUnitTypeTemplate.cs" />
+    <Compile Include="Model\MetadataKeys.cs" />
+    <Compile Include="Model\MetadataMap.cs" />
+    <Compile Include="Model\ModelComponentInfo.cs" />
+    <Compile Include="Model\ModelException.cs" />
+    <Compile Include="Model\ModelTreeBuilder.cs" />
+    <Compile Include="Model\ModelUtils.cs" />
+    <Compile Include="Model\RootTemplate.cs" />
+    <Compile Include="Model\RootTemplateBinding.cs" />
+    <Compile Include="Model\RootTest.cs" />
+    <Compile Include="Model\Slot.cs" />
+    <Compile Include="Model\StepInfo.cs" />
+    <Compile Include="Model\TemplateBindingInfo.cs" />
+    <Compile Include="Model\TemplateBindingScope.cs" />
+    <Compile Include="Model\TemplateEnumerationOptions.cs" />
+    <Compile Include="Model\TemplateInfo.cs" />
+    <Compile Include="Model\TemplateInfoList.cs" />
+    <Compile Include="Model\TemplateParameterInfo.cs" />
+    <Compile Include="Model\TemplateParameterInfoList.cs" />
+    <Compile Include="Model\TemplateTreeBuilder.cs" />
+    <Compile Include="Model\TestEnumerationOptions.cs" />
+    <Compile Include="Model\TestInfo.cs" />
+    <Compile Include="Model\TestInfoList.cs" />
+    <Compile Include="Model\TestOutcome.cs" />
+    <Compile Include="Model\TestStatus.cs" />
+    <Compile Include="Model\TestTreeBuilder.cs" />
+    <Compile Include="Contexts\IContextManager.cs" />
+    <Compile Include="Core\RuntimeSupport\IRuntime.cs" />
+    <Compile Include="Core\RuntimeSupport\IXmlDocumentationResolver.cs" />
+    <Compile Include="Collections\CollectionUtils.cs" />
+    <Compile Include="Collections\GenericUtils.cs" />
+    <Compile Include="Model\Serialization\SerializationUtils.cs" />
+    <Compile Include="Core\Utilities\StringUtils.cs" />
+    <Compile Include="Framework\KeyedPairwiseAssertion.cs" />
+    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\Attachment.cs" />
+    <Compile Include="Logging\AttachmentUtils.cs" />
+    <Compile Include="Logging\BinaryAttachment.cs" />
+    <Compile Include="Logging\IAttachmentVisitor.cs" />
+    <Compile Include="Logging\LogStreamNames.cs" />
+    <Compile Include="Logging\LogStreamWriter.cs" />
+    <Compile Include="Logging\LogWriter.cs" />
+    <Compile Include="Logging\MimeTypes.cs" />
+    <Compile Include="Logging\TextAttachment.cs" />
+    <Compile Include="Logging\XmlAttachment.cs" />
+    <Compile Include="Framework\MetadataAttribute.cs" />
+    <Compile Include="Framework\PairwiseAssertion.cs" />
+    <Compile Include="Framework\ParameterAttribute.cs" />
+    <Compile Include="Framework\ReflectionAssert.cs" />
+    <Compile Include="Framework\Reflection\AccessModifier.cs" />
+    <Compile Include="Framework\Reflection\MemberType.cs" />
+    <Compile Include="Framework\Reflection\ReflectionException.cs" />
+    <Compile Include="Framework\Reflection\Reflector.cs" />
+    <Compile Include="Framework\Relation.cs" />
+    <Compile Include="Framework\RowAttribute.cs" />
+    <Compile Include="Framework\RowTestAttribute.cs" />
+    <Compile Include="Core\RuntimeSupport\Runtime.cs" />
+    <Compile Include="Framework\SecurityAssert.cs" />
+    <Compile Include="Framework\SetUpAttribute.cs" />
+    <Compile Include="Contexts\Step.cs" />
+    <Compile Include="Framework\StringAssert.cs" />
+    <Compile Include="Framework\TearDownAttribute.cs" />
+    <Compile Include="Framework\TestAttribute.cs" />
+    <Compile Include="Framework\TestFixtureAttribute.cs" />
+    <Compile Include="Framework\TestFixtureSetUpAttribute.cs" />
+    <Compile Include="Framework\TestFixtureTearDownAttribute.cs" />
+    <Compile Include="Framework\TestImportance.cs" />
+    <Compile Include="Framework\TestsOnAttribute.cs" />
+    <Compile Include="Framework\Xml\XmlSerializationAssert.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\Container.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\Fixture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\FullStop.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\header-background.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\MbUnit-Report.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\MbUnit-Report.html.xsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\MbUnit-Report.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\MbUnit-Report.txt.xsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\MbUnitLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\Minus.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\Plus.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Reporting\Resources\Test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Runner\IsolatedTestDomain.config.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MbUnit.Gallio.plugin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

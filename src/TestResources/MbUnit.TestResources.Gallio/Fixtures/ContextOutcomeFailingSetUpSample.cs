@@ -16,7 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MbUnit.Contexts;
 using MbUnit.Framework;
+using MbUnit.Logging;
 
 namespace MbUnit.TestResources.Gallio.Fixtures
 {

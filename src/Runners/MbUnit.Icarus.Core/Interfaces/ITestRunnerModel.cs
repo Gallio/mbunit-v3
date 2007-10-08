@@ -15,7 +15,7 @@
 
 using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
-using MbUnit.Core.Model;
+using MbUnit.Model.Serialization;
 
 namespace MbUnit.Icarus.Core.Interfaces
 {

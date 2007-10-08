@@ -49,13 +49,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Core\MbUnit.Gallio.Core.csproj">
-      <Project>{B1843915-598A-4F80-9E47-BA890F879262}</Project>
-      <Name>MbUnit.Gallio.Core</Name>
+    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Tests\MbUnit.Gallio.Tests.csproj">
+      <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
+      <Name>MbUnit.Gallio.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Framework\MbUnit.Gallio.Framework.csproj">
-      <Project>{691E62B3-823F-4F1E-9585-58D0E00B72C3}</Project>
-      <Name>MbUnit.Gallio.Framework</Name>
+    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>MbUnit.Gallio</Name>
     </ProjectReference>
     <ProjectReference Include="..\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj">
       <Project>{BADF6646-9750-4CFB-8867-5D2D4086412A}</Project>

@@ -20,8 +20,8 @@ using System.Reflection;
 using Castle.Core.Logging;
 using MbUnit.AddIn.TDNet.Properties;
 using MbUnit.Core.Runner;
-using MbUnit.Framework.Kernel.Filters;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Model.Filters;
+using MbUnit.Model;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
 

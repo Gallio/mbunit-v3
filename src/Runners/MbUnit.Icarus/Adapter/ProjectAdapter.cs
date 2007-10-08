@@ -15,10 +15,10 @@
 
 using System;
 using MbUnit.Core.Harness;
-using MbUnit.Core.Model;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Icarus.Interfaces;
+using MbUnit.Model.Serialization;
 
 namespace MbUnit.Icarus.Adapter
 {

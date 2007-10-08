@@ -15,9 +15,10 @@
 
 using System;
 using System.Diagnostics;
+using MbUnit.Contexts;
 using MbUnit.Framework;
-using MbUnit.Framework.Logging;
-using MbUnit.Framework.Kernel.Model;
+using MbUnit.Logging;
+using MbUnit.Model;
 using MbUnit.Samples.Properties;
 
 namespace MbUnit.Samples

@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System.Windows.Forms;
-using MbUnit.Core.Model;
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Interfaces;
+using MbUnit.Model.Serialization;
 
 namespace MbUnit.Icarus.AdapterModel
 {

@@ -32,7 +32,7 @@ if /I not "%Answer%"=="N" goto :XUNIT_RETRY_PROMPT
 REM Using priority 15 for now so that we can run the MbUnit v2 tests
 REM that link in Gallio using the MbUnit v2 add-in.  Should be 10
 REM when we convert these tests to Gallio.
-call :AddRunner MbUnit.Gallio 15 MbUnit.Gallio.Framework
+call :AddRunner MbUnit.Gallio 15 MbUnit.Gallio
 call :AddRunner MbUnit.Gallio_MbUnit2 %MbUnit2AddInPriority% MbUnit.Framework
 call :AddRunner MbUnit.Gallio_NUnit %NUnitAddInPriority% nunit.framework
 call :AddRunner MbUnit.Gallio_Xunit %XunitAddInPriority% xunit

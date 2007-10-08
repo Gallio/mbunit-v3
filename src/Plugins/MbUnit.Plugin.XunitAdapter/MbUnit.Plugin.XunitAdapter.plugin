@@ -6,8 +6,8 @@
 
     <components>
       <component id="XunitAdapter.TestFramework"
-                 service="MbUnit.Core.Model.ITestFramework, MbUnit.Gallio.Core"
-                 type="MbUnit.Plugin.XunitAdapter.Core.XunitTestFramework, MbUnit.Plugin.XunitAdapter" />
+                 service="MbUnit.Model.ITestFramework, MbUnit.Gallio"
+                 type="MbUnit.Plugin.XunitAdapter.Model.XunitTestFramework, MbUnit.Plugin.XunitAdapter" />
     </components>
   </castle>
 </configuration>

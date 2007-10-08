@@ -17,13 +17,13 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
+using MbUnit.Collections;
 using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ConsoleSupport.CommandLine;
 using MbUnit.Core.Reporting;
 using MbUnit.Core.Runner;
 using MbUnit.Core.RuntimeSupport;
 using MbUnit.Echo.Properties;
-using MbUnit.Framework.Kernel.Utilities;
 
 namespace MbUnit.Echo
 {

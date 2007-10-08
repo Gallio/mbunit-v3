@@ -5,6 +5,7 @@
       $(CoreCompileDependsOn);
       GenerateAdditionalAssemblyInfo;
     </CoreCompileDependsOn>
+    <DefineConstants>$(DefineConstants);HAVE_ASSEMBLY_VERSION</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

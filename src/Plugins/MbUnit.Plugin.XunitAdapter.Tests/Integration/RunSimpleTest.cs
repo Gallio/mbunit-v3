@@ -16,9 +16,9 @@
 using System;
 using MbUnit.Core.Reporting;
 using MbUnit.Framework;
-using MbUnit.Framework.Logging;
-using MbUnit.Framework.Kernel.Model;
-using MbUnit.Framework.Tests.Integration;
+using MbUnit.Logging;
+using MbUnit.Model;
+using MbUnit.Tests.Integration;
 using MbUnit.TestResources.Xunit;
 
 namespace MbUnit.Plugin.XunitAdapter.Tests.Integration
@@ -37,8 +37,6 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Integration
         {
             TestRun testRun = GetTestRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")));
             Assert.AreEqual(TestOutcome.Passed, testRun.RootStepRun.Result.Outcome);
-
-            Assert.AreEqual("Pass", testRun.RootStepRun.Step.Metadata.GetValue("Xunit.MethodName"));
         }
 
         [Test]
@@ -47,8 +45,6 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Integration
             TestRun testRun = GetTestRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
             Assert.AreEqual(TestOutcome.Failed, testRun.RootStepRun.Result.Outcome);
             StringAssert.Contains(testRun.RootStepRun.ExecutionLog.GetStream(LogStreamNames.Failures).ToString(), "Boom");
-
-            Assert.AreEqual("Fail", testRun.RootStepRun.Step.Metadata.GetValue("Xunit.MethodName"));
         }
     }
 }
