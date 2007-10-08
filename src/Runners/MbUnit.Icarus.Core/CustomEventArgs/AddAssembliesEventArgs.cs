@@ -13,16 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.Windows.Forms;
+using System;
+using MbUnit.Core.Harness;
 
-using MbUnit.Model.Serialization;
-
-namespace MbUnit.Icarus.Interfaces
+namespace MbUnit.Icarus.Core.CustomEventArgs 
 {
-    public interface IProjectAdapterModel
+    public class AddAssembliesEventArgs : EventArgs
     {
-        TreeNode[] BuildTestTree(TestModel testModel);
-        ListViewItem[] BuildAssemblyList(List<string> list);
+        private readonly string[] assemblies;
+
+        public AddAssembliesEventArgs(string[] assemblies)
+        {
+            this.assemblies = assemblies;
+        }
+
+        public string[] Assemblies
+        {
+            get { return assemblies; }
+        }
     }
 }

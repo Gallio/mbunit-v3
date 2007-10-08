@@ -31,7 +31,33 @@ namespace MbUnit.Icarus
 {
     public partial class Main : Form, IProjectAdapterView
     {
+        #region Variables
+
         private TreeNode[] testTreeCollection;
+        private ListViewItem[] assemblies;
+
+        #endregion
+
+        #region Properties
+
+        public TreeNode[] TestTreeCollection
+        {
+            set { testTreeCollection = value; }
+        }
+
+        public ListViewItem[] Assemblies
+        {
+            set { assemblies = value; }
+        }
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler<EventArgs> GetTestTree;
+        public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
+
+        #endregion
 
         public Main()
         {
@@ -211,12 +237,22 @@ namespace MbUnit.Icarus
         {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.Filter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
-            if(openFile.ShowDialog() == DialogResult.OK)
+            openFile.Multiselect = true;
+            if (openFile.ShowDialog() == DialogResult.OK)
             {
-                GetTheTestTree(openFile.FileName);
+                // Add assemblies
+                if (AddAssemblies != null)
+                {
+                    AddAssemblies(this, new AddAssembliesEventArgs(openFile.FileNames));
+                }
+
+                // Load test tree
+                if (GetTestTree != null)
+                {
+                    GetTestTree(this, new EventArgs());
+                }
             }
         }
-
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
@@ -317,28 +353,15 @@ namespace MbUnit.Icarus
 
         #endregion
 
-        public event EventHandler<ProjectLoadEventArgs> GetTestTree;
-
-        public void GetTheTestTree(string assembly)
-        {
-            ProjectLoadEventArgs loadeventargs = new ProjectLoadEventArgs(assembly);
-
-            EventHandler<ProjectLoadEventArgs> getTestTree = GetTestTree;
-            if (getTestTree != null)
-            {
-                getTestTree(this, loadeventargs);
-                //bind test tree to control
-            }
-        }
-
-        public TreeNode[] TestTreeCollection
-        {
-            set { testTreeCollection = value; }
-        }
-
         public void DataBind()
         {
+            // populate tree
+            testTree.Nodes.Clear();
             testTree.Nodes.AddRange(testTreeCollection);
+
+            // populate assembly list
+            assemblyList.Items.Clear();
+            assemblyList.Items.AddRange(assemblies);
         }
     }
 }

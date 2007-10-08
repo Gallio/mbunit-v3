@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomEventArgs\AddAssembliesEventArgs.cs" />
     <Compile Include="CustomEventArgs\ProjectEventArgs.cs" />
     <Compile Include="CustomEventArgs\ProjectLoadEventArgs.cs" />
     <Compile Include="Interfaces\ILogHistoryModel.cs" />

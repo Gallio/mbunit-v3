@@ -24,33 +24,37 @@ namespace MbUnit.Icarus.Adapter
 {
     public class ProjectAdapter : IProjectAdapter
     {
-
         private readonly IProjectAdapterView _View;
         private readonly IProjectAdapterModel _Model;
+        
         private TestModel _testCollection;
+        private TestPackage testpackage;
+
         public event EventHandler<ProjectEventArgs> GetTestTree;
-      
 
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
             _View = view;
             _Model = model;
 
+            // Wire up event handlers
+            _View.AddAssemblies += _View_AddAssemblies;
             _View.GetTestTree += _View_GetTestTree;
+
+            // Create empty new test package
+            testpackage = new TestPackage();
         }
 
-        void _View_GetTestTree(object sender, ProjectLoadEventArgs e)
+        private void _View_AddAssemblies(object sender, AddAssembliesEventArgs e)
         {
-            TestPackage testpackage = new TestPackage();
-            //testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");
-            testpackage.AssemblyFiles.Add(e.assembly);
+            testpackage.AssemblyFiles.AddRange(e.Assemblies);
+        }
 
-            ProjectEventArgs pa = new ProjectEventArgs(testpackage);
-
-            EventHandler<ProjectEventArgs> getTestTree = GetTestTree;
-            if (getTestTree != null)
+        void _View_GetTestTree(object sender, EventArgs e)
+        {
+            if (GetTestTree != null)
             {
-                getTestTree(this, pa);
+                GetTestTree(this, new ProjectEventArgs(testpackage));
             }
         }
 
@@ -61,6 +65,7 @@ namespace MbUnit.Icarus.Adapter
 
         public void DataBind()
         {
+            _View.Assemblies = _Model.BuildAssemblyList(testpackage.AssemblyFiles);
             _View.TestTreeCollection = _Model.BuildTestTree(_testCollection);
             _View.DataBind();
         }

@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 
 namespace MbUnit.Core.ProgressMonitoring
@@ -21,6 +22,7 @@ namespace MbUnit.Core.ProgressMonitoring
     /// The tracking progress monitor is a refinement of <see cref="BaseProgressMonitor" />
     /// that remembers the current task name, status and sub-task stack.
     /// </summary>
+    [Serializable]
     public abstract class TrackingProgressMonitor : BaseProgressMonitor
     {
         private string taskName = @"";
