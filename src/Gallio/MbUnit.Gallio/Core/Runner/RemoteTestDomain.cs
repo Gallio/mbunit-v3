@@ -111,7 +111,7 @@ namespace MbUnit.Core.Runner
             try
             {
                 if (proxy != null)
-                    proxy.UnloadPackage(new SubProgressMonitor(progressMonitor, 0.9));
+                    proxy.UnloadPackage(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 0.9)));
             }
             catch (Exception ex)
             {

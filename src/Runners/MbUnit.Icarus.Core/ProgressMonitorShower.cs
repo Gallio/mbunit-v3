@@ -19,6 +19,5 @@ using MbUnit.Core.ProgressMonitoring;
 
 namespace MbUnit.Icarus.Core
 {
-    [Serializable]
     public class ProgressMonitorShower : TrackingProgressMonitor {}
 }

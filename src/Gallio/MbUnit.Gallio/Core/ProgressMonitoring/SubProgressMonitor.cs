@@ -29,7 +29,6 @@ namespace MbUnit.Core.ProgressMonitoring
     /// of cancelation if the child is canceled and vice-versa.
     /// </summary>
     /// <seealso cref="IProgressMonitor"/> for important thread-safety and usage remarks.
-    [Serializable]
     public class SubProgressMonitor : BaseProgressMonitor
     {
         private IProgressMonitor parent;
