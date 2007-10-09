@@ -19,12 +19,15 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
+
 using MbUnit.Icarus.Controls;
 using MbUnit.Icarus.Controls.Enums;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Interfaces;
 using MbUnit.Icarus.Properties;
+
 using ZedGraph;
 
 namespace MbUnit.Icarus
@@ -35,6 +38,10 @@ namespace MbUnit.Icarus
 
         private TreeNode[] testTreeCollection;
         private ListViewItem[] assemblies;
+        private Thread workerThread = null;
+        private string statusText = "Ready...";
+        private int totalWorkUnits, completedWorkUnits;
+        private System.Timers.Timer statusBarTimer;
 
         #endregion
 
@@ -50,6 +57,21 @@ namespace MbUnit.Icarus
             set { assemblies = value; }
         }
 
+        public string StatusText
+        {
+            set { statusText = value; }
+        }
+
+        public int TotalWorkUnits
+        {
+            set { totalWorkUnits = value; }
+        }
+
+        public int CompletedWorkUnits
+        {
+            set { completedWorkUnits = value; }
+        }
+
         #endregion
 
         #region Events
@@ -60,10 +82,27 @@ namespace MbUnit.Icarus
 
         #endregion
 
+        #region Delegates
+
+        public delegate void SetStatusText(string text);
+        public delegate void ClearTreeDelegate();
+        public delegate void AddRangeToTreeDelegate(TreeNode[] nodes);
+        public delegate void ClearListDelegate();
+        public delegate void AddRangeToListDelegate(ListViewItem[] items);
+
+        #endregion
+
         public Main()
         {
             InitializeComponent();
-                    
+
+            // status bar
+            statusBarTimer = new System.Timers.Timer(100);
+            statusBarTimer.AutoReset = true;
+            statusBarTimer.Enabled = true;
+            statusBarTimer.Elapsed += new ElapsedEventHandler(statusBarTimer_Elapsed);
+            statusBarTimer.Start();
+
             // Set the application version in the window title.
             GraphPane graphPane = zedGraphControl1.GraphPane;
             graphPane.Title.Text = "Total Test Results";
@@ -241,10 +280,21 @@ namespace MbUnit.Icarus
             openFile.Multiselect = true;
             if (openFile.ShowDialog() == DialogResult.OK)
             {
+                AbortWorkerThread();
+                workerThread = new Thread(new ParameterizedThreadStart(ThreadedAddAssemblies));
+                workerThread.Start(openFile.FileNames);
+            }
+        }
+
+        private void ThreadedAddAssemblies(object o)
+        {
+            string[] filenames = (string[]) o;
+            if (filenames != null)
+            {
                 // Add assemblies
                 if (AddAssemblies != null)
                 {
-                    AddAssemblies(this, new AddAssembliesEventArgs(openFile.FileNames));
+                    AddAssemblies(this, new AddAssembliesEventArgs(filenames));
                 }
 
                 // Load test tree
@@ -357,25 +407,86 @@ namespace MbUnit.Icarus
         public void DataBind()
         {
             // populate tree
-            testTree.Nodes.Clear();
-            testTree.Nodes.AddRange(testTreeCollection);
+            testTree.Invoke(new ClearTreeDelegate(testTree.Nodes.Clear));
+            testTree.Invoke(new AddRangeToTreeDelegate(testTree.Nodes.AddRange), new object[] { testTreeCollection });
 
             // populate assembly list
-            assemblyList.Items.Clear();
-            assemblyList.Items.AddRange(assemblies);
+            assemblyList.Invoke(new ClearListDelegate(assemblyList.Items.Clear));
+            assemblyList.Invoke(new AddRangeToListDelegate(assemblyList.Items.AddRange), new object[] { assemblies });
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            AbortWorkerThread();
+            workerThread = new Thread(new ThreadStart(ThreadedRemoveAssemblies));
+            workerThread.Start();
+        }
+
+        private void ThreadedRemoveAssemblies()
+        {
+            StatusText = "Removing assemblies...";
             // remove assemblies
             if (RemoveAssemblies != null)
             {
                 RemoveAssemblies(this, new EventArgs());
             }
-
             // clear tree & assembly list
-            testTree.Nodes.Clear();
-            assemblyList.Items.Clear();
+            testTree.Invoke(new ClearTreeDelegate(testTree.Nodes.Clear));
+            assemblyList.Invoke(new ClearListDelegate(assemblyList.Items.Clear));
+            StatusText = "Ready...";
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            if (workerThread != null)
+            {
+                workerThread.Abort();
+            }
+            base.OnClosing(e);
+        }
+
+        public void AbortWorkerThread()
+        {
+            if (workerThread != null)
+            {
+                try
+                {
+                    StatusText = "Aborting worker thread";
+                    workerThread.Join(1000);
+                    workerThread.Abort();
+                    workerThread.Join(2000);
+                    workerThread = null;
+                    StatusText = "Ready...";
+                }
+                catch (Exception ex)
+                {
+                    if (ex is System.Threading.ThreadAbortException)
+                        return;
+                }
+            }
+        }
+
+        private void statusBarTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                if (statusStrip.InvokeRequired)
+                {
+                    statusStrip.Invoke(new MethodInvoker(UpdateStatusBar));
+                }
+                else
+                {
+                    UpdateStatusBar();
+                }
+            }
+            catch { }
+        }
+
+        private void UpdateStatusBar()
+        {
+            toolStripStatusLabel.Text = statusText;
+            toolStripProgressBar.Maximum = totalWorkUnits;
+            toolStripProgressBar.Value = completedWorkUnits;
         }
     }
 }

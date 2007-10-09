@@ -32,6 +32,25 @@ namespace MbUnit.Icarus.Adapter
 
         public event EventHandler<ProjectEventArgs> GetTestTree;
 
+        #region Properties
+
+        public string StatusText
+        {
+            set { _View.StatusText = value; }
+        }
+
+        public int CompletedWorkUnits
+        {
+            set { _View.CompletedWorkUnits = value; }
+        }
+
+        public int TotalWorkUnits
+        {
+            set { _View.TotalWorkUnits = value; }
+        }
+
+        #endregion
+
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
             _View = view;

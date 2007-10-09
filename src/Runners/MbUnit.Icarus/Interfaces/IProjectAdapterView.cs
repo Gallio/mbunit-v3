@@ -26,6 +26,9 @@ namespace MbUnit.Icarus.Interfaces
         event EventHandler<EventArgs> GetTestTree;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
+        string StatusText { set; }
+        int CompletedWorkUnits { set; }
+        int TotalWorkUnits { set; }
         void DataBind();
     }
 }

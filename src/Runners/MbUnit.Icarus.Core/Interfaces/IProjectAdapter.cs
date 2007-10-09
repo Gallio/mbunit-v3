@@ -22,6 +22,10 @@ namespace MbUnit.Icarus.Core.Interfaces
     public interface IProjectAdapter
     {
         event EventHandler<ProjectEventArgs> GetTestTree; 
-        TestModel TestCollection { set;}
-        void DataBind();}
+        TestModel TestCollection { set; }
+        string StatusText { set; }
+        int CompletedWorkUnits { set; }
+        int TotalWorkUnits { set; }
+        void DataBind();
+    }
 }

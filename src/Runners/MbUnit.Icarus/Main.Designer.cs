@@ -71,7 +71,8 @@ namespace MbUnit.Icarus
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -96,11 +97,15 @@ namespace MbUnit.Icarus
             this.expandFailedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.resetTestsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.removeAssemblyToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.assemblyList = new System.Windows.Forms.ListView();
             this.columnHeader9 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader10 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader11 = new System.Windows.Forms.ColumnHeader();
+            this.assemblyListMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.removeAssemblyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.treeFilterCombo = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -143,6 +148,7 @@ namespace MbUnit.Icarus
             this.tabPage3.SuspendLayout();
             this.testTreeMenuStrip.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.assemblyListMenuStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.testResultsTabs.SuspendLayout();
             this.testResultsTabPage.SuspendLayout();
@@ -257,7 +263,7 @@ namespace MbUnit.Icarus
             // 
             this.reloadToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolStripMenuItem.Image")));
             this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
-            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.reloadToolStripMenuItem.Text = "R&eload";
             // 
             // toolsToolStripMenuItem
@@ -348,18 +354,26 @@ namespace MbUnit.Icarus
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.toolStripStatusLabel,
+            this.toolStripProgressBar});
             this.statusStrip.Location = new System.Drawing.Point(0, 685);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1003, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "statusStrip";
             // 
-            // toolStripStatusLabel1
+            // toolStripStatusLabel
             // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(50, 17);
-            this.toolStripStatusLabel1.Text = "Ready...";
+            this.toolStripStatusLabel.AutoSize = false;
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(400, 17);
+            this.toolStripStatusLabel.Text = "Ready...";
+            this.toolStripStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // toolStripProgressBar
+            // 
+            this.toolStripProgressBar.Name = "toolStripProgressBar";
+            this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
             // 
             // mainToolStrip
             // 
@@ -557,47 +571,61 @@ namespace MbUnit.Icarus
             this.toolStripSeparator7,
             this.expandFailedMenuItem,
             this.toolStripSeparator9,
-            this.resetTestsMenuItem});
+            this.resetTestsMenuItem,
+            this.toolStripSeparator10,
+            this.removeAssemblyToolStripMenuItem2});
             this.testTreeMenuStrip.Name = "classTreeMenuStrip";
-            this.testTreeMenuStrip.Size = new System.Drawing.Size(153, 104);
+            this.testTreeMenuStrip.Size = new System.Drawing.Size(173, 132);
             // 
             // expandAllMenuItem
             // 
             this.expandAllMenuItem.Name = "expandAllMenuItem";
-            this.expandAllMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.expandAllMenuItem.Size = new System.Drawing.Size(172, 22);
             this.expandAllMenuItem.Text = "&Expand All";
             this.expandAllMenuItem.Click += new System.EventHandler(this.expandAllMenuItem_Click);
             // 
             // collapseAllMenuItem
             // 
             this.collapseAllMenuItem.Name = "collapseAllMenuItem";
-            this.collapseAllMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.collapseAllMenuItem.Size = new System.Drawing.Size(172, 22);
             this.collapseAllMenuItem.Text = "&Collapse All";
             this.collapseAllMenuItem.Click += new System.EventHandler(this.collapseAllMenuItem_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(169, 6);
             // 
             // expandFailedMenuItem
             // 
             this.expandFailedMenuItem.Name = "expandFailedMenuItem";
-            this.expandFailedMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.expandFailedMenuItem.Size = new System.Drawing.Size(172, 22);
             this.expandFailedMenuItem.Text = "Expand &Failed";
             this.expandFailedMenuItem.Click += new System.EventHandler(this.expandFailedMenuItem_Click);
             // 
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(169, 6);
             // 
             // resetTestsMenuItem
             // 
             this.resetTestsMenuItem.Name = "resetTestsMenuItem";
-            this.resetTestsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetTestsMenuItem.Size = new System.Drawing.Size(172, 22);
             this.resetTestsMenuItem.Text = "&Reset Tests";
             this.resetTestsMenuItem.Click += new System.EventHandler(this.resetTestsMenuItem_Click);
+            // 
+            // toolStripSeparator10
+            // 
+            this.toolStripSeparator10.Name = "toolStripSeparator10";
+            this.toolStripSeparator10.Size = new System.Drawing.Size(169, 6);
+            // 
+            // removeAssemblyToolStripMenuItem2
+            // 
+            this.removeAssemblyToolStripMenuItem2.Enabled = false;
+            this.removeAssemblyToolStripMenuItem2.Name = "removeAssemblyToolStripMenuItem2";
+            this.removeAssemblyToolStripMenuItem2.Size = new System.Drawing.Size(172, 22);
+            this.removeAssemblyToolStripMenuItem2.Text = "Remove Assembly";
             // 
             // tabPage5
             // 
@@ -616,6 +644,7 @@ namespace MbUnit.Icarus
             this.columnHeader9,
             this.columnHeader10,
             this.columnHeader11});
+            this.assemblyList.ContextMenuStrip = this.assemblyListMenuStrip;
             this.assemblyList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.assemblyList.Location = new System.Drawing.Point(3, 3);
             this.assemblyList.Name = "assemblyList";
@@ -638,6 +667,20 @@ namespace MbUnit.Icarus
             // 
             this.columnHeader11.Text = "Location";
             this.columnHeader11.Width = 128;
+            // 
+            // assemblyListMenuStrip
+            // 
+            this.assemblyListMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeAssemblyToolStripMenuItem1});
+            this.assemblyListMenuStrip.Name = "assemblyListMenuStrip";
+            this.assemblyListMenuStrip.Size = new System.Drawing.Size(173, 26);
+            // 
+            // removeAssemblyToolStripMenuItem1
+            // 
+            this.removeAssemblyToolStripMenuItem1.Enabled = false;
+            this.removeAssemblyToolStripMenuItem1.Name = "removeAssemblyToolStripMenuItem1";
+            this.removeAssemblyToolStripMenuItem1.Size = new System.Drawing.Size(172, 22);
+            this.removeAssemblyToolStripMenuItem1.Text = "Remove Assembly";
             // 
             // panel1
             // 
@@ -946,6 +989,7 @@ namespace MbUnit.Icarus
             this.tabPage3.ResumeLayout(false);
             this.testTreeMenuStrip.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
+            this.assemblyListMenuStrip.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.testResultsTabs.ResumeLayout(false);
@@ -971,7 +1015,7 @@ namespace MbUnit.Icarus
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStrip mainToolStrip;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
@@ -1050,6 +1094,11 @@ namespace MbUnit.Icarus
         private System.Windows.Forms.ToolStripMenuItem resetTestsMenuItem;
         private System.Windows.Forms.ContextMenuStrip trayMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+        private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem2;
+        private System.Windows.Forms.ContextMenuStrip assemblyListMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
     }
 }
 

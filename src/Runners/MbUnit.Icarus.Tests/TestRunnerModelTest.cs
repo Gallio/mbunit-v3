@@ -18,6 +18,7 @@ using MbUnit.Core.Runner;
 using MbUnit.Core.RuntimeSupport;
 using MbUnit.Framework;
 using MbUnit.Icarus.Core.Model;
+using MbUnit.Icarus.Core.Presenter;
 using MbUnit.Model.Serialization;
 
 namespace MbUnit.Icarus.Tests
@@ -35,8 +36,8 @@ namespace MbUnit.Icarus.Tests
             testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");
             
             TestRunnerModel main = new TestRunnerModel();
-            
-            TestModel t = main.LoadUpAssembly(runner, testpackage);
+
+            //TestModel t = main.LoadUpAssembly(runner, testpackage);
         }
 
     }

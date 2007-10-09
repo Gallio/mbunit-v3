@@ -22,11 +22,31 @@ using MbUnit.Icarus.Core.Interfaces;
 
 namespace MbUnit.Icarus.Core.Presenter
 {
-    public class ProjectPresenter
+    public class ProjectPresenter : IProjectPresenter
     {
         private readonly IProjectAdapter _View;
         private readonly ITestRunnerModel _TestRunnerModel;
         private readonly StandaloneRunner runner;
+
+        public string StatusText
+        {
+            set { _View.StatusText = value; }
+        }
+
+        public int CompletedWorkUnits
+        {
+            set { _View.CompletedWorkUnits = value; }
+        }
+
+        public int TotalWorkUnits
+        {
+            set { _View.TotalWorkUnits = value; }
+        }
+
+        public StandaloneRunner Runner
+        {
+            get { return runner; }
+        }
 
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
         {
@@ -41,7 +61,7 @@ namespace MbUnit.Icarus.Core.Presenter
 
         private void GetTestTree(object sender, ProjectEventArgs e)
         {
-            _View.TestCollection = _TestRunnerModel.LoadUpAssembly(runner, e.LocalTestPackage);
+            _View.TestCollection = _TestRunnerModel.LoadUpAssembly(this, e.LocalTestPackage);
             _View.DataBind();
         }
     }

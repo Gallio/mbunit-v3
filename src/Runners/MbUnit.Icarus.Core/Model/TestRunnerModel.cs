@@ -25,18 +25,15 @@ namespace MbUnit.Icarus.Core.Model
     {
         #region public methods
 
-        public TestModel LoadUpAssembly(ITestRunner runner, TestPackage testpackage)
+        public TestModel LoadUpAssembly(IProjectPresenter presenter, TestPackage testpackage)
         {
-            ProgressMonitorShower p1 = new ProgressMonitorShower();
-            runner.LoadPackage(testpackage, p1);
-
-            ProgressMonitorShower p2 = new ProgressMonitorShower();
-            runner.BuildTemplates(p2);
-
-            ProgressMonitorShower p3 = new ProgressMonitorShower();
-            runner.BuildTests(p3);
-
-            return runner.TestModel;
+            StatusStripProgressMonitor sspm = new StatusStripProgressMonitor(presenter);
+            presenter.Runner.LoadPackage(testpackage, sspm);
+            sspm = new StatusStripProgressMonitor(presenter);
+            presenter.Runner.BuildTemplates(sspm);
+            sspm = new StatusStripProgressMonitor(presenter);
+            presenter.Runner.BuildTests(sspm);
+            return presenter.Runner.TestModel;
         }
 
         #endregion

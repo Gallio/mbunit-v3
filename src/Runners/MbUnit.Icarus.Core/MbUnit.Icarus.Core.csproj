@@ -40,6 +40,7 @@
     <Compile Include="CustomEventArgs\AddAssembliesEventArgs.cs" />
     <Compile Include="CustomEventArgs\ProjectEventArgs.cs" />
     <Compile Include="CustomEventArgs\ProjectLoadEventArgs.cs" />
+    <Compile Include="Interfaces\IProjectPresenter.cs" />
     <Compile Include="Interfaces\ILogHistoryModel.cs" />
     <Compile Include="Interfaces\IPreferencesModel.cs" />
     <Compile Include="Interfaces\IReportHistoryModel.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Interfaces\ITestTreeModel.cs" />
     <Compile Include="Model\TestRunnerModel.cs" />
     <Compile Include="Presenter\ProjectPresenter.cs" />
+    <Compile Include="ProgressMonitoring\StatusStripProgressMonitor.cs" />
     <Compile Include="ProgressMonitorShower.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

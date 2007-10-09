@@ -21,6 +21,6 @@ namespace MbUnit.Icarus.Core.Interfaces
 {
     public interface ITestRunnerModel
     {
-        TestModel LoadUpAssembly(ITestRunner runner, TestPackage testpackage);
+        TestModel LoadUpAssembly(IProjectPresenter presenter, TestPackage testpackage);
     }
 }
