@@ -241,16 +241,17 @@ namespace MbUnit.Icarus
             // 
             this.addAssemblyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addAssemblyToolStripMenuItem.Image")));
             this.addAssemblyToolStripMenuItem.Name = "addAssemblyToolStripMenuItem";
-            this.addAssemblyToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.addAssemblyToolStripMenuItem.Text = "&Add Assembly";
+            this.addAssemblyToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.addAssemblyToolStripMenuItem.Text = "&Add Assemblies...";
             this.addAssemblyToolStripMenuItem.Click += new System.EventHandler(this.addAssemblyToolStripMenuItem_Click);
             // 
             // removeAssemblyToolStripMenuItem
             // 
             this.removeAssemblyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeAssemblyToolStripMenuItem.Image")));
             this.removeAssemblyToolStripMenuItem.Name = "removeAssemblyToolStripMenuItem";
-            this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.removeAssemblyToolStripMenuItem.Text = "&Remove Assembly";
+            this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.removeAssemblyToolStripMenuItem.Text = "&Remove Assemblies";
+            this.removeAssemblyToolStripMenuItem.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem_Click);
             // 
             // reloadToolStripMenuItem
             // 
@@ -375,7 +376,7 @@ namespace MbUnit.Icarus
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(258, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(256, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
@@ -650,8 +651,8 @@ namespace MbUnit.Icarus
             // 
             // treeFilterCombo
             // 
-            this.treeFilterCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeFilterCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.treeFilterCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.treeFilterCombo.FormattingEnabled = true;
             this.treeFilterCombo.Items.AddRange(new object[] {
@@ -861,8 +862,8 @@ namespace MbUnit.Icarus
             // 
             // testProgressStatusBar
             // 
-            this.testProgressStatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.testProgressStatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
             this.testProgressStatusBar.ElapsedTime = 0;
             this.testProgressStatusBar.Failed = 0;

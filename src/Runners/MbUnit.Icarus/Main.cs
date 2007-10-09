@@ -56,6 +56,7 @@ namespace MbUnit.Icarus
 
         public event EventHandler<EventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
+        public event EventHandler<EventArgs> RemoveAssemblies;
 
         #endregion
 
@@ -362,6 +363,19 @@ namespace MbUnit.Icarus
             // populate assembly list
             assemblyList.Items.Clear();
             assemblyList.Items.AddRange(assemblies);
+        }
+
+        private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // remove assemblies
+            if (RemoveAssemblies != null)
+            {
+                RemoveAssemblies(this, new EventArgs());
+            }
+
+            // clear tree & assembly list
+            testTree.Nodes.Clear();
+            assemblyList.Items.Clear();
         }
     }
 }

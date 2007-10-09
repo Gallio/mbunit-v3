@@ -39,6 +39,7 @@ namespace MbUnit.Icarus.Adapter
 
             // Wire up event handlers
             _View.AddAssemblies += _View_AddAssemblies;
+            _View.RemoveAssemblies += _View_RemoveAssemblies;
             _View.GetTestTree += _View_GetTestTree;
 
             // Create empty new test package
@@ -48,6 +49,11 @@ namespace MbUnit.Icarus.Adapter
         private void _View_AddAssemblies(object sender, AddAssembliesEventArgs e)
         {
             testpackage.AssemblyFiles.AddRange(e.Assemblies);
+        }
+
+        private void _View_RemoveAssemblies(object sender, EventArgs e)
+        {
+            testpackage.AssemblyFiles.Clear();
         }
 
         void _View_GetTestTree(object sender, EventArgs e)

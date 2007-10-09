@@ -22,6 +22,7 @@ namespace MbUnit.Icarus.Interfaces
     public interface IProjectAdapterView
     {
         event EventHandler<AddAssembliesEventArgs> AddAssemblies;
+        event EventHandler<EventArgs> RemoveAssemblies;
         event EventHandler<EventArgs> GetTestTree;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
