@@ -57,5 +57,18 @@ namespace MbUnit.Core.RuntimeSupport
         /// </summary>
         /// <returns>The runtime setup</returns>
         RuntimeSetup GetRuntimeSetup();
+
+        /// <summary>
+        /// Maps a Uri to a local path.
+        /// </summary>
+        /// <remarks>
+        /// Recognizes plugin-relative paths of the form "plugin://Some.Plugin.Name/foo.txt"
+        /// and Uri's in the "file" scheme.
+        /// </remarks>
+        /// <param name="uri">The uri to map</param>
+        /// <returns>The local path</returns>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="uri"/>
+        /// cannot be mapped to a local path</exception>
+        string MapUriToLocalPath(Uri uri);
     }
 }

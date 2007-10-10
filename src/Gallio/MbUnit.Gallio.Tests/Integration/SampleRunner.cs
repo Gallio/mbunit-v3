@@ -88,12 +88,12 @@ namespace MbUnit.Tests.Integration
 
                 IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
                 NameValueCollection options = new NameValueCollection();
-                options.Add(TextReportFormatter.SaveAttachmentContentsOption, @"false");
+                options.Add(@"SaveAttachmentContents", @"false");
 
                 string reportPath = Path.GetTempFileName();
                 try
                 {
-                    reportManager.GetFormatter(TextReportFormatter.FormatterName).Format(report, reportPath, options, null, new NullProgressMonitor());
+                    reportManager.GetFormatter(@"Text").Format(report, new ReportContext(reportPath), options, new NullProgressMonitor());
 
                     using (logStreamWriter.BeginSection("Text Report"))
                     {

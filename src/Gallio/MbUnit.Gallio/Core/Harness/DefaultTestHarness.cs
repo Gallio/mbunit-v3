@@ -239,7 +239,7 @@ namespace MbUnit.Core.Harness
                     AssemblyResolverManager.AddHintDirectory(path);
 
                 foreach (string assemblyFile in package.AssemblyFiles)
-                    AssemblyResolverManager.AddHintDirectoryContainingFile(assemblyFile);
+                    AssemblyResolverManager.AddHintDirectory(NativeFileSystem.Instance.GetFullDirectoryName(assemblyFile));
 
                 progressMonitor.Worked(1);
 

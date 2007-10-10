@@ -56,12 +56,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="MbUnit.Plugin.XunitAdapter.plugin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Include="MbUnit.Plugin.XunitAdapter.plugin">
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Readme.txt" />
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

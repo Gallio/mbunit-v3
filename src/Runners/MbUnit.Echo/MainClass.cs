@@ -260,9 +260,12 @@ namespace MbUnit.Echo
             {
                 IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
 
+                string[] formatterNames = GenericUtils.ToArray(reportManager.GetFormatterNames());
+                Array.Sort(formatterNames);
+
                 console.WriteLine();
                 console.WriteLine(String.Format(Resources.MainClass_SupportedReportTypesMessage,
-                    string.Join(@", ", GenericUtils.ToArray(reportManager.GetFormatterNames()))));
+                    string.Join(@", ", formatterNames)));
             }
         }
 

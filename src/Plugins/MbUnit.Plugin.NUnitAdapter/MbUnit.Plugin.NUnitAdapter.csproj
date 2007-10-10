@@ -63,9 +63,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="MbUnit.Plugin.NUnitAdapter.plugin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Include="MbUnit.Plugin.NUnitAdapter.plugin">
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -75,7 +74,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Readme.txt" />
+    <Content Include="Readme.txt">
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj">

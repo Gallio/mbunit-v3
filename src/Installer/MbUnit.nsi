@@ -69,6 +69,9 @@ Section "!MbUnit Gallio" GallioSection
 	File "${BUILDDIR}\bin\ICSharpCode.TextEditor.dll"
 	File "${BUILDDIR}\bin\MbUnit.Echo.exe"
 	File "${BUILDDIR}\bin\MbUnit.Echo.exe.config"
+	File "${BUILDDIR}\bin\MbUnit.Icarus.exe"
+	File "${BUILDDIR}\bin\MbUnit.Icarus.exe.config"
+	File "${BUILDDIR}\bin\MbUnit.Icarus.Core.dll"
 	File "${BUILDDIR}\bin\MbUnit.Gallio.dll"
 	File "${BUILDDIR}\bin\MbUnit.Gallio.plugin"
 	File "${BUILDDIR}\bin\MbUnit.Gallio.xml"
@@ -78,10 +81,14 @@ Section "!MbUnit Gallio" GallioSection
 	File "${BUILDDIR}\bin\MbUnit.Tasks.NAnt.xml"
 	File "${BUILDDIR}\bin\ZedGraph.dll"
 
+	SetOutPath "$INSTDIR\bin\Reports"
+	File /r "${BUILDDIR}\bin\Reports\*"
+
 	; Create Shortcuts
 	CreateDirectory "$SMPROGRAMS\MbUnit Gallio"
 	
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Icarus GUI.lnk" "$INSTDIR\bin\MbUnit.Icarus.exe"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Online Documentation.lnk" "$INSTDIR\MbUnit Online Documentation.url"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Website.lnk" "$INSTDIR\MbUnit.url"
 SectionEnd
@@ -92,15 +99,7 @@ Section "MbUnit v2 Plugin" MbUnit2PluginSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin\MbUnit2"
-	File "${BUILDDIR}\bin\MbUnit2\Readme.txt"
-	File "${BUILDDIR}\bin\MbUnit2\MbUnit.Framework.2.0.dll"
-	File "${BUILDDIR}\bin\MbUnit2\MbUnit.Framework.dll"
-	File "${BUILDDIR}\bin\MbUnit2\MbUnit.Plugin.MbUnit2Adapter.dll"
-	File "${BUILDDIR}\bin\MbUnit2\MbUnit.Plugin.MbUnit2Adapter.plugin"
-	File "${BUILDDIR}\bin\MbUnit2\QuickGraph.Algorithms.dll"
-	File "${BUILDDIR}\bin\MbUnit2\QuickGraph.dll"
-	File "${BUILDDIR}\bin\MbUnit2\Refly.dll"
-	File "${BUILDDIR}\bin\MbUnit2\TestFu.dll"
+	File /r "${BUILDDIR}\bin\MbUnit2\*"
 SectionEnd
 
 Section "NUnit Plugin" NUnitPluginSection
@@ -109,15 +108,7 @@ Section "NUnit Plugin" NUnitPluginSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin\NUnit"
-	File "${BUILDDIR}\bin\NUnit\license.txt"
-	File "${BUILDDIR}\bin\NUnit\Readme.txt"
-	File "${BUILDDIR}\bin\NUnit\MbUnit.Plugin.NUnitAdapter.dll"
-	File "${BUILDDIR}\bin\NUnit\MbUnit.Plugin.NUnitAdapter.plugin"
-	File "${BUILDDIR}\bin\NUnit\nunit.core.dll"
-	File "${BUILDDIR}\bin\NUnit\nunit.core.extensions.dll"
-	File "${BUILDDIR}\bin\NUnit\nunit.core.interfaces.dll"
-	File "${BUILDDIR}\bin\NUnit\nunit.framework.dll"
-	File "${BUILDDIR}\bin\NUnit\nunit.framework.extensions.dll"
+	File /r "${BUILDDIR}\bin\NUnit\*"
 SectionEnd
 
 Section "Xunit Plugin" XunitPluginSection
@@ -126,12 +117,7 @@ Section "Xunit Plugin" XunitPluginSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin\Xunit"
-	File "${BUILDDIR}\bin\Xunit\Microsoft Permissive License.txt"
-	File "${BUILDDIR}\bin\Xunit\Readme.txt"
-	File "${BUILDDIR}\bin\Xunit\MbUnit.Plugin.XunitAdapter.dll"
-	File "${BUILDDIR}\bin\Xunit\MbUnit.Plugin.XunitAdapter.plugin"
-	File "${BUILDDIR}\bin\Xunit\xunit.dll"
-	File "${BUILDDIR}\bin\Xunit\xunit.extensions.dll"
+	File /r "${BUILDDIR}\bin\Xunit\*"
 SectionEnd
 
 Section "TestDriven.Net AddIn" TDNetAddInSection
@@ -251,98 +237,33 @@ FunctionEnd
 Section Uninstall
 	SetShellVarContext all
 
-	; Remove from registry...
-	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
-	DeleteRegKey HKLM "SOFTWARE\${APPNAME}"
-
-	; Install the help collection
-	IfFileExists "$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini" 0 +2
-		ExecWait '"$INSTDIR\utils\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
-
-	; Delete self
-	Delete "$INSTDIR\uninstall.exe"
-
-	; Delete Shortcuts
-	Delete "$SMPROGRAMS\${APPNAME}\Uninstall.lnk"
-	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Website.lnk"
-	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Online Documentation.lnk"
-	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" 
-
-	; Clean up MbUnit Gallio
-	Delete "$INSTDIR\ASL - Apache Software Foundation License.txt"
-	Delete "$INSTDIR\MbUnit License.txt"
-	Delete "$INSTDIR\MbUnit Website.url"
-	Delete "$INSTDIR\MbUnit Online Documentation.url"
-	Delete "$INSTDIR\MbUnit Offline Documentation.lnk"
-
-	Delete "$INSTDIR\bin\Castle.Core.dll"
-	Delete "$INSTDIR\bin\Castle.DynamicProxy2.dll"
-	Delete "$INSTDIR\bin\Castle.MicroKernel.dll"
-	Delete "$INSTDIR\bin\Castle.Windsor.dll"
-	Delete "$INSTDIR\bin\ICSharpCode.TextEditor.dll"
-	Delete "$INSTDIR\bin\MbUnit.AddIn.TDNet.dll"
-	Delete "$INSTDIR\bin\MbUnit.Echo.exe"
-	Delete "$INSTDIR\bin\MbUnit.Echo.exe.config"
-	Delete "$INSTDIR\bin\MbUnit.Gallio.dll"
-	Delete "$INSTDIR\bin\MbUnit.Gallio.plugin"
-	Delete "$INSTDIR\bin\MbUnit.Gallio.xml"
-	Delete "$INSTDIR\bin\MbUnit.Tasks.MSBuild.dll"
-	Delete "$INSTDIR\bin\MbUnit.Tasks.MSBuild.xml"
-	Delete "$INSTDIR\bin\MbUnit.Tasks.NAnt.dll"
-	Delete "$INSTDIR\bin\MbUnit.Tasks.NAnt.xml"
-	Delete "$INSTDIR\bin\ZedGraph.dll"
-
-	Delete "$INSTDIR\bin\MbUnit2\Readme.txt"
-	Delete "$INSTDIR\bin\MbUnit2\MbUnit.Framework.2.0.dll"
-	Delete "$INSTDIR\bin\MbUnit2\MbUnit.Framework.dll"
-	Delete "$INSTDIR\bin\MbUnit2\MbUnit.Plugin.MbUnit2Adapter.dll"
-	Delete "$INSTDIR\bin\MbUnit2\MbUnit.Plugin.MbUnit2Adapter.plugin"
-	Delete "$INSTDIR\bin\MbUnit2\QuickGraph.Algorithms.dll"
-	Delete "$INSTDIR\bin\MbUnit2\QuickGraph.dll"
-	Delete "$INSTDIR\bin\MbUnit2\Refly.dll"
-	Delete "$INSTDIR\bin\MbUnit2\TestFu.dll"
-
-	Delete "$INSTDIR\bin\NUnit\license.txt"
-	Delete "$INSTDIR\bin\NUnit\Readme.txt"
-	Delete "$INSTDIR\bin\NUnit\MbUnit.Plugin.NUnitAdapter.dll"
-	Delete "$INSTDIR\bin\NUnit\MbUnit.Plugin.NUnitAdapter.plugin"
-	Delete "$INSTDIR\bin\NUnit\nunit.core.dll"
-	Delete "$INSTDIR\bin\NUnit\nunit.core.extensions.dll"
-	Delete "$INSTDIR\bin\NUnit\nunit.core.interfaces.dll"
-	Delete "$INSTDIR\bin\NUnit\nunit.framework.dll"
-	Delete "$INSTDIR\bin\NUnit\nunit.framework.extensions.dll"
-
-	Delete "$INSTDIR\bin\Xunit\Microsoft Permissive License.txt"
-	Delete "$INSTDIR\bin\Xunit\Readme.txt"
-	Delete "$INSTDIR\bin\Xunit\MbUnit.Plugin.XunitAdapter.dll"
-	Delete "$INSTDIR\bin\Xunit\MbUnit.Plugin.XunitAdapter.plugin"
-	Delete "$INSTDIR\bin\Xunit\xunit.dll"
-	Delete "$INSTDIR\bin\Xunit\xunit.extensions.dll"
-
-	Delete "$INSTDIR\docs\MbUnit.chm"
-	Delete "$INSTDIR\docs\vs2005\MbUnit.HxS"
-	Delete "$INSTDIR\docs\vs2005\MbUnitCollection.*"
-
-	Delete "$INSTDIR\utils\H2Reg.exe"
-	Delete "$INSTDIR\utils\H2Reg.ini"
-	Delete "$INSTDIR\utils\H2Reg_Log.txt"
-	
-	; Remove remaining directories
-	RMDir "$SMPROGRAMS\MbUnit Gallio"
-	RMDir "$INSTDIR\bin\MbUnit2"
-	RMDir "$INSTDIR\bin\NUnit"
-	RMDir "$INSTDIR\bin\Xunit"
-	RMDir "$INSTDIR\bin"
-	RMDir "$INSTDIR\docs\vs2005"
-	RMDir "$INSTDIR\docs"
-	RMDir "$INSTDIR\utils"
-	RMDir "$INSTDIR"
-
-	; Remove registry keys
+	; Uninstall from TD.Net
 	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio"
 	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_MbUnit"
 	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_NUnit"
 	DeleteRegKey HKLM "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_Xunit"
+
+	; Uninstall the help collection
+	IfFileExists "$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini" 0 +2
+		ExecWait '"$INSTDIR\utils\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
+
+	; Delete Shortcuts
+	Delete "$SMPROGRAMS\${APPNAME}\Uninstall.lnk"
+	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Icarus GUI.lnk"
+	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Website.lnk"
+	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Online Documentation.lnk"
+	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" 
+	RMDir "$SMPROGRAMS\MbUnit Gallio"
+
+	; Remove from registry...
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
+	DeleteRegKey HKLM "SOFTWARE\${APPNAME}"
+
+	; Delete self
+	Delete "$INSTDIR\uninstall.exe"
+
+	; Remove all remaining contents
+	RMDir /r "$INSTDIR"
 SectionEnd
 
 BrandingText "mbunit.com"

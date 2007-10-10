@@ -535,7 +535,9 @@ namespace MbUnit.Core.Runner
             {
                 IReportFormatter formatter = reportManager.GetFormatter(reportFormat);
 
-                string reportFileName = FileUtils.EncodeFileName(String.Format(reportNameFormat,
+                IFileSystem fileSystem = NativeFileSystem.Instance;
+
+                string reportFileName = fileSystem.EncodeFileName(String.Format(reportNameFormat,
                     report.PackageRun.StartTime.ToShortDateString(),
                     report.PackageRun.EndTime.ToLongTimeString()));
                 string extension = formatter.PreferredExtension;
@@ -548,7 +550,7 @@ namespace MbUnit.Core.Runner
                 {
                     progressMonitor.BeginTask(String.Format("Generating {0} report.", reportFormat), 1);
 
-                    formatter.Format(report, reportPath, reportFormatOptions, null,
+                    formatter.Format(report, new ReportContext(reportPath, fileSystem), reportFormatOptions,
                         new SubProgressMonitor(progressMonitor, 1));
                 });
             }

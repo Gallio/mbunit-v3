@@ -34,7 +34,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Model
         public void Apply(IsolatedTestDomain domain)
         {
             Assembly frameworkAssembly = typeof(MbUnit2::MbUnit.Framework.Assert).Assembly;
-            domain.BootstrapAssemblies.Add(frameworkAssembly, true);
+            domain.AddBootstrapAssembly(frameworkAssembly, true);
         }
     }
 }

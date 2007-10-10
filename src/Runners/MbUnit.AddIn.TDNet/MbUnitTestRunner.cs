@@ -159,13 +159,13 @@ namespace MbUnit.AddIn.TDNet
         {
             try
             {
-                DirectoryInfo reportDirectory =
-                    new DirectoryInfo(Path.GetTempPath() + @"\MbUnit-TD-AddIn\");
+                DirectoryInfo reportDirectory = new DirectoryInfo(Path.Combine(Path.GetTempPath(), @"MbUnit-TD-AddIn"));
                 if (reportDirectory.Exists)
                 {
                     // Make sure the folder is empty
                     reportDirectory.Delete(true);
                 }
+
                 reportDirectory.Create();
 
                 return reportDirectory.FullName;

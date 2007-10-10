@@ -31,16 +31,6 @@
       <component id="Core.ReportManager"
                  service="MbUnit.Core.Reporting.IReportManager, MbUnit.Gallio"
                  type="MbUnit.Core.Reporting.DefaultReportManager, MbUnit.Gallio" />
-      
-      <component id="Core.XmlReportFormatter"
-                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
-                 type="MbUnit.Core.Reporting.XmlReportFormatter, MbUnit.Gallio" />
-      <component id="Core.HtmlReportFormatter"
-                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
-                 type="MbUnit.Core.Reporting.HtmlReportFormatter, MbUnit.Gallio" />
-      <component id="Core.TextReportFormatter"
-                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
-                 type="MbUnit.Core.Reporting.TextReportFormatter, MbUnit.Gallio" />
 
       <component id="Core.TestPlanFactory"
                  service="MbUnit.Model.Execution.ITestPlanFactory, MbUnit.Gallio"

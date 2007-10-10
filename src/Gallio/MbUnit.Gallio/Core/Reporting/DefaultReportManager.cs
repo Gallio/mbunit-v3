@@ -71,36 +71,40 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <inheritdoc />
-        public void Format(string formatterName, Report report, string reportPath,
-            NameValueCollection options, IList<string> filesWritten, IProgressMonitor progressMonitor)
+        public void Format(string formatterName, Report report, ReportContext reportContext,
+            NameValueCollection options, IProgressMonitor progressMonitor)
         {
             if (formatterName == null)
-                throw new ArgumentNullException("formatterName");
+                throw new ArgumentNullException(@"formatterName");
             if (report == null)
-                throw new ArgumentNullException("report");
-            if (reportPath == null)
-                throw new ArgumentNullException("reportPath");
+                throw new ArgumentNullException(@"report");
+            if (reportContext == null)
+                throw new ArgumentNullException(@"reportContext");
             if (options == null)
-                throw new ArgumentNullException("options");
-            if (filesWritten == null)
-                throw new ArgumentNullException("filesWritten");
+                throw new ArgumentNullException(@"options");
             if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
+                throw new ArgumentNullException(@"progressMonitor");
 
             IReportFormatter formatter = GetFormatter(formatterName);
-            formatter.Format(report, reportPath, options, filesWritten, progressMonitor);
+            formatter.Format(report, reportContext, options, progressMonitor);
         }
 
         /// <inheritdoc />
-        public void SaveReport(Report report, string reportPath, IProgressMonitor progressMonitor)
+        public void SaveReport(Report report, ReportContext reportContext, IProgressMonitor progressMonitor)
         {
-            ReportUtils.SaveReport(report, reportPath, true, false, null, progressMonitor);
+            if (reportContext == null)
+                throw new ArgumentNullException(@"reportContext");
+
+            reportContext.SaveReport(report, true, false, progressMonitor);
         }
 
         /// <inheritdoc />
-        public Report LoadReport(string reportPath, IProgressMonitor progressMonitor)
+        public Report LoadReport(ReportContext reportContext, IProgressMonitor progressMonitor)
         {
-            return ReportUtils.LoadReport(reportPath, true, progressMonitor);
+            if (reportContext == null)
+                throw new ArgumentNullException(@"reportContext");
+
+            return reportContext.LoadReport(true, progressMonitor);
         }
     }
 }

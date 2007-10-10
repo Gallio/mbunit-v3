@@ -34,19 +34,19 @@
     <DocumentationFile>bin\MbUnit.Gallio.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor, Version=1.0.0.5, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
     </Reference>
@@ -109,7 +109,7 @@
     <Compile Include="Core\Reporting\PackageRunStatisticsTests.cs" />
     <Compile Include="Core\Reporting\PackageRunTests.cs" />
     <Compile Include="Core\Reporting\ReportTest.cs" />
-    <Compile Include="Core\Reporting\ReportUtilsTests.cs" />
+    <Compile Include="Core\Reporting\ReportContextTests.cs" />
     <Compile Include="Core\Reporting\StepRunTests.cs" />
     <Compile Include="Core\Reporting\TestRunTests.cs" />
     <Compile Include="Core\Runner\TestRunnerHelperTests.cs" />

@@ -4,15 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{22AE34D9-185F-41A7-A48D-205BE68B1F7D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{399C33BF-A9F7-4390-8F9C-8EECF7814123}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MbUnit.Echo</RootNamespace>
-    <AssemblyName>MbUnit.Echo</AssemblyName>
-    <StartupObject>MbUnit.Echo.Program</StartupObject>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
-    <ApplicationIcon>App.ico</ApplicationIcon>
+    <RootNamespace>MbUnit.Plugin.Reports</RootNamespace>
+    <AssemblyName>MbUnit.Plugin.Reports</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,8 +18,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\MbUnit.Plugin.Reports.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,37 +28,60 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\MbUnit.Plugin.Reports.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainArguments.cs" />
-    <Compile Include="MainClass.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Verbosity.cs" />
+    <Compile Include="XmlReportFormatter.cs" />
+    <Compile Include="XsltReportFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.ico" />
-    <None Include="MbUnit.Echo.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>MbUnit.Gallio</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="img\Container.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="img\Fixture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="img\FullStop.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="img\header-background.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="img\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="css\MbUnit-Report.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="xsl\MbUnit-Report.html.xsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="xsl\MbUnit-Report.xhtml.xsl" />
+    <Content Include="img\Test.png" />
+    <Content Include="img\Plus.gif" />
+    <Content Include="img\Minus.gif" />
+    <Content Include="img\MbUnitLogo.png" />
+    <Content Include="xsl\MbUnit-Report.txt.xsl" />
+    <Content Include="js\MbUnit-Report.js" />
+    <Content Include="xsl\MbUnit-Report.html+xhtml.xsl" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -70,10 +89,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj">
-      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>MbUnit.Gallio</Name>
-    </ProjectReference>
+    <Content Include="MbUnit.Plugin.Reports.plugin">
+    </Content>
+    <Content Include="Readme.txt" />
+    <Content Include="xsl\MbUnit-Report.ccnet.xsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

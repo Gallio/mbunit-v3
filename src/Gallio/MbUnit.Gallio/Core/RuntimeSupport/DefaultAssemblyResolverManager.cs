@@ -88,19 +88,6 @@ namespace MbUnit.Core.RuntimeSupport
         }
 
         /// <inheritdoc />
-        public void AddHintDirectoryContainingFile(string file)
-        {
-            if (file == null)
-                throw new ArgumentNullException("file");
-
-            string directory = Path.GetDirectoryName(file);
-            if (directory == null || directory.Length == 0)
-                directory = ".";
-
-            AddHintDirectory(directory);
-        }
-
-        /// <inheritdoc />
         public void AddMbUnitDirectories()
         {
             foreach (string directory in MbUnitDirectories)

@@ -60,6 +60,11 @@ namespace MbUnit.Tests.Core.RuntimeSupport
             return new RuntimeSetup();
         }
 
+        public string MapUriToLocalPath(Uri uri)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose()
         {
         }

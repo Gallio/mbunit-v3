@@ -38,14 +38,6 @@ namespace MbUnit.Core.RuntimeSupport
         void AddHintDirectory(string hintDirectory);
 
         /// <summary>
-        /// Adds the directory that contains the specified file as an assembly load hint
-        /// directory to search when standard assembly resolution fails.
-        /// </summary>
-        /// <param name="file">The file in the hint directory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="file"/> is null</exception>
-        void AddHintDirectoryContainingFile(string file);
-
-        /// <summary>
         /// Adds the MbUnit assembly directories to the hint directory list.
         /// </summary>
         void AddMbUnitDirectories();

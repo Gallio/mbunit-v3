@@ -39,37 +39,14 @@ namespace MbUnit.Core.Reporting
         string PreferredExtension { get; }
 
         /// <summary>
-        /// Formats a report and saves it to a file.
+        /// Formats a report and saves it to a file specified by the report context.
         /// Overwrites the file and replaces associated resources if they exist.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// By convention the <paramref name="reportPath"/> always refers to the
-        /// primary file written by the report formatter including its extension.
-        /// Auxiliary resources may be written to the same directory in files with the same
-        /// base name as <paramref name="reportPath"/> but with different extensions.
-        /// If there are many auxiliary resources (such as linked images and execution log attachments)
-        /// then they should be created in a directory with the same base name as
-        /// <paramref name="reportPath"/>.
-        /// </para>
-        /// <para>
-        /// Example layout:
-        /// <list type="bullet">
-        /// <item>Reports\IntegrationTests.html (the value of <paramref name="reportPath"/></item>
-        /// <item>Reports\IntegrationTests.css (an associated file, could also be put in the IntegrationTests folder)</item>
-        /// <item>Reports\IntegrationTests\TestIcon.png (an image used in the report)</item>
-        /// <item>Reports\IntegrationTests\FixtureIcon.png (another image used in the report)</item>
-        /// <item>Reports\IntegrationTests\Screenshot.jpg (an execution log attachment)</item>
-        /// <item>Reports\IntegrationTests\AttachedLog.txt (another execution log attachment)</item>
-        /// </list>
-        /// </para>
-        /// </remarks>
         /// <param name="report">The report to format</param>
-        /// <param name="reportPath">The path of the file to write including its extension</param>
+        /// <param name="reportContext">The report context specifying the formatted report file to generate</param>
         /// <param name="options">Custom options for the report formatter</param>
-        /// <param name="filesWritten">If not null, the files written during the operation are appended to this list</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        void Format(Report report, string reportPath, NameValueCollection options,
-            IList<string> filesWritten, IProgressMonitor progressMonitor);
+        void Format(Report report, ReportContext reportContext, NameValueCollection options,
+            IProgressMonitor progressMonitor);
     }
 }

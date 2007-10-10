@@ -13,14 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
-using Castle.Core;
 using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Core.Reporting;
 
-namespace MbUnit.Core.Reporting
+namespace MbUnit.Plugin.Reports
 {
     /// <summary>
     /// <para>
@@ -50,13 +47,12 @@ namespace MbUnit.Core.Reporting
     /// </list>
     /// </para>
     /// </summary>
-    [Singleton]
     public class XmlReportFormatter : IReportFormatter
     {
         /// <summary>
         /// Gets the name of this formatter.
         /// </summary>
-        public const string FormatterName = @"XML";
+        public const string FormatterName = @"Xml";
 
         /// <summary>
         /// Gets the name of the option that controls whether attachments are saved.
@@ -82,8 +78,8 @@ namespace MbUnit.Core.Reporting
         }
 
         /// <inheritdoc />
-        public void Format(Report report, string reportPath, NameValueCollection options,
-            IList<string> filesWritten, IProgressMonitor progressMonitor)
+        public void Format(Report report, ReportContext reportContext, NameValueCollection options,
+            IProgressMonitor progressMonitor)
         {
             bool saveAttachmentContents;
             if (!bool.TryParse(options.Get(SaveAttachmentContentsOption), out saveAttachmentContents))
@@ -93,8 +89,7 @@ namespace MbUnit.Core.Reporting
             if (!bool.TryParse(options.Get(EmbedAttachmentContentsOption), out embedAttachmentContents))
                 embedAttachmentContents = false;
 
-            ReportUtils.SaveReport(report, reportPath, saveAttachmentContents, embedAttachmentContents,
-                filesWritten, progressMonitor);
+            reportContext.SaveReport(report, saveAttachmentContents, embedAttachmentContents, progressMonitor);
         }
     }
 }

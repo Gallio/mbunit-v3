@@ -6,7 +6,7 @@ function toggle(id)
         var childElement = document.getElementById(id);
         if (icon.src.indexOf('Plus.gif') != -1)
         {
-            icon.src = "img/Minus.gif";
+            icon.src = icon.src.replace('Plus.gif', 'Minus.gif');
             if (childElement != null)
             {
                 childElement.style.display = "block";
@@ -14,7 +14,7 @@ function toggle(id)
         }
         else
         {
-            icon.src = "img/Plus.gif";
+            icon.src = icon.src.replace('Minus.gif', 'Plus.gif');
             if (childElement != null)
             {
                 childElement.style.display = "none";

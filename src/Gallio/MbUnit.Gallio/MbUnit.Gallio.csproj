@@ -37,19 +37,19 @@
     <DocumentationFile>bin\MbUnit.Gallio.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.MicroKernel, Version=1.0.0.2, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor, Version=1.0.0.5, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
     </Reference>
@@ -82,6 +82,9 @@
     <Compile Include="Core\Harness\TestEnvironment.cs" />
     <Compile Include="Core\Harness\TestHarnessException.cs" />
     <Compile Include="Core\Harness\TestPackage.cs" />
+    <Compile Include="Core\IO\IFileSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\Execution\DependencyTestPlan.cs" />
     <Compile Include="Model\Execution\DependencyTestPlanFactory.cs" />
     <Compile Include="Model\Events\ITestListener.cs" />
@@ -138,20 +141,15 @@
     <Compile Include="Core\Reporting\ExecutionLogStreamTextFormatter.cs" />
     <Compile Include="Core\Reporting\ExecutionLogStreamTextTag.cs" />
     <Compile Include="Core\Reporting\ExecutionLogWriter.cs" />
-    <Compile Include="Core\Reporting\HtmlReportFormatter.cs" />
     <Compile Include="Core\Reporting\IExecutionLogStreamTagVisitor.cs" />
     <Compile Include="Core\Reporting\IReportFormatter.cs" />
     <Compile Include="Core\Reporting\IReportManager.cs" />
     <Compile Include="Core\Reporting\PackageRun.cs" />
     <Compile Include="Core\Reporting\PackageRunStatistics.cs" />
     <Compile Include="Core\Reporting\Report.cs" />
-    <Compile Include="Core\Reporting\ReportUtils.cs" />
-    <Compile Include="Core\Reporting\Resources\ReportingResources.cs" />
+    <Compile Include="Core\Reporting\ReportContext.cs" />
     <Compile Include="Core\Reporting\StepRun.cs" />
     <Compile Include="Core\Reporting\TestRun.cs" />
-    <Compile Include="Core\Reporting\TextReportFormatter.cs" />
-    <Compile Include="Core\Reporting\XmlReportFormatter.cs" />
-    <Compile Include="Core\Reporting\XsltReportFormatter.cs" />
     <Compile Include="Core\Runner\BaseRunner.cs" />
     <Compile Include="Core\Runner\BaseTestDomain.cs" />
     <Compile Include="Core\Runner\Bootstrapper.cs" />
@@ -186,9 +184,7 @@
     <Compile Include="Contexts\IContextServiceProvider.cs" />
     <Compile Include="Core\RuntimeSupport\RuntimeSetup.cs" />
     <Compile Include="Core\RuntimeSupport\WindsorRuntime.cs" />
-    <Compile Include="Core\Utilities\FileManager.cs" />
-    <Compile Include="Core\Utilities\FileUtils.cs" />
-    <Compile Include="Core\Utilities\IFileManager.cs" />
+    <Compile Include="Core\IO\NativeFileSystem.cs" />
     <Compile Include="Core\Utilities\LongLivingMarshalByRefObject.cs" />
     <Compile Include="Core\Utilities\MonoSupport.cs" />
     <Compile Include="Core\Utilities\TypedEventHandler.cs" />
@@ -381,51 +377,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\Container.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\Fixture.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\FullStop.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\header-background.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\MbUnit-Report.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\MbUnit-Report.html.xsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\MbUnit-Report.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\MbUnit-Report.txt.xsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\MbUnitLogo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\Minus.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\Plus.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Reporting\Resources\Test.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Core\Runner\IsolatedTestDomain.config.template" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MbUnit.Gallio.plugin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Include="MbUnit.Gallio.plugin" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\Reporting\Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

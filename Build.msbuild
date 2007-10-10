@@ -27,6 +27,8 @@
 
     <CSharpProject Include="$(SourceDir)\Gallio\MbUnit.Gallio.Tests\MbUnit.Gallio.Tests.csproj" />
 
+    <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\MbUnit.Plugin.Reports.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.csproj" />
     <CSharpProject Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter.Tests\MbUnit.Plugin.MbUnit2Adapter.Tests.csproj" />
 
@@ -63,15 +65,37 @@
     <Binary Include="$(LibsDir)\Components\ICSharpCode.TextEditor.dll" />
 
     <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio\bin\MbUnit.Gallio.dll" />
-    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio\bin\MbUnit.Gallio.plugin" />
+    <Binary Include="$(SourceDir)\Gallio\MbUnit.Gallio\MbUnit.Gallio.plugin" />
 
-    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\Readme.txt">
-        <Folder>MbUnit2</Folder>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\bin\MbUnit.Plugin.Reports.dll">
+        <Folder>Reports</Folder>
     </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\MbUnit.Plugin.Reports.plugin">
+        <Folder>Reports</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\Readme.txt">
+        <Folder>Reports</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\css\*">
+        <Folder>Reports\css</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\js\*">
+        <Folder>Reports\js</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\img\*">
+        <Folder>Reports\img</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\xslt\*">
+        <Folder>Reports\xsl</Folder>
+    </Binary>
+
     <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.dll">
         <Folder>MbUnit2</Folder>
     </Binary>
-    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\bin\MbUnit.Plugin.MbUnit2Adapter.plugin">
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\MbUnit.Plugin.MbUnit2Adapter.plugin">
+        <Folder>MbUnit2</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.MbUnit2Adapter\Readme.txt">
         <Folder>MbUnit2</Folder>
     </Binary>
     <Binary Include="$(LibsDir)\MbUnit2\bin\MbUnit.Framework.dll">
@@ -93,13 +117,13 @@
         <Folder>MbUnit2</Folder>
     </Binary>
 
-    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\Readme.txt">
-        <Folder>NUnit</Folder>
-    </Binary>
     <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.dll">
         <Folder>NUnit</Folder>
     </Binary>
-    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\bin\MbUnit.Plugin.NUnitAdapter.plugin">
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\MbUnit.Plugin.NUnitAdapter.plugin">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.NUnitAdapter\Readme.txt">
         <Folder>NUnit</Folder>
     </Binary>
     <Binary Include="$(LibsDir)\NUnit\license.txt">
@@ -121,13 +145,13 @@
         <Folder>NUnit</Folder>
     </Binary>
 
-    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\Readme.txt">
-        <Folder>Xunit</Folder>
-    </Binary>
     <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\bin\MbUnit.Plugin.XunitAdapter.dll">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\bin\MbUnit.Plugin.XunitAdapter.plugin">
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\MbUnit.Plugin.XunitAdapter.plugin">
+        <Folder>Xunit</Folder>
+    </Binary>
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.XunitAdapter\Readme.txt">
         <Folder>Xunit</Folder>
     </Binary>
     <Binary Include="$(LibsDir)\Xunit\Microsoft Permissive License.txt">

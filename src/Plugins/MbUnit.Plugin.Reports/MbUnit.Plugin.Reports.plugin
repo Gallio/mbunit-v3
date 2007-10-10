@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <castle>
+    <components>
+      <component id="Reports.XmlReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Plugin.Reports.XmlReportFormatter, MbUnit.Plugin.Reports" />
+      
+      <component id="Reports.TextReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
+        <parameters>
+          <name>Text</name>
+          <extension>txt</extension>
+          <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/MbUnit-Report.txt.xsl</xsltPath>
+          <resourcePaths>
+            <array>              
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>
+      
+      <component id="Reports.HtmlReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
+        <parameters>
+          <name>Html</name>
+          <extension>html</extension>
+          <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/MbUnit-Report.html.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+              <item>css</item>
+              <item>js</item>
+              <item>img</item>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>   
+      
+      <component id="Reports.XHtmlReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
+        <parameters>
+          <name>XHtml</name>
+          <extension>xhtml</extension>
+          <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/MbUnit-Report.xhtml.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+              <item>css</item>
+              <item>js</item>
+              <item>img</item>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>      
+      
+      <!--
+      <component id="Reports.CCNetReportFormatter"
+                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
+        <parameters>
+          <name>CCNet</name>
+          <extension>html-fragment</extension>
+          <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/MbUnit-Report.ccnet.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>
+      -->
+    </components>
+  </castle>
+</configuration>

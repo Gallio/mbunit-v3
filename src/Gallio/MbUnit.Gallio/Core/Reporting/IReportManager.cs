@@ -46,31 +46,30 @@ namespace MbUnit.Core.Reporting
         /// <seealso cref="IReportFormatter.Format"/> for important remarks.
         /// <param name="formatterName">The formatter name</param>
         /// <param name="report">The report to format</param>
-        /// <param name="reportPath">The path of the file to write including its extension</param>
+        /// <param name="reportContext">The report context specifying the formatted report file to generate</param>
         /// <param name="options">Custom options for the report formatter</param>
-        /// <param name="filesWritten">If not null, the files written during the operation are appended to this list</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterName"/>, <paramref name="report"/>,
-        /// <paramref name="reportPath"/>, <paramref name="options"/> or <paramref name="progressMonitor"/> is null</exception>
-        void Format(string formatterName, Report report, string reportPath,
-            NameValueCollection options, IList<string> filesWritten, IProgressMonitor progressMonitor);
+        /// <paramref name="reportContext"/>, <paramref name="options"/> or <paramref name="progressMonitor"/> is null</exception>
+        void Format(string formatterName, Report report, ReportContext reportContext,
+            NameValueCollection options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Saves the report as XML to the specified file.
         /// </summary>
         /// <param name="report">The report</param>
-        /// <param name="reportPath">The path of the file to save</param>
+        /// <param name="reportContext">The report context specifying the report file to save</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="reportPath"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="reportContext"/>
         /// or <paramref name="progressMonitor"/> is null</exception>
-        void SaveReport(Report report, string reportPath, IProgressMonitor progressMonitor);
+        void SaveReport(Report report, ReportContext reportContext, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Loads the report from XML from the specified file.
         /// </summary>
-        /// <param name="reportPath">The path of the file to load</param>
+        /// <param name="reportContext">The report context specifying the report file to load</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportPath"/> or <paramref name="progressMonitor "/> is null</exception>
-        Report LoadReport(string reportPath, IProgressMonitor progressMonitor);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportContext"/> or <paramref name="progressMonitor "/> is null</exception>
+        Report LoadReport(ReportContext reportContext, IProgressMonitor progressMonitor);
     }
 }

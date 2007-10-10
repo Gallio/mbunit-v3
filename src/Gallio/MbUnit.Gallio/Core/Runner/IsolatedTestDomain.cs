@@ -51,34 +51,26 @@ namespace MbUnit.Core.Runner
                 throw new ArgumentNullException("runtime");
 
             this.runtime = runtime;
+
+            bootstrapAssemblies = new Dictionary<Assembly, bool>();
+
+            AddBootstrapAssembly(typeof(Castle.Core.Logging.ILogger).Assembly, false);
+            AddBootstrapAssembly(typeof(Castle.MicroKernel.IKernel).Assembly, false);
+            AddBootstrapAssembly(typeof(Castle.Windsor.WindsorContainer).Assembly, false);
+            AddBootstrapAssembly(typeof(Castle.DynamicProxy.ProxyGenerator).Assembly, false);
+            AddBootstrapAssembly(typeof(IsolatedTestDomain).Assembly, false);
         }
 
         /// <summary>
-        /// Gets the list of assemblies from the host domain that must be loaded into
-        /// the isolated AppDomain in order to bootstrap the test framework.  The value
-        /// specifies whether a binding redirect should be used to force this version
-        /// of the assembly to be used.
+        /// Adds a bootstrap assembly entry that forces a particular assembly
+        /// to be loaded into the isolated test domain.
         /// </summary>
-        /// <remarks>
-        /// This list is pre-populated with Castle.Core, Castle.MicroKernel,
-        /// MbUnit.Gallio.Core and MbUnit.Gallio.Framework.
-        /// </remarks>
-        public IDictionary<Assembly, bool> BootstrapAssemblies
+        /// <param name="assembly">The assembly</param>
+        /// <param name="useBindingRedirect">If true, uses a binding redirect to
+        /// ensure that this exact version of the assembly is used</param>
+        public void AddBootstrapAssembly(Assembly assembly, bool useBindingRedirect)
         {
-            get
-            {
-                if (bootstrapAssemblies == null)
-                {
-                    bootstrapAssemblies = new Dictionary<Assembly, bool>();
-                    bootstrapAssemblies.Add(typeof(Castle.Core.Logging.ILogger).Assembly, false);
-                    bootstrapAssemblies.Add(typeof(Castle.MicroKernel.IKernel).Assembly, false);
-                    bootstrapAssemblies.Add(typeof(Castle.Windsor.WindsorContainer).Assembly, false);
-                    bootstrapAssemblies.Add(typeof(Castle.DynamicProxy.ProxyGenerator).Assembly, false);
-                    bootstrapAssemblies.Add(typeof(IsolatedTestDomain).Assembly, false);
-                }
-
-                return bootstrapAssemblies;
-            }
+            bootstrapAssemblies.Add(assembly, useBindingRedirect);
         }
 
         /// <summary>
@@ -231,7 +223,7 @@ namespace MbUnit.Core.Runner
         private byte[] CreateConfiguration()
         {
             Type domainType = typeof(IsolatedTestDomain);
-            string templateResourceName = domainType.FullName + ".config.template";
+            string templateResourceName = domainType.FullName + @".config.template";
 
             string template;
             using (TextReader reader = new StreamReader(domainType.Assembly.GetManifestResourceStream(templateResourceName)))
@@ -240,12 +232,12 @@ namespace MbUnit.Core.Runner
             }
 
             StringBuilder assemblyBindings = new StringBuilder();
-            foreach (KeyValuePair<Assembly, bool> entry in BootstrapAssemblies)
+            foreach (KeyValuePair<Assembly, bool> entry in bootstrapAssemblies)
             {
                 AppendAssemblyBinding(assemblyBindings, entry.Key, entry.Value);
             }
 
-            template = template.Replace("{ASSEMBLY_BINDINGS}", assemblyBindings.ToString());
+            template = template.Replace(@"{ASSEMBLY_BINDINGS}", assemblyBindings.ToString());
             return Encoding.ASCII.GetBytes(template);
         }
 
@@ -253,14 +245,17 @@ namespace MbUnit.Core.Runner
         {
             AssemblyName assemblyName = assembly.GetName();
 
-            assemblyBindings.Append("<dependentAssembly>");
+            assemblyBindings.AppendFormat("<qualifyAssembly partialName=\"{0}\" fullName=\"{1}\" />",
+                assembly.GetName().Name, assembly.FullName);
+
+            assemblyBindings.Append(@"<dependentAssembly>");
 
             assemblyBindings.AppendFormat("<assemblyIdentity name=\"{0}\" ", assemblyName.Name);
             if (assemblyName.GetPublicKeyToken() != null)
                 assemblyBindings.AppendFormat("publicKeyToken=\"{0}\" ", ToHex(assemblyName.GetPublicKeyToken()));
             //if (assemblyName.CultureInfo != null)
             //    assemblyBindings.AppendFormat("culture=\"{0}\" ", assemblyName.CultureInfo.Name);
-            assemblyBindings.Append("/>");
+            assemblyBindings.Append(@"/>");
 
             if (bindingRedirect)
                 assemblyBindings.AppendFormat("<bindingRedirect oldVersion=\"0.0.0.0-65535.65535.65535.65535\" newVersion=\"{0}\" />",

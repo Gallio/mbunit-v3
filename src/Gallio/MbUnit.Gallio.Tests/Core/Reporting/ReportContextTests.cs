@@ -15,6 +15,7 @@
 
 extern alias MbUnit2;
 using System;
+using System.IO;
 using MbUnit.Core.Reporting;
 //using MbUnit.Framework.Kernel.Results;
 using MbUnit2::MbUnit.Framework;
@@ -22,17 +23,25 @@ using MbUnit2::MbUnit.Framework;
 namespace MbUnit.Tests.Core.Reporting
 {
     [TestFixture]
-    [TestsOn(typeof(ReportUtils))]
+    [TestsOn(typeof(ReportContext))]
     [Author("Vadim")]
-    public class ReportUtilsTests
+    public class ReportContextTests
     {
+        private ReportContext reportContext;
+
+        [SetUp]
+        public void SetUp()
+        {
+            reportContext = new ReportContext(Path.GetTempFileName());
+        }
+
         [RowTest]
         [Row(@"C:\dir\fiename.ext", @"C:\dir\fiename")]
         [Row(@"fiename", @"fiename.content")]
         [Row(@"fiename.ext", @"fiename")]
-        public void GetContentDirectoryPathTest(string inputDir, string outputDir)
+        public void GetContentDirectoryPathTest(string reportPath, string outputDir)
         {
-            Assert.AreEqual(outputDir, ReportUtils.GetContentDirectoryPath(inputDir));
+            Assert.AreEqual(outputDir, new ReportContext(reportPath).ContentPath);
         }
 
         [Test]
@@ -44,14 +53,14 @@ namespace MbUnit.Tests.Core.Reporting
         [ExpectedArgumentNullException]
         public void LoadAttachmentContentsWithNullAttachementTest()
         {
-            ReportUtils.LoadAttachmentContents(null, "pat");
+            reportContext.LoadAttachmentContents(null, "pat");
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void LoadAttachmentContentsWithNullContentPathTest()
         {
-            ReportUtils.LoadAttachmentContents(new ExecutionLogAttachment("", "", ExecutionLogAttachmentEncoding.Xml, "", null), null);
+            reportContext.LoadAttachmentContents(new ExecutionLogAttachment("", "", ExecutionLogAttachmentEncoding.Xml, "", null), null);
         }
 
         [Test]
@@ -63,26 +72,26 @@ namespace MbUnit.Tests.Core.Reporting
         [ExpectedArgumentNullException]
         public void GetAttachmentFileNameWithNullAttachmentName()
         {
-            ReportUtils.GetAttachmentFileName(null);
+            reportContext.GetAttachmentFileName(null);
         }
 
         [Test]
         public void GetAttachmentFileNameTest()
         {
-            Assert.AreEqual("tes_t", ReportUtils.GetAttachmentFileName("tes\\t"));
+            Assert.AreEqual("tes_t", reportContext.GetAttachmentFileName("tes\\t"));
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void GetStepRunDirectoryNameWithNullStepId()
         {
-            ReportUtils.GetStepRunDirectoryName(null);
+            reportContext.GetStepRunDirectoryName(null);
         }
 
         [Test]
         public void GetStepRunDirectoryNameTest()
         {
-            Assert.AreEqual("test", ReportUtils.GetStepRunDirectoryName("test"));
+            Assert.AreEqual("test", reportContext.GetStepRunDirectoryName("test"));
         }
     }
 }

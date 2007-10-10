@@ -65,14 +65,14 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         private List<Argument> arguments;
         private Dictionary<string, Argument> argumentMap;
         private Argument defaultArgument;
-	    private readonly IFileManager resourceFileMgr;
+	    private readonly IFileSystem resourceFileMgr;
        
         /// <summary>
 		/// Creates a new command line argument parser.
 		/// </summary>
 		/// <param name="argumentSpecification">The argument type containing fields decorated
         /// with <see cref="CommandLineArgumentAttribute" /></param>
-		public CommandLineArgumentParser(Type argumentSpecification) : this(argumentSpecification, new FileManager())
+		public CommandLineArgumentParser(Type argumentSpecification) : this(argumentSpecification, NativeFileSystem.Instance)
 		{
 		}
 
@@ -81,14 +81,14 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
         /// </summary>
         /// <param name="argumentSpecification">The argument type containing fields decorated
         /// with <see cref="CommandLineArgumentAttribute" /></param>
-        /// <param name="fileManager">Object to process resource file.</param>
-        public CommandLineArgumentParser(Type argumentSpecification, IFileManager fileManager)
+        /// <param name="fileSystem">Object to process resource file.</param>
+        public CommandLineArgumentParser(Type argumentSpecification, IFileSystem fileSystem)
         {
             if (argumentSpecification == null)
                 throw new ArgumentNullException(@"argumentSpecification");
 
             this.argumentSpecification = argumentSpecification;
-            resourceFileMgr = fileManager;
+            resourceFileMgr = fileSystem;
 
             PopulateArgumentMap();
         }
@@ -372,7 +372,7 @@ namespace MbUnit.Core.ConsoleSupport.CommandLine
 	        string args = null;
 	        try
 	        {
-	            args = resourceFileMgr.GetFileContent(fileName);
+	            args = resourceFileMgr.ReadAllText(fileName);
 	        }
 	        catch (FileNotFoundException)
 	        {

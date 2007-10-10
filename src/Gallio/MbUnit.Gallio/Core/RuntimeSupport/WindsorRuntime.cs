@@ -44,6 +44,7 @@ namespace MbUnit.Core.RuntimeSupport
         private readonly IAssemblyResolverManager assemblyResolverManager;
         private readonly RuntimeSetup runtimeSetup;
         private readonly List<string> pluginDirectories;
+        private readonly Dictionary<string, string> pluginPaths;
 
         private WindsorContainer container;
 
@@ -57,15 +58,16 @@ namespace MbUnit.Core.RuntimeSupport
         public WindsorRuntime(IAssemblyResolverManager assemblyResolverManager, RuntimeSetup runtimeSetup)
         {
             if (assemblyResolverManager == null)
-                throw new ArgumentNullException("assemblyResolverManager");
+                throw new ArgumentNullException(@"assemblyResolverManager");
             if (runtimeSetup == null)
-                throw new ArgumentNullException("runtimeSetup");
+                throw new ArgumentNullException(@"runtimeSetup");
 
             this.assemblyResolverManager = assemblyResolverManager;
             this.runtimeSetup = runtimeSetup;
 
             container = new WindsorContainer();
             pluginDirectories = new List<string>();
+            pluginPaths = new Dictionary<string, string>();
 
             SetDefaultPluginDirectories();
             ConfigureFromSetup(runtimeSetup);
@@ -146,6 +148,35 @@ namespace MbUnit.Core.RuntimeSupport
             return runtimeSetup.Copy();
         }
 
+        /// <inheritdoc />
+        public string MapUriToLocalPath(Uri uri)
+        {
+            if (uri.IsFile)
+            {
+                return uri.LocalPath;
+            }
+            else if (uri.Scheme == @"plugin")
+            {
+                string pluginName = uri.Host.ToLowerInvariant();
+                string relativePath = uri.PathAndQuery;
+                if (pluginName.Length == 0)
+                    throw new InvalidOperationException(String.Format("Malformed plugin relative Uri: '{0}'.", uri));
+
+                string pluginPath;
+                if (! pluginPaths.TryGetValue(pluginName, out pluginPath))
+                    throw new InvalidOperationException(String.Format("Unrecognized plugin name in Uri: '{0}'.", uri));
+
+                if (relativePath.Length == 0 || relativePath == @"/")
+                    return pluginPath;
+
+                return Path.Combine(pluginPath, relativePath.Substring(1));
+            }
+            else
+            {
+                throw new InvalidOperationException(String.Format("Unsupported Uri scheme in Uri: '{0}'.", uri));
+            }
+        }
+
         private void ThrowIfDisposed()
         {
             if (container == null)
@@ -174,7 +205,7 @@ namespace MbUnit.Core.RuntimeSupport
                 DirectoryInfo pluginDirectoryInfo = new DirectoryInfo(pluginDirectory);
                 if (pluginDirectoryInfo.Exists)
                 {
-                    foreach (FileInfo pluginConfigFile in pluginDirectoryInfo.GetFiles("MbUnit.*.plugin", SearchOption.AllDirectories))
+                    foreach (FileInfo pluginConfigFile in pluginDirectoryInfo.GetFiles(@"*.plugin", SearchOption.AllDirectories))
                     {
                         // It can happen that we find two copies of the same plugin file
                         // in different directories such as during debugging when we ask
@@ -196,8 +227,11 @@ namespace MbUnit.Core.RuntimeSupport
         private void LoadConfigurationFromFile(string configFile)
         {
             // Ensure that we can resolve any types referenced by the config file.
-            assemblyResolverManager.AddHintDirectoryContainingFile(configFile);
+            string pluginPath = NativeFileSystem.Instance.GetFullDirectoryName(configFile);
+            assemblyResolverManager.AddHintDirectory(pluginPath);
+            assemblyResolverManager.AddHintDirectory(Path.Combine(pluginPath, @"bin"));
 
+            // Load the configuration.
             XmlElement rootElement;
             try
             {
@@ -217,6 +251,11 @@ namespace MbUnit.Core.RuntimeSupport
             XmlElement castleElement = rootElement.SelectSingleNode("//castle") as XmlElement;
             if (castleElement != null)
                 LoadConfigurationFromResource(new StaticContentResource(castleElement.OuterXml));
+
+            // Register the plugin path.
+            string pluginName = Path.GetFileNameWithoutExtension(configFile);
+            string contentPath = Path.GetDirectoryName(Path.GetFullPath(configFile));
+            pluginPaths.Add(pluginName.ToLowerInvariant(), contentPath);
         }
 
         private void LoadConfigurationFromResource(IResource resource)

@@ -31,6 +31,13 @@ namespace MbUnit.Core.Runner
         }
 
         /// <inheritdoc />
+        protected override void OnSetStatus(string status)
+        {
+            base.OnSetStatus(status);
+            UpdateDisplay();
+        }
+
+        /// <inheritdoc />
         protected override void OnWorked(double workUnits)
         {
             base.OnWorked(workUnits);

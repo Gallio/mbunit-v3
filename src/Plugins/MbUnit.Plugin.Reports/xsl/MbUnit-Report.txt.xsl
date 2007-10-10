@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:gallio="http://www.mbunit.com/gallio">
+                xmlns:g="http://www.mbunit.com/gallio">
+  <xsl:param name="contentRoot" select="''" />
+  <xsl:param name="resourceRoot" select="''" />
+  
   <xsl:param name="show-passed-tests">true</xsl:param>
   <xsl:param name="show-failed-tests">true</xsl:param>
   <xsl:param name="show-inconclusive-tests">true</xsl:param>
@@ -10,15 +13,15 @@
   <xsl:output method="text" encoding="utf-8"/>
 
   <xsl:template match="/">
-    <xsl:apply-templates select="//gallio:packageRun" />
+    <xsl:apply-templates select="//g:packageRun" />
   </xsl:template>
 
-  <xsl:template match="gallio:packageRun">
-		<xsl:apply-templates select="gallio:testRuns" />
-    <xsl:apply-templates select="gallio:statistics" />
+  <xsl:template match="g:packageRun">
+		<xsl:apply-templates select="g:testRuns" />
+    <xsl:apply-templates select="g:statistics" />
   </xsl:template>
   
-	<xsl:template match="gallio:statistics">
+	<xsl:template match="g:statistics">
     <xsl:text>Run: </xsl:text>
 		<xsl:value-of select="@runCount"/>
     <xsl:text>, Passed: </xsl:text>
@@ -34,12 +37,12 @@
 		<xsl:text>.&#xA;</xsl:text>
 	</xsl:template>
   
-	<xsl:template match="gallio:testRuns">
-    <xsl:variable name="passed" select="descendant::gallio:stepRun[gallio:result/@status='executed' and gallio:result/@outcome='passed']" />
-    <xsl:variable name="failed" select="descendant::gallio:stepRun[gallio:result/@status='executed' and gallio:result/@outcome='failed']" />
-    <xsl:variable name="inconclusive" select="descendant::gallio:stepRun[gallio:result/@status='executed' and gallio:result/@outcome='inconclusive']" />
-    <xsl:variable name="ignored" select="descendant::gallio:stepRun[gallio:result/@status='ignored']" />
-    <xsl:variable name="skipped" select="descendant::gallio:stepRun[gallio:result/@status='skipped']" />
+	<xsl:template match="g:testRuns">
+    <xsl:variable name="passed" select="descendant::g:stepRun[g:result/@status='executed' and g:result/@outcome='passed']" />
+    <xsl:variable name="failed" select="descendant::g:stepRun[g:result/@status='executed' and g:result/@outcome='failed']" />
+    <xsl:variable name="inconclusive" select="descendant::g:stepRun[g:result/@status='executed' and g:result/@outcome='inconclusive']" />
+    <xsl:variable name="ignored" select="descendant::g:stepRun[g:result/@status='ignored']" />
+    <xsl:variable name="skipped" select="descendant::g:stepRun[g:result/@status='skipped']" />
 
     <xsl:if test="$show-passed-tests and $passed">
       <xsl:text>* Passed:&#xA;&#xA;</xsl:text>
@@ -72,65 +75,65 @@
     </xsl:if>
 	</xsl:template>
   
-	<xsl:template match="gallio:testRun">
-    <xsl:apply-templates select="gallio:stepRun" />
+	<xsl:template match="g:testRun">
+    <xsl:apply-templates select="g:stepRun" />
 	</xsl:template>
 
-  <xsl:template match="gallio:stepRun">
-    <xsl:variable name="testRun" select="ancestor::gallio:testRun" />
+  <xsl:template match="g:stepRun">
+    <xsl:variable name="testRun" select="ancestor::g:testRun" />
     <xsl:variable name="testId" select="$testRun/@id" />
-    <xsl:variable name="test" select="//gallio:test[@id=$testId]" />
+    <xsl:variable name="test" select="//g:test[@id=$testId]" />
 
     <xsl:text>[</xsl:text>
-    <xsl:value-of select="$test/gallio:metadata/gallio:entry[@key='ComponentKind']/gallio:value" />
+    <xsl:value-of select="$test/g:metadata/g:entry[@key='ComponentKind']/g:value" />
     <xsl:text>] </xsl:text>
     <xsl:value-of select="@fullName" />
     <xsl:text>&#xA;</xsl:text>
-    <xsl:apply-templates select="gallio:executionLog" />
+    <xsl:apply-templates select="g:executionLog" />
     <xsl:text>&#xA;</xsl:text>
 
-    <xsl:apply-templates select="gallio:children/gallio:stepRun" />
+    <xsl:apply-templates select="g:children/g:stepRun" />
   </xsl:template>
 
-  <xsl:template match="gallio:executionLog">
-    <xsl:apply-templates select="gallio:streams" />
+  <xsl:template match="g:executionLog">
+    <xsl:apply-templates select="g:streams" />
   </xsl:template>
 
-  <xsl:template match="gallio:streams">
-    <xsl:apply-templates select="gallio:stream" />
+  <xsl:template match="g:streams">
+    <xsl:apply-templates select="g:stream" />
   </xsl:template>
   
-  <xsl:template match="gallio:stream">
+  <xsl:template match="g:stream">
     <xsl:param name="prefix" select="'  '" />
 
     <xsl:value-of select="$prefix"/>
     <xsl:text>&lt;Stream: </xsl:text>
     <xsl:value-of select="@name" />
     <xsl:text>&gt;&#xA;</xsl:text>
-    <xsl:apply-templates select="gallio:body">
+    <xsl:apply-templates select="g:body">
       <xsl:with-param name="prefix" select="concat($prefix, '  ')" />
     </xsl:apply-templates>
     <xsl:value-of select="$prefix"/>
     <xsl:text>&lt;End Stream&gt;&#xA;</xsl:text>
   </xsl:template>
   
-  <xsl:template match="gallio:body">
+  <xsl:template match="g:body">
     <xsl:param name="prefix" select="''" />
 
-    <xsl:apply-templates select="gallio:contents">
+    <xsl:apply-templates select="g:contents">
       <xsl:with-param name="prefix" select="$prefix" />
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="gallio:contents">
+  <xsl:template match="g:contents">
     <xsl:param name="prefix" select="''"  />
     
-    <xsl:apply-templates select="child::node()[self::gallio:text or self::gallio:section or self::gallio:embed]">
+    <xsl:apply-templates select="child::node()[self::g:text or self::g:section or self::g:embed]">
       <xsl:with-param name="prefix" select="$prefix" />
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="gallio:text">
+  <xsl:template match="g:text">
     <xsl:param name="prefix" select="''"  />
     
     <xsl:call-template name="indent">
@@ -139,21 +142,21 @@
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="gallio:section">
+  <xsl:template match="g:section">
     <xsl:param name="prefix" select="''"  />
     
     <xsl:value-of select="$prefix"/>
     <xsl:text>&lt;Section: </xsl:text>
     <xsl:value-of select="@name" />
     <xsl:text>&gt;&#xA;</xsl:text>
-    <xsl:apply-templates select="gallio:contents">
+    <xsl:apply-templates select="g:contents">
       <xsl:with-param name="prefix" select="concat($prefix, '  ')" />
     </xsl:apply-templates>
     <xsl:value-of select="$prefix"/>
     <xsl:text>&lt;End Section&gt;&#xA;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="gallio:embed">
+  <xsl:template match="g:embed">
     <xsl:param name="prefix" select="''"  />
     
     <xsl:value-of select="$prefix"/>

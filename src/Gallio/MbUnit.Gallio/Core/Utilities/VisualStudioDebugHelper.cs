@@ -32,14 +32,16 @@ namespace MbUnit.Core.Utilities
             // Add plugin bin directories assuming the user is running inside Visual Studio.
             foreach (string mbunitDirectory in assemblyResolverManager.MbUnitDirectories)
             {
-                DirectoryInfo pluginProjectDir = new DirectoryInfo(Path.GetFullPath(Path.Combine(mbunitDirectory, @"..\..\..\..\Plugins")));
-                if (pluginProjectDir.Exists)
+                DirectoryInfo srcDir = new DirectoryInfo(Path.GetFullPath(Path.Combine(mbunitDirectory, @"..\..\..\..\..\src")));
+                if (srcDir.Exists)
                 {
-                    foreach (DirectoryInfo projectDir in pluginProjectDir.GetDirectories())
+                    foreach (DirectoryInfo projectGroupDir in srcDir.GetDirectories())
                     {
-                        string pluginBinDir = Path.Combine(projectDir.FullName, "bin");
-                        if (!projectDir.FullName.Contains("Tests") && Directory.Exists(pluginBinDir))
-                            runtime.AddPluginDirectory(pluginBinDir);
+                        foreach (DirectoryInfo projectDir in projectGroupDir.GetDirectories())
+                        {
+                            if (projectDir.GetFiles(@"*.plugin").Length != 0)
+                                runtime.AddPluginDirectory(projectDir.FullName);
+                        }
                     }
                 }
             }

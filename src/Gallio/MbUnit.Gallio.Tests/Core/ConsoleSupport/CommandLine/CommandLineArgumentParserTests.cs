@@ -27,13 +27,13 @@ namespace MbUnit.Tests.Core.ConsoleSupport.CommandLine
     public class CommandLineArgumentParserTests
     {
         private MockRepository _mocks;
-        IFileManager _resourceFileMock;
+        IFileSystem _resourceFileMock;
 
         [SetUp]
         public void TestStart()
         {
             _mocks = new MockRepository();
-            _resourceFileMock = _mocks.CreateMock<IFileManager>();
+            _resourceFileMock = _mocks.CreateMock<IFileSystem>();
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace MbUnit.Tests.Core.ConsoleSupport.CommandLine
         {
             string errorMsg = string.Empty;
             MainArguments arguments = new MainArguments();
-            Expect.Call(_resourceFileMock.GetFileContent("InvalidFile")).Throw(new FileNotFoundException());
+            Expect.Call(_resourceFileMock.ReadAllText("InvalidFile")).Throw(new FileNotFoundException());
             CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), _resourceFileMock);
             _mocks.ReplayAll();
             Assert.AreEqual(false, parser.Parse(new string[] { "@InvalidFile" }, arguments,
@@ -116,7 +116,7 @@ namespace MbUnit.Tests.Core.ConsoleSupport.CommandLine
         {
             string errorMsg = string.Empty;
             MainArguments arguments = new MainArguments();
-            Expect.Call(_resourceFileMock.GetFileContent("EmptyResourceFile")).Return("");
+            Expect.Call(_resourceFileMock.ReadAllText("EmptyResourceFile")).Return("");
             CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), _resourceFileMock);
             _mocks.ReplayAll();
             Assert.AreEqual(true, parser.Parse(new string[] { "@EmptyResourceFile" }, arguments,
@@ -131,7 +131,7 @@ namespace MbUnit.Tests.Core.ConsoleSupport.CommandLine
             string errorMsg = string.Empty;
             string fileContent = "C:\\file.dll";
             MainArguments arguments = new MainArguments();
-            Expect.Call(_resourceFileMock.GetFileContent("ResourceFile")).Return(fileContent);
+            Expect.Call(_resourceFileMock.ReadAllText("ResourceFile")).Return(fileContent);
             CommandLineArgumentParser parser = new CommandLineArgumentParser(arguments.GetType(), _resourceFileMock);
             _mocks.ReplayAll();
             Assert.AreEqual(true, parser.Parse(new string[] { "@ResourceFile" },
