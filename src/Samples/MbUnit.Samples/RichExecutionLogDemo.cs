@@ -27,7 +27,7 @@ namespace MbUnit.Samples
     /// Generates an execution log with all sorts of rich content.
     /// </summary>
     [TestFixture]
-    [Description("Demonstrated the rich execution log features.")]
+    [Description("Demonstrate the rich execution log features.")]
     public class RichExecutionLogDemo
     {
         private static LogStreamWriter MbUnitRocks

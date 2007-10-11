@@ -85,7 +85,7 @@
     <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\img\*">
         <Folder>Reports\img</Folder>
     </Binary>
-    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\xslt\*">
+    <Binary Include="$(SourceDir)\Plugins\MbUnit.Plugin.Reports\xsl\*">
         <Folder>Reports\xsl</Folder>
     </Binary>
 
