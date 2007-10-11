@@ -49,6 +49,7 @@
     <Compile Include="Interfaces\ITestTreeModel.cs" />
     <Compile Include="Model\TestRunnerModel.cs" />
     <Compile Include="Presenter\ProjectPresenter.cs" />
+    <Compile Include="ProgressMonitoring\TestRunnerMonitor.cs" />
     <Compile Include="ProgressMonitoring\StatusStripProgressMonitor.cs" />
     <Compile Include="ProgressMonitorShower.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

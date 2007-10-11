@@ -16,26 +16,35 @@
 
 using MbUnit.Core.Harness;
 using MbUnit.Core.Runner;
+using MbUnit.Core.Runner.Monitors;
 using MbUnit.Icarus.Core.Interfaces;
+using MbUnit.Icarus.Core.ProgressMonitoring;
 using MbUnit.Model.Serialization;
 
 namespace MbUnit.Icarus.Core.Model
 {
     public class TestRunnerModel : ITestRunnerModel
     {
-        #region public methods
+        private ReportMonitor reportMonitor;
 
         public TestModel LoadUpAssembly(IProjectPresenter presenter, TestPackage testpackage)
         {
-            StatusStripProgressMonitor sspm = new StatusStripProgressMonitor(presenter);
-            presenter.Runner.LoadPackage(testpackage, sspm);
-            sspm = new StatusStripProgressMonitor(presenter);
-            presenter.Runner.BuildTemplates(sspm);
-            sspm = new StatusStripProgressMonitor(presenter);
-            presenter.Runner.BuildTests(sspm);
+            // set up report monitor
+            reportMonitor = new ReportMonitor();
+            reportMonitor.Attach(presenter.Runner);
+
+            presenter.Runner.LoadPackage(testpackage, new StatusStripProgressMonitor(presenter));
+            presenter.Runner.BuildTemplates(new StatusStripProgressMonitor(presenter));
+            presenter.Runner.BuildTests(new StatusStripProgressMonitor(presenter));
+
             return presenter.Runner.TestModel;
         }
 
-        #endregion
+        public void RunTests(IProjectPresenter presenter)
+        {
+            TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(presenter, reportMonitor);
+            testRunnerMonitor.Attach(presenter.Runner);
+            presenter.Runner.Run(new StatusStripProgressMonitor(presenter));
+        }
     }
 }

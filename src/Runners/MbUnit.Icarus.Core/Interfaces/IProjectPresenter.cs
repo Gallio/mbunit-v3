@@ -27,5 +27,9 @@ namespace MbUnit.Icarus.Core.Interfaces
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         StandaloneRunner Runner { get; }
+        void Passed(string testId);
+        void Failed(string testId);
+        void Ignored(string testId);
+        void Skipped(string testId);
     }
 }

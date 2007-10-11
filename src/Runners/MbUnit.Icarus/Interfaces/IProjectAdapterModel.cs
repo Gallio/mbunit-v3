@@ -23,6 +23,7 @@ namespace MbUnit.Icarus.Interfaces
     public interface IProjectAdapterModel
     {
         TreeNode[] BuildTestTree(TestModel testModel);
+        int CountTests(TestModel testModel);
         ListViewItem[] BuildAssemblyList(List<string> list);
     }
 }

@@ -39,9 +39,14 @@ namespace MbUnit.Icarus
         private TreeNode[] testTreeCollection;
         private ListViewItem[] assemblies;
         private Thread workerThread = null;
+        
+        // status bar
         private string statusText = "Ready...";
         private int totalWorkUnits, completedWorkUnits;
         private System.Timers.Timer statusBarTimer;
+        
+        // test progress bar
+        private int failedTests, ignoredTests, passedTests, skippedTests, totalTests;
 
         #endregion
 
@@ -72,6 +77,11 @@ namespace MbUnit.Icarus
             set { completedWorkUnits = value; }
         }
 
+        public int TotalTests
+        {
+            set { totalTests = value; }
+        }
+        
         #endregion
 
         #region Events
@@ -79,6 +89,7 @@ namespace MbUnit.Icarus
         public event EventHandler<EventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
+        public event EventHandler<EventArgs> RunTests;
 
         #endregion
 
@@ -97,7 +108,7 @@ namespace MbUnit.Icarus
             InitializeComponent();
 
             // status bar
-            statusBarTimer = new System.Timers.Timer(100);
+            statusBarTimer = new System.Timers.Timer(10);
             statusBarTimer.AutoReset = true;
             statusBarTimer.Enabled = true;
             statusBarTimer.Elapsed += new ElapsedEventHandler(statusBarTimer_Elapsed);
@@ -108,7 +119,6 @@ namespace MbUnit.Icarus
             graphPane.Title.Text = "Total Test Results";
             graphPane.XAxis.Title.Text = "Number of Tests";
             graphPane.YAxis.Title.Text = "Test Suites";
-
 
             // Make up some data points
             string[] labels = {"Class 1", "Class 2"};
@@ -182,19 +192,18 @@ namespace MbUnit.Icarus
         private void tlbStart_Click(object sender, EventArgs e)
         {
             testProgressStatusBar.Clear();
-            testProgressStatusBar.Total = 50;
-            for (int i = 0; i < testProgressStatusBar.Total; i++)
-            {
-                if (i == 12 || i == 20 || i == 28 || i == 29 || i == 38 || i == 40 || i == 45 || i == 46 || i == 47 ||
-                    i == 18 || i == 25)
-                    testProgressStatusBar.Failed += 1;
-                else if (i == 30 || i == 42)
-                    testProgressStatusBar.Ignored += 1;
-                else
-                    testProgressStatusBar.Passed += 1;
+            statusText = "Running tests...";
+            AbortWorkerThread();
+            workerThread = new Thread(new ThreadStart(ThreadedRunTests));
+            workerThread.Start();
+        }
 
-                Application.DoEvents();
-                Thread.Sleep(50);
+        private void ThreadedRunTests()
+        {
+            // Run tests
+            if (RunTests != null)
+            {
+                RunTests(this, new EventArgs());
             }
         }
 
@@ -484,9 +493,37 @@ namespace MbUnit.Icarus
 
         private void UpdateStatusBar()
         {
+            // status bar
             toolStripStatusLabel.Text = statusText;
             toolStripProgressBar.Maximum = totalWorkUnits;
             toolStripProgressBar.Value = completedWorkUnits;
+
+            // test progress bar
+            testProgressStatusBar.Total = totalTests;
+            testProgressStatusBar.Passed = passedTests;
+            testProgressStatusBar.Failed = failedTests;
+            testProgressStatusBar.Skipped = skippedTests;
+            testProgressStatusBar.Ignored = ignoredTests;
+        }
+
+        public void Passed(string testId)
+        {
+            passedTests++;
+        }
+
+        public void Failed(string testId)
+        {
+            failedTests++;
+        }
+
+        public void Ignored(string testId)
+        {
+            ignoredTests++;
+        }
+
+        public void Skipped(string testId)
+        {
+            skippedTests++;
         }
     }
 }

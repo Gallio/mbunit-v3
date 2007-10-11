@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
+
 using MbUnit.Core.Harness;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
@@ -24,13 +26,15 @@ namespace MbUnit.Icarus.Adapter
 {
     public class ProjectAdapter : IProjectAdapter
     {
+        #region Variables
+
         private readonly IProjectAdapterView _View;
         private readonly IProjectAdapterModel _Model;
         
         private TestModel _testCollection;
         private TestPackage testpackage;
-
-        public event EventHandler<ProjectEventArgs> GetTestTree;
+        
+        #endregion
 
         #region Properties
 
@@ -51,6 +55,13 @@ namespace MbUnit.Icarus.Adapter
 
         #endregion
 
+        #region Events
+
+        public event EventHandler<ProjectEventArgs> GetTestTree;
+        public event EventHandler<EventArgs> RunTests;
+
+        #endregion
+
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
             _View = view;
@@ -60,6 +71,7 @@ namespace MbUnit.Icarus.Adapter
             _View.AddAssemblies += _View_AddAssemblies;
             _View.RemoveAssemblies += _View_RemoveAssemblies;
             _View.GetTestTree += _View_GetTestTree;
+            _View.RunTests += _View_RunTests;
 
             // Create empty new test package
             testpackage = new TestPackage();
@@ -75,11 +87,21 @@ namespace MbUnit.Icarus.Adapter
             testpackage.AssemblyFiles.Clear();
         }
 
-        void _View_GetTestTree(object sender, EventArgs e)
+        [DebuggerStepThrough]
+        private void _View_GetTestTree(object sender, EventArgs e)
         {
             if (GetTestTree != null)
             {
                 GetTestTree(this, new ProjectEventArgs(testpackage));
+            }
+        }
+
+        [DebuggerStepThrough]
+        private void _View_RunTests(object sender, EventArgs e)
+        {
+            if (RunTests != null)
+            {
+                RunTests(this, new EventArgs());
             }
         }
 
@@ -92,7 +114,32 @@ namespace MbUnit.Icarus.Adapter
         {
             _View.Assemblies = _Model.BuildAssemblyList(testpackage.AssemblyFiles);
             _View.TestTreeCollection = _Model.BuildTestTree(_testCollection);
+            _View.TotalTests = _Model.CountTests(_testCollection);
             _View.DataBind();
+        }
+
+        [DebuggerStepThrough]
+        public void Passed(string testId)
+        {
+            _View.Passed(testId);
+        }
+
+        [DebuggerStepThrough]
+        public void Failed(string testId)
+        {
+            _View.Failed(testId);
+        }
+
+        [DebuggerStepThrough]
+        public void Skipped(string testId)
+        {
+            _View.Skipped(testId);
+        }
+
+        [DebuggerStepThrough]
+        public void Ignored(string testId)
+        {
+            _View.Ignored(testId);
         }
     }
 }

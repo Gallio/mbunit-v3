@@ -24,11 +24,17 @@ namespace MbUnit.Icarus.Interfaces
         event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         event EventHandler<EventArgs> RemoveAssemblies;
         event EventHandler<EventArgs> GetTestTree;
+        event EventHandler<EventArgs> RunTests;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
+        int TotalTests { set; }
         void DataBind();
+        void Passed(string testId);
+        void Failed(string testId);
+        void Ignored(string testId);
+        void Skipped(string testId);
     }
 }

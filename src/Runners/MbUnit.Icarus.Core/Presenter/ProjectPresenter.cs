@@ -55,14 +55,41 @@ namespace MbUnit.Icarus.Core.Presenter
 
             RuntimeSetup runtimeSetup = new RuntimeSetup();
             runner = StandaloneRunner.CreateRunner(runtimeSetup);
+            
+            // wire up events
             _View.GetTestTree += GetTestTree;
-
+            _View.RunTests += RunTests;
         }
 
         private void GetTestTree(object sender, ProjectEventArgs e)
         {
             _View.TestCollection = _TestRunnerModel.LoadUpAssembly(this, e.LocalTestPackage);
             _View.DataBind();
+        }
+
+        private void RunTests(object sender, EventArgs e)
+        {
+            _TestRunnerModel.RunTests(this);
+        }
+
+        public void Passed(string testId)
+        {
+            _View.Passed(testId);
+        }
+
+        public void Failed(string testId)
+        {
+            _View.Failed(testId);
+        }
+
+        public void Skipped(string testId)
+        {
+            _View.Skipped(testId);
+        }
+
+        public void Ignored(string testId)
+        {
+            _View.Ignored(testId);
         }
     }
 }

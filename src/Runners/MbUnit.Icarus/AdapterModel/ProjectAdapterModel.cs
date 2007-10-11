@@ -71,7 +71,22 @@ namespace MbUnit.Icarus.AdapterModel
             }
             return nodes;
         }
-        
+
+        public int CountTests(TestModel testModel)
+        {
+            return CountTests(testModel.RootTest);
+        }
+
+        private int CountTests(TestData td)
+        {
+            int testCount = 0;
+            if (td.IsTestCase)
+                testCount++;
+            foreach (TestData child in td.Children)
+                testCount += CountTests(child);
+            return testCount;
+        }
+
         public ListViewItem[] BuildAssemblyList(List<string> assemblyList)
         {
             ListViewItem[] assemblies = new ListViewItem[assemblyList.Count];

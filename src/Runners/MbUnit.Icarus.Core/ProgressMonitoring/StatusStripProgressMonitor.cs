@@ -22,7 +22,7 @@ using MbUnit.Core.Runner;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 
-namespace MbUnit.Icarus.Core
+namespace MbUnit.Icarus.Core.ProgressMonitoring
 {
     public class StatusStripProgressMonitor : TextualProgressMonitor
     {
