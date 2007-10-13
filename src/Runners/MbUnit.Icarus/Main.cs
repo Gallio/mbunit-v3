@@ -64,21 +64,25 @@ namespace MbUnit.Icarus
 
         public string StatusText
         {
+            get { return statusText; }
             set { statusText = value; }
         }
 
         public int TotalWorkUnits
         {
+            get { return totalWorkUnits; }
             set { totalWorkUnits = value; }
         }
 
         public int CompletedWorkUnits
         {
+            get { return completedWorkUnits; }
             set { completedWorkUnits = value; }
         }
 
         public int TotalTests
         {
+            get { return totalTests; }
             set { totalTests = value; }
         }
         
@@ -422,6 +426,14 @@ namespace MbUnit.Icarus
             // populate assembly list
             assemblyList.Invoke(new ClearListDelegate(assemblyList.Items.Clear));
             assemblyList.Invoke(new AddRangeToListDelegate(assemblyList.Items.AddRange), new object[] { assemblies });
+
+            // enable buttons (if necessary)
+            toolStripContainer.Invoke(new MethodInvoker(EnableButtons));
+        }
+
+        private void EnableButtons()
+        {
+            startToolbarButton.Enabled = reloadToolbarButton.Enabled = (testTree.Nodes.Count > 0);
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)

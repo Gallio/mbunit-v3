@@ -18,17 +18,67 @@ using System.Reflection;
 using System.Windows.Forms;
 
 using MbUnit.Framework;
+using MbUnit.Icarus.AdapterModel;
+using MbUnit.Icarus.Interfaces;
 using MbUnit.Model;
 using MbUnit.Model.Serialization;
-using MbUnit.Icarus.AdapterModel;
 
 namespace MbUnit.Icarus.Tests
 {
     [TestFixture]
-    public class ProjectAdapterModelTest
+    public class IProjectAdapterModelTest
     {
         [Test]
         public void BuildTestTree_Test()
+        {
+            IProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
+            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel());
+            Assert.AreEqual(1, treeNodes.Length);
+            // check Root node
+            TreeNode rootNode = treeNodes[0];
+            Assert.AreEqual("Root", rootNode.Name);
+            Assert.AreEqual(0, rootNode.ImageIndex);
+            Assert.AreEqual(1, rootNode.Nodes.Count);
+            // check Framework node
+            TreeNode frameworkNode = rootNode.Nodes[0];
+            Assert.AreEqual("Framework", frameworkNode.Name);
+            Assert.AreEqual(1, frameworkNode.ImageIndex);
+            Assert.AreEqual(1, frameworkNode.Nodes.Count);
+            // check Assembly node
+            TreeNode assemblyNode = frameworkNode.Nodes[0];
+            Assert.AreEqual("Assembly", assemblyNode.Name);
+            Assert.AreEqual(2, assemblyNode.ImageIndex);
+            Assert.AreEqual(1, assemblyNode.Nodes.Count);
+            TreeNode fixtureNode = assemblyNode.Nodes[0];
+            // check Fixture node
+            Assert.AreEqual("Fixture", fixtureNode.Name);
+            Assert.AreEqual(3, fixtureNode.ImageIndex);
+            Assert.AreEqual(3, fixtureNode.Nodes.Count);
+            // check first Test node
+            TreeNode testNode = fixtureNode.Nodes[0];
+            Assert.AreEqual("Test1", testNode.Name);
+            Assert.AreEqual(4, testNode.ImageIndex);
+            Assert.AreEqual(0, testNode.Nodes.Count);
+        }
+
+        [Test]
+        public void CountTests_Test()
+        {
+            IProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
+            Assert.AreEqual(3, projectAdapterModel.CountTests(CreateTestModel()));
+        }
+
+        [Test]
+        public void BuildAssemblyList_Test()
+        {
+            IProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
+            ListViewItem[] listViewItems = projectAdapterModel.BuildAssemblyList(new List<string>(new string[] { 
+                Assembly.GetExecutingAssembly().Location }));
+            Assert.AreEqual(1, listViewItems.Length);
+            Assert.AreEqual(3, listViewItems[0].SubItems.Count);
+        }
+
+        private TestModel CreateTestModel()
         {
             TestData rootTest = new TestData("Root", "Root");
             TestData framework = new TestData("Framework", "Framework");
@@ -40,44 +90,19 @@ namespace MbUnit.Icarus.Tests
             TestData fixture = new TestData("Fixture", "Fixture");
             fixture.Metadata.SetValue(MetadataKeys.ComponentKind, "Fixture");
             assembly.Children.Add(fixture);
-            TestData test = new TestData("Test", "Test");
-            test.Metadata.SetValue(MetadataKeys.ComponentKind, "Test");
-            fixture.Children.Add(test);
-            TestModel testModel = new TestModel(rootTest);
-
-            ProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
-            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(testModel);
-            Assert.AreEqual(1, treeNodes.Length);
-            TreeNode rootNode = treeNodes[0];
-            Assert.AreEqual("Root", rootNode.Name);
-            Assert.AreEqual(0, rootNode.ImageIndex);
-            Assert.AreEqual(1, rootNode.Nodes.Count);
-            TreeNode frameworkNode = rootNode.Nodes[0];
-            Assert.AreEqual("Framework", frameworkNode.Name);
-            Assert.AreEqual(1, frameworkNode.ImageIndex);
-            Assert.AreEqual(1, frameworkNode.Nodes.Count);
-            TreeNode assemblyNode = frameworkNode.Nodes[0];
-            Assert.AreEqual("Assembly", assemblyNode.Name);
-            Assert.AreEqual(2, assemblyNode.ImageIndex);
-            Assert.AreEqual(1, assemblyNode.Nodes.Count);
-            TreeNode fixtureNode = assemblyNode.Nodes[0];
-            Assert.AreEqual("Fixture", fixtureNode.Name);
-            Assert.AreEqual(3, fixtureNode.ImageIndex);
-            Assert.AreEqual(1, fixtureNode.Nodes.Count);
-            TreeNode testNode = fixtureNode.Nodes[0];
-            Assert.AreEqual("Test", testNode.Name);
-            Assert.AreEqual(4, testNode.ImageIndex);
-            Assert.AreEqual(0, testNode.Nodes.Count);
-        }
-
-        [Test]
-        public void BuildAssemblyList_Test()
-        {
-            ProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
-            ListViewItem[] listViewItems = projectAdapterModel.BuildAssemblyList(new List<string>(new string[] { 
-                Assembly.GetExecutingAssembly().Location }));
-            Assert.AreEqual(1, listViewItems.Length);
-            Assert.AreEqual(3, listViewItems[0].SubItems.Count);
+            TestData test1 = new TestData("Test1", "Test1");
+            test1.Metadata.SetValue(MetadataKeys.ComponentKind, "Test");
+            test1.IsTestCase = true;
+            fixture.Children.Add(test1);
+            TestData test2 = new TestData("Test2", "Test2");
+            test2.Metadata.SetValue(MetadataKeys.ComponentKind, "Test");
+            test2.IsTestCase = true;
+            fixture.Children.Add(test2);
+            TestData test3 = new TestData("Test3", "Test3");
+            test3.Metadata.SetValue(MetadataKeys.ComponentKind, "Test");
+            test3.IsTestCase = true;
+            fixture.Children.Add(test3);
+            return new TestModel(rootTest);
         }
     }
 }

@@ -27,6 +27,8 @@ namespace MbUnit.Icarus.Core.Interfaces
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         StandaloneRunner Runner { get; }
+        void GetTestTree(object sender, ProjectEventArgs e);
+        void RunTests(object sender, EventArgs e);
         void Passed(string testId);
         void Failed(string testId);
         void Ignored(string testId);

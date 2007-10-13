@@ -31,25 +31,40 @@ namespace MbUnit.Icarus.Adapter
         private readonly IProjectAdapterView _View;
         private readonly IProjectAdapterModel _Model;
         
-        private TestModel _testCollection;
-        private TestPackage testpackage;
+        private TestModel _testModel;
+        private TestPackage _testPackage;
         
         #endregion
 
         #region Properties
 
+        public TestModel TestModel
+        {
+            get { return _testModel; }
+            set { _testModel = value; }
+        }
+
+        public TestPackage TestPackage
+        {
+            get { return _testPackage; }
+            set { _testPackage = value; }
+        }
+
         public string StatusText
         {
+            get { return _View.StatusText; }
             set { _View.StatusText = value; }
         }
 
         public int CompletedWorkUnits
         {
+            get { return _View.CompletedWorkUnits; }
             set { _View.CompletedWorkUnits = value; }
         }
 
         public int TotalWorkUnits
         {
+            get { return _View.TotalWorkUnits; }
             set { _View.TotalWorkUnits = value; }
         }
 
@@ -61,6 +76,8 @@ namespace MbUnit.Icarus.Adapter
         public event EventHandler<EventArgs> RunTests;
 
         #endregion
+
+        #region Constructor
 
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
@@ -74,17 +91,21 @@ namespace MbUnit.Icarus.Adapter
             _View.RunTests += _View_RunTests;
 
             // Create empty new test package
-            testpackage = new TestPackage();
+            _testPackage = new TestPackage();
         }
+
+        #endregion
+
+        #region Event handlers
 
         private void _View_AddAssemblies(object sender, AddAssembliesEventArgs e)
         {
-            testpackage.AssemblyFiles.AddRange(e.Assemblies);
+            _testPackage.AssemblyFiles.AddRange(e.Assemblies);
         }
 
         private void _View_RemoveAssemblies(object sender, EventArgs e)
         {
-            testpackage.AssemblyFiles.Clear();
+            _testPackage.AssemblyFiles.Clear();
         }
 
         [DebuggerStepThrough]
@@ -92,7 +113,7 @@ namespace MbUnit.Icarus.Adapter
         {
             if (GetTestTree != null)
             {
-                GetTestTree(this, new ProjectEventArgs(testpackage));
+                GetTestTree(this, new ProjectEventArgs(_testPackage));
             }
         }
 
@@ -105,16 +126,15 @@ namespace MbUnit.Icarus.Adapter
             }
         }
 
-        public TestModel TestCollection
-        {
-            set { _testCollection = value; }
-        }
+        #endregion
+
+        #region Public methods
 
         public void DataBind()
         {
-            _View.Assemblies = _Model.BuildAssemblyList(testpackage.AssemblyFiles);
-            _View.TestTreeCollection = _Model.BuildTestTree(_testCollection);
-            _View.TotalTests = _Model.CountTests(_testCollection);
+            _View.Assemblies = _Model.BuildAssemblyList(_testPackage.AssemblyFiles);
+            _View.TestTreeCollection = _Model.BuildTestTree(_testModel);
+            _View.TotalTests = _Model.CountTests(_testModel);
             _View.DataBind();
         }
 
@@ -141,5 +161,7 @@ namespace MbUnit.Icarus.Adapter
         {
             _View.Ignored(testId);
         }
+
+        #endregion
     }
 }

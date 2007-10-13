@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+
+using MbUnit.Core.Harness;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Model.Serialization;
 
@@ -23,10 +25,11 @@ namespace MbUnit.Icarus.Core.Interfaces
     {
         event EventHandler<ProjectEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
-        TestModel TestCollection { set; }
-        string StatusText { set; }
-        int CompletedWorkUnits { set; }
-        int TotalWorkUnits { set; }
+        TestModel TestModel { get; set; }
+        TestPackage TestPackage { get; set; }
+        string StatusText { get; set; }
+        int CompletedWorkUnits { get; set; }
+        int TotalWorkUnits { get; set; }
         void DataBind();
         void Passed(string testId);
         void Failed(string testId);

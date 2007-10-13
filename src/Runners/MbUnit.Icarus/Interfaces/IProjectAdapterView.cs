@@ -27,10 +27,10 @@ namespace MbUnit.Icarus.Interfaces
         event EventHandler<EventArgs> RunTests;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
-        string StatusText { set; }
-        int CompletedWorkUnits { set; }
-        int TotalWorkUnits { set; }
-        int TotalTests { set; }
+        string StatusText { get; set; }
+        int CompletedWorkUnits { get; set; }
+        int TotalWorkUnits { get; set; }
+        int TotalTests { get; set; }
         void DataBind();
         void Passed(string testId);
         void Failed(string testId);

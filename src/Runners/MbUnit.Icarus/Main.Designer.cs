@@ -89,7 +89,6 @@ namespace MbUnit.Icarus
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.projectTabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.testTree = new MbUnit.Icarus.Controls.TestTreeView();
             this.testTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -130,11 +129,12 @@ namespace MbUnit.Icarus
             this.graphsFilterBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panelResults = new System.Windows.Forms.Panel();
-            this.testProgressStatusBar = new MbUnit.Icarus.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testTree = new MbUnit.Icarus.Controls.TestTreeView();
+            this.testProgressStatusBar = new MbUnit.Icarus.Controls.TestStatusBar();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -190,46 +190,49 @@ namespace MbUnit.Icarus
             // 
             this.newProjectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newProjectToolStripMenuItem.Image")));
             this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
-            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.newProjectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.newProjectToolStripMenuItem.Text = "&New Project";
             // 
             // openProjectMenuItem
             // 
             this.openProjectMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openProjectMenuItem.Image")));
             this.openProjectMenuItem.Name = "openProjectMenuItem";
-            this.openProjectMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.openProjectMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openProjectMenuItem.Size = new System.Drawing.Size(188, 22);
             this.openProjectMenuItem.Text = "&Open Project";
             this.openProjectMenuItem.Click += new System.EventHandler(this.openProjectToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(179, 6);
             // 
             // saveProjectToolStripMenuItem
             // 
             this.saveProjectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveProjectToolStripMenuItem.Image")));
             this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
-            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.saveProjectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.saveProjectToolStripMenuItem.Text = "&Save Project";
             // 
             // saveProjectAsToolStripMenuItem
             // 
             this.saveProjectAsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveProjectAsToolStripMenuItem.Image")));
             this.saveProjectAsToolStripMenuItem.Name = "saveProjectAsToolStripMenuItem";
-            this.saveProjectAsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.saveProjectAsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.saveProjectAsToolStripMenuItem.Text = "Save Project &As...";
             this.saveProjectAsToolStripMenuItem.Click += new System.EventHandler(this.saveProjectAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(179, 6);
             // 
             // fileExit
             // 
             this.fileExit.Name = "fileExit";
-            this.fileExit.Size = new System.Drawing.Size(173, 22);
+            this.fileExit.Size = new System.Drawing.Size(188, 22);
             this.fileExit.Text = "&Exit";
             this.fileExit.Click += new System.EventHandler(this.fileExit_Click);
             // 
@@ -247,7 +250,8 @@ namespace MbUnit.Icarus
             // 
             this.addAssemblyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addAssemblyToolStripMenuItem.Image")));
             this.addAssemblyToolStripMenuItem.Name = "addAssemblyToolStripMenuItem";
-            this.addAssemblyToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.addAssemblyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.addAssemblyToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.addAssemblyToolStripMenuItem.Text = "&Add Assemblies...";
             this.addAssemblyToolStripMenuItem.Click += new System.EventHandler(this.addAssemblyToolStripMenuItem_Click);
             // 
@@ -255,7 +259,8 @@ namespace MbUnit.Icarus
             // 
             this.removeAssemblyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeAssemblyToolStripMenuItem.Image")));
             this.removeAssemblyToolStripMenuItem.Name = "removeAssemblyToolStripMenuItem";
-            this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.removeAssemblyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.removeAssemblyToolStripMenuItem.Text = "&Remove Assemblies";
             this.removeAssemblyToolStripMenuItem.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem_Click);
             // 
@@ -263,7 +268,8 @@ namespace MbUnit.Icarus
             // 
             this.reloadToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolStripMenuItem.Image")));
             this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
-            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.reloadToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.reloadToolStripMenuItem.Text = "R&eload";
             // 
             // toolsToolStripMenuItem
@@ -420,6 +426,7 @@ namespace MbUnit.Icarus
             // 
             // reloadToolbarButton
             // 
+            this.reloadToolbarButton.Enabled = false;
             this.reloadToolbarButton.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolbarButton.Image")));
             this.reloadToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.reloadToolbarButton.Name = "reloadToolbarButton";
@@ -434,6 +441,7 @@ namespace MbUnit.Icarus
             // 
             // startToolbarButton
             // 
+            this.startToolbarButton.Enabled = false;
             this.startToolbarButton.Image = ((System.Drawing.Image)(resources.GetObject("startToolbarButton.Image")));
             this.startToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.startToolbarButton.Name = "startToolbarButton";
@@ -546,22 +554,6 @@ namespace MbUnit.Icarus
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Class View";
             this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // testTree
-            // 
-            this.testTree.CheckBoxes = true;
-            this.testTree.ContextMenuStrip = this.testTreeMenuStrip;
-            this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.testTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.testTree.HideSelection = false;
-            this.testTree.ImageIndex = 0;
-            this.testTree.ImageList = this.treeImages;
-            this.testTree.Location = new System.Drawing.Point(3, 3);
-            this.testTree.Name = "testTree";
-            this.testTree.SelectedImageIndex = 0;
-            this.testTree.Size = new System.Drawing.Size(302, 565);
-            this.testTree.TabIndex = 2;
-            this.testTree.TestStateImageList = this.stateImages;
             // 
             // testTreeMenuStrip
             // 
@@ -903,28 +895,6 @@ namespace MbUnit.Icarus
             this.panelResults.Size = new System.Drawing.Size(673, 56);
             this.panelResults.TabIndex = 0;
             // 
-            // testProgressStatusBar
-            // 
-            this.testProgressStatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
-            this.testProgressStatusBar.ElapsedTime = 0;
-            this.testProgressStatusBar.Failed = 0;
-            this.testProgressStatusBar.FailedColor = System.Drawing.Color.Red;
-            this.testProgressStatusBar.Font = new System.Drawing.Font("Verdana", 8F);
-            this.testProgressStatusBar.Ignored = 0;
-            this.testProgressStatusBar.IngoredColor = System.Drawing.Color.Gold;
-            this.testProgressStatusBar.Location = new System.Drawing.Point(7, 23);
-            this.testProgressStatusBar.Name = "testProgressStatusBar";
-            this.testProgressStatusBar.Passed = 0;
-            this.testProgressStatusBar.PassedColor = System.Drawing.Color.Green;
-            this.testProgressStatusBar.Size = new System.Drawing.Size(659, 23);
-            this.testProgressStatusBar.Skipped = 0;
-            this.testProgressStatusBar.SkippedColor = System.Drawing.Color.SteelBlue;
-            this.testProgressStatusBar.TabIndex = 4;
-            this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
-            this.testProgressStatusBar.Total = 0;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -956,6 +926,44 @@ namespace MbUnit.Icarus
             this.ExitMenuItem.Size = new System.Drawing.Size(103, 22);
             this.ExitMenuItem.Text = "Exit";
             this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
+            // 
+            // testTree
+            // 
+            this.testTree.CheckBoxes = true;
+            this.testTree.ContextMenuStrip = this.testTreeMenuStrip;
+            this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.testTree.HideSelection = false;
+            this.testTree.ImageIndex = 0;
+            this.testTree.ImageList = this.treeImages;
+            this.testTree.Location = new System.Drawing.Point(3, 3);
+            this.testTree.Name = "testTree";
+            this.testTree.SelectedImageIndex = 0;
+            this.testTree.Size = new System.Drawing.Size(302, 565);
+            this.testTree.TabIndex = 2;
+            this.testTree.TestStateImageList = this.stateImages;
+            // 
+            // testProgressStatusBar
+            // 
+            this.testProgressStatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
+            this.testProgressStatusBar.ElapsedTime = 0;
+            this.testProgressStatusBar.Failed = 0;
+            this.testProgressStatusBar.FailedColor = System.Drawing.Color.Red;
+            this.testProgressStatusBar.Font = new System.Drawing.Font("Verdana", 8F);
+            this.testProgressStatusBar.Ignored = 0;
+            this.testProgressStatusBar.IngoredColor = System.Drawing.Color.Gold;
+            this.testProgressStatusBar.Location = new System.Drawing.Point(7, 23);
+            this.testProgressStatusBar.Name = "testProgressStatusBar";
+            this.testProgressStatusBar.Passed = 0;
+            this.testProgressStatusBar.PassedColor = System.Drawing.Color.Green;
+            this.testProgressStatusBar.Size = new System.Drawing.Size(659, 23);
+            this.testProgressStatusBar.Skipped = 0;
+            this.testProgressStatusBar.SkippedColor = System.Drawing.Color.SteelBlue;
+            this.testProgressStatusBar.TabIndex = 4;
+            this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
+            this.testProgressStatusBar.Total = 0;
             // 
             // Main
             // 

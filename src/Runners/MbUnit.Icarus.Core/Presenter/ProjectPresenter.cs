@@ -61,13 +61,13 @@ namespace MbUnit.Icarus.Core.Presenter
             _View.RunTests += RunTests;
         }
 
-        private void GetTestTree(object sender, ProjectEventArgs e)
+        public void GetTestTree(object sender, ProjectEventArgs e)
         {
-            _View.TestCollection = _TestRunnerModel.LoadUpAssembly(this, e.LocalTestPackage);
+            _View.TestModel = _TestRunnerModel.LoadUpAssembly(this, e.LocalTestPackage);
             _View.DataBind();
         }
 
-        private void RunTests(object sender, EventArgs e)
+        public void RunTests(object sender, EventArgs e)
         {
             _TestRunnerModel.RunTests(this);
         }

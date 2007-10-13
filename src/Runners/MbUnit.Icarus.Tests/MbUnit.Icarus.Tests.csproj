@@ -44,9 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProjectAdapterModelTest.cs" />
-    <Compile Include="ProjectPresenterTest.cs" />
-    <Compile Include="TestRunnerModelTest.cs" />
+    <Compile Include="Adapter\IProjectAdapterTest.cs" />
+    <Compile Include="AdapterModel\IProjectAdapterModelTest.cs" />
+    <Compile Include="Core\Presenter\ProjectPresenterTest.cs" />
+    <Compile Include="Core\Model\TestRunnerModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
