@@ -25,7 +25,7 @@ namespace MbUnit.Core.Reporting
     /// elements.  Sections and embedded attachments introduce line-breaks within the
     /// text but are otherwise ignored.
     /// </summary>
-    public class ExecutionLogStreamTextFormatter : IExecutionLogStreamTagVisitor
+    public sealed class ExecutionLogStreamTextFormatter : IExecutionLogStreamTagVisitor
     {
         private readonly StringBuilder textBuilder = new StringBuilder();
 

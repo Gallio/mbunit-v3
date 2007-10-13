@@ -26,7 +26,7 @@ namespace MbUnit.Core.Reporting
     [Serializable]
     [XmlRoot(ElementName="statistics", Namespace=SerializationUtils.XmlNamespace)]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class PackageRunStatistics
+    public sealed class PackageRunStatistics
     {
         private int assertCount;
         private double duration;

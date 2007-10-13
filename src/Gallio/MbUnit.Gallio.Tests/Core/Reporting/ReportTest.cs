@@ -13,15 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using MbUnit.Core.Harness;
 using MbUnit.Core.Reporting;
+using MbUnit.Framework;
 using MbUnit.Framework.Xml;
 using MbUnit.Model.Serialization;
-using MbUnit2::MbUnit.Framework;
 
 namespace MbUnit.Tests.Core.Reporting
 {
@@ -45,6 +45,7 @@ namespace MbUnit.Tests.Core.Reporting
             Report report = new Report();
             report.PackageRun = new PackageRun();
             report.PackageRun.TestRuns.Add(new TestRun("123", new StepRun(new StepData("456", "abc", "456:abc", "testId"))));
+            report.PackageRun.TestRuns[0].RootStepRun.Children.Add(new StepRun(new StepData("child", "child", "child", "child")));
 
             serializer.Serialize(writer, report);
 

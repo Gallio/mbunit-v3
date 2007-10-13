@@ -15,15 +15,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
-using MbUnit.Core.Reporting;
+using MbUnit.Model.Serialization;
 
 namespace MbUnit.Core.Reporting
 {
     /// <summary>
     /// Abstract class of Xml-serializable execution log container tags.
     /// </summary>
+    [Serializable]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public abstract class ExecutionLogStreamContainerTag : ExecutionLogStreamTag
     {
         private readonly List<ExecutionLogStreamTag> contents;
@@ -31,7 +32,7 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Creates an empty container tag.
         /// </summary>
-        public ExecutionLogStreamContainerTag()
+        protected ExecutionLogStreamContainerTag()
         {
             contents = new List<ExecutionLogStreamTag>();
         }

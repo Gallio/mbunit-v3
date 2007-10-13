@@ -86,7 +86,8 @@ namespace MbUnit.Plugin.XunitAdapter.Model
 
         private void BuildTypeTest(ITest assemblyTest, Type typeInfo)
         {
-            XunitTest typeTest = new XunitTest(typeInfo.FullName, CodeReference.CreateFromType(typeInfo), this, typeInfo, null);
+            XunitTest typeTest = new XunitTest(ModelUtils.GetPossiblyNestedTypeName(typeInfo),
+                CodeReference.CreateFromType(typeInfo), this, typeInfo, null);
             typeTest.Kind = ComponentKind.Fixture;
             assemblyTest.AddChild(typeTest);
 

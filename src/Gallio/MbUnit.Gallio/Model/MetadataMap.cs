@@ -261,7 +261,11 @@ namespace MbUnit.Model
 
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
+            bool isEmptyMetadata = reader.IsEmptyElement;
             reader.ReadStartElement(@"metadata");
+
+            if (isEmptyMetadata)
+                return;
 
             while (reader.MoveToContent() == XmlNodeType.Element)
             {
@@ -288,8 +292,7 @@ namespace MbUnit.Model
                 }
             }
 
-            if (reader.NodeType == XmlNodeType.EndElement)
-                reader.ReadEndElement();
+            reader.ReadEndElement();
         }
 
         void IXmlSerializable.WriteXml(XmlWriter writer)

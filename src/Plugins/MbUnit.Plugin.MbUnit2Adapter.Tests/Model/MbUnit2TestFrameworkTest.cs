@@ -107,7 +107,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Tests.Model
             Assert.AreSame(frameworkTest, assemblyTest.Parent);
             Assert.AreEqual(ComponentKind.Assembly, assemblyTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeReference);
-            Assert.AreEqual(sampleAssembly.FullName, assemblyTest.Name);
+            Assert.AreEqual(sampleAssembly.GetName().Name, assemblyTest.Name);
             Assert.IsFalse(assemblyTest.IsTestCase);
             Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
 

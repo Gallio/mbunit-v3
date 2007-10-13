@@ -97,6 +97,11 @@ namespace MbUnit.Plugin.NUnitAdapter.Model
                 CoreExtensions.Host.InitializeService();
 
                 TestPackage package = new TestPackage(@"Tests");
+
+                // Don't build nodes for namespaces.  Grouping by namespace is a
+                // presentation concern of the test runner, not strictly a structural one. -- Jeff.
+                package.Settings.Add(@"AutoNamespaceSuites", false);
+
                 foreach (Assembly assembly in Assemblies)
                     package.Assemblies.Add(assembly.Location);
 
@@ -151,7 +156,16 @@ namespace MbUnit.Plugin.NUnitAdapter.Model
                     break;
             }
 
-            NUnitTest test = new NUnitTest(nunitTest.TestName.FullName, codeReference, this, nunitTest);
+            // The NUnit name for an assembly level test suite is the assembly's
+            // full path name which I find somewhat cluttered. -- Jeff.
+            string name;
+            if (codeReference.Kind == CodeReferenceKind.Assembly)
+                name = codeReference.ResolveAssembly().GetName().Name;
+            else
+                name = nunitTest.TestName.Name;
+
+            // Build the test.
+            NUnitTest test = new NUnitTest(name, codeReference, this, nunitTest);
             test.Kind = kind;
             test.IsTestCase = !nunitTest.IsSuite;
 

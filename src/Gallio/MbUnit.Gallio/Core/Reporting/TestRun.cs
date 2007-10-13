@@ -29,7 +29,7 @@ namespace MbUnit.Core.Reporting
     [Serializable]
     [XmlRoot("testRun", Namespace=SerializationUtils.XmlNamespace)]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class TestRun
+    public sealed class TestRun
     {
         private string testId;
         private StepRun rootStepRun;
@@ -80,7 +80,7 @@ namespace MbUnit.Core.Reporting
         /// The value cannot be null because a test run always has a root step.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("stepRun", IsNullable = false)]
+        [XmlElement("stepRun", IsNullable = false, Namespace=SerializationUtils.XmlNamespace)]
         public StepRun RootStepRun
         {
             get { return rootStepRun; }

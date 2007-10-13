@@ -29,7 +29,7 @@ namespace MbUnit.Core.Reporting
     [Serializable]
     [XmlRoot("report", Namespace=SerializationUtils.XmlNamespace)]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class Report
+    public sealed class Report
     {
         private TestPackage package;
         private TemplateModel templateModel;
@@ -39,7 +39,7 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Gets or sets the test package for the report, or null if none.
         /// </summary>
-        [XmlElement("package", IsNullable = true)]
+        [XmlElement("package", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
         public TestPackage Package
         {
             get { return package; }
@@ -49,7 +49,7 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Gets or sets the template model for the report, or null if none.
         /// </summary>
-        [XmlElement("templateModel", IsNullable = true)]
+        [XmlElement("templateModel", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
         public TemplateModel TemplateModel
         {
             get { return templateModel; }
@@ -59,7 +59,7 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Gets or sets the test model for the report, or null if none.
         /// </summary>
-        [XmlElement("testModel", IsNullable = true)]
+        [XmlElement("testModel", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
         public TestModel TestModel
         {
             get { return testModel; }
@@ -69,7 +69,7 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Gets or sets the package run information included in the report, or null if none.
         /// </summary>
-        [XmlElement("packageRun", IsNullable = true)]
+        [XmlElement("packageRun", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
         public PackageRun PackageRun
         {
             get { return packageRun; }

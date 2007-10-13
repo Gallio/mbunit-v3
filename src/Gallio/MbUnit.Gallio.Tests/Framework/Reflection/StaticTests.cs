@@ -80,7 +80,7 @@ namespace MbUnit.Tests.Framework.Reflection
         public void SetPrivateFieldInBaseClass()
         {
             Reflector.SetField(_sampleObject, "_baseString", "test base field");
-            Assert.AreEqual("test base field", Reflector.GetField(new TestSample(), "_baseString"));
+            Assert.AreEqual("test base field", Reflector.GetField(_sampleObject, "_baseString"));
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace MbUnit.Tests.Framework.Reflection
         public void SetPrivatePropertyInBaseClass()
         {
             Reflector.SetProperty(_sampleObject, "BaseInteger", 7);
-            Assert.AreEqual(7, Reflector.GetProperty(new TestSample(), "BaseInteger"));
+            Assert.AreEqual(7, Reflector.GetProperty(_sampleObject, "BaseInteger"));
         }
         #endregion
 

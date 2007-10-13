@@ -32,8 +32,9 @@ namespace MbUnit.Core.Reporting
     /// binary attachments are base 64 encoded.
     /// </para>
     /// </summary>
+    [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class ExecutionLogAttachment : IAttachmentVisitor
+    public sealed class ExecutionLogAttachment : IAttachmentVisitor
     {
         private string name;
         private string contentType;
@@ -46,7 +47,7 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        protected ExecutionLogAttachment()
+        private ExecutionLogAttachment()
         {
         }
 

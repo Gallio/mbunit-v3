@@ -56,22 +56,10 @@ namespace MbUnit.Core.RuntimeSupport
         {
             get
             {
-                List<string> directories = new List<string>();
-
-                Uri assemblyUri = new Uri(typeof(DefaultAssemblyResolverManager).Assembly.CodeBase);
-                if (assemblyUri.IsFile)
+                return new string[]
                 {
-                    try
-                    {
-                        directories.Add(assemblyUri.LocalPath);
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // Ignore problems getting the local directory
-                    }
-                }
-
-                return directories;
+                    RuntimeUtils.GetFriendlyAssemblyLocation(typeof(DefaultAssemblyResolverManager).Assembly)
+                };
             }
         }
 

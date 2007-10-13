@@ -104,6 +104,7 @@ namespace MbUnit.Model
         /// <summary>
         /// Gets the kind of code element specified by the code reference.
         /// </summary>
+        [XmlIgnore]
         public CodeReferenceKind Kind
         {
             get

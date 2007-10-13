@@ -25,6 +25,7 @@ namespace MbUnit.Core.Reporting
     /// An Xml-serializable execution log body.
     /// Contains all other tags within a log stream.
     /// </summary>
+    [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class ExecutionLogStreamBodyTag : ExecutionLogStreamContainerTag
     {

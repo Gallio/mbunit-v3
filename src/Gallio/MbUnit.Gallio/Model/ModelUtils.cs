@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using MbUnit.Collections;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Properties;
 
 namespace MbUnit.Model
@@ -202,6 +203,25 @@ namespace MbUnit.Model
         }
 
         /// <summary>
+        /// If the type is not nested, returns its name.  Otherwise returns
+        /// the name of the containing type followed by a '.' and the name of
+        /// the nested type.
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <returns>The type's name</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        public static string GetPossiblyNestedTypeName(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException(@"type");
+
+            if (!type.IsNested)
+                return type.Name;
+
+            return string.Concat(GetPossiblyNestedTypeName(type.DeclaringType), @".", type.Name);
+        }
+
+        /// <summary>
         /// Sorts an array of members that all belong to the same type
         /// such that the members declared by supertypes appear before those
         /// declared by subtypes.
@@ -255,6 +275,8 @@ namespace MbUnit.Model
         /// <param name="metadataMap">The metadata map</param>
         public static void PopulateMetadataFromAssembly(Assembly assembly, MetadataMap metadataMap)
         {
+            metadataMap.Add(MetadataKeys.CodeBase, RuntimeUtils.GetFriendlyAssemblyCodeBase(assembly));
+
             AssemblyCompanyAttribute companyAttribute = GetAttribute<AssemblyCompanyAttribute>(assembly);
             if (companyAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Company, companyAttribute.Company);

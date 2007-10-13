@@ -26,7 +26,7 @@ namespace MbUnit.Core.Reporting
     /// </summary>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class PackageRun
+    public sealed class PackageRun
     {
         private readonly List<TestRun> testRuns;
         private PackageRunStatistics statistics;

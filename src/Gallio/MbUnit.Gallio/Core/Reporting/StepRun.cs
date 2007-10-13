@@ -28,7 +28,7 @@ namespace MbUnit.Core.Reporting
     [Serializable]
     [XmlRoot("stepRun", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class StepRun
+    public sealed class StepRun
     {
         private readonly List<StepRun> children;
         private StepData step;
@@ -64,7 +64,7 @@ namespace MbUnit.Core.Reporting
         /// Gets or sets information about the step.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("step")]
+        [XmlElement("step", IsNullable=false, Namespace=SerializationUtils.XmlNamespace)]
         public StepData Step
         {
             get { return step; }
@@ -79,8 +79,8 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Gets the list of child steps.
         /// </summary>
-        [XmlArray("children", IsNullable=false)]
-        [XmlArrayItem("stepRun", typeof(StepRun), IsNullable=false)]
+        [XmlArray("children", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlArrayItem("stepRun", typeof(StepRun), IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
         public List<StepRun> Children
         {
             get { return children; }
@@ -110,7 +110,7 @@ namespace MbUnit.Core.Reporting
         /// Gets or sets the test result from the run.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("result", IsNullable = false)]
+        [XmlElement("result", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
         public TestResult Result
         {
             get
@@ -131,7 +131,7 @@ namespace MbUnit.Core.Reporting
         /// Gets or sets the execution log.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("executionLog", IsNullable = false)]
+        [XmlElement("executionLog", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
         public ExecutionLog ExecutionLog
         {
             get

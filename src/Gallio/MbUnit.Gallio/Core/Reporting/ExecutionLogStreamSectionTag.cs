@@ -26,8 +26,8 @@ namespace MbUnit.Core.Reporting
     /// an identifying section name.  This tag is used to delineate
     /// sections within an execution log stream.
     /// </summary>
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
     [Serializable]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class ExecutionLogStreamSectionTag : ExecutionLogStreamContainerTag
     {
         private string name;

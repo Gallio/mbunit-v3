@@ -185,9 +185,9 @@ namespace MbUnit.Core.RuntimeSupport
 
         private void SetDefaultPluginDirectories()
         {
-            string coreCodebase = new Uri(typeof(WindsorRuntime).Assembly.CodeBase).LocalPath;
-
-            AddPluginDirectory(Path.GetDirectoryName(Path.GetFullPath(coreCodebase)));
+            string coreLocation = RuntimeUtils.GetAssemblyLocalPath(typeof(WindsorRuntime).Assembly);
+            if (coreLocation != null)
+                AddPluginDirectory(Path.GetDirectoryName(Path.GetFullPath(coreLocation)));
         }
 
         private void ConfigureFromSetup(RuntimeSetup runtimeSetup)

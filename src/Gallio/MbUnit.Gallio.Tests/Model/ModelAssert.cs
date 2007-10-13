@@ -15,6 +15,7 @@
 
 using System;
 using MbUnit.Model;
+using MbUnit.Model.Execution;
 using MbUnit.Model.Serialization;
 using MbUnit.Framework;
 
@@ -139,6 +140,20 @@ namespace MbUnit.Tests.Model
             Assert.AreEqual(expected.TestId, actual.TestId);
             AreEqual(expected.CodeReference, actual.CodeReference);
             AreEqual(expected.Metadata, actual.Metadata);
+        }
+
+        public static void AreEqual(TestResult expected, TestResult actual)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual);
+                return;
+            }
+
+            Assert.AreEqual(expected.AssertCount, actual.AssertCount);
+            Assert.AreEqual(expected.Duration, actual.Duration);
+            Assert.AreEqual(expected.Outcome, actual.Outcome);
+            Assert.AreEqual(expected.Status, actual.Status);
         }
     }
 }

@@ -138,7 +138,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Model
 
         private MbUnit2Test CreateAssemblyTest(ITest parent, Assembly assembly)
         {
-            MbUnit2Test test = new MbUnit2Test(assembly.FullName, CodeReference.CreateFromAssembly(assembly), this, null, null);
+            MbUnit2Test test = new MbUnit2Test(assembly.GetName().Name, CodeReference.CreateFromAssembly(assembly), this, null, null);
             test.Kind = ComponentKind.Assembly;
 
             parent.AddChild(test);
@@ -148,7 +148,8 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Model
         private MbUnit2Test CreateFixtureTest(ITest parent, Fixture fixture)
         {
             Type fixtureType = fixture.Type;
-            MbUnit2Test test = new MbUnit2Test(fixture.Name, CodeReference.CreateFromType(fixtureType), this, fixture, null);
+            MbUnit2Test test = new MbUnit2Test(ModelUtils.GetPossiblyNestedTypeName(fixtureType),
+                CodeReference.CreateFromType(fixtureType), this, fixture, null);
             test.Kind = ComponentKind.Fixture;
 
             // Populate metadata

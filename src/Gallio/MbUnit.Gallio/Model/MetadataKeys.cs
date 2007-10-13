@@ -59,6 +59,15 @@ namespace MbUnit.Model
         public const string CategoryName = "CategoryName";
 
         /// <summary>
+        /// The matadata key for the location of an assembly as a local
+        /// file path or as a Uri.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from the assembly's <see cref="Assembly.CodeBase" /> property.
+        /// </remarks>
+        public const string CodeBase = "CodeBase";
+
+        /// <summary>
         /// The metadata key for the name of the company associated with a test.
         /// </summary>
         /// <remarks>

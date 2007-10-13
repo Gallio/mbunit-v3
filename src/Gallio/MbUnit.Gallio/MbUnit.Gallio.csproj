@@ -85,6 +85,7 @@
     <Compile Include="Core\IO\IFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\RuntimeSupport\RuntimeUtils.cs" />
     <Compile Include="Model\Execution\DependencyTestPlan.cs" />
     <Compile Include="Model\Execution\DependencyTestPlanFactory.cs" />
     <Compile Include="Model\Events\ITestListener.cs" />
@@ -381,9 +382,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MbUnit.Gallio.plugin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\Reporting\Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

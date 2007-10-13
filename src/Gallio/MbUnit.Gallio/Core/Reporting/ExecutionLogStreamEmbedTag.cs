@@ -24,8 +24,8 @@ namespace MbUnit.Core.Reporting
     /// <summary>
     /// An Xml-serializable tag for embedding an attachment within an execution log.
     /// </summary>
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     [Serializable]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class ExecutionLogStreamEmbedTag : ExecutionLogStreamTag
     {
         private string attachmentName;

@@ -22,8 +22,8 @@ namespace MbUnit.Core.Reporting
     /// <summary>
     /// An xml-serializable execution log stram.
     /// </summary>
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     [Serializable]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class ExecutionLogStream
     {
         private string name;

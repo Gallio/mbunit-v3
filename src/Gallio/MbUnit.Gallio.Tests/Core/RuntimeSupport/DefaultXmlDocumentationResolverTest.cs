@@ -305,14 +305,10 @@ namespace MbUnit.Tests.Core.RuntimeSupport
         }
 
         [Test]
-        public void GetXmlDocumentation_LogsWarningIfXmlDocFileNotFound()
+        public void GetXmlDocumentation_ReturnsNullIfXmlDocFileNotFound()
         {
             ILogger mockLogger = Mocks.CreateMock<ILogger>();
-            mockLogger.WarnFormat((Exception)null, "", null);
-            LastCall.IgnoreArguments();
             Mocks.ReplayAll();
-
-            resolver.Logger = mockLogger;
 
             // The mock logger's type can't possibly have documentation because it is dynamically generated.
             Assert.IsNull(resolver.GetXmlDocumentation(mockLogger.GetType()));

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +21,7 @@ using MbUnit.Core.Reporting;
 using MbUnit.Model;
 using MbUnit.Tests.Framework;
 using MbUnit.Tests.Model;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace MbUnit.Tests.Core.Reporting
 {
@@ -115,9 +114,52 @@ namespace MbUnit.Tests.Core.Reporting
             ModelAssert.AreEqual(expected.Step, actual.Step);
             Assert.AreEqual(expected.StartTime, actual.StartTime);
             Assert.AreEqual(expected.EndTime, actual.EndTime);
-            // TODO: etc...
+            ModelAssert.AreEqual(expected.Result, actual.Result);
+            AreEqual(expected.ExecutionLog, actual.ExecutionLog);
 
             MbUnit.Framework.InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
+        }
+
+        public static void AreEqual(ExecutionLog expected, ExecutionLog actual)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual);
+                return;
+            }
+
+            InterimAssert.WithPairs(expected.Attachments, actual.Attachments, AreEqual);
+            InterimAssert.WithPairs(expected.Streams, actual.Streams, AreEqual);
+        }
+
+        public static void AreEqual(ExecutionLogStream expected, ExecutionLogStream actual)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual);
+                return;
+            }
+
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.ToString(), actual.ToString());
+
+            // FIXME: not precise
+        }
+
+        public static void AreEqual(ExecutionLogAttachment expected, ExecutionLogAttachment actual)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual);
+                return;
+            }
+
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.ContentType, actual.ContentType);
+            Assert.AreEqual(expected.Encoding, actual.Encoding);
+            Assert.AreEqual(expected.ContentPath, actual.ContentPath);
+            Assert.AreEqual(expected.InnerText, actual.InnerText);
+            Assert.AreEqual(expected.InnerXml, actual.InnerXml);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Model
         }
 
         [Test]
-        public void PopulateTemplateTree_WhenAssemblyReferencesNUnit_ContainsJustTheFrameworkTemplate()
+        public void PopulateTemplateTree_WhenAssemblyReferencesXunit_ContainsJustTheFrameworkTemplate()
         {
             Version expectedVersion = typeof(Xunit.Assert).Assembly.GetName().Version;
             PopulateTemplateTree();
@@ -103,12 +103,12 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Model
             Assert.IsFalse(assemblyTest.IsTestCase);
             Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
 
-            XunitTest fixtureTest = (XunitTest)GetDescendantByName(assemblyTest, "MbUnit.TestResources.Xunit.SimpleTest");
+            XunitTest fixtureTest = (XunitTest)GetDescendantByName(assemblyTest, "SimpleTest");
             Assert.AreSame(assemblyTest, fixtureTest.Parent);
             Assert.AreEqual(ComponentKind.Fixture, fixtureTest.Kind);
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.Xunit", "MbUnit.TestResources.Xunit.SimpleTest", null, null),
                 fixtureTest.CodeReference);
-            Assert.AreEqual("MbUnit.TestResources.Xunit.SimpleTest", fixtureTest.Name);
+            Assert.AreEqual("SimpleTest", fixtureTest.Name);
             Assert.IsFalse(fixtureTest.IsTestCase);
             Assert.AreEqual(2, fixtureTest.Children.Count);
 
@@ -135,7 +135,7 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            XunitTest test = (XunitTest)GetDescendantByName(rootTest, typeof(SimpleTest).FullName);
+            XunitTest test = (XunitTest)GetDescendantByName(rootTest, typeof(SimpleTest).Name);
             XunitTest passTest = (XunitTest)GetDescendantByName(test, "Pass");
             XunitTest failTest = (XunitTest)GetDescendantByName(test, "Fail");
 
@@ -149,7 +149,7 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            XunitTest fixture = (XunitTest)GetDescendantByName(rootTest, typeof(MetadataSample).FullName);
+            XunitTest fixture = (XunitTest)GetDescendantByName(rootTest, typeof(MetadataSample).Name);
             XunitTest test = (XunitTest)fixture.Children[0];
             Assert.AreEqual("For testing purposes.", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
         }
@@ -159,7 +159,7 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            XunitTest fixture = (XunitTest)GetDescendantByName(rootTest, typeof(MetadataSample).FullName);
+            XunitTest fixture = (XunitTest)GetDescendantByName(rootTest, typeof(MetadataSample).Name);
             XunitTest test = (XunitTest)fixture.Children[0];
             Assert.AreEqual("customvalue-1", test.Metadata.GetValue("customkey-1"));
             Assert.AreEqual("customvalue-2", test.Metadata.GetValue("customkey-2"));

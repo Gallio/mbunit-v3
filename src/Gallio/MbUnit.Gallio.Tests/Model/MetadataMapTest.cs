@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using MbUnit.Model;
+using MbUnit.Model.Serialization;
 using MbUnit2::MbUnit.Framework;
 using Assert = MbUnit2::MbUnit.Framework.Assert;
 
@@ -107,6 +108,28 @@ namespace MbUnit.Tests.Model
             AssertAreEqual(expectedMap, actualMap);
         }
 
+        /// <summary>
+        /// We had a case where the implementation of the metadata Xml reader was
+        /// reading the final end element too agressively.  It was causing the
+        /// remainder of the containing element to be discarded when an empty
+        /// metadata section was found.
+        /// </summary>
+        [Test]
+        public void DeserializeFromXml_RegressionTestForEmptyMetadataElement()
+        {
+            MetadataContainer container = new MetadataContainer();
+            container.Metadata = new MetadataMap();
+            container.FollowingElement = 1;
+
+            XmlSerializer serializer = new XmlSerializer(typeof(MetadataContainer));
+            StringWriter output = new StringWriter();
+            serializer.Serialize(output, container);
+
+            MetadataContainer result = (MetadataContainer)serializer.Deserialize(new StringReader(output.ToString()));
+            Assert.AreEqual(0, result.Metadata.Count);
+            Assert.AreEqual(1, result.FollowingElement);
+        }
+
         [Test]
         public void AsReadOnly()
         {
@@ -129,6 +152,17 @@ namespace MbUnit.Tests.Model
             {
                 Assert.IsTrue(actual.Contains(entry));
             }
+        }
+
+        [XmlRoot("container", Namespace = SerializationUtils.XmlNamespace)]
+        [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+        public class MetadataContainer
+        {
+            [XmlElement("metadata")]
+            public MetadataMap Metadata;
+
+            [XmlElement("following")]
+            public int FollowingElement;
         }
     }
 }

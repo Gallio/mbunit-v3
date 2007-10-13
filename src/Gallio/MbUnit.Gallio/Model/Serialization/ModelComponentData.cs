@@ -25,7 +25,7 @@ namespace MbUnit.Model.Serialization
     /// <seealso cref="IModelComponent"/>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class ModelComponentData
+    public abstract class ModelComponentData
     {
         private string id;
         private string name;

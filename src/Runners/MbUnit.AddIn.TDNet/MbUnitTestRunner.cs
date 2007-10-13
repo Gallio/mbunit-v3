@@ -20,6 +20,7 @@ using System.Reflection;
 using Castle.Core.Logging;
 using MbUnit.AddIn.TDNet.Properties;
 using MbUnit.Core.Runner;
+using MbUnit.Core.RuntimeSupport;
 using MbUnit.Model.Filters;
 using MbUnit.Model;
 using TestDriven.Framework;
@@ -129,7 +130,7 @@ namespace MbUnit.AddIn.TDNet
 
                 testRunnerHelper.Package.EnableShadowCopy = true;
 
-                string location = new Uri(assembly.CodeBase).LocalPath;
+                string location = RuntimeUtils.GetFriendlyAssemblyLocation(assembly);
                 testRunnerHelper.Package.AssemblyFiles.Add(location);
 
                 testRunnerHelper.ReportFormats.Add(reportType);

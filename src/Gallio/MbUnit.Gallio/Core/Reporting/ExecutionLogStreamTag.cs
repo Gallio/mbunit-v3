@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using MbUnit.Model.Serialization;
 
 namespace MbUnit.Core.Reporting
 {
@@ -24,6 +25,8 @@ namespace MbUnit.Core.Reporting
     /// A tag is an Xml-serializable object that is included
     /// in the body of an execution log stream and describes its contents.
     /// </summary>
+    [Serializable]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public abstract class ExecutionLogStreamTag
     {
         /// <summary>

@@ -46,6 +46,8 @@ namespace MbUnit.Contexts
     /// </summary>
     public abstract class Context
     {
+        private static IContextManager cachedContextManager;
+
         private readonly Context parent;
 
         private Dictionary<string, object> data;
@@ -53,6 +55,11 @@ namespace MbUnit.Contexts
         private bool isDisposed;
         private event EventHandler disposedHandlers;
         private int assertCount;
+
+        static Context()
+        {
+            Runtime.InstanceChanged += delegate { cachedContextManager = null; };
+        }
 
         /// <summary>
         /// Creates a context.
@@ -68,7 +75,12 @@ namespace MbUnit.Contexts
         /// </summary>
         public static IContextManager ContextManager
         {
-            get { return Runtime.ContextManager; }
+            get
+            {
+                if (cachedContextManager == null)
+                    cachedContextManager = Runtime.Instance.Resolve<IContextManager>();
+                return cachedContextManager;
+            }
         }
 
         /// <summary>

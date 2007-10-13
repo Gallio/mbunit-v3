@@ -19,7 +19,6 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using Castle.Core.Logging;
 using MbUnit.Core.RuntimeSupport;
 
 namespace MbUnit.Core.RuntimeSupport
@@ -36,7 +35,6 @@ namespace MbUnit.Core.RuntimeSupport
     public class DefaultXmlDocumentationResolver : IXmlDocumentationResolver
     {
         private readonly Dictionary<Assembly, CachedDocument> cachedDocuments;
-        private ILogger logger;
 
         /// <summary>
         /// Creates an XML documentation loader.
@@ -44,23 +42,6 @@ namespace MbUnit.Core.RuntimeSupport
         public DefaultXmlDocumentationResolver()
         {
             cachedDocuments = new Dictionary<Assembly, CachedDocument>();
-            logger = NullLogger.Instance;
-        }
-
-        /// <summary>
-        /// Gets or sets the logger.
-        /// Defaults to a null logger.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        public ILogger Logger
-        {
-            get { return logger; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                logger = value;
-            }
         }
 
         /// <inheritdoc />
@@ -132,25 +113,17 @@ namespace MbUnit.Core.RuntimeSupport
                 if (cachedDocuments.TryGetValue(assembly, out document))
                     return document;
 
-                try
+                string assemblyPath = RuntimeUtils.GetAssemblyLocalPath(assembly);
+                if (assemblyPath != null)
                 {
-                    Uri assemblyUri = new Uri(assembly.CodeBase);
-                    if (assemblyUri.IsFile)
-                    {
-                        string assemblyPath = new Uri(assembly.CodeBase).LocalPath;
-                        string documentPath = Path.ChangeExtension(assemblyPath, @".xml");
+                    string documentPath = Path.ChangeExtension(assemblyPath, @".xml");
 
-                        if (File.Exists(documentPath))
-                        {
-                            document = CachedDocument.Load(documentPath);
-                            cachedDocuments.Add(assembly, document);
-                            return document;
-                        }
+                    if (File.Exists(documentPath))
+                    {
+                        document = CachedDocument.Load(documentPath);
+                        cachedDocuments.Add(assembly, document);
+                        return document;
                     }
-                }
-                catch (Exception ex)
-                {
-                    logger.WarnFormat(ex, "Failed to load XML documentation for assembly '{0}'.", assembly.FullName);
                 }
 
                 cachedDocuments.Add(assembly, null);

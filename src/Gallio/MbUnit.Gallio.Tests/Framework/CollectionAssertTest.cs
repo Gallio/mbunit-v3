@@ -49,10 +49,10 @@ namespace MbUnit.Tests.Framework
         }
 
         #region Synchronized
-        [Test, Ignore("Failing")]
+        [Test]
         public void AreSyncRootEqual()
         {
-            CollectionAssert.AreSyncRootEqual(arrSynced, arr2Synced);
+            CollectionAssert.AreSyncRootEqual(arr, arrSynced);
         }
 
         [Test]

@@ -23,13 +23,13 @@ namespace MbUnit.Core.Reporting
     /// <summary>
     /// An Xml-serializable test execution log.
     /// </summary>
+    [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     [XmlRoot("executionLog", Namespace=SerializationUtils.XmlNamespace)]
-    [Serializable]
     public sealed class ExecutionLog
     {
-        private List<ExecutionLogStream> streams;
-        private List<ExecutionLogAttachment> attachments;
+        private readonly List<ExecutionLogStream> streams;
+        private readonly List<ExecutionLogAttachment> attachments;
 
         /// <summary>
         /// Creates an empty execution log.
@@ -44,8 +44,8 @@ namespace MbUnit.Core.Reporting
         /// Gets the list of streams, not null.
         /// Used for Xml-serialization.
         /// </summary>
-        [XmlArray("streams", IsNullable=false)]
-        [XmlArrayItem("stream", typeof(ExecutionLogStream), IsNullable=false)]
+        [XmlArray("streams", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlArrayItem("stream", typeof(ExecutionLogStream), IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
         public List<ExecutionLogStream> Streams
         {
             get { return streams; }
@@ -54,8 +54,8 @@ namespace MbUnit.Core.Reporting
         /// <summary>
         /// Gets the list of attachments, not null.
         /// </summary>
-        [XmlArray("attachments", IsNullable=false)]
-        [XmlArrayItem("attachment", typeof(ExecutionLogAttachment), IsNullable=false)]
+        [XmlArray("attachments", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlArrayItem("attachment", typeof(ExecutionLogAttachment), IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
         public List<ExecutionLogAttachment> Attachments
         {
             get { return attachments; }

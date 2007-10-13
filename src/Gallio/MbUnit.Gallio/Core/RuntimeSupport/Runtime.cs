@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using MbUnit.Contexts;
 using MbUnit.Core.RuntimeSupport;
 
@@ -28,7 +29,6 @@ namespace MbUnit.Core.RuntimeSupport
     {
         private static IRuntime instance;
         private static IXmlDocumentationResolver cachedXmlDocumentationResolver;
-        private static IContextManager cachedContextManager;
 
         /// <summary>
         /// Gets or sets the runtime instance.
@@ -42,11 +42,23 @@ namespace MbUnit.Core.RuntimeSupport
             get { return instance; }
             set
             {
-                instance = value;
-                cachedXmlDocumentationResolver = null;
-                cachedContextManager = null;
+                EventHandler instanceChangedHandlers = InstanceChanged;
+                if (instance != value)
+                {
+                    instance = value;
+                    cachedXmlDocumentationResolver = null;
+
+                    if (instanceChangedHandlers != null)
+                        instanceChangedHandlers(null, EventArgs.Empty);
+                }
             }
         }
+
+        /// <summary>
+        /// The event dispatched when the value of the current runtime
+        /// <see cref="Instance" /> changes.
+        /// </summary>
+        public static event EventHandler InstanceChanged;
 
         /// <summary>
         /// Gets the XML documentation resolver.
@@ -58,19 +70,6 @@ namespace MbUnit.Core.RuntimeSupport
                 if (cachedXmlDocumentationResolver == null)
                     cachedXmlDocumentationResolver = instance.Resolve<IXmlDocumentationResolver>();
                 return cachedXmlDocumentationResolver;
-            }
-        }
-
-        /// <summary>
-        /// Gets the context manager.
-        /// </summary>
-        public static IContextManager ContextManager
-        {
-            get
-            {
-                if (cachedContextManager == null)
-                    cachedContextManager = instance.Resolve<IContextManager>();
-                return cachedContextManager;
             }
         }
     }

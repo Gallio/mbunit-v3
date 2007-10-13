@@ -98,11 +98,10 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        [Ignore("Don't know RegEx for NotLike")]
         public void NotLikeString()
         {
             string s = "Testing";
-            string regEx = @"";
+            string regEx = @"notthere";
 
             StringAssert.NotLike(s, regEx);
         }

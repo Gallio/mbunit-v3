@@ -204,7 +204,7 @@ namespace MbUnit.Core.Runner
         private T CreateRemoteInstance<T>(params object[] args)
         {
             Type type = typeof(T);
-            string assemblyFile = type.Assembly.Location;
+            string assemblyFile = RuntimeUtils.GetFriendlyAssemblyLocation(type.Assembly);
             return (T) appDomain.CreateInstanceFromAndUnwrap(assemblyFile, type.FullName, false,
                 BindingFlags.Default, null, args, null, null, null);
         }
