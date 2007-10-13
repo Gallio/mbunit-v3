@@ -30,18 +30,12 @@ using Rhino.Mocks.Interfaces;
 namespace MbUnit.Icarus.Tests
 {
     [TestFixture]
-    public class IProjectAdapterTest
+    public class IProjectAdapterTest : MockTest
     {
-        private MockRepository mocks;
         private IProjectAdapterView mockView;
         private IProjectAdapterModel mockModel;
+        private IProjectPresenter mockPresenter;
         private ProjectAdapter projectAdapter;
-
-        [TestFixtureSetUp]
-        public void TestFixtureSetUp()
-        {
-            mocks = new MockRepository();
-        }
 
         [SetUp]
         public void SetUp()
@@ -80,7 +74,7 @@ namespace MbUnit.Icarus.Tests
             mockView.GetTestTree += null;
             LastCall.IgnoreArguments();
             IEventRaiser raiseViewEvent = LastCall.GetEventRaiser();
-            IProjectPresenter mockPresenter = MockRepository.GenerateStub<IProjectPresenter>();
+            mockPresenter = MockRepository.GenerateStub<IProjectPresenter>();
             projectAdapter.GetTestTree += new EventHandler<ProjectEventArgs>(mockPresenter.GetTestTree);
             mockPresenter.GetTestTree(projectAdapter, new ProjectEventArgs(new TestPackage()));
             mocks.ReplayAll();
@@ -93,7 +87,7 @@ namespace MbUnit.Icarus.Tests
             mockView.RunTests += null;
             LastCall.IgnoreArguments();
             IEventRaiser raiseViewEvent = LastCall.GetEventRaiser();
-            IProjectPresenter mockPresenter = MockRepository.GenerateStub<IProjectPresenter>();
+            mockPresenter = MockRepository.GenerateStub<IProjectPresenter>();
             projectAdapter.RunTests += new EventHandler<EventArgs>(mockPresenter.RunTests);
             mockPresenter.RunTests(projectAdapter, EventArgs.Empty);
             mocks.ReplayAll();
@@ -167,12 +161,6 @@ namespace MbUnit.Icarus.Tests
             mockView.Ignored("test1");
             mocks.ReplayAll();
             projectAdapter.Ignored("test1");
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            mocks.VerifyAll();
         }
     }
 }

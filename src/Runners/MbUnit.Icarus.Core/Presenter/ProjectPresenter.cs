@@ -24,9 +24,15 @@ namespace MbUnit.Icarus.Core.Presenter
 {
     public class ProjectPresenter : IProjectPresenter
     {
+        #region Variables
+
         private readonly IProjectAdapter _View;
         private readonly ITestRunnerModel _TestRunnerModel;
         private readonly StandaloneRunner runner;
+
+        #endregion
+
+        #region Properties
 
         public string StatusText
         {
@@ -48,6 +54,10 @@ namespace MbUnit.Icarus.Core.Presenter
             get { return runner; }
         }
 
+        #endregion
+
+        #region Constructor
+
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
         {
             _View = view;
@@ -60,6 +70,8 @@ namespace MbUnit.Icarus.Core.Presenter
             _View.GetTestTree += GetTestTree;
             _View.RunTests += RunTests;
         }
+
+        #endregion
 
         public void GetTestTree(object sender, ProjectEventArgs e)
         {
