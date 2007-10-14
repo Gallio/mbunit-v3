@@ -16,11 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using MbUnit.Model.Events;
+using MbUnit.Model.Execution;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Logging;
 using MbUnit.Model;
-using MbUnit.Model.Execution;
 using NUnit.Core;
 using ITest=MbUnit.Model.ITest;
 using TestResult=NUnit.Core.TestResult;

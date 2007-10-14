@@ -21,8 +21,8 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Reporting;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Runner.Reports;
+using MbUnit.Hosting;
 
 namespace MbUnit.Plugin.Reports
 {

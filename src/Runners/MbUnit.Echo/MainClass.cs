@@ -18,11 +18,12 @@ using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
 using MbUnit.Collections;
-using MbUnit.Core.ConsoleSupport;
-using MbUnit.Core.ConsoleSupport.CommandLine;
-using MbUnit.Core.Reporting;
-using MbUnit.Core.Runner;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Core.IO;
+using MbUnit.Core.IO.CommandLine;
+using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Runner.Reports;
+using MbUnit.Runner;
+using MbUnit.Hosting;
 using MbUnit.Echo.Properties;
 
 namespace MbUnit.Echo
@@ -103,39 +104,40 @@ namespace MbUnit.Echo
             console.WriteLine(Resources.MainClass_Initializing);
             console.ResetColor();
 
-            using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper(
-                new RichConsoleProgressMonitorProvider(console),
-                logger))
+            using (TestLauncher launcher = new TestLauncher())
             {
-                testRunnerHelper.Filter = arguments.GetFilter();
+                launcher.Logger = logger;
+                launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(console);
+                launcher.Filter = arguments.GetFilter();
 
-                testRunnerHelper.Package.EnableShadowCopy = arguments.ShadowCopyFiles;
-                testRunnerHelper.Package.ApplicationBase = arguments.AppBaseDirectory;
-                testRunnerHelper.Package.AssemblyFiles.AddRange(arguments.Assemblies);
-                testRunnerHelper.Package.HintDirectories.AddRange(arguments.HintDirectories);
+                launcher.TestPackage.EnableShadowCopy = arguments.ShadowCopyFiles;
+                launcher.TestPackage.ApplicationBase = arguments.AppBaseDirectory;
+                launcher.TestPackage.AssemblyFiles.AddRange(arguments.Assemblies);
+                launcher.TestPackage.HintDirectories.AddRange(arguments.HintDirectories);
 
-                testRunnerHelper.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
+                launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
-                testRunnerHelper.ReportDirectory = arguments.ReportDirectory;
-                testRunnerHelper.ReportNameFormat = arguments.ReportNameFormat;
-                testRunnerHelper.ReportFormats.AddRange(arguments.ReportTypes);
+                launcher.ReportDirectory = arguments.ReportDirectory;
+                launcher.ReportNameFormat = arguments.ReportNameFormat;
 
-                testRunnerHelper.TemplateModelFilename = arguments.SaveTemplateTree;
-                testRunnerHelper.TestModelFilename = arguments.SaveTestTree;
+                GenericUtils.AddAll(arguments.ReportTypes, launcher.ReportFormats);
 
-                testRunnerHelper.EchoResults = ! arguments.NoEchoResults;
+                launcher.TemplateModelFilename = arguments.SaveTemplateTree;
+                launcher.TestModelFilename = arguments.SaveTestTree;
 
-                int result = testRunnerHelper.Run();
-                OpenReports(testRunnerHelper);
-                DisplayResultSummary(testRunnerHelper, result);
+                launcher.EchoResults = ! arguments.NoEchoResults;
 
-                return result;
+                TestLauncherResult result = launcher.Run();
+                OpenReports(result);
+                DisplayResultSummary(result);
+
+                return result.ResultCode;
             }
         }
 
-        private void DisplayResultSummary(TestRunnerHelper testRunnerHelper, int result)
+        private void DisplayResultSummary(TestLauncherResult result)
         {
-            switch (result)
+            switch (result.ResultCode)
             {
                 case ResultCode.Success:
                     console.ForegroundColor = ConsoleColor.Green;
@@ -146,11 +148,11 @@ namespace MbUnit.Echo
             }
 
             console.WriteLine();
-            console.WriteLine(testRunnerHelper.ResultSummary);
+            console.WriteLine(result.ResultSummary);
             console.WriteLine();
         }
 
-        private void OpenReports(TestRunnerHelper testRunnerHelper)
+        private void OpenReports(TestLauncherResult result)
         {
             if (arguments.ShowReports)
             {
@@ -160,14 +162,14 @@ namespace MbUnit.Echo
 
                 foreach (string reportType in arguments.ReportTypes)
                 {
-                    string filename = testRunnerHelper.GetReportFilename(reportType);
+                    string reportPath = result.GetReportContext(reportType).ReportPath;
                     try
                     {
-                        Process.Start(filename);
+                        Process.Start(reportPath);
                     }
                     catch (Exception ex)
                     {
-                        logger.FatalFormat("Could not open report '{0}' for display.", filename, ex);
+                        logger.FatalFormat("Could not open report '{0}' for display.", reportPath, ex);
                     }
                 }
             }
@@ -256,9 +258,11 @@ namespace MbUnit.Echo
             RuntimeSetup setup = new RuntimeSetup();
             if (arguments.PluginDirectories != null)
                 setup.PluginDirectories.AddRange(arguments.PluginDirectories);
-            using (StandaloneRunner runner = StandaloneRunner.CreateRunner(setup))
+
+            Runtime.Initialize(setup);
+            try
             {
-                IReportManager reportManager = runner.Runtime.Resolve<IReportManager>();
+                IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
 
                 string[] formatterNames = GenericUtils.ToArray(reportManager.GetFormatterNames());
                 Array.Sort(formatterNames);
@@ -266,6 +270,10 @@ namespace MbUnit.Echo
                 console.WriteLine();
                 console.WriteLine(String.Format(Resources.MainClass_SupportedReportTypesMessage,
                     string.Join(@", ", formatterNames)));
+            }
+            finally
+            {
+                Runtime.Shutdown();
             }
         }
 

@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 using MbUnit.Framework.Kernel.Model;
 using MbUnit.Model;
 
@@ -42,7 +42,7 @@ namespace MbUnit.Framework.Kernel.Model
 
             Kind = ComponentKind.Fixture;
 
-            string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(type);
+            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(type);
             if (xmlDocumentation != null)
                 Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }

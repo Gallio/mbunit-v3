@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Threading;
 using MbUnit.Logging;
 using MbUnit.Model;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 
 namespace MbUnit.Contexts
 {

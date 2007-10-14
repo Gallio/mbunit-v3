@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Core.Harness;
+using MbUnit.Runner.Harness;
 using MbUnit.Model;
 using MbUnit.Collections;
 using MbUnit.Plugin.NUnitAdapter.Properties;
@@ -26,23 +26,18 @@ namespace MbUnit.Plugin.NUnitAdapter.Model
     /// <summary>
     /// Builds a test object model based on reflection against NUnit framework attributes.
     /// </summary>
-    public class NUnitTestFramework : ITestFramework
+    public class NUnitTestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public string Name
+        public override string Name
         {
             get { return Resources.NUnitTestFramework_NUnitFrameworkName; }
         }
 
         /// <inheritdoc />
-        public void Apply(ITestHarness harness)
+        public override void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
         {
-            harness.BuildingTemplates += harness_BuildingTemplates;
-        }
-
-        private static void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
-        {
-            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(harness.Assemblies, @"nunit.framework");
+            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"nunit.framework");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
@@ -51,7 +46,7 @@ namespace MbUnit.Plugin.NUnitAdapter.Model
                 // on them like binding test parameters or composing tests.
                 Version frameworkVersion = entry.Key.Version;
                 NUnitFrameworkTemplate frameworkTemplate = new NUnitFrameworkTemplate(frameworkVersion, entry.Value);
-                harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
+                builder.Root.AddChild(frameworkTemplate);
             }
         }
     }

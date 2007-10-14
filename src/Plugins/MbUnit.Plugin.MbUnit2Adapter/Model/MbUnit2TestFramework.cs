@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Core.Harness;
+using MbUnit.Runner.Harness;
 using MbUnit.Collections;
 using MbUnit.Model;
 using MbUnit.Plugin.MbUnit2Adapter.Properties;
@@ -26,23 +26,18 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Model
     /// <summary>
     /// Builds a test object model based on reflection against MbUnit v2 framework attributes.
     /// </summary>
-    public class MbUnit2TestFramework : ITestFramework
+    public class MbUnit2TestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public string Name
+        public override string Name
         {
             get { return Resources.MbUnit2TestFramework_FrameworkName; }
         }
 
         /// <inheritdoc />
-        public void Apply(ITestHarness harness)
+        public override void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
         {
-            harness.BuildingTemplates += harness_BuildingTemplates;
-        }
-
-        private static void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
-        {
-            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(harness.Assemblies, @"MbUnit.Framework");
+            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"MbUnit.Framework");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
@@ -55,7 +50,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Model
                     CodeReference.Unknown);
                 frameworkTemplate.Kind = ComponentKind.Framework;
                 frameworkTemplate.IsGenerator = true;
-                harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
+                builder.Root.AddChild(frameworkTemplate);
 
                 foreach (Assembly assembly in entry.Value)
                 {

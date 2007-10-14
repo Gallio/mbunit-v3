@@ -15,6 +15,7 @@
 
 using System;
 using MbUnit.Framework.Kernel.Attributes;
+using MbUnit.Hosting;
 
 namespace MbUnit.Framework
 {

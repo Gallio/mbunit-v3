@@ -14,9 +14,11 @@
 // limitations under the License.
 
 using System.Reflection;
+using MbUnit.Contexts;
 using MbUnit.Framework;
-using MbUnit.Core.Harness;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Runner;
+using MbUnit.Runner.Harness;
+using MbUnit.Hosting;
 using MbUnit.Model.Execution;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Model;
@@ -41,10 +43,10 @@ namespace MbUnit.Tests.Model
         {
             sampleAssembly = GetSampleAssembly();
 
-            harness = new DefaultTestHarness(Runtime.Instance, Runtime.Instance.Resolve<ITestPlanFactory>());
+            harness = new DefaultTestHarness(new DependencyTestPlanFactory(Context.ContextManager));
 
             framework = CreateFramework();
-            harness.AddContributor(framework);
+            harness.AddTestFramework(framework);
         }
 
         [TearDown]
@@ -54,6 +56,8 @@ namespace MbUnit.Tests.Model
             {
                 harness.Dispose();
                 harness = null;
+                framework = null;
+                sampleAssembly = null;
             }
         }
 

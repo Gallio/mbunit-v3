@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.ConsoleSupport;
+using MbUnit.Core.IO;
 
 namespace MbUnit.Echo
 {
@@ -29,7 +29,7 @@ namespace MbUnit.Echo
         [LoaderOptimization(LoaderOptimization.MultiDomain)]
         public static int Main(string[] args)
         {
-            IRichConsole console = SystemConsole.Instance;
+            IRichConsole console = NativeConsole.Instance;
 
             try
             {

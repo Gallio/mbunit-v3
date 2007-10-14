@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 using MbUnit.Model.Data;
 using MbUnit.Model;
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
@@ -182,7 +182,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Model
                     test.Metadata.Add(MetadataKeys.Description, attrib.Description);
             }
 
-            string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(fixtureType);
+            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(fixtureType);
             if (xmlDocumentation != null)
                 test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
@@ -208,7 +208,7 @@ namespace MbUnit.Plugin.MbUnit2Adapter.Model
                         test.Metadata.Add(MetadataKeys.Description, attrib.Description);
                 }
 
-                string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(memberInfo);
+                string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(memberInfo);
                 if (xmlDocumentation != null)
                     test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
             }

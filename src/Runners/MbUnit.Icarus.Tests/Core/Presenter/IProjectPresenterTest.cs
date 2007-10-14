@@ -14,11 +14,10 @@
 // limitations under the License.
 
 using MbUnit.Framework;
-using MbUnit.Core.Harness;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Icarus.Core.Presenter;
-
+using MbUnit.Runner;
 using Rhino.Mocks;
 
 namespace MbUnit.Icarus.Tests.Core.Presenter

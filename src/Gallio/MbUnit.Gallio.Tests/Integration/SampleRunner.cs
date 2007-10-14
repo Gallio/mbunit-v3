@@ -15,18 +15,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using Castle.Core.Logging;
-using MbUnit.Core.Harness;
-using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Reporting;
-using MbUnit.Core.Runner;
-using MbUnit.Core.Runner.Monitors;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Runner.Reports;
+using MbUnit.Runner;
 using MbUnit.Logging;
 using MbUnit.Model.Filters;
 using MbUnit.Model;
+using MbUnit.Framework;
 
 namespace MbUnit.Tests.Integration
 {
@@ -35,12 +31,15 @@ namespace MbUnit.Tests.Integration
     /// for verification.  The idea is to make it easier to write tests that
     /// verify the end-to-end behavior of the test runner.
     /// </summary>
+    /// <todo author="jeff">
+    /// Use some kind of in-memory filesystem to avoid writing reports to disk.
+    /// </todo>
     public class SampleRunner
     {
         private readonly TestPackage package;
         private readonly List<Filter<ITest>> filters;
 
-        private Report report;
+        private TestLauncherResult result;
 
         public SampleRunner()
         {
@@ -50,8 +49,14 @@ namespace MbUnit.Tests.Integration
 
         public Report Report
         {
-            get { return report; }
+            get { return result.Report; }
         }
+
+        public TestLauncherResult Result
+        {
+            get { return result; }
+        }
+
 
         public void AddFixture(Type fixtureType)
         {
@@ -66,43 +71,33 @@ namespace MbUnit.Tests.Integration
         {
             LogStreamWriter logStreamWriter = Log.ConsoleOutput;
 
-            using (LocalRunner runner = new LocalRunner())
+            using (TestLauncher launcher = new TestLauncher())
             {
-                ReportMonitor reportMonitor = new ReportMonitor();
-                reportMonitor.Attach(runner);
-                report = reportMonitor.Report;
+                launcher.TestPackage = package;
+                launcher.Logger = new DebugLogger(logStreamWriter);
+                launcher.Filter = new OrFilter<ITest>(filters.ToArray());
+                launcher.TestRunnerFactory = delegate { return new LocalTestRunner(); };
+
+                string reportDirectory = Path.GetTempPath();
+                launcher.ReportDirectory = reportDirectory;
+                launcher.ReportNameFormat = "SampleRunnerReport";
+                launcher.ReportFormatOptions.Add(@"SaveAttachmentContents", @"false");
+                launcher.ReportFormats.Add(@"Text");
 
                 using (logStreamWriter.BeginSection("Debug Output"))
+                    result = launcher.Run();
+
+                using (logStreamWriter.BeginSection("Text Report"))
                 {
-                    ILogger logger = new DebugLogger(logStreamWriter);
-                    new DebugMonitor(logger).Attach(runner);
-                    //new LogMonitor(logger, reportMonitor).Attach(runner);
+                    ReportContext context = result.GetReportContext(@"Text");
+                    Assert.AreEqual(Path.Combine(reportDirectory, "SampleRunnerReport.txt"), context.ReportPath,
+                        "The report was not written in the expected location.");
 
-                    runner.LoadPackage(package, new NullProgressMonitor());
-                    runner.BuildTemplates(new NullProgressMonitor());
-                    runner.BuildTests(new NullProgressMonitor());
-
-                    runner.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
-                    runner.Run(new NullProgressMonitor());
-                }
-
-                IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
-                NameValueCollection options = new NameValueCollection();
-                options.Add(@"SaveAttachmentContents", @"false");
-
-                string reportPath = Path.GetTempFileName();
-                try
-                {
-                    reportManager.GetFormatter(@"Text").Format(report, new ReportContext(reportPath), options, new NullProgressMonitor());
-
-                    using (logStreamWriter.BeginSection("Text Report"))
+                    if (context != null)
                     {
-                        logStreamWriter.WriteLine(File.ReadAllText(reportPath));
+                        logStreamWriter.WriteLine(context.FileSystem.ReadAllText(context.ReportPath));
+                        context.FileSystem.Delete(context.ReportPath);
                     }
-                }
-                finally
-                {
-                    File.Delete(reportPath);
                 }
             }
         }

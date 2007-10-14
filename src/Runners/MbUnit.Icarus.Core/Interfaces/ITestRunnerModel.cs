@@ -13,8 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Core.Harness;
-using MbUnit.Core.Runner;
+using MbUnit.Runner;
 using MbUnit.Model.Serialization;
 
 namespace MbUnit.Icarus.Core.Interfaces

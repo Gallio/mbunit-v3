@@ -15,8 +15,8 @@
 
 using System;
 using MbUnit.Contexts;
-using MbUnit.Model.Events;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Model.Execution;
+using MbUnit.Hosting;
 
 namespace MbUnit.Model.Execution
 {

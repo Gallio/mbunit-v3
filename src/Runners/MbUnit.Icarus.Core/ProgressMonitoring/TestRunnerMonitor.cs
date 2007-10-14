@@ -15,7 +15,7 @@
 
 using System;
 
-using MbUnit.Core.Runner.Monitors;
+using MbUnit.Runner.Monitors;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Model;
 using MbUnit.Model.Serialization;

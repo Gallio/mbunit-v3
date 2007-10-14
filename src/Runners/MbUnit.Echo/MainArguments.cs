@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MbUnit.Core.ConsoleSupport.CommandLine;
+using MbUnit.Core.IO.CommandLine;
 using MbUnit.Framework;
 using MbUnit.Model.Filters;
 using MbUnit.Model;

@@ -28,7 +28,6 @@ namespace MbUnit.Tests
     /// All unit tests that require certain common facilities like Mock Objects
     /// inherit from this class.
     /// </summary>
-    [TestFixture]
     public abstract class BaseUnitTest
     {
         private MockRepository mocks;

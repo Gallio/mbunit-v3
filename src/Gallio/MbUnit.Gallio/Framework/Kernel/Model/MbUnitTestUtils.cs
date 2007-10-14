@@ -15,8 +15,8 @@
 
 using System;
 using System.Reflection;
-using MbUnit.Framework;
 using MbUnit.Framework.Kernel.Model;
+using MbUnit.Logging;
 using MbUnit.Model;
 using MbUnit.Properties;
 

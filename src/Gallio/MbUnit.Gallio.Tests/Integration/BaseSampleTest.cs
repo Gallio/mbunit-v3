@@ -15,7 +15,7 @@
 
 using System;
 using System.Text;
-using MbUnit.Core.Reporting;
+using MbUnit.Runner.Reports;
 using MbUnit.Model;
 using MbUnit.Model.Serialization;
 

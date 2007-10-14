@@ -109,5 +109,17 @@ namespace MbUnit.Collections
 
             return default(T);
         }
+
+        /// <summary>
+        /// Adds all elements of the input enumeration to the output collection.
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="input">The input enumeration</param>
+        /// <param name="output">The output collection</param>
+        public static void AddAll<T>(IEnumerable<T> input, ICollection<T> output)
+        {
+            foreach (T value in input)
+                output.Add(value);
+        }
     }
 }

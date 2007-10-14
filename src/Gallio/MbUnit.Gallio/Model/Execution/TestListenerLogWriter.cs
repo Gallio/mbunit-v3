@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Model.Events;
+using MbUnit.Model.Execution;
 using MbUnit.Logging;
 
 namespace MbUnit.Model.Execution

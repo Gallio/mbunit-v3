@@ -18,7 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Collections;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 using MbUnit.Model.Data;
 using MbUnit.Model;
 using MbUnit.Plugin.NUnitAdapter.Properties;
@@ -218,11 +218,11 @@ namespace MbUnit.Plugin.NUnitAdapter.Model
                 {
                     case CodeReferenceKind.Type:
                         Type type = test.CodeReference.ResolveType();
-                        return Runtime.XmlDocumentationResolver.GetXmlDocumentation(type);
+                        return Loader.XmlDocumentationResolver.GetXmlDocumentation(type);
 
                     case CodeReferenceKind.Member:
                         MemberInfo member = test.CodeReference.ResolveMember();
-                        return Runtime.XmlDocumentationResolver.GetXmlDocumentation(member);
+                        return Loader.XmlDocumentationResolver.GetXmlDocumentation(member);
                 }
             }
             catch (Exception)

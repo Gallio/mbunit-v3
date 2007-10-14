@@ -16,14 +16,13 @@
 using System;
 using System.Windows.Forms;
 
-using MbUnit.Core.Harness;
 using MbUnit.Framework;
 using MbUnit.Icarus.Adapter;
 using MbUnit.Icarus.AdapterModel;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Icarus.Interfaces;
-
+using MbUnit.Runner;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 

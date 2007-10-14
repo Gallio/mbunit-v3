@@ -38,11 +38,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="MbUnit.Framework, Version=1.0.2768.20906, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
-      <Aliases>MbUnit2</Aliases>
-    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities" />
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
@@ -54,9 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MSBuildLoggerTests.cs" />
-    <Compile Include="MSBuildTaskTests.cs" />
-    <Compile Include="MSBuildTaskUnitTests.cs" />
+    <Compile Include="InstrumentedMbUnitTask.cs" />
+    <Compile Include="MSBuildLoggerTest.cs" />
+    <Compile Include="MbUnitTaskIntegrationTest.cs" />
+    <Compile Include="MbUnitTaskUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,7 +82,7 @@
     <Content Include="TestBuildFiles\Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TestBuildFiles\runall.bat" />
+    <Content Include="TestBuildFiles\runall.bat" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

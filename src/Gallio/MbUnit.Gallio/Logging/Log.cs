@@ -18,9 +18,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
 using MbUnit.Contexts;
-using MbUnit.Framework;
 using MbUnit.Logging;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 
 namespace MbUnit.Logging
 {

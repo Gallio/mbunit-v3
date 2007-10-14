@@ -15,8 +15,8 @@
 
 using System;
 using MbUnit.AddIn.TDNet.Properties;
-using MbUnit.Core.Reporting;
-using MbUnit.Core.Runner.Monitors;
+using MbUnit.Runner.Reports;
+using MbUnit.Runner.Monitors;
 using MbUnit.Model;
 using MbUnit.Logging;
 using MbUnit.Model.Serialization;

@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Collections;
-using MbUnit.Core.Harness;
+using MbUnit.Runner.Harness;
 using MbUnit.Model;
 using MbUnit.Plugin.XunitAdapter.Properties;
 
@@ -26,23 +26,18 @@ namespace MbUnit.Plugin.XunitAdapter.Model
     /// <summary>
     /// Builds a test object model based on reflection against Xunit framework attributes.
     /// </summary>
-    public class XunitTestFramework : ITestFramework
+    public class XunitTestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public string Name
+        public override string Name
         {
             get { return Resources.XunitTestFramework_XunitFrameworkName; }
         }
 
         /// <inheritdoc />
-        public void Apply(ITestHarness harness)
+        public override void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
         {
-            harness.BuildingTemplates += harness_BuildingTemplates;
-        }
-
-        private static void harness_BuildingTemplates(ITestHarness harness, EventArgs e)
-        {
-            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(harness.Assemblies, @"xunit");
+            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"xunit");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
@@ -51,7 +46,7 @@ namespace MbUnit.Plugin.XunitAdapter.Model
                 // on them like binding test parameters or composing tests.
                 Version frameworkVersion = entry.Key.Version;
                 XunitFrameworkTemplate frameworkTemplate = new XunitFrameworkTemplate(frameworkVersion, entry.Value);
-                harness.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
+                builder.Root.AddChild(frameworkTemplate);
             }
         }
     }

@@ -17,8 +17,6 @@ using System;
 using System.Text;
 
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Runner;
-
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 

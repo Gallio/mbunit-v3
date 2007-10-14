@@ -15,7 +15,7 @@
 
 using System;
 using System.Reflection;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 using MbUnit.Model;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -42,7 +42,7 @@ namespace MbUnit.Framework.Kernel.Model
             MemberInfo member = slot.Member;
             if (member != null)
             {
-                string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(member);
+                string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(member);
                 if (xmlDocumentation != null)
                     Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
             }

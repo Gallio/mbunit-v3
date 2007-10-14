@@ -16,9 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Core.Runner;
+using MbUnit.Collections;
+using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Runner;
 using MbUnit.Model.Filters;
 using MbUnit.Model;
+using MbUnit.Runner.Reports;
 using MbUnit.Tasks.MSBuild.Properties;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -261,25 +264,32 @@ namespace MbUnit.Tasks.MSBuild
         private bool InternalExecute()
         {
             DisplayVersion();
+
             MSBuildLogger logger = new MSBuildLogger(Log);
-            using (TestRunnerHelper runner = new TestRunnerHelper(
-                new LogProgressMonitorProvider(logger),
-                logger))
+
+            using (TestLauncher launcher = new TestLauncher())
             {
-                runner.Filter = GetFilter();
+                launcher.Logger = logger;
+                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
+                launcher.Filter = GetFilter();
 
-                AddAllItemSpecs(runner.Package.AssemblyFiles, assemblies);
-                AddAllItemSpecs(runner.Package.HintDirectories, hintDirectories);
-                AddAllItemSpecs(runner.RuntimeSetup.PluginDirectories, pluginDirectories);
+                AddAllItemSpecs(launcher.TestPackage.AssemblyFiles, assemblies);
+                AddAllItemSpecs(launcher.TestPackage.HintDirectories, hintDirectories);
+                AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 
-                runner.ReportDirectory = ReportDirectory;
-                runner.ReportNameFormat = ReportNameFormat;
+                if (ReportDirectory != null)
+                    launcher.ReportDirectory = ReportDirectory;
+                if (ReportNameFormat != null)
+                    launcher.ReportNameFormat = ReportNameFormat;
+
                 if (ReportTypes != null)
-                    runner.ReportFormats.AddRange(ReportTypes);
+                    GenericUtils.AddAll(ReportTypes, launcher.ReportFormats);
 
-                exitCode = runner.Run();
-                LogResultSummary(logger, runner);
-                GetStatistics(runner);
+                TestLauncherResult result = RunLauncher(launcher);
+                exitCode = result.ResultCode;
+
+                LogResultSummary(logger, result);
+                PopulateStatistics(result);
 
                 if (ExitCode == ResultCode.Success ||
                     ExitCode == ResultCode.NoTests ||
@@ -290,31 +300,38 @@ namespace MbUnit.Tasks.MSBuild
             return false;
         }
 
-        private void GetStatistics(TestRunnerHelper runner)
+        /// <summary>
+        /// Provided so that the unit tests can override test execution behavior.
+        /// </summary>
+        protected virtual TestLauncherResult RunLauncher(TestLauncher launcher)
         {
-            if (runner.Statistics != null)
-            {
-                testCount = runner.Statistics.TestCount;
-                passCount = runner.Statistics.PassCount;
-                failureCount = runner.Statistics.FailureCount;
-                ignoreCount = runner.Statistics.IgnoreCount;
-                inconclusiveCount = runner.Statistics.InconclusiveCount;
-                runCount = runner.Statistics.RunCount;
-                skipCount = runner.Statistics.SkipCount;
-                duration = runner.Statistics.Duration;
-                assertCount = runner.Statistics.AssertCount;
-            }
+            return launcher.Run();
         }
 
-        private void LogResultSummary(ILogger logger, TestRunnerHelper runner)
+        private void PopulateStatistics(TestLauncherResult result)
         {
-            switch (exitCode)
+            PackageRunStatistics stats = result.Statistics;
+            testCount = stats.TestCount;
+            passCount = stats.PassCount;
+            failureCount = stats.FailureCount;
+            ignoreCount = stats.IgnoreCount;
+            inconclusiveCount = stats.InconclusiveCount;
+            runCount = stats.RunCount;
+            skipCount = stats.SkipCount;
+            duration = stats.Duration;
+            assertCount = stats.AssertCount;
+        }
+
+        private static void LogResultSummary(ILogger logger, TestLauncherResult result)
+        {
+            switch (result.ResultCode)
             {
                 case ResultCode.Success:
-                    logger.Info(runner.ResultSummary);
+                    logger.Info(result.ResultSummary);
                     break;
+
                 case ResultCode.Failure:
-                    logger.Error(runner.ResultSummary);
+                    logger.Error(result.ResultSummary);
                     break;
             }
         }

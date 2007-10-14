@@ -15,7 +15,7 @@
 
 using System;
 
-using MbUnit.Core.Runner;
+using MbUnit.Runner;
 
 using MbUnit.Icarus.Core.CustomEventArgs;
 
@@ -26,7 +26,7 @@ namespace MbUnit.Icarus.Core.Interfaces
         string StatusText { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
-        StandaloneRunner Runner { get; }
+        StandaloneTestRunner TestRunner { get; }
         void GetTestTree(object sender, ProjectEventArgs e);
         void RunTests(object sender, EventArgs e);
         void Passed(string testId);

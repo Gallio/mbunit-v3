@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Collections;
-using MbUnit.Core.Harness;
 using MbUnit.Framework.Kernel.Attributes;
+using MbUnit.Hosting;
 using MbUnit.Model;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -26,43 +26,40 @@ namespace MbUnit.Framework.Kernel.Model
     /// <summary>
     /// Provides support for the MbUnit Gallio test framework.
     /// </summary>
-    public class MbUnitTestFramework : ITestFramework
+    public class MbUnitTestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public string Name
+        public override string Name
         {
             get { return "MbUnit Gallio"; }
         }
 
         /// <inheritdoc />
-        public void Apply(ITestHarness harness)
+        public override void PrepareAssemblies(IList<Assembly> assemblies)
         {
-            harness.AssemblyAdded += harness_AssemblyAdded;
-            harness.BuildingTemplates += harness_BuildingTemplates;
-            harness.Disposing += harness_Disposing;
-        }
-
-        private void harness_AssemblyAdded(ITestHarness harness, AssemblyAddedEventArgs e)
-        {
-            foreach (AssemblyResolverAttribute resolverAttribute in
-                e.Assembly.GetCustomAttributes(typeof(AssemblyResolverAttribute), false))
+            foreach (Assembly assembly in assemblies)
             {
-                Type type = resolverAttribute.AssemblyResolverType;
-                try
+                foreach (AssemblyResolverAttribute resolverAttribute in
+                    assembly.GetCustomAttributes(typeof(AssemblyResolverAttribute), false))
                 {
-                    IAssemblyResolver resolver = (IAssemblyResolver)Activator.CreateInstance(type);
-                    harness.AssemblyResolverManager.AddAssemblyResolver(resolver);
-                }
-                catch (Exception ex)
-                {
-                    throw new ModelException(String.Format("Failed to create custom assembly resolver type '{0}'.", type), ex);
+                    Type type = resolverAttribute.AssemblyResolverType;
+                    try
+                    {
+                        IAssemblyResolver resolver = (IAssemblyResolver)Activator.CreateInstance(type);
+                        Loader.AssemblyResolverManager.AddAssemblyResolver(resolver);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ModelException(String.Format("Failed to create custom assembly resolver type '{0}'.", type), ex);
+                    }
                 }
             }
         }
 
-        private void harness_BuildingTemplates(ITestHarness sender, EventArgs e)
+        /// <inheritdoc />
+        public override void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
         {
-            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(sender.Assemblies, @"MbUnit.Gallio");
+            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"MbUnit.Gallio");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Build templates for the contents of the assemblies that reference MbUnit Gallio
@@ -70,17 +67,13 @@ namespace MbUnit.Framework.Kernel.Model
                 // process so that it can be easily extended by users.
                 Version frameworkVersion = entry.Key.Version;
                 MbUnitFrameworkTemplate frameworkTemplate = new MbUnitFrameworkTemplate(frameworkVersion);
-                sender.TemplateTreeBuilder.Root.AddChild(frameworkTemplate);
+                builder.Root.AddChild(frameworkTemplate);
 
                 foreach (Assembly assembly in entry.Value)
                 {
-                    AssemblyPatternAttribute.ProcessAssembly(sender.TemplateTreeBuilder, frameworkTemplate, assembly);
+                    AssemblyPatternAttribute.ProcessAssembly(builder, frameworkTemplate, assembly);
                 }
             }
-        }
-
-        private void harness_Disposing(ITestHarness sender, EventArgs e)
-        {
         }
     }
 }

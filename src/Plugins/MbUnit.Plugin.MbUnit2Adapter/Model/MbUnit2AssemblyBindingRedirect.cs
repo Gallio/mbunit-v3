@@ -18,7 +18,7 @@ extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Core.Runner;
+using MbUnit.Runner.Domains;
 
 namespace MbUnit.Plugin.MbUnit2Adapter.Model
 {

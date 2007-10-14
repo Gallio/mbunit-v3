@@ -10,7 +10,7 @@
                  type="MbUnit.Plugin.MbUnit2Adapter.Model.MbUnit2TestFramework, MbUnit.Plugin.MbUnit2Adapter" />
 
       <component id="MbUnit2Adapter.AssemblyBindingRedirect"
-                 service="MbUnit.Core.Runner.IIsolatedTestDomainContributor, MbUnit.Gallio"
+                 service="MbUnit.Runner.Domains.IIsolatedTestDomainContributor, MbUnit.Gallio"
                  type="MbUnit.Plugin.MbUnit2Adapter.Model.MbUnit2AssemblyBindingRedirect, MbUnit.Plugin.MbUnit2Adapter" />
     </components>
   </castle>

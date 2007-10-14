@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Core.Harness;
+using MbUnit.Runner.Harness;
 
 namespace MbUnit.Icarus.Core.CustomEventArgs 
 {

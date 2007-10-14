@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 
-namespace MbUnit.Core.Utilities
+namespace MbUnit.Core.IO
 {
     ///<summary>
     /// Provides an abstraction of a file system.
@@ -80,5 +80,12 @@ namespace MbUnit.Core.Utilities
         /// <param name="overwrite">If true, overwrites existing files in the destination</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePath"/> or <paramref name="destPath"/> is null</exception>
         void Copy(string sourcePath, string destPath, bool overwrite);
+
+        /// <summary>
+        /// Recursively deletes a file or directory.
+        /// Does nothing if the file or directory does not exist.
+        /// </summary>
+        /// <param name="path">The path</param>
+        void Delete(string path);
     }
 }

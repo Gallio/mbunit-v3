@@ -17,28 +17,36 @@
                  type="MbUnit.Framework.Kernel.Model.MbUnitTestFramework, MbUnit.Gallio" />
 
       <component id="Core.TestHarnessFactory"
-                 service="MbUnit.Core.Harness.ITestHarnessFactory, MbUnit.Gallio"
-                 type="MbUnit.Core.Harness.DefaultTestHarnessFactory, MbUnit.Gallio" />
+                 service="MbUnit.Runner.Harness.ITestHarnessFactory, MbUnit.Gallio"
+                 type="MbUnit.Runner.Harness.DefaultTestHarnessFactory, MbUnit.Gallio" />
 
+      <component id="Core.ConsoleTestEnvironment"
+           service="MbUnit.Runner.Harness.ITestEnvironment, MbUnit.Gallio"
+           type="MbUnit.Runner.Harness.ConsoleTestEnvironment, MbUnit.Gallio" />
+
+      <component id="Core.TraceTestEnvironment"
+                 service="MbUnit.Runner.Harness.ITestEnvironment, MbUnit.Gallio"
+                 type="MbUnit.Runner.Harness.TraceTestEnvironment, MbUnit.Gallio" />
+      
       <component id="Core.IsolatedTestDomainFactory"
-                 service="MbUnit.Core.Runner.ITestDomainFactory, MbUnit.Gallio"
-                 type="MbUnit.Core.Runner.IsolatedTestDomainFactory, MbUnit.Gallio" />
+                 service="MbUnit.Runner.Domains.ITestDomainFactory, MbUnit.Gallio"
+                 type="MbUnit.Runner.Domains.IsolatedTestDomainFactory, MbUnit.Gallio" />
 
       <component id="Core.LocalTestDomainFactory"
-                 service="MbUnit.Core.Runner.LocalTestDomainFactory, MbUnit.Gallio"
-                 type="MbUnit.Core.Runner.LocalTestDomainFactory, MbUnit.Gallio" />
+                 service="MbUnit.Runner.Domains.LocalTestDomainFactory, MbUnit.Gallio"
+                 type="MbUnit.Runner.Domains.LocalTestDomainFactory, MbUnit.Gallio" />
 
       <component id="Core.ReportManager"
-                 service="MbUnit.Core.Reporting.IReportManager, MbUnit.Gallio"
-                 type="MbUnit.Core.Reporting.DefaultReportManager, MbUnit.Gallio" />
+                 service="MbUnit.Runner.Reports.IReportManager, MbUnit.Gallio"
+                 type="MbUnit.Runner.Reports.DefaultReportManager, MbUnit.Gallio" />
 
       <component id="Core.TestPlanFactory"
                  service="MbUnit.Model.Execution.ITestPlanFactory, MbUnit.Gallio"
                  type="MbUnit.Model.Execution.DependencyTestPlanFactory, MbUnit.Gallio" />
 
       <component id="Core.XmlDocumentationResolver"
-                 service="MbUnit.Core.RuntimeSupport.IXmlDocumentationResolver, MbUnit.Gallio"
-                 type="MbUnit.Core.RuntimeSupport.DefaultXmlDocumentationResolver, MbUnit.Gallio" />
+                 service="MbUnit.Hosting.IXmlDocumentationResolver, MbUnit.Gallio"
+                 type="MbUnit.Hosting.DefaultXmlDocumentationResolver, MbUnit.Gallio" />
 
       <component id="Core.ContextManager"
                  service="MbUnit.Contexts.IContextManager, MbUnit.Gallio"

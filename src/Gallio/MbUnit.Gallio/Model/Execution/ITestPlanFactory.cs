@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Model.Events;
+using MbUnit.Model.Execution;
 
 namespace MbUnit.Model.Execution
 {

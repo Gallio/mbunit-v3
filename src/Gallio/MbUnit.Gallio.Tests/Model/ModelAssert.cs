@@ -15,7 +15,6 @@
 
 using System;
 using MbUnit.Model;
-using MbUnit.Model.Execution;
 using MbUnit.Model.Serialization;
 using MbUnit.Framework;
 

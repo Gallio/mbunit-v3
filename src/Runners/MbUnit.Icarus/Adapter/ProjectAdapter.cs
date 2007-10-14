@@ -15,8 +15,7 @@
 
 using System;
 using System.Diagnostics;
-
-using MbUnit.Core.Harness;
+using MbUnit.Runner;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Icarus.Interfaces;

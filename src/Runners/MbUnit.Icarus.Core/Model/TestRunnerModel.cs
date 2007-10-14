@@ -14,9 +14,8 @@
 // limitations under the License.
 
 
-using MbUnit.Core.Harness;
-using MbUnit.Core.Runner;
-using MbUnit.Core.Runner.Monitors;
+using MbUnit.Runner;
+using MbUnit.Runner.Monitors;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Icarus.Core.ProgressMonitoring;
 using MbUnit.Model.Serialization;
@@ -31,20 +30,20 @@ namespace MbUnit.Icarus.Core.Model
         {
             // set up report monitor
             reportMonitor = new ReportMonitor();
-            reportMonitor.Attach(presenter.Runner);
+            reportMonitor.Attach(presenter.TestRunner);
 
-            presenter.Runner.LoadPackage(testpackage, new StatusStripProgressMonitor(presenter));
-            presenter.Runner.BuildTemplates(new StatusStripProgressMonitor(presenter));
-            presenter.Runner.BuildTests(new StatusStripProgressMonitor(presenter));
+            presenter.TestRunner.LoadPackage(testpackage, new StatusStripProgressMonitor(presenter));
+            presenter.TestRunner.BuildTemplates(new StatusStripProgressMonitor(presenter));
+            presenter.TestRunner.BuildTests(new StatusStripProgressMonitor(presenter));
 
-            return presenter.Runner.TestModel;
+            return presenter.TestRunner.TestModel;
         }
 
         public void RunTests(IProjectPresenter presenter)
         {
             TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(presenter, reportMonitor);
-            testRunnerMonitor.Attach(presenter.Runner);
-            presenter.Runner.Run(new StatusStripProgressMonitor(presenter));
+            testRunnerMonitor.Attach(presenter.TestRunner);
+            presenter.TestRunner.Run(new StatusStripProgressMonitor(presenter));
         }
     }
 }

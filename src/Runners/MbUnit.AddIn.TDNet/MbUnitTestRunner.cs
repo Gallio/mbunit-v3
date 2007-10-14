@@ -19,8 +19,9 @@ using System.IO;
 using System.Reflection;
 using Castle.Core.Logging;
 using MbUnit.AddIn.TDNet.Properties;
-using MbUnit.Core.Runner;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Runner;
+using MbUnit.Hosting;
 using MbUnit.Model.Filters;
 using MbUnit.Model;
 using TestDriven.Framework;
@@ -109,6 +110,14 @@ namespace MbUnit.AddIn.TDNet
 
         #region Private Methods
 
+        /// <summary>
+        /// Provided so that the unit tests can override test execution behavior.
+        /// </summary>
+        protected virtual TestLauncherResult RunLauncher(TestLauncher launcher)
+        {
+            return launcher.Run();
+        }
+
         private TestRunState Run(ITestListener testListener, Assembly assembly, Filter<ITest> filter)
         {
             if (testListener == null)
@@ -119,35 +128,42 @@ namespace MbUnit.AddIn.TDNet
             TDNetLogger logger = new TDNetLogger(testListener);
             LogAddInVersion(logger);
 
-            using (TestRunnerHelper testRunnerHelper = new TestRunnerHelper(
-                new LogProgressMonitorProvider(logger),
-                logger))
+            using (TestLauncher launcher = new TestLauncher())
             {
-                testRunnerHelper.Filter = filter;
+                launcher.Logger = logger;
+                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
+                launcher.Filter = filter;
 
                 // This monitor will inform the user in real-time what's going on
-                testRunnerHelper.CustomMonitors.Add(new TDNetLogMonitor(testListener, testRunnerHelper.ReportMonitor));
+                launcher.CustomMonitors.Add(new TDNetLogMonitor(testListener, launcher.ReportMonitor));
 
-                testRunnerHelper.Package.EnableShadowCopy = true;
+                launcher.TestPackage.EnableShadowCopy = true;
 
-                string location = RuntimeUtils.GetFriendlyAssemblyLocation(assembly);
-                testRunnerHelper.Package.AssemblyFiles.Add(location);
+                string location = Loader.GetFriendlyAssemblyLocation(assembly);
+                launcher.TestPackage.AssemblyFiles.Add(location);
 
-                testRunnerHelper.ReportFormats.Add(reportType);
-                testRunnerHelper.ReportNameFormat = Path.GetFileName(location);
-                testRunnerHelper.ReportDirectory = GetReportDirectory(logger);
-                if (String.IsNullOrEmpty(testRunnerHelper.ReportDirectory))
+                launcher.ReportFormats.Add(reportType);
+                launcher.ReportNameFormat = Path.GetFileName(location);
+                launcher.ReportDirectory = GetReportDirectory(logger);
+
+                if (String.IsNullOrEmpty(launcher.ReportDirectory))
                 {
                     return TestRunState.Failure;
                 }
 
-                int result = testRunnerHelper.Run();
+                TestLauncherResult result = RunLauncher(launcher);
 
                 // This will generate a link to the generated report
-                Uri uri = new Uri(testRunnerHelper.GetReportFilename(reportType)); // yes, this really works.
+                Uri uri = new Uri(result.GetReportContext(reportType).ReportPath);
                 testListener.TestResultsUrl(uri.AbsoluteUri);
 
-                return GetTDNetResult(testRunnerHelper, testListener, result);
+                // Inform no tests run, if necessary.
+                if (result.ResultCode == ResultCode.NoTests)
+                    InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
+                else if (result.Statistics.TestCount == 0)
+                    InformNoTestsWereRun(testListener, null);
+
+                return GetTDNetResult(result);
             }
         }
 
@@ -182,40 +198,27 @@ namespace MbUnit.AddIn.TDNet
         /// Translates the test execution result into something understandable
         /// for TDNet.
         /// </summary>
-        /// <param name="testRunnerHelper">The TestRunnerHelper instance that was used to run the tests.</param>
-        /// <param name="testListener">An ITestListener object to write the message to.</param>
-        /// <param name="result">The result code given by MbUnit.</param>
+        /// <param name="result">The result information</param>
         /// <returns>The TestRunState value that should be returned to TDNet.</returns>
-        private static TestRunState GetTDNetResult(TestRunnerHelper testRunnerHelper, ITestListener testListener, int result)
+        private static TestRunState GetTDNetResult(TestLauncherResult result)
         {
-            TestRunState state;
-
-            switch (result)
+            switch (result.ResultCode)
             {
                 case ResultCode.FatalException:
                 case ResultCode.InvalidArguments:
-                    state = TestRunState.Error;
-                    break;
-                case ResultCode.Failure:
-                    state = TestRunState.Failure;
-                    break;
-                case ResultCode.NoTests:
-                    state = TestRunState.NoTests;
-                    InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
-                    break;
                 default:
-                    state = TestRunState.Success;
-                    break;
-            }
+                    return TestRunState.Error;
 
-            //TODO: Check if TestCount may be 0 for another reason?
-            if (testRunnerHelper.Statistics.TestCount == 0)
-            {
-                state = TestRunState.NoTests;
-                InformNoTestsWereRun(testListener, String.Empty);
-            }
+                case ResultCode.Failure:
+                    return TestRunState.Failure;
 
-            return state;
+                case ResultCode.NoTests:
+                    return TestRunState.NoTests;
+
+                case ResultCode.Success:
+                case ResultCode.Canceled:
+                    return TestRunState.Success;
+            }
         }
 
         /// <summary>
@@ -229,12 +232,13 @@ namespace MbUnit.AddIn.TDNet
         /// <param name="reason">The reason no tests were run for.</param>
         private static void InformNoTestsWereRun(ITestListener testListener, string reason)
         {
-            string message = String.Format("** {0}", Resources.MbUnitTestRunner_NoTestsWereRun);
-            if (!String.IsNullOrEmpty(reason))
-            {
-                message += " (" + reason + ")";
-            }
-            message += " **";
+            if (String.IsNullOrEmpty(reason))
+                reason = @"";
+            else
+                reason = @" (" + reason + @")";
+
+            string message = String.Format("** {0}{1} **", Resources.MbUnitTestRunner_NoTestsWereRun, reason);
+
             testListener.WriteLine(message, Category.Warning);
         }
 

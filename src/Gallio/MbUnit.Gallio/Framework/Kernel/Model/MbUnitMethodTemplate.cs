@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Reflection;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 using MbUnit.Model;
 
 namespace MbUnit.Framework.Kernel.Model
@@ -40,7 +40,7 @@ namespace MbUnit.Framework.Kernel.Model
 
             Kind = ComponentKind.Test;
 
-            string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(method);
+            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(method);
             if (xmlDocumentation != null)
                 Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }

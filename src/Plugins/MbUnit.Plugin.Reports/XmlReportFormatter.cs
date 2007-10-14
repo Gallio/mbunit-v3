@@ -15,7 +15,7 @@
 
 using System.Collections.Specialized;
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Core.Reporting;
+using MbUnit.Runner.Reports;
 
 namespace MbUnit.Plugin.Reports
 {

@@ -15,8 +15,9 @@
 
 using System;
 using System.IO;
+using MbUnit.Utilities;
 
-namespace MbUnit.Core.Utilities
+namespace MbUnit.Core.IO
 {
     ///<summary>
     /// Performs IO related operations on the native file system.
@@ -106,6 +107,15 @@ namespace MbUnit.Core.Utilities
             {
                 throw new FileNotFoundException("Source file or directory does not exist.", sourcePath);
             }
+        }
+
+        /// <inheritdoc />
+        public void Delete(string path)
+        {
+            if (Directory.Exists(path))
+                Directory.Delete(path, true);
+            else if (File.Exists(path))
+                File.Delete(path);
         }
 
         private static bool CanCopy(FileSystemInfo entry)

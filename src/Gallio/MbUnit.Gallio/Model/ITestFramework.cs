@@ -13,10 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Core.Harness;
 using MbUnit.Model;
 
 namespace MbUnit.Model
@@ -27,16 +25,26 @@ namespace MbUnit.Model
     /// may be supported by defining and registering a suitable implementation
     /// of this interface.
     /// </summary>
-    /// <remarks>
-    /// A test framework should register this interface rather than <see cref="ITestHarnessContributor" />
-    /// directly because it allows the system to see which frameworks are available and
-    /// to selectively enable them.
-    /// </remarks>
-    public interface ITestFramework : ITestHarnessContributor
+    public interface ITestFramework
     {
         /// <summary>
         /// Gets the name of the test framework.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Prepares assemblies for analysis with reflection.
+        /// A test framework can take advantage of this opportunity to ensure that
+        /// all assembly dependencies can be resolved as needed.
+        /// </summary>
+        /// <param name="assemblies">The list of assemblies</param>
+        void PrepareAssemblies(IList<Assembly> assemblies);
+
+        /// <summary>
+        /// Builds templates from the specified assemblies.
+        /// </summary>
+        /// <param name="builder">The template tree builder</param>
+        /// <param name="assemblies">The list of assemblies</param>
+        void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies);
     }
 }

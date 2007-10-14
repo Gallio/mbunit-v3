@@ -18,7 +18,6 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
-using MbUnit.Framework;
 using MbUnit.Logging;
 
 namespace MbUnit.Logging

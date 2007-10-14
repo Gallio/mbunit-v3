@@ -3,11 +3,11 @@
   <castle>
     <components>
       <component id="Reports.XmlReportFormatter"
-                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
                  type="MbUnit.Plugin.Reports.XmlReportFormatter, MbUnit.Plugin.Reports" />
       
       <component id="Reports.TextReportFormatter"
-                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
                  type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
         <parameters>
           <name>Text</name>
@@ -22,7 +22,7 @@
       </component>
       
       <component id="Reports.HtmlReportFormatter"
-                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
                  type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
         <parameters>
           <name>Html</name>
@@ -40,7 +40,7 @@
       </component>   
       
       <component id="Reports.XHtmlReportFormatter"
-                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
                  type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
         <parameters>
           <name>XHtml</name>
@@ -59,7 +59,7 @@
       
       <!--
       <component id="Reports.CCNetReportFormatter"
-                 service="MbUnit.Core.Reporting.IReportFormatter, MbUnit.Gallio"
+                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
                  type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
         <parameters>
           <name>CCNet</name>

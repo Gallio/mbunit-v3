@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Core.Harness;
-using MbUnit.Core.Runner;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Runner;
+using MbUnit.Hosting;
 using MbUnit.Icarus.Core.CustomEventArgs;
 using MbUnit.Icarus.Core.Interfaces;
 
@@ -28,7 +27,7 @@ namespace MbUnit.Icarus.Core.Presenter
 
         private readonly IProjectAdapter _View;
         private readonly ITestRunnerModel _TestRunnerModel;
-        private readonly StandaloneRunner runner;
+        private readonly StandaloneTestRunner testRunner;
 
         #endregion
 
@@ -49,9 +48,9 @@ namespace MbUnit.Icarus.Core.Presenter
             set { _View.TotalWorkUnits = value; }
         }
 
-        public StandaloneRunner Runner
+        public StandaloneTestRunner TestRunner
         {
-            get { return runner; }
+            get { return testRunner; }
         }
 
         #endregion
@@ -64,7 +63,7 @@ namespace MbUnit.Icarus.Core.Presenter
             _TestRunnerModel = testrunnermodel;
 
             RuntimeSetup runtimeSetup = new RuntimeSetup();
-            runner = StandaloneRunner.CreateRunner(runtimeSetup);
+            testRunner = new StandaloneTestRunner(runtimeSetup);
             
             // wire up events
             _View.GetTestTree += GetTestTree;

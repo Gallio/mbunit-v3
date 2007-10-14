@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using MbUnit.Collections;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 using MbUnit.Properties;
 
 namespace MbUnit.Model
@@ -275,7 +275,7 @@ namespace MbUnit.Model
         /// <param name="metadataMap">The metadata map</param>
         public static void PopulateMetadataFromAssembly(Assembly assembly, MetadataMap metadataMap)
         {
-            metadataMap.Add(MetadataKeys.CodeBase, RuntimeUtils.GetFriendlyAssemblyCodeBase(assembly));
+            metadataMap.Add(MetadataKeys.CodeBase, Hosting.Loader.GetFriendlyAssemblyCodeBase(assembly));
 
             AssemblyCompanyAttribute companyAttribute = GetAttribute<AssemblyCompanyAttribute>(assembly);
             if (companyAttribute != null)

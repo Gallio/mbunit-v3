@@ -17,7 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using MbUnit.Core.RuntimeSupport;
+using MbUnit.Hosting;
 using MbUnit.Model.Data;
 using MbUnit.Model;
 using MbUnit.Plugin.XunitAdapter.Properties;
@@ -113,7 +113,7 @@ namespace MbUnit.Plugin.XunitAdapter.Model
             }
 
             // Add XML documentation.
-            string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(typeInfo);
+            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(typeInfo);
             if (xmlDocumentation != null)
                 typeTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }
@@ -144,7 +144,7 @@ namespace MbUnit.Plugin.XunitAdapter.Model
             }
 
             // Add XML documentation.
-            string xmlDocumentation = Runtime.XmlDocumentationResolver.GetXmlDocumentation(methodInfo);
+            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(methodInfo);
             if (xmlDocumentation != null)
                 methodTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }
