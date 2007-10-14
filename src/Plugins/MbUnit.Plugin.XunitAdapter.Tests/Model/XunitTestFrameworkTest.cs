@@ -42,7 +42,7 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Model
         [Test]
         public void NameIsXunit()
         {
-            Assert.AreEqual("Xunit", framework.Name);
+            Assert.AreEqual("xUnit.Net", framework.Name);
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Model
             Assert.AreSame(rootTemplate, frameworkTemplate.Parent);
             Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
             Assert.AreEqual(CodeReference.Unknown, frameworkTemplate.CodeReference);
-            Assert.AreEqual("Xunit v" + expectedVersion, frameworkTemplate.Name);
+            Assert.AreEqual("xUnit.Net v" + expectedVersion, frameworkTemplate.Name);
             Assert.IsTrue(frameworkTemplate.IsGenerator);
             Assert.AreEqual(0, frameworkTemplate.Children.Count);
         }
@@ -91,7 +91,7 @@ namespace MbUnit.Plugin.XunitAdapter.Tests.Model
             Assert.AreSame(rootTest, frameworkTest.Parent);
             Assert.AreEqual(ComponentKind.Framework, frameworkTest.Kind);
             Assert.AreEqual(CodeReference.Unknown, frameworkTest.CodeReference);
-            Assert.AreEqual("Xunit v" + expectedVersion, frameworkTest.Name);
+            Assert.AreEqual("xUnit.Net v" + expectedVersion, frameworkTest.Name);
             Assert.IsFalse(frameworkTest.IsTestCase);
             Assert.AreEqual(1, frameworkTest.Children.Count);
 

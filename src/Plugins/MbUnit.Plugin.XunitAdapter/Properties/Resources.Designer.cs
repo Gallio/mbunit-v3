@@ -61,7 +61,7 @@ namespace MbUnit.Plugin.XunitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Xunit v{0}.
+        ///   Looks up a localized string similar to xUnit.Net v{0}.
         /// </summary>
         internal static string XunitFrameworkTemplate_FrameworkTemplateName {
             get {
@@ -70,7 +70,7 @@ namespace MbUnit.Plugin.XunitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Running Xunit tests..
+        ///   Looks up a localized string similar to Running xUnit.Net tests..
         /// </summary>
         internal static string XunitTestController_RunningXunitTests {
             get {
@@ -88,7 +88,7 @@ namespace MbUnit.Plugin.XunitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Xunit.
+        ///   Looks up a localized string similar to xUnit.Net.
         /// </summary>
         internal static string XunitTestFramework_XunitFrameworkName {
             get {
