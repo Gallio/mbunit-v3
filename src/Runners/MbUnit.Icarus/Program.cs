@@ -15,6 +15,7 @@
 
 using System;
 using System.Windows.Forms;
+using MbUnit.Hosting;
 using MbUnit.Icarus.Adapter;
 using MbUnit.Icarus.AdapterModel;
 using MbUnit.Icarus.Core.Model;
@@ -34,13 +35,20 @@ namespace MbUnit.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Main main = new Main();
+            Runtime.Initialize(new RuntimeSetup());
+            try
+            {
+                Main main = new Main();
 
-            ProjectAdapter pa = new ProjectAdapter(main, new ProjectAdapterModel());
-            ProjectPresenter p = new ProjectPresenter(pa, new TestRunnerModel());
+                ProjectAdapter pa = new ProjectAdapter(main, new ProjectAdapterModel());
+                ProjectPresenter p = new ProjectPresenter(pa, new TestRunnerModel());
 
-            Application.Run(main);
+                Application.Run(main);
+            }
+            finally
+            {
+                Runtime.Shutdown();
+            }
         }
-
     }
 }

@@ -27,7 +27,7 @@ namespace MbUnit.Icarus.Core.Presenter
 
         private readonly IProjectAdapter _View;
         private readonly ITestRunnerModel _TestRunnerModel;
-        private readonly StandaloneTestRunner testRunner;
+        private readonly ITestRunner testRunner;
 
         #endregion
 
@@ -48,7 +48,7 @@ namespace MbUnit.Icarus.Core.Presenter
             set { _View.TotalWorkUnits = value; }
         }
 
-        public StandaloneTestRunner TestRunner
+        public ITestRunner TestRunner
         {
             get { return testRunner; }
         }
@@ -62,8 +62,7 @@ namespace MbUnit.Icarus.Core.Presenter
             _View = view;
             _TestRunnerModel = testrunnermodel;
 
-            RuntimeSetup runtimeSetup = new RuntimeSetup();
-            testRunner = new StandaloneTestRunner(runtimeSetup);
+            testRunner = new IsolatedTestRunner();
             
             // wire up events
             _View.GetTestTree += GetTestTree;
