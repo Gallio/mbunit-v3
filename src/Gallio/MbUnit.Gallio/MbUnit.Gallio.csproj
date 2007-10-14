@@ -197,7 +197,7 @@
     <Compile Include="Framework\Assert.cs" />
     <Compile Include="Framework\AssertionException.cs" />
     <Compile Include="Framework\AuthorAttribute.cs" />
-    <Compile Include="Model\Block.cs" />
+    <Compile Include="Block.cs" />
     <Compile Include="Framework\CategoryAttribute.cs" />
     <Compile Include="Logging\ClientException.cs" />
     <Compile Include="Framework\CollectionAssert.cs" />

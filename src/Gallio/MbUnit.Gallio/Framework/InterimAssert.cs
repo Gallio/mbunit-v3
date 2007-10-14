@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using MbUnit.Logging;
-using MbUnit.Model;
 
 namespace MbUnit.Framework
 {

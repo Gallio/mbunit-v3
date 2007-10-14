@@ -7,8 +7,6 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyName>MbUnit.AddIn.TDNet</AssemblyName>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\MbUnit.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
     <RootNamespace>MbUnit.AddIn.TDNet</RootNamespace>

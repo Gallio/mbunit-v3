@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MbUnit.Model
+namespace MbUnit
 {
     /// <summary>
     /// A delegate used to execute a block of side-effecting code with no
