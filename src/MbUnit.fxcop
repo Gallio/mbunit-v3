@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<FxCopProject Version="1.35" Name="MbUnit">
+<FxCopProject Version="1.36" Name="MbUnit">
  <ProjectOptions>
   <SharedProject>True</SharedProject>
   <Stylesheet Apply="False">http://www.gotdotnet.com/team/fxcop//xsl/1.35/FxCopReport.xsl</Stylesheet>
@@ -13,18 +13,23 @@
   <SourceLookup>True</SourceLookup>
   <AnalysisExceptionsThreshold>10</AnalysisExceptionsThreshold>
   <RuleExceptionsThreshold>1</RuleExceptionsThreshold>
-  <Spelling Locale="en-us" />
-  <VersionAware>False</VersionAware>
+  <Spelling Locale="en-US" />
   <OverrideRuleVisibilities>False</OverrideRuleVisibilities>
   <CustomDictionaries SearchFxCopDir="True" SearchUserProfile="True" SearchProjectDir="True" />
   <SearchGlobalAssemblyCache>False</SearchGlobalAssemblyCache>
   <DeadlockDetectionTimeout>120</DeadlockDetectionTimeout>
+  <IgnoreGeneratedCode>False</IgnoreGeneratedCode>
  </ProjectOptions>
  <Targets>
-  <Target Name="$(ProjectDir)/Gallio/MbUnit.Gallio.Core/bin/MbUnit.Gallio.Core.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Gallio/MbUnit.Gallio.Framework/bin/MbUnit.Gallio.Framework.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <AssemblyReferenceDirectories>
+   <Directory>$(ProjectDir)/../libs/MbUnit2/bin/</Directory>
+   <Directory>$(ProjectDir)/../libs/TestDriven.Net/</Directory>
+  </AssemblyReferenceDirectories>
+  <Target Name="$(ProjectDir)/Gallio/MbUnit.Gallio/bin/MbUnit.Gallio.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.MbUnit2Adapter/bin/MbUnit.Plugin.MbUnit2Adapter.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.NUnitAdapter/bin/MbUnit.Plugin.NUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.Reports/bin/MbUnit.Plugin.Reports.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.XunitAdapter/bin/MbUnit.Plugin.XunitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Runners/MbUnit.AddIn.TDNet/bin/MbUnit.AddIn.TDNet.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Runners/MbUnit.Echo/bin/MbUnit.Echo.exe" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Runners/MbUnit.Tasks.MSBuild/bin/MbUnit.Tasks.MSBuild.dll" Analyze="True" AnalyzeAllChildren="True" />
@@ -90,8 +95,6 @@
    <RuleFile Name="$(FxCopDir)\Rules\InteroperabilityRules.dll" Enabled="False" AllRulesEnabled="False" />
    <RuleFile Name="$(FxCopDir)\Rules\MobilityRules.dll" Enabled="False" AllRulesEnabled="False" />
    <RuleFile Name="$(FxCopDir)\Rules\NamingRules.dll" Enabled="True" AllRulesEnabled="False">
-    <Rule Name="AvoidLanguageSpecificTypeNamesInParameters" Enabled="True" />
-    <Rule Name="AvoidTypeNamesInParameters" Enabled="True" />
     <Rule Name="DoNotNameEnumValuesReserved" Enabled="True" />
     <Rule Name="DoNotPrefixEnumValuesWithTypeName" Enabled="True" />
     <Rule Name="EventsShouldNotHaveBeforeOrAfterPrefix" Enabled="True" />
@@ -101,6 +104,7 @@
     <Rule Name="IdentifiersShouldDifferByMoreThanCase" Enabled="True" />
     <Rule Name="IdentifiersShouldHaveCorrectPrefix" Enabled="True" />
     <Rule Name="IdentifiersShouldHaveCorrectSuffix" Enabled="True" />
+    <Rule Name="IdentifiersShouldNotContainTypeNames" Enabled="True" />
     <Rule Name="IdentifiersShouldNotContainUnderscores" Enabled="True" />
     <Rule Name="IdentifiersShouldNotMatchKeywords" Enabled="True" />
     <Rule Name="OnlyFlagsEnumsShouldHavePluralNames" Enabled="True" />
@@ -116,19 +120,16 @@
    <RuleFile Name="$(FxCopDir)\Rules\PortabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
    <RuleFile Name="$(FxCopDir)\Rules\SecurityRules.dll" Enabled="True" AllRulesEnabled="True" />
    <RuleFile Name="$(FxCopDir)\Rules\UsageRules.dll" Enabled="True" AllRulesEnabled="False">
-    <Rule Name="AssembliesShouldDeclareMinimumSecurity" Enabled="True" />
     <Rule Name="CallBaseClassMethodsOnISerializableTypes" Enabled="True" />
     <Rule Name="CollectionPropertiesShouldBeReadOnly" Enabled="True" />
     <Rule Name="DisposableFieldsShouldBeDisposed" Enabled="True" />
     <Rule Name="DisposableTypesShouldDeclareFinalizer" Enabled="True" />
-    <Rule Name="DisposeMethodsShouldCallBaseClassDispose" Enabled="True" />
     <Rule Name="DoNotCallOverridableMethodsInConstructors" Enabled="True" />
     <Rule Name="DoNotDecreaseInheritedMemberVisibility" Enabled="True" />
-    <Rule Name="DoNotDisposeObjectsMultipleTimes" Enabled="True" />
     <Rule Name="DoNotIgnoreMethodResults" Enabled="True" />
     <Rule Name="DoNotMarkEnumsWithFlags" Enabled="True" />
     <Rule Name="DoNotMarkServicedComponentsWithWebMethod" Enabled="True" />
-    <Rule Name="DoNotRaiseExceptionsInFilterBlocks" Enabled="True" />
+    <Rule Name="DoNotRaiseExceptionsInExceptionClauses" Enabled="True" />
     <Rule Name="DoNotRaiseReservedExceptionTypes" Enabled="True" />
     <Rule Name="DoNotShipUnreleasedResourceFormats" Enabled="True" />
     <Rule Name="FinalizersShouldBeProtected" Enabled="True" />
@@ -138,7 +139,6 @@
     <Rule Name="ImplementSerializationMethodsCorrectly" Enabled="True" />
     <Rule Name="InitializeValueTypeStaticFieldsInline" Enabled="True" />
     <Rule Name="InstantiateArgumentExceptionsCorrectly" Enabled="True" />
-    <Rule Name="LiteralsShouldBeSpelledCorrectly" Enabled="True" />
     <Rule Name="MarkAllNonSerializableFields" Enabled="True" />
     <Rule Name="MarkISerializableTypesWithSerializable" Enabled="True" />
     <Rule Name="MarkWindowsFormsEntryPointsWithStaThread" Enabled="True" />
@@ -151,7 +151,6 @@
     <Rule Name="OverrideEqualsOnOverloadingOperatorEquals" Enabled="True" />
     <Rule Name="OverrideGetHashCodeOnOverridingEquals" Enabled="True" />
     <Rule Name="PassSystemUriObjectsInsteadOfStrings" Enabled="True" />
-    <Rule Name="ProvideCorrectArgumentsToFormattingMethods" Enabled="True" />
     <Rule Name="ProvideDeserializationMethodsForOptionalFields" Enabled="True" />
     <Rule Name="RethrowToPreserveStackDetails" Enabled="True" />
     <Rule Name="ReviewUnusedParameters" Enabled="True" />
@@ -163,137 +162,8 @@
   <Groups />
   <Settings />
  </Rules>
- <FxCopReport Version="1.35">
+ <FxCopReport Version="1.36">
   <Targets>
-   <Target Name="$(ProjectDir)/Gallio/MbUnit.Gallio.Framework/bin/MbUnit.Gallio.Framework.dll">
-    <Modules>
-     <Module Name="mbunit.gallio.framework.dll">
-      <Namespaces>
-       <Namespace Name="MbUnit.Framework">
-        <Types>
-         <Type Name="RowAttribute">
-          <Members>
-           <Member Name="Values">
-            <Messages>
-             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Status="Excluded" Created="2007-09-06 05:51:42Z">
-              <Issue>
-               <Item>RowAttribute.Values:Object[]</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-          </Members>
-         </Type>
-         <Type Name="Step">
-          <Messages>
-           <Message TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716" Status="Excluded" Created="2007-09-06 05:51:42Z">
-            <Issue Name="Type">
-             <Item>Step</Item>
-             <Item>Step</Item>
-            </Issue>
-           </Message>
-          </Messages>
-         </Type>
-        </Types>
-       </Namespace>
-       <Namespace Name="MbUnit.Framework.Kernel.Collections">
-        <Types>
-         <Type Name="MultiMap`2">
-          <Messages>
-           <Message TypeName="IdentifiersShouldHaveCorrectSuffix" Category="Microsoft.Naming" CheckId="CA1710" Status="Excluded" Created="2007-09-06 05:51:42Z">
-            <Issue>
-             <Item>MbUnit.Framework.Kernel.Collections.MultiMap`2</Item>
-             <Item>Dictionary</Item>
-            </Issue>
-           </Message>
-          </Messages>
-          <Members>
-           <Member Name="Add(TKey,System.Collections.Generic.IList`1&lt;TValue&gt;):System.Void">
-            <Messages>
-             <Message Id="1#" TypeName="ParameterNamesShouldMatchBaseDeclaration" Category="Microsoft.Naming" CheckId="CA1725" Status="Excluded" Created="2007-09-06 05:51:42Z">
-              <Issue>
-               <Item>values</Item>
-               <Item>MultiMap`2.Add(TKey, IList`1&lt;TValue&gt;):Void</Item>
-               <Item>value</Item>
-               <Item>IDictionary`2&lt;TKey,System.Collections.Generic.IList`1&lt;TValue&gt;&gt;.Add(TKey, IList`1&lt;TValue&gt;):Void</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-          </Members>
-         </Type>
-        </Types>
-       </Namespace>
-       <Namespace Name="MbUnit.Framework.Kernel.ExecutionLogs">
-        <Types>
-         <Type Name="BinaryAttachment">
-          <Members>
-           <Member Name="Data">
-            <Messages>
-             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Status="Excluded" Created="2007-09-06 05:51:42Z">
-              <Issue>
-               <Item>BinaryAttachment.Data:Byte[]</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-          </Members>
-         </Type>
-         <Type Name="XmlAttachment">
-          <Members>
-           <Member Name=".ctor(System.String,System.String,System.String)">
-            <Messages>
-             <Message Id="2#" TypeName="AvoidTypeNamesInParameters" Category="Microsoft.Naming" CheckId="CA1720" Status="Excluded" Created="2007-09-06 05:51:42Z">
-              <Issue>
-               <Item>xmlString</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-          </Members>
-         </Type>
-        </Types>
-       </Namespace>
-       <Namespace Name="MbUnit.Framework.Kernel.Model">
-        <Types>
-         <Type Name="BaseTemplate">
-          <Members>
-           <Member Name="AddChild(MbUnit.Framework.Kernel.Model.ITemplate):System.Void">
-            <Messages>
-             <Message Id="0#" TypeName="ParameterNamesShouldMatchBaseDeclaration" Category="Microsoft.Naming" CheckId="CA1725" Status="Excluded" Created="2007-09-06 05:51:42Z">
-              <Issue>
-               <Item>template</Item>
-               <Item>BaseTemplate.AddChild(ITemplate):Void</Item>
-               <Item>node</Item>
-               <Item>IModelTreeNode`1&lt;MbUnit.Framework.Kernel.Model.ITemplate&gt;.AddChild(ITemplate):Void</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-          </Members>
-         </Type>
-         <Type Name="BaseTest">
-          <Members>
-           <Member Name="AddChild(MbUnit.Framework.Kernel.Model.ITest):System.Void">
-            <Messages>
-             <Message Id="0#" TypeName="ParameterNamesShouldMatchBaseDeclaration" Category="Microsoft.Naming" CheckId="CA1725" Status="Excluded" Created="2007-09-06 05:51:42Z">
-              <Issue>
-               <Item>test</Item>
-               <Item>BaseTest.AddChild(ITest):Void</Item>
-               <Item>node</Item>
-               <Item>IModelTreeNode`1&lt;MbUnit.Framework.Kernel.Model.ITest&gt;.AddChild(ITest):Void</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-          </Members>
-         </Type>
-        </Types>
-       </Namespace>
-      </Namespaces>
-     </Module>
-    </Modules>
-   </Target>
    <Target Name="$(ProjectDir)/Runners/MbUnit.Tasks.MSBuild/bin/MbUnit.Tasks.MSBuild.dll">
     <Modules>
      <Module Name="mbunit.tasks.msbuild.dll">
@@ -304,8 +174,8 @@
           <Messages>
            <Message TypeName="TypeNamesShouldNotMatchNamespaces" Category="Microsoft.Naming" CheckId="CA1724" Status="Excluded" Created="2007-09-06 06:02:30Z">
             <Issue>
+             <Item>'MbUnit'</Item>
              <Item>MbUnit</Item>
-             <Item>MbUnit.Core.Reporting</Item>
             </Issue>
            </Message>
           </Messages>
@@ -316,68 +186,11 @@
      </Module>
     </Modules>
    </Target>
-   <Target Name="$(ProjectDir)/Runners/MbUnit.Tasks.NAnt/bin/MbUnit.Tasks.NAnt.dll">
-    <Modules>
-     <Module Name="mbunit.tasks.nant.dll">
-      <Namespaces>
-       <Namespace Name="MbUnit.Tasks.NAnt">
-        <Types>
-         <Type Name="MbUnitNAntTask">
-          <Members>
-           <Member Name="Assemblies">
-            <Messages>
-             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Status="Excluded" Created="2007-09-06 06:02:30Z">
-              <Issue>
-               <Item>MbUnitNAntTask.Assemblies:FileSet[]</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-           <Member Name="HintDirectories">
-            <Messages>
-             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Status="Excluded" Created="2007-09-06 06:02:30Z">
-              <Issue>
-               <Item>MbUnitNAntTask.HintDirectories:DirSet[]</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-           <Member Name="PluginDirectories">
-            <Messages>
-             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Status="Excluded" Created="2007-09-06 06:02:30Z">
-              <Issue>
-               <Item>MbUnitNAntTask.PluginDirectories:DirSet[]</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-          </Members>
-         </Type>
-        </Types>
-       </Namespace>
-      </Namespaces>
-     </Module>
-    </Modules>
-   </Target>
   </Targets>
   <Rules>
-   <Rule TypeName="AvoidTypeNamesInParameters" Category="Microsoft.Naming" CheckId="CA1720">
-    <Resolution Name="Default">Remove the type identifier from parameter name '{0}'.</Resolution>
-   </Rule>
-   <Rule TypeName="IdentifiersShouldHaveCorrectSuffix" Category="Microsoft.Naming" CheckId="CA1710">
-    <Resolution Name="Default">Rename '{0}' to end in '{1}'.</Resolution>
-   </Rule>
-   <Rule TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716">
-    <Resolution Name="Type">Change type name '{0}' so that it does not conflict with reserved keyword:'{1}'.</Resolution>
-   </Rule>
-   <Rule TypeName="ParameterNamesShouldMatchBaseDeclaration" Category="Microsoft.Naming" CheckId="CA1725">
-    <Resolution Name="Default">Change parameter name '{0}' of method {1} to '{2}' in order to match the identifier as it has been declared in {3}.</Resolution>
-   </Rule>
-   <Rule TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819">
-    <Resolution Name="Default">Change {0} to return a collection or make it a method.</Resolution>
-   </Rule>
    <Rule TypeName="TypeNamesShouldNotMatchNamespaces" Category="Microsoft.Naming" CheckId="CA1724">
-    <Resolution Name="Default">The type name '{0}' conflicts in whole or in part with the namespace name '{1}'. Change either name to eliminate the conflict.</Resolution>
+    <Resolution Name="Default">The type name {0} conflicts in whole or in part with the namespace name '{1}'. Change either name to eliminate the conflict.</Resolution>
+    <Resolution Name="System">The type name {0} conflicts in whole or in part with the namespace name '{1}' defined in the .NET Framework. Rename the type to eliminate the conflict.</Resolution>
    </Rule>
   </Rules>
  </FxCopReport>
