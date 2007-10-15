@@ -14,28 +14,25 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using MbUnit.Utilities;
+using System.Text;
 
-namespace MbUnit.Core.IO
+namespace MbUnit.Utilities
 {
-    ///<summary>
-    /// Performs IO related operations on the native file system.
-    ///</summary>
-    public class NativeFileSystem : IFileSystem
+    /// <summary>
+    /// Utilities for manipulating files.
+    /// </summary>
+    public static class FileUtils
     {
-        private static readonly NativeFileSystem instance = new NativeFileSystem();
-
         /// <summary>
-        /// Gets the singleton instance.
+        /// Replaces invalid characters in a file or directory name with underscores
+        /// and trims it if it is too long.
         /// </summary>
-        public static NativeFileSystem Instance
-        {
-            get { return instance; }
-        }
-
-        /// <inheritdoc />
-        public string EncodeFileName(string fileName)
+        /// <param name="fileName">The file or directory name</param>
+        /// <returns>The encoded file or directory name</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileName"/> is null</exception>
+        public static string EncodeFileName(string fileName)
         {
             if (fileName == null)
                 throw new ArgumentNullException(@"fileName");
@@ -49,39 +46,25 @@ namespace MbUnit.Core.IO
             return fileName;
         }
 
-        /// <inheritdoc />
-        public string GetFullDirectoryName(string path)
+        /// <summary>
+        /// Gets the full path of the containing directory.
+        /// </summary>
+        /// <param name="path">The path</param>
+        /// <returns>The full path of the parent directory or null if it is at the root</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        public static string GetFullPathOfParentDirectory(string path)
         {
             return Path.GetDirectoryName(Path.GetFullPath(path));
         }
 
-        /// <inheritdoc />
-        public void CreateDirectory(string path)
-        {
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-        }
-
-        /// <inheritdoc />
-        public string ReadAllText(string path)
-        {
-            return File.ReadAllText(path);
-        }
-
-        /// <inheritdoc />
-        public byte[] ReadAllBytes(string path)
-        {
-            return File.ReadAllBytes(path);
-        }
-
-        /// <inheritdoc />
-        public Stream OpenFile(string path, FileMode mode, FileAccess access)
-        {
-            return File.Open(path, mode, access);
-        }
-
-        /// <inheritdoc />
-        public void Copy(string sourcePath, string destPath, bool overwrite)
+        /// <summary>
+        /// Recursively copies files and folders from the source path to the destination.
+        /// </summary>
+        /// <param name="sourcePath">The source file or directory path</param>
+        /// <param name="destPath">The destination file or directory path</param>
+        /// <param name="overwrite">If true, overwrites existing files in the destination</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePath"/> or <paramref name="destPath"/> is null</exception>
+        public static void CopyAll(string sourcePath, string destPath, bool overwrite)
         {
             if (sourcePath == null)
                 throw new ArgumentNullException(@"sourcePath");
@@ -95,7 +78,7 @@ namespace MbUnit.Core.IO
                 foreach (FileSystemInfo entry in new DirectoryInfo(sourcePath).GetFileSystemInfos())
                 {
                     if (CanCopy(entry))
-                        Copy(entry.FullName, Path.Combine(destPath, entry.Name), overwrite);
+                        CopyAll(entry.FullName, Path.Combine(destPath, entry.Name), overwrite);
                 }
             }
             else if (File.Exists(sourcePath))
@@ -109,8 +92,12 @@ namespace MbUnit.Core.IO
             }
         }
 
-        /// <inheritdoc />
-        public void Delete(string path)
+        /// <summary>
+        /// Recursively deletes a file or directory.
+        /// Does nothing if the file or directory does not exist.
+        /// </summary>
+        /// <param name="path">The path</param>
+        public static void DeleteAll(string path)
         {
             if (Directory.Exists(path))
                 Directory.Delete(path, true);

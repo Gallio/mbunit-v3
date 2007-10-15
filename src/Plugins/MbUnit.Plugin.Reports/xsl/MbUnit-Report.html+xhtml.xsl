@@ -472,19 +472,25 @@
     <xsl:param name="attachments" />
     <xsl:variable name="attachmentName" select="@attachmentName" />
     <xsl:variable name="attachment" select="$attachments/g:attachment[@name=$attachmentName]" />
+    
+    <xsl:variable name="isImage" select="starts-with($attachment/@contentType, 'image/')" />
 
     <div class="logAttachment">
       <xsl:choose>
-        <xsl:when test="$contentDir != '' and $attachment/@contentPath">
+        <xsl:when test="$attachment/@contentDisposition = 'Link'">
+          <xsl:variable name="attachmentUri" select="translate($attachment/@contentPath, '\', '/')" />
           <xsl:choose>
-            <xsl:when test="starts-with($attachment/@contentType, 'image/')">
-              <img src="{$contentDir}{$attachment/@contentPath}" alt="{$attachmentName}" />
+            <xsl:when test="$isImage">
+              <img src="{$attachmentUri}" alt="Attachment: {$attachmentName}" />
             </xsl:when>
             <xsl:otherwise>
               <em>Attachment: </em>
-              <a href="{$contentDir}{$attachment/@contentPath}"><xsl:value-of select="$attachmentName" /></a>
+              <a href="{$attachmentUri}"><xsl:value-of select="$attachmentName" /></a>
             </xsl:otherwise>
           </xsl:choose>
+        </xsl:when>
+        <xsl:when test="$attachment/@contentDisposition = 'Inline' and $isImage and $attachment/@encoding = 'base64'">
+          <img src="data:{$attachment/@contentType};base64,{$attachment/text()}" alt="Attachment: {$attachmentName}" />
         </xsl:when>
         <xsl:otherwise>
           <em>Attachment: </em>

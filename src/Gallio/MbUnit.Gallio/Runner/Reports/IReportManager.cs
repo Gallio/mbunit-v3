@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
-using MbUnit.Core.IO;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 
 namespace MbUnit.Runner.Reports
@@ -41,48 +41,32 @@ namespace MbUnit.Runner.Reports
         IReportFormatter GetFormatter(string name);
 
         /// <summary>
-        /// Formats a report and saves it to a file.
-        /// Overwrites the file and replaces associated resources if they exist.
+        /// Formats the report indicated by the report writer.
         /// </summary>
-        /// <seealso cref="IReportFormatter.Format"/> for important remarks.
+        /// <param name="reportWriter">The report writer</param>
         /// <param name="formatterName">The formatter name</param>
-        /// <param name="report">The report to format</param>
-        /// <param name="reportContext">The report context specifying the formatted report file to generate</param>
-        /// <param name="options">Custom options for the report formatter</param>
+        /// <param name="formatterOptions">Custom options for the report formatter</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterName"/>, <paramref name="report"/>,
-        /// <paramref name="reportContext"/>, <paramref name="options"/> or <paramref name="progressMonitor"/> is null</exception>
-        void Format(string formatterName, Report report, ReportContext reportContext,
-            NameValueCollection options, IProgressMonitor progressMonitor);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportWriter"/>, <paramref name="formatterName"/>,
+        /// <paramref name="formatterOptions"/> or <paramref name="progressMonitor"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is no formatter with the specified name</exception>
+        void Format(IReportWriter reportWriter, string formatterName, NameValueCollection formatterOptions, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Saves the report as XML to the specified file.
+        /// Gets a report reader to load a report from the specified container.
+        /// </summary>
+        /// <param name="reportContainer">The report container</param>
+        /// <returns>The report reader</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportContainer"/> is null</exception>
+        IReportReader CreateReportReader(IReportContainer reportContainer);
+
+        /// <summary>
+        /// Gets a report writer to save or format a report to the specified container.
         /// </summary>
         /// <param name="report">The report</param>
-        /// <param name="reportContext">The report context specifying the report file to save</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="reportContext"/>
-        /// or <paramref name="progressMonitor"/> is null</exception>
-        void SaveReport(Report report, ReportContext reportContext, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Loads the report from XML from the specified file.
-        /// </summary>
-        /// <param name="reportContext">The report context specifying the report file to load</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportContext"/> or <paramref name="progressMonitor "/> is null</exception>
-        Report LoadReport(ReportContext reportContext, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Creates a report context.
-        /// </summary>
-        /// <param name="formatterName">The report formatter name</param>
-        /// <param name="reportDirectory">The directory in which the report should reside</param>
-        /// <param name="reportFileNameFormat">A format string used to construct the name of report files (without the extension).
-        /// Within the format string, <c>{0}</c> is replaced by the date and <c>{1}</c> by the time.</param>
-        /// <param name="reportTime">The date/time when the report was produced.</param>
-        /// <param name="fileSystem">The file system</param>
-        /// <returns>The full path of the report</returns>
-        ReportContext CreateReportContext(string formatterName, string reportDirectory, string reportFileNameFormat, DateTime reportTime, IFileSystem fileSystem);
+        /// <param name="reportContainer">The report container</param>
+        /// <returns>The report writer</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> or <paramref name="reportContainer"/> is null</exception>
+        IReportWriter CreateReportWriter(Report report, IReportContainer reportContainer);
     }
 }

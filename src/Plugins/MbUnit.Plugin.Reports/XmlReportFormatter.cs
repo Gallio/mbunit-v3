@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Specialized;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Runner.Reports;
@@ -31,65 +32,45 @@ namespace MbUnit.Plugin.Reports
     /// <description>Description</description>
     /// </listheader>
     /// <item>
-    /// <term>SaveAttachmentContents</term>
-    /// <description>If <c>"true"</c>, saves the attachment contents.
-    /// If <c>"false"</c>, discards the attachment altogether.
-    /// Defaults to <c>"true"</c>.</description>
-    /// </item>
-    /// <item>
-    /// <term>EmbedAttachmentContents</term>
-    /// <description>If <c>"true"</c> and <c>SaveAttachmentContents</c> is also <c>"true"</c>,
-    /// embeds attachment contents within the Xml file.
-    /// If "false", writes attachments to separate files in a subdirectory with the
-    /// same name as the report file.
-    /// Defaults to <c>"false"</c>.</description>
+    /// <term>AttachmentContentDisposition</term>
+    /// <description>Overrides the default attachment content disposition for the format.
+    /// The content disposition may be "Absent" to exclude attachments, "Link" to
+    /// include attachments by reference to external files, or "Inline" to include attachments as
+    /// inline content within the formatted document.  Different formats use different
+    /// default content dispositions.</description>
     /// </item>
     /// </list>
     /// </para>
     /// </summary>
-    public class XmlReportFormatter : IReportFormatter
+    public class XmlReportFormatter : BaseReportFormatter
     {
-        /// <summary>
-        /// Gets the name of this formatter.
-        /// </summary>
-        public const string FormatterName = @"Xml";
+        private readonly string name;
 
         /// <summary>
-        /// Gets the name of the option that controls whether attachments are saved.
+        /// Creates an Xml report formatter.
         /// </summary>
-        public const string SaveAttachmentContentsOption = @"SaveAttachmentContents";
-
-        /// <summary>
-        /// Gets the name of the option that controls whether attachment contents
-        /// are embedded within the report Xml or saved to individual files.
-        /// </summary>
-        public const string EmbedAttachmentContentsOption = @"EmbedAttachmentContents";
-
-        /// <inheritdoc />
-        public string Name
+        /// <param name="name">The formatter name</param>
+        public XmlReportFormatter(string name)
         {
-            get { return FormatterName; }
+            if (name == null)
+                throw new ArgumentNullException(@"name");
+
+            this.name = name;
         }
 
         /// <inheritdoc />
-        public string PreferredExtension
+        public override string Name
         {
-            get { return @"xml"; }
+            get { return name; }
         }
 
         /// <inheritdoc />
-        public void Format(Report report, ReportContext reportContext, NameValueCollection options,
-            IProgressMonitor progressMonitor)
+        public override void Format(IReportWriter reportWriter, NameValueCollection options, IProgressMonitor progressMonitor)
         {
-            bool saveAttachmentContents;
-            if (!bool.TryParse(options.Get(SaveAttachmentContentsOption), out saveAttachmentContents))
-                saveAttachmentContents = true;
+            ExecutionLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
-            bool embedAttachmentContents;
-            if (!bool.TryParse(options.Get(EmbedAttachmentContentsOption), out embedAttachmentContents))
-                embedAttachmentContents = false;
-
-            reportContext.SaveReport(report, saveAttachmentContents, embedAttachmentContents, progressMonitor);
+            reportWriter.SaveReport(attachmentContentDisposition, progressMonitor);
         }
     }
 }
+  

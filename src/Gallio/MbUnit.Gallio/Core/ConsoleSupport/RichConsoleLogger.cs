@@ -16,7 +16,7 @@
 using System;
 using Castle.Core.Logging;
 
-namespace MbUnit.Core.IO
+namespace MbUnit.Core.ConsoleSupport
 {
     /// <summary>
     /// A logger that sends all output to the console and displays messages in color

@@ -70,8 +70,8 @@
     <Compile Include="Framework\AssertWithTypeTest.cs" />
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Framework\CollectionAssertTest.cs" />
-    <Compile Include="Core\IO\CommandLine\CommandLineArgumentParserTests.cs" />
-    <Compile Include="Core\IO\CommandLine\CommandLineOutputTests.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineArgumentParserTests.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Contexts\ContextTest.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Framework\FileAssertTest.cs" />
@@ -108,7 +108,6 @@
     <Compile Include="Runner\Reports\PackageRunStatisticsTests.cs" />
     <Compile Include="Runner\Reports\PackageRunTests.cs" />
     <Compile Include="Runner\Reports\ReportTest.cs" />
-    <Compile Include="Runner\Reports\ReportContextTests.cs" />
     <Compile Include="Runner\Reports\StepRunTests.cs" />
     <Compile Include="Runner\Reports\TestRunTests.cs" />
     <Compile Include="Runner\TestLauncherTest.cs" />

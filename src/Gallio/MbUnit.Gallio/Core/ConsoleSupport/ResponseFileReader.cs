@@ -16,32 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.ConsoleSupport;
 
-namespace MbUnit.Echo
+namespace MbUnit.Core.ConsoleSupport
 {
     /// <summary>
-    /// The MbUnit console test runner program.
+    /// Reads the contents of a response file.
     /// </summary>
-    public class Program
-    {
-        [STAThread]
-        [LoaderOptimization(LoaderOptimization.MultiDomain)]
-        public static int Main(string[] args)
-        {
-            IRichConsole console = NativeConsole.Instance;
-
-            try
-            {
-                using (MainClass main = new MainClass(console))
-                {
-                    return main.Run(args);
-                }
-            }
-            finally
-            {
-                console.ResetColor();
-            }
-        }
-    }
+    /// <param name="responseFileName">The response file name, never null</param>
+    /// <returns>The plain text contents of the file</returns>
+    public delegate string ResponseFileReader(string responseFileName);
 }

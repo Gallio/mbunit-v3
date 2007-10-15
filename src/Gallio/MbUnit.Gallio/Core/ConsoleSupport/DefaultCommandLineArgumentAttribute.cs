@@ -14,7 +14,7 @@
 // limitations under the License.
 using System;
 
-namespace MbUnit.Core.IO.CommandLine
+namespace MbUnit.Core.ConsoleSupport
 {
 	/// <summary>
 	/// Indicates that this argument is the default argument.

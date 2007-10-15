@@ -15,7 +15,7 @@
 using System;
 using MbUnit.Collections;
 
-namespace MbUnit.Core.IO.CommandLine
+namespace MbUnit.Core.ConsoleSupport
 {
     /// <summary>
     /// Allows control of command line parsing.

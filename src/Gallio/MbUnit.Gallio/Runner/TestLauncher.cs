@@ -21,7 +21,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Text;
 using Castle.Core.Logging;
-using MbUnit.Core.IO;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Runner.Reports;
 using MbUnit.Runner.Monitors;
@@ -423,19 +423,6 @@ namespace MbUnit.Runner
 
         #region Private Methods
 
-        /// <summary>
-        /// <para>
-        /// Gets the file system to use for saving report contents.
-        /// </para>
-        /// <para>
-        /// The default file system is <see cref="NativeFileSystem.Instance" />.
-        /// </para>
-        /// </summary>
-        protected virtual IFileSystem GetReportFileSystem()
-        {
-            return NativeFileSystem.Instance;
-        }
-
         private bool PrepareToRun(TestLauncherResult result)
         {
             Canonicalize();
@@ -684,23 +671,47 @@ namespace MbUnit.Runner
 
         private void GenerateReports(TestLauncherResult result, IReportManager reportManager)
         {
+            if (reportFormats.Count == 0)
+                return;
+
             Report report = result.Report;
 
-            foreach (string reportFormat in reportFormats)
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                ReportContext reportContext = reportManager.CreateReportContext(reportFormat,
-                    reportDirectory, reportNameFormat, report.PackageRun.StartTime, GetReportFileSystem());
+                progressMonitor.BeginTask("Generating reports.", reportFormats.Count);
 
-                result.AddReportContext(reportFormat, reportContext);
+                IReportContainer reportContainer = CreateReportContainer(report);
+                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 
-                progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+                // Delete the report if it exists already.
+                reportContainer.DeleteReport();
+
+                // Format the report in all of the desired ways.
+                foreach (string reportFormat in reportFormats)
                 {
-                    progressMonitor.BeginTask(String.Format("Generating {0} report.", reportFormat), 1);
-
-                    reportManager.Format(reportFormat, report, reportContext, reportFormatOptions,
+                    reportManager.Format(reportWriter, reportFormat, reportFormatOptions,
                         new SubProgressMonitor(progressMonitor, 1));
-                });
-            }
+                }
+
+                // Save the full paths of the documents.
+                foreach (string reportDocumentPath in reportWriter.ReportDocumentPaths)
+                    result.AddReportDocumentPath(Path.Combine(reportDirectory, reportDocumentPath));
+            });
+        }
+
+        private IReportContainer CreateReportContainer(Report report)
+        {
+            string reportName = GenerateReportName(report);
+            return new FileSystemReportContainer(reportDirectory, reportName);
+        }
+
+        private string GenerateReportName(Report report)
+        {
+            DateTime reportTime = report.PackageRun != null ? report.PackageRun.StartTime : DateTime.Now;
+
+            return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
+                reportTime.ToString(@"yyyyMMdd"),
+                reportTime.ToString(@"HHmmss"));
         }
 
         #endregion

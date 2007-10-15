@@ -18,7 +18,7 @@ using System.IO;
 using System.Text;
 using MbUnit.Properties;
 
-namespace MbUnit.Core.IO.CommandLine
+namespace MbUnit.Core.ConsoleSupport
 {
     ///<summary>
     /// Responsible for creating output.

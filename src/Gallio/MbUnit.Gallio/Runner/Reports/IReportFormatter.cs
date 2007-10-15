@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
 using MbUnit.Core.ProgressMonitoring;
 
 namespace MbUnit.Runner.Reports
@@ -33,20 +31,13 @@ namespace MbUnit.Runner.Reports
         string Name { get; }
 
         /// <summary>
-        /// Gets the preferred extension used by the formatter to save its reports.
-        /// eg. "xml".
+        /// Formats the report indicated by the report writer.
         /// </summary>
-        string PreferredExtension { get; }
-
-        /// <summary>
-        /// Formats a report and saves it to a file specified by the report context.
-        /// Overwrites the file and replaces associated resources if they exist.
-        /// </summary>
-        /// <param name="report">The report to format</param>
-        /// <param name="reportContext">The report context specifying the formatted report file to generate</param>
-        /// <param name="options">Custom options for the report formatter</param>
+        /// <param name="reportWriter">The report writer</param>
+        /// <param name="formatterOptions">Custom options for the report formatter</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        void Format(Report report, ReportContext reportContext, NameValueCollection options,
-            IProgressMonitor progressMonitor);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportWriter"/>,
+        /// <paramref name="formatterOptions"/> or <paramref name="progressMonitor"/> is null</exception>
+        void Format(IReportWriter reportWriter, NameValueCollection formatterOptions, IProgressMonitor progressMonitor);
     }
 }

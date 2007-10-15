@@ -14,7 +14,7 @@
 // limitations under the License.
 using System;
 
-namespace MbUnit.Core.IO.CommandLine
+namespace MbUnit.Core.ConsoleSupport
 {
 	/// <summary>
 	/// Used to control parsing of command line arguments.

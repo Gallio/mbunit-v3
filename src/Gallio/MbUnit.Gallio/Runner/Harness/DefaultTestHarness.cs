@@ -18,11 +18,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using MbUnit.Collections;
-using MbUnit.Core.IO;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Hosting;
 using MbUnit.Model;
 using MbUnit.Model.Execution;
+using MbUnit.Utilities;
 
 namespace MbUnit.Runner.Harness
 {
@@ -201,7 +202,7 @@ namespace MbUnit.Runner.Harness
                     Loader.AssemblyResolverManager.AddHintDirectory(path);
 
                 foreach (string assemblyFile in package.AssemblyFiles)
-                    Loader.AssemblyResolverManager.AddHintDirectory(NativeFileSystem.Instance.GetFullDirectoryName(assemblyFile));
+                    Loader.AssemblyResolverManager.AddHintDirectory(FileUtils.GetFullPathOfParentDirectory(assemblyFile));
 
                 progressMonitor.Worked(1);
 

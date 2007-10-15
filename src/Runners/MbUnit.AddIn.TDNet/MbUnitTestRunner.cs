@@ -154,8 +154,11 @@ namespace MbUnit.AddIn.TDNet
                 TestLauncherResult result = RunLauncher(launcher);
 
                 // This will generate a link to the generated report
-                Uri uri = new Uri(result.GetReportContext(reportType).ReportPath);
-                testListener.TestResultsUrl(uri.AbsoluteUri);
+                if (result.ReportDocumentPaths.Count != 0)
+                {
+                    Uri uri = new Uri(result.ReportDocumentPaths[0]);
+                    testListener.TestResultsUrl(uri.AbsoluteUri);
+                }
 
                 // Inform no tests run, if necessary.
                 if (result.ResultCode == ResultCode.NoTests)

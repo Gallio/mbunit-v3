@@ -16,32 +16,28 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.ConsoleSupport;
 
-namespace MbUnit.Echo
+namespace MbUnit.Runner.Reports
 {
     /// <summary>
-    /// The MbUnit console test runner program.
+    /// Specifies how attachments are stored in Xml.
     /// </summary>
-    public class Program
+    public enum ExecutionLogAttachmentContentDisposition
     {
-        [STAThread]
-        [LoaderOptimization(LoaderOptimization.MultiDomain)]
-        public static int Main(string[] args)
-        {
-            IRichConsole console = NativeConsole.Instance;
+        /// <summary>
+        /// The attachment content is not present.
+        /// </summary>
+        Absent = 0,
 
-            try
-            {
-                using (MainClass main = new MainClass(console))
-                {
-                    return main.Run(args);
-                }
-            }
-            finally
-            {
-                console.ResetColor();
-            }
-        }
+        /// <summary>
+        /// The attachment content is saved to a linked file indicated by <see cref="ExecutionLogAttachment.ContentPath" />.
+        /// </summary>
+        Link,
+
+        /// <summary>
+        /// The attachment content is included inline as <see cref="ExecutionLogAttachment.InnerText" />
+        /// or <see cref="ExecutionLogAttachment.InnerXml" /> with a given <see cref="ExecutionLogAttachment.Encoding" />.
+        /// </summary>
+        Inline
     }
 }

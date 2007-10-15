@@ -60,17 +60,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\IO\CommandLine\CommandLineArgumentAttribute.cs" />
-    <Compile Include="Core\IO\CommandLine\CommandLineArgumentFlags.cs" />
-    <Compile Include="Core\IO\CommandLine\CommandLineArgumentParser.cs" />
-    <Compile Include="Core\IO\CommandLine\CommandLineErrorReporter.cs" />
-    <Compile Include="Core\IO\CommandLine\CommandLineOutput.cs" />
-    <Compile Include="Core\IO\CommandLine\DefaultCommandLineArgumentAttribute.cs" />
-    <Compile Include="Core\IO\IRichConsole.cs" />
-    <Compile Include="Core\IO\RichConsoleLogger.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineArgumentAttribute.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineArgumentFlags.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineArgumentParser.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineErrorReporter.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineOutput.cs" />
+    <Compile Include="Core\ConsoleSupport\DefaultCommandLineArgumentAttribute.cs" />
+    <Compile Include="Core\ConsoleSupport\ResponseFileReader.cs" />
+    <Compile Include="Core\ConsoleSupport\IRichConsole.cs" />
+    <Compile Include="Core\ConsoleSupport\RichConsoleLogger.cs" />
     <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitor.cs" />
     <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
-    <Compile Include="Core\IO\NativeConsole.cs" />
+    <Compile Include="Core\ConsoleSupport\NativeConsole.cs" />
     <Compile Include="Hosting\IRuntimeFactory.cs" />
     <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
@@ -84,12 +85,16 @@
     <Compile Include="Runner\Harness\ITestHarnessFactory.cs" />
     <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
     <Compile Include="Runner\IsolatedTestRunner.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogAttachmentContentDisposition.cs" />
+    <Compile Include="Runner\Reports\DefaultReportReader.cs" />
+    <Compile Include="Runner\Reports\DefaultReportWriter.cs" />
+    <Compile Include="Runner\Reports\FileSystemReportContainer.cs" />
+    <Compile Include="Runner\Reports\IReportContainer.cs" />
+    <Compile Include="Runner\Reports\IReportWriter.cs" />
+    <Compile Include="Runner\Reports\IReportReader.cs" />
     <Compile Include="Runner\TestRunnerFactory.cs" />
     <Compile Include="Runner\TestLauncherResult.cs" />
     <Compile Include="Runner\TestPackage.cs" />
-    <Compile Include="Core\IO\IFileSystem.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Hosting\Loader.cs" />
     <Compile Include="Model\Execution\DependencyTestPlan.cs" />
     <Compile Include="Model\Execution\DependencyTestPlanFactory.cs" />
@@ -153,7 +158,6 @@
     <Compile Include="Runner\Reports\PackageRun.cs" />
     <Compile Include="Runner\Reports\PackageRunStatistics.cs" />
     <Compile Include="Runner\Reports\Report.cs" />
-    <Compile Include="Runner\Reports\ReportContext.cs" />
     <Compile Include="Runner\Reports\StepRun.cs" />
     <Compile Include="Runner\Reports\TestRun.cs" />
     <Compile Include="Runner\BaseTestRunner.cs" />
@@ -190,7 +194,7 @@
     <Compile Include="Contexts\IContextServiceProvider.cs" />
     <Compile Include="Hosting\RuntimeSetup.cs" />
     <Compile Include="Hosting\WindsorRuntime.cs" />
-    <Compile Include="Core\IO\NativeFileSystem.cs" />
+    <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
     <Compile Include="Framework\ArrayAssert.cs" />
     <Compile Include="Framework\AssemblyResolverAttribute.cs" />

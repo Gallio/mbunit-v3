@@ -28,7 +28,7 @@ namespace MbUnit.Plugin.Reports
 {
     /// <summary>
     /// <para>
-    /// Abstract base class for formatters implemented using XSLT.
+    /// Generic XSLT report formatter.
     /// </para>
     /// <para>
     /// Recognizes the following options:
@@ -38,15 +38,17 @@ namespace MbUnit.Plugin.Reports
     /// <description>Description</description>
     /// </listheader>
     /// <item>
-    /// <term>SaveAttachmentContents</term>
-    /// <description>If <c>"true"</c>, saves the attachment contents.
-    /// If <c>"false"</c>, discards the attachment altogether.
-    /// Defaults to <c>"true"</c>.</description>
+    /// <term>AttachmentContentDisposition</term>
+    /// <description>Overrides the default attachment content disposition for the format.
+    /// The content disposition may be "Absent" to exclude attachments, "Link" to
+    /// include attachments by reference to external files, or "Inline" to include attachments as
+    /// inline content within the formatted document.  Different formats use different
+    /// default content dispositions.</description>
     /// </item>
     /// </list>
     /// </para>
     /// </summary>
-    public class XsltReportFormatter : IReportFormatter
+    public class XsltReportFormatter : BaseReportFormatter
     {
         private readonly string name;
         private readonly string extension;
@@ -55,11 +57,6 @@ namespace MbUnit.Plugin.Reports
         private readonly string[] resourcePaths;
 
         private XslCompiledTransform transform;
-
-        /// <summary>
-        /// Gets the name of the option that controls whether attachments are saved.
-        /// </summary>
-        public const string SaveAttachmentContentsOption = @"SaveAttachmentContents";
 
         /// <summary>
         /// Creates an XSLT report formatter.
@@ -98,42 +95,33 @@ namespace MbUnit.Plugin.Reports
         }
 
         /// <inheritdoc />
-        public string Name
+        public override string Name
         {
             get { return name; }
         }
 
         /// <inheritdoc />
-        public string PreferredExtension
+        public override void Format(IReportWriter reportWriter, NameValueCollection options, IProgressMonitor progressMonitor)
         {
-            get { return extension; }
-        }
-
-        /// <inheritdoc />
-        public void Format(Report report, ReportContext reportContext, NameValueCollection options,
-            IProgressMonitor progressMonitor)
-        {
-            bool saveAttachmentContents;
-            if (!bool.TryParse(options.Get(SaveAttachmentContentsOption), out saveAttachmentContents))
-                saveAttachmentContents = true;
+            ExecutionLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
             using (progressMonitor)
             {
                 progressMonitor.BeginTask(String.Format("Formatting report as {0}.", name), 10);
 
                 progressMonitor.SetStatus("Applying XSL transform.");
-                ApplyTransform(report, reportContext, options);
+                ApplyTransform(reportWriter, attachmentContentDisposition, options);
                 progressMonitor.Worked(3);
 
                 progressMonitor.SetStatus("Copying resources.");
-                CopyResources(reportContext);
+                CopyResources(reportWriter);
                 progressMonitor.Worked(2);
 
                 progressMonitor.SetStatus(@"");
 
-                if (saveAttachmentContents)
+                if (attachmentContentDisposition == ExecutionLogAttachmentContentDisposition.Link)
                 {
-                    reportContext.SaveReportAttachments(report, new SubProgressMonitor(progressMonitor, 5));
+                    reportWriter.SaveReportAttachments(new SubProgressMonitor(progressMonitor, 5));
                 }
             }
         }
@@ -149,38 +137,43 @@ namespace MbUnit.Plugin.Reports
         /// <summary>
         /// Applies the transform to produce a report.
         /// </summary>
-        protected virtual void ApplyTransform(Report report, ReportContext reportContext,
+        protected virtual void ApplyTransform(IReportWriter reportWriter, ExecutionLogAttachmentContentDisposition attachmentContentDisposition,
             NameValueCollection options)
         {
             XsltArgumentList arguments = new XsltArgumentList();
-            PopulateArguments(arguments, report, reportContext, options);
+            PopulateArguments(arguments, options, reportWriter.ReportContainer.ReportName);
 
-            IXPathNavigable reportDoc = reportContext.SerializeReportToXPathNavigable(report);
+            XPathDocument document = SerializeReportToXPathDocument(reportWriter, attachmentContentDisposition);
 
-            using (StreamWriter writer = new StreamWriter(reportContext.OpenReport(FileMode.Create, FileAccess.Write), Encoding.UTF8))
-                transform.Transform(reportDoc, arguments, writer);
+            string reportPath = reportWriter.ReportContainer.ReportName + @"." + extension;
+
+            using (StreamWriter writer = new StreamWriter(reportWriter.ReportContainer.OpenReportFile(
+                reportPath, FileMode.Create, FileAccess.Write), Encoding.UTF8))
+                transform.Transform(document, arguments, writer);
+
+            reportWriter.AddReportDocumentPath(reportPath);
         }
 
         /// <summary>
         /// Copies additional resources to the content path within the report.
         /// </summary>
-        protected virtual void CopyResources(ReportContext reportContext)
+        protected virtual void CopyResources(IReportWriter reportWriter)
         {
             foreach (string resourcePath in resourcePaths)
             {
-                reportContext.FileSystem.Copy(Path.Combine(contentLocalPath, resourcePath),
-                    Path.Combine(reportContext.ContentPath, resourcePath), true);
+                string sourceContentPath = Path.Combine(contentLocalPath, resourcePath);
+                string destContentPath = Path.Combine(reportWriter.ReportContainer.ReportName, resourcePath);
+
+                reportWriter.ReportContainer.CopyToReport(sourceContentPath, destContentPath);
             }
         }
 
         /// <summary>
         /// Populates the arguments for the XSL template processing.
         /// </summary>
-        protected virtual void PopulateArguments(XsltArgumentList arguments,
-            Report report, ReportContext reportContext, NameValueCollection options)
+        protected virtual void PopulateArguments(XsltArgumentList arguments, NameValueCollection options, string reportName)
         {
-            arguments.AddParam(@"contentRoot", @"", reportContext.RelativeContentPath);
-            arguments.AddParam(@"resourceRoot", @"", reportContext.RelativeContentPath);
+            arguments.AddParam(@"resourceRoot", @"", reportName);
         }
 
         private void LoadTransform()
@@ -192,6 +185,30 @@ namespace MbUnit.Plugin.Reports
             transform = new XslCompiledTransform();
             using (XmlReader reader = XmlReader.Create(Path.Combine(contentLocalPath, xsltPath), settings))
                 transform.Load(reader);
+        }
+
+        private static XPathDocument SerializeReportToXPathDocument(IReportWriter reportWriter,
+            ExecutionLogAttachmentContentDisposition attachmentContentDisposition)
+        {
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
+            xmlWriterSettings.CheckCharacters = false;
+            xmlWriterSettings.Encoding = Encoding.UTF8;
+            xmlWriterSettings.Indent = false;
+            xmlWriterSettings.CloseOutput = false;
+
+            MemoryStream stream = new MemoryStream();
+            XmlWriter xmlWriter = XmlWriter.Create(stream, xmlWriterSettings);
+            reportWriter.SerializeReport(xmlWriter, attachmentContentDisposition);
+
+            XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
+            xmlReaderSettings.CheckCharacters = false;
+            xmlReaderSettings.ValidationType = ValidationType.None;
+
+            stream.Position = 0;
+            XmlReader xmlReader = XmlReader.Create(stream, xmlReaderSettings);
+
+            XPathDocument document = new XPathDocument(xmlReader);
+            return document;
         }
 
         private static XmlResolver GetContentResolver()

@@ -18,7 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace MbUnit.Core.IO
+namespace MbUnit.Core.ConsoleSupport
 {
     /// <summary>
     /// <para>

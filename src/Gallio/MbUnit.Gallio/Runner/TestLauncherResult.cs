@@ -26,7 +26,7 @@ namespace MbUnit.Runner
     public class TestLauncherResult
     {
         private readonly Report report;
-        private readonly Dictionary<string, ReportContext> reportContexts;
+        private readonly List<string> reportDocumentPaths;
 
         private int resultCode = Runner.ResultCode.Success;
 
@@ -38,7 +38,7 @@ namespace MbUnit.Runner
         {
             this.report = report;
 
-            reportContexts = new Dictionary<string, ReportContext>();
+            reportDocumentPaths = new List<string>();
         }
 
         /// <summary>
@@ -84,20 +84,12 @@ namespace MbUnit.Runner
         }
 
         /// <summary>
-        /// Gets the context of the generated report for the given report format.
+        /// Gets the full paths of the formatted report documents.
         /// </summary>
-        /// <param name="reportFormat">The report format name</param>
-        /// <returns>The context of the generated report, or <c>null</c> if no report
-        /// was generated for the given report format</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportFormat"/> is null</exception>
-        public ReportContext GetReportContext(string reportFormat)
+        /// <returns>The full paths of the formatted report documents</returns>
+        public IList<string> ReportDocumentPaths
         {
-            if (reportFormat == null)
-                throw new ArgumentNullException(@"reportFormat");
-
-            ReportContext reportContext;
-            reportContexts.TryGetValue(CanonicalizeReportFormat(reportFormat), out reportContext);
-            return reportContext;
+            get { return reportDocumentPaths.ToArray(); }
         }
 
         /// <summary>
@@ -110,27 +102,16 @@ namespace MbUnit.Runner
         }
 
         /// <summary>
-        /// Adds a new report context.
+        /// Adds a new report document path.
         /// </summary>
-        /// <param name="reportFormat">The report format</param>
-        /// <param name="reportContext">The report context</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportFormat"/> or <
-        /// <paramref name="reportContext"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if there is already a context
-        /// registered for the specified <paramref name="reportFormat"/></exception>
-        public void AddReportContext(string reportFormat, ReportContext reportContext)
+        /// <param name="reportDocumentPath">The report document path</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportDocumentPath"/> is null</exception>
+        public void AddReportDocumentPath(string reportDocumentPath)
         {
-            if (reportFormat == null)
-                throw new ArgumentNullException(@"reportFormat");
-            if (reportContext == null)
-                throw new ArgumentNullException(@"reportContext");
+            if (reportDocumentPath == null)
+                throw new ArgumentNullException(@"reportDocumentPath");
 
-            reportContexts.Add(CanonicalizeReportFormat(reportFormat), reportContext);
-        }
-
-        private static string CanonicalizeReportFormat(string reportFormat)
-        {
-            return reportFormat.ToLower(CultureInfo.InvariantCulture);
+            reportDocumentPaths.Add(reportDocumentPath);
         }
     }
 }

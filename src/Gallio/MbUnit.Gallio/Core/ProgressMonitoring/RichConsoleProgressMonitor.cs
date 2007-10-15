@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Core.IO;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Utilities;
 using MbUnit.Properties;

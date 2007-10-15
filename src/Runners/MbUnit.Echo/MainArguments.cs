@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MbUnit.Core.IO.CommandLine;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Framework;
 using MbUnit.Model.Filters;
 using MbUnit.Model;
@@ -77,10 +77,10 @@ namespace MbUnit.Echo
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "rnf",
              LongName = "report-name-format",
-             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}{1}.",
+             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = mbunit-{0}-{1}.",
              ValueLabel = "pattern"
              )]
-        public string ReportNameFormat = "mbunit-result-{0}{1}";
+        public string ReportNameFormat = "mbunit-result-{0}-{1}";
 
         [CommandLineArgument(
              CommandLineArgumentFlags.MultipleUnique,

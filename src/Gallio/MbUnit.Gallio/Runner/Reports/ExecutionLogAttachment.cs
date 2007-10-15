@@ -39,6 +39,7 @@ namespace MbUnit.Runner.Reports
         private string name;
         private string contentType;
         private ExecutionLogAttachmentEncoding encoding;
+        private ExecutionLogAttachmentContentDisposition contentDisposition;
         private string innerText;
         private string contentPath;
         private XmlElement[] innerXml;
@@ -162,6 +163,17 @@ namespace MbUnit.Runner.Reports
         {
             get { return contentPath; }
             set { contentPath = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the content disposition of the attachment which
+        /// indicates how the attachment has been stored.
+        /// </summary>
+        [XmlAttribute("contentDisposition")]
+        public ExecutionLogAttachmentContentDisposition ContentDisposition
+        {
+            get { return contentDisposition; }
+            set { contentDisposition = value; }
         }
 
         /// <summary>

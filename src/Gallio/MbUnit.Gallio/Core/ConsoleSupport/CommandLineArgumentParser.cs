@@ -18,11 +18,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using MbUnit.Core.IO;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Properties;
 using MbUnit.Collections;
 
-namespace MbUnit.Core.IO.CommandLine
+namespace MbUnit.Core.ConsoleSupport
 {
 	/// <summary>
 	/// Parser for command line arguments.
@@ -62,17 +62,19 @@ namespace MbUnit.Core.IO.CommandLine
 	public class CommandLineArgumentParser
 	{
         private readonly Type argumentSpecification;
+        private readonly ResponseFileReader responseFileReader;
         private List<Argument> arguments;
         private Dictionary<string, Argument> argumentMap;
         private Argument defaultArgument;
-	    private readonly IFileSystem resourceFileMgr;
        
         /// <summary>
 		/// Creates a new command line argument parser.
 		/// </summary>
 		/// <param name="argumentSpecification">The argument type containing fields decorated
         /// with <see cref="CommandLineArgumentAttribute" /></param>
-		public CommandLineArgumentParser(Type argumentSpecification) : this(argumentSpecification, NativeFileSystem.Instance)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="argumentSpecification"/> is null</exception>
+        public CommandLineArgumentParser(Type argumentSpecification)
+            : this(argumentSpecification, File.ReadAllText)
 		{
 		}
 
@@ -81,14 +83,18 @@ namespace MbUnit.Core.IO.CommandLine
         /// </summary>
         /// <param name="argumentSpecification">The argument type containing fields decorated
         /// with <see cref="CommandLineArgumentAttribute" /></param>
-        /// <param name="fileSystem">Object to process resource file.</param>
-        public CommandLineArgumentParser(Type argumentSpecification, IFileSystem fileSystem)
+        /// <param name="responseFileReader">The delegate to use for reading response files instead of the default.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="argumentSpecification"/>
+        /// or <paramref name="responseFileReader"/> is null</exception>
+        public CommandLineArgumentParser(Type argumentSpecification, ResponseFileReader responseFileReader)
         {
             if (argumentSpecification == null)
                 throw new ArgumentNullException(@"argumentSpecification");
+            if (responseFileReader == null)
+                throw new ArgumentNullException(@"responseFileReader");
 
             this.argumentSpecification = argumentSpecification;
-            resourceFileMgr = fileSystem;
+            this.responseFileReader = responseFileReader;
 
             PopulateArgumentMap();
         }
@@ -372,7 +378,7 @@ namespace MbUnit.Core.IO.CommandLine
 	        string args = null;
 	        try
 	        {
-	            args = resourceFileMgr.ReadAllText(fileName);
+	            args = responseFileReader(fileName);
 	        }
 	        catch (FileNotFoundException)
 	        {

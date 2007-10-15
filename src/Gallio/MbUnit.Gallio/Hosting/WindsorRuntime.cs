@@ -25,7 +25,8 @@ using Castle.Core.Resource;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
-using MbUnit.Core.IO;
+using MbUnit.Core.ConsoleSupport;
+using MbUnit.Utilities;
 
 namespace MbUnit.Hosting
 {
@@ -227,7 +228,7 @@ namespace MbUnit.Hosting
         private void LoadConfigurationFromFile(string configFile)
         {
             // Ensure that we can resolve any types referenced by the config file.
-            string pluginPath = NativeFileSystem.Instance.GetFullDirectoryName(configFile);
+            string pluginPath = FileUtils.GetFullPathOfParentDirectory(configFile);
             assemblyResolverManager.AddHintDirectory(pluginPath);
             assemblyResolverManager.AddHintDirectory(Path.Combine(pluginPath, @"bin"));
 

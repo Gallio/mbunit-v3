@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Core.IO;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 
 namespace MbUnit.Core.ProgressMonitoring

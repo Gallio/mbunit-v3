@@ -18,8 +18,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
 using MbUnit.Collections;
-using MbUnit.Core.IO;
-using MbUnit.Core.IO.CommandLine;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Runner.Reports;
 using MbUnit.Runner;
@@ -160,18 +159,20 @@ namespace MbUnit.Echo
                 console.WriteLine(Resources.MainClass_OpeningReports);
                 console.ResetColor();
 
-                foreach (string reportType in arguments.ReportTypes)
-                {
-                    string reportPath = result.GetReportContext(reportType).ReportPath;
-                    try
-                    {
-                        Process.Start(reportPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.FatalFormat("Could not open report '{0}' for display.", reportPath, ex);
-                    }
-                }
+                foreach (string reportPath in result.ReportDocumentPaths)
+                    OpenReport(reportPath);
+            }
+        }
+
+        private void OpenReport(string reportPath)
+        {
+            try
+            {
+                Process.Start(reportPath);
+            }
+            catch (Exception ex)
+            {
+                logger.FatalFormat("Could not open report '{0}' for display.", reportPath, ex);
             }
         }
 

@@ -19,7 +19,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using Castle.Core;
-using MbUnit.Core.IO;
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Hosting;
 
@@ -74,56 +74,35 @@ namespace MbUnit.Runner.Reports
         }
 
         /// <inheritdoc />
-        public void Format(string formatterName, Report report, ReportContext reportContext,
-            NameValueCollection options, IProgressMonitor progressMonitor)
+        public void Format(IReportWriter reportWriter, string formatterName, NameValueCollection formatterOptions,
+            IProgressMonitor progressMonitor)
         {
+            if (reportWriter == null)
+                throw new ArgumentNullException(@"reportWriter");
             if (formatterName == null)
                 throw new ArgumentNullException(@"formatterName");
-            if (report == null)
-                throw new ArgumentNullException(@"report");
-            if (reportContext == null)
-                throw new ArgumentNullException(@"reportContext");
-            if (options == null)
-                throw new ArgumentNullException(@"options");
+            if (formatterOptions == null)
+                throw new ArgumentNullException(@"formatterOptions");
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
 
             IReportFormatter formatter = GetFormatter(formatterName);
-            formatter.Format(report, reportContext, options, progressMonitor);
+            if (formatter == null)
+                throw new InvalidOperationException(String.Format("There is no report formatter named '{0}'.", formatterName));
+
+            formatter.Format(reportWriter, formatterOptions, progressMonitor);
         }
 
         /// <inheritdoc />
-        public void SaveReport(Report report, ReportContext reportContext, IProgressMonitor progressMonitor)
+        public IReportReader CreateReportReader(IReportContainer reportContainer)
         {
-            if (reportContext == null)
-                throw new ArgumentNullException(@"reportContext");
-
-            reportContext.SaveReport(report, true, false, progressMonitor);
+            return new DefaultReportReader(reportContainer);
         }
 
         /// <inheritdoc />
-        public Report LoadReport(ReportContext reportContext, IProgressMonitor progressMonitor)
+        public IReportWriter CreateReportWriter(Report report, IReportContainer reportContainer)
         {
-            if (reportContext == null)
-                throw new ArgumentNullException(@"reportContext");
-
-            return reportContext.LoadReport(true, progressMonitor);
-        }
-
-        /// <inheritdoc />
-        public ReportContext CreateReportContext(string formatterName, string reportDirectory, string reportFileNameFormat, DateTime reportTime, IFileSystem fileSystem)
-        {
-            string reportFileName = fileSystem.EncodeFileName(
-                String.Format(CultureInfo.InvariantCulture, reportFileNameFormat,
-                reportTime.ToShortDateString(),
-                reportTime.ToLongTimeString()));
-
-            IReportFormatter formatter = GetFormatter(formatterName);
-            string extension = formatter.PreferredExtension;
-            if (extension.Length != 0)
-                reportFileName = String.Concat(reportFileName, @".", extension);
-
-            return new ReportContext(Path.Combine(reportDirectory, reportFileName), fileSystem);
+            return new DefaultReportWriter(report, reportContainer);
         }
     }
 }

@@ -89,14 +89,9 @@ namespace MbUnit.Tests.Integration
 
                 using (logStreamWriter.BeginSection("Text Report"))
                 {
-                    ReportContext context = result.GetReportContext(@"Text");
-                    Assert.AreEqual(Path.Combine(reportDirectory, "SampleRunnerReport.txt"), context.ReportPath,
-                        "The report was not written in the expected location.");
-
-                    if (context != null)
+                    foreach (string reportPath in result.ReportDocumentPaths)
                     {
-                        logStreamWriter.WriteLine(context.FileSystem.ReadAllText(context.ReportPath));
-                        context.FileSystem.Delete(context.ReportPath);
+                        logStreamWriter.WriteLine(File.ReadAllText(reportPath));
                     }
                 }
             }

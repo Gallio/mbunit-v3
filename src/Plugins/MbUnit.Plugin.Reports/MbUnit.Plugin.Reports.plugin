@@ -2,31 +2,47 @@
 <configuration>
   <castle>
     <components>
-      <component id="Reports.XmlReportFormatter"
+      <component id="ReportFormatter.Xml"
                  service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
-                 type="MbUnit.Plugin.Reports.XmlReportFormatter, MbUnit.Plugin.Reports" />
-      
-      <component id="Reports.TextReportFormatter"
+                 type="MbUnit.Plugin.Reports.XmlReportFormatter, MbUnit.Plugin.Reports">
+        <parameters>
+          <name>Xml</name>
+          <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        </parameters>
+      </component>
+
+      <component id="ReportFormatter.Xml-Inline"
+                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Plugin.Reports.XmlReportFormatter, MbUnit.Plugin.Reports">
+        <parameters>
+          <name>Xml-Inline</name>
+          <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
+        </parameters>
+      </component>
+
+      <component id="ReportFormatter.Text"
                  service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
                  type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
         <parameters>
           <name>Text</name>
           <extension>txt</extension>
+          <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
           <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
           <xsltPath>xsl/MbUnit-Report.txt.xsl</xsltPath>
           <resourcePaths>
-            <array>              
+            <array>
             </array>
           </resourcePaths>
         </parameters>
       </component>
       
-      <component id="Reports.HtmlReportFormatter"
+      <component id="ReportFormatter.Html"
                  service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
                  type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
         <parameters>
           <name>Html</name>
           <extension>html</extension>
+          <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
           <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
           <xsltPath>xsl/MbUnit-Report.html.xsl</xsltPath>
           <resourcePaths>
@@ -37,14 +53,53 @@
             </array>
           </resourcePaths>
         </parameters>
-      </component>   
-      
-      <component id="Reports.XHtmlReportFormatter"
+      </component>
+
+      <component id="ReportFormatter.Html-Inline"
+                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
+        <parameters>
+          <name>Html-Inline</name>
+          <extension>html</extension>
+          <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
+          <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/MbUnit-Report.html.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+              <item>css</item>
+              <item>js</item>
+              <item>img</item>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>
+
+      <component id="ReportFormatter.XHtml"
                  service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
                  type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
         <parameters>
           <name>XHtml</name>
           <extension>xhtml</extension>
+          <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+          <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/MbUnit-Report.xhtml.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+              <item>css</item>
+              <item>js</item>
+              <item>img</item>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>
+      
+      <component id="ReportFormatter.XHtml-Inline"
+                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
+                 type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
+        <parameters>
+          <name>XHtml-Inline</name>
+          <extension>xhtml</extension>
+          <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
           <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
           <xsltPath>xsl/MbUnit-Report.xhtml.xsl</xsltPath>
           <resourcePaths>
@@ -56,23 +111,6 @@
           </resourcePaths>
         </parameters>
       </component>      
-      
-      <!--
-      <component id="Reports.CCNetReportFormatter"
-                 service="MbUnit.Runner.Reports.IReportFormatter, MbUnit.Gallio"
-                 type="MbUnit.Plugin.Reports.XsltReportFormatter, MbUnit.Plugin.Reports">
-        <parameters>
-          <name>CCNet</name>
-          <extension>html-fragment</extension>
-          <contentUri>plugin://MbUnit.Plugin.Reports/</contentUri>
-          <xsltPath>xsl/MbUnit-Report.ccnet.xsl</xsltPath>
-          <resourcePaths>
-            <array>
-            </array>
-          </resourcePaths>
-        </parameters>
-      </component>
-      -->
     </components>
   </castle>
 </configuration>
