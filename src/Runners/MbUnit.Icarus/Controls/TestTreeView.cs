@@ -22,8 +22,33 @@ namespace MbUnit.Icarus.Controls
 {
     public class TestTreeView : TreeView
     {
+        #region Variables
+
         private ImageList testStateImages;
         private bool useTriStateCheckBoxes = true;
+
+        #endregion
+
+        #region Properties
+
+        [Browsable(true), Category("Test States")]
+        public ImageList TestStateImageList
+        {
+            get { return testStateImages; }
+            set { testStateImages = value; }
+        }
+
+        [Category("Appearance"), Description("If enabled the parent checkboxes will indicate the state of children.")]
+        [DefaultValue(true), TypeConverter(typeof(bool)), Editor("System.Boolean", typeof(bool))]
+        public bool UseTriStateCheckBoxes
+        {
+            get { return useTriStateCheckBoxes; }
+            set { useTriStateCheckBoxes = value; }
+        }
+
+        #endregion
+
+        #region Constructor
 
         public TestTreeView()
         {
@@ -31,9 +56,10 @@ namespace MbUnit.Icarus.Controls
             DrawMode = TreeViewDrawMode.OwnerDrawText;
 
             SetStyle(ControlStyles.DoubleBuffer, true);
-            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.ResizeRedraw, true);
         }
+
+        #endregion
 
         #region Overrides
 
@@ -160,27 +186,57 @@ namespace MbUnit.Icarus.Controls
                 SelectedNode = e.Node;
         }
 
-        #endregion
-
-        #region Public Properties
-
-        [Browsable(true),
-         Category("Test States")]
-        public ImageList TestStateImageList
+        protected override void OnNotifyMessage(Message m)
         {
-            get { return testStateImages; }
-            set { testStateImages = value; }
+            // filter WM_ERASEBKGND
+            if (m.Msg != 0x14)
+            {
+                base.OnNotifyMessage(m);
+            }
         }
 
-        [Category("Appearance"),
-         Description("If enabled the parent checkboxes will indicate the state of children."),
-         DefaultValue(true),
-         TypeConverter(typeof (bool)),
-         Editor("System.Boolean", typeof (bool))]
-        public bool UseTriStateCheckBoxes
+        #endregion
+
+        #region Methods
+
+        public void Passed(string testId)
         {
-            get { return useTriStateCheckBoxes; }
-            set { useTriStateCheckBoxes = value; }
+            TreeNode[] nodes = Nodes.Find(testId, true);
+            if (nodes.Length == 1)
+            {
+                TestTreeNode node = nodes[0] as TestTreeNode;
+                node.TestState = TestStates.Success;
+            }
+        }
+
+        public void Failed(string testId)
+        {
+            TreeNode[] nodes = Nodes.Find(testId, true);
+            if (nodes.Length == 1)
+            {
+                TestTreeNode node = nodes[0] as TestTreeNode;
+                node.TestState = TestStates.Failed;
+            }
+        }
+
+        public void Skipped(string testId)
+        {
+            TreeNode[] nodes = Nodes.Find(testId, true);
+            if (nodes.Length == 1)
+            {
+                TestTreeNode node = nodes[0] as TestTreeNode;
+                node.TestState = TestStates.Skipped;
+            }
+        }
+
+        public void Ignored(string testId)
+        {
+            TreeNode[] nodes = Nodes.Find(testId, true);
+            if (nodes.Length == 1)
+            {
+                TestTreeNode node = nodes[0] as TestTreeNode;
+                node.TestState = TestStates.Ignored;
+            }
         }
 
         #endregion

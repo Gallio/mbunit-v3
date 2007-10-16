@@ -104,6 +104,7 @@ namespace MbUnit.Icarus
         public delegate void AddRangeToTreeDelegate(TreeNode[] nodes);
         public delegate void ClearListDelegate();
         public delegate void AddRangeToListDelegate(ListViewItem[] items);
+        public delegate void UpdateTree(string testId);
 
         #endregion
 
@@ -521,21 +522,25 @@ namespace MbUnit.Icarus
         public void Passed(string testId)
         {
             passedTests++;
+            testTree.Invoke(new UpdateTree(testTree.Passed), new object[] { testId });
         }
 
         public void Failed(string testId)
         {
             failedTests++;
+            testTree.Invoke(new UpdateTree(testTree.Failed), new object[] { testId });
         }
 
         public void Ignored(string testId)
         {
             ignoredTests++;
+            testTree.Invoke(new UpdateTree(testTree.Ignored), new object[] { testId });
         }
 
         public void Skipped(string testId)
         {
             skippedTests++;
+            testTree.Invoke(new UpdateTree(testTree.Skipped), new object[] { testId });
         }
     }
 }
