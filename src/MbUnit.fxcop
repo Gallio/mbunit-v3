@@ -32,6 +32,7 @@
   <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.XunitAdapter/bin/MbUnit.Plugin.XunitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Runners/MbUnit.AddIn.TDNet/bin/MbUnit.AddIn.TDNet.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Runners/MbUnit.Echo/bin/MbUnit.Echo.exe" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Runners/MbUnit.Icarus/bin/MbUnit.Icarus.exe" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Runners/MbUnit.Tasks.MSBuild/bin/MbUnit.Tasks.MSBuild.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Runners/MbUnit.Tasks.NAnt/bin/MbUnit.Tasks.NAnt.dll" Analyze="True" AnalyzeAllChildren="True" />
  </Targets>
