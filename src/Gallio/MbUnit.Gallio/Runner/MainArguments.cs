@@ -21,7 +21,7 @@ using MbUnit.Framework;
 using MbUnit.Model.Filters;
 using MbUnit.Model;
 
-namespace MbUnit.Echo
+namespace MbUnit.Runner
 {
     public class MainArguments
     {
@@ -300,5 +300,16 @@ namespace MbUnit.Echo
 
             return new AndFilter<ITest>(filters.ToArray());
         }
+    }
+
+    /// <summary>
+    /// Specifies the verbosity of the output.
+    /// </summary>
+    public enum Verbosity
+    {
+        Quiet = 0,
+        Normal,
+        Verbose,
+        Debug
     }
 }
