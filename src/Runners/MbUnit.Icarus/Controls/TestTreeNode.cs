@@ -13,16 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+
 using MbUnit.Icarus.Controls.Enums;
 
 namespace MbUnit.Icarus.Controls
 {
+    [Serializable]
     public class TestTreeNode : TreeNode
     {
         private CheckBoxStates checkState = CheckBoxStates.Unchecked;
-        private TestStates testState = TestStates.Undefined;
+        private TestState testState = TestState.Undefined;
+        private string codeBase = "";
 
         #region Constructors
 
@@ -78,7 +82,7 @@ namespace MbUnit.Icarus.Controls
             }
         }
 
-        public TestStates TestState
+        public TestState TestState
         {
             get { return testState; }
             set
@@ -123,14 +127,14 @@ namespace MbUnit.Icarus.Controls
             }
         }
 
-        private TestStates SiblingTestState
+        private TestState SiblingTestState
         {
             get
             {
                 if ((Parent == null) || (Parent.Nodes.Count == 1))
                     return TestState;
 
-                TestStates testStates = TestStates.Undefined;
+                TestState testStates = TestState.Undefined;
                 foreach (TreeNode node in Parent.Nodes)
                 {
                     TestTreeNode child = node as TestTreeNode;
@@ -138,12 +142,18 @@ namespace MbUnit.Icarus.Controls
                         testStates = child.TestState;
 
                     // Failed is the worst state we can get to, dont bother checking the rest.
-                    if (testStates == TestStates.Failed)
+                    if (testStates == TestState.Failed)
                         break;
                 }
 
                 return testState;
             }
+        }
+
+        public string CodeBase
+        {
+            get { return codeBase; }
+            set { codeBase = value; }
         }
 
         #endregion
@@ -209,13 +219,12 @@ namespace MbUnit.Icarus.Controls
         /// </summary>
         private void UpdateChildNodeState()
         {
-            TestTreeNode child;
             foreach (TreeNode node in Nodes)
             {
                 // It is possible node is not a ThreeStateTreeNode, so check first.
-                if (node is TestTreeNode)
+                TestTreeNode child = node as TestTreeNode;
+                if (child != null)
                 {
-                    child = node as TestTreeNode;
                     child.CheckState = CheckState;
                     child.Checked = (CheckState != CheckBoxStates.Unchecked);
                     child.UpdateChildNodeState();
@@ -270,7 +279,7 @@ namespace MbUnit.Icarus.Controls
                 TestTreeNode parent = Parent as TestTreeNode;
                 if (parent != null)
                 {
-                    TestStates state = SiblingTestState;
+                    TestState state = SiblingTestState;
                     parent.TestState = state;
                 }
 
@@ -279,5 +288,25 @@ namespace MbUnit.Icarus.Controls
         }
 
         #endregion
+    }
+}
+
+namespace MbUnit.Icarus.Controls.Enums
+{
+    [FlagsAttribute]
+    public enum CheckBoxStates
+    {
+        Unchecked = 1,
+        Checked = 2,
+        Indeterminate = Unchecked | Checked
+    }
+
+    public enum TestState
+    {
+        Undefined = 0,
+        Success = 1,
+        Ignored = 2,
+        Skipped = 3,
+        Failed = 4
     }
 }

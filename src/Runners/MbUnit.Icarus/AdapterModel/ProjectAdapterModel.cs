@@ -49,25 +49,35 @@ namespace MbUnit.Icarus.AdapterModel
             {
                 TestData td = list[i];
                 int imgIndex = 0;
-                switch (td.Metadata["ComponentKind"][0])
+                string codeBase = null;
+                string componentKind = td.Metadata.GetValue("ComponentKind");
+                if (componentKind != null)
                 {
-                    case "Framework":
-                        imgIndex = 1;
-                        break;
-                    case "Assembly":
-                        imgIndex = 2;
-                        break;
-                    case "Fixture":
-                        imgIndex = 3;
-                        break;
-                    case "Test":
-                        imgIndex = 4;
-                        break;
+                    switch (componentKind)
+                    {
+                        case "Framework":
+                            imgIndex = 1;
+                            break;
+                        case "Assembly":
+                            imgIndex = 2;
+                            codeBase = td.Metadata.GetValue("CodeBase");
+                            break;
+                        case "Fixture":
+                            imgIndex = 3;
+                            break;
+                        case "Test":
+                            imgIndex = 4;
+                            break;
+                    }
+                    TestTreeNode ttnode = new TestTreeNode(td.Name, imgIndex, imgIndex, WalkTestTree(td.Children));
+                    ttnode.Name = td.Id;
+                    ttnode.Checked = true;
+                    if (codeBase != null)
+                    {
+                        ttnode.CodeBase = codeBase;
+                    }
+                    nodes[i] = ttnode;
                 }
-                TestTreeNode ttnode = new TestTreeNode(td.Name, imgIndex, imgIndex, WalkTestTree(td.Children));
-                ttnode.Name = td.Id;
-                ttnode.Checked = true;
-                nodes[i] = ttnode;
             }
             return nodes;
         }

@@ -23,6 +23,7 @@ namespace MbUnit.Icarus.Interfaces
     {
         event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         event EventHandler<EventArgs> RemoveAssemblies;
+        event EventHandler<RemoveAssemblyEventArgs> RemoveAssembly;
         event EventHandler<EventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
         TreeNode[] TestTreeCollection { set; }

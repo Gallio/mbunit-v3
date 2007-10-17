@@ -24,6 +24,6 @@ namespace MbUnit.Icarus.Interfaces
     {
         TreeNode[] BuildTestTree(TestModel testModel);
         int CountTests(TestModel testModel);
-        ListViewItem[] BuildAssemblyList(List<string> list);
+        ListViewItem[] BuildAssemblyList(List<string> assemblyList);
     }
 }

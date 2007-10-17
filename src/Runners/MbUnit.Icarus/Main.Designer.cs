@@ -79,8 +79,8 @@ namespace MbUnit.Icarus
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.reloadToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.startToolbarButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.startButton = new System.Windows.Forms.ToolStripButton();
+            this.stopButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.treeImages = new System.Windows.Forms.ImageList(this.components);
@@ -206,7 +206,7 @@ namespace MbUnit.Icarus
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(179, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(185, 6);
             // 
             // saveProjectToolStripMenuItem
             // 
@@ -220,14 +220,14 @@ namespace MbUnit.Icarus
             // 
             this.saveProjectAsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveProjectAsToolStripMenuItem.Image")));
             this.saveProjectAsToolStripMenuItem.Name = "saveProjectAsToolStripMenuItem";
-            this.saveProjectAsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.saveProjectAsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.saveProjectAsToolStripMenuItem.Text = "Save Project &As...";
             this.saveProjectAsToolStripMenuItem.Click += new System.EventHandler(this.saveProjectAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(179, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(185, 6);
             // 
             // fileExit
             // 
@@ -359,6 +359,7 @@ namespace MbUnit.Icarus
             // 
             // statusStrip
             // 
+            this.statusStrip.AutoSize = false;
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel,
             this.toolStripProgressBar});
@@ -372,12 +373,14 @@ namespace MbUnit.Icarus
             // 
             this.toolStripStatusLabel.AutoSize = false;
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(400, 17);
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(886, 17);
+            this.toolStripStatusLabel.Spring = true;
             this.toolStripStatusLabel.Text = "Ready...";
             this.toolStripStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // toolStripProgressBar
             // 
+            this.toolStripProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripProgressBar.Name = "toolStripProgressBar";
             this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
             // 
@@ -390,8 +393,8 @@ namespace MbUnit.Icarus
             this.toolStripSeparator1,
             this.reloadToolbarButton,
             this.toolStripSeparator6,
-            this.startToolbarButton,
-            this.toolStripButton4,
+            this.startButton,
+            this.stopButton,
             this.toolStripSeparator2,
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
@@ -426,7 +429,6 @@ namespace MbUnit.Icarus
             // 
             // reloadToolbarButton
             // 
-            this.reloadToolbarButton.Enabled = false;
             this.reloadToolbarButton.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolbarButton.Image")));
             this.reloadToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.reloadToolbarButton.Name = "reloadToolbarButton";
@@ -439,27 +441,27 @@ namespace MbUnit.Icarus
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
-            // startToolbarButton
+            // startButton
             // 
-            this.startToolbarButton.Enabled = false;
-            this.startToolbarButton.Image = ((System.Drawing.Image)(resources.GetObject("startToolbarButton.Image")));
-            this.startToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.startToolbarButton.Name = "startToolbarButton";
-            this.startToolbarButton.Size = new System.Drawing.Size(51, 22);
-            this.startToolbarButton.Text = "Start";
-            this.startToolbarButton.ToolTipText = "Start Tests";
-            this.startToolbarButton.Click += new System.EventHandler(this.tlbStart_Click);
+            this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
+            this.startButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(51, 22);
+            this.startButton.Text = "Start";
+            this.startButton.ToolTipText = "Start Tests";
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
-            // toolStripButton4
+            // stopButton
             // 
-            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton4.Enabled = false;
-            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
-            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton4.Text = "Stop";
-            this.toolStripButton4.ToolTipText = "Stop Tests";
+            this.stopButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.stopButton.Enabled = false;
+            this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
+            this.stopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(23, 22);
+            this.stopButton.Text = "Stop";
+            this.stopButton.ToolTipText = "Stop Tests";
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
             // toolStripSeparator2
             // 
@@ -567,7 +569,7 @@ namespace MbUnit.Icarus
             this.toolStripSeparator10,
             this.removeAssemblyToolStripMenuItem2});
             this.testTreeMenuStrip.Name = "classTreeMenuStrip";
-            this.testTreeMenuStrip.Size = new System.Drawing.Size(173, 132);
+            this.testTreeMenuStrip.Size = new System.Drawing.Size(173, 154);
             // 
             // expandAllMenuItem
             // 
@@ -618,6 +620,7 @@ namespace MbUnit.Icarus
             this.removeAssemblyToolStripMenuItem2.Name = "removeAssemblyToolStripMenuItem2";
             this.removeAssemblyToolStripMenuItem2.Size = new System.Drawing.Size(172, 22);
             this.removeAssemblyToolStripMenuItem2.Text = "Remove Assembly";
+            this.removeAssemblyToolStripMenuItem2.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem2_Click);
             // 
             // tabPage5
             // 
@@ -638,12 +641,15 @@ namespace MbUnit.Icarus
             this.columnHeader11});
             this.assemblyList.ContextMenuStrip = this.assemblyListMenuStrip;
             this.assemblyList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.assemblyList.FullRowSelect = true;
             this.assemblyList.Location = new System.Drawing.Point(3, 3);
+            this.assemblyList.MultiSelect = false;
             this.assemblyList.Name = "assemblyList";
             this.assemblyList.Size = new System.Drawing.Size(302, 565);
             this.assemblyList.TabIndex = 0;
             this.assemblyList.UseCompatibleStateImageBehavior = false;
             this.assemblyList.View = System.Windows.Forms.View.Details;
+            this.assemblyList.SelectedIndexChanged += new System.EventHandler(this.assemblyList_SelectedIndexChanged);
             // 
             // columnHeader9
             // 
@@ -673,6 +679,7 @@ namespace MbUnit.Icarus
             this.removeAssemblyToolStripMenuItem1.Name = "removeAssemblyToolStripMenuItem1";
             this.removeAssemblyToolStripMenuItem1.Size = new System.Drawing.Size(172, 22);
             this.removeAssemblyToolStripMenuItem1.Text = "Remove Assembly";
+            this.removeAssemblyToolStripMenuItem1.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem1_Click);
             // 
             // panel1
             // 
@@ -942,6 +949,7 @@ namespace MbUnit.Icarus
             this.testTree.Size = new System.Drawing.Size(302, 565);
             this.testTree.TabIndex = 2;
             this.testTree.TestStateImageList = this.stateImages;
+            this.testTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.testTree_AfterSelect);
             // 
             // testProgressStatusBar
             // 
@@ -1028,8 +1036,8 @@ namespace MbUnit.Icarus
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripButton startToolbarButton;
-        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton startButton;
+        private System.Windows.Forms.ToolStripButton stopButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton helpToolbarButton;
         private System.Windows.Forms.ToolStripMenuItem assembliesToolStripMenuItem;

@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 
 using MbUnit.Runner;
 using MbUnit.Runner.Monitors;
@@ -24,19 +25,46 @@ namespace MbUnit.Icarus.Core.Model
 {
     public class TestRunnerModel : ITestRunnerModel
     {
+        #region Variables
+
         private ReportMonitor reportMonitor;
+        private IProjectPresenter projectPresenter;
 
-        public TestModel LoadUpAssembly(IProjectPresenter presenter, TestPackage testpackage)
+        #endregion
+
+        #region Properties
+
+        public IProjectPresenter ProjectPresenter
         {
-            // set up report monitor
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"ProjectPresenter");
+
+                projectPresenter = value;                
+            }
+        }
+
+        #endregion
+
+        public void LoadPackage(TestPackage testpackage)
+        {
+            // attach report monitor to test runner
             reportMonitor = new ReportMonitor();
-            reportMonitor.Attach(presenter.TestRunner);
+            reportMonitor.Attach(projectPresenter.TestRunner);
 
-            presenter.TestRunner.LoadPackage(testpackage, new StatusStripProgressMonitor(presenter));
-            presenter.TestRunner.BuildTemplates(new StatusStripProgressMonitor(presenter));
-            presenter.TestRunner.BuildTests(new StatusStripProgressMonitor(presenter));
+            projectPresenter.TestRunner.LoadPackage(testpackage, new StatusStripProgressMonitor(projectPresenter));
+        }
 
-            return presenter.TestRunner.TestModel;
+        public void BuildTemplates()
+        {
+            projectPresenter.TestRunner.BuildTemplates(new StatusStripProgressMonitor(projectPresenter));
+        }
+
+        public TestModel BuildTests()
+        {
+            projectPresenter.TestRunner.BuildTests(new StatusStripProgressMonitor(projectPresenter));
+            return projectPresenter.TestRunner.TestModel;
         }
 
         public void RunTests(IProjectPresenter presenter)

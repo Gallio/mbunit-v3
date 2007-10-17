@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -27,7 +28,8 @@ namespace MbUnit.Icarus
 
             // Set the application version.
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            versionLabel.Text = String.Format(versionLabel.Text, appVersion.Major, appVersion.Minor, appVersion.Build);
+            versionLabel.Text = String.Format(CultureInfo.CurrentCulture, versionLabel.Text, 
+                appVersion.Major, appVersion.Minor, appVersion.Build);
         }
 
         private void buttonClose_Click(object sender, EventArgs e)

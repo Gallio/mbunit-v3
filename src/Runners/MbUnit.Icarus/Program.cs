@@ -15,11 +15,14 @@
 
 using System;
 using System.Windows.Forms;
+
+using MbUnit.Core.ConsoleSupport;
 using MbUnit.Hosting;
 using MbUnit.Icarus.Adapter;
 using MbUnit.Icarus.AdapterModel;
 using MbUnit.Icarus.Core.Model;
 using MbUnit.Icarus.Core.Presenter;
+using MbUnit.Runner;
 
 namespace MbUnit.Icarus
 {
@@ -28,9 +31,8 @@ namespace MbUnit.Icarus
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
-        [LoaderOptimization(LoaderOptimization.MultiDomain)]
-        static void Main()
+        [STAThread, LoaderOptimization(LoaderOptimization.MultiDomain)]
+        public static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -38,10 +40,19 @@ namespace MbUnit.Icarus
             Runtime.Initialize(new RuntimeSetup());
             try
             {
-                Main main = new Main();
+                // parse command line arguments
+                CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(MainArguments));
+                MainArguments arguments = new MainArguments();
+                TestPackage testPackage = new TestPackage();
+                if (argumentParser.Parse(args, arguments, delegate { }))
+                {
+                    testPackage.AssemblyFiles.AddRange(arguments.Assemblies);
+                }
 
-                ProjectAdapter pa = new ProjectAdapter(main, new ProjectAdapterModel());
-                ProjectPresenter p = new ProjectPresenter(pa, new TestRunnerModel());
+                // wire up model
+                Main main = new Main();
+                ProjectPresenter projectPresenter = new ProjectPresenter(new ProjectAdapter(main, new ProjectAdapterModel(), testPackage), 
+                    new TestRunnerModel());
 
                 Application.Run(main);
             }

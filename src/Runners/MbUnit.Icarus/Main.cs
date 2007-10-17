@@ -93,18 +93,18 @@ namespace MbUnit.Icarus
         public event EventHandler<EventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
+        public event EventHandler<RemoveAssemblyEventArgs> RemoveAssembly;
         public event EventHandler<EventArgs> RunTests;
 
         #endregion
 
         #region Delegates
 
-        public delegate void SetStatusText(string text);
+        public delegate void StringMethodDelegate(string s);
         public delegate void ClearTreeDelegate();
         public delegate void AddRangeToTreeDelegate(TreeNode[] nodes);
         public delegate void ClearListDelegate();
         public delegate void AddRangeToListDelegate(ListViewItem[] items);
-        public delegate void UpdateTree(string testId);
 
         #endregion
 
@@ -113,7 +113,7 @@ namespace MbUnit.Icarus
             InitializeComponent();
 
             // status bar
-            statusBarTimer = new System.Timers.Timer(10);
+            statusBarTimer = new System.Timers.Timer(50);
             statusBarTimer.AutoReset = true;
             statusBarTimer.Enabled = true;
             statusBarTimer.Elapsed += new ElapsedEventHandler(statusBarTimer_Elapsed);
@@ -176,8 +176,11 @@ namespace MbUnit.Icarus
             filterTestResultsCombo.SelectedIndex = 0;
             graphsFilterBox1.SelectedIndex = 0;
 
-            testTree.Sort();
             testTree.TestStateImageList = stateImages;
+
+            AbortWorkerThread();
+            workerThread = new Thread(new ThreadStart(ThreadedRefreshTree));
+            workerThread.Start();
         }
 
         private void fileExit_Click(object sender, EventArgs e)
@@ -194,10 +197,12 @@ namespace MbUnit.Icarus
             aboutForm.Dispose();
         }
 
-        private void tlbStart_Click(object sender, EventArgs e)
+        private void startButton_Click(object sender, EventArgs e)
         {
             testProgressStatusBar.Clear();
             statusText = "Running tests...";
+            startButton.Enabled = false;
+            stopButton.Enabled = true;
             AbortWorkerThread();
             workerThread = new Thread(new ThreadStart(ThreadedRunTests));
             workerThread.Start();
@@ -205,10 +210,25 @@ namespace MbUnit.Icarus
 
         private void ThreadedRunTests()
         {
-            // Run tests
+            // run tests
             if (RunTests != null)
             {
                 RunTests(this, new EventArgs());
+            }
+            // enable/disable buttons
+            toolStripContainer.Invoke(new StringMethodDelegate(EnableButtons), new object[] { "RunTestsFinished" });
+        }
+
+        private void EnableButtons(string mode)
+        {
+            switch (mode)
+            {
+                case "RunTestsFinished":
+                    {
+                        stopButton.Enabled = false;
+                        startButton.Enabled = true;
+                        break;
+                    }
             }
         }
 
@@ -302,6 +322,7 @@ namespace MbUnit.Icarus
 
         private void ThreadedAddAssemblies(object o)
         {
+            StatusText = "Adding assemblies...";
             string[] filenames = (string[]) o;
             if (filenames != null)
             {
@@ -310,13 +331,19 @@ namespace MbUnit.Icarus
                 {
                     AddAssemblies(this, new AddAssembliesEventArgs(filenames));
                 }
-
-                // Load test tree
-                if (GetTestTree != null)
-                {
-                    GetTestTree(this, new EventArgs());
-                }
+                ThreadedRefreshTree();
             }
+        }
+
+        private void ThreadedRefreshTree()
+        {
+            // Load test tree
+            if (GetTestTree != null)
+            {
+                GetTestTree(this, new EventArgs());
+            }
+            testTree.Invoke(new MethodInvoker(testTree.Sort));
+            StatusText = "Ready...";
         }
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
@@ -330,7 +357,7 @@ namespace MbUnit.Icarus
 
         private void helpToolbarButton_Click(object sender, EventArgs e)
         {
-            ((TestTreeNode) testTree.SelectedNode).TestState = TestStates.Failed;
+            ((TestTreeNode) testTree.SelectedNode).TestState = TestState.Failed;
         }
 
         private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -359,12 +386,12 @@ namespace MbUnit.Icarus
             testTree.BeginUpdate();
 
             testTree.CollapseAll();
-            TestNodes(testTree.Nodes[0], TestStates.Failed);
+            TestNodes(testTree.Nodes[0], TestState.Failed);
 
             testTree.EndUpdate();
         }
 
-        private void TestNodes(TreeNode node, TestStates state)
+        private void TestNodes(TreeNode node, TestState state)
         {
             if (node is TestTreeNode)
             {
@@ -412,7 +439,7 @@ namespace MbUnit.Icarus
             {
                 TestTreeNode testNode = node as TestTreeNode;
                 if (testNode != null)
-                    testNode.TestState = TestStates.Undefined;
+                    testNode.TestState = TestState.Undefined;
             }
         }
 
@@ -427,14 +454,6 @@ namespace MbUnit.Icarus
             // populate assembly list
             assemblyList.Invoke(new ClearListDelegate(assemblyList.Items.Clear));
             assemblyList.Invoke(new AddRangeToListDelegate(assemblyList.Items.AddRange), new object[] { assemblies });
-
-            // enable buttons (if necessary)
-            toolStripContainer.Invoke(new MethodInvoker(EnableButtons));
-        }
-
-        private void EnableButtons()
-        {
-            startToolbarButton.Enabled = reloadToolbarButton.Enabled = (testTree.Nodes.Count > 0);
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -446,16 +465,13 @@ namespace MbUnit.Icarus
 
         private void ThreadedRemoveAssemblies()
         {
-            StatusText = "Removing assemblies...";
             // remove assemblies
+            StatusText = "Removing assemblies...";
             if (RemoveAssemblies != null)
             {
                 RemoveAssemblies(this, new EventArgs());
             }
-            // clear tree & assembly list
-            testTree.Invoke(new ClearTreeDelegate(testTree.Nodes.Clear));
-            assemblyList.Invoke(new ClearListDelegate(assemblyList.Items.Clear));
-            StatusText = "Ready...";
+            ThreadedRefreshTree();
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -522,25 +538,82 @@ namespace MbUnit.Icarus
         public void Passed(string testId)
         {
             passedTests++;
-            testTree.Invoke(new UpdateTree(testTree.Passed), new object[] { testId });
+            testTree.Invoke(new StringMethodDelegate(testTree.Passed), new object[] { testId });
         }
 
         public void Failed(string testId)
         {
             failedTests++;
-            testTree.Invoke(new UpdateTree(testTree.Failed), new object[] { testId });
+            testTree.Invoke(new StringMethodDelegate(testTree.Failed), new object[] { testId });
         }
 
         public void Ignored(string testId)
         {
             ignoredTests++;
-            testTree.Invoke(new UpdateTree(testTree.Ignored), new object[] { testId });
+            testTree.Invoke(new StringMethodDelegate(testTree.Ignored), new object[] { testId });
         }
 
         public void Skipped(string testId)
         {
             skippedTests++;
-            testTree.Invoke(new UpdateTree(testTree.Skipped), new object[] { testId });
+            testTree.Invoke(new StringMethodDelegate(testTree.Skipped), new object[] { testId });
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void assemblyList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (assemblyList.SelectedItems.Count > 0)
+            {
+                removeAssemblyToolStripMenuItem1.Enabled = true;
+            }
+            else
+            {
+                removeAssemblyToolStripMenuItem1.Enabled = false;
+            }
+        }
+
+        private void removeAssemblyToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            AbortWorkerThread();
+            workerThread = new Thread(new ParameterizedThreadStart(ThreadedRemoveAssembly));
+            workerThread.Start(assemblyList.SelectedItems[0].SubItems[2].Text);
+        }
+
+        private void ThreadedRemoveAssembly(object o)
+        {
+            string assembly = o as string;
+            // remove assemblies
+            StatusText = "Removing assembly...";
+            if (RemoveAssembly != null)
+            {
+                RemoveAssembly(this, new RemoveAssemblyEventArgs(assembly));
+            }
+            ThreadedRefreshTree();
+        }
+
+        private void testTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TestTreeNode node = testTree.SelectedNode as TestTreeNode;
+            if (node.SelectedImageIndex == 2)
+            {
+                removeAssemblyToolStripMenuItem2.Enabled = true;
+            }
+            else
+            {
+                removeAssemblyToolStripMenuItem2.Enabled = false;
+            }
+        }
+
+        private void removeAssemblyToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            AbortWorkerThread();
+            workerThread = new Thread(new ParameterizedThreadStart(ThreadedRemoveAssembly));
+            TestTreeNode node = testTree.SelectedNode as TestTreeNode;
+            workerThread.Start(node.CodeBase);
         }
     }
 }

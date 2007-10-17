@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomEventArgs\AddAssembliesEventArgs.cs" />
+    <Compile Include="CustomEventArgs\RemoveAssemblyEventArgs.cs" />
     <Compile Include="CustomEventArgs\ProjectEventArgs.cs" />
     <Compile Include="CustomEventArgs\ProjectLoadEventArgs.cs" />
     <Compile Include="Interfaces\IProjectPresenter.cs" />

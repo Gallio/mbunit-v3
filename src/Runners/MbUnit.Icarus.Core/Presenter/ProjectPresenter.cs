@@ -61,6 +61,7 @@ namespace MbUnit.Icarus.Core.Presenter
         {
             _View = view;
             _TestRunnerModel = testrunnermodel;
+            _TestRunnerModel.ProjectPresenter = this;
 
             testRunner = new IsolatedTestRunner();
             
@@ -73,7 +74,9 @@ namespace MbUnit.Icarus.Core.Presenter
 
         public void GetTestTree(object sender, ProjectEventArgs e)
         {
-            _View.TestModel = _TestRunnerModel.LoadUpAssembly(this, e.LocalTestPackage);
+            _TestRunnerModel.LoadPackage(e.LocalTestPackage);
+            _TestRunnerModel.BuildTemplates();
+            _View.TestModel = _TestRunnerModel.BuildTests();
             _View.DataBind();
         }
 

@@ -16,13 +16,14 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace MbUnit.Icarus.Controls
 {
     internal class TestStatusBar : Control
     {
-        private double elapsedTime = 0;
+        private double elapsedTime;
         private Color failedColor = Color.Red;
         private int failedTests = 0;
         private Color ignoredColor = Color.Gold;
@@ -100,15 +101,8 @@ namespace MbUnit.Icarus.Controls
             e.Graphics.DrawRectangle(Pens.Black, r);
 
             // Build up the display text.
-            string text = string.Format(
-                Text,
-                totalTests,
-                passedTests,
-                ignoredTests,
-                skippedTests,
-                failedTests,
-                elapsedTime
-                );
+            string text = string.Format(CultureInfo.CurrentCulture, Text, totalTests, passedTests, ignoredTests, skippedTests, 
+                failedTests, elapsedTime);
 
             // Draw the text to the center of the control.
             StringFormat format = new StringFormat(StringFormatFlags.NoClip);

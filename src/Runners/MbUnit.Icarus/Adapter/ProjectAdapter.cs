@@ -78,19 +78,18 @@ namespace MbUnit.Icarus.Adapter
 
         #region Constructor
 
-        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
+        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model, TestPackage testPackage)
         {
             _View = view;
             _Model = model;
+            _testPackage = testPackage;
 
             // Wire up event handlers
             _View.AddAssemblies += _View_AddAssemblies;
             _View.RemoveAssemblies += _View_RemoveAssemblies;
+            _View.RemoveAssembly += _View_RemoveAssembly;
             _View.GetTestTree += _View_GetTestTree;
             _View.RunTests += _View_RunTests;
-
-            // Create empty new test package
-            _testPackage = new TestPackage();
         }
 
         #endregion
@@ -105,6 +104,11 @@ namespace MbUnit.Icarus.Adapter
         private void _View_RemoveAssemblies(object sender, EventArgs e)
         {
             _testPackage.AssemblyFiles.Clear();
+        }
+
+        private void _View_RemoveAssembly(object sender, RemoveAssemblyEventArgs e)
+        {
+            _testPackage.AssemblyFiles.Remove(e.Assembly);
         }
 
         [DebuggerStepThrough]

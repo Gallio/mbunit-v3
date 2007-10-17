@@ -41,7 +41,7 @@ namespace MbUnit.Icarus.Tests
         {
             mockView = MockRepository.GenerateStub<IProjectAdapterView>();
             mockModel = mocks.CreateMock<IProjectAdapterModel>();
-            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter = new ProjectAdapter(mockView, mockModel, new TestPackage());
         }
 
         [Test]

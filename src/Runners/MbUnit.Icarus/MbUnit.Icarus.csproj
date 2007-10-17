@@ -53,8 +53,6 @@
     </Compile>
     <Compile Include="AdapterModel\ProjectAdapterModel.cs" />
     <Compile Include="Adapter\ProjectAdapter.cs" />
-    <Compile Include="Controls\Enums\CheckBoxState.cs" />
-    <Compile Include="Controls\Enums\TestState.cs" />
     <Compile Include="Controls\TestStatusBar.cs">
       <SubType>Component</SubType>
     </Compile>

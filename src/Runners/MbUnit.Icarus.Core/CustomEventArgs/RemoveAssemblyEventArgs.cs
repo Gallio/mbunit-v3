@@ -13,14 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace MbUnit.Icarus.Controls.Enums
+using System;
+
+namespace MbUnit.Icarus.Core.CustomEventArgs 
 {
-    public enum TestStates
+    public class RemoveAssemblyEventArgs : EventArgs
     {
-        Undefined = 0,
-        Success = 1,
-        Ignored = 2,
-        Skipped = 3,
-        Failed = 4
+        private readonly string assembly;
+
+        public RemoveAssemblyEventArgs(string assembly)
+        {
+            this.assembly = assembly;
+        }
+
+        public string Assembly
+        {
+            get { return assembly; }
+        }
     }
 }

@@ -118,13 +118,13 @@ namespace MbUnit.Icarus.Controls
                     nodeColor = SystemBrushes.HighlightText;
 
                 else if (node != null)
-                    if (node.TestState == TestStates.Failed)
+                    if (node.TestState == TestState.Failed)
                         nodeColor = new SolidBrush(Color.Red);
 
-                    else if (node.TestState == TestStates.Success)
+                    else if (node.TestState == TestState.Success)
                         nodeColor = new SolidBrush(Color.Green);
 
-                    else if (node.TestState == TestStates.Ignored)
+                    else if (node.TestState == TestState.Ignored)
                         nodeColor = new SolidBrush(Color.SlateGray);
 
                 SizeF textSize = e.Graphics.MeasureString(e.Node.Text, nodeFont);
@@ -135,7 +135,7 @@ namespace MbUnit.Icarus.Controls
                     nodeColor = SystemBrushes.HighlightText;
 
                     if (node != null)
-                        if (node.TestState != TestStates.Undefined)
+                        if (node.TestState != TestState.Undefined)
                             e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.Bounds.X + 17, e.Bounds.Y,
                                                      textSize.Width, e.Bounds.Height);
                         else
@@ -145,7 +145,7 @@ namespace MbUnit.Icarus.Controls
 
                 // If the test icons have been set and we are at a leaf node, draw the extra image.
                 if (node != null)
-                    if (testStateImages.Images.Count > 0 && node.TestState != TestStates.Undefined)
+                    if (testStateImages.Images.Count > 0 && node.TestState != TestState.Undefined)
                     {
                         // Draw the highlighted background if the node has been selected.
                         if ((e.State & TreeNodeStates.Focused) != 0)
@@ -168,7 +168,6 @@ namespace MbUnit.Icarus.Controls
             }
         }
 
-
         protected override void OnNodeMouseClick(TreeNodeMouseClickEventArgs e)
         {
             base.OnNodeMouseClick(e);
@@ -177,7 +176,7 @@ namespace MbUnit.Icarus.Controls
 
             // Extend the selectable region of the control by 16px to include the image.
             if ((node != null) &&
-                (node.TestState != TestStates.Undefined) &&
+                (node.TestState != TestState.Undefined) &&
                 (e.Node.Bounds.Right + 16 >= e.Location.X) &&
                 (e.Node.Bounds.Left + 16 <= e.Location.X) &&
                 (e.Button == MouseButtons.Left))
@@ -195,6 +194,12 @@ namespace MbUnit.Icarus.Controls
             }
         }
 
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            SelectedNode = GetNodeAt(e.X, e.Y);
+            base.OnMouseDown(e);
+        }
+
         #endregion
 
         #region Methods
@@ -205,7 +210,7 @@ namespace MbUnit.Icarus.Controls
             if (nodes.Length == 1)
             {
                 TestTreeNode node = nodes[0] as TestTreeNode;
-                node.TestState = TestStates.Success;
+                node.TestState = TestState.Success;
             }
         }
 
@@ -215,7 +220,7 @@ namespace MbUnit.Icarus.Controls
             if (nodes.Length == 1)
             {
                 TestTreeNode node = nodes[0] as TestTreeNode;
-                node.TestState = TestStates.Failed;
+                node.TestState = TestState.Failed;
             }
         }
 
@@ -225,7 +230,7 @@ namespace MbUnit.Icarus.Controls
             if (nodes.Length == 1)
             {
                 TestTreeNode node = nodes[0] as TestTreeNode;
-                node.TestState = TestStates.Skipped;
+                node.TestState = TestState.Skipped;
             }
         }
 
@@ -235,7 +240,7 @@ namespace MbUnit.Icarus.Controls
             if (nodes.Length == 1)
             {
                 TestTreeNode node = nodes[0] as TestTreeNode;
-                node.TestState = TestStates.Ignored;
+                node.TestState = TestState.Ignored;
             }
         }
 
