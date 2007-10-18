@@ -83,6 +83,7 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Arguments.cs" />
     <Compile Include="Options.cs">
       <SubType>Form</SubType>
     </Compile>

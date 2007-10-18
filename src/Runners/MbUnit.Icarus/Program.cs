@@ -41,13 +41,13 @@ namespace MbUnit.Icarus
             try
             {
                 // parse command line arguments
-                //CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(MainArguments));
-                //MainArguments arguments = new MainArguments();
+                CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
+                Arguments arguments = new Arguments();
                 TestPackage testPackage = new TestPackage();
-                //if (argumentParser.Parse(args, arguments, delegate { }))
-                //{
-                //    testPackage.AssemblyFiles.AddRange(arguments.Assemblies);
-                //}
+                if (argumentParser.Parse(args, arguments, delegate { }))
+                {
+                    testPackage.AssemblyFiles.AddRange(arguments.Assemblies);
+                }
 
                 // wire up model
                 Main main = new Main();

@@ -52,17 +52,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\MbUnit.Gallio.Tests\MbUnit.Gallio.Tests.csproj">
-      <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
-      <Name>MbUnit.Gallio.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Gallio\MbUnit.Gallio\MbUnit.Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>MbUnit.Gallio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj">
-      <Project>{BADF6646-9750-4CFB-8867-5D2D4086412A}</Project>
-      <Name>MbUnit.Icarus.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\MbUnit.Icarus\MbUnit.Icarus.csproj">
       <Project>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</Project>
