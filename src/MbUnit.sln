@@ -127,12 +127,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{BFB5
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Icarus.Core", "Runners\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj", "{BADF6646-9750-4CFB-8867-5D2D4086412A}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.AddIn.TDNet", "Runners\MbUnit.AddIn.TDNet\MbUnit.AddIn.TDNet.csproj", "{53E13EE8-E19A-43DD-A623-55023BF74AD6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.AddIn.TDNet.Tests", "Runners\MbUnit.AddIn.TDNet.Tests\MbUnit.AddIn.TDNet.Tests.csproj", "{EAC4E1BA-73EF-4A25-A3EC-1AFA9CDE08C6}"

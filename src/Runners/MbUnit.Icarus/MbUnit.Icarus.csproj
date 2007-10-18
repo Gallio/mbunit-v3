@@ -60,6 +60,21 @@
     <Compile Include="Controls\TestTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Core\CustomEventArgs\AddAssembliesEventArgs.cs" />
+    <Compile Include="Core\CustomEventArgs\ProjectEventArgs.cs" />
+    <Compile Include="Core\CustomEventArgs\ProjectLoadEventArgs.cs" />
+    <Compile Include="Core\CustomEventArgs\RemoveAssemblyEventArgs.cs" />
+    <Compile Include="Core\Interfaces\ILogHistoryModel.cs" />
+    <Compile Include="Core\Interfaces\IPreferencesModel.cs" />
+    <Compile Include="Core\Interfaces\IProjectAdapter.cs" />
+    <Compile Include="Core\Interfaces\IProjectPresenter.cs" />
+    <Compile Include="Core\Interfaces\IReportHistoryModel.cs" />
+    <Compile Include="Core\Interfaces\ITestRunnerModel.cs" />
+    <Compile Include="Core\Interfaces\ITestTreeModel.cs" />
+    <Compile Include="Core\Model\TestRunnerModel.cs" />
+    <Compile Include="Core\Presenter\ProjectPresenter.cs" />
+    <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\TestRunnerMonitor.cs" />
     <Compile Include="Interfaces\IProjectAdapterModel.cs" />
     <Compile Include="Interfaces\IProjectAdapterView.cs" />
     <Compile Include="Main.cs">
