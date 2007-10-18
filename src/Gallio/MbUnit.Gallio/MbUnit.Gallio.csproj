@@ -85,7 +85,6 @@
     <Compile Include="Runner\Harness\ITestHarnessFactory.cs" />
     <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
     <Compile Include="Runner\IsolatedTestRunner.cs" />
-    <Compile Include="Runner\MainArguments.cs" />
     <Compile Include="Runner\Reports\ExecutionLogAttachmentContentDisposition.cs" />
     <Compile Include="Runner\Reports\DefaultReportReader.cs" />
     <Compile Include="Runner\Reports\DefaultReportWriter.cs" />
