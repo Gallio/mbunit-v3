@@ -27,6 +27,10 @@ using WatiN.Core.Logging;
 
 namespace MbUnit.Samples
 {
+    /// <summary>
+    /// This is a simple demonstration of integration opportunities between
+    /// MbUnit v3 and WatiN.
+    /// </summary>
     [TestFixture]
     public class WatiNDemo
     {
@@ -50,6 +54,11 @@ namespace MbUnit.Samples
                 ie.Dispose();
         }
 
+        /// <summary>
+        /// Demonstrates capturing a screenshot on failure automatically.  This test does
+        /// not contain any special logic for caputing the screenshot; it happens as part
+        /// of the TearDown phase when it detects that the test has failed.
+        /// </summary>
         [Test]
         public void DemoCaptureOnFailure()
         {
@@ -65,6 +74,12 @@ namespace MbUnit.Samples
             Assert.IsTrue(ie.ContainsText("NUnit"), "Expected to find NUnit on the page.");
         }
 
+        /// <summary>
+        /// Demonstrates capturing discretionary screenshots at will and labeling them.
+        /// Unlike <see cref="DemoCaptureOnFailure" /> this test does not capture an
+        /// extra automatic screenshot on termination because the TearDown phase can
+        /// detect that the test has passed so it does not bother to capture an image.
+        /// </summary>
         [Test]
         public void DemoNoCaptureOnSuccess()
         {
