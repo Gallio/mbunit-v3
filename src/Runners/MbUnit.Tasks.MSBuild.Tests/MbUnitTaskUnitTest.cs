@@ -62,7 +62,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void RunWithNoArguments()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.NoTests);
             // If nothing ran then all the statistics properties should be set to zero
@@ -79,8 +79,17 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void NullReportTypes()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.ReportTypes = null;
+            // Just make sure it doesn't crash
+            Assert.IsTrue(task.Execute());
+        }
+
+        [Test]
+        public void EmptyReportTypes()
+        {
+            MbUnit task = CreateTask();
+            task.ReportTypes = new string[] { String.Empty };
             // Just make sure it doesn't crash
             Assert.IsTrue(task.Execute());
         }
@@ -88,7 +97,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void NullReportDirectory()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.ReportDirectory = null;
             // Just make sure it doesn't crash
             Assert.IsTrue(task.Execute());
@@ -97,7 +106,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void NullReportNameFormat()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.ReportNameFormat = null;
             // Just make sure it doesn't crash
             Assert.IsTrue(task.Execute());
@@ -106,7 +115,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void RunAssembly()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.Assemblies = assemblies;
             Assert.IsFalse(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Failure);
@@ -116,7 +125,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         public void RunAssemblyAndIgnoreFailures()
         {
 
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.IgnoreFailures = true;
             task.Assemblies = assemblies;
             Assert.IsTrue(task.Execute());
@@ -126,7 +135,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void RunType()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.IgnoreFailures = true;
             task.Assemblies = assemblies;
             task.Filter = "Type=MbUnit.TestResources.MbUnit2.PassingTests";
@@ -144,7 +153,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void RunFailingFixture()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.Assemblies = assemblies;
             task.Filter = "Type=MbUnit.TestResources.MbUnit2.FailingFixture";
             Assert.IsFalse(task.Execute());
@@ -161,7 +170,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void RunSingleTest()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.Assemblies = assemblies;
             task.Filter = "Type=MbUnit.TestResources.MbUnit2.PassingTests;Member=Pass";
             Assert.IsTrue(task.Execute());
@@ -178,7 +187,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void RunSingleFailingTest()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.Assemblies = assemblies;
             task.Filter = "Type=MbUnit.TestResources.MbUnit2.FailingFixture;Member=Fail";
             Assert.IsFalse(task.Execute());
@@ -195,7 +204,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
         [Test]
         public void RunIgnoredTests()
         {
-            InstrumentedMbUnitTask task = CreateTask();
+            MbUnit task = CreateTask();
             task.Assemblies = assemblies;
             task.Filter = "Type=MbUnit.TestResources.MbUnit2.IgnoredTests";
             Assert.IsTrue(task.Execute());
@@ -203,6 +212,16 @@ namespace MbUnit.Tasks.MSBuild.Tests
             Assert.AreEqual(task.TestCount, 2);
             Assert.AreEqual(task.IgnoreCount, 2);
             Assert.GreaterThan(task.Duration, 0);
+        }
+
+        [Test]
+        public void ExecutionFailure()
+        {
+            MbUnit task = CreateTask();
+            task.IgnoreFailures = true;
+            task.HintDirectories = new ITaskItem[] { null };
+            task.PluginDirectories = new ITaskItem[] { null };
+            Assert.IsTrue(task.Execute());
         }
 
         #endregion
