@@ -23,13 +23,15 @@ using MbUnit.Runner.Domains;
 namespace MbUnit.Runner
 {
     /// <summary>
-    /// Base implementation of <see cref="ITestRunner" />.
+    /// Default implementation of <see cref="ITestRunner" />.
     /// </summary>
-    public class BaseTestRunner : ITestRunner
+    public class DefaultTestRunner : ITestRunner
     {
-        private readonly TestEventDispatcher eventDispatcher;
         private readonly ITestDomainFactory domainFactory;
 
+        private bool isDisposed;
+
+        private TestEventDispatcher eventDispatcher;
         private TemplateEnumerationOptions templateEnumerationOptions;
         private TestEnumerationOptions testEnumerationOptions;
         private TestExecutionOptions testExecutionOptions;
@@ -41,7 +43,7 @@ namespace MbUnit.Runner
         /// </summary>
         /// <param name="domainFactory">The test domain factory</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="domainFactory"/> is null</exception>
-        public BaseTestRunner(ITestDomainFactory domainFactory)
+        public DefaultTestRunner(ITestDomainFactory domainFactory)
         {
             if (domainFactory == null)
                 throw new ArgumentNullException(@"domainFactory");
@@ -61,6 +63,8 @@ namespace MbUnit.Runner
         {
             get
             {
+                ThrowIfDisposed();
+
                 if (domain == null)
                 {
                     domain = domainFactory.CreateDomain();
@@ -69,16 +73,30 @@ namespace MbUnit.Runner
 
                 return domain;
             }
-            protected set { domain = value; }
         }
 
         /// <inheritdoc />
         public virtual void Dispose()
         {
-            if (domain != null)
+            if (!isDisposed)
             {
-                domain.Dispose();
-                domain = null;
+                if (domain != null)
+                {
+                    domain.Dispose();
+                    domain = null;
+                }
+
+                LoadPackageComplete = null;
+                BuildTemplatesComplete = null;
+                BuildTestsComplete = null;
+                RunStarting = null;
+                RunComplete = null;
+                eventDispatcher = null;
+                templateEnumerationOptions = null;
+                testEnumerationOptions = null;
+                testExecutionOptions = null;
+
+                isDisposed = true;
             }
         }
 
@@ -100,17 +118,26 @@ namespace MbUnit.Runner
         /// <inheritdoc />
         public TestEventDispatcher EventDispatcher
         {
-            get { return eventDispatcher; }
+            get
+            {
+                ThrowIfDisposed();
+                return eventDispatcher;
+            }
         }
 
         /// <inheritdoc />
         public TemplateEnumerationOptions TemplateEnumerationOptions
         {
-            get { return templateEnumerationOptions; }
+            get
+            {
+                ThrowIfDisposed();
+                return templateEnumerationOptions;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
 
                 templateEnumerationOptions = value;
             }
@@ -119,11 +146,16 @@ namespace MbUnit.Runner
         /// <inheritdoc />
         public TestEnumerationOptions TestEnumerationOptions
         {
-            get { return testEnumerationOptions; }
+            get
+            {
+                ThrowIfDisposed();
+                return testEnumerationOptions;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
 
                 testEnumerationOptions = value;
             }
@@ -132,11 +164,16 @@ namespace MbUnit.Runner
         /// <inheritdoc />
         public TestExecutionOptions TestExecutionOptions
         {
-            get { return testExecutionOptions; }
+            get
+            {
+                ThrowIfDisposed();
+                return testExecutionOptions;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
 
                 testExecutionOptions = value;
             }
@@ -167,6 +204,7 @@ namespace MbUnit.Runner
                 throw new ArgumentNullException(@"progressMonitor");
             if (package == null)
                 throw new ArgumentNullException(@"package");
+            ThrowIfDisposed();
 
             try
             {
@@ -184,6 +222,7 @@ namespace MbUnit.Runner
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
+            ThrowIfDisposed();
 
             try
             {
@@ -201,6 +240,7 @@ namespace MbUnit.Runner
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
+            ThrowIfDisposed();
 
             try
             {
@@ -218,6 +258,7 @@ namespace MbUnit.Runner
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
+            ThrowIfDisposed();
 
             try
             {
@@ -231,6 +272,12 @@ namespace MbUnit.Runner
                 if (RunComplete != null)
                     RunComplete(this, EventArgs.Empty);
             }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (isDisposed)
+                throw new ObjectDisposedException(GetType().Name);
         }
     }
 }

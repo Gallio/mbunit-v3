@@ -146,10 +146,6 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>MbUnit.Gallio</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Icarus.Core\MbUnit.Icarus.Core.csproj">
-      <Project>{BADF6646-9750-4CFB-8867-5D2D4086412A}</Project>
-      <Name>MbUnit.Icarus.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

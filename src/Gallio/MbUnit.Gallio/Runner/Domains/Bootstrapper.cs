@@ -14,13 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Runner.Harness;
 using MbUnit.Hosting;
 using MbUnit.Utilities;
-using MbUnit.Hosting;
-using MbUnit.Model;
 
 namespace MbUnit.Runner.Domains
 {

@@ -26,9 +26,11 @@ namespace MbUnit.Runner.Domains
 {
     /// <summary>
     /// A local implementation of a test domain that performs all processing
-    /// with the current app-domain including loading assemblies.  The <see cref="Runtime" />
-    /// must be initialized prior to the use of a local test domain.
+    /// with the current app-domain including loading assemblies.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="Runtime" /> must be initialized prior to the use of this domain.
+    /// </remarks>
     public class LocalTestDomain : BaseTestDomain
     {
         private ITestHarnessFactory harnessFactory;

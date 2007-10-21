@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Castle.Core;
 using MbUnit.Model.Execution;
 using MbUnit.Model;
@@ -24,33 +23,69 @@ using MbUnit.Hosting;
 namespace MbUnit.Runner.Harness
 {
     /// <summary>
-    /// The default test harness factory creates a <see cref="DefaultTestHarness" />
-    /// and 
+    /// The default test harness factory creates a <see cref="DefaultTestHarness" />.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="Runtime" /> must be initialized prior to using this factory
+    /// because the tests will run within the current <see cref="AppDomain" /> and
+    /// <see cref="Runtime"/>.
+    /// </remarks>
     [Singleton]
     public class DefaultTestHarnessFactory : ITestHarnessFactory
     {
-        private readonly IRuntime runtime;
         private readonly ITestPlanFactory testPlanFactory;
+        private readonly IEnumerable<ITestFramework> frameworks;
+        private readonly IEnumerable<ITestEnvironment> environments;
 
         /// <summary>
-        /// Creates a default test harness factory that adds all registered
-        /// <see cref="ITestFramework" /> and <see cref="ITestEnvironment" />
-        /// services to the test harness when created.
+        /// Creates a test harness using the default <see cref="ITestPlanFactory" />
+        /// and all <see cref="ITestFramework" /> and <see cref="ITestEnvironment" />
+        /// components registered with the <see cref="Runtime" />.
+        /// </summary>
+        public DefaultTestHarnessFactory()
+            : this(Runtime.Instance)
+        {
+        }
+
+        /// <summary>
+        /// Creates a test harness using the default <see cref="ITestPlanFactory" />
+        /// and all <see cref="ITestFramework" /> and <see cref="ITestEnvironment" />
+        /// components registered with the specified <see cref="IRuntime" />.
         /// </summary>
         /// <param name="runtime">The runtime</param>
-        /// <param name="testPlanFactory">The test plan factory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> or
-        /// <paramref name="testPlanFactory"/> is null</exception>
-        public DefaultTestHarnessFactory(IRuntime runtime, ITestPlanFactory testPlanFactory)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
+        public DefaultTestHarnessFactory(IRuntime runtime)
         {
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");
+
+            testPlanFactory = runtime.Resolve<ITestPlanFactory>();
+            frameworks = runtime.ResolveAll<ITestFramework>();
+            environments = runtime.ResolveAll<ITestEnvironment>();
+        }
+
+        /// <summary>
+        /// Creates a default test harness factory with the specified <see cref="ITestPlanFactory" />,
+        /// <see cref="ITestFramework" /> and <see cref="ITestEnvironment" /> components.
+        /// </summary>
+        /// <param name="testPlanFactory">The test plan factory</param>
+        /// <param name="frameworks">The collection of test frameworks</param>
+        /// <param name="environments">The collection of test environments</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPlanFactory"/>,
+        /// <paramref name="frameworks" /> or <paramref name="environments"/> is null</exception>
+        public DefaultTestHarnessFactory(ITestPlanFactory testPlanFactory,
+            IEnumerable<ITestFramework> frameworks, IEnumerable<ITestEnvironment> environments)
+        {
             if (testPlanFactory == null)
                 throw new ArgumentNullException(@"testPlanFactory");
+            if (frameworks == null)
+                throw new ArgumentNullException(@"frameworks");
+            if (environments == null)
+                throw new ArgumentNullException(@"environments");
 
-            this.runtime = runtime;
             this.testPlanFactory = testPlanFactory;
+            this.frameworks = frameworks;
+            this.environments = environments;
         }
 
         /// <inheritdoc />
@@ -58,11 +93,11 @@ namespace MbUnit.Runner.Harness
         {
             DefaultTestHarness harness = new DefaultTestHarness(testPlanFactory);
 
-            foreach (ITestEnvironment environment in runtime.ResolveAll<ITestEnvironment>())
-                harness.AddTestEnvironment(environment);
-
-            foreach (ITestFramework framework in runtime.ResolveAll<ITestFramework>())
+            foreach (ITestFramework framework in frameworks)
                 harness.AddTestFramework(framework);
+
+            foreach (ITestEnvironment environment in environments)
+                harness.AddTestEnvironment(environment);
 
             return harness;
         }

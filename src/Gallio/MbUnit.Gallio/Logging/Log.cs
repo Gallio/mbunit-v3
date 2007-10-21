@@ -693,7 +693,7 @@ namespace MbUnit.Logging
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.AttachObjectAsXml(object, XmlSerializer)"/>
+        /// <seealso cref="LogWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         public static XmlAttachment EmbedObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {

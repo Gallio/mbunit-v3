@@ -18,7 +18,6 @@ using MbUnit.Runner;
 using MbUnit.Model.Execution;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Model;
-using MbUnit.Model.Execution;
 using MbUnit.Model.Serialization;
 
 namespace MbUnit.Runner.Domains

@@ -17,11 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Core.ProgressMonitoring;
-using MbUnit.Hosting;
-using MbUnit.Utilities;
-using MbUnit.Hosting;
 using MbUnit.Model;
-using MbUnit.Model.Execution;
 using MbUnit.Model.Execution;
 using MbUnit.Runner;
 

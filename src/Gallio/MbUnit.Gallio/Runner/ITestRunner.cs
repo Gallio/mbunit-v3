@@ -17,9 +17,7 @@ using System;
 using MbUnit.Model.Execution;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Model;
-using MbUnit.Model.Execution;
 using MbUnit.Model.Serialization;
-using MbUnit.Runner.Domains;
 
 namespace MbUnit.Runner
 {
@@ -29,16 +27,12 @@ namespace MbUnit.Runner
     /// </summary>
     /// <remarks>
     /// This interface is primarily used to simplify test runner integration
-    /// concerns by gathering the entire lifecycle in one place.
+    /// concerns by gathering the entire lifecycle in one place and enabling
+    /// it to be monitored by adding appropriate event handlers.  The creation
+    /// and disposal of resources such as a test domain and harness are taken
+    /// care of automatically by implementations of this interface so that the
+    /// client code is decoupled from these internal lifecycle issues.
     /// </remarks>
-    /// <todo author="jeff">
-    /// I don't like the direction this API is taking.  I intended it to capture
-    /// state management and lifecycle concerns so that test runners don't need
-    /// to bother with some of the minor steps if they don't care about the
-    /// intermediate results.  However, this is starting to look like a rather
-    /// ugly version of <see cref="ITestDomain" />.
-    /// Aggregating <see cref="ITestDomain" /> is a possibility.  Suggestions?
-    /// </todo>
     public interface ITestRunner : IDisposable
     {
         /// <summary>

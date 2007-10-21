@@ -76,7 +76,7 @@ namespace MbUnit.Tests.Integration
                 launcher.TestPackage = package;
                 launcher.Logger = new DebugLogger(logStreamWriter);
                 launcher.Filter = new OrFilter<ITest>(filters.ToArray());
-                launcher.TestRunnerFactory = delegate { return new LocalTestRunner(); };
+                launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
 
                 string reportDirectory = Path.GetTempPath();
                 launcher.ReportDirectory = reportDirectory;

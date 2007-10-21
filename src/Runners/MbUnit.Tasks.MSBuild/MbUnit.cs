@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using MbUnit.Collections;
 using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Hosting;
 using MbUnit.Runner;
 using MbUnit.Model.Filters;
 using MbUnit.Model;
@@ -272,6 +273,7 @@ namespace MbUnit.Tasks.MSBuild
                 launcher.Logger = logger;
                 launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
                 launcher.Filter = GetFilter();
+                launcher.RuntimeSetup = new RuntimeSetup();
 
                 AddAllItemSpecs(launcher.TestPackage.AssemblyFiles, assemblies);
                 AddAllItemSpecs(launcher.TestPackage.HintDirectories, hintDirectories);

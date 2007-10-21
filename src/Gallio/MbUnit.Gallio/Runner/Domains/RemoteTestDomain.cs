@@ -35,6 +35,14 @@ namespace MbUnit.Runner.Domains
         private ITestDomain proxy;
 
         /// <summary>
+        /// Creates a remote test domain initially in a disconnected
+        /// state (without a proxy).
+        /// </summary>
+        protected RemoteTestDomain()
+        {
+        }
+
+        /// <summary>
         /// Gets a proxy for the remote test domain instance.
         /// </summary>
         public ITestDomain Proxy

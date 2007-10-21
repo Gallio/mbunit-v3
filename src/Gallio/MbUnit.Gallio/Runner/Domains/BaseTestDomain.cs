@@ -37,6 +37,13 @@ namespace MbUnit.Runner.Domains
         private TemplateModel templateModel;
         private TestModel testModel;
 
+        /// <summary>
+        /// Creates a test domain.
+        /// </summary>
+        protected BaseTestDomain()
+        {
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {

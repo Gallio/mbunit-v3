@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using Castle.Core;
 using MbUnit.Runner.Harness;
 using MbUnit.Hosting;
@@ -25,10 +24,24 @@ namespace MbUnit.Runner.Domains
     /// <summary>
     /// A factory for <see cref="LocalTestDomain" />.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="Runtime" /> must be initialized prior to using this factory
+    /// because the tests will run within the current <see cref="AppDomain" /> and
+    /// <see cref="Runtime"/>.
+    /// </remarks>
     [Singleton]
     public class LocalTestDomainFactory : ITestDomainFactory
     {
         private readonly ITestHarnessFactory harnessFactory;
+
+        /// <summary>
+        /// Creates a local test domain factory using the default <see cref="ITestHarnessFactory" />
+        /// component registered with the <see cref="Runtime" />.
+        /// </summary>
+        public LocalTestDomainFactory()
+            : this(Runtime.Instance.Resolve<ITestHarnessFactory>())
+        {
+        }
 
         /// <summary>
         /// Creates an local test domain factory.

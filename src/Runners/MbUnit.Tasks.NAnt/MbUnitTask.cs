@@ -17,6 +17,7 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using MbUnit.Core.ProgressMonitoring;
+using MbUnit.Hosting;
 using MbUnit.Runner;
 using MbUnit.Model;
 using MbUnit.Model.Filters;
@@ -194,6 +195,7 @@ namespace MbUnit.Tasks.NAnt
                 launcher.Logger = logger;
                 launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
                 launcher.Filter = GetFilter();
+                launcher.RuntimeSetup = new RuntimeSetup();
 
                 AddAssemblies(launcher);
                 AddHintDirectories(launcher);

@@ -109,12 +109,13 @@ namespace MbUnit.Echo
                 launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(console);
                 launcher.Filter = arguments.GetFilter();
 
+                launcher.RuntimeSetup = new RuntimeSetup();
+                launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
+
                 launcher.TestPackage.EnableShadowCopy = arguments.ShadowCopyFiles;
                 launcher.TestPackage.ApplicationBase = arguments.AppBaseDirectory;
                 launcher.TestPackage.AssemblyFiles.AddRange(arguments.Assemblies);
                 launcher.TestPackage.HintDirectories.AddRange(arguments.HintDirectories);
-
-                launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
                 launcher.ReportDirectory = arguments.ReportDirectory;
                 launcher.ReportNameFormat = arguments.ReportNameFormat;

@@ -29,7 +29,8 @@ namespace MbUnit.Tasks.MSBuild.Tests
     {
         protected override TestLauncherResult RunLauncher(TestLauncher launcher)
         {
-            launcher.TestRunnerFactory = delegate { return new LocalTestRunner(); };
+            launcher.RuntimeSetup = null;
+            launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
             return base.RunLauncher(launcher);
         }
     }

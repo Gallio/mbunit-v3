@@ -63,7 +63,7 @@ namespace MbUnit.Icarus.Core.Presenter
             _TestRunnerModel = testrunnermodel;
             _TestRunnerModel.ProjectPresenter = this;
 
-            testRunner = new IsolatedTestRunner();
+            testRunner = TestRunnerFactory.CreateIsolatedTestRunner();
             
             // wire up events
             _View.GetTestTree += GetTestTree;

@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Castle.Core;
 using MbUnit.Hosting;
 using MbUnit.Runner.Domains;
@@ -29,13 +28,26 @@ namespace MbUnit.Runner.Domains
     [Singleton]
     public class IsolatedTestDomainFactory : ITestDomainFactory
     {
-        private readonly IRuntime runtime;
-        private readonly List<IIsolatedTestDomainContributor> contributors;
+        private readonly RuntimeSetup runtimeSetup;
+        private readonly IEnumerable<IIsolatedTestDomainContributor> contributors;
 
         /// <summary>
-        /// Creates an isolated test domain factory that adds all registered
-        /// <see cref="IIsolatedTestDomainContributor" /> services to the test domain
-        /// as contributors.
+        /// Creates an isolated test domain factory using the same <see cref="RuntimeSetup" />
+        /// as the current <see cref="Runtime" /> and automaticallyed registers all available
+        /// <see cref="IIsolatedTestDomainContributor" /> components.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="Runtime" /> must be initialized prior to using this constructor.
+        /// </remarks>
+        public IsolatedTestDomainFactory()
+            : this(Runtime.Instance)
+        {
+        }
+
+        /// <summary>
+        /// Creates an isolated test domain factory using the same <see cref="RuntimeSetup" />
+        /// as the specified <see cref="IRuntime" /> and all registered
+        /// <see cref="IIsolatedTestDomainContributor" /> components.
         /// </summary>
         /// <param name="runtime">The runtime</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
@@ -44,16 +56,33 @@ namespace MbUnit.Runner.Domains
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");
 
-            this.runtime = runtime;
+            runtimeSetup = runtime.GetRuntimeSetup();
+            contributors = runtime.ResolveAll<IIsolatedTestDomainContributor>();
+        }
 
-            contributors = new List<IIsolatedTestDomainContributor>();
-            contributors.AddRange(runtime.ResolveAll<IIsolatedTestDomainContributor>());
+        /// <summary>
+        /// Creates an isolated test domain factory that will create isolated
+        /// runtimes using the provided runtime setup.
+        /// </summary>
+        /// <param name="runtimeSetup">The runtime setup</param>
+        /// <param name="contributors">The collection of domain contributors</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimeSetup"/> or
+        /// <paramref name="contributors"/> is null</exception>
+        public IsolatedTestDomainFactory(RuntimeSetup runtimeSetup, IEnumerable<IIsolatedTestDomainContributor> contributors)
+        {
+            if (runtimeSetup == null)
+                throw new ArgumentNullException(@"runtimeSetup");
+            if (contributors == null)
+                throw new ArgumentNullException(@"contributors");
+
+            this.runtimeSetup = runtimeSetup;
+            this.contributors = contributors;
         }
 
         /// <inheritdoc />
         public ITestDomain CreateDomain()
         {
-            IsolatedTestDomain domain = new IsolatedTestDomain(runtime);
+            IsolatedTestDomain domain = new IsolatedTestDomain(runtimeSetup);
 
             foreach (IIsolatedTestDomainContributor contributor in contributors)
                 domain.AddContributor(contributor);

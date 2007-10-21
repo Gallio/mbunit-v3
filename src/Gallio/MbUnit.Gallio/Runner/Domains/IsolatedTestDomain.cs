@@ -34,25 +34,31 @@ namespace MbUnit.Runner.Domains
     /// <see cref="AppDomain" /> boundaries.  The <see cref="AppDomain" /> is
     /// created when a test project is loaded and is released on disposal.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="Runtime" /> does not need to be initialized in order
+    /// to use a <see cref="IsolatedTestDomain" />.  However, the domain
+    /// will automatically initialize the <see cref="Runtime" /> within
+    /// the isolated <see cref="AppDomain" /> that it creates.
+    /// </remarks>
     public class IsolatedTestDomain : RemoteTestDomain
     {
-        private IRuntime runtime;
+        private readonly RuntimeSetup runtimeSetup;
+        private readonly Dictionary<Assembly, bool> bootstrapAssemblies;
 
         private AppDomain appDomain;
         private Bootstrapper bootstrapper;
-        private Dictionary<Assembly, bool> bootstrapAssemblies;
 
         /// <summary>
         /// Creates an isolated test domain.
         /// </summary>
-        /// <param name="runtime">The runtime from which to obtain services</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
-        public IsolatedTestDomain(IRuntime runtime)
+        /// <param name="runtimeSetup">The runtime setup for the runtime to initialize within the isolated <see cref="AppDomain" /></param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimeSetup"/> is null</exception>
+        public IsolatedTestDomain(RuntimeSetup runtimeSetup)
         {
-            if (runtime == null)
-                throw new ArgumentNullException("runtime");
+            if (runtimeSetup == null)
+                throw new ArgumentNullException("runtimeSetup");
 
-            this.runtime = runtime;
+            this.runtimeSetup = runtimeSetup;
 
             bootstrapAssemblies = new Dictionary<Assembly, bool>();
 
@@ -170,7 +176,7 @@ namespace MbUnit.Runner.Domains
             try
             {
                 bootstrapper = CreateRemoteInstance<Bootstrapper>();
-                bootstrapper.Initialize(runtime.GetRuntimeSetup());
+                bootstrapper.Initialize(runtimeSetup);
 
                 return bootstrapper.CreateTestDomain();
             }
@@ -206,7 +212,7 @@ namespace MbUnit.Runner.Domains
         private T CreateRemoteInstance<T>(params object[] args)
         {
             Type type = typeof(T);
-            string assemblyFile = Hosting.Loader.GetFriendlyAssemblyLocation(type.Assembly);
+            string assemblyFile = Loader.GetFriendlyAssemblyLocation(type.Assembly);
             return (T) appDomain.CreateInstanceFromAndUnwrap(assemblyFile, type.FullName, false,
                 BindingFlags.Default, null, args, null, null, null);
         }

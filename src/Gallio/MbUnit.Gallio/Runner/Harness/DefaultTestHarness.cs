@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using MbUnit.Collections;
-using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Hosting;
 using MbUnit.Model;
@@ -30,6 +29,11 @@ namespace MbUnit.Runner.Harness
     /// <summary>
     /// Default implementation of a test harness.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="Runtime" /> must be initialized prior to using this factory
+    /// because the tests will run within the current <see cref="AppDomain" /> and
+    /// <see cref="Runtime"/>.
+    /// </remarks>
     public class DefaultTestHarness : ITestHarness
     {
         private ITestPlanFactory testPlanFactory;

@@ -72,6 +72,7 @@
     <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitor.cs" />
     <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
     <Compile Include="Core\ConsoleSupport\NativeConsole.cs" />
+    <Compile Include="Factory.cs" />
     <Compile Include="Hosting\IRuntimeFactory.cs" />
     <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
@@ -84,7 +85,6 @@
     <Compile Include="Runner\Harness\ITestHarness.cs" />
     <Compile Include="Runner\Harness\ITestHarnessFactory.cs" />
     <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
-    <Compile Include="Runner\IsolatedTestRunner.cs" />
     <Compile Include="Runner\Reports\ExecutionLogAttachmentContentDisposition.cs" />
     <Compile Include="Runner\Reports\DefaultReportReader.cs" />
     <Compile Include="Runner\Reports\DefaultReportWriter.cs" />
@@ -160,7 +160,7 @@
     <Compile Include="Runner\Reports\Report.cs" />
     <Compile Include="Runner\Reports\StepRun.cs" />
     <Compile Include="Runner\Reports\TestRun.cs" />
-    <Compile Include="Runner\BaseTestRunner.cs" />
+    <Compile Include="Runner\DefaultTestRunner.cs" />
     <Compile Include="Runner\Domains\BaseTestDomain.cs" />
     <Compile Include="Runner\Domains\Bootstrapper.cs" />
     <Compile Include="Runner\RunnerException.cs" />
@@ -171,7 +171,6 @@
     <Compile Include="Runner\Domains\ITestDomain.cs" />
     <Compile Include="Runner\Domains\ITestDomainFactory.cs" />
     <Compile Include="Runner\ITestRunner.cs" />
-    <Compile Include="Runner\LocalTestRunner.cs" />
     <Compile Include="Runner\Domains\LocalTestDomain.cs" />
     <Compile Include="Runner\Domains\LocalTestDomainFactory.cs" />
     <Compile Include="Core\ProgressMonitoring\LogProgressMonitor.cs" />
@@ -184,7 +183,6 @@
     <Compile Include="Runner\Monitors\ReportStepEventArgs.cs" />
     <Compile Include="Runner\Domains\RemoteTestDomain.cs" />
     <Compile Include="Runner\ResultCode.cs" />
-    <Compile Include="Runner\StandaloneTestRunner.cs" />
     <Compile Include="Runner\TestLauncher.cs" />
     <Compile Include="Core\ProgressMonitoring\TextualProgressMonitor.cs" />
     <Compile Include="Hosting\DefaultAssemblyResolverManager.cs" />

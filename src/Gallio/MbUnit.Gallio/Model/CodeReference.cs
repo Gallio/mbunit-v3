@@ -459,6 +459,11 @@ namespace MbUnit.Model
                 ^ (parameterName != null ? parameterName.GetHashCode() : 0);
         }
 
+        /// <summary>
+        /// Provides an opportunity for a read-only code reference to
+        /// throw an exception prior to modifications.  Normal behavior
+        /// is to simply clear the cache.
+        /// </summary>
         protected internal virtual void CheckReadOnlyAndClearCache()
         {
             cachedAssembly = null;

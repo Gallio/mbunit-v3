@@ -21,7 +21,6 @@ using System.IO;
 using System.Diagnostics;
 using System.Text;
 using Castle.Core.Logging;
-using MbUnit.Core.ConsoleSupport;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Runner.Reports;
 using MbUnit.Runner.Monitors;
@@ -49,8 +48,9 @@ namespace MbUnit.Runner
     /// <para>
     /// By default, a new <see cref="Runtime" /> environment is established just before
     /// test execution begins and is disposed just afterwards.  If you already have a
-    /// <see cref="Runtime" /> environment, set the <see cref="TestRunnerFactory" /> to
-    /// create a <see cref="ITestRunner" /> other than the default <see cref="StandaloneTestRunner" />.
+    /// <see cref="Runtime" /> environment, set the <see cref="RuntimeSetup" /> to <c>null</c>.
+    /// You can also override the default <see cref="ITestRunner" /> that is created
+    /// by setting the <see cref="TestRunnerFactory" /> property.
     /// </para>
     /// </summary>
     /// <todo>
@@ -71,7 +71,7 @@ namespace MbUnit.Runner
 
         private Filter<ITest> filter;
 
-        private TestRunnerFactory testRunnerFactory;
+        private Factory<ITestRunner> testRunnerFactory;
         private bool echoResults;
         private string templateModelFilename;
         private string testModelFilename;
@@ -79,8 +79,8 @@ namespace MbUnit.Runner
         private string reportDirectory;
         private string reportNameFormat;
 
-        private readonly ReportMonitor reportMonitor;
-        private readonly List<ITestRunnerMonitor> customMonitors;
+        private ReportMonitor reportMonitor;
+        private List<ITestRunnerMonitor> customMonitors;
 
         #endregion
 
@@ -89,8 +89,8 @@ namespace MbUnit.Runner
         /// </summary>
         public TestLauncher()
         {
-            runtimeSetup = new RuntimeSetup();
             testPackage = new TestPackage();
+            testRunnerFactory = Runner.TestRunnerFactory.CreateIsolatedTestRunner;
 
             reportDirectory = @"";
             reportNameFormat = @"mbunit-{0}-{1}";
@@ -106,6 +106,19 @@ namespace MbUnit.Runner
             customMonitors = new List<ITestRunnerMonitor>();
         }
 
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            // Help out the GC a little bit.
+            runtimeSetup = null;
+            testPackage = null;
+            progressMonitorProvider = null;
+            logger = null;
+            filter = null;
+            reportMonitor = null;
+            customMonitors = null;
+        }
+
         /// <summary>
         /// <para>
         /// Gets or sets the progress monitor provider to use.
@@ -117,11 +130,16 @@ namespace MbUnit.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public IProgressMonitorProvider ProgressMonitorProvider
         {
-            get { return progressMonitorProvider; }
+            get
+            {
+                ThrowIfDisposed();
+                return progressMonitorProvider;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
                 progressMonitorProvider = value;
             }
         }
@@ -137,11 +155,16 @@ namespace MbUnit.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public ILogger Logger
         {
-            get { return logger; }
+            get
+            {
+                ThrowIfDisposed();
+                return logger;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
                 logger = value;
             }
         }
@@ -157,11 +180,16 @@ namespace MbUnit.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public Filter<ITest> Filter
         {
-            get { return filter; }
+            get
+            {
+                ThrowIfDisposed();
+                return filter;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
                 filter = value;
             }
         }
@@ -172,31 +200,51 @@ namespace MbUnit.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public TestPackage TestPackage
         {
-            get { return testPackage; }
+            get
+            {
+                ThrowIfDisposed();
+                return testPackage;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
                 testPackage = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets the runtime setup.
+        /// <para>
+        /// Gets or sets the <see cref="RuntimeSetup" /> to use for automatically initializing
+        /// the <see cref="Runtime"/> during test execution or <c>null</c> if the <see cref="Runtime" />
+        /// is already initialized.
+        /// </para>
+        /// <para>
+        /// If this value if not <c>null</c> then the launcher will initialize the <see cref="Runtime" />
+        /// using this <see cref="RuntimeSetup" /> just prior to test execution and will automatically
+        /// shut down the <see cref="Runtime" /> just afterwards.
+        /// </para>
+        /// <para>
+        /// The default value is <c>null</c> which assumes that the <see cref="Runtime" /> is already initialized.
+        /// </para>
         /// </summary>
         /// <remarks>
-        /// The value of this property is only meaningful if <see cref="TestRunnerFactory" />
-        /// is <c>null</c>.
+        /// Runtimes cannot be nested.  So if the value of this property is not <c>null</c> and
+        /// the runtime has already been initialized, then an exception will be thrown when
+        /// running the tests because the <see cref="TestLauncher" /> will attempt to reinitialize
+        /// the runtime unnecessarily.
         /// </remarks>
-        /// <seealso cref="TestRunnerFactory"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public RuntimeSetup RuntimeSetup
         {
-            get { return runtimeSetup; }
+            get
+            {
+                ThrowIfDisposed();
+                return runtimeSetup;
+            }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
                 runtimeSetup = value;
             }
         }
@@ -207,22 +255,25 @@ namespace MbUnit.Runner
         /// test execution time.
         /// </para>
         /// <para>
-        /// The default value is <c>null</c> which indicates that the launcher should create
-        /// a <see cref="StandaloneTestRunner" /> to automatically initialize and shutdown the
-        /// runtime using the provided <see cref="RuntimeSetup" /> during test execution.
+        /// The default value is <see cref="Runner.TestRunnerFactory.CreateIsolatedTestRunner"/>.
         /// </para>
         /// </summary>
-        /// <remarks>
-        /// Runtimes cannot be nested.  So if the value of this property is <c>null</c> and
-        /// the runtime has already been initialized, then an exception will be thrown when
-        /// running the tests because the <see cref="StandaloneTestRunner" /> used by default
-        /// will attempt to reinitialize the runtime unnecessarily.
-        /// </remarks>
-        /// <seealso cref="RuntimeSetup"/>
-        public TestRunnerFactory TestRunnerFactory
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public Factory<ITestRunner> TestRunnerFactory
         {
-            get { return testRunnerFactory; }
-            set { testRunnerFactory = value; }
+            get
+            {
+                ThrowIfDisposed();
+                return testRunnerFactory;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+
+                ThrowIfDisposed();
+                testRunnerFactory = value;
+            }
         }
 
         /// <summary>
@@ -236,8 +287,16 @@ namespace MbUnit.Runner
         /// </summary>
         public bool EchoResults
         {
-            get { return echoResults; }
-            set { echoResults = value; }
+            get
+            {
+                ThrowIfDisposed();
+                return echoResults;
+            }
+            set
+            {
+                ThrowIfDisposed();
+                echoResults = value;
+            }
         }
 
         /// <summary>
@@ -251,8 +310,16 @@ namespace MbUnit.Runner
         /// </summary>
         public string TemplateModelFilename
         {
-            get { return templateModelFilename; }
-            set { templateModelFilename = value; }
+            get
+            {
+                ThrowIfDisposed();
+                return templateModelFilename;
+            }
+            set
+            {
+                ThrowIfDisposed();
+                templateModelFilename = value;
+            }
         }
 
         /// <summary>
@@ -266,8 +333,16 @@ namespace MbUnit.Runner
         /// </summary>
         public string TestModelFilename
         {
-            get { return testModelFilename; }
-            set { testModelFilename = value; }
+            get
+            {
+                ThrowIfDisposed();
+                return testModelFilename;
+            }
+            set
+            {
+                ThrowIfDisposed();
+                testModelFilename = value;
+            }
         }
 
         /// <summary>
@@ -281,11 +356,16 @@ namespace MbUnit.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public string ReportDirectory
         {
-            get { return reportDirectory; }
+            get
+            {
+                ThrowIfDisposed();
+                return reportDirectory;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
                 reportDirectory = value;
             }
         }
@@ -302,11 +382,16 @@ namespace MbUnit.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public string ReportNameFormat
         {
-            get { return reportNameFormat; }
+            get
+            {
+                ThrowIfDisposed();
+                return reportNameFormat;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+                ThrowIfDisposed();
                 reportNameFormat = value; 
             }
         }
@@ -316,7 +401,11 @@ namespace MbUnit.Runner
         /// </summary>
         public IList<string> ReportFormats
         {
-            get { return reportFormats; }
+            get
+            {
+                ThrowIfDisposed();
+                return reportFormats;
+            }
         }
 
         /// <summary>
@@ -324,7 +413,11 @@ namespace MbUnit.Runner
         /// </summary>
         public NameValueCollection ReportFormatOptions
         {
-            get { return reportFormatOptions; }
+            get
+            {
+                ThrowIfDisposed();
+                return reportFormatOptions;
+            }
         }
 
         /// <summary>
@@ -338,7 +431,11 @@ namespace MbUnit.Runner
         /// </summary>
         public ReportMonitor ReportMonitor
         {
-            get { return reportMonitor; }
+            get
+            {
+                ThrowIfDisposed();
+                return reportMonitor;
+            }
         }
 
         /// <summary>
@@ -354,7 +451,11 @@ namespace MbUnit.Runner
         /// </summary>
         public IList<ITestRunnerMonitor> CustomMonitors
         {
-            get { return customMonitors; }
+            get
+            {
+                ThrowIfDisposed();
+                return customMonitors;
+            }
         }
 
         #region Public Methods
@@ -365,57 +466,72 @@ namespace MbUnit.Runner
         /// <returns>An integer representing the result of the execution.</returns>
         public TestLauncherResult Run()
         {
+            ThrowIfDisposed();
+
             reportMonitor.ResetReport();
             TestLauncherResult result = new TestLauncherResult(reportMonitor.Report);
 
             if (!PrepareToRun(result))
                 return result;
 
-            using (ITestRunner runner = CreateRunner())
+            logger.Info("Initializing the test runner.");
+
+            if (runtimeSetup != null)
+                Runtime.Initialize(runtimeSetup);
+
+            try
             {
-                IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
-                if (!InitializeRunner(result, runner, reportManager))
+                using (ITestRunner runner = CreateRunner())
+                {
+                    IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
+                    if (!InitializeRunner(result, runner, reportManager))
+                        return result;
+
+                    Stopwatch stopWatch = Stopwatch.StartNew();
+                    logger.InfoFormat("Start time: {0}", DateTime.Now.ToShortTimeString());
+
+                    // Run initial phases.
+                    if (!RunInitialPhases(result, runner))
+                        return result;
+
+                    // Run tests.
+                    try
+                    {
+                        RunTests(runner);
+
+                        if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
+                            result.SetResultCode(ResultCode.Failure);
+                        else if (reportMonitor.Report.PackageRun.Statistics.TestCount == 0)
+                            result.SetResultCode(ResultCode.NoTests);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        result.SetResultCode(ResultCode.Canceled);
+                    }
+
+                    // Generate reports even if the test run is canceled, unless this step
+                    // also gets canceled.
+                    try
+                    {
+                        GenerateReports(result, reportManager);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        result.SetResultCode(ResultCode.Canceled);
+                    }
+
+                    // Done.
+                    logger.InfoFormat("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
+                        DateTime.Now.ToShortTimeString(),
+                        stopWatch.Elapsed.TotalSeconds);
+
                     return result;
-
-                Stopwatch stopWatch = Stopwatch.StartNew();
-                logger.InfoFormat("Start time: {0}", DateTime.Now.ToShortTimeString());
-
-                // Run initial phases.
-                if (!RunInitialPhases(result, runner))
-                    return result;
-
-                // Run tests.
-                try
-                {
-                    RunTests(runner);
-
-                    if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
-                        result.SetResultCode(ResultCode.Failure);
-                    else if (reportMonitor.Report.PackageRun.Statistics.TestCount == 0)
-                        result.SetResultCode(ResultCode.NoTests);
                 }
-                catch (OperationCanceledException)
-                {
-                    result.SetResultCode(ResultCode.Canceled);
-                }
-
-                // Generate reports even if the test run is canceled, unless this step
-                // also gets canceled.
-                try
-                {
-                    GenerateReports(result, reportManager);
-                }
-                catch (OperationCanceledException)
-                {
-                    result.SetResultCode(ResultCode.Canceled);
-                }
-
-                // Done.
-                logger.InfoFormat("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
-                    DateTime.Now.ToShortTimeString(),
-                    stopWatch.Elapsed.TotalSeconds);
-
-                return result;
+            }
+            finally
+            {
+                if (runtimeSetup != null)
+                    Runtime.Shutdown();
             }
         }
 
@@ -441,10 +557,7 @@ namespace MbUnit.Runner
 
         private ITestRunner CreateRunner()
         {
-            if (testRunnerFactory != null)
-                return testRunnerFactory();
-
-            return new StandaloneTestRunner(runtimeSetup);
+            return testRunnerFactory();
         }
 
         private bool InitializeRunner(TestLauncherResult result, ITestRunner runner, IReportManager reportManager)
@@ -554,7 +667,9 @@ namespace MbUnit.Runner
         {
             DisplayPaths(testPackage.AssemblyFiles, "Test Assemblies:");
             DisplayPaths(testPackage.HintDirectories, "Hint Directories:");
-            DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
+
+            if (runtimeSetup != null)
+                DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
         }
 
         private void DisplayPaths(ICollection<string> paths, string name)
@@ -578,7 +693,8 @@ namespace MbUnit.Runner
             CanonicalizePaths(testPackage.AssemblyFiles);
             CanonicalizePaths(testPackage.HintDirectories);
 
-            CanonicalizePaths(runtimeSetup.PluginDirectories);
+            if (runtimeSetup != null)
+                CanonicalizePaths(runtimeSetup.PluginDirectories);
         }
 
         private static string CanonicalizePath(string path)
@@ -716,16 +832,10 @@ namespace MbUnit.Runner
 
         #endregion
 
-        #region IDisposable Members
-
-        /// <summary>
-        /// The IDisposable interface is implemented just to be able to use this
-        /// class in a using statement.
-        /// </summary>
-        public void Dispose()
+        private void ThrowIfDisposed()
         {
+            if (testPackage == null)
+                throw new ObjectDisposedException(GetType().Name);
         }
-
-        #endregion
     }
 }

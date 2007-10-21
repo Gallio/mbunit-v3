@@ -16,21 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MbUnit.Runner;
 
-namespace MbUnit.AddIn.TDNet.Tests
+namespace MbUnit
 {
     /// <summary>
-    /// Makes it possible to unit test the <see cref="MbUnitTestRunner" /> class.
-    /// In particular we need to disable the initialization of a new runtime
-    /// because it will conflict with the test execution environment.
+    /// Creates an instance of an object.
     /// </summary>
-    public class InstrumentedMbUnitTestRunner : MbUnitTestRunner
-    {
-        protected override TestLauncherResult RunLauncher(TestLauncher launcher)
-        {
-            launcher.RuntimeSetup = null;
-            return base.RunLauncher(launcher);
-        }
-    }
+    /// <typeparam name="T">The type of object to create</typeparam>
+    /// <returns>The newly created object</returns>
+    public delegate T Factory<T>();
 }
