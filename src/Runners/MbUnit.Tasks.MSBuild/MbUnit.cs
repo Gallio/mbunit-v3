@@ -31,14 +31,48 @@ using ILogger = Castle.Core.Logging.ILogger;
 namespace MbUnit.Tasks.MSBuild
 {
     /// <summary>
-    /// A MSBuild Task implementation that allows to run MbUnit.
+    /// A custom MSBuild Task that allows to run MbUnit from MSBuild.
     /// </summary>
+    /// <remarks>
+    /// In order for MSBuild to find this task, the MbUnit.Tasks.MSBuild.dll has to be loaded with
+    /// the UsingTask task:
+    /// <code>
+    /// <![CDATA[
+    /// <UsingTask AssemblyFile="[Path-to-assembly]\MbUnit.Tasks.MSBuild.dll" TaskName="MbUnit" />
+    /// ]]>
+    /// </code>
+    /// The AssemblyFile attribute must be set to the path where the MbUnit.Tasks.MSBuild.dll assembly resides,
+    /// and the TaskName attribute <strong>must</strong> be set to "MbUnit", otherwise MSBuild won't load the task.
+    /// </remarks>
     /// <example>
+    /// The following code is an example build file that shows how to load the task, specify the test assemblies
+    /// and set some of the task's properties:
+    /// <code>
+    /// <![CDATA[
+    /// <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    ///     <!-- This is need by MSBuild to locate the MbUnit task -->
+    ///     <UsingTask AssemblyFile="[Path-to-assembly]\MbUnit.Tasks.MSBuild.dll" TaskName="MbUnit" />
+    ///     <!-- Specify the tests assemblies -->
+    ///     <ItemGroup>
+    ///         <TestAssemblies Include="[Path-to-test-assembly1]/TestAssembly1.dll" />
+    ///         <TestAssemblies Include="[Path-to-test-assembly2]/TestAssembly2.dll" />
+    ///     </ItemGroup>
+    ///     <Target Name="MyTarget">
+    ///         <MbUnit IgnoreFailures="true" Filter="Type=PassingTests" Assemblies="@(TestAssemblies)">
+    ///             <!-- This tells MSBuild to store the output value of the task's ExitCode property
+    ///                  into the project's MbUnit.ExitCode property -->
+    ///             <Output TaskParameter="ExitCode" PropertyName="MbUnit.ExitCode"/>
+    ///         </MbUnit>
+    ///         <Error Text="Tests execution failed" Condition="'$(MbUnit.ExitCode)' != 0" />
+    ///     </Target>
+    /// </Project>
+    /// ]]>
+    /// </code>
     /// </example>
     public class MbUnit : Task
     {
         /// Internal comment. In the MSBuild the class name is also the custom task
-        /// name, so we named this class "MbUnit" to be more friendly to the user.
+        /// name, so we named this class "MbUnit" to make things easier to the user.
 
         #region Private Members
 
@@ -66,177 +100,387 @@ namespace MbUnit.Tasks.MSBuild
         #region Public Properties
 
         /// <summary>
-        /// The list of test assemblies to execute. This is required.
+        /// The list of relative or absolute paths of test assembly files to execute. This is required.
         /// </summary>
+        /// <example>The following example shows how to specify the test assemblies (for a more complete example
+        /// please see the <see cref="MbUnit"/> task documentation):
+        /// <code>
+        /// <![CDATA[
+        /// <ItemGroup>
+        ///     <TestAssemblies Include="[Path-to-test-assembly1]/TestAssembly1.dll" />
+        ///     <TestAssemblies Include="[Path-to-test-assembly2]/TestAssembly2.dll" />
+        /// </ItemGroup>
+        /// <Target Name="MyTarget">
+        ///     <MbUnit Assemblies="@(TestAssemblies)" />
+        /// </Target>
+        /// ]]>
+        /// </code>
+        /// </example>
         [Required]
         public ITaskItem[] Assemblies
         {
-            get { return assemblies; }
             set { assemblies = value; }
         }
 
         /// <summary>
         /// The list of directories used for loading assemblies and other dependent resources.
         /// </summary>
+        /// <example>The following example shows how to specify the hint directories:
+        /// <code>
+        /// <![CDATA[
+        /// <!-- -->
+        /// <ItemGroup>
+        ///     <HintDirectories Include="[Path-to-test-hint-directory-1]/" />
+        ///     <HintDirectories Include="[Path-to-test-hint-directory-2]/" />
+        /// </ItemGroup>
+        /// <Target Name="MyTarget">
+        ///     <MbUnit HintDirectories="@(HintDirectories)" />
+        /// </Target>
+        /// ]]>
+        /// </code>
+        /// </example>
         public ITaskItem[] HintDirectories
         {
-            get { return hintDirectories; }
             set { hintDirectories = value; }
         }
 
         /// <summary>
-        ///  Additional MbUnit plugin directories to search recursively.
+        /// Additional MbUnit plugin directories to search recursively.
         /// </summary>
+        /// <example>The following example shows how to specify the plugins directories:
+        /// <code>
+        /// <![CDATA[
+        /// <ItemGroup>
+        ///     <PluginDirectories Include="[Path-to-test-plugin-directory-1]/" />
+        ///     <PluginDirectories Include="[Path-to-test-plugin-directory-2]/" />
+        /// </ItemGroup>
+        /// <Target Name="MyTarget">
+        ///     <MbUnit PluginDirectories="@(PluginDirectories)" />
+        /// </Target>
+        /// ]]>
+        /// </code>
+        /// </example>
         public ITaskItem[] PluginDirectories
         {
-            get { return pluginDirectories; }
             set { pluginDirectories = value; }
         }
 
         /// <summary>
-        /// An array of report types to generate.
+        /// A list of the types of reports to generate, separated by semicolons. 
         /// </summary>
+        /// <remarks>
+        /// <list>
+        /// <item>The types supported "out of the box" are: Html, Html-Inline, Text, XHtml,
+        /// XHtml-Inline, Xml, and Xml-Inline, but more types could be available as plugins.</item>
+        /// <item>This property is not case sentitive.</item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// In the following example reports will be generated in both HTML and XML format.
+        /// <code>
+        /// <![CDATA[
+        /// <Target Name="MyTarget">
+        ///     <MbUnit ReportTypes="html;xml" />
+        /// </Target>
+        /// ]]>
+        /// </code>
+        /// </example>
         public string[] ReportTypes
         {
-            get { return reportTypes; }
             set { reportTypes = value; }
         }
 
         /// <summary>
-        /// A format string to use to generate the reports filename.
+        /// Sets the format string to use to generate the reports filenames.
         /// </summary>
+        /// <remarks>
+        /// Any occurence of {0} will be replaced by the date, and any occurrence of {1} by the time.
+        /// The default format string is mbunit-{0}-{1}.
+        /// </remarks>
         public string ReportNameFormat
         {
-            get { return reportNameFormat; }
             set { reportNameFormat = value; }
         }
 
         /// <summary>
-        /// The directory where the reports will be put.
+        /// Sets the name of the directory where the reports will be put.
         /// </summary>
+        /// <remarks>
+        /// The directory will be created if it doesn't exist. Existing files will be overwrited.
+        /// </remarks>
         public string ReportDirectory
         {
-            get { return reportDirectory; }
             set { reportDirectory = value; }
         }
 
         /// <summary>
-        /// The filter to apply in the format "property=value;property=value;..."
+        /// Sets the filter to apply in the format "property=value;property=value;..."
         /// If left empty the "Any" filter will be applied.
         /// </summary>
         public string Filter
         {
-            get { return filter; }
             set { filter = value; }
         }
 
         /// <summary>
-        /// Whether or not to halt on failure.
+        /// Sets whether or not to halt on failure.
         /// </summary>
         public bool IgnoreFailures
         {
-            get { return ignoreFailures; }
             set { ignoreFailures = value; }
         }
 
         /// <summary>
-        /// The exit code of the tests execution.
+        /// Gets the exit code of the tests execution.
         /// </summary>
+        /// <remarks>
+        /// This property is only meaningful when the IgnoreFailures property is set to true.
+        /// </remarks>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's ExitCode output property will
+        ///           be made available as a property called MbUnitExitCode in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode"/>
+        /// </MbUnit>
+        /// <!-- After the exit code be retrieved and used like this: -->
+        /// <Error Text="The tests execution failed" Condition="'$(MbUnitExitCode)' != 0" />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int ExitCode
         {
             get { return exitCode; }
-            set { exitCode = value; }
         }
 
         /// <summary>
-        /// The total number of test cases.
+        /// Gets the total number of test cases.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's TestCount output property will
+        ///           be made available as a property called MbUnitTestCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="TestCount" PropertyName="MbUnitTestCount" />
+        /// </MbUnit>
+        /// <!-- After execution the number of tests run can be retrieved like this: -->
+        /// <Message Text="$(MbUnitTestCount) tests were run." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int TestCount
         {
             get { return testCount; }
-            set { testCount = value; }
         }
 
         /// <summary>
-        /// The total number of test cases that were run and passed.
+        /// Gets the total number of test cases that were run and passed.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's PassCount output property will
+        ///           be made available as a property called MbUnitPassCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="TestCount" PropertyName="MbUnitPassCount" />
+        /// </MbUnit>
+        /// <!-- After execution the number of passed tests can be retrieved like this: -->
+        /// <Message Text="$(MbUnitPassCount) tests passed." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int PassCount
         {
             get { return passCount; }
-            set { passCount = value; }
         }
 
         /// <summary>
-        /// The total number of test cases that were run and failed.
+        /// Gets the total number of test cases that were run and failed.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's FailCount output property will
+        ///           be made available as a property called MbUnitFailCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="FailCount" PropertyName="MbUnitFailCount" />
+        /// </MbUnit>
+        /// <!-- After execution the number of failed tests can be retrieved like this: -->
+        /// <Message Text="$(MbUnitFailCount) tests passed." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int FailureCount
         {
             get { return failureCount; }
-            set { failureCount = value; }
         }
 
         /// <summary>
-        /// The total number of test cases that did not run because they were ignored.
+        /// Gets the total number of test cases that did not run because they were ignored.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's IgnoreCount output property will
+        ///           be made available as a property called MbUnitIgnoreCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="IgnoreCount" PropertyName="MbUnitIgnoreCount" />
+        /// </MbUnit>
+        /// <!-- After execution the number of ignored tests can be retrieved like this: -->
+        /// <Message Text="$(MbUnitIgnoreCount) tests were ignored." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int IgnoreCount
         {
             get { return ignoreCount; }
-            set { ignoreCount = value; }
         }
 
         /// <summary>
-        /// The total number of test cases that ran and were inconclusive.
+        /// Gets the total number of test cases that ran and were inconclusive.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's InconclusiveCount output property will
+        ///           be made available as a property called MbUnitInconclusiveCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="InconclusiveCount" PropertyName="MbUnitInconclusiveCount" />
+        /// </MbUnit>
+        /// <!-- After execution the number of inconclusive tests can be retrieved like this: -->
+        /// <Message Text="$(MbUnitInconclusiveCount) tests were inconclusive." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int InconclusiveCount
         {
             get { return inconclusiveCount; }
-            set { inconclusiveCount = value; }
         }
 
         /// <summary>
-        /// The total number of test cases that were run.
+        /// Gets the total number of test cases that were run.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's RunCount output property will
+        ///           be made available as a property called MbUnitRunCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="RunCount" PropertyName="MbUnitRunCount" />
+        /// </MbUnit>
+        /// <!-- After execution the number of tests run can be retrieved like this: -->
+        /// <Message Text="$(MbUnitRunCount) tests were run." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int RunCount
         {
             get { return runCount; }
-            set { runCount = value; }
         }
 
         /// <summary>
-        /// The total number of test cases that did not run because they were skipped.
+        /// Gets the total number of test cases that did not run because they were skipped.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's SkipCount output property will
+        ///           be made available as a property called MbUnitSkipCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="SkipCount" PropertyName="MbUnitSkipCount" />
+        /// </MbUnit>
+        /// <!-- After execution the number of skipped tests can be retrieved like this: -->
+        /// <Message Text="$(MbUnitSkipCount) tests were skipped." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int SkipCount
         {
             get { return skipCount; }
-            set { skipCount = value; }
         }
 
         /// <summary>
-        /// Duration of the tests execution in seconds.
+        /// Gets the duration of the tests execution in seconds.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's Duration output property will
+        ///           be made available as a property called MbUnitDuration in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="Duration" PropertyName="MbUnitDuration" />
+        /// </MbUnit>
+        /// <!-- After execution the duration can be retrieved like this: -->
+        /// <Message Text="The tests took $(MbUnitDuration)s to execute." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public double Duration
         {
             get { return duration; }
-            set { duration = value; }
         }
 
         /// <summary>
-        /// Number of assertions evaluated.
+        /// Gets the number of assertions evaluated.
         /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// MbUnit tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <MbUnit>
+        ///      <!-- This tells MSBuild that the task's AssertionCount output property will
+        ///           be made available as a property called MbUnitAssertionCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="AssertionCount" PropertyName="MbUnitAssertionCount" />
+        /// </MbUnit>
+        /// <!-- After execution the number of assertions can be retrieved like this: -->
+        /// <Message Text="$(MbUnitAssertionCount) assertions were evaluated." />
+        /// ]]>
+        /// </code>
+        /// </example>
         [Output]
         public int AssertCount
         {
             get { return assertCount; }
-            set { assertCount = value; }
         }
 
         #endregion
@@ -254,7 +498,7 @@ namespace MbUnit.Tasks.MSBuild
             {
                 Log.LogError(Resources.UnexpectedFailureDuringMbUnitExecution);
                 Log.LogErrorFromException(ex, true);
-                return IgnoreFailures;
+                return ignoreFailures;
             }
         }
 
@@ -279,13 +523,13 @@ namespace MbUnit.Tasks.MSBuild
                 AddAllItemSpecs(launcher.TestPackage.HintDirectories, hintDirectories);
                 AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 
-                if (ReportDirectory != null)
-                    launcher.ReportDirectory = ReportDirectory;
-                if (ReportNameFormat != null)
-                    launcher.ReportNameFormat = ReportNameFormat;
+                if (reportDirectory != null)
+                    launcher.ReportDirectory = reportDirectory;
+                if (reportNameFormat != null)
+                    launcher.ReportNameFormat = reportNameFormat;
 
-                if (ReportTypes != null)
-                    GenericUtils.AddAll(ReportTypes, launcher.ReportFormats);
+                if (reportTypes != null)
+                    GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
 
                 TestLauncherResult result = RunLauncher(launcher);
                 exitCode = result.ResultCode;
@@ -295,7 +539,7 @@ namespace MbUnit.Tasks.MSBuild
 
                 if (ExitCode == ResultCode.Success ||
                     ExitCode == ResultCode.NoTests ||
-                    IgnoreFailures)
+                    ignoreFailures)
                     return true;
             }
 
