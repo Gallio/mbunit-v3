@@ -150,7 +150,6 @@ Section "Icarus (GUI Test Runner)" IcarusSection
 	File "${BUILDDIR}\bin\ICSharpCode.TextEditor.dll"
 	File "${BUILDDIR}\bin\MbUnit.Icarus.exe"
 	File "${BUILDDIR}\bin\MbUnit.Icarus.exe.config"
-	File "${BUILDDIR}\bin\MbUnit.Icarus.Core.dll"
 	File "${BUILDDIR}\bin\ZedGraph.dll"
 
 	CreateDirectory "$SMPROGRAMS\MbUnit Gallio"
