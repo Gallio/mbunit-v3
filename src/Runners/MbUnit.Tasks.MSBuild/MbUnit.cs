@@ -31,11 +31,11 @@ using ILogger = Castle.Core.Logging.ILogger;
 namespace MbUnit.Tasks.MSBuild
 {
     /// <summary>
-    /// A custom MSBuild Task that allows to run MbUnit from MSBuild.
+    /// An MSBuild task that provides support for running MbUnit tests.
     /// </summary>
     /// <remarks>
     /// In order for MSBuild to find this task, the MbUnit.Tasks.MSBuild.dll has to be loaded with
-    /// the UsingTask task:
+    /// the UsingTask directive:
     /// <code>
     /// <![CDATA[
     /// <UsingTask AssemblyFile="[Path-to-assembly]\MbUnit.Tasks.MSBuild.dll" TaskName="MbUnit" />
@@ -50,7 +50,7 @@ namespace MbUnit.Tasks.MSBuild
     /// <code>
     /// <![CDATA[
     /// <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    ///     <!-- This is need by MSBuild to locate the MbUnit task -->
+    ///     <!-- This is needed by MSBuild to locate the MbUnit task -->
     ///     <UsingTask AssemblyFile="[Path-to-assembly]\MbUnit.Tasks.MSBuild.dll" TaskName="MbUnit" />
     ///     <!-- Specify the tests assemblies -->
     ///     <ItemGroup>
@@ -58,7 +58,7 @@ namespace MbUnit.Tasks.MSBuild
     ///         <TestAssemblies Include="[Path-to-test-assembly2]/TestAssembly2.dll" />
     ///     </ItemGroup>
     ///     <Target Name="MyTarget">
-    ///         <MbUnit IgnoreFailures="true" Filter="Type=PassingTests" Assemblies="@(TestAssemblies)">
+    ///         <MbUnit IgnoreFailures="true" Filter="Type=SomeFixture" Assemblies="@(TestAssemblies)">
     ///             <!-- This tells MSBuild to store the output value of the task's ExitCode property
     ///                  into the project's MbUnit.ExitCode property -->
     ///             <Output TaskParameter="ExitCode" PropertyName="MbUnit.ExitCode"/>
@@ -128,7 +128,6 @@ namespace MbUnit.Tasks.MSBuild
         /// <example>The following example shows how to specify the hint directories:
         /// <code>
         /// <![CDATA[
-        /// <!-- -->
         /// <ItemGroup>
         ///     <HintDirectories Include="[Path-to-test-hint-directory-1]/" />
         ///     <HintDirectories Include="[Path-to-test-hint-directory-2]/" />
@@ -169,14 +168,14 @@ namespace MbUnit.Tasks.MSBuild
         /// A list of the types of reports to generate, separated by semicolons. 
         /// </summary>
         /// <remarks>
-        /// <list>
+        /// <list type="bullet">
         /// <item>The types supported "out of the box" are: Html, Html-Inline, Text, XHtml,
         /// XHtml-Inline, Xml, and Xml-Inline, but more types could be available as plugins.</item>
-        /// <item>This property is not case sentitive.</item>
+        /// <item>The report types are not case sensitives.</item>
         /// </list>
         /// </remarks>
         /// <example>
-        /// In the following example reports will be generated in both HTML and XML format.
+        /// In the following example reports will be generated in both HTML and XML format:
         /// <code>
         /// <![CDATA[
         /// <Target Name="MyTarget">
@@ -214,9 +213,80 @@ namespace MbUnit.Tasks.MSBuild
         }
 
         /// <summary>
-        /// Sets the filter to apply in the format "property=value;property=value;..."
-        /// If left empty the "Any" filter will be applied.
+        /// Sets the filter to apply in the format "filterkey1=value1,value2;filterkey2=value3;...".
         /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>
+        /// Currently the following filter keys are recognized:
+        /// <list type="bullet">
+        /// <item>Id: Filter by id</item>
+        /// <item>Assembly: Filter by assembly name</item>
+        /// <item>Namespace: Filter by namespace name</item>
+        /// <item>Type: Filter by type name</item>
+        /// <item>Member: Filter by member name</item>
+        /// <item>*: All other names are assumed to correspond to the members defined in the <see cref="MetadataKeys" /> class.</item>
+        /// </list>
+        /// </item>
+        /// <item>If this property is left empty then the "Any" filter will be applied.</item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// Assuming the following fixtures have been defined:
+        /// <code>
+        /// [TestFixture]
+        /// [TestCategory("UnitTest")]
+        /// [Author("AlbertEinstein")]
+        /// public class Fixture1
+        /// {
+        ///     [Test]
+        ///     public void Test1()
+        ///     {
+        ///     }
+        ///     [Test]
+        ///     public void Test2()
+        ///     {
+        ///     }
+        /// }
+        /// 
+        /// [TestFixture]
+        /// [TestCategory("IntegrationTest")]
+        /// public class Fixture2
+        /// {
+        ///     [Test]
+        ///     public void Test1()
+        ///     {
+        ///     }
+        ///     [Test]
+        ///     public void Test2()
+        ///     {
+        ///     }
+        /// }
+        /// </code>
+        /// <para>The following filters could be applied:</para>
+        /// <list type="bullet">
+        /// <item>
+        /// <term>filter="Type=Fixture1"</term>
+        /// <description>Only tests within Fixture1 will be run (that is, Fixture1.Test1 and Fixture1.Test2).</description>
+        /// </item>
+        /// <item>
+        /// <term>filter="Member=Test1"</term>
+        /// <description>Only Fixture1.Test1 and Fixture2.Test1 will be run.</description>
+        /// </item>
+        /// <item>
+        /// <term>filter="Type=Fixture1,Fixture2"</term>
+        /// <description>All the tests within Fixture1 and Fixture2 will be run.</description>
+        /// </item>
+        /// <item>
+        /// <term>filter="Type=Fixture1,Fixture2;Member=Test2"</term>
+        /// <description>Only Fixture1.Test2 and Fixture2.Test2 will be run.</description>
+        /// </item>
+        /// <item>
+        /// <term>filter="AuthorName=AlbertEinstein"</term>
+        /// <description>All the tests within Fixture1 will be run (because its author attribute is set to "AlbertEinstein").</description>
+        /// </item>
+        /// </list>  
+        /// </example>
         public string Filter
         {
             set { filter = value; }
@@ -525,9 +595,8 @@ namespace MbUnit.Tasks.MSBuild
 
                 if (reportDirectory != null)
                     launcher.ReportDirectory = reportDirectory;
-                if (reportNameFormat != null)
+                if (!String.IsNullOrEmpty(reportNameFormat))
                     launcher.ReportNameFormat = reportNameFormat;
-
                 if (reportTypes != null)
                     GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
 

@@ -179,8 +179,7 @@ namespace MbUnit.Tasks.MSBuild.Tests
             Assert.AreEqual(task.PassCount, 1);
             Assert.AreEqual(task.FailureCount, 0);
             Assert.GreaterThan(task.Duration, 0);
-            // The assert count is not reliable but we should be fine with simple
-            // asserts
+            // The assert count is not reliable but we should be fine with simple asserts
             Assert.AreEqual(task.AssertCount, 3);
         }
 

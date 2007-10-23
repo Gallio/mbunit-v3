@@ -33,6 +33,8 @@ namespace MbUnit.Tasks.NAnt
         /// to.</param>
         public NAntLogger(INAntLogger task)
         {
+            if (task == null)
+                throw new ArgumentNullException("task");
             this.task = task;
             Level = LoggerLevel.Debug;
         }

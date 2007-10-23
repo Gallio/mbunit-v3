@@ -34,6 +34,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.1.40796, Culture=neutral, PublicKeyToken=aaa0f432407c68df">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\NAnt\log4net.dll</HintPath>
@@ -53,6 +57,7 @@
   <ItemGroup>
     <Compile Include="MbUnitTaskUnitTest.cs" />
     <Compile Include="MbUnitTaskIntegrationTest.cs" />
+    <Compile Include="NAntLoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="InstrumentedMbUnitTask.cs" />
   </ItemGroup>

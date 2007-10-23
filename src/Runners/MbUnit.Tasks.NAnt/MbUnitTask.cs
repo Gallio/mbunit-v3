@@ -16,6 +16,7 @@
 using System;
 using System.Globalization;
 using System.Reflection;
+using MbUnit.Collections;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Hosting;
 using MbUnit.Runner;
@@ -30,8 +31,41 @@ using NAnt.Core.Types;
 namespace MbUnit.Tasks.NAnt
 {
     /// <summary>
-    /// A NAnt task for launching MbUnit.
+    /// A NAnt task that provides support for running MbUnit tests.
     /// </summary>
+    /// <remarks>
+    /// In order for NAnt to find this task, either the MbUnit.Tasks.NAnt.dll assembly needs
+    /// to be put in NAnt's bin folder, or it must be loaded with the loadtasks directive:
+    /// <code>
+    /// <![CDATA[
+    ///    <loadtasks assembly="[pathtoassembly]\MbUnit.Tasks.NAnt.dll" />
+    /// ]]>
+    /// </code>
+    /// </remarks>
+    /// <example>
+    /// The following code is an example build file that shows how to load the task, specify the test assemblies
+    /// and set some of the task's properties:
+    /// <code>
+    /// <![CDATA[
+    ///    <?xml version="1.0" ?>
+    ///    <project name="TestProject" default="RunMbUnit">
+    ///    <!-- This is needed by NAnt to locate the MbUnit task -->
+    ///    <loadtasks assembly="[pathtoassembly]\MbUnit.Tasks.NAnt.dll" />
+    ///    <target name="RunMbUnit">
+    ///     <mbunit result-property="ExitCode" failonerror="false" filter="Type=SomeFixture" >
+    ///      <assemblies>
+    ///        <!-- Specify the tests assemblies -->
+    ///        <include name="[Path-to-test-assembly1]/TestAssembly1.dll" />
+    ///        <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
+    ///      </assemblies>
+    ///     </mbunit>
+    ///     <fail if="${ExitCode != 0}" >The return code should have been 0!</fail>
+    ///    </target>
+    ///
+    ///    </project>
+    /// ]]>
+    /// </code>
+    /// </example>
     [TaskName(@"mbunit")]
     public class MbUnitTask : Task, INAntLogger
     {
@@ -74,6 +108,8 @@ namespace MbUnit.Tasks.NAnt
         /// to log messages.</param>
         public MbUnitTask(INAntLogger nantLogger)
         {
+            if (nantLogger == null)
+                throw new ArgumentNullException("nantLogger");
             // See the comments in the default constructor
             this.nantLogger = nantLogger;
         }
@@ -85,94 +121,267 @@ namespace MbUnit.Tasks.NAnt
         ///<summary>
         /// The list of test assemblies to execute. This is required.
         ///</summary>
+        ///<example>The following example shows how to specify the test assemblies (for a more complete example
+        /// please see the <see cref="MbUnitTask"/> task documentation):
+        /// <code>
+        /// <![CDATA[
+        /// <mbunit>
+        ///     <assemblies>
+        ///         <!-- Specify the tests assemblies -->
+        ///         <include name="[Path-to-test-assembly1]/TestAssembly1.dll" />
+        ///         <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
+        ///     </assemblies>
+        /// </mbunit>
+        /// ]]>
+        /// </code>
+        /// </example>
         [BuildElementArray("assemblies", Required = true, ElementType = typeof(FileSet))]
         public FileSet[] Assemblies
         {
-            get { return assemblies; }
             set { assemblies = value; }
         }
 
         /// <summary>
         /// The list of directories used for loading assemblies and other dependent resources.
         /// </summary>
+        /// <example>The following example shows how to specify the hint directories:
+        /// <code>
+        /// <![CDATA[
+        /// <mbunit>
+        ///     <hint-directories>
+        ///         <include name="C:\SomeFolder\AnotherFolder" />
+        ///         <include name="../somefolder" />
+        ///     </hint-directories>
+        /// </mbunit>
+        /// ]]>
+        /// </code>
+        /// </example>
         [BuildElementArray("hint-directories", ElementType = typeof(DirSet))]
         public DirSet[] HintDirectories
         {
-            get { return hintDirectories; }
             set { hintDirectories = value; }
         }
 
         /// <summary>
         /// Additional MbUnit plugin directories to search recursively.
         /// </summary>
+        /// <example>The following example shows how to specify the plugins directories:
+        /// <code>
+        /// <![CDATA[
+        /// <mbunit>
+        ///     <plugin-directories>
+        ///         <include name="C:\SomeFolder\AnotherFolder" />
+        ///         <include name="../somefolder" />
+        ///     </plugin-directories>
+        /// </mbunit>
+        /// ]]>
+        /// </code>
+        /// </example>
         [BuildElementArray("plugin-directories", ElementType = typeof(DirSet))]
         public DirSet[] PluginDirectories
         {
-            get { return pluginDirectories; }
             set { pluginDirectories = value; }
         }
 
-        ///<summary>
-        /// An array of report types to generate.
-        ///</summary>
+        /// <summary>
+        /// A list of the types of reports to generate, separated by semicolons. 
+        /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>The types supported "out of the box" are: Html, Html-Inline, Text, XHtml,
+        /// XHtml-Inline, Xml, and Xml-Inline, but more types could be available as plugins.</item>
+        /// <item>The report types are not case sensitives.</item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// In the following example reports will be generated in both HTML and XML format.
+        /// <code>
+        /// <![CDATA[
+        /// <mbunit report-types="html;xml">
+        ///     <!-- More options -->
+        /// </mbunit>
+        /// ]]>
+        /// </code>
+        /// </example>
         [TaskAttribute("report-types")]
         public string ReportTypes
         {
-            get { return reportTypes; }
             set { reportTypes = value; }
         }
 
-        ///<summary>
-        /// A format string to use to generate the reports filename.
-        ///</summary>
+        /// <summary>
+        /// Sets the format string to use to generate the reports filenames.
+        /// </summary>
+        /// <remarks>
+        /// Any occurence of {0} will be replaced by the date, and any occurrence of {1} by the time.
+        /// The default format string is mbunit-{0}-{1}.
+        /// </remarks>
         [TaskAttribute("report-name-format", Required = false)]
         public string ReportNameFormat
         {
-            get { return reportNameFormat; }
             set { reportNameFormat = value; }
         }
 
-        ///<summary>
-        /// The directory where the reports will be put.
-        ///</summary>
+        /// <summary>
+        /// Sets the name of the directory where the reports will be put.
+        /// </summary>
+        /// <remarks>
+        /// The directory will be created if it doesn't exist. Existing files will be overwrited.
+        /// </remarks>
         [TaskAttribute("report-directory", Required = false)]
         public string ReportDirectory
         {
-            get { return reportDirectory; }
             set { reportDirectory = value; }
         }
 
         /// <summary>
-        /// The name of a property in which the exit code of the tests execution
-        /// should be stored. Only of interest if FailOnError is false.
+        /// Sets the name of a NAnt property in which the exit code of the tests execution
+        /// should be stored.
         /// </summary>
+        /// <remarks>
+        /// Only of interest if FailOnError is set to false.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// <target name="RunMbUnit">
+        ///     <mbunit result-property="MbUnitExitCode" failonerror="false">
+        ///         <!-- Include test assemblies -->
+        ///     </mbunit>
+        ///     <fail if="${MbUnitExitCode != 0}" >The return code should have been 0!</fail>
+        /// </target>
+        /// ]]>
+        /// </code>
+        /// </example>
         [TaskAttribute("result-property")]
         [StringValidator(AllowEmpty = false)]
         public string ResultProperty
         {
-            get { return resultProperty; }
             set { resultProperty = value; }
         }
 
         /// <summary>
-        /// The prefix that will be used for the statistics result properties.
+        /// Sets the prefix that will be used for the statistics result properties.
         /// </summary>
+        /// <remarks>
+        /// The following properties are available:
+        /// <list type="bullet">
+        /// <item><term>AssertCount</term><description>Gets the number of assertions evaluated.</description></item>
+        /// <item><term>FailureCount</term><description>Gets the total number of test cases that were run and failed.</description></item>
+        /// <item><term>IgnoreCount</term><description>Gets the total number of test cases that did not run because they were ignored.</description></item>
+        /// <item><term>InconclusiveCount</term><description>Gets the total number of test cases that ran and were inconclusive.</description></item>
+        /// <item><term>PassCount</term><description>Gets the total number of test cases that were run and passed.</description></item>
+        /// <item><term>RunCount</term><description>Gets the total number of test cases that were run.</description></item>
+        /// <item><term>SkipCount</term><description>Gets the total number of test cases that did not run because they were skipped.</description></item>
+        /// <item><term>TestCount</term><description>Gets the total number of test cases.</description></item>
+        /// </list>
+        /// </remarks>
+        /// <example>The following example shows how to use the result-properties-prefix property :
+        /// <code>
+        /// <![CDATA[
+        /// <target name="RunMbUnit">
+        ///     <mbunit result-properties-prefix="mbunit.">
+        ///         <assemblies>
+        ///             <include name="SomeAssembly.dll" />
+        ///         </assemblies>
+        ///     </mbunit>
+        ///     <echo message="AssertCount = ${mbunit.AssertCount}" />
+        ///     <echo message="FailureCount = ${mbunit.FailureCount}" />
+        ///     <echo message="IgnoreCount = ${mbunit.IgnoreCount}" />
+        ///     <echo message="InconclusiveCount = ${mbunit.InconclusiveCount}" />
+        ///     <echo message="PassCount = ${mbunit.PassCount}" />
+        ///     <echo message="RunCount = ${mbunit.RunCount}" />
+        ///     <echo message="SkipCount = ${mbunit.SkipCount}" />
+        ///     <echo message="TestCount = ${mbunit.TestCount}" />
+        /// </target>
+        /// ]]>
+        /// </code>
+        /// </example>
         [TaskAttribute("result-properties-prefix")]
         [StringValidator(AllowEmpty = false)]
         public string ResultPropertiesPrefix
         {
-            get { return resultPropertiesPrefix; }
             set { resultPropertiesPrefix = value; }
         }
 
         /// <summary>
-        /// The filter to apply in the format "property=value;property=value;..."
-        /// If left empty the "Any" filter will be applied.
+        /// Sets the filter to apply in the format "filterkey1=value1,value2;filterkey2=value3;...".
         /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>
+        /// Currently the following filter keys are recognized:
+        /// <list type="bullet">
+        /// <item>Id: Filter by id</item>
+        /// <item>Assembly: Filter by assembly name</item>
+        /// <item>Namespace: Filter by namespace name</item>
+        /// <item>Type: Filter by type name</item>
+        /// <item>Member: Filter by member name</item>
+        /// <item>*: All other names are assumed to correspond to the members defined in the <see cref="MetadataKeys" /> class.</item>
+        /// </list>
+        /// </item>
+        /// <item>If this property is left empty then the "Any" filter will be applied.</item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// Assuming the following fixtures have been defined:
+        /// <code>
+        /// [TestFixture]
+        /// [TestCategory("UnitTest")]
+        /// [Author("AlbertEinstein")]
+        /// public class Fixture1
+        /// {
+        ///     [Test]
+        ///     public void Test1()
+        ///     {
+        ///     }
+        ///     [Test]
+        ///     public void Test2()
+        ///     {
+        ///     }
+        /// }
+        /// 
+        /// [TestFixture]
+        /// [TestCategory("IntegrationTest")]
+        /// public class Fixture2
+        /// {
+        ///     [Test]
+        ///     public void Test1()
+        ///     {
+        ///     }
+        ///     [Test]
+        ///     public void Test2()
+        ///     {
+        ///     }
+        /// }
+        /// </code>
+        /// <para>The following filters could be applied:</para>
+        /// <list type="bullet">
+        /// <item>
+        /// <term>filter="Type=Fixture1"</term>
+        /// <description>Only tests within Fixture1 will be run (that is, Fixture1.Test1 and Fixture1.Test2).</description>
+        /// </item>
+        /// <item>
+        /// <term>filter="Member=Test1"</term>
+        /// <description>Only Fixture1.Test1 and Fixture2.Test1 will be run.</description>
+        /// </item>
+        /// <item>
+        /// <term>filter="Type=Fixture1,Fixture2"</term>
+        /// <description>All the tests within Fixture1 and Fixture2 will be run.</description>
+        /// </item>
+        /// <item>
+        /// <term>filter="Type=Fixture1,Fixture2;Member=Test2"</term>
+        /// <description>Only Fixture1.Test2 and Fixture2.Test2 will be run.</description>
+        /// </item>
+        /// <item>
+        /// <term>filter="AuthorName=AlbertEinstein"</term>
+        /// <description>All the tests within Fixture1 will be run (because its author attribute is set to "AlbertEinstein").</description>
+        /// </item>
+        /// </list>  
+        /// </example>
         [TaskAttribute("filter")]
         public string Filter
         {
-            get { return filter; }
             set { filter = value; }
         }
 
@@ -200,6 +409,14 @@ namespace MbUnit.Tasks.NAnt
                 AddAssemblies(launcher);
                 AddHintDirectories(launcher);
                 AddPluginDirectories(launcher);
+
+                if (reportDirectory != null)
+                    launcher.ReportDirectory = reportDirectory;
+                if (!String.IsNullOrEmpty(reportNameFormat))
+                    launcher.ReportNameFormat = reportNameFormat;
+                if (reportTypes != null)
+                    GenericUtils.AddAll(reportTypes.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
+                        launcher.ReportFormats);
 
                 TestLauncherResult result = RunLauncher(launcher);
 
@@ -261,9 +478,9 @@ namespace MbUnit.Tasks.NAnt
         /// TestRunnerHelper class.</param>
         private void SetResultProperty(IConvertible resultCode)
         {
-            if (!String.IsNullOrEmpty(ResultProperty))
+            if (!String.IsNullOrEmpty(resultProperty))
             {
-                Properties[ResultProperty] = resultCode.ToString(CultureInfo.InvariantCulture);
+                Properties[resultProperty] = resultCode.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -277,9 +494,9 @@ namespace MbUnit.Tasks.NAnt
         private void AddAssemblies(TestLauncher launcher)
         {
 
-            if (Assemblies != null)
+            if (assemblies != null)
             {
-                foreach (FileSet fs in Assemblies)
+                foreach (FileSet fs in assemblies)
                 {
                     foreach (string f in fs.FileNames)
                         launcher.TestPackage.AssemblyFiles.Add(f);
@@ -289,9 +506,9 @@ namespace MbUnit.Tasks.NAnt
 
         private void AddHintDirectories(TestLauncher launcher)
         {
-            if (HintDirectories != null)
+            if (hintDirectories != null)
             {
-                foreach (DirSet ds in HintDirectories)
+                foreach (DirSet ds in hintDirectories)
                 {
                     foreach (string d in ds.FileNames)
                         launcher.TestPackage.HintDirectories.Add(d);

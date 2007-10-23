@@ -64,6 +64,13 @@ namespace MbUnit.Tasks.NAnt.Tests
         #region Tests
 
         [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void InstantiateWithNullArgument()
+        {
+            new MbUnitTask(null);
+        }
+        
+        [Test]
         public void RunWithNoArguments()
         {
             InstrumentedMbUnitTask task = CreateTask();
@@ -86,6 +93,15 @@ namespace MbUnit.Tasks.NAnt.Tests
         {
             InstrumentedMbUnitTask task = CreateTask();
             task.ReportTypes = null;
+            // Just make sure it doesn't crash
+            task.Execute();
+        }
+
+        [Test]
+        public void EmptyReportTypes()
+        {
+            InstrumentedMbUnitTask task = CreateTask();
+            task.ReportTypes = String.Empty;
             // Just make sure it doesn't crash
             task.Execute();
         }
@@ -210,6 +226,17 @@ namespace MbUnit.Tasks.NAnt.Tests
             AssertResultProperty(task, "TestCount", 2);
             AssertResultProperty(task, "IgnoreCount", 2);
             AssertDurationIsGreaterThanZero(task);
+        }
+
+        [Test]
+        public void AddHintAndPluginDirectories()
+        {
+            InstrumentedMbUnitTask task = CreateTask();
+            DirSet ds = new DirSet();
+            ds.FileNames.Add(@"C:\Windows");
+            task.HintDirectories = new DirSet[] { ds };
+            task.PluginDirectories = new DirSet[] { ds };
+            task.Execute();
         }
 
         #endregion
