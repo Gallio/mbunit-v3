@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Permissions;
 using System.Threading;
 using MbUnit.Logging;
 using MbUnit.Model;
@@ -463,6 +464,7 @@ namespace MbUnit.Contexts
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
+        [SecurityPermission(SecurityAction.Demand)] // Prevent this method from being inlined.
         public Context RunStep(string name, Block block)
         {
             return RunStep(name, block, CodeReference.CreateFromCallingMethod());
@@ -491,6 +493,7 @@ namespace MbUnit.Contexts
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
+        [SecurityPermission(SecurityAction.Demand)] // Prevent this method from being inlined.
         public Context RunStep(string name, Block block, CodeReference codeReference)
         {
             if (name == null)

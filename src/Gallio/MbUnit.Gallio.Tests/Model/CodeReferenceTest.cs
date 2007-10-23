@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics;
-
 using System;
+using System.Diagnostics;
 using System.Reflection;
+using System.Security.Permissions;
 using MbUnit.Model;
 using MbUnit.Framework;
 
@@ -204,6 +204,7 @@ namespace MbUnit.Tests.Model
             Assert.AreEqual("CreateFromStackFrame_WithFrameCount", r.MemberName);
         }
 
+        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
         private CodeReference CreateFromStackFrame_WithFrameCount_Helper()
         {
             return CodeReference.CreateFromStackFrame(1);
@@ -216,6 +217,7 @@ namespace MbUnit.Tests.Model
             Assert.AreEqual("CreateFromCallingMethod", r.MemberName);
         }
 
+        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
         private CodeReference CreateFromCallingMethod_Helper()
         {
             return CodeReference.CreateFromCallingMethod();

@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Permissions;
 using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Model.Serialization;
@@ -396,7 +397,23 @@ namespace MbUnit.Model
         /// <summary>
         /// Creates a code reference from the executing method.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This information may be unreliable if the compiler has inlined
+        /// the executing method into its caller because the stack frame
+        /// information will be incomplete.  This can can occur when compiler
+        /// optimizations are turned on and the method body is simple.
+        /// </para>
+        /// <para>
+        /// One way to prevent inlining is to attach a security attribute to
+        /// the method.  For example:
+        /// <code>
+        /// [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        /// </code>
+        /// </para>
+        /// </remarks>
         /// <returns>The code reference</returns>
+        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
         public static CodeReference CreateFromExecutingMethod()
         {
             return CreateFromStackFrame(1);
@@ -405,7 +422,23 @@ namespace MbUnit.Model
         /// <summary>
         /// Creates a code reference from the caller of the executing method.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This information may be unreliable if the compiler has inlined
+        /// the executing or calling method into its caller because the stack frame
+        /// information will be incomplete.  This can can occur when compiler
+        /// optimizations are turned on and the method body is simple.
+        /// </para>
+        /// <para>
+        /// One way to prevent inlining is to attach a security attribute to
+        /// the method.  For example:
+        /// <code>
+        /// [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        /// </code>
+        /// </para>
+        /// </remarks>
         /// <returns>The code reference</returns>
+        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
         public static CodeReference CreateFromCallingMethod()
         {
             return CreateFromStackFrame(2);
@@ -416,6 +449,7 @@ namespace MbUnit.Model
         /// </summary>
         /// <param name="stackFrame">The stack frame</param>
         /// <returns>The code reference</returns>
+        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
         public static CodeReference CreateFromStackFrame(StackFrame stackFrame)
         {
             if (stackFrame == null)
@@ -431,6 +465,7 @@ namespace MbUnit.Model
         /// the code reference will refer to the direct caller of this method;
         /// if it is 1, it will refer to the caller's caller, and so on.</param>
         /// <returns>The code reference</returns>
+        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
         public static CodeReference CreateFromStackFrame(int framesToSkip)
         {
             StackTrace stackTrace = new StackTrace(framesToSkip + 1, false);

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Security.Permissions;
 using MbUnit.Contexts;
 using MbUnit.Model;
 
@@ -121,6 +122,7 @@ namespace MbUnit.Contexts
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
+        [SecurityPermission(SecurityAction.Demand)] // Prevent this method from being inlined.
         public static Context Run(string name, Block block)
         {
             return Run(name, block, CodeReference.CreateFromCallingMethod());

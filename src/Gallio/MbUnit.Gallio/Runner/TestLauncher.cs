@@ -461,7 +461,13 @@ namespace MbUnit.Runner
         #region Public Methods
 
         /// <summary>
-        /// Runs a project.
+        /// <para>
+        /// Runs the test package as configured.
+        /// </para>
+        /// <para>
+        /// If <see cref="RuntimeSetup" /> is non-<c>null</c>, initializes the <see cref="Runtime" />
+        /// for the duration of this method then shuts it down automatically before returning.
+        /// </para>
         /// </summary>
         /// <returns>An integer representing the result of the execution.</returns>
         public TestLauncherResult Run()
