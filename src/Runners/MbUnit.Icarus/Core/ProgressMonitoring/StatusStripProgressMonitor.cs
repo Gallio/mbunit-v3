@@ -57,5 +57,11 @@ namespace MbUnit.Icarus.Core.ProgressMonitoring
             presenter.StatusText = "Ready...";
             presenter.CompletedWorkUnits = 0;
         }
+
+        protected override void OnCancel()
+        {
+            base.OnCancel();
+            presenter.StatusText = "Cancelled";
+        }
     }
 }

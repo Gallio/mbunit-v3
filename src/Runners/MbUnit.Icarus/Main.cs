@@ -45,9 +45,6 @@ namespace MbUnit.Icarus
         private int totalWorkUnits, completedWorkUnits;
         private System.Timers.Timer statusBarTimer;
         
-        // test progress bar
-        private int failedTests, ignoredTests, passedTests, skippedTests, totalTests;
-
         #endregion
 
         #region Properties
@@ -79,12 +76,6 @@ namespace MbUnit.Icarus
             get { return completedWorkUnits; }
             set { completedWorkUnits = value; }
         }
-
-        public int TotalTests
-        {
-            get { return totalTests; }
-            set { totalTests = value; }
-        }
         
         #endregion
 
@@ -95,12 +86,14 @@ namespace MbUnit.Icarus
         public event EventHandler<EventArgs> RemoveAssemblies;
         public event EventHandler<RemoveAssemblyEventArgs> RemoveAssembly;
         public event EventHandler<EventArgs> RunTests;
+        public event EventHandler<EventArgs> StopTests;
+        public event EventHandler<SetFilterEventArgs> SetFilter;
 
         #endregion
 
         #region Delegates
 
-        public delegate void StringMethodDelegate(string s);
+        public delegate void SingleParameterMethodDelegate(object o);
         public delegate void ClearTreeDelegate();
         public delegate void AddRangeToTreeDelegate(TreeNode[] nodes);
         public delegate void ClearListDelegate();
@@ -172,7 +165,7 @@ namespace MbUnit.Icarus
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
-            treeFilterCombo.SelectedIndex = 1;
+            treeFilterCombo.SelectedIndex = 0;
             filterTestResultsCombo.SelectedIndex = 0;
             graphsFilterBox1.SelectedIndex = 0;
 
@@ -199,13 +192,18 @@ namespace MbUnit.Icarus
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            // reset progress monitors
             testProgressStatusBar.Clear();
+            testTree.Reset();
+            
             statusText = "Running tests...";
             startButton.Enabled = false;
             stopButton.Enabled = true;
-            AbortWorkerThread();
-            workerThread = new Thread(new ThreadStart(ThreadedRunTests));
-            workerThread.Start();
+
+            ThreadedRunTests();
+            //AbortWorkerThread();
+            //workerThread = new Thread(new ThreadStart(ThreadedRunTests));
+            //workerThread.Start();
         }
 
         private void ThreadedRunTests()
@@ -216,19 +214,23 @@ namespace MbUnit.Icarus
                 RunTests(this, new EventArgs());
             }
             // enable/disable buttons
-            toolStripContainer.Invoke(new StringMethodDelegate(EnableButtons), new object[] { "RunTestsFinished" });
+            toolStripContainer.Invoke(new SingleParameterMethodDelegate(EnableButtons), new object[] { "RunTestsFinished" });
         }
 
-        private void EnableButtons(string mode)
+        private void EnableButtons(object o)
         {
-            switch (mode)
+            string mode = o as string;
+            if (mode != null)
             {
-                case "RunTestsFinished":
-                    {
-                        stopButton.Enabled = false;
-                        startButton.Enabled = true;
-                        break;
-                    }
+                switch (mode)
+                {
+                    case "RunTestsFinished":
+                        {
+                            stopButton.Enabled = false;
+                            startButton.Enabled = true;
+                            break;
+                        }
+                }
             }
         }
 
@@ -526,42 +528,107 @@ namespace MbUnit.Icarus
             toolStripStatusLabel.Text = statusText;
             toolStripProgressBar.Maximum = totalWorkUnits;
             toolStripProgressBar.Value = completedWorkUnits;
-
-            // test progress bar
-            testProgressStatusBar.Total = totalTests;
-            testProgressStatusBar.Passed = passedTests;
-            testProgressStatusBar.Failed = failedTests;
-            testProgressStatusBar.Skipped = skippedTests;
-            testProgressStatusBar.Ignored = ignoredTests;
         }
 
-        public void Passed(string testId)
+        public void Passed(object o)
         {
-            passedTests++;
-            testTree.Invoke(new StringMethodDelegate(testTree.Passed), new object[] { testId });
+            if (testTree.InvokeRequired)
+            {
+                testTree.Invoke(new SingleParameterMethodDelegate(Passed), new object[] { o });
+            }
+            else
+            {
+                string testId = o as string;
+                if (testId != null)
+                {
+                    testProgressStatusBar.Passed++;
+                    testTree.Passed(testId);
+                }
+            }
         }
 
-        public void Failed(string testId)
+        public void Failed(object o)
         {
-            failedTests++;
-            testTree.Invoke(new StringMethodDelegate(testTree.Failed), new object[] { testId });
+            if (testTree.InvokeRequired)
+            {
+                testTree.Invoke(new SingleParameterMethodDelegate(Failed), new object[] { o });
+            }
+            else
+            {
+                string testId = o as string;
+                if (testId != null)
+                {
+                    testProgressStatusBar.Failed++;
+                    testTree.Failed(testId);
+                }
+            }
         }
 
-        public void Ignored(string testId)
+        public void Ignored(object o)
         {
-            ignoredTests++;
-            testTree.Invoke(new StringMethodDelegate(testTree.Ignored), new object[] { testId });
+            if (testTree.InvokeRequired)
+            {
+                testTree.Invoke(new SingleParameterMethodDelegate(Ignored), new object[] { o });
+            }
+            else
+            {
+                string testId = o as string;
+                if (testId != null)
+                {
+                    testProgressStatusBar.Ignored++;
+                    testTree.Ignored(testId);
+                }
+            }
         }
 
-        public void Skipped(string testId)
+        public void Skipped(object o)
         {
-            skippedTests++;
-            testTree.Invoke(new StringMethodDelegate(testTree.Skipped), new object[] { testId });
+            if (testTree.InvokeRequired)
+            {
+                testTree.Invoke(new SingleParameterMethodDelegate(Skipped), new object[] { o });
+            }
+            else
+            {
+                string testId = o as string;
+                if (testId != null)
+                {
+                    testProgressStatusBar.Skipped++;
+                    testTree.Skipped(testId);
+                }
+            }
+        }
+
+        public void TotalTests(object o)
+        {
+            if (testProgressStatusBar.InvokeRequired)
+            {
+                testProgressStatusBar.Invoke(new SingleParameterMethodDelegate(TotalTests), new object[] { o });
+            }
+            else
+            {
+                int? totalTests = o as int?;
+                if (totalTests != null)
+                {
+                    testProgressStatusBar.Total = (int) totalTests;
+                }
+            }
         }
 
         private void stopButton_Click(object sender, EventArgs e)
         {
+            AbortWorkerThread();
+            workerThread = new Thread(new ThreadStart(ThreadedStopTests));
+            workerThread.Start();
+        }
 
+        private void ThreadedStopTests()
+        {
+            if (StopTests != null)
+            {
+                StopTests(this, new EventArgs());
+            }
+            // enable/disable buttons
+            toolStripContainer.Invoke(new SingleParameterMethodDelegate(EnableButtons), new object[] { "RunTestsFinished" });
         }
 
         private void assemblyList_SelectedIndexChanged(object sender, EventArgs e)
@@ -615,5 +682,17 @@ namespace MbUnit.Icarus
             TestTreeNode node = testTree.SelectedNode as TestTreeNode;
             workerThread.Start(node.CodeBase);
         }
+
+        private void testTree_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (e.Action != TreeViewAction.Unknown)
+            {
+                if (SetFilter != null)
+                {
+                    SetFilter(this, new SetFilterEventArgs(testTree.Nodes));
+                }
+            }
+        }
+
     }
 }

@@ -25,6 +25,8 @@ namespace MbUnit.Icarus.Core.Interfaces
     {
         event EventHandler<ProjectEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
+        event EventHandler<EventArgs> StopTests;
+        event EventHandler<SetFilterEventArgs> SetFilter;
         TestModel TestModel { get; set; }
         TestPackage TestPackage { get; set; }
         string StatusText { get; set; }

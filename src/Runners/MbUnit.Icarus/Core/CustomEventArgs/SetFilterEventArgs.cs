@@ -13,20 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
+using System;
 using System.Windows.Forms;
 
 using MbUnit.Model;
 using MbUnit.Model.Filters;
-using MbUnit.Model.Serialization;
 
-namespace MbUnit.Icarus.Interfaces
+namespace MbUnit.Icarus.Core.CustomEventArgs 
 {
-    public interface IProjectAdapterModel
+    public class SetFilterEventArgs : EventArgs
     {
-        TreeNode[] BuildTestTree(TestModel testModel);
-        int CountTests(TestModel testModel);
-        ListViewItem[] BuildAssemblyList(List<string> assemblyList);
-        Filter<ITest> GetFilter(TreeNodeCollection treeNodeCollection);
+        private readonly TreeNodeCollection nodes;
+        private readonly Filter<ITest> filter;
+
+        public SetFilterEventArgs(TreeNodeCollection nodes)
+        {
+            this.nodes = nodes;
+        }
+
+        public SetFilterEventArgs(Filter<ITest> filter)
+        {
+            this.filter = filter;
+        }
+
+        public TreeNodeCollection Nodes
+        {
+            get { return nodes; }
+        }
+
+        public Filter<ITest> Filter
+        {
+            get { return filter; }
+        }
     }
 }

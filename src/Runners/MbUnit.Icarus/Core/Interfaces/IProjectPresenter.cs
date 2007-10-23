@@ -29,6 +29,7 @@ namespace MbUnit.Icarus.Core.Interfaces
         ITestRunner TestRunner { get; }
         void GetTestTree(object sender, ProjectEventArgs e);
         void RunTests(object sender, EventArgs e);
+        void StopTests(object sender, EventArgs e);
         void Passed(string testId);
         void Failed(string testId);
         void Ignored(string testId);

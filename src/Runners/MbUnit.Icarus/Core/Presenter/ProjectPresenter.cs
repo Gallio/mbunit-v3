@@ -68,6 +68,8 @@ namespace MbUnit.Icarus.Core.Presenter
             // wire up events
             _View.GetTestTree += GetTestTree;
             _View.RunTests += RunTests;
+            _View.StopTests += StopTests;
+            _View.SetFilter += SetFilter;
         }
 
         #endregion
@@ -82,7 +84,17 @@ namespace MbUnit.Icarus.Core.Presenter
 
         public void RunTests(object sender, EventArgs e)
         {
-            _TestRunnerModel.RunTests(this);
+            _TestRunnerModel.RunTests();
+        }
+
+        public void StopTests(object sender, EventArgs e)
+        {
+            _TestRunnerModel.StopTests();
+        }
+
+        public void SetFilter(object sender, SetFilterEventArgs e)
+        {
+            testRunner.TestExecutionOptions.Filter = e.Filter;
         }
 
         public void Passed(string testId)

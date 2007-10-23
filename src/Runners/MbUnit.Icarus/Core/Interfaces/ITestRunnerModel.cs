@@ -13,8 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Runner;
+using MbUnit.Model;
+using MbUnit.Model.Filters;
 using MbUnit.Model.Serialization;
+using MbUnit.Runner;
 
 namespace MbUnit.Icarus.Core.Interfaces
 {
@@ -24,6 +26,8 @@ namespace MbUnit.Icarus.Core.Interfaces
         void LoadPackage(TestPackage testpackage);
         void BuildTemplates();
         TestModel BuildTests();
-        void RunTests(IProjectPresenter presenter);
+        void RunTests();
+        void StopTests();
+        void SetFilter(Filter<ITest> filter);
     }
 }

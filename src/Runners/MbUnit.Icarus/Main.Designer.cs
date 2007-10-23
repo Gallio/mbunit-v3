@@ -89,6 +89,7 @@ namespace MbUnit.Icarus
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.projectTabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.testTree = new MbUnit.Icarus.Controls.TestTreeView();
             this.testTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,12 +130,11 @@ namespace MbUnit.Icarus
             this.graphsFilterBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panelResults = new System.Windows.Forms.Panel();
+            this.testProgressStatusBar = new MbUnit.Icarus.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testTree = new MbUnit.Icarus.Controls.TestTreeView();
-            this.testProgressStatusBar = new MbUnit.Icarus.Controls.TestStatusBar();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -557,6 +557,24 @@ namespace MbUnit.Icarus
             this.tabPage3.Text = "Class View";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // testTree
+            // 
+            this.testTree.CheckBoxes = true;
+            this.testTree.ContextMenuStrip = this.testTreeMenuStrip;
+            this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.testTree.HideSelection = false;
+            this.testTree.ImageIndex = 0;
+            this.testTree.ImageList = this.treeImages;
+            this.testTree.Location = new System.Drawing.Point(3, 3);
+            this.testTree.Name = "testTree";
+            this.testTree.SelectedImageIndex = 0;
+            this.testTree.Size = new System.Drawing.Size(302, 565);
+            this.testTree.TabIndex = 2;
+            this.testTree.TestStateImageList = this.stateImages;
+            this.testTree.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.testTree_AfterCheck);
+            this.testTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.testTree_AfterSelect);
+            // 
             // testTreeMenuStrip
             // 
             this.testTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -569,7 +587,7 @@ namespace MbUnit.Icarus
             this.toolStripSeparator10,
             this.removeAssemblyToolStripMenuItem2});
             this.testTreeMenuStrip.Name = "classTreeMenuStrip";
-            this.testTreeMenuStrip.Size = new System.Drawing.Size(173, 154);
+            this.testTreeMenuStrip.Size = new System.Drawing.Size(173, 132);
             // 
             // expandAllMenuItem
             // 
@@ -698,7 +716,7 @@ namespace MbUnit.Icarus
             this.treeFilterCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.treeFilterCombo.FormattingEnabled = true;
             this.treeFilterCombo.Items.AddRange(new object[] {
-            "All",
+            "Assembly",
             "Namespaces",
             "Authors",
             "Categories",
@@ -902,6 +920,28 @@ namespace MbUnit.Icarus
             this.panelResults.Size = new System.Drawing.Size(673, 56);
             this.panelResults.TabIndex = 0;
             // 
+            // testProgressStatusBar
+            // 
+            this.testProgressStatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
+            this.testProgressStatusBar.ElapsedTime = 0;
+            this.testProgressStatusBar.Failed = 0;
+            this.testProgressStatusBar.FailedColor = System.Drawing.Color.Red;
+            this.testProgressStatusBar.Font = new System.Drawing.Font("Verdana", 8F);
+            this.testProgressStatusBar.Ignored = 0;
+            this.testProgressStatusBar.IngoredColor = System.Drawing.Color.Gold;
+            this.testProgressStatusBar.Location = new System.Drawing.Point(7, 23);
+            this.testProgressStatusBar.Name = "testProgressStatusBar";
+            this.testProgressStatusBar.Passed = 0;
+            this.testProgressStatusBar.PassedColor = System.Drawing.Color.Green;
+            this.testProgressStatusBar.Size = new System.Drawing.Size(659, 23);
+            this.testProgressStatusBar.Skipped = 0;
+            this.testProgressStatusBar.SkippedColor = System.Drawing.Color.SteelBlue;
+            this.testProgressStatusBar.TabIndex = 4;
+            this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
+            this.testProgressStatusBar.Total = 0;
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -933,45 +973,6 @@ namespace MbUnit.Icarus
             this.ExitMenuItem.Size = new System.Drawing.Size(103, 22);
             this.ExitMenuItem.Text = "Exit";
             this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-            // 
-            // testTree
-            // 
-            this.testTree.CheckBoxes = true;
-            this.testTree.ContextMenuStrip = this.testTreeMenuStrip;
-            this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.testTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.testTree.HideSelection = false;
-            this.testTree.ImageIndex = 0;
-            this.testTree.ImageList = this.treeImages;
-            this.testTree.Location = new System.Drawing.Point(3, 3);
-            this.testTree.Name = "testTree";
-            this.testTree.SelectedImageIndex = 0;
-            this.testTree.Size = new System.Drawing.Size(302, 565);
-            this.testTree.TabIndex = 2;
-            this.testTree.TestStateImageList = this.stateImages;
-            this.testTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.testTree_AfterSelect);
-            // 
-            // testProgressStatusBar
-            // 
-            this.testProgressStatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
-            this.testProgressStatusBar.ElapsedTime = 0;
-            this.testProgressStatusBar.Failed = 0;
-            this.testProgressStatusBar.FailedColor = System.Drawing.Color.Red;
-            this.testProgressStatusBar.Font = new System.Drawing.Font("Verdana", 8F);
-            this.testProgressStatusBar.Ignored = 0;
-            this.testProgressStatusBar.IngoredColor = System.Drawing.Color.Gold;
-            this.testProgressStatusBar.Location = new System.Drawing.Point(7, 23);
-            this.testProgressStatusBar.Name = "testProgressStatusBar";
-            this.testProgressStatusBar.Passed = 0;
-            this.testProgressStatusBar.PassedColor = System.Drawing.Color.Green;
-            this.testProgressStatusBar.Size = new System.Drawing.Size(659, 23);
-            this.testProgressStatusBar.Skipped = 0;
-            this.testProgressStatusBar.SkippedColor = System.Drawing.Color.SteelBlue;
-            this.testProgressStatusBar.TabIndex = 4;
-            this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s";
-            this.testProgressStatusBar.Total = 0;
             // 
             // Main
             // 

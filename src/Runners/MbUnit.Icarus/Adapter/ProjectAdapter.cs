@@ -73,6 +73,8 @@ namespace MbUnit.Icarus.Adapter
 
         public event EventHandler<ProjectEventArgs> GetTestTree;
         public event EventHandler<EventArgs> RunTests;
+        public event EventHandler<EventArgs> StopTests;
+        public event EventHandler<SetFilterEventArgs> SetFilter;
 
         #endregion
 
@@ -90,6 +92,8 @@ namespace MbUnit.Icarus.Adapter
             _View.RemoveAssembly += _View_RemoveAssembly;
             _View.GetTestTree += _View_GetTestTree;
             _View.RunTests += _View_RunTests;
+            _View.StopTests += _View_StopTests;
+            _View.SetFilter += _View_SetFilter;
         }
 
         #endregion
@@ -129,6 +133,23 @@ namespace MbUnit.Icarus.Adapter
             }
         }
 
+        [DebuggerStepThrough]
+        private void _View_StopTests(object sender, EventArgs e)
+        {
+            if (StopTests != null)
+            {
+                StopTests(this, new EventArgs());
+            }
+        }
+
+        private void _View_SetFilter(object sender, SetFilterEventArgs e)
+        {
+            if (SetFilter != null)
+            {
+                SetFilter(this, new SetFilterEventArgs(_Model.GetFilter(e.Nodes)));
+            }
+        }
+
         #endregion
 
         #region Public methods
@@ -137,7 +158,7 @@ namespace MbUnit.Icarus.Adapter
         {
             _View.Assemblies = _Model.BuildAssemblyList(_testPackage.AssemblyFiles);
             _View.TestTreeCollection = _Model.BuildTestTree(_testModel);
-            _View.TotalTests = _Model.CountTests(_testModel);
+            _View.TotalTests(_Model.CountTests(_testModel));
             _View.DataBind();
         }
 

@@ -15,11 +15,13 @@
 
 using System;
 
-using MbUnit.Runner;
-using MbUnit.Runner.Monitors;
 using MbUnit.Icarus.Core.Interfaces;
 using MbUnit.Icarus.Core.ProgressMonitoring;
+using MbUnit.Model;
+using MbUnit.Model.Filters;
 using MbUnit.Model.Serialization;
+using MbUnit.Runner;
+using MbUnit.Runner.Monitors;
 
 namespace MbUnit.Icarus.Core.Model
 {
@@ -27,8 +29,9 @@ namespace MbUnit.Icarus.Core.Model
     {
         #region Variables
 
-        private ReportMonitor reportMonitor;
-        private IProjectPresenter projectPresenter;
+        private ReportMonitor reportMonitor = null; 
+        private IProjectPresenter projectPresenter = null;
+        private StatusStripProgressMonitor statusStripProgressMonitor = null;
 
         #endregion
 
@@ -46,6 +49,8 @@ namespace MbUnit.Icarus.Core.Model
         }
 
         #endregion
+
+        #region Methods
 
         public void LoadPackage(TestPackage testpackage)
         {
@@ -67,11 +72,29 @@ namespace MbUnit.Icarus.Core.Model
             return projectPresenter.TestRunner.TestModel;
         }
 
-        public void RunTests(IProjectPresenter presenter)
+        public void RunTests()
         {
-            TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(presenter, reportMonitor);
-            testRunnerMonitor.Attach(presenter.TestRunner);
-            presenter.TestRunner.Run(new StatusStripProgressMonitor(presenter));
+            TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor);
+            testRunnerMonitor.Attach(projectPresenter.TestRunner);
+            statusStripProgressMonitor = new StatusStripProgressMonitor(projectPresenter);
+            projectPresenter.TestRunner.Run(statusStripProgressMonitor);
+            statusStripProgressMonitor.Done();
+            testRunnerMonitor.Detach();
         }
+
+        public void StopTests()
+        {
+            if (statusStripProgressMonitor != null)
+            {
+                statusStripProgressMonitor.Cancel();
+            }
+        }
+
+        public void SetFilter(Filter<ITest> filter)
+        {
+            projectPresenter.TestRunner.TestExecutionOptions.Filter = filter;
+        }
+
+        #endregion
     }
 }

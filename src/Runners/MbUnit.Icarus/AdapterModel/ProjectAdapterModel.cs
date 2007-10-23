@@ -15,8 +15,12 @@
 
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 using MbUnit.Icarus.Controls;
+using MbUnit.Icarus.Controls.Enums;
 using MbUnit.Icarus.Interfaces;
+using MbUnit.Model;
+using MbUnit.Model.Filters;
 using MbUnit.Model.Serialization;
 
 namespace MbUnit.Icarus.AdapterModel
@@ -38,6 +42,7 @@ namespace MbUnit.Icarus.AdapterModel
             root.Name = testModel.RootTest.Id;
             root.ExpandAll();
             root.Checked = true;
+            root.CheckState = CheckBoxStates.Checked;
             testTree[0] = root;
             return testTree;
         }
@@ -72,6 +77,7 @@ namespace MbUnit.Icarus.AdapterModel
                     TestTreeNode ttnode = new TestTreeNode(td.Name, imgIndex, imgIndex, WalkTestTree(td.Children));
                     ttnode.Name = td.Id;
                     ttnode.Checked = true;
+                    ttnode.CheckState = CheckBoxStates.Checked;
                     if (codeBase != null)
                     {
                         ttnode.CodeBase = codeBase;
@@ -109,6 +115,48 @@ namespace MbUnit.Icarus.AdapterModel
                 assemblies[i] = new ListViewItem(assemblyInfo);
             }
             return assemblies;
+        }
+
+        public Filter<ITest> GetFilter(TreeNodeCollection treeNodeCollection)
+        {
+            List<Filter<ITest>> filters = new List<Filter<ITest>>();
+            foreach (TestTreeNode node in treeNodeCollection)
+            {
+                switch (node.CheckState)
+                {
+                    case CheckBoxStates.Unchecked:
+                        {
+                            if (node.SelectedImageIndex == 0)
+                            {
+                                filters.Add(new NoneFilter<ITest>());
+                            }
+                            break;
+                        }
+                    case CheckBoxStates.Checked:
+                        {
+                            switch (node.SelectedImageIndex)
+                            {
+                                case 0:
+                                    {
+                                        filters.Add(new AnyFilter<ITest>());
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        filters.Add(new IdFilter<ITest>(node.Name));
+                                        break;
+                                    }
+                            }
+                            break;
+                        }
+                    case CheckBoxStates.Indeterminate:
+                        {
+                            filters.Add(GetFilter(node.Nodes));
+                            break;
+                        }
+                }
+            }
+            return new AndFilter<ITest>(filters.ToArray());
         }
     }
 }

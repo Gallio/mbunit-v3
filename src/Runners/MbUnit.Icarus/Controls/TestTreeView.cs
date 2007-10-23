@@ -67,8 +67,6 @@ namespace MbUnit.Icarus.Controls
         {
             BeginUpdate();
 
-            base.OnAfterCheck(e);
-
             if (UseTriStateCheckBoxes)
             {
                 switch (e.Action)
@@ -95,6 +93,8 @@ namespace MbUnit.Icarus.Controls
                         }
                 }
             }
+
+            base.OnAfterCheck(e);
 
             EndUpdate();
         }
@@ -203,6 +203,36 @@ namespace MbUnit.Icarus.Controls
         #endregion
 
         #region Methods
+
+        public void Reset()
+        {
+            BeginUpdate();
+            foreach (TreeNode node in Nodes)
+            {
+                TestTreeNode ttnode = node as TestTreeNode;
+                if (ttnode != null)
+                {
+                    ttnode.TestState = TestState.Undefined;
+                    ResetChildren(ttnode.Nodes);
+                }
+            }
+            EndUpdate();
+            
+            Invalidate();
+        }
+
+        public void ResetChildren(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                TestTreeNode ttnode = node as TestTreeNode;
+                if (ttnode != null)
+                {
+                    ttnode.TestState = TestState.Undefined;
+                    ResetChildren(ttnode.Nodes);
+                }
+            }
+        }
 
         public void Passed(string testId)
         {

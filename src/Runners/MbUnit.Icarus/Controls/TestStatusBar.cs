@@ -43,6 +43,7 @@ namespace MbUnit.Icarus.Controls
             // Setup the control styles so that the control does not flicker
             // when it is resized or redrawn.
             SetStyle(ControlStyles.DoubleBuffer, true);
+            SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.ResizeRedraw, true);
         }
@@ -130,7 +131,6 @@ namespace MbUnit.Icarus.Controls
             failedTests = 0;
             ignoredTests = 0;
             skippedTests = 0;
-            totalTests = 0;
 
             elapsedTime = 0;
 
