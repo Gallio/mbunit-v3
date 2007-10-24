@@ -34,31 +34,45 @@ namespace MbUnit.Icarus.Tests
             IProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
             TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel());
             Assert.AreEqual(1, treeNodes.Length);
+            
             // check Root node
             TreeNode rootNode = treeNodes[0];
             Assert.AreEqual("Root", rootNode.Name);
             Assert.AreEqual(0, rootNode.ImageIndex);
             Assert.AreEqual(1, rootNode.Nodes.Count);
+            
             // check Framework node
             TreeNode frameworkNode = rootNode.Nodes[0];
             Assert.AreEqual("Framework", frameworkNode.Name);
-            Assert.AreEqual(1, frameworkNode.ImageIndex);
+            Assert.AreEqual(0, frameworkNode.ImageIndex);
             Assert.AreEqual(1, frameworkNode.Nodes.Count);
+            
             // check Assembly node
             TreeNode assemblyNode = frameworkNode.Nodes[0];
             Assert.AreEqual("Assembly", assemblyNode.Name);
-            Assert.AreEqual(2, assemblyNode.ImageIndex);
+            Assert.AreEqual(1, assemblyNode.ImageIndex);
             Assert.AreEqual(1, assemblyNode.Nodes.Count);
-            TreeNode fixtureNode = assemblyNode.Nodes[0];
+
+            // check Namespace node
+            TreeNode namespaceNode = assemblyNode.Nodes[0];
+            Assert.AreEqual("Namespace", namespaceNode.Name);
+            Assert.AreEqual(2, namespaceNode.ImageIndex);
+            Assert.AreEqual(1, namespaceNode.Nodes.Count);
+
             // check Fixture node
+            TreeNode fixtureNode = namespaceNode.Nodes[0];
             Assert.AreEqual("Fixture", fixtureNode.Name);
             Assert.AreEqual(3, fixtureNode.ImageIndex);
             Assert.AreEqual(3, fixtureNode.Nodes.Count);
-            // check first Test node
-            TreeNode testNode = fixtureNode.Nodes[0];
-            Assert.AreEqual("Test1", testNode.Name);
-            Assert.AreEqual(4, testNode.ImageIndex);
-            Assert.AreEqual(0, testNode.Nodes.Count);
+                        
+            // check Test nodes
+            for (int i = 0; i < 3; i++)
+            {
+                TreeNode testNode = fixtureNode.Nodes[i];
+                Assert.AreEqual("Test" + (i + 1), testNode.Name);
+                Assert.AreEqual(4, testNode.ImageIndex);
+                Assert.AreEqual(0, testNode.Nodes.Count);
+            }
         }
 
         [Test]
@@ -88,6 +102,7 @@ namespace MbUnit.Icarus.Tests
             assembly.Metadata.SetValue(MetadataKeys.ComponentKind, "Assembly");
             framework.Children.Add(assembly);
             TestData fixture = new TestData("Fixture", "Fixture");
+            fixture.CodeReference.NamespaceName = "Namespace";
             fixture.Metadata.SetValue(MetadataKeys.ComponentKind, "Fixture");
             assembly.Children.Add(fixture);
             TestData test1 = new TestData("Test1", "Test1");

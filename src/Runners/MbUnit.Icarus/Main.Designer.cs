@@ -716,7 +716,7 @@ namespace MbUnit.Icarus
             this.treeFilterCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.treeFilterCombo.FormattingEnabled = true;
             this.treeFilterCombo.Items.AddRange(new object[] {
-            "Assembly",
+            "All",
             "Namespaces",
             "Authors",
             "Categories",

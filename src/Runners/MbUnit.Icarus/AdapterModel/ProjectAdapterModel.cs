@@ -37,52 +37,84 @@ namespace MbUnit.Icarus.AdapterModel
         /// <returns></returns>
         public TreeNode[] BuildTestTree(TestModel testModel)
         {
+            string mode = "Namespace";
             TreeNode[] testTree = new TreeNode[1];
-            TestTreeNode root = new TestTreeNode(testModel.RootTest.Name, 0, 0, WalkTestTree(testModel.RootTest.Children));
+            TestTreeNode root = new TestTreeNode(testModel.RootTest.Name, 0, 0);
             root.Name = testModel.RootTest.Id;
-            root.ExpandAll();
             root.Checked = true;
             root.CheckState = CheckBoxStates.Checked;
             testTree[0] = root;
+            switch (mode)
+            {
+                case "Namespace":
+                    {
+                        PopulateNamespaceTree(testModel.RootTest.Children, root);
+                        break;
+                    }
+            }
+            root.ExpandAll();
             return testTree;
         }
 
-        private TestTreeNode[] WalkTestTree(List<TestData> list)
+        private TestTreeNode[] PopulateNamespaceTree(List<TestData> list, TestTreeNode parent)
         {
             TestTreeNode[] nodes = new TestTreeNode[list.Count];
             for (int i = 0; i < list.Count; i++)
             {
                 TestData td = list[i];
                 int imgIndex = 0;
-                string codeBase = null;
                 string componentKind = td.Metadata.GetValue("ComponentKind");
                 if (componentKind != null)
                 {
                     switch (componentKind)
                     {
                         case "Framework":
-                            imgIndex = 1;
+                            imgIndex = 0;
                             break;
                         case "Assembly":
-                            imgIndex = 2;
-                            codeBase = td.Metadata.GetValue("CodeBase");
-                            break;
-                        case "Fixture":
-                            imgIndex = 3;
+                            imgIndex = 1;
                             break;
                         case "Test":
                             imgIndex = 4;
                             break;
                     }
-                    TestTreeNode ttnode = new TestTreeNode(td.Name, imgIndex, imgIndex, WalkTestTree(td.Children));
-                    ttnode.Name = td.Id;
-                    ttnode.Checked = true;
-                    ttnode.CheckState = CheckBoxStates.Checked;
-                    if (codeBase != null)
+                    TestTreeNode ttnode;
+                    if (componentKind != "Fixture")
                     {
-                        ttnode.CodeBase = codeBase;
+                        ttnode = new TestTreeNode(td.Name, imgIndex, imgIndex);
+                        ttnode.Name = td.Id;
+                        ttnode.Checked = true;
+                        ttnode.CheckState = CheckBoxStates.Checked;
+                        string codeBase = td.Metadata.GetValue("CodeBase");
+                        if (codeBase != null)
+                        {
+                            ttnode.CodeBase = codeBase;
+                        }
+                        parent.Nodes.Add(ttnode);
                     }
-                    nodes[i] = ttnode;
+                    else
+                    {
+                        TestTreeNode nsNode;
+                        string nameSpace = td.CodeReference.NamespaceName;
+                        if (parent.Nodes.ContainsKey(nameSpace))
+                        {
+                            nsNode = parent.Nodes.Find(nameSpace, false)[0] as TestTreeNode;
+                        }
+                        else
+                        {
+                            nsNode = new TestTreeNode(nameSpace, 2, 2);
+                            nsNode.Name = nameSpace;
+                            nsNode.Checked = true;
+                            nsNode.CheckState = CheckBoxStates.Checked;
+                            parent.Nodes.Add(nsNode);
+                        }
+                        ttnode = new TestTreeNode(td.Name, 3, 3);
+                        ttnode.Name = td.Id;
+                        ttnode.Checked = true;
+                        ttnode.CheckState = CheckBoxStates.Checked;
+                        nsNode.Nodes.Add(ttnode);
+                    }
+                    PopulateNamespaceTree(td.Children, ttnode);
                 }
             }
             return nodes;
@@ -139,6 +171,11 @@ namespace MbUnit.Icarus.AdapterModel
                                 case 0:
                                     {
                                         filters.Add(new AnyFilter<ITest>());
+                                        break;
+                                    }
+                                case 2:
+                                    {
+                                        filters.Add(GetFilter(node.Nodes));
                                         break;
                                     }
                                 default:

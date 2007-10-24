@@ -112,7 +112,6 @@ namespace MbUnit.Icarus
             statusBarTimer.Elapsed += new ElapsedEventHandler(statusBarTimer_Elapsed);
             statusBarTimer.Start();
 
-            // Set the application version in the window title.
             GraphPane graphPane = zedGraphControl1.GraphPane;
             graphPane.Title.Text = "Total Test Results";
             graphPane.XAxis.Title.Text = "Number of Tests";
@@ -162,10 +161,11 @@ namespace MbUnit.Icarus
 
         private void Form_Load(object sender, EventArgs e)
         {
+            // Set the application version in the window title
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
-            treeFilterCombo.SelectedIndex = 0;
+            treeFilterCombo.SelectedIndex = 1;
             filterTestResultsCombo.SelectedIndex = 0;
             graphsFilterBox1.SelectedIndex = 0;
 
@@ -200,10 +200,9 @@ namespace MbUnit.Icarus
             startButton.Enabled = false;
             stopButton.Enabled = true;
 
-            ThreadedRunTests();
-            //AbortWorkerThread();
-            //workerThread = new Thread(new ThreadStart(ThreadedRunTests));
-            //workerThread.Start();
+            AbortWorkerThread();
+            workerThread = new Thread(new ThreadStart(ThreadedRunTests));
+            workerThread.Start();
         }
 
         private void ThreadedRunTests()
