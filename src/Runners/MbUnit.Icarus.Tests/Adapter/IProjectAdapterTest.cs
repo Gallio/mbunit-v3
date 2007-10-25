@@ -77,7 +77,7 @@ namespace MbUnit.Icarus.Tests
             projectAdapter.GetTestTree += new EventHandler<ProjectEventArgs>(mockPresenter.GetTestTree);
             mockPresenter.GetTestTree(projectAdapter, new ProjectEventArgs(new TestPackage()));
             mocks.ReplayAll();
-            raiseViewEvent.Raise(mockView, EventArgs.Empty);
+            raiseViewEvent.Raise(mockView, new GetTestTreeEventArgs("mode"));
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace MbUnit.Icarus.Tests
         public void DataBind_Test()
         {
             Expect.Call(mockModel.BuildAssemblyList(projectAdapter.TestPackage.AssemblyFiles)).Return(new ListViewItem[0]);
-            Expect.Call(mockModel.BuildTestTree(projectAdapter.TestModel)).Return(new TreeNode[0]);
+            Expect.Call(mockModel.BuildTestTree(projectAdapter.TestModel, "")).Return(new TreeNode[0]);
             Expect.Call(mockModel.CountTests(projectAdapter.TestModel)).Return(0);
             mocks.ReplayAll();
             projectAdapter.DataBind();

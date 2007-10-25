@@ -24,7 +24,7 @@ namespace MbUnit.Icarus.Interfaces
         event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         event EventHandler<EventArgs> RemoveAssemblies;
         event EventHandler<RemoveAssemblyEventArgs> RemoveAssembly;
-        event EventHandler<EventArgs> GetTestTree;
+        event EventHandler<GetTestTreeEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;

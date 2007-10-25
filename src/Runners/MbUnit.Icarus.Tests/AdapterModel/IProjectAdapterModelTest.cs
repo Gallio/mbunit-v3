@@ -25,14 +25,14 @@ using MbUnit.Model.Serialization;
 
 namespace MbUnit.Icarus.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("IProjectAdapterModel")]
     public class IProjectAdapterModelTest
     {
         [Test]
-        public void BuildTestTree_Test()
+        public void BuildNamespaceTestTree_Test()
         {
             IProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
-            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel());
+            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
             Assert.AreEqual(1, treeNodes.Length);
             
             // check Root node

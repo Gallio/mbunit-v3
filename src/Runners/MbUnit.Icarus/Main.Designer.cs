@@ -726,6 +726,7 @@ namespace MbUnit.Icarus
             this.treeFilterCombo.Name = "treeFilterCombo";
             this.treeFilterCombo.Size = new System.Drawing.Size(260, 21);
             this.treeFilterCombo.TabIndex = 1;
+            this.treeFilterCombo.SelectedIndexChanged += new System.EventHandler(this.treeFilterCombo_SelectedIndexChanged);
             // 
             // label1
             // 

@@ -46,7 +46,7 @@ namespace MbUnit.Icarus.Tests.Core.Presenter
             Assert.AreEqual("blah blah", mockAdapter.StatusText);
         }
 
-        [Test]
+        [Test, Category("IProjectPresenter")]
         public void CompletedWorkUnits_Test()
         {
             mockAdapter.CompletedWorkUnits = 2;

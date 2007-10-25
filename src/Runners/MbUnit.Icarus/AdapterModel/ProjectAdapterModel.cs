@@ -35,57 +35,38 @@ namespace MbUnit.Icarus.AdapterModel
         /// </summary>
         /// <param name="testModel">gallio test tree</param>
         /// <returns></returns>
-        public TreeNode[] BuildTestTree(TestModel testModel)
+        public TreeNode[] BuildTestTree(TestModel testModel, string mode)
         {
-            string mode = "Namespace";
-            TreeNode[] testTree = new TreeNode[1];
-            TestTreeNode root = new TestTreeNode(testModel.RootTest.Name, 0, 0);
-            root.Name = testModel.RootTest.Id;
-            root.Checked = true;
-            root.CheckState = CheckBoxStates.Checked;
-            testTree[0] = root;
+            TestTreeNode root = new TestTreeNode(testModel.RootTest.Name, testModel.RootTest.Id, 0);
             switch (mode)
             {
-                case "Namespace":
-                    {
-                        PopulateNamespaceTree(testModel.RootTest.Children, root);
-                        break;
-                    }
+                case "Namespaces":
+                    PopulateNamespaceTree(testModel.RootTest.Children, root);
+                    break;
+
+                case "Categories":
+                    PopulateCategoryTree(testModel.RootTest.Children, root, root);
+                    break;
             }
             root.ExpandAll();
-            return testTree;
+            return new TreeNode[] { root };
         }
 
-        private TestTreeNode[] PopulateNamespaceTree(List<TestData> list, TestTreeNode parent)
+        private void PopulateNamespaceTree(List<TestData> list, TestTreeNode parent)
         {
-            TestTreeNode[] nodes = new TestTreeNode[list.Count];
             for (int i = 0; i < list.Count; i++)
             {
                 TestData td = list[i];
-                int imgIndex = 0;
-                string componentKind = td.Metadata.GetValue("ComponentKind");
+                string componentKind = td.Metadata.GetValue(MetadataKeys.ComponentKind);
                 if (componentKind != null)
                 {
-                    switch (componentKind)
-                    {
-                        case "Framework":
-                            imgIndex = 0;
-                            break;
-                        case "Assembly":
-                            imgIndex = 1;
-                            break;
-                        case "Test":
-                            imgIndex = 4;
-                            break;
-                    }
+                    int imgIndex = GetImageIndex(componentKind);
                     TestTreeNode ttnode;
-                    if (componentKind != "Fixture")
+                    if (componentKind != ComponentKind.Fixture)
                     {
-                        ttnode = new TestTreeNode(td.Name, imgIndex, imgIndex);
-                        ttnode.Name = td.Id;
-                        ttnode.Checked = true;
-                        ttnode.CheckState = CheckBoxStates.Checked;
-                        string codeBase = td.Metadata.GetValue("CodeBase");
+                        // create an appropriate node
+                        ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                        string codeBase = td.Metadata.GetValue(MetadataKeys.CodeBase);
                         if (codeBase != null)
                         {
                             ttnode.CodeBase = codeBase;
@@ -94,30 +75,97 @@ namespace MbUnit.Icarus.AdapterModel
                     }
                     else
                     {
-                        TestTreeNode nsNode;
+                        // fixtures need special treatment to insert the namespace layer!
                         string nameSpace = td.CodeReference.NamespaceName;
+                        // find the namespace node (or add if it doesn't exist)
+                        TestTreeNode nsNode;
                         if (parent.Nodes.ContainsKey(nameSpace))
                         {
                             nsNode = parent.Nodes.Find(nameSpace, false)[0] as TestTreeNode;
                         }
                         else
                         {
-                            nsNode = new TestTreeNode(nameSpace, 2, 2);
-                            nsNode.Name = nameSpace;
-                            nsNode.Checked = true;
-                            nsNode.CheckState = CheckBoxStates.Checked;
+                            nsNode = new TestTreeNode(nameSpace, nameSpace, 2);
                             parent.Nodes.Add(nsNode);
                         }
-                        ttnode = new TestTreeNode(td.Name, 3, 3);
-                        ttnode.Name = td.Id;
-                        ttnode.Checked = true;
-                        ttnode.CheckState = CheckBoxStates.Checked;
+                        // add the fixture to the namespace
+                        ttnode = new TestTreeNode(td.Name, td.Id, 3);
                         nsNode.Nodes.Add(ttnode);
                     }
+                    // process child nodes
                     PopulateNamespaceTree(td.Children, ttnode);
                 }
             }
-            return nodes;
+        }
+
+        private void PopulateCategoryTree(List<TestData> list, TestTreeNode root, TestTreeNode parent)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                TestData td = list[i];
+                string componentKind = td.Metadata.GetValue(MetadataKeys.ComponentKind);
+                if (componentKind != null)
+                {
+                    switch (componentKind)
+                    {
+                        case ComponentKind.Fixture:
+                        case ComponentKind.Test:
+                            int imgIndex = GetImageIndex(componentKind);
+                            string category = td.Metadata.GetValue(MetadataKeys.CategoryName) ?? "None";
+                            // find category node (or add if it doesn't exist)
+                            TestTreeNode categoryNode;
+                            if (root.Nodes.ContainsKey(category))
+                            {
+                                categoryNode = root.Nodes.Find(category, false)[0] as TestTreeNode;
+                            }
+                            else
+                            {
+                                categoryNode = new TestTreeNode(category, category, 0);
+                                root.Nodes.Add(categoryNode);
+                            }
+                            // add node in the appropriate place
+                            if (componentKind == ComponentKind.Fixture)
+                            {
+                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                                categoryNode.Nodes.Add(ttnode);
+                                PopulateCategoryTree(td.Children, root, ttnode);
+                                continue;
+                            }
+                            else
+                            {
+                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                                if (category != "None")
+                                {
+                                    categoryNode.Nodes.Add(ttnode);
+                                }
+                                else
+                                {
+                                    parent.Nodes.Add(ttnode);
+                                }
+                            }
+                            break;
+                    }
+                    PopulateCategoryTree(td.Children, root, parent);
+                }
+            }
+        }
+
+        private int GetImageIndex(string componentKind)
+        {
+            switch (componentKind)
+            {
+                case ComponentKind.Root:
+                case ComponentKind.Framework:
+                    return 0;
+                case ComponentKind.Assembly:
+                    return 1;
+                case ComponentKind.Fixture:
+                    return 3;
+                case ComponentKind.Test:
+                    return 4;
+                default:
+                    return 0;
+            }
         }
 
         public int CountTests(TestModel testModel)
@@ -156,14 +204,6 @@ namespace MbUnit.Icarus.AdapterModel
             {
                 switch (node.CheckState)
                 {
-                    case CheckBoxStates.Unchecked:
-                        {
-                            if (node.SelectedImageIndex == 0)
-                            {
-                                filters.Add(new NoneFilter<ITest>());
-                            }
-                            break;
-                        }
                     case CheckBoxStates.Checked:
                         {
                             switch (node.SelectedImageIndex)

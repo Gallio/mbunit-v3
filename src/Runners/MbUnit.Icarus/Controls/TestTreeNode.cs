@@ -49,6 +49,14 @@ namespace MbUnit.Icarus.Controls
         {
         }
 
+        public TestTreeNode(string text, string id, int imgIndex)
+            : base(text, imgIndex, imgIndex)
+        {
+            Name = id;
+            Checked = true;
+            CheckState = CheckBoxStates.Checked;
+        }
+
         public TestTreeNode(string text, int imageIndex, int selectedImageIndex, TestTreeNode[] children)
             : base(text, imageIndex, selectedImageIndex, children)
         {

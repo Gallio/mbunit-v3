@@ -32,7 +32,9 @@ namespace MbUnit.Icarus.Adapter
         
         private TestModel _testModel;
         private TestPackage _testPackage;
-        
+
+        private string mode = "";
+
         #endregion
 
         #region Properties
@@ -115,9 +117,9 @@ namespace MbUnit.Icarus.Adapter
             _testPackage.AssemblyFiles.Remove(e.Assembly);
         }
 
-        [DebuggerStepThrough]
-        private void _View_GetTestTree(object sender, EventArgs e)
+        private void _View_GetTestTree(object sender, GetTestTreeEventArgs e)
         {
+            mode = e.Mode;
             if (GetTestTree != null)
             {
                 GetTestTree(this, new ProjectEventArgs(_testPackage));
@@ -157,7 +159,7 @@ namespace MbUnit.Icarus.Adapter
         public void DataBind()
         {
             _View.Assemblies = _Model.BuildAssemblyList(_testPackage.AssemblyFiles);
-            _View.TestTreeCollection = _Model.BuildTestTree(_testModel);
+            _View.TestTreeCollection = _Model.BuildTestTree(_testModel, mode);
             _View.TotalTests(_Model.CountTests(_testModel));
             _View.DataBind();
         }

@@ -61,6 +61,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Core\CustomEventArgs\AddAssembliesEventArgs.cs" />
+    <Compile Include="Core\CustomEventArgs\GetTestTreeEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SetFilterEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\ProjectEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\ProjectLoadEventArgs.cs" />

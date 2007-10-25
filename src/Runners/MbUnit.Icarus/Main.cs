@@ -81,7 +81,7 @@ namespace MbUnit.Icarus
 
         #region Events
 
-        public event EventHandler<EventArgs> GetTestTree;
+        public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
         public event EventHandler<RemoveAssemblyEventArgs> RemoveAssembly;
@@ -341,10 +341,24 @@ namespace MbUnit.Icarus
             // Load test tree
             if (GetTestTree != null)
             {
-                GetTestTree(this, new EventArgs());
+                GetTestTree(this, new GetTestTreeEventArgs(GetTreeFilter()));
             }
             testTree.Invoke(new MethodInvoker(testTree.Sort));
             StatusText = "Ready...";
+        }
+
+        private delegate string GetTreeFilterDelegate();
+
+        private string GetTreeFilter()
+        {
+            if (treeFilterCombo.InvokeRequired)
+            {
+                return (string)treeFilterCombo.Invoke(new GetTreeFilterDelegate(GetTreeFilter));
+            }
+            else
+            {
+                return (string)treeFilterCombo.SelectedItem;
+            }
         }
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
@@ -691,6 +705,13 @@ namespace MbUnit.Icarus
                     SetFilter(this, new SetFilterEventArgs(testTree.Nodes));
                 }
             }
+        }
+
+        private void treeFilterCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AbortWorkerThread();
+            workerThread = new Thread(new ThreadStart(ThreadedRefreshTree));
+            workerThread.Start();
         }
 
     }
