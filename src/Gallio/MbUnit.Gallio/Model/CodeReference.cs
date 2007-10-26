@@ -21,6 +21,7 @@ using System.Text;
 using System.Xml.Serialization;
 using MbUnit.Model.Serialization;
 using MbUnit.Properties;
+using MbUnit.Utilities;
 
 namespace MbUnit.Model
 {
@@ -405,15 +406,19 @@ namespace MbUnit.Model
         /// optimizations are turned on and the method body is simple.
         /// </para>
         /// <para>
-        /// One way to prevent inlining is to attach a security attribute to
-        /// the method.  For example:
+        /// The inlining problem can be circumvented like this:
         /// <code>
-        /// [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        /// [NonInlined(SecurityAction.Demand)]
+        /// public void Foo()
+        /// {
+        ///     CodeReference r = CodeReference.CreateFromExecutingMethod();
+        ///     // ...
+        /// }
         /// </code>
         /// </para>
         /// </remarks>
         /// <returns>The code reference</returns>
-        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        [NonInlined(SecurityAction.Demand)]
         public static CodeReference CreateFromExecutingMethod()
         {
             return CreateFromStackFrame(1);
@@ -430,15 +435,19 @@ namespace MbUnit.Model
         /// optimizations are turned on and the method body is simple.
         /// </para>
         /// <para>
-        /// One way to prevent inlining is to attach a security attribute to
-        /// the method.  For example:
+        /// The inlining problem can be circumvented like this:
         /// <code>
-        /// [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        /// [NonInlined(SecurityAction.Demand)]
+        /// public void Foo()
+        /// {
+        ///     CodeReference r = CodeReference.CreateFromCallingMethod();
+        ///     // ...
+        /// }
         /// </code>
         /// </para>
         /// </remarks>
         /// <returns>The code reference</returns>
-        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        [NonInlined(SecurityAction.Demand)]
         public static CodeReference CreateFromCallingMethod()
         {
             return CreateFromStackFrame(2);
@@ -449,7 +458,7 @@ namespace MbUnit.Model
         /// </summary>
         /// <param name="stackFrame">The stack frame</param>
         /// <returns>The code reference</returns>
-        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        [NonInlined(SecurityAction.Demand)]
         public static CodeReference CreateFromStackFrame(StackFrame stackFrame)
         {
             if (stackFrame == null)
@@ -465,7 +474,7 @@ namespace MbUnit.Model
         /// the code reference will refer to the direct caller of this method;
         /// if it is 1, it will refer to the caller's caller, and so on.</param>
         /// <returns>The code reference</returns>
-        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        [NonInlined(SecurityAction.Demand)]
         public static CodeReference CreateFromStackFrame(int framesToSkip)
         {
             StackTrace stackTrace = new StackTrace(framesToSkip + 1, false);

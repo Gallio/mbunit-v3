@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Security.Permissions;
 using MbUnit.Model;
 using MbUnit.Framework;
+using MbUnit.Utilities;
 
 namespace MbUnit.Tests.Model
 {
@@ -204,7 +205,7 @@ namespace MbUnit.Tests.Model
             Assert.AreEqual("CreateFromStackFrame_WithFrameCount", r.MemberName);
         }
 
-        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        [NonInlined(SecurityAction.Demand)]
         private CodeReference CreateFromStackFrame_WithFrameCount_Helper()
         {
             return CodeReference.CreateFromStackFrame(1);
@@ -217,7 +218,7 @@ namespace MbUnit.Tests.Model
             Assert.AreEqual("CreateFromCallingMethod", r.MemberName);
         }
 
-        [SecurityPermission(SecurityAction.Demand)] // Prevent inlining
+        [NonInlined(SecurityAction.Demand)]
         private CodeReference CreateFromCallingMethod_Helper()
         {
             return CodeReference.CreateFromCallingMethod();

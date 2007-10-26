@@ -42,6 +42,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\NAnt\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MbUnit.Framework, Version=2.41.232.0, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
+      <Aliases>MbUnit2</Aliases>
+    </Reference>
     <Reference Include="NAnt.Core, Version=0.85.1932.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\NAnt\NAnt.Core.dll</HintPath>
@@ -80,17 +85,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestBuildFiles\NoTests.build" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="TestBuildFiles\FailingTests-FailuresIgnored.build" />
-    <Content Include="TestBuildFiles\FailingTests.build" />
-    <Content Include="TestBuildFiles\NoFilter.build" />
-    <Content Include="TestBuildFiles\PassingTests.build" />
     <Content Include="TestBuildFiles\runall.bat" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestBuildFiles\Readme.txt" />
+    <Content Include="TestBuildFiles\Integration.build" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

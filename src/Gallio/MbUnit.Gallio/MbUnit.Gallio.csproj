@@ -73,6 +73,7 @@
     <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
     <Compile Include="Core\ConsoleSupport\NativeConsole.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Framework\ProcessRunner.cs" />
     <Compile Include="Hosting\IRuntimeFactory.cs" />
     <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
@@ -330,6 +331,7 @@
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\GenericUtils.cs" />
     <Compile Include="Model\Serialization\SerializationUtils.cs" />
+    <Compile Include="Utilities\NonInlinedAttribute.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
     <Compile Include="Framework\KeyedPairwiseAssertion.cs" />
     <Compile Include="Logging\Log.cs" />

@@ -1,0 +1,64 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="..\bin\MbUnit.Tasks.MSBuild.dll" TaskName="MbUnit" />
+
+  <PropertyGroup>
+    <TestAssembly>..\bin\MbUnit.TestResources.MbUnit2.dll</TestAssembly>
+  </PropertyGroup>
+  
+  <Target Name="PassingTests">
+    <MbUnit Filter="Type=PassingTests" Assemblies="$(TestAssembly)"
+            PluginDirectories="$(GallioPath)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </MbUnit>
+    
+    <Error Text="Expected successful result code, was '$(ExitCode)'."
+           Condition="'$(ExitCode)' != '0'" />
+  </Target>
+  
+  <Target Name="FailingTests">
+    <MbUnit Filter="Type=FailingFixture" Assemblies="$(TestAssembly)"
+            PluginDirectories="$(GallioPath)" />
+    
+    <Error Text="Expected failure result code, so should not have reached this point." />
+  </Target>
+  
+  <Target Name="FailingTestsWithIgnoreFailures">
+    <MbUnit Filter="Type=FailingFixture" Assemblies="$(TestAssembly)" IgnoreFailures="true"
+            PluginDirectories="$(GallioPath)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </MbUnit>
+    
+    <Error Text="Expected failure result code, was '$(ExitCode)'."
+           Condition="'$(ExitCode)' != '1'" />
+  </Target>
+  
+  <Target Name="NoAssemblies">
+    <MbUnit Assemblies=""
+            PluginDirectories="$(GallioPath)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </MbUnit>
+    
+    <Error Text="Expected NoTests result code, was '$(ExitCode)'."
+           Condition="'$(ExitCode)' != '16'" />
+  </Target>
+
+  <Target Name="NoTests">
+    <MbUnit Filter="Type=NoSuchType" Assemblies="$(TestAssembly)"
+            PluginDirectories="$(GallioPath)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </MbUnit>
+    
+    <Error Text="Expected NoTests result code, was '$(ExitCode)'."
+           Condition="'$(ExitCode)' != '16'" />
+  </Target>
+
+  <Target Name="NoFilter">
+    <MbUnit Filter="" Assemblies="$(TestAssembly)" IgnoreFailures="true"
+            PluginDirectories="$(GallioPath)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </MbUnit>
+    
+    <Error Text="Expected failure result code, was '$(ExitCode)'."
+           Condition="'$(ExitCode)' != '1'" />
+  </Target>
+</Project>

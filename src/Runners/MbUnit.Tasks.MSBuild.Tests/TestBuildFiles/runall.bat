@@ -1,18 +1,18 @@
-cls
 @echo off
+REM Runs all of the integration tests from the command-line.
+REM We assume MSBuild is in the PATH
+cls
 
-REM We asume MSBuild is in the PATH
+call :RUN PassingTests
+call :RUN FailingTests
+call :RUN FailingTestsWithIgnoreFailures
+call :RUN NoAssemblies
+call :RUN NoTests
+call :RUN NoFilter
+exit /b 0
 
-MSBuild NoTests.xml /p:"ExpectedMbUnitExitCode=16"
+:RUN
+MSBuild Integration.proj /t:%1 /p:GallioPath="%~dp0..\bin"
+echo Exit code: %ERRORLEVEL%
 echo ============================================================
-
-MSBuild PassingTests.xml /p:"ExpectedMbUnitExitCode=0"
-echo ============================================================
-
-MSBuild FailingTests-FailuresIgnored.xml /p:"ExpectedMbUnitExitCode=1"
-echo ============================================================
-
-MSBuild FailingTests.xml /p:"ExpectedMbUnitExitCode=1"
-echo ============================================================
-
-MSBuild NoFilter.xml /p:"ExpectedMbUnitExitCode=1"
+goto :EOF

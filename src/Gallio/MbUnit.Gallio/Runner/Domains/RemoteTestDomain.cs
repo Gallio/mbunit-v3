@@ -17,7 +17,6 @@ using System;
 using System.Diagnostics;
 using MbUnit.Runner;
 using MbUnit.Model.Execution;
-using MbUnit.Model.Execution;
 using MbUnit.Core.ProgressMonitoring;
 using MbUnit.Model;
 using MbUnit.Runner.Domains;

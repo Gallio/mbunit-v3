@@ -1,18 +1,18 @@
-cls
 @echo off
+REM Runs all of the integration tests from the command-line.
+REM We assume NAnt is in the PATH
+cls
 
-REM  We asume nant is in the PATH
+call :RUN PassingTests
+call :RUN FailingTests
+call :RUN FailingTestsWithIgnoreFailures
+call :RUN NoAssemblies
+call :RUN NoTests
+call :RUN NoFilter
+exit /b 0
 
-nant /f:NoTests.build /D:ExpectedMbUnitExitCode=16
+:RUN
+NAnt /f:Integration.build %1 /D:GallioPath="%~dp0..\bin"
+echo Exit code: %ERRORLEVEL%
 echo ============================================================
-
-nant /f:PassingTests.build /D:ExpectedMbUnitExitCode=0
-echo ============================================================
-
-nant /f:FailingTests-FailuresIgnored.build /D:ExpectedMbUnitExitCode=1
-echo ============================================================
-
-nant /f:FailingTests.build /D:ExpectedMbUnitExitCode=1
-echo ============================================================
-
-nant /f:NoFilter.build /D:ExpectedMbUnitExitCode=1
+goto :EOF

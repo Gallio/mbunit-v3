@@ -15,6 +15,7 @@
 
 
 using System;
+using System.IO;
 using System.Reflection;
 using MbUnit.Hosting;
 
@@ -122,6 +123,18 @@ namespace MbUnit.Hosting
                 return localPath;
 
             return assembly.CodeBase;
+        }
+
+        /// <summary>
+        /// Gets the local path of the Gallio installation.
+        /// </summary>
+        /// <returns>The installation path</returns>
+        public static string InstallationPath
+        {
+            get
+            {
+                return Path.GetDirectoryName(GetFriendlyAssemblyLocation(typeof(Loader).Assembly));
+            }
         }
     }
 }

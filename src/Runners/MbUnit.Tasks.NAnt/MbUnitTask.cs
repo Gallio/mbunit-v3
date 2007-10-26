@@ -59,7 +59,7 @@ namespace MbUnit.Tasks.NAnt
     ///        <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
     ///      </assemblies>
     ///     </mbunit>
-    ///     <fail if="${ExitCode != 0}" >The return code should have been 0!</fail>
+    ///     <fail if="${ExitCode != '0'}" >The return code should have been 0!</fail>
     ///    </target>
     ///
     ///    </project>
@@ -493,7 +493,6 @@ namespace MbUnit.Tasks.NAnt
 
         private void AddAssemblies(TestLauncher launcher)
         {
-
             if (assemblies != null)
             {
                 foreach (FileSet fs in assemblies)
@@ -510,7 +509,7 @@ namespace MbUnit.Tasks.NAnt
             {
                 foreach (DirSet ds in hintDirectories)
                 {
-                    foreach (string d in ds.FileNames)
+                    foreach (string d in ds.DirectoryNames)
                         launcher.TestPackage.HintDirectories.Add(d);
                 }
             }
@@ -522,7 +521,7 @@ namespace MbUnit.Tasks.NAnt
             {
                 foreach (DirSet ds in pluginDirectories)
                 {
-                    foreach (string d in ds.FileNames)
+                    foreach (string d in ds.DirectoryNames)
                         launcher.RuntimeSetup.PluginDirectories.Add(d);
                 }
             }
