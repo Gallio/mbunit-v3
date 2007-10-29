@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.NUnitAdapter", "Plugins\Gallio.Plugin.NUnitAdapter\Gallio.Plugin.NUnitAdapter.csproj", "{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.NUnitAdapter", "Gallio\Plugins\Gallio.Plugin.NUnitAdapter\Gallio.Plugin.NUnitAdapter.csproj", "{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -25,19 +25,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TestResources.NUnit"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.MbUnit2Adapter", "Plugins\Gallio.Plugin.MbUnit2Adapter\Gallio.Plugin.MbUnit2Adapter.csproj", "{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.MbUnit2Adapter", "Gallio\Plugins\Gallio.Plugin.MbUnit2Adapter\Gallio.Plugin.MbUnit2Adapter.csproj", "{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.NUnitAdapter.Tests", "Plugins\Gallio.Plugin.NUnitAdapter.Tests\Gallio.Plugin.NUnitAdapter.Tests.csproj", "{7CB9DB43-2428-40C7-A926-AD3C2687A646}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.NUnitAdapter.Tests", "Gallio\Plugins\Gallio.Plugin.NUnitAdapter.Tests\Gallio.Plugin.NUnitAdapter.Tests.csproj", "{7CB9DB43-2428-40C7-A926-AD3C2687A646}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.MbUnit2Adapter.Tests", "Plugins\Gallio.Plugin.MbUnit2Adapter.Tests\Gallio.Plugin.MbUnit2Adapter.Tests.csproj", "{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.MbUnit2Adapter.Tests", "Gallio\Plugins\Gallio.Plugin.MbUnit2Adapter.Tests\Gallio.Plugin.MbUnit2Adapter.Tests.csproj", "{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -55,25 +55,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{70543B8E-D
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo", "Runners\Gallio.Echo\Gallio.Echo.csproj", "{22AE34D9-185F-41A7-A48D-205BE68B1F7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo", "Gallio\Runners\Gallio.Echo\Gallio.Echo.csproj", "{22AE34D9-185F-41A7-A48D-205BE68B1F7D}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus", "Runners\Gallio.Icarus\Gallio.Icarus.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus", "Gallio\Runners\Gallio.Icarus\Gallio.Icarus.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo.Tests", "Runners\Gallio.Echo.Tests\Gallio.Echo.Tests.csproj", "{299970D4-781F-4778-BCF2-F53AE7D8B060}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo.Tests", "Gallio\Runners\Gallio.Echo.Tests\Gallio.Echo.Tests.csproj", "{299970D4-781F-4778-BCF2-F53AE7D8B060}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus.Tests", "Runners\Gallio.Icarus.Tests\Gallio.Icarus.Tests.csproj", "{A90A40C4-4D48-4D0B-BE9B-432510EB1057}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus.Tests", "Gallio\Runners\Gallio.Icarus.Tests\Gallio.Icarus.Tests.csproj", "{A90A40C4-4D48-4D0B-BE9B-432510EB1057}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -103,9 +103,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{BFB5
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.XunitAdapter", "Plugins\Gallio.Plugin.XunitAdapter\Gallio.Plugin.XunitAdapter.csproj", "{F2619506-4CA0-4B5B-AAA8-733784C49476}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.XunitAdapter", "Gallio\Plugins\Gallio.Plugin.XunitAdapter\Gallio.Plugin.XunitAdapter.csproj", "{F2619506-4CA0-4B5B-AAA8-733784C49476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.XunitAdapter.Tests", "Plugins\Gallio.Plugin.XunitAdapter.Tests\Gallio.Plugin.XunitAdapter.Tests.csproj", "{606ED147-23B2-461B-A5DD-9A6CD998F6AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.XunitAdapter.Tests", "Gallio\Plugins\Gallio.Plugin.XunitAdapter.Tests\Gallio.Plugin.XunitAdapter.Tests.csproj", "{606ED147-23B2-461B-A5DD-9A6CD998F6AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TestResources.Xunit", "TestResources\Gallio.TestResources.Xunit\Gallio.TestResources.Xunit.csproj", "{70015C50-93E8-4D17-86B0-69F030911C98}"
 EndProject
@@ -113,19 +113,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio", "Gallio\Gallio\Gal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Tests", "Gallio\Gallio.Tests\Gallio.Tests.csproj", "{111FD89D-58A1-4445-B4A4-8A50D65DB714}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.Reports", "Plugins\Gallio.Plugin.Reports\Gallio.Plugin.Reports.csproj", "{399C33BF-A9F7-4390-8F9C-8EECF7814123}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.Reports", "Gallio\Plugins\Gallio.Plugin.Reports\Gallio.Plugin.Reports.csproj", "{399C33BF-A9F7-4390-8F9C-8EECF7814123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner", "Runners\Gallio.TDNetAddIn\Gallio.TDNetRunner.csproj", "{00C93D01-6A43-4AAA-9E6E-5936B985B497}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks", "Gallio\Runners\Gallio.NAntTasks\Gallio.NAntTasks.csproj", "{9D1FCE3D-7597-46DC-B661-83112269CD1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.Tests", "Runners\Gallio.TDNetAddIn.Tests\Gallio.TDNetRunner.Tests.csproj", "{EBB6130D-3D29-4313-BAA9-1076BB8572AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks.Tests", "Gallio\Runners\Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests.csproj", "{2EADCB02-CB78-480F-992D-7CCB48ACEF38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks", "Runners\Gallio.NAntTasks\Gallio.NAntTasks.csproj", "{9D1FCE3D-7597-46DC-B661-83112269CD1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks", "Gallio\Runners\Gallio.MSBuildTasks\Gallio.MSBuildTasks.csproj", "{B3601484-0AB7-424F-BA81-A8CC809AB41A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks.Tests", "Runners\Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests.csproj", "{2EADCB02-CB78-480F-992D-7CCB48ACEF38}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks", "Runners\Gallio.MSBuildTasks\Gallio.MSBuildTasks.csproj", "{B3601484-0AB7-424F-BA81-A8CC809AB41A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks.Tests", "Runners\Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests.csproj", "{9803265F-B0AF-4171-A770-0871CD2A593E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks.Tests", "Gallio\Runners\Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests.csproj", "{9803265F-B0AF-4171-A770-0871CD2A593E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MbUnit", "MbUnit", "{4D506DA5-13C1-4B1F-9018-4FDCA066993A}"
 EndProject
@@ -134,6 +130,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Tests", "MbUnit\MbUnit.Tests\MbUnit.Tests.csproj", "{321FD171-880D-472E-9912-EC844889E11A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "MbUnit\MbUnit.Samples\MbUnit.Samples.csproj", "{12850856-0A27-4E50-9116-5A3B19C7D779}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner", "Gallio\Runners\Gallio.TDNetRunner\Gallio.TDNetRunner.csproj", "{00C93D01-6A43-4AAA-9E6E-5936B985B497}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.Tests", "Gallio\Runners\Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests.csproj", "{EBB6130D-3D29-4313-BAA9-1076BB8572AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -209,14 +209,6 @@ Global
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Release|Any CPU.Build.0 = Release|Any CPU
-		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBB6130D-3D29-4313-BAA9-1076BB8572AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBB6130D-3D29-4313-BAA9-1076BB8572AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBB6130D-3D29-4313-BAA9-1076BB8572AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBB6130D-3D29-4313-BAA9-1076BB8572AB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9D1FCE3D-7597-46DC-B661-83112269CD1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9D1FCE3D-7597-46DC-B661-83112269CD1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D1FCE3D-7597-46DC-B661-83112269CD1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -245,34 +237,44 @@ Global
 		{12850856-0A27-4E50-9116-5A3B19C7D779}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12850856-0A27-4E50-9116-5A3B19C7D779}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12850856-0A27-4E50-9116-5A3B19C7D779}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBB6130D-3D29-4313-BAA9-1076BB8572AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBB6130D-3D29-4313-BAA9-1076BB8572AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBB6130D-3D29-4313-BAA9-1076BB8572AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBB6130D-3D29-4313-BAA9-1076BB8572AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A} = {BFB535CF-02E9-4201-977B-931372E68AF1}
-		{7CB9DB43-2428-40C7-A926-AD3C2687A646} = {BFB535CF-02E9-4201-977B-931372E68AF1}
-		{050A5A14-3F4D-4407-AA40-C45E14FE1FF1} = {BFB535CF-02E9-4201-977B-931372E68AF1}
-		{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9} = {BFB535CF-02E9-4201-977B-931372E68AF1}
-		{F2619506-4CA0-4B5B-AAA8-733784C49476} = {BFB535CF-02E9-4201-977B-931372E68AF1}
-		{606ED147-23B2-461B-A5DD-9A6CD998F6AE} = {BFB535CF-02E9-4201-977B-931372E68AF1}
-		{399C33BF-A9F7-4390-8F9C-8EECF7814123} = {BFB535CF-02E9-4201-977B-931372E68AF1}
+		{BFB535CF-02E9-4201-977B-931372E68AF1} = {00CE3107-C47F-4D2B-986B-763181832B51}
+		{7314C58D-3714-4872-885D-309338F09FC1} = {00CE3107-C47F-4D2B-986B-763181832B51}
+		{6CAB7735-05DA-480D-9A04-50615B00F886} = {00CE3107-C47F-4D2B-986B-763181832B51}
+		{111FD89D-58A1-4445-B4A4-8A50D65DB714} = {00CE3107-C47F-4D2B-986B-763181832B51}
 		{886B1BB9-AB7A-45EC-B38B-DE36CABCE505} = {BB87DDC9-05EA-4ACC-A600-970CE841E9D4}
 		{42CC86A2-B9A9-447F-97DD-D6809D78A8EB} = {BB87DDC9-05EA-4ACC-A600-970CE841E9D4}
 		{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE} = {BB87DDC9-05EA-4ACC-A600-970CE841E9D4}
 		{70015C50-93E8-4D17-86B0-69F030911C98} = {BB87DDC9-05EA-4ACC-A600-970CE841E9D4}
+		{7CB9DB43-2428-40C7-A926-AD3C2687A646} = {BFB535CF-02E9-4201-977B-931372E68AF1}
+		{050A5A14-3F4D-4407-AA40-C45E14FE1FF1} = {BFB535CF-02E9-4201-977B-931372E68AF1}
+		{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9} = {BFB535CF-02E9-4201-977B-931372E68AF1}
+		{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A} = {BFB535CF-02E9-4201-977B-931372E68AF1}
+		{F2619506-4CA0-4B5B-AAA8-733784C49476} = {BFB535CF-02E9-4201-977B-931372E68AF1}
+		{606ED147-23B2-461B-A5DD-9A6CD998F6AE} = {BFB535CF-02E9-4201-977B-931372E68AF1}
+		{399C33BF-A9F7-4390-8F9C-8EECF7814123} = {BFB535CF-02E9-4201-977B-931372E68AF1}
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{299970D4-781F-4778-BCF2-F53AE7D8B060} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{A90A40C4-4D48-4D0B-BE9B-432510EB1057} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{22AE34D9-185F-41A7-A48D-205BE68B1F7D} = {7314C58D-3714-4872-885D-309338F09FC1}
-		{00C93D01-6A43-4AAA-9E6E-5936B985B497} = {7314C58D-3714-4872-885D-309338F09FC1}
-		{EBB6130D-3D29-4313-BAA9-1076BB8572AB} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{9D1FCE3D-7597-46DC-B661-83112269CD1F} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{2EADCB02-CB78-480F-992D-7CCB48ACEF38} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{B3601484-0AB7-424F-BA81-A8CC809AB41A} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{9803265F-B0AF-4171-A770-0871CD2A593E} = {7314C58D-3714-4872-885D-309338F09FC1}
-		{6CAB7735-05DA-480D-9A04-50615B00F886} = {00CE3107-C47F-4D2B-986B-763181832B51}
-		{111FD89D-58A1-4445-B4A4-8A50D65DB714} = {00CE3107-C47F-4D2B-986B-763181832B51}
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497} = {7314C58D-3714-4872-885D-309338F09FC1}
+		{EBB6130D-3D29-4313-BAA9-1076BB8572AB} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{A9B54755-56B7-48C1-8941-BB69FCEFFF32} = {4D506DA5-13C1-4B1F-9018-4FDCA066993A}
 		{321FD171-880D-472E-9912-EC844889E11A} = {4D506DA5-13C1-4B1F-9018-4FDCA066993A}
 		{12850856-0A27-4E50-9116-5A3B19C7D779} = {4D506DA5-13C1-4B1F-9018-4FDCA066993A}
