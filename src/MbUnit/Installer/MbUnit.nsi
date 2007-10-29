@@ -1,8 +1,8 @@
 ; Define your application name
 !define APPNAME "MbUnit v3"
 !define APPNAMEANDVERSION "MbUnit v3 Alpha 1"
-!define LIBSDIR "..\..\libs"
-!define BUILDDIR "..\..\build"
+!define LIBSDIR "..\..\..\libs"
+!define BUILDDIR "..\..\..\build"
 
 ; Main Install settings
 Name "${APPNAMEANDVERSION}"
@@ -181,7 +181,8 @@ SectionEnd
 
 !macro InstallTDNetRunner Key Framework Priority
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "" "${Priority}"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "AssemblyPath" "${INSTALLDIR}\bin\Gallio.TDNetRunner.dll"
+	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "Application" "$INSTDIR\bin\Gallio.Icarus.exe"
+	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "AssemblyPath" "$INSTDIR\bin\Gallio.TDNetRunner.dll"
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "TypeName" "Gallio.TDNetRunner.GallioTestRunner"
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "TargetFrameworkAssemblyName" "${Framework}"
 !macroend
@@ -199,7 +200,7 @@ Section "TestDriven.Net Runner for MbUnit v3" TDNetAddInSection
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\MbUnit.AddIn.TDNet.dll"
+	File "${BUILDDIR}\bin\Gallio.TDNetRunner.dll"
 SectionEnd
 
 Section "TestDriven.Net Runner for Other Supported Frameworks" TDNetAddInOtherFrameworksSection
@@ -284,10 +285,10 @@ SectionEnd
 ;Uninstall section
 Section Uninstall
 	; Uninstall from TD.Net
-	!insertmacro "Gallio_MbUnit"
-	!insertmacro "Gallio_MbUnit2"
-	!insertmacro "Gallio_NUnit"
-	!insertmacro "Gallio_Xunit"
+	!insertmacro UninstallTDNetRunner "Gallio_MbUnit"
+	!insertmacro UninstallTDNetRunner "Gallio_MbUnit2"
+	!insertmacro UninstallTDNetRunner "Gallio_NUnit"
+	!insertmacro UninstallTDNetRunner "Gallio_Xunit"
 
 	; Uninstall the help collection
 	IfFileExists "$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini" 0 +2

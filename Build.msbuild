@@ -208,7 +208,7 @@
         <Folder>Samples</Folder>
     </Binary>
     <Binary Include="$(SourceDir)\MbUnit\Samples\MbUnit.Samples\bin\MbUnit.Samples.dll">
-        <Folder>Samples\MbUnit.Samples\bin</Folder>
+        <Folder>Samples\bin</Folder>
     </Binary>
     <Binary Include="$(LibsDir)\WatiN\bin\Interop.SHDocVw.dll">
         <Folder>Samples\bin</Folder>
@@ -294,7 +294,7 @@
           DependsOnTargets="BuildAPIDocs-CHM;BuildAPIDocs-HxS" />
 
   <Target Name="BuildAPIDocs-CHM">
-    <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in libs\Setup Files for the installer."
+    <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in libs\Setup Files for the Microsoft HTML Help Workshop installer."
              Condition="! Exists('$(HTMLHelpCompilerPath)')" />
 
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-CHM -project=&quot;%(NDocProject.Identity)&quot;"
@@ -302,7 +302,7 @@
   </Target>
 
   <Target Name="BuildAPIDocs-HxS">
-    <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (Hxs) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the installer."
+    <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (Hxs) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the Visual Studio 2005 SDK installer."
            Condition="! Exists('$(VS2005SDKHelpPath)')" />
 
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-Help2 -project=&quot;%(NDocProject.Identity)&quot;"
@@ -311,10 +311,10 @@
 
   <Target Name="BuildInstaller"
           DependsOnTargets="CreateBuildDir">
-    <Warning Text="The NSIS tools must be installed to generate the installer.  Look in libs\Setup Files for the installer."
+    <Warning Text="The NSIS tools must be installed to generate the installer.  Look in libs\Setup Files for the NSIS installer."
              Condition="! Exists('$(NSISPath)')" />
 
-    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;"
+    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG &quot;$(SourceDir)\MbUnit\Installer\MbUnit.nsi&quot;"
           Condition="Exists('$(NSISPath)')" />
   </Target>
 
