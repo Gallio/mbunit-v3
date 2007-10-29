@@ -33,7 +33,7 @@ namespace MbUnit.Model
         /// <inheritdoc />
         public override string Name
         {
-            get { return "MbUnit Gallio"; }
+            get { return "MbUnit v3"; }
         }
 
         /// <inheritdoc />
@@ -61,7 +61,7 @@ namespace MbUnit.Model
         /// <inheritdoc />
         public override void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
         {
-            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"MbUnit.Gallio");
+            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"MbUnit");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
                 // Build templates for the contents of the assemblies that reference MbUnit Gallio

@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <project name="TestProject">
-  <loadtasks assembly="..\bin\MbUnit.Tasks.NAnt.dll" />
-  <property name="TestAssembly" value="..\bin\MbUnit.TestResources.MbUnit2.dll" />
+  <loadtasks assembly="..\bin\Gallio.NAntTasks.dll" />
+  
+  <property name="TestAssembly" value="..\bin\Gallio.TestResources.MbUnit2.dll" />
   
   <target name="PassingTests">
     <gallio result-property="ExitCode" filter="Type=PassingTests">

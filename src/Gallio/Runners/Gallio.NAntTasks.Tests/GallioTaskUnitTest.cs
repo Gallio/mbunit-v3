@@ -156,7 +156,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=MbUnit.TestResources.MbUnit2.PassingTests";
+            task.Filter = "Type=Gallio.TestResources.MbUnit2.PassingTests";
             task.Execute();
             AssertResult(task, ResultCode.Success);
             AssertResultProperty(task, "TestCount", 4);
@@ -172,7 +172,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=MbUnit.TestResources.MbUnit2.FailingFixture";
+            task.Filter = "Type=Gallio.TestResources.MbUnit2.FailingFixture";
             task.Execute();
             AssertResult(task, ResultCode.Failure);
             AssertResultProperty(task, "TestCount", 2);
@@ -188,7 +188,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=MbUnit.TestResources.MbUnit2.PassingTests;Member=Pass";
+            task.Filter = "Type=Gallio.TestResources.MbUnit2.PassingTests;Member=Pass";
             task.Execute();
             AssertResult(task, ResultCode.Success);
             AssertResultProperty(task, "TestCount", 1);
@@ -204,7 +204,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=MbUnit.TestResources.MbUnit2.FailingFixture;Member=Fail";
+            task.Filter = "Type=Gallio.TestResources.MbUnit2.FailingFixture;Member=Fail";
             task.Execute();
             AssertResult(task, ResultCode.Failure);
             AssertResultProperty(task, "TestCount", 1);
@@ -220,7 +220,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=MbUnit.TestResources.MbUnit2.IgnoredTests";
+            task.Filter = "Type=Gallio.TestResources.MbUnit2.IgnoredTests";
             task.Execute();
             AssertResult(task, ResultCode.Success);
             AssertResultProperty(task, "TestCount", 2);

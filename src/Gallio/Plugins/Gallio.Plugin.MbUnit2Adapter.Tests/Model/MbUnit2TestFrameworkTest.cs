@@ -114,7 +114,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
             MbUnit2Test fixtureTest = (MbUnit2Test)GetDescendantByName(assemblyTest, typeof(SimpleTest).Name);
             Assert.AreSame(assemblyTest, fixtureTest.Parent);
             Assert.AreEqual(ComponentKind.Fixture, fixtureTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.MbUnit2", "MbUnit.TestResources.MbUnit2.SimpleTest", null, null), fixtureTest.CodeReference);
+            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.TestResources.MbUnit2", "Gallio.TestResources.MbUnit2.SimpleTest", null, null), fixtureTest.CodeReference);
             Assert.AreEqual("SimpleTest", fixtureTest.Name);
             Assert.AreEqual("SimpleTest", fixtureTest.Name);
             Assert.IsFalse(fixtureTest.IsTestCase);
@@ -125,14 +125,14 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
 
             Assert.AreSame(fixtureTest, passTest.Parent);
             Assert.AreEqual(ComponentKind.Test, passTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.MbUnit2", "MbUnit.TestResources.MbUnit2.SimpleTest", "Pass", null), passTest.CodeReference);
+            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.TestResources.MbUnit2", "Gallio.TestResources.MbUnit2.SimpleTest", "Pass", null), passTest.CodeReference);
             Assert.AreEqual("SimpleTest.Pass", passTest.Name);
             Assert.IsTrue(passTest.IsTestCase);
             Assert.AreEqual(0, passTest.Children.Count);
 
             Assert.AreSame(fixtureTest, failTest.Parent);
             Assert.AreEqual(ComponentKind.Test, failTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "MbUnit.TestResources.MbUnit2", "MbUnit.TestResources.MbUnit2.SimpleTest", "Fail", null), failTest.CodeReference);
+            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.TestResources.MbUnit2", "Gallio.TestResources.MbUnit2.SimpleTest", "Fail", null), failTest.CodeReference);
             Assert.AreEqual("SimpleTest.Fail", failTest.Name);
             Assert.IsTrue(failTest.IsTestCase);
             Assert.AreEqual(0, failTest.Children.Count);
@@ -239,12 +239,12 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
             BaseTemplate frameworkTemplate = (BaseTemplate)rootTemplate.Children[0];
             MbUnit2AssemblyTemplate assemblyTemplate = (MbUnit2AssemblyTemplate)frameworkTemplate.Children[0];
 
-            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Company));
+            Assert.AreEqual("MbUnit Project", assemblyTemplate.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTemplate.Metadata.GetValue(MetadataKeys.Configuration));
             StringAssert.Contains(assemblyTemplate.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
-            Assert.AreEqual("A sample test assembly.", assemblyTemplate.Metadata.GetValue(MetadataKeys.Description));
-            Assert.AreEqual("MbUnit.TestResources.MbUnit2", assemblyTemplate.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual("MbUnit.TestResources.MbUnit2", assemblyTemplate.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("A sample test assembly for MbUnit v2.", assemblyTemplate.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Product));
+            Assert.AreEqual("Gallio.TestResources.MbUnit2", assemblyTemplate.Metadata.GetValue(MetadataKeys.Title));
             Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Trademark));
 
             Assert.AreEqual("1.2.3.4", assemblyTemplate.Metadata.GetValue(MetadataKeys.InformationalVersion));

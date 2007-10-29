@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Gallio.TestResources.Xunit")]
 [assembly: AssemblyDescription("A sample test assembly for xUnit.Net.")]
 [assembly: AssemblyConfiguration("Test")]
-[assembly: AssemblyCompany("Gallio")]
+[assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("Gallio")]
 [assembly: AssemblyCopyright("Copyright © 2007 MbUnit Project - http://www.mbunit.com/")]
 [assembly: AssemblyTrademark("Gallio")]

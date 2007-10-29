@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Gallio.TestResources.NUnit")]
 [assembly: AssemblyDescription("A sample test assembly for NUnit.")]
 [assembly: AssemblyConfiguration("Test")]
-[assembly: AssemblyCompany("MbUnit")]
+[assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("Gallio")]
 [assembly: AssemblyCopyright("Copyright © 2007 MbUnit Project - http://www.mbunit.com/")]
 [assembly: AssemblyTrademark("Gallio")]

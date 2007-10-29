@@ -44,7 +44,7 @@ namespace Gallio.NAntTasks.Tests
         {
             workingDirectory = Path.Combine(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(GetType().Assembly)), @"..\TestBuildFiles");
 
-            executablePath = Path.Combine(workingDirectory, @"..\..\..\..\libs\NAnt\NAnt.exe");
+            executablePath = Path.Combine(workingDirectory, @"..\..\..\..\..\libs\NAnt\NAnt.exe");
             Assert.IsTrue(File.Exists(executablePath), "Cannot find the NAnt executable!");
         }
 

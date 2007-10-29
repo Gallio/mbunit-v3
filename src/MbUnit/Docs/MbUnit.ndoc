@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <project SchemaVersion="2.0">
     <assemblies>
-        <assembly location="..\MbUnit\MbUnit\bin\MbUnit.dll" documentation="..\MbUnit\MbUnit\bin\MbUnit.xml" />
+        <assembly location="..\MbUnit\bin\MbUnit.dll" documentation="..\MbUnit\bin\MbUnit.xml" />
         <assembly location="..\..\Gallio\Gallio\bin\Gallio.dll" documentation="..\..\Gallio\Gallio\bin\Gallio.xml" />
         <assembly location="..\..\Gallio\Runners\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" documentation="..\..\Gallio\Runners\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.xml" />
         <assembly location="..\..\Gallio\Runners\Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" documentation="..\..\Gallio\Runners\Gallio.NAntTasks\bin\Gallio.NAntTasks.xml" />

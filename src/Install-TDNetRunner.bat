@@ -4,8 +4,8 @@ REM Installs a reference to the TestDriven.Net Test Runner for local debugging.
 setlocal
 set SRCDIR=%~dp0
 set REG=%SRCDIR%..\libs\Tools\reg.exe
-set ICARUS_EXE=%SRCDIR%Runners\Gallio.Icarus\bin\Gallio.Icarus.exe
-set MBUNIT_ADDIN_DLL=%SRCDIR%Runners\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll
+set ICARUS_EXE=%SRCDIR%Gallio\Runners\Gallio.Icarus\bin\Gallio.Icarus.exe
+set MBUNIT_ADDIN_DLL=%SRCDIR%Gallio\Runners\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll
 set TDKEY=HKLM\Software\MutantDesign\TestDriven.Net\TestRunners
 
 set MbUnit2AddInPriority=20
@@ -44,6 +44,6 @@ set FRAMEWORK=%~3
 %REG% ADD %TDKEY%\%NAME% /V Application /D %ICARUS_EXE% /F >nul
 %REG% ADD %TDKEY%\%NAME% /V AssemblyPath /D %MBUNIT_ADDIN_DLL% /F >nul
 %REG% ADD %TDKEY%\%NAME% /V TargetFrameworkAssemblyName /D %FRAMEWORK% /F >nul
-%REG% ADD %TDKEY%\%NAME% /V TypeName /D Gallio.TDNetAddIn.GallioTestRunner /F >nul
+%REG% ADD %TDKEY%\%NAME% /V TypeName /D Gallio.TDNetRunner.GallioTestRunner /F >nul
 goto :EOF
 

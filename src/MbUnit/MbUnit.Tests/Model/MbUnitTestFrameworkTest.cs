@@ -42,7 +42,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         [Test]
         public void NameIsMbUnitGallio()
         {
-            Assert.AreEqual("MbUnit Gallio", framework.Name);
+            Assert.AreEqual("MbUnit v3", framework.Name);
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
             Assert.AreEqual(CodeReference.Unknown, frameworkTemplate.CodeReference);
             Assert.AreEqual(expectedVersion, frameworkTemplate.Version);
-            Assert.AreEqual("MbUnit Gallio v" + expectedVersion, frameworkTemplate.Name);
+            Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTemplate.Name);
             Assert.AreEqual(1, frameworkTemplate.AssemblyTemplates.Count);
 
             MbUnitAssemblyTemplate assemblyTemplate = frameworkTemplate.AssemblyTemplates[0];
@@ -155,12 +155,12 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             MbUnitFrameworkTemplate frameworkTemplate = (MbUnitFrameworkTemplate)rootTemplate.Children[0];
             MbUnitAssemblyTemplate assemblyTemplate = frameworkTemplate.AssemblyTemplates[0];
 
-            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Company));
+            Assert.AreEqual("MbUnit Project", assemblyTemplate.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTemplate.Metadata.GetValue(MetadataKeys.Configuration));
             StringAssert.Contains(assemblyTemplate.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
-            Assert.AreEqual("A sample test assembly.", assemblyTemplate.Metadata.GetValue(MetadataKeys.Description));
-            Assert.AreEqual("MbUnit.TestResources.Gallio", assemblyTemplate.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual("MbUnit.TestResources.Gallio", assemblyTemplate.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("A sample test assembly for MbUnit.", assemblyTemplate.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Product));
+            Assert.AreEqual("Gallio.TestResources.MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Title));
             Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Trademark));
 
             Assert.AreEqual("1.2.3.4", assemblyTemplate.Metadata.GetValue(MetadataKeys.InformationalVersion));

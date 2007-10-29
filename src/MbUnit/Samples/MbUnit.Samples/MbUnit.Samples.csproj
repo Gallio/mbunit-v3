@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="WatiN.Core, Version=1.2.0.4000, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\WatiN\bin\WatiN.Core.dll</HintPath>
+      <HintPath>..\..\..\..\libs\WatiN\bin\WatiN.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -67,11 +67,11 @@
     <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\Gallio\Gallio.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>

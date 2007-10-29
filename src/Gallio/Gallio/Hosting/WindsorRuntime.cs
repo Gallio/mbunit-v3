@@ -278,21 +278,18 @@ namespace Gallio.Hosting
         [Conditional("DEBUG")]
         private void ConfigurePluginDirectoriesForDebugging()
         {
-            // Add plugin bin directories assuming the user is running inside Visual Studio.
+            // Find the root "src" dir.
             string gallioBinDir = Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(WindsorRuntime).Assembly));
-            DirectoryInfo srcDir = new DirectoryInfo(Path.GetFullPath(Path.Combine(gallioBinDir,
-                @"..\..\..\..\src")));
-            if (srcDir.Exists)
-            {
-                foreach (DirectoryInfo projectGroupDir in srcDir.GetDirectories())
-                {
-                    foreach (DirectoryInfo projectDir in projectGroupDir.GetDirectories())
-                    {
-                        if (projectDir.GetFiles(@"*.plugin").Length != 0)
-                            AddPluginDirectory(projectDir.FullName);
-                    }
-                }
-            }
+
+            string srcDir = gallioBinDir;
+            while (srcDir != null && Path.GetFileName(srcDir) != "src")
+                srcDir = Path.GetDirectoryName(srcDir);
+
+            if (srcDir == null)
+                return; // not found!
+
+            // Add the source dir as a plugin directory.
+            AddPluginDirectory(srcDir);
         }
     }
 }

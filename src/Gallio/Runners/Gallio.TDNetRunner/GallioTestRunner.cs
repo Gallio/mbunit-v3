@@ -189,7 +189,7 @@ namespace Gallio.TDNetRunner
         {
             try
             {
-                DirectoryInfo reportDirectory = new DirectoryInfo(Path.Combine(Path.GetTempPath(), @"MbUnit-TD-AddIn"));
+                DirectoryInfo reportDirectory = new DirectoryInfo(Path.Combine(Path.GetTempPath(), @"Gallio.TDNetRunner"));
                 if (reportDirectory.Exists)
                 {
                     // Make sure the folder is empty
