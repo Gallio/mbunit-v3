@@ -1,0 +1,163 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit</RootNamespace>
+    <AssemblyName>MbUnit</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+    <DocumentationFile>bin\MbUnit.xml</DocumentationFile>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\MbUnit.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Framework\ProcessRunner.cs" />
+    <Compile Include="Model\MbUnitTestController.cs" />
+    <Compile Include="Model\MbUnitTestFramework.cs" />
+    <Compile Include="Framework\ArrayAssert.cs" />
+    <Compile Include="Framework\AssemblyResolverAttribute.cs" />
+    <Compile Include="Framework\Assert.cs" />
+    <Compile Include="Framework\AssertionException.cs" />
+    <Compile Include="Framework\AuthorAttribute.cs" />
+    <Compile Include="Framework\CategoryAttribute.cs" />
+    <Compile Include="Framework\CollectionAssert.cs" />
+    <Compile Include="Framework\DescriptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentNullExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentOutOfRangeExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedExceptionAttribute.cs" />
+    <Compile Include="Framework\FileAssert.cs" />
+    <Compile Include="Framework\GenericAssert.cs" />
+    <Compile Include="Framework\IgnoreAttribute.cs" />
+    <Compile Include="Framework\ImportanceAttribute.cs" />
+    <Compile Include="Framework\InterimAssert.cs" />
+    <Compile Include="Attributes\AssemblyDecoratorPatternAttribute.cs" />
+    <Compile Include="Attributes\AssemblyPatternAttribute.cs" />
+    <Compile Include="Attributes\ConditionPatternAttribute.cs" />
+    <Compile Include="Attributes\DataPatternAttribute.cs" />
+    <Compile Include="Attributes\DecoratorOrderComparer.cs" />
+    <Compile Include="Attributes\DecoratorPatternAttribute.cs" />
+    <Compile Include="Attributes\FixturePatternAttribute.cs" />
+    <Compile Include="Attributes\MetadataPatternAttribute.cs" />
+    <Compile Include="Attributes\MethodDecoratorPatternAttribute.cs" />
+    <Compile Include="Attributes\MethodPatternAttribute.cs" />
+    <Compile Include="Attributes\ParameterDecoratorPatternAttribute.cs" />
+    <Compile Include="Attributes\ParameterPatternAttribute.cs" />
+    <Compile Include="Attributes\PatternAttribute.cs" />
+    <Compile Include="Attributes\TestPatternAttribute.cs" />
+    <Compile Include="Attributes\TypeDecoratorPatternAttribute.cs" />
+    <Compile Include="Attributes\TypePatternAttribute.cs" />
+    <Compile Include="Model\MbUnitAssemblyTemplate.cs" />
+    <Compile Include="Model\MbUnitFrameworkTemplate.cs" />
+    <Compile Include="Model\MbUnitMethodTemplate.cs" />
+    <Compile Include="Model\MbUnitTemplate.cs" />
+    <Compile Include="Model\MbUnitTemplateBinding.cs" />
+    <Compile Include="Model\MbUnitTemplateParameter.cs" />
+    <Compile Include="Model\MbUnitTest.cs" />
+    <Compile Include="Model\MbUnitTestState.cs" />
+    <Compile Include="Model\MbUnitTestUtils.cs" />
+    <Compile Include="Model\MbUnitTypeTemplate.cs" />
+    <Compile Include="Framework\KeyedPairwiseAssertion.cs" />
+    <Compile Include="Framework\MetadataAttribute.cs" />
+    <Compile Include="Framework\PairwiseAssertion.cs" />
+    <Compile Include="Framework\ParameterAttribute.cs" />
+    <Compile Include="Framework\ReflectionAssert.cs" />
+    <Compile Include="Framework\Reflection\AccessModifier.cs" />
+    <Compile Include="Framework\Reflection\MemberType.cs" />
+    <Compile Include="Framework\Reflection\ReflectionException.cs" />
+    <Compile Include="Framework\Reflection\Reflector.cs" />
+    <Compile Include="Framework\Relation.cs" />
+    <Compile Include="Framework\RowAttribute.cs" />
+    <Compile Include="Framework\RowTestAttribute.cs" />
+    <Compile Include="Framework\SecurityAssert.cs" />
+    <Compile Include="Framework\SetUpAttribute.cs" />
+    <Compile Include="Framework\StringAssert.cs" />
+    <Compile Include="Framework\TearDownAttribute.cs" />
+    <Compile Include="Framework\TestAttribute.cs" />
+    <Compile Include="Framework\TestFixtureAttribute.cs" />
+    <Compile Include="Framework\TestFixtureSetUpAttribute.cs" />
+    <Compile Include="Framework\TestFixtureTearDownAttribute.cs" />
+    <Compile Include="Framework\Importance.cs" />
+    <Compile Include="Framework\TestsOnAttribute.cs" />
+    <Compile Include="Framework\Xml\XmlSerializationAssert.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MbUnit.plugin" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Gallio\Gallio\Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

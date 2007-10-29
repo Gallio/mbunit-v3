@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <castle>
+    <components>
+      <component id="ReportFormatter.Xml"
+                 service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                 type="Gallio.Plugin.Reports.XmlReportFormatter, Gallio.Plugin.Reports">
+        <parameters>
+          <name>Xml</name>
+          <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        </parameters>
+      </component>
+
+      <component id="ReportFormatter.Xml-Inline"
+                 service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                 type="Gallio.Plugin.Reports.XmlReportFormatter, Gallio.Plugin.Reports">
+        <parameters>
+          <name>Xml-Inline</name>
+          <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
+        </parameters>
+      </component>
+
+      <component id="ReportFormatter.Text"
+                 service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                 type="Gallio.Plugin.Reports.XsltReportFormatter, Gallio.Plugin.Reports">
+        <parameters>
+          <name>Text</name>
+          <extension>txt</extension>
+          <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
+          <contentUri>plugin://Gallio.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/Gallio-Report.txt.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>
+      
+      <component id="ReportFormatter.Html"
+                 service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                 type="Gallio.Plugin.Reports.XsltReportFormatter, Gallio.Plugin.Reports">
+        <parameters>
+          <name>Html</name>
+          <extension>html</extension>
+          <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+          <contentUri>plugin://Gallio.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/Gallio-Report.html.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+              <item>css</item>
+              <item>js</item>
+              <item>img</item>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>
+
+      <component id="ReportFormatter.Html-Inline"
+                 service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                 type="Gallio.Plugin.Reports.XsltReportFormatter, Gallio.Plugin.Reports">
+        <parameters>
+          <name>Html-Inline</name>
+          <extension>html</extension>
+          <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
+          <contentUri>plugin://Gallio.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/Gallio-Report.html.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+              <item>css</item>
+              <item>js</item>
+              <item>img</item>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>
+
+      <component id="ReportFormatter.XHtml"
+                 service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                 type="Gallio.Plugin.Reports.XsltReportFormatter, Gallio.Plugin.Reports">
+        <parameters>
+          <name>XHtml</name>
+          <extension>xhtml</extension>
+          <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+          <contentUri>plugin://Gallio.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/Gallio-Report.xhtml.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+              <item>css</item>
+              <item>js</item>
+              <item>img</item>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>
+      
+      <component id="ReportFormatter.XHtml-Inline"
+                 service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                 type="Gallio.Plugin.Reports.XsltReportFormatter, Gallio.Plugin.Reports">
+        <parameters>
+          <name>XHtml-Inline</name>
+          <extension>xhtml</extension>
+          <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
+          <contentUri>plugin://Gallio.Plugin.Reports/</contentUri>
+          <xsltPath>xsl/Gallio-Report.xhtml.xsl</xsltPath>
+          <resourcePaths>
+            <array>
+              <item>css</item>
+              <item>js</item>
+              <item>img</item>
+            </array>
+          </resourcePaths>
+        </parameters>
+      </component>      
+    </components>
+  </castle>
+</configuration>

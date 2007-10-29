@@ -1,0 +1,125 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Gallio.Tests</RootNamespace>
+    <AssemblyName>Gallio.Tests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Gallio.Tests.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Gallio.Tests.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="MbUnit.Framework, Version=2.41.232.0, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\MbUnit2\bin\MbUnit.Framework.dll</HintPath>
+      <Aliases>MbUnit2</Aliases>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseUnitTest.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineArgumentParserTests.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineOutputTests.cs" />
+    <Compile Include="Contexts\ContextTest.cs" />
+    <Compile Include="Hosting\LoaderTest.cs" />
+    <Compile Include="Runner\Reports\ReportAssert.cs" />
+    <Compile Include="Model\ModelAssert.cs" />
+    <Compile Include="Integration\BaseSampleTest.cs" />
+    <Compile Include="Integration\SampleRunner.cs" />
+    <Compile Include="Model\Actions\ActionChainTest.cs" />
+    <Compile Include="Model\Filters\AndFilterTest.cs" />
+    <Compile Include="Model\Filters\AnyFilterTest.cs" />
+    <Compile Include="Model\Filters\AssemblyFilterTest.cs" />
+    <Compile Include="Model\Filters\IdFilterTest.cs" />
+    <Compile Include="Model\Filters\MemberFilterTest.cs" />
+    <Compile Include="Model\Filters\MetadataFilterTest.cs" />
+    <Compile Include="Model\Filters\NamespaceFilterTest.cs" />
+    <Compile Include="Model\Filters\NoneFilterTest.cs" />
+    <Compile Include="Model\Filters\NotFilterTest.cs" />
+    <Compile Include="Model\Filters\OrFilterTest.cs" />
+    <Compile Include="Model\Filters\TypeFilterTest.cs" />
+    <Compile Include="Model\CodeReferenceTest.cs" />
+    <Compile Include="Model\MetadataMapTest.cs" />
+    <Compile Include="Collections\GenericUtilsTest.cs" />
+    <Compile Include="Runner\Reports\MockTestDataFactory.cs" />
+    <Compile Include="Model\BaseTestFrameworkTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runner\Reports\PackageRunStatisticsTests.cs" />
+    <Compile Include="Runner\Reports\PackageRunTests.cs" />
+    <Compile Include="Runner\Reports\ReportTest.cs" />
+    <Compile Include="Runner\Reports\StepRunTests.cs" />
+    <Compile Include="Runner\Reports\TestRunTests.cs" />
+    <Compile Include="Runner\TestLauncherTest.cs" />
+    <Compile Include="Hosting\DefaultXmlDocumentationResolverTest.cs" />
+    <Compile Include="Contexts\StepTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.csproj">
+      <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
+      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TestResources\Gallio.TestResources.MbUnit\Gallio.TestResources.MbUnit.csproj">
+      <Project>{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE}</Project>
+      <Name>Gallio.TestResources.MbUnit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio\Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

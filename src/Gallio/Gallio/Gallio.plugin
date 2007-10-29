@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <castle>
+    <facilities>
+      <!-- The Startable facility enables components that implement the IStartable
+           interface to be automatically started when the IoC container is
+           initialized and then automatically stopped when the IoC container is
+           shut down.  So if you have a component that you want to ensure is
+           initialized when the application starts, just make it implements IStartable. -->
+      <facility id="Startable"
+                type="Castle.Facilities.Startable.StartableFacility, Castle.MicroKernel" />
+    </facilities>
+
+    <components>
+      <component id="Core.TestHarnessFactory"
+                 service="Gallio.Runner.Harness.ITestHarnessFactory, Gallio"
+                 type="Gallio.Runner.Harness.DefaultTestHarnessFactory, Gallio" />
+
+      <component id="Core.ConsoleTestEnvironment"
+           service="Gallio.Runner.Harness.ITestEnvironment, Gallio"
+           type="Gallio.Runner.Harness.ConsoleTestEnvironment, Gallio" />
+
+      <component id="Core.TraceTestEnvironment"
+                 service="Gallio.Runner.Harness.ITestEnvironment, Gallio"
+                 type="Gallio.Runner.Harness.TraceTestEnvironment, Gallio" />
+      
+      <component id="Core.IsolatedTestDomainFactory"
+                 service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
+                 type="Gallio.Runner.Domains.IsolatedTestDomainFactory, Gallio" />
+
+      <component id="Core.LocalTestDomainFactory"
+                 service="Gallio.Runner.Domains.LocalTestDomainFactory, Gallio"
+                 type="Gallio.Runner.Domains.LocalTestDomainFactory, Gallio" />
+
+      <component id="Core.ReportManager"
+                 service="Gallio.Runner.Reports.IReportManager, Gallio"
+                 type="Gallio.Runner.Reports.DefaultReportManager, Gallio" />
+
+      <component id="Core.TestPlanFactory"
+                 service="Gallio.Model.Execution.ITestPlanFactory, Gallio"
+                 type="Gallio.Model.Execution.DependencyTestPlanFactory, Gallio" />
+
+      <component id="Core.XmlDocumentationResolver"
+                 service="Gallio.Hosting.IXmlDocumentationResolver, Gallio"
+                 type="Gallio.Hosting.DefaultXmlDocumentationResolver, Gallio" />
+
+      <component id="Core.ContextManager"
+                 service="Gallio.Contexts.IContextManager, Gallio"
+                 type="Gallio.Contexts.DefaultContextManager, Gallio" />
+    </components>
+  </castle>
+</configuration>

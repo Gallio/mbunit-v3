@@ -1,4 +1,4 @@
-MbUnit Gallio
+MbUnit v3 and the Gallio Automation Platform
 Copyright 2005-2007 MbUnit Project - http://www.mbunit.com/
 ===========================================================
 

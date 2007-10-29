@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<project SchemaVersion="2.0">
+    <assemblies>
+        <assembly location="..\MbUnit\MbUnit\bin\MbUnit.dll" documentation="..\MbUnit\MbUnit\bin\MbUnit.xml" />
+        <assembly location="..\..\Gallio\Gallio\bin\Gallio.dll" documentation="..\..\Gallio\Gallio\bin\Gallio.xml" />
+        <assembly location="..\..\Gallio\Runners\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" documentation="..\..\Gallio\Runners\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.xml" />
+        <assembly location="..\..\Gallio\Runners\Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" documentation="..\..\Gallio\Runners\Gallio.NAntTasks\bin\Gallio.NAntTasks.xml" />
+    </assemblies>
+    <documenters>
+        <documenter name="MSDN-Help2">
+            <property name="CollectionNamespace" value="MbUnit" />
+            <property name="GenerateCollectionFiles" value="True" />
+            <property name="PlugInNamespace" value="ms.vsipcc" />
+            <property name="AllLinksWithinVSHelpCollection" value="True" />
+            <property name="OutputDirectory" value="..\..\..\build\docs\vs2005\" />
+            <property name="HtmlHelpName" value="MbUnit" />
+            <property name="Title" value="MbUnit API" />
+            <property name="UseAssemblyShadowCache" value="False" />
+            <property name="AssemblyVersionInfo" value="AssemblyVersion" />
+            <property name="CopyrightText" value="Copyright 2007 MbUnit Project - http://www.mbunit.com/" />
+            <property name="CopyrightHref" value="http://www.mbunit.com/" />
+            <property name="IncludeDefaultThreadSafety" value="False" />
+            <property name="CleanIntermediates" value="True" />
+        </documenter>
+        <documenter name="MSDN-CHM">
+            <property name="OutputDirectory" value="..\..\..\build\docs\chm\" />
+            <property name="HtmlHelpName" value="MbUnit" />
+            <property name="Title" value="MbUnit API" />
+            <property name="UseAssemblyShadowCache" value="False" />
+            <property name="AssemblyVersionInfo" value="AssemblyVersion" />
+            <property name="CopyrightText" value="Copyright 2007 MbUnit Project - http://www.mbunit.com/" />
+            <property name="CopyrightHref" value="http://www.mbunit.com/" />
+            <property name="IncludeDefaultThreadSafety" value="False" />
+            <property name="CleanIntermediates" value="True" />
+        </documenter>
+        <documenter name="Intellisense">
+            <property name="OutputDirectory" value="..\..\..\build\bin\" />
+            <property name="UseAssemblyShadowCache" value="False" />
+        </documenter>
+        <documenter name="MSDN-Web">
+            <property name="RootPageContainsNamespaces" value="True" />
+            <property name="OutputDirectory" value="..\..\..\build\docs\html\" />
+            <property name="HtmlHelpName" value="MbUnit" />
+            <property name="Title" value="MbUnit API" />
+            <property name="UseAssemblyShadowCache" value="False" />
+            <property name="CopyrightText" value="Copyright 2007 MbUnit Project - http://www.mbunit.com/" />
+            <property name="CopyrightHref" value="http://www.mbunit.com/" />
+            <property name="IncludeDefaultThreadSafety" value="False" />
+            <property name="CleanIntermediates" value="True" />
+            <property name="AssemblyVersionInfo" value="AssemblyVersion" />
+        </documenter>
+    </documenters>
+</project>

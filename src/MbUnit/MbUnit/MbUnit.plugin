@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <castle>
+    <components>
+      <component id="Core.MbUnitTestFramework"
+                 service="Gallio.Model.ITestFramework, Gallio"
+                 type="MbUnit.Model.MbUnitTestFramework, MbUnit" />
+    </components>
+  </castle>
+</configuration>

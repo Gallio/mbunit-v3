@@ -1,0 +1,333 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Gallio</RootNamespace>
+    <AssemblyName>Gallio</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+    <DocumentationFile>bin\Gallio.xml</DocumentationFile>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\Gallio.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\ConsoleSupport\CommandLineArgumentAttribute.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineArgumentFlags.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineArgumentParser.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineErrorReporter.cs" />
+    <Compile Include="Core\ConsoleSupport\CommandLineOutput.cs" />
+    <Compile Include="Core\ConsoleSupport\DefaultCommandLineArgumentAttribute.cs" />
+    <Compile Include="Core\ConsoleSupport\ResponseFileReader.cs" />
+    <Compile Include="Core\ConsoleSupport\IRichConsole.cs" />
+    <Compile Include="Core\ConsoleSupport\RichConsoleLogger.cs" />
+    <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
+    <Compile Include="Core\ConsoleSupport\NativeConsole.cs" />
+    <Compile Include="Factory.cs" />
+    <Compile Include="Hosting\IRuntimeFactory.cs" />
+    <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
+    <Compile Include="Model\BaseTestFramework.cs" />
+    <Compile Include="Logging\ContextualLogTextWriter.cs" />
+    <Compile Include="Logging\ContextualLogTraceListener.cs" />
+    <Compile Include="Runner\Harness\ConsoleTestEnvironment.cs" />
+    <Compile Include="Runner\Harness\DefaultTestHarness.cs" />
+    <Compile Include="Runner\Harness\DefaultTestHarnessFactory.cs" />
+    <Compile Include="Runner\Harness\ITestEnvironment.cs" />
+    <Compile Include="Runner\Harness\ITestHarness.cs" />
+    <Compile Include="Runner\Harness\ITestHarnessFactory.cs" />
+    <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogAttachmentContentDisposition.cs" />
+    <Compile Include="Runner\Reports\DefaultReportReader.cs" />
+    <Compile Include="Runner\Reports\DefaultReportWriter.cs" />
+    <Compile Include="Runner\Reports\FileSystemReportContainer.cs" />
+    <Compile Include="Runner\Reports\IReportContainer.cs" />
+    <Compile Include="Runner\Reports\IReportWriter.cs" />
+    <Compile Include="Runner\Reports\IReportReader.cs" />
+    <Compile Include="Runner\TestRunnerFactory.cs" />
+    <Compile Include="Runner\TestLauncherResult.cs" />
+    <Compile Include="Runner\TestPackage.cs" />
+    <Compile Include="Hosting\Loader.cs" />
+    <Compile Include="Model\Execution\DependencyTestPlan.cs" />
+    <Compile Include="Model\Execution\DependencyTestPlanFactory.cs" />
+    <Compile Include="Model\Execution\ITestListener.cs" />
+    <Compile Include="Model\Execution\LifecycleEventArgs.cs" />
+    <Compile Include="Model\Execution\LifecycleEventType.cs" />
+    <Compile Include="Model\Execution\LogEventArgs.cs" />
+    <Compile Include="Model\Execution\LogEventType.cs" />
+    <Compile Include="Model\Execution\MessageEventArgs.cs" />
+    <Compile Include="Model\Execution\MessageType.cs" />
+    <Compile Include="Model\Execution\RemoteTestListener.cs" />
+    <Compile Include="Model\Execution\StepEventArgs.cs" />
+    <Compile Include="Model\Execution\TestEventDispatcher.cs" />
+    <Compile Include="Model\Execution\IStepMonitor.cs" />
+    <Compile Include="Model\Execution\ITestController.cs" />
+    <Compile Include="Model\ITestFramework.cs" />
+    <Compile Include="Model\Execution\ITestMonitor.cs" />
+    <Compile Include="Model\Execution\ITestPlan.cs" />
+    <Compile Include="Model\Execution\ITestPlanFactory.cs" />
+    <Compile Include="Model\Serialization\ModelComponentData.cs" />
+    <Compile Include="Model\Execution\RootTestController.cs" />
+    <Compile Include="Model\Serialization\StepData.cs" />
+    <Compile Include="Model\Serialization\TemplateComponentData.cs" />
+    <Compile Include="Model\Serialization\TemplateData.cs" />
+    <Compile Include="Model\Serialization\TemplateModel.cs" />
+    <Compile Include="Model\Serialization\TemplateParameterData.cs" />
+    <Compile Include="Model\Serialization\TestComponentData.cs" />
+    <Compile Include="Model\Serialization\TestData.cs" />
+    <Compile Include="Model\Execution\TestExecutionOptions.cs" />
+    <Compile Include="Model\Execution\TestListenerLogWriter.cs" />
+    <Compile Include="Model\Serialization\TestModel.cs" />
+    <Compile Include="Model\TestResult.cs" />
+    <Compile Include="Logging\TrackingLogWriter.cs" />
+    <Compile Include="Core\ProgressMonitoring\BaseProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\IProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\IProgressMonitorProvider.cs" />
+    <Compile Include="Core\ProgressMonitoring\NullProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\NullProgressMonitorProvider.cs" />
+    <Compile Include="Core\ProgressMonitoring\RemoteProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\SubProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\TaskWithProgress.cs" />
+    <Compile Include="Core\ProgressMonitoring\TrackingProgressMonitor.cs" />
+    <Compile Include="Runner\Reports\DefaultReportManager.cs" />
+    <Compile Include="Runner\Reports\ExecutionLog.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogAttachment.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogAttachmentEncoding.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogStream.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogStreamBodyTag.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogStreamContainerTag.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogStreamEmbedTag.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogStreamSectionTag.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogStreamTag.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogStreamTextFormatter.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogStreamTextTag.cs" />
+    <Compile Include="Runner\Reports\ExecutionLogWriter.cs" />
+    <Compile Include="Runner\Reports\IExecutionLogStreamTagVisitor.cs" />
+    <Compile Include="Runner\Reports\IReportFormatter.cs" />
+    <Compile Include="Runner\Reports\IReportManager.cs" />
+    <Compile Include="Runner\Reports\PackageRun.cs" />
+    <Compile Include="Runner\Reports\PackageRunStatistics.cs" />
+    <Compile Include="Runner\Reports\Report.cs" />
+    <Compile Include="Runner\Reports\StepRun.cs" />
+    <Compile Include="Runner\Reports\TestRun.cs" />
+    <Compile Include="Runner\DefaultTestRunner.cs" />
+    <Compile Include="Runner\Domains\BaseTestDomain.cs" />
+    <Compile Include="Runner\Domains\Bootstrapper.cs" />
+    <Compile Include="Runner\RunnerException.cs" />
+    <Compile Include="Model\Filters\FilterParser.cs" />
+    <Compile Include="Runner\Domains\IIsolatedTestDomainContributor.cs" />
+    <Compile Include="Runner\Domains\IsolatedTestDomain.cs" />
+    <Compile Include="Runner\Domains\IsolatedTestDomainFactory.cs" />
+    <Compile Include="Runner\Domains\ITestDomain.cs" />
+    <Compile Include="Runner\Domains\ITestDomainFactory.cs" />
+    <Compile Include="Runner\ITestRunner.cs" />
+    <Compile Include="Runner\Domains\LocalTestDomain.cs" />
+    <Compile Include="Runner\Domains\LocalTestDomainFactory.cs" />
+    <Compile Include="Core\ProgressMonitoring\LogProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\LogProgressMonitorProvider.cs" />
+    <Compile Include="Runner\Monitors\BaseTestRunnerMonitor.cs" />
+    <Compile Include="Runner\Monitors\DebugMonitor.cs" />
+    <Compile Include="Runner\Monitors\ITestRunnerMonitor.cs" />
+    <Compile Include="Runner\Monitors\LogMonitor.cs" />
+    <Compile Include="Runner\Monitors\ReportMonitor.cs" />
+    <Compile Include="Runner\Monitors\ReportStepEventArgs.cs" />
+    <Compile Include="Runner\Domains\RemoteTestDomain.cs" />
+    <Compile Include="Runner\ResultCode.cs" />
+    <Compile Include="Runner\TestLauncher.cs" />
+    <Compile Include="Core\ProgressMonitoring\TextualProgressMonitor.cs" />
+    <Compile Include="Hosting\DefaultAssemblyResolverManager.cs" />
+    <Compile Include="Contexts\DefaultContextManager.cs" />
+    <Compile Include="Hosting\DefaultXmlDocumentationResolver.cs" />
+    <Compile Include="Hosting\IAssemblyResolverManager.cs" />
+    <Compile Include="Contexts\IContextServiceProvider.cs" />
+    <Compile Include="Hosting\RuntimeSetup.cs" />
+    <Compile Include="Hosting\WindsorRuntime.cs" />
+    <Compile Include="Utilities\FileUtils.cs" />
+    <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
+    <Compile Include="Block.cs" />
+    <Compile Include="Logging\ClientException.cs" />
+    <Compile Include="Contexts\Context.cs" />
+    <Compile Include="Contexts\ContextCookie.cs" />
+    <Compile Include="Hosting\IAssemblyResolver.cs" />
+    <Compile Include="Model\Actions\ActionChain.cs" />
+    <Compile Include="Model\Actions\ActionDecorator.cs" />
+    <Compile Include="Collections\ContravariantList.cs" />
+    <Compile Include="Collections\EmptyArray.cs" />
+    <Compile Include="Collections\EmptyDictionary.cs" />
+    <Compile Include="Collections\IMultiMap.cs" />
+    <Compile Include="Collections\MultiMap.cs" />
+    <Compile Include="Collections\ReadOnlyMultiMap.cs" />
+    <Compile Include="Model\Data\IConverter.cs" />
+    <Compile Include="Model\Data\ArrayDataRow.cs" />
+    <Compile Include="Model\Data\ConvertedDataFactory.cs" />
+    <Compile Include="Model\Data\DataBinding.cs" />
+    <Compile Include="Model\Data\DataBindingException.cs" />
+    <Compile Include="Model\Data\DataBindingSet.cs" />
+    <Compile Include="Model\Data\DataSourceList.cs" />
+    <Compile Include="Model\Data\IDataBinder.cs" />
+    <Compile Include="Model\Data\IDataBindingContext.cs" />
+    <Compile Include="Model\Data\IDataFactory.cs" />
+    <Compile Include="Model\Data\IDataRow.cs" />
+    <Compile Include="Model\Data\IDataSource.cs" />
+    <Compile Include="Model\Data\IDataSourceResolver.cs" />
+    <Compile Include="Model\Filters\AndFilter.cs" />
+    <Compile Include="Model\Filters\AnyFilter.cs" />
+    <Compile Include="Model\Filters\AssemblyFilter.cs" />
+    <Compile Include="Model\Filters\Filter.cs" />
+    <Compile Include="Model\Filters\IdFilter.cs" />
+    <Compile Include="Model\Filters\MemberFilter.cs" />
+    <Compile Include="Model\Filters\MetadataFilter.cs" />
+    <Compile Include="Model\Filters\NamespaceFilter.cs" />
+    <Compile Include="Model\Filters\NoneFilter.cs" />
+    <Compile Include="Model\Filters\NotFilter.cs" />
+    <Compile Include="Model\Filters\OrFilter.cs" />
+    <Compile Include="Model\Filters\TypeFilter.cs" />
+    <Compile Include="Model\Data\IFormatter.cs" />
+    <Compile Include="Model\BaseInfo.cs" />
+    <Compile Include="Model\BaseInfoList.cs" />
+    <Compile Include="Model\BaseModelComponent.cs" />
+    <Compile Include="Model\BaseStep.cs" />
+    <Compile Include="Model\BaseTemplate.cs" />
+    <Compile Include="Model\BaseTemplateBinding.cs" />
+    <Compile Include="Model\BaseTemplateComponent.cs" />
+    <Compile Include="Model\BaseTemplateParameter.cs" />
+    <Compile Include="Model\BaseTest.cs" />
+    <Compile Include="Model\BaseTestComponent.cs" />
+    <Compile Include="Model\CodeReference.cs" />
+    <Compile Include="Model\CodeReferenceKind.cs" />
+    <Compile Include="Model\ComponentKind.cs" />
+    <Compile Include="Model\IModelComponent.cs" />
+    <Compile Include="Model\IModelTreeNode.cs" />
+    <Compile Include="Model\IStep.cs" />
+    <Compile Include="Model\ITemplate.cs" />
+    <Compile Include="Model\ITemplateBinding.cs" />
+    <Compile Include="Model\ITemplateComponent.cs" />
+    <Compile Include="Model\ITemplateParameter.cs" />
+    <Compile Include="Model\ITest.cs" />
+    <Compile Include="Model\ITestComponent.cs" />
+    <Compile Include="Model\LifecyclePhases.cs" />
+    <Compile Include="Model\MetadataKeys.cs" />
+    <Compile Include="Model\MetadataMap.cs" />
+    <Compile Include="Model\ModelComponentInfo.cs" />
+    <Compile Include="Model\ModelException.cs" />
+    <Compile Include="Model\ModelTreeBuilder.cs" />
+    <Compile Include="Model\ModelUtils.cs" />
+    <Compile Include="Model\RootTemplate.cs" />
+    <Compile Include="Model\RootTemplateBinding.cs" />
+    <Compile Include="Model\RootTest.cs" />
+    <Compile Include="Model\Slot.cs" />
+    <Compile Include="Model\StepInfo.cs" />
+    <Compile Include="Model\TemplateBindingInfo.cs" />
+    <Compile Include="Model\TemplateBindingScope.cs" />
+    <Compile Include="Model\TemplateEnumerationOptions.cs" />
+    <Compile Include="Model\TemplateInfo.cs" />
+    <Compile Include="Model\TemplateInfoList.cs" />
+    <Compile Include="Model\TemplateParameterInfo.cs" />
+    <Compile Include="Model\TemplateParameterInfoList.cs" />
+    <Compile Include="Model\TemplateTreeBuilder.cs" />
+    <Compile Include="Model\TestEnumerationOptions.cs" />
+    <Compile Include="Model\TestInfo.cs" />
+    <Compile Include="Model\TestInfoList.cs" />
+    <Compile Include="Model\TestOutcome.cs" />
+    <Compile Include="Model\TestStatus.cs" />
+    <Compile Include="Model\TestTreeBuilder.cs" />
+    <Compile Include="Contexts\IContextManager.cs" />
+    <Compile Include="Hosting\IRuntime.cs" />
+    <Compile Include="Hosting\IXmlDocumentationResolver.cs" />
+    <Compile Include="Collections\CollectionUtils.cs" />
+    <Compile Include="Collections\GenericUtils.cs" />
+    <Compile Include="Model\Serialization\SerializationUtils.cs" />
+    <Compile Include="Utilities\NonInlinedAttribute.cs" />
+    <Compile Include="Utilities\StringUtils.cs" />
+    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\Attachment.cs" />
+    <Compile Include="Logging\AttachmentUtils.cs" />
+    <Compile Include="Logging\BinaryAttachment.cs" />
+    <Compile Include="Logging\IAttachmentVisitor.cs" />
+    <Compile Include="Logging\LogStreamNames.cs" />
+    <Compile Include="Logging\LogStreamWriter.cs" />
+    <Compile Include="Logging\LogWriter.cs" />
+    <Compile Include="Logging\MimeTypes.cs" />
+    <Compile Include="Logging\TextAttachment.cs" />
+    <Compile Include="Logging\XmlAttachment.cs" />
+    <Compile Include="Hosting\Runtime.cs" />
+    <Compile Include="Contexts\Step.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Runner\Domains\IsolatedTestDomain.config.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Gallio.plugin" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
