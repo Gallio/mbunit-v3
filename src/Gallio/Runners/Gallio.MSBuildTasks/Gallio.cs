@@ -194,7 +194,7 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         /// <remarks>
         /// Any occurence of {0} will be replaced by the date, and any occurrence of {1} by the time.
-        /// The default format string is mbunit-{0}-{1}.
+        /// The default format string is test-report-{0}-{1}.
         /// </remarks>
         public string ReportNameFormat
         {
@@ -313,12 +313,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's ExitCode output property will
-        ///           be made available as a property called MbUnitExitCode in the project
+        ///           be made available as a property called ExitCode in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode"/>
+        ///     <Output TaskParameter="ExitCode" PropertyName="ExitCode"/>
         /// </Gallio>
         /// <!-- After the exit code be retrieved and used like this: -->
-        /// <Error Text="The tests execution failed" Condition="'$(MbUnitExitCode)' != 0" />
+        /// <Error Text="The tests execution failed" Condition="'$(ExitCode)' != 0" />
         /// ]]>
         /// </code>
         /// </example>
@@ -338,12 +338,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's TestCount output property will
-        ///           be made available as a property called MbUnitTestCount in the project
+        ///           be made available as a property called TestCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="TestCount" PropertyName="MbUnitTestCount" />
+        ///     <Output TaskParameter="TestCount" PropertyName="TestCount" />
         /// </Gallio>
         /// <!-- After execution the number of tests run can be retrieved like this: -->
-        /// <Message Text="$(MbUnitTestCount) tests were run." />
+        /// <Message Text="$(TestCount) tests were run." />
         /// ]]>
         /// </code>
         /// </example>
@@ -363,12 +363,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's PassCount output property will
-        ///           be made available as a property called MbUnitPassCount in the project
+        ///           be made available as a property called PassCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="TestCount" PropertyName="MbUnitPassCount" />
+        ///     <Output TaskParameter="TestCount" PropertyName="PassCount" />
         /// </Gallio>
         /// <!-- After execution the number of passed tests can be retrieved like this: -->
-        /// <Message Text="$(MbUnitPassCount) tests passed." />
+        /// <Message Text="$(PassCount) tests passed." />
         /// ]]>
         /// </code>
         /// </example>
@@ -388,12 +388,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's FailCount output property will
-        ///           be made available as a property called MbUnitFailCount in the project
+        ///           be made available as a property called FailCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="FailCount" PropertyName="MbUnitFailCount" />
+        ///     <Output TaskParameter="FailCount" PropertyName="FailCount" />
         /// </Gallio>
         /// <!-- After execution the number of failed tests can be retrieved like this: -->
-        /// <Message Text="$(MbUnitFailCount) tests passed." />
+        /// <Message Text="$(FailCount) tests passed." />
         /// ]]>
         /// </code>
         /// </example>
@@ -413,12 +413,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's IgnoreCount output property will
-        ///           be made available as a property called MbUnitIgnoreCount in the project
+        ///           be made available as a property called IgnoreCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="IgnoreCount" PropertyName="MbUnitIgnoreCount" />
+        ///     <Output TaskParameter="IgnoreCount" PropertyName="IgnoreCount" />
         /// </Gallio>
         /// <!-- After execution the number of ignored tests can be retrieved like this: -->
-        /// <Message Text="$(MbUnitIgnoreCount) tests were ignored." />
+        /// <Message Text="$(IgnoreCount) tests were ignored." />
         /// ]]>
         /// </code>
         /// </example>
@@ -438,12 +438,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's InconclusiveCount output property will
-        ///           be made available as a property called MbUnitInconclusiveCount in the project
+        ///           be made available as a property called InconclusiveCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="InconclusiveCount" PropertyName="MbUnitInconclusiveCount" />
+        ///     <Output TaskParameter="InconclusiveCount" PropertyName="InconclusiveCount" />
         /// </Gallio>
         /// <!-- After execution the number of inconclusive tests can be retrieved like this: -->
-        /// <Message Text="$(MbUnitInconclusiveCount) tests were inconclusive." />
+        /// <Message Text="$(InconclusiveCount) tests were inconclusive." />
         /// ]]>
         /// </code>
         /// </example>
@@ -463,12 +463,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's RunCount output property will
-        ///           be made available as a property called MbUnitRunCount in the project
+        ///           be made available as a property called RunCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="RunCount" PropertyName="MbUnitRunCount" />
+        ///     <Output TaskParameter="RunCount" PropertyName="RunCount" />
         /// </Gallio>
         /// <!-- After execution the number of tests run can be retrieved like this: -->
-        /// <Message Text="$(MbUnitRunCount) tests were run." />
+        /// <Message Text="$(RunCount) tests were run." />
         /// ]]>
         /// </code>
         /// </example>
@@ -488,12 +488,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's SkipCount output property will
-        ///           be made available as a property called MbUnitSkipCount in the project
+        ///           be made available as a property called SkipCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="SkipCount" PropertyName="MbUnitSkipCount" />
+        ///     <Output TaskParameter="SkipCount" PropertyName="SkipCount" />
         /// </Gallio>
         /// <!-- After execution the number of skipped tests can be retrieved like this: -->
-        /// <Message Text="$(MbUnitSkipCount) tests were skipped." />
+        /// <Message Text="$(SkipCount) tests were skipped." />
         /// ]]>
         /// </code>
         /// </example>
@@ -513,12 +513,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's Duration output property will
-        ///           be made available as a property called MbUnitDuration in the project
+        ///           be made available as a property called Duration in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="Duration" PropertyName="MbUnitDuration" />
+        ///     <Output TaskParameter="Duration" PropertyName="Duration" />
         /// </Gallio>
         /// <!-- After execution the duration can be retrieved like this: -->
-        /// <Message Text="The tests took $(MbUnitDuration)s to execute." />
+        /// <Message Text="The tests took $(Duration)s to execute." />
         /// ]]>
         /// </code>
         /// </example>
@@ -538,12 +538,12 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <Gallio>
         ///      <!-- This tells MSBuild that the task's AssertionCount output property will
-        ///           be made available as a property called MbUnitAssertionCount in the project
+        ///           be made available as a property called AssertionCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="AssertionCount" PropertyName="MbUnitAssertionCount" />
+        ///     <Output TaskParameter="AssertionCount" PropertyName="AssertionCount" />
         /// </Gallio>
         /// <!-- After execution the number of assertions can be retrieved like this: -->
-        /// <Message Text="$(MbUnitAssertionCount) assertions were evaluated." />
+        /// <Message Text="$(AssertionCount) assertions were evaluated." />
         /// ]]>
         /// </code>
         /// </example>

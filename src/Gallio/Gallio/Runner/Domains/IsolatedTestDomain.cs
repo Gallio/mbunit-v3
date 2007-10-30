@@ -219,12 +219,11 @@ namespace Gallio.Runner.Domains
 
         /// <summary>
         /// Creates a configuration for the new AppDomain that enables the legacy exception
-        /// policy and sets a binding redirect for MbUnit.  The binding redirect is used to
+        /// policy and sets a binding redirect for Gallio.  The binding redirect is used to
         /// reduce the impact of version conflicts between the runner and the test assemblies.
         /// It's not a perfect solution however.  A better approach would be to load assemblies
-        /// compiled against different MbUnit framework versions into distinct AppDomains
-        /// (indeed, perhaps just create one AppDomain per assembly) and use the correct
-        /// version of MbUnit for each one.
+        /// compiled against different framework versions into distinct AppDomains
+        /// (indeed, perhaps just create one AppDomain per assembly).
         /// FIXME: Do something better...
         /// </summary>
         /// <returns>The configuration</returns>

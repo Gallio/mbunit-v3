@@ -53,7 +53,7 @@ namespace Gallio.Logging
 
         /// <summary>
         /// Gets the content type of the attachment specified as a MIME type, not null.
-        /// <seealso cref="MimeTypes"/> for definitions of common MIME types used by MbUnit.
+        /// <seealso cref="MimeTypes"/> for definitions of common supported MIME types.
         /// </summary>
         public string ContentType
         {

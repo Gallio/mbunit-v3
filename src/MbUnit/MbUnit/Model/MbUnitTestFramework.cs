@@ -26,7 +26,7 @@ using Gallio.Model;
 namespace MbUnit.Model
 {
     /// <summary>
-    /// Provides support for the MbUnit Gallio test framework.
+    /// Provides support for the MbUnit v3 test framework.
     /// </summary>
     public class MbUnitTestFramework : BaseTestFramework
     {
@@ -64,7 +64,7 @@ namespace MbUnit.Model
             IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"MbUnit");
             foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
             {
-                // Build templates for the contents of the assemblies that reference MbUnit Gallio
+                // Build templates for the contents of the assemblies that reference MbUnit v3
                 // via reflection.  The attributes exercise a great deal of control over this
                 // process so that it can be easily extended by users.
                 Version frameworkVersion = entry.Key.Version;

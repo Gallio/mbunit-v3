@@ -43,7 +43,7 @@ namespace Gallio.NAntTasks.Tests
         private INAntLogger stubbedNAntLogger;
         private FileSet[] assemblies;
         private readonly string resultProperty = "ExitCode";
-        private readonly string resultPropertiesPrefix = "MbUnit.";
+        private readonly string resultPropertiesPrefix = "Gallio.";
 
         #endregion
 

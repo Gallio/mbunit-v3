@@ -70,7 +70,7 @@ namespace Gallio.Icarus
             treeNode1.Name = "Node0";
             treeNode1.Text = "General";
             treeNode2.Name = "Node4";
-            treeNode2.Text = "MbUnit Options";
+            treeNode2.Text = "Gallio Options";
             treeNode3.Name = "Node1";
             treeNode3.Text = "Something";
             treeNode4.Name = "Node2";
@@ -138,7 +138,7 @@ namespace Gallio.Icarus
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(621, 26);
             this.label1.TabIndex = 0;
-            this.label1.Text = "MbUnit Options";
+            this.label1.Text = "Gallio Options";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Options

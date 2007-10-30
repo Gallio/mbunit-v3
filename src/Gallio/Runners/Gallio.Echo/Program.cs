@@ -21,7 +21,7 @@ using Gallio.Core.ConsoleSupport;
 namespace Gallio.Echo
 {
     /// <summary>
-    /// The MbUnit console test runner program.
+    /// The Gallio console test runner program.
     /// </summary>
     public class Program
     {

@@ -961,7 +961,7 @@ namespace Gallio.Icarus
             this.trayIcon.BalloonTipText = "All tests are good";
             this.trayIcon.ContextMenuStrip = this.trayMenuStrip;
             this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
-            this.trayIcon.Text = "MbUnit Icarus";
+            this.trayIcon.Text = "Gallio Icarus";
             this.trayIcon.Visible = true;
             this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
             // 
@@ -990,7 +990,7 @@ namespace Gallio.Icarus
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Main";
-            this.Text = "MbUnit Icarus {0}.{1}";
+            this.Text = "Gallio Icarus {0}.{1}";
             this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
             this.Load += new System.EventHandler(this.Form_Load);
             this.menuStrip.ResumeLayout(false);

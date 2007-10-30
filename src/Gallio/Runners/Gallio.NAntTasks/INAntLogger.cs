@@ -18,7 +18,7 @@ using NAnt.Core;
 namespace Gallio.NAntTasks
 {
     /// <summary>
-    /// Used to make the MbUnit NAnt task "unit-testable".
+    /// Used to make the NAnt task "unit-testable".
     /// </summary>
     public interface INAntLogger
     {

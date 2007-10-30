@@ -24,9 +24,9 @@ namespace Gallio.Hosting
     /// hosting environment for test enumeration and execution.
     /// </para>
     /// <para>
-    /// The runtime provides a number of services to the MbUnit test framework.
-    /// New services can be registered by registering them in the inversion of control
-    /// container provided by the MbUnit core.
+    /// The runtime provides services to support the Gallio test automation platform.
+    /// New services are typically registered by adding them to plugin configuration
+    /// files.
     /// </para>
     /// </summary>
     public interface IRuntime : IDisposable, IInitializable

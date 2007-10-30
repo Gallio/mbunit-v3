@@ -25,9 +25,8 @@ namespace Gallio.Logging
 {
     /// <summary>
     /// <para>
-    /// The log class provides services for incorporating customized information
-    /// into the execution log for a test.  Using these services a test case or test framework
-    /// may publish additional log data streams beyond those that are usually collected by MbUnit.
+    /// The log class provides services for writing information to the
+    /// execution log associated with a test.
     /// </para>
     /// <para>
     /// An execution log records the output of a test during its execution including any text

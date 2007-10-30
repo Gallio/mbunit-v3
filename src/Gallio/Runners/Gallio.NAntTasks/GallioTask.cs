@@ -1,4 +1,4 @@
-// Copyright 2007 MbUnit Project - http://www.mbunit.com/
+// Copyright 2007 MbUnit Project - http://www.gallio.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,13 +52,13 @@ namespace Gallio.NAntTasks
     ///    <!-- This is needed by NAnt to locate the Gallio task -->
     ///    <loadtasks assembly="[pathtoassembly]\Gallio.NAntTasks.dll" />
     ///    <target name="RunTests">
-    ///     <mbunit result-property="ExitCode" failonerror="false" filter="Type=SomeFixture" >
+    ///     <gallio result-property="ExitCode" failonerror="false" filter="Type=SomeFixture" >
     ///      <assemblies>
     ///        <!-- Specify the tests assemblies -->
     ///        <include name="[Path-to-test-assembly1]/TestAssembly1.dll" />
     ///        <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
     ///      </assemblies>
-    ///     </mbunit>
+    ///     </gallio>
     ///     <fail if="${ExitCode != '0'}" >The return code should have been 0!</fail>
     ///    </target>
     ///
@@ -125,13 +125,13 @@ namespace Gallio.NAntTasks
         /// please see the <see cref="GallioTask"/> task documentation):
         /// <code>
         /// <![CDATA[
-        /// <mbunit>
+        /// <gallio>
         ///     <assemblies>
         ///         <!-- Specify the tests assemblies -->
         ///         <include name="[Path-to-test-assembly1]/TestAssembly1.dll" />
         ///         <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
         ///     </assemblies>
-        /// </mbunit>
+        /// </gallio>
         /// ]]>
         /// </code>
         /// </example>
@@ -147,12 +147,12 @@ namespace Gallio.NAntTasks
         /// <example>The following example shows how to specify the hint directories:
         /// <code>
         /// <![CDATA[
-        /// <mbunit>
+        /// <gallio>
         ///     <hint-directories>
         ///         <include name="C:\SomeFolder\AnotherFolder" />
         ///         <include name="../somefolder" />
         ///     </hint-directories>
-        /// </mbunit>
+        /// </gallio>
         /// ]]>
         /// </code>
         /// </example>
@@ -168,12 +168,12 @@ namespace Gallio.NAntTasks
         /// <example>The following example shows how to specify the plugins directories:
         /// <code>
         /// <![CDATA[
-        /// <mbunit>
+        /// <gallio>
         ///     <plugin-directories>
         ///         <include name="C:\SomeFolder\AnotherFolder" />
         ///         <include name="../somefolder" />
         ///     </plugin-directories>
-        /// </mbunit>
+        /// </gallio>
         /// ]]>
         /// </code>
         /// </example>
@@ -197,9 +197,9 @@ namespace Gallio.NAntTasks
         /// In the following example reports will be generated in both HTML and XML format.
         /// <code>
         /// <![CDATA[
-        /// <mbunit report-types="html;xml">
+        /// <gallio report-types="html;xml">
         ///     <!-- More options -->
-        /// </mbunit>
+        /// </gallio>
         /// ]]>
         /// </code>
         /// </example>
@@ -214,7 +214,7 @@ namespace Gallio.NAntTasks
         /// </summary>
         /// <remarks>
         /// Any occurence of {0} will be replaced by the date, and any occurrence of {1} by the time.
-        /// The default format string is mbunit-{0}-{1}.
+        /// The default format string is test-report-{0}-{1}.
         /// </remarks>
         [TaskAttribute("report-name-format", Required = false)]
         public string ReportNameFormat
@@ -244,11 +244,11 @@ namespace Gallio.NAntTasks
         /// <example>
         /// <code>
         /// <![CDATA[
-        /// <target name="RunMbUnit">
-        ///     <mbunit result-property="MbUnitExitCode" failonerror="false">
+        /// <target name="RunTests">
+        ///     <gallio result-property="ExitCode" failonerror="false">
         ///         <!-- Include test assemblies -->
-        ///     </mbunit>
-        ///     <fail if="${MbUnitExitCode != 0}" >The return code should have been 0!</fail>
+        ///     </gallio>
+        ///     <fail if="${ExitCode != 0}" >The return code should have been 0!</fail>
         /// </target>
         /// ]]>
         /// </code>
@@ -279,20 +279,20 @@ namespace Gallio.NAntTasks
         /// <example>The following example shows how to use the result-properties-prefix property :
         /// <code>
         /// <![CDATA[
-        /// <target name="RunMbUnit">
-        ///     <mbunit result-properties-prefix="mbunit.">
+        /// <target name="RunTests">
+        ///     <gallio result-properties-prefix="gallio.">
         ///         <assemblies>
         ///             <include name="SomeAssembly.dll" />
         ///         </assemblies>
-        ///     </mbunit>
-        ///     <echo message="AssertCount = ${mbunit.AssertCount}" />
-        ///     <echo message="FailureCount = ${mbunit.FailureCount}" />
-        ///     <echo message="IgnoreCount = ${mbunit.IgnoreCount}" />
-        ///     <echo message="InconclusiveCount = ${mbunit.InconclusiveCount}" />
-        ///     <echo message="PassCount = ${mbunit.PassCount}" />
-        ///     <echo message="RunCount = ${mbunit.RunCount}" />
-        ///     <echo message="SkipCount = ${mbunit.SkipCount}" />
-        ///     <echo message="TestCount = ${mbunit.TestCount}" />
+        ///     </gallio>
+        ///     <echo message="AssertCount = ${gallio.AssertCount}" />
+        ///     <echo message="FailureCount = ${gallio.FailureCount}" />
+        ///     <echo message="IgnoreCount = ${gallio.IgnoreCount}" />
+        ///     <echo message="InconclusiveCount = ${gallio.InconclusiveCount}" />
+        ///     <echo message="PassCount = ${gallio.PassCount}" />
+        ///     <echo message="RunCount = ${gallio.RunCount}" />
+        ///     <echo message="SkipCount = ${gallio.SkipCount}" />
+        ///     <echo message="TestCount = ${gallio.TestCount}" />
         /// </target>
         /// ]]>
         /// </code>

@@ -36,11 +36,11 @@ namespace Gallio.Hosting
     /// </summary>
     /// <remarks>
     /// Loads plugins automatically when initialized by searching for configuration
-    /// files named "MbUnit.*.plugin" in the plugin load directories and installing
+    /// files named "*.plugin" in the plugin load directories and installing
     /// any Windsor configuration sections into the container.
     /// </remarks>
     [Singleton]
-    public class WindsorRuntime : IRuntime, IContainerAccessor, IInitializable
+    public class WindsorRuntime : IRuntime, IContainerAccessor
     {
         private readonly IAssemblyResolverManager assemblyResolverManager;
         private readonly RuntimeSetup runtimeSetup;
@@ -96,7 +96,7 @@ namespace Gallio.Hosting
         /// Gets a mutable list of directories to be searched recursively for plugins configuration files.
         /// </summary>
         /// <value>
-        /// Initially contains the MbUnit core directory.
+        /// Initially the list contains the directory where the runtime library is located.
         /// </value>
         public IList<string> PluginDirectories
         {
@@ -210,10 +210,10 @@ namespace Gallio.Hosting
                     {
                         // It can happen that we find two copies of the same plugin file
                         // in different directories such as during debugging when we ask
-                        // the runtime to load plugins from multiple directories that happen
-                        // to each contain the MbUnit.Gallio.Core assembly.  So we enforce
-                        // a uniqueness constraint on plugin files and we assume subsequent
-                        // copies are just dupes.
+                        // the runtime to load plugins from multiple directories.  So we
+                        // enforce a uniqueness constraint on plugin file names since they
+                        // uniquely identify plugins.  The first plugin file found wins.
+                        // Thus an ambiguity may arise if duplicate plugin files differ in content.
                         if (!loadedPluginFilenames.Contains(pluginConfigFile.Name))
                         {
                             loadedPluginFilenames.Add(pluginConfigFile.Name);
@@ -271,9 +271,9 @@ namespace Gallio.Hosting
         }
 
         /// <summary>
-        /// The Visual Studio debug helper is used when debugging MbUnit within
-        /// Visual Studio.  It assumes a few things about the project file layout
-        /// on the filesystem to ensure that plugins get loaded.
+        /// The Visual Studio debug helper is used to configure the runtime for
+        /// debugging purposes.  It adds the root directory of the source tree to
+        /// the list of plugin directories to ensure that plugins can be resolved.
         /// </summary>
         [Conditional("DEBUG")]
         private void ConfigurePluginDirectoriesForDebugging()

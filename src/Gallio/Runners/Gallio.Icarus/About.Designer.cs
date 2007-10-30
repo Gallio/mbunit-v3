@@ -99,7 +99,7 @@ namespace Gallio.Icarus
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(168, 13);
             this.versionLabel.TabIndex = 3;
-            this.versionLabel.Text = "MbUnit Icarus - Version {0}.{1}.{2}";
+            this.versionLabel.Text = "Gallio Icarus - Version {0}.{1}.{2}";
             // 
             // label2
             // 
@@ -108,7 +108,7 @@ namespace Gallio.Icarus
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(147, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Installed MbUnit components:";
+            this.label2.Text = "Installed Gallio components:";
             // 
             // componentList
             // 
@@ -199,7 +199,7 @@ namespace Gallio.Icarus
             this.Name = "About";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "About MbUnit Icarus";
+            this.Text = "About Gallio Icarus";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

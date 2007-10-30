@@ -18,7 +18,7 @@ using System;
 namespace Gallio.Logging
 {
     /// <summary>
-    /// Defines constants for commonly used mime types in MbUnit.
+    /// Defines constants for commonly used mime types.
     /// </summary>
     public static class MimeTypes
     {

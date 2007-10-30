@@ -27,7 +27,7 @@ namespace Gallio.Model.Serialization
     public static class SerializationUtils
     {
         /// <summary>
-        /// The XML namespace for all MbUnit Gallio XML types.
+        /// The XML namespace for all Gallio XML types.
         /// </summary>
         public const string XmlNamespace = "http://www.mbunit.com/gallio";
 

@@ -57,7 +57,7 @@ namespace Gallio.Contexts
     /// programming language, the total number of commands and the order in which they
     /// will be performed might not be known ahead of time.  Using steps enables the
     /// integration of tests written in forms that cannot be directly adapted
-    /// to MbUnit's testing primitives.</item>
+    /// to the framework's native testing primitives.</item>
     /// <item>When testing non-deterministic algorithms, it is sometimes useful to repeat
     /// a test multiple times under slightly different conditions until a certain level
     /// of confidence is reached.  The variety of conditions tested might be determined

@@ -69,7 +69,7 @@ namespace Gallio.Icarus.Controls
          Description("The current state of the node's checkbox, Unchecked, Checked, or Indeterminate"),
          DefaultValue(CheckBoxStates.Unchecked),
          TypeConverter(typeof (CheckBoxStates)),
-         Editor("MbUnit.Icarus.Controls.Enums.CheckBoxState", typeof (CheckBoxStates))]
+         Editor("Gallio.Icarus.Controls.Enums.CheckBoxState", typeof (CheckBoxStates))]
         public CheckBoxStates CheckState
         {
             get { return checkState; }

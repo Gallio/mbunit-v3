@@ -102,7 +102,7 @@ namespace MbUnit.Samples
                 MbUnitRocks.WriteLine("And so much more...");
                 MbUnitRocks.WriteLine();
 
-                MbUnitRocks.WriteLine("Welcome to MbUnit Gallio!");
+                MbUnitRocks.WriteLine("Welcome to MbUnit v3!");
             });
         }
 

@@ -83,7 +83,7 @@ namespace Gallio.TDNetRunner
             TestResult result = new TestResult();
             result.Name = e.StepRun.Step.FullName;
             result.TimeSpan = TimeSpan.FromSeconds(e.StepRun.Result.Duration);
-            // result.TestRunner = "MbUnit Gallio"; // note: can crash in older versions of TD.Net with MissingFieldException
+            // result.TestRunner = "Gallio"; // note: can crash in older versions of TD.Net with MissingFieldException
 
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line

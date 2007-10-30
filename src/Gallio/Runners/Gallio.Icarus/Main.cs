@@ -256,7 +256,7 @@ namespace Gallio.Icarus
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
             //trayIcon.Icon = Resources.FailMb;
-            //trayIcon.ShowBalloonTip(5, "MbUnit Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
+            //trayIcon.ShowBalloonTip(5, "Gallio Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
             //                        ToolTipIcon.Error);
             List<TaskButton> taskButtons = new List<TaskButton>();
 
@@ -291,7 +291,7 @@ namespace Gallio.Icarus
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog();
-            openFile.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
+            openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
             DialogResult res = openFile.ShowDialog();
 
             if (res == DialogResult.OK)
@@ -303,8 +303,8 @@ namespace Gallio.Icarus
             SaveFileDialog saveFile = new SaveFileDialog();
             saveFile.OverwritePrompt = true;
             saveFile.AddExtension = true;
-            saveFile.DefaultExt = "MbUnit Projects (*.mbunit)|*.mbunit";
-            saveFile.Filter = "MbUnit Projects (*.mbunit)|*.mbunit";
+            saveFile.DefaultExt = "Gallio Projects (*.gallio)|*.gallio";
+            saveFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
             saveFile.ShowDialog();
         }
 

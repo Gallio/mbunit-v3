@@ -31,10 +31,11 @@ namespace Gallio.Runner.Domains
     /// </para>
     /// <para>
     /// Test domain implementations should be designed to permit interoperability of
-    /// the host application with different versions of MbUnit linked to the code modules
-    /// being tested.  For this reason, the test domain API only exposes objects that
-    /// are serializable by value or interfaces for which proxies can be easily
-    /// constructed with efficient interfaces that require few round-trips.
+    /// the host application with multiple frameworks.  The test domain API is
+    /// designed to limit the number of round-trips required.  Moreover, all objects
+    /// that pass through the API are serializable by value or can be marshalled
+    /// using simple proxies.  This design facilitates remote operation and cross-version
+    /// compatibility.
     /// </para>
     /// <para>
     /// Test domain implementations based on remote calls should implement the test

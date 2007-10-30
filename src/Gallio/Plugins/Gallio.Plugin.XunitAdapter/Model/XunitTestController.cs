@@ -34,7 +34,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
     {
         /// <summary>
         /// The metadata key used for recording Xunit's internal test name with a step
-        /// when it differs from what MbUnit derived.
+        /// when it differs from what the adapter derived by itself.
         /// </summary>
         private const string XunitTestNameKey = "Xunit:TestName";
 
