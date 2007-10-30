@@ -1,0 +1,1 @@
+msbuild Build.msbuild /t:BuildAPIDocs
