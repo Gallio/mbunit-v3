@@ -123,9 +123,12 @@ namespace Gallio.Model
             get { return (ITest)base.Source; }
         }
 
-        ITestController ITest.CreateTestController()
+        Factory<ITestController> ITest.TestControllerFactory
         {
-            throw new NotSupportedException();
+            get
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 }

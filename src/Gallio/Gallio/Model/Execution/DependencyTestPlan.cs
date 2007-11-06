@@ -135,8 +135,13 @@ namespace Gallio.Model.Execution
 
                     // Now run the tests.
                     // Test execution could be interrupted non-deterministically.
-                    using (RootTestController controller = new RootTestController())
-                        controller.RunTests(progressMonitor, cachedRootTestMonitor);
+                    Factory<ITestController> rootTestControllerFactory = cachedRootTestMonitor.Test.TestControllerFactory;
+
+                    if (rootTestControllerFactory != null)
+                    {
+                        using (ITestController controller = rootTestControllerFactory())
+                            controller.RunTests(progressMonitor, cachedRootTestMonitor);
+                    }
                 }
                 finally
                 {

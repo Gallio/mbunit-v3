@@ -95,9 +95,9 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public virtual ITestController CreateTestController()
+        public virtual Factory<ITestController> TestControllerFactory
         {
-            return null;
+            get { return null; }
         }
     }
 }

@@ -77,23 +77,23 @@ namespace Gallio.Model
         IList<ITest> Dependencies { get; }
 
         /// <summary>
-        /// <summary>
-        /// Creates a <see cref="ITestController" /> to run this test and all of its children.
-        /// Returns null if this test is merely a container for other tests or if it does not
-        /// require its own controller.
+        /// Gets a <see cref="ITestController" /> <see cref="Factory{T}" /> to run this tes
+        /// and all of its children.  Returns null if this test is merely a container for
+        /// other tests or if it otherwise does not require or provide its own controller.
         /// </summary>
+        /// <remarks>
         /// <para>
-        /// The top-most test that produces a non-null <see cref="ITestController" /> is
-        /// referred to as the master test.  It may contain other tests that can also produce
-        /// <see cref="ITestController" />s but there is no built-in mechanism provided
-        /// to delegate control from one controller to another in the middle of its execution.
+        /// The top-most test that returns a non-null <see cref="Factory{T}" /> is
+        /// referred to as the master test.  It may contain other tests that also have
+        /// non-null factories but there is no built-in mechanism provided to delegate control
+        /// from one controller to another in the middle of its execution.
         /// Thus the nested controller will only be executed if the master controller chooses
-        /// to implement a delegation policy of this sort.
+        /// to implement a suitable delegation policy of this sort.
         /// </para>
         /// <para>
-        /// The test harness scans the list of tests to be executed in depth-first order
-        /// to locate the master test for each subtree.  It then invokes the controller
-        /// and passes it a reference to the master test itself.
+        /// During test execution, the test plan scans the list of tests to be executed
+        /// in depth-first order to locate the master tests for each subtree.  The test plan
+        /// instantiates and invokes a test controller for each master test.
         /// </para>
         /// <para>
         /// For example, the top-level test created by a <see cref="ITestFramework" />
@@ -103,9 +103,9 @@ namespace Gallio.Model
         /// between the test harness and test controllers (as mediated by master tests) represents
         /// a division of labor among multiple possible test execution strategies.
         /// </para>
-        /// </summary>
-        /// <returns>The new test controller, or null if this test does not produce
+        /// </remarks>
+        /// <returns>The test controller factory, or null if this test cannot produce
         /// a controller (and consequently is not a master test according to the definition above)</returns>
-        ITestController CreateTestController();
+        Factory<ITestController> TestControllerFactory { get; }
     }
 }

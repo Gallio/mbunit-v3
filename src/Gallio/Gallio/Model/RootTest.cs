@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Execution;
 using Gallio.Properties;
 
 namespace Gallio.Model
@@ -33,6 +34,17 @@ namespace Gallio.Model
         {
             // Note: The kind will be set by the RootTemplateBinding.
             Kind = null;
+        }
+
+        /// <inheritdoc />
+        public override Factory<ITestController> TestControllerFactory
+        {
+            get { return CreateTestController; }
+        }
+
+        private static ITestController CreateTestController()
+        {
+            return new RecursiveTestController();
         }
     }
 }

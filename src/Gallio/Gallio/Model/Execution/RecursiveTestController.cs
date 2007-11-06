@@ -20,11 +20,11 @@ using Gallio.Model;
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// A test controller for a root test.  Recursively enters contexts
-    /// until a master test is found then delegates control over to the
-    /// <see cref="ITestController" /> produced by the master test.
+    /// A test controller that recursively enters the context of each non master-test found.
+    /// When a master test is found, instantiates the <see cref="ITestController" /> for it
+    /// and hands control over to it for the subtree of tests rooted at the master test.
     /// </summary>
-    public class RootTestController : ITestController
+    public class RecursiveTestController : ITestController
     {
         /// <inheritdoc />
         public void Dispose()
@@ -43,37 +43,44 @@ namespace Gallio.Model.Execution
             {
                 progressMonitor.BeginTask("Running tests.", rootTestMonitor.TestCount);
 
-                RunTestMonitor(progressMonitor, rootTestMonitor);
+                RunNonMasterTest(progressMonitor, rootTestMonitor);
             }
         }
 
-        private static void RunTestMonitor(IProgressMonitor progressMonitor, ITestMonitor testMonitor)
+        private static void RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor)
         {
-            using (ITestController controller = testMonitor.Test.CreateTestController())
+            Factory<ITestController> factory = testMonitor.Test.TestControllerFactory;
+
+            if (factory != null)
             {
-                if (controller != null)
+                // Delegate to the associated controller, if present.
+                using (ITestController controller = factory())
                 {
-                    // Delegate to the associated controller, if present.
                     controller.RunTests(new SubProgressMonitor(progressMonitor, testMonitor.TestCount), testMonitor);
                 }
-                else
-                {
-                    // Enter the scope of the test and recursve until we find a controller.
-                    progressMonitor.SetStatus(String.Format("Run test: {0}.", testMonitor.Test.Name));
+            }
+            else
+            {
+                RunNonMasterTest(progressMonitor, testMonitor);
+            }
+        }
 
-                    IStepMonitor stepMonitor = testMonitor.StartRootStep();
-                    try
-                    {
-                        foreach (ITestMonitor monitor in testMonitor.Children)
-                            RunTestMonitor(progressMonitor, monitor);
-                    }
-                    finally
-                    {
-                        stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
+        private static void RunNonMasterTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor)
+        {
+            // Enter the scope of the test and recurse until we find a controller.
+            progressMonitor.SetStatus(String.Format("Run test: {0}.", testMonitor.Test.Name));
 
-                        progressMonitor.Worked(1);
-                    }
-                }
+            IStepMonitor stepMonitor = testMonitor.StartRootStep();
+            try
+            {
+                foreach (ITestMonitor monitor in testMonitor.Children)
+                    RunTest(progressMonitor, monitor);
+            }
+            finally
+            {
+                stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
+
+                progressMonitor.Worked(1);
             }
         }
     }

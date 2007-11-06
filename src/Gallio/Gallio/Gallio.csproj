@@ -117,7 +117,7 @@
     <Compile Include="Model\Execution\ITestPlan.cs" />
     <Compile Include="Model\Execution\ITestPlanFactory.cs" />
     <Compile Include="Model\Serialization\ModelComponentData.cs" />
-    <Compile Include="Model\Execution\RootTestController.cs" />
+    <Compile Include="Model\Execution\RecursiveTestController.cs" />
     <Compile Include="Model\Serialization\StepData.cs" />
     <Compile Include="Model\Serialization\TemplateComponentData.cs" />
     <Compile Include="Model\Serialization\TemplateData.cs" />

@@ -69,7 +69,12 @@ namespace Gallio.Plugin.XunitAdapter.Model
         }
 
         /// <inheritdoc />
-        public override ITestController CreateTestController()
+        public override Factory<ITestController> TestControllerFactory
+        {
+            get { return CreateTestController; }
+        }
+
+        private static ITestController CreateTestController()
         {
             return new XunitTestController();
         }

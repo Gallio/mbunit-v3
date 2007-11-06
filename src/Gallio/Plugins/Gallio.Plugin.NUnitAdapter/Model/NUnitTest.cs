@@ -60,7 +60,12 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        public override ITestController CreateTestController()
+        public override Factory<ITestController> TestControllerFactory
+        {
+            get { return CreateTestController; }
+        }
+
+        private ITestController CreateTestController()
         {
             return new NUnitTestController(TemplateBinding.Runner);
         }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio;
 using MbUnit.Model;
 using Gallio.Model.Execution;
 using Gallio.Model;
@@ -139,7 +140,12 @@ namespace MbUnit.Model
         }
 
         /// <inheritdoc />
-        public override ITestController CreateTestController()
+        public override Factory<ITestController> TestControllerFactory
+        {
+            get { return CreateTestController; }
+        }
+
+        private static ITestController CreateTestController()
         {
             return new MbUnitTestController();
         }

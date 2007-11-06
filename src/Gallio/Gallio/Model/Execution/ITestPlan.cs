@@ -47,8 +47,8 @@ namespace Gallio.Model.Execution
     /// <item>The <see cref="RunTests" /> method is called.</item>
     /// <item>The test plan internally runs tests in dependency order until it
     /// finds a master test in the tree.</item>
-    /// <item>When a master test is found, the test plan calls
-    /// <see cref="ITest.CreateTestController" /> to create a controller.
+    /// <item>When a master test is found, the test plan uses the factory returned by
+    /// <see cref="ITest.TestControllerFactory" /> to create a test controller.
     /// Then it invokes <see cref="ITestController.RunTests" /> and passes in
     /// a <see cref="ITestMonitor" /> corresponding to the master test
     /// that was found.</item>

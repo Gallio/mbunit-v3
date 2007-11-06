@@ -75,7 +75,12 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        public override ITestController CreateTestController()
+        public override Factory<ITestController> TestControllerFactory
+        {
+            get { return CreateTestController; }
+        }
+
+        private ITestController CreateTestController()
         {
             return new MbUnit2TestController(TemplateBinding.FixtureExplorer);
         }
