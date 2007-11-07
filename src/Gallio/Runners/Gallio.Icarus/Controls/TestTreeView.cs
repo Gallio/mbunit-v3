@@ -204,24 +204,7 @@ namespace Gallio.Icarus.Controls
 
         #region Methods
 
-        public void Reset()
-        {
-            BeginUpdate();
-            foreach (TreeNode node in Nodes)
-            {
-                TestTreeNode ttnode = node as TestTreeNode;
-                if (ttnode != null)
-                {
-                    ttnode.TestState = TestState.Undefined;
-                    ResetChildren(ttnode.Nodes);
-                }
-            }
-            EndUpdate();
-            
-            Invalidate();
-        }
-
-        public void ResetChildren(TreeNodeCollection nodes)
+        public void Reset(TreeNodeCollection nodes)
         {
             foreach (TreeNode node in nodes)
             {
@@ -229,7 +212,7 @@ namespace Gallio.Icarus.Controls
                 if (ttnode != null)
                 {
                     ttnode.TestState = TestState.Undefined;
-                    ResetChildren(ttnode.Nodes);
+                    Reset(ttnode.Nodes);
                 }
             }
         }
@@ -272,6 +255,42 @@ namespace Gallio.Icarus.Controls
                 TestTreeNode node = nodes[0] as TestTreeNode;
                 node.TestState = TestState.Ignored;
             }
+        }
+
+        public int CountTests()
+        {
+            int count = 0;
+            foreach (TreeNode node in Nodes)
+            {
+                TestTreeNode ttnode = node as TestTreeNode;
+                if (ttnode != null)
+                {
+                    if (ttnode.SelectedImageIndex == 4 && ttnode.Checked)
+                    {
+                        count++;
+                    }
+                    count += CountTests(ttnode.Nodes);
+                }
+            }
+            return count;
+        }
+
+        public int CountTests(TreeNodeCollection nodes)
+        {
+            int count = 0;
+            foreach (TreeNode node in nodes)
+            {
+                TestTreeNode ttnode = node as TestTreeNode;
+                if (ttnode != null)
+                {
+                    if (ttnode.SelectedImageIndex == 4 && ttnode.Checked)
+                    {
+                        count++;
+                    }
+                    count += CountTests(ttnode.Nodes);
+                }
+            }
+            return count;
         }
 
         #endregion

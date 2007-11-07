@@ -23,14 +23,16 @@ namespace Gallio.Icarus.Interfaces
     {
         event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         event EventHandler<EventArgs> RemoveAssemblies;
-        event EventHandler<RemoveAssemblyEventArgs> RemoveAssembly;
-        event EventHandler<GetTestTreeEventArgs> GetTestTree;
+        event EventHandler<SingleStringEventArgs> RemoveAssembly;
+        event EventHandler<SingleStringEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
+        event EventHandler<SingleStringEventArgs> GetLogStream;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
-        string StatusText { get; set; }
+        string StatusText { set; }
+        string LogBody { set; }
         int CompletedWorkUnits { get; set; }
         int TotalWorkUnits { get; set; }
         void DataBind();

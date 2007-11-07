@@ -17,18 +17,18 @@ using System;
 
 namespace Gallio.Icarus.Core.CustomEventArgs 
 {
-    public class RemoveAssemblyEventArgs : EventArgs
+    public class SingleStringEventArgs : EventArgs
     {
-        private readonly string assembly;
+        private readonly string _string;
 
-        public RemoveAssemblyEventArgs(string assembly)
+        public SingleStringEventArgs(string s)
         {
-            this.assembly = assembly;
+            _string = s;
         }
 
-        public string Assembly
+        public string String
         {
-            get { return assembly; }
+            get { return _string; }
         }
     }
 }

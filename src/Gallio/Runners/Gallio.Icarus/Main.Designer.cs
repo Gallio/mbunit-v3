@@ -93,7 +93,7 @@ namespace Gallio.Icarus
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.projectTabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.testTree = new Icarus.Controls.TestTreeView();
+            this.testTree = new Gallio.Icarus.Controls.TestTreeView();
             this.testTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -127,14 +127,18 @@ namespace Gallio.Icarus
             this.resultsFilterPanel = new System.Windows.Forms.Panel();
             this.filterTestResultsCombo = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.logStreamsTabPage = new System.Windows.Forms.TabPage();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.logStream = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.logBody = new System.Windows.Forms.RichTextBox();
+            this.performanceMonitorTabPage = new System.Windows.Forms.TabPage();
             this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.panel2 = new System.Windows.Forms.Panel();
             this.graphsFilterBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panelResults = new System.Windows.Forms.Panel();
-            this.testProgressStatusBar = new Icarus.Controls.TestStatusBar();
+            this.testProgressStatusBar = new Gallio.Icarus.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -157,7 +161,9 @@ namespace Gallio.Icarus
             this.testResultsTabs.SuspendLayout();
             this.testResultsTabPage.SuspendLayout();
             this.resultsFilterPanel.SuspendLayout();
-            this.tabPage2.SuspendLayout();
+            this.logStreamsTabPage.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.performanceMonitorTabPage.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panelResults.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
@@ -744,8 +750,8 @@ namespace Gallio.Icarus
             // testResultsTabs
             // 
             this.testResultsTabs.Controls.Add(this.testResultsTabPage);
-            this.testResultsTabs.Controls.Add(this.tabPage4);
-            this.testResultsTabs.Controls.Add(this.tabPage2);
+            this.testResultsTabs.Controls.Add(this.logStreamsTabPage);
+            this.testResultsTabs.Controls.Add(this.performanceMonitorTabPage);
             this.testResultsTabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testResultsTabs.Location = new System.Drawing.Point(0, 61);
             this.testResultsTabs.Name = "testResultsTabs";
@@ -849,26 +855,74 @@ namespace Gallio.Icarus
             this.label3.TabIndex = 0;
             this.label3.Text = "Filter Results By";
             // 
-            // tabPage4
+            // logStreamsTabPage
             // 
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(665, 546);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Console";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.logStreamsTabPage.Controls.Add(this.logBody);
+            this.logStreamsTabPage.Controls.Add(this.panel3);
+            this.logStreamsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.logStreamsTabPage.Name = "logStreamsTabPage";
+            this.logStreamsTabPage.Size = new System.Drawing.Size(665, 546);
+            this.logStreamsTabPage.TabIndex = 3;
+            this.logStreamsTabPage.Text = "Log Streams";
+            this.logStreamsTabPage.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
+            // panel3
             // 
-            this.tabPage2.Controls.Add(this.zedGraphControl1);
-            this.tabPage2.Controls.Add(this.panel2);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(665, 546);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Performance Monitor";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.panel3.Controls.Add(this.logStream);
+            this.panel3.Controls.Add(this.label5);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(665, 39);
+            this.panel3.TabIndex = 2;
+            // 
+            // logStream
+            // 
+            this.logStream.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.logStream.FormattingEnabled = true;
+            this.logStream.Items.AddRange(new object[] {
+            "ConsoleInput",
+            "ConsoleOutput",
+            "ConsoleError",
+            "DebugTrace",
+            "Warnings",
+            "Failures",
+            "Log"});
+            this.logStream.Location = new System.Drawing.Point(75, 9);
+            this.logStream.Name = "logStream";
+            this.logStream.Size = new System.Drawing.Size(189, 21);
+            this.logStream.TabIndex = 1;
+            this.logStream.SelectedIndexChanged += new System.EventHandler(this.logStream_SelectedIndexChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 12);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(57, 13);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Select log:";
+            // 
+            // logBody
+            // 
+            this.logBody.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logBody.Location = new System.Drawing.Point(0, 39);
+            this.logBody.Name = "logBody";
+            this.logBody.Size = new System.Drawing.Size(665, 507);
+            this.logBody.TabIndex = 0;
+            this.logBody.Text = "";
+            // 
+            // performanceMonitorTabPage
+            // 
+            this.performanceMonitorTabPage.Controls.Add(this.zedGraphControl1);
+            this.performanceMonitorTabPage.Controls.Add(this.panel2);
+            this.performanceMonitorTabPage.Location = new System.Drawing.Point(4, 22);
+            this.performanceMonitorTabPage.Name = "performanceMonitorTabPage";
+            this.performanceMonitorTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.performanceMonitorTabPage.Size = new System.Drawing.Size(665, 546);
+            this.performanceMonitorTabPage.TabIndex = 1;
+            this.performanceMonitorTabPage.Text = "Performance Monitor";
+            this.performanceMonitorTabPage.UseVisualStyleBackColor = true;
             // 
             // zedGraphControl1
             // 
@@ -1018,7 +1072,10 @@ namespace Gallio.Icarus
             this.testResultsTabPage.ResumeLayout(false);
             this.resultsFilterPanel.ResumeLayout(false);
             this.resultsFilterPanel.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
+            this.logStreamsTabPage.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.performanceMonitorTabPage.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panelResults.ResumeLayout(false);
@@ -1064,10 +1121,10 @@ namespace Gallio.Icarus
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabControl testResultsTabs;
         private System.Windows.Forms.TabPage testResultsTabPage;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage performanceMonitorTabPage;
         private System.Windows.Forms.Panel panelResults;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage logStreamsTabPage;
         private System.Windows.Forms.ToolStripButton reloadToolbarButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ImageList treeImages;
@@ -1085,7 +1142,6 @@ namespace Gallio.Icarus
         private TestStatusBar testProgressStatusBar;
         private System.Windows.Forms.ToolStripContainer toolStripContainer;
         private System.Windows.Forms.Panel resultsFilterPanel;
-        private System.Windows.Forms.ComboBox filterTestResultsCombo;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TabControl projectTabs;
         private System.Windows.Forms.TabPage tabPage3;
@@ -1121,6 +1177,11 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ContextMenuStrip assemblyListMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
+        private System.Windows.Forms.RichTextBox logBody;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.ComboBox logStream;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox filterTestResultsCombo;
     }
 }
 

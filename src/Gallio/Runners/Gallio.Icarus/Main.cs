@@ -61,7 +61,6 @@ namespace Gallio.Icarus
 
         public string StatusText
         {
-            get { return statusText; }
             set { statusText = value; }
         }
 
@@ -76,18 +75,24 @@ namespace Gallio.Icarus
             get { return completedWorkUnits; }
             set { completedWorkUnits = value; }
         }
-        
+
+        public string LogBody
+        {
+            set { logBody.Text = value; }
+        }
+
         #endregion
 
         #region Events
 
-        public event EventHandler<GetTestTreeEventArgs> GetTestTree;
+        public event EventHandler<SingleStringEventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
-        public event EventHandler<RemoveAssemblyEventArgs> RemoveAssembly;
+        public event EventHandler<SingleStringEventArgs> RemoveAssembly;
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
+        public event EventHandler<SingleStringEventArgs> GetLogStream;
 
         #endregion
 
@@ -194,7 +199,9 @@ namespace Gallio.Icarus
         {
             // reset progress monitors
             testProgressStatusBar.Clear();
-            testTree.Reset();
+            testTree.BeginUpdate();
+            testTree.Reset(testTree.Nodes);
+            testTree.EndUpdate();
             
             statusText = "Running tests...";
             startButton.Enabled = false;
@@ -341,7 +348,7 @@ namespace Gallio.Icarus
             // Load test tree
             if (GetTestTree != null)
             {
-                GetTestTree(this, new GetTestTreeEventArgs(GetTreeFilter()));
+                GetTestTree(this, new SingleStringEventArgs(GetTreeFilter()));
             }
             testTree.Invoke(new MethodInvoker(testTree.Sort));
             StatusText = "Ready...";
@@ -670,7 +677,7 @@ namespace Gallio.Icarus
             StatusText = "Removing assembly...";
             if (RemoveAssembly != null)
             {
-                RemoveAssembly(this, new RemoveAssemblyEventArgs(assembly));
+                RemoveAssembly(this, new SingleStringEventArgs(assembly));
             }
             ThreadedRefreshTree();
         }
@@ -678,13 +685,22 @@ namespace Gallio.Icarus
         private void testTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TestTreeNode node = testTree.SelectedNode as TestTreeNode;
-            if (node.SelectedImageIndex == 2)
+            if (node != null)
             {
-                removeAssemblyToolStripMenuItem2.Enabled = true;
-            }
-            else
-            {
-                removeAssemblyToolStripMenuItem2.Enabled = false;
+                // if "Assembly" node
+                if (node.SelectedImageIndex == 2)
+                {
+                    // enable "Remove assembly" context item
+                    removeAssemblyToolStripMenuItem2.Enabled = true;
+                }
+                else
+                {
+                    // disable it
+                    removeAssemblyToolStripMenuItem2.Enabled = false;
+                }
+
+                // display log stream (if available)
+                UpdateLogBody(node);
             }
         }
 
@@ -704,6 +720,7 @@ namespace Gallio.Icarus
                 {
                     SetFilter(this, new SetFilterEventArgs(testTree.Nodes));
                 }
+                testProgressStatusBar.Total = testTree.CountTests();
             }
         }
 
@@ -714,5 +731,25 @@ namespace Gallio.Icarus
             workerThread.Start();
         }
 
+        private void logStream_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TestTreeNode node = testTree.SelectedNode as TestTreeNode;
+            if (node != null)
+            {
+                UpdateLogBody(node);
+            }
+        }
+
+        private void UpdateLogBody(TestTreeNode node)
+        {
+            // display log stream (if available)
+            if (node.SelectedImageIndex == 4 && node.TestState != TestState.Undefined)
+            {
+                if (GetLogStream != null && logStream.SelectedItem != null)
+                {
+                    GetLogStream(this, new SingleStringEventArgs(logStream.SelectedItem.ToString() + node.Name));
+                }
+            }
+        }
     }
 }

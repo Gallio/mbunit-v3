@@ -14,10 +14,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Icarus.Core.Interfaces;
+using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Monitors;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring
 {
@@ -25,6 +28,7 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
     {
         private readonly ReportMonitor reportMonitor;
         private readonly IProjectPresenter presenter;
+        private Dictionary<string, string> logStreams;
 
         public TestRunnerMonitor(IProjectPresenter presenter, ReportMonitor reportMonitor)
         {
@@ -35,6 +39,7 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
             this.presenter = presenter;
             this.reportMonitor = reportMonitor;
+            logStreams = new Dictionary<string, string>();
         }
 
         /// <inheritdoc />
@@ -71,6 +76,32 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
                 case TestOutcome.Inconclusive:
                     presenter.Ignored(e.TestRun.TestId);
                     break;
+            }
+
+            // store log streams
+            foreach (ExecutionLogStream els in e.StepRun.ExecutionLog.Streams)
+            {
+                string key = els.Name + e.TestRun.TestId;
+                if (logStreams.ContainsKey(key))
+                {
+                    logStreams[key] += els.ToString();
+                }
+                else
+                {
+                    logStreams.Add(key, els.ToString());
+                }
+            }
+        }
+
+        public string GetLogStream(string log)
+        {
+            if (logStreams.ContainsKey(log))
+            {
+                return logStreams[log];
+            }
+            else
+            {
+                return string.Empty;
             }
         }
     }

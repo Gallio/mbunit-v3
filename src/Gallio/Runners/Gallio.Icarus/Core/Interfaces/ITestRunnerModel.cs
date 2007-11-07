@@ -29,5 +29,6 @@ namespace Gallio.Icarus.Core.Interfaces
         void RunTests();
         void StopTests();
         void SetFilter(Filter<ITest> filter);
+        string GetLogStream(string log);
     }
 }

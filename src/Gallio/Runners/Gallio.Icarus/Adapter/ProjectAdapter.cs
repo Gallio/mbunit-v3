@@ -53,7 +53,6 @@ namespace Gallio.Icarus.Adapter
 
         public string StatusText
         {
-            get { return _View.StatusText; }
             set { _View.StatusText = value; }
         }
 
@@ -69,6 +68,11 @@ namespace Gallio.Icarus.Adapter
             set { _View.TotalWorkUnits = value; }
         }
 
+        public string LogBody
+        {
+            set { _View.LogBody = value; }
+        }
+
         #endregion
 
         #region Events
@@ -77,6 +81,7 @@ namespace Gallio.Icarus.Adapter
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
+        public event EventHandler<SingleStringEventArgs> GetLogStream;
 
         #endregion
 
@@ -96,6 +101,7 @@ namespace Gallio.Icarus.Adapter
             _View.RunTests += _View_RunTests;
             _View.StopTests += _View_StopTests;
             _View.SetFilter += _View_SetFilter;
+            _View.GetLogStream += _View_GetLogStream;
         }
 
         #endregion
@@ -112,17 +118,26 @@ namespace Gallio.Icarus.Adapter
             _testPackage.AssemblyFiles.Clear();
         }
 
-        private void _View_RemoveAssembly(object sender, RemoveAssemblyEventArgs e)
+        private void _View_RemoveAssembly(object sender, SingleStringEventArgs e)
         {
-            _testPackage.AssemblyFiles.Remove(e.Assembly);
+            _testPackage.AssemblyFiles.Remove(e.String);
         }
 
-        private void _View_GetTestTree(object sender, GetTestTreeEventArgs e)
+        private void _View_GetTestTree(object sender, SingleStringEventArgs e)
         {
-            mode = e.Mode;
+            mode = e.String;
             if (GetTestTree != null)
             {
                 GetTestTree(this, new ProjectEventArgs(_testPackage));
+            }
+        }
+
+        [DebuggerStepThrough]
+        private void _View_GetLogStream(object sender, SingleStringEventArgs e)
+        {
+            if (GetLogStream != null)
+            {
+                GetLogStream(this, e);
             }
         }
 
@@ -131,7 +146,7 @@ namespace Gallio.Icarus.Adapter
         {
             if (RunTests != null)
             {
-                RunTests(this, new EventArgs());
+                RunTests(this, e);
             }
         }
 
@@ -140,7 +155,7 @@ namespace Gallio.Icarus.Adapter
         {
             if (StopTests != null)
             {
-                StopTests(this, new EventArgs());
+                StopTests(this, e);
             }
         }
 

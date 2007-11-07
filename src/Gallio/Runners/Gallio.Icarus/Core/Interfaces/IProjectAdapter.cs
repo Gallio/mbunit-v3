@@ -26,9 +26,11 @@ namespace Gallio.Icarus.Core.Interfaces
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
+        event EventHandler<SingleStringEventArgs> GetLogStream;
         TestModel TestModel { get; set; }
         TestPackage TestPackage { get; set; }
-        string StatusText { get; set; }
+        string StatusText { set; }
+        string LogBody { set; }
         int CompletedWorkUnits { get; set; }
         int TotalWorkUnits { get; set; }
         void DataBind();

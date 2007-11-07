@@ -31,6 +31,7 @@ namespace Gallio.Icarus.Core.Model
         private ReportMonitor reportMonitor = null; 
         private IProjectPresenter projectPresenter = null;
         private StatusStripProgressMonitor statusStripProgressMonitor = null;
+        private TestRunnerMonitor testRunnerMonitor = null;
 
         #endregion
 
@@ -73,7 +74,7 @@ namespace Gallio.Icarus.Core.Model
 
         public void RunTests()
         {
-            TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor);
+            testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor);
             testRunnerMonitor.Attach(projectPresenter.TestRunner);
             statusStripProgressMonitor = new StatusStripProgressMonitor(projectPresenter);
             projectPresenter.TestRunner.Run(statusStripProgressMonitor);
@@ -92,6 +93,11 @@ namespace Gallio.Icarus.Core.Model
         public void SetFilter(Filter<ITest> filter)
         {
             projectPresenter.TestRunner.TestExecutionOptions.Filter = filter;
+        }
+
+        public string GetLogStream(string log)
+        {
+            return testRunnerMonitor.GetLogStream(log);
         }
 
         #endregion
