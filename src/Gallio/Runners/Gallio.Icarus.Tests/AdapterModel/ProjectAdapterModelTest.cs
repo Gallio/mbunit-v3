@@ -25,12 +25,19 @@ using Gallio.Model.Serialization;
 namespace Gallio.Icarus.Tests
 {
     [TestFixture, Category("IProjectAdapterModel")]
-    public class IProjectAdapterModelTest
+    public class ProjectAdapterModelTest
     {
+        private ProjectAdapterModel projectAdapterModel;
+
+        [SetUp]
+        public void SetUp()
+        {
+            projectAdapterModel = new ProjectAdapterModel();
+        }
+
         [Test]
         public void BuildNamespaceTestTree_Test()
         {
-            IProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
             TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
             Assert.AreEqual(1, treeNodes.Length);
             
@@ -77,14 +84,12 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void CountTests_Test()
         {
-            IProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
             Assert.AreEqual(3, projectAdapterModel.CountTests(CreateTestModel()));
         }
 
         [Test]
         public void BuildAssemblyList_Test()
         {
-            IProjectAdapterModel projectAdapterModel = new ProjectAdapterModel();
             ListViewItem[] listViewItems = projectAdapterModel.BuildAssemblyList(new List<string>(new string[] { 
                 Assembly.GetExecutingAssembly().Location }));
             Assert.AreEqual(1, listViewItems.Length);

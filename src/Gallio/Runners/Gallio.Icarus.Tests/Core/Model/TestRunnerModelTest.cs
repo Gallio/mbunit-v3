@@ -13,26 +13,77 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Icarus.Core.Model;
+using Gallio.Icarus.Core.Interfaces;
+using Gallio.Icarus.Core.Presenter;
+using Gallio.Icarus.Core.ProgressMonitoring;
+using Gallio.Icarus.Tests;
+using Gallio.Model;
+using Gallio.Model.Filters;
+using Gallio.Runner;
 using MbUnit.Framework;
+using Rhino.Mocks;
 
-namespace Gallio.Icarus.Tests
+namespace Gallio.Icarus.Core.Model.Tests
 {
     [TestFixture]
-    public class TestRunnerModelTest
+    public class TestRunnerModelTest : MockTest
     {
-        [Test]
-        [Ignore("Incomplete")]
-        public void LoadUpAssemblyAndGetTestTree_Test()
-        {
-            //TestPackage testpackage = new TestPackage();
-            //testpackage.AssemblyFiles.Add("C:\\Source\\MbUnitGoogle\\mb-unit\\v3\\src\\TestResources\\MbUnit.TestResources.MbUnit2\\bin\\MbUnit.TestResources.MbUnit2.dll");
-            
-            TestRunnerModel main = new TestRunnerModel();
+        private IProjectAdapter mockAdapter;
+        private ITestRunnerModel mockModel;
+        private ProjectPresenter mockProjectPresenter;
+        private TestRunnerModel testRunnerModel;
 
-            //TestModel t = main.LoadUpAssembly(runner, testpackage);
+        [SetUp]
+        public void SetUp()
+        {
+            testRunnerModel = new TestRunnerModel();
         }
 
+        [Test, ExpectedException(typeof(ArgumentNullException))]
+        public void SetProjectPresenterNull_Test()
+        {
+            testRunnerModel.ProjectPresenter = null;
+        }
+
+        [Test]
+        public void TestRunnerModel_Test()
+        {
+            // set up mocks
+            mockAdapter = MockRepository.GenerateStub<IProjectAdapter>();
+            mockModel = MockRepository.GenerateStub<ITestRunnerModel>();
+            mockProjectPresenter = mocks.CreateMock<ProjectPresenter>(mockAdapter, mockModel);
+            testRunnerModel.ProjectPresenter = mockProjectPresenter;
+
+            // set up expectations
+            mockProjectPresenter.TotalWorkUnits = 0;
+            LastCall.IgnoreArguments();
+            mockProjectPresenter.StatusText = "";
+            LastCall.IgnoreArguments();
+            mockProjectPresenter.CompletedWorkUnits = 0;
+            LastCall.IgnoreArguments();
+
+            mocks.ReplayAll();
+            
+            // these cannot be split up into seperate tests
+            testRunnerModel.LoadPackage(new TestPackage());
+            testRunnerModel.BuildTemplates();
+            testRunnerModel.BuildTests();
+            testRunnerModel.RunTests();
+        }
+
+        [Test]
+        public void SetFilter_Test()
+        {
+            mockAdapter = MockRepository.GenerateStub<IProjectAdapter>();
+            mockModel = MockRepository.GenerateStub<ITestRunnerModel>();
+            mockProjectPresenter = mocks.CreateMock<ProjectPresenter>(mockAdapter, mockModel);
+            testRunnerModel.ProjectPresenter = mockProjectPresenter;
+
+            mocks.ReplayAll();
+
+            testRunnerModel.SetFilter(new AnyFilter<ITest>());
+        }
     }
-    
 }

@@ -13,21 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Presenter;
-using MbUnit.Framework;
+using Gallio.Icarus.Tests;
 using Gallio.Runner;
+using MbUnit.Framework;
 using Rhino.Mocks;
 
-namespace Gallio.Icarus.Tests.Core.Presenter
+namespace Gallio.Icarus.Core.Presenter.Tests
 {
     [TestFixture]
-    public class IProjectPresenterTests : MockTest
+    public class ProjectPresenterTest : MockTest
     {
         private IProjectAdapter mockAdapter;
         private ITestRunnerModel mockModel;
-        private IProjectPresenter projectPresenter;
+        private ProjectPresenter projectPresenter;
 
         [SetUp]
         public void SetUp()
@@ -43,7 +45,6 @@ namespace Gallio.Icarus.Tests.Core.Presenter
             mockAdapter.StatusText = "blah blah";
             mocks.ReplayAll();
             projectPresenter.StatusText = "blah blah";
-            Assert.AreEqual("blah blah", mockAdapter.StatusText);
         }
 
         [Test, Category("IProjectPresenter")]
@@ -77,6 +78,9 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         [Test]
         public void RunTests_Test()
         {
+            mockModel.RunTests();
+            mocks.ReplayAll();
+            projectPresenter.RunTests(mockAdapter, EventArgs.Empty);
         }
 
         [Test]
