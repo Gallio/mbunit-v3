@@ -217,12 +217,45 @@ namespace Gallio.Icarus.Controls
 
                 UpdateParentNodeState(true);
 
+                UpdateDuplicateNodes();
+
                 tv.EndUpdate();
             }
         }
 
+        private void UpdateDuplicateNodes()
+        {
+            UpdateDuplicateNode(this);
+            foreach (TreeNode node in Nodes)
+            {
+                TestTreeNode tn = node as TestTreeNode;
+                if (tn != null)
+                {
+                    UpdateDuplicateNode(tn);
+                }
+            }
+            TestTreeNode parent = Parent as TestTreeNode;
+            while (parent != null)
+            {
+                UpdateDuplicateNode(parent);
+                parent = parent.Parent as TestTreeNode;
+            }
+        }
+
+        private void UpdateDuplicateNode(TestTreeNode node)
+        {
+            foreach (TreeNode n in TreeView.Nodes.Find(node.Name, true))
+            {
+                TestTreeNode tn = n as TestTreeNode;
+                if (tn != null && !tn.Equals(node) && tn.CheckState != node.CheckState)
+                {
+                    tn.Toggle();
+                }
+            }
+        }
+
         /// <summary>
-        /// Recursiveley update child node's state based on the state of this node.
+        /// Recursively update child node's state based on the state of this node.
         /// </summary>
         private void UpdateChildNodeState()
         {
@@ -240,7 +273,7 @@ namespace Gallio.Icarus.Controls
         }
 
         /// <summary>
-        /// Recursiveley update parent node state based on the current state of this node.
+        /// Recursively update parent node state based on the current state of this node.
         /// </summary>
         private void UpdateParentNodeState(bool isStartingPoint)
         {

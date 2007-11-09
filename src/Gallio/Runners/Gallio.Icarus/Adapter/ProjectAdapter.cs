@@ -18,6 +18,8 @@ using System.Diagnostics;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Interfaces;
+using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 
@@ -163,7 +165,12 @@ namespace Gallio.Icarus.Adapter
         {
             if (SetFilter != null)
             {
-                SetFilter(this, new SetFilterEventArgs(_Model.GetFilter(e.Nodes)));
+                Filter<ITest> filter = _Model.GetFilter(e.Nodes);
+                if (filter == null)
+                {
+                    filter = new NoneFilter<ITest>();
+                }
+                SetFilter(this, new SetFilterEventArgs(filter));
             }
         }
 

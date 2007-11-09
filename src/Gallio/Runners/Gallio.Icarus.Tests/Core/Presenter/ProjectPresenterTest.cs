@@ -47,7 +47,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             projectPresenter.StatusText = "blah blah";
         }
 
-        [Test, Category("IProjectPresenter")]
+        [Test, Category("ProjectPresenter"), Category("AnotherCategory"), Author("Graham Hay")]
         public void CompletedWorkUnits_Test()
         {
             mockAdapter.CompletedWorkUnits = 2;

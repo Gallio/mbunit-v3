@@ -726,12 +726,11 @@ namespace Gallio.Icarus
             this.treeFilterCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.treeFilterCombo.FormattingEnabled = true;
             this.treeFilterCombo.Items.AddRange(new object[] {
-            "All",
             "Namespaces",
             "Authors",
             "Categories",
             "Importance",
-            "TestOn\'s"});
+            "TestsOn"});
             this.treeFilterCombo.Location = new System.Drawing.Point(53, 3);
             this.treeFilterCombo.Name = "treeFilterCombo";
             this.treeFilterCombo.Size = new System.Drawing.Size(260, 21);

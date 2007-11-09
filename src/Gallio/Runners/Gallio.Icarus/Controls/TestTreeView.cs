@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -74,15 +75,15 @@ namespace Gallio.Icarus.Controls
                     case TreeViewAction.ByKeyboard:
                     case TreeViewAction.ByMouse:
                         {
-                            if (e.Node is TestTreeNode)
+                            // Toggle node
+                            TestTreeNode tn = e.Node as TestTreeNode;
+                            if (tn != null)
                             {
-                                // Toggle to the next state.
-                                TestTreeNode tn = e.Node as TestTreeNode;
-                                if (tn != null) tn.Toggle();
+                                tn.Toggle();
                             }
-
                             break;
                         }
+
                     case TreeViewAction.Collapse:
                     case TreeViewAction.Expand:
                     case TreeViewAction.Unknown:
@@ -217,65 +218,17 @@ namespace Gallio.Icarus.Controls
             }
         }
 
-        public void Passed(string testId)
+        public void UpdateTestState(string testId, TestState testState)
         {
             TreeNode[] nodes = Nodes.Find(testId, true);
-            if (nodes.Length == 1)
+            foreach (TreeNode n in nodes)
             {
-                TestTreeNode node = nodes[0] as TestTreeNode;
-                node.TestState = TestState.Success;
+                TestTreeNode node = n as TestTreeNode;
+                node.TestState = testState;
             }
         }
 
-        public void Failed(string testId)
-        {
-            TreeNode[] nodes = Nodes.Find(testId, true);
-            if (nodes.Length == 1)
-            {
-                TestTreeNode node = nodes[0] as TestTreeNode;
-                node.TestState = TestState.Failed;
-            }
-        }
-
-        public void Skipped(string testId)
-        {
-            TreeNode[] nodes = Nodes.Find(testId, true);
-            if (nodes.Length == 1)
-            {
-                TestTreeNode node = nodes[0] as TestTreeNode;
-                node.TestState = TestState.Skipped;
-            }
-        }
-
-        public void Ignored(string testId)
-        {
-            TreeNode[] nodes = Nodes.Find(testId, true);
-            if (nodes.Length == 1)
-            {
-                TestTreeNode node = nodes[0] as TestTreeNode;
-                node.TestState = TestState.Ignored;
-            }
-        }
-
-        public int CountTests()
-        {
-            int count = 0;
-            foreach (TreeNode node in Nodes)
-            {
-                TestTreeNode ttnode = node as TestTreeNode;
-                if (ttnode != null)
-                {
-                    if (ttnode.SelectedImageIndex == 4 && ttnode.Checked)
-                    {
-                        count++;
-                    }
-                    count += CountTests(ttnode.Nodes);
-                }
-            }
-            return count;
-        }
-
-        public int CountTests(TreeNodeCollection nodes)
+        public int CountTests(TreeNodeCollection nodes, List<string> dupes)
         {
             int count = 0;
             foreach (TreeNode node in nodes)
@@ -283,11 +236,15 @@ namespace Gallio.Icarus.Controls
                 TestTreeNode ttnode = node as TestTreeNode;
                 if (ttnode != null)
                 {
-                    if (ttnode.SelectedImageIndex == 4 && ttnode.Checked)
+                    if (ttnode.SelectedImageIndex == 4 && ttnode.Checked && !dupes.Contains(ttnode.Name))
                     {
+                        if (Nodes.Find(ttnode.Name, true).Length > 1)
+                        {
+                            dupes.Add(ttnode.Name);
+                        }
                         count++;
                     }
-                    count += CountTests(ttnode.Nodes);
+                    count += CountTests(ttnode.Nodes, dupes);
                 }
             }
             return count;

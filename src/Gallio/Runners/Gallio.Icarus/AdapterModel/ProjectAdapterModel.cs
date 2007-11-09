@@ -45,8 +45,20 @@ namespace Gallio.Icarus.AdapterModel
                     PopulateNamespaceTree(testModel.RootTest.Children, root);
                     break;
 
+                case "Authors":
+                    PopulateMetadataTree(MetadataKeys.AuthorName, testModel.RootTest.Children, root, root);
+                    break;
+
                 case "Categories":
-                    PopulateCategoryTree(testModel.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.CategoryName, testModel.RootTest.Children, root, root);
+                    break;
+                
+                case "Importance":
+                    PopulateMetadataTree(MetadataKeys.Importance, testModel.RootTest.Children, root, root);
+                    break;
+
+                case "TestsOn":
+                    PopulateMetadataTree(MetadataKeys.TestsOn, testModel.RootTest.Children, root, root);
                     break;
             }
             root.ExpandAll();
@@ -99,7 +111,7 @@ namespace Gallio.Icarus.AdapterModel
             }
         }
 
-        private void PopulateCategoryTree(List<TestData> list, TestTreeNode root, TestTreeNode parent)
+        private void PopulateMetadataTree(string key, List<TestData> list, TestTreeNode root, TestTreeNode parent)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -112,41 +124,51 @@ namespace Gallio.Icarus.AdapterModel
                         case ComponentKind.Fixture:
                         case ComponentKind.Test:
                             int imgIndex = GetImageIndex(componentKind);
-                            string category = td.Metadata.GetValue(MetadataKeys.CategoryName) ?? "None";
-                            // find category node (or add if it doesn't exist)
-                            TestTreeNode categoryNode;
-                            if (root.Nodes.ContainsKey(category))
+                            IList<string> metadata = td.Metadata[key];
+                            if (metadata.Count == 0)
                             {
-                                categoryNode = root.Nodes.Find(category, false)[0] as TestTreeNode;
+                                metadata = new List<string>();
+                                metadata.Add("None");
                             }
-                            else
+                            foreach (string m in metadata)
                             {
-                                categoryNode = new TestTreeNode(category, category, 0);
-                                root.Nodes.Add(categoryNode);
-                            }
-                            // add node in the appropriate place
-                            if (componentKind == ComponentKind.Fixture)
-                            {
-                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
-                                categoryNode.Nodes.Add(ttnode);
-                                PopulateCategoryTree(td.Children, root, ttnode);
-                                continue;
-                            }
-                            else
-                            {
-                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
-                                if (category != "None")
+                                // find metadata node (or add if it doesn't exist)
+                                TestTreeNode metadataNode;
+                                if (root.Nodes.ContainsKey(m))
                                 {
-                                    categoryNode.Nodes.Add(ttnode);
+                                    metadataNode = root.Nodes.Find(m, false)[0] as TestTreeNode;
                                 }
                                 else
                                 {
-                                    parent.Nodes.Add(ttnode);
+                                    metadataNode = new TestTreeNode(m, m, 0);
+                                    root.Nodes.Add(metadataNode);
+                                }
+                                // add node in the appropriate place
+                                if (componentKind == ComponentKind.Fixture)
+                                {
+                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                                    metadataNode.Nodes.Add(ttnode);
+                                    PopulateMetadataTree(key, td.Children, root, ttnode);
+                                }
+                                else
+                                {
+                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                                    if (m != "None")
+                                    {
+                                        metadataNode.Nodes.Add(ttnode);
+                                    }
+                                    else
+                                    {
+                                        parent.Nodes.Add(ttnode);
+                                    }
                                 }
                             }
                             break;
                     }
-                    PopulateCategoryTree(td.Children, root, parent);
+                    if (componentKind != ComponentKind.Fixture)
+                    {
+                        PopulateMetadataTree(key, td.Children, root, parent);
+                    }
                 }
             }
         }
@@ -207,34 +229,39 @@ namespace Gallio.Icarus.AdapterModel
                 {
                     case CheckBoxStates.Checked:
                         {
-                            switch (node.SelectedImageIndex)
+                            if (node.SelectedImageIndex > 2)
                             {
-                                case 0:
-                                    {
-                                        filters.Add(new AnyFilter<ITest>());
-                                        break;
-                                    }
-                                case 2:
-                                    {
-                                        filters.Add(GetFilter(node.Nodes));
-                                        break;
-                                    }
-                                default:
-                                    {
-                                        filters.Add(new IdFilter<ITest>(node.Name));
-                                        break;
-                                    }
+                                filters.Add(new IdFilter<ITest>(node.Name));
+                            }
+                            else
+                            {
+                                Filter<ITest> childFilters = GetFilter(node.Nodes);
+                                if (childFilters != null)
+                                {
+                                    filters.Add(childFilters);
+                                }
                             }
                             break;
                         }
                     case CheckBoxStates.Indeterminate:
                         {
-                            filters.Add(GetFilter(node.Nodes));
+                            Filter<ITest> childFilters = GetFilter(node.Nodes);
+                            if (childFilters != null)
+                            {
+                                filters.Add(childFilters);
+                            }
                             break;
                         }
                 }
             }
-            return new AndFilter<ITest>(filters.ToArray());
+            if (filters.Count > 0)
+            {
+                return new AndFilter<ITest>(filters.ToArray());
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

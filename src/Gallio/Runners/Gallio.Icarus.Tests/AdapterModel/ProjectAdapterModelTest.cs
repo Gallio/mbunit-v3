@@ -24,7 +24,7 @@ using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus.Tests
 {
-    [TestFixture, Category("IProjectAdapterModel")]
+    [TestFixture, Category("ProjectAdapterModel"), Category("Category2")]
     public class ProjectAdapterModelTest
     {
         private ProjectAdapterModel projectAdapterModel;

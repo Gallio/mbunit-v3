@@ -98,11 +98,12 @@ namespace Gallio.Icarus
 
         #region Delegates
 
-        public delegate void SingleParameterMethodDelegate(object o);
-        public delegate void ClearTreeDelegate();
-        public delegate void AddRangeToTreeDelegate(TreeNode[] nodes);
-        public delegate void ClearListDelegate();
-        public delegate void AddRangeToListDelegate(ListViewItem[] items);
+        private delegate void SingleParameterMethodDelegate(object o);
+        private delegate void ClearTreeDelegate();
+        private delegate void AddRangeToTreeDelegate(TreeNode[] nodes);
+        private delegate void ClearListDelegate();
+        private delegate void AddRangeToListDelegate(ListViewItem[] items);
+        private delegate string GetTreeFilterDelegate();
 
         #endregion
 
@@ -170,9 +171,10 @@ namespace Gallio.Icarus
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
-            treeFilterCombo.SelectedIndex = 1;
+            treeFilterCombo.SelectedIndex = 0;
             filterTestResultsCombo.SelectedIndex = 0;
             graphsFilterBox1.SelectedIndex = 0;
+            logStream.SelectedIndex = 0;
 
             testTree.TestStateImageList = stateImages;
 
@@ -350,11 +352,9 @@ namespace Gallio.Icarus
             {
                 GetTestTree(this, new SingleStringEventArgs(GetTreeFilter()));
             }
-            testTree.Invoke(new MethodInvoker(testTree.Sort));
+            //testTree.Invoke(new MethodInvoker(testTree.Sort));
             StatusText = "Ready...";
         }
-
-        private delegate string GetTreeFilterDelegate();
 
         private string GetTreeFilter()
         {
@@ -562,7 +562,7 @@ namespace Gallio.Icarus
                 if (testId != null)
                 {
                     testProgressStatusBar.Passed++;
-                    testTree.Passed(testId);
+                    testTree.UpdateTestState(testId, TestState.Success);
                 }
             }
         }
@@ -579,7 +579,7 @@ namespace Gallio.Icarus
                 if (testId != null)
                 {
                     testProgressStatusBar.Failed++;
-                    testTree.Failed(testId);
+                    testTree.UpdateTestState(testId, TestState.Failed);
                 }
             }
         }
@@ -596,7 +596,7 @@ namespace Gallio.Icarus
                 if (testId != null)
                 {
                     testProgressStatusBar.Ignored++;
-                    testTree.Ignored(testId);
+                    testTree.UpdateTestState(testId, TestState.Ignored);
                 }
             }
         }
@@ -613,7 +613,7 @@ namespace Gallio.Icarus
                 if (testId != null)
                 {
                     testProgressStatusBar.Skipped++;
-                    testTree.Skipped(testId);
+                    testTree.UpdateTestState(testId, TestState.Skipped);
                 }
             }
         }
@@ -720,7 +720,9 @@ namespace Gallio.Icarus
                 {
                     SetFilter(this, new SetFilterEventArgs(testTree.Nodes));
                 }
-                testProgressStatusBar.Total = testTree.CountTests();
+                testTree.Reset(testTree.Nodes);
+                testProgressStatusBar.Clear();
+                testProgressStatusBar.Total = testTree.CountTests(testTree.Nodes, new List<string>());
             }
         }
 
