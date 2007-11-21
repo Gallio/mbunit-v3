@@ -64,5 +64,11 @@ namespace Gallio.Model.Filters
             AssemblyName name = new AssemblyName(assemblyName);
             return name.Name;
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return " Assembly(" + assemblyName + ") ";
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Gallio.Model.Filters
     /// <summary>
     /// Provides functions for construncting test filters a string representation.
     /// </summary>
-    public static class FilterParser
+    public class FilterParser
     {
         /// <summary>
         /// Parses a description of a list of filters that must be jointly satisfied
@@ -39,13 +39,8 @@ namespace Gallio.Model.Filters
         public static Filter<T> ParseFilterList<T>(string filterListDescription)
             where T : IModelComponent
         {
-            if (filterListDescription == null)
-                throw new ArgumentNullException(@"filterListDescription");
-
-            string[] filterDescriptions = filterListDescription.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            Filter<T>[] filters = GenericUtils.ConvertAllToArray<string, Filter<T>>(filterDescriptions, ParseFilter<T>);
-
-            return new AndFilter<T>(filters);
+            FilterParser<T> parser = new FilterParser<T>(filterListDescription);
+            return parser.ParsedFilter;
         }
 
         /// <summary>
@@ -125,6 +120,227 @@ namespace Gallio.Model.Filters
                 default:
                     return new MetadataFilter<T>(filterKey, filterValue);
             }
+        }
+    }
+
+    internal class FilterParser<T>
+        where T : IModelComponent
+    {
+        private Filter<T> parsedFilter = null;
+        private readonly FilterLexer lexer;
+
+        internal FilterParser(string filterListDescription)
+        {
+            lexer = new FilterLexer(filterListDescription);
+            Parse();
+        }
+
+        public Filter<T> ParsedFilter
+        {
+            get { return parsedFilter; }
+        }
+
+        private void Parse()
+        {
+            parsedFilter = MatchFilter();
+        }
+
+        private Filter<T> MatchFilter()
+        {
+            return MatchOrFilter();
+        }
+
+        private Filter<T> MatchOrFilter()
+        {
+            List<Filter<T>> filters = new List<Filter<T>>();
+            Filter<T> firstFilter = MatchAndFilter();
+            filters.Add(firstFilter);
+            
+            FilterToken nextToken = lexer.LookAhead(1);
+            while (nextToken != null && nextToken.Type == FilterTokenType.Or)
+            {
+                lexer.GetNextToken();
+                filters.Add(MatchAndFilter());
+                nextToken = lexer.LookAhead(1);
+            }
+
+            if (filters.Count > 1)
+                return new OrFilter<T>(filters.ToArray());
+            else
+                return firstFilter;
+        }
+
+        private Filter<T> MatchAndFilter()
+        {
+            List<Filter<T>> filters = new List<Filter<T>>();
+            Filter<T> firstFilter = MatchNegationFilter();
+            filters.Add(firstFilter);
+
+            FilterToken nextToken = lexer.LookAhead(1);
+            while (nextToken != null && nextToken.Type == FilterTokenType.And)
+            {
+                lexer.GetNextToken();
+                filters.Add(MatchNegationFilter());
+                nextToken = lexer.LookAhead(1);
+            }
+
+            if (filters.Count > 1)
+                return new AndFilter<T>(filters.ToArray());
+            else
+                return firstFilter;
+        }
+
+        private Filter<T> MatchNegationFilter()
+        {
+            FilterToken nextToken = lexer.LookAhead(1);
+            if (nextToken != null && nextToken.Type == FilterTokenType.Not)
+            {
+                lexer.GetNextToken();
+                return new NotFilter<T>(MatchParenthesizedFilter());
+            }
+
+            return MatchParenthesizedFilter();
+        }
+
+        private Filter<T> MatchParenthesizedFilter()
+        {
+            Filter<T> filter = null;
+            FilterToken nextToken = lexer.LookAhead(1);
+            if (nextToken != null)
+            {
+                if (nextToken.Type == FilterTokenType.LeftBracket)
+                {
+                    lexer.GetNextToken();
+                    filter = MatchOrFilter();
+                    MatchRightBracket();
+                }
+                else
+                {
+                    List<Filter<T>> values = new List<Filter<T>>();
+                    FilterToken key = MatchKey();
+                    MatchColon();
+                    List<FilterToken> matchSequence = MatchMatchSequence();
+                    if (matchSequence.Count > 1)
+                    {
+                        foreach (FilterToken value in matchSequence)
+                        {
+                            values.Add(BuildFilter(key.Text, value.Text));
+                        }
+                        return new OrFilter<T>(values.ToArray());
+                    }
+                    else
+                    {
+                        return BuildFilter(key.Text, matchSequence[0].Text);
+                    }
+                }
+            }
+
+            return filter;
+        }
+
+        private FilterToken MatchKey()
+        {
+            FilterToken nextToken = lexer.LookAhead(1);
+            if (nextToken == null || IsNotWord(nextToken))
+            {
+                throw new Exception("String literal expected");
+            }
+            lexer.GetNextToken();
+
+            return nextToken;
+        }
+
+        private void MatchColon()
+        {
+            FilterToken nextToken = lexer.LookAhead(1);
+            if (nextToken == null || nextToken.Type != FilterTokenType.Colon)
+            {
+                throw new Exception("Colon expected");
+            }
+            lexer.GetNextToken();
+        }
+
+        private List<FilterToken> MatchMatchSequence()
+        {
+            List<FilterToken> values = new List<FilterToken>();
+            values.Add(MatchValue());
+            FilterToken nextToken = lexer.LookAhead(1);
+            while (nextToken != null && nextToken.Type == FilterTokenType.Comma)
+            {
+                MatchComma();
+                values.Add(MatchValue());
+                nextToken = lexer.LookAhead(1);
+            }
+
+            return values;
+        }
+
+        private FilterToken MatchValue()
+        {
+            FilterToken nextToken = lexer.LookAhead(1);
+            if (nextToken == null || IsNotWord(nextToken))
+            {
+                throw new Exception("Value expected");
+            }
+            lexer.GetNextToken();
+            return nextToken;
+        }
+
+        private void MatchRightBracket()
+        {
+            FilterToken nextToken = lexer.LookAhead(1);
+            if (nextToken == null || nextToken.Type != FilterTokenType.RightBracket)
+            {
+                throw new Exception("Right bracket expected");
+            }
+            lexer.GetNextToken();
+        }
+
+        private void MatchComma()
+        {
+            FilterToken nextToken = lexer.LookAhead(1);
+            if (nextToken == null || nextToken.Type != FilterTokenType.Comma)
+            {
+                throw new Exception("Comma expected");
+            }
+            lexer.GetNextToken();
+        }
+
+        private static Filter<T> BuildFilter(string filterKey, string filterValue)
+        {
+            switch (filterKey)
+            {
+                case "Id":
+                    return new IdFilter<T>(filterValue);
+                case "Assembly":
+                    return new AssemblyFilter<T>(filterValue);
+                case "Namespace":
+                    return new NamespaceFilter<T>(filterValue);
+                case "Type":
+                    return new TypeFilter<T>(filterValue, true);
+                case "Member":
+                    return new MemberFilter<T>(filterValue);
+                default:
+                    return new MetadataFilter<T>(filterKey, filterValue);
+            }
+        }
+
+        private static bool IsWord(FilterToken token)
+        {
+            return token.Type == FilterTokenType.QuotedWord || token.Type == FilterTokenType.UnquotedWord;
+        }
+
+        private static bool IsNotWord(FilterToken token)
+        {
+            return !IsWord(token);
+        }
+    }
+
+    internal class FilterRecognitionException : Exception
+    {
+        internal FilterRecognitionException(FilterTokenType expected, FilterToken[] found)
+            : base("Expected character '" + expected + "', but '" + found + "' was found instead.")
+        {
         }
     }
 }

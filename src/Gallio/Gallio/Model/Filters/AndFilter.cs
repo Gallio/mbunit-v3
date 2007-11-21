@@ -48,5 +48,16 @@ namespace Gallio.Model.Filters
                 return filter.IsMatch(value);
             });
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            string innerValues = string.Empty;
+            Array.ForEach(filters, delegate(Filter<T> filter)
+            {
+                innerValues += " {" + filter + "} ";
+            });
+            return " And(" + innerValues + ") ";
+        }
     }
 }

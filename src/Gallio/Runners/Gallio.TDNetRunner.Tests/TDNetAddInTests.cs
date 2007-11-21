@@ -68,6 +68,12 @@ namespace Gallio.TDNetRunner.Tests
         }
 
         [Test]
+        public void ExecutionTest_NullTestListener()
+        {
+            //ITestRunner
+        }
+
+        [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunNamespace_NullITestListener()
         {

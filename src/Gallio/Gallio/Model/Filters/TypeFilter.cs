@@ -46,8 +46,9 @@ namespace Gallio.Model.Filters
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null</exception>
         public TypeFilter(string typeName, bool includeDerivedTypes)
         {
-            if (typeName == null)
-                throw new ArgumentNullException(@"typeName");
+            //TODO: Localize this message
+            if (String.IsNullOrEmpty(typeName))
+                throw new ArgumentException(@"The Type's name can't be an empty string.");
 
             this.typeName = typeName;
             this.includeDerivedTypes = includeDerivedTypes;
@@ -95,6 +96,12 @@ namespace Gallio.Model.Filters
             return typeName == type.AssemblyQualifiedName
                 || typeName == type.FullName
                 || typeName == type.Name;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return " Type(" + typeName + ") ";
         }
     }
 }

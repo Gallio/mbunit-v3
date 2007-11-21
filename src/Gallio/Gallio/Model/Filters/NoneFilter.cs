@@ -28,5 +28,11 @@ namespace Gallio.Model.Filters
         {
             return false;
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return " None() ";
+        }
     }
 }

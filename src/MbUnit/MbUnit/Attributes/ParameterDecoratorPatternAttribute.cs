@@ -14,12 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using MbUnit.Model;
 using Gallio.Model;
-using MbUnit.Model;
 
 namespace MbUnit.Attributes
 {

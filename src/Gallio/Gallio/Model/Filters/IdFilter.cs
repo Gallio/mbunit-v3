@@ -25,7 +25,7 @@ namespace Gallio.Model.Filters
     [Serializable]
     public class IdFilter<T> : Filter<T> where T : IModelComponent
     {
-        private string id;
+        private readonly string id;
 
         /// <summary>
         /// Creates an identity filter.
@@ -44,6 +44,12 @@ namespace Gallio.Model.Filters
         public override bool IsMatch(T value)
         {
             return value.Id == id;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return " Id(" + id + ") ";
         }
     }
 }

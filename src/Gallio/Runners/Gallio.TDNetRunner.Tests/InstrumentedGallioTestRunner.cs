@@ -13,11 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
+using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Runner;
 using Gallio.TDNetRunner;
+using ITestRunner = TestDriven.Framework.ITestRunner;
+using TDF = TestDriven.Framework;
 
 namespace Gallio.TDNetRunner.Tests
 {
@@ -32,6 +34,11 @@ namespace Gallio.TDNetRunner.Tests
         {
             launcher.RuntimeSetup = null;
             return base.RunLauncher(launcher);
+        }
+
+        public new TDF.TestRunState Run(TDF.ITestListener testListener, Assembly assembly, Filter<ITest> filter)
+        {
+            return base.Run(testListener, assembly, filter);
         }
     }
 }

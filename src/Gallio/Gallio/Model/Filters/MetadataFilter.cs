@@ -48,5 +48,11 @@ namespace Gallio.Model.Filters
         {
             return value.Metadata[key].Contains(this.value);
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return " Metadata(" + key + "," + value + ") ";
+        }
     }
 }

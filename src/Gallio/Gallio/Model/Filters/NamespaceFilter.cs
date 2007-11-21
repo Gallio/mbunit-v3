@@ -46,5 +46,11 @@ namespace Gallio.Model.Filters
         {
             return namespaceName == value.CodeReference.NamespaceName;
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return " Namespace(" + namespaceName + ") ";
+        }
     }
 }

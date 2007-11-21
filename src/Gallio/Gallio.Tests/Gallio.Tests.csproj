@@ -9,6 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.Tests</RootNamespace>
     <AssemblyName>Gallio.Tests</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,6 +71,8 @@
     <Compile Include="Core\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Contexts\ContextTest.cs" />
     <Compile Include="Hosting\LoaderTest.cs" />
+    <Compile Include="Model\Filters\FilterLexerTest.cs" />
+    <Compile Include="Model\Filters\FilterParserTest.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />
     <Compile Include="Integration\BaseSampleTest.cs" />
@@ -113,6 +117,9 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Key.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

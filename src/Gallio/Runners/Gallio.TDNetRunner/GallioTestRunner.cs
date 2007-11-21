@@ -119,7 +119,7 @@ namespace Gallio.TDNetRunner
             return launcher.Run();
         }
 
-        private TestRunState Run(ITestListener testListener, Assembly assembly, Filter<ITest> filter)
+        protected TestRunState Run(ITestListener testListener, Assembly assembly, Filter<ITest> filter)
         {
             if (testListener == null)
                 throw new ArgumentNullException(@"testListener");

@@ -13,26 +13,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
 namespace Gallio.Model.Filters
 {
-    /// <summary>
-    /// A filter that matches anything and always returns true.
-    /// </summary>
-    [Serializable]
-    public class AnyFilter<T> : Filter<T>
+    internal class FilterToken
     {
-        /// <inheritdoc />
-        public override bool IsMatch(T value)
+        private readonly FilterTokenType type;
+        private readonly string text;
+        private readonly int position;
+
+        internal FilterToken(FilterTokenType type, string text, int position)
         {
-            return true;
+            this.type = type;
+            this.text = text;
+            this.position = position;
         }
 
-        /// <inheritdoc />
-        public override string ToString()
+        public FilterTokenType Type
         {
-            return "Any";
+            get { return type; }
+        }
+
+        public string Text
+        {
+            get { return text; }
+        }
+
+        public int Position
+        {
+            get { return position; }
         }
     }
 }

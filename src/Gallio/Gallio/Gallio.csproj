@@ -39,6 +39,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.1.0.8206, Culture=neutral, PublicKeyToken=3a9cab8f8d22bfb7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\ANTLR\Antlr3.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
@@ -80,6 +84,9 @@
     <Compile Include="Model\BaseTestFramework.cs" />
     <Compile Include="Logging\ContextualLogTextWriter.cs" />
     <Compile Include="Logging\ContextualLogTraceListener.cs" />
+    <Compile Include="Model\Filters\FilterLexer.cs" />
+    <Compile Include="Model\Filters\FilterToken.cs" />
+    <Compile Include="Model\Filters\FilterTokenType.cs" />
     <Compile Include="Runner\Harness\ConsoleTestEnvironment.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarness.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarnessFactory.cs" />

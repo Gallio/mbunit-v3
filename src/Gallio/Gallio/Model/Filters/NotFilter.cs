@@ -43,5 +43,11 @@ namespace Gallio.Model.Filters
         {
             return !filter.IsMatch(value);
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return " Not(" + filter + ") ";
+        }
     }
 }

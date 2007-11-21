@@ -47,5 +47,11 @@ namespace Gallio.Model.Filters
         {
             return memberName == value.CodeReference.MemberName;
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return " Member(" + memberName + ") ";
+        }
     }
 }
