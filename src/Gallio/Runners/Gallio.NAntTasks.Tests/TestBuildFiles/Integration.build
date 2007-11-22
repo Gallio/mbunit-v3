@@ -5,7 +5,7 @@
   <property name="TestAssembly" value="..\bin\Gallio.TestResources.MbUnit2.dll" />
   
   <target name="PassingTests">
-    <gallio result-property="ExitCode" filter="Type=PassingTests">
+    <gallio result-property="ExitCode" filter="Type: PassingTests">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -18,7 +18,7 @@
   </target>
 
   <target name="FailingTests">
-    <gallio filter="Type=FailingFixture">
+    <gallio filter="Type: FailingFixture">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -31,7 +31,7 @@
   </target>
 
   <target name="FailingTestsWithIgnoreFailures">
-    <gallio result-property="ExitCode" filter="Type=FailingFixture" failonerror="false">
+    <gallio result-property="ExitCode" filter="Type: FailingFixture" failonerror="false">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -56,7 +56,7 @@
   </target>
 
   <target name="NoTests">
-    <gallio result-property="ExitCode" filter="Type=NoSuchType">
+    <gallio result-property="ExitCode" filter="Type: NoSuchType">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>

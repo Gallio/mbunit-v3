@@ -6,7 +6,7 @@
   </PropertyGroup>
   
   <Target Name="PassingTests">
-    <Gallio Filter="Type=PassingTests" Assemblies="$(TestAssembly)"
+    <Gallio Filter="Type: PassingTests" Assemblies="$(TestAssembly)"
             PluginDirectories="$(GallioPath)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
@@ -16,14 +16,14 @@
   </Target>
   
   <Target Name="FailingTests">
-    <Gallio Filter="Type=FailingFixture" Assemblies="$(TestAssembly)"
+    <Gallio Filter="Type: FailingFixture" Assemblies="$(TestAssembly)"
             PluginDirectories="$(GallioPath)" />
     
     <Error Text="Expected failure result code, so should not have reached this point." />
   </Target>
   
   <Target Name="FailingTestsWithIgnoreFailures">
-    <Gallio Filter="Type=FailingFixture" Assemblies="$(TestAssembly)" IgnoreFailures="true"
+    <Gallio Filter="Type: FailingFixture" Assemblies="$(TestAssembly)" IgnoreFailures="true"
             PluginDirectories="$(GallioPath)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
@@ -43,7 +43,7 @@
   </Target>
 
   <Target Name="NoTests">
-    <Gallio Filter="Type=NoSuchType" Assemblies="$(TestAssembly)"
+    <Gallio Filter="Type: NoSuchType" Assemblies="$(TestAssembly)"
             PluginDirectories="$(GallioPath)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>

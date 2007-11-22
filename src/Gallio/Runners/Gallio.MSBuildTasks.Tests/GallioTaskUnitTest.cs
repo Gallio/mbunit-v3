@@ -137,7 +137,7 @@ namespace Gallio.MSBuildTasks.Tests
             Gallio task = CreateTask();
             task.IgnoreFailures = true;
             task.Assemblies = assemblies;
-            task.Filter = "Type=Gallio.TestResources.MbUnit2.PassingTests";
+            task.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests";
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Success);
             Assert.AreEqual(task.TestCount, 4);
@@ -154,7 +154,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=Gallio.TestResources.MbUnit2.FailingFixture";
+            task.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture";
             Assert.IsFalse(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Failure);
             Assert.AreEqual(task.TestCount, 2);
@@ -171,7 +171,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=Gallio.TestResources.MbUnit2.PassingTests;Member=Pass";
+            task.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests & Member: Pass";
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Success);
             Assert.AreEqual(task.TestCount, 1);
@@ -187,7 +187,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=Gallio.TestResources.MbUnit2.FailingFixture;Member=Fail";
+            task.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture & Member: Fail";
             Assert.IsFalse(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Failure);
             Assert.AreEqual(task.TestCount, 1);
@@ -204,7 +204,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type=Gallio.TestResources.MbUnit2.IgnoredTests";
+            task.Filter = "Type: Gallio.TestResources.MbUnit2.IgnoredTests";
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Success);
             Assert.AreEqual(task.TestCount, 2);
