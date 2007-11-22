@@ -167,7 +167,7 @@ namespace Gallio.TDNetRunner
                 if (result.ReportDocumentPaths.Count != 0)
                 {
                     Uri uri = new Uri(result.ReportDocumentPaths[0]);
-                    testListener.TestResultsUrl(uri.AbsoluteUri);
+                    testListener.TestResultsUrl("file:///" + uri.LocalPath.Replace(" ", "%20").Replace(@"\", @"/"));
                 }
 
                 // Inform no tests run, if necessary.
@@ -185,7 +185,7 @@ namespace Gallio.TDNetRunner
         /// </summary>
         /// <param name="logger">The logger</param>
         /// <returns>The full name of the folder or null if it could not be created.</returns>
-        private string GetReportDirectory(ILogger logger)
+        private static string GetReportDirectory(ILogger logger)
         {
             try
             {
@@ -255,7 +255,7 @@ namespace Gallio.TDNetRunner
             testListener.WriteLine(message, Category.Warning);
         }
 
-        private void LogAddInVersion(ILogger logger)
+        private static void LogAddInVersion(ILogger logger)
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             logger.Info(String.Format(Resources.RunnerNameAndVersion + "\n",
