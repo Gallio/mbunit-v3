@@ -51,7 +51,8 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithAssemblyQualifiedName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
-            Assert.AreEqual(expectedMatch, new TypeFilter<IModelComponent>(type.AssemblyQualifiedName, includeDerivedTypes).IsMatch(component));
+            Assert.AreEqual(expectedMatch,
+                new TypeFilter<IModelComponent>(new EqualityFilter<string>(type.AssemblyQualifiedName), includeDerivedTypes).IsMatch(component));
         }
 
         [RowTest]
@@ -63,7 +64,8 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithFullName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
-            Assert.AreEqual(expectedMatch, new TypeFilter<IModelComponent>(type.FullName, includeDerivedTypes).IsMatch(component));
+            Assert.AreEqual(expectedMatch,
+                new TypeFilter<IModelComponent>(new EqualityFilter<string>(type.FullName), includeDerivedTypes).IsMatch(component));
         }
 
         [RowTest]
@@ -75,7 +77,8 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
-            Assert.AreEqual(expectedMatch, new TypeFilter<IModelComponent>(type.Name, includeDerivedTypes).IsMatch(component));
+            Assert.AreEqual(expectedMatch,
+                new TypeFilter<IModelComponent>(new EqualityFilter<string>(type.Name), includeDerivedTypes).IsMatch(component));
         }
     }
 

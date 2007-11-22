@@ -47,7 +47,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return " Not(" + filter + ") ";
+            return "Not(" + filter + ")";
         }
     }
 }

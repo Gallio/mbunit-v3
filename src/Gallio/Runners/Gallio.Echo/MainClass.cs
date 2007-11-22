@@ -127,8 +127,8 @@ namespace Gallio.Echo
                 launcher.TestModelFilename = arguments.SaveTestTree;
 
                 if (!String.IsNullOrEmpty(arguments.Filter))
-                    launcher.Filter = FilterParser.ParseFilter<ITest>(arguments.Filter);
-
+                    launcher.Filter = FilterUtils.ParseTestFilter(arguments.Filter);
+                
                 launcher.EchoResults = !arguments.NoEchoResults;
 
                 TestLauncherResult result = launcher.Run();

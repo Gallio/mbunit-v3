@@ -14,39 +14,39 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
-using Gallio.Model;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
-    /// matches the specified member name filter.  This filter should normally be used together with
-    /// a <see cref="TypeFilter" /> to ensure the accuracy of the member match.
+    /// An equality filter compares values for strict equality.
     /// </summary>
     [Serializable]
-    public class MemberFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    public sealed class EqualityFilter<T> : Filter<T>
+        where T : IEquatable<T>
     {
+        private readonly T comparand;
+
         /// <summary>
-        /// Creates a member filter.
+        /// Creates an equality filter.
         /// </summary>
-        /// <param name="memberNameFilter">A filter for the member name as returned by <see cref="MemberInfo.Name" /></param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="memberNameFilter"/> is null</exception>
-        public MemberFilter(Filter<string> memberNameFilter)
-            : base(memberNameFilter)
+        /// <param name="comparand">The value to compare for equality</param>
+        public EqualityFilter(T comparand)
         {
+            this.comparand = comparand;
         }
 
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            return ValueFilter.IsMatch(value.CodeReference.MemberName);
+            return comparand.Equals(value);
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Member(" + ValueFilter + ")";
+            return "Equality('" + comparand + "')";
         }
     }
 }

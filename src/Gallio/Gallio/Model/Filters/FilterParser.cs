@@ -15,134 +15,58 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
 using Gallio.Model.Filters;
-using Gallio.Model;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// Provides functions for construncting test filters a string representation.
+    /// <para>
+    /// A filter parser constructs filters from its textual representation as a filter expression.
+    /// </para>
+    /// <para>
+    /// The filter grammar is defined as follows:
+    /// </para>
+    /// <para>
+    /// NOTE TO JULIAN:
+    /// Please document the filter grammar here.
+    /// </para>
     /// </summary>
-    public class FilterParser
+    public class FilterParser<T>
     {
+        private readonly IFilterFactory<T> factory;
+        private FilterLexer lexer;
+
         /// <summary>
-        /// Parses a description of a list of filters that must be jointly satisfied
-        /// in the format "FilterKey1=Value1;FilterKey2=Value2a,Value2b;..."
-        /// and constructs a <see cref="Filter{ITest}" /> from it.  The format allows for
-        /// compact specification of alternative values delimited by commas.
+        /// Creates a filter parser.
         /// </summary>
-        /// <typeparam name="T">The type to filter</typeparam>
-        /// <param name="filterListDescription">The filter list description</param>
-        /// <returns>The constructed filter</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filterListDescription"/> is null</exception>
-        public static Filter<T> ParseFilterList<T>(string filterListDescription)
-            where T : IModelComponent
+        /// <param name="factory">The factory to use for constructing
+        /// filters based on filter keys and a filter rule for matching string values</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factory"/> is null</exception>
+        public FilterParser(IFilterFactory<T> factory)
         {
-            FilterParser<T> parser = new FilterParser<T>(filterListDescription);
-            return parser.ParsedFilter;
+            if (factory == null)
+                throw new ArgumentNullException("factory");
+
+            this.factory = factory;
         }
 
         /// <summary>
-        /// Parses a description of a filter in the format "FilterKey=Value1,Value2,Value3,..."
-        /// and constructs a <see cref="Filter{ITest}" /> from it.  The format allows for
-        /// compact specification of alternative values delimited by commas.
+        /// Creates a filter from its textual representation as a filter expression.
         /// </summary>
-        /// <param name="filterDescription">The filter description</param>
-        /// <returns>The constructed filter</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filterDescription"/> is null</exception>
-        public static Filter<T> ParseFilter<T>(string filterDescription)
-            where T : IModelComponent
+        /// <param name="filterExpr">The filter expression</param>
+        /// <returns>The parsed filter</returns>
+        public Filter<T> Parse(string filterExpr)
         {
-            if (filterDescription == null)
-                throw new ArgumentNullException(@"filterDescription");
-
-            int equalsPos = filterDescription.IndexOf('=');
-            if (equalsPos <= 0)
-                throw new ArgumentException("Missing '=' between filter key and values.", "filterDescription");
-
-            string key = filterDescription.Substring(0, equalsPos);
-            string values = equalsPos + 1 == filterDescription.Length ? "" : filterDescription.Substring(equalsPos + 1);
-            string[] splitValues = values.Split(',');
-            return BuildFilter<T>(key, splitValues);
-        }
-
-        /// <summary>
-        /// Builds a filter given a filter key and a list of accepted values for that filter.
-        /// </summary>
-        /// <remarks>
-        /// Recognizes the following filter keys:
-        /// <list type="bullet">
-        /// <item>Id: Filter by id</item>
-        /// <item>Assembly: Filter by assembly name</item>
-        /// <item>Namespace: Filter by namespace name</item>
-        /// <item>Type: Filter by type name</item>
-        /// <item>Member: Filter by member name</item>
-        /// <item>*: All other names are assumed to correspond to metadata keys</item>
-        /// </list>
-        /// </remarks>
-        /// <param name="filterKey">The filter key</param>
-        /// <param name="filterValues">The accepted values</param>
-        /// <typeparam name="T">The type to filter</typeparam>
-        /// <returns>The constructed filter</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filterKey"/> or <paramref name="filterValues"/> is null</exception>
-        public static Filter<T> BuildFilter<T>(string filterKey, string[] filterValues)
-            where T : IModelComponent
-        {
-            if (filterKey == null)
-                throw new ArgumentNullException(@"filterKey");
-            if (filterValues == null)
-                throw new ArgumentNullException(@"filterValues");
-
-            Filter<T>[] filters = GenericUtils.ConvertAllToArray<string, Filter<T>>(filterValues, delegate(string filterValue)
+            try
             {
-                return BuildFilter<T>(filterKey, filterValue);
-            });
-
-            return new OrFilter<T>(filters);
-        }
-
-        private static Filter<T> BuildFilter<T>(string filterKey, string filterValue)
-            where T : IModelComponent
-        {
-            switch (filterKey)
-            {
-                case "Id":
-                    return new IdFilter<T>(filterValue);
-                case "Assembly":
-                    return new AssemblyFilter<T>(filterValue);
-                case "Namespace":
-                    return new NamespaceFilter<T>(filterValue);
-                case "Type":
-                    return new TypeFilter<T>(filterValue, true);
-                case "Member":
-                    return new MemberFilter<T>(filterValue);
-                default:
-                    return new MetadataFilter<T>(filterKey, filterValue);
+                // TODO: Refactor to just pass the lexer around as a parameter in each function.
+                lexer = new FilterLexer(filterExpr);
+                return MatchFilter();
             }
-        }
-    }
-
-    internal class FilterParser<T>
-        where T : IModelComponent
-    {
-        private Filter<T> parsedFilter = null;
-        private readonly FilterLexer lexer;
-
-        internal FilterParser(string filterListDescription)
-        {
-            lexer = new FilterLexer(filterListDescription);
-            Parse();
-        }
-
-        public Filter<T> ParsedFilter
-        {
-            get { return parsedFilter; }
-        }
-
-        private void Parse()
-        {
-            parsedFilter = MatchFilter();
+            finally
+            {
+                lexer = null;
+            }
         }
 
         private Filter<T> MatchFilter()
@@ -216,29 +140,18 @@ namespace Gallio.Model.Filters
                 }
                 else
                 {
-                    List<Filter<T>> values = new List<Filter<T>>();
-                    FilterToken key = MatchKey();
+                    string key = MatchKey();
                     MatchColon();
-                    List<FilterToken> matchSequence = MatchMatchSequence();
-                    if (matchSequence.Count > 1)
-                    {
-                        foreach (FilterToken value in matchSequence)
-                        {
-                            values.Add(BuildFilter(key.Text, value.Text));
-                        }
-                        return new OrFilter<T>(values.ToArray());
-                    }
-                    else
-                    {
-                        return BuildFilter(key.Text, matchSequence[0].Text);
-                    }
+
+                    Filter<string> valueFilter = MatchMatchSequence();
+                    return factory.CreateFilter(key, valueFilter);
                 }
             }
 
             return filter;
         }
 
-        private FilterToken MatchKey()
+        private string MatchKey()
         {
             FilterToken nextToken = lexer.LookAhead(1);
             if (nextToken == null || IsNotWord(nextToken))
@@ -247,7 +160,7 @@ namespace Gallio.Model.Filters
             }
             lexer.GetNextToken();
 
-            return nextToken;
+            return nextToken.Text;
         }
 
         private void MatchColon()
@@ -260,10 +173,11 @@ namespace Gallio.Model.Filters
             lexer.GetNextToken();
         }
 
-        private List<FilterToken> MatchMatchSequence()
+        private Filter<string> MatchMatchSequence()
         {
-            List<FilterToken> values = new List<FilterToken>();
+            List<Filter<string>> values = new List<Filter<string>>();
             values.Add(MatchValue());
+            
             FilterToken nextToken = lexer.LookAhead(1);
             while (nextToken != null && nextToken.Type == FilterTokenType.Comma)
             {
@@ -272,10 +186,13 @@ namespace Gallio.Model.Filters
                 nextToken = lexer.LookAhead(1);
             }
 
-            return values;
+            if (values.Count == 1)
+                return values[0];
+            else
+                return new OrFilter<string>(values.ToArray());
         }
 
-        private FilterToken MatchValue()
+        private Filter<string> MatchValue()
         {
             FilterToken nextToken = lexer.LookAhead(1);
             if (nextToken == null || IsNotWord(nextToken))
@@ -283,7 +200,7 @@ namespace Gallio.Model.Filters
                 throw new Exception("Value expected");
             }
             lexer.GetNextToken();
-            return nextToken;
+            return new EqualityFilter<string>(nextToken.Text);
         }
 
         private void MatchRightBracket()
@@ -304,25 +221,6 @@ namespace Gallio.Model.Filters
                 throw new Exception("Comma expected");
             }
             lexer.GetNextToken();
-        }
-
-        private static Filter<T> BuildFilter(string filterKey, string filterValue)
-        {
-            switch (filterKey)
-            {
-                case "Id":
-                    return new IdFilter<T>(filterValue);
-                case "Assembly":
-                    return new AssemblyFilter<T>(filterValue);
-                case "Namespace":
-                    return new NamespaceFilter<T>(filterValue);
-                case "Type":
-                    return new TypeFilter<T>(filterValue, true);
-                case "Member":
-                    return new MemberFilter<T>(filterValue);
-                default:
-                    return new MetadataFilter<T>(filterKey, filterValue);
-            }
         }
 
         private static bool IsWord(FilterToken token)

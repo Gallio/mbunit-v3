@@ -21,31 +21,25 @@ namespace Gallio.Model.Filters
 {
     /// <summary>
     /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
-    /// contains the specified assembly.
+    /// matches the specified assembly name filter.
     /// </summary>
     [Serializable]
-    public class AssemblyFilter<T> : Filter<T> where T : IModelComponent
+    public class AssemblyFilter<T> : BasePropertyFilter<T> where T : IModelComponent
     {
-        private string assemblyName;
-
         /// <summary>
         /// Creates an assembly filter.
         /// </summary>
-        /// <param name="assemblyName">The type name specified in one of the following ways.
-        /// In each case, the assembly name must exactly match the value obtained via reflection
-        /// on the assembly.
+        /// <param name="assemblyNameFilter">A filter for the assembly name that is used
+        /// to match one of the following values:
         /// <list type="bullet">
         /// <item>Full name as returned by <see cref="Assembly.FullName" /></item>
         /// <item>Simple name (aka. partial name) as returned by <see cref="AssemblyName.Name" /></item>
         /// </list>
         /// </param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> is null</exception>
-        public AssemblyFilter(string assemblyName)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyNameFilter"/> is null</exception>
+        public AssemblyFilter(Filter<string> assemblyNameFilter)
+            :  base(assemblyNameFilter)
         {
-            if (assemblyName == null)
-                throw new ArgumentNullException("assemblyName");
-
-            this.assemblyName = assemblyName;
         }
 
         /// <inheritdoc />
@@ -55,11 +49,11 @@ namespace Gallio.Model.Filters
             if (assemblyName == null)
                 return false;
 
-            return this.assemblyName == assemblyName
-                || this.assemblyName == GetSimpleName(assemblyName);
+            return ValueFilter.IsMatch(assemblyName) ||
+                ValueFilter.IsMatch(GetSimpleName(assemblyName));
         }
 
-        private string GetSimpleName(string assemblyName)
+        private static string GetSimpleName(string assemblyName)
         {
             AssemblyName name = new AssemblyName(assemblyName);
             return name.Name;
@@ -68,7 +62,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return " Assembly(" + assemblyName + ") ";
+            return "Assembly(" + ValueFilter + ")";
         }
     }
 }

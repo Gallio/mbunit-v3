@@ -32,7 +32,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return " None() ";
+            return "None()";
         }
     }
 }

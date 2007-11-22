@@ -14,37 +14,24 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.Id" />
-    /// matches the specified id filter.
+    /// Creates filters of a given type based on a specification that
+    /// consists of a filter key and a rule for matching values.
     /// </summary>
-    [Serializable]
-    public class IdFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    /// <typeparam name="T">The filter type</typeparam>
+    public interface IFilterFactory<T>
     {
         /// <summary>
-        /// Creates an identity filter.
+        /// Creates a filter from a specification 
         /// </summary>
-        /// <param name="idFilter">A filter for the id</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="idFilter"/> is null</exception>
-        public IdFilter(Filter<string> idFilter)
-            : base(idFilter)
-        {
-        }
-
-        /// <inheritdoc />
-        public override bool IsMatch(T value)
-        {
-            return ValueFilter.IsMatch(value.Id);
-        }
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return "Id(" + ValueFilter + ")";
-        }
+        /// <param name="key">The filter key that identifies the kind of filter to create</param>
+        /// <param name="valueFilter">The filter to use as a rule for matching values</param>
+        /// <returns>The filter</returns>
+        Filter<T> CreateFilter(string key, Filter<string> valueFilter);
     }
 }

@@ -60,7 +60,7 @@ namespace Gallio.Tests.Integration
 
         public void AddFixture(Type fixtureType)
         {
-            filters.Add(new TypeFilter<ITest>(fixtureType.AssemblyQualifiedName, false));
+            filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(fixtureType.AssemblyQualifiedName), false));
 
             string assemblyFile = fixtureType.Assembly.Location;
             if (!package.AssemblyFiles.Contains(assemblyFile))

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Text;
 
 namespace Gallio.Model.Filters
 {
@@ -52,12 +53,19 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            string innerValues = string.Empty;
-            Array.ForEach(filters, delegate(Filter<T> filter)
+            StringBuilder result = new StringBuilder();
+            result.Append("And({ ");
+
+            foreach (Filter<T> filter in filters)
             {
-                innerValues += " {" + filter + "} ";
-            });
-            return " And(" + innerValues + ") ";
+                if (result.Length != 6)
+                    result.Append(", ");
+
+                result.Append(filter);
+            }
+
+            result.Append(" })");
+            return result.ToString();
         }
     }
 }

@@ -40,7 +40,8 @@ namespace Gallio.Tests.Model.Filters
             SetupResult.For(component.CodeReference).Return(codeReference);
             Mocks.ReplayAll();
 
-            Assert.AreEqual(expectedMatch, new NamespaceFilter<IModelComponent>(typeof(NamespaceFilterTest).Namespace).IsMatch(component));
+            Assert.AreEqual(expectedMatch, new NamespaceFilter<IModelComponent>(
+                new EqualityFilter<string>(typeof(NamespaceFilterTest).Namespace)).IsMatch(component));
         }
     }
 }

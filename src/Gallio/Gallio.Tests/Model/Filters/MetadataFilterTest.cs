@@ -42,7 +42,8 @@ namespace Gallio.Tests.Model.Filters
             SetupResult.For(component.Metadata).Return(metadata);
             Mocks.ReplayAll();
 
-            Assert.AreEqual(expectedMatch, new MetadataFilter<IModelComponent>("key", "expectedValue").IsMatch(component));
+            Assert.AreEqual(expectedMatch, new MetadataFilter<IModelComponent>("key",
+                new EqualityFilter<string>("expectedValue")).IsMatch(component));
         }
     }
 }

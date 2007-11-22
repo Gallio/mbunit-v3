@@ -21,20 +21,18 @@ namespace Gallio.Model.Filters
 {
     /// <summary>
     /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
-    /// contains the specified type.
+    /// matches the specified type name.
     /// </summary>
     [Serializable]
-    public class TypeFilter<T> : Filter<T> where T : IModelComponent
+    public class TypeFilter<T> : BasePropertyFilter<T> where T : IModelComponent
     {
-        private readonly string typeName;
         private readonly bool includeDerivedTypes;
 
         /// <summary>
         /// Creates a type filter.
         /// </summary>
-        /// <param name="typeName">The type name specified in one of the following ways.
-        /// In each case, the type name must exactly match the value obtained via reflection
-        /// on the type.
+        /// <param name="typeNameFilter">A filter to match the type name obtained via reflection
+        /// on the type in one of the following ways:
         /// <list type="bullet">
         /// <item>Fully qualified by namespace and assembly as returned by <see cref="Type.AssemblyQualifiedName" /></item>
         /// <item>Qualified by namespace as returned by <see cref="Type.FullName" /></item>
@@ -43,14 +41,10 @@ namespace Gallio.Model.Filters
         /// </param>
         /// <param name="includeDerivedTypes">If true, subclasses and interface implementations of the specified
         /// type are also matched by the filter if they can be located</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null</exception>
-        public TypeFilter(string typeName, bool includeDerivedTypes)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeNameFilter"/> is null</exception>
+        public TypeFilter(Filter<string> typeNameFilter, bool includeDerivedTypes)
+            : base(typeNameFilter)
         {
-            //TODO: Localize this message
-            if (String.IsNullOrEmpty(typeName))
-                throw new ArgumentException(@"The Type's name can't be an empty string.");
-
-            this.typeName = typeName;
             this.includeDerivedTypes = includeDerivedTypes;
         }
 
@@ -66,10 +60,6 @@ namespace Gallio.Model.Filters
             {
                 return false;
             }
-
-            // TODO: Handle case where the type cannot be loaded using plain
-            //       old strings.  Naturally we won't be able to
-            //       handle includeDerivedTypes.
 
             if (IsMatchForType(type))
                 return true;
@@ -92,15 +82,15 @@ namespace Gallio.Model.Filters
 
         private bool IsMatchForType(Type type)
         {
-            return typeName == type.AssemblyQualifiedName
-                || typeName == type.FullName
-                || typeName == type.Name;
+            return ValueFilter.IsMatch(type.AssemblyQualifiedName)
+                || ValueFilter.IsMatch(type.FullName)
+                || ValueFilter.IsMatch(type.Name);
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return " Type(" + typeName + ") ";
+            return "Type(" + ValueFilter + ", " + includeDerivedTypes + ")";
         }
     }
 }

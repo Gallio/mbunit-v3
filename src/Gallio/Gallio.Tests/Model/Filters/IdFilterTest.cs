@@ -36,7 +36,8 @@ namespace Gallio.Tests.Model.Filters
             SetupResult.For(component.Id).Return(value);
             Mocks.ReplayAll();
 
-            Assert.AreEqual(expectedMatch, new IdFilter<IModelComponent>("expectedValue").IsMatch(component));
+            Assert.AreEqual(expectedMatch,
+                new IdFilter<IModelComponent>(new EqualityFilter<string>("expectedValue")).IsMatch(component));
         }
     }
 }

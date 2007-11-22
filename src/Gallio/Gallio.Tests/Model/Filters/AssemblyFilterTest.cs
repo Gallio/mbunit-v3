@@ -46,7 +46,8 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, typeof(Int32))]
         public void IsMatchWithFullName(bool expectedMatch, Type type)
         {
-            Assert.AreEqual(expectedMatch, new AssemblyFilter<IModelComponent>(type.Assembly.FullName).IsMatch(component));
+            Assert.AreEqual(expectedMatch, new AssemblyFilter<IModelComponent>(
+                new EqualityFilter<string>(type.Assembly.FullName)).IsMatch(component));
         }
 
         [RowTest]
@@ -54,7 +55,8 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, typeof(Int32))]
         public void IsMatchWithDisplayName(bool expectedMatch, Type type)
         {
-            Assert.AreEqual(expectedMatch, new AssemblyFilter<IModelComponent>(type.Assembly.GetName().Name).IsMatch(component));
+            Assert.AreEqual(expectedMatch, new AssemblyFilter<IModelComponent>(
+                new EqualityFilter<string>(type.Assembly.GetName().Name)).IsMatch(component));
         }
     }
 }

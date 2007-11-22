@@ -657,7 +657,8 @@ namespace Gallio.MSBuildTasks
             {
                 return new AnyFilter<ITest>();
             }
-            return FilterParser.ParseFilterList<ITest>(filter);
+
+            return FilterUtils.ParseTestFilter(filter);
         }
 
         private void DisplayVersion()

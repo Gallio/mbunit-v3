@@ -14,37 +14,25 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.Id" />
-    /// matches the specified id filter.
+    /// Provides utilities for manipulating filters.
     /// </summary>
-    [Serializable]
-    public class IdFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    public static class FilterUtils
     {
         /// <summary>
-        /// Creates an identity filter.
+        /// Parses a test filter.
         /// </summary>
-        /// <param name="idFilter">A filter for the id</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="idFilter"/> is null</exception>
-        public IdFilter(Filter<string> idFilter)
-            : base(idFilter)
+        /// <param name="filterExpr">The filter expression</param>
+        /// <returns>The parsed filter</returns>
+        public static Filter<ITest> ParseTestFilter(string filterExpr)
         {
-        }
-
-        /// <inheritdoc />
-        public override bool IsMatch(T value)
-        {
-            return ValueFilter.IsMatch(value.Id);
-        }
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return "Id(" + ValueFilter + ")";
+            FilterParser<ITest> parser = new FilterParser<ITest>(new ModelComponentFilterFactory<ITest>());
+            return parser.Parse(filterExpr);
         }
     }
 }

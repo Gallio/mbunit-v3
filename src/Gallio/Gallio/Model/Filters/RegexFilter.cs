@@ -14,39 +14,42 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
-using Gallio.Model;
+using System.Text.RegularExpressions;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
-    /// matches the specified member name filter.  This filter should normally be used together with
-    /// a <see cref="TypeFilter" /> to ensure the accuracy of the member match.
+    /// A regex filter matches strings against a given <see cref="Regex" />.
+    /// Null string values are converted to empty strings for regex evaluation purposes.
     /// </summary>
     [Serializable]
-    public class MemberFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    public sealed class RegexFilter : Filter<string>
     {
+        private readonly Regex regex;
+
         /// <summary>
-        /// Creates a member filter.
+        /// Creates an regex filter.
         /// </summary>
-        /// <param name="memberNameFilter">A filter for the member name as returned by <see cref="MemberInfo.Name" /></param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="memberNameFilter"/> is null</exception>
-        public MemberFilter(Filter<string> memberNameFilter)
-            : base(memberNameFilter)
+        /// <param name="regex">The regular expression for matching strings</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        public RegexFilter(Regex regex)
         {
+            if (regex == null)
+                throw new ArgumentNullException("regex");
+
+            this.regex = regex;
         }
 
         /// <inheritdoc />
-        public override bool IsMatch(T value)
+        public override bool IsMatch(string value)
         {
-            return ValueFilter.IsMatch(value.CodeReference.MemberName);
+            return regex.IsMatch(value ?? @"");
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Member(" + ValueFilter + ")";
+            return "Regex('" + regex + "')";
         }
     }
 }

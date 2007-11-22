@@ -43,7 +43,8 @@ namespace Gallio.Tests.Model.Filters
             SetupResult.For(component.CodeReference).Return(codeReference);
             Mocks.ReplayAll();
 
-            Assert.AreEqual(expectedMatch, new MemberFilter<IModelComponent>("A").IsMatch(component));
+            Assert.AreEqual(expectedMatch,
+                new MemberFilter<IModelComponent>(new EqualityFilter<string>("A")).IsMatch(component));
         }
 
         internal static void A()

@@ -49,7 +49,7 @@ namespace Gallio.TDNetRunner
             if (assembly == null)
                 throw new ArgumentNullException(@"assembly");
 
-            return Run(testListener, assembly, new AssemblyFilter<ITest>(assembly.FullName));
+            return Run(testListener, assembly, new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
         }
 
         /// <summary>
@@ -64,13 +64,13 @@ namespace Gallio.TDNetRunner
                 throw new ArgumentNullException(@"member");
 
             List<Filter<ITest>> filters = new List<Filter<ITest>>();
-            filters.Add(new AssemblyFilter<ITest>(assembly.FullName));
+            filters.Add(new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
             switch (member.MemberType)
             {
                 case MemberTypes.TypeInfo:
                     Type type = (Type)member;
                     // FIXME: Should we always include derived types?
-                    filters.Add(new TypeFilter<ITest>(type.FullName, true));
+                    filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true));
                     break;
                 case MemberTypes.Method:
                     MethodInfo methodInfo = (MethodInfo)member;
@@ -78,8 +78,8 @@ namespace Gallio.TDNetRunner
                     // to avoid ambiguity
                     Type declaringType = methodInfo.DeclaringType;
                     // FIXME: Should we always include derived types?
-                    filters.Add(new TypeFilter<ITest>(declaringType.FullName, false));
-                    filters.Add(new MemberFilter<ITest>(member.Name));
+                    filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(declaringType.FullName), false));
+                    filters.Add(new MemberFilter<ITest>(new EqualityFilter<string>(member.Name)));
                     break;
                 default:
                     // This is not something we can run so just ignore it
@@ -101,8 +101,8 @@ namespace Gallio.TDNetRunner
                 throw new ArgumentNullException(@"ns");
 
             List<Filter<ITest>> filters = new List<Filter<ITest>>();
-            filters.Add(new AssemblyFilter<ITest>(assembly.FullName));
-            filters.Add(new NamespaceFilter<ITest>(ns));
+            filters.Add(new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
+            filters.Add(new NamespaceFilter<ITest>(new EqualityFilter<string>(ns)));
 
             return Run(testListener, assembly, new AndFilter<ITest>(filters.ToArray()));
         }

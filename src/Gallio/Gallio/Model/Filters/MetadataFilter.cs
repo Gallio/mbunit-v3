@@ -20,39 +20,42 @@ namespace Gallio.Model.Filters
 {
     /// <summary>
     /// A filter that matches objects whose <see cref="IModelComponent.Metadata" />
-    /// contains the specified key and value.
+    /// has a key with a value that matches the value filter.
     /// </summary>
     [Serializable]
-    public class MetadataFilter<T> : Filter<T> where T : IModelComponent
+    public class MetadataFilter<T> : BasePropertyFilter<T> where T : IModelComponent
     {
-        private string key;
-        private string value;
+        private readonly string key;
 
         /// <summary>
         /// Creates a metadata filter.
         /// </summary>
         /// <param name="key">The metadata key to look for</param>
-        /// <param name="value">The metadata value to look for</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        public MetadataFilter(string key, string value)
+        /// <param name="valueFilter">A filter for the metadata value to match</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="valueFilter"/> is null</exception>
+        public MetadataFilter(string key, Filter<string> valueFilter)
+            : base(valueFilter)
         {
             if (key == null)
                 throw new ArgumentNullException("key");
             
             this.key = key;
-            this.value = value;
         }
 
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            return value.Metadata[key].Contains(this.value);
+            foreach (string assocValue in value.Metadata[key])
+                if (ValueFilter.IsMatch(assocValue))
+                    return true;
+
+            return false;
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return " Metadata(" + key + "," + value + ") ";
+            return "Metadata('" + key + "', " + ValueFilter + ")";
         }
     }
 }

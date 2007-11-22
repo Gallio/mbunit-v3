@@ -231,7 +231,7 @@ namespace Gallio.Icarus.AdapterModel
                         {
                             if (node.SelectedImageIndex > 2)
                             {
-                                filters.Add(new IdFilter<ITest>(node.Name));
+                                filters.Add(new IdFilter<ITest>(new EqualityFilter<string>(node.Name)));
                             }
                             else
                             {

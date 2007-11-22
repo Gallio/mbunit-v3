@@ -20,37 +20,32 @@ namespace Gallio.Model.Filters
 {
     /// <summary>
     /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
-    /// contains the specified namespace.
+    /// matches the specified namespace name.
     /// </summary>
     [Serializable]
-    public class NamespaceFilter<T> : Filter<T> where T : IModelComponent
+    public class NamespaceFilter<T> : BasePropertyFilter<T> where T : IModelComponent
     {
-        private string namespaceName;
-
         /// <summary>
         /// Creates a namespace filter.
         /// </summary>
-        /// <param name="namespaceName">The namespace name that must exactly match the
-        /// value obtained via reflection on types</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespaceName"/> is null</exception>
-        public NamespaceFilter(string namespaceName)
+        /// <param name="namespaceNameFilter">A filter for the namespace name
+        /// obtained via reflection on types</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespaceNameFilter"/> is null</exception>
+        public NamespaceFilter(Filter<string> namespaceNameFilter)
+            : base(namespaceNameFilter)
         {
-            if (namespaceName == null)
-                throw new ArgumentNullException("namespaceName");
-
-            this.namespaceName = namespaceName;
         }
 
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            return namespaceName == value.CodeReference.NamespaceName;
+            return ValueFilter.IsMatch(value.CodeReference.NamespaceName);
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return " Namespace(" + namespaceName + ") ";
+            return "Namespace(" + ValueFilter + ")";
         }
     }
 }
