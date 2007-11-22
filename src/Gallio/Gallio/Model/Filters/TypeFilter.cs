@@ -57,20 +57,19 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            string typeName = value.CodeReference.TypeName;
-            if (typeName == null)
+            Type type;
+            try
+            {
+                type = value.CodeReference.ResolveType();
+            }
+            catch (Exception)
+            {
                 return false;
-            string assemblyName = value.CodeReference.AssemblyName;
-            if (assemblyName == null)
-                return false;
+            }
 
             // TODO: Handle case where the type cannot be loaded using plain
-            //       old string comparisons.  Naturally we won't be able to
+            //       old strings.  Naturally we won't be able to
             //       handle includeDerivedTypes.
-
-            Type type = Type.GetType(typeName + @", " + assemblyName, false);
-            if (type == null)
-                return false;
 
             if (IsMatchForType(type))
                 return true;
