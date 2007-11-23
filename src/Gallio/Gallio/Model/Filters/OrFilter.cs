@@ -25,7 +25,7 @@ namespace Gallio.Model.Filters
     [Serializable]
     public class OrFilter<T> : Filter<T>
     {
-        private Filter<T>[] filters;
+        private readonly Filter<T>[] filters;
 
         /// <summary>
         /// Creates an OR-filter.

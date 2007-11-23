@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Gallio.Model.Filters;
 
 namespace Gallio.Model.Filters
@@ -184,13 +185,31 @@ namespace Gallio.Model.Filters
 
         private static Filter<string> MatchValue(FilterLexer lexer)
         {
+            bool useRegexFilter = false;
             FilterToken nextToken = lexer.LookAhead(1);
-            if (nextToken == null || IsNotWord(nextToken))
+            if (nextToken != null)
             {
-                throw new Exception("Value expected");
+                if (nextToken.Type == FilterTokenType.Tilde)
+                {
+                    lexer.GetNextToken();
+                    nextToken = lexer.LookAhead(1);
+                    useRegexFilter = true;
+                }
+                if (IsWord(nextToken))
+                {
+                    lexer.GetNextToken();
+                    if (useRegexFilter)
+                    {
+                        return new RegexFilter(new Regex(nextToken.Text, RegexOptions.Compiled));
+                    }
+                    else
+                    {
+                        return new EqualityFilter<string>(nextToken.Text);
+                    }
+                }
             }
-            lexer.GetNextToken();
-            return new EqualityFilter<string>(nextToken.Text);
+            
+            throw new Exception("Value expected");
         }
 
         private static void MatchRightBracket(FilterLexer lexer)

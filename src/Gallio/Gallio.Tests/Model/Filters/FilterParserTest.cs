@@ -14,7 +14,9 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System;
 using MbUnit2::MbUnit.Framework;
+using System.Collections;
 using Gallio.TestResources.MbUnit;
 using Gallio.TestResources.MbUnit.Fixtures;
 using Gallio.Model;
@@ -32,10 +34,6 @@ namespace Gallio.Tests.Model.Filters
         ITest fixture1 = null;
         ITest fixture2 = null;
         ITest fixture3 = null;
-        //ITest fixture1_Test1 = null;
-        //ITest fixture1_Test2 = null;
-        //ITest fixture2_Test1 = null;
-        //ITest fixture2_Test2 = null;
 
         [SetUp]
         public override void SetUp()
@@ -74,18 +72,35 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
             Assert.IsFalse(parsedFilter.IsMatch(fixture2));
         }
-
-        [RowTest]
-        [Row("'SimpleTest'")]
-        [Row("'Gallio.TestResources.MbUnit.SimpleTest'")]
-        [Row("\"SimpleTest\"")]
-        [Row("\"Gallio.TestResources.MbUnit.SimpleTest\"")]
-        public void FilterWithOneQuotedValue(string type)
+        
+        [Factory(typeof(string))]
+        public IEnumerable Types()
         {
-            string filter = "Type:" + type;
+            yield return "'SimpleTest'";
+            yield return "'Gallio.TestResources.MbUnit.SimpleTest'";
+            yield return "\"SimpleTest\"";
+            yield return "\"Gallio.TestResources.MbUnit.SimpleTest\"";
+        }
+
+        [Factory(typeof(string))]
+        public IEnumerable MatchTypes()
+        {
+            yield return "~";
+            yield return string.Empty;
+        }
+
+        [CombinatorialTest]
+        public void FilterWithRegexValue2(
+            [UsingFactories("Types")] string type,
+            [UsingFactories("MatchTypes")] string matchType)
+        {
+            string filter = "Type:" + matchType + type;
             Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
-            Assert.AreEqual(parsedFilter.ToString(), "Type(Equality('" + type.Substring(1, type.Length - 2) + "'), True)");
+            string filterType = "Regex";
+            if (String.IsNullOrEmpty(matchType))
+                filterType = "Equality";
+            Assert.AreEqual(parsedFilter.ToString(), "Type("+ filterType + "('" + type.Substring(1, type.Length - 2) + "'), True)");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
             Assert.IsFalse(parsedFilter.IsMatch(fixture2));
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
@@ -147,40 +162,23 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
 
-        //Type:"Fixture1"
-        //Type:"Fixtur\\e1"
-        //Type:'Fixture1'
-        //'Type':Fixture1
-        //Type:"Fixture1",Fixture2
-        //Type:"Fixture1","Fixture2"
-        //Type:"Fixture1",'Fixture2'
-        //Type:'Fixture1','Fixture2'
-        //"Type":Fixture1
-        //Type:~"Fixture1"
-        //Type:~'Fixture1'        
-        //Type:!"Fixture1"
-        //Author:~"Jeff \"Gallio\" Brown"
-        //Type:Fixture1|Type:Fixture2
-        //Type:Fixture1|Type:Fixture2
-        //Type:"Fixture1|"|Type:Fixture2
-
-        //[RowTest]
-        //[Row("Type=\"Fixture1\"")]
-        //[Row("Type=\"Fixtur\\e1\"")]
-        //[Row("Type='Fixture1'")]
-        //[Row("'Type'=Fixture1")]
-        //[Row("Type=\"Fixture1\",Fixture2")]
-        //[Row("Type=\"Fixture1\",\"Fixture2\"")]
-        //[Row("Type=\"Fixture1\",'Fixture2'")]
-        //[Row("Type='Fixture1','Fixture2'")]
-        //[Row("\"Type\"=Fixture1")]
-        //[Row("Type=~\"Fixture1\"")]
-        //[Row("Type=~'Fixture1'")]
-        //[Row("(Type=Fixture1 | Type:Fixture2)")]
-        //[Row("Type=!\"Fixture1\"")]
-        //public void ValidFiltersTests(string filter)
-        //{
-        //    FilterParser.ParseFilterList<ITest>(filter);
-        //}
+        [RowTest]
+        [Row("Type:\"Fixture1\"")]
+        [Row("Type:\"Fixtur\\e1\"")]
+        [Row("Type:'Fixture1'")]
+        [Row("'Type':Fixture1")]
+        [Row("Type:\"Fixture1\",Fixture2")]
+        [Row("Type:\"Fixture1\",\"Fixture2\"")]
+        [Row("Type:\"Fixture1\",'Fixture2'")]
+        [Row("Type:'Fixture1','Fixture2'")]
+        [Row("\"Type\":Fixture1")]
+        [Row("Type:~\"Fixture1\"")]
+        [Row("Type:~'Fixture1'")]
+        [Row("(Type:Fixture1 | Type:Fixture2)")]
+        public void ValidFiltersTests(string filter)
+        {
+            // Just making sure they are parsed
+            Assert.IsNotNull(FilterUtils.ParseTestFilter(filter));
+        }
     }
 }

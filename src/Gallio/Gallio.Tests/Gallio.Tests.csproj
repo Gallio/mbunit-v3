@@ -71,8 +71,10 @@
     <Compile Include="Core\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Contexts\ContextTest.cs" />
     <Compile Include="Hosting\LoaderTest.cs" />
+    <Compile Include="Model\Filters\EqualityFilterTest.cs" />
     <Compile Include="Model\Filters\FilterLexerTest.cs" />
     <Compile Include="Model\Filters\FilterParserTest.cs" />
+    <Compile Include="Model\Filters\RegexFilterTest.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />
     <Compile Include="Integration\BaseSampleTest.cs" />
