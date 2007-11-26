@@ -40,7 +40,7 @@ namespace Gallio.TDNetRunner.Tests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            stubbedITestListener = MockRepository.GenerateStub<TDF.ITestListener>();
+            stubbedITestListener = MockRepository.GenerateStub<ITestListener>();
             testAssembly = typeof(SimpleTest).Assembly;
         }
 
@@ -85,7 +85,7 @@ namespace Gallio.TDNetRunner.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunNamespace_NullAssembly()
         {
-            TDF.ITestRunner tr = new InstrumentedGallioTestRunner();
+            ITestRunner tr = new InstrumentedGallioTestRunner();
             tr.RunNamespace(stubbedITestListener, null, null);
         }
 

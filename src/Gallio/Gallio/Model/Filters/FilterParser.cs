@@ -21,17 +21,15 @@ using Gallio.Model.Filters;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// <para>
-    /// A filter parser constructs filters from its textual representation as a filter expression.
-    /// </para>
-    /// <para>
-    /// The filter grammar is defined as follows:
-    /// </para>
-    /// <para>
-    /// NOTE TO JULIAN:
-    /// Please document the filter grammar here.
-    /// </para>
+    /// A filter parser constructs filters from its textual representation as a filter
+    /// expression. 
     /// </summary>
+    /// <remarks>
+    /// <include file='../../../../Gallio/docs/FilterSyntax.xml' path='doc/remarks/*' />
+    /// </remarks>
+    /// <example>
+    /// <include file='../../../../Gallio/docs/FilterSyntax.xml' path='doc/example/*' />
+    /// </example>
     public class FilterParser<T>
     {
         private readonly IFilterFactory<T> factory;
@@ -62,6 +60,8 @@ namespace Gallio.Model.Filters
 
         private Filter<T> MatchFilter(FilterLexer lexer)
         {
+            if (lexer.Tokens.Count == 0)
+                return new AnyFilter<T>();
             return MatchOrFilter(lexer);
         }
 
@@ -70,7 +70,7 @@ namespace Gallio.Model.Filters
             List<Filter<T>> filters = new List<Filter<T>>();
             Filter<T> firstFilter = MatchAndFilter(lexer);
             filters.Add(firstFilter);
-            
+
             FilterToken nextToken = lexer.LookAhead(1);
             while (nextToken != null && nextToken.Type == FilterTokenType.Or)
             {
@@ -168,7 +168,7 @@ namespace Gallio.Model.Filters
         {
             List<Filter<string>> values = new List<Filter<string>>();
             values.Add(MatchValue(lexer));
-            
+
             FilterToken nextToken = lexer.LookAhead(1);
             while (nextToken != null && nextToken.Type == FilterTokenType.Comma)
             {
@@ -208,7 +208,7 @@ namespace Gallio.Model.Filters
                     }
                 }
             }
-            
+
             throw new Exception("Value expected");
         }
 

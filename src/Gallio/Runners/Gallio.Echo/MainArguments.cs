@@ -14,11 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Gallio.Core.ConsoleSupport;
-using Gallio.Model.Filters;
-using Gallio.Model;
 
 namespace Gallio.Echo
 {
@@ -105,14 +102,23 @@ namespace Gallio.Echo
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "f",
              LongName = "filter",
-             Description = "The test filter in the format \"filterkey1=value1,value2; filterkey2=value3;...\".\n"
-                + "The filter key may be Id, Assembly, Namespace, Type, Member, or any metadata key that is associated with tests.\n  Examples:\n"
-                + "  Type=Fixture1,Fixture2\n"
-                + "    Runs tests in Fixture1 and Fixture2.\n"
-                + "  Type=Fixture1,Member=Test1\n"
-                + "    Runs Fixture1.Test1.\n"
-                + "  AuthorName=AlbertEinstein\n"
-                + "    Runs tests with the AuthorName metadata value AlbertEinstein."
+             Description =
+                   "A filter expression consists of one or more filter rules\n"
+                 + "that may be combined using 'and', 'or', and 'not'\n"
+                 + "(equivalently '&', '|', and '!') and grouped with\n"
+                 + "parentheses. A filter rule consists of a filter key\n"
+                 + "followed by one or more comma-delimited matching values\n"
+                 + "in the form:\n"
+                 + "key: value, \"quoted value\", ~\"regular expression\"\n"
+                 + "A filter key may be 'Id', 'Name', 'Assembly', 'Namespace',\n"
+                 + "'Type', 'Member' or any custom metadata key such as\n"
+                 + "'Category' and 'AuthorName'.\n  Examples:\n"
+                 + "Type: Fixture1, Fixture2\n"
+                 + "- Runs tests belonging to Fixture1 or Fixture2.\n"
+                 + "Type: Fixture1 and Member: Test1\n"
+                 + "- Runs Fixture1.Test1.\n"
+                 + "AuthorName: \"Albert Einstein\"\n"
+                 + "- Runs tests with the AuthorName metadata value \"Albert\nEinstein\"."
              )]
         public string Filter;
 

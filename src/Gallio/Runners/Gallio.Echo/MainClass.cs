@@ -21,7 +21,6 @@ using Gallio.Echo.Properties;
 using Gallio.Collections;
 using Gallio.Core.ConsoleSupport;
 using Gallio.Core.ProgressMonitoring;
-using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Reports;
 using Gallio.Runner;

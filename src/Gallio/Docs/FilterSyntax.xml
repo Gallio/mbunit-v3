@@ -1,0 +1,167 @@
+<doc>
+  <summary>
+    <para>
+    Sets the filter expression to apply. A filter expression consists of one or
+    more filter rules that may be combined using 'and', 'or', and 'not' (equivalently
+    '&amp;', '|', and '!') and grouped with parentheses. A filter rule consists of
+      a filter key followed by one or more comma-delimited matching values in the
+      form 'key: value, "quoted value", ~"regular expression"'. A filter key may be
+      'Id', 'Name', 'Assembly', 'Namespace', 'Type', 'Member' or any custom metadata
+      key such as 'Category' and 'AuthorName'.
+    </para>
+  </summary>
+  <remarks>
+    <para>
+      The filter grammar is defined as follows:
+    </para>
+    <para>
+      <code>
+        <![CDATA[
+     OR               ::= "or"  | "|"            # Not case-sensitive
+     AND              ::= "and" | "&"            # Not case-sensitive
+     NOT              ::= "not" | "!"            # Not case-sensitive
+
+     <unquotedWord>   ::= [a-zA-Z0-9_\-+.*@]+
+    
+     <quotedWord>     ::= '"' ([^"] | \")* '"'   # String of any character but " enclosed by double quotation marks
+                      | "'" ([^'] | \')* "'"     # String of any character but ' enclosed by single quotation marks
+     
+     <word>           ::= <unquotedWord>
+                      | <quotedWord>
+                      
+     <key>            ::= <word>
+    
+     <value>          ::= <word>                 # Value specified by exact string
+                      | "~" <word>               # Value specified by regular expression
+    
+     <matchSequence>  ::= <value> (',' <value>)* # One or more comma-separated values
+    
+     <filter>         ::= <key> ":" matchSeq>
+                      | <filter> OR filter>      # Combine filters with OR
+                      | <filter> AND filter>     # Combine filters with AND
+                      | NOT <filter>             # Negate filter
+                      | "(" <filter> ")"         # Grouping
+     ]]></code>
+    </para>
+    <list type="bullet">
+      <item>
+        The operator precedence is, from highest to lowest: NOT, AND, and OR. All these operators are left-associative.
+      </item>
+      <item>
+        The commas used to separate the values are interpreted as OR operators, so "Type:Fixture1,Fixture2" is equivalent to "Type:Fixture1 or Type:Fixture2".
+      </item>
+      <item>
+        White-space is ignored outside quoted strings, so "Type:Fixture1|Type:Fixture2" is equivalent to "Type : Fixture1 | Type : Fixture2".
+      </item>
+      <item>
+        Within a single quotation mark delimited string, \' will be interpreted as '.
+      </item>
+      <item>
+        Within a double quotation mark delimited string, \" will be interpreted as ".
+      </item>
+      <item>
+        Currently the following filter keys are recognized:
+        <list type="bullet">
+          <item>Id: Filter by id.</item>
+          <item>Assembly: Filter by assembly name.</item>
+          <item>Namespace: Filter by namespace name.</item>
+          <item>Type: Filter by type name.</item>
+          <item>Member: Filter by member name.</item>
+          <item>
+            *: All other names are assumed to correspond to metadata keys. See <see cref="MetadataKeys" /> for standard metadata keys.<seealso cref="MetadataKeys" />
+          </item>
+        </list>
+      </item>
+      <item>If this property is left empty then the "Any" filter will be applied.</item>
+    </list>
+  </remarks>
+  <example>
+    <para>
+      Assuming the following fixtures have been defined:
+    </para>
+    <code>
+      [TestFixture]
+      [TestCategory("UnitTest")]
+      [Author("AlbertEinstein")]
+      public class Fixture1
+      {
+        [Test]
+        public void Test1()
+        {
+        }
+        [Test]
+        public void Test2()
+        {
+        }
+      }
+
+      [TestFixture]
+      [TestCategory("IntegrationTest")]
+      public class Fixture2
+      {
+        [Test]
+        public void Test1()
+        {
+        }
+        [Test]
+        public void Test2()
+        {
+        }
+      }
+    </code>
+    <para>The following filters could be applied:</para>
+    <list type="bullet">
+      <item>
+        <term>Type: Fixture1</term>
+        <description>Only tests within Fixture1 will be run (that is, Fixture1.Test1 and Fixture1.Test2).</description>
+      </item>
+
+      <item>
+        <term>Member: Test1</term>
+        <description>Only Fixture1.Test1 and Fixture2.Test1 will be run.</description>
+      </item>
+
+      <item>
+        <term>Type: Fixture1, Fixture2</term>
+        <description>All the tests within Fixture1 or Fixture2 will be run.</description>
+      </item>
+
+      <item>
+        <term>Type:Fixture1 or Type:Fixture2</term>
+        <description>All the tests within Fixture1 or Fixture2 will be run.</description>
+      </item>
+
+      <item>
+        <term>Type:Fixture1, Fixture2 and Member:Test2</term>
+        <description>Only Fixture1.Test2 and Fixture2.Test2 will be run.</description>
+      </item>
+
+      <item>
+        <term>Type:~Fixture* and Member:Test2</term>
+        <description>Only Fixture1.Test2 and Fixture2.Test2 will be run.</description>
+      </item>
+
+      <item>
+        <term>AuthorName:AlbertEinstein</term>
+        <description>All the tests within Fixture1 will be run (because its author attribute is set to "AlbertEinstein").</description>
+      </item>
+
+      <item>
+        <term>Type: Fixture2 and not AuthorName: AlbertEinstein</term>
+        <description>All the tests within Fixture2 will be run (because they belong to Fixture2 and its author attribute is not set to "AlbertEinstein").</description>
+      </item>
+
+      <item>
+        <term>("Type": 'Fixture1' and "Member":~"Test*") or (Type : Fixture2 and Member: ~Test*)</term>
+        <description>All the tests will be run. This example also shows that you can enclose key and
+        values with quotation marks, and group expressions with parentheses.</description>
+      </item>
+
+      <item>
+        <term>("Type": 'Fixture1' &amp; "Member":~"Test*") | (Type : Fixture2 &amp; Member: ~Test*)</term>
+        <description>The same as above, but using &amp; and | instead of 'and' and 'or'.
+        </description>
+      </item>
+    </list>
+  </example>
+</doc>

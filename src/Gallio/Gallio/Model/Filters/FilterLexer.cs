@@ -24,13 +24,15 @@ namespace Gallio.Model.Filters
     {
         private readonly List<FilterToken> tokens = new List<FilterToken>();
         private readonly StringReader input = null;
-        private int position = -1;
+        private int inputPosition = -1;
         private int tokenStreamPosition = -1;
 
         internal FilterLexer(string filter)
         {
-            if (string.IsNullOrEmpty(filter))
-                throw new ArgumentException("filter cannot be null or empty");
+            if (filter == null)
+            {
+                filter = String.Empty;
+            }
             input = new StringReader(filter);
             Scan();
         }
@@ -83,7 +85,7 @@ namespace Gallio.Model.Filters
                 else if (IsString(c))
                 {
                     StringBuilder chars = new StringBuilder();
-                    int startPosition = position + 1;
+                    int startPosition = inputPosition + 1;
                     chars.Append(ConsumeNextChar());
                     int nextChar = input.Peek();
                     while (nextChar != -1 && IsString((char)nextChar))
@@ -104,7 +106,7 @@ namespace Gallio.Model.Filters
                 }
                 else
                 {
-                    position++;
+                    inputPosition++;
                     input.Read();
                 }
             }
@@ -113,7 +115,7 @@ namespace Gallio.Model.Filters
         private void MatchQuotedString(char quotationMark)
         {
             StringBuilder chars = new StringBuilder();
-            int startPosition = position + 1;
+            int startPosition = inputPosition + 1;
             char nextChar = (char)0;
             char previousChar = (char)0;
             bool finalQuotationMarkFound = false;
@@ -122,15 +124,33 @@ namespace Gallio.Model.Filters
             while (input.Peek() != -1)
             {
                 nextChar = (char)input.Peek();
-                if (nextChar == quotationMark && previousChar != '\\')
+                if (nextChar == quotationMark)
                 {
-                    ConsumeNextChar();
-                    finalQuotationMarkFound = true;
-                    break;
+                    if (previousChar != '\\')
+                    {
+                        ConsumeNextChar();
+                        finalQuotationMarkFound = true;
+                        break;
+                    }
+                    else
+                    {
+                        // Add the quotation mark
+                        chars.Append(ConsumeNextChar());
+                    }
                 }
-                else
+                else 
                 {
-                    chars.Append(ConsumeNextChar());
+                    // previousChar was a \ but not followed by a quotation mark
+                    if (previousChar == '\\')
+                    {
+                        chars.Append('\\');
+                    }
+                    // If current char is a \ then hold it
+                    if (nextChar != '\\')
+                    {
+                        chars.Append(nextChar);
+                    }
+                    ConsumeNextChar();
                 }
                 previousChar = nextChar;
             }
@@ -144,7 +164,7 @@ namespace Gallio.Model.Filters
 
         private char ConsumeNextChar()
         {
-            position++;
+            inputPosition++;
             return (char)input.Read();
         }
 
@@ -176,7 +196,7 @@ namespace Gallio.Model.Filters
 
         private void Match(IEnumerable<char> token, FilterTokenType filterTokenType)
         {
-            int startPosition = position + 1;
+            int startPosition = inputPosition + 1;
             foreach (char c in token)
             {
                 CheckEndOfStream();
@@ -215,7 +235,7 @@ namespace Gallio.Model.Filters
 
         private static bool IsString(char c)
         {
-            return char.IsLetterOrDigit(c) || c == '_' || c == '-' || c == '+' || c == '.' || c == '*' || c == '@';
+            return char.IsLetterOrDigit(c) || c == '_' || c == '\\' || c == '-' || c == '+' || c == '.' || c == '*' || c == '@';
         }
     }
 

@@ -213,79 +213,13 @@ namespace Gallio.MSBuildTasks
         }
 
         /// <summary>
-        /// Sets the filter to apply in the format "filterkey1=value1,value2;filterkey2=value3;...".
+        /// <include file='../../../Gallio/docs/FilterSyntax.xml' path='doc/summary/*' />
         /// </summary>
         /// <remarks>
-        /// <list type="bullet">
-        /// <item>
-        /// Currently the following filter keys are recognized:
-        /// <list type="bullet">
-        /// <item>Id: Filter by id</item>
-        /// <item>Assembly: Filter by assembly name</item>
-        /// <item>Namespace: Filter by namespace name</item>
-        /// <item>Type: Filter by type name</item>
-        /// <item>Member: Filter by member name</item>
-        /// <item>*: All other names are assumed to correspond to metadata keys.  <seealso cref="MetadataKeys" /> for standard metadata keys.</item>
-        /// </list>
-        /// </item>
-        /// <item>If this property is left empty then the "Any" filter will be applied.</item>
-        /// </list>
+        /// <include file='../../../Gallio/docs/FilterSyntax.xml' path='doc/remarks/*' />
         /// </remarks>
         /// <example>
-        /// Assuming the following fixtures have been defined:
-        /// <code>
-        /// [TestFixture]
-        /// [TestCategory("UnitTest")]
-        /// [Author("AlbertEinstein")]
-        /// public class Fixture1
-        /// {
-        ///     [Test]
-        ///     public void Test1()
-        ///     {
-        ///     }
-        ///     [Test]
-        ///     public void Test2()
-        ///     {
-        ///     }
-        /// }
-        /// 
-        /// [TestFixture]
-        /// [TestCategory("IntegrationTest")]
-        /// public class Fixture2
-        /// {
-        ///     [Test]
-        ///     public void Test1()
-        ///     {
-        ///     }
-        ///     [Test]
-        ///     public void Test2()
-        ///     {
-        ///     }
-        /// }
-        /// </code>
-        /// <para>The following filters could be applied:</para>
-        /// <list type="bullet">
-        /// <item>
-        /// <term>filter="Type=Fixture1"</term>
-        /// <description>Only tests within Fixture1 will be run (that is, Fixture1.Test1 and Fixture1.Test2).</description>
-        /// </item>
-        /// <item>
-        /// <term>filter="Member=Test1"</term>
-        /// <description>Only Fixture1.Test1 and Fixture2.Test1 will be run.</description>
-        /// </item>
-        /// <item>
-        /// <term>filter="Type=Fixture1,Fixture2"</term>
-        /// <description>All the tests within Fixture1 and Fixture2 will be run.</description>
-        /// </item>
-        /// <item>
-        /// <term>filter="Type=Fixture1,Fixture2;Member=Test2"</term>
-        /// <description>Only Fixture1.Test2 and Fixture2.Test2 will be run.</description>
-        /// </item>
-        /// <item>
-        /// <term>filter="AuthorName=AlbertEinstein"</term>
-        /// <description>All the tests within Fixture1 will be run (because its author attribute is set to "AlbertEinstein").</description>
-        /// </item>
-        /// </list>  
+        /// <include file='../../../Gallio/docs/FilterSyntax.xml' path='doc/example/*' />
         /// </example>
         public string Filter
         {

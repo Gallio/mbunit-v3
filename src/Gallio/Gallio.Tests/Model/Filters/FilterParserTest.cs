@@ -60,6 +60,19 @@ namespace Gallio.Tests.Model.Filters
             Mocks.VerifyAll();
         }
 
+        [Test]
+        public void AnyFilterIsReturnedForEmptyFilterExpressions()
+        {
+            string filter = "";
+            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Assert.IsNotNull(parsedFilter);
+            Assert.AreEqual(parsedFilter.ToString(), "Any()");
+            Assert.AreSame(parsedFilter.GetType(), typeof(AnyFilter<ITest>));
+            Assert.IsTrue(parsedFilter.IsMatch(fixture1));
+            Assert.IsTrue(parsedFilter.IsMatch(fixture2));
+            Assert.IsTrue(parsedFilter.IsMatch(fixture3));
+        }
+
         [RowTest]
         [Row("SimpleTest")]
         [Row("Gallio.TestResources.MbUnit.SimpleTest")]
@@ -71,6 +84,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(parsedFilter.ToString(), "Type(Equality('" + type + "'), True)");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
             Assert.IsFalse(parsedFilter.IsMatch(fixture2));
+            Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
         
         [Factory(typeof(string))]
@@ -97,9 +111,7 @@ namespace Gallio.Tests.Model.Filters
             string filter = "Type:" + matchType + type;
             Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
-            string filterType = "Regex";
-            if (String.IsNullOrEmpty(matchType))
-                filterType = "Equality";
+            string filterType = GetFilterTypeForMatchType(matchType);
             Assert.AreEqual(parsedFilter.ToString(), "Type("+ filterType + "('" + type.Substring(1, type.Length - 2) + "'), True)");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
             Assert.IsFalse(parsedFilter.IsMatch(fixture2));
@@ -179,6 +191,15 @@ namespace Gallio.Tests.Model.Filters
         {
             // Just making sure they are parsed
             Assert.IsNotNull(FilterUtils.ParseTestFilter(filter));
+        }
+
+        private static string GetFilterTypeForMatchType(string matchType)
+        {
+            string filterType = "Regex";
+            if (String.IsNullOrEmpty(matchType))
+                filterType = "Equality";
+
+            return filterType;
         }
     }
 }
