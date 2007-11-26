@@ -330,9 +330,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.plugin" />
-    <Content Include="Model\Filters\FilterSyntax.xml">
-      <SubType>Component</SubType>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
