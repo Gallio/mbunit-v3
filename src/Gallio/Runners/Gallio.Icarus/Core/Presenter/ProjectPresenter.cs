@@ -70,6 +70,7 @@ namespace Gallio.Icarus.Core.Presenter
             _View.StopTests += StopTests;
             _View.SetFilter += SetFilter;
             _View.GetLogStream += GetLogStream;
+            _View.GenerateReport += GenerateReport;
         }
 
         #endregion
@@ -100,6 +101,11 @@ namespace Gallio.Icarus.Core.Presenter
         public void GetLogStream(object sender, SingleStringEventArgs e)
         {
             _View.LogBody = _TestRunnerModel.GetLogStream(e.String);
+        }
+
+        public void GenerateReport(object sender, SingleStringEventArgs e)
+        {
+            _TestRunnerModel.GenerateReport(e.String);
         }
 
         public void Passed(string testId)

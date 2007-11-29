@@ -27,12 +27,12 @@ namespace Gallio.Icarus.Core.Interfaces
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
         event EventHandler<SingleStringEventArgs> GetLogStream;
-        TestModel TestModel { get; set; }
-        TestPackage TestPackage { get; set; }
+        event EventHandler<SingleStringEventArgs> GenerateReport;
+        TestModel TestModel { set; }
         string StatusText { set; }
         string LogBody { set; }
-        int CompletedWorkUnits { get; set; }
-        int TotalWorkUnits { get; set; }
+        int CompletedWorkUnits { set; }
+        int TotalWorkUnits { set; }
         void DataBind();
         void Passed(string testId);
         void Failed(string testId);

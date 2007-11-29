@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="AdapterModel\ProjectAdapterModelTest.cs" />
     <Compile Include="Adapter\ProjectAdapterTest.cs" />
+    <Compile Include="AboutTest.cs" />
+    <Compile Include="OptionsTest.cs" />
     <Compile Include="Core\Model\TestRunnerModelTest.cs" />
     <Compile Include="Core\Presenter\ProjectPresenterTest.cs" />
     <Compile Include="MockTest.cs" />

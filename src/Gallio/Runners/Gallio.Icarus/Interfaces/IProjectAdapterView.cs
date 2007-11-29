@@ -29,12 +29,13 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
         event EventHandler<SingleStringEventArgs> GetLogStream;
+        event EventHandler<SingleStringEventArgs> GenerateReport;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
         string LogBody { set; }
-        int CompletedWorkUnits { get; set; }
-        int TotalWorkUnits { get; set; }
+        int CompletedWorkUnits { set; }
+        int TotalWorkUnits { set; }
         void DataBind();
         void Passed(object o);
         void Failed(object o);

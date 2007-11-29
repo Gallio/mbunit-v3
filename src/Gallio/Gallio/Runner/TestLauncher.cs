@@ -541,6 +541,41 @@ namespace Gallio.Runner
             }
         }
 
+        /// <summary>
+        /// Method to generate reports in the specified formats for a result set.
+        /// </summary>
+        /// <param name="result">The test results to use</param>
+        /// <param name="reportManager">The report manager</param>
+        public void GenerateReports(TestLauncherResult result, IReportManager reportManager)
+        {
+            if (reportFormats.Count == 0)
+                return;
+
+            Report report = result.Report;
+
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                progressMonitor.BeginTask("Generating reports.", reportFormats.Count);
+
+                IReportContainer reportContainer = CreateReportContainer(report);
+                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+
+                // Delete the report if it exists already.
+                reportContainer.DeleteReport();
+
+                // Format the report in all of the desired ways.
+                foreach (string reportFormat in reportFormats)
+                {
+                    reportManager.Format(reportWriter, reportFormat, reportFormatOptions,
+                        new SubProgressMonitor(progressMonitor, 1));
+                }
+
+                // Save the full paths of the documents.
+                foreach (string reportDocumentPath in reportWriter.ReportDocumentPaths)
+                    result.AddReportDocumentPath(Path.Combine(reportDirectory, reportDocumentPath));
+            });
+        }
+
         #endregion
 
         #region Private Methods
@@ -791,36 +826,6 @@ namespace Gallio.Runner
             }
         }
 
-        private void GenerateReports(TestLauncherResult result, IReportManager reportManager)
-        {
-            if (reportFormats.Count == 0)
-                return;
-
-            Report report = result.Report;
-
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
-            {
-                progressMonitor.BeginTask("Generating reports.", reportFormats.Count);
-
-                IReportContainer reportContainer = CreateReportContainer(report);
-                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
-
-                // Delete the report if it exists already.
-                reportContainer.DeleteReport();
-
-                // Format the report in all of the desired ways.
-                foreach (string reportFormat in reportFormats)
-                {
-                    reportManager.Format(reportWriter, reportFormat, reportFormatOptions,
-                        new SubProgressMonitor(progressMonitor, 1));
-                }
-
-                // Save the full paths of the documents.
-                foreach (string reportDocumentPath in reportWriter.ReportDocumentPaths)
-                    result.AddReportDocumentPath(Path.Combine(reportDirectory, reportDocumentPath));
-            });
-        }
-
         private IReportContainer CreateReportContainer(Report report)
         {
             string reportName = GenerateReportName(report);
@@ -836,12 +841,12 @@ namespace Gallio.Runner
                 reportTime.ToString(@"HHmmss"));
         }
 
-        #endregion
-
         private void ThrowIfDisposed()
         {
             if (testPackage == null)
                 throw new ObjectDisposedException(GetType().Name);
         }
+
+        #endregion
     }
 }

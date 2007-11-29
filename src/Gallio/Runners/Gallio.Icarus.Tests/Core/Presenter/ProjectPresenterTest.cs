@@ -18,9 +18,12 @@ using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Presenter;
 using Gallio.Icarus.Tests;
+using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Runner;
 using MbUnit.Framework;
 using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 namespace Gallio.Icarus.Core.Presenter.Tests
 {
@@ -31,12 +34,47 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         private ITestRunnerModel mockModel;
         private ProjectPresenter projectPresenter;
 
+        private IEventRaiser getTestTreeEvent;
+        private IEventRaiser runTestsEvent;
+        private IEventRaiser stopTestsEvent;
+        private IEventRaiser setFilterEvent;
+        private IEventRaiser getLogStreamEvent;
+        private IEventRaiser generateReportEvent;
+
         [SetUp]
         public void SetUp()
         {
-            mockAdapter = MockRepository.GenerateStub<IProjectAdapter>();
-            mockModel = MockRepository.GenerateStub<ITestRunnerModel>();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            projectPresenter = null;
+
+            mockAdapter = mocks.CreateMock<IProjectAdapter>();
+            mockModel = mocks.CreateMock<ITestRunnerModel>();
+
+            mockModel.ProjectPresenter = null;
+            LastCall.IgnoreArguments();
+
+            mockAdapter.GetTestTree += null;
+            LastCall.IgnoreArguments();
+            getTestTreeEvent = LastCall.GetEventRaiser();
+
+            mockAdapter.RunTests += null;
+            LastCall.IgnoreArguments();
+            runTestsEvent = LastCall.GetEventRaiser();
+
+            mockAdapter.StopTests += null;
+            LastCall.IgnoreArguments();
+            stopTestsEvent = LastCall.GetEventRaiser();
+
+            mockAdapter.SetFilter += null;
+            LastCall.IgnoreArguments();
+            setFilterEvent = LastCall.GetEventRaiser();
+
+            mockAdapter.GetLogStream += null;
+            LastCall.IgnoreArguments();
+            getLogStreamEvent = LastCall.GetEventRaiser();
+
+            mockAdapter.GenerateReport += null;
+            LastCall.IgnoreArguments();
+            generateReportEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -44,6 +82,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             mockAdapter.StatusText = "blah blah";
             mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.StatusText = "blah blah";
         }
 
@@ -52,8 +91,8 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             mockAdapter.CompletedWorkUnits = 2;
             mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.CompletedWorkUnits = 2;
-            Assert.AreEqual(2, mockAdapter.CompletedWorkUnits);
         }
 
         [Test]
@@ -61,18 +100,24 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             mockAdapter.TotalWorkUnits = 5;
             mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.TotalWorkUnits = 5;
-            Assert.AreEqual(5, mockAdapter.TotalWorkUnits);
         }
 
         [Test]
         public void GetTestTree_Test()
         {
+            TestPackage testPackage = new TestPackage();
+            mockModel.LoadPackage(testPackage);
+            mockModel.BuildTemplates();
+            LastCall.IgnoreArguments();
+            Expect.Call(mockModel.BuildTests()).Return(null);
             mockAdapter.TestModel = null;
             LastCall.IgnoreArguments();
             mockAdapter.DataBind();
             mocks.ReplayAll();
-            projectPresenter.GetTestTree(mockAdapter, new ProjectEventArgs(new TestPackage()));
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            getTestTreeEvent.Raise(mockAdapter, new ProjectEventArgs(testPackage));
         }
 
         [Test]
@@ -80,7 +125,46 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             mockModel.RunTests();
             mocks.ReplayAll();
-            projectPresenter.RunTests(mockAdapter, EventArgs.Empty);
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            runTestsEvent.Raise(mockAdapter, EventArgs.Empty);
+        }
+
+        [Test]
+        public void StopTests_Test()
+        {
+            mockModel.StopTests();
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            stopTestsEvent.Raise(mockAdapter, EventArgs.Empty);
+        }
+
+        [Test]
+        public void SetFilter_Test()
+        {
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            Filter<ITest> filter = new NoneFilter<ITest>();
+            setFilterEvent.Raise(mockAdapter, new SetFilterEventArgs(filter));
+            Assert.AreEqual(filter, projectPresenter.TestRunner.TestExecutionOptions.Filter);
+        }
+
+        [Test]
+        public void GetLogStream_Test()
+        {
+            Expect.Call(mockModel.GetLogStream("getLogStreamTest")).Return("blah blah");
+            mockAdapter.LogBody = "blah blah";
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            getLogStreamEvent.Raise(mockAdapter, new SingleStringEventArgs("getLogStreamTest"));
+        }
+
+        [Test]
+        public void GenerateReport_Test()
+        {
+            mockModel.GenerateReport("generateReportTest");
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            generateReportEvent.Raise(mockAdapter, new SingleStringEventArgs("generateReportTest"));
         }
 
         [Test]
@@ -88,6 +172,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             mockAdapter.Passed("test1");
             mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.Passed("test1");
         }
 
@@ -96,6 +181,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             mockAdapter.Failed("test1");
             mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.Failed("test1");
         }
 
@@ -104,6 +190,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             mockAdapter.Skipped("test1");
             mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.Skipped("test1");
         }
 
@@ -112,6 +199,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             mockAdapter.Ignored("test1");
             mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.Ignored("test1");
         }
     }

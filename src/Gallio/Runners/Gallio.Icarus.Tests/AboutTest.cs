@@ -13,23 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Reflection;
+using System.Windows.Forms;
+using Gallio.Icarus.AdapterModel;
+using Gallio.Icarus.Interfaces;
+using MbUnit.Framework;
 using Gallio.Model;
-using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Runner;
 
-namespace Gallio.Icarus.Core.Interfaces
+namespace Gallio.Icarus.Tests
 {
-    public interface ITestRunnerModel
+    [TestFixture]
+    public class AboutTest
     {
-        IProjectPresenter ProjectPresenter { set; }
-        void LoadPackage(TestPackage testpackage);
-        void BuildTemplates();
-        TestModel BuildTests();
-        void RunTests();
-        void StopTests();
-        void SetFilter(Filter<ITest> filter);
-        string GetLogStream(string log);
-        void GenerateReport(string reportType);
+        [Test]
+        public void About_Test()
+        {
+            About about = new About();
+        }
     }
 }

@@ -229,7 +229,7 @@ namespace Gallio.Icarus.AdapterModel
                 {
                     case CheckBoxStates.Checked:
                         {
-                            if (node.SelectedImageIndex > 2)
+                            if (node.SelectedImageIndex != 2)
                             {
                                 filters.Add(new IdFilter<ITest>(new EqualityFilter<string>(node.Name)));
                             }
@@ -256,7 +256,7 @@ namespace Gallio.Icarus.AdapterModel
             }
             if (filters.Count > 0)
             {
-                return new AndFilter<ITest>(filters.ToArray());
+                return new OrFilter<ITest>(filters.ToArray());
             }
             else
             {

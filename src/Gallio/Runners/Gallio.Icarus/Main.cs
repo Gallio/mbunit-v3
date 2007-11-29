@@ -66,13 +66,11 @@ namespace Gallio.Icarus
 
         public int TotalWorkUnits
         {
-            get { return totalWorkUnits; }
             set { totalWorkUnits = value; }
         }
 
         public int CompletedWorkUnits
         {
-            get { return completedWorkUnits; }
             set { completedWorkUnits = value; }
         }
 
@@ -93,6 +91,7 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
         public event EventHandler<SingleStringEventArgs> GetLogStream;
+        public event EventHandler<SingleStringEventArgs> GenerateReport;
 
         #endregion
 
@@ -751,6 +750,43 @@ namespace Gallio.Icarus
                 {
                     GetLogStream(this, new SingleStringEventArgs(logStream.SelectedItem.ToString() + node.Name));
                 }
+            }
+        }
+
+        private void reportMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+            if (toolStripMenuItem != null)
+            {
+                string reportType = "";
+                switch (toolStripMenuItem.Name)
+                {
+                    case "xmlReportMenuItem":
+                        reportType = "xml";
+                        break;
+                    case "textReportMenuItem":
+                        reportType = "text";
+                        break;
+                    case "htmlReportMenuItem":
+                        reportType = "html";
+                        break;
+                    case "xhtmlReportMenuItem":
+                        reportType = "xhtml";
+                        break;
+                }
+                AbortWorkerThread();
+                workerThread = new Thread(new ParameterizedThreadStart(ThreadedGenerateReport));
+                //workerThread.Start(reportType);
+                ThreadedGenerateReport(reportType);
+            }
+        }
+
+        private void ThreadedGenerateReport(object o)
+        {
+            string reportType = o as string;
+            if (GenerateReport != null)
+            {
+                GenerateReport(this, new SingleStringEventArgs(reportType));
             }
         }
     }

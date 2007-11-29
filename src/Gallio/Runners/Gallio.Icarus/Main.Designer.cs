@@ -64,10 +64,10 @@ namespace Gallio.Icarus
             this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.hTMLReportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.textReportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.textReportToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.dOXReportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.xmlReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.htmlReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.xhtmlReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.optionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,10 +128,10 @@ namespace Gallio.Icarus
             this.filterTestResultsCombo = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.logStreamsTabPage = new System.Windows.Forms.TabPage();
+            this.logBody = new System.Windows.Forms.RichTextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.logStream = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.logBody = new System.Windows.Forms.RichTextBox();
             this.performanceMonitorTabPage = new System.Windows.Forms.TabPage();
             this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -295,47 +295,51 @@ namespace Gallio.Icarus
             // reportsToolStripMenuItem1
             // 
             this.reportsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.hTMLReportToolStripMenuItem1,
-            this.textReportToolStripMenuItem1,
-            this.textReportToolStripMenuItem2,
-            this.dOXReportToolStripMenuItem1});
+            this.xmlReportMenuItem,
+            this.textReportMenuItem,
+            this.htmlReportMenuItem,
+            this.xhtmlReportMenuItem});
             this.reportsToolStripMenuItem1.Name = "reportsToolStripMenuItem1";
-            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(123, 22);
+            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.reportsToolStripMenuItem1.Text = "&Reports";
             // 
-            // hTMLReportToolStripMenuItem1
+            // xmlReportMenuItem
             // 
-            this.hTMLReportToolStripMenuItem1.Name = "hTMLReportToolStripMenuItem1";
-            this.hTMLReportToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
-            this.hTMLReportToolStripMenuItem1.Text = "&HTML Report";
+            this.xmlReportMenuItem.Name = "xmlReportMenuItem";
+            this.xmlReportMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.xmlReportMenuItem.Text = "&XML report";
+            this.xmlReportMenuItem.Click += new System.EventHandler(this.reportMenuItem_Click);
             // 
-            // textReportToolStripMenuItem1
+            // textReportMenuItem
             // 
-            this.textReportToolStripMenuItem1.Name = "textReportToolStripMenuItem1";
-            this.textReportToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
-            this.textReportToolStripMenuItem1.Text = "&XML Report";
+            this.textReportMenuItem.Name = "textReportMenuItem";
+            this.textReportMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.textReportMenuItem.Text = "&Text report";
+            this.textReportMenuItem.Click += new System.EventHandler(this.reportMenuItem_Click);
             // 
-            // textReportToolStripMenuItem2
+            // htmlReportMenuItem
             // 
-            this.textReportToolStripMenuItem2.Name = "textReportToolStripMenuItem2";
-            this.textReportToolStripMenuItem2.Size = new System.Drawing.Size(147, 22);
-            this.textReportToolStripMenuItem2.Text = "&Text Report";
+            this.htmlReportMenuItem.Name = "htmlReportMenuItem";
+            this.htmlReportMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.htmlReportMenuItem.Text = "&HTML report";
+            this.htmlReportMenuItem.Click += new System.EventHandler(this.reportMenuItem_Click);
             // 
-            // dOXReportToolStripMenuItem1
+            // xhtmlReportMenuItem
             // 
-            this.dOXReportToolStripMenuItem1.Name = "dOXReportToolStripMenuItem1";
-            this.dOXReportToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
-            this.dOXReportToolStripMenuItem1.Text = "&DOX Report";
+            this.xhtmlReportMenuItem.Name = "xhtmlReportMenuItem";
+            this.xhtmlReportMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.xhtmlReportMenuItem.Text = "&XHTML report";
+            this.xhtmlReportMenuItem.Click += new System.EventHandler(this.reportMenuItem_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(120, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
             // 
             // optionsMenuItem
             // 
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.optionsMenuItem.Size = new System.Drawing.Size(152, 22);
             this.optionsMenuItem.Text = "&Options";
             this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
@@ -865,6 +869,15 @@ namespace Gallio.Icarus
             this.logStreamsTabPage.Text = "Log Streams";
             this.logStreamsTabPage.UseVisualStyleBackColor = true;
             // 
+            // logBody
+            // 
+            this.logBody.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logBody.Location = new System.Drawing.Point(0, 39);
+            this.logBody.Name = "logBody";
+            this.logBody.Size = new System.Drawing.Size(665, 507);
+            this.logBody.TabIndex = 0;
+            this.logBody.Text = "";
+            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.logStream);
@@ -901,15 +914,6 @@ namespace Gallio.Icarus
             this.label5.Size = new System.Drawing.Size(57, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "Select log:";
-            // 
-            // logBody
-            // 
-            this.logBody.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logBody.Location = new System.Drawing.Point(0, 39);
-            this.logBody.Name = "logBody";
-            this.logBody.Size = new System.Drawing.Size(665, 507);
-            this.logBody.TabIndex = 0;
-            this.logBody.Text = "";
             // 
             // performanceMonitorTabPage
             // 
@@ -1152,10 +1156,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportsToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem hTMLReportToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem textReportToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem textReportToolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem dOXReportToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem htmlReportMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem xmlReportMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem textReportMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip testTreeMenuStrip;
@@ -1181,6 +1184,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ComboBox logStream;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox filterTestResultsCombo;
+        private System.Windows.Forms.ToolStripMenuItem xhtmlReportMenuItem;
     }
 }
 

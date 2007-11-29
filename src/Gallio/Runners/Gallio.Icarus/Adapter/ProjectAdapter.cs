@@ -50,7 +50,6 @@ namespace Gallio.Icarus.Adapter
         public TestPackage TestPackage
         {
             get { return _testPackage; }
-            set { _testPackage = value; }
         }
 
         public string StatusText
@@ -60,13 +59,11 @@ namespace Gallio.Icarus.Adapter
 
         public int CompletedWorkUnits
         {
-            get { return _View.CompletedWorkUnits; }
             set { _View.CompletedWorkUnits = value; }
         }
 
         public int TotalWorkUnits
         {
-            get { return _View.TotalWorkUnits; }
             set { _View.TotalWorkUnits = value; }
         }
 
@@ -84,6 +81,7 @@ namespace Gallio.Icarus.Adapter
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
         public event EventHandler<SingleStringEventArgs> GetLogStream;
+        public event EventHandler<SingleStringEventArgs> GenerateReport;
 
         #endregion
 
@@ -104,6 +102,7 @@ namespace Gallio.Icarus.Adapter
             _View.StopTests += _View_StopTests;
             _View.SetFilter += _View_SetFilter;
             _View.GetLogStream += _View_GetLogStream;
+            _View.GenerateReport += _View_GenerateReport;
         }
 
         #endregion
@@ -171,6 +170,14 @@ namespace Gallio.Icarus.Adapter
                     filter = new NoneFilter<ITest>();
                 }
                 SetFilter(this, new SetFilterEventArgs(filter));
+            }
+        }
+
+        private void _View_GenerateReport(object sender, SingleStringEventArgs e)
+        {
+            if (GenerateReport != null)
+            {
+                GenerateReport(this, e);
             }
         }
 

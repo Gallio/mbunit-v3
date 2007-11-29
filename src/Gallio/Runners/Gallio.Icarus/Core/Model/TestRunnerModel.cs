@@ -14,6 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.IO;
+using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.ProgressMonitoring;
 using Gallio.Model;
@@ -21,6 +24,7 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Runner.Monitors;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Core.Model
 {
@@ -30,6 +34,7 @@ namespace Gallio.Icarus.Core.Model
 
         private ReportMonitor reportMonitor = null; 
         private IProjectPresenter projectPresenter = null;
+        private IProgressMonitorProvider progressMonitorProvider = null;
         private StatusStripProgressMonitor statusStripProgressMonitor = null;
         private TestRunnerMonitor testRunnerMonitor = null;
 
@@ -44,7 +49,8 @@ namespace Gallio.Icarus.Core.Model
                 if (value == null)
                     throw new ArgumentNullException(@"ProjectPresenter");
 
-                projectPresenter = value;                
+                projectPresenter = value;
+                progressMonitorProvider = new StatusStripProgressMonitorProvider(projectPresenter);
             }
         }
 
@@ -98,6 +104,39 @@ namespace Gallio.Icarus.Core.Model
         public string GetLogStream(string log)
         {
             return testRunnerMonitor.GetLogStream(log);
+        }
+
+        public void GenerateReport(string reportType)
+        {
+            TestLauncher testLauncher = new TestLauncher();
+            testLauncher.ProgressMonitorProvider = progressMonitorProvider;
+            testLauncher.ReportFormats.Add(reportType);
+            if (testLauncher.ReportDirectory == "")
+            {
+                string reportDirectory = System.Configuration.ConfigurationManager.AppSettings["reportDirectory"];
+                if (reportDirectory == "")
+                {
+                    reportDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MbUnit\Reports");
+                    if (!Directory.Exists(reportDirectory))
+                    {
+                        Directory.CreateDirectory(reportDirectory);
+                    }
+                }
+                testLauncher.ReportDirectory = reportDirectory;
+            }
+            TestLauncherResult testLauncherResult = new TestLauncherResult(reportMonitor.Report);
+            testLauncher.GenerateReports(testLauncherResult, Runtime.Instance.Resolve<IReportManager>());
+
+            // open created report
+            foreach (string reportPath in testLauncherResult.ReportDocumentPaths)
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(reportPath);
+                }
+                catch (Exception)
+                { }
+            }
         }
 
         #endregion

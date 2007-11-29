@@ -22,6 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,7 +35,12 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -73,6 +80,7 @@
     <Compile Include="Core\Interfaces\ITestTreeModel.cs" />
     <Compile Include="Core\Model\TestRunnerModel.cs" />
     <Compile Include="Core\Presenter\ProjectPresenter.cs" />
+    <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProvider.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitor.cs" />
     <Compile Include="Core\ProgressMonitoring\TestRunnerMonitor.cs" />
     <Compile Include="Interfaces\IProjectAdapterModel.cs" />

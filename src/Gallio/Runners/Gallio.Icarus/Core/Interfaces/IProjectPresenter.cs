@@ -28,6 +28,9 @@ namespace Gallio.Icarus.Core.Interfaces
         void GetTestTree(object sender, ProjectEventArgs e);
         void RunTests(object sender, EventArgs e);
         void StopTests(object sender, EventArgs e);
+        void SetFilter(object sender, SetFilterEventArgs e);
+        void GetLogStream(object sender, SingleStringEventArgs e);
+        void GenerateReport(object sender, SingleStringEventArgs e);
         void Passed(string testId);
         void Failed(string testId);
         void Ignored(string testId);
