@@ -32,9 +32,12 @@ namespace Gallio.Tests.Model.Filters
     [Author("Julian Hidalgo")]
     public class FilterParserTest : BaseUnitTest
     {
-        ITest fixture1 = null;
-        ITest fixture2 = null;
-        ITest fixture3 = null;
+        private ITest fixture1 = null;
+        private ITest fixture2 = null;
+        private ITest fixture3 = null;
+        private string fixture1TypeName = null;
+        private string fixture2TypeName = null;
+        private string fixture3TypeName = null;
 
         [SetUp]
         public override void SetUp()
@@ -45,12 +48,15 @@ namespace Gallio.Tests.Model.Filters
 
             ICodeElementInfo codeElement1 = Reflector.Wrap(typeof(SimpleTest));
             SetupResult.For(fixture1.CodeElement).Return(codeElement1);
+            fixture1TypeName = codeElement1.Name;
 
             ICodeElementInfo codeElement2 = Reflector.Wrap(typeof(ParameterizedTest));
             SetupResult.For(fixture2.CodeElement).Return(codeElement2);
+            fixture2TypeName = codeElement2.Name;
 
             ICodeElementInfo codeElement3 = Reflector.Wrap(typeof(FixtureInheritanceSample));
             SetupResult.For(fixture3.CodeElement).Return(codeElement3);
+            fixture3TypeName = codeElement3.Name;
 
             Mocks.ReplayAll();
         }
@@ -192,6 +198,34 @@ namespace Gallio.Tests.Model.Filters
         {
             // Just making sure they are parsed
             Assert.IsNotNull(FilterUtils.ParseTestFilter(filter));
+        }
+
+        [Test]
+        public void ComplexFilter1()
+        {
+            string filter = "((Type: " + fixture1TypeName + ") | (Type: "+ fixture2TypeName +
+                ")) & not Type:" + fixture3TypeName;
+            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Assert.IsNotNull(parsedFilter);
+            Assert.AreEqual(parsedFilter.ToString(), "And({ Or({ Type(Equality('" + fixture1TypeName
+                + "'), True), Type(Equality('"+ fixture2TypeName 
+                + "'), True) }), Not(Type(Equality('" + fixture3TypeName 
+                + "'), True)) })");
+            Assert.IsTrue(parsedFilter.IsMatch(fixture1));
+            Assert.IsTrue(parsedFilter.IsMatch(fixture2));
+            Assert.IsFalse(parsedFilter.IsMatch(fixture3));
+        }
+
+        [Test]
+        public void ComplexFilter2()
+        {
+            string filter = "not ((Type: " + fixture1TypeName + ") | (Type: " + fixture2TypeName + ")) & Type:" + fixture3TypeName + "";
+            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Assert.IsNotNull(parsedFilter);
+            Assert.AreEqual(parsedFilter.ToString(), "And({ Not(Or({ Type(Equality('" + fixture1TypeName + "'), True), Type(Equality('" + fixture2TypeName + "'), True) })), Type(Equality('" + fixture3TypeName + "'), True) })");
+            Assert.IsFalse(parsedFilter.IsMatch(fixture1));
+            Assert.IsFalse(parsedFilter.IsMatch(fixture2));
+            Assert.IsTrue(parsedFilter.IsMatch(fixture3));
         }
 
         private static string GetFilterTypeForMatchType(string matchType)

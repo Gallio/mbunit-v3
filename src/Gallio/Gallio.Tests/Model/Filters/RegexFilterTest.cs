@@ -15,7 +15,8 @@
 
 extern alias MbUnit2;
 using MbUnit2::MbUnit.Framework;
-using Gallio.Model;
+using System;
+using System.Text.RegularExpressions;
 using Gallio.Model.Filters;
 
 namespace Gallio.Tests.Model.Filters
@@ -25,6 +26,44 @@ namespace Gallio.Tests.Model.Filters
     [Author("Julian Hidalgo")]
     public class RegexFilterTest
     {
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullArgument()
+        {
+            new RegexFilter(null);
+        }
 
+        [Test]
+        public void ToStringTest()
+        {
+            string someExpression = "Some Expression *";
+            RegexFilter filter = new RegexFilter(new Regex(someExpression));
+            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "')");
+        }
+
+        [RowTest]
+        [Row("Acb")]
+        [Row("Acbb")]
+        [Row("Accb")]
+        public void Matches(string expressionToMatch)
+        {
+            string someExpression = "A*b+";
+            RegexFilter filter = new RegexFilter(new Regex(someExpression));
+            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "')");
+            Assert.IsTrue(filter.IsMatch(expressionToMatch));
+        }
+
+        [RowTest]
+        [Row(null)]
+        [Row("")]
+        [Row("Acaede")]
+        [Row("a*cB")]
+        public void NoMatches(string expressionToMatch)
+        {
+            string someExpression = "A*b+";
+            RegexFilter filter = new RegexFilter(new Regex(someExpression));
+            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "')");
+            Assert.IsFalse(filter.IsMatch(expressionToMatch));
+        }
     }
 }

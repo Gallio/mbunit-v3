@@ -22,7 +22,7 @@ namespace Gallio.Model.Filters
     /// </summary>
     [Serializable]
     public sealed class EqualityFilter<T> : Filter<T>
-        where T : IEquatable<T>
+        where T : class, IEquatable<T>
     {
         private readonly T comparand;
 
@@ -32,6 +32,8 @@ namespace Gallio.Model.Filters
         /// <param name="comparand">The value to compare for equality</param>
         public EqualityFilter(T comparand)
         {
+            if (comparand == null)
+                throw new ArgumentNullException("comparand");
             this.comparand = comparand;
         }
 

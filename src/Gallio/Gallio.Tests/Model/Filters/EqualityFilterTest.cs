@@ -14,17 +14,52 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System;
 using MbUnit2::MbUnit.Framework;
 using Gallio.Model;
 using Gallio.Model.Filters;
 
 namespace Gallio.Tests.Model.Filters
 {
-    //[TestFixture]
-    //[TestsOn(typeof(EqualityFilter<ITest>))]
-    //[Author("Julian Hidalgo")]
-    //public class EqualityFilterTest
-    //{
+    [TestFixture]
+    [TestsOn(typeof(EqualityFilter<string>))]
+    [Author("Julian Hidalgo")]
+    public class EqualityFilterTest
+    {
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullArgument()
+        {
+            new EqualityFilter<string>(null);
+        }
 
-    //}
+        [Test]
+        public void ToStringTest()
+        {
+            Assert.AreEqual(CreateFilter().ToString(), "Equality('MbUnit')");
+        }
+
+        [Test]
+        public void Match()
+        {
+            Assert.IsTrue(CreateFilter().IsMatch("MbUnit"));
+        }
+
+        [RowTest]
+        [Row(null)]
+        [Row("")]
+        [Row("MbUnit2")]
+        [Row("mbUnit")]
+        [Row("MBUNIT")]
+        [Row("MBUsNIT")]
+        public void NoMatch(string expressionToMatch)
+        {
+            Assert.IsFalse(CreateFilter().IsMatch(expressionToMatch));
+        }
+
+        private EqualityFilter<string> CreateFilter()
+        {
+            return new EqualityFilter<string>("MbUnit");
+        }
+    }
 }
