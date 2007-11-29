@@ -205,5 +205,18 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
             StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
             StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
         }
+
+        [Test]
+        public void DoesNotChokeOnAmbiguousMatch()
+        {
+            PopulateTestTree();
+
+            NUnitTest fixture = (NUnitTest)GetDescendantByName(rootTest, typeof(AmbiguousMatchSample).Name);
+            Assert.AreEqual(1, fixture.Children.Count);
+
+            NUnitTest test = (NUnitTest) fixture.Children[0];
+            Assert.AreEqual("Test", test.Name);
+            Assert.IsNull(test.CodeElement);
+        }
     }
 }

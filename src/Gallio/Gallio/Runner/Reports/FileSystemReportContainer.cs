@@ -47,6 +47,9 @@ namespace Gallio.Runner.Reports
             if (reportName.Length == 0)
                 throw new ArgumentException("Report name must not be empty.", @"reportName");
 
+            if (reportDirectory.Length == 0)
+                reportDirectory = Environment.CurrentDirectory;
+
             this.reportDirectory = Path.GetFullPath(reportDirectory);
             if (!reportDirectory.EndsWith(Path.DirectorySeparatorChar.ToString())
                 && ! reportDirectory.EndsWith(Path.AltDirectorySeparatorChar.ToString()))

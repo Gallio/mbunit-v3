@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Gallio.Collections;
 using Gallio.Model.Reflection;
 using MbUnit.Framework;
@@ -60,13 +59,13 @@ namespace MbUnit.Model
         /// <inheritdoc />
         public override void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
         {
-            IMultiMap<AssemblyName, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReference(assemblies, @"MbUnit");
-            foreach (KeyValuePair<AssemblyName, IList<IAssemblyInfo>> entry in map)
+            IMultiMap<Version, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReferenceVersion(assemblies, @"MbUnit");
+            foreach (KeyValuePair<Version, IList<IAssemblyInfo>> entry in map)
             {
                 // Build templates for the contents of the assemblies that reference MbUnit v3
                 // via reflection.  The attributes exercise a great deal of control over this
                 // process so that it can be easily extended by users.
-                Version frameworkVersion = entry.Key.Version;
+                Version frameworkVersion = entry.Key;
                 MbUnitFrameworkTemplate frameworkTemplate = new MbUnitFrameworkTemplate(frameworkVersion);
                 builder.Root.AddChild(frameworkTemplate);
 

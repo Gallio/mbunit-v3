@@ -188,15 +188,15 @@ namespace Gallio.Model.Reflection
         /// </summary>
         /// <param name="assemblies">The assemblies to map</param>
         /// <param name="displayName">The display name of the referenced assembly</param>
-        /// <returns>A map of the input assemblies indexed by the full assembly name of the desired reference</returns>
-        public static IMultiMap<AssemblyName, IAssemblyInfo> MapByAssemblyReference(IEnumerable<IAssemblyInfo> assemblies, string displayName)
+        /// <returns>A map of the input assemblies indexed by the version of the desired reference</returns>
+        public static IMultiMap<Version, IAssemblyInfo> MapByAssemblyReferenceVersion(IEnumerable<IAssemblyInfo> assemblies, string displayName)
         {
-            MultiMap<AssemblyName, IAssemblyInfo> map = new MultiMap<AssemblyName, IAssemblyInfo>();
+            MultiMap<Version, IAssemblyInfo> map = new MultiMap<Version, IAssemblyInfo>();
             foreach (IAssemblyInfo assembly in assemblies)
             {
                 AssemblyName reference = FindAssemblyReference(assembly, displayName);
                 if (reference != null)
-                    map.Add(reference, assembly);
+                    map.Add(reference.Version, assembly);
             }
 
             return map;

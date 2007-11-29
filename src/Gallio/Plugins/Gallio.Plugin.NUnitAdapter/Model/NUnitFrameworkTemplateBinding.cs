@@ -253,7 +253,17 @@ namespace Gallio.Plugin.NUnitAdapter.Model
 
                         ITypeInfo type = assembly.GetType(typeName);
                         if (type != null)
-                            return type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
+                        {
+                            try
+                            {
+                                return type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
+                            }
+                            catch (AmbiguousMatchException)
+                            {
+                                // We may have insufficient information to distinguish overloaded
+                                // test methods.  In this case we give up trying to find the code element.
+                            }
+                        }
                     }
                 }
             }

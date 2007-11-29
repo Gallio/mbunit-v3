@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Gallio.Model.Reflection;
 using Gallio.Plugin.NUnitAdapter.Properties;
 using Gallio.Model;
@@ -37,14 +36,14 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         /// <inheritdoc />
         public override void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
         {
-            IMultiMap<AssemblyName, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReference(assemblies, @"nunit.framework");
-            foreach (KeyValuePair<AssemblyName, IList<IAssemblyInfo>> entry in map)
+            IMultiMap<Version, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReferenceVersion(assemblies, @"nunit.framework");
+            foreach (KeyValuePair<Version, IList<IAssemblyInfo>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
                 // NUnit test enumerator.  We don't actually represent each test as a
                 // template because we can't perform any interesting meta-operations
                 // on them like binding test parameters or composing tests.
-                Version frameworkVersion = entry.Key.Version;
+                Version frameworkVersion = entry.Key;
                 NUnitFrameworkTemplate frameworkTemplate = new NUnitFrameworkTemplate(frameworkVersion, entry.Value);
                 builder.Root.AddChild(frameworkTemplate);
             }

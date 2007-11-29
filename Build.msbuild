@@ -71,6 +71,7 @@
   <!-- The binaries to copy into the build folder after compilation. -->
   <ItemGroup>
     <Binary Include="$(RootDir)\MbUnit License.txt" />
+    <Binary Include="$(RootDir)\Release Notes.txt" />
     <Binary Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
 
     <Binary Include="$(LibsDir)\Castle\bin\Castle.Core.dll" />

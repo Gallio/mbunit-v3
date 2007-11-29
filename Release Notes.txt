@@ -1,0 +1,42 @@
+MbUnit v3 and the Gallio Automation Platform
+Copyright 2005-2007 MbUnit Project - http://www.mbunit.com/
+===========================================================
+
+RELEASE NOTES
+-------------
+
+
+*** 2007/11/29: Alpha 1
+
+First combined release of MbUnit v3 and Gallio.
+Still lots of rough edges but covers a lot of ground.
+
+Gallio Achievements:
+
+- Dogfood.
+- Get project infrastructure in place.
+- Initial draft of the Gallio test object model.
+- Initial draft of the plugin extensibility model.
+- Implement core test harness components.
+- Plugins for MbUnit v2, NUnit v2, xUnit.Net beta 2.
+- Runners for command-line (Echo), MSBuild, NAnt, TestDriven.Net.
+- Reports generated in HTML, XHTML, Text, and XML.
+- Supports rich execution logs including attachments and embedded images.
+- Integrated help documentation.
+- Installer / Uninstaller.
+- Start of community process.
+- Early work on the GUI test runner (Icarus) but not ready yet.
+
+MbUnit v3 Achievements:
+
+- Dogfood.
+- Initial draft of the attribute extensibility model.
+- Supports [Test] and [TestFixture] attributes.
+- Assertions ported from MbUnit v2 in the interim.
+
+Remarks:
+
+- Try running the samples from the MbUnit.Samples assembly using Gallio.Echo!
+- MbUnit v3 [RowTest] not yet implemented.
+- Data-driven testing features postponed to subsequent release.
+- Still lots of loose ends floating around.

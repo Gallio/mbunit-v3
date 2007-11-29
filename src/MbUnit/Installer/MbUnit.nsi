@@ -78,6 +78,7 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	SetOutPath "$INSTDIR"
 	File "${BUILDDIR}\bin\ASL - Apache Software Foundation License.txt"
 	File "${BUILDDIR}\bin\MbUnit License.txt"
+	File "${BUILDDIR}\bin\Release Notes.txt"
 	File "MbUnit Website.url"
 	File "MbUnit Online Documentation.url"
 
