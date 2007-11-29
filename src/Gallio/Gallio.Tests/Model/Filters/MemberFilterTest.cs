@@ -48,6 +48,15 @@ namespace Gallio.Tests.Model.Filters
                 new MemberFilter<IModelComponent>(new EqualityFilter<string>("A")).IsMatch(component));
         }
 
+        [RowTest]
+        [Row("Member1")]
+        [Row("Member2")]
+        public void ToStringTest(string member)
+        {
+            MemberFilter<IModelComponent> filter = new MemberFilter<IModelComponent>(new EqualityFilter<string>(member));
+            Assert.AreEqual("Member(Equality('" + member + "'))", filter.ToString());
+        }
+
         internal static void A()
         {
         }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System;
 using Gallio.Collections;
 using Gallio.Tests;
 using MbUnit2::MbUnit.Framework;
@@ -26,6 +27,13 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(OrFilter<object>))]
     public class OrFilterTest : BaseUnitTest
     {
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullArgument()
+        {
+            new OrFilter<object>(null);
+        }
+
         [RowTest]
         [Row(true, new bool[] { })]
         [Row(true, new bool[] { true })]

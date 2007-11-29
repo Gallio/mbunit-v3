@@ -59,5 +59,16 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(expectedMatch, new AssemblyFilter<IModelComponent>(
                 new EqualityFilter<string>(type.Assembly.GetName().Name)).IsMatch(component));
         }
+
+        [RowTest]
+        [Row(true, typeof(TypeFilterTest))]
+        [Row(false, typeof(Int32))]
+        public void ToStringTest(bool expectedMatch, Type type)
+        {
+            string assemblyName = type.Assembly.GetName().Name;
+            AssemblyFilter<IModelComponent> filter = new AssemblyFilter<IModelComponent>(
+                new EqualityFilter<string>(assemblyName));
+            Assert.AreEqual("Assembly(Equality('" + assemblyName + "'))", filter.ToString());
+        }
     }
 }

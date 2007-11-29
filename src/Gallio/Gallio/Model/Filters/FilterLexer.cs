@@ -106,8 +106,7 @@ namespace Gallio.Model.Filters
                 }
                 else
                 {
-                    inputPosition++;
-                    input.Read();
+                    ConsumeNextChar();
                 }
             }
         }

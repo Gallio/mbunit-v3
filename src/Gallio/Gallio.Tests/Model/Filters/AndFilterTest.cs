@@ -29,6 +29,13 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(AndFilter<object>))]
     public class AndFilterTest : BaseUnitTest
     {
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullArgument()
+        {
+            new AndFilter<object>(null);
+        }
+
         [RowTest]
         [Row(true, new bool[] { })]
         [Row(true, new bool[] { true })]

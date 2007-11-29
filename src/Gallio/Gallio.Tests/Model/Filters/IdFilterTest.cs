@@ -39,5 +39,14 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(expectedMatch,
                 new IdFilter<IModelComponent>(new EqualityFilter<string>("expectedValue")).IsMatch(component));
         }
+
+        [RowTest]
+        [Row("")]
+        [Row("id1212")]
+        public void ToStringTest(string id)
+        {
+            Filter<IModelComponent> filter = new IdFilter<IModelComponent>(new EqualityFilter<string>(id));
+            Assert.AreEqual("Id(Equality('" + id + "'))", filter.ToString());
+        }
     }
 }

@@ -15,32 +15,29 @@
 
 extern alias MbUnit2;
 using System;
-using Gallio.Tests;
 using MbUnit2::MbUnit.Framework;
-
+using Gallio.Model;
 using Gallio.Model.Filters;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(NotFilter<object>))]
-    public class NotFilterTest : BaseUnitTest
+    [TestsOn(typeof(ModelComponentFilterFactory<ITest>))]
+    [Author("Julian Hidalgo")]
+    public class ModelComponentFilterFactoryTest
     {
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void NullArgument()
-        {
-            new NotFilter<object>(null);
-        }
-
         [RowTest]
-        [Row(true, false)]
-        [Row(false, true)]
-        public void IsMatchCombinations(bool expectedMatch, bool state)
+        [Row("Id", typeof(IdFilter<ITest>))]
+        [Row("Assembly", typeof(AssemblyFilter<ITest>))]
+        [Row("Namespace", typeof(NamespaceFilter<ITest>))]
+        [Row("Type", typeof(TypeFilter<ITest>))]
+        [Row("Member", typeof(MemberFilter<ITest>))]
+        [Row("SomeOtherKey", typeof(MetadataFilter<ITest>))]
+        public void CreateFilter(string key, Type filterType)
         {
-            Filter<object> filter = state ? (Filter<object>)new AnyFilter<object>() : new NoneFilter<object>();
-            NotFilter<object> combinator = new NotFilter<object>(filter);
-            Assert.AreEqual(expectedMatch, combinator.IsMatch(null));
+            Filter<string> filterValue = new EqualityFilter<string>("");
+            Filter<ITest> filter = (new ModelComponentFilterFactory<ITest>()).CreateFilter(key, filterValue);
+            Assert.AreEqual(filter.GetType(), filterType);
         }
     }
 }

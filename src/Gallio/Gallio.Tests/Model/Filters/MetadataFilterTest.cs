@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System;
 using Gallio.Model;
 using Gallio.Tests;
 using MbUnit2::MbUnit.Framework;
@@ -27,6 +28,13 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(MetadataFilter<IModelComponent>))]
     public class MetadataFilterTest : BaseUnitTest
     {
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullArgument()
+        {
+            new MetadataFilter<IModelComponent>(null, new EqualityFilter<string>("expectedValue"));
+        }
+
         [RowTest]
         [Row(true, new string[] { "expectedValue" })]
         [Row(true, new string[] { "this", "that", "expectedValue" })]
@@ -44,6 +52,16 @@ namespace Gallio.Tests.Model.Filters
 
             Assert.AreEqual(expectedMatch, new MetadataFilter<IModelComponent>("key",
                 new EqualityFilter<string>("expectedValue")).IsMatch(component));
+        }
+
+        [RowTest]
+        [Row("Key1", "Member1")]
+        [Row("Key1", "Member2")]
+        public void ToStringTest(string key, string value)
+        {
+            MetadataFilter<IModelComponent> filter = new MetadataFilter<IModelComponent>(key,
+                new EqualityFilter<string>(value));
+            Assert.AreEqual("Metadata('" + key + "', Equality('" + value + "'))", filter.ToString());
         }
     }
 }

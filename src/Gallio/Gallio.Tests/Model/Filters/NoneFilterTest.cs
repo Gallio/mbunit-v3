@@ -30,5 +30,14 @@ namespace Gallio.Tests.Model.Filters
         {
             Assert.IsFalse(new NoneFilter<object>().IsMatch(null));
         }
+
+        [RowTest]
+        [Row("")]
+        [Row("id1212")]
+        public void ToStringTest(string id)
+        {
+            NoneFilter<object> filter = new NoneFilter<object>();
+            Assert.AreEqual(filter.ToString(), "None()");
+        }
     }
 }

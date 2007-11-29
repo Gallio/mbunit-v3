@@ -29,6 +29,13 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(NamespaceFilter<IModelComponent>))]
     public class NamespaceFilterTest : BaseUnitTest
     {
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullArgument()
+        {
+            new NamespaceFilter<IModelComponent>(null);
+        }
+
         [RowTest]
         [Row(true, typeof(NamespaceFilterTest))]
         [Row(false, typeof(NamespaceFilter<IModelComponent>))]
@@ -43,6 +50,18 @@ namespace Gallio.Tests.Model.Filters
 
             Assert.AreEqual(expectedMatch, new NamespaceFilter<IModelComponent>(
                 new EqualityFilter<string>(typeof(NamespaceFilterTest).Namespace)).IsMatch(component));
+        }
+
+        [RowTest]
+        [Row(typeof(NamespaceFilterTest))]
+        [Row(typeof(NamespaceFilter<IModelComponent>))]
+        //[Row(null)]
+        public void ToStringTest(Type type)
+        {
+            string namespaceName = type.Namespace;
+            NamespaceFilter<IModelComponent> filter = new NamespaceFilter<IModelComponent>(
+                new EqualityFilter<string>(namespaceName));
+            Assert.AreEqual("Namespace(Equality('" + namespaceName + "'))", filter.ToString());
         }
     }
 }
