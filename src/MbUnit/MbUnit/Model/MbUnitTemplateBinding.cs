@@ -78,7 +78,7 @@ namespace MbUnit.Model
         /// <inheritdoc />
         public override void BuildTests(TestTreeBuilder builder, ITest parent)
         {
-            MbUnitTest test = Template.CreateMbUnitTest(Template.Name, Template.CodeReference, this);
+            MbUnitTest test = Template.CreateMbUnitTest(Template.Name, Template.CodeElement, this);
             test.Kind = null;
             test.Metadata.AddAll(Template.Metadata);
             parent.AddChild(test);

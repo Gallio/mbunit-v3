@@ -84,7 +84,7 @@ namespace Gallio.Model
         {
             // The base implementation builds a test node for the template and recurses
             // into the children.
-            BaseTest test = new BaseTest(template.Name, template.CodeReference, this);
+            BaseTest test = new BaseTest(template.Name, template.CodeElement, this);
             test.Kind = null;
             test.Metadata.AddAll(template.Metadata);
 

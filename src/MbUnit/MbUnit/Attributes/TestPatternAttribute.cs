@@ -16,7 +16,6 @@
 using System;
 using MbUnit.Model;
 using Gallio.Model;
-using MbUnit.Model;
 
 namespace MbUnit.Attributes
 {
@@ -35,7 +34,7 @@ namespace MbUnit.Attributes
     public abstract class TestPatternAttribute : MethodPatternAttribute
     {
         /// <inheritdoc />
-        public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        public override void Apply(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
             base.Apply(builder, methodTemplate);
 

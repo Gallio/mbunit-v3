@@ -42,14 +42,5 @@ namespace MbUnit.Attributes
             get { return order; }
             set { order = value; }
         }
-
-        /// <summary>
-        /// Sorts decorators by priority order.
-        /// </summary>
-        /// <param name="decoratorPatternAttributes">The array to sort</param>
-        public static void Sort(object[] decoratorPatternAttributes)
-        {
-            Array.Sort(decoratorPatternAttributes, DecoratorOrderComparer.Instance);
-        }
     }
 }

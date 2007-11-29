@@ -81,7 +81,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(TemplateTreeBuilder builder, MbUnitTemplateParameter parameter)
+        public override void Apply(MbUnitTestBuilder builder, MbUnitTemplateParameter parameter)
         {
             if (name != null)
                 parameter.Name = name;

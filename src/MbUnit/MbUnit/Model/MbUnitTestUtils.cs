@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
 using Gallio.Logging;
 using Gallio.Model;
@@ -36,18 +37,19 @@ namespace MbUnit.Model
         /// </remarks>
         /// <param name="method">The method to invoke</param>
         /// <returns>The action</returns>
-        public static Action<MbUnitTestState> CreateFixtureMethodInvoker(MethodInfo method)
+        public static Action<MbUnitTestState> CreateFixtureMethodInvoker(IMethodInfo method)
         {
             if (method == null)
                 throw new ArgumentNullException(@"method");
 
             return delegate(MbUnitTestState state)
             {
+                MethodInfo resolvedMethod = method.Resolve();
                 try
                 {
-                    if (method.IsStatic)
+                    if (resolvedMethod.IsStatic)
                     {
-                        method.Invoke(null, null);
+                        resolvedMethod.Invoke(null, null);
                     }
                     else
                     {
@@ -55,7 +57,7 @@ namespace MbUnit.Model
                         if (instance == null)
                             throw new ModelException(Resources.MbUnitTestUtils_ExpectedToInvokeAnInstanceMethod);
 
-                        method.Invoke(instance, null);
+                        resolvedMethod.Invoke(instance, null);
                     }
                 }
                 catch (TargetInvocationException ex)

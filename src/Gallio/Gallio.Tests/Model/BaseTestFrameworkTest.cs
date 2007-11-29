@@ -15,6 +15,7 @@
 
 using System.Reflection;
 using Gallio.Contexts;
+using Gallio.Model.Reflection;
 using MbUnit.Framework;
 using Gallio.Runner;
 using Gallio.Runner.Harness;
@@ -64,7 +65,7 @@ namespace Gallio.Tests.Model
         protected void PopulateTemplateTree()
         {
             harness.LoadPackage(new TestPackage(), new NullProgressMonitor());
-            harness.AddAssembly(sampleAssembly);
+            harness.AddAssembly(Reflector.Wrap(sampleAssembly));
             harness.BuildTemplates(new TemplateEnumerationOptions(), new NullProgressMonitor());
 
             rootTemplate = harness.TemplateTreeBuilder.Root;

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Logging;
 using Gallio.Model;

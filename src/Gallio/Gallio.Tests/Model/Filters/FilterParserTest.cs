@@ -15,6 +15,7 @@
 
 extern alias MbUnit2;
 using System;
+using Gallio.Model.Reflection;
 using MbUnit2::MbUnit.Framework;
 using System.Collections;
 using Gallio.TestResources.MbUnit;
@@ -42,14 +43,14 @@ namespace Gallio.Tests.Model.Filters
             fixture2 = Mocks.CreateMock<ITest>();
             fixture3 = Mocks.CreateMock<ITest>();
 
-            CodeReference codeReference1 = CodeReference.CreateFromType(typeof(SimpleTest));
-            SetupResult.For(fixture1.CodeReference).Return(codeReference1);
+            ICodeElementInfo codeElement1 = Reflector.Wrap(typeof(SimpleTest));
+            SetupResult.For(fixture1.CodeElement).Return(codeElement1);
 
-            CodeReference codeReference2 = CodeReference.CreateFromType(typeof(ParameterizedTest));
-            SetupResult.For(fixture2.CodeReference).Return(codeReference2);
+            ICodeElementInfo codeElement2 = Reflector.Wrap(typeof(ParameterizedTest));
+            SetupResult.For(fixture2.CodeElement).Return(codeElement2);
 
-            CodeReference codeReference3 = CodeReference.CreateFromType(typeof(FixtureInheritanceSample));
-            SetupResult.For(fixture3.CodeReference).Return(codeReference3);
+            ICodeElementInfo codeElement3 = Reflector.Wrap(typeof(FixtureInheritanceSample));
+            SetupResult.For(fixture3.CodeElement).Return(codeElement3);
 
             Mocks.ReplayAll();
         }

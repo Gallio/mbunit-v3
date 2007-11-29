@@ -16,6 +16,7 @@
 using System;
 using System.Threading;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -25,7 +26,6 @@ namespace Gallio.Model
     public abstract class ModelComponentInfo : BaseInfo, IModelComponent
     {
         private MetadataMap cachedMetadata;
-        private CodeReference cachedCodeReference;
 
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
@@ -71,18 +71,13 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public CodeReference CodeReference
+        public ICodeElementInfo CodeElement
         {
-            get
-            {
-                if (cachedCodeReference == null)
-                    Interlocked.CompareExchange(ref cachedCodeReference, Source.CodeReference.ReadOnlyCopy(), null);
-                return cachedCodeReference;
-            }
+            get{ return Source.CodeElement; }
         }
-        CodeReference IModelComponent.CodeReference
+        ICodeElementInfo IModelComponent.CodeElement
         {
-            get { return CodeReference; }
+            get { return CodeElement; }
             set { throw new NotSupportedException(); }
         }
 

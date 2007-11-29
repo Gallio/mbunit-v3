@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace MbUnit.Model
 {
@@ -25,18 +26,16 @@ namespace MbUnit.Model
     public class MbUnitAssemblyTemplate : MbUnitTemplate
     {
         private readonly MbUnitFrameworkTemplate frameworkTemplate;
-        private readonly Assembly assembly;
 
         /// <summary>
         /// Initializes an MbUnit assembly template model object.
         /// </summary>
         /// <param name="frameworkTemplate">The containing framework template</param>
         /// <param name="assembly">The assembly from which the template was derived</param>
-        public MbUnitAssemblyTemplate(MbUnitFrameworkTemplate frameworkTemplate, Assembly assembly)
-            : base(assembly.GetName().Name, CodeReference.CreateFromAssembly(assembly))
+        public MbUnitAssemblyTemplate(MbUnitFrameworkTemplate frameworkTemplate, IAssemblyInfo assembly)
+            : base(assembly.Name, assembly)
         {
             this.frameworkTemplate = frameworkTemplate;
-            this.assembly = assembly;
 
             Kind = ComponentKind.Assembly;
             IsGenerator = true;
@@ -53,9 +52,9 @@ namespace MbUnit.Model
         /// <summary>
         /// Gets the assembly from which the template was derived.
         /// </summary>
-        public Assembly Assembly
+        public IAssemblyInfo Assembly
         {
-            get { return assembly; }
+            get { return (IAssemblyInfo) CodeElement; }
         }
 
         /// <summary>

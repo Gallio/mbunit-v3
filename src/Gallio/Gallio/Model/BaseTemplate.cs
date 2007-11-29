@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model.Data;
+using Gallio.Model.Reflection;
 using Gallio.Properties;
 
 namespace Gallio.Model
@@ -38,11 +39,10 @@ namespace Gallio.Model
         /// Initializes a template initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="codeReference"/> is null</exception>
-        public BaseTemplate(string name, CodeReference codeReference)
-            : base(name, codeReference)
+        /// <param name="codeElement">The point of definition of the template, or null if unknown</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public BaseTemplate(string name, ICodeElementInfo codeElement)
+            : base(name, codeElement)
         {
             children = new List<ITemplate>();
             parameters = new List<ITemplateParameter>();

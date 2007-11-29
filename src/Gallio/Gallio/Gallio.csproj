@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -89,6 +89,22 @@
     <Compile Include="Model\Filters\ModelComponentFilterFactory.cs" />
     <Compile Include="Model\Filters\RegexFilter.cs" />
     <Compile Include="Model\Filters\BasePropertyFilter.cs" />
+    <Compile Include="Model\Reflection\DeclaringTypeComparer.cs" />
+    <Compile Include="Model\Reflection\IAssemblyInfo.cs" />
+    <Compile Include="Model\Reflection\ICodeElementInfo.cs" />
+    <Compile Include="Model\Reflection\IConstructorInfo.cs" />
+    <Compile Include="Model\Reflection\IEventInfo.cs" />
+    <Compile Include="Model\Reflection\IFieldInfo.cs" />
+    <Compile Include="Model\Reflection\IMemberInfo.cs" />
+    <Compile Include="Model\Reflection\IFunctionInfo.cs" />
+    <Compile Include="Model\Reflection\IMethodInfo.cs" />
+    <Compile Include="Model\Reflection\INamespaceInfo.cs" />
+    <Compile Include="Model\Reflection\IParameterInfo.cs" />
+    <Compile Include="Model\Reflection\IPropertyInfo.cs" />
+    <Compile Include="Model\Reflection\ISlotInfo.cs" />
+    <Compile Include="Model\Reflection\ITypeInfo.cs" />
+    <Compile Include="Model\Reflection\Reflector.cs" />
+    <Compile Include="Model\Reflection\ReflectionUtils.cs" />
     <Compile Include="Runner\Harness\ConsoleTestEnvironment.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarness.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarnessFactory.cs" />
@@ -252,8 +268,8 @@
     <Compile Include="Model\BaseTemplateParameter.cs" />
     <Compile Include="Model\BaseTest.cs" />
     <Compile Include="Model\BaseTestComponent.cs" />
-    <Compile Include="Model\CodeReference.cs" />
-    <Compile Include="Model\CodeReferenceKind.cs" />
+    <Compile Include="Model\Reflection\CodeReference.cs" />
+    <Compile Include="Model\Reflection\CodeReferenceKind.cs" />
     <Compile Include="Model\ComponentKind.cs" />
     <Compile Include="Model\IModelComponent.cs" />
     <Compile Include="Model\IModelTreeNode.cs" />
@@ -274,7 +290,6 @@
     <Compile Include="Model\RootTemplate.cs" />
     <Compile Include="Model\RootTemplateBinding.cs" />
     <Compile Include="Model\RootTest.cs" />
-    <Compile Include="Model\Slot.cs" />
     <Compile Include="Model\StepInfo.cs" />
     <Compile Include="Model\TemplateBindingInfo.cs" />
     <Compile Include="Model\TemplateBindingScope.cs" />

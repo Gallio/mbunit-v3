@@ -20,10 +20,11 @@ using Gallio.Core.ProgressMonitoring;
 using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Reflection;
 using Gallio.Plugin.XunitAdapter.Properties;
-using Xunit;
-using Xunit.Runner;
 using Xunit.Sdk;
+using Reflector=Gallio.Model.Reflection.Reflector;
+using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 
 namespace Gallio.Plugin.XunitAdapter.Model
 {
@@ -65,18 +66,9 @@ namespace Gallio.Plugin.XunitAdapter.Model
             {
                 passed = RunChildTests(progressMonitor, testMonitor);
             }
-            else if (xunitTest.MethodInfo != null)
-            {
-                passed = RunTestMethod(testMonitor, xunitTest.MethodInfo);
-            }
             else
             {
-                // Previously we marked the fixture as a test case if it had
-                // an associated RunWith command.
-                if (xunitTest.IsTestCase)
-                    passed = RunTestFixtureWithTestClassCommand(testMonitor, xunitTest.TypeInfo);
-                else
-                    passed = RunTestFixture(progressMonitor, testMonitor, xunitTest.TypeInfo);
+                passed = RunTestFixture(testMonitor, xunitTest.TypeInfo);
             }
 
             progressMonitor.Worked(1);
@@ -95,62 +87,97 @@ namespace Gallio.Plugin.XunitAdapter.Model
             return passed;
         }
 
-        private static bool RunTestFixture(IProgressMonitor progressMonitor, ITestMonitor testMonitor, Type typeInfo)
+        private static bool RunTestFixture(ITestMonitor testMonitor, XunitTypeInfoAdapter typeInfo)
         {
             IStepMonitor stepMonitor = testMonitor.StartRootStep();
 
-            bool passed = true;
+            ITestClassCommand testClassCommand;
             try
             {
-                ITestFixture testFixture = null;
-                try
-                {
-                    // Run BeforeAllTests behavior, if applicable.
-                    if (typeof(ITestFixture).IsAssignableFrom(typeInfo))
-                    {
-                        testFixture = (ITestFixture)Activator.CreateInstance(typeInfo);
-                        testFixture.BeforeAllTests();
-                    }
-                    
-                    // Run tests.
-                    foreach (ITestMonitor child in testMonitor.Children)
-                        passed &= RunTest(progressMonitor, child);
-
-                    // Run AfterAllTests behavior, if applicable.
-                    if (testFixture != null)
-                        testFixture.AfterAllTests();
-                }
-                finally
-                {
-                    // Run dispose behavior, if applicable.
-                    IDisposable disposable = testFixture as IDisposable;
-                    if (disposable != null)
-                        disposable.Dispose();
-                }
-            }
-            catch (TargetInvocationException ex)
-            {
-                stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex.InnerException);
-                passed = false;
+                testClassCommand = TestClassCommandFactory.Make(typeInfo);
             }
             catch (Exception ex)
             {
+                // Xunit can throw exceptions when making commands if the test is malformed.
                 stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
-                passed = false;
+                stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
+                return false;
             }
 
-            stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
-            return passed;
+            return RunTestClassCommandAndFinishStep(testMonitor, stepMonitor, testClassCommand);
         }
 
-        private static bool RunTestMethod(ITestMonitor testMonitor, MethodInfo methodInfo)
+        private static bool RunTestClassCommandAndFinishStep(ITestMonitor testMonitor, IStepMonitor stepMonitor, ITestClassCommand testClassCommand)
+        {
+            try
+            {
+                bool passed = true;
+
+                // Run ClassStart behavior, if applicable.
+                stepMonitor.LifecyclePhase = LifecyclePhases.SetUp;
+                Exception ex = testClassCommand.ClassStart();
+
+                // Run tests.
+                if (ex == null)
+                {
+                    List<MethodInfo> testMethods = new List<MethodInfo>();
+                    List<ITestMonitor> testMonitors = new List<ITestMonitor>();
+
+                    foreach (ITestMonitor child in testMonitor.Children)
+                    {
+                        XunitTest test = child.Test as XunitTest;
+
+                        if (test != null)
+                        {
+                            testMethods.Add(test.MethodInfo.Target.Resolve());
+                            testMonitors.Add(child);
+                        }
+                    }
+
+                    while (testMethods.Count != 0)
+                    {
+                        int nextTestIndex = testClassCommand.ChooseNextTest(testMethods.AsReadOnly());
+                        ITestMonitor nextTestMonitor = testMonitors[nextTestIndex];
+                        MethodInfo nextTestMethodInfo = testMethods[nextTestIndex];
+
+                        testMethods.RemoveAt(nextTestIndex);
+                        testMonitors.RemoveAt(nextTestIndex);
+
+                        passed &= RunTestMethod(nextTestMonitor, nextTestMethodInfo, testClassCommand);
+                    }
+                }
+
+                // Run ClassFinish behavior, if applicable.
+                stepMonitor.LifecyclePhase = LifecyclePhases.TearDown;
+                ex = testClassCommand.ClassFinish() ?? ex;
+
+                if (ex != null)
+                {
+                    stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
+                    passed = false;
+                }
+
+                stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
+                return passed;
+            }
+            catch (Exception ex)
+            {
+                // Xunit probably shouldn't throw an exception in a test command.
+                // But just in case...
+                stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
+                stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
+                return false;
+            }
+        }
+
+        private static bool RunTestMethod(ITestMonitor testMonitor, MethodInfo methodInfo, ITestClassCommand testClassCommand)
         {
             IStepMonitor stepMonitor = testMonitor.StartRootStep();
 
-            List<ITestCommand> commands;
+            List<ITestCommand> testCommands;
             try
             {
-                commands = new List<ITestCommand>(TestCommandFactory.Make(methodInfo));
+                testCommands = new List<ITestCommand>(TestCommandFactory.Make(testClassCommand, methodInfo));
             }
             catch (Exception ex)
             {
@@ -161,18 +188,18 @@ namespace Gallio.Plugin.XunitAdapter.Model
             }
 
             // For simple tests, run them as one step.
-            if (commands.Count == 1)
-                return RunTestCommandAndFinishStep(stepMonitor, commands[0]);
+            if (testCommands.Count == 1)
+                return RunTestCommandAndFinishStep(stepMonitor, testClassCommand, testCommands[0]);
 
             // For data-driven tests, run them as multiple nested steps.
             bool passed = true;
             int step = 0;
-            foreach (ITestCommand command in commands)
+            foreach (ITestCommand testCommand in testCommands)
             {
                 IStepMonitor nestedStepMonitor = stepMonitor.StartChildStep(String.Format("Xunit Test Step {0}", ++step),
-                    CodeReference.CreateFromMember(methodInfo));
+                    Reflector.Wrap(methodInfo));
 
-                bool stepPassed = RunTestCommandAndFinishStep(nestedStepMonitor, command);
+                bool stepPassed = RunTestCommandAndFinishStep(nestedStepMonitor, testClassCommand, testCommand);
                 if (!stepPassed)
                     passed = false;
             }
@@ -181,11 +208,11 @@ namespace Gallio.Plugin.XunitAdapter.Model
             return passed;
         }
 
-        private static bool RunTestCommandAndFinishStep(IStepMonitor stepMonitor, ITestCommand command)
+        private static bool RunTestCommandAndFinishStep(IStepMonitor stepMonitor, ITestClassCommand testClassCommand, ITestCommand testCommand)
         {
             try
             {
-                MethodResult result = command.Execute();
+                MethodResult result = testCommand.Execute(testClassCommand.ObjectUnderTest);
                 return LogMethodResultAndFinishStep(stepMonitor, result, false);
             }
             catch (Exception ex)
@@ -200,7 +227,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         private static bool LogMethodResultAndFinishStep(IStepMonitor stepMonitor, MethodResult result, bool useXunitTime)
         {
-            TimeSpan? testTime = useXunitTime ? (TimeSpan?) TimeSpan.FromSeconds(result.TestTime) : null;
+            TimeSpan? testTime = useXunitTime ? (TimeSpan?)TimeSpan.FromSeconds(result.TestTime) : null;
 
             // Record the method name if it's not at all present in the step name.
             // That can happen with data-driven tests.
@@ -219,22 +246,15 @@ namespace Gallio.Plugin.XunitAdapter.Model
             FailedResult failedResult = result as FailedResult;
             if (failedResult != null)
             {
-                // Get the failure exception if any.
+                // Get the failure exception.
                 LogStreamWriter failureStream = stepMonitor.LogWriter[LogStreamNames.Failures];
-                if (failedResult.Exception != null)
+                using (failureStream.BeginSection("Exception"))
                 {
-                    failureStream.WriteException(failedResult.Exception);
-                }
-                else
-                {
-                    using (failureStream.BeginSection("Exception"))
-                    {
-                        if (failedResult.Message != null)
-                            failureStream.WriteLine(failedResult.Message);
+                    if (failedResult.Message != null)
+                        failureStream.WriteLine(failedResult.Message);
 
-                        if (failedResult.StackTrace != null)
-                            failureStream.Write(failedResult.StackTrace);
-                    }
+                    if (failedResult.StackTrace != null)
+                        failureStream.Write(failedResult.StackTrace);
                 }
 
                 stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed, testTime);
@@ -252,67 +272,6 @@ namespace Gallio.Plugin.XunitAdapter.Model
             }
 
             throw new NotSupportedException(String.Format("Unrecognized Xunit method result type: '{0}'.", result.GetType()));
-        }
-
-        private static bool RunTestFixtureWithTestClassCommand(ITestMonitor testMonitor, Type typeInfo)
-        {
-            IStepMonitor stepMonitor = testMonitor.StartRootStep();
-
-            // Use more general-purpose support base on ITestClassCommand for RunWith.
-            // The user experience is not quite as good because we are limited in
-            // terms of the amount of declarative information we can derive early on.
-            ITestClassCommand command;
-            try
-            {
-                command = TestClassCommandFactory.Make(typeInfo);
-            }
-            catch (Exception ex)
-            {
-                // Xunit can throw exceptions when making commands if the test is malformed.
-                stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
-                stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
-                return false;
-            }
-
-            return RunTestClassCommandAndFinishStep(stepMonitor, command);
-        }
-
-        private static bool RunTestClassCommandAndFinishStep(IStepMonitor stepMonitor, ITestClassCommand command)
-        {
-            try
-            {
-                bool passed = true;
-                ClassResult classResult = command.Execute(delegate(ITestResult result)
-                {
-                    MethodResult methodResult = result as MethodResult;
-                    if (methodResult != null)
-                    {
-                        IStepMonitor methodStepMonitor = stepMonitor.StartChildStep(methodResult.MethodName, CodeReference.Unknown);
-
-                        foreach (KeyValuePair<string, string> entry in methodResult.Properties)
-                            methodStepMonitor.AddMetadata(entry.Key, entry.Value ?? @"");
-
-                        passed &= LogMethodResultAndFinishStep(methodStepMonitor, methodResult, true);
-                    }
-                });
-
-                if (classResult.FixtureException != null)
-                {
-                    stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(classResult.FixtureException);
-                    passed = false;
-                }
-
-                stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
-                return passed;
-            }
-            catch (Exception ex)
-            {
-                // Xunit probably shouldn't throw an exception in a test command.
-                // But just in case...
-                stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
-                stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
-                return false;
-            }
         }
     }
 }

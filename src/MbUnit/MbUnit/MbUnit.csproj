@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\ProcessRunner.cs" />
+    <Compile Include="Model\MbUnitTestBuilder.cs" />
     <Compile Include="Model\MbUnitTestController.cs" />
     <Compile Include="Model\MbUnitTestFramework.cs" />
     <Compile Include="Framework\ArrayAssert.cs" />
@@ -82,7 +83,6 @@
     <Compile Include="Framework\InterimAssert.cs" />
     <Compile Include="Attributes\AssemblyDecoratorPatternAttribute.cs" />
     <Compile Include="Attributes\AssemblyPatternAttribute.cs" />
-    <Compile Include="Attributes\ConditionPatternAttribute.cs" />
     <Compile Include="Attributes\DataPatternAttribute.cs" />
     <Compile Include="Attributes\DecoratorOrderComparer.cs" />
     <Compile Include="Attributes\DecoratorPatternAttribute.cs" />

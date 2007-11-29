@@ -21,6 +21,7 @@ using Gallio.Collections;
 using Gallio.Hosting;
 using Gallio.Model.Data;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 using Gallio.Plugin.NUnitAdapter.Properties;
 using NUnit.Core;
 using ITest=Gallio.Model.ITest;
@@ -41,6 +42,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         private const string NUnitTestTypeKey = "NUnit:TestType";
 
         private TestRunner runner;
+        private Dictionary<string, IAssemblyInfo> resolvedAssembliesByLocation;
 
         /// <summary>
         /// Creates a template binding.
@@ -67,7 +69,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         /// <summary>
         /// Gets the list of assemblies.
         /// </summary>
-        public IList<Assembly> Assemblies
+        public IList<IAssemblyInfo> Assemblies
         {
             get { return ((NUnitFrameworkTemplate) Template).Assemblies; }
         }
@@ -98,14 +100,29 @@ namespace Gallio.Plugin.NUnitAdapter.Model
 
                 TestPackage package = new TestPackage(@"Tests");
 
-                // Don't build nodes for namespaces.  Grouping by namespace is a
-                // presentation concern of the test runner, not strictly a structural one. -- Jeff.
+                // Note: Don't build nodes for namespaces.  Grouping by namespace is a
+                //       presentation concern of the test runner, not strictly a structural one
+                //       so we turn this feature off.
                 package.Settings.Add(@"AutoNamespaceSuites", false);
 
-                foreach (Assembly assembly in Assemblies)
-                    package.Assemblies.Add(assembly.Location);
+                resolvedAssembliesByLocation = new Dictionary<string, IAssemblyInfo>();
 
-                //runner = new SimpleTestRunner();
+                foreach (IAssemblyInfo assemblyInfo in Assemblies)
+                {
+                    try
+                    {
+                        Assembly assembly = assemblyInfo.Resolve();
+
+                        string location = assembly.Location;
+                        resolvedAssembliesByLocation[location] = assemblyInfo;
+                        package.Assemblies.Add(location);
+                    }
+                    catch (Exception)
+                    {
+                        // Ignore assemblies that cannot be resolved.
+                    }
+                }
+
                 runner = new RemoteTestRunner();
                 if (!runner.Load(package))
                     throw new ModelException(Resources.NUnitFrameworkTemplateBinding_CannotLoadNUnitTestAssemblies);
@@ -113,13 +130,14 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             catch (Exception)
             {
                 runner = null;
+                resolvedAssembliesByLocation = null;
                 throw;
             }
         }
 
         private void BuildFrameworkTest(ITest parentTest, NUnit.Core.ITest nunitRootTest)
         {
-            NUnitTest test = new NUnitTest(Template.Name, CodeReference.Unknown, this, nunitRootTest);
+            NUnitTest test = new NUnitTest(Template.Name, null, this, nunitRootTest);
             test.Kind = ComponentKind.Framework;
             PopulateMetadata(test, nunitRootTest);
 
@@ -130,42 +148,41 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         private void BuildTests(NUnitTest parentTest, NUnit.Core.ITest nunitTest)
         {
             string kind;
-            CodeReference codeReference;
+            ICodeElementInfo codeElement;
             bool unrecognizedTestType = false;
+
             switch (nunitTest.TestType)
             {
                 case @"Test Case":
                     kind = ComponentKind.Test;
-                    codeReference = ParseTestCaseName(parentTest.CodeReference, nunitTest.TestName.FullName);
+                    codeElement = ParseTestCaseName(parentTest.CodeElement, nunitTest.TestName.FullName);
                     break;
 
                 case @"Test Fixture":
                     kind = ComponentKind.Fixture;
-                    codeReference = ParseTestFixtureName(parentTest.CodeReference, nunitTest.TestName.FullName);
+                    codeElement = ParseTestFixtureName(parentTest.CodeElement, nunitTest.TestName.FullName);
                     break;
 
                 case @"Test Suite":
                     kind = ComponentKind.Suite;
-                    codeReference = ParseCodeReferenceFromTestSuiteName(parentTest.CodeReference, nunitTest.TestName.FullName, ref kind);
+                    codeElement = ParseTestSuiteName(nunitTest.TestName.FullName, ref kind);
                     break;
 
                 default:
                     kind = nunitTest.IsSuite ? ComponentKind.Suite : ComponentKind.Test;
-                    codeReference = CodeReference.Unknown;
+                    codeElement = null;
                     unrecognizedTestType = true;
                     break;
             }
 
             // The NUnit name for an assembly level test suite is the assembly's
             // full path name which I find somewhat cluttered. -- Jeff.
-            string name;
-            if (codeReference.Kind == CodeReferenceKind.Assembly)
-                name = codeReference.ResolveAssembly().GetName().Name;
-            else
-                name = nunitTest.TestName.Name;
+            string name = nunitTest.TestName.Name;
+            if (codeElement is IAssemblyInfo)
+                name = codeElement.Name;
 
             // Build the test.
-            NUnitTest test = new NUnitTest(name, codeReference, this, nunitTest);
+            NUnitTest test = new NUnitTest(name, codeElement, this, nunitTest);
             test.Kind = kind;
             test.IsTestCase = !nunitTest.IsSuite;
 
@@ -201,72 +218,63 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             foreach (DictionaryEntry entry in nunitTest.Properties)
                 test.Metadata.Add(entry.Key.ToString(), entry.Value != null ? entry.Value.ToString() : null);
 
-            string xmlDocumentation = GetXmlDocumentation(test);
-            if (xmlDocumentation != null)
-                test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+            ICodeElementInfo codeElement = test.CodeElement;
+            if (codeElement != null)
+            {
+                // Add documentation.
+                string xmlDocumentation = codeElement.GetXmlDocumentation();
+                if (xmlDocumentation != null)
+                    test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            // Add assembly-level metadata.
-            if (test.CodeReference.Kind == CodeReferenceKind.Assembly)
-                ModelUtils.PopulateMetadataFromAssembly(test.CodeReference.ResolveAssembly(), test.Metadata);
+                // Add assembly-level metadata.
+                IAssemblyInfo assemblyInfo = codeElement as IAssemblyInfo;
+                if (assemblyInfo != null)
+                    ModelUtils.PopulateMetadataFromAssembly(assemblyInfo, test.Metadata);
+            }
         }
 
-        private static string GetXmlDocumentation(NUnitTest test)
+        /// <summary>
+        /// Parses a code element from an NUnit test case name.
+        /// The name generally consists of the fixture type full-name followed by
+        /// a dot and the test method name.
+        /// </summary>
+        private static ICodeElementInfo ParseTestCaseName(ICodeElementInfo parent, string name)
         {
-            try
+            if (IsProbableIdentifier(name))
             {
-                switch (test.CodeReference.Kind)
+                IAssemblyInfo assembly = ReflectionUtils.GetAssembly(parent);
+                if (assembly != null)
                 {
-                    case CodeReferenceKind.Type:
-                        Type type = test.CodeReference.ResolveType();
-                        return Loader.XmlDocumentationResolver.GetXmlDocumentation(type);
+                    int lastDot = name.LastIndexOf('.');
+                    if (lastDot > 0 && lastDot < name.Length - 1)
+                    {
+                        string typeName = name.Substring(0, lastDot);
+                        string methodName = name.Substring(lastDot + 1);
 
-                    case CodeReferenceKind.Member:
-                        MemberInfo member = test.CodeReference.ResolveMember();
-                        return Loader.XmlDocumentationResolver.GetXmlDocumentation(member);
+                        ITypeInfo type = assembly.GetType(typeName);
+                        if (type != null)
+                            return type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                // Ignore any problems.  We don't care if this fails.
             }
 
             return null;
         }
 
         /// <summary>
-        /// Parses a code reference from an NUnit test case name.
-        /// The name generally consists of the fixture type full-name followed by
-        /// a dot and the test method name.
-        /// </summary>
-        private static CodeReference ParseTestCaseName(CodeReference parent, string name)
-        {
-            if (parent.AssemblyName != null)
-            {
-                string namespaceName;
-                string typeName;
-                string methodName;
-                if (SplitMethodName(name, out namespaceName, out typeName, out methodName))
-                    return new CodeReference(parent.AssemblyName, namespaceName, typeName, methodName, null);
-            }
-
-            return new CodeReference(parent.AssemblyName, parent.NamespaceName, parent.TypeName, parent.MemberName, null);
-        }
-
-        /// <summary>
         /// Parses a code reference from an NUnit test fixture name.
         /// The name generally consists of the fixture type full-name.
         /// </summary>
-        private CodeReference ParseTestFixtureName(CodeReference parent, string name)
+        private static ICodeElementInfo ParseTestFixtureName(ICodeElementInfo parent, string name)
         {
-            if (parent.AssemblyName != null)
+            if (IsProbableIdentifier(name))
             {
-                string namespaceName;
-                string typeName;
-                if (SplitTypeName(name, out namespaceName, out typeName))
-                    return new CodeReference(parent.AssemblyName, namespaceName, typeName, null, null);
+                IAssemblyInfo assembly = ReflectionUtils.GetAssembly(parent);
+                if (assembly != null)
+                    return assembly.GetType(name);
             }
 
-            return new CodeReference(parent.AssemblyName, parent.NamespaceName, parent.TypeName, null, null);
+            return null;
         }
 
         /// <summary>
@@ -274,67 +282,16 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         /// The name generally consists of the assembly filename or namespace name
         /// but it might be user-generated also.
         /// </summary>
-        private CodeReference ParseCodeReferenceFromTestSuiteName(CodeReference parent, string name, ref string kind)
+        private ICodeElementInfo ParseTestSuiteName(string name, ref string kind)
         {
-            Assembly assembly = GenericUtils.Find(Assemblies, delegate(Assembly candidate)
-            {
-                return candidate.Location == name;
-            });
-
-            if (assembly != null)
+            IAssemblyInfo assembly;
+            if (resolvedAssembliesByLocation.TryGetValue(name, out assembly))
             {
                 kind = ComponentKind.Assembly;
-                return CodeReference.CreateFromAssembly(assembly);
+                return assembly;
             }
 
-            if (parent.AssemblyName != null && IsProbableIdentifier(name))
-            {
-                kind = ComponentKind.Namespace;
-                return new CodeReference(parent.AssemblyName, name, null, null, null);
-            }
-
-            return new CodeReference(parent.AssemblyName, parent.NamespaceName, parent.TypeName, null, null);
-        }
-
-        private static bool SplitTypeName(string name, out string namespaceName, out string typeName)
-        {
-            if (IsProbableIdentifier(name))
-            {
-                int lastDot = name.LastIndexOf('.');
-                if (lastDot > 0 && lastDot < name.Length - 1)
-                {
-                    namespaceName = name.Substring(0, lastDot);
-                    typeName = name; //name.Substring(lastDot + 1);
-                    return true;
-                }
-            }
-
-            namespaceName = null;
-            typeName = null;
-            return false;
-        }
-
-        private static bool SplitMethodName(string name, out string namespaceName,
-            out string typeName, out string methodName)
-        {
-            if (IsProbableIdentifier(name))
-            {
-                int lastDot = name.LastIndexOf('.');
-                if (lastDot > 0 && lastDot < name.Length - 1)
-                {
-                    string firstPart = name.Substring(0, lastDot);
-                    if (SplitTypeName(firstPart, out namespaceName, out typeName))
-                    {
-                        methodName = name.Substring(lastDot + 1);
-                        return true;
-                    }
-                }
-            }
-
-            namespaceName = null;
-            typeName = null;
-            methodName = null;
-            return false;
+            return null;
         }
 
         private static bool IsProbableIdentifier(string name)

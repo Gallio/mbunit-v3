@@ -13,32 +13,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections;
 using MbUnit.Attributes;
+using System.Collections.Generic;
 
 namespace MbUnit.Attributes
 {
     /// <summary>
     /// Sorts decorator pattern attributes in ascending order by <see cref="DecoratorPatternAttribute.Order" />.
     /// </summary>
-    public sealed class DecoratorOrderComparer : IComparer
+    public sealed class DecoratorOrderComparer<T> : IComparer<T>
+        where T : DecoratorPatternAttribute
     {
         /// <summary>
         /// Gets the singleton instance of the comparer.
         /// </summary>
-        public static readonly DecoratorOrderComparer Instance = new DecoratorOrderComparer();
+        public static readonly DecoratorOrderComparer<T> Instance = new DecoratorOrderComparer<T>();
 
         private DecoratorOrderComparer()
         {
         }
 
         /// <inheritdoc />
-        public int Compare(object x, object y)
+        public int Compare(T x, T y)
         {
-            DecoratorPatternAttribute xAttrib = (DecoratorPatternAttribute)x;
-            DecoratorPatternAttribute yAttrib = (DecoratorPatternAttribute)y;
-
-            return xAttrib.Order.CompareTo(yAttrib.Order);
+            return x.Order.CompareTo(y.Order);
         }
     }
 }

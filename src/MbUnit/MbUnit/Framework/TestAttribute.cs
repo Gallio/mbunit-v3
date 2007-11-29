@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Model.Reflection;
 using MbUnit.Attributes;
 using MbUnit.Model;
 using Gallio.Model;
@@ -45,10 +46,10 @@ namespace MbUnit.Framework
     public sealed class TestAttribute : TestPatternAttribute
     {
         /// <override />
-        public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        public override void Apply(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
-            MethodInfo method = methodTemplate.Method;
-            ModelUtils.CheckMethodSignature(method);
+            IMethodInfo method = methodTemplate.Method;
+            ReflectionUtils.CheckMethodSignature(method);
 
             methodTemplate.ProcessTestChain.After(delegate(MbUnitTest test)
             {

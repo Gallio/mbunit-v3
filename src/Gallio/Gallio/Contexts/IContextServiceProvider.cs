@@ -20,6 +20,7 @@ using Gallio;
 using Gallio.Contexts;
 using Gallio.Logging;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Contexts
 {
@@ -67,13 +68,13 @@ namespace Gallio.Contexts
         /// </remarks>
         /// <param name="name">The name of the step</param>
         /// <param name="block">The block of code to run</param>
-        /// <param name="codeReference">The code reference</param>
+        /// <param name="codeElement">The code element associated with the step, or null if none</param>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="block"/> or <paramref name="codeReference "/>is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
+        /// <paramref name="block"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
-        Context RunStep(string name, Block block, CodeReference codeReference);
+        Context RunStep(string name, Block block, ICodeElementInfo codeElement);
 
         /// <summary>
         /// Adds metadata to the step.

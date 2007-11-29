@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Reflection;
 using Gallio.Runner;
 
 namespace Gallio.Runner.Harness
@@ -35,7 +36,7 @@ namespace Gallio.Runner.Harness
         /// <summary>
         /// Gets the list of test assemblies loaded into the test harness.
         /// </summary>
-        IList<Assembly> Assemblies { get; }
+        IList<IAssemblyInfo> Assemblies { get; }
 
         /// <summary>
         /// Gets the event dispatcher.
@@ -80,7 +81,7 @@ namespace Gallio.Runner.Harness
         /// </summary>
         /// <param name="assembly">The assembly to add</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
-        void AddAssembly(Assembly assembly);
+        void AddAssembly(IAssemblyInfo assembly);
 
         /// <summary>
         /// Loads a test assembly and adds it to the list.
@@ -89,7 +90,7 @@ namespace Gallio.Runner.Harness
         /// <returns>The loaded assembly</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyFile"/> is null</exception>
         /// <exception cref="RunnerException">Thrown if the assembly could not be loaded</exception>
-        Assembly LoadAssemblyFrom(string assemblyFile);
+        IAssemblyInfo LoadAssemblyFrom(string assemblyFile);
 
         /// <summary>
         /// Loads the test package into the test harness.

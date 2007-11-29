@@ -16,6 +16,7 @@
 using System.Reflection;
 using Gallio.Hosting;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace MbUnit.Model
 {
@@ -25,24 +26,18 @@ namespace MbUnit.Model
     public class MbUnitMethodTemplate : MbUnitTemplate
     {
         private readonly MbUnitTypeTemplate typeTemplate;
-        private readonly MethodInfo method;
 
         /// <summary>
         /// Initializes an MbUnit test method template model object.
         /// </summary>
         /// <param name="typeTemplate">The containing type template</param>
         /// <param name="method">The method from which the template was derived</param>
-        public MbUnitMethodTemplate(MbUnitTypeTemplate typeTemplate, MethodInfo method)
-            : base(method.Name, CodeReference.CreateFromMember(method))
+        public MbUnitMethodTemplate(MbUnitTypeTemplate typeTemplate, IMethodInfo method)
+            : base(method.Name, method)
         {
             this.typeTemplate = typeTemplate;
-            this.method = method;
 
             Kind = ComponentKind.Test;
-
-            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(method);
-            if (xmlDocumentation != null)
-                Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }
 
         /// <summary>
@@ -56,9 +51,9 @@ namespace MbUnit.Model
         /// <summary>
         /// Gets the test method.
         /// </summary>
-        public MethodInfo Method
+        public IMethodInfo Method
         {
-            get { return method; }
+            get { return (IMethodInfo) CodeElement; }
         }
     }
 }

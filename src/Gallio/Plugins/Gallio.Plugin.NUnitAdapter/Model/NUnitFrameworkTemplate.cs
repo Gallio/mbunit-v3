@@ -15,9 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Gallio.Model.Data;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 using Gallio.Plugin.NUnitAdapter.Properties;
 
 namespace Gallio.Plugin.NUnitAdapter.Model
@@ -29,15 +29,15 @@ namespace Gallio.Plugin.NUnitAdapter.Model
     /// </summary>
     public class NUnitFrameworkTemplate : BaseTemplate
     {
-        private readonly IList<Assembly> assemblies;
+        private readonly IList<IAssemblyInfo> assemblies;
 
         /// <summary>
         /// Initializes a template initially without a parent.
         /// </summary>
         /// <param name="frameworkVersion">The framework version</param>
         /// <param name="assemblies">The list of assemblies</param>
-        public NUnitFrameworkTemplate(Version frameworkVersion, IList<Assembly> assemblies)
-            : base(String.Format(Resources.NUnitFrameworkTemplate_FrameworkTemplateName, frameworkVersion), CodeReference.Unknown)
+        public NUnitFrameworkTemplate(Version frameworkVersion, IList<IAssemblyInfo> assemblies)
+            : base(String.Format(Resources.NUnitFrameworkTemplate_FrameworkTemplateName, frameworkVersion), null)
         {
             this.assemblies = assemblies;
 
@@ -48,7 +48,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         /// <summary>
         /// Gets the list of assemblies.
         /// </summary>
-        public IList<Assembly> Assemblies
+        public IList<IAssemblyInfo> Assemblies
         {
             get { return assemblies; }
         }

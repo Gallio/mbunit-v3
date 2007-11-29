@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 using Gallio.Plugin.MbUnit2Adapter.Properties;
 
 namespace Gallio.Plugin.MbUnit2Adapter.Model
@@ -34,10 +35,11 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        public override void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
+        public override void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
         {
-            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"MbUnit.Framework");
-            foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
+            IMultiMap<AssemblyName, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReference(assemblies, @"MbUnit.Framework");
+
+            foreach (KeyValuePair<AssemblyName, IList<IAssemblyInfo>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
                 // MbUnit v2 test enumerator.  We don't actually represent each test as a
@@ -45,13 +47,12 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 // on them like binding test parameters or composing tests.
                 Version frameworkVersion = entry.Key.Version;
                 BaseTemplate frameworkTemplate = new BaseTemplate(
-                    String.Format(Resources.MbUnit2TestFramework_FrameworkTemplateName, frameworkVersion),
-                    CodeReference.Unknown);
+                    String.Format(Resources.MbUnit2TestFramework_FrameworkTemplateName, frameworkVersion), null);
                 frameworkTemplate.Kind = ComponentKind.Framework;
                 frameworkTemplate.IsGenerator = true;
                 builder.Root.AddChild(frameworkTemplate);
 
-                foreach (Assembly assembly in entry.Value)
+                foreach (IAssemblyInfo assembly in entry.Value)
                 {
                     MbUnit2AssemblyTemplate assemblyTemplate = new MbUnit2AssemblyTemplate(assembly);
                     frameworkTemplate.AddChild(assemblyTemplate);

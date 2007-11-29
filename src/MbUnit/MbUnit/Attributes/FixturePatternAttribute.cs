@@ -14,12 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using MbUnit.Model;
 using Gallio.Model;
-using MbUnit.Model;
 
 namespace MbUnit.Attributes
 {
@@ -40,7 +36,7 @@ namespace MbUnit.Attributes
     public abstract class FixturePatternAttribute : TypePatternAttribute
     {
         /// <inheritdoc />
-        public override void Apply(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
+        public override void Apply(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate)
         {
             base.Apply(builder, typeTemplate);
 

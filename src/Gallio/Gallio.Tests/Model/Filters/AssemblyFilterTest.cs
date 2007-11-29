@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using Gallio.Model.Reflection;
 using Gallio.Tests;
 using MbUnit2::MbUnit.Framework;
 
@@ -35,9 +36,9 @@ namespace Gallio.Tests.Model.Filters
         {
             base.SetUp();
 
-            CodeReference codeReference = CodeReference.CreateFromType(typeof(TypeFilterTest));
+            ICodeElementInfo codeElement = Reflector.Wrap(typeof(TypeFilterTest));
             component = Mocks.CreateMock<IModelComponent>();
-            SetupResult.For(component.CodeReference).Return(codeReference);
+            SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
         }
 

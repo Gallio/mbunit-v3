@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using Gallio.Model.Reflection;
 using Gallio.Tests;
 using MbUnit2::MbUnit.Framework;
 
@@ -35,12 +36,12 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, null)]
         public void IsMatchCombinations(bool expectedMatch, string memberName)
         {
-            CodeReference codeReference = memberName != null
-                ? CodeReference.CreateFromMember(GetType().GetMethod(memberName, BindingFlags.Static | BindingFlags.NonPublic))
-                : CodeReference.Unknown;
+            ICodeElementInfo codeElement = memberName != null
+                ? Reflector.Wrap((MemberInfo) GetType().GetMethod(memberName, BindingFlags.Static | BindingFlags.NonPublic))
+                : null;
 
             IModelComponent component = Mocks.CreateMock<IModelComponent>();
-            SetupResult.For(component.CodeReference).Return(codeReference);
+            SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
 
             Assert.AreEqual(expectedMatch,

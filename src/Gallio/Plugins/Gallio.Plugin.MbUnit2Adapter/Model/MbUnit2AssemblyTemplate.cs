@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model.Data;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Plugin.MbUnit2Adapter.Model
 {
@@ -28,17 +29,13 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
     /// </summary>
     public class MbUnit2AssemblyTemplate : BaseTemplate
     {
-        private Assembly assembly;
-
         /// <summary>
         /// Initializes a template initially without a parent.
         /// </summary>
         /// <param name="assembly">The assembly</param>
-        public MbUnit2AssemblyTemplate(Assembly assembly)
-            : base(assembly.FullName, CodeReference.CreateFromAssembly(assembly))
+        public MbUnit2AssemblyTemplate(IAssemblyInfo assembly)
+            : base(assembly.FullName, assembly)
         {
-            this.assembly = assembly;
-
             Kind = ComponentKind.Assembly;
             IsGenerator = true;
         }
@@ -46,9 +43,9 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
         /// <summary>
         /// Gets the assembly.
         /// </summary>
-        public Assembly Assembly
+        public IAssemblyInfo Assembly
         {
-            get { return assembly; }
+            get { return (IAssemblyInfo) CodeElement; }
         }
 
         /// <inheritdoc />

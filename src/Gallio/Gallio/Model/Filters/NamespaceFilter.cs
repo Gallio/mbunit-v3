@@ -15,11 +15,12 @@
 
 using System;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
+    /// A filter that matches objects whose <see cref="IModelComponent.CodeElement" />
     /// matches the specified namespace name.
     /// </summary>
     [Serializable]
@@ -39,7 +40,11 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            return ValueFilter.IsMatch(value.CodeReference.NamespaceName);
+            INamespaceInfo @namespace = ReflectionUtils.GetNamespace(value.CodeElement);
+            if (@namespace == null)
+                return false;
+
+            return ValueFilter.IsMatch(@namespace.Name);
         }
 
         /// <inheritdoc />

@@ -22,6 +22,7 @@ using Gallio.Core.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Reflection;
 using Gallio.Utilities;
 
 namespace Gallio.Runner.Harness
@@ -39,7 +40,7 @@ namespace Gallio.Runner.Harness
         private ITestPlanFactory testPlanFactory;
 
         private bool isDisposed;
-        private List<Assembly> assemblies;
+        private List<IAssemblyInfo> assemblies;
         private TestPackage package;
         private TemplateTreeBuilder templateTreeBuilder;
         private TestTreeBuilder testTreeBuilder;
@@ -60,7 +61,7 @@ namespace Gallio.Runner.Harness
 
             this.testPlanFactory = testPlanFactory;
 
-            assemblies = new List<Assembly>();
+            assemblies = new List<IAssemblyInfo>();
             eventDispatcher = new TestEventDispatcher();
             frameworks = new List<ITestFramework>();
             environments = new List<ITestEnvironment>();
@@ -84,7 +85,7 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public IList<Assembly> Assemblies
+        public IList<IAssemblyInfo> Assemblies
         {
             get
             {
@@ -152,7 +153,7 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public void AddAssembly(Assembly assembly)
+        public void AddAssembly(IAssemblyInfo assembly)
         {
             if (assembly == null)
                 throw new ArgumentNullException(@"assembly");
@@ -162,7 +163,7 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public Assembly LoadAssemblyFrom(string assemblyFile)
+        public IAssemblyInfo LoadAssemblyFrom(string assemblyFile)
         {
             if (assemblyFile == null)
                 throw new ArgumentNullException(@"assemblyFile");
@@ -171,7 +172,7 @@ namespace Gallio.Runner.Harness
 
             try
             {
-                Assembly assembly = Assembly.LoadFrom(assemblyFile);
+                IAssemblyInfo assembly = Reflector.Wrap(Assembly.LoadFrom(assemblyFile));
                 AddAssembly(assembly);
                 return assembly;
             }
@@ -218,7 +219,7 @@ namespace Gallio.Runner.Harness
             }
         }
 
-        private void LoadAssemblies(IProgressMonitor progressMonitor, IList<string> assemblyFiles)
+        private void LoadAssemblies(IProgressMonitor progressMonitor, ICollection<string> assemblyFiles)
         {
             using (progressMonitor)
             {

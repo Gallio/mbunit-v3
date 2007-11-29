@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Gallio.TDNetAddIn")]
+[assembly: AssemblyTitle("Gallio.TDNetRunner")]
 [assembly: AssemblyDescription("TestDriven.Net runner for Gallio.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]

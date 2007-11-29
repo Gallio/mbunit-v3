@@ -20,6 +20,7 @@ using System.Threading;
 using Gallio.Contexts;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Logging;
+using Gallio.Model.Reflection;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Model.Execution
@@ -429,7 +430,7 @@ namespace Gallio.Model.Execution
 
             private BaseStep CreateRootStep()
             {
-                return new BaseStep(BaseStep.RootStepName, test.CodeReference, test, null);
+                return new BaseStep(BaseStep.RootStepName, test.CodeElement, test, null);
             }
         }
 
@@ -525,12 +526,12 @@ namespace Gallio.Model.Execution
                 get { return outcome; }
             }
 
-            public Context RunStep(string name, Block block, CodeReference codeReference)
+            public Context RunStep(string name, Block block, ICodeElementInfo codeElement)
             {
                 if (block == null)
                     throw new ArgumentNullException(@"block");
 
-                StepMonitor childStepMonitor = StartChildStepImpl(name, codeReference);
+                StepMonitor childStepMonitor = StartChildStepImpl(name, codeElement);
                 childStepMonitor.RunBlock(block);
                 return childStepMonitor.context;
             }
@@ -564,19 +565,17 @@ namespace Gallio.Model.Execution
                 }
             }
 
-            public IStepMonitor StartChildStep(string name, CodeReference codeReference)
+            public IStepMonitor StartChildStep(string name, ICodeElementInfo codeElement)
             {
-                return StartChildStepImpl(name, codeReference);
+                return StartChildStepImpl(name, codeElement);
             }
 
-            private StepMonitor StartChildStepImpl(string name, CodeReference codeReference)
+            private StepMonitor StartChildStepImpl(string name, ICodeElementInfo codeElement)
             {
                 if (name == null)
                     throw new ArgumentNullException(@"name");
                 if (name.Length == 0)
                     throw new ArgumentException("Name must not be empty.", @"name");
-                if (codeReference == null)
-                    throw new ArgumentNullException(@"codeReference");
 
                 try
                 {
@@ -590,7 +589,7 @@ namespace Gallio.Model.Execution
                     {
                         VerifyNotFinishedWithLocalLock();
 
-                        BaseStep childStep = new BaseStep(name, codeReference, step.Test, step);
+                        BaseStep childStep = new BaseStep(name, codeElement, step.Test, step);
                         stepMonitor = new StepMonitor(testPlan, childStep, this);
                     }
 

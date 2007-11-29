@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 using Gallio.Plugin.XunitAdapter.Properties;
 
 namespace Gallio.Plugin.XunitAdapter.Model
@@ -34,10 +35,10 @@ namespace Gallio.Plugin.XunitAdapter.Model
         }
 
         /// <inheritdoc />
-        public override void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
+        public override void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
         {
-            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"xunit");
-            foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
+            IMultiMap<AssemblyName, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReference(assemblies, @"xunit");
+            foreach (KeyValuePair<AssemblyName, IList<IAssemblyInfo>> entry in map)
             {
                 // Add a framework template with suitable rules to populate tests using the
                 // Xunit test enumerator.  We don't actually represent each test as a

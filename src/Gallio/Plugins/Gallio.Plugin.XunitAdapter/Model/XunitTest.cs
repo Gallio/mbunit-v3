@@ -14,36 +14,33 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
 using Gallio.Model.Execution;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Plugin.XunitAdapter.Model
 {
     /// <summary>
     /// Wraps an Xunit test.
     /// </summary>
-    /// <remarks author="jeff">
-    /// Looks like Type will be replaced by ITypeInfo in Xunit beta 2.
-    /// </remarks>
     public class XunitTest : BaseTest
     {
-        private readonly Type typeInfo;
-        private readonly MethodInfo methodInfo;
+        private readonly XunitTypeInfoAdapter typeInfo;
+        private readonly XunitMethodInfoAdapter methodInfo;
 
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
+        /// <param name="codeElement">The point of definition, or null if none</param>
         /// <param name="templateBinding">The template binding that produced this test</param>
         /// <param name="typeInfo">The Xunit test type information</param>
         /// <param name="methodInfo">The Xunit test method information, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="codeReference"/>, <paramref name="templateBinding"/>, or <paramref name="typeInfo"/> is null</exception>
-        public XunitTest(string name, CodeReference codeReference, XunitFrameworkTemplateBinding templateBinding,
-            Type typeInfo, MethodInfo methodInfo)
-            : base(name, codeReference, templateBinding)
+        /// <paramref name="templateBinding"/>, or <paramref name="typeInfo"/> is null</exception>
+        public XunitTest(string name, ICodeElementInfo codeElement, XunitFrameworkTemplateBinding templateBinding,
+            XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
+            : base(name, codeElement, templateBinding)
         {
             if (typeInfo == null)
                 throw new ArgumentNullException(@"typeInfo");
@@ -55,7 +52,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
         /// <summary>
         /// Gets the Xunit test type information.
         /// </summary>
-        public Type TypeInfo
+        public XunitTypeInfoAdapter TypeInfo
         {
             get { return typeInfo; }
         }
@@ -63,7 +60,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
         /// <summary>
         /// Gets the Xunit test method information.
         /// </summary>
-        public MethodInfo MethodInfo
+        public XunitMethodInfoAdapter MethodInfo
         {
             get { return methodInfo; }
         }

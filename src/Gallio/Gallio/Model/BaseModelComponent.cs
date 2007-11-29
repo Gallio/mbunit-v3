@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -24,26 +25,23 @@ namespace Gallio.Model
     {
         private string id;
         private string name;
-        private CodeReference codeReference;
+        private ICodeElementInfo codeElement;
         private readonly MetadataMap metadata;
 
         /// <summary>
         /// Initializes a test component.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition of the component</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="codeReference"/>
-        /// is null</exception>
-        public BaseModelComponent(string name, CodeReference codeReference)
+        /// <param name="codeElement">The point of definition of the component, or null if unknown</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public BaseModelComponent(string name, ICodeElementInfo codeElement)
         {
             if (name == null)
                 throw new ArgumentNullException(@"name");
-            if (codeReference == null)
-                throw new ArgumentNullException(@"codeReference");
 
             this.id = Guid.NewGuid().ToString(); // interim value until initialized to a stable identifier
             this.name = name;
-            this.codeReference = codeReference;
+            this.codeElement = codeElement;
             this.metadata = new MetadataMap();
         }
 
@@ -80,15 +78,15 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public CodeReference CodeReference
+        public ICodeElementInfo CodeElement
         {
-            get { return codeReference; }
+            get { return codeElement; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
 
-                codeReference = value;
+                codeElement = value;
             }
         }
 

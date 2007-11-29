@@ -44,6 +44,9 @@
     <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.TDNetRunner\Gallio.TDNetRunner.csproj" />
     <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests.csproj" />
 
+    <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner\Gallio.ReSharperRunner.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner.Tests.csproj" />
+
     <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.Echo\Gallio.Echo.csproj" />
     <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.Echo.Tests\Gallio.Echo.Tests.csproj" />
 
@@ -170,17 +173,25 @@
     <Binary Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.XunitAdapter\Readme.txt">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="$(LibsDir)\Xunit\Microsoft Permissive License.txt">
+    <Binary Include="$(LibsDir)\Xunit\EULA.txt">
         <Folder>Xunit</Folder>
     </Binary>
     <Binary Include="$(LibsDir)\Xunit\xunit.dll">
         <Folder>Xunit</Folder>
     </Binary>
+    <Binary Include="$(LibsDir)\Xunit\xunit.xml">
+        <Folder>Xunit</Folder>
+    </Binary>
     <Binary Include="$(LibsDir)\Xunit\xunit.extensions.dll">
+        <Folder>Xunit</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\Xunit\xunit.extensions.xml">
         <Folder>Xunit</Folder>
     </Binary>
 
     <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll" />
+
+    <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll" />
 
     <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.Echo\bin\Gallio.Echo.exe" />
     <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.Echo\bin\Gallio.Echo.exe.config" />
@@ -231,6 +242,7 @@
     <TestAssembly Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.XunitAdapter.Tests\bin\Gallio.Plugin.XunitAdapter.Tests.dll" />
 
     <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.TDNetRunner.Tests\bin\Gallio.TDNetRunner.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner.Tests\bin\Gallio.ReSharperRunner.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.Echo.Tests\bin\Gallio.Echo.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.MSBuildTasks.Tests\bin\Gallio.MSBuildTasks.Tests.dll" />

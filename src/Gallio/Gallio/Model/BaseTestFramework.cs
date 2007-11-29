@@ -13,10 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -29,12 +27,12 @@ namespace Gallio.Model
         public abstract string Name { get; }
 
         /// <inheritdoc />
-        public virtual void PrepareAssemblies(IList<Assembly> assemblies)
+        public virtual void PrepareAssemblies(IList<IAssemblyInfo> assemblies)
         {
         }
 
         /// <inheritdoc />
-        public virtual void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
+        public virtual void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
         {
         }
     }

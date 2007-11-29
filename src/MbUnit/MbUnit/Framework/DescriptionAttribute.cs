@@ -16,6 +16,7 @@
 using System;
 using MbUnit.Attributes;
 using Gallio.Model;
+using MbUnit.Model;
 
 namespace MbUnit.Framework
 {
@@ -50,7 +51,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
+        public override void Apply(MbUnitTestBuilder builder, ITemplateComponent component)
         {
             component.Metadata.Add(MetadataKeys.Description, description);
         }

@@ -15,6 +15,7 @@
 
 using System;
 using Gallio;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
 using Gallio.Model.Execution;
 using Gallio.Model;
@@ -38,12 +39,12 @@ namespace MbUnit.Model
         /// Initializes a test initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
+        /// <param name="codeElement">The point of definition, or null if none</param>
         /// <param name="templateBinding">The template binding that produced this test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
-        public MbUnitTest(string name, CodeReference codeReference, MbUnitTemplateBinding templateBinding)
-            : base(name, codeReference, templateBinding)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="templateBinding"/> is null</exception>
+        public MbUnitTest(string name, ICodeElementInfo codeElement, MbUnitTemplateBinding templateBinding)
+            : base(name, codeElement, templateBinding)
         {
             setUpChain = new ActionChain<MbUnitTestState>();
             executeChain = new ActionChain<MbUnitTestState>();

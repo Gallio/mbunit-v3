@@ -16,11 +16,12 @@
 using System;
 using System.Reflection;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
+    /// A filter that matches objects whose <see cref="IModelComponent.CodeElement" />
     /// matches the specified assembly name filter.
     /// </summary>
     [Serializable]
@@ -45,18 +46,12 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            string assemblyName = value.CodeReference.AssemblyName;
-            if (assemblyName == null)
+            IAssemblyInfo assembly = ReflectionUtils.GetAssembly(value.CodeElement);
+            if (assembly == null)
                 return false;
 
-            return ValueFilter.IsMatch(assemblyName) ||
-                ValueFilter.IsMatch(GetSimpleName(assemblyName));
-        }
-
-        private static string GetSimpleName(string assemblyName)
-        {
-            AssemblyName name = new AssemblyName(assemblyName);
-            return name.Name;
+            return ValueFilter.IsMatch(assembly.FullName) ||
+                ValueFilter.IsMatch(assembly.Name);
         }
 
         /// <inheritdoc />

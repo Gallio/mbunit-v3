@@ -13,11 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Gallio.Model.Reflection;
 
-namespace Gallio.Model
+namespace Gallio.Model.Reflection
 {
     /// <summary>
     /// Describes the kind of code element specified by a <see cref="CodeReference" />.
@@ -45,12 +43,12 @@ namespace Gallio.Model
         Type,
 
         /// <summary>
-        /// The code reference specifies a member.
+        /// The code reference specifies a constructor, method, property, field or event.
         /// </summary>
         Member,
 
         /// <summary>
-        /// The code reference specifies a parameter.
+        /// The code reference specifies a parameter of a constructor or method.
         /// </summary>
         Parameter
     }

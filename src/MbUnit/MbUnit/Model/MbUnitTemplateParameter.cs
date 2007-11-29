@@ -17,6 +17,7 @@ using System;
 using System.Reflection;
 using Gallio.Hosting;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace MbUnit.Model
 {
@@ -25,43 +26,34 @@ namespace MbUnit.Model
     /// </summary>
     public class MbUnitTemplateParameter : BaseTemplateParameter
     {
-        private readonly Slot slot;
+        private readonly ISlotInfo slot;
 
         /// <summary>
         /// Initializes an MbUnit test parameter model object.
         /// </summary>
         /// <param name="slot">The slot</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="slot"/> is null</exception>
-        public MbUnitTemplateParameter(Slot slot)
-            : base(ValidateSlotArgument(slot).Name, slot.CodeReference, slot.ValueType)
+        public MbUnitTemplateParameter(ISlotInfo slot)
+            : base(ValidateSlotArgument(slot).Name, slot, slot.ValueType)
         {
             this.slot = slot;
 
             Index = slot.Position;
-
-            MemberInfo member = slot.Member;
-            if (member != null)
-            {
-                string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(member);
-                if (xmlDocumentation != null)
-                    Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
-            }
         }
 
         /// <summary>
         /// Gets the associated slot.
         /// </summary>
-        public Slot Slot
+        public ISlotInfo Slot
         {
             get { return slot; }
         }
 
-        private static Slot ValidateSlotArgument(Slot slot)
+        private static ISlotInfo ValidateSlotArgument(ISlotInfo slot)
         {
             if (slot == null)
                 throw new ArgumentNullException(@"slot");
             return slot;
         }
-
     }
 }

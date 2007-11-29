@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -33,7 +34,7 @@ namespace Gallio.Model
         /// Gets or sets the type of value that must be bound to the parameter.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        Type Type { get; set; }
+        ITypeInfo Type { get; set; }
 
         /// <summary>
         /// Gets or sets the zero-based index of the parameter.  The index is used

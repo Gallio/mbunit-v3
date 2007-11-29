@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -75,6 +75,7 @@
     <Compile Include="Model\Filters\FilterLexerTest.cs" />
     <Compile Include="Model\Filters\FilterParserTest.cs" />
     <Compile Include="Model\Filters\RegexFilterTest.cs" />
+    <Compile Include="Model\Reflection\ReflectorTests.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />
     <Compile Include="Integration\BaseSampleTest.cs" />
@@ -91,7 +92,7 @@
     <Compile Include="Model\Filters\NotFilterTest.cs" />
     <Compile Include="Model\Filters\OrFilterTest.cs" />
     <Compile Include="Model\Filters\TypeFilterTest.cs" />
-    <Compile Include="Model\CodeReferenceTest.cs" />
+    <Compile Include="Model\Reflection\CodeReferenceTest.cs" />
     <Compile Include="Model\MetadataMapTest.cs" />
     <Compile Include="Collections\GenericUtilsTest.cs" />
     <Compile Include="Runner\Reports\MockTestDataFactory.cs" />

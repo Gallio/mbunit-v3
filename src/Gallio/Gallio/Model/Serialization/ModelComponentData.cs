@@ -16,6 +16,7 @@
 using System;
 using System.Xml.Serialization;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model.Serialization
 {
@@ -67,7 +68,7 @@ namespace Gallio.Model.Serialization
 
             id = source.Id;
             name = source.Name;
-            codeReference = source.CodeReference.Copy();
+            codeReference = source.CodeElement != null ? source.CodeElement.CodeReference : CodeReference.Unknown;
             metadata = source.Metadata.Copy();
         }
 
@@ -109,7 +110,7 @@ namespace Gallio.Model.Serialization
         /// Gets or sets the code reference.  (non-null)
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        /// <seealso cref="IModelComponent.CodeReference"/>
+        /// <seealso cref="IModelComponent.CodeElement"/>
         [XmlElement("codeReference", IsNullable=false)]
         public CodeReference CodeReference
         {

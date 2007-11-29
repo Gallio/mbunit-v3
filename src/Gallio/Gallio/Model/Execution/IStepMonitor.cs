@@ -19,6 +19,7 @@ using System.Text;
 using Gallio.Contexts;
 using Gallio.Logging;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model.Execution
 {
@@ -40,12 +41,12 @@ namespace Gallio.Model.Execution
         /// test step that is starting.
         /// </remarks>
         /// <param name="name">The name of the step</param>
-        /// <param name="codeReference">The code reference of the step</param>
+        /// <param name="codeElement">The code element associated with the step, or null if none</param>
         /// <returns>The monitor for the child step</returns>
         /// <exception cref="InvalidOperationException">Thrown if the step has finished</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="codeReference"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        IStepMonitor StartChildStep(string name, CodeReference codeReference);
+        IStepMonitor StartChildStep(string name, ICodeElementInfo codeElement);
 
         /// <summary>
         /// Finishes a step and submits its final result.

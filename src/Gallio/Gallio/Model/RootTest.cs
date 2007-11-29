@@ -30,7 +30,7 @@ namespace Gallio.Model
         /// <param name="templateBinding">The root template binding</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="templateBinding"/> is null</exception>
         public RootTest(ITemplateBinding templateBinding)
-            : base(Resources.RootTest_RootTestName, CodeReference.Unknown, templateBinding)
+            : base(Resources.RootTest_RootTestName, null, templateBinding)
         {
             // Note: The kind will be set by the RootTemplateBinding.
             Kind = null;

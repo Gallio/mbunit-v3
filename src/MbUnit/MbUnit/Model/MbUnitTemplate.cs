@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Gallio.Model.Data;
 using Gallio.Model.Actions;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace MbUnit.Model
 {
@@ -39,11 +40,10 @@ namespace MbUnit.Model
         /// Initializes a template initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="codeReference"/> is null</exception>
-        public MbUnitTemplate(string name, CodeReference codeReference)
-            : base(name, codeReference)
+        /// <param name="codeElement">The point of definition, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public MbUnitTemplate(string name, ICodeElementInfo codeElement)
+            : base(name, codeElement)
         {
         }
 
@@ -104,14 +104,14 @@ namespace MbUnit.Model
         /// Creates an MbUnit test instance.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
+        /// <param name="codeElement">The point of definition, or null if none</param>
         /// <param name="templateBinding">The template binding that produced this test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="templateBinding"/> is null</exception>
         /// <returns>The new test</returns>
-        public virtual MbUnitTest CreateMbUnitTest(string name, CodeReference codeReference, MbUnitTemplateBinding templateBinding)
+        public virtual MbUnitTest CreateMbUnitTest(string name, ICodeElementInfo codeElement, MbUnitTemplateBinding templateBinding)
         {
-            return new MbUnitTest(name, codeReference, templateBinding);
+            return new MbUnitTest(name, codeElement, templateBinding);
         }
     }
 }

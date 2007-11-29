@@ -72,15 +72,17 @@ namespace Gallio.TDNetRunner
                     // FIXME: Should we always include derived types?
                     filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true));
                     break;
+
                 case MemberTypes.Method:
                     MethodInfo methodInfo = (MethodInfo)member;
                     // We look for the declaring type so we can also use a TypeFilter
                     // to avoid ambiguity
                     Type declaringType = methodInfo.DeclaringType;
                     // FIXME: Should we always include derived types?
-                    filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(declaringType.FullName), false));
+                    filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(declaringType.FullName), true));
                     filters.Add(new MemberFilter<ITest>(new EqualityFilter<string>(member.Name)));
                     break;
+
                 default:
                     // This is not something we can run so just ignore it
                     InformNoTestsWereRun(testListener, String.Format(Resources.MbUnitTestRunner_MemberIsNotATest, member.Name));

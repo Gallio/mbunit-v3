@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Hosting;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
 using Gallio.Model;
 
@@ -27,24 +27,18 @@ namespace MbUnit.Model
     public class MbUnitTypeTemplate : MbUnitTemplate
     {
         private readonly MbUnitAssemblyTemplate assemblyTemplate;
-        private readonly Type type;
 
         /// <summary>
         /// Initializes an MbUnit type template model object.
         /// </summary>
         /// <param name="assemblyTemplate">The containing assembly template</param>
         /// <param name="type">The type from which the template was derived</param>
-        public MbUnitTypeTemplate(MbUnitAssemblyTemplate assemblyTemplate, Type type)
-            : base(ModelUtils.GetPossiblyNestedTypeName(type), CodeReference.CreateFromType(type))
+        public MbUnitTypeTemplate(MbUnitAssemblyTemplate assemblyTemplate, ITypeInfo type)
+            : base(type.CompoundName, type)
         {
             this.assemblyTemplate = assemblyTemplate;
-            this.type = type;
 
             Kind = ComponentKind.Fixture;
-
-            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(type);
-            if (xmlDocumentation != null)
-                Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }
 
         /// <summary>
@@ -58,9 +52,9 @@ namespace MbUnit.Model
         /// <summary>
         /// Gets the type from which the template was derived.
         /// </summary>
-        public Type Type
+        public ITypeInfo Type
         {
-            get { return type; }
+            get { return (ITypeInfo) CodeElement; }
         }
 
         /// <summary>

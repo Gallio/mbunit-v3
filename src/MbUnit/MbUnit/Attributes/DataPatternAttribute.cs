@@ -30,17 +30,5 @@ namespace MbUnit.Attributes
         | AttributeTargets.Parameter, AllowMultiple=true, Inherited=true)]
     public abstract class DataPatternAttribute : PatternAttribute
     {
-        private string condition;
-
-        /// <summary>
-        /// Gets or sets the name of the condition token associated with a condition to
-        /// evaluate to decide whether to use the data specified by this attribute.
-        /// <seealso cref="ConditionPatternAttribute" />.
-        /// </summary>
-        public string Condition
-        {
-            get { return condition; }
-            set { condition = value; }
-        }
     }
 }

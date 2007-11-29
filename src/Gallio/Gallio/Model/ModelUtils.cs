@@ -15,11 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Reflection;
-using Gallio.Collections;
-using Gallio.Hosting;
+using Gallio.Model.Reflection;
 using Gallio.Properties;
 
 namespace Gallio.Model
@@ -67,190 +64,6 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Checks that the method has the specified signature otherwise throws a <see cref="ModelException" />.
-        /// </summary>
-        /// <param name="method">The method</param>
-        /// <param name="signature">The list of parameter types (all input parameters)</param>
-        /// <exception cref="ModelException">Thrown if the method has a different signature</exception>
-        public static void CheckMethodSignature(MethodInfo method, params Type[] signature)
-        {
-            ParameterInfo[] parameters = method.GetParameters();
-            if (parameters.Length == signature.Length)
-            {
-                for (int i = 0; i < parameters.Length; i++)
-                {
-                    ParameterInfo parameter = parameters[i];
-                    if (parameter.ParameterType != signature[i] || !parameter.IsIn || parameter.IsOut)
-                        goto Fail;
-                }
-
-                return;
-            }
-
-        Fail:
-            string[] expectedTypeNames = Array.ConvertAll<Type, string>(signature, delegate(Type parameterType)
-            {
-                return parameterType.FullName;
-            });
-            string[] actualTypeNames = Array.ConvertAll<ParameterInfo, string>(parameters, delegate(ParameterInfo parameter)
-            {
-                if (parameter.IsOut)
-                {
-                    string prefix = parameter.IsIn ? @"ref " : @"out ";
-                    return prefix + parameter.ParameterType.FullName;
-                }
-
-                return parameter.ParameterType.FullName;
-            });
-
-            throw new ModelException(String.Format(CultureInfo.CurrentCulture,
-                Resources.ModelUtils_InvalidSignature,
-                string.Join(@", ", expectedTypeNames),
-                string.Join(@", ", actualTypeNames)));
-        }
-
-        /// <summary>
-        /// Gets the attribute with the specified type.
-        /// </summary>
-        /// <typeparam name="T">The attribute type</typeparam>
-        /// <param name="provider">The attribute provider</param>
-        /// <returns>The attribute or null if none</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the attribute provider
-        /// contains multiple attributes of the specified type</exception>
-        public static T GetAttribute<T>(ICustomAttributeProvider provider) where T : class
-        {
-            object[] attribs = provider.GetCustomAttributes(typeof(T), true);
-
-            if (attribs.Length == 0)
-                return null;
-            else if (attribs.Length == 1)
-                return (T)attribs[0];
-            else
-                throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture,
-                    "There are multiple instances of attribute '{0}'.", typeof(T).FullName)); 
-        }
-
-        /// <summary>
-        /// Finds the assembly name of the directly referenced assembly with the specified display name.
-        /// </summary>
-        /// <param name="assembly">The assembly to search</param>
-        /// <param name="displayName">The display name of the referenced assembly to find</param>
-        /// <returns>The referenced assembly name or null if none</returns>
-        public static AssemblyName FindAssemblyReference(Assembly assembly, string displayName)
-        {
-            foreach (AssemblyName reference in assembly.GetReferencedAssemblies())
-            {
-                if (reference.Name == displayName)
-                    return reference;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Maps an enumeration of assemblies based on the assembly name of their
-        /// reference with the specified display name.  Assemblies that do not have
-        /// referenced with the specified display name are omitted from the map.
-        /// </summary>
-        /// <param name="assemblies">The assemblies to map</param>
-        /// <param name="displayName">The display name of the referenced assembly</param>
-        /// <returns>A map of the input assemblies indexed by the full assembly name of the desired reference</returns>
-        public static IMultiMap<AssemblyName, Assembly> MapByAssemblyReference(IEnumerable<Assembly> assemblies, string displayName)
-        {
-            MultiMap<AssemblyName, Assembly> map = new MultiMap<AssemblyName, Assembly>();
-            foreach (Assembly assembly in assemblies)
-            {
-                AssemblyName reference = FindAssemblyReference(assembly, displayName);
-                if (reference != null)
-                    map.Add(reference, assembly);
-            }
-
-            return map;
-        }
-
-        /// <summary>
-        /// Determines if the type can be instantiated using a public constructor.
-        /// </summary>
-        /// <param name="type">The type</param>
-        /// <returns>True if the type can be instantiated</returns>
-        public static bool CanInstantiate(Type type)
-        {
-            return !type.IsAbstract && type.IsClass && type.IsVisible
-                && !type.HasElementType && type.GetConstructors().Length != 0;
-        }
-
-        /// <summary>
-        /// Determines if the method is public, non-static and is non-abstract so it can be invoked.
-        /// </summary>
-        /// <param name="method">The method</param>
-        /// <returns>True if the method can be invoked</returns>
-        public static bool CanInvokeNonStatic(MethodInfo method)
-        {
-            return !method.IsAbstract && method.IsPublic && !method.IsStatic;
-        }
-
-        /// <summary>
-        /// Determines if the property has public, non-static and non-abstract getter
-        /// and setter functions.
-        /// </summary>
-        /// <param name="property">The property</param>
-        /// <returns>True if the property can be get and set</returns>
-        public static bool CanGetAndSetNonStatic(PropertyInfo property)
-        {
-            return property.CanRead && property.CanWrite
-                && CanInvokeNonStatic(property.GetGetMethod())
-                    && CanInvokeNonStatic(property.GetSetMethod());
-        }
-
-        /// <summary>
-        /// If the type is not nested, returns its name.  Otherwise returns
-        /// the name of the containing type followed by a '.' and the name of
-        /// the nested type.
-        /// </summary>
-        /// <param name="type">The type</param>
-        /// <returns>The type's name</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
-        public static string GetPossiblyNestedTypeName(Type type)
-        {
-            if (type == null)
-                throw new ArgumentNullException(@"type");
-
-            if (!type.IsNested)
-                return type.Name;
-
-            return string.Concat(GetPossiblyNestedTypeName(type.DeclaringType), @".", type.Name);
-        }
-
-        /// <summary>
-        /// Sorts an array of members that all belong to the same type
-        /// such that the members declared by supertypes appear before those
-        /// declared by subtypes.
-        /// </summary>
-        /// <example>
-        /// If type A derives from types B and C then given methods
-        /// A.Foo, A.Bar, B.Foo, C.Quux one possible sorted order will be:
-        /// B.Foo, C.Quux, A.Bar, A.Foo.  The members are not sorted by name or
-        /// by any other criterion except by relative specificity of the
-        /// declaring types.
-        /// </example>
-        public static void SortMembersBySubTypes<T>(T[] members)
-            where T : MemberInfo
-        {
-            Array.Sort(members, delegate(T a, T b)
-            {
-                Type ta = a.DeclaringType, tb = b.DeclaringType;
-                if (ta != tb)
-                {
-                    if (ta.IsAssignableFrom(tb))
-                        return -1;
-                    if (tb.IsAssignableFrom(ta))
-                        return 1;
-                }
-                return 0;
-            });
-        }
-
-        /// <summary>
         /// <para>
         /// Populates the provided metadata map with asembly-level metadata derived
         /// from custom attributes.
@@ -273,43 +86,43 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="assembly">The assembly</param>
         /// <param name="metadataMap">The metadata map</param>
-        public static void PopulateMetadataFromAssembly(Assembly assembly, MetadataMap metadataMap)
+        public static void PopulateMetadataFromAssembly(IAssemblyInfo assembly, MetadataMap metadataMap)
         {
-            metadataMap.Add(MetadataKeys.CodeBase, Gallio.Hosting.Loader.GetFriendlyAssemblyCodeBase(assembly));
+            metadataMap.Add(MetadataKeys.CodeBase, assembly.Path);
 
-            AssemblyCompanyAttribute companyAttribute = GetAttribute<AssemblyCompanyAttribute>(assembly);
+            AssemblyCompanyAttribute companyAttribute = assembly.GetAttribute<AssemblyCompanyAttribute>(false);
             if (companyAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Company, companyAttribute.Company);
 
-            AssemblyConfigurationAttribute configurationAttribute = GetAttribute<AssemblyConfigurationAttribute>(assembly);
+            AssemblyConfigurationAttribute configurationAttribute = assembly.GetAttribute<AssemblyConfigurationAttribute>(false);
             if (configurationAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Configuration, configurationAttribute.Configuration);
 
-            AssemblyCopyrightAttribute copyrightAttribute = GetAttribute<AssemblyCopyrightAttribute>(assembly);
+            AssemblyCopyrightAttribute copyrightAttribute = assembly.GetAttribute<AssemblyCopyrightAttribute>(false);
             if (copyrightAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Copyright, copyrightAttribute.Copyright);
 
-            AssemblyDescriptionAttribute descriptionAttribute = GetAttribute<AssemblyDescriptionAttribute>(assembly);
+            AssemblyDescriptionAttribute descriptionAttribute = assembly.GetAttribute<AssemblyDescriptionAttribute>(false);
             if (descriptionAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Description, descriptionAttribute.Description);
 
-            AssemblyFileVersionAttribute fileVersionAttribute = GetAttribute<AssemblyFileVersionAttribute>(assembly);
+            AssemblyFileVersionAttribute fileVersionAttribute = assembly.GetAttribute<AssemblyFileVersionAttribute>(false);
             if (fileVersionAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.FileVersion, fileVersionAttribute.Version);
 
-            AssemblyInformationalVersionAttribute informationalVersionAttribute = GetAttribute<AssemblyInformationalVersionAttribute>(assembly);
+            AssemblyInformationalVersionAttribute informationalVersionAttribute = assembly.GetAttribute<AssemblyInformationalVersionAttribute>(false);
             if (informationalVersionAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.InformationalVersion, informationalVersionAttribute.InformationalVersion);
 
-            AssemblyProductAttribute productAttribute = GetAttribute<AssemblyProductAttribute>(assembly);
+            AssemblyProductAttribute productAttribute = assembly.GetAttribute<AssemblyProductAttribute>(false);
             if (productAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Product, productAttribute.Product);
 
-            AssemblyTitleAttribute titleAttribute = GetAttribute<AssemblyTitleAttribute>(assembly);
+            AssemblyTitleAttribute titleAttribute = assembly.GetAttribute<AssemblyTitleAttribute>(false);
             if (titleAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Title, titleAttribute.Title);
 
-            AssemblyTrademarkAttribute trademarkAttribute = GetAttribute<AssemblyTrademarkAttribute>(assembly);
+            AssemblyTrademarkAttribute trademarkAttribute = assembly.GetAttribute<AssemblyTrademarkAttribute>(false);
             if (trademarkAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Trademark, trademarkAttribute.Trademark);
 

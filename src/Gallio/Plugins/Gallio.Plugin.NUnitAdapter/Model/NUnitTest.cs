@@ -14,10 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Model.Execution;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Plugin.NUnitAdapter.Model
 {
@@ -32,13 +31,14 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         /// Initializes a test initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
+        /// <param name="codeElement">The point of definition, or null if none</param>
         /// <param name="templateBinding">The template binding that produced this test</param>
         /// <param name="test">The NUnit test, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
-        public NUnitTest(string name, CodeReference codeReference, NUnitFrameworkTemplateBinding templateBinding, NUnit.Core.ITest test)
-            : base(name, codeReference, templateBinding)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="templateBinding"/> is null</exception>
+        public NUnitTest(string name, ICodeElementInfo codeElement,
+            NUnitFrameworkTemplateBinding templateBinding, NUnit.Core.ITest test)
+            : base(name, codeElement, templateBinding)
         {
             this.test = test;
         }

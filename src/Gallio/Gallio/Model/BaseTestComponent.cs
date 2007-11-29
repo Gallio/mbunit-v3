@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -26,11 +27,10 @@ namespace Gallio.Model
         /// Initializes a component initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="codeReference"/> is null</exception>
-        public BaseTestComponent(string name, CodeReference codeReference)
-            : base(name, codeReference)
+        /// <param name="codeElement">The point of definition of the component, or null if unknown</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public BaseTestComponent(string name, ICodeElementInfo codeElement)
+            : base(name, codeElement)
         {
         }
     }

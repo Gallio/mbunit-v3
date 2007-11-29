@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -33,11 +34,11 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public Type Type
+        public ITypeInfo Type
         {
             get { return Source.Type; }
         }
-        Type ITemplateParameter.Type
+        ITypeInfo ITemplateParameter.Type
         {
             get { return Type; }
             set { throw new NotSupportedException(); }

@@ -77,7 +77,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        public override void Apply(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
             methodTemplate.ProcessTestChain.After(delegate(MbUnitTest test)
             {

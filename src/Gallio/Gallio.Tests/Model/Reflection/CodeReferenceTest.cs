@@ -17,11 +17,11 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Permissions;
-using Gallio.Model;
+using Gallio.Model.Reflection;
 using MbUnit.Framework;
 using Gallio.Utilities;
 
-namespace Gallio.Tests.Model
+namespace Gallio.Tests.Model.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(CodeReference))]
@@ -59,7 +59,7 @@ namespace Gallio.Tests.Model
         [Test]
         public void Copy()
         {
-            CodeReference original = new CodeReference(assembly, @namespace, type, member, parameter);
+            CodeReference original = CodeReference.CreateFromParameter(parameter);
             CodeReference copy = original.Copy();
 
             Assert.AreNotSame(original, copy);
@@ -69,7 +69,7 @@ namespace Gallio.Tests.Model
         [Test]
         public void ReadOnlyCopy()
         {
-            CodeReference original = new CodeReference(assembly, @namespace, type, member, parameter);
+            CodeReference original = CodeReference.CreateFromParameter(parameter);
             CodeReference copy = original.ReadOnlyCopy();
 
             Assert.AreNotSame(original, copy);
@@ -93,10 +93,6 @@ namespace Gallio.Tests.Model
             Assert.AreEqual(parameter.Name, r.ParameterName);
 
             Assert.AreEqual(CodeReferenceKind.Parameter, r.Kind);
-            Assert.AreEqual(assembly, r.ResolveAssembly());
-            Assert.AreEqual(type, r.ResolveType());
-            Assert.AreEqual(member, r.ResolveMember());
-            Assert.AreEqual(parameter, r.ResolveParameter());
         }
 
         [Test]
@@ -110,13 +106,31 @@ namespace Gallio.Tests.Model
             Assert.IsNull(r.ParameterName);
 
             Assert.AreEqual(CodeReferenceKind.Assembly, r.Kind);
-            Assert.AreEqual(assembly, r.ResolveAssembly());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
         public void CreateFromAssembly_ThrowsIfNull()
         {
             CodeReference.CreateFromAssembly(null);
+        }
+
+        [Test]
+        public void CreateFromNamespace()
+        {
+            CodeReference r = CodeReference.CreateFromNamespace(@namespace);
+            Assert.IsNull(r.AssemblyName);
+            Assert.AreEqual(@namespace, r.NamespaceName);
+            Assert.IsNull(r.TypeName);
+            Assert.IsNull(r.MemberName);
+            Assert.IsNull(r.ParameterName);
+
+            Assert.AreEqual(CodeReferenceKind.Namespace, r.Kind);
+        }
+
+        [Test, ExpectedException(typeof(ArgumentNullException))]
+        public void CreateFromNamespace_ThrowsIfNull()
+        {
+            CodeReference.CreateFromNamespace(null);
         }
 
         [Test]
@@ -130,8 +144,6 @@ namespace Gallio.Tests.Model
             Assert.IsNull(r.ParameterName);
 
             Assert.AreEqual(CodeReferenceKind.Type, r.Kind);
-            Assert.AreEqual(assembly, r.ResolveAssembly());
-            Assert.AreEqual(type, r.ResolveType());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
@@ -151,9 +163,6 @@ namespace Gallio.Tests.Model
             Assert.IsNull(r.ParameterName);
 
             Assert.AreEqual(CodeReferenceKind.Member, r.Kind);
-            Assert.AreEqual(assembly, r.ResolveAssembly());
-            Assert.AreEqual(type, r.ResolveType());
-            Assert.AreEqual(member, r.ResolveMember());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
@@ -173,62 +182,12 @@ namespace Gallio.Tests.Model
             Assert.AreEqual(parameter.Name, r.ParameterName);
 
             Assert.AreEqual(CodeReferenceKind.Parameter, r.Kind);
-            Assert.AreEqual(assembly, r.ResolveAssembly());
-            Assert.AreEqual(type, r.ResolveType());
-            Assert.AreEqual(member, r.ResolveMember());
-            Assert.AreEqual(parameter, r.ResolveParameter());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
         public void CreateFromParameter_ThrowsIfNull()
         {
             CodeReference.CreateFromParameter(null);
-        }
-
-        [Test, ExpectedException(typeof(ArgumentNullException))]
-        public void CreateFromStackFrame_ThrowsIfNull()
-        {
-            CodeReference.CreateFromStackFrame(null);
-        }
-
-        [Test]
-        public void CreateFromStackFrame()
-        {
-            CodeReference r = CodeReference.CreateFromStackFrame(new StackTrace(0).GetFrame(0));
-            Assert.AreEqual("CreateFromStackFrame", r.MemberName);
-        }
-
-        [Test]
-        public void CreateFromStackFrame_WithFrameCount()
-        {
-            CodeReference r = CreateFromStackFrame_WithFrameCount_Helper();
-            Assert.AreEqual("CreateFromStackFrame_WithFrameCount", r.MemberName);
-        }
-
-        [NonInlined(SecurityAction.Demand)]
-        private CodeReference CreateFromStackFrame_WithFrameCount_Helper()
-        {
-            return CodeReference.CreateFromStackFrame(1);
-        }
-
-        [Test]
-        public void CreateFromCallingMethod()
-        {
-            CodeReference r = CreateFromCallingMethod_Helper();
-            Assert.AreEqual("CreateFromCallingMethod", r.MemberName);
-        }
-
-        [NonInlined(SecurityAction.Demand)]
-        private CodeReference CreateFromCallingMethod_Helper()
-        {
-            return CodeReference.CreateFromCallingMethod();
-        }
-
-        [Test]
-        public void CreateFromExecutingMethod()
-        {
-            CodeReference r = CodeReference.CreateFromExecutingMethod();
-            Assert.AreEqual("CreateFromExecutingMethod", r.MemberName);
         }
 
         [Test]

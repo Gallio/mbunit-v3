@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Model.Reflection;
 using MbUnit.Attributes;
 using MbUnit.Model;
 using Gallio.Model;
@@ -45,12 +46,12 @@ namespace MbUnit.Framework
     public sealed class TestFixtureTearDownAttribute : MethodPatternAttribute
     {
         /// <inheritdoc />
-        public override void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        public override void Apply(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
             base.Apply(builder, methodTemplate);
 
-            MethodInfo method = methodTemplate.Method;
-            ModelUtils.CheckMethodSignature(method);
+            IMethodInfo method = methodTemplate.Method;
+            ReflectionUtils.CheckMethodSignature(method);
 
             methodTemplate.TypeTemplate.ProcessTestChain.After(delegate(MbUnitTest fixtureTest)
             {

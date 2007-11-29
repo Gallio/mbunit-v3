@@ -15,15 +15,14 @@
 
 using System;
 using System.Reflection;
-using MbUnit.Model;
-using Gallio.Model;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
 
 namespace MbUnit.Attributes
 {
     /// <summary>
     /// <para>
-    /// Generates a parameter template from the annotated property, field or
+    /// Generates a template parameter from the annotated property, field or
     /// method parameter.  Subclasses of this attribute can control how the
     /// parameter template is manipulated by the system.
     /// </para>
@@ -54,12 +53,12 @@ namespace MbUnit.Attributes
         /// This method is called when a parameter is discovered via reflection to
         /// create a new model object to represent it.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="template">The template</param>
         /// <param name="slot">The slot</param>
         /// <returns>The test parameter</returns>
-        public virtual MbUnitTemplateParameter CreateParameter(TemplateTreeBuilder builder,
-            MbUnitTemplate template, Slot slot)
+        public virtual MbUnitTemplateParameter CreateParameter(MbUnitTestBuilder builder,
+            MbUnitTemplate template, ISlotInfo slot)
         {
             return new MbUnitTemplateParameter(slot);
         }
@@ -72,7 +71,7 @@ namespace MbUnit.Attributes
         /// <para>
         /// Contributions are applied in a very specific order:
         /// <list type="bullet">
-        /// <item>Parameter decorator attributes declared by the slot</item>
+        /// <item>Parameter decorator attributes declared by the slot sorted by order</item>
         /// <item>Metadata attributes declared by the slot</item>
         /// </list>
         /// </para>
@@ -82,48 +81,14 @@ namespace MbUnit.Attributes
         /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="parameter">The parameter</param>
-        public virtual void Apply(TemplateTreeBuilder builder, MbUnitTemplateParameter parameter)
+        public virtual void Apply(MbUnitTestBuilder builder, MbUnitTemplateParameter parameter)
         {
-            ICustomAttributeProvider attributeProvider = parameter.Slot.AttributeProvider;
-
-            ParameterDecoratorPatternAttribute.ProcessDecorators(builder, parameter, attributeProvider);
-            MetadataPatternAttribute.ProcessMetadata(builder, parameter, attributeProvider);
+            builder.ProcessParameterDecorators(parameter);
+            builder.ProcessMetadata(parameter, parameter.Slot);
 
             // TODO: Look for data attributes.
-        }
-
-        /// <summary>
-        /// Processes a slot using reflection and attaches a test parameter to the template if applicable.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="template">The template to which the parameter should be attached</param>
-        /// <param name="slot">The slot to process</param>
-        public static void ProcessSlot(TemplateTreeBuilder builder, MbUnitTemplate template, Slot slot)
-        {
-            ParameterPatternAttribute parameterPatternAttribute = ModelUtils.GetAttribute<ParameterPatternAttribute>(slot.AttributeProvider);
-
-            if (parameterPatternAttribute == null)
-            {
-                if (slot.Parameter == null)
-                {
-                    // Fields and properties are not automatically treated as template parameters
-                    // because they might be used by the test for unrelated purposes.  To disambiguate
-                    // we check if we have at least one other pattern attribute on this member
-                    // then assume we just happened to elide the parameter attribute in this case.
-                    // This provides a particularly nice shortcut for self-binding parameters
-                    // with data attributes.
-                    if (slot.AttributeProvider.GetCustomAttributes(typeof(PatternAttribute), true).Length == 0)
-                        return;
-                }
-
-                parameterPatternAttribute = DefaultInstance;
-            }
-
-            MbUnitTemplateParameter parameter = parameterPatternAttribute.CreateParameter(builder, template, slot);
-            template.AddParameter(parameter);
-            parameterPatternAttribute.Apply(builder, parameter);
         }
 
         private class DefaultImpl : ParameterPatternAttribute

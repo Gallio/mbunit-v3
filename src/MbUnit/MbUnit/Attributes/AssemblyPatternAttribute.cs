@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
-using MbUnit.Model;
-using Gallio.Model;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
 
 namespace MbUnit.Attributes
@@ -48,12 +46,12 @@ namespace MbUnit.Attributes
         /// This method is called when an assembly that appears to contain unit
         /// tests is discovered via reflection to create a new model object to represent it.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="frameworkTemplate">The containing framework template</param>
         /// <param name="assembly">The assembly</param>
         /// <returns>The test assembly template</returns>
-        public virtual MbUnitAssemblyTemplate CreateTemplate(TemplateTreeBuilder builder,
-            MbUnitFrameworkTemplate frameworkTemplate, Assembly assembly)
+        public virtual MbUnitAssemblyTemplate CreateTemplate(MbUnitTestBuilder builder,
+            MbUnitFrameworkTemplate frameworkTemplate, IAssemblyInfo assembly)
         {
             return new MbUnitAssemblyTemplate(frameworkTemplate, assembly);
         }
@@ -66,7 +64,7 @@ namespace MbUnit.Attributes
         /// <para>
         /// Contributions are applied in a very specific order:
         /// <list type="bullet">
-        /// <item>Assembly decorator attributes declared by the assembly</item>
+        /// <item>Assembly decorator attributes declared by the assembly sorted by order</item>
         /// <item>Metadata attributes declared by the assembly</item>
         /// </list>
         /// </para>
@@ -76,45 +74,24 @@ namespace MbUnit.Attributes
         /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="assemblyTemplate">The assembly template</param>
-        public virtual void Apply(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate)
+        public virtual void Apply(MbUnitTestBuilder builder, MbUnitAssemblyTemplate assemblyTemplate)
         {
-            AssemblyDecoratorPatternAttribute.ProcessDecorators(builder, assemblyTemplate, assemblyTemplate.Assembly);
-            MetadataPatternAttribute.ProcessMetadata(builder, assemblyTemplate, assemblyTemplate.Assembly);
+            builder.ProcessAssemblyDecorators(assemblyTemplate);
+            builder.ProcessMetadata(assemblyTemplate, assemblyTemplate.Assembly);
 
-            ProcessPublicTypes(builder, assemblyTemplate);
-        }
-
-        /// <summary>
-        /// Processes an assembly using reflection to build a template tree.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="frameworkTemplate">The containing framework template</param>
-        /// <param name="assembly">The assembly to process</param>
-        public static void ProcessAssembly(TemplateTreeBuilder builder, MbUnitFrameworkTemplate frameworkTemplate,
-            Assembly assembly)
-        {
-            AssemblyPatternAttribute assemblyPatternAttribute = ModelUtils.GetAttribute<AssemblyPatternAttribute>(assembly);
-            if (assemblyPatternAttribute == null)
-                assemblyPatternAttribute = DefaultInstance;
-
-            MbUnitAssemblyTemplate assemblyTemplate = assemblyPatternAttribute.CreateTemplate(builder, frameworkTemplate, assembly);
-            frameworkTemplate.AddAssemblyTemplate(assemblyTemplate);
-            assemblyPatternAttribute.Apply(builder, assemblyTemplate);
-
-            // Add assembly-level metadata.
-            ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTemplate.Metadata);
+            ProcessTypes(builder, assemblyTemplate);
         }
 
         /// <summary>
         /// Processes all public types within the assembly via reflection.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="assemblyTemplate">The assembly template</param>
-        protected virtual void ProcessPublicTypes(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate)
+        protected virtual void ProcessTypes(MbUnitTestBuilder builder, MbUnitAssemblyTemplate assemblyTemplate)
         {
-            foreach (Type type in assemblyTemplate.Assembly.GetExportedTypes())
+            foreach (ITypeInfo type in assemblyTemplate.Assembly.GetExportedTypes())
             {
                 ProcessType(builder, assemblyTemplate, type);
             }
@@ -123,12 +100,12 @@ namespace MbUnit.Attributes
         /// <summary>
         /// Processes a type via reflection.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="assemblyTemplate">The assembly template</param>
         /// <param name="type">The type</param>
-        protected virtual void ProcessType(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate, Type type)
+        protected virtual void ProcessType(MbUnitTestBuilder builder, MbUnitAssemblyTemplate assemblyTemplate, ITypeInfo type)
         {
-            TypePatternAttribute.ProcessType(builder, assemblyTemplate, type);
+            builder.ProcessType(assemblyTemplate, type);
         }
 
         private class DefaultImpl : AssemblyPatternAttribute

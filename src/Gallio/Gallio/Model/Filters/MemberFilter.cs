@@ -16,11 +16,12 @@
 using System;
 using System.Reflection;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
+    /// A filter that matches objects whose <see cref="IModelComponent.CodeElement" />
     /// matches the specified member name filter.  This filter should normally be used together with
     /// a <see cref="TypeFilter" /> to ensure the accuracy of the member match.
     /// </summary>
@@ -40,7 +41,11 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            return ValueFilter.IsMatch(value.CodeReference.MemberName);
+            IMemberInfo member = ReflectionUtils.GetMember(value.CodeElement);
+            if (member == null)
+                return false;
+
+            return ValueFilter.IsMatch(member.Name);
         }
 
         /// <inheritdoc />

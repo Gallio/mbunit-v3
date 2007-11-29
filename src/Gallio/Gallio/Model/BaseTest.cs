@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model.Execution;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -38,12 +39,12 @@ namespace Gallio.Model
         /// Initializes a test initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
+        /// <param name="codeElement">The point of definition of the test, or null if unknown</param>
         /// <param name="templateBinding">The template binding that produced this test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="codeReference"/> or <paramref name="templateBinding"/> is null</exception>
-        public BaseTest(string name, CodeReference codeReference, ITemplateBinding templateBinding)
-            : base(name, codeReference)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="templateBinding"/> is null</exception>
+        public BaseTest(string name, ICodeElementInfo codeElement, ITemplateBinding templateBinding)
+            : base(name, codeElement)
         {
             if (templateBinding == null)
                 throw new ArgumentNullException(@"templateBinding");

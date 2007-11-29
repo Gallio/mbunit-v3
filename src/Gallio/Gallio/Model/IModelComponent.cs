@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -67,9 +68,8 @@ namespace Gallio.Model
 
         /// <summary>
         /// Gets or sets a reference to the point of definition of this test
-        /// component in the code.
+        /// component in the code, or null if unknown.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        CodeReference CodeReference { get; set; }
+        ICodeElementInfo CodeElement { get; set; }
     }
 }

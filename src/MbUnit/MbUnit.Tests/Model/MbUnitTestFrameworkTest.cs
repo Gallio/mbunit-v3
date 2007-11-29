@@ -16,6 +16,7 @@
 using System;
 using System.Reflection;
 using Gallio.Collections;
+using Gallio.Model.Reflection;
 using MbUnit.Framework;
 using MbUnit.Model;
 using Gallio.Model;
@@ -67,13 +68,13 @@ namespace MbUnit.Tests.Framework.Kernel.Model
 
             Assert.IsNull(rootTemplate.Parent);
             Assert.AreEqual(ComponentKind.Root, rootTemplate.Kind);
-            Assert.AreEqual(CodeReference.Unknown, rootTemplate.CodeReference);
+            Assert.IsNull(rootTemplate.CodeElement);
             Assert.AreEqual(1, rootTemplate.Children.Count);
 
             MbUnitFrameworkTemplate frameworkTemplate = (MbUnitFrameworkTemplate)rootTemplate.Children[0];
             Assert.AreSame(rootTemplate, frameworkTemplate.Parent);
             Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
-            Assert.AreEqual(CodeReference.Unknown, frameworkTemplate.CodeReference);
+            Assert.IsNull(frameworkTemplate.CodeElement);
             Assert.AreEqual(expectedVersion, frameworkTemplate.Version);
             Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTemplate.Name);
             Assert.AreEqual(1, frameworkTemplate.AssemblyTemplates.Count);
@@ -81,19 +82,19 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             MbUnitAssemblyTemplate assemblyTemplate = frameworkTemplate.AssemblyTemplates[0];
             Assert.AreSame(frameworkTemplate, assemblyTemplate.Parent);
             Assert.AreEqual(ComponentKind.Assembly, assemblyTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTemplate.CodeReference);
-            Assert.AreEqual(sampleAssembly, assemblyTemplate.Assembly);
+            Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTemplate.CodeElement.CodeReference);
+            Assert.AreEqual(sampleAssembly, assemblyTemplate.Assembly.Resolve());
             Assert.GreaterEqualThan(assemblyTemplate.TypeTemplates.Count, 1);
 
             MbUnitTypeTemplate typeTemplate = GenericUtils.Find(assemblyTemplate.TypeTemplates, delegate(MbUnitTypeTemplate template)
             {
-                return template.Type == typeof(SimpleTest);
+                return template.Name == "SimpleTest";
             });
             Assert.IsNotNull(typeTemplate, "Could not find the SimpleTest fixture.");
             Assert.AreSame(assemblyTemplate, typeTemplate.Parent);
             Assert.AreEqual(ComponentKind.Fixture, typeTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), typeTemplate.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest), typeTemplate.Type);
+            Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), typeTemplate.CodeElement.CodeReference);
+            Assert.AreEqual(typeof(SimpleTest), typeTemplate.Type.Resolve());
             Assert.AreEqual("SimpleTest", typeTemplate.Name);
             Assert.AreEqual(2, typeTemplate.MethodTemplates.Count);
 
@@ -104,8 +105,8 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.IsNotNull(passTemplate, "Could not find the Pass test.");
             Assert.AreSame(typeTemplate, passTemplate.Parent);
             Assert.AreEqual(ComponentKind.Test, passTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")), passTemplate.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), passTemplate.Method);
+            Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")), passTemplate.CodeElement.CodeReference);
+            Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), passTemplate.Method.Resolve());
             Assert.AreEqual("Pass", passTemplate.Name);
 
             MbUnitMethodTemplate failTemplate = GenericUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
@@ -115,8 +116,8 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.IsNotNull(failTemplate, "Could not find the Fail test.");
             Assert.AreSame(typeTemplate, failTemplate.Parent);
             Assert.AreEqual(ComponentKind.Test, failTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")), failTemplate.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest).GetMethod("Fail"), failTemplate.Method);
+            Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")), failTemplate.CodeElement.CodeReference);
+            Assert.AreEqual(typeof(SimpleTest).GetMethod("Fail"), failTemplate.Method.Resolve());
             Assert.AreEqual("Fail", failTemplate.Name);
         }
 

@@ -38,27 +38,10 @@ namespace MbUnit.Attributes
         /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="parameter">The parameter</param>
-        public virtual void Apply(TemplateTreeBuilder builder, MbUnitTemplateParameter parameter)
+        public virtual void Apply(MbUnitTestBuilder builder, MbUnitTemplateParameter parameter)
         {
-        }
-
-        /// <summary>
-        /// Processes all parameter decorators via reflection.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="parameter">The parameter</param>
-        /// <param name="attributeProvider">The attribute provider to scan</param>
-        public static void ProcessDecorators(TemplateTreeBuilder builder, MbUnitTemplateParameter parameter, ICustomAttributeProvider attributeProvider)
-        {
-            object[] decorators = attributeProvider.GetCustomAttributes(typeof(ParameterDecoratorPatternAttribute), true);
-            Sort(decorators);
-
-            foreach (ParameterDecoratorPatternAttribute decoratorAttribute in decorators)
-            {
-                decoratorAttribute.Apply(builder, parameter);
-            }
         }
     }
 }

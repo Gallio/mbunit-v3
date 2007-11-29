@@ -19,9 +19,9 @@ namespace Gallio.TestResources.Xunit.Metadata
 {
     public class MetadataSample
     {
-        [Test(Skip="For testing purposes.")]
-        [Property("customkey-1", "customvalue-1")]
-        [Property("customkey-2", "customvalue-2")]
+        [Fact(Skip="For testing purposes.")]
+        [Trait("customkey-1", "customvalue-1")]
+        [Trait("customkey-2", "customvalue-2")]
         public void Test()
         {
         }

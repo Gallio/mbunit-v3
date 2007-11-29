@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Reflection;
 using Gallio.Properties;
 
 namespace Gallio.Model
@@ -39,13 +40,13 @@ namespace Gallio.Model
         /// Creates a step.
         /// </summary>
         /// <param name="name">The step name</param>
-        /// <param name="codeReference">The code reference</param>
+        /// <param name="codeElement">The point of definition of the step, or null if unknown</param>
         /// <param name="test">The test to which the step belongs</param>
         /// <param name="parent">The parent step, or null if creating a root step</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="codeReference"/> or <paramref name="test"/> is null</exception>
-        public BaseStep(string name, CodeReference codeReference, ITest test, IStep parent)
-            : base(name, codeReference)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="test"/> is null</exception>
+        public BaseStep(string name, ICodeElementInfo codeElement, ITest test, IStep parent)
+            : base(name, codeElement)
         {
             if (name == null)
                 throw new ArgumentNullException(@"name");

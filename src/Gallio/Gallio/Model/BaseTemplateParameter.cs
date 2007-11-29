@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -22,19 +23,19 @@ namespace Gallio.Model
     /// </summary>
     public class BaseTemplateParameter : BaseTemplateComponent, ITemplateParameter
     {
-        private Type type;
+        private ITypeInfo type;
         private int index;
 
         /// <summary>
         /// Initializes a test parameter.
         /// </summary>
         /// <param name="name">The name of the component</param>
-        /// <param name="codeReference">The point of definition</param>
+        /// <param name="codeElement">The point of definition of the parameter, or null if unknown</param>
         /// <param name="type">The type of the parameter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, <paramref name="codeReference"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
         /// or <paramref name="type"/> is null</exception>
-        public BaseTemplateParameter(string name, CodeReference codeReference, Type type)
-            : base(name, codeReference)
+        public BaseTemplateParameter(string name, ICodeElementInfo codeElement, ITypeInfo type)
+            : base(name, codeElement)
         {
             if (type == null)
                 throw new ArgumentNullException(@"type");
@@ -43,7 +44,7 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public Type Type
+        public ITypeInfo Type
         {
             get { return type; }
             set

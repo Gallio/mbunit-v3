@@ -18,6 +18,7 @@ using System.Security.Permissions;
 using Gallio;
 using Gallio.Contexts;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 using Gallio.Utilities;
 
 namespace Gallio.Contexts
@@ -111,7 +112,7 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Runs a block of code as a new step.
+        /// Runs a block of code as a new step associated with the calling function.
         /// </summary>
         /// <remarks>
         /// This method may be called recursively to create nested steps or concurrently
@@ -127,7 +128,7 @@ namespace Gallio.Contexts
         [NonInlined(SecurityAction.Demand)]
         public static Context Run(string name, Block block)
         {
-            return Run(name, block, CodeReference.CreateFromCallingMethod());
+            return Run(name, block, Reflector.GetCallingFunction());
         }
 
         /// <summary>
@@ -146,16 +147,15 @@ namespace Gallio.Contexts
         /// </remarks>
         /// <param name="name">The name of the step</param>
         /// <param name="block">The block of code to run</param>
-        /// <param name="codeReference">The code reference, or null to use the calling method
-        /// as the code reference.</param>
+        /// <param name="codeElement">The associated code element, or null if none</param>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="block"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
-        public static Context Run(string name, Block block, CodeReference codeReference)
+        public static Context Run(string name, Block block, ICodeElementInfo codeElement)
         {
-            return Context.CurrentContext.RunStep(name, block, codeReference);
+            return Context.CurrentContext.RunStep(name, block, codeElement);
         }
 
         /// <summary>

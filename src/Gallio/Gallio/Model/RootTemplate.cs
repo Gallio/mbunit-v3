@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using Gallio.Model.Data;
+using Gallio.Model.Reflection;
 using Gallio.Properties;
 
 namespace Gallio.Model
@@ -28,7 +29,7 @@ namespace Gallio.Model
         /// Creates the root template.
         /// </summary>
         public RootTemplate()
-            : base(Resources.RootTemplate_RootTemplateName, CodeReference.Unknown)
+            : base(Resources.RootTemplate_RootTemplateName, null)
         {
             Kind = ComponentKind.Root;
             IsGenerator = true;

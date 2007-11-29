@@ -105,7 +105,7 @@ namespace MbUnit.Model
 
                 MbUnitTypeTemplate typeTemplate = state.Test.TemplateBinding.Template as MbUnitTypeTemplate;
                 if (typeTemplate != null)
-                    state.FixtureInstance = Activator.CreateInstance(typeTemplate.Type);
+                    state.FixtureInstance = Activator.CreateInstance(typeTemplate.Type.Resolve());
                 else if (parentState != null)
                     state.FixtureInstance = parentState.FixtureInstance;
             }, "An exception occurred during initialization.");

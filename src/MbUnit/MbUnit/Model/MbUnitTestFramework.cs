@@ -17,9 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
-using MbUnit.Attributes;
+using Gallio.Model.Reflection;
 using MbUnit.Framework;
-using MbUnit.Attributes;
 using Gallio.Hosting;
 using Gallio.Model;
 
@@ -37,12 +36,12 @@ namespace MbUnit.Model
         }
 
         /// <inheritdoc />
-        public override void PrepareAssemblies(IList<Assembly> assemblies)
+        public override void PrepareAssemblies(IList<IAssemblyInfo> assemblies)
         {
-            foreach (Assembly assembly in assemblies)
+            foreach (IAssemblyInfo assembly in assemblies)
             {
                 foreach (AssemblyResolverAttribute resolverAttribute in
-                    assembly.GetCustomAttributes(typeof(AssemblyResolverAttribute), false))
+                    assembly.GetAttributes<AssemblyResolverAttribute>(false))
                 {
                     Type type = resolverAttribute.AssemblyResolverType;
                     try
@@ -59,10 +58,10 @@ namespace MbUnit.Model
         }
 
         /// <inheritdoc />
-        public override void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies)
+        public override void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
         {
-            IMultiMap<AssemblyName, Assembly> map = ModelUtils.MapByAssemblyReference(assemblies, @"MbUnit");
-            foreach (KeyValuePair<AssemblyName, IList<Assembly>> entry in map)
+            IMultiMap<AssemblyName, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReference(assemblies, @"MbUnit");
+            foreach (KeyValuePair<AssemblyName, IList<IAssemblyInfo>> entry in map)
             {
                 // Build templates for the contents of the assemblies that reference MbUnit v3
                 // via reflection.  The attributes exercise a great deal of control over this
@@ -71,9 +70,11 @@ namespace MbUnit.Model
                 MbUnitFrameworkTemplate frameworkTemplate = new MbUnitFrameworkTemplate(frameworkVersion);
                 builder.Root.AddChild(frameworkTemplate);
 
-                foreach (Assembly assembly in entry.Value)
+                MbUnitTestBuilder testBuilder = new MbUnitTestBuilder(builder);
+
+                foreach (IAssemblyInfo assembly in entry.Value)
                 {
-                    AssemblyPatternAttribute.ProcessAssembly(builder, frameworkTemplate, assembly);
+                    testBuilder.ProcessAssembly(frameworkTemplate, assembly);
                 }
             }
         }

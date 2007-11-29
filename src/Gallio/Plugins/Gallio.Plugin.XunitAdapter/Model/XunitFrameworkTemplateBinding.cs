@@ -14,14 +14,14 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using Gallio.Hosting;
 using Gallio.Model.Data;
 using Gallio.Model;
-using Gallio.Plugin.XunitAdapter.Properties;
+using Gallio.Model.Reflection;
 using Xunit.Sdk;
+using ITypeInfo=Gallio.Model.Reflection.ITypeInfo;
+using XunitMethodUtility = Xunit.Sdk.MethodUtility;
+using XunitTypeUtility = Xunit.Sdk.TypeUtility;
 
 namespace Gallio.Plugin.XunitAdapter.Model
 {
@@ -49,7 +49,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
         /// <summary>
         /// Gets the list of assemblies.
         /// </summary>
-        public IList<Assembly> Assemblies
+        public IList<IAssemblyInfo> Assemblies
         {
             get { return ((XunitFrameworkTemplate) Template).Assemblies; }
         }
@@ -57,94 +57,79 @@ namespace Gallio.Plugin.XunitAdapter.Model
         /// <inheritdoc />
         public override void BuildTests(TestTreeBuilder builder, ITest parent)
         {
-            BaseTest frameworkTest = new BaseTest(Template.Name, CodeReference.Unknown, this);
+            BaseTest frameworkTest = new BaseTest(Template.Name, null, this);
             frameworkTest.Kind = ComponentKind.Framework;
             parent.AddChild(frameworkTest);
 
-            foreach (Assembly assembly in Assemblies)
+            foreach (IAssemblyInfo assembly in Assemblies)
             {
                 BuildAssemblyTest(frameworkTest, assembly);
             }
         }
 
-        private void BuildAssemblyTest(ITest frameworkTest, Assembly assembly)
+        private void BuildAssemblyTest(ITest frameworkTest, IAssemblyInfo assembly)
         {
-            BaseTest assemblyTest = new BaseTest(assembly.GetName().Name, CodeReference.CreateFromAssembly(assembly), this);
+            BaseTest assemblyTest = new BaseTest(assembly.Name, assembly, this);
             assemblyTest.Kind = ComponentKind.Assembly;
             frameworkTest.AddChild(assemblyTest);
 
-            foreach (Type typeInfo in assembly.GetExportedTypes())
+            foreach (ITypeInfo type in assembly.GetExportedTypes())
             {
-                if (TypeReflectionUtilities.ContainsTestMethods(typeInfo)
-                    || TypeReflectionUtilities.HasRunWith(typeInfo))
-                    BuildTypeTest(assemblyTest, typeInfo);
+                XunitTypeInfoAdapter xunitTypeInfo = new XunitTypeInfoAdapter(type);
+
+                ITestClassCommand command = TestClassCommandFactory.Make(xunitTypeInfo);
+                if (command != null)
+                    BuildTypeTest(assemblyTest, xunitTypeInfo, command);
             }
 
             // Add assembly-level metadata.
             ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTest.Metadata);
         }
 
-        private void BuildTypeTest(ITest assemblyTest, Type typeInfo)
+        private void BuildTypeTest(ITest assemblyTest, XunitTypeInfoAdapter typeInfo, ITestClassCommand testClassCommand)
         {
-            XunitTest typeTest = new XunitTest(ModelUtils.GetPossiblyNestedTypeName(typeInfo),
-                CodeReference.CreateFromType(typeInfo), this, typeInfo, null);
+            XunitTest typeTest = new XunitTest(typeInfo.Target.Name, typeInfo.Target, this, typeInfo, null);
             typeTest.Kind = ComponentKind.Fixture;
             assemblyTest.AddChild(typeTest);
-
-            if (TypeReflectionUtilities.HasRunWith(typeInfo))
+            
+            foreach (XunitMethodInfoAdapter methodInfo in testClassCommand.EnumerateTestMethods())
             {
-                // The ITestClassCommand produced by a RunWith command does
-                // not allow us to derive as much declarative information ahead
-                // of time.  Consequently we can only generate a test node for
-                // the fixture, not its methods.  The internal processing of
-                // the RunWith will occur in a series of nested test Steps
-                // created at runtime on demand.
-                typeTest.IsTestCase = true;
-            }
-            else
-            {
-                // Special support for typical Xunit tests.
-                // We exploit the additional declarative information we have
-                // to provide a better user experience in this case.
-                foreach (MethodInfo methodInfo in TypeReflectionUtilities.GetTestMethods(typeInfo))
-                {
-                    BuildMethodTest(typeTest, methodInfo);
-                }
+                BuildMethodTest(typeTest, typeInfo, methodInfo);
             }
 
             // Add XML documentation.
-            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(typeInfo);
+            string xmlDocumentation = typeInfo.Target.GetXmlDocumentation();
             if (xmlDocumentation != null)
                 typeTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }
 
-        private void BuildMethodTest(XunitTest typeTest, MethodInfo methodInfo)
+        private void BuildMethodTest(XunitTest typeTest, XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
         {
-            XunitTest methodTest = new XunitTest(methodInfo.Name, CodeReference.CreateFromMember(methodInfo), this,
-                methodInfo.ReflectedType, methodInfo);
+            XunitTest methodTest = new XunitTest(methodInfo.Name, methodInfo.Target, this,
+                typeInfo, methodInfo);
             methodTest.Kind = ComponentKind.Test;
             methodTest.IsTestCase = true;
             typeTest.AddChild(methodTest);
 
             // Add skip reason.
-            if (MethodReflectionUtilities.IsSkip(methodInfo))
+            if (XunitMethodUtility.IsSkip(methodInfo))
             {
-                string skipReason = MethodReflectionUtilities.GetSkipReason(methodInfo);
+                string skipReason = XunitMethodUtility.GetSkipReason(methodInfo);
                 if (skipReason != null)
                     methodTest.Metadata.SetValue(MetadataKeys.IgnoreReason, skipReason);
             }
 
-            // Add properties.
-            if (MethodReflectionUtilities.HasProperties(methodInfo))
+            // Add traits.
+            if (XunitMethodUtility.HasTraits(methodInfo))
             {
-                foreach (KeyValuePair<string, string> entry in MethodReflectionUtilities.GetProperties(methodInfo))
+                foreach (KeyValuePair<string, string> entry in XunitMethodUtility.GetTraits(methodInfo))
                 {
                     methodTest.Metadata.Add(entry.Key ?? @"", entry.Value ?? @"");
                 }
             }
 
             // Add XML documentation.
-            string xmlDocumentation = Loader.XmlDocumentationResolver.GetXmlDocumentation(methodInfo);
+            string xmlDocumentation = methodInfo.Target.GetXmlDocumentation();
             if (xmlDocumentation != null)
                 methodTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
         }

@@ -25,7 +25,7 @@ namespace Gallio.TestResources.Xunit
         /// <summary>
         /// A passing test.
         /// </summary>
-        [Test]
+        [Fact]
         public void Pass()
         {
         }
@@ -33,7 +33,7 @@ namespace Gallio.TestResources.Xunit
         /// <summary>
         /// A failing test.
         /// </summary>
-        [Test]
+        [Fact]
         public void Fail()
         {
             Assert.False(true, "Boom");

@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
-using Gallio.Model;
 
 namespace MbUnit.Attributes
 {
@@ -38,12 +37,12 @@ namespace MbUnit.Attributes
         /// This method is called when a method is discovered via reflection to
         /// create a new model object to represent it.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The containing type template</param>
         /// <param name="methodInfo">The test method</param>
         /// <returns>The test method template</returns>
-        public virtual MbUnitMethodTemplate CreateTemplate(TemplateTreeBuilder builder,
-            MbUnitTypeTemplate typeTemplate, MethodInfo methodInfo)
+        public virtual MbUnitMethodTemplate CreateTemplate(MbUnitTestBuilder builder,
+            MbUnitTypeTemplate typeTemplate, IMethodInfo methodInfo)
         {
             return new MbUnitMethodTemplate(typeTemplate, methodInfo);
         }
@@ -56,8 +55,7 @@ namespace MbUnit.Attributes
         /// <para>
         /// Contributions are applied in a very specific order:
         /// <list type="bullet">
-        /// <item>Method decorator attributes declared by the reflected type</item>
-        /// <item>Method decorator attributes declared by the method</item>
+        /// <item>Method decorator attributes declared by the reflected type and method sorted by order</item>
         /// <item>Metadata attributes declared by the method</item>
         /// </list>
         /// </para>
@@ -67,42 +65,24 @@ namespace MbUnit.Attributes
         /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="methodTemplate">The method template</param>
-        public virtual void Apply(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        public virtual void Apply(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
-            MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method.ReflectedType);
-            MethodDecoratorPatternAttribute.ProcessDecorators(builder, methodTemplate, methodTemplate.Method);
-            MetadataPatternAttribute.ProcessMetadata(builder, methodTemplate, methodTemplate.Method);
+            builder.ProcessMethodDecorators(methodTemplate);
+            builder.ProcessMetadata(methodTemplate, methodTemplate.Method);
 
             ProcessParameters(builder, methodTemplate);
         }
 
         /// <summary>
-        /// Processes a method using reflection to populate the template tree.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="typeTemplate">The type template</param>
-        /// <param name="method">The method to process</param>
-        public static void ProcessMethod(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, MethodInfo method)
-        {
-            MethodPatternAttribute methodPatternAttribute = ModelUtils.GetAttribute<MethodPatternAttribute>(method);
-            if (methodPatternAttribute == null)
-                return;
-
-            MbUnitMethodTemplate methodTemplate = methodPatternAttribute.CreateTemplate(builder, typeTemplate, method);
-            typeTemplate.AddMethodTemplate(methodTemplate);
-            methodPatternAttribute.Apply(builder, methodTemplate);
-        }
-
-        /// <summary>
         /// Processes all parameters using reflection to populate method parameters.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The tbuilder</param>
         /// <param name="methodTemplate">The method template</param>
-        protected virtual void ProcessParameters(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate)
+        protected virtual void ProcessParameters(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
         {
-            foreach (ParameterInfo parameter in methodTemplate.Method.GetParameters())
+            foreach (IParameterInfo parameter in methodTemplate.Method.GetParameters())
             {
                 ProcessParameter(builder, methodTemplate, parameter);
             }
@@ -111,13 +91,13 @@ namespace MbUnit.Attributes
         /// <summary>
         /// Processes a parameter using reflection to populate method parameters.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="methodTemplate">The method template</param>
         /// <param name="parameter">The parameter</param>
-        protected virtual void ProcessParameter(TemplateTreeBuilder builder, MbUnitMethodTemplate methodTemplate,
-            ParameterInfo parameter)
+        protected virtual void ProcessParameter(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate,
+            IParameterInfo parameter)
         {
-            ParameterPatternAttribute.ProcessSlot(builder, methodTemplate, new Slot(parameter));
+            builder.ProcessParameter(methodTemplate, parameter);
         }
     }
 }

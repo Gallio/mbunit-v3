@@ -14,9 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
-using MbUnit.Model;
-using Gallio.Model;
 using MbUnit.Model;
 
 namespace MbUnit.Attributes
@@ -46,27 +43,10 @@ namespace MbUnit.Attributes
         /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The type template</param>
-        public virtual void Apply(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
+        public virtual void Apply(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate)
         {
-        }
-
-        /// <summary>
-        /// Processes all type decorators via reflection.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="typeTemplate">The type template</param>
-        /// <param name="attributeProvider">The attribute provider to scan</param>
-        public static void ProcessDecorators(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, ICustomAttributeProvider attributeProvider)
-        {
-            object[] decorators = attributeProvider.GetCustomAttributes(typeof(TypeDecoratorPatternAttribute), true);
-            Sort(decorators);
-
-            foreach (TypeDecoratorPatternAttribute decoratorAttribute in decorators)
-            {
-                decoratorAttribute.Apply(builder, typeTemplate);
-            }
         }
     }
 }

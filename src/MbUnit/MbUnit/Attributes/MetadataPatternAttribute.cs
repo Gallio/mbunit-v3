@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
 using Gallio.Model;
+using MbUnit.Model;
 
 namespace MbUnit.Attributes
 {
@@ -33,24 +33,10 @@ namespace MbUnit.Attributes
         /// <summary>
         /// Applies metadata contributions to the specified component.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="component">The component to which metadata should be applied</param>
-        public virtual void Apply(TemplateTreeBuilder builder, ITemplateComponent component)
+        public virtual void Apply(MbUnitTestBuilder builder, ITemplateComponent component)
         {
-        }
-
-        /// <summary>
-        /// Scans a code element using reflection to apply metadata pattern attributes.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="component">The component to which metadata should be applied</param>
-        /// <param name="attributeProvider">The attribute provider to scan</param>
-        public static void ProcessMetadata(TemplateTreeBuilder builder, ITemplateComponent component, ICustomAttributeProvider attributeProvider)
-        {
-            foreach (MetadataPatternAttribute metadataAttribute in attributeProvider.GetCustomAttributes(typeof(MetadataPatternAttribute), true))
-            {
-                metadataAttribute.Apply(builder, component);
-            }
         }
     }
 }

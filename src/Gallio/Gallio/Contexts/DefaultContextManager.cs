@@ -21,6 +21,7 @@ using Gallio;
 using Gallio.Contexts;
 using Gallio.Logging;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Contexts
 {
@@ -396,9 +397,9 @@ namespace Gallio.Contexts
                 return contextManager.EnterContext(this);
             }
 
-            protected override Context RunStepImpl(string name, Block block, CodeReference codeReference)
+            protected override Context RunStepImpl(string name, Block block, ICodeElementInfo codeElement)
             {
-                return serviceProvider.RunStep(name, block, codeReference);
+                return serviceProvider.RunStep(name, block, codeElement);
             }
 
             protected override void AddMetadataImpl(string metadataKey, string metadataValue)

@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -38,13 +39,13 @@ namespace Gallio.Model
         /// all assembly dependencies can be resolved as needed.
         /// </summary>
         /// <param name="assemblies">The list of assemblies</param>
-        void PrepareAssemblies(IList<Assembly> assemblies);
+        void PrepareAssemblies(IList<IAssemblyInfo> assemblies);
 
         /// <summary>
         /// Builds templates from the specified assemblies.
         /// </summary>
         /// <param name="builder">The template tree builder</param>
         /// <param name="assemblies">The list of assemblies</param>
-        void BuildTemplates(TemplateTreeBuilder builder, IList<Assembly> assemblies);
+        void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies);
     }
 }

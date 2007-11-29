@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
 using Gallio.Model;
 using MbUnit.Properties;
@@ -34,7 +35,7 @@ namespace MbUnit.Model
         /// </summary>
         /// <param name="version">The MbUnit framework version</param>
         public MbUnitFrameworkTemplate(Version version)
-            : base(String.Format(Resources.MbUnitFrameworkTemplate_MbUnitGallioFrameworkVersionFormat, version), CodeReference.Unknown)
+            : base(String.Format(Resources.MbUnitFrameworkTemplate_MbUnitGallioFrameworkVersionFormat, version), null)
         {
             this.version = version;
 

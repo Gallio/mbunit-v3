@@ -16,15 +16,43 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Xunit;
 
-namespace MbUnit.Attributes
+namespace Gallio.TestResources.Xunit
 {
     /// <summary>
-    /// TODO: A condition attribute will annotate a predicate method that
-    ///       is evaluated to set a condition used at runtime within some
-    ///       scope.
+    /// A test fixture with before/after sections.
     /// </summary>
-    public abstract class ConditionPatternAttribute
+    public class UseFixtureSample : IUseFixture<UseFixtureSample.Fixture>
     {
+        [Fact]
+        public void Test1()
+        {
+            Console.WriteLine("Test1");
+        }
+
+        [Fact]
+        public void Test2()
+        {
+            Console.WriteLine("Test2");
+        }
+
+        public void SetFixture(Fixture data)
+        {
+            Assert.NotNull(data);
+        }
+
+        public class Fixture : IDisposable
+        {
+            public Fixture()
+            {
+                Console.WriteLine("Before");
+            }
+
+            public void Dispose()
+            {
+                Console.WriteLine("After");
+            }
+        }
     }
 }

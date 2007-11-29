@@ -16,11 +16,12 @@
 using System;
 using System.Reflection;
 using Gallio.Model;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeReference" />
+    /// A filter that matches objects whose <see cref="IModelComponent.CodeElement" />
     /// matches the specified type name.
     /// </summary>
     [Serializable]
@@ -51,28 +52,22 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
-            Type type;
-            try
-            {
-                type = value.CodeReference.ResolveType();
-            }
-            catch (Exception)
-            {
+            ITypeInfo type = ReflectionUtils.GetType(value.CodeElement);
+            if (type == null)
                 return false;
-            }
 
             if (IsMatchForType(type))
                 return true;
 
             if (includeDerivedTypes)
             {
-                for (Type baseType = type.BaseType; baseType != null; baseType = baseType.BaseType)
+                for (ITypeInfo baseType = type.BaseType; baseType != null; baseType = baseType.BaseType)
                 {
                     if (IsMatchForType(baseType))
                         return true;
                 }
 
-                foreach (Type @interface in type.GetInterfaces())
+                foreach (ITypeInfo @interface in type.GetInterfaces())
                     if (IsMatchForType(@interface))
                         return true;
             }
@@ -80,7 +75,7 @@ namespace Gallio.Model.Filters
             return false;
         }
 
-        private bool IsMatchForType(Type type)
+        private bool IsMatchForType(ITypeInfo type)
         {
             return ValueFilter.IsMatch(type.AssemblyQualifiedName)
                 || ValueFilter.IsMatch(type.FullName)

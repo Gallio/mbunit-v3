@@ -15,13 +15,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Security.Permissions;
 using System.Threading;
 using Gallio;
 using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Hosting;
+using Gallio.Model.Reflection;
 using Gallio.Utilities;
 
 namespace Gallio.Contexts
@@ -448,7 +448,7 @@ namespace Gallio.Contexts
         /// <summary>
         /// <para>
         /// Runs a block of code as a new step within the current context and associates
-        /// it with the caller's code reference.
+        /// it with the calling function.
         /// </para>
         /// <para>
         /// This method creates a new child context to represent the <see cref="Step" />,
@@ -469,7 +469,7 @@ namespace Gallio.Contexts
         [NonInlined(SecurityAction.Demand)]
         public Context RunStep(string name, Block block)
         {
-            return RunStep(name, block, CodeReference.CreateFromCallingMethod());
+            return RunStep(name, block, Reflector.GetCallingFunction());
         }
 
         /// <summary>
@@ -488,24 +488,21 @@ namespace Gallio.Contexts
         /// </remarks>
         /// <param name="name">The name of the step</param>
         /// <param name="block">The block of code to run</param>
-        /// <param name="codeReference">The code reference, or null to use the calling method
-        /// as the code reference.</param>
+        /// <param name="codeElement">The associated code element, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="block"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
         [NonInlined(SecurityAction.Demand)]
-        public Context RunStep(string name, Block block, CodeReference codeReference)
+        public Context RunStep(string name, Block block, ICodeElementInfo codeElement)
         {
             if (name == null)
                 throw new ArgumentNullException(@"name");
             if (block == null)
                 throw new ArgumentNullException(@"block");
-            if (codeReference == null)
-                codeReference = CodeReference.CreateFromCallingMethod();
 
-            return RunStepImpl(name, block, codeReference);
+            return RunStepImpl(name, block, codeElement);
         }
 
         /// <summary>
@@ -621,12 +618,13 @@ namespace Gallio.Contexts
         protected abstract string LifecyclePhaseImpl { get; set; }
 
         /// <summary>
-        /// Implementation of <see cref="RunStep(string, Block, CodeReference)" />.
+        /// Implementation of <see cref="RunStep(string, Block, ICodeElementInfo)" />.
         /// </summary>
         /// <remarks>
-        /// The arguments will already have been validated is called and will all be non-null.
+        /// The arguments will already have been validated is called and will all be non-null except
+        /// perhaps for <paramref name="codeElement"/>.
         /// </remarks>
-        protected abstract Context RunStepImpl(string name, Block block, CodeReference codeReference);
+        protected abstract Context RunStepImpl(string name, Block block, ICodeElementInfo codeElement);
 
         /// <summary>
         /// Adds metadata to the step that is running in the context.

@@ -15,8 +15,7 @@
 
 using System;
 using System.Reflection;
-using MbUnit.Model;
-using Gallio.Model;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
 
 namespace MbUnit.Attributes
@@ -45,12 +44,12 @@ namespace MbUnit.Attributes
         /// objects in the template tree and to further expand the tree using
         /// declarative metadata derived via reflection.
         /// </remarks>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="assemblyTemplate">The containing assembly template</param>
         /// <param name="type">The annotated type</param>
         /// <returns>The type template</returns>
-        public virtual MbUnitTypeTemplate CreateTemplate(TemplateTreeBuilder builder,
-            MbUnitAssemblyTemplate assemblyTemplate, Type type)
+        public virtual MbUnitTypeTemplate CreateTemplate(MbUnitTestBuilder builder,
+            MbUnitAssemblyTemplate assemblyTemplate, ITypeInfo type)
         {
             return new MbUnitTypeTemplate(assemblyTemplate, type);
         }
@@ -63,8 +62,7 @@ namespace MbUnit.Attributes
         /// <para>
         /// Contributions are applied in a very specific order:
         /// <list type="bullet">
-        /// <item>Type decorator attributes declared by the containing assembly</item>
-        /// <item>Type decorator attributes declared by the type</item>
+        /// <item>Type decorator attributes declared by the containing assembly and the type sorted by order</item>
         /// <item>Metadata attributes declared by the type</item>
         /// <item>Fields, properties, methods and events declared by supertypes before
         /// those declared by subtypes</item>
@@ -72,13 +70,12 @@ namespace MbUnit.Attributes
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The type template</param>
-        public virtual void Apply(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
+        public virtual void Apply(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate)
         {
-            TypeDecoratorPatternAttribute.ProcessDecorators(builder, typeTemplate, typeTemplate.Type.Assembly);
-            TypeDecoratorPatternAttribute.ProcessDecorators(builder, typeTemplate, typeTemplate.Type);
-            MetadataPatternAttribute.ProcessMetadata(builder, typeTemplate, typeTemplate.Type);
+            builder.ProcessTypeDecorators(typeTemplate);
+            builder.ProcessMetadata(typeTemplate, typeTemplate.Type);
 
             ProcessMembers(builder, typeTemplate);
             ProcessConstructors(builder, typeTemplate);
@@ -88,11 +85,11 @@ namespace MbUnit.Attributes
         /// Processes all public constructors using reflection to populate the
         /// type template's parameters derived from constructor parameters.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The type template</param>
-        protected virtual void ProcessConstructors(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
+        protected virtual void ProcessConstructors(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate)
         {
-            foreach (ConstructorInfo constructor in typeTemplate.Type.GetConstructors())
+            foreach (IConstructorInfo constructor in typeTemplate.Type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
             {
                 ProcessConstructor(builder, typeTemplate, constructor);
 
@@ -109,15 +106,27 @@ namespace MbUnit.Attributes
         /// Processes a constructor using reflection to populate the
         /// type template's parameters derived from constructor parameters.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The type template</param>
         /// <param name="constructor">The constructor to process</param>
-        protected virtual void ProcessConstructor(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, ConstructorInfo constructor)
+        protected virtual void ProcessConstructor(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate, IConstructorInfo constructor)
         {
-            foreach (ParameterInfo parameter in constructor.GetParameters())
+            foreach (IParameterInfo parameter in constructor.GetParameters())
             {
-                ParameterPatternAttribute.ProcessSlot(builder, typeTemplate, new Slot(parameter));
+                ProcessConstructorParameter(builder, typeTemplate, parameter);
             }
+        }
+
+        /// <summary>
+        /// Processes a constructor parameter using reflection to populate template parameters.
+        /// </summary>
+        /// <param name="builder">The builder</param>
+        /// <param name="typeTemplate">The type template</param>
+        /// <param name="parameter">The parameter</param>
+        protected virtual void ProcessConstructorParameter(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate,
+            IParameterInfo parameter)
+        {
+            builder.ProcessParameter(typeTemplate, parameter);
         }
 
         /// <summary>
@@ -126,99 +135,71 @@ namespace MbUnit.Attributes
         /// </summary>
         /// <param name="builder">The template tree builder</param>
         /// <param name="typeTemplate">The type template</param>
-        protected virtual void ProcessMembers(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate)
+        protected virtual void ProcessMembers(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate)
         {
-            MemberInfo[] members = typeTemplate.Type.FindMembers(MemberTypes.Field | MemberTypes.Property | MemberTypes.Method | MemberTypes.Event,
-                BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, null, null);
-            ModelUtils.SortMembersBySubTypes<MemberInfo>(members);
+            foreach (IFieldInfo field in typeTemplate.Type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+                ProcessField(builder, typeTemplate, field);
 
-            foreach (MemberInfo member in members)
-            {
-                switch (member.MemberType)
-                {
-                    case MemberTypes.Field:
-                        ProcessField(builder, typeTemplate, (FieldInfo)member);
-                        break;
+            foreach (IPropertyInfo property in typeTemplate.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+                ProcessProperty(builder, typeTemplate, property);
 
-                    case MemberTypes.Property:
-                        ProcessProperty(builder, typeTemplate, (PropertyInfo)member);
-                        break;
+            foreach (IMethodInfo method in typeTemplate.Type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+                ProcessMethod(builder, typeTemplate, method);
 
-                    case MemberTypes.Method:
-                        ProcessMethod(builder, typeTemplate, (MethodInfo)member);
-                        break;
-
-                    case MemberTypes.Event:
-                        ProcessEvent(builder, typeTemplate, (EventInfo)member);
-                        break;
-                }
-            }
+            foreach (IEventInfo @event in typeTemplate.Type.GetEvents(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+                ProcessEvent(builder, typeTemplate, @event);
         }
 
         /// <summary>
         /// Processes a field using reflection to populate the
         /// type template's parameters derived from fields.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The type template</param>
         /// <param name="field">The field to process</param>
-        protected virtual void ProcessField(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, FieldInfo field)
+        protected virtual void ProcessField(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate, IFieldInfo field)
         {
-            ParameterPatternAttribute.ProcessSlot(builder, typeTemplate, new Slot(field));
+            builder.ProcessParameter(typeTemplate, field);
         }
 
         /// <summary>
         /// Processes a property using reflection to populate the
         /// type template's parameters derived from properties.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The type template</param>
         /// <param name="property">The property to process</param>
-        protected virtual void ProcessProperty(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, PropertyInfo property)
+        protected virtual void ProcessProperty(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate, IPropertyInfo property)
         {
-            if (ModelUtils.CanGetAndSetNonStatic(property))
-                ParameterPatternAttribute.ProcessSlot(builder, typeTemplate, new Slot(property));
+            builder.ProcessParameter(typeTemplate, property);
         }
 
         /// <summary>
         /// Processes an event using reflection.  The default implementation does nothing.
         /// </summary>
-        /// <todo author="jeff">
-        /// What kinds of neat things can we do with events?
-        /// </todo>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The type template</param>
         /// <param name="event">The event to process</param>
-        protected virtual void ProcessEvent(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, EventInfo @event)
+        protected virtual void ProcessEvent(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate, IEventInfo @event)
         {
         }
 
         /// <summary>
         /// Processes a method using reflection to populate tests and other executable components.
         /// </summary>
-        /// <param name="builder">The template tree builder</param>
+        /// <param name="builder">The builder</param>
         /// <param name="typeTemplate">The type template</param>
         /// <param name="method">The method to process</param>
-        protected virtual void ProcessMethod(TemplateTreeBuilder builder, MbUnitTypeTemplate typeTemplate, MethodInfo method)
+        protected virtual void ProcessMethod(MbUnitTestBuilder builder, MbUnitTypeTemplate typeTemplate, IMethodInfo method)
         {
-            MethodPatternAttribute.ProcessMethod(builder, typeTemplate, method);
+            builder.ProcessMethod(typeTemplate, method);
         }
 
-        /// <summary>
-        /// Scans a type using reflection to build a template tree.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="assemblyTemplate">The containing assembly template</param>
-        /// <param name="type">The type to process</param>
-        public static void ProcessType(TemplateTreeBuilder builder, MbUnitAssemblyTemplate assemblyTemplate, Type type)
+        private T[] SortMembers<T>(T[] members)
+            where T : IMemberInfo
         {
-            TypePatternAttribute typePatternAttribute = ModelUtils.GetAttribute<TypePatternAttribute>(type);
-            if (typePatternAttribute == null || ! ModelUtils.CanInstantiate(type))
-                return;
-
-            MbUnitTypeTemplate typeTemplate = typePatternAttribute.CreateTemplate(builder, assemblyTemplate, type);
-            assemblyTemplate.AddTypeTemplate(typeTemplate);
-            typePatternAttribute.Apply(builder, typeTemplate);
+            Array.Sort(members, DeclaringTypeComparer<T>.Instance);
+            return members;
         }
     }
 }
