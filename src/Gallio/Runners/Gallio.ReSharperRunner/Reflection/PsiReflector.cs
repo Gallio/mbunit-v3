@@ -23,7 +23,6 @@ using JetBrains.ProjectModel.Build;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.Util;
-using JetBrains.Shell;
 
 namespace Gallio.ReSharperRunner.Reflection
 {
@@ -302,14 +301,24 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public abstract IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit);
 
+            public IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit)
+            {
+                return AttributeUtils.FilterAttributesOfType(GetAttributeInfos(inherit), attributeType);
+            }
+
             public bool HasAttribute(Type attributeType, bool inherit)
             {
-                return AttributeUtils.HasAttributeOfType(GetAttributeInfos(inherit), attributeType);
+                return AttributeUtils.ContainsAttributeOfType(GetAttributeInfos(inherit), attributeType);
+            }
+
+            public IEnumerable<object> GetAttributes(bool inherit)
+            {
+                return AttributeUtils.ResolveAttributes(GetAttributeInfos(inherit));
             }
 
             public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
             {
-                return AttributeUtils.CreateAttributesOfType(GetAttributeInfos(inherit), attributeType);
+                return AttributeUtils.ResolveAttributesOfType(GetAttributeInfos(inherit), attributeType);
             }
 
             public string GetXmlDocumentation()
@@ -366,7 +375,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return Wrap(GetDeclarationsCache().GetTypeElementByCLRName(typeName));
             }
 
-            public ITypeInfo[] GetExportedTypes()
+            public IList<ITypeInfo> GetExportedTypes()
             {
                 INamespace ns = PsiManager.GetNamespace("");
                 IDeclarationsCache cache = GetDeclarationsCache();
@@ -374,7 +383,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 List<ITypeInfo> types = new List<ITypeInfo>();
                 PopulateExportedTypes(types, ns, cache);
 
-                return types.ToArray();
+                return types;
             }
 
             public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
@@ -412,7 +421,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
-            public abstract AssemblyName[] GetReferencedAssemblies();
+            public abstract IList<AssemblyName> GetReferencedAssemblies();
 
             protected abstract IAssemblyFile GetAssemblyFile();
 
@@ -431,7 +440,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
             }
 
-            public override AssemblyName[] GetReferencedAssemblies()
+            public override IList<AssemblyName> GetReferencedAssemblies()
             {
                 return Resolve().GetReferencedAssemblies();
             }
@@ -457,7 +466,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
             }
 
-            public override AssemblyName[] GetReferencedAssemblies()
+            public override IList<AssemblyName> GetReferencedAssemblies()
             {
                 ICollection<IModuleReference> moduleRefs = Target.GetModuleReferences();
                 return GenericUtils.ConvertAllToArray<IModuleReference, AssemblyName>(moduleRefs, delegate(IModuleReference moduleRef)
@@ -603,13 +612,13 @@ namespace Gallio.ReSharperRunner.Reflection
             public abstract ITypeInfo BaseType { get; }
             public abstract string FullName { get; }
             public abstract TypeAttributes Modifiers { get; }
-            public abstract ITypeInfo[] GetInterfaces();
-            public abstract IConstructorInfo[] GetConstructors(BindingFlags bindingFlags);
+            public abstract IList<ITypeInfo> GetInterfaces();
+            public abstract IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
             public abstract IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags);
-            public abstract IMethodInfo[] GetMethods(BindingFlags bindingFlags);
-            public abstract IPropertyInfo[] GetProperties(BindingFlags bindingFlags);
-            public abstract IFieldInfo[] GetFields(BindingFlags bindingFlags);
-            public abstract IEventInfo[] GetEvents(BindingFlags bindingFlags);
+            public abstract IList<IMethodInfo> GetMethods(BindingFlags bindingFlags);
+            public abstract IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
+            public abstract IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
+            public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
             public abstract Type Resolve();
 
             MemberInfo IMemberInfo.Resolve()
@@ -735,7 +744,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
-            public override ITypeInfo[] GetInterfaces()
+            public override IList<ITypeInfo> GetInterfaces()
             {
                 List<ITypeInfo> interfaces = new List<ITypeInfo>();
 
@@ -746,14 +755,14 @@ namespace Gallio.ReSharperRunner.Reflection
                         interfaces.Add(Wrap(@interface));
                 }
 
-                return interfaces.ToArray();
+                return interfaces;
             }
 
-            public override IConstructorInfo[] GetConstructors(BindingFlags bindingFlags)
+            public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
             {
                 List<IConstructorInfo> result = new List<IConstructorInfo>();
                 AddMatchingMembers(result, bindingFlags, TypeElement.Constructors, Wrap);
-                return result.ToArray();
+                return result;
             }
 
             public override IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags)
@@ -774,22 +783,22 @@ namespace Gallio.ReSharperRunner.Reflection
                 return Wrap(match);
             }
 
-            public override IMethodInfo[] GetMethods(BindingFlags bindingFlags)
+            public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
             {
                 List<IMethodInfo> result = new List<IMethodInfo>();
                 AddMatchingMembers(result, bindingFlags, TypeElement.Methods, Wrap);
                 AddMatchingMembers(result, bindingFlags, TypeElement.Operators, Wrap);
-                return result.ToArray();
+                return result;
             }
 
-            public override IPropertyInfo[] GetProperties(BindingFlags bindingFlags)
+            public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
             {
                 List<IPropertyInfo> result = new List<IPropertyInfo>();
                 AddMatchingMembers(result, bindingFlags, TypeElement.Properties, Wrap);
-                return result.ToArray();
+                return result;
             }
 
-            public override IFieldInfo[] GetFields(BindingFlags bindingFlags)
+            public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
             {
                 List<IFieldInfo> result = new List<IFieldInfo>();
 
@@ -800,14 +809,14 @@ namespace Gallio.ReSharperRunner.Reflection
                     AddMatchingMembers(result, bindingFlags, @class.Constants, Wrap);
                 }
 
-                return result.ToArray();
+                return result;
             }
 
-            public override IEventInfo[] GetEvents(BindingFlags bindingFlags)
+            public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
             {
                 List<IEventInfo> result = new List<IEventInfo>();
                 AddMatchingMembers(result, bindingFlags, TypeElement.Events, Wrap);
-                return result.ToArray();
+                return result;
             }
 
             public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
@@ -903,12 +912,12 @@ namespace Gallio.ReSharperRunner.Reflection
                 get { return EffectiveClassType.Modifiers; }
             }
 
-            public override ITypeInfo[] GetInterfaces()
+            public override IList<ITypeInfo> GetInterfaces()
             {
                 return EffectiveClassType.GetInterfaces();
             }
 
-            public override IConstructorInfo[] GetConstructors(BindingFlags bindingFlags)
+            public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetConstructors(bindingFlags);
             }
@@ -918,22 +927,22 @@ namespace Gallio.ReSharperRunner.Reflection
                 return EffectiveClassType.GetMethod(methodName, bindingFlags);
             }
 
-            public override IMethodInfo[] GetMethods(BindingFlags bindingFlags)
+            public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetMethods(bindingFlags);
             }
 
-            public override IPropertyInfo[] GetProperties(BindingFlags bindingFlags)
+            public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetProperties(bindingFlags);
             }
 
-            public override IFieldInfo[] GetFields(BindingFlags bindingFlags)
+            public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetFields(bindingFlags);
             }
 
-            public override IEventInfo[] GetEvents(BindingFlags bindingFlags)
+            public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetEvents(bindingFlags);
             }
@@ -1079,7 +1088,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
-            public IParameterInfo[] GetParameters()
+            public IList<IParameterInfo> GetParameters()
             {
                 IList<IParameter> parameters = Target.Parameters;
                 return GenericUtils.ConvertAllToArray<IParameter, IParameterInfo>(parameters, Wrap);
@@ -1334,6 +1343,45 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
+            public object GetFieldValue(string name)
+            {
+                IClass @class = attrib.AttributeType as IClass;
+                if (@class != null)
+                {
+                    foreach (IField field in @class.Fields)
+                    {
+                        if (field.ShortName == name)
+                        {
+                            ConstantValue2 value = attrib.NamedParameter(field);
+                            if (!value.IsBadValue())
+                                return value.Value;
+                        }
+                    }
+                }
+
+                throw new ArgumentException(String.Format("The attribute does not have an initialized field named '{0}'.", name));
+            }
+
+            public object GetPropertyValue(string name)
+            {
+                IClass @class = attrib.AttributeType as IClass;
+                if (@class != null)
+                {
+                    foreach (IProperty property in @class.Properties)
+                    {
+                        if (property.ShortName == name)
+                        {
+                            ConstantValue2 value = attrib.NamedParameter(property);
+                            if (!value.IsBadValue())
+                                return value.Value;
+                        }
+                    }
+                }
+
+                throw new ArgumentException(String.Format("The attribute does not have an initialized property named '{0}'.", name));
+            }
+
+
             public IDictionary<IFieldInfo, object> FieldValues
             {
                 get
@@ -1380,6 +1428,11 @@ namespace Gallio.ReSharperRunner.Reflection
 
                     return values;
                 }
+            }
+
+            public object Resolve()
+            {
+                return AttributeUtils.CreateAttribute(this);
             }
         }
     }

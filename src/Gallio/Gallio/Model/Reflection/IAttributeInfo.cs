@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Gallio.Model.Reflection
 {
@@ -25,6 +24,22 @@ namespace Gallio.Model.Reflection
         object[] ArgumentValues { get; }
 
         /// <summary>
+        /// Gets an attribute field value.
+        /// </summary>
+        /// <param name="name">The field name</param>
+        /// <returns>The value</returns>
+        /// <exception cref="ArgumentException">Thrown if there is no field with the specified name</exception>
+        object GetFieldValue(string name);
+
+        /// <summary>
+        /// Gets an attribute property value.
+        /// </summary>
+        /// <param name="name">The property name</param>
+        /// <returns>The value</returns>
+        /// <exception cref="ArgumentException">Thrown if there is no property with the specified name</exception>
+        object GetPropertyValue(string name);
+
+        /// <summary>
         /// Gets the attribute field values.
         /// </summary>
         IDictionary<IFieldInfo, object> FieldValues { get; }
@@ -33,5 +48,11 @@ namespace Gallio.Model.Reflection
         /// Gets the attribute property values.
         /// </summary>
         IDictionary<IPropertyInfo, object> PropertyValues { get; }
+
+        /// <summary>
+        /// Gets the attribute as an object.
+        /// </summary>
+        /// <returns>The attribute</returns>
+        object Resolve();
     }
 }

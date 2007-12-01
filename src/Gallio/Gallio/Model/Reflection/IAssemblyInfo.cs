@@ -53,13 +53,13 @@ namespace Gallio.Model.Reflection
         /// Gets the names of the assemblies referenced by this assembly.
         /// </summary>
         /// <returns>The names of the references assemblies</returns>
-        AssemblyName[] GetReferencedAssemblies();
+        IList<AssemblyName> GetReferencedAssemblies();
 
         /// <summary>
         /// Gets the public types exported by the assembly.
         /// </summary>
         /// <returns>The exported types</returns>
-        ITypeInfo[] GetExportedTypes();
+        IList<ITypeInfo> GetExportedTypes();
 
         /// <summary>
         /// Gets a public type by name, or null if not found.

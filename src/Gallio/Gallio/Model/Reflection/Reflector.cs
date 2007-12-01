@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Permissions;
+using Gallio.Collections;
 using Gallio.Hosting;
 using Gallio.Utilities;
 
@@ -351,9 +352,20 @@ namespace Gallio.Model.Reflection
                     yield return Wrap(attrib);
             }
 
+            public IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit)
+            {
+                foreach (Attribute attrib in Target.GetCustomAttributes(attributeType, inherit))
+                    yield return Wrap(attrib);
+            }
+
             public bool HasAttribute(Type attributeType, bool inherit)
             {
                 return Target.IsDefined(attributeType, inherit);
+            }
+
+            public IEnumerable<object> GetAttributes(bool inherit)
+            {
+                return Target.GetCustomAttributes(inherit);
             }
 
             public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
@@ -401,12 +413,12 @@ namespace Gallio.Model.Reflection
                 return Target.GetName();
             }
 
-            public AssemblyName[] GetReferencedAssemblies()
+            public IList<AssemblyName> GetReferencedAssemblies()
             {
                 return Target.GetReferencedAssemblies();
             }
 
-            public ITypeInfo[] GetExportedTypes()
+            public IList<ITypeInfo> GetExportedTypes()
             {
                 Type[] types = Target.GetExportedTypes();
                 return Array.ConvertAll<Type, ITypeInfo>(types, Wrap);
@@ -543,13 +555,13 @@ namespace Gallio.Model.Reflection
                 get { return Target.Attributes; }
             }
 
-            public ITypeInfo[] GetInterfaces()
+            public IList<ITypeInfo> GetInterfaces()
             {
                 Type[] interfaces = Target.GetInterfaces();
                 return Array.ConvertAll<Type, ITypeInfo>(interfaces, Wrap);
             }
 
-            public IConstructorInfo[] GetConstructors(BindingFlags bindingFlags)
+            public IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
             {
                 ConstructorInfo[] constructors = Target.GetConstructors(bindingFlags);
                 return Array.ConvertAll<ConstructorInfo, IConstructorInfo>(constructors, Wrap);
@@ -560,25 +572,25 @@ namespace Gallio.Model.Reflection
                 return Wrap(Target.GetMethod(methodName, bindingFlags));
             }
 
-            public IMethodInfo[] GetMethods(BindingFlags bindingFlags)
+            public IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
             {
                 MethodInfo[] methods = Target.GetMethods(bindingFlags);
                 return Array.ConvertAll<MethodInfo, IMethodInfo>(methods, Wrap);
             }
 
-            public IPropertyInfo[] GetProperties(BindingFlags bindingFlags)
+            public IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
             {
                 PropertyInfo[] properties = Target.GetProperties(bindingFlags);
                 return Array.ConvertAll<PropertyInfo, IPropertyInfo>(properties, Wrap);
             }
 
-            public IFieldInfo[] GetFields(BindingFlags bindingFlags)
+            public IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
             {
                 FieldInfo[] fields = Target.GetFields(bindingFlags);
                 return Array.ConvertAll<FieldInfo, IFieldInfo>(fields, Wrap);
             }
 
-            public IEventInfo[] GetEvents(BindingFlags bindingFlags)
+            public IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
             {
                 EventInfo[] events = Target.GetEvents(bindingFlags);
                 return Array.ConvertAll<EventInfo, IEventInfo>(events, Wrap);
@@ -613,7 +625,7 @@ namespace Gallio.Model.Reflection
                 get { return Target.Attributes; }
             }
 
-            public IParameterInfo[] GetParameters()
+            public IList<IParameterInfo> GetParameters()
             {
                 ParameterInfo[] parameters = Target.GetParameters();
                 return Array.ConvertAll<ParameterInfo, IParameterInfo>(parameters, Wrap);
@@ -817,7 +829,12 @@ namespace Gallio.Model.Reflection
 
             public IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
             {
-                yield break;
+                return EmptyArray<IAttributeInfo>.Instance;
+            }
+
+            public IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit)
+            {
+                return EmptyArray<IAttributeInfo>.Instance;
             }
 
             public bool HasAttribute(Type attributeType, bool inherit)
@@ -825,9 +842,14 @@ namespace Gallio.Model.Reflection
                 return false;
             }
 
+            public IEnumerable<object> GetAttributes(bool inherit)
+            {
+                return EmptyArray<object>.Instance;
+            }
+
             public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
             {
-                yield break;
+                return EmptyArray<object>.Instance;
             }
 
             public string GetXmlDocumentation()
@@ -860,22 +882,61 @@ namespace Gallio.Model.Reflection
 
             public IConstructorInfo Constructor
             {
-                get { throw new NotImplementedException(); }
+                get { throw new NotSupportedException("Cannot get original constructor of an Attribute object."); }
             }
 
             public object[] ArgumentValues
             {
-                get { throw new NotImplementedException(); }
+                get { throw new NotSupportedException("Cannot get original constructor arguments of an Attribute object."); }
+            }
+
+            public object GetFieldValue(string name)
+            {
+                FieldInfo field = attrib.GetType().GetField(name, BindingFlags.Instance | BindingFlags.Public);
+                if (field != null)
+                    return field.GetValue(attrib);
+
+                throw new ArgumentException(String.Format("The attribute does not have a field named '{0}'.", name));
+            }
+
+            public object GetPropertyValue(string name)
+            {
+                PropertyInfo property = attrib.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
+                if (property != null)
+                    return property.GetValue(attrib, null);
+
+                throw new ArgumentException(String.Format("The attribute does not have a property named '{0}'.", name));
             }
 
             public IDictionary<IFieldInfo, object> FieldValues
             {
-                get { throw new NotImplementedException(); }
+                get
+                {
+                    Dictionary<IFieldInfo, object> values = new Dictionary<IFieldInfo, object>();
+
+                    foreach (FieldInfo field in attrib.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
+                        values.Add(Wrap(field), field.GetValue(attrib));
+
+                    return values;
+                }
             }
 
             public IDictionary<IPropertyInfo, object> PropertyValues
             {
-                get { throw new NotImplementedException(); }
+                get
+                {
+                    Dictionary<IPropertyInfo, object> values = new Dictionary<IPropertyInfo, object>();
+
+                    foreach (PropertyInfo property in attrib.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+                        values.Add(Wrap(property), property.GetValue(attrib, null));
+
+                    return values;
+                }
+            }
+
+            public object Resolve()
+            {
+                return attrib;
             }
         }
     }

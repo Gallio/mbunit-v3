@@ -35,11 +35,19 @@ namespace Gallio.Model.Reflection
         CodeReference CodeReference { get; }
 
         /// <summary>
-        /// Gets information about all attributes of the code element.
+        /// Gets information about all the code element's attributes.
         /// </summary>
         /// <param name="inherit">If true, includes inherited attributes</param>
         /// <returns>The code element's attributes</returns>
         IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit);
+
+        /// <summary>
+        /// Gets information about the code element's attributes of the specified type.
+        /// </summary>
+        /// <param name="attributeType">The attribute type</param>
+        /// <param name="inherit">If true, includes inherited attributes</param>
+        /// <returns>The code element's attributes</returns>
+        IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit);
 
         /// <summary>
         /// Returns true if the code element has an attribute of the specified type.
@@ -48,6 +56,13 @@ namespace Gallio.Model.Reflection
         /// <param name="inherit">If true, includes inherited attributes</param>
         /// <returns>True if the code element has at least one attribute of the specified type</returns>
         bool HasAttribute(Type attributeType, bool inherit);
+
+        /// <summary>
+        /// Gets all of the code element's attributes.
+        /// </summary>
+        /// <param name="inherit">If true, includes inherited attributes</param>
+        /// <returns>The attributes</returns>
+        IEnumerable<object> GetAttributes(bool inherit);
 
         /// <summary>
         /// Gets the code element's attributes of the specified type.

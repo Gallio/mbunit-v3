@@ -214,14 +214,24 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public abstract IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit);
 
+            public IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit)
+            {
+                return AttributeUtils.FilterAttributesOfType(GetAttributeInfos(inherit), attributeType);
+            }
+
             public bool HasAttribute(Type attributeType, bool inherit)
             {
-                return AttributeUtils.HasAttributeOfType(GetAttributeInfos(inherit), attributeType);
+                return AttributeUtils.ContainsAttributeOfType(GetAttributeInfos(inherit), attributeType);
+            }
+
+            public IEnumerable<object> GetAttributes(bool inherit)
+            {
+                return AttributeUtils.ResolveAttributes(GetAttributeInfos(inherit));
             }
 
             public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
             {
-                return AttributeUtils.CreateAttributesOfType(GetAttributeInfos(inherit), attributeType);
+                return AttributeUtils.ResolveAttributesOfType(GetAttributeInfos(inherit), attributeType);
             }
 
             public string GetXmlDocumentation()
@@ -267,7 +277,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return Target.AssemblyName;
             }
 
-            public AssemblyName[] GetReferencedAssemblies()
+            public IList<AssemblyName> GetReferencedAssemblies()
             {
                 AssemblyReference[] references = Target.ReferencedAssembliesNames;
                 return Array.ConvertAll<AssemblyReference, AssemblyName>(references, delegate(AssemblyReference reference)
@@ -276,7 +286,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 });
             }
 
-            public ITypeInfo[] GetExportedTypes()
+            public IList<ITypeInfo> GetExportedTypes()
             {
                 IMetadataTypeInfo[] types = Target.GetTypes();
                 return Array.ConvertAll<IMetadataTypeInfo, ITypeInfo>(types, WrapOpenType);
@@ -395,13 +405,13 @@ namespace Gallio.ReSharperRunner.Reflection
             public abstract ITypeInfo BaseType { get; }
             public abstract string FullName { get; }
             public abstract TypeAttributes Modifiers { get; }
-            public abstract ITypeInfo[] GetInterfaces();
-            public abstract IConstructorInfo[] GetConstructors(BindingFlags bindingFlags);
+            public abstract IList<ITypeInfo> GetInterfaces();
+            public abstract IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
             public abstract IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags);
-            public abstract IMethodInfo[] GetMethods(BindingFlags bindingFlags);
-            public abstract IPropertyInfo[] GetProperties(BindingFlags bindingFlags);
-            public abstract IFieldInfo[] GetFields(BindingFlags bindingFlags);
-            public abstract IEventInfo[] GetEvents(BindingFlags bindingFlags);
+            public abstract IList<IMethodInfo> GetMethods(BindingFlags bindingFlags);
+            public abstract IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
+            public abstract IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
+            public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
             public abstract bool IsAssignableFrom(ITypeInfo type);
             public abstract Type Resolve();
 
@@ -486,13 +496,13 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
-            public override ITypeInfo[] GetInterfaces()
+            public override IList<ITypeInfo> GetInterfaces()
             {
                 IMetadataClassType[] interfaces = TargetInfo.Interfaces;
                 return Array.ConvertAll<IMetadataClassType, ITypeInfo>(interfaces, Wrap);
             }
 
-            public override IConstructorInfo[] GetConstructors(BindingFlags bindingFlags)
+            public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
             {
                 List<IConstructorInfo> result = new List<IConstructorInfo>();
 
@@ -502,7 +512,7 @@ namespace Gallio.ReSharperRunner.Reflection
                         result.Add(WrapConstructor(method));
                 }
 
-                return result.ToArray();
+                return result;
             }
 
             public override IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags)
@@ -522,7 +532,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return (IMethodInfo)Wrap(match);
             }
 
-            public override IMethodInfo[] GetMethods(BindingFlags bindingFlags)
+            public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
             {
                 List<IMethodInfo> result = new List<IMethodInfo>();
 
@@ -532,10 +542,10 @@ namespace Gallio.ReSharperRunner.Reflection
                         result.Add(WrapMethod(method));
                 }
 
-                return result.ToArray();
+                return result;
             }
 
-            public override IPropertyInfo[] GetProperties(BindingFlags bindingFlags)
+            public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
             {
                 List<IPropertyInfo> result = new List<IPropertyInfo>();
 
@@ -546,10 +556,10 @@ namespace Gallio.ReSharperRunner.Reflection
                         result.Add(Wrap(property));
                 }
 
-                return result.ToArray();
+                return result;
             }
 
-            public override IFieldInfo[] GetFields(BindingFlags bindingFlags)
+            public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
             {
                 List<IFieldInfo> result = new List<IFieldInfo>();
 
@@ -559,10 +569,10 @@ namespace Gallio.ReSharperRunner.Reflection
                         result.Add(Wrap(field));
                 }
 
-                return result.ToArray();
+                return result;
             }
 
-            public override IEventInfo[] GetEvents(BindingFlags bindingFlags)
+            public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
             {
                 List<IEventInfo> result = new List<IEventInfo>();
 
@@ -574,7 +584,7 @@ namespace Gallio.ReSharperRunner.Reflection
                         result.Add(Wrap(@event));
                 }
 
-                return result.ToArray();
+                return result;
             }
 
             public override bool IsAssignableFrom(ITypeInfo type)
@@ -662,12 +672,12 @@ namespace Gallio.ReSharperRunner.Reflection
                 get { return EffectiveClassType.Modifiers; }
             }
 
-            public override ITypeInfo[] GetInterfaces()
+            public override IList<ITypeInfo> GetInterfaces()
             {
                 return EffectiveClassType.GetInterfaces();
             }
 
-            public override IConstructorInfo[] GetConstructors(BindingFlags bindingFlags)
+            public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetConstructors(bindingFlags);
             }
@@ -677,22 +687,22 @@ namespace Gallio.ReSharperRunner.Reflection
                 return EffectiveClassType.GetMethod(methodName, bindingFlags);
             }
 
-            public override IMethodInfo[] GetMethods(BindingFlags bindingFlags)
+            public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetMethods(bindingFlags);
             }
 
-            public override IPropertyInfo[] GetProperties(BindingFlags bindingFlags)
+            public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetProperties(bindingFlags);
             }
 
-            public override IFieldInfo[] GetFields(BindingFlags bindingFlags)
+            public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetFields(bindingFlags);
             }
 
-            public override IEventInfo[] GetEvents(BindingFlags bindingFlags)
+            public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
             {
                 return EffectiveClassType.GetEvents(bindingFlags);
             }
@@ -907,7 +917,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
-            public IParameterInfo[] GetParameters()
+            public IList<IParameterInfo> GetParameters()
             {
                 IMetadataParameter[] parameters = Target.Parameters;
                 return Array.ConvertAll<IMetadataParameter, IParameterInfo>(parameters, Wrap);
@@ -1188,6 +1198,24 @@ namespace Gallio.ReSharperRunner.Reflection
                 get { return attrib.ConstructorArguments; }
             }
 
+            public object GetFieldValue(string name)
+            {
+                foreach (IMetadataCustomAttributeFieldInitialization initialization in attrib.InitializedFields)
+                    if (initialization.Field.Name == name)
+                        return initialization.Value;
+
+                throw new ArgumentException(String.Format("The attribute does not have an initialized field named '{0}'.", name));
+            }
+
+            public object GetPropertyValue(string name)
+            {
+                foreach (IMetadataCustomAttributePropertyInitialization initialization in attrib.InitializedProperties)
+                    if (initialization.Property.Name == name)
+                        return initialization.Value;
+
+                throw new ArgumentException(String.Format("The attribute does not have an initialized property named '{0}'.", name));
+            }
+
             public IDictionary<IFieldInfo, object> FieldValues
             {
                 get
@@ -1214,6 +1242,11 @@ namespace Gallio.ReSharperRunner.Reflection
 
                     return values;
                 }
+            }
+
+            public object Resolve()
+            {
+                return AttributeUtils.CreateAttribute(this);
             }
         }
 

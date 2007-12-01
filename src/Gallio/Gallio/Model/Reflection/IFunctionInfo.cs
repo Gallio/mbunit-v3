@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Gallio.Model.Reflection
@@ -40,7 +41,7 @@ namespace Gallio.Model.Reflection
         /// Gets the parameters of the function.
         /// </summary>
         /// <returns>The parameters</returns>
-        IParameterInfo[] GetParameters();
+        IList<IParameterInfo> GetParameters();
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

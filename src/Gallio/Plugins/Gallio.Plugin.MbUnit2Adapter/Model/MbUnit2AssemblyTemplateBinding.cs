@@ -18,8 +18,6 @@ extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
-using Gallio.Hosting;
 using Gallio.Model.Data;
 using Gallio.Model;
 using Gallio.Model.Reflection;
@@ -36,7 +34,6 @@ using MbUnit2::MbUnit.Core.Remoting;
 using MbUnit2::MbUnit.Core.Filters;
 using MbUnit2::MbUnit.Core.Reports.Serialization;
 using MbUnit2::MbUnit.Core.Invokers;
-using Gallio.Plugin.MbUnit2Adapter.Properties;
 
 namespace Gallio.Plugin.MbUnit2Adapter.Model
 {

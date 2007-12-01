@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model.Reflection;
 
-using XunitReflector = Xunit.Sdk.Reflector;
 using XunitTypeInfo = Xunit.Sdk.ITypeInfo;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 using XunitAttributeInfo = Xunit.Sdk.IAttributeInfo;
@@ -53,8 +52,8 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         public IEnumerable<XunitAttributeInfo> GetCustomAttributes(Type attributeType)
         {
-            foreach (Attribute attribute in target.GetAttributes(attributeType, true))
-                yield return XunitReflector.Wrap(attribute);
+            foreach (IAttributeInfo attribute in target.GetAttributeInfos(attributeType, true))
+                yield return new XunitAttributeInfoAdapter(attribute);
         }
 
         public bool HasAttribute(Type attributeType)

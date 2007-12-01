@@ -99,14 +99,14 @@ namespace Gallio.Model.Reflection
         /// Gets all of the type's interfaces.
         /// </summary>
         /// <returns>The type's interfaces</returns>
-        ITypeInfo[] GetInterfaces();
+        IList<ITypeInfo> GetInterfaces();
 
         /// <summary>
         /// Gets all constructors of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The method binding flags</param>
         /// <returns>The constructors</returns>
-        IConstructorInfo[] GetConstructors(BindingFlags bindingFlags);
+        IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets a method by name, or null if not found.
@@ -121,28 +121,28 @@ namespace Gallio.Model.Reflection
         /// </summary>
         /// <param name="bindingFlags">The method binding flags</param>
         /// <returns>The methods</returns>
-        IMethodInfo[] GetMethods(BindingFlags bindingFlags);
+        IList<IMethodInfo> GetMethods(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all properties of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The method binding flags</param>
         /// <returns>The properties</returns>
-        IPropertyInfo[] GetProperties(BindingFlags bindingFlags);
+        IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all fields of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The method binding flags</param>
         /// <returns>The fields</returns>
-        IFieldInfo[] GetFields(BindingFlags bindingFlags);
+        IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all events of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The method binding flags</param>
         /// <returns>The events</returns>
-        IEventInfo[] GetEvents(BindingFlags bindingFlags);
+        IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
 
         /// <summary>
         /// Returns true if variables of this type can be assigned with values of the specified type.

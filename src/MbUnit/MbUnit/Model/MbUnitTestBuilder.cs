@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Gallio.Model;
 using Gallio.Model.Reflection;
 using MbUnit.Attributes;

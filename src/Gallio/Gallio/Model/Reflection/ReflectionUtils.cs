@@ -128,10 +128,10 @@ namespace Gallio.Model.Reflection
         /// <exception cref="ModelException">Thrown if the method has a different signature</exception>
         public static void CheckMethodSignature(IMethodInfo method, params ITypeInfo[] signature)
         {
-            IParameterInfo[] parameters = method.GetParameters();
-            if (parameters.Length == signature.Length)
+            IList<IParameterInfo> parameters = method.GetParameters();
+            if (parameters.Count == signature.Length)
             {
-                for (int i = 0; i < parameters.Length; i++)
+                for (int i = 0; i < parameters.Count; i++)
                 {
                     IParameterInfo parameter = parameters[i];
                     if (parameter.ValueType != signature[i]
@@ -147,7 +147,7 @@ namespace Gallio.Model.Reflection
             {
                 return parameterType.FullName;
             });
-            string[] actualTypeNames = Array.ConvertAll<IParameterInfo, string>(parameters, delegate(IParameterInfo parameter)
+            string[] actualTypeNames = GenericUtils.ConvertAllToArray<IParameterInfo, string>(parameters, delegate(IParameterInfo parameter)
             {
                 if ((parameter.Modifiers & ParameterAttributes.Out) != 0)
                 {
@@ -212,7 +212,7 @@ namespace Gallio.Model.Reflection
             return type != null
                 && (type.Modifiers & (TypeAttributes.Abstract | TypeAttributes.Class | TypeAttributes.Public)) == (TypeAttributes.Class | TypeAttributes.Public)
                 && type.ElementType == null
-                && type.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Length != 0;
+                && type.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Count != 0;
         }
 
         /// <summary>
