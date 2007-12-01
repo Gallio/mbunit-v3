@@ -27,6 +27,12 @@ namespace Gallio.Model
         public abstract string Name { get; }
 
         /// <inheritdoc />
+        public virtual ITestExplorer CreateTestExplorer()
+        {
+            return new NullTestExplorer();
+        }
+
+        /// <inheritdoc />
         public virtual void PrepareAssemblies(IList<IAssemblyInfo> assemblies)
         {
         }

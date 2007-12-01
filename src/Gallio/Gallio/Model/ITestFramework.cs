@@ -34,6 +34,12 @@ namespace Gallio.Model
         string Name { get; }
 
         /// <summary>
+        /// Creates a test explorer for this test framework.
+        /// </summary>
+        /// <returns>The test explorer,</returns>
+        ITestExplorer CreateTestExplorer();
+
+        /// <summary>
         /// Prepares assemblies for analysis with reflection.
         /// A test framework can take advantage of this opportunity to ensure that
         /// all assembly dependencies can be resolved as needed.

@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
 
@@ -31,6 +30,7 @@ namespace Gallio.Hosting
     {
         private readonly List<string> pluginDirectories;
         private string runtimeFactoryType;
+        private string configurationFilePath;
 
         /// <summary>
         /// Creates a default runtime setup.
@@ -56,13 +56,29 @@ namespace Gallio.Hosting
         /// <summary>
         /// Gets list of relative or absolute paths of directories to be
         /// searched for plugin configuration files in addition to the
-        /// primary MbUnit directories.
+        /// primary Gallio directories.
         /// </summary>
         [XmlArray("pluginDirectories", IsNullable = false)]
         [XmlArrayItem("pluginDirectory", typeof(string), IsNullable = false)]
         public List<string> PluginDirectories
         {
             get { return pluginDirectories; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path of the primary configuration file to be
+        /// loaded by the runtime (if it exists).  This is useful
+        /// when Gallio is launched by a library instead of as a standalone
+        /// executable.
+        /// </summary>
+        /// <value>
+        /// The primary configuration file path.  Default is null to load the
+        /// configuration from the <see cref="AppDomain" />.
+        /// </value>
+        public string ConfigurationFilePath
+        {
+            get { return configurationFilePath; }
+            set { configurationFilePath = value; }
         }
 
         /// <summary>
@@ -74,6 +90,7 @@ namespace Gallio.Hosting
             RuntimeSetup copy = new RuntimeSetup();
             copy.pluginDirectories.AddRange(pluginDirectories);
             copy.runtimeFactoryType = runtimeFactoryType;
+            copy.configurationFilePath = configurationFilePath;
             return copy;
         }
     }

@@ -63,6 +63,7 @@
     <Compile Include="Framework\ProcessRunner.cs" />
     <Compile Include="Model\MbUnitTestBuilder.cs" />
     <Compile Include="Model\MbUnitTestController.cs" />
+    <Compile Include="Model\MbUnitTestExplorer.cs" />
     <Compile Include="Model\MbUnitTestFramework.cs" />
     <Compile Include="Framework\ArrayAssert.cs" />
     <Compile Include="Framework\AssemblyResolverAttribute.cs" />

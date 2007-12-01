@@ -136,6 +136,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.Tests", "Gallio\Runners\Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests.csproj", "{EBB6130D-3D29-4313-BAA9-1076BB8572AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "MbUnit\Samples\MbUnit.Samples\MbUnit.Samples.csproj", "{12850856-0A27-4E50-9116-5A3B19C7D779}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6CAB7735-05DA-480D-9A04-50615B00F886} = {6CAB7735-05DA-480D-9A04-50615B00F886}
+		{A9B54755-56B7-48C1-8941-BB69FCEFFF32} = {A9B54755-56B7-48C1-8941-BB69FCEFFF32}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner", "Gallio\Runners\Gallio.ReSharperRunner\Gallio.ReSharperRunner.csproj", "{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}"
 EndProject

@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Gallio.TDNetRunner")]
-[assembly: AssemblyDescription("TestDriven.Net runner for Gallio.")]
+[assembly: AssemblyDescription("Gallio test runner for TestDriven.Net.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Gallio")]

@@ -238,5 +238,28 @@ namespace Gallio.Model.Reflection
                 && CanInvokeNonStatic(property.GetGetMethod())
                 && CanInvokeNonStatic(property.GetSetMethod());
         }
+
+        /// <summary>
+        /// Returns true if a type is derived from another type with the specified qualified name.
+        /// </summary>
+        /// <param name="type">The type to check</param>
+        /// <param name="qualifiedTypeName">The qualified type name</param>
+        /// <returns>True if <paramref name="type"/> is derived from <paramref name="qualifiedTypeName"/></returns>
+        public static bool IsDerivedFrom(ITypeInfo type, string qualifiedTypeName)
+        {
+            for (ITypeInfo superType = type; superType != null; superType = superType.BaseType)
+            {
+                if (superType.FullName == qualifiedTypeName)
+                    return true;
+            }
+
+            foreach (ITypeInfo interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.FullName == qualifiedTypeName)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

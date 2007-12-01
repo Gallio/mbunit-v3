@@ -152,7 +152,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             test.Kind = ComponentKind.Fixture;
 
             // Populate metadata
-            foreach (AuthorAttribute2 attrib in fixtureType.GetAttributes<AuthorAttribute2>(true))
+            foreach (AuthorAttribute2 attrib in AttributeUtils.GetAttributes<AuthorAttribute2>(fixtureType, true))
             {
                 if (! String.IsNullOrEmpty(attrib.Name))
                     test.Metadata.Add(MetadataKeys.AuthorName, attrib.Name);
@@ -161,19 +161,19 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 if (!String.IsNullOrEmpty(attrib.HomePage) && attrib.HomePage != @"unspecified")
                     test.Metadata.Add(MetadataKeys.AuthorHomepage, attrib.HomePage);
             }
-            foreach (FixtureCategoryAttribute2 attrib in fixtureType.GetAttributes<FixtureCategoryAttribute2>(true))
+            foreach (FixtureCategoryAttribute2 attrib in AttributeUtils.GetAttributes<FixtureCategoryAttribute2>(fixtureType, true))
             {
                 test.Metadata.Add(MetadataKeys.CategoryName, attrib.Category);
             }
-            foreach (TestsOnAttribute2 attrib in fixtureType.GetAttributes<TestsOnAttribute2>(true))
+            foreach (TestsOnAttribute2 attrib in AttributeUtils.GetAttributes<TestsOnAttribute2>(fixtureType, true))
             {
                 test.Metadata.Add(MetadataKeys.TestsOn, attrib.TestedType.AssemblyQualifiedName);
             }
-            foreach (ImportanceAttribute2 attrib in fixtureType.GetAttributes<ImportanceAttribute2>(true))
+            foreach (ImportanceAttribute2 attrib in AttributeUtils.GetAttributes<ImportanceAttribute2>(fixtureType, true))
             {
                 test.Metadata.Add(MetadataKeys.Importance, attrib.Importance.ToString());
             }
-            foreach (TestFixturePatternAttribute2 attrib in fixtureType.GetAttributes<TestFixturePatternAttribute2>(true))
+            foreach (TestFixturePatternAttribute2 attrib in AttributeUtils.GetAttributes<TestFixturePatternAttribute2>(fixtureType, true))
             {
                 if (! String.IsNullOrEmpty(attrib.Description))
                     test.Metadata.Add(MetadataKeys.Description, attrib.Description);
@@ -199,7 +199,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             // Populate metadata
             if (member != null)
             {
-                foreach (TestPatternAttribute2 attrib in member.GetAttributes<TestPatternAttribute2>(true))
+                foreach (TestPatternAttribute2 attrib in AttributeUtils.GetAttributes<TestPatternAttribute2>(member, true))
                 {
                     if (!String.IsNullOrEmpty(attrib.Description))
                         test.Metadata.Add(MetadataKeys.Description, attrib.Description);

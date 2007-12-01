@@ -25,7 +25,6 @@ using Castle.Core.Resource;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
-using Gallio.Core.ConsoleSupport;
 using Gallio.Utilities;
 
 namespace Gallio.Hosting
@@ -120,6 +119,17 @@ namespace Gallio.Hosting
 
             container.Kernel.AddComponentInstance(@"Core.Runtime", typeof(IRuntime), this);
             container.Kernel.AddComponentInstance(@"Core.AssemblyResolverManager", typeof(IAssemblyResolverManager), assemblyResolverManager);
+
+            if (runtimeSetup.ConfigurationFilePath != null)
+            {
+                if (File.Exists(runtimeSetup.ConfigurationFilePath))
+                    LoadConfigurationFromFile(runtimeSetup.ConfigurationFilePath);
+            }
+            else
+            {
+                if (ConfigurationManager.GetSection("castle") != null)
+                    LoadConfigurationFromResource(new ConfigResource());
+            }
 
             LoadAllPluginConfiguration();
             RunContainerInstaller();

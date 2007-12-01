@@ -58,7 +58,7 @@ namespace MbUnit.Model
         /// <param name="assembly">The assembly to process</param>
         public virtual void ProcessAssembly(MbUnitFrameworkTemplate frameworkTemplate, IAssemblyInfo assembly)
         {
-            AssemblyPatternAttribute assemblyPatternAttribute = assembly.GetAttribute<AssemblyPatternAttribute>(false);
+            AssemblyPatternAttribute assemblyPatternAttribute = AttributeUtils.GetAttribute<AssemblyPatternAttribute>(assembly, false);
             if (assemblyPatternAttribute == null)
                 assemblyPatternAttribute = AssemblyPatternAttribute.DefaultInstance;
 
@@ -74,8 +74,9 @@ namespace MbUnit.Model
         /// <param name="assemblyTemplate">The assembly template</param>
         public virtual void ProcessAssemblyDecorators(MbUnitAssemblyTemplate assemblyTemplate)
         {
-            AssemblyDecoratorPatternAttribute[] decorators = assemblyTemplate.Assembly.GetAttributes<AssemblyDecoratorPatternAttribute>(false);
-            Array.Sort(decorators, DecoratorOrderComparer<AssemblyDecoratorPatternAttribute>.Instance);
+            List<AssemblyDecoratorPatternAttribute> decorators = new List<AssemblyDecoratorPatternAttribute>();
+            decorators.AddRange(AttributeUtils.GetAttributes<AssemblyDecoratorPatternAttribute>(assemblyTemplate.Assembly, false));
+            decorators.Sort(DecoratorOrderComparer<AssemblyDecoratorPatternAttribute>.Instance);
 
             foreach (AssemblyDecoratorPatternAttribute decoratorAttribute in decorators)
             {
@@ -90,7 +91,7 @@ namespace MbUnit.Model
         /// <param name="type">The type</param>
         public virtual void ProcessType(MbUnitAssemblyTemplate assemblyTemplate, ITypeInfo type)
         {
-            TypePatternAttribute typePatternAttribute = type.GetAttribute<TypePatternAttribute>(true);
+            TypePatternAttribute typePatternAttribute = AttributeUtils.GetAttribute<TypePatternAttribute>(type, true);
             if (typePatternAttribute == null || !ReflectionUtils.CanInstantiate(type))
                 return;
 
@@ -108,8 +109,8 @@ namespace MbUnit.Model
         public virtual void ProcessTypeDecorators(MbUnitTypeTemplate typeTemplate)
         {
             List<TypeDecoratorPatternAttribute> decorators = new List<TypeDecoratorPatternAttribute>();
-            decorators.AddRange(typeTemplate.Type.GetAttributes<TypeDecoratorPatternAttribute>(true));
-            decorators.AddRange(typeTemplate.Type.Assembly.GetAttributes<TypeDecoratorPatternAttribute>(true));
+            decorators.AddRange(AttributeUtils.GetAttributes < TypeDecoratorPatternAttribute>(typeTemplate.Type, true));
+            decorators.AddRange(AttributeUtils.GetAttributes<TypeDecoratorPatternAttribute>(typeTemplate.Type.Assembly, true));
             decorators.Sort(DecoratorOrderComparer < TypeDecoratorPatternAttribute>.Instance);
 
             foreach (TypeDecoratorPatternAttribute decoratorAttribute in decorators)
@@ -125,7 +126,7 @@ namespace MbUnit.Model
         /// <param name="method">The method to process</param>
         public virtual void ProcessMethod(MbUnitTypeTemplate typeTemplate, IMethodInfo method)
         {
-            MethodPatternAttribute methodPatternAttribute = method.GetAttribute<MethodPatternAttribute>(true);
+            MethodPatternAttribute methodPatternAttribute = AttributeUtils.GetAttribute<MethodPatternAttribute>(method, true);
             if (methodPatternAttribute == null)
                 return;
 
@@ -142,8 +143,8 @@ namespace MbUnit.Model
         public virtual void ProcessMethodDecorators(MbUnitMethodTemplate methodTemplate)
         {
             List<MethodDecoratorPatternAttribute> decorators = new List<MethodDecoratorPatternAttribute>();
-            decorators.AddRange(methodTemplate.Method.GetAttributes<MethodDecoratorPatternAttribute>(true));
-            decorators.AddRange(methodTemplate.Method.DeclaringType.GetAttributes<MethodDecoratorPatternAttribute>(true));
+            decorators.AddRange(AttributeUtils.GetAttributes<MethodDecoratorPatternAttribute>(methodTemplate.Method, true));
+            decorators.AddRange(AttributeUtils.GetAttributes<MethodDecoratorPatternAttribute>(methodTemplate.Method.DeclaringType, true));
             decorators.Sort(DecoratorOrderComparer<MethodDecoratorPatternAttribute>.Instance);
 
             foreach (MethodDecoratorPatternAttribute decoratorAttribute in decorators)
@@ -159,7 +160,7 @@ namespace MbUnit.Model
         /// <param name="slot">The slot to process</param>
         public virtual void ProcessParameter(MbUnitTemplate template, ISlotInfo slot)
         {
-            ParameterPatternAttribute parameterPatternAttribute = slot.GetAttribute<ParameterPatternAttribute>(true);
+            ParameterPatternAttribute parameterPatternAttribute = AttributeUtils.GetAttribute<ParameterPatternAttribute>(slot, true);
 
             if (parameterPatternAttribute == null)
             {
@@ -190,8 +191,9 @@ namespace MbUnit.Model
         /// <param name="parameter">The template parameter to decorate</param>
         public virtual void ProcessParameterDecorators(MbUnitTemplateParameter parameter)
         {
-            ParameterDecoratorPatternAttribute[] decorators = parameter.Slot.GetAttributes<ParameterDecoratorPatternAttribute>(true);
-            Array.Sort(decorators, DecoratorOrderComparer<ParameterDecoratorPatternAttribute>.Instance);
+            List<ParameterDecoratorPatternAttribute> decorators = new List<ParameterDecoratorPatternAttribute>();
+            decorators.AddRange(AttributeUtils.GetAttributes<ParameterDecoratorPatternAttribute>(parameter.Slot, true));
+            decorators.Sort(DecoratorOrderComparer<ParameterDecoratorPatternAttribute>.Instance);
 
             foreach (ParameterDecoratorPatternAttribute decoratorAttribute in decorators)
             {
@@ -206,7 +208,7 @@ namespace MbUnit.Model
         /// <param name="codeElement">The code element bearing the metadata</param>
         public virtual void ProcessMetadata(ITemplateComponent component, ICodeElementInfo codeElement)
         {
-            foreach (MetadataPatternAttribute metadataAttribute in codeElement.GetAttributes<MetadataPatternAttribute>(true))
+            foreach (MetadataPatternAttribute metadataAttribute in AttributeUtils.GetAttributes<MetadataPatternAttribute>(codeElement, true))
             {
                 metadataAttribute.Apply(this, component);
             }

@@ -50,11 +50,6 @@ namespace Gallio.Model.Reflection
         ITypeInfo BaseType { get; }
 
         /// <summary>
-        /// Gets the element type of a compound type, or null if none.
-        /// </summary>
-        ITypeInfo ElementType { get; }
-
-        /// <summary>
         /// Gets the assembly-qualified name of the type.
         /// </summary>
         string AssemblyQualifiedName { get; }
@@ -68,6 +63,37 @@ namespace Gallio.Model.Reflection
         /// Gets the type modifiers.
         /// </summary>
         TypeAttributes Modifiers { get; }
+
+        /// <summary>
+        /// Gets the element type of a constructed type such as an array or pointer, or null if none.
+        /// </summary>
+        ITypeInfo ElementType { get; }
+
+        /// <summary>
+        /// Returns true if the type represents an array.
+        /// </summary>
+        bool IsArray { get; }
+
+        /// <summary>
+        /// Returns true if the type represents a pointer.
+        /// </summary>
+        bool IsPointer { get; }
+
+        /// <summary>
+        /// Returns true if the type represents a type that is passed by reference.
+        /// </summary>
+        bool IsByRef { get; }
+
+        /// <summary>
+        /// Returns true if the type represents a generic type parameter.
+        /// </summary>
+        bool IsGenericParameter { get; }
+
+        /// <summary>
+        /// Gets the rank of the array type.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the type is not an array type</exception>
+        int ArrayRank { get; }
 
         /// <summary>
         /// Gets all of the type's interfaces.

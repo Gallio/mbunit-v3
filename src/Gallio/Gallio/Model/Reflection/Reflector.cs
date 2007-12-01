@@ -14,11 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Reflection;
 using System.Security.Permissions;
-using Gallio.Collections;
 using Gallio.Hosting;
 using Gallio.Utilities;
 
@@ -238,6 +237,16 @@ namespace Gallio.Model.Reflection
         }
 
         /// <summary>
+        /// Obtains a reflection wrapper for an attribute instance.
+        /// </summary>
+        /// <param name="target">The attribute, or null if none</param>
+        /// <returns>The reflection wrapper, or null if none</returns>
+        public static IAttributeInfo Wrap(Attribute target)
+        {
+            return target != null ? new AttributeWrapper(target) : null;
+        }
+
+        /// <summary>
         /// Creates a code element from the executing function.
         /// </summary>
         /// <remarks>
@@ -336,37 +345,20 @@ namespace Gallio.Model.Reflection
 
             public abstract CodeReference CodeReference { get; }
 
+            public IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+            {
+                foreach (Attribute attrib in Target.GetCustomAttributes(inherit))
+                    yield return Wrap(attrib);
+            }
+
             public bool HasAttribute(Type attributeType, bool inherit)
             {
                 return Target.IsDefined(attributeType, inherit);
             }
 
-            public object GetAttribute(Type attributeType, bool inherit)
-            {
-                object[] attribs = Target.GetCustomAttributes(attributeType, true);
-
-                if (attribs.Length == 0)
-                    return null;
-                else if (attribs.Length == 1)
-                    return attribs[0];
-                else
-                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                        "There are multiple instances of attribute '{0}'.", attributeType.FullName));
-            }
-
-            public object[] GetAttributes(Type attributeType, bool inherit)
+            public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
             {
                 return Target.GetCustomAttributes(attributeType, inherit);
-            }
-
-            public T GetAttribute<T>(bool inherit) where T : Attribute
-            {
-                return (T)GetAttribute(typeof(T), inherit);
-            }
-
-            public T[] GetAttributes<T>(bool inherit) where T : Attribute
-            {
-                return (T[])GetAttributes(typeof(T), inherit);
             }
 
             public abstract string GetXmlDocumentation();
@@ -504,6 +496,36 @@ namespace Gallio.Model.Reflection
             public ITypeInfo ElementType
             {
                 get { return Wrap(Target.GetElementType()); }
+            }
+
+            public bool IsArray
+            {
+                get { return Target.IsArray; }
+            }
+
+            public bool IsPointer
+            {
+                get { return Target.IsPointer; }
+            }
+
+            public bool IsByRef
+            {
+                get { return Target.IsByRef; }
+            }
+
+            public bool IsGenericParameter
+            {
+                get { return Target.IsGenericParameter; }
+            }
+
+            public int ArrayRank
+            {
+                get
+                {
+                    if (! Target.IsArray)
+                        throw new InvalidOperationException("Not an array type.");
+                    return Target.GetArrayRank();
+                }
             }
 
             public string AssemblyQualifiedName
@@ -793,29 +815,19 @@ namespace Gallio.Model.Reflection
                 get { return CodeReference.CreateFromNamespace(name); }
             }
 
+            public IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+            {
+                yield break;
+            }
+
             public bool HasAttribute(Type attributeType, bool inherit)
             {
                 return false;
             }
 
-            public object GetAttribute(Type attributeType, bool inherit)
+            public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
             {
-                return null;
-            }
-
-            public object[] GetAttributes(Type attributeType, bool inherit)
-            {
-                return EmptyArray<object>.Instance;
-            }
-
-            public T GetAttribute<T>(bool inherit) where T : Attribute
-            {
-                return null;
-            }
-
-            public T[] GetAttributes<T>(bool inherit) where T : Attribute
-            {
-                return EmptyArray<T>.Instance;
+                yield break;
             }
 
             public string GetXmlDocumentation()
@@ -826,6 +838,44 @@ namespace Gallio.Model.Reflection
             public override string ToString()
             {
                 return name;
+            }
+        }
+
+        private sealed class AttributeWrapper : IAttributeInfo
+        {
+            private readonly Attribute attrib;
+
+            public AttributeWrapper(Attribute attrib)
+            {
+                if (attrib == null)
+                    throw new ArgumentNullException("attrib");
+
+                this.attrib = attrib;
+            }
+
+            public ITypeInfo Type
+            {
+                get { return Wrap(attrib.GetType()); }
+            }
+
+            public IConstructorInfo Constructor
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public object[] ArgumentValues
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public IDictionary<IFieldInfo, object> FieldValues
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public IDictionary<IPropertyInfo, object> PropertyValues
+            {
+                get { throw new NotImplementedException(); }
             }
         }
     }

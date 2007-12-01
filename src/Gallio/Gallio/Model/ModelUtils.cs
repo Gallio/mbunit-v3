@@ -90,39 +90,39 @@ namespace Gallio.Model
         {
             metadataMap.Add(MetadataKeys.CodeBase, assembly.Path);
 
-            AssemblyCompanyAttribute companyAttribute = assembly.GetAttribute<AssemblyCompanyAttribute>(false);
+            AssemblyCompanyAttribute companyAttribute = AttributeUtils.GetAttribute<AssemblyCompanyAttribute>(assembly, false);
             if (companyAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Company, companyAttribute.Company);
 
-            AssemblyConfigurationAttribute configurationAttribute = assembly.GetAttribute<AssemblyConfigurationAttribute>(false);
+            AssemblyConfigurationAttribute configurationAttribute = AttributeUtils.GetAttribute<AssemblyConfigurationAttribute>(assembly, false);
             if (configurationAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Configuration, configurationAttribute.Configuration);
 
-            AssemblyCopyrightAttribute copyrightAttribute = assembly.GetAttribute<AssemblyCopyrightAttribute>(false);
+            AssemblyCopyrightAttribute copyrightAttribute = AttributeUtils.GetAttribute<AssemblyCopyrightAttribute>(assembly, false);
             if (copyrightAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Copyright, copyrightAttribute.Copyright);
 
-            AssemblyDescriptionAttribute descriptionAttribute = assembly.GetAttribute<AssemblyDescriptionAttribute>(false);
+            AssemblyDescriptionAttribute descriptionAttribute = AttributeUtils.GetAttribute<AssemblyDescriptionAttribute>(assembly, false);
             if (descriptionAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Description, descriptionAttribute.Description);
 
-            AssemblyFileVersionAttribute fileVersionAttribute = assembly.GetAttribute<AssemblyFileVersionAttribute>(false);
+            AssemblyFileVersionAttribute fileVersionAttribute = AttributeUtils.GetAttribute<AssemblyFileVersionAttribute>(assembly, false);
             if (fileVersionAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.FileVersion, fileVersionAttribute.Version);
 
-            AssemblyInformationalVersionAttribute informationalVersionAttribute = assembly.GetAttribute<AssemblyInformationalVersionAttribute>(false);
+            AssemblyInformationalVersionAttribute informationalVersionAttribute = AttributeUtils.GetAttribute<AssemblyInformationalVersionAttribute>(assembly, false);
             if (informationalVersionAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.InformationalVersion, informationalVersionAttribute.InformationalVersion);
 
-            AssemblyProductAttribute productAttribute = assembly.GetAttribute<AssemblyProductAttribute>(false);
+            AssemblyProductAttribute productAttribute = AttributeUtils.GetAttribute<AssemblyProductAttribute>(assembly, false);
             if (productAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Product, productAttribute.Product);
 
-            AssemblyTitleAttribute titleAttribute = assembly.GetAttribute<AssemblyTitleAttribute>(false);
+            AssemblyTitleAttribute titleAttribute = AttributeUtils.GetAttribute<AssemblyTitleAttribute>(assembly, false);
             if (titleAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Title, titleAttribute.Title);
 
-            AssemblyTrademarkAttribute trademarkAttribute = assembly.GetAttribute<AssemblyTrademarkAttribute>(false);
+            AssemblyTrademarkAttribute trademarkAttribute = AttributeUtils.GetAttribute<AssemblyTrademarkAttribute>(assembly, false);
             if (trademarkAttribute != null)
                 AddMetadataIfNotEmptyOrNull(metadataMap, MetadataKeys.Trademark, trademarkAttribute.Trademark);
 

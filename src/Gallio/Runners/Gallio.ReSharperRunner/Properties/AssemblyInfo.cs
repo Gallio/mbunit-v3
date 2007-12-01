@@ -18,12 +18,13 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using JetBrains.UI.Shell.PluginSupport;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Gallio.ReSharperRunner")]
-[assembly: AssemblyDescription("ReSharper runner for Gallio.")]
+[assembly: AssemblyDescription("Gallio test runner for ReSharper.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Gallio")]
@@ -45,3 +46,8 @@ using System.Runtime.InteropServices;
 // The neutral resources language is US English.
 // Telling the system that this is the case yields a small performance improvement during startup.
 [assembly: NeutralResourcesLanguage("en-US")]
+
+// ReSharper plugin attributes.
+[assembly: PluginTitle("Gallio Test Runner")]
+[assembly: PluginDescription("Gallio test runner for ReSharper.")]
+[assembly: PluginVendor("Gallio")]

@@ -35,12 +35,18 @@ namespace MbUnit.Model
         }
 
         /// <inheritdoc />
+        public override ITestExplorer CreateTestExplorer()
+        {
+            return new MbUnitTestExplorer();
+        }
+
+        /// <inheritdoc />
         public override void PrepareAssemblies(IList<IAssemblyInfo> assemblies)
         {
             foreach (IAssemblyInfo assembly in assemblies)
             {
                 foreach (AssemblyResolverAttribute resolverAttribute in
-                    assembly.GetAttributes<AssemblyResolverAttribute>(false))
+                    AttributeUtils.GetAttributes<AssemblyResolverAttribute>(assembly, false))
                 {
                     Type type = resolverAttribute.AssemblyResolverType;
                     try

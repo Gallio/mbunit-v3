@@ -89,8 +89,11 @@
     <Compile Include="Model\Filters\ModelComponentFilterFactory.cs" />
     <Compile Include="Model\Filters\RegexFilter.cs" />
     <Compile Include="Model\Filters\BasePropertyFilter.cs" />
+    <Compile Include="Model\NullTestExplorer.cs" />
+    <Compile Include="Model\Reflection\AttributeUtils.cs" />
     <Compile Include="Model\Reflection\DeclaringTypeComparer.cs" />
     <Compile Include="Model\Reflection\IAssemblyInfo.cs" />
+    <Compile Include="Model\Reflection\IAttributeInfo.cs" />
     <Compile Include="Model\Reflection\ICodeElementInfo.cs" />
     <Compile Include="Model\Reflection\IConstructorInfo.cs" />
     <Compile Include="Model\Reflection\IEventInfo.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Model\Reflection\ITypeInfo.cs" />
     <Compile Include="Model\Reflection\Reflector.cs" />
     <Compile Include="Model\Reflection\ReflectionUtils.cs" />
+    <Compile Include="Model\AggregateTestExplorer.cs" />
     <Compile Include="Runner\Harness\ConsoleTestEnvironment.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarness.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarnessFactory.cs" />
@@ -112,6 +116,7 @@
     <Compile Include="Runner\Harness\ITestHarness.cs" />
     <Compile Include="Runner\Harness\ITestHarnessFactory.cs" />
     <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
+    <Compile Include="Model\ITestExplorer.cs" />
     <Compile Include="Runner\Reports\ExecutionLogAttachmentContentDisposition.cs" />
     <Compile Include="Runner\Reports\DefaultReportReader.cs" />
     <Compile Include="Runner\Reports\DefaultReportWriter.cs" />
