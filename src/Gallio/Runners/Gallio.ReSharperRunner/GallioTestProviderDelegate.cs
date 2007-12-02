@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Model.Reflection;
 using Gallio.ReSharperRunner.Reflection;
+using Gallio.ReSharperRunner.Tasks;
 using JetBrains.CommonControls;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
@@ -31,16 +32,16 @@ using JetBrains.Util.DataStructures.TreeModel;
 
 namespace Gallio.ReSharperRunner
 {
-    public class DefaultUnitTestProviderDelegate : IUnitTestProviderDelegate
+    public class GallioTestProviderDelegate : IUnitTestProviderDelegate
     {
-        private readonly GallioUnitTestPresenter presenter;
+        private readonly GallioTestPresenter presenter;
 
         private IUnitTestProvider provider;
         private ITestExplorer explorer;
 
-        public DefaultUnitTestProviderDelegate()
+        public GallioTestProviderDelegate()
         {
-            presenter = new GallioUnitTestPresenter();
+            presenter = new GallioTestPresenter();
         }
 
         private ITestExplorer TestExplorer
@@ -159,25 +160,39 @@ namespace Gallio.ReSharperRunner
 
         public RemoteTaskRunnerInfo GetTaskRunnerInfo()
         {
-            return new RemoteTaskRunnerInfo();
+            return new RemoteTaskRunnerInfo(typeof(GallioRemoteTaskRunner));
         }
 
         public IList<UnitTestTask> GetTaskSequence(UnitTestElement element, IList<UnitTestElement> explicitElements)
         {
-            return new UnitTestTask[0];
+            List<UnitTestTask> tasks = new List<UnitTestTask>();
+            PopulateUnitTestTasks(tasks, (GallioTestElement) element);
+
+            return tasks;
+        }
+
+        private static void PopulateUnitTestTasks(ICollection<UnitTestTask> tasks, GallioTestElement element)
+        {
+            tasks.Add(CreateUnitTestTask(element));
+        }
+
+        private static UnitTestTask CreateUnitTestTask(GallioTestElement element)
+        {
+            return new UnitTestTask(element,
+                new GallioTestRunTask(element.Test.Id, element.GetAssemblyLocation()));
         }
 
         public int CompareUnitTestElements(UnitTestElement x, UnitTestElement y)
         {
-            GallioUnitTestElement xe = (GallioUnitTestElement)x;
-            GallioUnitTestElement ye = (GallioUnitTestElement)y;
+            GallioTestElement xe = (GallioTestElement)x;
+            GallioTestElement ye = (GallioTestElement)y;
 
             return xe.CompareTo(ye);
         }
 
         private void ConsumeTest(ITest test, UnitTestElement parent, UnitTestElementConsumer consumer)
         {
-            GallioUnitTestElement element = new GallioUnitTestElement(test, provider, parent);
+            GallioTestElement element = new GallioTestElement(test, provider, parent);
             consumer(element);
 
             foreach (ITest child in test.Children)

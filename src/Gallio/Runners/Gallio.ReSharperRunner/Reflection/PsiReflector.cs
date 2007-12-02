@@ -508,7 +508,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             protected override IAssemblyFile GetAssemblyFile()
             {
-                return BuildSettingsManager.GetInstance(Target).GetOutputAssemblyFile();
+                return ReflectorUtils.GetAssemblyFile(Target);
             }
 
             protected override IDeclarationsCache GetDeclarationsCache()

@@ -39,7 +39,7 @@ namespace Gallio.ReSharperRunner
     /// it is possible that those types could not be loaded.  Service location
     /// should be performed via the <see cref="RuntimeProxy"/>.
     /// </remarks>
-    public class NullUnitTestProviderDelegate : IUnitTestProviderDelegate
+    public class NullTestProviderDelegate : IUnitTestProviderDelegate
     {
         public void SetProvider(IUnitTestProvider provider)
         {

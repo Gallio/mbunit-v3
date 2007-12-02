@@ -38,9 +38,9 @@ namespace Gallio.ReSharperRunner
     /// should be performed via the <see cref="RuntimeProxy"/>.
     /// </remarks>
     [UnitTestProvider]
-    public class UnitTestProviderProxy : IUnitTestProvider
+    public class GallioTestProvider : IUnitTestProvider
     {
-        private const string ProviderId = "Gallio";
+        public const string ProviderId = "Gallio";
 
         private IUnitTestProviderDelegate @delegate;
 
@@ -203,7 +203,11 @@ namespace Gallio.ReSharperRunner
             {
                 if (@delegate == null)
                 {
-                    @delegate = RuntimeProxy.Resolve<IUnitTestProviderDelegate>();
+                    if (RuntimeProxy.TryInitializeWithPrompt())
+                        @delegate = RuntimeProxy.Resolve<IUnitTestProviderDelegate>();
+                    else
+                        @delegate = new NullTestProviderDelegate();
+
                     @delegate.SetProvider(this);
                 }
 

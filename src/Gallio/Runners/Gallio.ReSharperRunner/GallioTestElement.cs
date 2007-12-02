@@ -28,11 +28,11 @@ namespace Gallio.ReSharperRunner
     /// <summary>
     /// Represents a Gallio test.
     /// </summary>
-    public class GallioUnitTestElement : UnitTestElement, IEquatable<GallioUnitTestElement>, IComparable<GallioUnitTestElement>
+    public class GallioTestElement : UnitTestElement, IEquatable<GallioTestElement>, IComparable<GallioTestElement>
     {
         private readonly ITest test;
 
-        public GallioUnitTestElement(ITest test, IUnitTestProvider provider, UnitTestElement parent)
+        public GallioTestElement(ITest test, IUnitTestProvider provider, UnitTestElement parent)
             : base(provider, parent)
         {
             if (test == null)
@@ -43,6 +43,11 @@ namespace Gallio.ReSharperRunner
             this.test = test;
 
             PopulateMetadata();
+        }
+
+        public string GetAssemblyLocation()
+        {
+            return ReflectorUtils.GetAssemblyFile(GetProject()).Location.FullPath;
         }
 
         public ITest Test
@@ -121,18 +126,18 @@ namespace Gallio.ReSharperRunner
             if (test.Name.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0)
                 return true;
 
-            GallioUnitTestElement parent = Parent as GallioUnitTestElement;
+            GallioTestElement parent = Parent as GallioTestElement;
             return parent != null && parent.Matches(filter);
         }
 
-        public bool Equals(GallioUnitTestElement other)
+        public bool Equals(GallioTestElement other)
         {
             return other != null && test.Id == other.test.Id;
         }
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as GallioUnitTestElement);
+            return Equals(obj as GallioTestElement);
         }
 
         public override int GetHashCode()
@@ -140,7 +145,7 @@ namespace Gallio.ReSharperRunner
             return test.Id.GetHashCode();
         }
 
-        public int CompareTo(GallioUnitTestElement other)
+        public int CompareTo(GallioTestElement other)
         {
             int discriminator = GetTitle().CompareTo(other.GetTitle());
             if (discriminator != 0)

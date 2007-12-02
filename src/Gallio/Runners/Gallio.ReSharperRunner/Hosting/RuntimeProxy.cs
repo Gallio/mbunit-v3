@@ -14,13 +14,11 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Gallio.Hosting;
-using Gallio.ReSharperRunner;
+using JetBrains.ReSharper.TaskRunnerFramework;
 using JetBrains.UI.Shell;
 
 namespace Gallio.ReSharperRunner.Hosting
@@ -36,78 +34,86 @@ namespace Gallio.ReSharperRunner.Hosting
     {
         private const string GallioInstallationPathConfigXPath = "//GallioInstallationPath";
 
-        private static readonly object syncRoot = new object();
+        private static readonly object initializationLock = new object();
         private static bool? initializationState;
 
-        private static Dictionary<Type, Type> nullComponentTypes;
+        /// <summary>
+        /// Returns true if the runtime has been initialized.
+        /// </summary>
+        public static bool IsInitialized
+        {
+            get { return initializationState.GetValueOrDefault(false); }
+        }
+
+        /// <summary>
+        /// Tries to initialize the runtime if not already performed.
+        /// If an error occurs, displays a message to the user and returns false.
+        /// </summary>
+        /// <returns>True if the runtime has been initialized</returns>
+        public static bool TryInitializeWithPrompt()
+        {
+            for (; ; )
+            {
+                try
+                {
+                    Initialize();
+
+                    return IsInitialized;
+                }
+                catch (RuntimeProxyException ex)
+                {
+                    if (!DisplayInitializationError(ex))
+                        return false;
+
+                    initializationState = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes the runtime if not already performed.
+        /// </summary>
+        /// <exception cref="RuntimeProxyException">Thrown if the runtime could not been initialized.</exception>
+        public static void Initialize()
+        {
+            lock (initializationLock)
+            {
+                try
+                {
+                    if (initializationState.HasValue)
+                    {
+                        if (initializationState.Value == false)
+                            throw new RuntimeProxyException("The Gallio runtime components could not be initialized.  Aborted the initialization attempt due to a previous failure.");
+                    }
+                    else
+                    {
+                        InitializeRuntime();
+
+                        initializationState = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    initializationState = false;
+
+                    throw new RuntimeProxyException("The Gallio runtime components could not be initialized.", ex);
+                }
+            }
+        }
 
         /// <summary>
         /// Resolves a component that implements a runtime service.
         /// </summary>
         /// <typeparam name="T">The service type</typeparam>
         /// <returns>The component</returns>
-        /// <exception cref="RuntimeProxyException">Thrown if the service cannot be resolved</exception>
+        /// <exception cref="RuntimeProxyException">Thrown if the runtime has not been initialized.</exception>
+        /// <exception cref="Exception">Other exceptions may be thrown if the service cannot be resolved.</exception>
         public static T Resolve<T>()
         {
-            if (Initialize())
-                return Protected.Resolve<T>();
+            if (! IsInitialized)
+                throw new RuntimeProxyException("The runtime has not been initialized.");
 
-            return (T) ResolveNullComponent(typeof(T));
-        }
-
-        private static object ResolveNullComponent(Type serviceType)
-        {
-            InitializeNullComponentTypes();
-
-            Type componentType;
-            if (nullComponentTypes.TryGetValue(serviceType, out componentType))
-                return Activator.CreateInstance(componentType);
-
-            throw new RuntimeProxyException("Cannot resolve the service because the Gallio runtime is not initialized.");
-        }
-
-        private static void InitializeNullComponentTypes()
-        {
-            lock (syncRoot)
-            {
-                if (nullComponentTypes == null)
-                {
-                    nullComponentTypes = new Dictionary<Type, Type>();
-                    nullComponentTypes.Add(typeof(IUnitTestProviderDelegate), typeof(NullUnitTestProviderDelegate));
-                }
-            }
-        }
-
-        private static bool Initialize()
-        {
-            for (; ; )
-            {
-                Exception exception;
-
-                lock (syncRoot)
-                {
-                    try
-                    {
-                        if (initializationState.HasValue)
-                            return initializationState.Value;
-
-                        InitializeRuntime();
-
-                        initializationState = true;
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        initializationState = false;
-                        exception = ex;
-                    }
-                }
-
-                if (!DisplayInitializationError(exception))
-                    return false;
-
-                initializationState = null;
-            }
+            return Protected.Resolve<T>();
         }
 
         private static string GetConfigurationFilePath()
@@ -118,25 +124,22 @@ namespace Gallio.ReSharperRunner.Hosting
         private static void InitializeRuntime()
         {
             string configFilePath = GetConfigurationFilePath();
-            AssemblyResolver resolver = CreateAssemblyResolverIfNeeded(configFilePath);
 
+            AssemblyLoader loader = CreateAssemblyLoaderIfNeeded(configFilePath);
             try
             {
-                if (resolver != null)
-                    resolver.Install(AppDomain.CurrentDomain);
-
                 Protected.InitializeRuntime(configFilePath);
             }
             catch
             {
-                if (resolver != null)
-                    resolver.Uninstall(AppDomain.CurrentDomain);
+                if (loader != null)
+                    loader.Dispose();
 
                 throw;
             }
         }
 
-        private static AssemblyResolver CreateAssemblyResolverIfNeeded(string configFilePath)
+        private static AssemblyLoader CreateAssemblyLoaderIfNeeded(string configFilePath)
         {
             if (IsRuntimeAssemblyAccessible())
                 return null;
@@ -161,7 +164,9 @@ namespace Gallio.ReSharperRunner.Hosting
                             installationPath = Path.GetFullPath(Path.Combine(pluginBasePath, installationPath));
                     }
 
-                    return new AssemblyResolver(installationPath);
+                    AssemblyLoader loader = new AssemblyLoader();
+                    loader.RegisterPath(installationPath);
+                    return loader;
                 }
 
                 exception = null;
@@ -221,56 +226,6 @@ namespace Gallio.ReSharperRunner.Hosting
             {
                 // Check whether we can run this code without failure.
                 GC.KeepAlive(Runtime.IsInitialized);
-            }
-        }
-
-        /// <summary>
-        /// An assembly resolver.
-        /// We can't actually use <see cref="JetBrains.Util.AssemblyResolver" /> because it
-        /// assumes it can compare <see cref="AssemblyName" /> instances using <see cref="object.Equals(object)"/>
-        /// but that method is not defined appropriately.
-        /// Obviously we also can't use the resolver defined by Gallio.
-        /// </summary>
-        /// <remarks author="jeff">
-        /// I've implemented this code in a similar form as the ReSharper type so we can
-        /// revert to it once they fix the bug.
-        /// </remarks>
-        private class AssemblyResolver
-        {
-            private readonly string dir;
-
-            public AssemblyResolver(string dir)
-            {
-                this.dir = dir;
-            }
-
-            public void Install(AppDomain appDomain)
-            {
-                appDomain.AssemblyResolve += AssemblyResolve;
-            }
-
-            public void Uninstall(AppDomain appDomain)
-            {
-                appDomain.AssemblyResolve -= AssemblyResolve;
-            }
-
-            private Assembly AssemblyResolve(object sender, ResolveEventArgs args)
-            {
-                String[] splitName = args.Name.Split(',');
-                String displayName = splitName[0];
-
-                string assemblyFile = Path.GetFullPath(Path.Combine(dir, displayName));
-
-                if (File.Exists(assemblyFile))
-                    return Assembly.LoadFrom(assemblyFile);
-
-                if (File.Exists(assemblyFile + @".dll"))
-                    return Assembly.LoadFrom(assemblyFile + @".dll");
-
-                if (File.Exists(assemblyFile + @".exe"))
-                    return Assembly.LoadFrom(assemblyFile + @".exe");
-
-                return null;
             }
         }
     }

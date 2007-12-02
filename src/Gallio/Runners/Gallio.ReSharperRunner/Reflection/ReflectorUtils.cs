@@ -14,39 +14,46 @@
 // limitations under the License.
 
 using System.Reflection;
+using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Build;
 
 namespace Gallio.ReSharperRunner.Reflection
 {
     /// <summary>
     /// Helper functions for the reflector.
     /// </summary>
-    internal static class ReflectorUtils
+    public static class ReflectorUtils
     {
-        public static void AddFlagIfTrue(ref TypeAttributes flags, TypeAttributes flagToAdd, bool condition)
+        public static IAssemblyFile GetAssemblyFile(IProject project)
+        {
+            return BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
+        }
+
+        internal static void AddFlagIfTrue(ref TypeAttributes flags, TypeAttributes flagToAdd, bool condition)
         {
             if (condition)
                 flags |= flagToAdd;
         }
 
-        public static void AddFlagIfTrue(ref MethodAttributes flags, MethodAttributes flagToAdd, bool condition)
+        internal static void AddFlagIfTrue(ref MethodAttributes flags, MethodAttributes flagToAdd, bool condition)
         {
             if (condition)
                 flags |= flagToAdd;
         }
 
-        public static void AddFlagIfTrue(ref FieldAttributes flags, FieldAttributes flagToAdd, bool condition)
+        internal static void AddFlagIfTrue(ref FieldAttributes flags, FieldAttributes flagToAdd, bool condition)
         {
             if (condition)
                 flags |= flagToAdd;
         }
 
-        public static void AddFlagIfTrue(ref PropertyAttributes flags, PropertyAttributes flagToAdd, bool condition)
+        internal static void AddFlagIfTrue(ref PropertyAttributes flags, PropertyAttributes flagToAdd, bool condition)
         {
             if (condition)
                 flags |= flagToAdd;
         }
 
-        public static void AddFlagIfTrue(ref ParameterAttributes flags, ParameterAttributes flagToAdd, bool condition)
+        internal static void AddFlagIfTrue(ref ParameterAttributes flags, ParameterAttributes flagToAdd, bool condition)
         {
             if (condition)
                 flags |= flagToAdd;

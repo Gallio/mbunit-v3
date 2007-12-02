@@ -13,11 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Drawing;
 using Gallio.Model;
 using JetBrains.CommonControls;
-using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.TreeModelBrowser;
 using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.UI.TreeView;
@@ -25,14 +23,14 @@ using JetBrains.Util.DataStructures.TreeModel;
 
 namespace Gallio.ReSharperRunner
 {
-    public class GallioUnitTestPresenter : TreeModelBrowserPresenter
+    public class GallioTestPresenter : TreeModelBrowserPresenter
     {
-        public GallioUnitTestPresenter()
+        public GallioTestPresenter()
         {
-            Present<GallioUnitTestElement>(PresentTestElement);
+            Present<GallioTestElement>(PresentTestElement);
         }
 
-        private void PresentTestElement(GallioUnitTestElement value, IPresentableItem item,
+        private void PresentTestElement(GallioTestElement value, IPresentableItem item,
             TreeModelNode modelNode, PresentationState state)
         {
             item.Clear();
