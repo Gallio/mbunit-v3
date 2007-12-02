@@ -122,6 +122,8 @@
     <Compile Include="Hosting\RuntimeProxyException.cs" />
     <Compile Include="Hosting\RuntimeProxy.cs" />
     <Compile Include="Reflection\IDeclaredElementAccessor.cs" />
+    <Compile Include="Reflection\IProjectAccessor.cs" />
+    <Compile Include="Reflection\ReflectorUtils.cs" />
     <Compile Include="UnitTestProviderProxy.cs" />
     <Compile Include="IUnitTestProviderDelegate.cs" />
     <Compile Include="NullUnitTestProviderDelegate.cs" />

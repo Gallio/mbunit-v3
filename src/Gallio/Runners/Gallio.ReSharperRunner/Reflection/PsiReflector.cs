@@ -265,27 +265,28 @@ namespace Gallio.ReSharperRunner.Reflection
             return target != null ? new AttributeWrapper(target) : null;
         }
 
-        public static IEnumerable<IAttributeInfo> GetAttributeInfosForModule(IModuleAttributes moduleAttributes, bool inherit)
+        private static IEnumerable<IAttributeInfo> GetAttributeInfosForModule(IModuleAttributes moduleAttributes)
         {
             foreach (IAttributeInstance attrib in moduleAttributes.AttributeInstances)
                 yield return Wrap(attrib);
         }
 
-        public static IEnumerable<IAttributeInfo> GetAttributeInfosForElement(IAttributesOwner element, bool inherit)
+        private static IEnumerable<IAttributeInfo> GetAttributeInfosForElement(IAttributesOwner element, bool inherit)
         {
+            // TODO: Support attribute inheritance.
             foreach (IAttributeInstance attrib in element.GetAttributeInstances(inherit))
                 yield return Wrap(attrib);
         }
 
-        private abstract class CodeElementWrapper<TTarget> : ICodeElementInfo
+        private abstract class BaseWrapper<TTarget>
             where TTarget : class
         {
             private readonly TTarget target;
 
-            public CodeElementWrapper(TTarget target)
+            public BaseWrapper(TTarget target)
             {
                 if (target == null)
-                    throw new ArgumentNullException(@"target");
+                    throw new ArgumentNullException("target");
 
                 this.target = target;
             }
@@ -293,6 +294,26 @@ namespace Gallio.ReSharperRunner.Reflection
             public TTarget Target
             {
                 get { return target; }
+            }
+        }
+
+        private abstract class CodeElementWrapper<TTarget> : BaseWrapper<TTarget>, ICodeElementInfo,
+            IDeclaredElementAccessor, IProjectAccessor
+            where TTarget : class
+        {
+            public CodeElementWrapper(TTarget target)
+                : base(target)
+            {
+            }
+
+            public IProject Project
+            {
+                get { return DeclaredElement.Module as IProject; }
+            }
+
+            public virtual IDeclaredElement DeclaredElement
+            {
+                get { return null; }
             }
 
             public abstract string Name { get; }
@@ -377,47 +398,57 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public IList<ITypeInfo> GetExportedTypes()
             {
-                INamespace ns = PsiManager.GetNamespace("");
-                IDeclarationsCache cache = GetDeclarationsCache();
+                return GetTypes(false);
+            }
 
-                List<ITypeInfo> types = new List<ITypeInfo>();
-                PopulateExportedTypes(types, ns, cache);
-
-                return types;
+            public IList<ITypeInfo> GetTypes()
+            {
+                return GetTypes(true);
             }
 
             public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
             {
-                return GetAttributeInfosForModule(PsiManager.GetModuleAttributes(Target), inherit);
+                return GetAttributeInfosForModule(PsiManager.GetModuleAttributes(Target));
             }
 
-            private void PopulateExportedTypes(IList<ITypeInfo> types, INamespace ns, IDeclarationsCache cache)
+            private IList<ITypeInfo> GetTypes(bool includeNonPublicTypes)
+            {
+                INamespace ns = PsiManager.GetNamespace("");
+                IDeclarationsCache cache = GetDeclarationsCache();
+
+                List<ITypeInfo> types = new List<ITypeInfo>();
+                PopulateTypes(types, ns, cache, includeNonPublicTypes);
+
+                return types;
+            }
+
+            private void PopulateTypes(IList<ITypeInfo> types, INamespace ns, IDeclarationsCache cache, bool includeNonPublicTypes)
             {
                 foreach (IDeclaredElement element in ns.GetNestedElements(cache))
                 {
                     ITypeElement type = element as ITypeElement;
                     if (type != null)
                     {
-                        PopulateExportedTypes(types, type);
+                        PopulateTypes(types, type, includeNonPublicTypes);
                     }
                     else
                     {
                         INamespace nestedNamespace = element as INamespace;
                         if (nestedNamespace != null)
-                            PopulateExportedTypes(types, nestedNamespace, cache);
+                            PopulateTypes(types, nestedNamespace, cache, includeNonPublicTypes);
                     }
                 }
             }
 
-            private void PopulateExportedTypes(IList<ITypeInfo> types, ITypeElement type)
+            private void PopulateTypes(IList<ITypeInfo> types, ITypeElement type, bool includeNonPublicTypes)
             {
                 IModifiersOwner modifiers = type as IModifiersOwner;
-                if (modifiers != null && modifiers.GetAccessRights() == AccessRights.PUBLIC)
+                if (modifiers != null && (includeNonPublicTypes || modifiers.GetAccessRights() == AccessRights.PUBLIC))
                 {
                     types.Add(Wrap(type));
 
                     foreach (ITypeElement nestedType in type.NestedTypes)
-                        PopulateExportedTypes(types, nestedType);
+                        PopulateTypes(types, nestedType, includeNonPublicTypes);
                 }
             }
 
@@ -486,7 +517,7 @@ namespace Gallio.ReSharperRunner.Reflection
             }
         }
 
-        private abstract class MemberWrapper<TTarget> : CodeElementWrapper<TTarget>, IMemberInfo, IDeclaredElementAccessor
+        private abstract class MemberWrapper<TTarget> : CodeElementWrapper<TTarget>, IMemberInfo
             where TTarget : class, ITypeMember
         {
             public MemberWrapper(TTarget target)
@@ -494,7 +525,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
             }
 
-            public IDeclaredElement DeclaredElement
+            public override IDeclaredElement DeclaredElement
             {
                 get { return Target; }
             }
@@ -627,14 +658,14 @@ namespace Gallio.ReSharperRunner.Reflection
             }
         }
 
-        private sealed class DeclaredTypeWrapper : TypeWrapper<IDeclaredType>, IDeclaredElementAccessor
+        private sealed class DeclaredTypeWrapper : TypeWrapper<IDeclaredType>
         {
             public DeclaredTypeWrapper(IDeclaredType target)
                 : base(target)
             {
             }
 
-            public IDeclaredElement DeclaredElement
+            public override IDeclaredElement DeclaredElement
             {
                 get { return TypeElement; }
             }
@@ -717,16 +748,19 @@ namespace Gallio.ReSharperRunner.Reflection
                         if (modifiers.IsSealed)
                             flags |= TypeAttributes.Sealed;
 
+                        bool isNested = typeElement.GetContainingType() != null;
+
                         switch (modifiers.GetAccessRights())
                         {
                             case AccessRights.PUBLIC:
-                                flags |= TypeAttributes.NestedPublic;
-                                break;
-                            case AccessRights.INTERNAL:
-                                flags |= TypeAttributes.NestedAssembly;
+                                flags |= isNested ? TypeAttributes.NestedPublic : TypeAttributes.Public;
                                 break;
                             case AccessRights.PRIVATE:
-                                flags |= TypeAttributes.NestedPrivate;
+                                flags |= isNested ? TypeAttributes.NestedPrivate : TypeAttributes.NotPublic;
+                                break;
+                            case AccessRights.NONE:
+                            case AccessRights.INTERNAL:
+                                flags |= TypeAttributes.NestedAssembly;
                                 break;
                             case AccessRights.PROTECTED:
                                 flags |= TypeAttributes.NestedFamily;
@@ -989,7 +1023,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // Should return a type of System.Array.
+                    // TODO: Should return a type of System.Array.
                     throw new NotImplementedException();
                 }
             }
@@ -1032,7 +1066,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // Should return System.Pointer.
+                    // TODO: Should return System.Pointer.
                     throw new NotImplementedException();
                 }
             }
@@ -1063,11 +1097,12 @@ namespace Gallio.ReSharperRunner.Reflection
                         case AccessRights.PUBLIC:
                             flags |= MethodAttributes.Public;
                             break;
-                        case AccessRights.INTERNAL:
-                            flags |= MethodAttributes.Assembly;
-                            break;
                         case AccessRights.PRIVATE:
                             flags |= MethodAttributes.Private;
+                            break;
+                        case AccessRights.NONE:
+                        case AccessRights.INTERNAL:
+                            flags |= MethodAttributes.Assembly;
                             break;
                         case AccessRights.PROTECTED:
                             flags |= MethodAttributes.Family;
@@ -1080,10 +1115,10 @@ namespace Gallio.ReSharperRunner.Reflection
                             break;
                     }
 
-                    AddFlagIfTrue(ref flags, MethodAttributes.Abstract, modifiers.IsAbstract);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Final, modifiers.IsSealed);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Static, modifiers.IsStatic);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Virtual, modifiers.IsVirtual);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Abstract, modifiers.IsAbstract);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Final, modifiers.IsSealed);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Static, modifiers.IsStatic);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, modifiers.IsVirtual);
                     return flags;
                 }
             }
@@ -1105,12 +1140,6 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             public abstract MethodBase ResolveMethodBase();
-
-            private static void AddFlagIfTrue(ref MethodAttributes flags, MethodAttributes flagToAdd, bool condition)
-            {
-                if (condition)
-                    flags |= flagToAdd;
-            }
         }
 
         private sealed class ConstructorWrapper : FunctionWrapper<IConstructor>, IConstructorInfo
@@ -1127,6 +1156,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ConstructorInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
@@ -1150,6 +1180,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public MethodInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
@@ -1171,6 +1202,15 @@ namespace Gallio.ReSharperRunner.Reflection
                 get { return 0; }
             }
 
+            public PropertyAttributes Modifiers
+            {
+                get
+                {
+                    // Note: There don't seem to be any usable property attributes.
+                    return 0;
+                }
+            }
+
             public IMethodInfo GetGetMethod()
             {
                 return Wrap(Target.Getter(false));
@@ -1188,6 +1228,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public PropertyInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
@@ -1214,8 +1255,44 @@ namespace Gallio.ReSharperRunner.Reflection
                 return Resolve();
             }
 
+            public FieldAttributes Modifiers
+            {
+                get
+                {
+                    FieldAttributes flags = 0;
+                    IModifiersOwner modifiers = Target;
+
+                    switch (modifiers.GetAccessRights())
+                    {
+                        case AccessRights.PUBLIC:
+                            flags |= FieldAttributes.Public;
+                            break;
+                        case AccessRights.PRIVATE:
+                            flags |= FieldAttributes.Private;
+                            break;
+                        case AccessRights.NONE:
+                        case AccessRights.INTERNAL:
+                            flags |= FieldAttributes.Assembly;
+                            break;
+                        case AccessRights.PROTECTED:
+                            flags |= FieldAttributes.Family;
+                            break;
+                        case AccessRights.PROTECTED_AND_INTERNAL:
+                            flags |= FieldAttributes.FamANDAssem;
+                            break;
+                        case AccessRights.PROTECTED_OR_INTERNAL:
+                            flags |= FieldAttributes.FamORAssem;
+                            break;
+                    }
+
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Static, modifiers.IsStatic);
+                    return flags;
+                }
+            }
+
             public FieldInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
@@ -1234,6 +1311,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public EventInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
@@ -1243,6 +1321,11 @@ namespace Gallio.ReSharperRunner.Reflection
             public ParameterWrapper(IParameter target)
                 : base(target)
             {
+            }
+
+            public override IDeclaredElement DeclaredElement
+            {
+                get { return Target; }
             }
 
             public override CodeReference CodeReference
@@ -1278,9 +1361,10 @@ namespace Gallio.ReSharperRunner.Reflection
                 get
                 {
                     ParameterAttributes flags = 0;
-                    AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.Kind != ParameterKind.OUTPUT);
-                    AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.Kind != ParameterKind.VALUE);
-                    AddFlagIfTrue(ref flags, ParameterAttributes.Optional, Target.IsOptional);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.HasDefault, ! Target.GetDefaultValue().IsBadValue());
+                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.Kind != ParameterKind.OUTPUT);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.Kind != ParameterKind.VALUE);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Optional, Target.IsOptional);
                     return flags;
                 }
             }
@@ -1297,47 +1381,37 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ParameterInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
-            }
-
-            private static void AddFlagIfTrue(ref ParameterAttributes flags, ParameterAttributes flagToAdd, bool condition)
-            {
-                if (condition)
-                    flags |= flagToAdd;
             }
         }
 
-        private sealed class AttributeWrapper : IAttributeInfo
+        private sealed class AttributeWrapper : BaseWrapper<IAttributeInstance>, IAttributeInfo
         {
-            private readonly IAttributeInstance attrib;
-
-            public AttributeWrapper(IAttributeInstance attrib)
+            public AttributeWrapper(IAttributeInstance target)
+                : base(target)
             {
-                if (attrib == null)
-                    throw new ArgumentNullException("attrib");
-
-                this.attrib = attrib;
             }
 
 
             public ITypeInfo Type
             {
-                get { return Wrap(attrib.AttributeType, true); }
+                get { return Wrap(Target.AttributeType, true); }
             }
 
             public IConstructorInfo Constructor
             {
-                get { return Wrap(attrib.Constructor); }
+                get { return Wrap(Target.Constructor); }
             }
 
             public object[] ArgumentValues
             {
                 get
                 {
-                    object[] values = new object[attrib.Constructor.Parameters.Count];
+                    object[] values = new object[Target.Constructor.Parameters.Count];
 
                     for (int i = 0; i < values.Length; i++)
-                        values[i] = attrib.PositionParameter(i).Value;
+                        values[i] = Target.PositionParameter(i).Value;
 
                     return values;
                 }
@@ -1345,14 +1419,14 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public object GetFieldValue(string name)
             {
-                IClass @class = attrib.AttributeType as IClass;
+                IClass @class = Target.AttributeType as IClass;
                 if (@class != null)
                 {
                     foreach (IField field in @class.Fields)
                     {
                         if (field.ShortName == name)
                         {
-                            ConstantValue2 value = attrib.NamedParameter(field);
+                            ConstantValue2 value = Target.NamedParameter(field);
                             if (!value.IsBadValue())
                                 return value.Value;
                         }
@@ -1364,14 +1438,14 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public object GetPropertyValue(string name)
             {
-                IClass @class = attrib.AttributeType as IClass;
+                IClass @class = Target.AttributeType as IClass;
                 if (@class != null)
                 {
                     foreach (IProperty property in @class.Properties)
                     {
                         if (property.ShortName == name)
                         {
-                            ConstantValue2 value = attrib.NamedParameter(property);
+                            ConstantValue2 value = Target.NamedParameter(property);
                             if (!value.IsBadValue())
                                 return value.Value;
                         }
@@ -1388,14 +1462,14 @@ namespace Gallio.ReSharperRunner.Reflection
                 {
                     Dictionary<IFieldInfo, object> values = new Dictionary<IFieldInfo, object>();
 
-                    IClass @class = attrib.AttributeType as IClass;
+                    IClass @class = Target.AttributeType as IClass;
                     if (@class != null)
                     {
                         foreach (IField field in @class.Fields)
                         {
                             if (!field.IsStatic && ! field.IsReadonly && !field.IsConstant)
                             {
-                                ConstantValue2 value = attrib.NamedParameter(field);
+                                ConstantValue2 value = Target.NamedParameter(field);
                                 if (!value.IsBadValue())
                                     values.Add(Wrap(field), value.Value);
                             }
@@ -1412,14 +1486,14 @@ namespace Gallio.ReSharperRunner.Reflection
                 {
                     Dictionary<IPropertyInfo, object> values = new Dictionary<IPropertyInfo, object>();
 
-                    IClass @class = attrib.AttributeType as IClass;
+                    IClass @class = Target.AttributeType as IClass;
                     if (@class != null)
                     {
                         foreach (IProperty property in @class.Properties)
                         {
                             if (!property.IsStatic && property.IsWritable && !property.IsAbstract)
                             {
-                                ConstantValue2 value = attrib.NamedParameter(property);
+                                ConstantValue2 value = Target.NamedParameter(property);
                                 if (!value.IsBadValue())
                                     values.Add(Wrap(property), value.Value);
                             }

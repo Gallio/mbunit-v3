@@ -62,6 +62,12 @@ namespace Gallio.Model.Reflection
         IList<ITypeInfo> GetExportedTypes();
 
         /// <summary>
+        /// Gets all of the types in an assembly.
+        /// </summary>
+        /// <returns>The types</returns>
+        IList<ITypeInfo> GetTypes();
+
+        /// <summary>
         /// Gets a public type by name, or null if not found.
         /// </summary>
         /// <param name="typeName">The type name</param>

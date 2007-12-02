@@ -424,6 +424,12 @@ namespace Gallio.Model.Reflection
                 return Array.ConvertAll<Type, ITypeInfo>(types, Wrap);
             }
 
+            public IList<ITypeInfo> GetTypes()
+            {
+                Type[] types = Target.GetTypes();
+                return Array.ConvertAll<Type, ITypeInfo>(types, Wrap);
+            }
+
             public ITypeInfo GetType(string typeName)
             {
                 return Wrap(Target.GetType(typeName));
@@ -690,6 +696,11 @@ namespace Gallio.Model.Reflection
                 get { return 0; }
             }
 
+            public PropertyAttributes Modifiers
+            {
+                get { return Target.Attributes; }
+            }
+
             public IMethodInfo GetGetMethod()
             {
                 return Wrap(Target.GetGetMethod());
@@ -726,6 +737,11 @@ namespace Gallio.Model.Reflection
             public int Position
             {
                 get { return 0; }
+            }
+
+            public FieldAttributes Modifiers
+            {
+                get { return Target.Attributes; }
             }
 
             new public FieldInfo Resolve()

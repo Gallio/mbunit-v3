@@ -55,16 +55,12 @@ namespace Gallio.ReSharperRunner
         {
             try
             {
-                using (ReadLockCookie.Create())
+                IAssemblyInfo assemblyInfo = new MetadataReflector(project).Wrap(assembly);
+                if (assemblyInfo != null)
                 {
-                    IAssemblyInfo assemblyInfo = PsiReflector.Wrap(project);
-                    if (assemblyInfo != null)
-                    {
-                        foreach (ITest test in TestExplorer.ExploreAssembly(assemblyInfo))
-                        {
-                            consumer(CreateUnitTestElement(test, null));
-                        }
-                    }
+                    // Note: We need the read lock because we access the IDeclaredElement from the declarations cache.
+                    foreach (ITest test in TestExplorer.ExploreAssembly(assemblyInfo))
+                        ConsumeTest(test, null, consumer);
                 }
             }
             finally
@@ -109,7 +105,10 @@ namespace Gallio.ReSharperRunner
                     if (interrupted())
                         throw new ProcessCancelledException();
 
-                    consumer(CreateUnitTestElement(test, null).GetDisposition());
+                    ConsumeTest(test, null, delegate(UnitTestElement element)
+                    {
+                        consumer(element.GetDisposition());
+                    });
                 }
             }
 
@@ -161,9 +160,13 @@ namespace Gallio.ReSharperRunner
             return xe.CompareTo(ye);
         }
 
-        private UnitTestElement CreateUnitTestElement(ITest test, UnitTestElement parent)
+        private void ConsumeTest(ITest test, UnitTestElement parent, UnitTestElementConsumer consumer)
         {
-            return new GallioUnitTestElement(test, provider, parent);
+            GallioUnitTestElement element = new GallioUnitTestElement(test, provider, parent);
+            consumer(element);
+
+            foreach (ITest child in test.Children)
+                ConsumeTest(child, element, consumer);
         }
     }
 }

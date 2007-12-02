@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Psi;
 
 namespace Gallio.ReSharperRunner.Reflection
 {
     /// <summary>
-    /// Gets the declared element associated with a code element.
+    /// Gets the project to which a code element belongs.
     /// </summary>
-    public interface IDeclaredElementAccessor
+    public interface IProjectAccessor
     {
         /// <summary>
-        /// Gets the declared element, or null if none.
+        /// Gets the project to which a code element belongs, or null if none.
         /// </summary>
-        IDeclaredElement DeclaredElement { get; }
+        IProject Project { get; }
     }
 }

@@ -34,6 +34,11 @@ namespace Gallio.Model.Reflection
     public interface IPropertyInfo : IMemberInfo, ISlotInfo
     {
         /// <summary>
+        /// Gets the property modifiers.
+        /// </summary>
+        PropertyAttributes Modifiers { get; }
+
+        /// <summary>
         /// Gets the get method of the property, or null if none.
         /// </summary>
         /// <returns>The get method, or null if none</returns>

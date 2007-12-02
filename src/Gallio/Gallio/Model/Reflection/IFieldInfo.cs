@@ -34,6 +34,11 @@ namespace Gallio.Model.Reflection
     public interface IFieldInfo : IMemberInfo, ISlotInfo
     {
         /// <summary>
+        /// Gets the field modifiers.
+        /// </summary>
+        FieldAttributes Modifiers { get; }
+
+        /// <summary>
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
         /// <returns>The native reflection target</returns>

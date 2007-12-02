@@ -28,7 +28,6 @@ namespace Gallio.ReSharperRunner
             this.test = test;
 
             PopulateMetadata();
-            PopulateChildren();
         }
 
         public ITest Test
@@ -60,12 +59,8 @@ namespace Gallio.ReSharperRunner
 
         public override IProject GetProject()
         {
-            IDeclaredElement declaredElement = GetDeclaredElement();
-
-            if (declaredElement != null && declaredElement.IsValid())
-                return declaredElement.Module as IProject;
-
-            return null;
+            IProjectAccessor accessor = test.CodeElement as IProjectAccessor;
+            return accessor != null ? accessor.Project : null;
         }
 
         public override IList<IProjectItem> GetProjectItems()
@@ -153,13 +148,6 @@ namespace Gallio.ReSharperRunner
             string reason = test.Metadata.GetValue(MetadataKeys.IgnoreReason);
             if (reason != null)
                 SetExplicit(reason);
-        }
-
-        private void PopulateChildren()
-        {
-            // Create the children (has the side-effect of enlisting them in the Children list).
-            foreach (ITest child in test.Children)
-                new GallioUnitTestElement(child, Provider, this);
         }
     }
 }

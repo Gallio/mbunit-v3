@@ -20,6 +20,10 @@ using Gallio.Collections;
 using Gallio.Model.Reflection;
 using JetBrains.Metadata.Access;
 using JetBrains.Metadata.Reader.API;
+using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Caches;
+using JetBrains.Shell;
 
 namespace Gallio.ReSharperRunner.Reflection
 {
@@ -30,16 +34,36 @@ namespace Gallio.ReSharperRunner.Reflection
     /// Support inherited attribute lookup.
     /// Support Resolve() method.
     /// </todo>
-    public static class MetadataReflector
+    public class MetadataReflector
     {
+        private readonly IProject contextProject;
+
+        /// <summary>
+        /// Creates a reflector with the specified project as its context.
+        /// The context project is used to resolve metadata items to declared elements.
+        /// </summary>
+        /// <param name="contextProject">The context project, or null if none</param>
+        public MetadataReflector(IProject contextProject)
+        {
+            this.contextProject = contextProject;
+        }
+
+        /// <summary>
+        /// Gets the context project, or null if none.
+        /// </summary>
+        public IProject ContextProject
+        {
+            get { return contextProject; }
+        }
+
         /// <summary>
         /// Obtains a reflection wrapper for an assembly.
         /// </summary>
         /// <param name="target">The assembly, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IAssemblyInfo Wrap(IMetadataAssembly target)
+        public IAssemblyInfo Wrap(IMetadataAssembly target)
         {
-            return target != null ? new AssemblyWrapper(target) : null;
+            return target != null ? new AssemblyWrapper(this, target) : null;
         }
 
         /// <summary>
@@ -47,7 +71,7 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="name">The namespace name, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static INamespaceInfo WrapNamespace(string name)
+        public INamespaceInfo WrapNamespace(string name)
         {
             return Reflector.WrapNamespace(name);
         }
@@ -57,30 +81,30 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The type, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static ITypeInfo Wrap(IMetadataType target)
+        public ITypeInfo Wrap(IMetadataType target)
         {
             if (target == null)
                 return null;
 
             IMetadataClassType classType = target as IMetadataClassType;
             if (classType != null)
-                return new ClassTypeWrapper(classType);
+                return new ClassTypeWrapper(this, classType);
 
             IMetadataArrayType arrayType = target as IMetadataArrayType;
             if (arrayType != null)
-                return new ArrayTypeWrapper(arrayType);
+                return new ArrayTypeWrapper(this, arrayType);
 
             IMetadataPointerType pointerType = target as IMetadataPointerType;
             if (pointerType != null)
-                return new PointerTypeWrapper(pointerType);
+                return new PointerTypeWrapper(this, pointerType);
 
             IMetadataReferenceType referenceType = target as IMetadataReferenceType;
             if (referenceType != null)
-                return new ReferenceTypeWrapper(referenceType);
+                return new ReferenceTypeWrapper(this, referenceType);
 
             IMetadataGenericArgumentReferenceType argumentType = target as IMetadataGenericArgumentReferenceType;
             if (argumentType != null)
-                return new GenericArgumentTypeWrapper(argumentType);
+                return new GenericArgumentTypeWrapper(this, argumentType);
 
             throw new NotSupportedException("Unrecognized type.");
         }
@@ -91,9 +115,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The type, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static ITypeInfo WrapOpenType(IMetadataTypeInfo target)
+        public ITypeInfo WrapOpenType(IMetadataTypeInfo target)
         {
-            return target != null ? new ClassTypeWrapper(new OpenClassType(target)) : null;
+            return target != null ? new ClassTypeWrapper(this, new OpenClassType(target)) : null;
         }
 
         /// <summary>
@@ -101,12 +125,12 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The function, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IFunctionInfo Wrap(IMetadataMethod target)
+        public IFunctionInfo Wrap(IMetadataMethod target)
         {
             if (target == null)
                 return null;
 
-            return IsConstructorName(target.Name) ? (IFunctionInfo) new ConstructorWrapper(target) : new MethodWrapper(target);
+            return IsConstructor(target) ? (IFunctionInfo) new ConstructorWrapper(this, target) : new MethodWrapper(this, target);
         }
 
         /// <summary>
@@ -114,9 +138,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The method, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IMethodInfo WrapMethod(IMetadataMethod target)
+        public IMethodInfo WrapMethod(IMetadataMethod target)
         {
-            return target != null ? new MethodWrapper(target) : null;
+            return target != null ? new MethodWrapper(this, target) : null;
         }
 
         /// <summary>
@@ -124,9 +148,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The method, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IConstructorInfo WrapConstructor(IMetadataMethod target)
+        public IConstructorInfo WrapConstructor(IMetadataMethod target)
         {
-            return target != null ? new ConstructorWrapper(target) : null;
+            return target != null ? new ConstructorWrapper(this, target) : null;
         }
 
         /// <summary>
@@ -134,9 +158,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The property, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IPropertyInfo Wrap(IMetadataProperty target)
+        public IPropertyInfo Wrap(IMetadataProperty target)
         {
-            return target != null ? new PropertyWrapper(target) : null;
+            return target != null ? new PropertyWrapper(this, target) : null;
         }
 
         /// <summary>
@@ -144,9 +168,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The field, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IFieldInfo Wrap(IMetadataField target)
+        public IFieldInfo Wrap(IMetadataField target)
         {
-            return target != null ? new FieldWrapper(target) : null;
+            return target != null ? new FieldWrapper(this, target) : null;
         }
 
         /// <summary>
@@ -154,9 +178,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The event, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IEventInfo Wrap(IMetadataEvent target)
+        public IEventInfo Wrap(IMetadataEvent target)
         {
-            return target != null ? new EventWrapper(target) : null;
+            return target != null ? new EventWrapper(this, target) : null;
         }
 
         /// <summary>
@@ -164,9 +188,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The parameter, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IParameterInfo Wrap(IMetadataParameter target)
+        public IParameterInfo Wrap(IMetadataParameter target)
         {
-            return target != null ? new ParameterWrapper(target) : null;
+            return target != null ? new ParameterWrapper(this, target) : null;
         }
 
         /// <summary>
@@ -174,38 +198,206 @@ namespace Gallio.ReSharperRunner.Reflection
         /// </summary>
         /// <param name="target">The attribute, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public static IAttributeInfo Wrap(IMetadataCustomAttribute target)
+        public IAttributeInfo Wrap(IMetadataCustomAttribute target)
         {
-            return target != null ? new AttributeWrapper(target) : null;
+            return target != null ? new AttributeWrapper(this, target) : null;
         }
 
-        private static bool IsConstructorName(string name)
+        private static bool IsConstructor(IMetadataMethod method)
         {
+            string name = method.Name;
             return name == ".ctor" || name == ".cctor";
         }
 
-        public static IEnumerable<IAttributeInfo> GetAttributeInfosForEntity(IMetadataEntity entity, bool inherit)
+        private IEnumerable<IAttributeInfo> GetAttributeInfosForEntity(IMetadataEntity entity, bool inherit)
         {
+            // TODO: Support attribute inheritance.
             foreach (IMetadataCustomAttribute attrib in entity.CustomAttributes)
                 yield return Wrap(attrib);
         }
 
-        private abstract class CodeElementWrapper<TTarget> : ICodeElementInfo
+        private IDeclarationsCache GetDeclarationsCache()
+        {
+            return PsiManager.GetInstance(contextProject.GetSolution()).
+                GetDeclarationsCache(DeclarationsCacheScope.ProjectScope(contextProject, true), true);
+        }
+
+        private ITypeElement GetDeclaredElementWithLock(IMetadataTypeInfo type)
+        {
+            if (contextProject != null)
+            {
+                IDeclarationsCache cache = GetDeclarationsCache();
+
+                // TODO: Verify expected assembly name in case there are multiple types with
+                //       the same name distinguished only by declaring assembly.
+                return cache.GetTypeElementByCLRName(type.FullyQualifiedName);
+            }
+
+            return null;
+        }
+
+        private IFunction GetDeclaredElementWithLock(IMetadataMethod metadataMethod)
+        {
+            ITypeElement type = GetDeclaredElementWithLock(metadataMethod.DeclaringType);
+
+            if (type != null)
+            {
+                if (IsConstructor(metadataMethod))
+                {
+                    foreach (IConstructor constructor in type.Constructors)
+                    {
+                        if (constructor.IsStatic == metadataMethod.IsStatic
+                            && IsSameSignature(constructor.Parameters, metadataMethod.Parameters))
+                            return constructor;
+                    }
+                }
+                else
+                {
+                    foreach (IMethod method in type.Methods)
+                    {
+                        if (method.IsStatic == metadataMethod.IsStatic
+                            && method.ShortName == metadataMethod.Name
+                            && IsSameSignature(method.Parameters, metadataMethod.Parameters))
+                            return method;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static bool IsSameSignature(IList<IParameter> parameters, IMetadataParameter[] metadataParameters)
+        {
+            if (parameters.Count != metadataParameters.Length)
+                return false;
+
+            for (int i = 0; i < metadataParameters.Length; i++)
+            {
+                IParameter parameter = parameters[i];
+                IMetadataParameter metadataParameter = metadataParameters[i];
+
+                if (parameter.ShortName != metadataParameter.Name
+                    || parameter.IsOptional != metadataParameter.IsOptional
+                    || (parameter.Kind != ParameterKind.OUTPUT) != metadataParameter.IsIn
+                    || (parameter.Kind != ParameterKind.VALUE) != metadataParameter.IsOut
+                    || parameter.Type.GetPresentableName(PsiLanguageType.UNKNOWN) != metadataParameter.Type.PresentableName)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private IProperty GetDeclaredElementWithLock(IMetadataProperty metadataProperty)
+        {
+            ITypeElement type = GetDeclaredElementWithLock(metadataProperty.DeclaringType);
+
+            if (type != null)
+            {
+                // TODO: Handle overloaded indexer properties.
+                foreach (IProperty property in type.Properties)
+                    if (property.ShortName == metadataProperty.Name)
+                        return property;
+            }
+
+            return null;
+        }
+
+        private IField GetDeclaredElementWithLock(IMetadataField metadataField)
+        {
+            IClass type = GetDeclaredElementWithLock(metadataField.DeclaringType) as IClass;
+
+            if (type != null)
+            {
+                foreach (IField field in type.Fields)
+                    if (field.ShortName == metadataField.Name)
+                        return field;
+            }
+
+            return null;
+        }
+
+        private IEvent GetDeclaredElementWithLock(IMetadataEvent metadataEvent)
+        {
+            ITypeElement type = GetDeclaredElementWithLock(metadataEvent.DeclaringType);
+
+            if (type != null)
+            {
+                foreach (IEvent @event in type.Events)
+                    if (@event.ShortName == metadataEvent.Name)
+                        return @event;
+            }
+
+            return null;
+        }
+
+        private IParameter GetDeclaredElementWithLock(IMetadataParameter metadataParameter)
+        {
+            IFunction function = GetDeclaredElementWithLock(metadataParameter.DeclaringMethod);
+
+            if (function != null)
+            {
+                foreach (IParameter parameter in function.Parameters)
+                    if (parameter.ShortName == metadataParameter.Name)
+                        return parameter;
+            }
+
+            return null;
+        }
+
+        private abstract class BaseWrapper<TTarget>
             where TTarget : class
         {
+            private readonly MetadataReflector reflector;
             private readonly TTarget target;
 
-            public CodeElementWrapper(TTarget target)
+            public BaseWrapper(MetadataReflector reflector, TTarget target)
             {
+                if (reflector == null)
+                    throw new ArgumentNullException("reflector");
                 if (target == null)
-                    throw new ArgumentNullException(@"target");
+                    throw new ArgumentNullException("target");
 
+                this.reflector = reflector;
                 this.target = target;
             }
 
             public TTarget Target
             {
                 get { return target; }
+            }
+
+            public MetadataReflector Reflector
+            {
+                get { return reflector; }
+            }
+        }
+
+        private abstract class CodeElementWrapper<TTarget> : BaseWrapper<TTarget>, ICodeElementInfo,
+            IDeclaredElementAccessor, IProjectAccessor
+            where TTarget : class
+        {
+            public CodeElementWrapper(MetadataReflector reflector, TTarget target)
+                : base(reflector, target)
+            {
+            }
+
+            public IProject Project
+            {
+                get { return Reflector.ContextProject; }
+            }
+
+            public IDeclaredElement DeclaredElement
+            {
+                get
+                {
+                    using (ReadLockCookie.Create())
+                        return GetDeclaredElementWithLock(); 
+                }
+            }
+
+            protected virtual IDeclaredElement GetDeclaredElementWithLock()
+            {
+                return null;
             }
 
             public abstract string Name { get; }
@@ -247,8 +439,8 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private sealed class AssemblyWrapper : CodeElementWrapper<IMetadataAssembly>, IAssemblyInfo
         {
-            public AssemblyWrapper(IMetadataAssembly target)
-                : base(target)
+            public AssemblyWrapper(MetadataReflector reflector, IMetadataAssembly target)
+                : base(reflector, target)
             {
             }
 
@@ -288,18 +480,31 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public IList<ITypeInfo> GetExportedTypes()
             {
+                List<ITypeInfo> types = new List<ITypeInfo>();
+
+                foreach (IMetadataTypeInfo type in Target.GetTypes())
+                {
+                    if (type.IsPublic || type.IsNestedPublic)
+                        types.Add(Reflector.WrapOpenType(type));
+                }
+
+                return types;
+            }
+
+            public IList<ITypeInfo> GetTypes()
+            {
                 IMetadataTypeInfo[] types = Target.GetTypes();
-                return Array.ConvertAll<IMetadataTypeInfo, ITypeInfo>(types, WrapOpenType);
+                return Array.ConvertAll<IMetadataTypeInfo, ITypeInfo>(types, Reflector.WrapOpenType);
             }
 
             public ITypeInfo GetType(string typeName)
             {
-                return Wrap(Target.GetTypeFromQualifiedName(typeName, false));
+                return Reflector.Wrap(Target.GetTypeFromQualifiedName(typeName, false));
             }
 
             public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
             {
-                return GetAttributeInfosForEntity(Target, inherit);
+                return Reflector.GetAttributeInfosForEntity(Target, inherit);
             }
 
             public Assembly Resolve()
@@ -311,8 +516,8 @@ namespace Gallio.ReSharperRunner.Reflection
         private abstract class MemberWrapper<TTarget> : CodeElementWrapper<TTarget>, IMemberInfo
             where TTarget : class, IMetadataEntity
         {
-            public MemberWrapper(TTarget target)
-                : base(target)
+            public MemberWrapper(MetadataReflector reflector, TTarget target)
+                : base(reflector, target)
             {
             }
 
@@ -339,7 +544,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
             {
-                return GetAttributeInfosForEntity(Target, inherit);
+                return Reflector.GetAttributeInfosForEntity(Target, inherit);
             }
 
             MemberInfo IMemberInfo.Resolve()
@@ -353,8 +558,8 @@ namespace Gallio.ReSharperRunner.Reflection
         private abstract class TypeWrapper<TTarget> : CodeElementWrapper<TTarget>, ITypeInfo
             where TTarget : class, IMetadataType
         {
-            public TypeWrapper(TTarget target)
-                : base(target)
+            public TypeWrapper(MetadataReflector reflector, TTarget target)
+                : base(reflector, target)
             {
             }
 
@@ -423,14 +628,19 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private sealed class ClassTypeWrapper : TypeWrapper<IMetadataClassType>
         {
-            public ClassTypeWrapper(IMetadataClassType target)
-                : base(target)
+            public ClassTypeWrapper(MetadataReflector reflector, IMetadataClassType target)
+                : base(reflector, target)
             {
+            }
+
+            protected override IDeclaredElement GetDeclaredElementWithLock()
+            {
+                return Reflector.GetDeclaredElementWithLock(Target.Type);
             }
 
             public override string Name
             {
-                get { return FullName.Substring(0, FullName.LastIndexOf('.')); }
+                get { return new CLRTypeName(TargetInfo.FullyQualifiedName).ShortName; }
             }
 
             public override string CompoundName
@@ -444,29 +654,29 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override ITypeInfo DeclaringType
             {
-                get { return WrapOpenType(TargetInfo.DeclaringType); }
+                get { return Reflector.WrapOpenType(TargetInfo.DeclaringType); }
             }
 
             public override IAssemblyInfo Assembly
             {
                 get
                 {
-                    // FIXME: HACK!  We really need the IAssemblyResolver to do this correctly.
+                    // TODO: Fix this hack!  We really need the IAssemblyResolver to do this correctly.
                     FieldInfo myAssemblyField = TargetInfo.GetType().GetField("myAssembly", BindingFlags.Instance | BindingFlags.NonPublic);
                     IMetadataAssembly assembly = (IMetadataAssembly)myAssemblyField.GetValue(TargetInfo);
 
-                    return Wrap(assembly);
+                    return Reflector.Wrap(assembly);
                 }
             }
 
             public override INamespaceInfo Namespace
             {
-                get { return WrapNamespace(NamespaceName); }
+                get { return Reflector.WrapNamespace(NamespaceName); }
             }
 
             public override ITypeInfo BaseType
             {
-                get { return Wrap(TargetInfo.Base); }
+                get { return Reflector.Wrap(TargetInfo.Base); }
             }
 
             public override string FullName
@@ -480,18 +690,20 @@ namespace Gallio.ReSharperRunner.Reflection
                 {
                     IMetadataTypeInfo info = TargetInfo;
                     TypeAttributes flags = 0;
-                    AddFlagIfTrue(ref flags, TypeAttributes.Abstract, info.IsAbstract);
-                    AddFlagIfTrue(ref flags, TypeAttributes.Class, info.IsClass);
-                    AddFlagIfTrue(ref flags, TypeAttributes.Interface, info.IsInterface);
-                    AddFlagIfTrue(ref flags, TypeAttributes.NestedAssembly, info.IsNestedAssembly);
-                    AddFlagIfTrue(ref flags, TypeAttributes.NestedFamily, info.IsNestedFamily);
-                    AddFlagIfTrue(ref flags, TypeAttributes.NestedFamANDAssem, info.IsNestedFamilyAndAssembly);
-                    AddFlagIfTrue(ref flags, TypeAttributes.NestedFamORAssem, info.IsNestedFamilyOrAssembly);
-                    AddFlagIfTrue(ref flags, TypeAttributes.NestedPrivate, info.IsNestedPrivate);
-                    AddFlagIfTrue(ref flags, TypeAttributes.NestedPublic, info.IsNestedPublic);
-                    AddFlagIfTrue(ref flags, TypeAttributes.Sealed, info.IsSealed);
-                    AddFlagIfTrue(ref flags, TypeAttributes.Serializable, info.IsSerializable);
-                    AddFlagIfTrue(ref flags, TypeAttributes.SpecialName, info.IsSpecialName);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Abstract, info.IsAbstract);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Class, info.IsClass);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Interface, info.IsInterface);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedAssembly, info.IsNestedAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedFamily, info.IsNestedFamily);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedFamANDAssem, info.IsNestedFamilyAndAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedFamORAssem, info.IsNestedFamilyOrAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedPrivate, info.IsNestedPrivate);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedPublic, info.IsNestedPublic);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Public, info.IsPublic);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NotPublic, info.IsNotPublic);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Sealed, info.IsSealed);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Serializable, info.IsSerializable);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.SpecialName, info.IsSpecialName);
                     return flags;
                 }
             }
@@ -499,7 +711,7 @@ namespace Gallio.ReSharperRunner.Reflection
             public override IList<ITypeInfo> GetInterfaces()
             {
                 IMetadataClassType[] interfaces = TargetInfo.Interfaces;
-                return Array.ConvertAll<IMetadataClassType, ITypeInfo>(interfaces, Wrap);
+                return Array.ConvertAll<IMetadataClassType, ITypeInfo>(interfaces, Reflector.Wrap);
             }
 
             public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
@@ -508,8 +720,8 @@ namespace Gallio.ReSharperRunner.Reflection
 
                 foreach (IMetadataMethod method in TargetInfo.GetMethods())
                 {
-                    if (IsConstructorName(method.Name) && CheckBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
-                        result.Add(WrapConstructor(method));
+                    if (IsConstructor(method) && CheckBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
+                        result.Add(Reflector.WrapConstructor(method));
                 }
 
                 return result;
@@ -529,7 +741,7 @@ namespace Gallio.ReSharperRunner.Reflection
                     }
                 }
 
-                return (IMethodInfo)Wrap(match);
+                return (IMethodInfo) Reflector.Wrap(match);
             }
 
             public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
@@ -538,8 +750,8 @@ namespace Gallio.ReSharperRunner.Reflection
 
                 foreach (IMetadataMethod method in TargetInfo.GetMethods())
                 {
-                    if (!IsConstructorName(method.Name) && CheckBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
-                        result.Add(WrapMethod(method));
+                    if (!IsConstructor(method) && CheckBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
+                        result.Add(Reflector.WrapMethod(method));
                 }
 
                 return result;
@@ -553,7 +765,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 {
                     IMetadataMethod method = property.Getter ?? property.Setter;
                     if (CheckBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
-                        result.Add(Wrap(property));
+                        result.Add(Reflector.Wrap(property));
                 }
 
                 return result;
@@ -566,7 +778,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 foreach (IMetadataField field in TargetInfo.GetFields())
                 {
                     if (CheckBindingFlags(bindingFlags, field.IsPublic, field.IsStatic))
-                        result.Add(Wrap(field));
+                        result.Add(Reflector.Wrap(field));
                 }
 
                 return result;
@@ -581,7 +793,7 @@ namespace Gallio.ReSharperRunner.Reflection
                     IMetadataMethod method = @event.Adder ?? @event.Remover ?? @event.Raiser;
 
                     if (CheckBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
-                        result.Add(Wrap(@event));
+                        result.Add(Reflector.Wrap(@event));
                 }
 
                 return result;
@@ -589,33 +801,29 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override bool IsAssignableFrom(ITypeInfo type)
             {
+                // TODO
                 throw new NotImplementedException();
             }
 
             public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
             {
-                return GetAttributeInfosForEntity(TargetInfo, inherit);
+                return Reflector.GetAttributeInfosForEntity(TargetInfo, inherit);
             }
 
             public override Type Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
 
             private string NamespaceName
             {
-                get { return FullName.Substring(FullName.LastIndexOf('.') + 1); }
+                get { return new CLRTypeName(TargetInfo.FullyQualifiedName).NamespaceName; }
             }
 
             private IMetadataTypeInfo TargetInfo
             {
                 get { return Target.Type; }
-            }
-
-            private static void AddFlagIfTrue(ref TypeAttributes flags, TypeAttributes flagToAdd, bool condition)
-            {
-                if (condition)
-                    flags |= flagToAdd;
             }
 
             private static bool CheckBindingFlags(BindingFlags flags, bool @public, bool @static)
@@ -630,8 +838,8 @@ namespace Gallio.ReSharperRunner.Reflection
         private abstract class ConstructedTypeWrapper<TTarget> : TypeWrapper<TTarget>
             where TTarget : class, IMetadataType
         {
-            public ConstructedTypeWrapper(TTarget target)
-                : base(target)
+            public ConstructedTypeWrapper(MetadataReflector reflector, TTarget target)
+                : base(reflector, target)
             {
             }
 
@@ -709,6 +917,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override bool IsAssignableFrom(ITypeInfo type)
             {
+                // TODO
                 throw new NotImplementedException();
             }
 
@@ -725,8 +934,8 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private sealed class ArrayTypeWrapper : ConstructedTypeWrapper<IMetadataArrayType>
         {
-            public ArrayTypeWrapper(IMetadataArrayType target)
-                : base(target)
+            public ArrayTypeWrapper(MetadataReflector reflector, IMetadataArrayType target)
+                : base(reflector, target)
             {
             }
 
@@ -737,7 +946,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override ITypeInfo ElementType
             {
-                get { return Wrap(Target.ElementType); }
+                get { return Reflector.Wrap(Target.ElementType); }
             }
 
             public override int ArrayRank
@@ -754,7 +963,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // Return System.Array.
+                    // TODO: Return System.Array.
                     throw new NotImplementedException();
                 }
             }
@@ -773,8 +982,8 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private sealed class GenericArgumentTypeWrapper : ConstructedTypeWrapper<IMetadataGenericArgumentReferenceType>
         {
-            public GenericArgumentTypeWrapper(IMetadataGenericArgumentReferenceType target)
-                : base(target)
+            public GenericArgumentTypeWrapper(MetadataReflector reflector, IMetadataGenericArgumentReferenceType target)
+                : base(reflector, target)
             {
             }
 
@@ -792,22 +1001,23 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // FIXME: In actuality we can treat this case as producing a type whose members
-                    //        are the union of the classes or interfaces in the generic type parameter constraint.
-                    throw new NotSupportedException("Cannot perform this operation on a generic type parameter.");
+                    // TODO: In actuality we can treat this case as producing a type whose members
+                    //       are the union of the classes or interfaces in the generic type parameter constraint.
+                    throw new NotImplementedException("Cannot perform this operation on a generic type parameter.");
                 }
             }
 
             public override Type Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
 
         private sealed class PointerTypeWrapper : ConstructedTypeWrapper<IMetadataPointerType>
         {
-            public PointerTypeWrapper(IMetadataPointerType target)
-                : base(target)
+            public PointerTypeWrapper(MetadataReflector reflector, IMetadataPointerType target)
+                : base(reflector, target)
             {
             }
 
@@ -818,7 +1028,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override ITypeInfo ElementType
             {
-                get { return Wrap(Target.Type); }
+                get { return Reflector.Wrap(Target.Type); }
             }
 
             public override bool IsPointer
@@ -830,7 +1040,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // Return System.Pointer.
+                    // TODO: Return System.Pointer.
                     throw new NotImplementedException();
                 }
             }
@@ -843,8 +1053,8 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private sealed class ReferenceTypeWrapper : ConstructedTypeWrapper<IMetadataReferenceType>
         {
-            public ReferenceTypeWrapper(IMetadataReferenceType target)
-                : base(target)
+            public ReferenceTypeWrapper(MetadataReflector reflector, IMetadataReferenceType target)
+                : base(reflector, target)
             {
             }
 
@@ -855,7 +1065,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override ITypeInfo ElementType
             {
-                get { return Wrap(Target.Type); }
+                get { return Reflector.Wrap(Target.Type); }
             }
 
             public override bool IsByRef
@@ -867,22 +1077,28 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // Return System.TypedReference.
+                    // TODO: Return System.TypedReference.
                     throw new NotImplementedException();
                 }
             }
 
             public override Type Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
 
         private abstract class FunctionWrapper : MemberWrapper<IMetadataMethod>, IFunctionInfo
         {
-            public FunctionWrapper(IMetadataMethod target)
-                : base(target)
+            public FunctionWrapper(MetadataReflector reflector, IMetadataMethod target)
+                : base(reflector, target)
             {
+            }
+
+            protected override IDeclaredElement GetDeclaredElementWithLock()
+            {
+                return Reflector.GetDeclaredElementWithLock(Target);
             }
 
             public override string Name
@@ -892,7 +1108,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override ITypeInfo DeclaringType
             {
-                get { return WrapOpenType(Target.DeclaringType); }
+                get { return Reflector.WrapOpenType(Target.DeclaringType); }
             }
 
             public MethodAttributes Modifiers
@@ -900,19 +1116,19 @@ namespace Gallio.ReSharperRunner.Reflection
                 get
                 {
                     MethodAttributes flags = 0;
-                    AddFlagIfTrue(ref flags, MethodAttributes.Abstract, Target.IsAbstract);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Assembly, Target.IsAssembly);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Family, Target.IsFamily);
-                    AddFlagIfTrue(ref flags, MethodAttributes.FamANDAssem, Target.IsFamilyAndAssembly);
-                    AddFlagIfTrue(ref flags, MethodAttributes.FamORAssem, Target.IsFamilyOrAssembly);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Final, Target.IsFinal);
-                    AddFlagIfTrue(ref flags, MethodAttributes.HideBySig, Target.IsHideBySig);
-                    AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, Target.IsNewSlot);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Private, Target.IsPrivate);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Public, Target.IsPublic);
-                    AddFlagIfTrue(ref flags, MethodAttributes.SpecialName, Target.IsSpecialName);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Static, Target.IsStatic);
-                    AddFlagIfTrue(ref flags, MethodAttributes.Virtual, Target.IsVirtual);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Abstract, Target.IsAbstract);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Assembly, Target.IsAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Family, Target.IsFamily);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.FamANDAssem, Target.IsFamilyAndAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.FamORAssem, Target.IsFamilyOrAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Final, Target.IsFinal);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.HideBySig, Target.IsHideBySig);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, Target.IsNewSlot);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Private, Target.IsPrivate);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Public, Target.IsPublic);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.SpecialName, Target.IsSpecialName);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Static, Target.IsStatic);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, Target.IsVirtual);
                     return flags;
                 }
             }
@@ -920,7 +1136,7 @@ namespace Gallio.ReSharperRunner.Reflection
             public IList<IParameterInfo> GetParameters()
             {
                 IMetadataParameter[] parameters = Target.Parameters;
-                return Array.ConvertAll<IMetadataParameter, IParameterInfo>(parameters, Wrap);
+                return Array.ConvertAll<IMetadataParameter, IParameterInfo>(parameters, Reflector.Wrap);
             }
 
             public override MemberInfo ResolveMemberInfo()
@@ -934,20 +1150,14 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             public abstract MethodBase ResolveMethodBase();
-
-            private static void AddFlagIfTrue(ref MethodAttributes flags, MethodAttributes flagToAdd, bool condition)
-            {
-                if (condition)
-                    flags |= flagToAdd;
-            }
         }
 
         private sealed class ConstructorWrapper : FunctionWrapper, IConstructorInfo
         {
-            public ConstructorWrapper(IMetadataMethod target)
-                : base(target)
+            public ConstructorWrapper(MetadataReflector reflector, IMetadataMethod target)
+                : base(reflector, target)
             {
-                if (!IsConstructorName(target.Name))
+                if (!IsConstructor(target))
                     throw new ArgumentException("target");
             }
 
@@ -958,22 +1168,23 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ConstructorInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
 
         private sealed class MethodWrapper : FunctionWrapper, IMethodInfo
         {
-            public MethodWrapper(IMetadataMethod target)
-                : base(target)
+            public MethodWrapper(MetadataReflector reflector, IMetadataMethod target)
+                : base(reflector, target)
             {
-                if (IsConstructorName(target.Name))
+                if (IsConstructor(target))
                     throw new ArgumentException("target");
             }
 
             public ITypeInfo ReturnType
             {
-                get { return Wrap(Target.ReturnValue.Type); }
+                get { return Reflector.Wrap(Target.ReturnValue.Type); }
             }
 
             public override MethodBase ResolveMethodBase()
@@ -983,15 +1194,21 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public MethodInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
 
         private sealed class PropertyWrapper : MemberWrapper<IMetadataProperty>, IPropertyInfo
         {
-            public PropertyWrapper(IMetadataProperty target)
-                : base(target)
+            public PropertyWrapper(MetadataReflector reflector, IMetadataProperty target)
+                : base(reflector, target)
             {
+            }
+
+            protected override IDeclaredElement GetDeclaredElementWithLock()
+            {
+                return Reflector.GetDeclaredElementWithLock(Target);
             }
 
             public override string Name
@@ -1001,12 +1218,12 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override ITypeInfo DeclaringType
             {
-                get { return WrapOpenType(Target.DeclaringType); }
+                get { return Reflector.WrapOpenType(Target.DeclaringType); }
             }
 
             public ITypeInfo ValueType
             {
-                get { return Wrap(Target.Type); }
+                get { return Reflector.Wrap(Target.Type); }
             }
 
             public int Position
@@ -1014,14 +1231,23 @@ namespace Gallio.ReSharperRunner.Reflection
                 get { return 0; }
             }
 
+            public PropertyAttributes Modifiers
+            {
+                get
+                {
+                    // Note: There don't seem to be any usable property attributes.
+                    return 0;
+                }
+            }
+
             public IMethodInfo GetGetMethod()
             {
-                return WrapMethod(Target.Getter);
+                return Reflector.WrapMethod(Target.Getter);
             }
 
             public IMethodInfo GetSetMethod()
             {
-                return WrapMethod(Target.Setter);
+                return Reflector.WrapMethod(Target.Setter);
             }
 
             public override MemberInfo ResolveMemberInfo()
@@ -1031,20 +1257,26 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public PropertyInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
 
         private sealed class FieldWrapper : MemberWrapper<IMetadataField>, IFieldInfo
         {
-            public FieldWrapper(IMetadataField target)
-                : base(target)
+            public FieldWrapper(MetadataReflector reflector, IMetadataField target)
+                : base(reflector, target)
             {
+            }
+
+            protected override IDeclaredElement GetDeclaredElementWithLock()
+            {
+                return Reflector.GetDeclaredElementWithLock(Target);
             }
 
             public ITypeInfo ValueType
             {
-                get { return Wrap(Target.Type); }
+                get { return Reflector.Wrap(Target.Type); }
             }
 
             public int Position
@@ -1054,7 +1286,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override ITypeInfo DeclaringType
             {
-                get { return WrapOpenType(Target.DeclaringType); }
+                get { return Reflector.WrapOpenType(Target.DeclaringType); }
             }
 
             public override string Name
@@ -1067,22 +1299,47 @@ namespace Gallio.ReSharperRunner.Reflection
                 return Resolve();
             }
 
+            public FieldAttributes Modifiers
+            {
+                get
+                {
+                    FieldAttributes flags = 0;
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Assembly, Target.IsAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Family, Target.IsFamily);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.FamANDAssem, Target.IsFamilyAndAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.FamORAssem, Target.IsFamilyOrAssembly);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Private, Target.IsPrivate);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Public, Target.IsPublic);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.SpecialName, Target.IsSpecialName);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Static, Target.IsStatic);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Literal, Target.IsLiteral);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.InitOnly, Target.IsInitOnly);
+                    return flags;
+                }
+            }
+
             public FieldInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
 
         private sealed class EventWrapper : MemberWrapper<IMetadataEvent>, IEventInfo
         {
-            public EventWrapper(IMetadataEvent target)
-                : base(target)
+            public EventWrapper(MetadataReflector reflector, IMetadataEvent target)
+                : base(reflector, target)
             {
+            }
+
+            protected override IDeclaredElement GetDeclaredElementWithLock()
+            {
+                return Reflector.GetDeclaredElementWithLock(Target);
             }
 
             public override ITypeInfo DeclaringType
             {
-                get { return WrapOpenType(Target.DeclaringType); }
+                get { return Reflector.WrapOpenType(Target.DeclaringType); }
             }
 
             public override string Name
@@ -1097,15 +1354,21 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public EventInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
             }
         }
 
         private sealed class ParameterWrapper : CodeElementWrapper<IMetadataParameter>, IParameterInfo
         {
-            public ParameterWrapper(IMetadataParameter target)
-                : base(target)
+            public ParameterWrapper(MetadataReflector reflector, IMetadataParameter target)
+                : base(reflector, target)
             {
+            }
+
+            protected override IDeclaredElement GetDeclaredElementWithLock()
+            {
+                return Reflector.GetDeclaredElementWithLock(Target);
             }
 
             public override string Name
@@ -1125,7 +1388,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ITypeInfo ValueType
             {
-                get { return Wrap(Target.Type); }
+                get { return Reflector.Wrap(Target.Type); }
             }
 
             public int Position
@@ -1138,7 +1401,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public IMemberInfo Member
             {
-                get { return Wrap(Target.DeclaringMethod); }
+                get { return Reflector.Wrap(Target.DeclaringMethod); }
             }
 
             public ParameterAttributes Modifiers
@@ -1146,61 +1409,50 @@ namespace Gallio.ReSharperRunner.Reflection
                 get
                 {
                     ParameterAttributes flags = 0;
-                    AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.IsIn);
-                    AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.IsOut);
-                    AddFlagIfTrue(ref flags, ParameterAttributes.Optional, Target.IsOptional);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.IsIn);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.IsOut);
+                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Optional, Target.IsOptional);
                     return flags;
                 }
             }
 
             public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
             {
-                return GetAttributeInfosForEntity(Target, inherit);
+                return Reflector.GetAttributeInfosForEntity(Target, inherit);
             }
 
             public ParameterInfo Resolve()
             {
+                // TODO
                 throw new NotImplementedException();
-            }
-
-            private static void AddFlagIfTrue(ref ParameterAttributes flags, ParameterAttributes flagToAdd, bool condition)
-            {
-                if (condition)
-                    flags |= flagToAdd;
             }
         }
 
-        private sealed class AttributeWrapper : IAttributeInfo
+        private sealed class AttributeWrapper : BaseWrapper<IMetadataCustomAttribute>, IAttributeInfo
         {
-            private readonly IMetadataCustomAttribute attrib;
-
-            public AttributeWrapper(IMetadataCustomAttribute attrib)
+            public AttributeWrapper(MetadataReflector reflector, IMetadataCustomAttribute target)
+                : base(reflector, target)
             {
-                if (attrib == null)
-                    throw new ArgumentNullException("attrib");
-
-                this.attrib = attrib;
             }
-
 
             public ITypeInfo Type
             {
-                get { return WrapOpenType(attrib.UsedConstructor.DeclaringType); }
+                get { return Reflector.WrapOpenType(Target.UsedConstructor.DeclaringType); }
             }
 
             public IConstructorInfo Constructor
             {
-                get { return WrapConstructor(attrib.UsedConstructor); }
+                get { return Reflector.WrapConstructor(Target.UsedConstructor); }
             }
 
             public object[] ArgumentValues
             {
-                get { return attrib.ConstructorArguments; }
+                get { return Target.ConstructorArguments; }
             }
 
             public object GetFieldValue(string name)
             {
-                foreach (IMetadataCustomAttributeFieldInitialization initialization in attrib.InitializedFields)
+                foreach (IMetadataCustomAttributeFieldInitialization initialization in Target.InitializedFields)
                     if (initialization.Field.Name == name)
                         return initialization.Value;
 
@@ -1209,7 +1461,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public object GetPropertyValue(string name)
             {
-                foreach (IMetadataCustomAttributePropertyInitialization initialization in attrib.InitializedProperties)
+                foreach (IMetadataCustomAttributePropertyInitialization initialization in Target.InitializedProperties)
                     if (initialization.Property.Name == name)
                         return initialization.Value;
 
@@ -1220,11 +1472,11 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    IMetadataCustomAttributeFieldInitialization[] initializations = attrib.InitializedFields;
+                    IMetadataCustomAttributeFieldInitialization[] initializations = Target.InitializedFields;
                     Dictionary<IFieldInfo, object> values = new Dictionary<IFieldInfo, object>(initializations.Length);
 
                     foreach (IMetadataCustomAttributeFieldInitialization initialization in initializations)
-                        values.Add(Wrap(initialization.Field), initialization.Value);
+                        values.Add(Reflector.Wrap(initialization.Field), initialization.Value);
 
                     return values;
                 }
@@ -1234,11 +1486,11 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    IMetadataCustomAttributePropertyInitialization[] initializations = attrib.InitializedProperties;
+                    IMetadataCustomAttributePropertyInitialization[] initializations = Target.InitializedProperties;
                     Dictionary<IPropertyInfo, object> values = new Dictionary<IPropertyInfo, object>(initializations.Length);
 
                     foreach (IMetadataCustomAttributePropertyInitialization initialization in initializations)
-                        values.Add(Wrap(initialization.Property), initialization.Value);
+                        values.Add(Reflector.Wrap(initialization.Property), initialization.Value);
 
                     return values;
                 }
