@@ -98,11 +98,12 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	File /r "${BUILDDIR}\bin\Reports\*"
 
 	; Create Shortcuts
+	SetOutPath "$SMPROGRAMS\${APPNAME}"
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
-	
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
-	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Online Documentation.lnk" "$INSTDIR\MbUnit Online Documentation.url"
-	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Website.lnk" "$INSTDIR\MbUnit.url"
+
+	File "MbUnit Website.url"
+	File "MbUnit Online Documentation.url"
 SectionEnd
 
 SectionGroup "Plugins"
@@ -238,13 +239,13 @@ Section "Standalone Help Docs" CHMHelpSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR"
-	File "MbUnit Offline Documentation.lnk"
 
 	SetOutPath "$INSTDIR\docs"
 	File "${BUILDDIR}\docs\chm\MbUnit.chm"
 
 	; Create Shortcuts
-	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" "$INSTDIR\MbUnit Offline Documentation.lnk"
+	CreateShortCut "$INSTDIR\MbUnit Offline Documentation.lnk" "$INSTDIR\docs\MbUnit.chm"
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" "$INSTDIR\docs\MbUnit.chm"
 SectionEnd
 !endif
 
@@ -296,12 +297,7 @@ Section Uninstall
 		ExecWait '"$INSTDIR\utils\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
 
 	; Delete Shortcuts
-	Delete "$SMPROGRAMS\${APPNAME}\Uninstall.lnk"
-	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Icarus GUI.lnk"
-	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Website.lnk"
-	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Online Documentation.lnk"
-	Delete "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" 
-	RMDir "$SMPROGRAMS\${APPNAME}"
+	RMDir /r "$SMPROGRAMS\${APPNAME}"
 
 	; Remove from registry...
 	DeleteRegKey SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
@@ -451,7 +447,7 @@ Function AddRemovePageLeave
 	Abort
 
 	Uninstall:
-	ExecWait '"$OLD_INSTALL_DIR\uninstall.exe" /S' $0
+	ExecWait '"$OLD_INSTALL_DIR\uninstall.exe" /S _?=$OLD_INSTALL_DIR' $0
 	DetailPrint "Uninstaller returned $0"
 
 	IntCmp $INI_VALUE 1 Upgrade
