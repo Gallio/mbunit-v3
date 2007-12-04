@@ -24,6 +24,7 @@ namespace Gallio.Model.Filters
     {
         private readonly List<FilterToken> tokens = new List<FilterToken>();
         private readonly StringReader input = null;
+        private readonly string filter;
         private int inputPosition = -1;
         private int tokenStreamPosition = -1;
 
@@ -34,12 +35,18 @@ namespace Gallio.Model.Filters
                 filter = String.Empty;
             }
             input = new StringReader(filter);
+            this.filter = filter;
             Scan();
         }
 
         internal List<FilterToken> Tokens
         {
             get { return tokens; }
+        }
+
+        public string OriginalFilterExpression
+        {
+            get { return filter; }
         }
 
         internal FilterToken GetNextToken()
@@ -80,49 +87,53 @@ namespace Gallio.Model.Filters
                 }
                 else if (IsQuotationMark(c))
                 {
-                    MatchQuotedString(c);
+                    MatchQuotedWord(c);
                 }
                 else if (IsString(c))
                 {
-                    StringBuilder chars = new StringBuilder();
-                    int startPosition = inputPosition + 1;
-                    chars.Append(ConsumeNextChar());
-                    int nextChar = input.Peek();
-                    while (nextChar != -1 && IsString((char)nextChar))
-                    {
-                        chars.Append(ConsumeNextChar());
-                        nextChar = input.Peek();
-                    }
-                    string token = chars.ToString();
-                    FilterTokenType filterTokenType = GetReservedWord(token);
-                    if (filterTokenType != FilterTokenType.None)
-                    {
-                        tokens.Add(new FilterToken(filterTokenType, null, startPosition));
-                    }
-                    else
-                    {
-                        tokens.Add(new FilterToken(FilterTokenType.UnquotedWord, token, startPosition));
-                    }
+                    MatchUnquotedWord();
                 }
                 else
                 {
-                    ConsumeNextChar();
+                    tokens.Add(new FilterToken(FilterTokenType.Error, ConsumeNextChar().ToString(), inputPosition));
                 }
             }
         }
 
-        private void MatchQuotedString(char quotationMark)
+        private void MatchUnquotedWord()
         {
             StringBuilder chars = new StringBuilder();
             int startPosition = inputPosition + 1;
-            char nextChar = (char)0;
+            chars.Append(ConsumeNextChar());
+            int nextChar = input.Peek();
+            while (nextChar != -1 && IsString((char)nextChar))
+            {
+                chars.Append(ConsumeNextChar());
+                nextChar = input.Peek();
+            }
+            string token = chars.ToString();
+            FilterTokenType filterTokenType = GetReservedWord(token);
+            if (filterTokenType != FilterTokenType.None)
+            {
+                tokens.Add(new FilterToken(filterTokenType, null, startPosition));
+            }
+            else
+            {
+                tokens.Add(new FilterToken(FilterTokenType.UnquotedWord, token, startPosition));
+            }
+        }
+
+        private void MatchQuotedWord(char quotationMark)
+        {
+            StringBuilder chars = new StringBuilder();
+            int startPosition = inputPosition + 1;
             char previousChar = (char)0;
             bool finalQuotationMarkFound = false;
 
             ConsumeNextChar();
             while (input.Peek() != -1)
             {
-                nextChar = (char)input.Peek();
+                char nextChar = (char)input.Peek();
                 if (nextChar == quotationMark)
                 {
                     if (previousChar != '\\')
@@ -137,7 +148,7 @@ namespace Gallio.Model.Filters
                         chars.Append(ConsumeNextChar());
                     }
                 }
-                else 
+                else
                 {
                     // previousChar was a \ but not followed by a quotation mark
                     if (previousChar == '\\')
@@ -153,12 +164,11 @@ namespace Gallio.Model.Filters
                 }
                 previousChar = nextChar;
             }
+            tokens.Add(new FilterToken(FilterTokenType.QuotedWord, chars.ToString(), startPosition));
             if (!finalQuotationMarkFound)
             {
-                throw new RecognitionException(quotationMark, nextChar);
+                tokens.Add(new FilterToken(FilterTokenType.Error, null, inputPosition));
             }
-
-            tokens.Add(new FilterToken(FilterTokenType.QuotedWord, chars.ToString(), startPosition));
         }
 
         private char ConsumeNextChar()
@@ -188,9 +198,9 @@ namespace Gallio.Model.Filters
             return reservedWord;
         }
 
-        private void CheckEndOfStream()
+        private bool IsEndOfStream()
         {
-            if (input.Peek() == -1) throw new UnexpectedEndOfFilterException("Unexpected end of filter");
+            return (input.Peek() == -1) ;
         }
 
         private void Match(IEnumerable<char> token, FilterTokenType filterTokenType)
@@ -198,7 +208,11 @@ namespace Gallio.Model.Filters
             int startPosition = inputPosition + 1;
             foreach (char c in token)
             {
-                CheckEndOfStream();
+                if (IsEndOfStream())
+                {
+                    tokens.Add(new FilterToken(FilterTokenType.Error, "Unexpected end of input", inputPosition));
+                    break;
+                }
                 char inputChar = (char)input.Peek();
                 if (char.ToLower(inputChar) == c)
                 {
@@ -206,7 +220,7 @@ namespace Gallio.Model.Filters
                 }
                 else
                 {
-                    throw new RecognitionException(c, inputChar);
+                    tokens.Add(new FilterToken(FilterTokenType.Error, inputChar.ToString(), inputPosition));
                 }
             }
             tokens.Add(new FilterToken(filterTokenType, null, startPosition));
@@ -235,22 +249,6 @@ namespace Gallio.Model.Filters
         private static bool IsString(char c)
         {
             return char.IsLetterOrDigit(c) || c == '_' || c == '\\' || c == '-' || c == '+' || c == '.' || c == '*' || c == '@';
-        }
-    }
-
-    internal class RecognitionException : Exception
-    {
-        internal RecognitionException(char expected, char found)
-            : base("Expected character '" + expected + "', but '" + found + "' was found instead.")
-        {
-        }
-    }
-
-    internal class UnexpectedEndOfFilterException : Exception
-    {
-        internal UnexpectedEndOfFilterException(string message)
-            : base(message)
-        {
         }
     }
 }

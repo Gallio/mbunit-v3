@@ -74,6 +74,26 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(filterToken.Position, 0);
             Assert.AreEqual(filterToken.Text, null);
         }
+                
+        [RowTest]
+        //[Row("#", 0)]
+        //[Row("aaaaaaaa#bbbbbbb", 8)]
+        //[Row("aaaaaaaaa#bbbbbb", 9)]
+        //[Row("aaaaaaaaaa#bbbbb", 10)]
+        //[Row("aaaaaaaaaaa#bbbb", 11)]
+        public void BadInput(string filter, int position)
+        {
+            string exceptionMessage = null;
+            try
+            {
+                new FilterLexer(filter);
+            }
+            catch (Exception e)
+            {
+                exceptionMessage = e.Message;
+            }
+            Assert.AreEqual(exceptionMessage, "Unexpected character '#' found at position " + position);
+        }
 
         [RowTest]
         // We can't use FilterTokenType directly because it's internal and this method is public
@@ -85,7 +105,7 @@ namespace Gallio.Tests.Model.Filters
         [Row("no")]
         [Row("andOr")]
         [Row("orAnd")]
-        public void MalformedSingleElement(string filter)
+        public void SingleMalformedElement(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 1);
@@ -153,11 +173,16 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [RowTest]
-        [Row("\"abcdefghijklmnopqrst", ExpectedException = typeof(RecognitionException))]
-        [Row("'abcdefghijklmnopqrst", ExpectedException = typeof(RecognitionException))]
+        [Row("\"abcdefghijklmnopqrst")]
+        [Row("'abcdefghijklmnopqrst")]
         public void QuotedElementWithMissingEndQuotationMark(string filter)
         {
-            new FilterLexer(filter);
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, 2);
+            FilterToken token = lexer.Tokens[1];
+            Assert.AreEqual(token.Type, FilterTokenType.Error);
+            Assert.AreEqual(token.Position, 20);
+            Assert.AreEqual(token.Text, null);
         }
 
         [RowTest]

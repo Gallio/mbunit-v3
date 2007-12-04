@@ -19,14 +19,15 @@ namespace Gallio.Model.Filters
     {
         None = 0,
         And,
-        Or,
-        Not,
         Colon,
         Comma,
+        Error,
         LeftBracket,
+        Not,
+        Or,
+        QuotedWord,
         RightBracket,
         Tilde,
-        UnquotedWord,
-        QuotedWord
+        UnquotedWord
     }
 }
