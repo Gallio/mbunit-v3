@@ -8,104 +8,40 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{70543B8E-D
 		..\docs\Mono Issues.txt = ..\docs\Mono Issues.txt
 		..\docs\TODO.txt = ..\docs\TODO.txt
 	EndProjectSection
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runners", "Runners", "{7314C58D-3714-4872-885D-309338F09FC1}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gallio", "Gallio", "{00CE3107-C47F-4D2B-986B-763181832B51}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestResources", "TestResources", "{BB87DDC9-05EA-4ACC-A600-970CE841E9D4}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{BFB535CF-02E9-4201-977B-931372E68AF1}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MbUnit", "MbUnit", "{4D506DA5-13C1-4B1F-9018-4FDCA066993A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{24B192F6-0332-4F79-B09A-A0D5C7080BFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.NUnitAdapter", "Gallio\Plugins\Gallio.Plugin.NUnitAdapter\Gallio.Plugin.NUnitAdapter.csproj", "{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TestResources.MbUnit", "TestResources\Gallio.TestResources.MbUnit\Gallio.TestResources.MbUnit.csproj", "{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TestResources.MbUnit2", "TestResources\Gallio.TestResources.MbUnit2\Gallio.TestResources.MbUnit2.csproj", "{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TestResources.NUnit", "TestResources\Gallio.TestResources.NUnit\Gallio.TestResources.NUnit.csproj", "{42CC86A2-B9A9-447F-97DD-D6809D78A8EB}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.MbUnit2Adapter", "Gallio\Plugins\Gallio.Plugin.MbUnit2Adapter\Gallio.Plugin.MbUnit2Adapter.csproj", "{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.NUnitAdapter.Tests", "Gallio\Plugins\Gallio.Plugin.NUnitAdapter.Tests\Gallio.Plugin.NUnitAdapter.Tests.csproj", "{7CB9DB43-2428-40C7-A926-AD3C2687A646}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.MbUnit2Adapter.Tests", "Gallio\Plugins\Gallio.Plugin.MbUnit2Adapter.Tests\Gallio.Plugin.MbUnit2Adapter.Tests.csproj", "{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo", "Gallio\Runners\Gallio.Echo\Gallio.Echo.csproj", "{22AE34D9-185F-41A7-A48D-205BE68B1F7D}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus", "Gallio\Runners\Gallio.Icarus\Gallio.Icarus.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo.Tests", "Gallio\Runners\Gallio.Echo.Tests\Gallio.Echo.Tests.csproj", "{299970D4-781F-4778-BCF2-F53AE7D8B060}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus.Tests", "Gallio\Runners\Gallio.Icarus.Tests\Gallio.Icarus.Tests.csproj", "{A90A40C4-4D48-4D0B-BE9B-432510EB1057}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.XunitAdapter", "Gallio\Plugins\Gallio.Plugin.XunitAdapter\Gallio.Plugin.XunitAdapter.csproj", "{F2619506-4CA0-4B5B-AAA8-733784C49476}"
 EndProject
@@ -144,6 +80,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner", "Gallio\Runners\Gallio.ReSharperRunner\Gallio.ReSharperRunner.csproj", "{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner.Tests", "Gallio\Runners\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner.Tests.csproj", "{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCmdlet", "Gallio\Runners\Gallio.PowerShellCmdlet\Gallio.PowerShellCmdlet.csproj", "{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCmdlet.Tests", "Gallio\Runners\Gallio.PowerShellCmdlet.Tests\Gallio.PowerShellCmdlet.Tests.csproj", "{52E0A229-CE15-4B72-8ACF-F17DCB929A64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -263,6 +203,14 @@ Global
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -284,6 +232,8 @@ Global
 		{EBB6130D-3D29-4313-BAA9-1076BB8572AB} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC} = {7314C58D-3714-4872-885D-309338F09FC1}
+		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD} = {7314C58D-3714-4872-885D-309338F09FC1}
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE} = {BB87DDC9-05EA-4ACC-A600-970CE841E9D4}
 		{886B1BB9-AB7A-45EC-B38B-DE36CABCE505} = {BB87DDC9-05EA-4ACC-A600-970CE841E9D4}
 		{42CC86A2-B9A9-447F-97DD-D6809D78A8EB} = {BB87DDC9-05EA-4ACC-A600-970CE841E9D4}
