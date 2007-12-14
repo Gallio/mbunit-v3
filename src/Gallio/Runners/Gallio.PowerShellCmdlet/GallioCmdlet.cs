@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Gallio.Model;
 using System.Management.Automation;
 
 namespace Gallio.PowerShellCmdlet

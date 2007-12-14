@@ -96,7 +96,6 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [RowTest]
-        // We can't use FilterTokenType directly because it's internal and this method is public
         [Row("anX")]
         [Row("oX")]
         [Row("noX")]
