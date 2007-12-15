@@ -38,15 +38,18 @@ namespace Gallio.ReSharperRunner.Reflection
     public class MetadataReflector
     {
         private readonly IProject contextProject;
+        private readonly MetadataLoader metadataLoader;
 
         /// <summary>
         /// Creates a reflector with the specified project as its context.
         /// The context project is used to resolve metadata items to declared elements.
         /// </summary>
         /// <param name="contextProject">The context project, or null if none</param>
-        public MetadataReflector(IProject contextProject)
+        /// <param name="metadataLoader">The metadata loader, or null if none</param>
+        public MetadataReflector(IProject contextProject, MetadataLoader metadataLoader)
         {
             this.contextProject = contextProject;
+            this.metadataLoader = metadataLoader;
         }
 
         /// <summary>
@@ -355,6 +358,15 @@ namespace Gallio.ReSharperRunner.Reflection
             return null;
         }
 
+        private IMetadataAssembly LoadAssembly(AssemblyName assemblyName)
+        {
+            if (metadataLoader == null)
+                throw new InvalidOperationException(String.Format("Cannot load assembly '{0}' because no metadata loader is available.",
+                    assemblyName));
+
+            return metadataLoader.Load(assemblyName, delegate { return true; });
+        }
+
         private abstract class BaseWrapper<TTarget>
             where TTarget : class
         {
@@ -457,7 +469,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override string ToString()
             {
-                return Target.ToString();
+                return Name;
             }
 
             public bool Equals(ICodeElementInfo other)
@@ -543,7 +555,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public Assembly Resolve()
             {
-                return Assembly.LoadFrom(Path);
+                return ReflectorUtils.ResolveAssembly(this);
             }
 
             public bool Equals(IAssemblyInfo other)
@@ -596,6 +608,11 @@ namespace Gallio.ReSharperRunner.Reflection
             public bool Equals(IMemberInfo other)
             {
                 return Equals((object)other);
+            }
+
+            public override string ToString()
+            {
+                return CompoundName;
             }
         }
 
@@ -668,7 +685,11 @@ namespace Gallio.ReSharperRunner.Reflection
             public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
             public abstract IList<IGenericParameterInfo> GetGenericParameters();
             public abstract bool IsAssignableFrom(ITypeInfo type);
-            public abstract Type Resolve();
+
+            public Type Resolve()
+            {
+                return ReflectorUtils.ResolveType(this);
+            }
 
             MemberInfo IMemberInfo.Resolve()
             {
@@ -734,9 +755,9 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // TODO: Fix this hack!  We really need the IAssemblyResolver to do this correctly.
-                    FieldInfo myAssemblyField = TargetInfo.GetType().GetField("myAssembly", BindingFlags.Instance | BindingFlags.NonPublic);
-                    IMetadataAssembly assembly = (IMetadataAssembly)myAssemblyField.GetValue(TargetInfo);
+                    IMetadataAssembly assembly = ReflectorUtils.GetMetadataAssemblyHack(TargetInfo);
+                    if (assembly == null)
+                        assembly = Reflector.LoadAssembly(TargetInfo.DeclaringAssemblyName);
 
                     return Reflector.Wrap(assembly);
                 }
@@ -889,12 +910,6 @@ namespace Gallio.ReSharperRunner.Reflection
                 return Array.ConvertAll<IMetadataGenericArgument, IGenericParameterInfo>(parameters, Reflector.Wrap);
             }
 
-            public override Type Resolve()
-            {
-                // TODO
-                throw new NotImplementedException();
-            }
-
             private string NamespaceName
             {
                 get { return new CLRTypeName(TargetInfo.FullyQualifiedName).NamespaceName; }
@@ -1009,11 +1024,6 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 yield break;
             }
-
-            public override Type Resolve()
-            {
-                return EffectiveClassType.Resolve();
-            }
         }
 
         private sealed class ArrayTypeWrapper : ConstructedTypeWrapper<IMetadataArrayType>
@@ -1047,17 +1057,6 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get { return Gallio.Model.Reflection.Reflector.Wrap(typeof(Array)); }
             }
-
-            public override Type Resolve()
-            {
-                int rank = checked((int) Target.Rank);
-                Type elementType = ElementType.Resolve();
-
-                if (rank == 1)
-                    return elementType.MakeArrayType();
-                else
-                    return elementType.MakeArrayType(rank);
-            }
         }
 
         private sealed class GenericParameterWrapper : ConstructedTypeWrapper<IMetadataGenericArgumentReferenceType>, IGenericParameterInfo
@@ -1090,12 +1089,6 @@ namespace Gallio.ReSharperRunner.Reflection
                     //       are the union of the classes or interfaces in the generic type parameter constraint.
                     throw new NotImplementedException("Cannot perform this operation on a generic type parameter.");
                 }
-            }
-
-            public override Type Resolve()
-            {
-                // TODO
-                throw new NotImplementedException();
             }
 
             public GenericParameterAttributes GenericParameterAttributes
@@ -1149,11 +1142,6 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get { return Gallio.Model.Reflection.Reflector.Wrap(typeof(Pointer)); }
             }
-
-            public override Type Resolve()
-            {
-                return ElementType.Resolve().MakePointerType();
-            }
         }
 
         private sealed class ReferenceTypeWrapper : ConstructedTypeWrapper<IMetadataReferenceType>
@@ -1181,12 +1169,6 @@ namespace Gallio.ReSharperRunner.Reflection
             public override ITypeInfo EffectiveClassType
             {
                 get { return Gallio.Model.Reflection.Reflector.Wrap(typeof(TypedReference)); }
-            }
-
-            public override Type Resolve()
-            {
-                // TODO
-                throw new NotImplementedException();
             }
         }
 
@@ -1285,8 +1267,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ConstructorInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveConstructor(this);
             }
 
             public bool Equals(IConstructorInfo other)
@@ -1321,8 +1302,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public MethodInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveMethod(this);
             }
         }
 
@@ -1389,8 +1369,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public PropertyInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveProperty(this);
             }
 
             public bool Equals(ISlotInfo other)
@@ -1467,8 +1446,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public FieldInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveField(this);
             }
 
             public bool Equals(ISlotInfo other)
@@ -1516,8 +1494,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public EventInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveEvent(this);
             }
 
             public bool Equals(IEventInfo other)
@@ -1595,8 +1572,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ParameterInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveParameter(this);
             }
 
             public bool Equals(ISlotInfo other)

@@ -47,7 +47,7 @@ namespace Gallio.Model.Reflection
         /// Gets the member to its underlying native reflection type.
         /// </summary>
         /// <returns>The underlying native reflection type</returns>
-        /// <exception cref="NotSupportedException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="CodeElementResolveException">Thrown if the target cannot be resolved</exception>
         MemberInfo Resolve();
     }
 }

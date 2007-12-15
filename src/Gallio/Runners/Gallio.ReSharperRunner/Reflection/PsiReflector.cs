@@ -330,9 +330,13 @@ namespace Gallio.ReSharperRunner.Reflection
             {
             }
 
-            public IProject Project
+            public virtual IProject Project
             {
-                get { return DeclaredElement.Module as IProject; }
+                get
+                {
+                    IDeclaredElement declaredElement = DeclaredElement;
+                    return declaredElement != null ? declaredElement.Module as IProject : null;
+                }
             }
 
             public virtual IDeclaredElement DeclaredElement
@@ -375,7 +379,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override string ToString()
             {
-                return Target.ToString();
+                return Name;
             }
 
             public bool Equals(ICodeElementInfo other)
@@ -414,7 +418,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public Assembly Resolve()
             {
-                return Assembly.LoadFrom(Path);
+                return ReflectorUtils.ResolveAssembly(this);
             }
 
             public string Path
@@ -538,6 +542,11 @@ namespace Gallio.ReSharperRunner.Reflection
             {
             }
 
+            public override IProject Project
+            {
+                get { return Target; }
+            }
+
             public override IList<AssemblyName> GetReferencedAssemblies()
             {
                 ICollection<IModuleReference> moduleRefs = Target.GetModuleReferences();
@@ -615,6 +624,11 @@ namespace Gallio.ReSharperRunner.Reflection
             public bool Equals(IMemberInfo other)
             {
                 return Equals((object)other);
+            }
+
+            public override string ToString()
+            {
+                return CompoundName;
             }
         }
 
@@ -703,7 +717,10 @@ namespace Gallio.ReSharperRunner.Reflection
             public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
             public abstract IList<IGenericParameterInfo> GetGenericParameters();
 
-            public abstract Type Resolve();
+            public Type Resolve()
+            {
+                return ReflectorUtils.ResolveType(this);
+            }
 
             MemberInfo IMemberInfo.Resolve()
             {
@@ -927,11 +944,6 @@ namespace Gallio.ReSharperRunner.Reflection
                 return GetAttributeInfosForElement(TypeElement, inherit);
             }
 
-            public override Type Resolve()
-            {
-                return Assembly.Resolve().GetType(FullName, true);
-            }
-
             private string NamespaceName
             {
                 get { return CLRTypeName.NamespaceName; }
@@ -1116,11 +1128,6 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 yield break;
             }
-
-            public override Type Resolve()
-            {
-                return EffectiveClassType.Resolve();
-            }
         }
 
         private sealed class ArrayTypeWrapper : ConstructedTypeWrapper<IArrayType>
@@ -1154,20 +1161,8 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // TODO: Should return a type of System.Array.
-                    throw new NotImplementedException();
+                    return Reflector.Wrap(typeof(Array));
                 }
-            }
-
-            public override Type Resolve()
-            {
-                int rank = Target.Rank;
-                Type elementType = ElementType.Resolve();
-
-                if (rank == 1)
-                    return elementType.MakeArrayType();
-                else
-                    return elementType.MakeArrayType(rank);
             }
         }
 
@@ -1197,14 +1192,8 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    // TODO: Should return System.Pointer.
-                    throw new NotImplementedException();
+                    return Reflector.Wrap(typeof(Pointer));
                 }
-            }
-
-            public override Type Resolve()
-            {
-                return ElementType.Resolve().MakePointerType();
             }
         }
 
@@ -1303,8 +1292,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ConstructorInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveConstructor(this);
             }
 
             public bool Equals(IConstructorInfo other)
@@ -1337,8 +1325,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public MethodInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveMethod(this);
             }
         }
 
@@ -1390,8 +1377,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public PropertyInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveProperty(this);
             }
 
             public bool Equals(ISlotInfo other)
@@ -1469,8 +1455,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public FieldInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveField(this);
             }
 
             public bool Equals(ISlotInfo other)
@@ -1503,8 +1488,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public EventInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveEvent(this);
             }
 
             public bool Equals(IEventInfo other)
@@ -1583,8 +1567,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ParameterInfo Resolve()
             {
-                // TODO
-                throw new NotImplementedException();
+                return ReflectorUtils.ResolveParameter(this);
             }
 
             public bool Equals(ISlotInfo other)

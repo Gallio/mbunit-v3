@@ -70,7 +70,8 @@ namespace Gallio.ReSharperRunner
 
         public void ExploreAssembly(IMetadataAssembly assembly, IProject project, UnitTestElementConsumer consumer)
         {
-            IAssemblyInfo assemblyInfo = new MetadataReflector(project).Wrap(assembly);
+            MetadataReflector reflector = new MetadataReflector(project, ReflectorUtils.GetMetadataLoaderHack(assembly));
+            IAssemblyInfo assemblyInfo = reflector.Wrap(assembly);
 
             if (assemblyInfo != null)
             {

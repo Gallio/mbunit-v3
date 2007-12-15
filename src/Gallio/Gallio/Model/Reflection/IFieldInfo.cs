@@ -42,7 +42,7 @@ namespace Gallio.Model.Reflection
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
         /// <returns>The native reflection target</returns>
-        /// <exception cref="NotSupportedException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="CodeElementResolveException">Thrown if the target cannot be resolved</exception>
         new FieldInfo Resolve();
     }
 }

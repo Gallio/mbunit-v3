@@ -68,6 +68,7 @@ namespace Gallio.Model.Reflection
         /// Gets the attribute as an object.
         /// </summary>
         /// <returns>The attribute</returns>
+        /// <exception cref="CodeElementResolveException">Thrown if the attribute could not be resolved</exception>
         object Resolve();
     }
 }

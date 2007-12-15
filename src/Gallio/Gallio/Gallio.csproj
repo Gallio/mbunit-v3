@@ -118,6 +118,7 @@
     <Compile Include="Model\Execution\ContextualTestStepMonitor.cs" />
     <Compile Include="Model\Reflection\CodeElementKind.cs" />
     <Compile Include="Model\Reflection\IGenericParameterInfo.cs" />
+    <Compile Include="Model\Reflection\CodeElementResolveException.cs" />
     <Compile Include="Model\Serialization\TestInstanceData.cs" />
     <Compile Include="Model\Serialization\TestPackageData.cs" />
     <Compile Include="Model\TestInstanceInfo.cs" />
