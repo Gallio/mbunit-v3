@@ -74,6 +74,10 @@ namespace MbUnit.Model.Builder
         /// <param name="method">The method</param>
         protected virtual void InitializeMethodTest(ITestBuilder methodTestBuilder, IMethodInfo method)
         {
+            string xmlDocumentation = method.GetXmlDocumentation();
+            if (xmlDocumentation != null)
+                methodTestBuilder.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+
             foreach (IPattern pattern in methodTestBuilder.TestModelBuilder.ReflectionPolicy.GetPatterns(method))
                 pattern.ProcessTest(methodTestBuilder, method);
 

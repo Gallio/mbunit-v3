@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model;
 using Gallio.Model.Reflection;
 
 namespace MbUnit.Model.Builder
@@ -72,6 +73,10 @@ namespace MbUnit.Model.Builder
         /// <param name="slot">The slot</param>
         protected virtual void InitializeTestParameter(ITestParameterBuilder testParameterBuilder, ISlotInfo slot)
         {
+            string xmlDocumentation = slot.GetXmlDocumentation();
+            if (xmlDocumentation != null)
+                testParameterBuilder.TestParameter.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+
             foreach (IPattern pattern in testParameterBuilder.TestModelBuilder.ReflectionPolicy.GetPatterns(slot))
                 pattern.ProcessTestParameter(testParameterBuilder, slot);
         }

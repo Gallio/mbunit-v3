@@ -24,8 +24,7 @@ namespace MbUnit.Tests.Framework.Reflection
     [Author("Vadim")]
     public class ReflectorStaticTests
     {
-        public static readonly string MSCorLibAssembly = Environment.GetEnvironmentVariable("SystemRoot")
-            + @"\Microsoft.NET\Framework\v2.0.50727\mscorlib.dll";
+        public static readonly string MSCorLibAssembly = typeof(Int32).Assembly.FullName;
         TestSample _sampleObject;
 
         [SetUp]

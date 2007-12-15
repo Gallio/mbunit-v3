@@ -74,6 +74,10 @@ namespace MbUnit.Model.Builder
         /// <param name="type">The type</param>
         protected virtual void InitializeTest(ITestBuilder typeTestBuilder, ITypeInfo type)
         {
+            string xmlDocumentation = type.GetXmlDocumentation();
+            if (xmlDocumentation != null)
+                typeTestBuilder.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+
             foreach (IPattern pattern in typeTestBuilder.TestModelBuilder.ReflectionPolicy.GetPatterns(type))
                 pattern.ProcessTest(typeTestBuilder, type);
 
