@@ -37,12 +37,6 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         private const string ExplorerStateKey = "NUnit:ExplorerState";
         private const string NUnitFrameworkAssemblyDisplayName = @"nunit.framework";
 
-        /// <summary>
-        /// The metadata key used for recording NUnit's internal test type
-        /// when it couldn't be mapped to one of the standard types.
-        /// </summary>
-        private const string NUnitTestTypeKey = "NUnit:TestType";
-
         private sealed class ExplorerState
         {
             public readonly Dictionary<Version, ITest> FrameworkTests = new Dictionary<Version, ITest>();
@@ -140,7 +134,9 @@ namespace Gallio.Plugin.NUnitAdapter.Model
 
                 NUnitAssemblyTest assemblyTest = new NUnitAssemblyTest(assembly, runner);
                 PopulateMetadata(assemblyTest);
-                BuildTestChildren(assemblyTest);
+
+                foreach (NUnitITest assemblyTestSuite in runner.Test.Tests)
+                    BuildTestChildren(assemblyTest, assemblyTestSuite);
 
                 return assemblyTest;
             }
@@ -176,7 +172,6 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         {
             string kind;
             ICodeElementInfo codeElement;
-            bool unrecognizedTestType = false;
 
             switch (nunitTest.TestType)
             {
@@ -190,15 +185,9 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                     codeElement = ParseTestFixtureName(parentTest.CodeElement, nunitTest.TestName.FullName);
                     break;
 
-                case @"Test Suite":
-                    kind = ComponentKind.Suite;
-                    codeElement = null;
-                    break;
-
                 default:
                     kind = nunitTest.IsSuite ? ComponentKind.Suite : ComponentKind.Test;
-                    codeElement = null;
-                    unrecognizedTestType = true;
+                    codeElement = parentTest.CodeElement;
                     break;
             }
 
@@ -207,21 +196,18 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             test.Kind = kind;
             test.IsTestCase = !nunitTest.IsSuite;
 
-            if (unrecognizedTestType)
-                test.Metadata.Add(NUnitTestTypeKey, nunitTest.TestType);
-
             PopulateMetadata(test);
 
             parentTest.AddChild(test);
-            BuildTestChildren(test);
+            BuildTestChildren(test, nunitTest);
         }
 
-        private static void BuildTestChildren(NUnitTest test)
+        private static void BuildTestChildren(NUnitTest parentTest, NUnitITest parentNUnitTest)
         {
-            if (test.Test != null && test.Test.Tests != null)
+            if (parentNUnitTest.Tests != null)
             {
-                foreach (NUnitITest childNUnitTest in test.Test.Tests)
-                    BuildTest(test, childNUnitTest);
+                foreach (NUnitITest childNUnitTest in parentNUnitTest.Tests)
+                    BuildTest(parentTest, childNUnitTest);
             }
         }
 

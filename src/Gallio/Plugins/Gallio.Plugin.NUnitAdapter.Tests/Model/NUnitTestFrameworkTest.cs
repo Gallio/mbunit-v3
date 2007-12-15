@@ -69,7 +69,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
             Assert.AreEqual(1, rootTest.Children.Count);
 
             BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
-            Assert.AreSame(testModel, frameworkTest.Parent);
+            Assert.AreSame(testModel.RootTest, frameworkTest.Parent);
             Assert.AreEqual(ComponentKind.Framework, frameworkTest.Kind);
             Assert.IsNull(frameworkTest.CodeElement);
             Assert.AreEqual("NUnit v" + expectedVersion, frameworkTest.Name);
