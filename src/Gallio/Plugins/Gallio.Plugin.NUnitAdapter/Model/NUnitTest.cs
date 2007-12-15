@@ -14,9 +14,10 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Execution;
 using Gallio.Model;
 using Gallio.Model.Reflection;
+
+using NUnitITest = NUnit.Core.ITest;
 
 namespace Gallio.Plugin.NUnitAdapter.Model
 {
@@ -25,49 +26,28 @@ namespace Gallio.Plugin.NUnitAdapter.Model
     /// </summary>
     public class NUnitTest : BaseTest
     {
-        private readonly NUnit.Core.ITest test;
+        private NUnitITest test;
 
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <param name="templateBinding">The template binding that produced this test</param>
         /// <param name="test">The NUnit test, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="templateBinding"/> is null</exception>
-        public NUnitTest(string name, ICodeElementInfo codeElement,
-            NUnitFrameworkTemplateBinding templateBinding, NUnit.Core.ITest test)
-            : base(name, codeElement, templateBinding)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public NUnitTest(string name, ICodeElementInfo codeElement, NUnitITest test)
+            : base(name, codeElement)
         {
             this.test = test;
         }
 
         /// <summary>
-        /// Gets the NUnit test.
+        /// Gets or sets the NUnit test.
         /// </summary>
-        public NUnit.Core.ITest Test
+        public NUnitITest Test
         {
             get { return test; }
-        }
-
-        /// <summary>
-        /// Gets the binding.
-        /// </summary>
-        new public NUnitFrameworkTemplateBinding TemplateBinding
-        {
-            get { return (NUnitFrameworkTemplateBinding)base.TemplateBinding; }
-        }
-
-        /// <inheritdoc />
-        public override Factory<ITestController> TestControllerFactory
-        {
-            get { return CreateTestController; }
-        }
-
-        private ITestController CreateTestController()
-        {
-            return new NUnitTestController(TemplateBinding.Runner);
+            set { test = value; }
         }
     }
 }

@@ -43,9 +43,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\XunitTestExplorer.cs" />
     <Compile Include="Model\XunitAttributeInfoAdapter.cs" />
-    <Compile Include="Model\XunitFrameworkTemplate.cs" />
-    <Compile Include="Model\XunitFrameworkTemplateBinding.cs" />
     <Compile Include="Model\XunitMethodInfoAdapter.cs" />
     <Compile Include="Model\XunitTest.cs" />
     <Compile Include="Model\XunitTestController.cs" />

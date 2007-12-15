@@ -23,17 +23,17 @@ namespace Gallio.Model
     /// <summary>
     /// A read-only implementation of <see cref="ITest" /> for reflection.
     /// </summary>
-    public sealed class TestInfo : ModelComponentInfo, ITest
+    public sealed class TestInfo : TestComponentInfo, ITest
     {
-        private TemplateBindingInfo cachedTemplateBinding;
+        private TestParameterInfoList cachedParameters;
         private TestInfoList cachedDependencies;
         private TestInfo cachedParent;
         private TestInfoList cachedChildren;
 
         /// <summary>
-        /// Creates a read-only wrapper of the specified model object.
+        /// Creates a read-only wrapper of a test.
         /// </summary>
-        /// <param name="source">The source model object</param>
+        /// <param name="source">The source test</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
         public TestInfo(ITest source)
             : base(source)
@@ -45,25 +45,20 @@ namespace Gallio.Model
         {
             get { return Source.IsTestCase; }
         }
-        bool ITest.IsTestCase
-        {
-            get { return IsTestCase; }
-            set { throw new NotSupportedException(); }
-        }
 
         /// <inheritdoc />
-        public TemplateBindingInfo TemplateBinding
+        public TestParameterInfoList Parameters
         {
             get
             {
-                if (cachedTemplateBinding == null)
-                    Interlocked.CompareExchange(ref cachedTemplateBinding, new TemplateBindingInfo(Source.TemplateBinding), null);
-                return cachedTemplateBinding;
+                if (cachedParameters == null)
+                    Interlocked.CompareExchange(ref cachedParameters, new TestParameterInfoList(Source.Parameters), null);
+                return cachedParameters;
             }
         }
-        ITemplateBinding ITest.TemplateBinding
+        IList<ITestParameter> ITest.Parameters
         {
-            get { return TemplateBinding; }
+            get { return Parameters.AsModelList(); }
         }
 
         /// <inheritdoc />
@@ -91,7 +86,7 @@ namespace Gallio.Model
                 return cachedParent;
             }
         }
-        ITest IModelTreeNode<ITest>.Parent
+        ITest ITest.Parent
         {
             get { return Parent; }
             set { throw new NotSupportedException(); }
@@ -107,12 +102,32 @@ namespace Gallio.Model
                 return cachedChildren;
             }
         }
-        IList<ITest> IModelTreeNode<ITest>.Children
+        IList<ITest> ITest.Children
         {
             get { return Children.AsModelList(); }
         }
 
-        void IModelTreeNode<ITest>.AddChild(ITest node)
+        void ITest.AddChild(ITest node)
+        {
+            throw new NotSupportedException();
+        }
+
+        void ITest.AddDependency(ITest test)
+        {
+            throw new NotSupportedException();
+        }
+
+        IEnumerable<ITestInstance> ITest.GetInstances(bool guessDynamicInstances)
+        {
+            throw new NotSupportedException();
+        }
+
+        Factory<ITestController> ITest.TestControllerFactory
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        void ITest.AddParameter(ITestParameter parameter)
         {
             throw new NotSupportedException();
         }
@@ -121,14 +136,6 @@ namespace Gallio.Model
         new internal ITest Source
         {
             get { return (ITest)base.Source; }
-        }
-
-        Factory<ITestController> ITest.TestControllerFactory
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
         }
     }
 }

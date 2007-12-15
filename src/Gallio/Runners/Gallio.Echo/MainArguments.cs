@@ -154,21 +154,12 @@ namespace Gallio.Echo
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
-             ShortName= "",
-             LongName = "save-template-tree",
-             Description = "Save the template tree to a file as XML.",
+             ShortName = "stm",
+             LongName = "save-test-model",
+             Description = "Save the test model to a file as XML.",
              ValueLabel = "file"
              )]
-        public string SaveTemplateTree;
-
-        [CommandLineArgument(
-             CommandLineArgumentFlags.AtMostOnce,
-             ShortName = "",
-             LongName = "save-test-tree",
-             Description = "Save the test tree to a file as XML.",
-             ValueLabel = "file"
-             )]
-        public string SaveTestTree;
+        public string SaveTestModel;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
@@ -209,8 +200,7 @@ namespace Gallio.Echo
 
             sw.WriteLine("Verbosity: {0}", Verbosity);
             sw.WriteLine("No Echo Results: {0}", NoEchoResults);
-            sw.WriteLine("Save Template Tree: {0}", SaveTemplateTree);
-            sw.WriteLine("Save Test Tree: {0}", SaveTestTree);
+            sw.WriteLine("Save Test Model: {0}", SaveTestModel);
             sw.WriteLine("Shadow Copy Files: {0}", ShadowCopyFiles);
             return sw.ToString();
         }

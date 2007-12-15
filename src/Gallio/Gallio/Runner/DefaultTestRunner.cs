@@ -32,7 +32,6 @@ namespace Gallio.Runner
         private bool isDisposed;
 
         private TestEventDispatcher eventDispatcher;
-        private TemplateEnumerationOptions templateEnumerationOptions;
         private TestEnumerationOptions testEnumerationOptions;
         private TestExecutionOptions testExecutionOptions;
 
@@ -51,7 +50,6 @@ namespace Gallio.Runner
             this.domainFactory = domainFactory;
 
             eventDispatcher = new TestEventDispatcher();
-            templateEnumerationOptions = new TemplateEnumerationOptions();
             testEnumerationOptions = new TestEnumerationOptions();
             testExecutionOptions = new TestExecutionOptions();
         }
@@ -86,13 +84,11 @@ namespace Gallio.Runner
                     domain = null;
                 }
 
-                LoadPackageComplete = null;
-                BuildTemplatesComplete = null;
-                BuildTestsComplete = null;
-                RunStarting = null;
-                RunComplete = null;
+                LoadTestPackageComplete = null;
+                BuildTestModelComplete = null;
+                RunTestsStarting = null;
+                RunTestsComplete = null;
                 eventDispatcher = null;
-                templateEnumerationOptions = null;
                 testEnumerationOptions = null;
                 testExecutionOptions = null;
 
@@ -101,19 +97,16 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public event EventHandler LoadPackageComplete;
+        public event EventHandler LoadTestPackageComplete;
 
         /// <inheritdoc />
-        public event EventHandler BuildTemplatesComplete;
+        public event EventHandler BuildTestModelComplete;
 
         /// <inheritdoc />
-        public event EventHandler BuildTestsComplete;
+        public event EventHandler RunTestsStarting;
 
         /// <inheritdoc />
-        public event EventHandler RunStarting;
-
-        /// <inheritdoc />
-        public event EventHandler RunComplete;
+        public event EventHandler RunTestsComplete;
 
         /// <inheritdoc />
         public TestEventDispatcher EventDispatcher
@@ -122,24 +115,6 @@ namespace Gallio.Runner
             {
                 ThrowIfDisposed();
                 return eventDispatcher;
-            }
-        }
-
-        /// <inheritdoc />
-        public TemplateEnumerationOptions TemplateEnumerationOptions
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return templateEnumerationOptions;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                ThrowIfDisposed();
-
-                templateEnumerationOptions = value;
             }
         }
 
@@ -180,45 +155,39 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public TestPackage Package
+        public TestPackageData TestPackageData
         {
-            get { return Domain.Package; }
+            get { return Domain.TestPackageData; }
         }
 
         /// <inheritdoc />
-        public TemplateModel TemplateModel
+        public TestModelData TestModelData
         {
-            get { return Domain.TemplateModel; }
+            get { return Domain.TestModelData; }
         }
 
         /// <inheritdoc />
-        public TestModel TestModel
-        {
-            get { return Domain.TestModel; }
-        }
-
-        /// <inheritdoc />
-        public virtual void LoadPackage(TestPackage package, IProgressMonitor progressMonitor)
+        public virtual void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
-            if (package == null)
-                throw new ArgumentNullException(@"package");
+            if (packageConfig == null)
+                throw new ArgumentNullException("packageConfig");
             ThrowIfDisposed();
 
             try
             {
-                Domain.LoadPackage(package, progressMonitor);
+                Domain.LoadTestPackage(packageConfig, progressMonitor);
             }
             finally
             {
-                if (LoadPackageComplete != null)
-                    LoadPackageComplete(this, EventArgs.Empty);
+                if (LoadTestPackageComplete != null)
+                    LoadTestPackageComplete(this, EventArgs.Empty);
             }
         }
 
         /// <inheritdoc />
-        public virtual void BuildTemplates(IProgressMonitor progressMonitor)
+        public virtual void BuildTestModel(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
@@ -226,17 +195,17 @@ namespace Gallio.Runner
 
             try
             {
-                Domain.BuildTemplates(templateEnumerationOptions, progressMonitor);
+                Domain.BuildTestModel(testEnumerationOptions, progressMonitor);
             }
             finally
             {
-                if (BuildTemplatesComplete != null)
-                    BuildTemplatesComplete(this, EventArgs.Empty);
+                if (BuildTestModelComplete != null)
+                    BuildTestModelComplete(this, EventArgs.Empty);
             }
         }
 
         /// <inheritdoc />
-        public virtual void BuildTests(IProgressMonitor progressMonitor)
+        public virtual void RunTests(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
@@ -244,33 +213,15 @@ namespace Gallio.Runner
 
             try
             {
-                Domain.BuildTests(testEnumerationOptions, progressMonitor);
-            }
-            finally
-            {
-                if (BuildTestsComplete != null)
-                    BuildTestsComplete(this, EventArgs.Empty);
-            }
-        }
-
-        /// <inheritdoc />
-        public virtual void Run(IProgressMonitor progressMonitor)
-        {
-            if (progressMonitor == null)
-                throw new ArgumentNullException(@"progressMonitor");
-            ThrowIfDisposed();
-
-            try
-            {
-                if (RunStarting != null)
-                    RunStarting(this, EventArgs.Empty);
+                if (RunTestsStarting != null)
+                    RunTestsStarting(this, EventArgs.Empty);
 
                 Domain.RunTests(progressMonitor, testExecutionOptions);
             }
             finally
             {
-                if (RunComplete != null)
-                    RunComplete(this, EventArgs.Empty);
+                if (RunTestsComplete != null)
+                    RunTestsComplete(this, EventArgs.Empty);
             }
         }
 

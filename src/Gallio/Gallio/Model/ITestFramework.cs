@@ -13,10 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.Reflection;
 using Gallio.Model;
-using Gallio.Model.Reflection;
 
 namespace Gallio.Model
 {
@@ -40,18 +37,12 @@ namespace Gallio.Model
         ITestExplorer CreateTestExplorer();
 
         /// <summary>
-        /// Prepares assemblies for analysis with reflection.
-        /// A test framework can take advantage of this opportunity to ensure that
-        /// all assembly dependencies can be resolved as needed.
+        /// Prepares a test package in advance of test exploration.
+        /// A test framework can take advantage of this opportunity to configure the
+        /// assembly resolve to ensure that all assembly dependencies can be resolved
+        /// as needed.
         /// </summary>
-        /// <param name="assemblies">The list of assemblies</param>
-        void PrepareAssemblies(IList<IAssemblyInfo> assemblies);
-
-        /// <summary>
-        /// Builds templates from the specified assemblies.
-        /// </summary>
-        /// <param name="builder">The template tree builder</param>
-        /// <param name="assemblies">The list of assemblies</param>
-        void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies);
+        /// <param name="package">The test package</param>
+        void PrepareTestPackage(TestPackage package);
     }
 }

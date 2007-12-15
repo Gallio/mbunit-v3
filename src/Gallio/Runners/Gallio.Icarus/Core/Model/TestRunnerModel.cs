@@ -58,24 +58,19 @@ namespace Gallio.Icarus.Core.Model
 
         #region Methods
 
-        public void LoadPackage(TestPackage testpackage)
+        public void LoadPackage(TestPackageConfig testpackage)
         {
             // attach report monitor to test runner
             reportMonitor = new ReportMonitor();
             reportMonitor.Attach(projectPresenter.TestRunner);
 
-            projectPresenter.TestRunner.LoadPackage(testpackage, new StatusStripProgressMonitor(projectPresenter));
+            projectPresenter.TestRunner.LoadTestPackage(testpackage, new StatusStripProgressMonitor(projectPresenter));
         }
 
-        public void BuildTemplates()
+        public TestModelData BuildTests()
         {
-            projectPresenter.TestRunner.BuildTemplates(new StatusStripProgressMonitor(projectPresenter));
-        }
-
-        public TestModel BuildTests()
-        {
-            projectPresenter.TestRunner.BuildTests(new StatusStripProgressMonitor(projectPresenter));
-            return projectPresenter.TestRunner.TestModel;
+            projectPresenter.TestRunner.BuildTestModel(new StatusStripProgressMonitor(projectPresenter));
+            return projectPresenter.TestRunner.TestModelData;
         }
 
         public void RunTests()
@@ -83,7 +78,7 @@ namespace Gallio.Icarus.Core.Model
             testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor);
             testRunnerMonitor.Attach(projectPresenter.TestRunner);
             statusStripProgressMonitor = new StatusStripProgressMonitor(projectPresenter);
-            projectPresenter.TestRunner.Run(statusStripProgressMonitor);
+            projectPresenter.TestRunner.RunTests(statusStripProgressMonitor);
             statusStripProgressMonitor.Done();
             testRunnerMonitor.Detach();
         }

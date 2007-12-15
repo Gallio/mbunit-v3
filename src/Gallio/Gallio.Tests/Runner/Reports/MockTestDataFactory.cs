@@ -25,16 +25,10 @@ namespace Gallio.Tests.Runner.Reports
     /// </summary>
     public static class MockTestDataFactory
     {
-        public static TemplateModel CreateEmptyTemplateModel()
-        {
-            TemplateData root = new TemplateData("root", "root");
-            return new TemplateModel(root);
-        }
-
-        public static TestModel CreateEmptyTestModel()
+        public static TestModelData CreateEmptyTestModel()
         {
             TestData root = new TestData("root", "root");
-            return new TestModel(root);
+            return new TestModelData(root);
         }
     }
 }

@@ -20,11 +20,12 @@ using MbUnit2::MbUnit.Framework;
 using Gallio.Model.Filters;
 using Gallio.Model;
 using Rhino.Mocks;
+using ITestComponent=Gallio.Model.ITestComponent;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(IdFilter<IModelComponent>))]
+    [TestsOn(typeof(IdFilter<ITestComponent>))]
     public class IdFilterTest : BaseUnitTest
     {
         [RowTest]
@@ -32,12 +33,12 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, "otherValue")]
         public void IsMatchCombinations(bool expectedMatch, string value)
         {
-            IModelComponent component = Mocks.CreateMock<IModelComponent>();
+            ITestComponent component = Mocks.CreateMock<ITestComponent>();
             SetupResult.For(component.Id).Return(value);
             Mocks.ReplayAll();
 
             Assert.AreEqual(expectedMatch,
-                new IdFilter<IModelComponent>(new EqualityFilter<string>("expectedValue")).IsMatch(component));
+                new IdFilter<ITestComponent>(new EqualityFilter<string>("expectedValue")).IsMatch(component));
         }
 
         [RowTest]
@@ -45,7 +46,7 @@ namespace Gallio.Tests.Model.Filters
         [Row("id1212")]
         public void ToStringTest(string id)
         {
-            Filter<IModelComponent> filter = new IdFilter<IModelComponent>(new EqualityFilter<string>(id));
+            Filter<ITestComponent> filter = new IdFilter<ITestComponent>(new EqualityFilter<string>(id));
             Assert.AreEqual("Id(Equality('" + id + "'))", filter.ToString());
         }
     }

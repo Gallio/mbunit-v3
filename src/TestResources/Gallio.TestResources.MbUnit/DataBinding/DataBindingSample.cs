@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using MbUnit.Framework;
 
 namespace Gallio.TestResources.MbUnit.DataBinding
@@ -26,7 +24,7 @@ namespace Gallio.TestResources.MbUnit.DataBinding
     [TestFixture]
     public class BindingSample
     {
-        [RowTest]
+        [Test]
         [Row(1, "quux", "2002/01/01")]
         public void AutoBindingByPropertyIndex(int a, string b, DateTime c)
         {

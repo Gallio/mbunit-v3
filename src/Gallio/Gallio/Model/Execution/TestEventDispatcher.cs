@@ -27,11 +27,6 @@ namespace Gallio.Model.Execution
         private List<ITestListener> listeners;
 
         /// <summary>
-        /// The event fired when notified of a message event.
-        /// </summary>
-        public EventHandler<MessageEventArgs> Message;
-
-        /// <summary>
         /// The event fired when notified of a test lifecycle event.
         /// </summary>
         public EventHandler<LifecycleEventArgs> Lifecycle;
@@ -53,17 +48,6 @@ namespace Gallio.Model.Execution
                     listeners = new List<ITestListener>();
                 return listeners;
             }
-        }
-
-        /// <inheritdoc />
-        public void NotifyMessageEvent(MessageEventArgs e)
-        {
-            if (Message != null)
-                Message(this, e);
-
-            if (listeners != null)
-                foreach (ITestListener listener in listeners)
-                    listener.NotifyMessageEvent(e);
         }
 
         /// <inheritdoc />

@@ -48,40 +48,12 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         }
 
         [Test]
-        public void PopulateTemplateTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
+        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
         {
             sampleAssembly = typeof(Int32).Assembly;
-            PopulateTemplateTree();
+            PopulateTestTree();
 
-            Assert.AreEqual(0, rootTemplate.Children.Count);
-        }
-
-        [Test]
-        public void PopulateTemplateTree_WhenAssemblyReferencesMbUnitV2_ContainsJustTheFrameworkTemplate()
-        {
-            Version expectedVersion = typeof(MbUnit2::MbUnit.Framework.Assert).Assembly.GetName().Version;
-            PopulateTemplateTree();
-
-            Assert.IsNull(rootTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Root, rootTemplate.Kind);
-            Assert.IsNull(rootTemplate.CodeElement);
-            Assert.IsTrue(rootTemplate.IsGenerator);
-            Assert.AreEqual(1, rootTemplate.Children.Count);
-
-            BaseTemplate frameworkTemplate = (BaseTemplate)rootTemplate.Children[0];
-            Assert.AreSame(rootTemplate, frameworkTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
-            Assert.IsNull(frameworkTemplate.CodeElement);
-            Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTemplate.Name);
-            Assert.IsTrue(frameworkTemplate.IsGenerator);
-            Assert.AreEqual(1, frameworkTemplate.Children.Count);
-
-            MbUnit2AssemblyTemplate assemblyTemplate = (MbUnit2AssemblyTemplate)frameworkTemplate.Children[0];
-            Assert.AreSame(frameworkTemplate, assemblyTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Assembly, assemblyTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTemplate.CodeElement.CodeReference);
-            Assert.IsTrue(assemblyTemplate.IsGenerator);
-            Assert.AreEqual(0, assemblyTemplate.Children.Count);
+            Assert.AreEqual(0, testModel.RootTest.Children.Count);
         }
 
         [Test]
@@ -90,6 +62,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
             Version expectedVersion = typeof(MbUnit2::MbUnit.Framework.Assert).Assembly.GetName().Version;
             PopulateTestTree();
 
+            RootTest rootTest = testModel.RootTest;
             Assert.IsNull(rootTest.Parent);
             Assert.AreEqual(ComponentKind.Root, rootTest.Kind);
             Assert.IsNull(rootTest.CodeElement);
@@ -97,7 +70,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
             Assert.AreEqual(1, rootTest.Children.Count);
 
             BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
-            Assert.AreSame(rootTest, frameworkTest.Parent);
+            Assert.AreSame(testModel, frameworkTest.Parent);
             Assert.AreEqual(ComponentKind.Framework, frameworkTest.Kind);
             Assert.IsNull(frameworkTest.CodeElement);
             Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
@@ -147,7 +120,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(SimpleTest).Name);
+            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
             MbUnit2Test passTest = (MbUnit2Test)GetDescendantByName(test, "SimpleTest.Pass");
             MbUnit2Test failTest = (MbUnit2Test)GetDescendantByName(test, "SimpleTest.Fail");
 
@@ -161,7 +134,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test test = (MbUnit2Test) GetDescendantByName(rootTest, typeof(AuthorNameSample).Name);
+            MbUnit2Test test = (MbUnit2Test) GetDescendantByName(testModel.RootTest, typeof(AuthorNameSample).Name);
             Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(null, test.Metadata.GetValue(MetadataKeys.AuthorEmail));
             Assert.AreEqual(null, test.Metadata.GetValue(MetadataKeys.AuthorHomepage));
@@ -172,7 +145,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(AuthorNameAndEmailSample).Name);
+            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(AuthorNameAndEmailSample).Name);
             Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual("joe@example.com", test.Metadata.GetValue(MetadataKeys.AuthorEmail));
             Assert.AreEqual(null, test.Metadata.GetValue(MetadataKeys.AuthorHomepage));
@@ -183,7 +156,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(AuthorNameAndEmailAndHomepageSample).Name);
+            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(AuthorNameAndEmailAndHomepageSample).Name);
             Assert.AreEqual("joe", test.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual("joe@example.com", test.Metadata.GetValue(MetadataKeys.AuthorEmail));
             Assert.AreEqual("http://www.example.com/", test.Metadata.GetValue(MetadataKeys.AuthorHomepage));
@@ -194,7 +167,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(FixtureCategorySample).Name);
+            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(FixtureCategorySample).Name);
             Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.CategoryName));
         }
 
@@ -203,7 +176,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(ImportanceSample).Name);
+            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(ImportanceSample).Name);
             Assert.AreEqual(MbUnit2::MbUnit.Framework.TestImportance.Critical.ToString(), test.Metadata.GetValue(MetadataKeys.Importance));
         }
 
@@ -212,7 +185,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(TestsOnSample).Name);
+            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(TestsOnSample).Name);
             Assert.AreEqual(typeof(TestsOnSample).AssemblyQualifiedName, test.Metadata.GetValue(MetadataKeys.TestsOn));
         }
 
@@ -221,7 +194,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(rootTest, typeof(FixtureDescriptionSample).Name);
+            MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(FixtureDescriptionSample).Name);
             Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
         }
 
@@ -230,7 +203,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         {
             PopulateTestTree();
 
-            MbUnit2Test fixture = (MbUnit2Test)GetDescendantByName(rootTest, typeof(TestDescriptionSample).Name);
+            MbUnit2Test fixture = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(TestDescriptionSample).Name);
             MbUnit2Test test = (MbUnit2Test)fixture.Children[0];
             Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
         }
@@ -238,22 +211,22 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
         [Test]
         public void MetadataImport_AssemblyAttributes()
         {
-            PopulateTemplateTree();
+            PopulateTestTree();
 
-            BaseTemplate frameworkTemplate = (BaseTemplate)rootTemplate.Children[0];
-            MbUnit2AssemblyTemplate assemblyTemplate = (MbUnit2AssemblyTemplate)frameworkTemplate.Children[0];
+            BaseTest frameworkTest = (BaseTest)testModel.RootTest.Children[0];
+            MbUnit2AssemblyTest assemblyTest = (MbUnit2AssemblyTest)frameworkTest.Children[0];
 
-            Assert.AreEqual("MbUnit Project", assemblyTemplate.Metadata.GetValue(MetadataKeys.Company));
-            Assert.AreEqual("Test", assemblyTemplate.Metadata.GetValue(MetadataKeys.Configuration));
-            StringAssert.Contains(assemblyTemplate.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
-            Assert.AreEqual("A sample test assembly for MbUnit v2.", assemblyTemplate.Metadata.GetValue(MetadataKeys.Description));
-            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual("Gallio.TestResources.MbUnit2", assemblyTemplate.Metadata.GetValue(MetadataKeys.Title));
-            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Trademark));
+            Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
+            Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
+            StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
+            Assert.AreEqual("A sample test assembly for MbUnit v2.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
+            Assert.AreEqual("Gallio.TestResources.MbUnit2", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
 
-            Assert.AreEqual("1.2.3.4", assemblyTemplate.Metadata.GetValue(MetadataKeys.InformationalVersion));
-            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.FileVersion));
-            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.Version));
+            Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));
+            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
+            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
         }
     }
 }

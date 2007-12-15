@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
 
@@ -28,7 +27,7 @@ namespace Gallio.Runner.Reports
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class PackageRun
     {
-        private readonly List<TestRun> testRuns;
+        private readonly List<TestInstanceRun> testInstanceRuns;
         private PackageRunStatistics statistics;
         private DateTime startTime;
         private DateTime endTime;
@@ -38,7 +37,7 @@ namespace Gallio.Runner.Reports
         /// </summary>
         public PackageRun()
         {
-            testRuns = new List<TestRun>();
+            testInstanceRuns = new List<TestInstanceRun>();
         }
 
         /// <summary>
@@ -64,11 +63,11 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets the list of test runs performed as part of the package run.
         /// </summary>
-        [XmlArray("testRuns", Namespace=SerializationUtils.XmlNamespace, IsNullable=false)]
-        [XmlArrayItem("testRun", typeof(TestRun), Namespace=SerializationUtils.XmlNamespace, IsNullable=false)]
-        public List<TestRun> TestRuns
+        [XmlArray("testInstanceRuns", Namespace=SerializationUtils.XmlNamespace, IsNullable=false)]
+        [XmlArrayItem("testInstanceRun", typeof(TestInstanceRun), Namespace=SerializationUtils.XmlNamespace, IsNullable=false)]
+        public List<TestInstanceRun> TestInstanceRuns
         {
-            get { return testRuns; }
+            get { return testInstanceRuns; }
         }
 
         /// <summary>
@@ -96,13 +95,13 @@ namespace Gallio.Runner.Reports
         /// Recursively enumerates all test run steps.
         /// </summary>
         [XmlIgnore]
-        public IEnumerable<StepRun> StepRuns
+        public IEnumerable<TestStepRun> TestStepRuns
         {
             get
             {
-                foreach (TestRun testRun in testRuns)
-                    foreach (StepRun stepRun in testRun.StepRuns)
-                        yield return stepRun;
+                foreach (TestInstanceRun testInstanceRun in testInstanceRuns)
+                    foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
+                        yield return testStepRun;
             }
         }
     }

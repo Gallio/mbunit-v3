@@ -21,7 +21,7 @@ using Gallio.Model;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// Builds filters for <see cref="IModelComponent"/> objects.
+    /// Builds filters for <see cref="ITestComponent"/> objects.
     /// </summary>
     /// <remarks>
     /// Recognizes the following filter keys:
@@ -34,9 +34,9 @@ namespace Gallio.Model.Filters
     /// <item>*: All other names are assumed to correspond to metadata keys</item>
     /// </list>
     /// </remarks>
-    /// <typeparam name="T">The <see cref="IModelComponent"/> subtype</typeparam>
+    /// <typeparam name="T">The <see cref="ITestComponent"/> subtype</typeparam>
     public class ModelComponentFilterFactory<T> : IFilterFactory<T>
-        where T : IModelComponent
+        where T : ITestComponent
     {
         /// <inheritdoc />
         public Filter<T> CreateFilter(string key, Filter<string> valueFilter)

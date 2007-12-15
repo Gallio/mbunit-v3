@@ -36,16 +36,16 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Integration
         [Test]
         public void PassTestPassed()
         {
-            TestRun testRun = GetTestRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")));
-            Assert.AreEqual(TestOutcome.Passed, testRun.RootStepRun.Result.Outcome);
+            TestInstanceRun run = GetFirstTestInstanceRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")));
+            Assert.AreEqual(TestOutcome.Passed, run.RootTestStepRun.Result.Outcome);
         }
 
         [Test]
         public void FailTestFailed()
         {
-            TestRun testRun = GetTestRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
-            Assert.AreEqual(TestOutcome.Failed, testRun.RootStepRun.Result.Outcome);
-            StringAssert.Contains(testRun.RootStepRun.ExecutionLog.GetStream(LogStreamNames.Failures).ToString(), "Boom");
+            TestInstanceRun run = GetFirstTestInstanceRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
+            Assert.AreEqual(TestOutcome.Failed, run.RootTestStepRun.Result.Outcome);
+            StringAssert.Contains(run.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.Failures).ToString(), "Boom");
         }
     }
 }

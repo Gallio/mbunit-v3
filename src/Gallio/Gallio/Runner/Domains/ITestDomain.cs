@@ -59,21 +59,14 @@ namespace Gallio.Runner.Domains
         /// </summary>
         /// <exception cref="RunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        TestPackage Package { get; }
-
-        /// <summary>
-        /// Gets the template model, or null if templates have not been built yet.
-        /// </summary>
-        /// <exception cref="RunnerException">Thrown if an error occurs</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        TemplateModel TemplateModel { get; }
+        TestPackageData TestPackageData { get; }
 
         /// <summary>
         /// Gets the test model, or null if tests have not been built yet.
         /// </summary>
         /// <exception cref="RunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        TestModel TestModel { get; }
+        TestModelData TestModelData { get; }
 
         /// <summary>
         /// Sets the test listener for the domain.
@@ -84,30 +77,23 @@ namespace Gallio.Runner.Domains
         /// <summary>
         /// Loads a test package into the test domain.
         /// </summary>
-        /// <param name="package">The test package to load</param>
+        /// <param name="packageConfig">The test package configuration to load</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="packageConfig"/> is null</exception>
         /// <exception cref="RunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void LoadPackage(TestPackage package, IProgressMonitor progressMonitor);
+        void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Builds the tree of templates.
-        /// </summary>
-        /// <param name="options">The template enumeration options</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
-        /// <exception cref="RunnerException">Thrown if an error occurs</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void BuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Builds the tree of tests.
+        /// Populates the test model.
         /// </summary>
         /// <param name="options">The test enumeration options</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
-        void BuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor);
+        /// <exception cref="RunnerException">Thrown if an error occurs</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadTestPackage" /> has not been called.</exception>
+        void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.
@@ -115,6 +101,7 @@ namespace Gallio.Runner.Domains
         /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test execution options</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTestModel" /> has not been called.</exception>
         void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options);
 
         /// <summary>

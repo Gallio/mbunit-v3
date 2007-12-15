@@ -47,33 +47,12 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
         }
 
         [Test]
-        public void PopulateTemplateTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
+        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
         {
             sampleAssembly = typeof(Int32).Assembly;
-            PopulateTemplateTree();
+            PopulateTestTree();
 
-            Assert.AreEqual(0, rootTemplate.Children.Count);
-        }
-
-        [Test]
-        public void PopulateTemplateTree_WhenAssemblyReferencesNUnit_ContainsJustTheFrameworkTemplate()
-        {
-            Version expectedVersion = typeof(NUnit.Framework.Assert).Assembly.GetName().Version;
-            PopulateTemplateTree();
-
-            Assert.IsNull(rootTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Root, rootTemplate.Kind);
-            Assert.IsNull(rootTemplate.CodeElement);
-            Assert.IsTrue(rootTemplate.IsGenerator);
-            Assert.AreEqual(1, rootTemplate.Children.Count);
-
-            BaseTemplate frameworkTemplate = (BaseTemplate)rootTemplate.Children[0];
-            Assert.AreSame(rootTemplate, frameworkTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
-            Assert.IsNull(frameworkTemplate.CodeElement);
-            Assert.AreEqual("NUnit v" + expectedVersion, frameworkTemplate.Name);
-            Assert.IsTrue(frameworkTemplate.IsGenerator);
-            Assert.AreEqual(0, frameworkTemplate.Children.Count);
+            Assert.AreEqual(0, testModel.RootTest.Children.Count);
         }
 
         [Test]
@@ -82,6 +61,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
             Version expectedVersion = typeof(NUnit.Framework.Assert).Assembly.GetName().Version;
             PopulateTestTree();
 
+            RootTest rootTest = testModel.RootTest;
             Assert.IsNull(rootTest.Parent);
             Assert.AreEqual(ComponentKind.Root, rootTest.Kind);
             Assert.IsNull(rootTest.CodeElement);
@@ -89,7 +69,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
             Assert.AreEqual(1, rootTest.Children.Count);
 
             BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
-            Assert.AreSame(rootTest, frameworkTest.Parent);
+            Assert.AreSame(testModel, frameworkTest.Parent);
             Assert.AreEqual(ComponentKind.Framework, frameworkTest.Kind);
             Assert.IsNull(frameworkTest.CodeElement);
             Assert.AreEqual("NUnit v" + expectedVersion, frameworkTest.Name);
@@ -138,7 +118,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            NUnitTest test = (NUnitTest)GetDescendantByName(rootTest, typeof(SimpleTest).Name);
+            NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
             NUnitTest passTest = (NUnitTest)GetDescendantByName(test, "Pass");
             NUnitTest failTest = (NUnitTest)GetDescendantByName(test, "Fail");
 
@@ -152,7 +132,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            NUnitTest test = (NUnitTest)GetDescendantByName(rootTest, typeof(DescriptionSample).Name);
+            NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(DescriptionSample).Name);
             Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
         }
 
@@ -161,7 +141,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            NUnitTest test = (NUnitTest)GetDescendantByName(rootTest, typeof(CategorySample).Name);
+            NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(CategorySample).Name);
             Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.CategoryName));
         }
 
@@ -170,7 +150,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            NUnitTest fixture = (NUnitTest)GetDescendantByName(rootTest, typeof(IgnoreReasonSample).Name);
+            NUnitTest fixture = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(IgnoreReasonSample).Name);
             NUnitTest test = (NUnitTest)fixture.Children[0];
             Assert.AreEqual("For testing purposes.", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
         }
@@ -180,7 +160,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            NUnitTest test = (NUnitTest)GetDescendantByName(rootTest, typeof(PropertySample).Name);
+            NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(PropertySample).Name);
             Assert.AreEqual("customvalue-1", test.Metadata.GetValue("customkey-1"));
             Assert.AreEqual("customvalue-2", test.Metadata.GetValue("customkey-2"));
         }
@@ -190,7 +170,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
+            BaseTest frameworkTest = (BaseTest)testModel.RootTest.Children[0];
             NUnitTest assemblyTest = (NUnitTest)frameworkTest.Children[0];
 
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
@@ -211,7 +191,7 @@ namespace Gallio.Plugin.NUnitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            NUnitTest fixture = (NUnitTest)GetDescendantByName(rootTest, typeof(AmbiguousMatchSample).Name);
+            NUnitTest fixture = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(AmbiguousMatchSample).Name);
             Assert.AreEqual(1, fixture.Children.Count);
 
             NUnitTest test = (NUnitTest) fixture.Children[0];

@@ -22,44 +22,45 @@ using System;
 using Gallio.Model.Filters;
 using Gallio.Model;
 using Rhino.Mocks;
+using ITestComponent=Gallio.Model.ITestComponent;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(NamespaceFilter<IModelComponent>))]
+    [TestsOn(typeof(NamespaceFilter<ITestComponent>))]
     public class NamespaceFilterTest : BaseUnitTest
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void NullArgument()
         {
-            new NamespaceFilter<IModelComponent>(null);
+            new NamespaceFilter<ITestComponent>(null);
         }
 
         [RowTest]
         [Row(true, typeof(NamespaceFilterTest))]
-        [Row(false, typeof(NamespaceFilter<IModelComponent>))]
+        [Row(false, typeof(NamespaceFilter<ITestComponent>))]
         [Row(false, null)]
         public void IsMatchCombinations(bool expectedMatch, Type type)
         {
             ICodeElementInfo codeElement = type != null ? Reflector.Wrap(type) : null;
 
-            IModelComponent component = Mocks.CreateMock<IModelComponent>();
+            ITestComponent component = Mocks.CreateMock<ITestComponent>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
 
-            Assert.AreEqual(expectedMatch, new NamespaceFilter<IModelComponent>(
+            Assert.AreEqual(expectedMatch, new NamespaceFilter<ITestComponent>(
                 new EqualityFilter<string>(typeof(NamespaceFilterTest).Namespace)).IsMatch(component));
         }
 
         [RowTest]
         [Row(typeof(NamespaceFilterTest))]
-        [Row(typeof(NamespaceFilter<IModelComponent>))]
+        [Row(typeof(NamespaceFilter<ITestComponent>))]
         //[Row(null)]
         public void ToStringTest(Type type)
         {
             string namespaceName = type.Namespace;
-            NamespaceFilter<IModelComponent> filter = new NamespaceFilter<IModelComponent>(
+            NamespaceFilter<ITestComponent> filter = new NamespaceFilter<ITestComponent>(
                 new EqualityFilter<string>(namespaceName));
             Assert.AreEqual("Namespace(Equality('" + namespaceName + "'))", filter.ToString());
         }

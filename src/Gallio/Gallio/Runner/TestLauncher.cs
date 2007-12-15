@@ -60,7 +60,7 @@ namespace Gallio.Runner
     {
         #region Private Members
 
-        private TestPackage testPackage;
+        private TestPackageConfig testPackageConfig;
         private RuntimeSetup runtimeSetup;
 
         private readonly List<string> reportFormats;
@@ -73,7 +73,6 @@ namespace Gallio.Runner
 
         private Factory<ITestRunner> testRunnerFactory;
         private bool echoResults;
-        private string templateModelFilename;
         private string testModelFilename;
 
         private string reportDirectory;
@@ -89,7 +88,7 @@ namespace Gallio.Runner
         /// </summary>
         public TestLauncher()
         {
-            testPackage = new TestPackage();
+            testPackageConfig = new TestPackageConfig();
             testRunnerFactory = Runner.TestRunnerFactory.CreateIsolatedTestRunner;
 
             reportDirectory = @"";
@@ -111,7 +110,7 @@ namespace Gallio.Runner
         {
             // Help out the GC a little bit.
             runtimeSetup = null;
-            testPackage = null;
+            testPackageConfig = null;
             progressMonitorProvider = null;
             logger = null;
             filter = null;
@@ -198,19 +197,19 @@ namespace Gallio.Runner
         /// Gets or sets the test package.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        public TestPackage TestPackage
+        public TestPackageConfig TestPackageConfig
         {
             get
             {
                 ThrowIfDisposed();
-                return testPackage;
+                return testPackageConfig;
             }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
                 ThrowIfDisposed();
-                testPackage = value;
+                testPackageConfig = value;
             }
         }
 
@@ -296,29 +295,6 @@ namespace Gallio.Runner
             {
                 ThrowIfDisposed();
                 echoResults = value;
-            }
-        }
-
-        /// <summary>
-        /// <para>
-        /// Gets or sets the name of a file to which the template model
-        /// should be persisted, or <c>null</c> if none.
-        /// </para>
-        /// <para>
-        /// The default value is <c>null</c>.
-        /// </para>
-        /// </summary>
-        public string TemplateModelFilename
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return templateModelFilename;
-            }
-            set
-            {
-                ThrowIfDisposed();
-                templateModelFilename = value;
             }
         }
 
@@ -665,11 +641,9 @@ namespace Gallio.Runner
             try
             {
                 ApplyFilter(runner);
-                LoadProject(runner);
-                BuildTemplates(runner);
-                BuildTests(runner);
-                PersistTemplateTree(runner);
-                PersistTestTree(runner);
+                LoadTestPackage(runner);
+                BuildTestModel(runner);
+                PersistTestModel(runner);
                 return true;
             }
             catch (OperationCanceledException)
@@ -689,7 +663,7 @@ namespace Gallio.Runner
                 progressMonitor.BeginTask("Verifying assembly names.", 1);
 
                 List<string> assembliesToRemove = new List<string>();
-                foreach (string assemblyName in testPackage.AssemblyFiles)
+                foreach (string assemblyName in testPackageConfig.AssemblyFiles)
                 {
                     if (!File.Exists(assemblyName))
                     {
@@ -700,14 +674,14 @@ namespace Gallio.Runner
 
                 // Remove invalid assemblies
                 foreach (string assemblyName in assembliesToRemove)
-                    testPackage.AssemblyFiles.Remove(assemblyName);
+                    testPackageConfig.AssemblyFiles.Remove(assemblyName);
             });
         }
 
         private void DisplayConfiguration()
         {
-            DisplayPaths(testPackage.AssemblyFiles, "Test Assemblies:");
-            DisplayPaths(testPackage.HintDirectories, "Hint Directories:");
+            DisplayPaths(testPackageConfig.AssemblyFiles, "Test Assemblies:");
+            DisplayPaths(testPackageConfig.HintDirectories, "Hint Directories:");
 
             if (runtimeSetup != null)
                 DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
@@ -730,9 +704,9 @@ namespace Gallio.Runner
 
         private void Canonicalize()
         {
-            testPackage.ApplicationBase = CanonicalizePath(testPackage.ApplicationBase);
-            CanonicalizePaths(testPackage.AssemblyFiles);
-            CanonicalizePaths(testPackage.HintDirectories);
+            testPackageConfig.ApplicationBase = CanonicalizePath(testPackageConfig.ApplicationBase);
+            CanonicalizePaths(testPackageConfig.AssemblyFiles);
+            CanonicalizePaths(testPackageConfig.HintDirectories);
 
             if (runtimeSetup != null)
                 CanonicalizePaths(runtimeSetup.PluginDirectories);
@@ -754,7 +728,7 @@ namespace Gallio.Runner
 
         private bool HasTestAssemblies()
         {
-            if (testPackage.AssemblyFiles.Count == 0)
+            if (testPackageConfig.AssemblyFiles.Count == 0)
             {
                 logger.Warn("No test assemblies to execute!");
                 return false;
@@ -768,27 +742,19 @@ namespace Gallio.Runner
             runner.TestExecutionOptions.Filter = filter;
         }
 
-        private void LoadProject(ITestRunner runner)
+        private void LoadTestPackage(ITestRunner runner)
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                runner.LoadPackage(testPackage, progressMonitor);
+                runner.LoadTestPackage(testPackageConfig, progressMonitor);
             });
         }
 
-        private void BuildTemplates(ITestRunner runner)
+        private void BuildTestModel(ITestRunner runner)
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                runner.BuildTemplates(progressMonitor);
-            });
-        }
-
-        private void BuildTests(ITestRunner runner)
-        {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.BuildTests(progressMonitor);
+                runner.BuildTestModel(progressMonitor);
             });
         }
 
@@ -796,32 +762,19 @@ namespace Gallio.Runner
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                runner.Run(progressMonitor);
+                runner.RunTests(progressMonitor);
             });
         }
 
-        private void PersistTemplateTree(ITestRunner runner)
-        {
-            if (templateModelFilename != null)
-            {
-                progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
-                {
-                    progressMonitor.BeginTask("Saving template tree.", 1);
-                    progressMonitor.SetStatus(templateModelFilename);
-                    SerializationUtils.SaveToXml(runner.TemplateModel, templateModelFilename);
-                });
-            }
-        }
-
-        private void PersistTestTree(ITestRunner runner)
+        private void PersistTestModel(ITestRunner runner)
         {
             if (testModelFilename != null)
             {
                 progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
                 {
-                    progressMonitor.BeginTask("Saving test tree.", 1);
+                    progressMonitor.BeginTask("Saving test model.", 1);
                     progressMonitor.SetStatus(testModelFilename);
-                    SerializationUtils.SaveToXml(runner.TestModel, testModelFilename);
+                    SerializationUtils.SaveToXml(runner.TestModelData, testModelFilename);
                 });
             }
         }
@@ -843,7 +796,7 @@ namespace Gallio.Runner
 
         private void ThrowIfDisposed()
         {
-            if (testPackage == null)
+            if (testPackageConfig == null)
                 throw new ObjectDisposedException(GetType().Name);
         }
 

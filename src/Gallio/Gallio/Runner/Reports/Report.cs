@@ -14,10 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
+using Gallio.Model;
 
 namespace Gallio.Runner.Reports
 {
@@ -30,39 +29,28 @@ namespace Gallio.Runner.Reports
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
     public sealed class Report
     {
-        private TestPackage package;
-        private TemplateModel templateModel;
-        private TestModel testModel;
+        private TestPackageConfig packageConfig;
+        private TestModelData testModelData;
         private PackageRun packageRun;
 
         /// <summary>
-        /// Gets or sets the test package for the report, or null if none.
+        /// Gets or sets the test package configuration for the report, or null if none.
         /// </summary>
-        [XmlElement("package", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
-        public TestPackage Package
+        [XmlElement("packageConfig", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
+        public TestPackageConfig PackageConfig
         {
-            get { return package; }
-            set { package = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the template model for the report, or null if none.
-        /// </summary>
-        [XmlElement("templateModel", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
-        public TemplateModel TemplateModel
-        {
-            get { return templateModel; }
-            set { templateModel = value; }
+            get { return packageConfig; }
+            set { packageConfig = value; }
         }
 
         /// <summary>
         /// Gets or sets the test model for the report, or null if none.
         /// </summary>
         [XmlElement("testModel", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
-        public TestModel TestModel
+        public TestModelData TestModelData
         {
-            get { return testModel; }
-            set { testModel = value; }
+            get { return testModelData; }
+            set { testModelData = value; }
         }
 
         /// <summary>

@@ -17,11 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Castle.Core.Logging;
+using Gallio.Model;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
 using Gallio.Logging;
 using Gallio.Model.Filters;
-using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Integration
@@ -36,14 +36,14 @@ namespace Gallio.Tests.Integration
     /// </todo>
     public class SampleRunner
     {
-        private readonly TestPackage package;
+        private readonly TestPackageConfig packageConfig;
         private readonly List<Filter<ITest>> filters;
 
         private TestLauncherResult result;
 
         public SampleRunner()
         {
-            package = new TestPackage();
+            packageConfig = new TestPackageConfig();
             filters = new List<Filter<ITest>>();
         }
 
@@ -63,8 +63,8 @@ namespace Gallio.Tests.Integration
             filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(fixtureType.AssemblyQualifiedName), false));
 
             string assemblyFile = fixtureType.Assembly.Location;
-            if (!package.AssemblyFiles.Contains(assemblyFile))
-                package.AssemblyFiles.Add(assemblyFile);
+            if (!packageConfig.AssemblyFiles.Contains(assemblyFile))
+                packageConfig.AssemblyFiles.Add(assemblyFile);
         }
 
         public void Run()
@@ -73,7 +73,7 @@ namespace Gallio.Tests.Integration
 
             using (TestLauncher launcher = new TestLauncher())
             {
-                launcher.TestPackage = package;
+                launcher.TestPackageConfig = packageConfig;
                 launcher.Logger = new DebugLogger(logStreamWriter);
                 launcher.Filter = new OrFilter<ITest>(filters.ToArray());
                 launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;

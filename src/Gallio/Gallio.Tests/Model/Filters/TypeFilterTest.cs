@@ -23,14 +23,15 @@ using System.Reflection;
 using Gallio.Model.Filters;
 using Gallio.Model;
 using Rhino.Mocks;
+using ITestComponent=Gallio.Model.ITestComponent;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(TypeFilter<IModelComponent>))]
+    [TestsOn(typeof(TypeFilter<ITestComponent>))]
     public class TypeFilterTest : BaseUnitTest, ITypeFilterTest
     {
-        private IModelComponent component;
+        private ITestComponent component;
 
         [SetUp]
         public override void SetUp()
@@ -38,7 +39,7 @@ namespace Gallio.Tests.Model.Filters
             base.SetUp();
 
             ICodeElementInfo codeElement = Reflector.Wrap(typeof(TypeFilterTest));
-            component = Mocks.CreateMock<IModelComponent>();
+            component = Mocks.CreateMock<ITestComponent>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
         }
@@ -53,7 +54,7 @@ namespace Gallio.Tests.Model.Filters
         public void IsMatchWithAssemblyQualifiedName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
             Assert.AreEqual(expectedMatch,
-                new TypeFilter<IModelComponent>(new EqualityFilter<string>(type.AssemblyQualifiedName), includeDerivedTypes).IsMatch(component));
+                new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.AssemblyQualifiedName), includeDerivedTypes).IsMatch(component));
         }
 
         [RowTest]
@@ -66,7 +67,7 @@ namespace Gallio.Tests.Model.Filters
         public void IsMatchWithFullName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
             Assert.AreEqual(expectedMatch,
-                new TypeFilter<IModelComponent>(new EqualityFilter<string>(type.FullName), includeDerivedTypes).IsMatch(component));
+                new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.FullName), includeDerivedTypes).IsMatch(component));
         }
 
         [RowTest]
@@ -79,7 +80,7 @@ namespace Gallio.Tests.Model.Filters
         public void IsMatchWithName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
             Assert.AreEqual(expectedMatch,
-                new TypeFilter<IModelComponent>(new EqualityFilter<string>(type.Name), includeDerivedTypes).IsMatch(component));
+                new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.Name), includeDerivedTypes).IsMatch(component));
         }
     }
 

@@ -16,8 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
-
 
 namespace Gallio.Model.Reflection
 {
@@ -32,7 +30,7 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface ITypeInfo : IMemberInfo
+    public interface ITypeInfo : IMemberInfo, IEquatable<ITypeInfo>
     {
         /// <summary>
         /// Gets the assembly in which the type is declared.
@@ -60,9 +58,9 @@ namespace Gallio.Model.Reflection
         string FullName { get; }
 
         /// <summary>
-        /// Gets the type modifiers.
+        /// Gets the type attributes.
         /// </summary>
-        TypeAttributes Modifiers { get; }
+        TypeAttributes TypeAttributes { get; }
 
         /// <summary>
         /// Gets the element type of a constructed type such as an array or pointer, or null if none.
@@ -143,6 +141,12 @@ namespace Gallio.Model.Reflection
         /// <param name="bindingFlags">The method binding flags</param>
         /// <returns>The events</returns>
         IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
+
+        /// <summary>
+        /// Gets the generic parameters of the type.
+        /// </summary>
+        /// <returns>The generic parameters</returns>
+        IList<IGenericParameterInfo> GetGenericParameters();
 
         /// <summary>
         /// Returns true if variables of this type can be assigned with values of the specified type.

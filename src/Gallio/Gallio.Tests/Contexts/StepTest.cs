@@ -22,16 +22,32 @@ namespace Gallio.Tests.Contexts
     public class StepTest
     {
         [Test]
+        public void CurrentStepHasCorrectTestName()
+        {
+            Assert.AreEqual("CurrentStepHasCorrectTestName", Step.CurrentStep.FullName);
+
+            Step.RunStep("Step1", delegate
+            {
+                Assert.AreEqual("CurrentStepHasCorrectTestName:Step1", Step.CurrentStep.FullName);
+
+                Step.RunStep("Step2", delegate
+                {
+                    Assert.AreEqual("CurrentStepHasCorrectTestName:Step1/Step2", Step.CurrentStep.FullName);
+                });
+            });
+        }
+
+        [Test]
         public void MetadataAdditionsAreVisibleInStepInfo()
         {
-            Assert.IsNull(Context.CurrentStep.Metadata.GetValue("New"));
+            Assert.IsNull(Step.CurrentStep.Metadata.GetValue("New"));
 
             Step.AddMetadata("New", "And improved!");
-            Assert.AreEqual("And improved!", Context.CurrentStep.Metadata.GetValue("New"));
+            Assert.AreEqual("And improved!", Step.CurrentStep.Metadata.GetValue("New"));
 
             Step.AddMetadata("New", "Now with less sugar.");
             CollectionAssert.AreElementsEqual(new string[] { "And improved!", "Now with less sugar." },
-                Context.CurrentStep.Metadata["New"]);
+                Step.CurrentStep.Metadata["New"]);
         }
     }
 }

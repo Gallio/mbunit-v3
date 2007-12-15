@@ -16,7 +16,7 @@
 using System;
 using System.Xml.Serialization;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Model.Reflection;
 
 namespace Gallio.Model.Serialization
 {
@@ -26,8 +26,13 @@ namespace Gallio.Model.Serialization
     /// <seealso cref="ITestComponent"/>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public abstract class TestComponentData : ModelComponentData
+    public abstract class TestComponentData
     {
+        private string id;
+        private string name;
+        private CodeReference codeReference;
+        private MetadataMap metadata;
+
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
@@ -42,18 +47,107 @@ namespace Gallio.Model.Serialization
         /// <param name="name">The component name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
         public TestComponentData(string id, string name)
-            : base(id, name)
         {
+            if (id == null)
+                throw new ArgumentNullException(@"id");
+            if (name == null)
+                throw new ArgumentNullException(@"name");
+
+            this.id = id;
+            this.name = name;
         }
 
         /// <summary>
         /// Copies the contents of a test component.
         /// </summary>
-        /// <param name="source">The source model object</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source object</param>
         public TestComponentData(ITestComponent source)
-            : base(source)
         {
+            if (source == null)
+                throw new ArgumentNullException(@"source");
+
+            id = source.Id;
+            name = source.Name;
+            codeReference = source.CodeElement != null ? source.CodeElement.CodeReference : CodeReference.Unknown;
+            metadata = source.Metadata.Copy();
+        }
+
+        /// <summary>
+        /// Gets or sets the test component id.  (non-null)
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <seealso cref="ITestComponent.Id"/>
+        [XmlAttribute("id")]
+        public string Id
+        {
+            get { return id; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                id = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the test component name.  (non-null)
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <seealso cref="ITestComponent.Name"/>
+        [XmlAttribute("name")]
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                name = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the code reference.  (non-null)
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <seealso cref="ITestComponent.CodeElement"/>
+        [XmlElement("codeReference", IsNullable=false)]
+        public CodeReference CodeReference
+        {
+            get
+            {
+                if (codeReference == null)
+                    codeReference = new CodeReference();
+                return codeReference;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                codeReference = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the metadata map.  (non-null)
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <seealso cref="ITestComponent.Metadata"/>
+        [XmlElement("metadata", IsNullable=false)]
+        public MetadataMap Metadata
+        {
+            get
+            {
+                if (metadata == null)
+                    metadata = new MetadataMap();
+                return metadata;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                metadata = value;
+            }
         }
     }
 }

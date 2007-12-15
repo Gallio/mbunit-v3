@@ -36,40 +36,29 @@ namespace Gallio.Runner
     public interface ITestRunner : IDisposable
     {
         /// <summary>
-        /// Event fired once <see cref="LoadPackage" /> completes.
+        /// Event fired once <see cref="LoadTestPackage" /> completes.
         /// </summary>
-        event EventHandler LoadPackageComplete;
+        event EventHandler LoadTestPackageComplete;
 
         /// <summary>
-        /// Event fired once <see cref="BuildTemplates" /> completes.
+        /// Event fired once <see cref="BuildTestModel" /> completes.
         /// </summary>
-        event EventHandler BuildTemplatesComplete;
+        event EventHandler BuildTestModelComplete;
 
         /// <summary>
-        /// Event fired once <see cref="BuildTests" /> completes.
+        /// Event fired before <see cref="RunTests" /> begins doing work.
         /// </summary>
-        event EventHandler BuildTestsComplete;
+        event EventHandler RunTestsStarting;
 
         /// <summary>
-        /// Event fired before <see cref="Run" /> begins doing work.
+        /// Event fired once <see cref="RunTests" /> completes.
         /// </summary>
-        event EventHandler RunStarting;
-
-        /// <summary>
-        /// Event fired once <see cref="Run" /> completes.
-        /// </summary>
-        event EventHandler RunComplete;
+        event EventHandler RunTestsComplete;
 
         /// <summary>
         /// Gets the event dispatcher for the test runner.
         /// </summary>
         TestEventDispatcher EventDispatcher { get; }
-
-        /// <summary>
-        /// Gets or sets the template enumeration options.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        TemplateEnumerationOptions TemplateEnumerationOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the test enumeration options.
@@ -86,47 +75,34 @@ namespace Gallio.Runner
         /// <summary>
         /// Gets the currently loaded test package, or null if none has been loaded yet.
         /// </summary>
-        TestPackage Package { get; }
-
-        /// <summary>
-        /// Gets the template model, or null if templates have not been built yet.
-        /// </summary>
-        TemplateModel TemplateModel { get; }
+        TestPackageData TestPackageData { get; }
 
         /// <summary>
         /// Gets the test model, or null if tests have not been built yet.
         /// </summary>
-        TestModel TestModel { get; }
+        TestModelData TestModelData { get; }
 
         /// <summary>
         /// Loads a test package.
         /// </summary>
-        /// <param name="package">The test package</param>
+        /// <param name="packageConfig">The test package configuration</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
-        void LoadPackage(TestPackage package, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Builds the template tree using the current <see cref="TemplateEnumerationOptions" />.
-        /// Populates <see cref="TemplateModel" /> accordingly.
-        /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        void BuildTemplates(IProgressMonitor progressMonitor);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="packageConfig"/> is null</exception>
+        void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Builds the test tree using the current <see cref="TestEnumerationOptions" />.
-        /// Populates <see cref="TestModel" /> accordingly.
+        /// Populates <see cref="TestModelData" /> accordingly.
         /// </summary>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        void BuildTests(IProgressMonitor progressMonitor);
+        void BuildTestModel(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.
         /// </summary>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        void Run(IProgressMonitor progressMonitor);
+        void RunTests(IProgressMonitor progressMonitor);
     }
 }

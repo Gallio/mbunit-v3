@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Core.Interfaces
         event EventHandler<SetFilterEventArgs> SetFilter;
         event EventHandler<SingleStringEventArgs> GetLogStream;
         event EventHandler<SingleStringEventArgs> GenerateReport;
-        TestModel TestModel { set; }
+        TestModelData TestModelData { set; }
         string StatusText { set; }
         string LogBody { set; }
         int CompletedWorkUnits { set; }

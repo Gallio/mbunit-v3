@@ -58,7 +58,7 @@ namespace Gallio.Tests.Integration
 
         protected TestData GetTestInfo(CodeReference codeReference)
         {
-            foreach (TestData info in Report.TestModel.Tests.Values)
+            foreach (TestData info in Report.TestModelData.Tests.Values)
             {
                 if (info.CodeReference.Equals(codeReference))
                     return info;
@@ -67,14 +67,14 @@ namespace Gallio.Tests.Integration
             return null;
         }
 
-        protected TestRun GetTestRun(CodeReference codeReference)
+        protected TestInstanceRun GetFirstTestInstanceRun(CodeReference codeReference)
         {
             TestData data = GetTestInfo(codeReference);
             if (data != null)
             {
-                return Report.PackageRun.TestRuns.Find(delegate(TestRun run)
+                return Report.PackageRun.TestInstanceRuns.Find(delegate(TestInstanceRun run)
                 {
-                    return run.TestId == data.Id;
+                    return run.TestInstance.TestId == data.Id;
                 });
             }
 
@@ -83,12 +83,12 @@ namespace Gallio.Tests.Integration
 
         protected string GetStreamText(CodeReference codeReference, string streamName)
         {
-            TestRun run = GetTestRun(codeReference);
+            TestInstanceRun run = GetFirstTestInstanceRun(codeReference);
             if (run == null)
                 return null;
 
             StringBuilder contents = new StringBuilder();
-            foreach (StepRun step in run.StepRuns)
+            foreach (TestStepRun step in run.TestStepRuns)
             {
                 ExecutionLogStream stream = step.ExecutionLog.GetStream(streamName);
                 if (stream != null)

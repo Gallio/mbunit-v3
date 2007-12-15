@@ -15,14 +15,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Gallio.Model;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
     /// A test monitor tracks the execution of a single <see cref="ITest" />.  It is the mechanism
-    /// used by <see cref="ITestController" /> to interace with the <see cref="ITestPlan" />
+    /// used by <see cref="ITestController" /> to interface with the <see cref="ITestPlan" />
     /// and ensure that tests are executed in the desired order with all dependencies taken care of.
     /// </summary>
     /// <remarks author="jeff">
@@ -41,7 +40,7 @@ namespace Gallio.Model.Execution
         ITest Test { get; }
 
         /// <summary>
-        /// Gets the total number of tests dominated by the monitor, including itself.
+        /// Gets the total number of tests managed by the monitor, including itself.
         /// </summary>
         int TestCount { get; }
 
@@ -54,13 +53,6 @@ namespace Gallio.Model.Execution
         /// one of its parents having been selected.
         /// </remarks>
         bool IsExplicit { get; }
-
-        /// <summary>
-        /// Returns true if the test is awaiting execution.  Returns false if the test has
-        /// started running or was abandoned, skipped, or ignored, or failed because one
-        /// of its dependencies was not satisfied.
-        /// </summary>
-        bool IsPending { get; }
 
         /// <summary>
         /// Gets monitors for the children of the test to run within the scope
@@ -88,15 +80,26 @@ namespace Gallio.Model.Execution
         IList<ITestMonitor> GetAllMonitors();
 
         /// <summary>
-        /// Starts the root step of the test and returns its step monitor.
+        /// Starts the root step of a new test instance and returns its step monitor.
         /// </summary>
         /// <remarks>
         /// The current thread's test context is set to a new context for the
         /// test step that is starting.  The new context will be a child of the
         /// current thread's context.
         /// </remarks>
-        /// <returns>The monitor for the root step of the test</returns>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsPending"/> is false</exception>
-        IStepMonitor StartRootStep();
+        /// <param name="rootStep">The test root step of the test instance</param>
+        /// <returns>The monitor for the root step of the test instance</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootStep"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="rootStep"/> is not the root
+        /// step of an instance of this test</exception>
+        ITestStepMonitor StartTestInstance(ITestStep rootStep);
+
+        /// <summary>
+        /// Starts the root step of a new test instance and returns its step monitor
+        /// using a default implementation of <see cref="ITestStep" />.
+        /// </summary>
+        /// <returns>The monitor for the root step of the test instance</returns>
+        /// <seealso cref="StartTestInstance(ITestStep)"/>
+        ITestStepMonitor StartTestInstance();
     }
 }

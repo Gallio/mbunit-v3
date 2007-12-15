@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Gallio.Model.Reflection
 {
@@ -24,7 +22,7 @@ namespace Gallio.Model.Reflection
     /// simplify the handling of data binding since all three of these types
     /// are similar in that they can hold values of some type.
     /// </summary>
-    public interface ISlotInfo : ICodeElementInfo
+    public interface ISlotInfo : ICodeElementInfo, IEquatable<ISlotInfo>
     {
         /// <summary>
         /// Gets the type of value held in the slot.

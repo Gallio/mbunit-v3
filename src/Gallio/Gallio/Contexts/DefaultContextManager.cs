@@ -17,11 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
-using Gallio;
 using Gallio.Contexts;
-using Gallio.Logging;
-using Gallio.Model;
-using Gallio.Model.Reflection;
 
 namespace Gallio.Contexts
 {
@@ -36,9 +32,9 @@ namespace Gallio.Contexts
         private const int CleanupInterval = 60000;
 
         private readonly string contextKey;
-        private readonly Dictionary<Thread, InternalContext> threadOverrides;
+        private readonly Dictionary<Thread, Context> threadOverrides;
 
-        private InternalContext rootContext;
+        private Context globalContext;
         private Timer threadCleanupTimer;
 
         /// <summary>
@@ -47,7 +43,7 @@ namespace Gallio.Contexts
         public DefaultContextManager()
         {
             contextKey = @"DefaultContextManager." + Guid.NewGuid();
-            threadOverrides = new Dictionary<Thread, InternalContext>();
+            threadOverrides = new Dictionary<Thread, Context>();
         }
 
         private object SyncRoot
@@ -56,9 +52,10 @@ namespace Gallio.Contexts
         }
 
         /// <inheritdoc />
-        public Context RootContext
+        public Context GlobalContext
         {
-            get { return rootContext; }
+            get { return globalContext; }
+            set { globalContext = value; }
         }
 
         /// <inheritdoc />
@@ -68,70 +65,15 @@ namespace Gallio.Contexts
         }
 
         /// <inheritdoc />
-        public Context InitializeRootContext(IContextServiceProvider serviceProvider)
-        {
-            if (serviceProvider == null)
-                throw new ArgumentNullException(@"serviceProvider");
-
-            lock (SyncRoot)
-            {
-                if (rootContext != null)
-                    throw new InvalidOperationException("The root context has already been initialized.");
-
-                rootContext = new InternalContext(this, null, serviceProvider);
-                rootContext.Initialize();
-                return rootContext;
-            }
-        }
-
-        /// <inheritdoc />
-        public void DisposeRootContext()
-        {
-            // Dispose the old root context.
-            InternalContext oldRootContext;
-            lock (SyncRoot)
-            {
-                if (rootContext == null)
-                    return;
-
-                oldRootContext = rootContext;
-            }
-
-            oldRootContext.Dispose();
-
-            // Clear out remaining state assuming no other thread has barged
-            // in here and done it already.
-            lock (SyncRoot)
-            {
-                if (rootContext != oldRootContext)
-                    return; // check for race condition with other disposers!
-
-                rootContext = null;
-                threadOverrides.Clear();
-                ConfigureThreadCleanupTimerWithLock();
-            }
-        }
-
-        /// <inheritdoc />
-        public Context CreateChildContext(Context parent, IContextServiceProvider serviceProvider)
-        {
-            if (parent == null)
-                throw new ArgumentNullException(@"parent");
-            if (serviceProvider == null)
-                throw new ArgumentNullException(@"serviceProvider");
-            InternalContext internalParent = CastContextArgument(parent, @"parent");
-
-            return new InternalContext(this, internalParent, serviceProvider);
-        }
-
-        /// <inheritdoc />
-        public void DisposeContext(Context context)
+        public ContextCookie EnterContext(Context context)
         {
             if (context == null)
-                throw new ArgumentNullException(@"context");
-            InternalContext internalContext = CastContextArgument(context, @"parent");
+                throw new ArgumentNullException("context");
 
-            internalContext.Dispose();
+            InternalContextLink previousTopLink = TopContextLinkForCurrentThread;
+            TopContextLinkForCurrentThread = new InternalContextLink(previousTopLink, context);
+
+            return new InternalContextCookie(this, previousTopLink);
         }
 
         /// <inheritdoc />
@@ -139,14 +81,13 @@ namespace Gallio.Contexts
         {
             if (thread == null)
                 throw new ArgumentNullException(@"thread");
-            InternalContext internalContext = CastContextArgument(context, @"context");
             
             lock (SyncRoot)
             {
-                if (context == null || context == rootContext)
+                if (context == null || context == globalContext)
                     threadOverrides.Remove(thread);
                 else
-                    threadOverrides[thread] = internalContext;
+                    threadOverrides[thread] = context;
 
                 ConfigureThreadCleanupTimerWithLock();
             }
@@ -158,10 +99,10 @@ namespace Gallio.Contexts
             if (thread == null)
                 throw new ArgumentNullException(@"thread");
 
-            return GetThreadDefaultContext(thread);
+            return GetThreadDefaultContextImpl(thread);
         }
 
-        private InternalContext GetCurrentContextImpl()
+        private Context GetCurrentContextImpl()
         {
             InternalContextLink contextLink = TopContextLinkForCurrentThread;
 
@@ -171,24 +112,16 @@ namespace Gallio.Contexts
             return GetThreadDefaultContextImpl(Thread.CurrentThread);
         }
 
-        private InternalContext GetThreadDefaultContextImpl(Thread thread)
+        private Context GetThreadDefaultContextImpl(Thread thread)
         {
             lock (SyncRoot)
             {
-                InternalContext context;
+                Context context;
                 if (threadOverrides.TryGetValue(thread, out context))
                     return context;
 
-                return rootContext;
+                return globalContext;
             }
-        }
-
-        private ContextCookie EnterContext(InternalContext context)
-        {
-            InternalContextLink previousTopLink = TopContextLinkForCurrentThread;
-            TopContextLinkForCurrentThread = new InternalContextLink(previousTopLink, context);
-
-            return new InternalContextCookie(this, previousTopLink);
         }
 
         private void ExitContext(InternalContextLink previousTopLink, int threadId)
@@ -271,18 +204,6 @@ namespace Gallio.Contexts
             }
         }
 
-        private InternalContext CastContextArgument(Context context, string argumentName)
-        {
-            InternalContext internalContext = context as InternalContext;
-
-            if (internalContext == null && context != null)
-                throw new ArgumentException("Context is not of the expected type.", argumentName);
-            if (!internalContext.BelongsTo(this))
-                throw new ArgumentException("Context does not belong to this context manager.", argumentName);
-
-            return internalContext;
-        }
-
         /// <summary>
         /// Represents a single link in a chain of contexts per-thread.
         /// We use a linked list because we want each stack of contexts to be distinct
@@ -292,9 +213,9 @@ namespace Gallio.Contexts
         private sealed class InternalContextLink
         {
             private readonly InternalContextLink parentLink;
-            private readonly InternalContext context;
+            private readonly Context context;
 
-            public InternalContextLink(InternalContextLink parentLink, InternalContext context)
+            public InternalContextLink(InternalContextLink parentLink, Context context)
             {
                 this.parentLink = parentLink;
                 this.context = context;
@@ -305,7 +226,7 @@ namespace Gallio.Contexts
                 get { return parentLink; }
             }
 
-            public InternalContext Context
+            public Context Context
             {
                 get { return context; }
             }
@@ -328,83 +249,6 @@ namespace Gallio.Contexts
             public override void ExitContext()
             {
                 contextManager.ExitContext(previousTopLink, threadId);
-            }
-        }
-
-        private sealed class InternalContext : Context, IDisposable
-        {
-            private readonly DefaultContextManager contextManager;
-            private readonly IContextServiceProvider serviceProvider;
-
-            private StepInfo cachedStepInfo;
-
-            public InternalContext(DefaultContextManager contextManager,
-                InternalContext parent, IContextServiceProvider serviceProvider)
-                : base(parent)
-            {
-                this.contextManager = contextManager;
-                this.serviceProvider = serviceProvider;
-            }
-
-            new public void Initialize()
-            {
-                base.Initialize();
-            }
-
-            public bool BelongsTo(DefaultContextManager contextManager)
-            {
-                return this.contextManager == contextManager;
-            }
-
-            public void Dispose()
-            {
-                Dispose(true);
-            }
-
-            public override TestInfo Test
-            {
-                get { return Step.Test; }
-            }
-
-            public override StepInfo Step
-            {
-                get
-                {
-                    if (cachedStepInfo == null)
-                        Interlocked.CompareExchange(ref cachedStepInfo, new StepInfo(serviceProvider.Step), null);
-                    return cachedStepInfo;
-                }
-            }
-
-            public override LogWriter LogWriter
-            {
-                get { return serviceProvider.LogWriter; }
-            }
-
-            protected override string LifecyclePhaseImpl
-            {
-                get { return serviceProvider.LifecyclePhase; }
-                set { serviceProvider.LifecyclePhase = value; }
-            }
-
-            public override TestOutcome Outcome
-            {
-                get { return serviceProvider.Outcome; }
-            }
-
-            public override ContextCookie Enter()
-            {
-                return contextManager.EnterContext(this);
-            }
-
-            protected override Context RunStepImpl(string name, Block block, ICodeElementInfo codeElement)
-            {
-                return serviceProvider.RunStep(name, block, codeElement);
-            }
-
-            protected override void AddMetadataImpl(string metadataKey, string metadataValue)
-            {
-                serviceProvider.AddMetadata(metadataKey, metadataValue);
             }
         }
     }

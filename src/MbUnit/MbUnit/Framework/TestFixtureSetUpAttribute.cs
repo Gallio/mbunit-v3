@@ -14,11 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
 using Gallio.Model.Reflection;
-using MbUnit.Attributes;
 using MbUnit.Model;
-using Gallio.Model;
+using MbUnit.Model.Builder;
 
 namespace MbUnit.Framework
 {
@@ -43,20 +41,15 @@ namespace MbUnit.Framework
     /// an Order property similar to decorators.
     /// </todo>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public sealed class TestFixtureSetUpAttribute : MethodPatternAttribute
+    public sealed class TestFixtureSetUpAttribute : ContributionPatternAttribute
     {
         /// <inheritdoc />
-        public override void Apply(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
+        protected override void DecorateContainingTest(ITestBuilder containingTestBuilder, ICodeElementInfo codeElement)
         {
-            base.Apply(builder, methodTemplate);
-
-            IMethodInfo method = methodTemplate.Method;
+            IMethodInfo method = (IMethodInfo) codeElement;
             ReflectionUtils.CheckMethodSignature(method);
 
-            methodTemplate.TypeTemplate.ProcessTestChain.After(delegate(MbUnitTest fixtureTest)
-            {
-                fixtureTest.SetUpChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
-            });
+            containingTestBuilder.Test.SetUpChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
         }
     }
 }

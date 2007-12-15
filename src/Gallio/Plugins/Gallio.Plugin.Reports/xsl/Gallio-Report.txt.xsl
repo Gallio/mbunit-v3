@@ -16,7 +16,7 @@
   </xsl:template>
 
   <xsl:template match="g:packageRun">
-		<xsl:apply-templates select="g:testRuns" />
+		<xsl:apply-templates select="g:testInstanceRuns" />
     <xsl:apply-templates select="g:statistics" />
   </xsl:template>
   
@@ -36,12 +36,12 @@
 		<xsl:text>.&#xA;</xsl:text>
 	</xsl:template>
   
-	<xsl:template match="g:testRuns">
-    <xsl:variable name="passed" select="descendant::g:stepRun[g:result/@status='executed' and g:result/@outcome='passed']" />
-    <xsl:variable name="failed" select="descendant::g:stepRun[g:result/@status='executed' and g:result/@outcome='failed']" />
-    <xsl:variable name="inconclusive" select="descendant::g:stepRun[g:result/@status='executed' and g:result/@outcome='inconclusive']" />
-    <xsl:variable name="ignored" select="descendant::g:stepRun[g:result/@status='ignored']" />
-    <xsl:variable name="skipped" select="descendant::g:stepRun[g:result/@status='skipped']" />
+	<xsl:template match="g:testInstanceRuns">
+    <xsl:variable name="passed" select="descendant::g:testStepRun[g:result/@status='executed' and g:result/@outcome='passed']" />
+    <xsl:variable name="failed" select="descendant::g:testStepRun[g:result/@status='executed' and g:result/@outcome='failed']" />
+    <xsl:variable name="inconclusive" select="descendant::g:testStepRun[g:result/@status='executed' and g:result/@outcome='inconclusive']" />
+    <xsl:variable name="ignored" select="descendant::g:testStepRun[g:result/@status='ignored']" />
+    <xsl:variable name="skipped" select="descendant::g:testStepRun[g:result/@status='skipped']" />
 
     <xsl:if test="$show-passed-tests and $passed">
       <xsl:text>* Passed:&#xA;&#xA;</xsl:text>
@@ -74,13 +74,13 @@
     </xsl:if>
 	</xsl:template>
   
-	<xsl:template match="g:testRun">
-    <xsl:apply-templates select="g:stepRun" />
+	<xsl:template match="g:testInstanceRun">
+    <xsl:apply-templates select="g:testStepRun" />
 	</xsl:template>
 
-  <xsl:template match="g:stepRun">
-    <xsl:variable name="testRun" select="ancestor::g:testRun" />
-    <xsl:variable name="testId" select="$testRun/@id" />
+  <xsl:template match="g:testStepRun">
+    <xsl:variable name="testInstanceRun" select="ancestor::g:testInstanceRun" />
+    <xsl:variable name="testId" select="$testInstanceRun/g:testInstance/@testId" />
     <xsl:variable name="test" select="//g:test[@id=$testId]" />
 
     <xsl:text>[</xsl:text>
@@ -91,7 +91,7 @@
     <xsl:apply-templates select="g:executionLog" />
     <xsl:text>&#xA;</xsl:text>
 
-    <xsl:apply-templates select="g:children/g:stepRun" />
+    <xsl:apply-templates select="g:children/g:testStepRun" />
   </xsl:template>
 
   <xsl:template match="g:executionLog">

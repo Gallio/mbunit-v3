@@ -16,16 +16,14 @@
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Runner;
 
 namespace Gallio.Icarus.Core.Interfaces
 {
     public interface ITestRunnerModel
     {
         IProjectPresenter ProjectPresenter { set; }
-        void LoadPackage(TestPackage testpackage);
-        void BuildTemplates();
-        TestModel BuildTests();
+        void LoadPackage(TestPackageConfig testpackage);
+        TestModelData BuildTests();
         void RunTests();
         void StopTests();
         void SetFilter(Filter<ITest> filter);

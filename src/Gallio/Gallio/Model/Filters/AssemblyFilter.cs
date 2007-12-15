@@ -21,11 +21,11 @@ using Gallio.Model.Reflection;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeElement" />
+    /// A filter that matches objects whose <see cref="ITestComponent.CodeElement" />
     /// matches the specified assembly name filter.
     /// </summary>
     [Serializable]
-    public class AssemblyFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    public class AssemblyFilter<T> : BasePropertyFilter<T> where T : ITestComponent
     {
         /// <summary>
         /// Creates an assembly filter.

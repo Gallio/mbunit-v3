@@ -46,42 +46,42 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         protected override void OnAttach()
         {
             base.OnAttach();
-            reportMonitor.StepFinished += HandleStepFinished;
+            reportMonitor.TestStepFinished += HandleStepFinished;
         }
 
         /// <inheritdoc />
         protected override void OnDetach()
         {
             base.OnDetach();
-            reportMonitor.StepFinished -= HandleStepFinished;
+            reportMonitor.TestStepFinished -= HandleStepFinished;
         }
 
-        private void HandleStepFinished(object sender, ReportStepEventArgs e)
+        private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
             // Ignore tests that aren't test cases & nested test steps.
-            TestData testData = e.Report.TestModel.Tests[e.TestRun.TestId];
-            if (!testData.IsTestCase || e.StepRun.Step.ParentId != null)
+            TestData testData = e.TestData;
+            if (!testData.IsTestCase || e.TestStepRun.Step.ParentId != null)
                 return;
 
-            switch (e.StepRun.Result.Outcome)
+            switch (e.TestStepRun.Result.Outcome)
             {
                 case TestOutcome.Passed:
-                    presenter.Passed(e.TestRun.TestId);
+                    presenter.Passed(e.TestData.Id);
                     break;
 
                 case TestOutcome.Failed:
-                    presenter.Failed(e.TestRun.TestId);
+                    presenter.Failed(e.TestData.Id);
                     break;
 
                 case TestOutcome.Inconclusive:
-                    presenter.Ignored(e.TestRun.TestId);
+                    presenter.Ignored(e.TestData.Id);
                     break;
             }
 
             // store log streams
-            foreach (ExecutionLogStream els in e.StepRun.ExecutionLog.Streams)
+            foreach (ExecutionLogStream els in e.TestStepRun.ExecutionLog.Streams)
             {
-                string key = els.Name + e.TestRun.TestId;
+                string key = els.Name + e.TestData.Id;
                 if (logStreams.ContainsKey(key))
                 {
                     logStreams[key] += els.ToString();

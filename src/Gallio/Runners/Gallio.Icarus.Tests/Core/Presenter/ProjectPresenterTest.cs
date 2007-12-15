@@ -20,7 +20,6 @@ using Gallio.Icarus.Core.Presenter;
 using Gallio.Icarus.Tests;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Runner;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
@@ -107,17 +106,15 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         [Test]
         public void GetTestTree_Test()
         {
-            TestPackage testPackage = new TestPackage();
-            mockModel.LoadPackage(testPackage);
-            mockModel.BuildTemplates();
-            LastCall.IgnoreArguments();
+            TestPackageConfig testPackageConfig = new TestPackageConfig();
+            mockModel.LoadPackage(testPackageConfig);
             Expect.Call(mockModel.BuildTests()).Return(null);
-            mockAdapter.TestModel = null;
+            mockAdapter.TestModelData = null;
             LastCall.IgnoreArguments();
             mockAdapter.DataBind();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            getTestTreeEvent.Raise(mockAdapter, new ProjectEventArgs(testPackage));
+            getTestTreeEvent.Raise(mockAdapter, new ProjectEventArgs(testPackageConfig));
         }
 
         [Test]

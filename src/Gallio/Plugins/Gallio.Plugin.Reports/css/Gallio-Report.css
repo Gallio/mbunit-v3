@@ -57,7 +57,7 @@ ul
 	margin-left: 24px;
 }
 
-ul.testRunContainer, ul.stepRunContainer
+ul.testInstanceRunContainer, ul.testStepRunContainer
 {
 	margin-left: 12px;
 }
@@ -145,40 +145,40 @@ div.outcomeBar
 }
 
 /* Styles for test runs, including customized varieties per component kind */
-.testRun
+.testInstanceRun
 {
 	margin-top: 12pt;
 	font-size: 10pt;
 }
 
-.testRunHeading
+.testInstanceRunHeading
 {
 	font-weight:bold;
 	font-size:10pt;
 	position:relative;
 }
 
-.testRunHeading-Level1
+.testInstanceRunHeading-Level1
 {
 	font-size:11pt;
 }
 
-.testRunHeading-Level2
+.testInstanceRunHeading-Level2
 {
 	font-size:10pt;
 }
 
-.testRunHeading-Level3
+.testInstanceRunHeading-Level3
 {
 	font-size:10pt;
 }
 
-.testRunHeading-Level4
+.testInstanceRunHeading-Level4
 {
 	font-size:10pt;
 }
 
-.testRunPanel
+.testInstanceRunPanel
 {
 	margin-left: 12pt;
 }
@@ -195,18 +195,18 @@ div.outcomeBar
 }
 
 /* Styles for step runs */
-.stepRun
+.testStepRun
 {
 	font-size:9pt;
 }
 
-.stepRunHeading
+.testStepRunHeading
 {
 	font-weight:bold;
 	position:relative;
 }
 
-.stepRunPanel
+.testStepRunPanel
 {
 	margin-left: 12pt;
 }

@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Gallio.Model.Reflection
 {
@@ -31,12 +29,12 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IPropertyInfo : IMemberInfo, ISlotInfo
+    public interface IPropertyInfo : IMemberInfo, ISlotInfo, IEquatable<IPropertyInfo>
     {
         /// <summary>
-        /// Gets the property modifiers.
+        /// Gets the property attributes.
         /// </summary>
-        PropertyAttributes Modifiers { get; }
+        PropertyAttributes PropertyAttributes { get; }
 
         /// <summary>
         /// Gets the get method of the property, or null if none.

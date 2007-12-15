@@ -124,7 +124,10 @@ namespace Gallio.Model.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public static ITypeInfo Wrap(Type target)
         {
-            return target != null ? new TypeWrapper(target) : null;
+            if (target == null)
+                return null;
+
+            return target.IsGenericParameter ? new GenericParameterWrapper(target) : new TypeWrapper(target);
         }
 
         /// <summary>
@@ -247,6 +250,11 @@ namespace Gallio.Model.Reflection
             return target != null ? new AttributeWrapper(target) : null;
         }
 
+        private static IGenericParameterInfo WrapAsGenericParameter(Type target)
+        {
+            return (IGenericParameterInfo)Wrap(target);
+        }
+
         /// <summary>
         /// Creates a code element from the executing function.
         /// </summary>
@@ -344,6 +352,8 @@ namespace Gallio.Model.Reflection
 
             public abstract string Name { get; }
 
+            public abstract CodeElementKind Kind { get; }
+
             public abstract CodeReference CodeReference { get; }
 
             public IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
@@ -379,6 +389,22 @@ namespace Gallio.Model.Reflection
             {
                 return Target.ToString();
             }
+
+            public override bool Equals(object obj)
+            {
+                CodeElementWrapper<TTarget> other = obj as CodeElementWrapper<TTarget>;
+                return other != null && target.Equals(other.target);
+            }
+
+            public override int GetHashCode()
+            {
+                return target.GetHashCode();
+            }
+
+            public bool Equals(ICodeElementInfo other)
+            {
+                return Equals((object) other);
+            }
         }
 
         private sealed class AssemblyWrapper : CodeElementWrapper<Assembly>, IAssemblyInfo
@@ -406,6 +432,11 @@ namespace Gallio.Model.Reflection
             public string FullName
             {
                 get { return Target.FullName; }
+            }
+
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.Assembly; }
             }
 
             public AssemblyName GetName()
@@ -443,6 +474,11 @@ namespace Gallio.Model.Reflection
             public override string GetXmlDocumentation()
             {
                 return null;
+            }
+
+            public bool Equals(IAssemblyInfo other)
+            {
+                return Equals((object)other);
             }
         }
 
@@ -482,9 +518,14 @@ namespace Gallio.Model.Reflection
             {
                 return Target;
             }
+
+            public bool Equals(IMemberInfo other)
+            {
+                return Equals((object)other);
+            }
         }
 
-        private sealed class TypeWrapper : MemberWrapper<Type>, ITypeInfo
+        private class TypeWrapper : MemberWrapper<Type>, ITypeInfo
         {
             public TypeWrapper(Type target)
                 : base(target)
@@ -556,9 +597,14 @@ namespace Gallio.Model.Reflection
                 get { return Target.FullName; }
             }
 
-            public TypeAttributes Modifiers
+            public TypeAttributes TypeAttributes
             {
                 get { return Target.Attributes; }
+            }
+
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.Type; }
             }
 
             public IList<ITypeInfo> GetInterfaces()
@@ -602,6 +648,12 @@ namespace Gallio.Model.Reflection
                 return Array.ConvertAll<EventInfo, IEventInfo>(events, Wrap);
             }
 
+            public IList<IGenericParameterInfo> GetGenericParameters()
+            {
+                Type[] parameters = Target.GetGenericArguments();
+                return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, WrapAsGenericParameter);
+            }
+
             public bool IsAssignableFrom(ITypeInfo type)
             {
                 return Target.IsAssignableFrom(type.Resolve());
@@ -616,9 +668,47 @@ namespace Gallio.Model.Reflection
             {
                 return Loader.XmlDocumentationResolver.GetXmlDocumentation(Target);
             }
+
+            public bool Equals(ITypeInfo other)
+            {
+                return Equals((object)other);
+            }
         }
 
-        private class FunctionWrapper<TTarget> : MemberWrapper<TTarget>, IFunctionInfo
+        private sealed class GenericParameterWrapper : TypeWrapper, IGenericParameterInfo
+        {
+            public GenericParameterWrapper(Type target)
+                : base(target)
+            {
+            }
+
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.GenericParameter; }
+            }
+
+            public GenericParameterAttributes GenericParameterAttributes
+            {
+                get { return Target.GenericParameterAttributes; }
+            }
+
+            public ITypeInfo ValueType
+            {
+                get { return Wrap(typeof(Type)); }
+            }
+
+            public int Position
+            {
+                get { return Target.GenericParameterPosition; }
+            }
+
+            public bool Equals(ISlotInfo other)
+            {
+                return Equals((object)other);
+            }
+        }
+
+        private abstract class FunctionWrapper<TTarget> : MemberWrapper<TTarget>, IFunctionInfo
             where TTarget : MethodBase
         {
             public FunctionWrapper(TTarget target)
@@ -626,7 +716,7 @@ namespace Gallio.Model.Reflection
             {
             }
 
-            public MethodAttributes Modifiers
+            public MethodAttributes MethodAttributes
             {
                 get { return Target.Attributes; }
             }
@@ -635,6 +725,12 @@ namespace Gallio.Model.Reflection
             {
                 ParameterInfo[] parameters = Target.GetParameters();
                 return Array.ConvertAll<ParameterInfo, IParameterInfo>(parameters, Wrap);
+            }
+
+            public IList<IGenericParameterInfo> GetGenericParameters()
+            {
+                Type[] parameters = Target.GetGenericArguments();
+                return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, WrapAsGenericParameter);
             }
 
             new public MethodBase Resolve()
@@ -646,6 +742,11 @@ namespace Gallio.Model.Reflection
             {
                 return Loader.XmlDocumentationResolver.GetXmlDocumentation(Target);
             }
+
+            public bool Equals(IFunctionInfo other)
+            {
+                return Equals((object)other);
+            }
         }
 
         private sealed class ConstructorWrapper : FunctionWrapper<ConstructorInfo>, IConstructorInfo
@@ -655,9 +756,19 @@ namespace Gallio.Model.Reflection
             {
             }
 
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.Constructor; }
+            }
+
             new public ConstructorInfo Resolve()
             {
                 return Target;
+            }
+
+            public bool Equals(IConstructorInfo other)
+            {
+                return Equals((object)other);
             }
         }
 
@@ -671,6 +782,11 @@ namespace Gallio.Model.Reflection
             public ITypeInfo ReturnType
             {
                 get { return Wrap(Target.ReturnType); }
+            }
+
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.Method; }
             }
 
             new public MethodInfo Resolve()
@@ -696,9 +812,14 @@ namespace Gallio.Model.Reflection
                 get { return 0; }
             }
 
-            public PropertyAttributes Modifiers
+            public PropertyAttributes PropertyAttributes
             {
                 get { return Target.Attributes; }
+            }
+
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.Property; }
             }
 
             public IMethodInfo GetGetMethod()
@@ -720,6 +841,16 @@ namespace Gallio.Model.Reflection
             {
                 return Loader.XmlDocumentationResolver.GetXmlDocumentation(Target);
             }
+
+            public bool Equals(ISlotInfo other)
+            {
+                return Equals((object)other);
+            }
+
+            public bool Equals(IPropertyInfo other)
+            {
+                return Equals((object)other);
+            }
         }
 
         private sealed class FieldWrapper : MemberWrapper<FieldInfo>, IFieldInfo
@@ -739,9 +870,14 @@ namespace Gallio.Model.Reflection
                 get { return 0; }
             }
 
-            public FieldAttributes Modifiers
+            public FieldAttributes FieldAttributes
             {
                 get { return Target.Attributes; }
+            }
+
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.Field; }
             }
 
             new public FieldInfo Resolve()
@@ -753,6 +889,16 @@ namespace Gallio.Model.Reflection
             {
                 return Loader.XmlDocumentationResolver.GetXmlDocumentation(Target);
             }
+
+            public bool Equals(ISlotInfo other)
+            {
+                return Equals((object)other);
+            }
+
+            public bool Equals(IFieldInfo other)
+            {
+                return Equals((object)other);
+            }
         }
 
         private sealed class EventWrapper : MemberWrapper<EventInfo>, IEventInfo
@@ -760,6 +906,11 @@ namespace Gallio.Model.Reflection
             public EventWrapper(EventInfo target)
                 : base(target)
             {
+            }
+
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.Event; }
             }
 
             new public EventInfo Resolve()
@@ -770,6 +921,11 @@ namespace Gallio.Model.Reflection
             public override string GetXmlDocumentation()
             {
                 return Loader.XmlDocumentationResolver.GetXmlDocumentation(Target);
+            }
+
+            public bool Equals(IEventInfo other)
+            {
+                return Equals((object)other);
             }
         }
 
@@ -805,9 +961,14 @@ namespace Gallio.Model.Reflection
                 get { return Wrap(Target.Member); }
             }
 
-            public ParameterAttributes Modifiers
+            public ParameterAttributes ParameterAttributes
             {
                 get { return Target.Attributes; }
+            }
+
+            public override CodeElementKind Kind
+            {
+                get { return CodeElementKind.Parameter; }
             }
 
             public ParameterInfo Resolve()
@@ -818,6 +979,16 @@ namespace Gallio.Model.Reflection
             public override string GetXmlDocumentation()
             {
                 return null;
+            }
+
+            public bool Equals(ISlotInfo other)
+            {
+                return Equals((object)other);
+            }
+
+            public bool Equals(IParameterInfo other)
+            {
+                return Equals((object)other);
             }
         }
 
@@ -836,6 +1007,11 @@ namespace Gallio.Model.Reflection
             public string Name
             {
                 get { return name; }
+            }
+
+            public CodeElementKind Kind
+            {
+                get { return CodeElementKind.Namespace; }
             }
 
             public CodeReference CodeReference
@@ -876,6 +1052,27 @@ namespace Gallio.Model.Reflection
             public override string ToString()
             {
                 return name;
+            }
+
+            public override int GetHashCode()
+            {
+                return name.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                NamespaceWrapper other = obj as NamespaceWrapper;
+                return other != null && name == other.name;
+            }
+
+            public bool Equals(ICodeElementInfo other)
+            {
+                return Equals((object)other);
+            }
+
+            public bool Equals(INamespaceInfo other)
+            {
+                return Equals((object)other);
             }
         }
 

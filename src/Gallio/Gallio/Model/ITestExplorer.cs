@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Gallio.Model;
 using Gallio.Model.Reflection;
 
@@ -29,20 +28,9 @@ namespace Gallio.Model
     /// layout of the test suite that can subsequently be used to drive the
     /// test runner.
     /// </para>
-    /// <para>
-    /// A test explorer may assume that the reflection data will remain unchanged
-    /// and cache information until <see cref="Reset" /> is called.
-    /// </para>
     /// </summary>
     public interface ITestExplorer
     {
-        /// <summary>
-        /// Notifies the test explorer that reflection data may have changed.
-        /// The test explorer can take advantage of this opportunity to flush
-        /// its caches.
-        /// </summary>
-        void Reset();
-
         /// <summary>
         /// Returns true if the code element represents a test.
         /// </summary>
@@ -51,23 +39,27 @@ namespace Gallio.Model
         bool IsTest(ICodeElementInfo element);
 
         /// <summary>
-        /// Explores the tests defined by a type.
-        /// </summary>
-        /// <remarks>
-        /// This method should not recurse into nested types, if any.
-        /// </remarks>
-        /// <param name="type">The type</param>
-        /// <returns>An enumeration of the top-level tests defined
-        /// by the type.  For example, if the type is a test fixture, this
-        /// method might return a single <see cref="ITest" /> representing
-        /// the fixture with the individual test cases represented as children of the fixture.</returns>
-        IEnumerable<ITest> ExploreType(ITypeInfo type);
-
-        /// <summary>
-        /// Explores the tests defined by an assembly.
+        /// <para>
+        /// Explores the tests defined by an assembly and links them into
+        /// the <see cref="TestModel" />.
+        /// </para>
         /// </summary>
         /// <param name="assembly">The assembly</param>
-        /// <returns>An enumeration of the top-level tests defined by the assembly.</returns>
-        IEnumerable<ITest> ExploreAssembly(IAssemblyInfo assembly);
+        /// <param name="testModel">The test model</param>
+        /// <param name="consumer">An action to perform on each assembly-level test
+        /// explored, or null if no action is required</param>
+        void ExploreAssembly(IAssemblyInfo assembly, TestModel testModel, Action<ITest> consumer);
+
+        /// <summary>
+        /// <para>
+        /// Explores the tests defined by a type and links them into the
+        /// <see cref="TestModel" />.
+        /// </para>
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <param name="testModel">The test model</param>
+        /// <param name="consumer">An action to perform on each type-level test
+        /// explored, or null if no action is required</param>
+        void ExploreType(ITypeInfo type, TestModel testModel, Action<ITest> consumer);
     }
 }

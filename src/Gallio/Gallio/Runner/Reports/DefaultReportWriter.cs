@@ -109,16 +109,16 @@ namespace Gallio.Runner.Reports
 
                 if (report.PackageRun != null)
                 {
-                    foreach (TestRun testRun in report.PackageRun.TestRuns)
+                    foreach (TestInstanceRun testInstanceRun in report.PackageRun.TestInstanceRuns)
                     {
-                        foreach (StepRun stepRun in testRun.StepRuns)
+                        foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
                         {
-                            foreach (ExecutionLogAttachment attachment in stepRun.ExecutionLog.Attachments)
+                            foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                             {
                                 originalAttachmentData.Add(attachment, new KeyValuePair<ExecutionLogAttachmentContentDisposition, string>(
                                     attachment.ContentDisposition, attachment.ContentPath));
 
-                                string attachmentPath = GetAttachmentPath(testRun.TestId, stepRun.Step.Id, attachment.Name);
+                                string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
                                 attachment.ContentDisposition = attachmentContentDisposition;
                                 attachment.ContentPath = attachmentPath;
                             }
@@ -202,13 +202,13 @@ namespace Gallio.Runner.Reports
 
                 progressMonitor.BeginTask("Saving report attachments.", attachmentCount);
 
-                foreach (TestRun testRun in report.PackageRun.TestRuns)
+                foreach (TestInstanceRun testInstanceRun in report.PackageRun.TestInstanceRuns)
                 {
-                    foreach (StepRun stepRun in testRun.StepRuns)
+                    foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
                     {
-                        foreach (ExecutionLogAttachment attachment in stepRun.ExecutionLog.Attachments)
+                        foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                         {
-                            string attachmentPath = GetAttachmentPath(testRun.TestId, stepRun.Step.Id, attachment.Name);
+                            string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
 
                             progressMonitor.ThrowIfCanceled();
                             progressMonitor.SetStatus(attachmentPath);
@@ -230,12 +230,11 @@ namespace Gallio.Runner.Reports
                 attachment.Contents.Accept(new SaveAttachmentVisitor(attachmentStream));
         }
 
-        private string GetAttachmentPath(string stepId, string testId, string attachmentName)
+        private string GetAttachmentPath(string testStepId, string attachmentName)
         {
-            return Path.Combine(Path.Combine(Path.Combine(
+            return Path.Combine(Path.Combine(
                 reportContainer.ReportName,
-                reportContainer.EncodeFileName(stepId)),
-                reportContainer.EncodeFileName(testId)),
+                reportContainer.EncodeFileName(testStepId)),
                 reportContainer.EncodeFileName(attachmentName));
         }
 
@@ -245,7 +244,7 @@ namespace Gallio.Runner.Reports
 
             if (report.PackageRun != null)
             {
-                foreach (StepRun stepRun in report.PackageRun.StepRuns)
+                foreach (TestStepRun stepRun in report.PackageRun.TestStepRuns)
                 {
                     count += stepRun.ExecutionLog.Attachments.Count;
                 }

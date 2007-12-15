@@ -30,18 +30,24 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IFunctionInfo : IMemberInfo
+    public interface IFunctionInfo : IMemberInfo, IEquatable<IFunctionInfo>
     {
         /// <summary>
-        /// Gets the method modifiers.
+        /// Gets the method attributes.
         /// </summary>
-        MethodAttributes Modifiers { get; }
+        MethodAttributes MethodAttributes { get; }
 
         /// <summary>
         /// Gets the parameters of the function.
         /// </summary>
         /// <returns>The parameters</returns>
         IList<IParameterInfo> GetParameters();
+
+        /// <summary>
+        /// Gets the generic parameters of the function.
+        /// </summary>
+        /// <returns>The generic parameters</returns>
+        IList<IGenericParameterInfo> GetGenericParameters();
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

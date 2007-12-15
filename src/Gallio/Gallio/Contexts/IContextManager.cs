@@ -20,7 +20,7 @@ using Gallio.Contexts;
 namespace Gallio.Contexts
 {
     /// <summary>
-    /// The context manager tracks the <see cref="Context" /> associated with the current thread.
+    /// The context manager tracks the <see cref="Context" /> associated with threads.
     /// </summary>
     /// <remarks>
     /// All context manager operations are thread safe.
@@ -34,10 +34,20 @@ namespace Gallio.Contexts
         Context CurrentContext { get; }
 
         /// <summary>
-        /// Gets the root context of the environment, or null if there is no
-        /// root context.
+        /// Gets or the global context of the environment, or null if there is no
+        /// such context.
         /// </summary>
-        Context RootContext { get; }
+        Context GlobalContext { get; set; }
+
+        /// <summary>
+        /// <para>
+        /// Enters a context.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The context to enter</param>
+        /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
+        ContextCookie EnterContext(Context context);
 
         /// <summary>
         /// <para>
@@ -46,7 +56,7 @@ namespace Gallio.Contexts
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default context for a thread is <see cref="RootContext" /> unless the thread's
+        /// The default context for a thread is <see cref="GlobalContext" /> unless the thread's
         /// default context has been overridden with <see cref="SetThreadDefaultContext" />.
         /// </para>
         /// <para>
@@ -58,7 +68,7 @@ namespace Gallio.Contexts
         /// </remarks>
         /// <param name="thread">The thread</param>
         /// <param name="context">The context to associate with the thread, or null to reset the
-        /// thread's default context to the root context</param>
+        /// thread's default context to inherit the <see cref="GlobalContext" /> once again</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
         void SetThreadDefaultContext(Thread thread, Context context);
 
@@ -69,7 +79,7 @@ namespace Gallio.Contexts
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default context for a thread is <see cref="RootContext" /> unless the thread's
+        /// The default context for a thread is <see cref="GlobalContext" /> unless the thread's
         /// default context has been overridden with <see cref="SetThreadDefaultContext" />.
         /// </para>
         /// <para>
@@ -80,45 +90,8 @@ namespace Gallio.Contexts
         /// </para>
         /// </remarks>
         /// <param name="thread">The thread</param>
-        /// <returns>The default context</returns>
+        /// <returns>The default context of the thread</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
         Context GetThreadDefaultContext(Thread thread);
-
-        /// <summary>
-        /// Initializes the root context of the context manager with a new context
-        /// created from the root step.
-        /// </summary>
-        /// <remarks>
-        /// Subsequent attempts to access <see cref="IContextManager.RootContext" /> will
-        /// the new root context as returned by this method.
-        /// </remarks>
-        /// <param name="serviceProvider">The context service provider</param>
-        /// <returns>The new root context</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceProvider"/> is null</exception>
-        Context InitializeRootContext(IContextServiceProvider serviceProvider);
-
-        /// <summary>
-        /// Disposes the root context if there is one.
-        /// </summary>
-        /// <remarks>
-        /// Subsequent attempts to access <see cref="IContextManager.RootContext" /> will return null.
-        /// </remarks>
-        void DisposeRootContext();
-
-        /// <summary>
-        /// Creates a new child context.
-        /// </summary>
-        /// <param name="parent">The parent context</param>
-        /// <param name="serviceProvider">The context service provider</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parent"/>
-        /// or <paramref name="serviceProvider"/> is null</exception>
-        Context CreateChildContext(Context parent, IContextServiceProvider serviceProvider);
-
-        /// <summary>
-        /// Disposes a context.
-        /// </summary>
-        /// <param name="context">The context to dispose</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
-        void DisposeContext(Context context);
     }
 }

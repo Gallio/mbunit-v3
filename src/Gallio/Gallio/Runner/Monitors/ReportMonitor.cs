@@ -31,25 +31,28 @@ namespace Gallio.Runner.Monitors
     /// The report monitor also provides reinterpreted events regarding the lifecycle of
     /// tests in terms of report elements that have been generated.
     /// For example, to obtain the result associated with a test failure, a test runner
-    /// can listen for the <see cref="StepFinished"/> event which will include the test
-    /// result as part of its <see cref="ReportStepEventArgs" />.
+    /// can listen for the <see cref="TestStepFinished"/> event which will include the test
+    /// result as part of its <see cref="TestStepRunEventArgs" />.
     /// </para>
     /// </summary>
     public class ReportMonitor : BaseTestRunnerMonitor
     {
-        private readonly Dictionary<string, StepState> stepDataMap;
+        private readonly Dictionary<string, TestStepState> states;
+        private readonly Dictionary<string, TestInstanceData> testInstances;
+
         private Report report;
         private Stopwatch durationStopwatch;
 
-        private EventHandler<ReportStepEventArgs> stepStarting;
-        private EventHandler<ReportStepEventArgs> stepFinished;
+        private EventHandler<TestStepRunEventArgs> testStepStarting;
+        private EventHandler<TestStepRunEventArgs> testStepFinished;
 
         /// <summary>
         /// Creates a test summary tracker initially with no contents.
         /// </summary>
         public ReportMonitor()
         {
-            stepDataMap = new Dictionary<string, StepState>();
+            states = new Dictionary<string, TestStepState>();
+            testInstances = new Dictionary<string, TestInstanceData>();
             report = new Report();
         }
 
@@ -66,31 +69,31 @@ namespace Gallio.Runner.Monitors
         }
 
         /// <summary>
-        /// The event fired when a step is starting.
+        /// The event fired when a test step is starting.
         /// </summary>
         /// <remarks>
         /// The <see cref="Report" /> instance is locked for the duration of this
         /// event to prevent race conditions.  Do not perform long-running operations
         /// when processing this event.  Also beware of potential deadlocks!
         /// </remarks>
-        public event EventHandler<ReportStepEventArgs> StepStarting
+        public event EventHandler<TestStepRunEventArgs> TestStepStarting
         {
-            add { lock (report) stepStarting += value; }
-            remove { lock (report) stepStarting -= value; }
+            add { lock (report) testStepStarting += value; }
+            remove { lock (report) testStepStarting -= value; }
         }
 
         /// <summary>
-        /// The event fired when a step is finished.
+        /// The event fired when a test step is finished.
         /// </summary>
         /// <remarks>
         /// The <see cref="Report" /> instance is locked for the duration of this
         /// event to prevent race conditions.  Do not perform long-running operations
         /// when processing this event.  Also beware of potential deadlocks!
         /// </remarks>
-        public event EventHandler<ReportStepEventArgs> StepFinished
+        public event EventHandler<TestStepRunEventArgs> TestStepFinished
         {
-            add { lock (report) stepFinished += value; }
-            remove { lock (report) stepFinished -= value; }
+            add { lock (report) testStepFinished += value; }
+            remove { lock (report) testStepFinished -= value; }
         }
 
         /// <summary>
@@ -113,11 +116,10 @@ namespace Gallio.Runner.Monitors
         {
             base.OnAttach();
 
-            Runner.LoadPackageComplete += HandleLoadPackageComplete;
-            Runner.BuildTemplatesComplete += HandleBuildTemplatesComplete;
-            Runner.BuildTestsComplete += HandleBuildTestsComplete;
-            Runner.RunStarting += HandleRunStarting;
-            Runner.RunComplete += HandleRunComplete;
+            Runner.LoadTestPackageComplete += HandleLoadTestPackageComplete;
+            Runner.BuildTestModelComplete += HandleBuildTestModelComplete;
+            Runner.RunTestsStarting += HandleRunTestsStarting;
+            Runner.RunTestsComplete += HandleRunTestsComplete;
             Runner.EventDispatcher.Lifecycle += HandleLifecycleEvent;
             Runner.EventDispatcher.ExecutionLog += HandleExecutionLogEvent;
         }
@@ -127,50 +129,39 @@ namespace Gallio.Runner.Monitors
         {
             base.OnDetach();
 
-            Runner.LoadPackageComplete -= HandleLoadPackageComplete;
-            Runner.BuildTemplatesComplete -= HandleBuildTemplatesComplete;
-            Runner.BuildTestsComplete -= HandleBuildTestsComplete;
-            Runner.RunStarting -= HandleRunStarting;
-            Runner.RunComplete -= HandleRunComplete;
+            Runner.LoadTestPackageComplete -= HandleLoadTestPackageComplete;
+            Runner.BuildTestModelComplete -= HandleBuildTestModelComplete;
+            Runner.RunTestsStarting -= HandleRunTestsStarting;
+            Runner.RunTestsComplete -= HandleRunTestsComplete;
             Runner.EventDispatcher.Lifecycle -= HandleLifecycleEvent;
             Runner.EventDispatcher.ExecutionLog -= HandleExecutionLogEvent;
         }
 
-        private void HandleLoadPackageComplete(object sender, EventArgs e)
+        private void HandleLoadTestPackageComplete(object sender, EventArgs e)
         {
             lock (report)
             {
-                report.Package = Runner.Package.Copy();
-                report.TemplateModel = null;
-                report.TestModel = null;
+                report.PackageConfig = Runner.TestPackageData.Config.Copy();
+                report.TestModelData = null;
                 report.PackageRun = null;
             }
         }
 
-        private void HandleBuildTemplatesComplete(object sender, EventArgs e)
+        private void HandleBuildTestModelComplete(object sender, EventArgs e)
         {
             lock (report)
             {
-                report.TemplateModel = Runner.TemplateModel;
-                report.TestModel = null;
+                report.TestModelData = Runner.TestModelData;
                 report.PackageRun = null;
             }
         }
 
-        private void HandleBuildTestsComplete(object sender, EventArgs e)
+        private void HandleRunTestsStarting(object sender, EventArgs e)
         {
             lock (report)
             {
-                report.TestModel = Runner.TestModel;
-                report.PackageRun = null;
-            }
-        }
-
-        private void HandleRunStarting(object sender, EventArgs e)
-        {
-            lock (report)
-            {
-                stepDataMap.Clear();
+                states.Clear();
+                testInstances.Clear();
 
                 report.PackageRun = new PackageRun();
                 report.PackageRun.StartTime = DateTime.Now;
@@ -178,11 +169,12 @@ namespace Gallio.Runner.Monitors
             }
         }
 
-        private void HandleRunComplete(object sender, EventArgs e)
+        private void HandleRunTestsComplete(object sender, EventArgs e)
         {
             lock (report)
             {
-                stepDataMap.Clear();
+                states.Clear();
+                testInstances.Clear();
 
                 report.PackageRun.EndTime = DateTime.Now;
                 report.PackageRun.Statistics.Duration = durationStopwatch.Elapsed.TotalSeconds;
@@ -195,30 +187,38 @@ namespace Gallio.Runner.Monitors
             {
                 switch (e.EventType)
                 {
+                    case LifecycleEventType.NewInstance:
+                    {
+                        TestInstanceData testInstanceData = e.TestInstanceData;
+                        testInstances.Add(testInstanceData.Id, testInstanceData);
+                        break;
+                    }
+
                     case LifecycleEventType.Start:
                     {
-                        TestData testData = Runner.TestModel.Tests[e.StepData.TestId];
-                        StepRun stepRun = new StepRun(e.StepData);
+                        TestInstanceData testInstanceData = testInstances[e.TestStepData.TestInstanceId];
+                        TestData testData = Runner.TestModelData.Tests[testInstanceData.TestId];
+                        TestStepRun testStepRun = new TestStepRun(e.TestStepData);
 
-                        StepState stepState;
-                        if (e.StepData.ParentId == null)
+                        TestStepState state;
+                        if (e.TestStepData.ParentId == null)
                         {
-                            TestRun testRun = new TestRun(e.StepData.TestId, stepRun);
-                            report.PackageRun.TestRuns.Add(testRun);
+                            TestInstanceRun testInstanceRun = new TestInstanceRun(testInstanceData, testStepRun);
+                            report.PackageRun.TestInstanceRuns.Add(testInstanceRun);
 
-                            stepState = new StepState(testData, testRun, stepRun);
+                            state = new TestStepState(testData, testInstanceRun, testStepRun);
                         }
                         else
                         {
-                            StepState parentStepState = GetStepData(e.StepData.ParentId);
-                            parentStepState.StepRun.Children.Add(stepRun);
+                            TestStepState parentState = GetStepData(e.TestStepData.ParentId);
+                            parentState.TestStepRun.Children.Add(testStepRun);
 
-                            stepState = new StepState(testData, parentStepState.TestRun, stepRun);
+                            state = new TestStepState(testData, parentState.TestInstanceRun, testStepRun);
                         }
-                        stepDataMap.Add(e.StepId, stepState);
-                        stepRun.StartTime = DateTime.Now;
+                        states.Add(e.StepId, state);
+                        testStepRun.StartTime = DateTime.Now;
 
-                        NotifyStepStarting(stepState);
+                        NotifyStepStarting(state);
                         break;
                     }
 
@@ -227,22 +227,22 @@ namespace Gallio.Runner.Monitors
 
                     case LifecycleEventType.AddMetadata:
                     {
-                        StepState stepState = GetStepData(e.StepId);
-                        stepState.StepRun.Step.Metadata.Add(e.MetadataKey, e.MetadataValue);
+                        TestStepState state = GetStepData(e.StepId);
+                        state.TestStepRun.Step.Metadata.Add(e.MetadataKey, e.MetadataValue);
                         break;
                     }
 
                     case LifecycleEventType.Finish:
                     {
-                        StepState stepState = GetStepData(e.StepId);
-                        stepState.StepRun.EndTime = DateTime.Now;
-                        stepState.StepRun.Result = e.Result;
-                        report.PackageRun.Statistics.MergeStepStatistics(stepState.StepRun,
-                            stepState.StepRun.Step.ParentId == null && stepState.TestData.IsTestCase);
+                        TestStepState state = GetStepData(e.StepId);
+                        state.TestStepRun.EndTime = DateTime.Now;
+                        state.TestStepRun.Result = e.Result;
+                        report.PackageRun.Statistics.MergeStepStatistics(state.TestStepRun,
+                            state.TestStepRun.Step.ParentId == null && state.TestData.IsTestCase);
 
-                        stepState.ExecutionLogWriter.Close();
+                        state.ExecutionLogWriter.Close();
 
-                        NotifyStepFinished(stepState);
+                        NotifyStepFinished(state);
                         break;
                     }
                 }
@@ -253,24 +253,24 @@ namespace Gallio.Runner.Monitors
         {
             lock (report)
             {
-                StepState stepState = GetStepData(e.StepId);
+                TestStepState state = GetStepData(e.StepId);
 
-                e.ApplyToLogWriter(stepState.ExecutionLogWriter);
+                e.ApplyToLogWriter(state.ExecutionLogWriter);
             }
         }
 
-        private StepState GetStepData(string stepId)
+        private TestStepState GetStepData(string stepId)
         {
-            return stepDataMap[stepId];
+            return states[stepId];
         }
 
-        private void NotifyStepStarting(StepState stepState)
+        private void NotifyStepStarting(TestStepState state)
         {
-            if (stepStarting != null)
+            if (testStepStarting != null)
             {
                 try
                 {
-                    stepStarting(this, new ReportStepEventArgs(report, stepState.TestRun, stepState.StepRun));
+                    testStepStarting(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun));
                 }
                 catch (Exception ex)
                 {
@@ -279,13 +279,13 @@ namespace Gallio.Runner.Monitors
             }
         }
 
-        private void NotifyStepFinished(StepState stepState)
+        private void NotifyStepFinished(TestStepState state)
         {
-            if (stepFinished != null)
+            if (testStepFinished != null)
             {
                 try
                 {
-                    stepFinished(this, new ReportStepEventArgs(report, stepState.TestRun, stepState.StepRun));
+                    testStepFinished(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun));
                 }
                 catch (Exception ex)
                 {
@@ -294,21 +294,21 @@ namespace Gallio.Runner.Monitors
             }
         }
 
-        private sealed class StepState
+        private sealed class TestStepState
         {
             public readonly TestData TestData;
-            public readonly TestRun TestRun;
-            public readonly StepRun StepRun;
+            public readonly TestInstanceRun TestInstanceRun;
+            public readonly TestStepRun TestStepRun;
             public readonly ExecutionLogWriter ExecutionLogWriter;
 
-            public StepState(TestData testData, TestRun testRun, StepRun stepRun)
+            public TestStepState(TestData testData, TestInstanceRun testInstanceRun, TestStepRun testStepRun)
             {
-                this.TestData = testData;
-                this.TestRun = testRun;
-                this.StepRun = stepRun;
+                TestData = testData;
+                TestInstanceRun = testInstanceRun;
+                TestStepRun = testStepRun;
 
                 ExecutionLogWriter = new ExecutionLogWriter();
-                stepRun.ExecutionLog = ExecutionLogWriter.ExecutionLog;
+                testStepRun.ExecutionLog = ExecutionLogWriter.ExecutionLog;
             }
         }
     }

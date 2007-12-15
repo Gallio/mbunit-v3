@@ -14,13 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Reflection;
-using Gallio.Runner;
 
 namespace Gallio.Runner.Harness
 {
@@ -34,33 +30,19 @@ namespace Gallio.Runner.Harness
     public interface ITestHarness : IDisposable
     {
         /// <summary>
-        /// Gets the list of test assemblies loaded into the test harness.
-        /// </summary>
-        IList<IAssemblyInfo> Assemblies { get; }
-
-        /// <summary>
         /// Gets the event dispatcher.
         /// </summary>
         TestEventDispatcher EventDispatcher { get; }
 
         /// <summary>
-        /// Gets the package loaded in the test harness, or null if none.
+        /// Gets the test package loaded in the test harness, or null if none.
         /// </summary>
-        TestPackage Package { get; }
+        TestPackage TestPackage { get; }
 
         /// <summary>
-        /// Gets the template tree builder for the test harness.
+        /// Gets the test model, or null if the test model has not been built.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the template
-        /// tree has not been built</exception>
-        TemplateTreeBuilder TemplateTreeBuilder { get; }
-
-        /// <summary>
-        /// Gets the test tree builder for the test harness.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the test
-        /// tree has not been built</exception>
-        TestTreeBuilder TestTreeBuilder { get; }
+        TestModel TestModel { get; }
 
         /// <summary>
         /// Adds a test framework.
@@ -77,49 +59,24 @@ namespace Gallio.Runner.Harness
         void AddTestEnvironment(ITestEnvironment environment);
 
         /// <summary>
-        /// Adds a test assembly to the list.
-        /// </summary>
-        /// <param name="assembly">The assembly to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
-        void AddAssembly(IAssemblyInfo assembly);
-
-        /// <summary>
-        /// Loads a test assembly and adds it to the list.
-        /// </summary>
-        /// <param name="assemblyFile">The filename of the assembly to load</param>
-        /// <returns>The loaded assembly</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyFile"/> is null</exception>
-        /// <exception cref="RunnerException">Thrown if the assembly could not be loaded</exception>
-        IAssemblyInfo LoadAssemblyFrom(string assemblyFile);
-
-        /// <summary>
         /// Loads the test package into the test harness.
         /// </summary>
-        /// <param name="package">The test package</param>
+        /// <param name="packageConfig">The test package configuration</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="package"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadPackage" /> has already been called once
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="packageConfig"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadTestPackage" /> has already been called once
         /// because this interface does not support unloading packages except by disposing the harness
         /// and recreating it</exception>
-        void LoadPackage(TestPackage package, IProgressMonitor progressMonitor);
+        void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Populates the template tree.
-        /// </summary>
-        /// <param name="options">The template enumeration options</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadPackage" /> has not been called yet</exception>
-        void BuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Populates the test tree.
+        /// Populates the test model.
         /// </summary>
         /// <param name="options">The test enumeration options</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTemplates" /> has not been called yet</exception>
-        void BuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor);
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadTestPackage" /> has not been called yet</exception>
+        void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.
@@ -127,7 +84,7 @@ namespace Gallio.Runner.Harness
         /// <param name="options">The test execution options</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTests" /> has not been called yet</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTestModel" /> has not been called yet</exception>
         void RunTests(TestExecutionOptions options, IProgressMonitor progressMonitor);
     }
 }

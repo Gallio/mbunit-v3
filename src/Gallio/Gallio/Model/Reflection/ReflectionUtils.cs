@@ -135,7 +135,7 @@ namespace Gallio.Model.Reflection
                 {
                     IParameterInfo parameter = parameters[i];
                     if (parameter.ValueType != signature[i]
-                        || (parameter.Modifiers & (ParameterAttributes.In | ParameterAttributes.Out)) != ParameterAttributes.In)
+                        || (parameter.ParameterAttributes & (ParameterAttributes.In | ParameterAttributes.Out)) != ParameterAttributes.In)
                         goto Fail;
                 }
 
@@ -149,9 +149,9 @@ namespace Gallio.Model.Reflection
             });
             string[] actualTypeNames = GenericUtils.ConvertAllToArray<IParameterInfo, string>(parameters, delegate(IParameterInfo parameter)
             {
-                if ((parameter.Modifiers & ParameterAttributes.Out) != 0)
+                if ((parameter.ParameterAttributes & ParameterAttributes.Out) != 0)
                 {
-                    string prefix = (parameter.Modifiers & ParameterAttributes.In) != 0 ? @"ref " : @"out ";
+                    string prefix = (parameter.ParameterAttributes & ParameterAttributes.In) != 0 ? @"ref " : @"out ";
                     return prefix + parameter.ValueType.FullName;
                 }
 
@@ -182,27 +182,6 @@ namespace Gallio.Model.Reflection
         }
 
         /// <summary>
-        /// Maps an enumeration of assemblies based on the assembly name of their
-        /// reference with the specified display name.  Assemblies that do not have
-        /// referenced with the specified display name are omitted from the map.
-        /// </summary>
-        /// <param name="assemblies">The assemblies to map</param>
-        /// <param name="displayName">The display name of the referenced assembly</param>
-        /// <returns>A map of the input assemblies indexed by the version of the desired reference</returns>
-        public static IMultiMap<Version, IAssemblyInfo> MapByAssemblyReferenceVersion(IEnumerable<IAssemblyInfo> assemblies, string displayName)
-        {
-            MultiMap<Version, IAssemblyInfo> map = new MultiMap<Version, IAssemblyInfo>();
-            foreach (IAssemblyInfo assembly in assemblies)
-            {
-                AssemblyName reference = FindAssemblyReference(assembly, displayName);
-                if (reference != null)
-                    map.Add(reference.Version, assembly);
-            }
-
-            return map;
-        }
-
-        /// <summary>
         /// Determines if the type can be instantiated using a public constructor.
         /// </summary>
         /// <param name="type">The type</param>
@@ -210,7 +189,7 @@ namespace Gallio.Model.Reflection
         public static bool CanInstantiate(ITypeInfo type)
         {
             return type != null
-                && (type.Modifiers & (TypeAttributes.Abstract | TypeAttributes.Class | TypeAttributes.Public)) == (TypeAttributes.Class | TypeAttributes.Public)
+                && (type.TypeAttributes & (TypeAttributes.Abstract | TypeAttributes.Class | TypeAttributes.Public)) == (TypeAttributes.Class | TypeAttributes.Public)
                 && type.ElementType == null
                 && type.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Count != 0;
         }
@@ -223,7 +202,7 @@ namespace Gallio.Model.Reflection
         public static bool CanInvokeNonStatic(IMethodInfo method)
         {
             return method != null
-                && (method.Modifiers & (MethodAttributes.Abstract | MethodAttributes.Public | MethodAttributes.Static)) == MethodAttributes.Public;
+                && (method.MethodAttributes & (MethodAttributes.Abstract | MethodAttributes.Public | MethodAttributes.Static)) == MethodAttributes.Public;
         }
 
         /// <summary>

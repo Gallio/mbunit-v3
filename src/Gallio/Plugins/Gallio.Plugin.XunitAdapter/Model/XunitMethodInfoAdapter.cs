@@ -61,12 +61,12 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         public bool IsAbstract
         {
-            get { return (target.Modifiers & MethodAttributes.Abstract) != 0; }
+            get { return (target.MethodAttributes & MethodAttributes.Abstract) != 0; }
         }
 
         public bool IsStatic
         {
-            get { return (target.Modifiers & MethodAttributes.Static) != 0; }
+            get { return (target.MethodAttributes & MethodAttributes.Static) != 0; }
         }
 
         public MethodInfo MethodInfo

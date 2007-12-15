@@ -34,19 +34,9 @@ namespace Gallio.Plugin.XunitAdapter.Model
         }
 
         /// <inheritdoc />
-        public override void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
+        public override ITestExplorer CreateTestExplorer()
         {
-            IMultiMap<Version, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReferenceVersion(assemblies, @"xunit");
-            foreach (KeyValuePair<Version, IList<IAssemblyInfo>> entry in map)
-            {
-                // Add a framework template with suitable rules to populate tests using the
-                // Xunit test enumerator.  We don't actually represent each test as a
-                // template because we can't perform any interesting meta-operations
-                // on them like binding test parameters or composing tests.
-                Version frameworkVersion = entry.Key;
-                XunitFrameworkTemplate frameworkTemplate = new XunitFrameworkTemplate(frameworkVersion, entry.Value);
-                builder.Root.AddChild(frameworkTemplate);
-            }
+            return new XunitTestExplorer();
         }
     }
 }

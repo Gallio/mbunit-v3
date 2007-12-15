@@ -29,7 +29,7 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IConstructorInfo : IFunctionInfo
+    public interface IConstructorInfo : IFunctionInfo, IEquatable<IConstructorInfo>
     {
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

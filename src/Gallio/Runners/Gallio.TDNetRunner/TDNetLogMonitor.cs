@@ -50,22 +50,22 @@ namespace Gallio.TDNetRunner
         {
             base.OnAttach();
 
-            reportMonitor.StepFinished += HandleStepFinished;
+            reportMonitor.TestStepFinished += HandleTestStepFinished;
         }
 
         protected override void OnDetach()
         {
             base.OnDetach();
 
-            reportMonitor.StepFinished -= HandleStepFinished;
+            reportMonitor.TestStepFinished -= HandleTestStepFinished;
         }
 
-        private void HandleStepFinished(object sender, ReportStepEventArgs e)
+        private void HandleTestStepFinished(object sender, TestStepRunEventArgs e)
         {
             // Ignore tests that aren't test cases.
             // Also ignore nested test steps.
-            TestData testData = e.Report.TestModel.Tests[e.TestRun.TestId];
-            if (!testData.IsTestCase || e.StepRun.Step.ParentId != null)
+            TestData testData = e.TestData;
+            if (!testData.IsTestCase || e.TestStepRun.Step.ParentId != null)
                 return;
 
             // A TestResult with State == TestState.Passed won't be displayed in the
@@ -73,31 +73,31 @@ namespace Gallio.TDNetRunner
             // Since that can be harder to notice, and also is lost when the following
             // test finishes, we print a message in the output window so the user can 
             // progressively see if the tests are passing or failing.
-            if (e.StepRun.Result.Outcome == TestOutcome.Passed)
+            if (e.TestStepRun.Result.Outcome == TestOutcome.Passed)
             {
                 testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed, 
-                    e.StepRun.Step.FullName), Category.Info);
+                    e.TestStepRun.Step.FullName), Category.Info);
             }
 
             // Inform TD.NET what happened 
             TestResult result = new TestResult();
-            result.Name = e.StepRun.Step.FullName;
-            result.TimeSpan = TimeSpan.FromSeconds(e.StepRun.Result.Duration);
+            result.Name = e.TestStepRun.Step.FullName;
+            result.TimeSpan = TimeSpan.FromSeconds(e.TestStepRun.Result.Duration);
             // result.TestRunner = "Gallio"; // note: can crash in older versions of TD.Net with MissingFieldException
 
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line
-            ExecutionLogStream failureStream = e.StepRun.ExecutionLog.GetStream(LogStreamNames.Failures);
+            ExecutionLogStream failureStream = e.TestStepRun.ExecutionLog.GetStream(LogStreamNames.Failures);
             if (failureStream != null)
                 result.StackTrace = failureStream.ToString();
 
-            ExecutionLogStream warningStream = e.StepRun.ExecutionLog.GetStream(LogStreamNames.Warnings);
+            ExecutionLogStream warningStream = e.TestStepRun.ExecutionLog.GetStream(LogStreamNames.Warnings);
             if (warningStream != null)
                 result.Message = String.Format(Resources.TDNetLogMonitor_Warnings, warningStream);
 
             // TD.NET will automatically count the number of passed, ignored and failed tests
             // provided we call the TestFinished method with the right State
-            result.State = GetTestState(e.StepRun.Result.Outcome);
+            result.State = GetTestState(e.TestStepRun.Result.Outcome);
 
             testListener.TestFinished(result);
         }

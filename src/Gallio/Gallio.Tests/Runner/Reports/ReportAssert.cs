@@ -16,9 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Runner;
-using Gallio.Runner.Reports;
 using Gallio.Model;
+using Gallio.Runner.Reports;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
 
@@ -37,13 +36,12 @@ namespace Gallio.Tests.Runner.Reports
                 return;
             }
 
-            AreEqual(expected.Package, actual.Package);
-            ModelAssert.AreEqual(expected.TemplateModel, actual.TemplateModel);
-            ModelAssert.AreEqual(expected.TestModel, actual.TestModel);
+            AreEqual(expected.PackageConfig, actual.PackageConfig);
+            ModelAssert.AreEqual(expected.TestModelData, actual.TestModelData);
             AreEqual(expected.PackageRun, actual.PackageRun);
         }
 
-        public static void AreEqual(TestPackage expected, TestPackage actual)
+        public static void AreEqual(TestPackageConfig expected, TestPackageConfig actual)
         {
             if (expected == null)
             {
@@ -69,7 +67,7 @@ namespace Gallio.Tests.Runner.Reports
             Assert.AreEqual(expected.EndTime, actual.EndTime);
             AreEqual(expected.Statistics, actual.Statistics);
 
-            MbUnit.Framework.InterimAssert.WithPairs(expected.TestRuns, actual.TestRuns, AreEqual);
+            MbUnit.Framework.InterimAssert.WithPairs(expected.TestInstanceRuns, actual.TestInstanceRuns, AreEqual);
         }
 
         public static void AreEqual(PackageRunStatistics expected, PackageRunStatistics actual)
@@ -90,7 +88,7 @@ namespace Gallio.Tests.Runner.Reports
             Assert.AreEqual(expected.TestCount, actual.TestCount);
         }
 
-        public static void AreEqual(TestRun expected, TestRun actual)
+        public static void AreEqual(TestInstanceRun expected, TestInstanceRun actual)
         {
             if (expected == null)
             {
@@ -98,11 +96,11 @@ namespace Gallio.Tests.Runner.Reports
                 return;
             }
 
-            Assert.AreEqual(expected.TestId, actual.TestId);
-            AreEqual(expected.RootStepRun, actual.RootStepRun);
+            ModelAssert.AreEqual(expected.TestInstance, actual.TestInstance);
+            AreEqual(expected.RootTestStepRun, actual.RootTestStepRun);
         }
 
-        public static void AreEqual(StepRun expected, StepRun actual)
+        public static void AreEqual(TestStepRun expected, TestStepRun actual)
         {
             if (expected == null)
             {

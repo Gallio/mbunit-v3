@@ -23,92 +23,92 @@ using MbUnit2::MbUnit.Framework;
 namespace Gallio.Tests.Runner.Reports
 {
     [TestFixture]
-    [TestsOn(typeof(StepRun))]
+    [TestsOn(typeof(TestStepRun))]
     [Author("Vadim")]
     public class StepRunTests
     {
-        private StepRun _stepRun;
+        private TestStepRun testStepRun;
 
         [SetUp]
         public void TestStart()
         {
-            _stepRun = new StepRun(new StepData("id", "name", "fullName", "testId"));
+            testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"));
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void ConstructorExceptionTest()
         {
-            new StepRun(null);
+            new TestStepRun(null);
         }
 
         [Test]
         public void ConstructorTest()
         {
-            StepData step = new StepData("id", "name", "fullName", "testId");
-            StepRun stepRun = new StepRun(step);
-            Assert.AreSame(step, stepRun.Step);
-            Assert.AreEqual(0, stepRun.Children.Count);
+            TestStepData step = new TestStepData("id", "name", "fullName", "testId");
+            TestStepRun testStepRun = new TestStepRun(step);
+            Assert.AreSame(step, testStepRun.Step);
+            Assert.AreEqual(0, testStepRun.Children.Count);
         }
 
         [Test]
         public void ResultSetTest()
         {
-            _stepRun.Result = new TestResult();
-            Assert.IsNotNull(_stepRun.Result);
+            testStepRun.Result = new TestResult();
+            Assert.IsNotNull(testStepRun.Result);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void ResultSetExceptionTest()
         {
-            _stepRun.Result = null;
+            testStepRun.Result = null;
         }
 
         [Test]
         public void ResultGetTest()
         {
-            Assert.IsNotNull(_stepRun.Result);
+            Assert.IsNotNull(testStepRun.Result);
         }
 
         [Test]
         public void StepSetTest()
         {
-            _stepRun.Step = new StepData("stepId", "stepName", "fullName", "testId");
-            Assert.IsNotNull(_stepRun.Step);
+            testStepRun.Step = new TestStepData("stepId", "stepName", "fullName", "testId");
+            Assert.IsNotNull(testStepRun.Step);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void StepSetExceptionTest()
         {
-            _stepRun.Step = null;
+            testStepRun.Step = null;
         }
 
         [Test]
         public void StepGetTest()
         {
-            Assert.IsNotNull(_stepRun.Step);
+            Assert.IsNotNull(testStepRun.Step);
         }
 
         [Test]
         public void ExecutionLogSetTest()
         {
-            _stepRun.ExecutionLog = new ExecutionLog();
-            Assert.IsNotNull(_stepRun.ExecutionLog);
+            testStepRun.ExecutionLog = new ExecutionLog();
+            Assert.IsNotNull(testStepRun.ExecutionLog);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void ExecutionLogSetExceptionTest()
         {
-            _stepRun.ExecutionLog = null;
+            testStepRun.ExecutionLog = null;
         }
 
         [Test]
         public void ExecutionLogGetTest()
         {
-            Assert.IsNotNull(_stepRun.ExecutionLog);
+            Assert.IsNotNull(testStepRun.ExecutionLog);
         }
     }
 }

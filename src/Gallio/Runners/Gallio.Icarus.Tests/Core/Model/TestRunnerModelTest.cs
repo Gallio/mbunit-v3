@@ -17,11 +17,9 @@ using System;
 using Gallio.Icarus.Core.Model;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Presenter;
-using Gallio.Icarus.Core.ProgressMonitoring;
 using Gallio.Icarus.Tests;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Runner;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -67,8 +65,7 @@ namespace Gallio.Icarus.Core.Model.Tests
             mocks.ReplayAll();
             
             // these cannot be split up into seperate tests
-            testRunnerModel.LoadPackage(new TestPackage());
-            testRunnerModel.BuildTemplates();
+            testRunnerModel.LoadPackage(new TestPackageConfig());
             testRunnerModel.BuildTests();
             testRunnerModel.RunTests();
         }

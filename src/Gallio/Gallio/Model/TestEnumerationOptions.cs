@@ -14,18 +14,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Gallio.Model
 {
     /// <summary>
     /// Provides options that control how test enumeration occurs.
     /// </summary>
-    /// <todo>
-    /// Add a parameter to pass in bindings for particular templates so they
-    /// end up in the root scope.
-    /// </todo>
     [Serializable]
     public class TestEnumerationOptions
     {

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Model.Execution;
 using Gallio.Properties;
 
@@ -27,13 +26,10 @@ namespace Gallio.Model
         /// <summary>
         /// Creates the root test.
         /// </summary>
-        /// <param name="templateBinding">The root template binding</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="templateBinding"/> is null</exception>
-        public RootTest(ITemplateBinding templateBinding)
-            : base(Resources.RootTest_RootTestName, null, templateBinding)
+        public RootTest()
+            : base(Resources.RootTest_RootTestName, null)
         {
-            // Note: The kind will be set by the RootTemplateBinding.
-            Kind = null;
+            Kind = ComponentKind.Root;
         }
 
         /// <inheritdoc />

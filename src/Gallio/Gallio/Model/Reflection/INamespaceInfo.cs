@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Gallio.Model.Reflection
 {
@@ -30,7 +28,7 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface INamespaceInfo : ICodeElementInfo
+    public interface INamespaceInfo : ICodeElementInfo, IEquatable<INamespaceInfo>
     {
     }
 }

@@ -1575,7 +1575,7 @@ namespace MbUnit.Tests.Framework
         #region int
         
         // TODO: Swap the arguments (fails!)
-        [RowTest]
+        [Test]
         [Row(1, 0, 2, Description = "Valid Case")]
         [Row(3, 0, 2, Description = "Fail, Above Upper Bound", ExpectedException = typeof(AssertionException))]
         [Row(0, 0, 2, Description = "Valid Case, Equal To Lower Bound")]
@@ -1648,7 +1648,7 @@ namespace MbUnit.Tests.Framework
 
         #region short
 
-        [RowTest]
+        [Test]
         [Row(1, 0, 2, Description = "Valid Case")]
         [Row(3, 0, 2, Description = "Fail, Above Upper Bound", ExpectedException = typeof(AssertionException))]
         [Row(0, 0, 2, Description = "Valid Case, Equal To Lower Bound")]
@@ -1721,7 +1721,7 @@ namespace MbUnit.Tests.Framework
 
         #region byte
 
-        [RowTest]
+        [Test]
         [Row(1, 0, 2, Description = "Valid Case")]
         [Row(3, 0, 2, Description = "Fail, Above Upper Bound", ExpectedException = typeof(AssertionException))]
         [Row(0, 0, 2, Description = "Valid Case, Equal To Lower Bound")]
@@ -1789,7 +1789,7 @@ namespace MbUnit.Tests.Framework
 
         #region long
 
-        [RowTest]
+        [Test]
         [Row(1, 0, 2, Description = "Valid Case")]
         [Row(3, 0, 2, Description = "Fail, Above Upper Bound", ExpectedException = typeof(AssertionException))]
         [Row(0, 0, 2, Description = "Valid Case, Equal To Lower Bound")]
@@ -1862,7 +1862,7 @@ namespace MbUnit.Tests.Framework
 
         #region double
 
-        [RowTest]
+        [Test]
         [Row(1, 0, 2, Description = "Valid Case")]
         [Row(3, 0, 2, Description = "Fail, Above Upper Bound", ExpectedException = typeof(AssertionException))]
         [Row(0, 0, 2, Description = "Valid Case, Equal To Lower Bound")]
@@ -1935,7 +1935,7 @@ namespace MbUnit.Tests.Framework
 
         #region float
 
-        [RowTest]
+        [Test]
         [Row(1, 0, 2, Description = "Valid Case")]
         [Row(3, 0, 2, Description = "Fail, Above Upper Bound", ExpectedException = typeof(AssertionException))]
         [Row(0, 0, 2, Description = "Valid Case, Equal To Lower Bound")]
@@ -2008,7 +2008,7 @@ namespace MbUnit.Tests.Framework
 
         #region IComparable
 
-        [RowTest]
+        [Test]
         [Row("b", "a", "c", Description = "Valid Case")]
         [Row("d", "a", "c", Description = "Fail", ExpectedException = (typeof(AssertionException)))]
         [Row(2, 1, 3)]
@@ -2084,7 +2084,7 @@ namespace MbUnit.Tests.Framework
 
         #region int
 
-        [RowTest]
+        [Test]
         [Row(4, 2, 3, Description = "Above Upper Bound")]
         [Row(2, 1, 3, Description = "Fail", ExpectedException = (typeof(AssertionException)))]
         [Row(2, 3, 1, Description = "Fail, Left Greater than Right", ExpectedException = (typeof(AssertionException)))]
@@ -2104,7 +2104,7 @@ namespace MbUnit.Tests.Framework
 
         #region short
 
-        [RowTest]
+        [Test]
         [Row(4, 2, 3, Description = "Above Upper Bound")]
         [Row(2, 1, 3, Description = "Fail", ExpectedException = (typeof(AssertionException)))]
         [Row(2, 3, 1, Description = "Fail, Left Greater than Right", ExpectedException = (typeof(AssertionException)))]
@@ -2123,7 +2123,7 @@ namespace MbUnit.Tests.Framework
 
         #region byte
 
-        [RowTest]
+        [Test]
         [Row(4, 2, 3, Description = "Above Upper Bound")]
         [Row(2, 1, 3, Description = "Fail", ExpectedException = (typeof(AssertionException)))]
         [Row(2, 3, 1, Description = "Fail, Left Greater than Right", ExpectedException = (typeof(AssertionException)))]
@@ -2138,7 +2138,7 @@ namespace MbUnit.Tests.Framework
         #endregion
 
         #region long
-        [RowTest]
+        [Test]
         [Row(4, 2, 3, Description = "Above Upper Bound")]
         [Row(2, 1, 3, Description = "Fail", ExpectedException = (typeof(AssertionException)))]
         [Row(2, 3, 1, Description = "Fail, Left Greater than Right", ExpectedException = (typeof(AssertionException)))]
@@ -2157,7 +2157,7 @@ namespace MbUnit.Tests.Framework
 
         #region double
         
-        [RowTest]
+        [Test]
         [Row(4, 2, 3, Description = "Above Upper Bound")]
         [Row(2, 1, 3, Description = "Fail", ExpectedException = (typeof(AssertionException)))]
         [Row(2, 3, 1, Description = "Fail, Left Greater than Right", ExpectedException = (typeof(AssertionException)))]
@@ -2177,7 +2177,7 @@ namespace MbUnit.Tests.Framework
 
         #region float
         
-        [RowTest]
+        [Test]
         [Row(4, 2, 3, Description = "Above Upper Bound")]
         [Row(2, 1, 3, Description = "Fail", ExpectedException = (typeof(AssertionException)))]
         [Row(2, 3, 1, Description = "Fail, Left Greater than Right", ExpectedException = (typeof(AssertionException)))]
@@ -2197,7 +2197,7 @@ namespace MbUnit.Tests.Framework
 
         #region IComparable
 
-        [RowTest]
+        [Test]
         [Row("d", "a", "c", Description = "Valid Case")]
         [Row("a", "b", "c", Description = "Valid Case")]
         [Row("b", "a", "c", Description = "Fail", ExpectedException = (typeof(AssertionException)))]
@@ -2221,7 +2221,7 @@ namespace MbUnit.Tests.Framework
 
         #region int
 
-        [RowTest]
+        [Test]
         [Row(0,1, Description = "Valid Case")]
         [Row(2,1, Description = "Invalid Case", ExpectedException = typeof (AssertionException))]
         public void LowerThanIntParamTest(int left, int right)
@@ -2283,7 +2283,7 @@ namespace MbUnit.Tests.Framework
 
         #region short
 
-        [RowTest]
+        [Test]
         [Row((short)0, (short)1, Description = "Valid Case")]
         [Row((short)2, (short)1, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void LowerThanShortParamTest(short left, short right)
@@ -2346,7 +2346,7 @@ namespace MbUnit.Tests.Framework
 
         #region byte
 
-        [RowTest]
+        [Test]
         [Row((byte) 0, (byte) 1, Description = "Valid Case")]
         [Row((byte) 2, (byte) 1, Description = "Invalid Case", ExpectedException = typeof (AssertionException))]
         public void LowerThanByteParamTest(byte left, byte right)
@@ -2408,7 +2408,7 @@ namespace MbUnit.Tests.Framework
 
         #region double
 
-        [RowTest]
+        [Test]
         [Row((double) 0, (double) 1, Description = "Valid Case")]
         [Row((double) 3, (double) 1, Description = "Invalid Case", ExpectedException = typeof (AssertionException))]
         public void LowerThanDoubleParamTest(double left, double right)
@@ -2471,7 +2471,7 @@ namespace MbUnit.Tests.Framework
 
         #region long
 
-        [RowTest]
+        [Test]
         [Row((long)0, (long) 1, Description = "Valid Case")]
         [Row((long)3, (long) 1, Description = "Invalid Case", ExpectedException = typeof (AssertionException))]
         public void LowerThanLongParamTest(long left, long right)
@@ -2534,7 +2534,7 @@ namespace MbUnit.Tests.Framework
 
         #region float
 
-        [RowTest]
+        [Test]
         [Row((float)0, (float)2, Description = "Valid Case")]
         [Row((float)3, (float)2, Description = "Invalid Case", ExpectedException = typeof (AssertionException))]
         public void LowerThanFloatParamTest(float left, float right)
@@ -2597,7 +2597,7 @@ namespace MbUnit.Tests.Framework
 
         #region IComparable
 
-        [RowTest]
+        [Test]
         [Row("aaaa", "zzzz", Description = "Valid Case")]
         [Row(1, 2, Description = "Valid Case")]
         [Row(null, null, ExpectedException = (typeof(AssertionException)))]
@@ -2669,7 +2669,7 @@ namespace MbUnit.Tests.Framework
 
         #region int
 
-        [RowTest]
+        [Test]
         [Row(0, 1, Description = "Valid Case")]
         [Row(2, 1, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void LessIntParamTest(int left, int right)
@@ -2731,7 +2731,7 @@ namespace MbUnit.Tests.Framework
 
         #region uint
 
-        [RowTest]
+        [Test]
         [Row((uint)0, (uint)1, Description = "Valid Case")]
         [Row((uint)2, (uint)1, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void LessUIntParamTest(uint left, uint right)
@@ -2794,7 +2794,7 @@ namespace MbUnit.Tests.Framework
 
         #region decimal
 
-        [RowTest]
+        [Test]
         [Row(0, 1, Description = "Valid Case")]
         [Row(2, 1, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void LessDecimalParamTest(decimal left, decimal right)
@@ -2856,7 +2856,7 @@ namespace MbUnit.Tests.Framework
 
         #region double
 
-        [RowTest]
+        [Test]
         [Row((double)0, (double)1, Description = "Valid Case")]
         [Row((double)3, (double)1, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void LessDoubleParamTest(double left, double right)
@@ -2919,7 +2919,7 @@ namespace MbUnit.Tests.Framework
 
         #region long
 
-        [RowTest]
+        [Test]
         [Row((long)0, (long)1, Description = "Valid Case")]
         [Row((long)3, (long)1, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void LessLongParamTest(long left, long right)
@@ -2982,7 +2982,7 @@ namespace MbUnit.Tests.Framework
 
         #region float
 
-        [RowTest]
+        [Test]
         [Row((float)0, (float)2, Description = "Valid Case")]
         [Row((float)3, (float)2, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void LessFloatParamTest(float left, float right)
@@ -3045,7 +3045,7 @@ namespace MbUnit.Tests.Framework
 
         #region IComparable
 
-        [RowTest]
+        [Test]
         [Row("aaaa","zzzz", Description = "Valid Case")]
         [Row(1, 2, Description = "Valid Case")]
         [Row("zzzz", "aaaa", Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
@@ -3113,7 +3113,7 @@ namespace MbUnit.Tests.Framework
 
         #region int
 
-        [RowTest]
+        [Test]
         [Row((int) 0, (int) 1, Description = "Valid Case (Lower Than)")]
         [Row((int)0, (int)0, Description = "Valid Case (Zero Equal)")]
         [Row((int)1, (int)1, Description = "Valid Case (Positive Equal)")]
@@ -3179,7 +3179,7 @@ namespace MbUnit.Tests.Framework
 
         #region short
 
-        [RowTest]
+        [Test]
         [Row(0, 1, Description = "Valid Case (Lower Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -3244,7 +3244,7 @@ namespace MbUnit.Tests.Framework
 
         #region byte
 
-        [RowTest]
+        [Test]
         [Row(0, 1, Description = "Valid Case (Lower Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -3308,7 +3308,7 @@ namespace MbUnit.Tests.Framework
 
         #region long
 
-        [RowTest]
+        [Test]
         [Row(0, 1, Description = "Valid Case (Lower Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -3374,7 +3374,7 @@ namespace MbUnit.Tests.Framework
 
         #region double
 
-        [RowTest]
+        [Test]
         [Row(0, 1, Description = "Valid Case (Lower Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -3440,7 +3440,7 @@ namespace MbUnit.Tests.Framework
 
         #region float
 
-        [RowTest]
+        [Test]
         [Row(0, 1, Description = "Valid Case (Lower Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -3506,7 +3506,7 @@ namespace MbUnit.Tests.Framework
 
         #region IComparable
 
-        [RowTest]
+        [Test]
         [Row("aaaa", "zzzz", Description = "Valid Case")]
         [Row("aaaa", "aaaa", Description = "Valid Case (Equals)")]
         [Row(1, 2, Description = "Valid Case")]
@@ -3579,7 +3579,7 @@ namespace MbUnit.Tests.Framework
 
         #region int
 
-        [RowTest]
+        [Test]
         [Row((int)1, (int)0, Description = "Valid Case (Greater Than)")]
         [Row((int)1, (int)2, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void GreaterThanIntParamTest(int left, int right)
@@ -3642,7 +3642,7 @@ namespace MbUnit.Tests.Framework
 
         #region short
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(1, 2, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void GreaterThanShortParamTest(short left, short right)
@@ -3704,7 +3704,7 @@ namespace MbUnit.Tests.Framework
 
         #region byte
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(1, 2, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void GreaterThanByteParamTest(byte left, byte right)
@@ -3766,7 +3766,7 @@ namespace MbUnit.Tests.Framework
 
         #region long
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(1, 2, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void GreaterThanLongParamTest(long left, long right)
@@ -3829,7 +3829,7 @@ namespace MbUnit.Tests.Framework
 
         #region double
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(1, 2, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void GreaterThanDoubleParamTest(double left, double right)
@@ -3892,7 +3892,7 @@ namespace MbUnit.Tests.Framework
 
         #region float
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(1, 2, Description = "Invalid Case", ExpectedException = typeof(AssertionException))]
         public void GreaterThanFloatParamTest(float left, float right)
@@ -3955,7 +3955,7 @@ namespace MbUnit.Tests.Framework
 
         #region IComparable
 
-        [RowTest]
+        [Test]
         [Row("z", "a", Description = "Valid Case")]
         [Row(2, 1, Description = "Valid Case")]
         [Row(null, null, ExpectedException = (typeof(AssertionException)))]
@@ -4194,7 +4194,7 @@ namespace MbUnit.Tests.Framework
 
         #region int
 
-        [RowTest]
+        [Test]
         [Row((int)1, (int)0, Description = "Valid Case (Greater Than)")]
         [Row((int)0, (int)0, Description = "Valid Case (Zero Equal)")]
         [Row((int)1, (int)1, Description = "Valid Case (Positive Equal)")]
@@ -4260,7 +4260,7 @@ namespace MbUnit.Tests.Framework
 
         #region short
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -4325,7 +4325,7 @@ namespace MbUnit.Tests.Framework
 
         #region byte
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -4389,7 +4389,7 @@ namespace MbUnit.Tests.Framework
 
         #region long
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -4455,7 +4455,7 @@ namespace MbUnit.Tests.Framework
 
         #region double
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -4521,7 +4521,7 @@ namespace MbUnit.Tests.Framework
 
         #region float
 
-        [RowTest]
+        [Test]
         [Row(1, 0, Description = "Valid Case (Greater Than)")]
         [Row(0, 0, Description = "Valid Case (Zero Equal)")]
         [Row(1, 1, Description = "Valid Case (Positive Equal)")]
@@ -4587,7 +4587,7 @@ namespace MbUnit.Tests.Framework
 
         #region IComparable
 
-        [RowTest]
+        [Test]
         [Row("z", "a", Description = "Valid Case")]
         [Row("a", "a", Description = "Valid Case (Equals)")]
         [Row(2, 1, Description = "Valid Case")]

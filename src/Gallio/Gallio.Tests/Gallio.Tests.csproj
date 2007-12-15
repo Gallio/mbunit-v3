@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -67,9 +67,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseUnitTest.cs" />
+    <Compile Include="Contexts\StepTest.cs" />
     <Compile Include="Core\ConsoleSupport\CommandLineArgumentParserTests.cs" />
     <Compile Include="Core\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Contexts\ContextTest.cs" />
+    <Compile Include="Data\DataBindingTest.cs" />
+    <Compile Include="Data\GeneratorsTest.cs" />
     <Compile Include="Hosting\LoaderTest.cs" />
     <Compile Include="Model\Filters\EqualityFilterTest.cs" />
     <Compile Include="Model\Filters\FilterLexerTest.cs" />
@@ -104,10 +107,9 @@
     <Compile Include="Runner\Reports\PackageRunTests.cs" />
     <Compile Include="Runner\Reports\ReportTest.cs" />
     <Compile Include="Runner\Reports\StepRunTests.cs" />
-    <Compile Include="Runner\Reports\TestRunTests.cs" />
+    <Compile Include="Runner\Reports\TestInstanceRunTests.cs" />
     <Compile Include="Runner\TestLauncherTest.cs" />
     <Compile Include="Hosting\DefaultXmlDocumentationResolverTest.cs" />
-    <Compile Include="Contexts\StepTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.csproj">

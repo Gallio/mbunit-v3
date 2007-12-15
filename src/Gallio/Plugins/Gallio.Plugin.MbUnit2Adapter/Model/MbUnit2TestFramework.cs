@@ -13,11 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using Gallio.Collections;
 using Gallio.Model;
-using Gallio.Model.Reflection;
 using Gallio.Plugin.MbUnit2Adapter.Properties;
 
 namespace Gallio.Plugin.MbUnit2Adapter.Model
@@ -34,32 +30,9 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        public override void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
+        public override ITestExplorer CreateTestExplorer()
         {
-            IMultiMap<Version, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReferenceVersion(assemblies, @"MbUnit.Framework");
-
-            foreach (KeyValuePair<Version, IList<IAssemblyInfo>> entry in map)
-            {
-                // Add a framework template with suitable rules to populate tests using the
-                // MbUnit v2 test enumerator.  We don't actually represent each test as a
-                // template because we can't perform any interesting meta-operations
-                // on them like binding test parameters or composing tests.
-                Version frameworkVersion = entry.Key;
-                BaseTemplate frameworkTemplate = new BaseTemplate(
-                    String.Format(Resources.MbUnit2TestFramework_FrameworkTemplateName, frameworkVersion), null);
-                frameworkTemplate.Kind = ComponentKind.Framework;
-                frameworkTemplate.IsGenerator = true;
-                builder.Root.AddChild(frameworkTemplate);
-
-                foreach (IAssemblyInfo assembly in entry.Value)
-                {
-                    MbUnit2AssemblyTemplate assemblyTemplate = new MbUnit2AssemblyTemplate(assembly);
-                    frameworkTemplate.AddChild(assemblyTemplate);
-
-                    // Add assembly-level metadata.
-                    ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTemplate.Metadata);
-                }
-            }
+            return new MbUnit2TestExplorer();
         }
     }
 }

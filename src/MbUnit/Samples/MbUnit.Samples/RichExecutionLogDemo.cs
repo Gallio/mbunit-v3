@@ -70,19 +70,19 @@ namespace MbUnit.Samples
                 }
             }
 
-            Step.Run("Lemmings!", delegate
+            Step.RunStep("Lemmings!", delegate
             {
                 MbUnitRocks.WriteLine("You can subdivide a test into nested steps.");
                 MbUnitRocks.WriteLine("And run them repeatedly with independent failure conditions.");
 
                 for (int i = 5; i > 0; i--)
                 {
-                    Step.Run(i.ToString(), delegate { MbUnitRocks.WriteLine("..."); });
+                    Step.RunStep(i.ToString(), delegate { MbUnitRocks.WriteLine("..."); });
                 }
 
                 try
                 {
-                    Step.Run("Uh oh!", delegate
+                    Step.RunStep("Uh oh!", delegate
                     {
                         Step.AddMetadata(MetadataKeys.Description, "The untimely death of a Blocker Lemming.");
                         Step.AddMetadata("Epitaph", "Did not follow the herd."); 
@@ -97,7 +97,7 @@ namespace MbUnit.Samples
 
             Step.AddMetadata("Highlight", "It's dynamic!");
 
-            Step.Run("Tag Line", delegate
+            Step.RunStep("Tag Line", delegate
             {
                 MbUnitRocks.WriteLine("And so much more...");
                 MbUnitRocks.WriteLine();

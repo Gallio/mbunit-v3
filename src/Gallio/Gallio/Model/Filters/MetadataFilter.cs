@@ -19,11 +19,11 @@ using Gallio.Model;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.Metadata" />
+    /// A filter that matches objects whose <see cref="ITestComponent.Metadata" />
     /// has a key with a value that matches the value filter.
     /// </summary>
     [Serializable]
-    public class MetadataFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    public class MetadataFilter<T> : BasePropertyFilter<T> where T : ITestComponent
     {
         private readonly string key;
 

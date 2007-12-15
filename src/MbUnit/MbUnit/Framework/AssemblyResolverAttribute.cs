@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Attributes;
 using Gallio.Hosting;
 
 namespace MbUnit.Framework
@@ -23,9 +22,9 @@ namespace MbUnit.Framework
     /// Registers a custom assembly resolver.
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple=true)]
-    public sealed class AssemblyResolverAttribute : PatternAttribute
+    public sealed class AssemblyResolverAttribute : Attribute
     {
-        private Type assemblyResolverType;
+        private readonly Type assemblyResolverType;
 
         /// <summary>
         /// Registers a custom assembly resolver.

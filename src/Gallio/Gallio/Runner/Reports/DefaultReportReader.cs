@@ -99,7 +99,7 @@ namespace Gallio.Runner.Reports
                     return;
 
                 List<ExecutionLogAttachment> attachmentsToLoad = new List<ExecutionLogAttachment>();
-                foreach (StepRun stepRun in report.PackageRun.StepRuns)
+                foreach (TestStepRun stepRun in report.PackageRun.TestStepRuns)
                 {
                     foreach (ExecutionLogAttachment attachment in stepRun.ExecutionLog.Attachments)
                     {

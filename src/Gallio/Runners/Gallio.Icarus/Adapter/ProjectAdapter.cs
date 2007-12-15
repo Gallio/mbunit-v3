@@ -21,7 +21,6 @@ using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Runner;
 
 namespace Gallio.Icarus.Adapter
 {
@@ -32,8 +31,8 @@ namespace Gallio.Icarus.Adapter
         private readonly IProjectAdapterView _View;
         private readonly IProjectAdapterModel _Model;
         
-        private TestModel _testModel;
-        private TestPackage _testPackage;
+        private TestModelData _testModelData;
+        private TestPackageConfig _testPackageConfig;
 
         private string mode = "";
 
@@ -41,15 +40,15 @@ namespace Gallio.Icarus.Adapter
 
         #region Properties
 
-        public TestModel TestModel
+        public TestModelData TestModelData
         {
-            get { return _testModel; }
-            set { _testModel = value; }
+            get { return _testModelData; }
+            set { _testModelData = value; }
         }
 
-        public TestPackage TestPackage
+        public TestPackageConfig TestPackageConfig
         {
-            get { return _testPackage; }
+            get { return _testPackageConfig; }
         }
 
         public string StatusText
@@ -87,11 +86,11 @@ namespace Gallio.Icarus.Adapter
 
         #region Constructor
 
-        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model, TestPackage testPackage)
+        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model, TestPackageConfig testPackageConfig)
         {
             _View = view;
             _Model = model;
-            _testPackage = testPackage;
+            _testPackageConfig = testPackageConfig;
 
             // Wire up event handlers
             _View.AddAssemblies += _View_AddAssemblies;
@@ -111,17 +110,17 @@ namespace Gallio.Icarus.Adapter
 
         private void _View_AddAssemblies(object sender, AddAssembliesEventArgs e)
         {
-            _testPackage.AssemblyFiles.AddRange(e.Assemblies);
+            _testPackageConfig.AssemblyFiles.AddRange(e.Assemblies);
         }
 
         private void _View_RemoveAssemblies(object sender, EventArgs e)
         {
-            _testPackage.AssemblyFiles.Clear();
+            _testPackageConfig.AssemblyFiles.Clear();
         }
 
         private void _View_RemoveAssembly(object sender, SingleStringEventArgs e)
         {
-            _testPackage.AssemblyFiles.Remove(e.String);
+            _testPackageConfig.AssemblyFiles.Remove(e.String);
         }
 
         private void _View_GetTestTree(object sender, SingleStringEventArgs e)
@@ -129,7 +128,7 @@ namespace Gallio.Icarus.Adapter
             mode = e.String;
             if (GetTestTree != null)
             {
-                GetTestTree(this, new ProjectEventArgs(_testPackage));
+                GetTestTree(this, new ProjectEventArgs(_testPackageConfig));
             }
         }
 
@@ -187,9 +186,9 @@ namespace Gallio.Icarus.Adapter
 
         public void DataBind()
         {
-            _View.Assemblies = _Model.BuildAssemblyList(_testPackage.AssemblyFiles);
-            _View.TestTreeCollection = _Model.BuildTestTree(_testModel, mode);
-            _View.TotalTests(_Model.CountTests(_testModel));
+            _View.Assemblies = _Model.BuildAssemblyList(_testPackageConfig.AssemblyFiles);
+            _View.TestTreeCollection = _Model.BuildTestTree(_testModelData, mode);
+            _View.TotalTests(_Model.CountTests(_testModelData));
             _View.DataBind();
         }
 

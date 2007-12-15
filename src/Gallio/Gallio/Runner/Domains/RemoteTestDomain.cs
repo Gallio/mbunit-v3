@@ -15,6 +15,7 @@
 
 using System;
 using System.Diagnostics;
+using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Model.Execution;
 using Gallio.Core.ProgressMonitoring;
@@ -56,47 +57,32 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override void InternalLoadPackage(TestPackage package, IProgressMonitor progressMonitor)
+        protected override TestPackageData InternalLoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
-            Connect(new SubProgressMonitor(progressMonitor, 0.1));
+            Connect(packageConfig, new SubProgressMonitor(progressMonitor, 0.1));
 
             try
             {
-                proxy.LoadPackage(package, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 0.9)));
+                proxy.LoadTestPackage(packageConfig, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 0.9)));
+                return proxy.TestPackageData; 
             }
             catch (Exception ex)
             {
-                throw new RunnerException("Failed to load the project in the remote test domain.", ex);
+                throw new RunnerException("Failed to load the test package in the remote test domain.", ex);
             }
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor)
+        protected override TestModelData InternalBuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             try
             {
-                TemplateModel = null;
-                proxy.BuildTemplates(options, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)));
-                TemplateModel = proxy.TemplateModel;
+                proxy.BuildTestModel(options, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)));
+                return proxy.TestModelData;
             }
             catch (Exception ex)
             {
-                throw new RunnerException("Failed to build templates in the remote test domain.", ex);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void InternalBuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor)
-        {
-            try
-            {
-                TestModel = null;
-                proxy.BuildTests(options, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)));
-                TestModel = proxy.TestModel;
-            }
-            catch (Exception ex)
-            {
-                throw new RunnerException("Failed to build tests in the remote test domain.", ex);
+                throw new RunnerException("Failed to build the test model in the remote test domain.", ex);
             }
         }
 
@@ -114,7 +100,7 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override void InternalUnloadPackage(IProgressMonitor progressMonitor)
+        protected override void InternalUnloadTestPackage(IProgressMonitor progressMonitor)
         {
             try
             {
@@ -134,9 +120,10 @@ namespace Gallio.Runner.Domains
         /// <summary>
         /// Connects to the remote test domain and returns a proxy for the remote instance.
         /// </summary>
+        /// <param name="packageConfig">The test package configuration</param>
         /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <returns>A proxy for the remote test domain instance</returns>
-        protected abstract ITestDomain InternalConnect(IProgressMonitor progressMonitor);
+        protected abstract ITestDomain InternalConnect(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Disconnects from the remote test domain.
@@ -144,14 +131,14 @@ namespace Gallio.Runner.Domains
         /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         protected abstract void InternalDisconnect(IProgressMonitor progressMonitor);
 
-        private void Connect(IProgressMonitor progressMonitor)
+        private void Connect(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             try
             {
                 using (progressMonitor)
                 {
                     progressMonitor.BeginTask("Connecting to the remote test domain.", 1);
-                    proxy = InternalConnect(progressMonitor);
+                    proxy = InternalConnect(packageConfig, progressMonitor);
 
                     if (Listener != null)
                         proxy.SetTestListener(new RemoteTestListener(Listener));

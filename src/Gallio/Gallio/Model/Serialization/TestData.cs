@@ -32,6 +32,7 @@ namespace Gallio.Model.Serialization
     public sealed class TestData : TestComponentData
     {
         private readonly List<TestData> children;
+        private readonly List<TestParameterData> parameters;
         private bool isTestCase;
 
         /// <summary>
@@ -52,21 +53,28 @@ namespace Gallio.Model.Serialization
             : base(id, name)
         {
             children = new List<TestData>();
+            parameters = new List<TestParameterData>();
         }
 
         /// <summary>
         /// Copies the contents of a test.
         /// </summary>
-        /// <param name="source">The source model object</param>
+        /// <param name="source">The source test</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
         public TestData(ITest source)
             : base(source)
         {
             children = new List<TestData>();
+            parameters = new List<TestParameterData>();
 
             GenericUtils.ConvertAndAddAll(source.Children, children, delegate(ITest child)
             {
                 return new TestData(child);
+            });
+
+            GenericUtils.ConvertAndAddAll(source.Parameters, parameters, delegate(ITestParameter parameter)
+            {
+                return new TestParameterData(parameter);
             });
 
             isTestCase = source.IsTestCase;
@@ -86,12 +94,23 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets the mutable list of children.
         /// </summary>
-        /// <seealso cref="IModelTreeNode{T}.Children"/>
+        /// <seealso cref="ITest.Children"/>
         [XmlArray("children", IsNullable = false)]
         [XmlArrayItem("test", typeof(TestData), IsNullable = false)]
         public List<TestData> Children
         {
             get { return children; }
+        }
+
+        /// <summary>
+        /// Gets the mutable list of parameters.
+        /// </summary>
+        /// <seealso cref="ITest.Parameters"/>
+        [XmlArray("parameters", IsNullable = false)]
+        [XmlArrayItem("parameter", typeof(TestParameterData), IsNullable = false)]
+        public List<TestParameterData> Parameters
+        {
+            get { return parameters; }
         }
     }
 }

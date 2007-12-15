@@ -21,11 +21,11 @@ using Gallio.Model.Reflection;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeElement" />
+    /// A filter that matches objects whose <see cref="ITestComponent.CodeElement" />
     /// matches the specified type name.
     /// </summary>
     [Serializable]
-    public class TypeFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    public class TypeFilter<T> : BasePropertyFilter<T> where T : ITestComponent
     {
         private readonly bool includeDerivedTypes;
 

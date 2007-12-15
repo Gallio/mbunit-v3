@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Attributes;
 using Gallio.Model;
-using MbUnit.Model;
+using MbUnit.Model.Builder;
 
 namespace MbUnit.Framework
 {
@@ -65,9 +64,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(MbUnitTestBuilder builder, ITemplateComponent component)
+        protected override void Apply(MetadataMap metadata)
         {
-            component.Metadata.Add(metadataKey, metadataValue);
+            metadata.Add(metadataKey, metadataValue);
         }
     }
 }

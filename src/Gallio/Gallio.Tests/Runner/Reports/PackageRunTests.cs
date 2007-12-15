@@ -39,7 +39,7 @@ namespace Gallio.Tests.Runner.Reports
         [Test]
         public void ConstructorTest()
         {
-            Assert.AreEqual(0, _packageRun.TestRuns.Count);
+            Assert.AreEqual(0, _packageRun.TestInstanceRuns.Count);
         }
 
         [Test]
@@ -74,7 +74,8 @@ namespace Gallio.Tests.Runner.Reports
         {
             XmlSerializer serializer = new XmlSerializer(typeof(PackageRun));
             StringWriter writer = new StringWriter();
-            _packageRun.TestRuns.Add(new TestRun("testId", new StepRun(new StepData("stepId", "stepName", "stepFullName", "testId"))));
+            _packageRun.TestInstanceRuns.Add(new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
+                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"))));
             serializer.Serialize(writer, _packageRun);
 
             PackageRun deserializedPackageRun = (PackageRun)serializer.Deserialize(new StringReader(writer.ToString()));
@@ -84,13 +85,13 @@ namespace Gallio.Tests.Runner.Reports
         [Test]
         public void StepRuns()
         {
-            StepRun stepRun = new StepRun(new StepData("stepId", "stepName", "stepFullName", "testId"));
-            stepRun.Children.Add(new StepRun(new StepData("childId", "childName", "childFullName", "testId")));
-            TestRun testRun = new TestRun("testId", stepRun);
-            _packageRun.TestRuns.Add(testRun);
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"));
+            testStepRun.Children.Add(new TestStepRun(new TestStepData("childId", "childName", "childFullName", "testId")));
+            TestInstanceRun testRun = new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false), testStepRun);
+            _packageRun.TestInstanceRuns.Add(testRun);
 
-            CollectionAssert.AreElementsEqual(new StepRun[] { stepRun, stepRun.Children[0] },
-                _packageRun.StepRuns);
+            CollectionAssert.AreElementsEqual(new TestStepRun[] { testStepRun, testStepRun.Children[0] },
+                _packageRun.TestStepRuns);
         }
     }
 }

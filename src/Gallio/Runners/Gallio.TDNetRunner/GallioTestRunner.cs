@@ -149,10 +149,10 @@ namespace Gallio.TDNetRunner
                 // This monitor will inform the user in real-time what's going on
                 launcher.CustomMonitors.Add(new TDNetLogMonitor(testListener, launcher.ReportMonitor));
 
-                launcher.TestPackage.EnableShadowCopy = true;
+                launcher.TestPackageConfig.EnableShadowCopy = true;
 
                 string location = Loader.GetFriendlyAssemblyLocation(assembly);
-                launcher.TestPackage.AssemblyFiles.Add(location);
+                launcher.TestPackageConfig.AssemblyFiles.Add(location);
 
                 launcher.ReportFormats.Add(reportType);
                 launcher.ReportNameFormat = Path.GetFileName(location);

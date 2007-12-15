@@ -13,9 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using Gallio.Model.Reflection;
-
 namespace Gallio.Model
 {
     /// <summary>
@@ -29,16 +26,11 @@ namespace Gallio.Model
         /// <inheritdoc />
         public virtual ITestExplorer CreateTestExplorer()
         {
-            return new NullTestExplorer();
+            return NullTestExplorer.Instance;
         }
 
         /// <inheritdoc />
-        public virtual void PrepareAssemblies(IList<IAssemblyInfo> assemblies)
-        {
-        }
-
-        /// <inheritdoc />
-        public virtual void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
+        public virtual void PrepareTestPackage(TestPackage package)
         {
         }
     }

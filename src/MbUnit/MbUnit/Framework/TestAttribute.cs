@@ -14,11 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
 using Gallio.Model.Reflection;
-using MbUnit.Attributes;
 using MbUnit.Model;
-using Gallio.Model;
+using MbUnit.Model.Builder;
 
 namespace MbUnit.Framework
 {
@@ -43,21 +41,14 @@ namespace MbUnit.Framework
     /// TestSequence attribute.
     /// </todo>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public sealed class TestAttribute : TestPatternAttribute
+    public class TestAttribute : TestPatternAttribute
     {
-        /// <override />
-        public override void Apply(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
+        /// <inheritdoc />
+        protected override void InitializeMethodTest(ITestBuilder methodTestBuilder, IMethodInfo method)
         {
-            IMethodInfo method = methodTemplate.Method;
-            ReflectionUtils.CheckMethodSignature(method);
+            methodTestBuilder.Test.ExecuteChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
 
-            methodTemplate.ProcessTestChain.After(delegate(MbUnitTest test)
-            {
-                test.IsTestCase = true;
-                test.ExecuteChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
-            });
-
-            base.Apply(builder, methodTemplate);
+            base.InitializeMethodTest(methodTestBuilder, method);
         }
     }
 }

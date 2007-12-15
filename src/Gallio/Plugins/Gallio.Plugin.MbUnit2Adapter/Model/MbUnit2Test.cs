@@ -16,8 +16,6 @@
 extern alias MbUnit2;
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Model.Execution;
 using Gallio.Model;
 using Gallio.Model.Reflection;
@@ -38,14 +36,11 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <param name="templateBinding">The template binding that produced this test</param>
         /// <param name="fixture">The MbUnit v2 fixture, or null if none</param>
         /// <param name="runPipe">The MbUnit v2 run pipe, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="templateBinding"/> is null</exception>
-        public MbUnit2Test(string name, ICodeElementInfo codeElement,
-            MbUnit2AssemblyTemplateBinding templateBinding, Fixture fixture, RunPipe runPipe)
-            : base(name, codeElement, templateBinding)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public MbUnit2Test(string name, ICodeElementInfo codeElement, Fixture fixture, RunPipe runPipe)
+            : base(name, codeElement)
         {
             this.fixture = fixture;
             this.runPipe = runPipe;
@@ -65,25 +60,6 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
         public RunPipe RunPipe
         {
             get { return runPipe; }
-        }
-
-        /// <summary>
-        /// Gets the binding.
-        /// </summary>
-        new public MbUnit2AssemblyTemplateBinding TemplateBinding
-        {
-            get { return (MbUnit2AssemblyTemplateBinding)base.TemplateBinding; }
-        }
-
-        /// <inheritdoc />
-        public override Factory<ITestController> TestControllerFactory
-        {
-            get { return CreateTestController; }
-        }
-
-        private ITestController CreateTestController()
-        {
-            return new MbUnit2TestController(TemplateBinding.FixtureExplorer);
         }
     }
 }

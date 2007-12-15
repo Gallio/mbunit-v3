@@ -14,19 +14,20 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Attributes;
-using MbUnit.Model;
 using Gallio.Model;
+using Gallio.Model.Reflection;
+using MbUnit.Model;
+using MbUnit.Model.Builder;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Declares that the associated test method is expected to throw an exception of
+    /// Declares that the associated test is expected to throw an exception of
     /// a particular type.  The expected contents of the exception message may optionally
     /// be specified.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class ExpectedExceptionAttribute : MethodDecoratorPatternAttribute
+    public class ExpectedExceptionAttribute : TestDecoratorPatternAttribute
     {
         private readonly Type exceptionType;
         private string message;
@@ -77,20 +78,17 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(MbUnitTestBuilder builder, MbUnitMethodTemplate methodTemplate)
+        protected override void DecorateMethodTest(ITestBuilder builder, IMethodInfo method)
         {
-            methodTemplate.ProcessTestChain.After(delegate(MbUnitTest test)
+            builder.Test.Metadata.Add(MetadataKeys.ExpectedException, exceptionType.ToString());
+
+            builder.Test.ExecuteChain.Around(delegate(MbUnitTestState state, Action<MbUnitTestState> innerAction)
             {
-                test.ExecuteChain.Around(delegate(MbUnitTestState state, Action<MbUnitTestState> innerAction)
+                InterimAssert.Throws(exceptionType, delegate
                 {
-                    InterimAssert.Throws(exceptionType, delegate
-                    {
-                        innerAction(state);
-                    });
+                    innerAction(state);
                 });
             });
-
-            base.Apply(builder, methodTemplate);
         }
     }
 }

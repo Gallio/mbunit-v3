@@ -76,6 +76,12 @@ namespace Gallio.Model
         public const string Test = "Test";
 
         /// <summary>
+        /// The component describes an error placeholder used in place of a test
+        /// when an error occurs during test enumeration.
+        /// </summary>
+        public const string Error = "Error";
+
+        /// <summary>
         /// The component is of some other unspecified kind.
         /// </summary>
         /// <remarks>

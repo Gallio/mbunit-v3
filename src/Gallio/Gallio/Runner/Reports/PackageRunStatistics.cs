@@ -151,14 +151,14 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Merges statistics from a test run step, incrementing the relevant counters.
         /// </summary>
-        /// <param name="stepRun">The test step</param>
+        /// <param name="testStepRun">The test step run</param>
         /// <param name="isTestCase">True if the test is a test case</param>
-        public void MergeStepStatistics(StepRun stepRun, bool isTestCase)
+        public void MergeStepStatistics(TestStepRun testStepRun, bool isTestCase)
         {
-            if (stepRun == null)
-                throw new ArgumentNullException("stepRun");
+            if (testStepRun == null)
+                throw new ArgumentNullException("testStepRun");
 
-            assertCount += stepRun.Result.AssertCount;
+            assertCount += testStepRun.Result.AssertCount;
             stepCount += 1;
 
             if (!isTestCase)
@@ -167,7 +167,7 @@ namespace Gallio.Runner.Reports
             testCount += 1;
 
             // Tally the various test run states.
-            switch (stepRun.Result.Status)
+            switch (testStepRun.Result.Status)
             {
                 case TestStatus.NotRun:
                     return;
@@ -187,7 +187,7 @@ namespace Gallio.Runner.Reports
             }
 
             // If the test ran, tally the various outcomes.
-            switch (stepRun.Result.Outcome)
+            switch (testStepRun.Result.Outcome)
             {
                 case TestOutcome.Passed:
                     passCount += 1;

@@ -25,7 +25,7 @@ namespace Gallio.Model
         private readonly object source;
 
         /// <summary>
-        /// Copies the contents of a source model object.
+        /// Copies the contents of a model object.
         /// </summary>
         /// <param name="source">The source model object</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>

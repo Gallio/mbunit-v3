@@ -69,13 +69,15 @@ namespace Gallio.Contexts
     /// </summary>
     /// <example>
     /// <para>
-    /// Running a test for a set maximum duration.
+    /// Running as many iterations of a test as possible for a set maximum duration.
+    /// Each iteration will run as a separate test step so that it has its own test
+    /// execution log and test outcome included in the test report.
     /// <code>
     /// [Test]
     /// public void MeasurePerformance()
     /// {
     ///     // Warm up.
-    ///     Step.Run("Warm Up", DoSomething);
+    ///     Context.RunStep("Warm Up", DoSomething);
     /// 
     ///     // Run as many iterations as possible for 10 seconds.
     ///     int iterations = 0;
@@ -83,7 +85,7 @@ namespace Gallio.Contexts
     ///     while (stopwatch.ElapsedMilliseconds &lt; 10*1000)
     ///     {
     ///         iterations += 1;
-    ///         Step.Run("Iteration #" + i, DoSomething);
+    ///         Context.RunStep("Iteration #" + i, DoSomething);
     ///     }
     /// 
     ///     double iterationsPerSecond = iterations * 1000.0 / stopwatch.ElapsedMilliseconds;
@@ -98,21 +100,28 @@ namespace Gallio.Contexts
     /// </para>
     /// </example>
     /// <todo author="jeff">
-    /// Support running other test fixtures and tests as nested steps.
-    /// eg. Step.RunTestFixture("Name", typeof(SomeFixture));
+    /// Support running other test fixtures and test instances as nested steps.
+    /// eg. Context.RunTestFixture("Name", typeof(SomeFixture));
     /// </todo>
     public static class Step
     {
         /// <summary>
         /// Gets reflection information about the current step.
         /// </summary>
-        public static StepInfo CurrentStep
+        public static TestStepInfo CurrentStep
         {
-            get { return Context.CurrentStep; }
+            get { return Context.CurrentContext.TestStep; }
         }
 
         /// <summary>
-        /// Runs a block of code as a new step associated with the calling function.
+        /// <para>
+        /// Runs a block of code as a new step within the current context and associates
+        /// it with the calling function.
+        /// </para>
+        /// <para>
+        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// enters the child context, runs the block of code, then exits the child context.
+        /// </para>
         /// </summary>
         /// <remarks>
         /// This method may be called recursively to create nested steps or concurrently
@@ -126,9 +135,9 @@ namespace Gallio.Contexts
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
         [NonInlined(SecurityAction.Demand)]
-        public static Context Run(string name, Block block)
+        public static Context RunStep(string name, Block block)
         {
-            return Run(name, block, Reflector.GetCallingFunction());
+            return Context.CurrentContext.RunStep(name, Reflector.GetCallingFunction(), block);
         }
 
         /// <summary>
@@ -137,7 +146,7 @@ namespace Gallio.Contexts
         /// with the specified code reference.
         /// </para>
         /// <para>
-        /// This method creates a new child context to represent the <see cref="Step" />,
+        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
         /// enters the child context, runs the block of code, then exits the child context.
         /// </para>
         /// </summary>
@@ -146,20 +155,25 @@ namespace Gallio.Contexts
         /// to create parallel steps.
         /// </remarks>
         /// <param name="name">The name of the step</param>
-        /// <param name="block">The block of code to run</param>
         /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <returns>The context of the step that ran</returns>
+        /// <param name="block">The block of code to run</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="block"/> is null</exception>
+        /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
-        public static Context Run(string name, Block block, ICodeElementInfo codeElement)
+        public static Context RunStep(string name, ICodeElementInfo codeElement, Block block)
         {
-            return Context.CurrentContext.RunStep(name, block, codeElement);
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (block == null)
+                throw new ArgumentNullException("block");
+
+            return Context.CurrentContext.RunStep(name, codeElement, block);
         }
 
         /// <summary>
-        /// Adds metadata to the step that is currently running.
+        /// Adds metadata to the step that is running in the context.
         /// </summary>
         /// <param name="metadataKey">The metadata key</param>
         /// <param name="metadataValue">The metadata value</param>

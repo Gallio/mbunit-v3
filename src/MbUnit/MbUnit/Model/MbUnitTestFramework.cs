@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using Gallio.Collections;
 using Gallio.Model.Reflection;
 using MbUnit.Framework;
 using Gallio.Hosting;
@@ -41,9 +39,9 @@ namespace MbUnit.Model
         }
 
         /// <inheritdoc />
-        public override void PrepareAssemblies(IList<IAssemblyInfo> assemblies)
+        public override void PrepareTestPackage(TestPackage package)
         {
-            foreach (IAssemblyInfo assembly in assemblies)
+            foreach (IAssemblyInfo assembly in package.Assemblies)
             {
                 foreach (AssemblyResolverAttribute resolverAttribute in
                     AttributeUtils.GetAttributes<AssemblyResolverAttribute>(assembly, false))
@@ -58,28 +56,6 @@ namespace MbUnit.Model
                     {
                         throw new ModelException(String.Format("Failed to create custom assembly resolver type '{0}'.", type), ex);
                     }
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public override void BuildTemplates(TemplateTreeBuilder builder, IList<IAssemblyInfo> assemblies)
-        {
-            IMultiMap<Version, IAssemblyInfo> map = ReflectionUtils.MapByAssemblyReferenceVersion(assemblies, @"MbUnit");
-            foreach (KeyValuePair<Version, IList<IAssemblyInfo>> entry in map)
-            {
-                // Build templates for the contents of the assemblies that reference MbUnit v3
-                // via reflection.  The attributes exercise a great deal of control over this
-                // process so that it can be easily extended by users.
-                Version frameworkVersion = entry.Key;
-                MbUnitFrameworkTemplate frameworkTemplate = new MbUnitFrameworkTemplate(frameworkVersion);
-                builder.Root.AddChild(frameworkTemplate);
-
-                MbUnitTestBuilder testBuilder = new MbUnitTestBuilder(builder);
-
-                foreach (IAssemblyInfo assembly in entry.Value)
-                {
-                    testBuilder.ProcessAssembly(frameworkTemplate, assembly);
                 }
             }
         }

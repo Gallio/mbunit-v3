@@ -27,43 +27,6 @@ namespace Gallio.Model
     public static class ModelUtils
     {
         /// <summary>
-        /// Links a node into the list of children managed by a given parent.
-        /// </summary>
-        /// <param name="parent">The parent node</param>
-        /// <param name="child">The child to add</param>
-        /// <exception cref="InvalidOperationException">Thrown if the child already has a parent</exception>
-        public static void Link<T>(T parent, T child)
-            where T : class, IModelTreeNode<T>
-        {
-            if (child.Parent != null)
-                throw new InvalidOperationException(Resources.ModelUtils_NodeAlreadyHasAParent);
-
-            child.Parent = parent;
-            parent.Children.Add(child);
-        }
-
-        /// <summary>
-        /// Gets all children of the node that have the specified type.
-        /// </summary>
-        /// <typeparam name="S">The node type</typeparam>
-        /// <typeparam name="T">The type to filter by</typeparam>
-        /// <param name="node">The node whose children are to be scanned</param>
-        /// <returns>The filtered list of children</returns>
-        public static IList<T> FilterChildrenByType<S, T>(IModelTreeNode<S> node)
-            where S : class, IModelTreeNode<S> where T : class, S
-        {
-            List<T> filteredChildren = new List<T>();
-            foreach (S child in node.Children)
-            {
-                T filteredChild = child as T;
-                if (filteredChild != null)
-                    filteredChildren.Add(filteredChild);
-            }
-
-            return filteredChildren;
-        }
-
-        /// <summary>
         /// <para>
         /// Populates the provided metadata map with asembly-level metadata derived
         /// from custom attributes.

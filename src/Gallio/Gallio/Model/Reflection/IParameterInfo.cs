@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Gallio.Model.Reflection
 {
@@ -31,7 +29,7 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IParameterInfo : ICodeElementInfo, ISlotInfo
+    public interface IParameterInfo : ISlotInfo, IEquatable<IParameterInfo>
     {
         /// <summary>
         /// Gets the member to which the parameter belongs.
@@ -39,9 +37,9 @@ namespace Gallio.Model.Reflection
         IMemberInfo Member { get; }
 
         /// <summary>
-        /// Gets the parameter modifiers.
+        /// Gets the parameter attributes.
         /// </summary>
-        ParameterAttributes Modifiers { get; }
+        ParameterAttributes ParameterAttributes { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

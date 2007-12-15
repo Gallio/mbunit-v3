@@ -55,7 +55,7 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override void InternalLoadPackage(TestPackage package, IProgressMonitor progressMonitor)
+        protected override TestPackageData InternalLoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             progressMonitor.SetStatus("Creating test harness.");
 
@@ -66,23 +66,15 @@ namespace Gallio.Runner.Domains
             if (Listener != null)
                 harness.EventDispatcher.Listeners.Add(Listener);
 
-            harness.LoadPackage(package, new SubProgressMonitor(progressMonitor, 0.9));
+            harness.LoadTestPackage(packageConfig, new SubProgressMonitor(progressMonitor, 0.9));
+            return new TestPackageData(harness.TestPackage);
         }
 
         /// <inheritdoc />
-        protected override void InternalBuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor)
+        protected override TestModelData InternalBuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
-            TemplateModel = null;
-            harness.BuildTemplates(options, new SubProgressMonitor(progressMonitor, 1));
-            TemplateModel = new TemplateModel(new TemplateData(harness.TemplateTreeBuilder.Root));
-        }
-
-        /// <inheritdoc />
-        protected override void InternalBuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor)
-        {
-            TestModel = null;
-            harness.BuildTests(options, new SubProgressMonitor(progressMonitor, 1));
-            TestModel = new TestModel(new TestData(harness.TestTreeBuilder.Root));
+            harness.BuildTestModel(options, new SubProgressMonitor(progressMonitor, 1));
+            return new TestModelData(harness.TestModel);
         }
 
         /// <inheritdoc />
@@ -92,7 +84,7 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override void InternalUnloadPackage(IProgressMonitor progressMonitor)
+        protected override void InternalUnloadTestPackage(IProgressMonitor progressMonitor)
         {
             try
             {

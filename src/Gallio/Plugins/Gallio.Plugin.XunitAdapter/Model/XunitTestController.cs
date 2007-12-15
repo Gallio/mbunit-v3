@@ -20,7 +20,6 @@ using Gallio.Core.ProgressMonitoring;
 using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Reflection;
 using Gallio.Plugin.XunitAdapter.Properties;
 using Xunit.Sdk;
 using Reflector=Gallio.Model.Reflection.Reflector;
@@ -77,7 +76,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         private static bool RunChildTests(IProgressMonitor progressMonitor, ITestMonitor testMonitor)
         {
-            IStepMonitor stepMonitor = testMonitor.StartRootStep();
+            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
 
             bool passed = true;
             foreach (ITestMonitor child in testMonitor.Children)
@@ -89,7 +88,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         private static bool RunTestFixture(ITestMonitor testMonitor, XunitTypeInfoAdapter typeInfo)
         {
-            IStepMonitor stepMonitor = testMonitor.StartRootStep();
+            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
 
             ITestClassCommand testClassCommand;
             try
@@ -107,7 +106,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
             return RunTestClassCommandAndFinishStep(testMonitor, stepMonitor, testClassCommand);
         }
 
-        private static bool RunTestClassCommandAndFinishStep(ITestMonitor testMonitor, IStepMonitor stepMonitor, ITestClassCommand testClassCommand)
+        private static bool RunTestClassCommandAndFinishStep(ITestMonitor testMonitor, ITestStepMonitor stepMonitor, ITestClassCommand testClassCommand)
         {
             try
             {
@@ -172,7 +171,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         private static bool RunTestMethod(ITestMonitor testMonitor, MethodInfo methodInfo, ITestClassCommand testClassCommand)
         {
-            IStepMonitor stepMonitor = testMonitor.StartRootStep();
+            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
 
             List<ITestCommand> testCommands;
             try
@@ -196,7 +195,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
             int step = 0;
             foreach (ITestCommand testCommand in testCommands)
             {
-                IStepMonitor nestedStepMonitor = stepMonitor.StartChildStep(String.Format("Xunit Test Step {0}", ++step),
+                ITestStepMonitor nestedStepMonitor = stepMonitor.StartChildStep(String.Format("Xunit Test Step {0}", ++step),
                     Reflector.Wrap(methodInfo));
 
                 bool stepPassed = RunTestCommandAndFinishStep(nestedStepMonitor, testClassCommand, testCommand);
@@ -208,7 +207,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
             return passed;
         }
 
-        private static bool RunTestCommandAndFinishStep(IStepMonitor stepMonitor, ITestClassCommand testClassCommand, ITestCommand testCommand)
+        private static bool RunTestCommandAndFinishStep(ITestStepMonitor stepMonitor, ITestClassCommand testClassCommand, ITestCommand testCommand)
         {
             try
             {
@@ -225,14 +224,14 @@ namespace Gallio.Plugin.XunitAdapter.Model
             }
         }
 
-        private static bool LogMethodResultAndFinishStep(IStepMonitor stepMonitor, MethodResult result, bool useXunitTime)
+        private static bool LogMethodResultAndFinishStep(ITestStepMonitor stepMonitor, MethodResult result, bool useXunitTime)
         {
             TimeSpan? testTime = useXunitTime ? (TimeSpan?)TimeSpan.FromSeconds(result.TestTime) : null;
 
-            // Record the method name if it's not at all present in the step name.
+            // Record the method name as metadata if it's not at all present in the step name.
             // That can happen with data-driven tests.
             string xunitTestName = result.MethodName;
-            if (xunitTestName != stepMonitor.Step.Test.Name
+            if (xunitTestName != stepMonitor.Step.TestInstance.Name
                 && xunitTestName != stepMonitor.Step.FullName
                 && xunitTestName != stepMonitor.Step.Name)
                 stepMonitor.AddMetadata(XunitTestNameKey, xunitTestName);

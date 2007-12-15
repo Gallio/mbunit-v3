@@ -523,8 +523,8 @@ namespace Gallio.MSBuildTasks
                 launcher.Filter = GetFilter();
                 launcher.RuntimeSetup = new RuntimeSetup();
 
-                AddAllItemSpecs(launcher.TestPackage.AssemblyFiles, assemblies);
-                AddAllItemSpecs(launcher.TestPackage.HintDirectories, hintDirectories);
+                AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
+                AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
                 AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 
                 if (reportDirectory != null)

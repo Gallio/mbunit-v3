@@ -69,11 +69,11 @@ namespace MbUnit.Tests.Integration
             CodeReference codeReference = CodeReference.CreateFromType(fixtureType);
             codeReference.MemberName = memberName;
 
-            TestRun testRun = GetTestRun(codeReference);
-            Assert.AreEqual(expectedOutcome, testRun.RootStepRun.Result.Outcome);
-            Assert.AreEqual(expectedStatus, testRun.RootStepRun.Result.Status);
+            TestInstanceRun run = GetFirstTestInstanceRun(codeReference);
+            Assert.AreEqual(expectedOutcome, run.RootTestStepRun.Result.Outcome);
+            Assert.AreEqual(expectedStatus, run.RootTestStepRun.Result.Status);
 
-            string actualOutput = testRun.RootStepRun.ExecutionLog.GetStream(LogStreamNames.Default).ToString();
+            string actualOutput = run.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.Default).ToString();
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
@@ -82,11 +82,11 @@ namespace MbUnit.Tests.Integration
         {
             CodeReference codeReference = CodeReference.CreateFromType(fixtureType);
 
-            TestRun testRun = GetTestRun(codeReference);
-            Assert.AreEqual(expectedOutcome, testRun.RootStepRun.Result.Outcome);
-            Assert.AreEqual(expectedStatus, testRun.RootStepRun.Result.Status);
+            TestInstanceRun run = GetFirstTestInstanceRun(codeReference);
+            Assert.AreEqual(expectedOutcome, run.RootTestStepRun.Result.Outcome);
+            Assert.AreEqual(expectedStatus, run.RootTestStepRun.Result.Status);
 
-            string actualOutput = testRun.RootStepRun.ExecutionLog.GetStream(LogStreamNames.Default).ToString();
+            string actualOutput = run.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.Default).ToString();
             Assert.AreEqual(expectedOutput, actualOutput);
         }
     }

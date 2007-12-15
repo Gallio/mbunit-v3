@@ -66,11 +66,11 @@ namespace Gallio.Tests.Runner.Reports
             , int asrtCnt, int tstCnt, int ignrCnt, int skipCnt, int runCnt, int passCnt, int failCnt, int inclsvCnt)
         {
             SetPackageRunStaticsProperties();
-            StepRun stepRun = new StepRun(new StepData("stepId", "stepName", "fullName", "testId"));
-            stepRun.Result.Status = status;
-            stepRun.Result.Outcome = outcome;
-            stepRun.Result.AssertCount = stepRunAsrtCnt;
-            _prStat.MergeStepStatistics(stepRun, isTestCase);
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "fullName", "testId"));
+            testStepRun.Result.Status = status;
+            testStepRun.Result.Outcome = outcome;
+            testStepRun.Result.AssertCount = stepRunAsrtCnt;
+            _prStat.MergeStepStatistics(testStepRun, isTestCase);
             AssertProperties(asrtCnt, tstCnt, ignrCnt, skipCnt, runCnt, passCnt, failCnt, inclsvCnt);
         }
 

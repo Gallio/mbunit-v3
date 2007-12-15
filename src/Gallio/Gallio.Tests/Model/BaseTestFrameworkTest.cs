@@ -16,13 +16,12 @@
 using System.Reflection;
 using Gallio.Contexts;
 using Gallio.Model.Reflection;
+using Gallio.Model;
 using MbUnit.Framework;
-using Gallio.Runner;
 using Gallio.Runner.Harness;
 using Gallio.Hosting;
 using Gallio.Model.Execution;
 using Gallio.Core.ProgressMonitoring;
-using Gallio.Model;
 
 namespace Gallio.Tests.Model
 {
@@ -30,8 +29,7 @@ namespace Gallio.Tests.Model
     {
         protected Assembly sampleAssembly;
         protected ITestFramework framework;
-        protected RootTemplate rootTemplate;
-        protected RootTest rootTest;
+        protected TestModel testModel;
 
         private ITestHarness harness;
 
@@ -62,36 +60,15 @@ namespace Gallio.Tests.Model
             }
         }
 
-        protected void PopulateTemplateTree()
-        {
-            harness.LoadPackage(new TestPackage(), new NullProgressMonitor());
-            harness.AddAssembly(Reflector.Wrap(sampleAssembly));
-            harness.BuildTemplates(new TemplateEnumerationOptions(), new NullProgressMonitor());
-
-            rootTemplate = harness.TemplateTreeBuilder.Root;
-        }
-
         protected void PopulateTestTree()
         {
-            PopulateTemplateTree();
-            harness.BuildTests(new TestEnumerationOptions(), new NullProgressMonitor());
+            TestPackageConfig config = new TestPackageConfig();
+            config.AssemblyFiles.Add(sampleAssembly.FullName);
 
-            rootTest = harness.TestTreeBuilder.Root;
-        }
+            harness.LoadTestPackage(config, new NullProgressMonitor());
+            harness.BuildTestModel(new TestEnumerationOptions(), new NullProgressMonitor());
 
-        protected ITemplate GetDescendantByName(ITemplate parent, string name)
-        {
-            foreach (ITemplate test in parent.Children)
-            {
-                if (test.Name == name)
-                    return test;
-
-                ITemplate descendant = GetDescendantByName(test, name);
-                if (descendant != null)
-                    return descendant;
-            }
-
-            return null;
+            testModel = harness.TestModel;
         }
 
         protected ITest GetDescendantByName(ITest parent, string name)
@@ -104,6 +81,17 @@ namespace Gallio.Tests.Model
                 ITest descendant = GetDescendantByName(test, name);
                 if (descendant != null)
                     return descendant;
+            }
+
+            return null;
+        }
+
+        protected ITestParameter GetParameterByName(ITest test, string name)
+        {
+            foreach (ITestParameter testParameter in test.Parameters)
+            {
+                if (testParameter.Name == name)
+                    return testParameter;
             }
 
             return null;

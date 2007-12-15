@@ -26,7 +26,8 @@ namespace Gallio.Model.Execution
     public class LifecycleEventArgs : StepEventArgs
     {
         private readonly LifecycleEventType eventType;
-        private StepData stepData;
+        private TestInstanceData testInstanceData;
+        private TestStepData testStepData;
         private string phaseName;
         private TestResult result;
         private string metadataKey;
@@ -47,7 +48,21 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
-        /// Gets information about the step just started.
+        /// Gets information about the test instance just created.
+        /// </summary>
+        /// <remarks>
+        /// Valid for events of the following types:
+        /// <list type="bullet">
+        /// <item><see cref="LifecycleEventType.NewInstance" />, non-null</item>
+        /// </list>
+        /// </remarks>
+        public TestInstanceData TestInstanceData
+        {
+            get { return testInstanceData; }
+        }
+
+        /// <summary>
+        /// Gets information about the test step just started.
         /// </summary>
         /// <remarks>
         /// Valid for events of the following types:
@@ -55,9 +70,9 @@ namespace Gallio.Model.Execution
         /// <item><see cref="LifecycleEventType.Start" />, non-null</item>
         /// </list>
         /// </remarks>
-        public StepData StepData
+        public TestStepData TestStepData
         {
-            get { return stepData; }
+            get { return testStepData; }
         }
 
         /// <summary>
@@ -117,17 +132,32 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
+        /// Creates a <see cref="LifecycleEventType.NewInstance" /> event.
+        /// </summary>
+        /// <param name="testInstanceData">Information about the test instance that is being created</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testInstanceData"/> is null</exception>
+        public static LifecycleEventArgs CreateNewInstanceEvent(TestInstanceData testInstanceData)
+        {
+            if (testInstanceData == null)
+                throw new ArgumentNullException(@"testInstanceData");
+
+            LifecycleEventArgs e = new LifecycleEventArgs(testInstanceData.Id, LifecycleEventType.NewInstance);
+            e.testInstanceData = testInstanceData;
+            return e;
+        }
+
+        /// <summary>
         /// Creates a <see cref="LifecycleEventType.Start" /> event.
         /// </summary>
-        /// <param name="stepData">Information about the step that is about to start</param>
+        /// <param name="stepData">Information about the test step that is about to start</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepData"/> is null</exception>
-        public static LifecycleEventArgs CreateStartEvent(StepData stepData)
+        public static LifecycleEventArgs CreateStartEvent(TestStepData stepData)
         {
             if (stepData == null)
                 throw new ArgumentNullException(@"stepData");
 
             LifecycleEventArgs e = new LifecycleEventArgs(stepData.Id, LifecycleEventType.Start);
-            e.stepData = stepData;
+            e.testStepData = stepData;
             return e;
         }
 

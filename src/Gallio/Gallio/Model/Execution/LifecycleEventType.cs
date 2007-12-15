@@ -23,6 +23,11 @@ namespace Gallio.Model.Execution
     public enum LifecycleEventType
     {
         /// <summary>
+        /// A test instance is being created.
+        /// </summary>
+        NewInstance,
+
+        /// <summary>
         /// The test step is starting.
         /// </summary>
         Start,

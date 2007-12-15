@@ -33,14 +33,11 @@ namespace Gallio.Plugin.XunitAdapter.Model
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <param name="templateBinding">The template binding that produced this test</param>
         /// <param name="typeInfo">The Xunit test type information</param>
         /// <param name="methodInfo">The Xunit test method information, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="templateBinding"/>, or <paramref name="typeInfo"/> is null</exception>
-        public XunitTest(string name, ICodeElementInfo codeElement, XunitFrameworkTemplateBinding templateBinding,
-            XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
-            : base(name, codeElement, templateBinding)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="typeInfo"/> is null</exception>
+        public XunitTest(string name, ICodeElementInfo codeElement, XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
+            : base(name, codeElement)
         {
             if (typeInfo == null)
                 throw new ArgumentNullException(@"typeInfo");

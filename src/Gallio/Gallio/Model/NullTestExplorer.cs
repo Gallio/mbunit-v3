@@ -13,38 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using Gallio.Collections;
-using Gallio.Model.Reflection;
-
 namespace Gallio.Model
 {
     /// <summary>
     /// A null test explorer.
     /// </summary>
-    public class NullTestExplorer : ITestExplorer
+    public sealed class NullTestExplorer : BaseTestExplorer
     {
-        /// <inheritdoc />
-        public void Reset()
-        {
-        }
+        /// <summary>
+        /// Gets the singleton instance of the null test explorer.
+        /// </summary>
+        public static readonly NullTestExplorer Instance = new NullTestExplorer();
 
-        /// <inheritdoc />
-        public bool IsTest(ICodeElementInfo element)
+        private NullTestExplorer()
         {
-            return false;
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<ITest> ExploreType(ITypeInfo type)
-        {
-            return EmptyArray<ITest>.Instance;
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<ITest> ExploreAssembly(IAssemblyInfo assembly)
-        {
-            return EmptyArray<ITest>.Instance;
         }
     }
 }

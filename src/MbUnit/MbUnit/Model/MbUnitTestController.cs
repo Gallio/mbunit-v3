@@ -15,6 +15,7 @@
 
 using System;
 using Gallio;
+using Gallio.Model.Reflection;
 using MbUnit.Model;
 using Gallio.Model.Execution;
 using Gallio.Core.ProgressMonitoring;
@@ -51,7 +52,7 @@ namespace MbUnit.Model
         {
             progressMonitor.SetStatus(String.Format("Run test: {0}.", testMonitor.Test.Name));
 
-            IStepMonitor stepMonitor = testMonitor.StartRootStep();
+            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
             try
             {
                 MbUnitTest test = (MbUnitTest)testMonitor.Test;
@@ -94,7 +95,7 @@ namespace MbUnit.Model
             }
         }
 
-        private bool InitializeTest(IStepMonitor stepMonitor, MbUnitTestState state, MbUnitTestState parentState)
+        private bool InitializeTest(ITestStepMonitor stepMonitor, MbUnitTestState state, MbUnitTestState parentState)
         {
             return ExecuteSafely(stepMonitor, LifecyclePhases.Initialize, delegate
             {
@@ -103,15 +104,15 @@ namespace MbUnit.Model
                 // of its own state.  Thus fixtures can decide how to create instances
                 // of themselves and how to pass them to child tests and so on.
 
-                MbUnitTypeTemplate typeTemplate = state.Test.TemplateBinding.Template as MbUnitTypeTemplate;
-                if (typeTemplate != null)
-                    state.FixtureInstance = Activator.CreateInstance(typeTemplate.Type.Resolve());
+                ITypeInfo type = state.Test.CodeElement as ITypeInfo;
+                if (type != null)
+                    state.FixtureInstance = Activator.CreateInstance(type.Resolve());
                 else if (parentState != null)
                     state.FixtureInstance = parentState.FixtureInstance;
             }, "An exception occurred during initialization.");
         }
 
-        private bool RunSetup(IStepMonitor stepMonitor, MbUnitTestState state, MbUnitTestState parentState)
+        private bool RunSetup(ITestStepMonitor stepMonitor, MbUnitTestState state, MbUnitTestState parentState)
         {
             return ExecuteSafely(stepMonitor, LifecyclePhases.SetUp, delegate
             {
@@ -122,7 +123,7 @@ namespace MbUnit.Model
             }, "An exception occurred during set up.");
         }
 
-        private bool RunExecute(IStepMonitor stepMonitor, MbUnitTestState state)
+        private bool RunExecute(ITestStepMonitor stepMonitor, MbUnitTestState state)
         {
             return ExecuteSafely(stepMonitor, LifecyclePhases.Execute, delegate
             {
@@ -130,7 +131,7 @@ namespace MbUnit.Model
             }, "An exception occurred during execution.");
         }
 
-        private bool RunTearDown(IStepMonitor stepMonitor, MbUnitTestState state, MbUnitTestState parentState)
+        private bool RunTearDown(ITestStepMonitor stepMonitor, MbUnitTestState state, MbUnitTestState parentState)
         {
             return ExecuteSafely(stepMonitor, LifecyclePhases.TearDown, delegate
             {
@@ -141,7 +142,7 @@ namespace MbUnit.Model
             }, "An exception occurred during tear down.");
         }
 
-        private bool ExecuteSafely(IStepMonitor stepMonitor, string lifecyclePhase, Block block, string failureHeading)
+        private bool ExecuteSafely(ITestStepMonitor stepMonitor, string lifecyclePhase, Block block, string failureHeading)
         {
             stepMonitor.LifecyclePhase = lifecyclePhase;
 

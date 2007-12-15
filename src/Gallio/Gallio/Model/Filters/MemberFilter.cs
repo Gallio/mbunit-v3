@@ -21,12 +21,12 @@ using Gallio.Model.Reflection;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.CodeElement" />
+    /// A filter that matches objects whose <see cref="ITestComponent.CodeElement" />
     /// matches the specified member name filter.  This filter should normally be used together with
     /// a <see cref="TypeFilter" /> to ensure the accuracy of the member match.
     /// </summary>
     [Serializable]
-    public class MemberFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    public class MemberFilter<T> : BasePropertyFilter<T> where T : ITestComponent
     {
         /// <summary>
         /// Creates a member filter.

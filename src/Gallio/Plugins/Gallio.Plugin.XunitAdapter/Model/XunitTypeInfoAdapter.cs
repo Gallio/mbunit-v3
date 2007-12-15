@@ -74,7 +74,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         public bool IsAbstract
         {
-            get { return (target.Modifiers & TypeAttributes.Abstract) != 0; }
+            get { return (target.TypeAttributes & TypeAttributes.Abstract) != 0; }
         }
 
         public Type Type

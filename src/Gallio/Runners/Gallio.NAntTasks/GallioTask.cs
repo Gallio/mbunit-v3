@@ -448,7 +448,7 @@ namespace Gallio.NAntTasks
                 foreach (FileSet fs in assemblies)
                 {
                     foreach (string f in fs.FileNames)
-                        launcher.TestPackage.AssemblyFiles.Add(f);
+                        launcher.TestPackageConfig.AssemblyFiles.Add(f);
                 }
             }
         }
@@ -460,7 +460,7 @@ namespace Gallio.NAntTasks
                 foreach (DirSet ds in hintDirectories)
                 {
                     foreach (string d in ds.DirectoryNames)
-                        launcher.TestPackage.HintDirectories.Add(d);
+                        launcher.TestPackageConfig.HintDirectories.Add(d);
                 }
             }
         }

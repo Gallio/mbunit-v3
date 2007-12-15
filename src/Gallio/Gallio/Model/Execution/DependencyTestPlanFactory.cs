@@ -16,7 +16,6 @@
 using System;
 using Gallio.Contexts;
 using Gallio.Model.Execution;
-using Gallio.Hosting;
 
 namespace Gallio.Model.Execution
 {

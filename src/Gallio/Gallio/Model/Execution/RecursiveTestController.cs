@@ -24,15 +24,10 @@ namespace Gallio.Model.Execution
     /// When a master test is found, instantiates the <see cref="ITestController" /> for it
     /// and hands control over to it for the subtree of tests rooted at the master test.
     /// </summary>
-    public class RecursiveTestController : ITestController
+    public class RecursiveTestController : BaseTestController
     {
         /// <inheritdoc />
-        public void Dispose()
-        {
-        }
-
-        /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor)
+        public override void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
@@ -70,7 +65,7 @@ namespace Gallio.Model.Execution
             // Enter the scope of the test and recurse until we find a controller.
             progressMonitor.SetStatus(String.Format("Run test: {0}.", testMonitor.Test.Name));
 
-            IStepMonitor stepMonitor = testMonitor.StartRootStep();
+            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
             try
             {
                 foreach (ITestMonitor monitor in testMonitor.Children)

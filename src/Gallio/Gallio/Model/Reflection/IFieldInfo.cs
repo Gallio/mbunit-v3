@@ -31,12 +31,12 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IFieldInfo : IMemberInfo, ISlotInfo
+    public interface IFieldInfo : IMemberInfo, ISlotInfo, IEquatable<IFieldInfo>
     {
         /// <summary>
-        /// Gets the field modifiers.
+        /// Gets the field attributes.
         /// </summary>
-        FieldAttributes Modifiers { get; }
+        FieldAttributes FieldAttributes { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

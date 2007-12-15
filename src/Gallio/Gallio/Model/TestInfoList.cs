@@ -24,9 +24,9 @@ namespace Gallio.Model
     public sealed class TestInfoList : BaseInfoList<ITest, TestInfo>
     {
         /// <summary>
-        /// Creates a wrapper for the specified input list of model objects.
+        /// Creates a wrapper for the specified list of tests.
         /// </summary>
-        /// <param name="inputList">The input list</param>
+        /// <param name="inputList">The source test list</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="inputList"/> is null</exception>
         public TestInfoList(IList<ITest> inputList)
             : base(inputList)

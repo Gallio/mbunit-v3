@@ -20,9 +20,9 @@ using System.Reflection;
 using System.Security.Policy;
 using System.Text;
 using Gallio.Core.ProgressMonitoring;
+using Gallio.Model;
 using Gallio.Runner;
 using Gallio.Hosting;
-using Gallio.Utilities;
 using Gallio.Runner.Domains;
 
 namespace Gallio.Runner.Domains
@@ -91,10 +91,10 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override ITestDomain InternalConnect(IProgressMonitor progressMonitor)
+        protected override ITestDomain InternalConnect(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             progressMonitor.SetStatus("Creating the isolated AppDomain.");
-            CreateAppDomain();
+            CreateAppDomain(packageConfig);
             progressMonitor.Worked(0.7);
 
             progressMonitor.SetStatus("Initializing the test runner.");
@@ -120,24 +120,24 @@ namespace Gallio.Runner.Domains
             }
         }
 
-        private void CreateAppDomain()
+        private void CreateAppDomain(TestPackageConfig packageConfig)
         {
             try
             {
                 AppDomainSetup setup = new AppDomainSetup();
 
-                if (Package.ApplicationBase.Length == 0
-                    || !Path.IsPathRooted(Package.ApplicationBase))
-                    setup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Package.ApplicationBase);
+                if (packageConfig.ApplicationBase.Length == 0
+                    || !Path.IsPathRooted(packageConfig.ApplicationBase))
+                    setup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, packageConfig.ApplicationBase);
                 else
-                    setup.ApplicationBase = Package.ApplicationBase;
+                    setup.ApplicationBase = packageConfig.ApplicationBase;
 
                 setup.ApplicationName = "IsolatedTestDomain";
 
-                if (Package.EnableShadowCopy)
+                if (packageConfig.EnableShadowCopy)
                 {
                     setup.ShadowCopyFiles = @"true";
-                    setup.ShadowCopyDirectories = Package.ApplicationBase;
+                    setup.ShadowCopyDirectories = packageConfig.ApplicationBase;
                     // FIXME: should we also shadow-copy all assembly reference paths?
                 }
 

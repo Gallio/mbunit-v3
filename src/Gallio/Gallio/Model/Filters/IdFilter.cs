@@ -19,11 +19,11 @@ using Gallio.Model;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="IModelComponent.Id" />
+    /// A filter that matches objects whose <see cref="ITestComponent.Id" />
     /// matches the specified id filter.
     /// </summary>
     [Serializable]
-    public class IdFilter<T> : BasePropertyFilter<T> where T : IModelComponent
+    public class IdFilter<T> : BasePropertyFilter<T> where T : ITestComponent
     {
         /// <summary>
         /// Creates an identity filter.

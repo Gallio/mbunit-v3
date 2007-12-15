@@ -65,13 +65,6 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public void Reset()
-        {
-            foreach (ITestExplorer explorer in explorers)
-                explorer.Reset();
-        }
-
-        /// <inheritdoc />
         public bool IsTest(ICodeElementInfo element)
         {
             foreach (ITestExplorer explorer in explorers)
@@ -82,19 +75,17 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public IEnumerable<ITest> ExploreType(ITypeInfo type)
+        public void ExploreAssembly(IAssemblyInfo assembly, TestModel testModel, Action<ITest> consumer)
         {
             foreach (ITestExplorer explorer in explorers)
-                foreach (ITest test in explorer.ExploreType(type))
-                    yield return test;
+                explorer.ExploreAssembly(assembly, testModel, consumer);
         }
 
         /// <inheritdoc />
-        public IEnumerable<ITest> ExploreAssembly(IAssemblyInfo assembly)
+        public void ExploreType(ITypeInfo type, TestModel testModel, Action<ITest> consumer)
         {
             foreach (ITestExplorer explorer in explorers)
-                foreach (ITest test in explorer.ExploreAssembly(assembly))
-                    yield return test;
+                explorer.ExploreType(type, testModel, consumer);
         }
     }
 }

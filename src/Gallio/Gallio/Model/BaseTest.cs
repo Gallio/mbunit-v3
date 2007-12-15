@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Model.Execution;
 using Gallio.Model.Reflection;
+using Gallio.Properties;
 
 namespace Gallio.Model
 {
@@ -29,9 +31,9 @@ namespace Gallio.Model
     /// </remarks>
     public class BaseTest : BaseTestComponent, ITest
     {
+        private readonly List<ITestParameter> parameters;
         private readonly List<ITest> children;
         private readonly List<ITest> dependencies;
-        private readonly ITemplateBinding templateBinding;
         private ITest parent;
         private bool isTestCase;
 
@@ -40,17 +42,11 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeElement">The point of definition of the test, or null if unknown</param>
-        /// <param name="templateBinding">The template binding that produced this test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="templateBinding"/> is null</exception>
-        public BaseTest(string name, ICodeElementInfo codeElement, ITemplateBinding templateBinding)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public BaseTest(string name, ICodeElementInfo codeElement)
             : base(name, codeElement)
         {
-            if (templateBinding == null)
-                throw new ArgumentNullException(@"templateBinding");
-
-            this.templateBinding = templateBinding;
-
+            parameters = new List<ITestParameter>();
             dependencies = new List<ITest>();
             children = new List<ITest>();
 
@@ -72,27 +68,63 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public ITemplateBinding TemplateBinding
+        public IList<ITestParameter> Parameters
         {
-            get { return templateBinding; }
+            get { return parameters.AsReadOnly(); }
         }
 
         /// <inheritdoc />
         public IList<ITest> Children
         {
-            get { return children; }
+            get { return children.AsReadOnly(); }
         }
 
         /// <inheritdoc />
         public IList<ITest> Dependencies
         {
-            get { return dependencies; }
+            get { return dependencies.AsReadOnly(); }
         }
 
         /// <inheritdoc />
-        public virtual void AddChild(ITest test)
+        public void AddParameter(ITestParameter parameter)
         {
-            ModelUtils.Link<ITest>(this, test);
+            if (parameter == null)
+                throw new ArgumentNullException("parameter");
+            if (parameter.Owner != null)
+                throw new InvalidOperationException("The test parameter is already owned by another test.");
+
+            parameters.Add(parameter);
+        }
+
+        /// <inheritdoc />
+        public void AddChild(ITest test)
+        {
+            if (test == null)
+                throw new ArgumentNullException("test");
+            if (test.Parent != null)
+                throw new InvalidOperationException(Resources.ModelUtils_NodeAlreadyHasAParent);
+
+            test.Parent = this;
+            children.Add(test);
+        }
+
+        /// <inheritdoc />
+        public void AddDependency(ITest test)
+        {
+            if (test == null)
+                throw new ArgumentNullException("test");
+
+            if (! dependencies.Contains(test))
+                dependencies.Add(test);
+        }
+
+        /// <inheritdoc />
+        public virtual IEnumerable<ITestInstance> GetInstances(bool guessDynamicInstances)
+        {
+            if (parameters.Count == 0)
+                return new ITestInstance[] { new BaseTestInstance(this) };
+            else
+                return EmptyArray<ITestInstance>.Instance;
         }
 
         /// <inheritdoc />

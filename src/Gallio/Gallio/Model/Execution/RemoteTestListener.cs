@@ -45,19 +45,6 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public void NotifyMessageEvent(MessageEventArgs e)
-        {
-            try
-            {
-                forwarder.NotifyMessageEvent(e);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Failed to send a Message event to the remote event listener: " + ex);
-            }
-        }
-
-        /// <inheritdoc />
         public void NotifyLifecycleEvent(LifecycleEventArgs e)
         {
             try
@@ -93,11 +80,6 @@ namespace Gallio.Model.Execution
             public Forwarder(ITestListener listener)
             {
                 this.listener = listener;
-            }
-
-            public void NotifyMessageEvent(MessageEventArgs e)
-            {
-                listener.NotifyMessageEvent(e);
             }
 
             public void NotifyTestLifecycleEvent(LifecycleEventArgs e)

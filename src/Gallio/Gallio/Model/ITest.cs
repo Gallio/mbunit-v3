@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Model.Execution;
 
@@ -20,9 +21,19 @@ namespace Gallio.Model
 {
     /// <summary>
     /// <para>
-    /// A test object represents a single instance of a test that has been
-    /// generated from a <see cref="ITemplate" /> using particular
-    /// bindings in a particular scope.
+    /// A test object represents a parameterized test case or test
+    /// container.  The test parameters are used as placeholders for
+    /// data-binding during test execution.  A single test can
+    /// produce multiple steps (<seealso cref="ITestStep" />) at runtime.
+    /// </para>
+    /// <para>
+    /// A <see cref="ITest" /> can be thought of as a declarative
+    /// artifact that describes about what a test "looks like"
+    /// from the outside based on available reflective metadata.
+    /// A <see cref="ITestStep" /> is then the runtime counterpart of a
+    /// <see cref="ITest" /> that is created to describe different
+    /// parameter bindigns or other characteristics of a test's structure
+    /// that become manifest only at runtime.
     /// </para>
     /// <para>
     /// A test may depend on one or more other tests.  When a test
@@ -46,10 +57,10 @@ namespace Gallio.Model
     /// contain any test cases or if none of their test cases have been selected for execution.
     /// </para>
     /// </summary>
-    public interface ITest : ITestComponent, IModelTreeNode<ITest>
+    public interface ITest : ITestComponent
     {
         /// <summary>
-        /// Gets or sets whether this test represents an individual test case
+        /// Gets whether this test represents an individual test case
         /// as opposed to a test container such as a fixture or suite.  The value of
         /// this property can be used by the test harness to avoid processing containers
         /// that have no test cases.  It can also be used by the reporting infrastructure
@@ -64,12 +75,24 @@ namespace Gallio.Model
         /// significantly changes the semantics of test execution.
         /// </para>
         /// </remarks>
-        bool IsTestCase { get; set; }
+        bool IsTestCase { get; }
 
         /// <summary>
-        /// Gets the template binding from which the test was produced.
+        /// Gets or sets the parent of this test, or null if this is the root test.
         /// </summary>
-        ITemplateBinding TemplateBinding { get; }
+        ITest Parent { get; set; }
+
+        /// <summary>
+        /// Gets the children of this test.
+        /// </summary>
+        IList<ITest> Children { get; }
+
+        /// <summary>
+        /// Gets the parameters of this test.
+        /// Each parameter must have a unique name.  The order in which
+        /// the parameters appear is not significant.
+        /// </summary>
+        IList<ITestParameter> Parameters { get; }
 
         /// <summary>
         /// Gets the list of the dependencies of this test.
@@ -107,5 +130,58 @@ namespace Gallio.Model
         /// <returns>The test controller factory, or null if this test cannot produce
         /// a controller (and consequently is not a master test according to the definition above)</returns>
         Factory<ITestController> TestControllerFactory { get; }
+
+        /// <summary>
+        /// Adds a test parameter and sets its <see cref="ITestParameter.Owner" /> property.
+        /// </summary>
+        /// <param name="parameter">The test parameter to add</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="parameter"/> is already
+        /// owned by some other test</exception>
+        void AddParameter(ITestParameter parameter);
+
+        /// <summary>
+        /// Adds a child test and sets its <see cref="ITest.Parent" /> property.
+        /// </summary>
+        /// <param name="test">The test to add as a child</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="test"/> is already
+        /// the child of some other test</exception>
+        void AddChild(ITest test);
+
+        /// <summary>
+        /// Adds a test dependency.
+        /// </summary>
+        /// <param name="test">The test to add as a dependency</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        void AddDependency(ITest test);
+
+        /// <summary>
+        /// <para>
+        /// Gets an enumeration of known test instances.
+        /// </para>
+        /// <para>
+        /// When <paramref name="guessDynamicInstances"/> is <c>false</c>, the
+        /// enumeration only contains test instances that are statically
+        /// known ahead of time.  These test instances will always be created
+        /// no matter what because their parameters are bound to values that are fixed.
+        /// </para>
+        /// <para>
+        /// When <paramref name="guessDynamicInstances"/> is <c>true</c>, in addition
+        /// to static test instances, the enumeration may contain some dynamic
+        /// test instances based on currently available information.  The dynamic
+        /// test instance information may be incomplete and it is subject to
+        /// change upon test execution.  Dynamic test information is provided only
+        /// as a hint to a user who is able to make an informed judgement about the
+        /// reliability of the information.  When using this information in a GUI,
+        /// be prepared to throw it away, extend it or rebuild it from scratch based
+        /// on actual test execution behavior that is observed.
+        /// </para>
+        /// </summary>
+        /// <param name="guessDynamicInstances">If true, tries to obtain dynamic
+        /// test instances based on currently available information</param>
+        /// <returns>The enumeration of statically known test instances</returns>
+        /// <seealso cref="ITestInstance.IsDynamic"/>
+        IEnumerable<ITestInstance> GetInstances(bool guessDynamicInstances);
     }
 }

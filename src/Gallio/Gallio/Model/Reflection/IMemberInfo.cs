@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Gallio.Model.Reflection
 {
@@ -31,7 +29,7 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IMemberInfo : ICodeElementInfo
+    public interface IMemberInfo : ICodeElementInfo, IEquatable<IMemberInfo>
     {
         /// <summary>
         /// Gets the compound name of the member consisting of the compound name of its

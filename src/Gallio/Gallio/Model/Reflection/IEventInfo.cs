@@ -31,7 +31,7 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IEventInfo : IMemberInfo
+    public interface IEventInfo : IMemberInfo, IEquatable<IEventInfo>
     {
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

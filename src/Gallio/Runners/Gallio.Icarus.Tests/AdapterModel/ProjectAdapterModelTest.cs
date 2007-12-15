@@ -178,7 +178,7 @@ namespace Gallio.Icarus.Tests
             Assert.AreEqual(3, listViewItems[0].SubItems.Count);
         }
 
-        private TestModel CreateTestModel()
+        private TestModelData CreateTestModel()
         {
             TestData rootTest = new TestData("Root", "Root");
             TestData framework = new TestData("Framework", "Framework");
@@ -216,7 +216,7 @@ namespace Gallio.Icarus.Tests
             test4.Metadata.SetValue(MetadataKeys.ComponentKind, "Other");
             test4.IsTestCase = true;
             fixture2.Children.Add(test4);
-            return new TestModel(rootTest);
+            return new TestModelData(rootTest);
         }
 
         [Test]

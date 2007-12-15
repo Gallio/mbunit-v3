@@ -21,7 +21,7 @@ using Gallio.Icarus.Core.Model;
 using Gallio.Icarus.Core.Presenter;
 using Gallio.Core.ConsoleSupport;
 using Gallio.Hosting;
-using Gallio.Runner;
+using Gallio.Model;
 
 namespace Gallio.Icarus
 {
@@ -42,15 +42,15 @@ namespace Gallio.Icarus
                 // parse command line arguments
                 CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
                 Arguments arguments = new Arguments();
-                TestPackage testPackage = new TestPackage();
+                TestPackageConfig testPackageConfig = new TestPackageConfig();
                 if (argumentParser.Parse(args, arguments, delegate { }))
                 {
-                    testPackage.AssemblyFiles.AddRange(arguments.Assemblies);
+                    testPackageConfig.AssemblyFiles.AddRange(arguments.Assemblies);
                 }
 
                 // wire up model
                 Main main = new Main();
-                ProjectPresenter projectPresenter = new ProjectPresenter(new ProjectAdapter(main, new ProjectAdapterModel(), testPackage), 
+                ProjectPresenter projectPresenter = new ProjectPresenter(new ProjectAdapter(main, new ProjectAdapterModel(), testPackageConfig), 
                     new TestRunnerModel());
 
                 Application.Run(main);

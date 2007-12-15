@@ -57,8 +57,8 @@ namespace Gallio.Runner.Monitors
         {
             base.OnAttach();
 
-            reportMonitor.StepStarting += HandleStepStarting;
-            reportMonitor.StepFinished += HandleStepFinished;
+            reportMonitor.TestStepStarting += HandleStepStarting;
+            reportMonitor.TestStepFinished += HandleStepFinished;
         }
 
         /// <inheritdoc />
@@ -66,25 +66,25 @@ namespace Gallio.Runner.Monitors
         {
             base.OnDetach();
 
-            reportMonitor.StepStarting -= HandleStepStarting;
-            reportMonitor.StepFinished -= HandleStepFinished;
+            reportMonitor.TestStepStarting -= HandleStepStarting;
+            reportMonitor.TestStepFinished -= HandleStepFinished;
         }
 
-        private void HandleStepStarting(object sender, ReportStepEventArgs e)
+        private void HandleStepStarting(object sender, TestStepRunEventArgs e)
         {
             logger.DebugFormat(Resources.LogMonitor_HeaderFormat,
-                Resources.LogMonitor_Status_Starting, e.StepRun.Step.FullName);
+                Resources.LogMonitor_Status_Starting, e.TestStepRun.Step.FullName);
         }
 
-        private void HandleStepFinished(object sender, ReportStepEventArgs e)
+        private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
             LoggerLevel level;
-            string status = GetFinishedMessageStatus(e.StepRun.Result.Outcome, e.StepRun.Result.Status, out level);
-            string warnings = FormatStream(e.StepRun, LogStreamNames.Warnings);
-            string failures = FormatStream(e.StepRun, LogStreamNames.Failures);
+            string status = GetFinishedMessageStatus(e.TestStepRun.Result.Outcome, e.TestStepRun.Result.Status, out level);
+            string warnings = FormatStream(e.TestStepRun, LogStreamNames.Warnings);
+            string failures = FormatStream(e.TestStepRun, LogStreamNames.Failures);
 
             StringBuilder messageBuilder = new StringBuilder();
-            messageBuilder.AppendFormat(Resources.LogMonitor_HeaderFormat, status, e.StepRun.Step.FullName);
+            messageBuilder.AppendFormat(Resources.LogMonitor_HeaderFormat, status, e.TestStepRun.Step.FullName);
 
             if (warnings.Length != 0)
             {
@@ -125,9 +125,9 @@ namespace Gallio.Runner.Monitors
             }
         }
 
-        private static string FormatStream(StepRun stepRun, string streamName)
+        private static string FormatStream(TestStepRun testStepRun, string streamName)
         {
-            ExecutionLogStream stream = stepRun.ExecutionLog.GetStream(streamName);
+            ExecutionLogStream stream = testStepRun.ExecutionLog.GetStream(streamName);
             return stream != null ? stream.ToString() : @"";
         }
 

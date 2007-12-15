@@ -400,6 +400,15 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [Lifecycle: NewInstance ({0})].
+        /// </summary>
+        internal static string DebugMonitor_LifecycleEvent_NewInstance_EventFormat {
+            get {
+                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_NewInstance_EventFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [Lifecycle: Set Phase ({0})]
         ///	Phase Name: {1}.
         /// </summary>

@@ -112,18 +112,17 @@ namespace Gallio.Echo
                 launcher.RuntimeSetup = new RuntimeSetup();
                 launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
-                launcher.TestPackage.EnableShadowCopy = arguments.ShadowCopyFiles;
-                launcher.TestPackage.ApplicationBase = arguments.AppBaseDirectory;
-                launcher.TestPackage.AssemblyFiles.AddRange(arguments.Assemblies);
-                launcher.TestPackage.HintDirectories.AddRange(arguments.HintDirectories);
+                launcher.TestPackageConfig.EnableShadowCopy = arguments.ShadowCopyFiles;
+                launcher.TestPackageConfig.ApplicationBase = arguments.AppBaseDirectory;
+                launcher.TestPackageConfig.AssemblyFiles.AddRange(arguments.Assemblies);
+                launcher.TestPackageConfig.HintDirectories.AddRange(arguments.HintDirectories);
 
                 launcher.ReportDirectory = arguments.ReportDirectory;
                 launcher.ReportNameFormat = arguments.ReportNameFormat;
 
                 GenericUtils.AddAll(arguments.ReportTypes, launcher.ReportFormats);
 
-                launcher.TemplateModelFilename = arguments.SaveTemplateTree;
-                launcher.TestModelFilename = arguments.SaveTestTree;
+                launcher.TestModelFilename = arguments.SaveTestModel;
 
                 if (!String.IsNullOrEmpty(arguments.Filter))
                     launcher.Filter = FilterUtils.ParseTestFilter(arguments.Filter);

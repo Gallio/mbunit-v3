@@ -48,33 +48,12 @@ namespace Gallio.Plugin.XunitAdapter.Tests.Model
         }
 
         [Test]
-        public void PopulateTemplateTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
+        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
         {
             sampleAssembly = typeof(Int32).Assembly;
-            PopulateTemplateTree();
+            PopulateTestTree();
 
-            Assert.AreEqual(0, rootTemplate.Children.Count);
-        }
-
-        [Test]
-        public void PopulateTemplateTree_WhenAssemblyReferencesXunit_ContainsJustTheFrameworkTemplate()
-        {
-            Version expectedVersion = typeof(XunitAssert).Assembly.GetName().Version;
-            PopulateTemplateTree();
-
-            Assert.IsNull(rootTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Root, rootTemplate.Kind);
-            Assert.IsNull(rootTemplate.CodeElement);
-            Assert.IsTrue(rootTemplate.IsGenerator);
-            Assert.AreEqual(1, rootTemplate.Children.Count);
-
-            BaseTemplate frameworkTemplate = (BaseTemplate)rootTemplate.Children[0];
-            Assert.AreSame(rootTemplate, frameworkTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
-            Assert.IsNull(frameworkTemplate.CodeElement);
-            Assert.AreEqual("xUnit.Net v" + expectedVersion, frameworkTemplate.Name);
-            Assert.IsTrue(frameworkTemplate.IsGenerator);
-            Assert.AreEqual(0, frameworkTemplate.Children.Count);
+            Assert.AreEqual(0, testModel.RootTest.Children.Count);
         }
 
         [Test]
@@ -83,6 +62,7 @@ namespace Gallio.Plugin.XunitAdapter.Tests.Model
             Version expectedVersion = typeof(XunitAssert).Assembly.GetName().Version;
             PopulateTestTree();
 
+            RootTest rootTest = testModel.RootTest;
             Assert.IsNull(rootTest.Parent);
             Assert.AreEqual(ComponentKind.Root, rootTest.Kind);
             Assert.IsNull(rootTest.CodeElement);
@@ -90,7 +70,7 @@ namespace Gallio.Plugin.XunitAdapter.Tests.Model
             Assert.AreEqual(1, rootTest.Children.Count);
 
             BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
-            Assert.AreSame(rootTest, frameworkTest.Parent);
+            Assert.AreSame(testModel, frameworkTest.Parent);
             Assert.AreEqual(ComponentKind.Framework, frameworkTest.Kind);
             Assert.IsNull(frameworkTest.CodeElement);
             Assert.AreEqual("xUnit.Net v" + expectedVersion, frameworkTest.Name);
@@ -139,7 +119,7 @@ namespace Gallio.Plugin.XunitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            XunitTest test = (XunitTest)GetDescendantByName(rootTest, typeof(SimpleTest).Name);
+            XunitTest test = (XunitTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
             XunitTest passTest = (XunitTest)GetDescendantByName(test, "Pass");
             XunitTest failTest = (XunitTest)GetDescendantByName(test, "Fail");
 
@@ -153,7 +133,7 @@ namespace Gallio.Plugin.XunitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            XunitTest fixture = (XunitTest)GetDescendantByName(rootTest, typeof(MetadataSample).Name);
+            XunitTest fixture = (XunitTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
             XunitTest test = (XunitTest)fixture.Children[0];
             Assert.AreEqual("For testing purposes.", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
         }
@@ -163,7 +143,7 @@ namespace Gallio.Plugin.XunitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            XunitTest fixture = (XunitTest)GetDescendantByName(rootTest, typeof(MetadataSample).Name);
+            XunitTest fixture = (XunitTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
             XunitTest test = (XunitTest)fixture.Children[0];
             Assert.AreEqual("customvalue-1", test.Metadata.GetValue("customkey-1"));
             Assert.AreEqual("customvalue-2", test.Metadata.GetValue("customkey-2"));
@@ -174,7 +154,7 @@ namespace Gallio.Plugin.XunitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            ITest frameworkTest = rootTest.Children[0];
+            ITest frameworkTest = testModel.RootTest.Children[0];
             ITest assemblyTest = frameworkTest.Children[0];
 
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));

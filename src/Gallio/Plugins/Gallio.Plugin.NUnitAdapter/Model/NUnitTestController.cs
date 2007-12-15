@@ -22,7 +22,6 @@ using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Plugin.NUnitAdapter.Properties;
 using NUnit.Core;
-using ITest=Gallio.Model.ITest;
 using TestResult=NUnit.Core.TestResult;
 
 namespace Gallio.Plugin.NUnitAdapter.Model
@@ -80,7 +79,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             private readonly IList<ITestMonitor> testMonitors;
 
             private Dictionary<TestName, ITestMonitor> testMonitorsByTestName;
-            private Stack<IStepMonitor> stepMonitorStack;
+            private Stack<ITestStepMonitor> stepMonitorStack;
 
             public RunMonitor(TestRunner runner, IList<ITestMonitor> testMonitors,
                 IProgressMonitor progressMonitor)
@@ -137,7 +136,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                         testMonitorsByTestName[test.Test.TestName] = testMonitor;
                 }
 
-                stepMonitorStack = new Stack<IStepMonitor>();
+                stepMonitorStack = new Stack<ITestStepMonitor>();
             }
 
             #region EventListener Members
@@ -171,7 +170,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                 if (stepMonitorStack.Count == 0)
                     return;
 
-                IStepMonitor stepMonitor = stepMonitorStack.Peek();
+                ITestStepMonitor stepMonitor = stepMonitorStack.Peek();
 
                 string streamName;
                 switch (testOutput.Type)
@@ -211,7 +210,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                 if (stepMonitorStack.Count == 0)
                     return;
 
-                IStepMonitor stepMonitor = stepMonitorStack.Peek();
+                ITestStepMonitor stepMonitor = stepMonitorStack.Peek();
 
                 stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(exception, Resources.NUnitTestController_UnhandledExceptionSectionName);
             }
@@ -224,7 +223,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
 
                 progressMonitor.SetStatus(String.Format(Resources.NUnitTestController_StatusMessages_RunningTest, testMonitor.Test.Name));
 
-                IStepMonitor stepMonitor = testMonitor.StartRootStep();
+                ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
                 stepMonitorStack.Push(stepMonitor);
             }
 
@@ -233,8 +232,8 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                 if (stepMonitorStack.Count == 0)
                     return;
 
-                IStepMonitor stepMonitor = stepMonitorStack.Peek();
-                NUnitTest test = (NUnitTest) stepMonitor.Step.Test;
+                ITestStepMonitor stepMonitor = stepMonitorStack.Peek();
+                NUnitTest test = (NUnitTest) stepMonitor.Step.TestInstance.Test;
                 if (test.Test.TestName != nunitResult.Test.TestName)
                     return;
 

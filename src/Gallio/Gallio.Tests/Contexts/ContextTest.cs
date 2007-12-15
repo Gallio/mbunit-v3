@@ -25,23 +25,7 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void CurrentTestHasCorrectTestName()
         {
-            Assert.AreEqual("CurrentTestHasCorrectTestName", Context.CurrentTest.Name);
-        }
-
-        [Test]
-        public void CurrentStepHasCorrectTestName()
-        {
-            Assert.AreEqual("CurrentStepHasCorrectTestName", Context.CurrentStep.FullName);
-
-            Step.Run("Step1", delegate
-            {
-                Assert.AreEqual("CurrentStepHasCorrectTestName:Step1", Context.CurrentStep.FullName);
-
-                Step.Run("Step2", delegate
-                {
-                    Assert.AreEqual("CurrentStepHasCorrectTestName:Step1/Step2", Context.CurrentStep.FullName);
-                });
-            });
+            Assert.AreEqual("CurrentTestHasCorrectTestName", Context.CurrentContext.Test.Name);
         }
     }
 }

@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using Gallio.Collections;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
@@ -40,14 +39,13 @@ namespace Gallio.Runner.Harness
         private ITestPlanFactory testPlanFactory;
 
         private bool isDisposed;
-        private List<IAssemblyInfo> assemblies;
-        private TestPackage package;
-        private TemplateTreeBuilder templateTreeBuilder;
-        private TestTreeBuilder testTreeBuilder;
         private TestEventDispatcher eventDispatcher;
 
         private List<ITestFramework> frameworks;
         private List<ITestEnvironment> environments;
+
+        private TestPackage package;
+        private TestModel model;
 
         /// <summary>
         /// Creates a test harness.
@@ -61,7 +59,6 @@ namespace Gallio.Runner.Harness
 
             this.testPlanFactory = testPlanFactory;
 
-            assemblies = new List<IAssemblyInfo>();
             eventDispatcher = new TestEventDispatcher();
             frameworks = new List<ITestFramework>();
             environments = new List<ITestEnvironment>();
@@ -74,23 +71,12 @@ namespace Gallio.Runner.Harness
             {
                 isDisposed = true;
 
-                templateTreeBuilder = null;
-                testTreeBuilder = null;
-                assemblies = null;
+                package = null;
+                model = null;
                 testPlanFactory = null;
                 eventDispatcher = null;
                 frameworks = null;
                 environments = null;
-            }
-        }
-
-        /// <inheritdoc />
-        public IList<IAssemblyInfo> Assemblies
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return GenericUtils.ToArray(assemblies);
             }
         }
 
@@ -101,34 +87,22 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public TestPackage Package
-        {
-            get { return package; }
-        }
-
-        /// <inheritdoc />
-        public TemplateTreeBuilder TemplateTreeBuilder
+        public TestPackage TestPackage
         {
             get
             {
                 ThrowIfDisposed();
-
-                if (templateTreeBuilder == null)
-                    throw new InvalidOperationException("Templates have not been built yet.");
-                return templateTreeBuilder;
+                return package;
             }
         }
 
         /// <inheritdoc />
-        public TestTreeBuilder TestTreeBuilder
+        public TestModel TestModel
         {
             get
             {
                 ThrowIfDisposed();
-
-                if (testTreeBuilder == null)
-                    throw new InvalidOperationException("Tests have not been built yet.");
-                return testTreeBuilder;
+                return model;
             }
         }
 
@@ -153,67 +127,39 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public void AddAssembly(IAssemblyInfo assembly)
-        {
-            if (assembly == null)
-                throw new ArgumentNullException(@"assembly");
-
-            if (!assemblies.Contains(assembly))
-                assemblies.Add(assembly);
-        }
-
-        /// <inheritdoc />
-        public IAssemblyInfo LoadAssemblyFrom(string assemblyFile)
-        {
-            if (assemblyFile == null)
-                throw new ArgumentNullException(@"assemblyFile");
-
-            Status("Loading assembly: " + assemblyFile);
-
-            try
-            {
-                IAssemblyInfo assembly = Reflector.Wrap(Assembly.LoadFrom(assemblyFile));
-                AddAssembly(assembly);
-                return assembly;
-            }
-            catch (Exception ex)
-            {
-                throw new RunnerException(String.Format(CultureInfo.CurrentCulture,
-                    "Could not load test assembly from '{0}'.", assemblyFile), ex);
-            }
-        }
-
-        /// <inheritdoc />
-        public void LoadPackage(TestPackage package, IProgressMonitor progressMonitor)
+        public void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
-            if (package == null)
-                throw new ArgumentNullException(@"package");
+            if (packageConfig == null)
+                throw new ArgumentNullException("packageConfig");
 
             ThrowIfDisposed();
 
-            if (this.package != null)
+            if (package != null)
                 throw new InvalidOperationException("A package has already been loaded.");
 
             using (progressMonitor)
             {
                 progressMonitor.BeginTask("Loading test package.", 10);
-
                 progressMonitor.SetStatus("Performing pre-processing.");
-                this.package = package;
 
-                foreach (string path in package.HintDirectories)
+                package = new TestPackage(packageConfig);
+
+                foreach (string path in packageConfig.HintDirectories)
                     Loader.AssemblyResolverManager.AddHintDirectory(path);
 
-                foreach (string assemblyFile in package.AssemblyFiles)
+                foreach (string assemblyFile in packageConfig.AssemblyFiles)
                     Loader.AssemblyResolverManager.AddHintDirectory(FileUtils.GetFullPathOfParentDirectory(assemblyFile));
 
                 progressMonitor.Worked(1);
 
-                LoadAssemblies(new SubProgressMonitor(progressMonitor, 8), package.AssemblyFiles);
+                LoadAssemblies(new SubProgressMonitor(progressMonitor, 8), packageConfig.AssemblyFiles);
 
                 progressMonitor.SetStatus("Performing post-processing.");
+
+                foreach (ITestFramework framework in frameworks)
+                    framework.PrepareTestPackage(package);
 
                 progressMonitor.Worked(1);
             }
@@ -227,7 +173,7 @@ namespace Gallio.Runner.Harness
                 {
                     progressMonitor.BeginTask("Loading test assemblies.", assemblyFiles.Count);
 
-                    foreach (string assemblyFile in package.AssemblyFiles)
+                    foreach (string assemblyFile in package.Config.AssemblyFiles)
                     {
                         progressMonitor.SetStatus("Loading: " + assemblyFile + ".");
 
@@ -239,8 +185,25 @@ namespace Gallio.Runner.Harness
             }
         }
 
+        private void LoadAssemblyFrom(string assemblyFile)
+        {
+            if (assemblyFile == null)
+                throw new ArgumentNullException(@"assemblyFile");
+
+            try
+            {
+                IAssemblyInfo assembly = Reflector.Wrap(Assembly.LoadFrom(assemblyFile));
+                package.AddAssembly(assembly);
+            }
+            catch (Exception ex)
+            {
+                throw new RunnerException(String.Format(CultureInfo.CurrentCulture,
+                    "Could not load test assembly from '{0}'.", assemblyFile), ex);
+            }
+        }
+
         /// <inheritdoc />
-        public void BuildTemplates(TemplateEnumerationOptions options, IProgressMonitor progressMonitor)
+        public void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
@@ -250,56 +213,20 @@ namespace Gallio.Runner.Harness
             ThrowIfDisposed();
 
             if (package == null)
-                throw new InvalidOperationException("No package has been loaded.");
+                throw new InvalidOperationException("No test package has been loaded.");
 
             using (progressMonitor)
             {
-                progressMonitor.BeginTask("Building test templates.", 10);
+                progressMonitor.BeginTask("Building test model.", 10);
 
-                testTreeBuilder = null;
+                model = new TestModel();
 
-                RootTemplate rootTemplate = new RootTemplate();
-                templateTreeBuilder = new TemplateTreeBuilder(rootTemplate, options);
-
+                AggregateTestExplorer explorer = new AggregateTestExplorer();
                 foreach (ITestFramework framework in frameworks)
-                    framework.PrepareAssemblies(assemblies);
-                foreach (ITestFramework framework in frameworks)
-                    framework.BuildTemplates(templateTreeBuilder, assemblies);
+                    explorer.AddTestExplorer(framework.CreateTestExplorer());
 
-                templateTreeBuilder.FinishBuilding();
-            }
-        }
-
-        /// <inheritdoc />
-        public void BuildTests(TestEnumerationOptions options, IProgressMonitor progressMonitor)
-        {
-            if (progressMonitor == null)
-                throw new ArgumentNullException(@"progressMonitor");
-            if (options == null)
-                throw new ArgumentNullException(@"options");
-
-            ThrowIfDisposed();
-
-            if (templateTreeBuilder == null)
-                throw new InvalidOperationException("The template tree has not been built yet.");
-
-            using (progressMonitor)
-            {
-                progressMonitor.BeginTask("Building tests.", 10);
-
-                TemplateBindingScope scope = new TemplateBindingScope(null);
-                List<ITemplateBinding> rootBindings = new List<ITemplateBinding>(scope.Bind(templateTreeBuilder.Root));
-
-                if (rootBindings.Count != 1)
-                    throw new InvalidOperationException("The root template did not yield exactly one root template binding when it was bound.");
-
-                ITemplateBinding rootBinding = rootBindings[0];
-                RootTest rootTest = new RootTest(rootBinding);
-                testTreeBuilder = new TestTreeBuilder(rootTest, options);
-
-                rootBinding.BuildTests(testTreeBuilder, rootTest);
-
-                testTreeBuilder.FinishBuilding();
+                foreach (IAssemblyInfo assembly in package.Assemblies)
+                    explorer.ExploreAssembly(assembly, model, null);
             }
         }
 
@@ -313,8 +240,8 @@ namespace Gallio.Runner.Harness
 
             ThrowIfDisposed();
 
-            if (testTreeBuilder == null)
-                throw new InvalidOperationException("The test tree has not been built yet.");
+            if (model == null)
+                throw new InvalidOperationException("The test model has not been built.");
 
             using (progressMonitor)
             {
@@ -332,7 +259,7 @@ namespace Gallio.Runner.Harness
                     ITestPlan plan = testPlanFactory.CreateTestPlan(eventDispatcher);
                     try
                     {
-                        plan.ScheduleTests(new SubProgressMonitor(progressMonitor, 5), testTreeBuilder.Root, options);
+                        plan.ScheduleTests(new SubProgressMonitor(progressMonitor, 5), model, options);
                         plan.RunTests(new SubProgressMonitor(progressMonitor, 80));
                     }
                     finally
@@ -355,11 +282,6 @@ namespace Gallio.Runner.Harness
         {
             if (isDisposed)
                 throw new ObjectDisposedException("The test harness has been disposed.");
-        }
-
-        private void Status(string message)
-        {
-            eventDispatcher.NotifyMessageEvent(new MessageEventArgs(MessageType.Status, message));
         }
     }
 }

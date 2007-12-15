@@ -14,22 +14,22 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runner;
+using Gallio.Model;
 
 namespace Gallio.Icarus.Core.CustomEventArgs 
 {
     public class ProjectEventArgs : EventArgs
     {
-        private readonly TestPackage _localTestPackage;
+        private readonly TestPackageConfig _localTestPackageConfig;
 
-        public ProjectEventArgs(TestPackage localTestPackage)
+        public ProjectEventArgs(TestPackageConfig localTestPackageConfig)
         {
-            _localTestPackage = localTestPackage;
+            _localTestPackageConfig = localTestPackageConfig;
         }
         
-        public TestPackage LocalTestPackage
+        public TestPackageConfig LocalTestPackageConfig
         {
-            get { return _localTestPackage; }
+            get { return _localTestPackageConfig; }
         }
     }
 }

@@ -21,12 +21,6 @@ namespace Gallio.Model.Execution
     public interface ITestListener
     {
         /// <summary>
-        /// Notifes the listener about a message event. 
-        /// </summary>
-        /// <param name="e">The event arguments</param>
-        void NotifyMessageEvent(MessageEventArgs e);
-
-        /// <summary>
         /// Notifes the listener about a lifecycle event.
         /// </summary>
         /// <param name="e">The event arguments</param>

@@ -14,25 +14,28 @@
 // limitations under the License.
 
 using System;
-using Gallio;
+using Gallio.Data;
 using Gallio.Model.Reflection;
 using MbUnit.Model;
-using Gallio.Model.Execution;
 using Gallio.Model;
 using Gallio.Model.Actions;
 
 namespace MbUnit.Model
 {
     /// <summary>
-    /// Base class for MbUnit-derived tests.
+    /// A basic MbUnit test.
     /// </summary>
-    public class MbUnitTest : BaseTest
+    public class MbUnitTest : BaseTest, IDataSourceScope
     {
+        private DataSourceTable dataSourceTable;
+        private event MbUnitTestPopulator populator;
+
         private readonly ActionChain<MbUnitTestState> setUpChain;
         private readonly ActionChain<MbUnitTestState> executeChain;
         private readonly ActionChain<MbUnitTestState> tearDownChain;
         private readonly ActionChain<MbUnitTestState> beforeChildChain;
         private readonly ActionChain<MbUnitTestState> afterChildChain;
+
         private TimeSpan? timeout;
 
         /// <summary>
@@ -40,11 +43,8 @@ namespace MbUnit.Model
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <param name="templateBinding">The template binding that produced this test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="templateBinding"/> is null</exception>
-        public MbUnitTest(string name, ICodeElementInfo codeElement, MbUnitTemplateBinding templateBinding)
-            : base(name, codeElement, templateBinding)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public MbUnitTest(string name, ICodeElementInfo codeElement) : base(name, codeElement)
         {
             setUpChain = new ActionChain<MbUnitTestState>();
             executeChain = new ActionChain<MbUnitTestState>();
@@ -70,6 +70,16 @@ namespace MbUnit.Model
                     throw new ArgumentOutOfRangeException(@"value");
                 timeout = value;
             }
+        }
+
+        /// <summary>
+        /// Returns <c>true</c> if there is no additional work required to populate
+        /// the children of this test.
+        /// </summary>
+        /// <seealso cref="Populate"/>
+        public bool IsPopulated
+        {
+            get { return populator == null; }
         }
 
         /// <summary>
@@ -140,15 +150,68 @@ namespace MbUnit.Model
             get { return afterChildChain; }
         }
 
-        /// <inheritdoc />
-        public override Factory<ITestController> TestControllerFactory
+        /// <summary>
+        /// Populates the children of this test if not already populated.
+        /// Otherwise does nothing.
+        /// </summary>
+        /// <param name="recurse">If true, the populator should recursively populate
+        /// all of its newly populated test elements in addition to itself</param>
+        public void Populate(bool recurse)
         {
-            get { return CreateTestController; }
+            MbUnitTestPopulator oldPopulator = populator;
+
+            if (oldPopulator != null)
+            {
+                populator = null;
+                oldPopulator(recurse);
+            }
         }
 
-        private static ITestController CreateTestController()
+        /// <summary>
+        /// <para>
+        /// Adds a populator to the list of actions to perform to populate
+        /// the children of this test lazily.
+        /// </para>
+        /// <para>
+        /// When the test is initially created, it may not
+        /// have all of its children in place.  This can occur because we only
+        /// require a subset of the tests to be populated for certain operations
+        /// such as enumerating the tests within a type.  The delegate added here
+        /// will eventually be called by <see cref="Populate" /> if the children
+        /// of this test are needed.
+        /// </para>
+        /// </summary>
+        /// <param name="populator">The populator to add</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="populator"/> is null</exception>
+        public void AddPopulator(MbUnitTestPopulator populator)
         {
-            return new MbUnitTestController();
+            if (populator == null)
+                throw new ArgumentNullException("populator");
+
+            this.populator += populator;
+        }
+
+        /// <inheritdoc />
+        public DataSource DefineDataSource(string name)
+        {
+            if (dataSourceTable == null)
+                dataSourceTable = new DataSourceTable();
+
+            return dataSourceTable.DefineDataSource(name);
+        }
+
+        /// <inheritdoc />
+        public DataSource ResolveDataSource(string name)
+        {
+            if (dataSourceTable != null)
+            {
+                DataSource source = dataSourceTable.ResolveDataSource(name);
+                if (source != null)
+                    return source;
+            }
+
+            IDataSourceScope parentScope = Parent as IDataSourceScope;
+            return parentScope != null ? parentScope.ResolveDataSource(name) : null;
         }
     }
 }

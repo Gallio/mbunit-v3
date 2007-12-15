@@ -29,6 +29,7 @@ using JetBrains.Shell;
 using JetBrains.Shell.Progress;
 using JetBrains.UI.TreeView;
 using JetBrains.Util.DataStructures.TreeModel;
+using System;
 
 namespace Gallio.ReSharperRunner
 {
@@ -69,88 +70,56 @@ namespace Gallio.ReSharperRunner
 
         public void ExploreAssembly(IMetadataAssembly assembly, IProject project, UnitTestElementConsumer consumer)
         {
-            try
+            IAssemblyInfo assemblyInfo = new MetadataReflector(project).Wrap(assembly);
+
+            if (assemblyInfo != null)
             {
-                IAssemblyInfo assemblyInfo = new MetadataReflector(project).Wrap(assembly);
-                if (assemblyInfo != null)
-                {
-                    // Note: We need the read lock because we access the IDeclaredElement from the declarations cache.
-                    foreach (ITest test in TestExplorer.ExploreAssembly(assemblyInfo))
-                        ConsumeTest(test, null, consumer);
-                }
-            }
-            finally
-            {
-                TestExplorer.Reset();
+                TestModel testModel = new TestModel();
+                ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
+
+                TestExplorer.ExploreAssembly(assemblyInfo, testModel, consumerAdapter.Consume);
             }
         }
 
         public void ExploreFile(IFile psiFile, UnitTestElementLocationConsumer consumer, CheckForInterrupt interrupted)
         {
-            try
+            TestModel testModel = new TestModel();
+            ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
+
+            psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
             {
-                psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
-                {
-                    ITypeDeclaration declaration = element as ITypeDeclaration;
-                    if (declaration != null)
-                        ExploreTypeDeclaration(declaration, consumer, interrupted);
-                }, delegate(IElement element)
-                {
-                    if (interrupted())
-                        throw new ProcessCancelledException();
-
-                    // Stop recursing at the first type declaration found.
-                    return element is ITypeDeclaration;
-                }));
-            }
-            finally
-            {
-                TestExplorer.Reset();
-            }
-        }
-
-        private void ExploreTypeDeclaration(ITypeDeclaration declaration,
-            UnitTestElementLocationConsumer consumer, CheckForInterrupt interrupted)
-        {
-            ITypeInfo typeInfo = PsiReflector.Wrap(declaration.DeclaredElement);
-
-            if (typeInfo != null)
-            {
-                foreach (ITest test in TestExplorer.ExploreType(typeInfo))
-                {
-                    if (interrupted())
-                        throw new ProcessCancelledException();
-
-                    ConsumeTest(test, null, delegate(UnitTestElement element)
-                    {
-                        consumer(element.GetDisposition());
-                    });
-                }
-            }
-
-            foreach (ITypeDeclaration nestedDeclaration in declaration.NestedTypeDeclarations)
+                ITypeDeclaration declaration = element as ITypeDeclaration;
+                if (declaration != null)
+                    ExploreTypeDeclaration(declaration, testModel, consumerAdapter.Consume);
+            }, delegate(IElement element)
             {
                 if (interrupted())
                     throw new ProcessCancelledException();
 
-                ExploreTypeDeclaration(nestedDeclaration, consumer, interrupted);
-            }
+                // Stop recursing at the first type declaration found.
+                return element is ITypeDeclaration;
+            }));
+        }
+
+        private void ExploreTypeDeclaration(ITypeDeclaration declaration, TestModel testModel,
+            Action<ITest> consumer)
+        {
+            ITypeInfo typeInfo = PsiReflector.Wrap(declaration.DeclaredElement);
+
+            if (typeInfo != null)
+                TestExplorer.ExploreType(typeInfo, testModel, consumer);
+
+            foreach (ITypeDeclaration nestedDeclaration in declaration.NestedTypeDeclarations)
+                ExploreTypeDeclaration(nestedDeclaration, testModel, consumer);
         }
 
         public bool IsUnitTestElement(IDeclaredElement element)
         {
-            try
-            {
-                ICodeElementInfo elementInfo = PsiReflector.Wrap(element, false);
-                if (elementInfo == null)
-                    return false;
+            ICodeElementInfo elementInfo = PsiReflector.Wrap(element, false);
+            if (elementInfo == null)
+                return false;
 
-                return TestExplorer.IsTest(elementInfo);
-            }
-            finally
-            {
-                TestExplorer.Reset();
-            }
+            return TestExplorer.IsTest(elementInfo);
         }
 
         public void Present(UnitTestElement element, IPresentableItem item, TreeModelNode node, PresentationState state)
@@ -166,14 +135,33 @@ namespace Gallio.ReSharperRunner
         public IList<UnitTestTask> GetTaskSequence(UnitTestElement element, IList<UnitTestElement> explicitElements)
         {
             List<UnitTestTask> tasks = new List<UnitTestTask>();
-            PopulateUnitTestTasks(tasks, (GallioTestElement) element);
+            GallioTestElement self = element as GallioTestElement;
+
+            PopulateSelfAndAncestorTasks(tasks, self);
+            PopulateDescendentTasks(tasks, self);
 
             return tasks;
         }
 
-        private static void PopulateUnitTestTasks(ICollection<UnitTestTask> tasks, GallioTestElement element)
+        private static void PopulateSelfAndAncestorTasks(ICollection<UnitTestTask> tasks, GallioTestElement element)
         {
+            if (element != null)
+            {
+                PopulateSelfAndAncestorTasks(tasks, element.Parent as GallioTestElement);
+
+                tasks.Add(CreateUnitTestTask(element));
+            }
+        }
+
+        private static void PopulateDescendentTasks(ICollection<UnitTestTask> tasks, GallioTestElement element)
+        {
+            if (element != null)
+            {
             tasks.Add(CreateUnitTestTask(element));
+
+            foreach (UnitTestElement childElement in element.Children)
+                PopulateDescendentTasks(tasks, childElement as GallioTestElement);
+            }
         }
 
         private static UnitTestTask CreateUnitTestTask(GallioTestElement element)
@@ -190,13 +178,57 @@ namespace Gallio.ReSharperRunner
             return xe.CompareTo(ye);
         }
 
-        private void ConsumeTest(ITest test, UnitTestElement parent, UnitTestElementConsumer consumer)
+        private sealed class ConsumerAdapter
         {
-            GallioTestElement element = new GallioTestElement(test, provider, parent);
-            consumer(element);
+            private readonly IUnitTestProvider provider;
+            private readonly Dictionary<ITest, UnitTestElement> tests = new Dictionary<ITest, UnitTestElement>();
+            private readonly UnitTestElementConsumer consumer;
 
-            foreach (ITest child in test.Children)
-                ConsumeTest(child, element, consumer);
+            public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementConsumer consumer)
+            {
+                this.provider = provider;
+                this.consumer = consumer;
+            }
+
+            public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementLocationConsumer consumer)
+                : this(provider, delegate(UnitTestElement element)
+                {
+                    consumer(element.GetDisposition());
+                }) 
+            {
+            }
+
+            public void Consume(ITest test)
+            {
+                Consume(test, null);
+            }
+
+            private void Consume(ITest test, UnitTestElement parentElement)
+            {
+                UnitTestElement element = MapTest(test, parentElement);
+                consumer(element);
+
+                foreach (ITest childTest in test.Children)
+                    Consume(childTest, element);
+            }
+
+            private UnitTestElement MapTest(ITest test, UnitTestElement parentElement)
+            {
+                if (test == null)
+                    return null;
+
+                UnitTestElement element;
+                if (!tests.TryGetValue(test, out element))
+                {
+                    if (parentElement == null)
+                        parentElement = MapTest(test.Parent, null);
+
+                    element = new GallioTestElement(test, provider, parentElement);
+                    tests.Add(test, element);
+                }
+
+                return element;
+            }
         }
     }
 }

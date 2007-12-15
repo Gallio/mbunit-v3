@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Model;
-using Gallio.Model;
-using MbUnit.Attributes;
+using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
 
 namespace MbUnit.Framework
 {
@@ -65,7 +64,9 @@ namespace MbUnit.Framework
         /// </remarks>
         /// <value>
         /// The default value is null which causes the parameter's index to be set to 0 for fields
-        /// and properties or the parameter's actual positional index for method parameters.
+        /// and properties or the parameter's actual positional index for the combined list
+        /// of generic parameters and method parameters with the generic parameters counted first
+        /// followed by the method parameters in left-to-right order.
         /// </value>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than 0</exception>
         public int? Index
@@ -81,15 +82,15 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(MbUnitTestBuilder builder, MbUnitTemplateParameter parameter)
+        protected override void InitializeTestParameter(ITestParameterBuilder testParameterBuilder, ISlotInfo slot)
         {
             if (name != null)
-                parameter.Name = name;
+                testParameterBuilder.TestParameter.Name = name;
 
             if (index.HasValue)
-                parameter.Index = index.Value;
+                testParameterBuilder.TestParameter.Index = index.Value;
 
-            base.Apply(builder, parameter);
+            base.InitializeTestParameter(testParameterBuilder, slot);
         }
     }
 }

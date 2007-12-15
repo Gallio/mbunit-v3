@@ -33,11 +33,9 @@ namespace Gallio.Contexts
     /// test step begins execution.
     /// </para>
     /// <para>
-    /// Contexts are arranged in a hierarchy
-    /// that mirrors the containment relationship among test assemblies,
-    /// fixtures, methods, steps and other test components.  Thus it is
-    /// possible to access information about the containing test fixture or
-    /// test assembly from within a test.
+    /// Contexts are arranged in a hierarchy that corresponds to the order in which
+    /// the contexts were entered.  Thus the context for a test likely has as
+    /// its parent the context for its containing test fixture.
     /// </para>
     /// <para>
     /// Arbitrary user data can be associated with a context.  Furthermore, an
@@ -46,12 +44,21 @@ namespace Gallio.Contexts
     /// reclamation rules that do not depend on direct framework support or the use
     /// of tear-down methods.
     /// </para>
+    /// <para>
+    /// The context also provides functions for manipulating "test steps".
+    /// <seealso cref="Step"/>
+    /// </para>
     /// </summary>
     public abstract class Context
     {
         private static IContextManager cachedContextManager;
 
         private readonly Context parent;
+        private readonly TestStepInfo testStep;
+        private readonly LogWriter logWriter;
+
+        private string lifecyclePhase = @"";
+        private TestOutcome outcome = TestOutcome.Passed;
 
         private Dictionary<string, object> data;
 
@@ -67,10 +74,30 @@ namespace Gallio.Contexts
         /// <summary>
         /// Creates a context.
         /// </summary>
-        /// <param name="parent">The parent context, or null if this is the root context</param>
-        protected Context(Context parent)
+        /// <param name="parent">The parent context, or null if this context has no parent</param>
+        /// <param name="testStep">The test step associated with the context</param>
+        /// <param name="logWriter">The log writer for the context</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/>
+        /// or <paramref name="logWriter"/> is null</exception>
+        protected Context(Context parent, TestStepInfo testStep, LogWriter logWriter)
         {
+            if (testStep == null)
+                throw new ArgumentNullException("testStep");
+            if (logWriter == null)
+                throw new ArgumentNullException("logWriter");
+
             this.parent = parent;
+            this.testStep = testStep;
+            this.logWriter = logWriter;
+        }
+
+        /// <summary>
+        /// Causes the resources of the context to be disposed.
+        /// </summary>
+        protected void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -96,28 +123,12 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Gets the root context of the environment, or null if there is no
-        /// root context.
+        /// Gets the global context of the environment, or null if there is no
+        /// such context.
         /// </summary>
-        public static Context RootContext
+        public static Context GlobalContext
         {
-            get { return ContextManager.RootContext; }
-        }
-
-        /// <summary>
-        /// Gets reflection information about the current test.
-        /// </summary>
-        public static TestInfo CurrentTest
-        {
-            get { return CurrentContext.Test; }
-        }
-
-        /// <summary>
-        /// Gets reflection information about the  current step.
-        /// </summary>
-        public static StepInfo CurrentStep
-        {
-            get { return CurrentContext.Step; }
+            get { return ContextManager.GlobalContext; }
         }
 
         /// <summary>
@@ -127,7 +138,7 @@ namespace Gallio.Contexts
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default context for a thread is <see cref="RootContext" /> unless the thread's
+        /// The default context for a thread is <see cref="GlobalContext" /> unless the thread's
         /// default context has been overridden with <see cref="SetThreadDefaultContext" />.
         /// </para>
         /// <para>
@@ -139,7 +150,7 @@ namespace Gallio.Contexts
         /// </remarks>
         /// <param name="thread">The thread</param>
         /// <param name="context">The context to associate with the thread, or null to reset the
-        /// thread's default context to the root context</param>
+        /// thread's default context to inherit the <see cref="GlobalContext" /> once again</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
         public static void SetThreadDefaultContext(Thread thread, Context context)
         {
@@ -153,7 +164,7 @@ namespace Gallio.Contexts
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default context for a thread is <see cref="RootContext" /> unless the thread's
+        /// The default context for a thread is <see cref="GlobalContext" /> unless the thread's
         /// default context has been overridden with <see cref="SetThreadDefaultContext" />.
         /// </para>
         /// <para>
@@ -172,7 +183,7 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Gets the parent of this context or null if this is the root context.
+        /// Gets the parent context or null if this context has no parent.
         /// </summary>
         public Context Parent
         {
@@ -182,12 +193,26 @@ namespace Gallio.Contexts
         /// <summary>
         /// Gets the test associated with the context.
         /// </summary>
-        public abstract TestInfo Test { get; }
+        public TestInfo Test
+        {
+            get { return TestInstance.Test; }
+        }
+
+        /// <summary>
+        /// Gets the test instance associated with the context.
+        /// </summary>
+        public TestInstanceInfo TestInstance
+        {
+            get { return testStep.TestInstance; }
+        }
 
         /// <summary>
         /// Gets the test step associated with the context.
         /// </summary>
-        public abstract StepInfo Step { get; }
+        public TestStepInfo TestStep
+        {
+            get { return testStep; }
+        }
 
         /// <summary>
         /// <para>
@@ -195,11 +220,14 @@ namespace Gallio.Contexts
         /// </para>
         /// <para>
         /// Each test step gets its own log writer that is distinct from those
-        /// of other steps.  So the log write returned by this property is
+        /// of other steps.  So the log writer returned by this property is
         /// particular to the step represented by this test context.
         /// </para>
         /// </summary>
-        public abstract LogWriter LogWriter { get; }
+        public LogWriter LogWriter
+        {
+            get { return logWriter; }
+        }
 
         /// <summary>
         /// Gets or sets the lifecycle phase the context is in.
@@ -208,12 +236,12 @@ namespace Gallio.Contexts
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public string LifecyclePhase
         {
-            get { return LifecyclePhaseImpl; }
+            get { return lifecyclePhase; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                LifecyclePhaseImpl = value;
+                SetLifecyclePhaseImpl(value);
             }
         }
 
@@ -235,7 +263,10 @@ namespace Gallio.Contexts
         /// For example, this property enables code running in a tear down method to
         /// determine whether the test failed and to perform different actions in that case.
         /// </remarks>
-        public abstract TestOutcome Outcome { get; }
+        public TestOutcome Outcome
+        {
+            get { return outcome; }
+        }
 
         /// <summary>
         /// Returns true if the context has been disposed.
@@ -451,7 +482,7 @@ namespace Gallio.Contexts
         /// it with the calling function.
         /// </para>
         /// <para>
-        /// This method creates a new child context to represent the <see cref="Step" />,
+        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
         /// enters the child context, runs the block of code, then exits the child context.
         /// </para>
         /// </summary>
@@ -469,7 +500,7 @@ namespace Gallio.Contexts
         [NonInlined(SecurityAction.Demand)]
         public Context RunStep(string name, Block block)
         {
-            return RunStep(name, block, Reflector.GetCallingFunction());
+            return RunStep(name, Reflector.GetCallingFunction(), block);
         }
 
         /// <summary>
@@ -478,7 +509,7 @@ namespace Gallio.Contexts
         /// with the specified code reference.
         /// </para>
         /// <para>
-        /// This method creates a new child context to represent the <see cref="Step" />,
+        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
         /// enters the child context, runs the block of code, then exits the child context.
         /// </para>
         /// </summary>
@@ -487,51 +518,21 @@ namespace Gallio.Contexts
         /// to create parallel steps.
         /// </remarks>
         /// <param name="name">The name of the step</param>
-        /// <param name="block">The block of code to run</param>
         /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="block">The block of code to run</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="block"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the block</exception>
-        [NonInlined(SecurityAction.Demand)]
-        public Context RunStep(string name, Block block, ICodeElementInfo codeElement)
+        public Context RunStep(string name, ICodeElementInfo codeElement, Block block)
         {
             if (name == null)
-                throw new ArgumentNullException(@"name");
+                throw new ArgumentNullException("name");
             if (block == null)
-                throw new ArgumentNullException(@"block");
+                throw new ArgumentNullException("block");
 
-            return RunStepImpl(name, block, codeElement);
-        }
-
-        /// <summary>
-        /// Enters this context with the current thread.
-        /// </summary>
-        /// <remarks>
-        /// Conceptually this method pushes the specified context onto the context
-        /// stack for the current thread.  It then returns a cookie that can be used
-        /// to restore the current thread's context to its previous value.
-        /// </remarks>
-        /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
-        /// <seealso cref="ContextCookie"/>
-        public abstract ContextCookie Enter();
-
-        /// <summary>
-        /// Increments the assert count atomically.
-        /// </summary>
-        public void IncrementAssertCount()
-        {
-            Interlocked.Increment(ref assertCount);
-        }
-
-        /// <summary>
-        /// Adds the specified amount to the assert count atomically.
-        /// </summary>
-        /// <param name="value">The amount to add to the assert count</param>
-        public void AddAssertCount(int value)
-        {
-            Interlocked.Add(ref assertCount, value);
+            return RunStepImpl(name, codeElement, block);
         }
 
         /// <summary>
@@ -549,6 +550,38 @@ namespace Gallio.Contexts
                 throw new ArgumentNullException(@"metadataValue");
 
             AddMetadataImpl(metadataKey, metadataValue);
+        }
+
+        /// <summary>
+        /// Enters this context with the current thread.
+        /// </summary>
+        /// <remarks>
+        /// Conceptually this method pushes the specified context onto the context
+        /// stack for the current thread.  It then returns a cookie that can be used
+        /// to restore the current thread's context to its previous value.
+        /// </remarks>
+        /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
+        /// <seealso cref="ContextCookie"/>
+        public ContextCookie Enter()
+        {
+            return ContextManager.EnterContext(this);
+        }
+
+        /// <summary>
+        /// Increments the assert count atomically.
+        /// </summary>
+        public void IncrementAssertCount()
+        {
+            Interlocked.Increment(ref assertCount);
+        }
+
+        /// <summary>
+        /// Adds the specified amount to the assert count atomically.
+        /// </summary>
+        /// <param name="value">The amount to add to the assert count</param>
+        public void AddAssertCount(int value)
+        {
+            Interlocked.Add(ref assertCount, value);
         }
 
         /// <summary>
@@ -610,21 +643,34 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Implementation of <see cref="LifecyclePhase" />.
+        /// Sets the lifecycle phase.
         /// </summary>
         /// <remarks>
-        /// The arguments will already have been validated is called and will all be non-null.
+        /// The argument will already have been validated is called and will be non-null.
         /// </remarks>
-        protected abstract string LifecyclePhaseImpl { get; set; }
+        /// <param name="lifecyclePhase">The new lifecycle phase</param>
+        protected virtual void SetLifecyclePhaseImpl(string lifecyclePhase)
+        {
+            this.lifecyclePhase = lifecyclePhase;
+        }
 
         /// <summary>
-        /// Implementation of <see cref="RunStep(string, Block, ICodeElementInfo)" />.
+        /// Sets the interim outcome.
+        /// </summary>
+        /// <param name="outcome">The outcome</param>
+        protected virtual void SetOutcomeImpl(TestOutcome outcome)
+        {
+            this.outcome = outcome;
+        }
+
+        /// <summary>
+        /// Implementation of <see cref="RunStep(string,ICodeElementInfo,Block)" />.
         /// </summary>
         /// <remarks>
         /// The arguments will already have been validated is called and will all be non-null except
         /// perhaps for <paramref name="codeElement"/>.
         /// </remarks>
-        protected abstract Context RunStepImpl(string name, Block block, ICodeElementInfo codeElement);
+        protected abstract Context RunStepImpl(string name, ICodeElementInfo codeElement, Block block);
 
         /// <summary>
         /// Adds metadata to the step that is running in the context.

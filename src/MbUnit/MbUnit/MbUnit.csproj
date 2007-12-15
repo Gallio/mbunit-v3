@@ -60,10 +60,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\BindAttribute.cs" />
+    <Compile Include="Framework\ColumnAttribute.cs" />
+    <Compile Include="Framework\HeaderAttribute.cs" />
+    <Compile Include="Framework\RowAttribute.cs" />
+    <Compile Include="Framework\MixinAttribute.cs" />
     <Compile Include="Framework\ProcessRunner.cs" />
-    <Compile Include="Model\MbUnitTestBuilder.cs" />
+    <Compile Include="Model\Builder\AssemblyDecoratorPatternAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Builder\AssemblyPatternAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Builder\BasePattern.cs" />
+    <Compile Include="Model\Builder\BootstrapAssemblyPattern.cs" />
+    <Compile Include="Model\Builder\BuilderUtils.cs" />
+    <Compile Include="Model\Builder\DataPatternAttribute.cs" />
+    <Compile Include="Model\Builder\DecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Builder\DefaultTestBuilder.cs" />
+    <Compile Include="Model\Builder\DefaultTestModelBuilder.cs" />
+    <Compile Include="Model\Builder\DefaultTestParameterBuilder.cs" />
+    <Compile Include="Model\Builder\MetadataPatternAttribute.cs" />
+    <Compile Include="Model\Builder\TestDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Builder\TestPatternAttribute.cs" />
+    <Compile Include="Model\Builder\ParameterDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Builder\ParameterPatternAttribute.cs" />
+    <Compile Include="Model\Builder\PatternAttributeReflectionPolicy.cs" />
+    <Compile Include="Model\Builder\ITestModelBuilder.cs" />
+    <Compile Include="Model\Builder\IPattern.cs" />
+    <Compile Include="Model\Builder\IReflectionPolicy.cs" />
+    <Compile Include="Model\Builder\ITestBuilder.cs" />
+    <Compile Include="Model\Builder\ITestParameterBuilder.cs" />
+    <Compile Include="Model\Builder\PatternAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Builder\FixtureDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Builder\FixturePatternAttribute.cs" />
+    <Compile Include="Model\Builder\ContributionPatternAttribute.cs" />
     <Compile Include="Model\MbUnitTestController.cs" />
-    <Compile Include="Model\MbUnitTestExplorer.cs" />
+    <Compile Include="Model\MbUnitTestExplorer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\MbUnitTestFramework.cs" />
     <Compile Include="Framework\ArrayAssert.cs" />
     <Compile Include="Framework\AssemblyResolverAttribute.cs" />
@@ -82,31 +119,12 @@
     <Compile Include="Framework\IgnoreAttribute.cs" />
     <Compile Include="Framework\ImportanceAttribute.cs" />
     <Compile Include="Framework\InterimAssert.cs" />
-    <Compile Include="Attributes\AssemblyDecoratorPatternAttribute.cs" />
-    <Compile Include="Attributes\AssemblyPatternAttribute.cs" />
-    <Compile Include="Attributes\DataPatternAttribute.cs" />
-    <Compile Include="Attributes\DecoratorOrderComparer.cs" />
-    <Compile Include="Attributes\DecoratorPatternAttribute.cs" />
-    <Compile Include="Attributes\FixturePatternAttribute.cs" />
-    <Compile Include="Attributes\MetadataPatternAttribute.cs" />
-    <Compile Include="Attributes\MethodDecoratorPatternAttribute.cs" />
-    <Compile Include="Attributes\MethodPatternAttribute.cs" />
-    <Compile Include="Attributes\ParameterDecoratorPatternAttribute.cs" />
-    <Compile Include="Attributes\ParameterPatternAttribute.cs" />
-    <Compile Include="Attributes\PatternAttribute.cs" />
-    <Compile Include="Attributes\TestPatternAttribute.cs" />
-    <Compile Include="Attributes\TypeDecoratorPatternAttribute.cs" />
-    <Compile Include="Attributes\TypePatternAttribute.cs" />
-    <Compile Include="Model\MbUnitAssemblyTemplate.cs" />
-    <Compile Include="Model\MbUnitFrameworkTemplate.cs" />
-    <Compile Include="Model\MbUnitMethodTemplate.cs" />
-    <Compile Include="Model\MbUnitTemplate.cs" />
-    <Compile Include="Model\MbUnitTemplateBinding.cs" />
-    <Compile Include="Model\MbUnitTemplateParameter.cs" />
+    <Compile Include="Model\MbUnitFrameworkTest.cs" />
+    <Compile Include="Model\MbUnitTestParameter.cs" />
     <Compile Include="Model\MbUnitTest.cs" />
+    <Compile Include="Model\MbUnitTestPopulator.cs" />
     <Compile Include="Model\MbUnitTestState.cs" />
     <Compile Include="Model\MbUnitTestUtils.cs" />
-    <Compile Include="Model\MbUnitTypeTemplate.cs" />
     <Compile Include="Framework\KeyedPairwiseAssertion.cs" />
     <Compile Include="Framework\MetadataAttribute.cs" />
     <Compile Include="Framework\PairwiseAssertion.cs" />
@@ -117,8 +135,6 @@
     <Compile Include="Framework\Reflection\ReflectionException.cs" />
     <Compile Include="Framework\Reflection\Reflector.cs" />
     <Compile Include="Framework\Relation.cs" />
-    <Compile Include="Framework\RowAttribute.cs" />
-    <Compile Include="Framework\RowTestAttribute.cs" />
     <Compile Include="Framework\SecurityAssert.cs" />
     <Compile Include="Framework\SetUpAttribute.cs" />
     <Compile Include="Framework\StringAssert.cs" />

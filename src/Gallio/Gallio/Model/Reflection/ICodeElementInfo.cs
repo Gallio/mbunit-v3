@@ -19,14 +19,27 @@ using System.Collections.Generic;
 namespace Gallio.Model.Reflection
 {
     /// <summary>
+    /// <para>
     /// Represents a structural element of some code base. 
+    /// </para>
+    /// <para>
+    /// This interface is the base of a hierarchy of abstract reflection objects.
+    /// Different implementations of these objects may be used to perform
+    /// reflection over different sources.
+    /// </para>
     /// </summary>
-    public interface ICodeElementInfo
+    /// <seealso cref="Reflector"/>
+    public interface ICodeElementInfo : IEquatable<ICodeElementInfo>
     {
         /// <summary>
         /// Gets the name of the code element.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Gets the kind of code element represented by this instance.
+        /// </summary>
+        CodeElementKind Kind { get; }
 
         /// <summary>
         /// Gets a <see cref="CodeReference" /> for this code element.

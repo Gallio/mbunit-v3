@@ -15,7 +15,6 @@
 
 using System;
 using System.Reflection;
-using Gallio.Collections;
 using Gallio.Model.Reflection;
 using MbUnit.Framework;
 using MbUnit.Model;
@@ -47,12 +46,12 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         }
 
         [Test]
-        public void PopulateTemplateTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
+        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
         {
             sampleAssembly = typeof(Int32).Assembly;
-            PopulateTemplateTree();
+            PopulateTestTree();
 
-            Assert.AreEqual(0, rootTemplate.Children.Count);
+            Assert.AreEqual(0, testModel.RootTest.Children.Count);
         }
 
         /// <summary>
@@ -61,64 +60,56 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         /// attributes are handled belong elsewhere.
         /// </summary>
         [Test]
-        public void PopulateTemplateTree_WhenAssemblyReferencesMbUnitGallio_ContainsSimpleTest()
+        public void PopulateTestTree_WhenAssemblyReferencesMbUnitGallio_ContainsSimpleTest()
         {
             Version expectedVersion = typeof(MbUnitTestFramework).Assembly.GetName().Version;
-            PopulateTemplateTree();
+            PopulateTestTree();
 
-            Assert.IsNull(rootTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Root, rootTemplate.Kind);
-            Assert.IsNull(rootTemplate.CodeElement);
-            Assert.AreEqual(1, rootTemplate.Children.Count);
+            RootTest rootTest = testModel.RootTest;
+            Assert.IsNull(rootTest.Parent);
+            Assert.AreEqual(ComponentKind.Root, rootTest.Kind);
+            Assert.IsNull(rootTest.CodeElement);
+            Assert.AreEqual(1, rootTest.Children.Count);
 
-            MbUnitFrameworkTemplate frameworkTemplate = (MbUnitFrameworkTemplate)rootTemplate.Children[0];
-            Assert.AreSame(rootTemplate, frameworkTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Framework, frameworkTemplate.Kind);
-            Assert.IsNull(frameworkTemplate.CodeElement);
-            Assert.AreEqual(expectedVersion, frameworkTemplate.Version);
-            Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTemplate.Name);
-            Assert.AreEqual(1, frameworkTemplate.AssemblyTemplates.Count);
+            MbUnitFrameworkTest frameworkTest = (MbUnitFrameworkTest)rootTest.Children[0];
+            Assert.AreSame(rootTest, frameworkTest.Parent);
+            Assert.AreEqual(ComponentKind.Framework, frameworkTest.Kind);
+            Assert.IsNull(frameworkTest.CodeElement);
+            Assert.AreEqual(expectedVersion, frameworkTest.Version);
+            Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
+            Assert.AreEqual(1, frameworkTest.Children.Count);
 
-            MbUnitAssemblyTemplate assemblyTemplate = frameworkTemplate.AssemblyTemplates[0];
-            Assert.AreSame(frameworkTemplate, assemblyTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Assembly, assemblyTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTemplate.CodeElement.CodeReference);
-            Assert.AreEqual(sampleAssembly, assemblyTemplate.Assembly.Resolve());
-            Assert.GreaterEqualThan(assemblyTemplate.TypeTemplates.Count, 1);
+            MbUnitTest assemblyTest = (MbUnitTest) frameworkTest.Children[0];
+            Assert.AreSame(frameworkTest, assemblyTest.Parent);
+            Assert.AreEqual(ComponentKind.Assembly, assemblyTest.Kind);
+            Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeElement.CodeReference);
+            Assert.AreEqual(sampleAssembly, ((IAssemblyInfo) assemblyTest.CodeElement).Resolve());
+            Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
 
-            MbUnitTypeTemplate typeTemplate = GenericUtils.Find(assemblyTemplate.TypeTemplates, delegate(MbUnitTypeTemplate template)
-            {
-                return template.Name == "SimpleTest";
-            });
-            Assert.IsNotNull(typeTemplate, "Could not find the SimpleTest fixture.");
-            Assert.AreSame(assemblyTemplate, typeTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Fixture, typeTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), typeTemplate.CodeElement.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest), typeTemplate.Type.Resolve());
-            Assert.AreEqual("SimpleTest", typeTemplate.Name);
-            Assert.AreEqual(2, typeTemplate.MethodTemplates.Count);
+            MbUnitTest typeTest = (MbUnitTest)GetDescendantByName(assemblyTest, "SimpleTest");
+            Assert.IsNotNull(typeTest, "Could not find the SimpleTest fixture.");
+            Assert.AreSame(assemblyTest, typeTest.Parent);
+            Assert.AreEqual(ComponentKind.Fixture, typeTest.Kind);
+            Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), typeTest.CodeElement.CodeReference);
+            Assert.AreEqual(typeof(SimpleTest), ((ITypeInfo) typeTest.CodeElement).Resolve());
+            Assert.AreEqual("SimpleTest", typeTest.Name);
+            Assert.AreEqual(2, typeTest.Children.Count);
 
-            MbUnitMethodTemplate passTemplate = GenericUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
-            {
-                return template.Name == "Pass";
-            });
-            Assert.IsNotNull(passTemplate, "Could not find the Pass test.");
-            Assert.AreSame(typeTemplate, passTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Test, passTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")), passTemplate.CodeElement.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), passTemplate.Method.Resolve());
-            Assert.AreEqual("Pass", passTemplate.Name);
+            MbUnitTest passTest = (MbUnitTest)GetDescendantByName(typeTest, "Pass");
+            Assert.IsNotNull(passTest, "Could not find the Pass test.");
+            Assert.AreSame(typeTest, passTest.Parent);
+            Assert.AreEqual(ComponentKind.Test, passTest.Kind);
+            Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")), passTest.CodeElement.CodeReference);
+            Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), ((IMethodInfo) passTest.CodeElement).Resolve());
+            Assert.AreEqual("Pass", passTest.Name);
 
-            MbUnitMethodTemplate failTemplate = GenericUtils.Find(typeTemplate.MethodTemplates, delegate(MbUnitMethodTemplate template)
-            {
-                return template.Name == "Fail";
-            });
-            Assert.IsNotNull(failTemplate, "Could not find the Fail test.");
-            Assert.AreSame(typeTemplate, failTemplate.Parent);
-            Assert.AreEqual(ComponentKind.Test, failTemplate.Kind);
-            Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")), failTemplate.CodeElement.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest).GetMethod("Fail"), failTemplate.Method.Resolve());
-            Assert.AreEqual("Fail", failTemplate.Name);
+            MbUnitTest failTest = (MbUnitTest)GetDescendantByName(typeTest, "Fail");
+            Assert.IsNotNull(failTest, "Could not find the Fail test.");
+            Assert.AreSame(typeTest, failTest.Parent);
+            Assert.AreEqual(ComponentKind.Test, failTest.Kind);
+            Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")), failTest.CodeElement.CodeReference);
+            Assert.AreEqual(typeof(SimpleTest).GetMethod("Fail"), ((IMethodInfo)failTest.CodeElement).Resolve());
+            Assert.AreEqual("Fail", failTest.Name);
         }
 
         [Test]
@@ -126,7 +117,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         {
             PopulateTestTree();
 
-            MbUnitTest test = (MbUnitTest)GetDescendantByName(rootTest, typeof(SimpleTest).Name);
+            MbUnitTest test = (MbUnitTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
             MbUnitTest passTest = (MbUnitTest)GetDescendantByName(test, "Pass");
             MbUnitTest failTest = (MbUnitTest)GetDescendantByName(test, "Fail");
 
@@ -136,13 +127,13 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         }
 
         [Test]
-        public void MetadataImport_XmlDocumentation_TemplateParameters()
+        public void MetadataImport_XmlDocumentation_TestParameters()
         {
-            PopulateTemplateTree();
+            PopulateTestTree();
 
-            MbUnitTemplate template = (MbUnitTemplate)GetDescendantByName(rootTemplate, typeof(ParameterizedTest).Name);
-            MbUnitTemplateParameter fieldParameter = (MbUnitTemplateParameter) template.GetParameterByName("FieldParameter");
-            MbUnitTemplateParameter propertyParameter = (MbUnitTemplateParameter) template.GetParameterByName("PropertyParameter");
+            MbUnitTest test = (MbUnitTest)GetDescendantByName(testModel.RootTest, typeof(ParameterizedTest).Name);
+            MbUnitTestParameter fieldParameter = (MbUnitTestParameter) GetParameterByName(test, "FieldParameter");
+            MbUnitTestParameter propertyParameter = (MbUnitTestParameter) GetParameterByName(test, "PropertyParameter");
 
             Assert.AreEqual("<summary>\nA field parameter.\n</summary>", fieldParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
             Assert.AreEqual("<summary>\nA property parameter.\n</summary>", propertyParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
@@ -151,22 +142,22 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         [Test]
         public void MetadataImport_AssemblyAttributes()
         {
-            PopulateTemplateTree();
+            PopulateTestTree();
 
-            MbUnitFrameworkTemplate frameworkTemplate = (MbUnitFrameworkTemplate)rootTemplate.Children[0];
-            MbUnitAssemblyTemplate assemblyTemplate = frameworkTemplate.AssemblyTemplates[0];
+            MbUnitFrameworkTest frameworkTest = (MbUnitFrameworkTest)testModel.RootTest.Children[0];
+            MbUnitTest assemblyTest = (MbUnitTest) frameworkTest.Children[0];
 
-            Assert.AreEqual("MbUnit Project", assemblyTemplate.Metadata.GetValue(MetadataKeys.Company));
-            Assert.AreEqual("Test", assemblyTemplate.Metadata.GetValue(MetadataKeys.Configuration));
-            StringAssert.Contains(assemblyTemplate.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
-            Assert.AreEqual("A sample test assembly for MbUnit.", assemblyTemplate.Metadata.GetValue(MetadataKeys.Description));
-            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual("Gallio.TestResources.MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Title));
-            Assert.AreEqual("MbUnit", assemblyTemplate.Metadata.GetValue(MetadataKeys.Trademark));
+            Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
+            Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
+            StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
+            Assert.AreEqual("A sample test assembly for MbUnit.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
+            Assert.AreEqual("Gallio.TestResources.MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
 
-            Assert.AreEqual("1.2.3.4", assemblyTemplate.Metadata.GetValue(MetadataKeys.InformationalVersion));
-            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.FileVersion));
-            StringAssert.IsNonEmpty(assemblyTemplate.Metadata.GetValue(MetadataKeys.Version));
+            Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));
+            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
+            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
         }
     }
 }

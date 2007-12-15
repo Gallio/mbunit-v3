@@ -34,31 +34,31 @@ namespace Gallio.Icarus.AdapterModel
         /// <summary>
         /// Builds a winforms test tree from a gallio test tree
         /// </summary>
-        /// <param name="testModel">gallio test tree</param>
+        /// <param name="testModelData">gallio test tree</param>
         /// <returns></returns>
-        public TreeNode[] BuildTestTree(TestModel testModel, string mode)
+        public TreeNode[] BuildTestTree(TestModelData testModelData, string mode)
         {
-            TestTreeNode root = new TestTreeNode(testModel.RootTest.Name, testModel.RootTest.Id, 0);
+            TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, 0);
             switch (mode)
             {
                 case "Namespaces":
-                    PopulateNamespaceTree(testModel.RootTest.Children, root);
+                    PopulateNamespaceTree(testModelData.RootTest.Children, root);
                     break;
 
                 case "Authors":
-                    PopulateMetadataTree(MetadataKeys.AuthorName, testModel.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.AuthorName, testModelData.RootTest.Children, root, root);
                     break;
 
                 case "Categories":
-                    PopulateMetadataTree(MetadataKeys.CategoryName, testModel.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.CategoryName, testModelData.RootTest.Children, root, root);
                     break;
                 
                 case "Importance":
-                    PopulateMetadataTree(MetadataKeys.Importance, testModel.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.Importance, testModelData.RootTest.Children, root, root);
                     break;
 
                 case "TestsOn":
-                    PopulateMetadataTree(MetadataKeys.TestsOn, testModel.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.TestsOn, testModelData.RootTest.Children, root, root);
                     break;
             }
             root.ExpandAll();
@@ -191,9 +191,9 @@ namespace Gallio.Icarus.AdapterModel
             }
         }
 
-        public int CountTests(TestModel testModel)
+        public int CountTests(TestModelData testModelData)
         {
-            return CountTests(testModel.RootTest);
+            return CountTests(testModelData.RootTest);
         }
 
         private int CountTests(TestData td)

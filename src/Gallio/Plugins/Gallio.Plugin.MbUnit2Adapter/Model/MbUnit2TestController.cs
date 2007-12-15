@@ -91,7 +91,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             private Dictionary<Fixture, ITestMonitor> fixtureTestMonitors;
             private Dictionary<RunPipe, ITestMonitor> runPipeTestMonitors;
 
-            private Dictionary<ITestMonitor, IStepMonitor> activeStepMonitors;
+            private Dictionary<ITestMonitor, ITestStepMonitor> activeStepMonitors;
 
             private double workUnit;
 
@@ -125,7 +125,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 includedFixtureTypes = new Dictionary<Type, bool>();
                 fixtureTestMonitors = new Dictionary<Fixture, ITestMonitor>();
                 runPipeTestMonitors = new Dictionary<RunPipe, ITestMonitor>();
-                activeStepMonitors = new Dictionary<ITestMonitor, IStepMonitor>();
+                activeStepMonitors = new Dictionary<ITestMonitor, ITestStepMonitor>();
 
                 bool isExplicit = false;
                 foreach (ITestMonitor testMonitor in testMonitors)
@@ -186,7 +186,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
 
                 if (Explorer.HasAssemblySetUp)
                 {
-                    IStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
+                    ITestStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
                     assemblyStepMonitor.LifecyclePhase = LifecyclePhases.SetUp;
                 }
 
@@ -207,7 +207,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
 
                 if (Explorer.HasAssemblyTearDown && assemblyTestMonitor != null)
                 {
-                    IStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
+                    ITestStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
                     assemblyStepMonitor.LifecyclePhase = LifecyclePhases.TearDown;
                 }
 
@@ -264,7 +264,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 ITestMonitor fixtureTestMonitor;
                 if (fixture.HasSetUp && fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                 {
-                    IStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
+                    ITestStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
                     fixtureStepMonitor.LifecyclePhase = LifecyclePhases.SetUp;
                 }
 
@@ -283,7 +283,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 ITestMonitor fixtureTestMonitor;
                 if (fixture.HasSetUp && fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                 {
-                    IStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
+                    ITestStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
                     fixtureStepMonitor.LifecyclePhase = LifecyclePhases.TearDown;
                 }
 
@@ -341,7 +341,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 if (assemblyTestMonitor == null)
                     return;
 
-                IStepMonitor assemblyStepMonitor = assemblyTestMonitor.StartRootStep();
+                ITestStepMonitor assemblyStepMonitor = assemblyTestMonitor.StartTestInstance();
                 activeStepMonitors.Add(assemblyTestMonitor, assemblyStepMonitor);
             }
 
@@ -350,7 +350,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 if (assemblyTestMonitor == null)
                     return;
 
-                IStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
+                ITestStepMonitor assemblyStepMonitor = activeStepMonitors[assemblyTestMonitor];
                 activeStepMonitors.Remove(assemblyTestMonitor);
 
                 assemblyStepMonitor.FinishStep(TestStatus.Executed, outcome, null);
@@ -362,7 +362,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 if (!fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                     return;
 
-                IStepMonitor fixtureStepMonitor = fixtureTestMonitor.StartRootStep();
+                ITestStepMonitor fixtureStepMonitor = fixtureTestMonitor.StartTestInstance();
                 activeStepMonitors.Add(fixtureTestMonitor, fixtureStepMonitor);
             }
 
@@ -372,7 +372,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 if (!fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                     return;
 
-                IStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
+                ITestStepMonitor fixtureStepMonitor = activeStepMonitors[fixtureTestMonitor];
                 activeStepMonitors.Remove(fixtureTestMonitor);
 
                 FinishStepWithReportRunResult(fixtureStepMonitor, reportRunResult);
@@ -386,7 +386,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 if (!runPipeTestMonitors.TryGetValue(runPipe, out runPipeTestMonitor))
                     return;
 
-                IStepMonitor runPipeStepMonitor = runPipeTestMonitor.StartRootStep();
+                ITestStepMonitor runPipeStepMonitor = runPipeTestMonitor.StartTestInstance();
                 activeStepMonitors.Add(runPipeTestMonitor, runPipeStepMonitor);
             }
 
@@ -395,7 +395,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 ITestMonitor runPipeTestMonitor;
                 if (runPipeTestMonitors.TryGetValue(runPipe, out runPipeTestMonitor))
                 {
-                    IStepMonitor stepMonitor = activeStepMonitors[runPipeTestMonitor];
+                    ITestStepMonitor stepMonitor = activeStepMonitors[runPipeTestMonitor];
                     activeStepMonitors.Remove(runPipeTestMonitor);
 
                     // Output all execution log contents.
@@ -479,7 +479,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 return result.ToString();
             }
 
-            private static void FinishStepWithReportRunResult(IStepMonitor stepMonitor, ReportRunResult reportRunResult)
+            private static void FinishStepWithReportRunResult(ITestStepMonitor stepMonitor, ReportRunResult reportRunResult)
             {
                 switch (reportRunResult)
                 {

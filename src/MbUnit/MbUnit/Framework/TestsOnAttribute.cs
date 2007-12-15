@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Attributes;
 using Gallio.Model;
-using MbUnit.Model;
+using MbUnit.Model.Builder;
 
 namespace MbUnit.Framework
 {
@@ -31,7 +30,7 @@ namespace MbUnit.Framework
     /// </remarks>
     public class TestsOnAttribute : MetadataPatternAttribute
     {
-        private string typeName;
+        private readonly string typeName;
 
         /// <summary>
         /// Associates the type under test with the test component annotated by this attribute.
@@ -43,7 +42,7 @@ namespace MbUnit.Framework
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            this.typeName = type.AssemblyQualifiedName;
+            typeName = type.AssemblyQualifiedName;
         }
 
         /// <summary>
@@ -74,9 +73,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(MbUnitTestBuilder builder, ITemplateComponent component)
+        protected override void Apply(MetadataMap metadata)
         {
-            component.Metadata.Add(MetadataKeys.TestsOn, typeName);
+            metadata.Add(MetadataKeys.TestsOn, typeName);
         }
     }
 }

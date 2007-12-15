@@ -13,9 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Attributes;
 using Gallio.Model;
-using MbUnit.Model;
+using MbUnit.Model.Builder;
 
 namespace MbUnit.Framework
 {
@@ -25,7 +24,7 @@ namespace MbUnit.Framework
     /// </summary>
     public class ImportanceAttribute : MetadataPatternAttribute
     {
-        private Importance importance;
+        private readonly Importance importance;
 
         /// <summary>
         /// Associates a <see cref="Framework.Importance" />  with the test component annotated by this attribute.
@@ -45,9 +44,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Apply(MbUnitTestBuilder builder, ITemplateComponent component)
+        protected override void Apply(MetadataMap metadata)
         {
-            component.Metadata.Add(MetadataKeys.Description, importance.ToString());
+            metadata.Add(MetadataKeys.Description, importance.ToString());
         }
     }
 

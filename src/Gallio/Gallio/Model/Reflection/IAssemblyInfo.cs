@@ -31,7 +31,7 @@ namespace Gallio.Model.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IAssemblyInfo : ICodeElementInfo
+    public interface IAssemblyInfo : ICodeElementInfo, IEquatable<IAssemblyInfo>
     {
         /// <summary>
         /// Gets the codebase of the assembly as a local path if possible or as a Uri otherwise.

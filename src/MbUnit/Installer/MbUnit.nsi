@@ -52,6 +52,9 @@ ReserveFile "UserSelectionPage.ini"
 !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 Var INI_VALUE
 
+; Stores "all" if installing for all users, else "current"
+Var UserContext
+
 ; Detect whether any components are missing
 !tempfile DETECT_TEMP
 !system 'if not exist "${BUILDDIR}\docs\chm\MbUnit.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
@@ -181,6 +184,66 @@ Section "NAnt Tasks" NAntTasksSection
 	File "${BUILDDIR}\bin\Gallio.NAntTasks.xml"
 SectionEnd
 
+Section "PowerShell Cmdlet" PowerShellCmdletSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\bin"
+	File "${BUILDDIR}\bin\Gallio.PowerShellCmdlet.dll"
+	File "${BUILDDIR}\bin\Gallio.PowerShellCmdlet.xml"
+SectionEnd
+
+Var ReSharperInstallDir
+Var ReSharperPluginDir
+
+!macro GetReSharperPluginDir RSVersion VSVersion
+	StrCpy $ReSharperPluginDir ""
+
+        ClearErrors
+	ReadRegStr $0 HKCU "Software\JetBrains\ReSharper\$0\$1\InstallDir" ""
+	IfErrors +3
+		StrCpy $ReSharperInstallDir $0
+		Goto +10
+
+        ClearErrors
+	ReadRegStr $0 HKLM "Software\JetBrains\ReSharper\$0\$1\InstallDir" ""
+	IfErrors +3
+		StrCpy $ReSharperInstallDir $0
+		Goto +5
+
+	StrCmp "current" $UserContext +3
+		StrCpy $ReSharperPluginDir "$ReSharperInstallDir\Bin\Plugins"
+		Goto +2
+
+	StrCpy $ReSharperPluginDir "$APPDATA\JetBrains\ReSharper\$0\$1\Plugins"
+!macroend
+
+!macro InstallReSharperRunner RSVersion VSVersion SourcePath
+	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
+
+	StrCmp "" "$ReSharperPluginDir" +3
+		SetOutPath "$ReSharperPluginDir\Gallio"
+		File "${SourcePath}\Gallio.ReSharperRunner.dll"
+!macroend
+
+!macro UninstallReSharperRunner RSVersion VSVersion
+	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
+
+	StrCmp "" "$ReSharperPluginDir" +3
+		Delete "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll"
+		RMDir "$ReSharperPluginDir\Gallio"
+!macroend
+
+Section "ReSharper v3 Plug-in" ReSharperRunnerSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	!insertmacro InstallReSharperRunner "v3.0" "vs8.0" "${BUILDDIR}\bin"
+	!insertmacro InstallReSharperRunner "v3.0" "vs9.0" "${BUILDDIR}\bin"
+SectionEnd
+
 !macro InstallTDNetRunner Key Framework Priority
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "" "${Priority}"
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "Application" "$INSTDIR\bin\Gallio.Icarus.exe"
@@ -228,6 +291,7 @@ Section "TestDriven.Net Runner for Other Supported Frameworks" TDNetAddInOtherFr
 		!insertmacro InstallTDNetRunner "Gallio_Xunit" "xunit" "5"
 	NoXunit:
 SectionEnd
+
 SectionGroupEnd
 
 !ifndef MISSING_CHM_HELP | MISSING_VS2005_HELP
@@ -292,6 +356,10 @@ Section Uninstall
 	!insertmacro UninstallTDNetRunner "Gallio_NUnit"
 	!insertmacro UninstallTDNetRunner "Gallio_Xunit"
 
+	; Uninstall from ReSharper
+	!insertmacro UninstallReSharperRunner "v3.0" "vs8.0"
+	!insertmacro UninstallReSharperRunner "v3.0" "vs9.0"
+
 	; Uninstall the help collection
 	IfFileExists "$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini" 0 +2
 		ExecWait '"$INSTDIR\utils\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
@@ -318,10 +386,12 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${NUnitPluginSection} "Installs the NUnit plugin.  Enables Gallio to run NUnit tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${XunitPluginSection} "Installs the Xunit plugin.  Enables Gallio to run xUnit.Net tests."
 
-	!insertmacro MUI_DESCRIPTION_TEXT ${EchoSection} "Installs the command-line test runner for MbUnit v3."
-	!insertmacro MUI_DESCRIPTION_TEXT ${IcarusSection} "Installs the GUI-based test runner for MbUnit v3."
-	!insertmacro MUI_DESCRIPTION_TEXT ${MSBuildTasksSection} "Installs the MSBuild tasks for MbUnit v3."
-	!insertmacro MUI_DESCRIPTION_TEXT ${NAntTasksSection} "Installs the NAnt tasks for MbUnit v3."
+	!insertmacro MUI_DESCRIPTION_TEXT ${EchoSection} "Installs the command-line test runner."
+	!insertmacro MUI_DESCRIPTION_TEXT ${IcarusSection} "Installs the GUI-based test runner."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MSBuildTasksSection} "Installs the MSBuild tasks."
+	!insertmacro MUI_DESCRIPTION_TEXT ${NAntTasksSection} "Installs the NAnt tasks."
+	!insertmacro MUI_DESCRIPTION_TEXT ${PowerShellCmdletSection} "Installs the PowerShell cmdlet."
+	!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3 plug-in."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in for MbUnit v3."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInOtherFrameworksSection} "Enables the TestDriven.Net add-in to run tests for other supported frameworks."
 
@@ -349,6 +419,8 @@ Function .onInit
 	SectionSetInstTypes ${IcarusSection} 3
 	SectionSetInstTypes ${MSBuildTasksSection} 3
 	SectionSetInstTypes ${NAntTasksSection} 3
+	SectionSetInstTypes ${PowerShellCmdletSection} 3
+	SectionSetInstTypes ${ReSharperRunnerSection} 3
 	SectionSetInstTypes ${TDNetAddInSection} 3
 	SectionSetInstTypes ${TDNetAddInOtherFrameworksSection} 1
 	!ifndef MISSING_CHM_HELP
@@ -378,6 +450,7 @@ Function un.onInit
 	ReadRegStr $0 HKCU "Software\${APPNAME}" ""
 	IfErrors NotInstalledForUser
 		SetShellVarContext current
+		StrCpy $UserContext "current"
 		StrCpy $INSTDIR $0
 		Goto Installed
 	NotInstalledForUser:
@@ -386,6 +459,7 @@ Function un.onInit
 	ReadRegStr $0 HKLM "Software\${APPNAME}" ""
 	IfErrors NotInstalledForSystem
 		SetShellVarContext all
+		StrCpy $UserContext "all"
 		StrCpy $INSTDIR $0
 		Goto Installed
 	NotInstalledForSystem:
@@ -466,9 +540,11 @@ Function UserSelectionPageLeave
 	!insertmacro MUI_INSTALLOPTIONS_READ $INI_VALUE "UserSelectionPage.ini" "Field 2" "State"
 	IntCmp $INI_VALUE 0 CurrentUserOnly
 		SetShellVarContext all
+		StrCpy $UserContext "all"
 		Goto Done
 	CurrentUserOnly:
 		SetShellVarContext current
+		StrCpy $UserContext "current"
 	Done:
 FunctionEnd
 

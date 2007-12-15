@@ -107,6 +107,15 @@ namespace Gallio.Model
         public const string Description = "Description";
 
         /// <summary>
+        /// The metadata key for the expected exception type.
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <c>ExpectedExceptionAttribute</c> in MbUnit
+        /// or its equivalent.
+        /// </remarks>
+        public const string ExpectedException = "ExpectedException";
+
+        /// <summary>
         /// The metadata key for a file version number associated with a test.
         /// </summary>
         /// <remarks>

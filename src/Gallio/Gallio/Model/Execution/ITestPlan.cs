@@ -14,11 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Model.Execution;
 using Gallio.Core.ProgressMonitoring;
-using Gallio.Model.Filters;
 using Gallio.Model;
 
 namespace Gallio.Model.Execution
@@ -55,7 +52,7 @@ namespace Gallio.Model.Execution
     /// <item>When <see cref="RunTests" /> returns, the test harness then calls
     /// <see cref="CleanUpTests" /> to clean up the state of any tests that
     /// did not complete normally.  For example, an incorrectly written
-    /// <see cref="ITestController" /> might fail to call <see cref="IStepMonitor.FinishStep" />
+    /// <see cref="ITestController" /> might fail to call <see cref="ITestStepMonitor.FinishStep" />
     /// for some steps when runtime errors occurs.</item>
     /// <item>The test plan object can now be recycled.</item>
     /// </list>
@@ -65,7 +62,7 @@ namespace Gallio.Model.Execution
     /// <para>
     /// All operations on a test plan assume that a single client is using
     /// the test plan from a single thread at a time.  However, the <see cref="ITestMonitor" />
-    /// and <see cref="IStepMonitor" /> objects yielded by a test plan are safe
+    /// and <see cref="ITestStepMonitor" /> objects yielded by a test plan are safe
     /// for multi-threaded access.
     /// </para>
     /// <para>
@@ -92,14 +89,12 @@ namespace Gallio.Model.Execution
         /// </para>
         /// </remarks>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <param name="rootTest">The root test in the tree</param>
+        /// <param name="testModel">The test model</param>
         /// <param name="options">The test execution options, including the test filter</param>
         /// <returns>True if any tests were actually scheduled</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/>,
-        /// <paramref name="rootTest"/> or <paramref name="options"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="rootTest"/> is
-        /// not the root of a test tree</exception>
-        bool ScheduleTests(IProgressMonitor progressMonitor, ITest rootTest, TestExecutionOptions options);
+        /// <paramref name="testModel"/> or <paramref name="options"/> is null</exception>
+        bool ScheduleTests(IProgressMonitor progressMonitor, TestModel testModel, TestExecutionOptions options);
 
         /// <summary>
         /// Runs the currently scheduled tests.

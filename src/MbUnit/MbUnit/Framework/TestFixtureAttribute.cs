@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Attributes;
+using MbUnit.Model.Builder;
 
 namespace MbUnit.Framework
 {
