@@ -22,7 +22,8 @@ using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Plugin.NUnitAdapter.Properties;
 using NUnit.Core;
-using TestResult=NUnit.Core.TestResult;
+using NUnitTestResult=NUnit.Core.TestResult;
+using NUnitTestName = NUnit.Core.TestName;
 
 namespace Gallio.Plugin.NUnitAdapter.Model
 {
@@ -132,8 +133,10 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                 foreach (ITestMonitor testMonitor in testMonitors)
                 {
                     NUnitTest test = (NUnitTest) testMonitor.Test;
-                    if (test.Test != null)
-                        testMonitorsByTestName[test.Test.TestName] = testMonitor;
+                    test.ProcessTestNames(delegate(NUnitTestName testName)
+                    {
+                        testMonitorsByTestName[testName] = testMonitor;
+                    }); 
                 }
 
                 stepMonitorStack = new Stack<ITestStepMonitor>();
@@ -147,7 +150,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                 CheckCanceled();
             }
 
-            void EventListener.RunFinished(TestResult result)
+            void EventListener.RunFinished(NUnitTestResult result)
             {
             }
 
@@ -227,7 +230,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                 stepMonitorStack.Push(stepMonitor);
             }
 
-            private void HandleTestOrSuiteFinished(TestResult nunitResult)
+            private void HandleTestOrSuiteFinished(NUnitTestResult nunitResult)
             {
                 if (stepMonitorStack.Count == 0)
                     return;

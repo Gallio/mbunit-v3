@@ -18,6 +18,7 @@ using Gallio.Model;
 using Gallio.Model.Reflection;
 
 using NUnitITest = NUnit.Core.ITest;
+using NUnitTestName = NUnit.Core.TestName;
 
 namespace Gallio.Plugin.NUnitAdapter.Model
 {
@@ -48,6 +49,15 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         {
             get { return test; }
             set { test = value; }
+        }
+
+        /// <summary>
+        /// Processes all of the test names associated with the test.
+        /// </summary>
+        /// <param name="action">The action to apply</param>
+        public virtual void ProcessTestNames(Action<NUnitTestName> action)
+        {
+            action(test.TestName);
         }
     }
 }

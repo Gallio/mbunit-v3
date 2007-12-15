@@ -13,10 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Reflection;
 using NUnitTestRunner = NUnit.Core.TestRunner;
+using NUnitTestName = NUnit.Core.TestName;
+using NUnitITest = NUnit.Core.ITest;
 
 namespace Gallio.Plugin.NUnitAdapter.Model
 {
@@ -49,6 +52,15 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         private ITestController CreateTestController()
         {
             return new NUnitTestController(runner);
+        }
+
+        /// <inheritdoc />
+        public override void ProcessTestNames(Action<NUnitTestName> action)
+        {
+            base.ProcessTestNames(action);
+
+            foreach (NUnitITest test in Test.Tests)
+                action(test.TestName);
         }
     }
 }
