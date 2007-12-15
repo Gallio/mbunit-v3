@@ -196,42 +196,44 @@ SectionEnd
 
 Var ReSharperInstallDir
 Var ReSharperPluginDir
-
 !macro GetReSharperPluginDir RSVersion VSVersion
+        ClearErrors
+	ReadRegStr $0 HKCU "Software\JetBrains\ReSharper\${RSVersion}\${VSVersion}" "InstallDir"
+	IfErrors +3
+		StrCpy $ReSharperInstallDir $0
+		Goto +8
+
+        ClearErrors
+	ReadRegStr $0 HKLM "Software\JetBrains\ReSharper\${RSVersion}\${VSVersion}" "InstallDir"
+	IfErrors +3
+		StrCpy $ReSharperInstallDir $0
+		Goto +3
+
 	StrCpy $ReSharperPluginDir ""
-
-        ClearErrors
-	ReadRegStr $0 HKCU "Software\JetBrains\ReSharper\$0\$1\InstallDir" ""
-	IfErrors +3
-		StrCpy $ReSharperInstallDir $0
-		Goto +10
-
-        ClearErrors
-	ReadRegStr $0 HKLM "Software\JetBrains\ReSharper\$0\$1\InstallDir" ""
-	IfErrors +3
-		StrCpy $ReSharperInstallDir $0
-		Goto +5
+	Goto +5
 
 	StrCmp "current" $UserContext +3
-		StrCpy $ReSharperPluginDir "$ReSharperInstallDir\Bin\Plugins"
+		StrCpy $ReSharperPluginDir "$ReSharperInstallDir\Plugins"
 		Goto +2
 
-	StrCpy $ReSharperPluginDir "$APPDATA\JetBrains\ReSharper\$0\$1\Plugins"
+	StrCpy $ReSharperPluginDir "$APPDATA\JetBrains\ReSharper\${RSVersion}\${VSVersion}\Plugins"
 !macroend
 
 !macro InstallReSharperRunner RSVersion VSVersion SourcePath
 	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
 
-	StrCmp "" "$ReSharperPluginDir" +3
+	StrCmp "" "$ReSharperPluginDir" +4
 		SetOutPath "$ReSharperPluginDir\Gallio"
 		File "${SourcePath}\Gallio.ReSharperRunner.dll"
+		File "${SourcePath}\Gallio.ReSharperRunner.dll.config"
 !macroend
 
 !macro UninstallReSharperRunner RSVersion VSVersion
 	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
 
-	StrCmp "" "$ReSharperPluginDir" +3
+	StrCmp "" "$ReSharperPluginDir" +4
 		Delete "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll"
+		Delete "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll.config"
 		RMDir "$ReSharperPluginDir\Gallio"
 !macroend
 

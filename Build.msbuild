@@ -196,6 +196,7 @@
     <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll" />
 
     <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll" />
+    <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll.config" />
 
     <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.Echo\bin\Gallio.Echo.exe" />
     <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.Echo\bin\Gallio.Echo.exe.config" />
