@@ -17,8 +17,10 @@ using System;
 using Gallio.Model;
 using Gallio.Model.Reflection;
 using MbUnit.Model;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
@@ -46,9 +48,7 @@ namespace MbUnit.Model.Builder
             IAssemblyInfo assembly = (IAssemblyInfo)codeElement;
 
             MbUnitTest test = CreateAssemblyTest(containingTestBuilder, assembly);
-            containingTestBuilder.Test.AddChild(test);
-
-            ITestBuilder testBuilder = containingTestBuilder.TestModelBuilder.CreateTestBuilder(test);
+            ITestBuilder testBuilder = containingTestBuilder.AddChild(test);
             InitializeAssemblyTest(testBuilder, assembly);
 
             testBuilder.ApplyDecorators();
@@ -77,7 +77,7 @@ namespace MbUnit.Model.Builder
         {
             ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTestBuilder.Test.Metadata);
 
-            foreach (IPattern pattern in assemblyTestBuilder.TestModelBuilder.ReflectionPolicy.GetPatterns(assembly))
+            foreach (IPattern pattern in assemblyTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(assembly))
                 pattern.ProcessTest(assemblyTestBuilder, assembly);
 
             foreach (ITypeInfo type in assembly.GetExportedTypes())
@@ -92,7 +92,7 @@ namespace MbUnit.Model.Builder
         /// <returns>True if the type was consumed</returns>
         protected virtual bool ProcessType(ITestBuilder assemblyTestBuilder, ITypeInfo type)
         {
-            return BuilderUtils.ConsumeWithFallback(assemblyTestBuilder, type, ProcessTypeFallback);
+            return PatternUtils.ConsumeWithFallback(assemblyTestBuilder, type, ProcessTypeFallback);
         }
 
         /// <summary>

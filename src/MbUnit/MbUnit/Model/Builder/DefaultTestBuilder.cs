@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Model;
 
 namespace MbUnit.Model.Builder
 {
@@ -55,6 +56,32 @@ namespace MbUnit.Model.Builder
         public ITestModelBuilder TestModelBuilder
         {
             get { return testModelBuilder; }
+        }
+
+        /// <inheritdoc />
+        public ITestBuilder AddChild(MbUnitTest test)
+        {
+            Test.AddChild(test);
+
+            ITestBuilder testBuilder = new DefaultTestBuilder(testModelBuilder, test);
+            testModelBuilder.RegisterTestBuilder(testBuilder);
+            return testBuilder;
+        }
+
+        /// <inheritdoc />
+        public ITestParameterBuilder AddParameter(MbUnitTestParameter testParameter)
+        {
+            Test.AddParameter(testParameter);
+
+            ITestParameterBuilder testParameterBuilder = new DefaultTestParameterBuilder(this, testParameter);
+            testModelBuilder.RegisterTestParameterBuilder(testParameterBuilder);
+            return testParameterBuilder;
+        }
+
+        /// <inheritdoc />
+        public void AddDependency(ITest test)
+        {
+            Test.AddDependency(test);
         }
 
         /// <inheritdoc />

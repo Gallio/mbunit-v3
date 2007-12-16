@@ -20,7 +20,7 @@ namespace Gallio.NAntTasks
     /// <summary>
     /// Used to make the NAnt task "unit-testable".
     /// </summary>
-    public interface INAntLogger
+    internal interface INAntLogger
     {
         /// <summary>
         /// Logs a message with the given priority.

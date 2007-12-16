@@ -13,10 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 
 namespace Gallio.ReSharperRunner.Reflection
@@ -24,7 +20,7 @@ namespace Gallio.ReSharperRunner.Reflection
     /// <summary>
     /// Gets the declared element associated with a code element.
     /// </summary>
-    public interface IDeclaredElementAccessor
+    internal interface IDeclaredElementAccessor
     {
         /// <summary>
         /// Gets the declared element, or null if none.

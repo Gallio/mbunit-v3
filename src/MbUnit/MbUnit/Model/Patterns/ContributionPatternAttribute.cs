@@ -15,41 +15,38 @@
 
 using System;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
-    /// A test decorator pattern attribute applies decorations to an
-    /// existing method-level <see cref="MbUnitTest" />.
+    /// A contribution pattern attribute applies decorations to a containing test
+    /// such as by introducing a new setup or teardown action.
     /// </para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public abstract class TestDecoratorPatternAttribute : DecoratorPatternAttribute
+    public abstract class ContributionPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void ProcessTest(ITestBuilder testBuilder, ICodeElementInfo codeElement)
+        public override bool Consume(ITestBuilder containingTestBuilder, ICodeElementInfo codeElement)
         {
-            IMethodInfo method = (IMethodInfo)codeElement;
-
-            testBuilder.AddDecorator(Order, delegate(ITestBuilder methodTestBuilder)
+            containingTestBuilder.AddDecorator(Order, delegate(ITestBuilder methodTestBuilder)
             {
-                DecorateMethodTest(methodTestBuilder, method);
+                DecorateContainingTest(methodTestBuilder, codeElement);
             });
+
+            return true;
         }
 
         /// <summary>
         /// <para>
-        /// Applies decorations to a method-level <see cref="MbUnitTest" />.
-        /// </para>
-        /// <para>
-        /// A typical use of this method is to augment the test with additional metadata
-        /// or to add additional behaviors to the test.
+        /// Applies decorations to the containing <see cref="MbUnitTest" />.
         /// </para>
         /// </summary>
-        /// <param name="builder">The test builder</param>
-        /// <param name="method">The method</param>
-        protected virtual void DecorateMethodTest(ITestBuilder builder, IMethodInfo method)
+        /// <param name="containingTestBuilder">The containing test builder</param>
+        /// <param name="codeElement">The code element</param>
+        protected virtual void DecorateContainingTest(ITestBuilder containingTestBuilder, ICodeElementInfo codeElement)
         {
         }
     }

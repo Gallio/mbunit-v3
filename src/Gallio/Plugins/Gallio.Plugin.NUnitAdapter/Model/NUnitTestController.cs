@@ -30,7 +30,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
     /// <summary>
     /// Controls the execution of NUnit tests.
     /// </summary>
-    public class NUnitTestController : ITestController
+    internal class NUnitTestController : ITestController
     {
         private TestRunner runner;
 

@@ -32,44 +32,32 @@ namespace Gallio.Plugin.NUnitAdapter.Model
     /// <summary>
     /// Explores tests in NUnit assemblies.
     /// </summary>
-    public class NUnitTestExplorer : BaseTestExplorer
+    internal class NUnitTestExplorer : BaseTestExplorer
     {
-        private const string ExplorerStateKey = "NUnit:ExplorerState";
         private const string NUnitFrameworkAssemblyDisplayName = @"nunit.framework";
 
-        private sealed class ExplorerState
+        public readonly Dictionary<Version, ITest> frameworkTests;
+        public readonly Dictionary<IAssemblyInfo, ITest> assemblyTests;
+
+        public NUnitTestExplorer(TestModel testModel) : base(testModel)
         {
-            public readonly Dictionary<Version, ITest> FrameworkTests = new Dictionary<Version, ITest>();
-            public readonly Dictionary<IAssemblyInfo, ITest> AssemblyTests = new Dictionary<IAssemblyInfo, ITest>();
+            frameworkTests = new Dictionary<Version, ITest>();
+            assemblyTests = new Dictionary<IAssemblyInfo, ITest>();
         }
 
         /// <inheritdoc />
-        public override void ExploreAssembly(IAssemblyInfo assembly, TestModel testModel, Action<ITest> consumer)
+        public override void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
         {
             Version frameworkVersion = GetFrameworkVersion(assembly);
 
             if (frameworkVersion != null)
             {
-                ExplorerState state = GetExplorerState(testModel);
-                ITest frameworkTest = GetFrameworkTest(frameworkVersion, testModel.RootTest, state);
-                ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest, state);
+                ITest frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
+                ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest);
 
                 if (consumer != null)
                     consumer(assemblyTest);
             }
-        }
-
-        private static ExplorerState GetExplorerState(TestModel testModel)
-        {
-            ExplorerState state = testModel.UserData.GetValue<ExplorerState>(ExplorerStateKey);
-
-            if (state == null)
-            {
-                state = new ExplorerState();
-                testModel.UserData.SetValue(ExplorerStateKey, state);
-            }
-
-            return state;
         }
 
         private static Version GetFrameworkVersion(IAssemblyInfo assembly)
@@ -78,15 +66,15 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
         }
 
-        private static ITest GetFrameworkTest(Version frameworkVersion, ITest rootTest, ExplorerState state)
+        private ITest GetFrameworkTest(Version frameworkVersion, ITest rootTest)
         {
             ITest frameworkTest;
-            if (!state.FrameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
+            if (!frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
             {
                 frameworkTest = CreateFrameworkTest(frameworkVersion);
                 rootTest.AddChild(frameworkTest);
 
-                state.FrameworkTests.Add(frameworkVersion, frameworkTest);
+                frameworkTests.Add(frameworkVersion, frameworkTest);
             }
 
             return frameworkTest;
@@ -100,15 +88,15 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             return frameworkTest;
         }
 
-        private static ITest GetAssemblyTest(IAssemblyInfo assembly, ITest frameworkTest, ExplorerState state)
+        private ITest GetAssemblyTest(IAssemblyInfo assembly, ITest frameworkTest)
         {
             ITest assemblyTest;
-            if (!state.AssemblyTests.TryGetValue(assembly, out assemblyTest))
+            if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
             {
                 assemblyTest = CreateAssemblyTest(assembly);
                 frameworkTest.AddChild(assemblyTest);
 
-                state.AssemblyTests.Add(assembly, assemblyTest);
+                assemblyTests.Add(assembly, assemblyTest);
             }
 
             return assemblyTest;

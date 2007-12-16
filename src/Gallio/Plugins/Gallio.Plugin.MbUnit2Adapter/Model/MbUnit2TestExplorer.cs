@@ -18,7 +18,6 @@ extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Reflection;
 using Gallio.Plugin.MbUnit2Adapter.Properties;
@@ -41,45 +40,35 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
     /// <summary>
     /// Explores tests in MbUnit v2 assemblies.
     /// </summary>
-    public class MbUnit2TestExplorer : BaseTestExplorer
+    internal class MbUnit2TestExplorer : BaseTestExplorer
     {
-        private const string ExplorerStateKey = "MbUnit2:ExplorerState";
         private const string MbUnitFrameworkAssemblyDisplayName = @"MbUnit.Framework";
 
-        private sealed class ExplorerState
+        private readonly Dictionary<Version, ITest> frameworkTests;
+        private readonly Dictionary<IAssemblyInfo, ITest> assemblyTests;
+        private readonly List<KeyValuePair<ITest, string>> unresolvedDependencies;
+
+        public MbUnit2TestExplorer(TestModel testModel)
+            : base(testModel)
         {
-            public readonly Dictionary<Version, ITest> FrameworkTests = new Dictionary<Version, ITest>();
-            public readonly Dictionary<IAssemblyInfo, ITest> AssemblyTests = new Dictionary<IAssemblyInfo, ITest>();
-            public readonly List<KeyValuePair<ITest, string>> UnresolvedDependencies = new List<KeyValuePair<ITest, string>>();
+            frameworkTests = new Dictionary<Version, ITest>();
+            assemblyTests = new Dictionary<IAssemblyInfo, ITest>();
+            unresolvedDependencies = new List<KeyValuePair<ITest, string>>();
         }
 
         /// <inheritdoc />
-        public override void ExploreAssembly(IAssemblyInfo assembly, TestModel testModel, Action<ITest> consumer)
+        public override void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
         {
             Version frameworkVersion = GetFrameworkVersion(assembly);
 
             if (frameworkVersion != null)
             {
-                ExplorerState state = GetExplorerState(testModel);
-                ITest frameworkTest = GetFrameworkTest(frameworkVersion, testModel.RootTest, state);
-                ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest, state);
+                ITest frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
+                ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest);
 
                 if (consumer != null)
                     consumer(assemblyTest);
             }
-        }
-
-        private static ExplorerState GetExplorerState(TestModel testModel)
-        {
-            ExplorerState state = testModel.UserData.GetValue<ExplorerState>(ExplorerStateKey);
-
-            if (state == null)
-            {
-                state = new ExplorerState();
-                testModel.UserData.SetValue(ExplorerStateKey, state);
-            }
-
-            return state;
         }
 
         private static Version GetFrameworkVersion(IAssemblyInfo assembly)
@@ -88,15 +77,15 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
         }
 
-        private static ITest GetFrameworkTest(Version frameworkVersion, ITest rootTest, ExplorerState state)
+        private ITest GetFrameworkTest(Version frameworkVersion, ITest rootTest)
         {
             ITest frameworkTest;
-            if (! state.FrameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
+            if (! frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
             {
                 frameworkTest = CreateFrameworkTest(frameworkVersion);
                 rootTest.AddChild(frameworkTest);
 
-                state.FrameworkTests.Add(frameworkVersion, frameworkTest);
+                frameworkTests.Add(frameworkVersion, frameworkTest);
             }
 
             return frameworkTest;
@@ -111,10 +100,10 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             return frameworkTest;
         }
 
-        private static ITest GetAssemblyTest(IAssemblyInfo assembly, ITest frameworkTest, ExplorerState state)
+        private ITest GetAssemblyTest(IAssemblyInfo assembly, ITest frameworkTest)
         {
             ITest assemblyTest;
-            if (state.AssemblyTests.TryGetValue(assembly, out assemblyTest))
+            if (assemblyTests.TryGetValue(assembly, out assemblyTest))
                 return assemblyTest;
 
             try
@@ -138,7 +127,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                 }
 
                 foreach (string assemblyName in fixtureExplorer.GetDependentAssemblies())
-                    state.UnresolvedDependencies.Add(new KeyValuePair<ITest, string>(assemblyTest, assemblyName));
+                    unresolvedDependencies.Add(new KeyValuePair<ITest, string>(assemblyTest, assemblyName));
             }
             catch (Exception ex)
             {
@@ -146,14 +135,14 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                     String.Format("An exception occurred while enumerating MbUnit v2 tests in assembly '{0}'.  {1}", assembly.Name, ex));
             }
 
-            for (int i = 0; i < state.UnresolvedDependencies.Count; i++)
+            for (int i = 0; i < unresolvedDependencies.Count; i++)
             {
-                foreach (KeyValuePair<IAssemblyInfo, ITest> entry in state.AssemblyTests)
+                foreach (KeyValuePair<IAssemblyInfo, ITest> entry in assemblyTests)
                 {
-                    if (entry.Key.FullName == state.UnresolvedDependencies[i].Value)
+                    if (entry.Key.FullName == unresolvedDependencies[i].Value)
                     {
-                        state.UnresolvedDependencies[i].Key.AddDependency(entry.Value);
-                        state.UnresolvedDependencies.RemoveAt(i--);
+                        unresolvedDependencies[i].Key.AddDependency(entry.Value);
+                        unresolvedDependencies.RemoveAt(i--);
                         break;
                     }
                 }
@@ -161,7 +150,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
 
             frameworkTest.AddChild(assemblyTest);
 
-            state.AssemblyTests.Add(assembly, assemblyTest);
+            assemblyTests.Add(assembly, assemblyTest);
             return assemblyTest;
         }
 

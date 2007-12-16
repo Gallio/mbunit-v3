@@ -26,7 +26,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
     /// <summary>
     /// An adapter for converting <see cref="IMethodInfo" /> into <see cref="XunitMethodInfo" />.
     /// </summary>
-    public class XunitMethodInfoAdapter : XunitMethodInfo
+    internal class XunitMethodInfoAdapter : XunitMethodInfo
     {
         private readonly IMethodInfo target;
 

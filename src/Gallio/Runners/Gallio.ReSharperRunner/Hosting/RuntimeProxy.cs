@@ -18,7 +18,6 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Gallio.Hosting;
-using JetBrains.ReSharper.TaskRunnerFramework;
 using JetBrains.UI.Shell;
 
 namespace Gallio.ReSharperRunner.Hosting
@@ -30,7 +29,7 @@ namespace Gallio.ReSharperRunner.Hosting
     /// be loaded, the runtime proxy will revert to null implementations of
     /// services to avoid generating repeated errors.
     /// </summary>
-    public static class RuntimeProxy
+    internal static class RuntimeProxy
     {
         private const string GallioInstallationPathConfigXPath = "//GallioInstallationPath";
 

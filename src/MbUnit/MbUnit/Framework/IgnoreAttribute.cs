@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
 namespace MbUnit.Framework
 {

@@ -26,7 +26,7 @@ namespace Gallio.ReSharperRunner.Reflection
     /// <summary>
     /// Helper functions for the reflector.
     /// </summary>
-    public static class ReflectorUtils
+    internal static class ReflectorUtils
     {
         public static IAssemblyFile GetAssemblyFile(IProject project)
         {

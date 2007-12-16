@@ -15,7 +15,7 @@
 
 using MbUnit.Model;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>

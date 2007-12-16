@@ -13,9 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using JetBrains.ProjectModel;
 
 namespace Gallio.ReSharperRunner.Reflection
@@ -23,7 +20,7 @@ namespace Gallio.ReSharperRunner.Reflection
     /// <summary>
     /// Gets the project to which a code element belongs.
     /// </summary>
-    public interface IProjectAccessor
+    internal interface IProjectAccessor
     {
         /// <summary>
         /// Gets the project to which a code element belongs, or null if none.

@@ -17,8 +17,10 @@ using System;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
@@ -45,9 +47,7 @@ namespace MbUnit.Model.Builder
             ITypeInfo type = (ITypeInfo)codeElement;
 
             MbUnitTest test = CreateTest(containingTestBuilder, type);
-            containingTestBuilder.Test.AddChild(test);
-
-            ITestBuilder testBuilder = containingTestBuilder.TestModelBuilder.CreateTestBuilder(test);
+            ITestBuilder testBuilder = containingTestBuilder.AddChild(test);
             InitializeTest(testBuilder, type);
 
             testBuilder.ApplyDecorators();
@@ -78,7 +78,7 @@ namespace MbUnit.Model.Builder
             if (xmlDocumentation != null)
                 typeTestBuilder.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in typeTestBuilder.TestModelBuilder.ReflectionPolicy.GetPatterns(type))
+            foreach (IPattern pattern in typeTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(type))
                 pattern.ProcessTest(typeTestBuilder, type);
 
             foreach (IGenericParameterInfo parameter in type.GetGenericParameters())
@@ -117,7 +117,7 @@ namespace MbUnit.Model.Builder
         /// <returns>True if the slot was consumed</returns>
         protected virtual bool ProcessSlot(ITestBuilder typeTestBuilder, ISlotInfo slot)
         {
-            return BuilderUtils.ConsumeWithFallback(typeTestBuilder, slot, ProcessSlotFallback);
+            return PatternUtils.ConsumeWithFallback(typeTestBuilder, slot, ProcessSlotFallback);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace MbUnit.Model.Builder
         /// <returns>True if the constructor was consumed</returns>
         protected virtual bool ProcessConstructor(ITestBuilder typeTestBuilder, IConstructorInfo constructor)
         {
-            return BuilderUtils.ConsumeWithFallback(typeTestBuilder, constructor, ProcessConstructorFallback);
+            return PatternUtils.ConsumeWithFallback(typeTestBuilder, constructor, ProcessConstructorFallback);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace MbUnit.Model.Builder
         /// <returns>True if the event was consumed</returns>
         protected virtual bool ProcessEvent(ITestBuilder typeTestBuilder, IEventInfo @event)
         {
-            return BuilderUtils.ConsumeWithFallback(typeTestBuilder, @event, ProcessEventFallback);
+            return PatternUtils.ConsumeWithFallback(typeTestBuilder, @event, ProcessEventFallback);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace MbUnit.Model.Builder
         /// <returns>True if the method was consumed</returns>
         protected virtual bool ProcessMethod(ITestBuilder typeTestBuilder, IMethodInfo method)
         {
-            return BuilderUtils.ConsumeWithFallback(typeTestBuilder, method, ProcessMethodFallback);
+            return PatternUtils.ConsumeWithFallback(typeTestBuilder, method, ProcessMethodFallback);
         }
 
         /// <summary>

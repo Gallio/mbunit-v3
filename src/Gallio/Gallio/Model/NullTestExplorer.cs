@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Gallio.Model
 {
     /// <summary>
@@ -21,11 +23,12 @@ namespace Gallio.Model
     public sealed class NullTestExplorer : BaseTestExplorer
     {
         /// <summary>
-        /// Gets the singleton instance of the null test explorer.
+        /// Create a null test explorer.
         /// </summary>
-        public static readonly NullTestExplorer Instance = new NullTestExplorer();
-
-        private NullTestExplorer()
+        /// <param name="testModel">The test model</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null</exception>
+        public NullTestExplorer(TestModel testModel)
+            : base(testModel)
         {
         }
     }

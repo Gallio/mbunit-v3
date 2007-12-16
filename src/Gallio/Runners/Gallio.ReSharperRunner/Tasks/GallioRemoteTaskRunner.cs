@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Threading;
 using Gallio.Hosting;
 using Gallio.ReSharperRunner.Hosting;
 using JetBrains.ReSharper.TaskRunnerFramework;

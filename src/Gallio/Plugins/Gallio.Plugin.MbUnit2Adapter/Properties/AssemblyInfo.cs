@@ -45,3 +45,5 @@ using System.Runtime.InteropServices;
 // The neutral resources language is US English.
 // Telling the system that this is the case yields a small performance improvement during startup.
 [assembly: NeutralResourcesLanguage("en-US")]
+
+[assembly: InternalsVisibleTo("Gallio.Plugin.MbUnit2Adapter.Tests")]

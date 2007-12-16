@@ -18,8 +18,9 @@ using System.Collections.Generic;
 using Gallio.Data;
 using Gallio.Model;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
@@ -49,7 +50,7 @@ namespace MbUnit.Model.Builder
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class
         | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field
-        | AttributeTargets.Parameter, AllowMultiple=true, Inherited=true)]
+            | AttributeTargets.Parameter, AllowMultiple=true, Inherited=true)]
     public abstract class DataPatternAttribute : DecoratorPatternAttribute
     {
         private string sourceName = "";

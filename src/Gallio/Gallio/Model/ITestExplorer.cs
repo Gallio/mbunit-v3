@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Model.Reflection;
 
@@ -28,9 +27,24 @@ namespace Gallio.Model
     /// layout of the test suite that can subsequently be used to drive the
     /// test runner.
     /// </para>
+    /// <para>
+    /// As a test explorer explores test assemblies and types, it incrementally
+    /// populates a <see cref="TestModel" /> with its discoveries.  The <see cref="TestModel" />
+    /// is guaranteed to contain all of the tests explicitly explored, but it may
+    /// also contain other tests that were discovered by the explorer along the
+    /// way.  For example, a valid implementation of <see cref="ITestExplorer" />
+    /// could implement <see cref="ExploreType" /> by exploring the entire assembly
+    /// as performed by <see cref="ExploreAssembly" />.
+    /// </para>
     /// </summary>
     public interface ITestExplorer
     {
+        /// <summary>
+        /// Gets the test model that is incrementally populated by the test explorer as
+        /// it explores tests.
+        /// </summary>
+        TestModel TestModel { get; }
+
         /// <summary>
         /// Returns true if the code element represents a test.
         /// </summary>
@@ -45,10 +59,9 @@ namespace Gallio.Model
         /// </para>
         /// </summary>
         /// <param name="assembly">The assembly</param>
-        /// <param name="testModel">The test model</param>
         /// <param name="consumer">An action to perform on each assembly-level test
         /// explored, or null if no action is required</param>
-        void ExploreAssembly(IAssemblyInfo assembly, TestModel testModel, Action<ITest> consumer);
+        void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer);
 
         /// <summary>
         /// <para>
@@ -57,9 +70,8 @@ namespace Gallio.Model
         /// </para>
         /// </summary>
         /// <param name="type">The type</param>
-        /// <param name="testModel">The test model</param>
         /// <param name="consumer">An action to perform on each type-level test
         /// explored, or null if no action is required</param>
-        void ExploreType(ITypeInfo type, TestModel testModel, Action<ITest> consumer);
+        void ExploreType(ITypeInfo type, Action<ITest> consumer);
     }
 }

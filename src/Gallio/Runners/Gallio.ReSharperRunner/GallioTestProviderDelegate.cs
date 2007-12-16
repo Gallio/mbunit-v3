@@ -38,21 +38,10 @@ namespace Gallio.ReSharperRunner
         private readonly GallioTestPresenter presenter;
 
         private IUnitTestProvider provider;
-        private ITestExplorer explorer;
 
         public GallioTestProviderDelegate()
         {
             presenter = new GallioTestPresenter();
-        }
-
-        private ITestExplorer TestExplorer
-        {
-            get
-            {
-                if (explorer == null)
-                    explorer = AggregateTestExplorer.CreateExplorerForAllTestFrameworks();
-                return explorer;
-            }
         }
 
         public void SetProvider(IUnitTestProvider provider)
@@ -75,23 +64,23 @@ namespace Gallio.ReSharperRunner
 
             if (assemblyInfo != null)
             {
-                TestModel testModel = new TestModel();
                 ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
+                ITestExplorer explorer = CreateTestExplorer(reflector.ReflectionPolicy);
 
-                TestExplorer.ExploreAssembly(assemblyInfo, testModel, consumerAdapter.Consume);
+                explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
             }
         }
 
         public void ExploreFile(IFile psiFile, UnitTestElementLocationConsumer consumer, CheckForInterrupt interrupted)
         {
-            TestModel testModel = new TestModel();
             ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
+            ITestExplorer explorer = CreateTestExplorer(PsiReflector.GetReflectionPolicy(psiFile.GetManager()));
 
             psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
             {
                 ITypeDeclaration declaration = element as ITypeDeclaration;
                 if (declaration != null)
-                    ExploreTypeDeclaration(declaration, testModel, consumerAdapter.Consume);
+                    ExploreTypeDeclaration(explorer, declaration, consumerAdapter.Consume);
             }, delegate(IElement element)
             {
                 if (interrupted())
@@ -102,16 +91,15 @@ namespace Gallio.ReSharperRunner
             }));
         }
 
-        private void ExploreTypeDeclaration(ITypeDeclaration declaration, TestModel testModel,
-            Action<ITest> consumer)
+        private void ExploreTypeDeclaration(ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
         {
             ITypeInfo typeInfo = PsiReflector.Wrap(declaration.DeclaredElement);
 
             if (typeInfo != null)
-                TestExplorer.ExploreType(typeInfo, testModel, consumer);
+                explorer.ExploreType(typeInfo, consumer);
 
             foreach (ITypeDeclaration nestedDeclaration in declaration.NestedTypeDeclarations)
-                ExploreTypeDeclaration(nestedDeclaration, testModel, consumer);
+                ExploreTypeDeclaration(explorer, nestedDeclaration, consumer);
         }
 
         public bool IsUnitTestElement(IDeclaredElement element)
@@ -120,7 +108,8 @@ namespace Gallio.ReSharperRunner
             if (elementInfo == null)
                 return false;
 
-            return TestExplorer.IsTest(elementInfo);
+            ITestExplorer explorer = CreateTestExplorer(PsiReflector.GetReflectionPolicy(element.GetManager()));
+            return explorer.IsTest(elementInfo);
         }
 
         public void Present(UnitTestElement element, IPresentableItem item, TreeModelNode node, PresentationState state)
@@ -230,6 +219,13 @@ namespace Gallio.ReSharperRunner
 
                 return element;
             }
+        }
+
+        private static ITestExplorer CreateTestExplorer(IReflectionPolicy reflectionPolicy)
+        {
+            TestPackage testPackage = new TestPackage(new TestPackageConfig(), reflectionPolicy);
+            TestModel testModel = new TestModel(testPackage);
+            return AggregateTestExplorer.CreateExplorerForAllTestFrameworks(testModel);
         }
     }
 }

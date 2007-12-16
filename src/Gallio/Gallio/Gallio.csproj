@@ -117,10 +117,12 @@
     <Compile Include="Model\Execution\IContextHandler.cs" />
     <Compile Include="Model\Execution\ContextualTestStepMonitor.cs" />
     <Compile Include="Model\Reflection\CodeElementKind.cs" />
+    <Compile Include="Model\Reflection\IReflectionPolicy.cs" />
     <Compile Include="Model\Reflection\IGenericParameterInfo.cs" />
     <Compile Include="Model\Reflection\CodeElementResolveException.cs" />
     <Compile Include="Model\Serialization\TestInstanceData.cs" />
     <Compile Include="Model\Serialization\TestPackageData.cs" />
+    <Compile Include="Model\TestDeclarationErrorException.cs" />
     <Compile Include="Model\TestInstanceInfo.cs" />
     <Compile Include="Model\Filters\EqualityFilter.cs" />
     <Compile Include="Model\Filters\FilterLexer.cs" />
@@ -163,7 +165,6 @@
     <Compile Include="Model\TestParameterInfoList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\UserDataCollection.cs" />
     <Compile Include="Runner\Harness\ConsoleTestEnvironment.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarness.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarnessFactory.cs" />

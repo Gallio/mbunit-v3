@@ -16,7 +16,7 @@
 using System;
 using Gallio.Data;
 using Gallio.Model.Reflection;
-using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -48,6 +48,7 @@ namespace MbUnit.Framework
     /// </example>
     /// <seealso cref="RowAttribute"/>
     /// <seealso cref="ColumnAttribute"/>
+    [CLSCompliant(false)]
     public class HeaderAttribute : DataPatternAttribute
     {
         private readonly string[] columnNames;

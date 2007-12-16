@@ -13,11 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using Gallio.Collections;
 using Gallio.Model;
-using Gallio.Model.Reflection;
 using Gallio.Plugin.XunitAdapter.Properties;
 
 namespace Gallio.Plugin.XunitAdapter.Model
@@ -34,9 +30,9 @@ namespace Gallio.Plugin.XunitAdapter.Model
         }
 
         /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer()
+        public override ITestExplorer CreateTestExplorer(TestModel testModel)
         {
-            return new XunitTestExplorer();
+            return new XunitTestExplorer(testModel);
         }
     }
 }

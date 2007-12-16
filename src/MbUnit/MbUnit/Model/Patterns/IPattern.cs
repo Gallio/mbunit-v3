@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
@@ -46,20 +48,20 @@ namespace MbUnit.Model.Builder
     {
         /// <summary>
         /// <para>
-        /// Consumes the <paramref cref="codeElement" /> and applies its contributions to
+        /// Consumes the <paramref name="codeElement" /> and applies its contributions to
         /// the <paramref name="containingTestBuilder"/>.
         /// </para>
         /// <para>
         /// This method is used to declare new tests, test parameters and other components
-        /// and add them to a containing test that was defined by some other <paramref cref="codeElement" />.
+        /// and add them to a containing test that was defined by some other <paramref name="codeElement" />.
         /// </para>
         /// <para>
-        /// For example, when enumerating MbUnit tests, the <paramref cref="BootstrapAssemblyPattern" />
-        /// will call the <paramref cref="Consume" /> method of all patterns associated
+        /// For example, when enumerating MbUnit tests, the <see cref="Consume" />
+        /// will call the <see cref="ProcessTest" /> method of all patterns associated
         /// with the public types in an assembly.  Some of these patterns will create new test fixture
         /// objects and add them as children of the containing assembly-level test.  They will then
-        /// call <paramref cref="ProcessTest" /> for each of the other patterns defined
-        /// by this <paramref cref="codeElement" />.  A test fixture pattern will then typically
+        /// call <see cref="BootstrapAssemblyPattern" /> for each of the other patterns defined
+        /// by this <paramref name="codeElement" />.  A test fixture pattern will then typically
         /// recurse into the fixture to apply contributions defined by patterns associated
         /// with methods, fields, properties, events, constructors and generic type parameters.
         /// </para>
@@ -77,14 +79,14 @@ namespace MbUnit.Model.Builder
         /// <summary>
         /// <para>
         /// Processes a test that was declared by a pattern associated with this
-        /// <paramref cref="codeElement" /> and applies contributions to its builder.
+        /// <paramref name="codeElement" /> and applies contributions to its builder.
         /// </para>
         /// <para>
-        /// This method is used to decorate tests defined by <paramref cref="codeElement" /> itself.
+        /// This method is used to decorate tests defined by <paramref name="codeElement" /> itself.
         /// </para>
         /// <para>
-        /// For example, <paramref cref="ProcessTest" /> will typically be called by another pattern that has
-        /// just created a new test based on declarative information about the <paramref cref="codeElement" />.
+        /// For example, <see cref="ProcessTest" /> will typically be called by another pattern that has
+        /// just created a new test based on declarative information about the <paramref name="codeElement" />.
         /// The callee then has the opportunity to add decorators to the new test and to
         /// apply other contributions of its choosing.
         /// </para>
@@ -96,15 +98,15 @@ namespace MbUnit.Model.Builder
         /// <summary>
         /// <para>
         /// Processes a test parameter that was declared by a pattern associated with this
-        /// <paramref cref="codeElement" /> and applies contributions to its builder.
+        /// <paramref name="codeElement" /> and applies contributions to its builder.
         /// </para>
         /// <para>
-        /// This method is used to decorate test parameters defined by <paramref cref="codeElement" /> itself.
+        /// This method is used to decorate test parameters defined by <paramref name="codeElement" /> itself.
         /// </para>
         /// <para>
-        /// For example, <paramref cref="ProcessTestParameter" /> will typically be called by another
+        /// For example, <see cref="ProcessTestParameter" /> will typically be called by another
         /// pattern that has just created a new test parameter based on declarative information
-        /// about the <paramref cref="codeElement" />.  The callee then has the opportunity to add decorators to
+        /// about the <paramref name="codeElement" />.  The callee then has the opportunity to add decorators to
         /// the new test parameter and to apply other contributions of its choosing.
         /// </para>
         /// </summary>

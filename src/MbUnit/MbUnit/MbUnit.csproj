@@ -62,41 +62,44 @@
   <ItemGroup>
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
+    <Compile Include="Model\Patterns\DependencyPatternAttribute.cs" />
+    <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
+    <Compile Include="Framework\DependsOnAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
     <Compile Include="Framework\ProcessRunner.cs" />
-    <Compile Include="Model\Builder\AssemblyDecoratorPatternAttribute.cs">
+    <Compile Include="Model\Patterns\AssemblyDecoratorPatternAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Builder\AssemblyPatternAttribute.cs">
+    <Compile Include="Model\Patterns\AssemblyPatternAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Builder\BasePattern.cs" />
-    <Compile Include="Model\Builder\BootstrapAssemblyPattern.cs" />
-    <Compile Include="Model\Builder\BuilderUtils.cs" />
-    <Compile Include="Model\Builder\DataPatternAttribute.cs" />
-    <Compile Include="Model\Builder\DecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\BasePattern.cs" />
+    <Compile Include="Model\Patterns\BootstrapAssemblyPattern.cs" />
+    <Compile Include="Model\Patterns\PatternUtils.cs" />
+    <Compile Include="Model\Patterns\DataPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\DecoratorPatternAttribute.cs" />
     <Compile Include="Model\Builder\DefaultTestBuilder.cs" />
     <Compile Include="Model\Builder\DefaultTestModelBuilder.cs" />
     <Compile Include="Model\Builder\DefaultTestParameterBuilder.cs" />
-    <Compile Include="Model\Builder\MetadataPatternAttribute.cs" />
-    <Compile Include="Model\Builder\TestDecoratorPatternAttribute.cs" />
-    <Compile Include="Model\Builder\TestPatternAttribute.cs" />
-    <Compile Include="Model\Builder\ParameterDecoratorPatternAttribute.cs" />
-    <Compile Include="Model\Builder\ParameterPatternAttribute.cs" />
-    <Compile Include="Model\Builder\PatternAttributeReflectionPolicy.cs" />
+    <Compile Include="Model\Patterns\MetadataPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\TestDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\TestPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\ParameterDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\ParameterPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\DeclarativePatternResolver.cs" />
     <Compile Include="Model\Builder\ITestModelBuilder.cs" />
-    <Compile Include="Model\Builder\IPattern.cs" />
-    <Compile Include="Model\Builder\IReflectionPolicy.cs" />
+    <Compile Include="Model\Patterns\IPattern.cs" />
+    <Compile Include="Model\Patterns\IPatternResolver.cs" />
     <Compile Include="Model\Builder\ITestBuilder.cs" />
     <Compile Include="Model\Builder\ITestParameterBuilder.cs" />
-    <Compile Include="Model\Builder\PatternAttribute.cs">
+    <Compile Include="Model\Patterns\PatternAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Builder\FixtureDecoratorPatternAttribute.cs" />
-    <Compile Include="Model\Builder\FixturePatternAttribute.cs" />
-    <Compile Include="Model\Builder\ContributionPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\FixtureDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\FixturePatternAttribute.cs" />
+    <Compile Include="Model\Patterns\ContributionPatternAttribute.cs" />
     <Compile Include="Model\MbUnitTestController.cs" />
     <Compile Include="Model\MbUnitTestExplorer.cs">
       <SubType>Code</SubType>

@@ -16,8 +16,10 @@
 using System;
 using Gallio.Model;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
@@ -44,9 +46,7 @@ namespace MbUnit.Model.Builder
             IMethodInfo method = (IMethodInfo)codeElement;
 
             MbUnitTest test = CreateMethodTest(containingTestBuilder, method);
-            containingTestBuilder.Test.AddChild(test);
-
-            ITestBuilder testBuilder = containingTestBuilder.TestModelBuilder.CreateTestBuilder(test);
+            ITestBuilder testBuilder = containingTestBuilder.AddChild(test);
             InitializeMethodTest(testBuilder, method);
 
             testBuilder.ApplyDecorators();
@@ -78,7 +78,7 @@ namespace MbUnit.Model.Builder
             if (xmlDocumentation != null)
                 methodTestBuilder.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in methodTestBuilder.TestModelBuilder.ReflectionPolicy.GetPatterns(method))
+            foreach (IPattern pattern in methodTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(method))
                 pattern.ProcessTest(methodTestBuilder, method);
 
             foreach (IGenericParameterInfo parameter in method.GetGenericParameters())
@@ -96,7 +96,7 @@ namespace MbUnit.Model.Builder
         /// <returns>True if the slot was consumed</returns>
         protected virtual bool ProcessSlot(ITestBuilder methodTestBuilder, ISlotInfo slot)
         {
-            return BuilderUtils.ConsumeWithFallback(methodTestBuilder, slot, ProcessSlotFallback);
+            return PatternUtils.ConsumeWithFallback(methodTestBuilder, slot, ProcessSlotFallback);
         }
 
         /// <summary>

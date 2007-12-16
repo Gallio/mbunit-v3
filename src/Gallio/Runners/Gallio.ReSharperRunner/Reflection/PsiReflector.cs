@@ -32,8 +32,17 @@ namespace Gallio.ReSharperRunner.Reflection
     /// Support inherited attribute lookup.
     /// Support Resolve() method.
     /// </todo>
-    public static class PsiReflector
+    internal static class PsiReflector
     {
+        /// <summary>
+        /// Gets the reflection policy for a PSI manager.
+        /// </summary>
+        /// <param name="manager">The PSI manager</param>
+        public static IReflectionPolicy GetReflectionPolicy(PsiManager manager)
+        {
+            return new PsiReflectionPolicy(manager);
+        }
+
         /// <summary>
         /// Obtains a reflection wrapper for a module.
         /// </summary>
@@ -426,7 +435,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 get { return GetAssemblyFile().Location.FullPath; }
             }
 
-            public AssemblyName GetName()
+            public virtual AssemblyName GetName()
             {
                 return GetAssemblyFile().AssemblyName;
             }
@@ -514,6 +523,11 @@ namespace Gallio.ReSharperRunner.Reflection
             public AssemblyWrapper(IAssembly target)
                 : base(target)
             {
+            }
+
+            public override AssemblyName GetName()
+            {
+                return Target.AssemblyName;
             }
 
             public override IList<AssemblyName> GetReferencedAssemblies()
@@ -1702,6 +1716,36 @@ namespace Gallio.ReSharperRunner.Reflection
             public object Resolve()
             {
                 return AttributeUtils.CreateAttribute(this);
+            }
+        }
+
+        private sealed class PsiReflectionPolicy : IReflectionPolicy
+        {
+            private readonly PsiManager manager;
+
+            public PsiReflectionPolicy(PsiManager manager)
+            {
+                if (manager == null)
+                    throw new ArgumentNullException("manager");
+
+                this.manager = manager;
+            }
+
+            public IAssemblyInfo LoadAssembly(AssemblyName assemblyName)
+            {
+                bool partialName = assemblyName.Name == assemblyName.FullName;
+
+                foreach (IAssembly candidateAssembly in manager.Solution.GetAllAssemblies())
+                {
+                    AssemblyName candidateAssemblyName = candidateAssembly.AssemblyName;
+
+                    if (partialName && assemblyName.Name == candidateAssemblyName.Name
+                        || ! partialName && assemblyName.FullName == candidateAssemblyName.FullName)
+                        return Wrap(candidateAssembly);
+                }
+
+                throw new ArgumentException(String.Format("Could not find assembly '{0}' in the ReSharper code cache.",
+                    assemblyName.FullName));
             }
         }
     }

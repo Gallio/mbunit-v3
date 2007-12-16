@@ -121,7 +121,7 @@ namespace Gallio.NAntTasks
         /// </summary>
         /// <param name="nantLogger">The <see cref="INAntLogger" /> object that will be used
         /// to log messages.</param>
-        public GallioTask(INAntLogger nantLogger)
+        internal GallioTask(INAntLogger nantLogger)
         {
             if (nantLogger == null)
                 throw new ArgumentNullException("nantLogger");

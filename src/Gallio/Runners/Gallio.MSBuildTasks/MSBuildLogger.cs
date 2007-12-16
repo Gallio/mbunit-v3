@@ -24,7 +24,7 @@ namespace Gallio.MSBuildTasks
     /// <summary>
     /// Logs messages to a <see cref="TaskLoggingHelper" /> instance.
     /// </summary>
-    public class MSBuildLogger : LevelFilteredLogger
+    internal class MSBuildLogger : LevelFilteredLogger
     {
         private readonly TaskLoggingHelper taskLogger;
         

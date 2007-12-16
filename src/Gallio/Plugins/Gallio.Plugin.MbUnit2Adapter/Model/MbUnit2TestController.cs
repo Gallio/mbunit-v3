@@ -32,7 +32,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
     /// <summary>
     /// Controls the execution of MbUnit v2 tests.
     /// </summary>
-    public class MbUnit2TestController : ITestController
+    internal class MbUnit2TestController : ITestController
     {
         private FixtureExplorer fixtureExplorer;
 

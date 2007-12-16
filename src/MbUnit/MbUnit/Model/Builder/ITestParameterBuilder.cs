@@ -29,6 +29,11 @@ namespace MbUnit.Model.Builder
         MbUnitTestParameter TestParameter { get; }
 
         /// <summary>
+        /// Gets the builder for the test that owns this parameter.
+        /// </summary>
+        ITestBuilder TestBuilder { get; }
+
+        /// <summary>
         /// Gets the builder for the test model.
         /// </summary>
         ITestModelBuilder TestModelBuilder { get; }

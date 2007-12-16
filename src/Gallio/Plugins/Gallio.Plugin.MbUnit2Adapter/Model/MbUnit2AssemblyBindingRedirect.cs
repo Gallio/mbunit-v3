@@ -26,7 +26,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
     /// they were built against differs from the plugin so long as no breaking API
     /// changes are encountered.
     /// </summary>
-    public class MbUnit2AssemblyBindingRedirect : IIsolatedTestDomainContributor
+    internal class MbUnit2AssemblyBindingRedirect : IIsolatedTestDomainContributor
     {
         /// <inheritdoc />
         public void Apply(IsolatedTestDomain domain)

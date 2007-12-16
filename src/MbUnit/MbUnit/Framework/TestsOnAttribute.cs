@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Model;
-using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -61,7 +61,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets or sets the full name or assembly qualified name of the type under test.
+        /// Gets the full name or assembly qualified name of the type under test.
         /// </summary>
         /// <value>
         /// The name of the type under test as obtained by <see cref="Type.FullName" />

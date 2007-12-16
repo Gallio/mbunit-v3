@@ -13,24 +13,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
-    /// The reflection policy provides a means for obtaining the <see cref="IPattern" />
-    /// objects associated with an <see cref="ICodeElementInfo" />
+    /// Abstract base implementation of <see cref="IPattern" /> with do-nothing
+    /// implementations.
     /// </summary>
-    public interface IReflectionPolicy
+    public abstract class BasePattern : IPattern
     {
-        /// <summary>
-        /// Gets the patterns associated with the specified code element.
-        /// </summary>
-        /// <param name="codeElement">The code element</param>
-        /// <returns>The enumeration of patterns</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null</exception>
-        IEnumerable<IPattern> GetPatterns(ICodeElementInfo codeElement);
+        /// <inheritdoc />
+        public virtual bool Consume(ITestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        {
+            return false;
+        }
+
+        /// <inheritdoc />
+        public virtual void ProcessTest(ITestBuilder testBuilder, ICodeElementInfo codeElement)
+        {
+        }
+
+        /// <inheritdoc />
+        public virtual void ProcessTestParameter(ITestParameterBuilder testParameterBuilder, ICodeElementInfo codeElement)
+        {
+        }
     }
 }

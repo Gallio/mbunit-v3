@@ -27,7 +27,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
     /// <summary>
     /// Represents an MbUnit v2 assembly-level test.
     /// </summary>
-    public class MbUnit2AssemblyTest : MbUnit2Test
+    internal class MbUnit2AssemblyTest : MbUnit2Test
     {
         private readonly FixtureExplorer fixtureExplorer;
 

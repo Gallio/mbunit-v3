@@ -13,9 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Data;
 using Gallio.Model.Reflection;
-using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -23,6 +24,7 @@ namespace MbUnit.Framework
     /// Provides a row of literal values as a data source.
     /// </summary>
     /// <seealso cref="ColumnAttribute"/>
+    [CLSCompliant(false)]
     public class RowAttribute : DataPatternAttribute
     {
         private readonly object[] values;

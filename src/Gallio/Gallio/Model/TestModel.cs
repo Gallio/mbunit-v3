@@ -23,28 +23,42 @@ namespace Gallio.Model
     /// </summary>
     public sealed class TestModel
     {
+        private readonly TestPackage testPackage;
         private readonly RootTest rootTest;
-        private UserDataCollection userData;
 
         /// <summary>
         /// Creates a test model with a new empty root test.
         /// </summary>
-        public TestModel()
-            : this(new RootTest())
+        /// <param name="testPackage">The test package from which the model was created</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage"/> is null</exception>
+        public TestModel(TestPackage testPackage)
+            : this(testPackage, new RootTest())
         {
         }
 
         /// <summary>
         /// Creates a test model.
         /// </summary>
+        /// <param name="testPackage">The test package from which the model was created</param>
         /// <param name="rootTest">The root test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTest"/> is null</exception>
-        public TestModel(RootTest rootTest)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage" /> or <paramref name="rootTest"/> is null</exception>
+        public TestModel(TestPackage testPackage, RootTest rootTest)
         {
+            if (testPackage == null)
+                throw new ArgumentNullException("testPackage");
             if (rootTest == null)
                 throw new ArgumentNullException(@"rootTest");
 
+            this.testPackage = testPackage;
             this.rootTest = rootTest;
+        }
+
+        /// <summary>
+        /// Gets the test package.
+        /// </summary>
+        public TestPackage TestPackage
+        {
+            get { return testPackage; }
         }
 
         /// <summary>
@@ -53,21 +67,6 @@ namespace Gallio.Model
         public RootTest RootTest
         {
             get { return rootTest; }
-        }
-
-        /// <summary>
-        /// Gets a dictionary that contains user data that may be used to
-        /// store state needed by test frameworks during the construction of
-        /// the test model.
-        /// </summary>
-        public UserDataCollection UserData
-        {
-            get
-            {
-                if (userData == null)
-                    userData = new UserDataCollection();
-                return userData;
-            }
         }
     }
 }

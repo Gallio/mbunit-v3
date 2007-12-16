@@ -24,9 +24,9 @@ namespace Gallio.Model
         public abstract string Name { get; }
 
         /// <inheritdoc />
-        public virtual ITestExplorer CreateTestExplorer()
+        public virtual ITestExplorer CreateTestExplorer(TestModel testModel)
         {
-            return NullTestExplorer.Instance;
+            return new NullTestExplorer(testModel);
         }
 
         /// <inheritdoc />

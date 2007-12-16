@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model;
 
 namespace MbUnit.Model.Builder
 {
@@ -32,6 +33,29 @@ namespace MbUnit.Model.Builder
         /// Gets the builder for the test model.
         /// </summary>
         ITestModelBuilder TestModelBuilder { get; }
+
+        /// <summary>
+        /// Adds a test as a child of this test and returns a new <see cref="ITestBuilder" />.
+        /// </summary>
+        /// <param name="test">The test for which to create a builder</param>
+        /// <returns>The new test builder</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        ITestBuilder AddChild(MbUnitTest test);
+
+        /// <summary>
+        /// Adds a test parameter to this test and returns a new <see cref="ITestParameterBuilder" />.
+        /// </summary>
+        /// <param name="testParameter">The test parameter for which to create a builder</param>
+        /// <returns>The new test parameter builder</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testParameter"/> is null</exception>
+        ITestParameterBuilder AddParameter(MbUnitTestParameter testParameter);
+
+        /// <summary>
+        /// Adds a test dependency.
+        /// </summary>
+        /// <param name="test">The test dependency to add</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        void AddDependency(ITest test);
 
         /// <summary>
         /// Registers a test decorator action.

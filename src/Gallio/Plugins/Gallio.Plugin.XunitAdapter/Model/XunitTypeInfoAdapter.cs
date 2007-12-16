@@ -27,7 +27,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
     /// <summary>
     /// An adapter for converting <see cref="ITypeInfo" /> into <see cref="XunitTypeInfo" />.
     /// </summary>
-    public class XunitTypeInfoAdapter : XunitTypeInfo
+    internal class XunitTypeInfoAdapter : XunitTypeInfo
     {
         private readonly ITypeInfo target;
 

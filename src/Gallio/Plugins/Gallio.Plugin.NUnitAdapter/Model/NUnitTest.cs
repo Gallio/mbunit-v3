@@ -25,7 +25,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
     /// <summary>
     /// Wraps an NUnit test.
     /// </summary>
-    public class NUnitTest : BaseTest
+    internal class NUnitTest : BaseTest
     {
         private NUnitITest test;
 

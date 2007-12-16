@@ -41,14 +41,25 @@ namespace Gallio.Model
         /// all registered <see cref="ITestFramework" /> services in the
         /// <see cref="Runtime" />.
         /// </summary>
-        public static AggregateTestExplorer CreateExplorerForAllTestFrameworks()
+        /// <param name="testModel">The test model to populate incrementally as
+        /// tests are discovered</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null</exception>
+        public static AggregateTestExplorer CreateExplorerForAllTestFrameworks(TestModel testModel)
         {
+            if (testModel == null)
+                throw new ArgumentNullException("testModel");
+
             AggregateTestExplorer aggregate = new AggregateTestExplorer();
 
             foreach (ITestFramework framework in Runtime.Instance.ResolveAll<ITestFramework>())
-                aggregate.AddTestExplorer(framework.CreateTestExplorer());
+                aggregate.AddTestExplorer(framework.CreateTestExplorer(testModel));
 
             return aggregate;
+        }
+
+        TestModel ITestExplorer.TestModel
+        {
+            get { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -75,17 +86,17 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public void ExploreAssembly(IAssemblyInfo assembly, TestModel testModel, Action<ITest> consumer)
+        public void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
         {
             foreach (ITestExplorer explorer in explorers)
-                explorer.ExploreAssembly(assembly, testModel, consumer);
+                explorer.ExploreAssembly(assembly, consumer);
         }
 
         /// <inheritdoc />
-        public void ExploreType(ITypeInfo type, TestModel testModel, Action<ITest> consumer)
+        public void ExploreType(ITypeInfo type, Action<ITest> consumer)
         {
             foreach (ITestExplorer explorer in explorers)
-                explorer.ExploreType(type, testModel, consumer);
+                explorer.ExploreType(type, consumer);
         }
     }
 }

@@ -33,9 +33,9 @@ namespace MbUnit.Model
         }
 
         /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer()
+        public override ITestExplorer CreateTestExplorer(TestModel testModel)
         {
-            return new MbUnitTestExplorer();
+            return new MbUnitTestExplorer(testModel);
         }
 
         /// <inheritdoc />

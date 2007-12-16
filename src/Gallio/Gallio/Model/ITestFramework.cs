@@ -33,8 +33,10 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a test explorer for this test framework.
         /// </summary>
-        /// <returns>The test explorer,</returns>
-        ITestExplorer CreateTestExplorer();
+        /// <param name="testModel">The test model to populate incrementally as
+        /// tests are discovered</param>
+        /// <returns>The test explorer</returns>
+        ITestExplorer CreateTestExplorer(TestModel testModel);
 
         /// <summary>
         /// Prepares a test package in advance of test exploration.

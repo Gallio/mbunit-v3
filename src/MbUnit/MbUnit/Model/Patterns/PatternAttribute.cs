@@ -15,17 +15,20 @@
 
 using System;
 using Gallio.Model.Reflection;
+using MbUnit.Model;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
     /// The <see cref="PatternAttribute" /> class is the base class for all MbUnit framework
-    /// attributes.  It associates a code element with a <see cref="IPattern" /> for building
-    /// <see cref="MbUnitTest" /> and <see cref="MbUnitTestParameter" /> objects using reflection.
+    /// attributes.  It associates a code element with a <see cref="MbUnitTest" /> for building
+    /// <see cref="MbUnitTestParameter" /> and <see cref="PatternAttribute" /> objects using reflection.
     /// </para>
     /// <para>
-    /// Subclasses of <see cref="PatternAttribute" /> define simpler interfaces for implementing
+    /// Subclasses of <see cref="IPattern" /> define simpler interfaces for implementing
     /// the semantics of common types of MbUnit attributes such as test factories, decorators,
     /// and data providers.  Refer to the documentation of each subclass for details on its use.
     /// </para>

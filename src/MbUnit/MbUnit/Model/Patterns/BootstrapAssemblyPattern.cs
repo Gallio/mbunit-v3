@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// The pattern used to bootstrap test enumeration for assemblies.
@@ -27,10 +29,6 @@ namespace MbUnit.Model.Builder
         /// </summary>
         public static readonly BootstrapAssemblyPattern Instance = new BootstrapAssemblyPattern();
 
-        protected BootstrapAssemblyPattern()
-        {
-        }
-
         /// <summary>
         /// Processes an assembly.
         /// </summary>
@@ -39,7 +37,7 @@ namespace MbUnit.Model.Builder
         /// <returns>True if the assembly was consumed</returns>
         protected virtual bool ProcessAssembly(ITestBuilder containingTestBuilder, IAssemblyInfo assembly)
         {
-            return BuilderUtils.ConsumeWithFallback(containingTestBuilder, assembly, ProcessAssemblyFallback);
+            return PatternUtils.ConsumeWithFallback(containingTestBuilder, assembly, ProcessAssemblyFallback);
         }
 
         /// <summary>

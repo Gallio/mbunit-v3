@@ -35,7 +35,7 @@ namespace Gallio.ReSharperRunner.Reflection
     /// Support inherited attribute lookup.
     /// Support Resolve() method.
     /// </todo>
-    public class MetadataReflector
+    internal class MetadataReflector : IReflectionPolicy
     {
         private readonly IProject contextProject;
         private readonly MetadataLoader metadataLoader;
@@ -58,6 +58,12 @@ namespace Gallio.ReSharperRunner.Reflection
         public IProject ContextProject
         {
             get { return contextProject; }
+        }
+
+        /// <inheritdoc />
+        public IReflectionPolicy ReflectionPolicy
+        {
+            get { return this; }
         }
 
         /// <summary>
@@ -365,6 +371,11 @@ namespace Gallio.ReSharperRunner.Reflection
                     assemblyName));
 
             return metadataLoader.Load(assemblyName, delegate { return true; });
+        }
+
+        IAssemblyInfo IReflectionPolicy.LoadAssembly(AssemblyName assemblyName)
+        {
+            return Wrap(LoadAssembly(assemblyName));
         }
 
         private abstract class BaseWrapper<TTarget>

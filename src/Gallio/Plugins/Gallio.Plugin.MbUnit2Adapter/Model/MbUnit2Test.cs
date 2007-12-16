@@ -26,7 +26,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
     /// <summary>
     /// Wraps an MbUnit v2 test.
     /// </summary>
-    public class MbUnit2Test : BaseTest
+    internal class MbUnit2Test : BaseTest
     {
         private readonly Fixture fixture;
         private readonly RunPipe runPipe;

@@ -26,7 +26,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
     /// <summary>
     /// Represents an NUnit assembly-level test.
     /// </summary>
-    public class NUnitAssemblyTest : NUnitTest
+    internal class NUnitAssemblyTest : NUnitTest
     {
         private readonly NUnitTestRunner runner;
 

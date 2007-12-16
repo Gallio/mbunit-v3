@@ -15,8 +15,10 @@
 
 using System;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// A test parameter decorator pattern attribute applies decorations to an

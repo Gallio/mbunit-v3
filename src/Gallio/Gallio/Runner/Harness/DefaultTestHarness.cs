@@ -144,7 +144,7 @@ namespace Gallio.Runner.Harness
                 progressMonitor.BeginTask("Loading test package.", 10);
                 progressMonitor.SetStatus("Performing pre-processing.");
 
-                package = new TestPackage(packageConfig);
+                package = new TestPackage(packageConfig, Reflector.ReflectionPolicy);
 
                 foreach (string path in packageConfig.HintDirectories)
                     Loader.AssemblyResolverManager.AddHintDirectory(path);
@@ -219,14 +219,14 @@ namespace Gallio.Runner.Harness
             {
                 progressMonitor.BeginTask("Building test model.", 10);
 
-                model = new TestModel();
+                model = new TestModel(package);
 
                 AggregateTestExplorer explorer = new AggregateTestExplorer();
                 foreach (ITestFramework framework in frameworks)
-                    explorer.AddTestExplorer(framework.CreateTestExplorer());
+                    explorer.AddTestExplorer(framework.CreateTestExplorer(model));
 
                 foreach (IAssemblyInfo assembly in package.Assemblies)
-                    explorer.ExploreAssembly(assembly, model, null);
+                    explorer.ExploreAssembly(assembly, null);
             }
         }
 

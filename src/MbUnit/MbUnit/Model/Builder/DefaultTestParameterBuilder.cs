@@ -23,25 +23,25 @@ namespace MbUnit.Model.Builder
     /// </summary>
     public class DefaultTestParameterBuilder : ITestParameterBuilder
     {
-        private readonly ITestModelBuilder testModelBuilder;
+        private readonly ITestBuilder testBuilder;
         private readonly MbUnitTestParameter testParameter;
         private List<KeyValuePair<int, Action<ITestParameterBuilder>>> decorators;
 
         /// <summary>
         /// Creates a test parameter builder.
         /// </summary>
-        /// <param name="testModelBuilder">The test model builder</param>
+        /// <param name="testBuilder">The test builder</param>
         /// <param name="testParameter">The test parameter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModelBuilder"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testBuilder"/>
         /// or <paramref name="testParameter"/> is null</exception>
-        public DefaultTestParameterBuilder(ITestModelBuilder testModelBuilder, MbUnitTestParameter testParameter)
+        public DefaultTestParameterBuilder(ITestBuilder testBuilder, MbUnitTestParameter testParameter)
         {
-            if (testModelBuilder == null)
-                throw new ArgumentNullException("testModelBuilder");
+            if (testBuilder == null)
+                throw new ArgumentNullException("testBuilder");
             if (testParameter == null)
                 throw new ArgumentNullException("testParameter");
 
-            this.testModelBuilder = testModelBuilder;
+            this.testBuilder = testBuilder;
             this.testParameter = testParameter;
         }
 
@@ -52,9 +52,15 @@ namespace MbUnit.Model.Builder
         }
 
         /// <inheritdoc />
+        public ITestBuilder TestBuilder
+        {
+            get { return testBuilder; }
+        }
+
+        /// <inheritdoc />
         public ITestModelBuilder TestModelBuilder
         {
-            get { return testModelBuilder; }
+            get { return testBuilder.TestModelBuilder; }
         }
 
         /// <inheritdoc />

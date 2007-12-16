@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Patterns;
 
 namespace MbUnit.Model.Builder
 {
@@ -32,9 +33,14 @@ namespace MbUnit.Model.Builder
         TestModel TestModel { get; }
 
         /// <summary>
-        /// Gets the reflection policy for building the model.
+        /// Gets the reflection policy for the model.
         /// </summary>
         IReflectionPolicy ReflectionPolicy { get; }
+
+        /// <summary>
+        /// Gets the pattern resolver for the model.
+        /// </summary>
+        IPatternResolver PatternResolver { get; }
 
         /// <summary>
         /// Gets a test builder for the root test of a particular version
@@ -46,24 +52,20 @@ namespace MbUnit.Model.Builder
         ITestBuilder GetFrameworkTestBuilder(Version frameworkVersion);
 
         /// <summary>
-        /// Creates a test builder for a new test and registers the
-        /// test with the test model so that it can be resolved later
+        /// Registers the test builder with the test model so that it can be resolved later
         /// by <see cref="GetTestBuilders" />.
         /// </summary>
-        /// <param name="test">The test for which to create a builder</param>
-        /// <returns>The new test builder</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
-        ITestBuilder CreateTestBuilder(MbUnitTest test);
+        /// <param name="testBuilder">The test builder</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testBuilder"/> is null</exception>
+        void RegisterTestBuilder(ITestBuilder testBuilder);
 
         /// <summary>
-        /// Creates a test parameter builder for a new test parameter and registers the
-        /// test parameter with the test model so that it can be resolved
+        /// Registers the test parameter builder with the test model so that it can be resolved
         /// by <see cref="GetTestParameterBuilders" />.
         /// </summary>
-        /// <param name="testParameter">The test parameter for which to create a builder</param>
-        /// <returns>The new test parameter builder</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testParameter"/> is null</exception>
-        ITestParameterBuilder CreateTestParameterBuilder(MbUnitTestParameter testParameter);
+        /// <param name="testParameterBuilder">The test parameter builder</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testParameterBuilder"/> is null</exception>
+        void RegisterTestParameterBuilder(ITestParameterBuilder testParameterBuilder);
 
         /// <summary>
         /// Finds tests that are associated with the specified <see cref="ICodeElementInfo" />

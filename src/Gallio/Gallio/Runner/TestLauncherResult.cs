@@ -22,6 +22,7 @@ namespace Gallio.Runner
     /// <summary>
     /// Contains the result of a complete test run.
     /// </summary>
+    [Serializable]
     public class TestLauncherResult
     {
         private readonly Report report;

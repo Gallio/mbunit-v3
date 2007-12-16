@@ -33,7 +33,7 @@ namespace Gallio.ReSharperRunner.Hosting
     /// we haven't yet loaded up the Gallio assemblies.
     /// *sigh*
     /// </remarks>
-    public class AssemblyLoader : IDisposable
+    internal class AssemblyLoader : IDisposable
     {
         private static readonly string[] extensions = new string[] { ".dll", ".exe" };
 

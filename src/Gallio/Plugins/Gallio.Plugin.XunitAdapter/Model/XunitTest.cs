@@ -23,7 +23,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
     /// <summary>
     /// Wraps an Xunit test.
     /// </summary>
-    public class XunitTest : BaseTest
+    internal class XunitTest : BaseTest
     {
         private readonly XunitTypeInfoAdapter typeInfo;
         private readonly XunitMethodInfoAdapter methodInfo;

@@ -25,7 +25,7 @@ namespace Gallio.ReSharperRunner.Hosting
     /// is not accessible.
     /// </summary>
     [Serializable]
-    public class RuntimeProxyException : Exception
+    internal class RuntimeProxyException : Exception
     {
         /// <summary>
         /// Creates an exception.

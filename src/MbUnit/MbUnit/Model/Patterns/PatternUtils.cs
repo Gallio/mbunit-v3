@@ -15,13 +15,15 @@
 
 
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
-    /// Provides utility functions for building MbUnit tests.
+    /// Provides utility functions for implementors and clients of <see cref="IPattern" />.
     /// </summary>
-    public static class BuilderUtils
+    public static class PatternUtils
     {
         /// <summary>
         /// Delegate for consuming a code element.
@@ -47,7 +49,7 @@ namespace MbUnit.Model.Builder
             Consumer<T> fallback) where T : ICodeElementInfo
         {
             bool consumed = false;
-            foreach (IPattern pattern in containingTestBuilder.TestModelBuilder.ReflectionPolicy.GetPatterns(codeElement))
+            foreach (IPattern pattern in containingTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(codeElement))
                 consumed |= pattern.Consume(containingTestBuilder, codeElement);
 
             if (!consumed)

@@ -16,8 +16,9 @@
 using System;
 using Gallio.Model.Reflection;
 using MbUnit.Model;
+using MbUnit.Model.Builder;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// A test assembly decorator pattern attribute applies decorations to an

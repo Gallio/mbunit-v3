@@ -36,14 +36,14 @@ namespace Gallio.NAntTasks.Tests
     /// so we need to avoid calling the instance Log methods directly and use a
     /// interface too.
     /// </remarks>
-    public class InstrumentedGallioTask : GallioTask
+    internal class InstrumentedGallioTask : GallioTask
     {
         // We need to instantiate our own dictionary of properties
         // WARNING: This could break in the future if a check for null is added
         // in the PropertyDictionary constructor
         private readonly PropertyDictionary properties = new PropertyDictionary(null);
 
-        public InstrumentedGallioTask(INAntLogger nantLogger)
+        internal InstrumentedGallioTask(INAntLogger nantLogger)
             : base(nantLogger)
         {
         }

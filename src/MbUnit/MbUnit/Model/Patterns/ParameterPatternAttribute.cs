@@ -16,8 +16,10 @@
 using System;
 using Gallio.Model;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
@@ -45,9 +47,7 @@ namespace MbUnit.Model.Builder
             ISlotInfo slot = (ISlotInfo)codeElement;
 
             MbUnitTestParameter testParameter = CreateTestParameter(containingTestBuilder, slot);
-            containingTestBuilder.Test.AddParameter(testParameter);
-
-            ITestParameterBuilder testParameterBuilder = containingTestBuilder.TestModelBuilder.CreateTestParameterBuilder(testParameter);
+            ITestParameterBuilder testParameterBuilder = containingTestBuilder.AddParameter(testParameter);
             InitializeTestParameter(testParameterBuilder, slot);
 
             testParameterBuilder.ApplyDecorators();
@@ -77,7 +77,7 @@ namespace MbUnit.Model.Builder
             if (xmlDocumentation != null)
                 testParameterBuilder.TestParameter.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in testParameterBuilder.TestModelBuilder.ReflectionPolicy.GetPatterns(slot))
+            foreach (IPattern pattern in testParameterBuilder.TestModelBuilder.PatternResolver.GetPatterns(slot))
                 pattern.ProcessTestParameter(testParameterBuilder, slot);
         }
         

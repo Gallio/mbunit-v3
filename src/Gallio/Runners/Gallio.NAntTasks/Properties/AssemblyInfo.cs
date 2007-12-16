@@ -49,3 +49,5 @@ using System.Runtime.InteropServices;
 
 // Can't strong-name the task because NAnt isn't strong-named.
 [assembly: SuppressMessage("Microsoft.Design", "CA2210:AssembliesShouldHaveValidStrongNames")]
+
+[assembly: InternalsVisibleTo("Gallio.NAntTasks.Tests")]

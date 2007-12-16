@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Model.Reflection;
 using Gallio.Plugin.NUnitAdapter.Properties;
 using Gallio.Model;
 
@@ -30,9 +31,9 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer()
+        public override ITestExplorer CreateTestExplorer(TestModel testModel)
         {
-            return new NUnitTestExplorer();
+            return new NUnitTestExplorer(testModel);
         }
     }
 }

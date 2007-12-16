@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Patterns;
 
 namespace MbUnit.Model.Builder
 {
@@ -29,7 +30,7 @@ namespace MbUnit.Model.Builder
     public class DefaultTestModelBuilder : ITestModelBuilder
     {
         private readonly TestModel testModel;
-        private readonly IReflectionPolicy reflectionPolicy;
+        private readonly IPatternResolver patternResolver;
 
         private readonly Dictionary<Version, ITestBuilder> frameworkTestBuilders;
         private readonly MultiMap<ICodeElementInfo, ITestBuilder> testBuilders;
@@ -39,18 +40,18 @@ namespace MbUnit.Model.Builder
         /// Creates a test model builder.
         /// </summary>
         /// <param name="testModel">The test model to build on</param>
-        /// <param name="reflectionPolicy">The reflection policy</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/>
-        /// or <paramref name="reflectionPolicy"/> is null</exception>
-        public DefaultTestModelBuilder(TestModel testModel, IReflectionPolicy reflectionPolicy)
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> or
+        /// <paramref name="patternResolver"/> is null</exception>
+        public DefaultTestModelBuilder(TestModel testModel, IPatternResolver patternResolver)
         {
             if (testModel == null)
                 throw new ArgumentNullException("testModel");
-            if (reflectionPolicy == null)
-                throw new ArgumentNullException("reflectionPolicy");
+            if (patternResolver == null)
+                throw new ArgumentNullException("patternResolver");
 
             this.testModel = testModel;
-            this.reflectionPolicy = reflectionPolicy;
+            this.patternResolver = patternResolver;
 
             frameworkTestBuilders = new Dictionary<Version, ITestBuilder>();
             testBuilders = new MultiMap<ICodeElementInfo, ITestBuilder>();
@@ -66,18 +67,27 @@ namespace MbUnit.Model.Builder
         /// <inheritdoc />
         public IReflectionPolicy ReflectionPolicy
         {
-            get { return reflectionPolicy; }
+            get { return testModel.TestPackage.ReflectionPolicy; }
+        }
+
+        /// <inheritdoc />
+        public IPatternResolver PatternResolver
+        {
+            get { return patternResolver; }
         }
 
         /// <inheritdoc />
         public ITestBuilder GetFrameworkTestBuilder(Version frameworkVersion)
         {
+            if (frameworkVersion == null)
+                throw new ArgumentNullException("frameworkVersion");
+
             ITestBuilder frameworkTestBuilder;
             if (! frameworkTestBuilders.TryGetValue(frameworkVersion, out frameworkTestBuilder))
             {
                 MbUnitFrameworkTest frameworkTest = new MbUnitFrameworkTest(frameworkVersion);
 
-                frameworkTestBuilder = CreateTestBuilder(frameworkTest);
+                frameworkTestBuilder = new DefaultTestBuilder(this, frameworkTest);
                 frameworkTestBuilders.Add(frameworkVersion, frameworkTestBuilder);
 
                 testModel.RootTest.AddChild(frameworkTest);
@@ -87,27 +97,25 @@ namespace MbUnit.Model.Builder
         }
 
         /// <inheritdoc />
-        public ITestBuilder CreateTestBuilder(MbUnitTest test)
+        public void RegisterTestBuilder(ITestBuilder testBuilder)
         {
-            ITestBuilder testBuilder = new DefaultTestBuilder(this, test);
+            if (testBuilder == null)
+                throw new ArgumentNullException("testBuilder");
 
-            ICodeElementInfo codeElement = test.CodeElement;
+            ICodeElementInfo codeElement = testBuilder.Test.CodeElement;
             if (codeElement != null)
                 testBuilders.Add(codeElement, testBuilder);
-
-            return testBuilder;
         }
 
         /// <inheritdoc />
-        public ITestParameterBuilder CreateTestParameterBuilder(MbUnitTestParameter testParameter)
+        public void RegisterTestParameterBuilder(ITestParameterBuilder testParameterBuilder)
         {
-            ITestParameterBuilder testParameterBuilder = new DefaultTestParameterBuilder(this, testParameter);
+            if (testParameterBuilder == null)
+                throw new ArgumentNullException("testParameterBuilder");
 
-            ICodeElementInfo codeElement = testParameter.CodeElement;
+            ICodeElementInfo codeElement = testParameterBuilder.TestParameter.CodeElement;
             if (codeElement != null)
                 testParameterBuilders.Add(codeElement, testParameterBuilder);
-
-            return testParameterBuilder;
         }
 
         /// <inheritdoc />

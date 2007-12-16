@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Gallio.Model.Reflection;
 
 namespace Gallio.Model
@@ -27,19 +26,25 @@ namespace Gallio.Model
     public sealed class TestPackage
     {
         private readonly TestPackageConfig config;
+        private readonly IReflectionPolicy reflectionPolicy;
         private readonly List<IAssemblyInfo> assemblies;
 
         /// <summary>
         /// Creates a test package with the specified configuration.
         /// </summary>
         /// <param name="config">The package configuration</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="config"/> is null</exception>
-        public TestPackage(TestPackageConfig config)
+        /// <param name="reflectionPolicy">The reflection policy for the package</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="config"/> or
+        /// <paramref name="reflectionPolicy"/> is null</exception>
+        public TestPackage(TestPackageConfig config, IReflectionPolicy reflectionPolicy)
         {
             if (config == null)
                 throw new ArgumentNullException("config");
+            if (reflectionPolicy == null)
+                throw new ArgumentNullException("reflectionPolicy");
 
             this.config = config;
+            this.reflectionPolicy = reflectionPolicy;
 
             assemblies = new List<IAssemblyInfo>();
         }
@@ -50,6 +55,14 @@ namespace Gallio.Model
         public TestPackageConfig Config
         {
             get { return config; }
+        }
+
+        /// <summary>
+        /// Gets the reflection policy.
+        /// </summary>
+        public IReflectionPolicy ReflectionPolicy
+        {
+            get { return reflectionPolicy; }
         }
 
         /// <summary>

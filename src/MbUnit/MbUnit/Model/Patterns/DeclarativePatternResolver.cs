@@ -16,20 +16,21 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model.Reflection;
+using MbUnit.Model.Patterns;
 
-namespace MbUnit.Model.Builder
+namespace MbUnit.Model.Patterns
 {
     /// <summary>
-    /// A reflection policy based on <see cref="PatternAttribute"/>.
+    /// A declarative pattern resolver based on <see cref="PatternAttribute"/>.
     /// </summary>
-    public sealed class PatternAttributeReflectionPolicy : IReflectionPolicy
+    public sealed class DeclarativePatternResolver : IPatternResolver
     {
         /// <summary>
-        /// Gets the singleton instance of this policy.
+        /// Gets the singleton instance of the declarative pattern resolver.
         /// </summary>
-        public static readonly PatternAttributeReflectionPolicy Instance = new PatternAttributeReflectionPolicy();
+        public static readonly DeclarativePatternResolver Instance = new DeclarativePatternResolver();
 
-        private PatternAttributeReflectionPolicy()
+        private DeclarativePatternResolver()
         {
         }
 

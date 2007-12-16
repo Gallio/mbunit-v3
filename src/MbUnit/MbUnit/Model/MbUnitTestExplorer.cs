@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Model;
 using Gallio.Model.Reflection;
 using MbUnit.Model.Builder;
+using MbUnit.Model.Patterns;
 
 namespace MbUnit.Model
 {
@@ -27,19 +28,21 @@ namespace MbUnit.Model
     /// </summary>
     public class MbUnitTestExplorer : BaseTestExplorer
     {
-        private const string ExplorerStateKey = "MbUnit:ExplorerState";
         private const string MbUnitAssemblyDisplayName = @"MbUnit";
 
-        private sealed class ExplorerState
-        {
-            public readonly ITestModelBuilder Builder;
-            public readonly List<IAssemblyInfo> Assemblies;
+        public readonly ITestModelBuilder builder;
+        public readonly List<IAssemblyInfo> assemblies;
 
-            public ExplorerState(TestModel testModel)
-            {
-                Builder = new DefaultTestModelBuilder(testModel, PatternAttributeReflectionPolicy.Instance);
-                Assemblies = new List<IAssemblyInfo>();
-            }
+        /// <summary>
+        /// Creates a test explorer.
+        /// </summary>
+        /// <param name="testModel">The test model</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null</exception>
+        public MbUnitTestExplorer(TestModel testModel)
+            : base(testModel)
+        {
+            builder = new DefaultTestModelBuilder(testModel, DeclarativePatternResolver.Instance);
+            assemblies = new List<IAssemblyInfo>();
         }
 
         /// <inheritdoc />
@@ -51,13 +54,11 @@ namespace MbUnit.Model
         }
 
         /// <inheritdoc />
-        public override void ExploreAssembly(IAssemblyInfo assembly, TestModel testModel, Action<ITest> consumer)
+        public override void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
         {
-            ExplorerState state = GetExplorerState(testModel);
+            BuildAssemblyTest(assembly);
 
-            BuildAssemblyTest(assembly, state);
-
-            foreach (ITestBuilder testBuilder in state.Builder.GetTestBuilders(assembly))
+            foreach (ITestBuilder testBuilder in builder.GetTestBuilders(assembly))
             {
                 testBuilder.Test.Populate(true);
 
@@ -67,17 +68,16 @@ namespace MbUnit.Model
         }
 
         /// <inheritdoc />
-        public override void ExploreType(ITypeInfo type, TestModel testModel, Action<ITest> consumer)
+        public override void ExploreType(ITypeInfo type, Action<ITest> consumer)
         {
-            ExplorerState state = GetExplorerState(testModel);
             IAssemblyInfo assembly = type.Assembly;
 
-            BuildAssemblyTest(assembly, state);
+            BuildAssemblyTest(assembly);
 
-            foreach (ITestBuilder testBuilder in state.Builder.GetTestBuilders(assembly))
+            foreach (ITestBuilder testBuilder in builder.GetTestBuilders(assembly))
                 testBuilder.Test.Populate(false);
 
-            foreach (ITestBuilder testBuilder in state.Builder.GetTestBuilders(type))
+            foreach (ITestBuilder testBuilder in builder.GetTestBuilders(type))
             {
                 testBuilder.Test.Populate(true);
 
@@ -92,33 +92,20 @@ namespace MbUnit.Model
             return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
         }
 
-        private static void BuildAssemblyTest(IAssemblyInfo assembly, ExplorerState state)
+        private void BuildAssemblyTest(IAssemblyInfo assembly)
         {
-            if (state.Assemblies.Contains(assembly))
+            if (assemblies.Contains(assembly))
                 return;
 
-            state.Assemblies.Add(assembly);
+            assemblies.Add(assembly);
 
             Version frameworkVersion = GetFrameworkVersion(assembly);
             if (frameworkVersion == null)
                 return;
 
-            ITestBuilder frameworkTestBuilder = state.Builder.GetFrameworkTestBuilder(frameworkVersion);
+            ITestBuilder frameworkTestBuilder = builder.GetFrameworkTestBuilder(frameworkVersion);
 
             BootstrapAssemblyPattern.Instance.Consume(frameworkTestBuilder, assembly);
-        }
-
-        private static ExplorerState GetExplorerState(TestModel testModel)
-        {
-            ExplorerState state = testModel.UserData.GetValue<ExplorerState>(ExplorerStateKey);
-
-            if (state == null)
-            {
-                state = new ExplorerState(testModel);
-                testModel.UserData.SetValue(ExplorerStateKey, state);
-            }
-
-            return state;
         }
     }
 }

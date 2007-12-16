@@ -31,6 +31,14 @@ namespace Gallio.Model.Reflection
     public static class Reflector
     {
         /// <summary>
+        /// Gets the singleton instance of the standard <see cref="IReflectionPolicy" />.
+        /// </summary>
+        public static IReflectionPolicy ReflectionPolicy
+        {
+            get { return StandardReflectionPolicy.Instance; }
+        }
+
+        /// <summary>
         /// Resolves the specified <see cref="CodeReference" />. 
         /// </summary>
         /// <param name="reference">The code reference, or null</param>
@@ -1150,6 +1158,16 @@ namespace Gallio.Model.Reflection
             public object Resolve()
             {
                 return attrib;
+            }
+        }
+
+        private sealed class StandardReflectionPolicy : IReflectionPolicy
+        {
+            public static readonly StandardReflectionPolicy Instance = new StandardReflectionPolicy();
+
+            public IAssemblyInfo LoadAssembly(AssemblyName assemblyName)
+            {
+                return Wrap(Assembly.Load(assemblyName));
             }
         }
     }

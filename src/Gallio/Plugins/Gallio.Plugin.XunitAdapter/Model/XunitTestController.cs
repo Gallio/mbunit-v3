@@ -22,7 +22,6 @@ using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Plugin.XunitAdapter.Properties;
 using Xunit.Sdk;
-using Reflector=Gallio.Model.Reflection.Reflector;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 
 namespace Gallio.Plugin.XunitAdapter.Model
@@ -30,7 +29,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
     /// <summary>
     /// Controls the execution of Xunit tests.
     /// </summary>
-    public class XunitTestController : ITestController
+    internal class XunitTestController : ITestController
     {
         /// <summary>
         /// The metadata key used for recording Xunit's internal test name with a step
@@ -171,7 +170,6 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         private static bool RunTestMethod(ITestMonitor testMonitor, MethodInfo methodInfo, ITestClassCommand testClassCommand)
         {
-            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
 
             List<ITestCommand> testCommands;
             try
@@ -181,29 +179,19 @@ namespace Gallio.Plugin.XunitAdapter.Model
             catch (Exception ex)
             {
                 // Xunit can throw exceptions when making commands if the test is malformed.
+                ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
                 stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
                 stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
                 return false;
             }
 
-            // For simple tests, run them as one step.
-            if (testCommands.Count == 1)
-                return RunTestCommandAndFinishStep(stepMonitor, testClassCommand, testCommands[0]);
-
-            // For data-driven tests, run them as multiple nested steps.
             bool passed = true;
-            int step = 0;
             foreach (ITestCommand testCommand in testCommands)
             {
-                ITestStepMonitor nestedStepMonitor = stepMonitor.StartChildStep(String.Format("Xunit Test Step {0}", ++step),
-                    Reflector.Wrap(methodInfo));
-
-                bool stepPassed = RunTestCommandAndFinishStep(nestedStepMonitor, testClassCommand, testCommand);
-                if (!stepPassed)
-                    passed = false;
+                ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
+                passed &= RunTestCommandAndFinishStep(stepMonitor, testClassCommand, testCommand);
             }
 
-            stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
             return passed;
         }
 

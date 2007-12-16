@@ -51,3 +51,5 @@ using JetBrains.UI.Shell.PluginSupport;
 [assembly: PluginTitle("Gallio Test Runner")]
 [assembly: PluginDescription("Gallio test runner for ReSharper.")]
 [assembly: PluginVendor("Gallio")]
+
+[assembly: InternalsVisibleTo("Gallio.ReSharperRunner.Tests")]

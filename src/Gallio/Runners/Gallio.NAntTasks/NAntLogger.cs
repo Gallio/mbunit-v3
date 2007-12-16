@@ -21,7 +21,7 @@ namespace Gallio.NAntTasks
     /// <summary>
     /// An ILogger implementation that logs messages to a INAntLogger object.
     /// </summary>
-    public class NAntLogger : LevelFilteredLogger
+    internal class NAntLogger : LevelFilteredLogger
     {
         private readonly INAntLogger task;
 
