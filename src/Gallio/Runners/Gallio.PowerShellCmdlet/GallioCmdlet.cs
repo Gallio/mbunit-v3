@@ -109,7 +109,8 @@ namespace Gallio.PowerShellCmdlet
         /// <summary>
         /// The list of directories used for loading assemblies and other dependent resources.
         /// </summary>
-        /// <example>The following example shows how to specify the hint directories:
+        /// <example>
+        /// <para>The following example shows how to specify the hint directories:</para>
         /// <code>
         /// Run-Gallio SomeAssembly.dll -hd C:\SomeFolder
         /// </code>
@@ -126,7 +127,8 @@ namespace Gallio.PowerShellCmdlet
         /// <summary>
         /// Additional Gallio plugin directories to search recursively.
         /// </summary>
-        /// <example>The following example shows how to specify the plugin directories:
+        /// <example>
+        /// <para>The following example shows how to specify the plugin directories:</para>
         /// <code>
         /// Run-Gallio SomeAssembly.dll -pd C:\SomeFolder
         /// </code>
@@ -151,7 +153,7 @@ namespace Gallio.PowerShellCmdlet
         /// </list>
         /// </remarks>
         /// <example>
-        /// In the following example reports will be generated in both HTML and XML format:
+        /// <para>In the following example reports will be generated in both HTML and XML format:</para>
         /// <code>
         /// Run-Gallio SomeAssembly.dll -rt "html","text"
         /// </code>
