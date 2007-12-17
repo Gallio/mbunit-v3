@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{52E0A229-CE15-4B72-8ACF-F17DCB929A64}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -32,6 +32,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Management.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -41,13 +45,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GallioCmdletIntegrationTest.cs" />
+    <Compile Include="GallioCmdletUnitTest.cs" />
+    <Compile Include="InstrumentedGallioCmdlet.cs" />
+    <Compile Include="PowerShellLoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.csproj">
+      <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
+      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\TestResources\Gallio.TestResources.MbUnit2\Gallio.TestResources.MbUnit2.csproj">
+      <Project>{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}</Project>
+      <Name>Gallio.TestResources.MbUnit2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Gallio\Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gallio.PowerShellCmdlet\Gallio.PowerShellCmdlet.csproj">
       <Project>{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}</Project>
       <Name>Gallio.PowerShellCmdlet</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestBuildFiles\BuildScript.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
