@@ -50,6 +50,9 @@ namespace Gallio.PowerShellCommands
         /// <param name="exception">The exception to log (it can be null).</param>
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
+            // The PowerShell logging methods may throw InvalidOperationException
+            // or NotImplementedException if the PowerShell host is not connected
+            // or does not support the requested service.  So we eat those exceptions.
             try
             {
                 switch (level)
@@ -59,7 +62,7 @@ namespace Gallio.PowerShellCommands
                         if (exception == null)
                             exception = new Exception(message);
 
-                        cmdlet.WriteError(new ErrorRecord(exception, message, ErrorCategory.NotSpecified, null));
+                        cmdlet.WriteError(new ErrorRecord(exception, message, ErrorCategory.NotSpecified, "Gallio"));
                         break;
 
                     case LoggerLevel.Warn:
@@ -75,10 +78,11 @@ namespace Gallio.PowerShellCommands
                         break;
                 }
             }
+            catch (NotImplementedException)
+            {
+            }
             catch (InvalidOperationException)
             {
-                // The PowerShell logging methods may throw InvalidOperationException
-                // if the PowerShell host is not connected.  So we eat that exception.
             }
         }
 
