@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Security;
+using System.Security.Permissions;
 using System.Security.Policy;
 using System.Text;
 using Gallio.Core.ProgressMonitoring;
@@ -145,8 +147,11 @@ namespace Gallio.Runner.Domains
                 if (!Runtime.IsUsingMono)
                     ConfigureAppDomainSetupForCLR(setup);
 
-                Evidence evidence = new Evidence(AppDomain.CurrentDomain.Evidence); // FIXME: should be more careful here
-                appDomain = AppDomain.CreateDomain("IsolatedTestDomain", evidence, setup);
+                // TODO: Might need to be more careful about how the Evidence is derived.
+                Evidence evidence = AppDomain.CurrentDomain.Evidence;
+                PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
+                StrongName[] fullTrustAssemblies = new StrongName[0];
+                appDomain = AppDomain.CreateDomain("IsolatedTestDomain", evidence, setup, defaultPermissionSet, fullTrustAssemblies);
             }
             catch (Exception ex)
             {

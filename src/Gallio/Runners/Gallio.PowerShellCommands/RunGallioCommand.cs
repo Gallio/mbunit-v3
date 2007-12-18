@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Core.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using System.Management.Automation;
@@ -244,7 +243,7 @@ namespace Gallio.PowerShellCommands
         {
             try
             {
-                WriteObject(Execute());
+                WriteObject(ExecuteWithMessagePump());
             }
             catch (Exception ex)
             {
@@ -257,12 +256,47 @@ namespace Gallio.PowerShellCommands
         #region Private Methods
 
         /// <exclude />
+        protected TestLauncherResult ExecuteWithMessagePump()
+        {
+            TestLauncherResult result = null;
+
+            RunWithMessagePump(delegate
+            {
+                result = ExecuteWithCurrentDirectory();
+            });
+
+            if (result == null)
+                throw new InvalidOperationException("The task finished without returning a result.");
+
+            return result;
+        }
+
+        /// <exclude />
+        protected TestLauncherResult ExecuteWithCurrentDirectory()
+        {
+            string oldDirectory = Environment.CurrentDirectory;
+            try
+            {
+                // FIXME: Will this throw an exception if the current path is
+                //        within a virtual file system?
+                string resolvedDirectory = SessionState.Path.CurrentFileSystemLocation.Path;
+                Environment.CurrentDirectory = resolvedDirectory;
+
+                return Execute();
+            }
+            finally
+            {
+                Environment.CurrentDirectory = oldDirectory;
+            }
+        }
+
+        /// <exclude />
         protected TestLauncherResult Execute()
         {
             using (TestLauncher launcher = new TestLauncher())
             {
                 launcher.Logger = Logger;
-                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(Logger);
+                launcher.ProgressMonitorProvider = ProgressMonitorProvider;
                 launcher.Filter = GetFilter();
                 launcher.RuntimeSetup = new RuntimeSetup();
                 launcher.ShowReports = showReports.IsPresent;

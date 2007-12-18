@@ -23,6 +23,10 @@
       <component id="Core.TraceTestEnvironment"
                  service="Gallio.Runner.Harness.ITestEnvironment, Gallio"
                  type="Gallio.Runner.Harness.TraceTestEnvironment, Gallio" />
+
+      <component id="Core.UnhandledExceptionTestEnvironment"
+                 service="Gallio.Runner.Harness.ITestEnvironment, Gallio"
+                 type="Gallio.Runner.Harness.UnhandledExceptionTestEnvironment, Gallio" />
       
       <component id="Core.IsolatedTestDomainFactory"
                  service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"

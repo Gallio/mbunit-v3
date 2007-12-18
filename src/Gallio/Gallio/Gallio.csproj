@@ -173,6 +173,7 @@
     <Compile Include="Runner\Harness\ITestHarnessFactory.cs" />
     <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
     <Compile Include="Model\ITestExplorer.cs" />
+    <Compile Include="Runner\Harness\UnhandledExceptionTestEnvironment.cs" />
     <Compile Include="Runner\Reports\ExecutionLogAttachmentContentDisposition.cs" />
     <Compile Include="Runner\Reports\DefaultReportReader.cs" />
     <Compile Include="Runner\Reports\DefaultReportWriter.cs" />

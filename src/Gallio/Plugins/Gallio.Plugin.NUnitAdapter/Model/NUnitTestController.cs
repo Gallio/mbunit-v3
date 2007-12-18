@@ -101,12 +101,6 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             {
                 try
                 {
-                    // NUnit does not seem to catch unhandled exceptions at the app-domain level
-                    // itself so they bubble up to the test runner and get printed to the console
-                    // (due to our use of the legacyExceptionPolicy).  This is very bizarre.
-                    // So we handle these exceptions here and try to log them with the test results.
-                    AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
-
                     runner.Run(this, this);
                 }
                 catch (ThreadAbortException)
@@ -117,10 +111,6 @@ namespace Gallio.Plugin.NUnitAdapter.Model
                     // RemoteTestRunner is immune.  I'm leaving this in just in case.
                     if (progressMonitor.IsCanceled)
                         Thread.ResetAbort();
-                }
-                finally
-                {
-                    AppDomain.CurrentDomain.UnhandledException -= HandleUnhandledException;
                 }
             }
 
@@ -339,13 +329,6 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             private void HandleCanceled(object sender, EventArgs e)
             {
                 Cancel();
-            }
-
-            private void HandleUnhandledException(object sender, UnhandledExceptionEventArgs e)
-            {
-                Exception ex = e.ExceptionObject as Exception;
-                if (ex != null)
-                    LogException(ex);
             }
         }
     }

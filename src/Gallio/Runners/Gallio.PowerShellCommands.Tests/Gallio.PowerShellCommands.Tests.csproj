@@ -48,7 +48,7 @@
     <Compile Include="RunGallioCommandIntegrationTest.cs" />
     <Compile Include="RunGallioCommandUnitTest.cs" />
     <Compile Include="InstrumentedRunGallioCommand.cs" />
-    <Compile Include="CmdletLoggerTest.cs" />
+    <Compile Include="CommandLoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

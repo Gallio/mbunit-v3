@@ -21,28 +21,28 @@ namespace Gallio.PowerShellCommands.Tests
 {
     [TestFixture]
     [Author("Julian Hidalgo")]
-    [TestsOn(typeof(CmdletLogger))]
+    [TestsOn(typeof(CommandLogger))]
     [Category("UnitTests")]
-    public class CmdletLoggerTest
+    public class CommandLoggerTest
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void InstantiateLoggerWithNullArgument()
         {
-            new CmdletLogger(null);
+            new CommandLogger(null);
         }
 
         [Test]
         public void InstantiateLogger()
         {
-            new CmdletLogger(new RunGallioCommand());
+            new CommandLogger(new RunGallioCommand());
         }
 
         [Test]
         public void CreateChildLogger()
         {
-            CmdletLogger logger = new CmdletLogger(new RunGallioCommand());
-            Assert.AreSame(logger.CreateChildLogger("child").GetType(), typeof(CmdletLogger));
+            CommandLogger logger = new CommandLogger(new RunGallioCommand());
+            Assert.AreSame(logger.CreateChildLogger("child").GetType(), typeof(CommandLogger));
         }
     }
 }

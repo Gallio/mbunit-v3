@@ -207,7 +207,7 @@ namespace Gallio.Core.ProgressMonitoring
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method is called by <see cref="ArgumentNullException" /> as a new
+        /// This method is called by <see cref="SubProgressMonitor" /> as a new
         /// task or sub-task begins.
         /// </para>
         /// <para>
@@ -215,8 +215,8 @@ namespace Gallio.Core.ProgressMonitoring
         /// </para>
         /// </remarks>
         /// <param name="subTaskName">The name of the current subtask</param>
-        /// <exception cref="InvalidOperationException">Thrown if <paramref name="subTaskName"/> is null</exception>
-        /// <exception cref="SubProgressMonitor">Thrown if the task is not running</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="subTaskName"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the task is not running</exception>
         void BeginSubTask(string subTaskName);
 
         /// <summary>

@@ -21,18 +21,18 @@ namespace Gallio.PowerShellCommands
 {
     /// <exclude />
     /// <summary>
-    /// Logs messages using a <see cref="Cmdlet" />'s logging functions.
+    /// Logs messages using a <see cref="BaseCommand" />'s logging functions.
     /// </summary>
-    internal class CmdletLogger : LevelFilteredLogger
+    internal class CommandLogger : LevelFilteredLogger
     {
-        private readonly Cmdlet cmdlet;
+        private readonly BaseCommand cmdlet;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CmdletLogger" /> class.
+        /// Initializes a new instance of the <see cref="CommandLogger" /> class.
         /// </summary>
         /// <param name="cmdlet">The <see cref="Cmdlet" /> instance to channel
         /// log messages to.</param>
-        public CmdletLogger(Cmdlet cmdlet)
+        public CommandLogger(BaseCommand cmdlet)
         {
             if (cmdlet == null)
                 throw new ArgumentNullException("cmdlet");
@@ -53,37 +53,40 @@ namespace Gallio.PowerShellCommands
             // The PowerShell logging methods may throw InvalidOperationException
             // or NotImplementedException if the PowerShell host is not connected
             // or does not support the requested service.  So we eat those exceptions.
-            try
+            cmdlet.PostMessage(delegate
             {
-                switch (level)
+                try
                 {
-                    case LoggerLevel.Fatal:
-                    case LoggerLevel.Error:
-                        if (exception == null)
-                            exception = new Exception(message);
+                    switch (level)
+                    {
+                        case LoggerLevel.Fatal:
+                        case LoggerLevel.Error:
+                            if (exception == null)
+                                exception = new Exception(message);
 
-                        cmdlet.WriteError(new ErrorRecord(exception, message, ErrorCategory.NotSpecified, "Gallio"));
-                        break;
+                            cmdlet.WriteError(new ErrorRecord(exception, message, ErrorCategory.NotSpecified, "Gallio"));
+                            break;
 
-                    case LoggerLevel.Warn:
-                        cmdlet.WriteWarning(message);
-                        break;
+                        case LoggerLevel.Warn:
+                            cmdlet.WriteWarning(message);
+                            break;
 
-                    case LoggerLevel.Info:
-                        cmdlet.WriteVerbose(message);
-                        break;
+                        case LoggerLevel.Info:
+                            cmdlet.WriteVerbose(message);
+                            break;
 
-                    case LoggerLevel.Debug:
-                        cmdlet.WriteDebug(message);
-                        break;
+                        case LoggerLevel.Debug:
+                            cmdlet.WriteDebug(message);
+                            break;
+                    }
                 }
-            }
-            catch (NotImplementedException)
-            {
-            }
-            catch (InvalidOperationException)
-            {
-            }
+                catch (NotImplementedException)
+                {
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            });
         }
 
         /// <inheritdoc />
@@ -91,7 +94,7 @@ namespace Gallio.PowerShellCommands
         {
             // We ignore the name because we do not use the child logger
             // implementation pattern in Gallio.
-            return new CmdletLogger(cmdlet);
+            return new CommandLogger(cmdlet);
         }
     }
 }
