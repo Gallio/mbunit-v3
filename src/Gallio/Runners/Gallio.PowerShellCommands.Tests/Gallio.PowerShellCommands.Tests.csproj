@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.PowerShellCommands.Tests</RootNamespace>
     <AssemblyName>Gallio.PowerShellCommands.Tests</AssemblyName>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -56,9 +56,9 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\TestResources\Gallio.TestResources.MbUnit2\Gallio.TestResources.MbUnit2.csproj">
-      <Project>{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}</Project>
-      <Name>Gallio.TestResources.MbUnit2</Name>
+    <ProjectReference Include="..\..\..\TestResources\Gallio.TestResources.MbUnit\Gallio.TestResources.MbUnit.csproj">
+      <Project>{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE}</Project>
+      <Name>Gallio.TestResources.MbUnit</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>

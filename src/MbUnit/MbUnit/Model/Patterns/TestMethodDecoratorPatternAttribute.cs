@@ -22,29 +22,27 @@ namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
-    /// A test fixture decorator pattern attribute applies decorations to an
-    /// existing type-level <see cref="MbUnitTest" />.
+    /// A test decorator pattern attribute applies decorations to an
+    /// existing method-level <see cref="MbUnitTest" />.
     /// </para>
     /// </summary>
-    /// <seealso cref="FixturePatternAttribute"/>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface,
-        AllowMultiple = true, Inherited = true)]
-    public abstract class FixtureDecoratorPatternAttribute : DecoratorPatternAttribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public abstract class TestMethodDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
         public override void ProcessTest(ITestBuilder testBuilder, ICodeElementInfo codeElement)
         {
-            ITypeInfo type = (ITypeInfo)codeElement;
+            IMethodInfo method = (IMethodInfo)codeElement;
 
-            testBuilder.AddDecorator(Order, delegate(ITestBuilder typeTestBuilder)
+            testBuilder.AddDecorator(Order, delegate(ITestBuilder methodTestBuilder)
             {
-                DecorateTest(typeTestBuilder, type);
+                DecorateMethodTest(methodTestBuilder, method);
             });
         }
 
         /// <summary>
         /// <para>
-        /// Applies decorations to a type-level <see cref="MbUnitTest" />.
+        /// Applies decorations to a method-level <see cref="MbUnitTest" />.
         /// </para>
         /// <para>
         /// A typical use of this method is to augment the test with additional metadata
@@ -52,8 +50,8 @@ namespace MbUnit.Model.Patterns
         /// </para>
         /// </summary>
         /// <param name="builder">The test builder</param>
-        /// <param name="type">The type</param>
-        protected virtual void DecorateTest(ITestBuilder builder, ITypeInfo type)
+        /// <param name="method">The method</param>
+        protected virtual void DecorateMethodTest(ITestBuilder builder, IMethodInfo method)
         {
         }
     }

@@ -15,23 +15,25 @@
 
 using MbUnit.Framework;
 
-namespace Gallio.TestResources.MbUnit2
+namespace Gallio.TestResources.MbUnit
 {
+    /// <summary>
+    /// This class is used by the MSBuild task tests. Please don't modify it.
+    /// </summary>
     [TestFixture]
-    public class IgnoredTests
+    public class PassingTests
     {
         [Test]
-        [Ignore("Won't run")]
-        public void IgnoredTest1()
+        public void Pass()
         {
-            Assert.Fail("Should never get here");   
+            Assert.AreEqual(1, 0 + 1);
+            Assert.AreEqual(2, 1 + 1);
+            Assert.AreEqual(3, 2 + 1);
         }
 
         [Test]
-        public void IgnoredTest2()
+        public void PassAgain()
         {
-            Assert.Ignore("Should stop here");
-            Assert.Fail("Should never get here");
         }
     }
 }

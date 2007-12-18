@@ -23,7 +23,8 @@ namespace MbUnit.Model.Patterns
 {
     /// <summary>
     /// <para>
-    /// Declares that a field, property or method parameter represents an <see cref="MbUnitTestParameter" />.
+    /// Declares that a field, property, method parameter or generic parameter
+    /// represents an <see cref="MbUnitTestParameter" />.
     /// Subclasses of this attribute can control what happens with the parameter.
     /// </para>
     /// <para>
@@ -33,13 +34,13 @@ namespace MbUnit.Model.Patterns
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter
         | AttributeTargets.GenericParameter, AllowMultiple = false, Inherited = true)]
-    public abstract class ParameterPatternAttribute : PatternAttribute
+    public abstract class TestParameterPatternAttribute : PatternAttribute
     {
         /// <summary>
         /// Gets a default instance of the parameter pattern attribute to use
         /// when no other pattern consumes the parameter.
         /// </summary>
-        public static readonly ParameterPatternAttribute DefaultInstance = new DefaultImpl();
+        public static readonly TestParameterPatternAttribute DefaultInstance = new DefaultImpl();
 
         /// <inheritdoc />
         public override bool Consume(ITestBuilder containingTestBuilder, ICodeElementInfo codeElement)
@@ -81,7 +82,7 @@ namespace MbUnit.Model.Patterns
                 pattern.ProcessTestParameter(testParameterBuilder, slot);
         }
         
-        private sealed class DefaultImpl : ParameterPatternAttribute
+        private sealed class DefaultImpl : TestParameterPatternAttribute
         {
         }
     }

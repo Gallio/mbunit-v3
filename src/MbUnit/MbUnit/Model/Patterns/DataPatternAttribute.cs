@@ -28,7 +28,7 @@ namespace MbUnit.Model.Patterns
     /// parameter declaratively.  It can be attached to a fixture class, a public property
     /// or field of a fixture, a test method or a test method parameter.  When attached
     /// to a property or field of a fixture, implies that the property or field is
-    /// a fixture parameter (so the <see cref="ParameterPatternAttribute" />
+    /// a fixture parameter (so the <see cref="TestParameterPatternAttribute" />
     /// may be omitted).
     /// </para>
     /// <para>

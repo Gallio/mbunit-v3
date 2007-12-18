@@ -27,7 +27,7 @@ namespace MbUnit.Framework
     /// test method parameters and test fixture constructor parameters the parameter
     /// will be declared with default values (which are usually just fine).
     /// </summary>
-    public class ParameterAttribute : ParameterPatternAttribute
+    public class ParameterAttribute : TestParameterPatternAttribute
     {
         private string name;
         private int? index;

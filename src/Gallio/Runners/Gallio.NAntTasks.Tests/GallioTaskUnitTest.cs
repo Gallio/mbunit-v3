@@ -15,9 +15,9 @@
 
 using System;
 using Gallio.Runner;
+using Gallio.TestResources.MbUnit;
 using MbUnit.Framework;
 using Gallio.NAntTasks;
-using Gallio.TestResources.MbUnit2;
 using NAnt.Core;
 using NAnt.Core.Types;
 using Rhino.Mocks;
@@ -156,11 +156,11 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests";
             task.Execute();
             AssertResult(task, ResultCode.Success);
-            AssertResultProperty(task, "TestCount", 4);
-            AssertResultProperty(task, "PassCount", 4);
+            AssertResultProperty(task, "TestCount", 2);
+            AssertResultProperty(task, "PassCount", 2);
             AssertResultProperty(task, "FailureCount", 0);
             AssertDurationIsGreaterThanZero(task);
             // The assert count is not reliable but we should be fine with simple asserts
@@ -172,12 +172,12 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests";
             task.Execute();
             AssertResult(task, ResultCode.Failure);
             AssertResultProperty(task, "TestCount", 2);
-            AssertResultProperty(task, "PassCount", 1);
-            AssertResultProperty(task, "FailureCount", 1);
+            AssertResultProperty(task, "PassCount", 0);
+            AssertResultProperty(task, "FailureCount", 2);
             AssertDurationIsGreaterThanZero(task);
             // The assert count is not reliable but we should be fine with simple asserts
             AssertResultProperty(task, "AssertCount", 0);
@@ -188,7 +188,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests & Member: Pass";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests & Member: Pass";
             task.Execute();
             AssertResult(task, ResultCode.Success);
             AssertResultProperty(task, "TestCount", 1);
@@ -204,7 +204,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture & Member: Fail";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests & Member: Fail";
             task.Execute();
             AssertResult(task, ResultCode.Failure);
             AssertResultProperty(task, "TestCount", 1);
@@ -220,11 +220,11 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.IgnoredTests";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.IgnoredTests";
             task.Execute();
             AssertResult(task, ResultCode.Success);
-            AssertResultProperty(task, "TestCount", 2);
-            AssertResultProperty(task, "IgnoreCount", 2);
+            AssertResultProperty(task, "TestCount", 1);
+            AssertResultProperty(task, "IgnoreCount", 1);
             AssertDurationIsGreaterThanZero(task);
         }
 

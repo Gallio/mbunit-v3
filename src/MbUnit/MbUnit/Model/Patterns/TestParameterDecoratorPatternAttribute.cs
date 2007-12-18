@@ -26,7 +26,7 @@ namespace MbUnit.Model.Patterns
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter
         | AttributeTargets.GenericParameter, AllowMultiple = true, Inherited = true)]
-    public abstract class ParameterDecoratorPatternAttribute : DecoratorPatternAttribute
+    public abstract class TestParameterDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
         public override void ProcessTestParameter(ITestParameterBuilder testParameterBuilder, ICodeElementInfo codeElement)

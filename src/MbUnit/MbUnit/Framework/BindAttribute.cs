@@ -27,7 +27,7 @@ namespace MbUnit.Framework
     /// one such attribute may appear on any given test parameter.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple=false, Inherited=true)]
-    public class BindAttribute : ParameterDecoratorPatternAttribute
+    public class BindAttribute : TestParameterDecoratorPatternAttribute
     {
         private string source;
         private readonly string path;

@@ -13,23 +13,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using Gallio.Model;
+using Gallio.Model.Reflection;
+using MbUnit.Model.Builder;
 using MbUnit.Model.Patterns;
 
 namespace MbUnit.Framework
 {
-    public class IgnoreAttribute : DecoratorPatternAttribute
+    /// <summary>
+    /// <para>
+    /// Indicates that a test is to be ignored by the framework and will not be run.
+    /// The test will still appear in test reports along with the reason that it
+    /// was ignored, if provided.
+    /// </para>
+    /// <para>
+    /// This attribute can be used to disable tests that are broken or expensive
+    /// without commenting them out or removing them from the source code.
+    /// </para>
+    /// </summary>
+    public class IgnoreAttribute : TestDecoratorPatternAttribute
     {
         private readonly string reason;
 
-        // TODO.
-
+        /// <summary>
+        /// Indicates that this test is to be ignored without providing a reason.
+        /// </summary>
         public IgnoreAttribute()
             : this("")
         {
         }
 
+        /// <summary>
+        /// Indicates that this test is to be ignored and provides a reason.
+        /// </summary>
+        /// <param name="reason">The reason for which the test is to be ignored</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/>
+        /// is null</exception>
         public IgnoreAttribute(string reason)
         {
+            if (reason == null)
+                throw new ArgumentNullException("reason");
+
             this.reason = reason;
         }
 
@@ -39,6 +64,12 @@ namespace MbUnit.Framework
         public string Reason
         {
             get { return reason; }
+        }
+
+        /// <inheritdoc />
+        protected override void DecorateTest(ITestBuilder builder, ICodeElementInfo codeElement)
+        {
+            builder.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
         }
     }
 }

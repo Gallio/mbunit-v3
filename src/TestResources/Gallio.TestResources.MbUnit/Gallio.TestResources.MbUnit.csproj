@@ -46,10 +46,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DocumentedClass.cs" />
+    <Compile Include="FailingTests.cs" />
     <Compile Include="Fixtures\ContextOutcomeFailingSetUpSample.cs" />
     <Compile Include="Fixtures\ContextOutcomeFailingTearDownSample.cs" />
     <Compile Include="Fixtures\ContextOutcomeFailingTestSample.cs" />
     <Compile Include="Fixtures\ContextOutcomePassingTestSample.cs" />
+    <Compile Include="IgnoredTests.cs" />
+    <Compile Include="PassingTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

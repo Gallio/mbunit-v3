@@ -54,6 +54,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TestResources\Gallio.TestResources.MbUnit\Gallio.TestResources.MbUnit.csproj">
+      <Project>{F5AC8612-BF27-458F-92E7-8F7DBAACA1DE}</Project>
+      <Name>Gallio.TestResources.MbUnit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Gallio.Tests\Gallio.Tests.csproj">
       <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
       <Name>Gallio.Tests</Name>
@@ -65,10 +69,6 @@
     <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\TestResources\Gallio.TestResources.MbUnit2\Gallio.TestResources.MbUnit2.csproj">
-      <Project>{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}</Project>
-      <Name>Gallio.TestResources.MbUnit2</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.TDNetRunner\Gallio.TDNetRunner.csproj">
       <Project>{00C93D01-6A43-4AAA-9E6E-5936B985B497}</Project>

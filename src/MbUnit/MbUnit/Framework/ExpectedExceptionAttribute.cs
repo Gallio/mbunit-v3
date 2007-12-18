@@ -28,7 +28,7 @@ namespace MbUnit.Framework
     /// be specified.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class ExpectedExceptionAttribute : TestDecoratorPatternAttribute
+    public class ExpectedExceptionAttribute : TestMethodDecoratorPatternAttribute
     {
         private readonly Type exceptionType;
         private string message;

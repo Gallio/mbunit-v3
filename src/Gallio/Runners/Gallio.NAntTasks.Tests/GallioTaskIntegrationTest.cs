@@ -21,7 +21,6 @@ using System.IO;
 using System.Reflection;
 using Gallio.Hosting;
 using Gallio.Runner;
-using Gallio.TestResources.MbUnit2;
 using ProcessRunner = MbUnit.Framework.ProcessRunner;
 
 namespace Gallio.NAntTasks.Tests

@@ -35,7 +35,7 @@ namespace MbUnit.Framework
     /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public sealed class TestFixtureAttribute : FixturePatternAttribute
+    public sealed class TestFixtureAttribute : TestTypePatternAttribute
     {
     }
 }

@@ -2,7 +2,7 @@
 <project name="TestProject">
   <loadtasks assembly="..\bin\Gallio.NAntTasks.dll" />
   
-  <property name="TestAssembly" value="..\bin\Gallio.TestResources.MbUnit2.dll" />
+  <property name="TestAssembly" value="..\bin\Gallio.TestResources.MbUnit.dll" />
   
   <target name="PassingTests">
     <gallio result-property="ExitCode" filter="Type: PassingTests">
@@ -18,7 +18,7 @@
   </target>
 
   <target name="FailingTests">
-    <gallio filter="Type: FailingFixture">
+    <gallio filter="Type: FailingTests">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -31,7 +31,7 @@
   </target>
 
   <target name="FailingTestsWithIgnoreFailures">
-    <gallio result-property="ExitCode" filter="Type: FailingFixture" failonerror="false">
+    <gallio result-property="ExitCode" filter="Type: FailingTests" failonerror="false">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>

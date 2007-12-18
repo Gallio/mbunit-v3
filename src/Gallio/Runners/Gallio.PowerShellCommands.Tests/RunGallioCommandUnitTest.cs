@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Runner;
-using Gallio.TestResources.MbUnit2;
+using Gallio.TestResources.MbUnit;
 using MbUnit.Framework;
 using Gallio.PowerShellCommands;
 
@@ -115,12 +115,12 @@ namespace Gallio.PowerShellCommands.Tests
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
-            command.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests";
+            command.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests";
             TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
-            Assert.AreEqual(result.Statistics.TestCount, 4);
-            Assert.AreEqual(result.Statistics.PassCount, 4);
+            Assert.AreEqual(result.Statistics.TestCount, 2);
+            Assert.AreEqual(result.Statistics.PassCount, 2);
             Assert.AreEqual(result.Statistics.FailureCount, 0);
             Assert.GreaterThan(result.Statistics.Duration, 0);
             // The assert count is not reliable but we should be fine with simple
@@ -133,13 +133,13 @@ namespace Gallio.PowerShellCommands.Tests
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
-            command.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture";
+            command.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests";
             TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
             Assert.AreEqual(result.Statistics.TestCount, 2);
-            Assert.AreEqual(result.Statistics.PassCount, 1);
-            Assert.AreEqual(result.Statistics.FailureCount, 1);
+            Assert.AreEqual(result.Statistics.PassCount, 0);
+            Assert.AreEqual(result.Statistics.FailureCount, 2);
             Assert.GreaterThan(result.Statistics.Duration, 0);
             // The assert count is not reliable but we should be fine with simple
             // asserts
@@ -151,7 +151,7 @@ namespace Gallio.PowerShellCommands.Tests
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
-            command.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests & Member: Pass";
+            command.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests & Member: Pass";
             TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
@@ -168,7 +168,7 @@ namespace Gallio.PowerShellCommands.Tests
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
-            command.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture & Member: Fail";
+            command.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests & Member: Fail";
             TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
@@ -186,7 +186,7 @@ namespace Gallio.PowerShellCommands.Tests
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
-            command.Filter = "Type: Gallio.TestResources.MbUnit2.IgnoredTests";
+            command.Filter = "Type: Gallio.TestResources.MbUnit.IgnoredTests";
             TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);

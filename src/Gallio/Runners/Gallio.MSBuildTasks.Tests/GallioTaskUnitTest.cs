@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.TestResources.MbUnit;
 using MbUnit.Framework;
 using Gallio.Runner;
-using Gallio.TestResources.MbUnit2;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Rhino.Mocks;
@@ -137,11 +137,11 @@ namespace Gallio.MSBuildTasks.Tests
             Gallio task = CreateTask();
             task.IgnoreFailures = true;
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests";
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Success);
-            Assert.AreEqual(task.TestCount, 4);
-            Assert.AreEqual(task.PassCount, 4);
+            Assert.AreEqual(task.TestCount, 2);
+            Assert.AreEqual(task.PassCount, 2);
             Assert.AreEqual(task.FailureCount, 0);
             Assert.GreaterThan(task.Duration, 0);
             // The assert count is not reliable but we should be fine with simple
@@ -154,12 +154,12 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests";
             Assert.IsFalse(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Failure);
             Assert.AreEqual(task.TestCount, 2);
-            Assert.AreEqual(task.PassCount, 1);
-            Assert.AreEqual(task.FailureCount, 1);
+            Assert.AreEqual(task.PassCount, 0);
+            Assert.AreEqual(task.FailureCount, 2);
             Assert.GreaterThan(task.Duration, 0);
             // The assert count is not reliable but we should be fine with simple
             // asserts
@@ -171,7 +171,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests & Member: Pass";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests & Member: Pass";
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Success);
             Assert.AreEqual(task.TestCount, 1);
@@ -187,7 +187,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture & Member: Fail";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests & Member: Fail";
             Assert.IsFalse(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Failure);
             Assert.AreEqual(task.TestCount, 1);
@@ -204,11 +204,11 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit2.IgnoredTests";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.IgnoredTests";
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Success);
-            Assert.AreEqual(task.TestCount, 2);
-            Assert.AreEqual(task.IgnoreCount, 2);
+            Assert.AreEqual(task.TestCount, 1);
+            Assert.AreEqual(task.IgnoreCount, 1);
             Assert.GreaterThan(task.Duration, 0);
         }
 

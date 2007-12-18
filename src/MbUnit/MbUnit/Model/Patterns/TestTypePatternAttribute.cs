@@ -31,15 +31,15 @@ namespace MbUnit.Model.Patterns
     /// At most one attribute of this type may appear on any given class.
     /// </para>
     /// </summary>
-    /// <seealso cref="FixtureDecoratorPatternAttribute"/>
+    /// <seealso cref="TestTypeDecoratorPatternAttribute"/>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
-    public class FixturePatternAttribute : PatternAttribute
+    public class TestTypePatternAttribute : PatternAttribute
     {
         /// <summary>
         /// Gets a default instance of the type pattern attribute to use
         /// when no other pattern consumes a type.
         /// </summary>
-        public static readonly FixturePatternAttribute DefaultInstance = new DefaultImpl();
+        public static readonly TestTypePatternAttribute DefaultInstance = new DefaultImpl();
 
         /// <inheritdoc />
         public override bool Consume(ITestBuilder containingTestBuilder, ICodeElementInfo codeElement)
@@ -131,7 +131,7 @@ namespace MbUnit.Model.Patterns
             if (slot is IFieldInfo || slot is IPropertyInfo)
                 return false;
 
-            return ParameterPatternAttribute.DefaultInstance.Consume(typeTestBuilder, slot);
+            return TestParameterPatternAttribute.DefaultInstance.Consume(typeTestBuilder, slot);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace MbUnit.Model.Patterns
             return false;
         }
 
-        private sealed class DefaultImpl : FixturePatternAttribute
+        private sealed class DefaultImpl : TestTypePatternAttribute
         {
         }
     }

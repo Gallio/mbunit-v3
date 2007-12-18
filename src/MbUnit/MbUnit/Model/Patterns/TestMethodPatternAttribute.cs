@@ -30,15 +30,15 @@ namespace MbUnit.Model.Patterns
     /// At most one attribute of this type may appear on any given method.
     /// </para>
     /// </summary>
-    /// <seealso cref="TestDecoratorPatternAttribute"/>
+    /// <seealso cref="TestMethodDecoratorPatternAttribute"/>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
-    public abstract class TestPatternAttribute : PatternAttribute
+    public abstract class TestMethodPatternAttribute : PatternAttribute
     {
         /// <summary>
         /// Gets a default instance of the method pattern attribute to use
         /// when no other pattern consumes a method.
         /// </summary>
-        public static readonly TestPatternAttribute DefaultInstance = new DefaultImpl();
+        public static readonly TestMethodPatternAttribute DefaultInstance = new DefaultImpl();
 
         /// <inheritdoc />
         public override bool Consume(ITestBuilder containingTestBuilder, ICodeElementInfo codeElement)
@@ -107,10 +107,10 @@ namespace MbUnit.Model.Patterns
         /// <returns>True if the slot was consumed</returns>
         protected virtual bool ProcessSlotFallback(ITestBuilder methodTestBuilder, ISlotInfo slot)
         {
-            return ParameterPatternAttribute.DefaultInstance.Consume(methodTestBuilder, slot);
+            return TestParameterPatternAttribute.DefaultInstance.Consume(methodTestBuilder, slot);
         }
 
-        private sealed class DefaultImpl : TestPatternAttribute
+        private sealed class DefaultImpl : TestMethodPatternAttribute
         {
         }
     }

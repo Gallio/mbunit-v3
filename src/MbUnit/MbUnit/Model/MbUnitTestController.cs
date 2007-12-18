@@ -56,31 +56,42 @@ namespace MbUnit.Model
             try
             {
                 MbUnitTest test = (MbUnitTest)testMonitor.Test;
-                MbUnitTestState state = new MbUnitTestState(test);
-                bool passed;
 
-                passed = InitializeTest(stepMonitor, state, parentState);
-
-                if (passed)
+                string ignoreReason = test.Metadata.GetValue(MetadataKeys.IgnoreReason);
+                if (ignoreReason != null)
                 {
-                    passed &= RunSetup(stepMonitor, state, parentState);
+                    stepMonitor.LogWriter[LogStreamNames.Warnings].WriteLine("Ignored: {0}", ignoreReason);
+                    stepMonitor.FinishStep(TestStatus.Ignored, TestOutcome.Inconclusive, null);
+                    return true;
+                }
+                else
+                {
+                    MbUnitTestState state = new MbUnitTestState(test);
+                    bool passed;
+
+                    passed = InitializeTest(stepMonitor, state, parentState);
 
                     if (passed)
                     {
-                        passed &= RunExecute(stepMonitor, state);
+                        passed &= RunSetup(stepMonitor, state, parentState);
 
                         if (passed)
                         {
-                            foreach (ITestMonitor child in testMonitor.Children)
-                                passed &= RunTest(progressMonitor, child, state);
+                            passed &= RunExecute(stepMonitor, state);
+
+                            if (passed)
+                            {
+                                foreach (ITestMonitor child in testMonitor.Children)
+                                    passed &= RunTest(progressMonitor, child, state);
+                            }
                         }
+
+                        passed &= RunTearDown(stepMonitor, state, parentState);
                     }
 
-                    passed &= RunTearDown(stepMonitor, state, parentState);
+                    stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
+                    return passed;
                 }
-
-                stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
-                return passed;
             }
             catch (Exception ex)
             {

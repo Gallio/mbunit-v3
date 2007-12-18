@@ -2,7 +2,7 @@
   <UsingTask AssemblyFile="..\bin\Gallio.MSBuildTasks.dll" TaskName="Gallio" />
 
   <PropertyGroup>
-    <TestAssembly>..\bin\Gallio.TestResources.MbUnit2.dll</TestAssembly>
+    <TestAssembly>..\bin\Gallio.TestResources.MbUnit.dll</TestAssembly>
   </PropertyGroup>
   
   <Target Name="PassingTests">
@@ -16,14 +16,14 @@
   </Target>
   
   <Target Name="FailingTests">
-    <Gallio Filter="Type: FailingFixture" Assemblies="$(TestAssembly)"
+    <Gallio Filter="Type: FailingTests" Assemblies="$(TestAssembly)"
             PluginDirectories="$(GallioPath)" />
     
     <Error Text="Expected failure result code, so should not have reached this point." />
   </Target>
   
   <Target Name="FailingTestsWithIgnoreFailures">
-    <Gallio Filter="Type: FailingFixture" Assemblies="$(TestAssembly)" IgnoreFailures="true"
+    <Gallio Filter="Type: FailingTests" Assemblies="$(TestAssembly)" IgnoreFailures="true"
             PluginDirectories="$(GallioPath)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>

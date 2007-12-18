@@ -42,7 +42,7 @@ namespace MbUnit.Framework
     /// TestSequence attribute.
     /// </todo>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class TestAttribute : TestPatternAttribute
+    public class TestAttribute : TestMethodPatternAttribute
     {
         /// <inheritdoc />
         protected override void InitializeMethodTest(ITestBuilder methodTestBuilder, IMethodInfo method)

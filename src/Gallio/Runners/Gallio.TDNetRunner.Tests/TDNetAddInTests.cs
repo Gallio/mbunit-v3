@@ -15,8 +15,8 @@
 
 using System;
 using System.Reflection;
+using Gallio.TestResources.MbUnit;
 using MbUnit.Framework;
-using Gallio.TestResources.MbUnit2;
 using Rhino.Mocks;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
@@ -183,7 +183,7 @@ namespace Gallio.TDNetRunner.Tests
         public void RunMember_RunFailingTest()
         {
             ITestRunner tr = new InstrumentedGallioTestRunner();
-            Type t = typeof(FailingFixture);
+            Type t = typeof(FailingTests);
             MethodInfo memberInfo = t.GetMethod("Fail");
             TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, memberInfo);
             Assert.AreEqual(result, TestRunState.Failure);

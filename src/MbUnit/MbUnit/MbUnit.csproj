@@ -85,9 +85,10 @@
     <Compile Include="Model\Builder\DefaultTestParameterBuilder.cs" />
     <Compile Include="Model\Patterns\MetadataPatternAttribute.cs" />
     <Compile Include="Model\Patterns\TestDecoratorPatternAttribute.cs" />
-    <Compile Include="Model\Patterns\TestPatternAttribute.cs" />
-    <Compile Include="Model\Patterns\ParameterDecoratorPatternAttribute.cs" />
-    <Compile Include="Model\Patterns\ParameterPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\TestMethodDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\TestMethodPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\TestParameterDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\TestParameterPatternAttribute.cs" />
     <Compile Include="Model\Patterns\DeclarativePatternResolver.cs" />
     <Compile Include="Model\Builder\ITestModelBuilder.cs" />
     <Compile Include="Model\Patterns\IPattern.cs" />
@@ -97,8 +98,8 @@
     <Compile Include="Model\Patterns\PatternAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Patterns\FixtureDecoratorPatternAttribute.cs" />
-    <Compile Include="Model\Patterns\FixturePatternAttribute.cs" />
+    <Compile Include="Model\Patterns\TestTypeDecoratorPatternAttribute.cs" />
+    <Compile Include="Model\Patterns\TestTypePatternAttribute.cs" />
     <Compile Include="Model\Patterns\ContributionPatternAttribute.cs" />
     <Compile Include="Model\MbUnitTestController.cs" />
     <Compile Include="Model\MbUnitTestExplorer.cs">
