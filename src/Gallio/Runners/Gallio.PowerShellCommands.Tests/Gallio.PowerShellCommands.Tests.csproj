@@ -64,7 +64,7 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.PowerShellCmdlet\Gallio.PowerShellCommands.csproj">
+    <ProjectReference Include="..\Gallio.PowerShellCommands\Gallio.PowerShellCommands.csproj">
       <Project>{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}</Project>
       <Name>Gallio.PowerShellCommands</Name>
     </ProjectReference>
