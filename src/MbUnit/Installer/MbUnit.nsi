@@ -9,6 +9,7 @@
 !define LIBSDIR "..\..\..\libs"
 !define BUILDDIR "..\..\..\build"
 
+!include "StrRep.nsh"
 
 ; Main Install settings
 Name "${APPNAMEANDVERSION}"
@@ -27,11 +28,9 @@ InstType "Typical"
 !define /math SF_SELECTED_MASK 255 - ${SF_SELECTED}
 !define /math SF_RO_MASK 255 - ${SF_RO}
 
-; Settings
+; Modern interface settings
 !define MUI_COMPONENTSPAGE_SMALLDESC ; Put description on bottom.
 !define MUI_ABORTWARNING
-
-; Modern interface settings
 !include "MUI.nsh"
 
 ; Pages
@@ -234,13 +233,46 @@ Var ReSharperPluginDir
 	StrCpy $ReSharperPluginDir "$APPDATA\JetBrains\ReSharper\${RSVersion}\${VSVersion}\Plugins"
 !macroend
 
+Function PatchReSharperConfigFile
+	PatchRetry:
+	FileOpen $1 "Gallio.ReSharperRunner.dll.config.orig" "r"
+	IfErrors PatchError
+	FileOpen $2 "Gallio.ReSharperRunner.dll.config" "w"
+	IfErrors PatchErrorCloseSource
+	
+	PatchLoop:
+	FileRead $1 $3
+	IfErrors PatchDone
+	${StrReplace} $3 "..\..\..\Gallio\bin<!-- Pre-configured for debugging purposes -->" "$INSTDIR\bin" $3
+	FileWrite $2 $3
+	GoTo PatchLoop
+
+	PatchDone:
+	ClearErrors
+	FileClose $2
+	FileClose $1
+	Delete "$OUTDIR\Gallio.ReSharperRunner.dll.config.orig"
+	IfErrors PatchError
+	PatchSkip:
+	Return
+
+	PatchErrorCloseSource:
+	FileClose $1
+	PatchError:
+	ClearErrors
+	MessageBox MB_ABORTRETRYIGNORE "Error patching ReSharper plug-in configuration file." IDRETRY PatchRetry IDIGNORE PatchSkip
+	Abort
+
+FunctionEnd
+
 !macro InstallReSharperRunner RSVersion VSVersion SourcePath
 	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
 
-	StrCmp "" "$ReSharperPluginDir" +4
+	StrCmp "" "$ReSharperPluginDir" +5
 		SetOutPath "$ReSharperPluginDir\Gallio"
 		File "${SourcePath}\Gallio.ReSharperRunner.dll"
-		File "${SourcePath}\Gallio.ReSharperRunner.dll.config"
+		File "/oname=Gallio.ReSharperRunner.dll.config.orig" "${SourcePath}\Gallio.ReSharperRunner.dll.config"
+		Call PatchReSharperConfigFile
 !macroend
 
 !macro UninstallReSharperRunner RSVersion VSVersion

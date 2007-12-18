@@ -265,8 +265,6 @@ namespace Gallio.PowerShellCommands
                 launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(Logger);
                 launcher.Filter = GetFilter();
                 launcher.RuntimeSetup = new RuntimeSetup();
-                launcher.TestPackageConfig.EnableShadowCopy = true;
-                launcher.TestRunnerFactory = TestRunnerFactory.CreateIsolatedTestRunner;
                 launcher.ShowReports = showReports.IsPresent;
 
                 AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
