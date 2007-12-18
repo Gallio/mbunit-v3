@@ -141,7 +141,8 @@ namespace Gallio.Runner.Monitors
         {
             lock (report)
             {
-                report.PackageConfig = Runner.TestPackageData.Config.Copy();
+                TestPackageData data = Runner.TestPackageData;
+                report.PackageConfig = data != null ? data.Config.Copy() : null;
                 report.TestModelData = null;
                 report.PackageRun = null;
             }

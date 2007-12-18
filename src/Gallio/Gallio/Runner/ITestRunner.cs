@@ -38,11 +38,19 @@ namespace Gallio.Runner
         /// <summary>
         /// Event fired once <see cref="LoadTestPackage" /> completes.
         /// </summary>
+        /// <remarks>
+        /// This event will be fired even if the operation failed in which case
+        /// <see cref="TestPackageData" /> will be null.
+        /// </remarks>
         event EventHandler LoadTestPackageComplete;
 
         /// <summary>
         /// Event fired once <see cref="BuildTestModel" /> completes.
         /// </summary>
+        /// <remarks>
+        /// This event will be fired even if the operation failed in which case
+        /// <see cref="TestModelData" /> will be null.
+        /// </remarks>
         event EventHandler BuildTestModelComplete;
 
         /// <summary>

@@ -21,9 +21,6 @@ namespace Gallio.Runner.Monitors
     /// <summary>
     /// Base implementation of <see cref="ITestRunnerMonitor" />.
     /// </summary>
-    /// <todo author="jeff">
-    /// Tentative.  Subject to change!!
-    /// </todo>
     public abstract class BaseTestRunnerMonitor : ITestRunnerMonitor
     {
         private ITestRunner runner;
