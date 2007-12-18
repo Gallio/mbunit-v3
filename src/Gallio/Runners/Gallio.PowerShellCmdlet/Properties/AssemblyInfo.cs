@@ -42,4 +42,4 @@ using System.Runtime.InteropServices;
 // Telling the system that this is the case yields a small performance improvement during startup.
 [assembly: NeutralResourcesLanguage("en-US")]
 
-[assembly: InternalsVisibleTo("Gallio.PowerShellCmdlet.Tests")]
+[assembly: InternalsVisibleTo("Gallio.PowerShellCommands.Tests")]

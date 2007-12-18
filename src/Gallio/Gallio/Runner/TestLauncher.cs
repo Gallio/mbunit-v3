@@ -81,6 +81,8 @@ namespace Gallio.Runner
         private ReportMonitor reportMonitor;
         private List<ITestRunnerMonitor> customMonitors;
 
+        private bool showReports;
+
         #endregion
 
         /// <summary>
@@ -416,6 +418,28 @@ namespace Gallio.Runner
 
         /// <summary>
         /// <para>
+        /// Gets or sets whether to show the reports after the test run finishes.
+        /// </para>
+        /// <para>
+        /// The default value is <c>false</c>.
+        /// </para>
+        /// </summary>
+        public bool ShowReports
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return showReports;
+            }
+            set
+            {
+                ThrowIfDisposed();
+                showReports = value;
+            }
+        }
+
+        /// <summary>
+        /// <para>
         /// Gets a mutable list of custom <see cref="ITestRunnerMonitor" /> objects that
         /// will be attached to the <see cref="ITestRunner" /> just prior to test execution
         /// then detached afterwards.
@@ -507,6 +531,12 @@ namespace Gallio.Runner
                         DateTime.Now.ToShortTimeString(),
                         stopWatch.Elapsed.TotalSeconds);
 
+                    if (showReports)
+                    {
+                        logger.Info("Displaying reports.");
+                        ShowReportDocuments(result);
+                    }
+
                     return result;
                 }
             }
@@ -550,6 +580,29 @@ namespace Gallio.Runner
                 foreach (string reportDocumentPath in reportWriter.ReportDocumentPaths)
                     result.AddReportDocumentPath(Path.Combine(reportDirectory, reportDocumentPath));
             });
+        }
+
+        /// <summary>
+        /// Shows the report documents enumerated in the launcher result.
+        /// </summary>
+        /// <param name="result">The result</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="result"/> is null</exception>
+        public void ShowReportDocuments(TestLauncherResult result)
+        {
+            if (result == null)
+                throw new ArgumentNullException("result");
+
+            foreach (string reportDocumentPath in result.ReportDocumentPaths)
+            {
+                try
+                {
+                    TestRunnerUtils.ShowReportDocument(reportDocumentPath);
+                }
+                catch (Exception ex)
+                {
+                    logger.FatalFormat("Could not open report '{0}' for display.", reportDocumentPath, ex);
+                }
+            }
         }
 
         #endregion

@@ -21,6 +21,7 @@ using ILogger=Castle.Core.Logging.ILogger;
 
 namespace Gallio.MSBuildTasks
 {
+    /// <exclude />
     /// <summary>
     /// Logs messages to a <see cref="TaskLoggingHelper" /> instance.
     /// </summary>

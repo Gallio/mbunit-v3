@@ -59,8 +59,8 @@
     <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.NAntTasks\Gallio.NAntTasks.csproj" />
     <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests.csproj" />
 
-    <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.PowerShellCmdlet\Gallio.PowerShellCmdlet.csproj" />
-    <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.PowerShellCmdlet.Tests\Gallio.PowerShellCmdlet.Tests.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.PowerShellCommands\Gallio.PowerShellCommands.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests.csproj" />
   </ItemGroup>
 
   <!-- The NDoc projects to compile. -->
@@ -83,6 +83,8 @@
     <Binary Include="$(LibsDir)\Castle\bin\Castle.DynamicProxy2.dll" />
     <Binary Include="$(LibsDir)\Components\ZedGraph.dll" />
     <Binary Include="$(LibsDir)\Components\ICSharpCode.TextEditor.dll" />
+    <Binary Include="$(LibsDir)\ReferenceAssemblies\System.Core.dll" />
+    <Binary Include="$(LibsDir)\ReferenceAssemblies\System.Management.Automation.dll" />
 
     <Binary Include="$(SourceDir)\Gallio\Gallio\bin\Gallio.dll" />
     <Binary Include="$(SourceDir)\Gallio\Gallio\Gallio.plugin" />
@@ -208,7 +210,7 @@
 
     <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" />
 
-    <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.PowerShellCmdlet\bin\Gallio.PowerShellCmdlet.dll" />
+    <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
 
     <Binary Include="$(SourceDir)\MbUnit\Samples\*.sln">
         <Folder>Samples</Folder>
@@ -254,7 +256,7 @@
     <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.MSBuildTasks.Tests\bin\Gallio.MSBuildTasks.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.NAntTasks.Tests\bin\Gallio.NAntTasks.Tests.dll" />
-    <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.PowerShellCmdlet.Tests\bin\Gallio.PowerShellCmdlet.Tests.dll" />
+    <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.PowerShellCommands.Tests\bin\Gallio.PowerShellCommands.Tests.dll" />
   </ItemGroup>
 
   <Target Name="Build"
@@ -334,7 +336,7 @@
     <Warning Text="The NSIS tools must be installed to generate the installer.  Look in libs\Setup Files for the NSIS installer."
              Condition="! Exists('$(NSISPath)')" />
 
-    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG &quot;$(SourceDir)\MbUnit\Installer\MbUnit.nsi&quot;"
+    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) &quot;$(SourceDir)\MbUnit\Installer\MbUnit.nsi&quot;"
           Condition="Exists('$(NSISPath)')" />
   </Target>
 

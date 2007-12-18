@@ -18,6 +18,7 @@ using Castle.Core.Logging;
 
 namespace Gallio.NAntTasks
 {
+    /// <exclude />
     /// <summary>
     /// An ILogger implementation that logs messages to a INAntLogger object.
     /// </summary>

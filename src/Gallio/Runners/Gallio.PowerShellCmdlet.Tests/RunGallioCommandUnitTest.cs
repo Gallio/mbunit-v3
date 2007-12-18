@@ -17,15 +17,15 @@ using System;
 using Gallio.Runner;
 using Gallio.TestResources.MbUnit2;
 using MbUnit.Framework;
-using Gallio.PowerShellCmdlet;
+using Gallio.PowerShellCommands;
 
-namespace Gallio.PowerShellCmdlet.Tests
+namespace Gallio.PowerShellCommands.Tests
 {
     [TestFixture]
     [Author("Julian Hidalgo")]
-    [TestsOn(typeof(GallioCmdlet))]
+    [TestsOn(typeof(RunGallioCommand))]
     [Category("UnitTests")]
-    public class GallioCmdletUnitTest
+    public class RunGallioCommandUnitTest
     {
         #region Private Members
 
@@ -49,8 +49,8 @@ namespace Gallio.PowerShellCmdlet.Tests
         [Test]
         public void RunWithNoArguments()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            TestLauncherResult result = cmdlet.Execute();
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.NoTests);
             // If nothing ran then all the statistics properties should be set to zero
@@ -67,45 +67,45 @@ namespace Gallio.PowerShellCmdlet.Tests
         [Test]
         public void NullReportTypes()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.ReportTypes = null;
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.ReportTypes = null;
             // Just make sure it doesn't crash
-            Assert.IsNotNull(cmdlet.Execute());
+            Assert.IsNotNull(command.Execute());
         }
 
         [Test]
         public void EmptyReportTypes()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.ReportTypes = new string[] { String.Empty };
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.ReportTypes = new string[] { String.Empty };
             // Just make sure it doesn't crash
-            Assert.IsNotNull(cmdlet.Execute());
+            Assert.IsNotNull(command.Execute());
         }
 
         [Test]
         public void NullReportDirectory()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.ReportDirectory = null;
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.ReportDirectory = null;
             // Just make sure it doesn't crash
-            Assert.IsNotNull(cmdlet.Execute());
+            Assert.IsNotNull(command.Execute());
         }
 
         [Test]
         public void NullReportNameFormat()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.ReportNameFormat = null;
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.ReportNameFormat = null;
             // Just make sure it doesn't crash
-            Assert.IsNotNull(cmdlet.Execute());
+            Assert.IsNotNull(command.Execute());
         }
 
         [Test]
         public void RunAssembly()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.Assemblies = assemblies;
-            TestLauncherResult result = cmdlet.Execute();
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.Assemblies = assemblies;
+            TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
         }
@@ -113,10 +113,10 @@ namespace Gallio.PowerShellCmdlet.Tests
         [Test]
         public void RunType()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.Assemblies = assemblies;
-            cmdlet.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests";
-            TestLauncherResult result = cmdlet.Execute();
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.Assemblies = assemblies;
+            command.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests";
+            TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
             Assert.AreEqual(result.Statistics.TestCount, 4);
@@ -131,10 +131,10 @@ namespace Gallio.PowerShellCmdlet.Tests
         [Test]
         public void RunFailingFixture()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.Assemblies = assemblies;
-            cmdlet.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture";
-            TestLauncherResult result = cmdlet.Execute();
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.Assemblies = assemblies;
+            command.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture";
+            TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
             Assert.AreEqual(result.Statistics.TestCount, 2);
@@ -149,10 +149,10 @@ namespace Gallio.PowerShellCmdlet.Tests
         [Test]
         public void RunSingleTest()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.Assemblies = assemblies;
-            cmdlet.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests & Member: Pass";
-            TestLauncherResult result = cmdlet.Execute();
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.Assemblies = assemblies;
+            command.Filter = "Type: Gallio.TestResources.MbUnit2.PassingTests & Member: Pass";
+            TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
             Assert.AreEqual(result.Statistics.TestCount, 1);
@@ -166,10 +166,10 @@ namespace Gallio.PowerShellCmdlet.Tests
         [Test]
         public void RunSingleFailingTest()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.Assemblies = assemblies;
-            cmdlet.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture & Member: Fail";
-            TestLauncherResult result = cmdlet.Execute();
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.Assemblies = assemblies;
+            command.Filter = "Type: Gallio.TestResources.MbUnit2.FailingFixture & Member: Fail";
+            TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
             Assert.AreEqual(result.Statistics.TestCount, 1);
@@ -184,10 +184,10 @@ namespace Gallio.PowerShellCmdlet.Tests
         [Test]
         public void RunIgnoredTests()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.Assemblies = assemblies;
-            cmdlet.Filter = "Type: Gallio.TestResources.MbUnit2.IgnoredTests";
-            TestLauncherResult result = cmdlet.Execute();
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.Assemblies = assemblies;
+            command.Filter = "Type: Gallio.TestResources.MbUnit2.IgnoredTests";
+            TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
             Assert.AreEqual(result.Statistics.TestCount, 2);
@@ -196,13 +196,13 @@ namespace Gallio.PowerShellCmdlet.Tests
         }
 
         [Test]
+        [ExpectedException(typeof(InvalidOperationException))] // throw by ThrowTerminatingError
         public void ExecutionFailure()
         {
-            InstrumentedGallioCmdlet cmdlet = CreateCmdlet();
-            cmdlet.TerminateOnFailure = false;
-            cmdlet.HintDirectories = new string[] { null };
-            cmdlet.PluginDirectories = new string[] { null };
-            TestLauncherResult result = cmdlet.Execute();
+            InstrumentedRunGallioCommand command = CreateCmdlet();
+            command.HintDirectories = new string[] { null };
+            command.PluginDirectories = new string[] { null };
+            TestLauncherResult result = command.Execute();
             Assert.IsNotNull(result);
         }
 
@@ -210,11 +210,11 @@ namespace Gallio.PowerShellCmdlet.Tests
 
         #region Private Methods
 
-        private static InstrumentedGallioCmdlet CreateCmdlet()
+        private static InstrumentedRunGallioCommand CreateCmdlet()
         {
-            InstrumentedGallioCmdlet cmdlet = new InstrumentedGallioCmdlet();
+            InstrumentedRunGallioCommand command = new InstrumentedRunGallioCommand();
 
-            return cmdlet;
+            return command;
         }
 
         #endregion

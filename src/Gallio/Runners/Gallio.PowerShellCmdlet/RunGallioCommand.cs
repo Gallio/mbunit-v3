@@ -15,17 +15,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Gallio.Collections;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using System.Management.Automation;
 using Gallio.Model.Filters;
-using Gallio.PowerShellCmdlet.Properties;
+using Gallio.PowerShellCommands.Properties;
 using Gallio.Runner;
 
-namespace Gallio.PowerShellCmdlet
+namespace Gallio.PowerShellCommands
 {
     /// <summary>
     /// A PowerShell Cmdlet for running Gallio.
@@ -36,15 +35,14 @@ namespace Gallio.PowerShellCmdlet
     /// <example>
     /// <para>There are severals ways to run this cmdlet:</para>
     /// <code>
-    /// # Makes the Gallio cmdlet available
-    /// Add-PSSnapIn GallioCmdlet
+    /// # Makes the Gallio commands available
+    /// Add-PSSnapIn Gallio
     /// # Runs TestAssembly1.dll
-    /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll" -f Category:UnitTests
-    /// -rd C:\build\reports -rf html
+    /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll" -f Category:UnitTests -rd C:\build\reports -rf html
     /// </code>
     /// </example>
     [Cmdlet("Run", "Gallio")]
-    public class GallioCmdlet : PSCmdlet
+    public class RunGallioCommand : BaseCommand
     {
         #region Private Members
 
@@ -55,7 +53,6 @@ namespace Gallio.PowerShellCmdlet
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
         private string filter;
-        private SwitchParameter terminateOnFailure = false;
         private SwitchParameter showReports = false;
 
         #endregion
@@ -211,39 +208,6 @@ namespace Gallio.PowerShellCmdlet
         }
 
         /// <summary>
-        /// Sets whether or not to terminate on failure.
-        /// </summary>
-        /// <remarks>
-        /// <list type="bullet">
-        /// <item>This parameter controls the behavior of the cmdlet in case an unexpected
-        /// exception occurs while running the tests. Of set
-        /// </item>
-        /// <item>This parameter takes the value true if present and false if not. No
-        /// value has to be specified.</item> 
-        /// </list> 
-        /// </remarks>
-        /// <example>
-        /// <code>
-        /// # Doesn't cause PowerShell to terminate in case an expected exception occurs
-        /// Run-Gallio SomeAssembly.dll
-        /// # Causes PowerShell to terminate in case an expected exception occurs
-        /// Run-Gallio SomeAssembly.dll -tof
-        /// </code>
-        /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("tof", "terminate-on-failures")]
-        public SwitchParameter TerminateOnFailure
-        {
-            //NOTE: In the tasks runners the IgnoreFailures parameter is used instead
-            //of this one. The decision of "reversing the sense" of the parameter in
-            //this Cmdlet was based on the Microsoft suggestion of using SwitchParameter
-            //instead of boolean types, and the fact that we want the default behavior
-            //to be not to terminate on failures.
-            //See http://msdn2.microsoft.com/en-us/library/ms714433.aspx for more info.
-            set { terminateOnFailure = value; }
-        }
-
-        /// <summary>
         /// Sets whether to open the generated reports once execution has finished.
         /// </summary>
         /// <remarks>
@@ -284,21 +248,7 @@ namespace Gallio.PowerShellCmdlet
             }
             catch (Exception ex)
             {
-                ErrorRecord error = new ErrorRecord
-                    (
-                    ex,
-                    Resources.UnexpectedErrorDuringExecution,
-                    ErrorCategory.NotSpecified,
-                    "GallioCmdlet"
-                    );
-                if (!terminateOnFailure)
-                {
-                    WriteError(error);
-                }
-                else
-                {
-                    ThrowTerminatingError(error);
-                }
+                ThrowTerminatingError(new ErrorRecord(ex, Resources.UnexpectedErrorDuringExecution, ErrorCategory.NotSpecified, null));
             }
         }
 
@@ -306,23 +256,18 @@ namespace Gallio.PowerShellCmdlet
 
         #region Private Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+        /// <exclude />
         protected TestLauncherResult Execute()
         {
-            PowerShellLogger logger = new PowerShellLogger(this);
             using (TestLauncher launcher = new TestLauncher())
             {
-                launcher.Logger = logger;
-                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
+                launcher.Logger = Logger;
+                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(Logger);
                 launcher.Filter = GetFilter();
                 launcher.RuntimeSetup = new RuntimeSetup();
                 launcher.TestPackageConfig.EnableShadowCopy = true;
-                // Please see the comments in Gallio.TDNetRunner.GallioTestRunner class
-                // about the isolated test runner problem.
-                launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
+                launcher.TestRunnerFactory = TestRunnerFactory.CreateIsolatedTestRunner;
+                launcher.ShowReports = showReports.IsPresent;
 
                 AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
                 AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
@@ -336,29 +281,11 @@ namespace Gallio.PowerShellCmdlet
                     GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
 
                 TestLauncherResult result = RunLauncher(launcher);
-                ShowReportsIfAsked(result);
-
                 return result;
             }
         }
 
-        /// <summary>
-        /// Provided so that the unit tests can skip this.
-        /// </summary>
-        protected virtual void ShowReportsIfAsked(TestLauncherResult result)
-        {
-            if (showReports.IsPresent)
-            {
-                foreach (string report in result.ReportDocumentPaths)
-                {
-                    Process p = new Process();
-                    ProcessStartInfo startInfo = new ProcessStartInfo(report);
-                    p.StartInfo = startInfo;
-                    p.Start();
-                }
-            }
-        }
-
+        /// <exclude />
         /// <summary>
         /// Provided so that the unit tests can override test execution behavior.
         /// </summary>

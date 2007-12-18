@@ -1,8 +1,14 @@
+; Check arguments.
+!ifndef VERSION
+	!error "The /DVersion=x.y.z.w argument must be specified."
+!endif
+
 ; Define your application name
 !define APPNAME "MbUnit v3"
-!define APPNAMEANDVERSION "MbUnit v3 Alpha 1"
+!define APPNAMEANDVERSION "MbUnit v${VERSION}"
 !define LIBSDIR "..\..\..\libs"
 !define BUILDDIR "..\..\..\build"
+
 
 ; Main Install settings
 Name "${APPNAMEANDVERSION}"
@@ -184,14 +190,23 @@ Section "NAnt Tasks" NAntTasksSection
 	File "${BUILDDIR}\bin\Gallio.NAntTasks.xml"
 SectionEnd
 
-Section "PowerShell Cmdlet" PowerShellCmdletSection
+Section "PowerShell Commands" PowerShellCommandsSection
 	; Set Section properties
 	SetOverwrite on
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\Gallio.PowerShellCmdlet.dll"
-	File "${BUILDDIR}\bin\Gallio.PowerShellCmdlet.xml"
+	File "${BUILDDIR}\bin\Gallio.PowerShellCommands.dll"
+	File "${BUILDDIR}\bin\Gallio.PowerShellCommands.xml"
+
+	; Registry keys for the snap-in
+	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "ApplicationBase" "$INSTDIR\bin"
+	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "AssemblyName" "Gallio.PowerShellCommands, Version=${VERSION}, Culture=neutral, PublicKeyToken=null"
+	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "Description" "Gallio Commands."
+	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "ModuleName" "$INSTDIR\bin\Gallio.PowerShellCommands.dll"
+	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "PowerShellVersion" "1.0"
+	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "Vendor" "Gallio"
+	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "Version" "${VERSION}"
 SectionEnd
 
 Var ReSharperInstallDir
@@ -362,6 +377,9 @@ Section Uninstall
 	!insertmacro UninstallReSharperRunner "v3.0" "vs8.0"
 	!insertmacro UninstallReSharperRunner "v3.0" "vs9.0"
 
+	; Uninstall from PowerShell
+	DeleteRegKey SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio"
+
 	; Uninstall the help collection
 	IfFileExists "$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini" 0 +2
 		ExecWait '"$INSTDIR\utils\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
@@ -392,7 +410,7 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${IcarusSection} "Installs the GUI-based test runner."
 	!insertmacro MUI_DESCRIPTION_TEXT ${MSBuildTasksSection} "Installs the MSBuild tasks."
 	!insertmacro MUI_DESCRIPTION_TEXT ${NAntTasksSection} "Installs the NAnt tasks."
-	!insertmacro MUI_DESCRIPTION_TEXT ${PowerShellCmdletSection} "Installs the PowerShell cmdlet."
+	!insertmacro MUI_DESCRIPTION_TEXT ${PowerShellCommandsSection} "Installs the PowerShell commands."
 	!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3 plug-in."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in for MbUnit v3."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInOtherFrameworksSection} "Enables the TestDriven.Net add-in to run tests for other supported frameworks."
@@ -421,7 +439,7 @@ Function .onInit
 	SectionSetInstTypes ${IcarusSection} 3
 	SectionSetInstTypes ${MSBuildTasksSection} 3
 	SectionSetInstTypes ${NAntTasksSection} 3
-	SectionSetInstTypes ${PowerShellCmdletSection} 3
+	SectionSetInstTypes ${PowerShellCommandsSection} 3
 	SectionSetInstTypes ${ReSharperRunnerSection} 3
 	SectionSetInstTypes ${TDNetAddInSection} 3
 	SectionSetInstTypes ${TDNetAddInOtherFrameworksSection} 1

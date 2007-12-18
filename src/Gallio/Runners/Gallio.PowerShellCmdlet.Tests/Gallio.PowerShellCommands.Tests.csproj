@@ -2,13 +2,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{52E0A229-CE15-4B72-8ACF-F17DCB929A64}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gallio.PowerShellCmdlet.Tests</RootNamespace>
-    <AssemblyName>Gallio.PowerShellCmdlet.Tests</AssemblyName>
+    <RootNamespace>Gallio.PowerShellCommands.Tests</RootNamespace>
+    <AssemblyName>Gallio.PowerShellCommands.Tests</AssemblyName>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -45,10 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GallioCmdletIntegrationTest.cs" />
-    <Compile Include="GallioCmdletUnitTest.cs" />
-    <Compile Include="InstrumentedGallioCmdlet.cs" />
-    <Compile Include="PowerShellLoggerTest.cs" />
+    <Compile Include="RunGallioCommandIntegrationTest.cs" />
+    <Compile Include="RunGallioCommandUnitTest.cs" />
+    <Compile Include="InstrumentedRunGallioCommand.cs" />
+    <Compile Include="CmdletLoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,9 +64,9 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.PowerShellCmdlet\Gallio.PowerShellCmdlet.csproj">
+    <ProjectReference Include="..\Gallio.PowerShellCmdlet\Gallio.PowerShellCommands.csproj">
       <Project>{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}</Project>
-      <Name>Gallio.PowerShellCmdlet</Name>
+      <Name>Gallio.PowerShellCommands</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

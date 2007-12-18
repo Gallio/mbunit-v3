@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Specialized;
 using System.IO;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Hosting;
@@ -47,7 +48,7 @@ namespace Gallio.Icarus.Core.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException(@"ProjectPresenter");
+                    throw new ArgumentNullException(@"value");
 
                 projectPresenter = value;
                 progressMonitorProvider = new StatusStripProgressMonitorProvider(projectPresenter);
@@ -103,35 +104,37 @@ namespace Gallio.Icarus.Core.Model
 
         public void GenerateReport(string reportType)
         {
-            TestLauncher testLauncher = new TestLauncher();
-            testLauncher.ProgressMonitorProvider = progressMonitorProvider;
-            testLauncher.ReportFormats.Add(reportType);
-            if (testLauncher.ReportDirectory == "")
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                string reportDirectory = System.Configuration.ConfigurationManager.AppSettings["reportDirectory"];
-                if (reportDirectory == "")
-                {
-                    reportDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MbUnit\Reports");
-                    if (!Directory.Exists(reportDirectory))
-                    {
-                        Directory.CreateDirectory(reportDirectory);
-                    }
-                }
-                testLauncher.ReportDirectory = reportDirectory;
-            }
-            TestLauncherResult testLauncherResult = new TestLauncherResult(reportMonitor.Report);
-            testLauncher.GenerateReports(testLauncherResult, Runtime.Instance.Resolve<IReportManager>());
+                progressMonitor.BeginTask("Generating reports.", 100);
 
-            // open created report
-            foreach (string reportPath in testLauncherResult.ReportDocumentPaths)
-            {
-                try
-                {
-                    System.Diagnostics.Process.Start(reportPath);
-                }
-                catch (Exception)
-                { }
-            }
+                string reportDirectory = GetReportDirectory();
+                Report report = reportMonitor.Report;
+                IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
+                IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, "MbUnit-Report");
+                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+
+                // Delete the report if it exists already.
+                reportContainer.DeleteReport();
+
+                // Format the report in all of the desired ways.
+                reportManager.Format(reportWriter, reportType, new NameValueCollection(),
+                    new SubProgressMonitor(progressMonitor, 90));
+
+                progressMonitor.SetStatus("Displaying reports.");
+                foreach (string reportDocumentPath in reportWriter.ReportDocumentPaths)
+                    TestRunnerUtils.ShowReportDocument(Path.Combine(reportDirectory, reportDocumentPath));
+            });
+        }
+
+        private static string GetReportDirectory()
+        {
+            string reportDirectory = System.Configuration.ConfigurationManager.AppSettings["reportDirectory"];
+
+            if (reportDirectory.Length == 0)
+                reportDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MbUnit\Reports");
+
+            return reportDirectory;
         }
 
         #endregion

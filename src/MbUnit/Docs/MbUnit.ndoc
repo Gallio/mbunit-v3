@@ -5,7 +5,7 @@
         <assembly location="..\..\Gallio\Gallio\bin\Gallio.dll" documentation="..\..\Gallio\Gallio\bin\Gallio.xml" />
         <assembly location="..\..\Gallio\Runners\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" documentation="..\..\Gallio\Runners\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.xml" />
         <assembly location="..\..\Gallio\Runners\Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" documentation="..\..\Gallio\Runners\Gallio.NAntTasks\bin\Gallio.NAntTasks.xml" />
-        <assembly location="..\..\Gallio\Runners\Gallio.PowerShellCmdlet\bin\Gallio.PowerShellCmdlet.dll" documentation="..\..\Gallio\Runners\Gallio.PowerShellCmdlet\bin\Gallio.PowerShellCmdlet.xml" />
+        <assembly location="..\..\Gallio\Runners\Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" documentation="..\..\Gallio\Runners\Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.xml" />
     </assemblies>
     <documenters>
         <documenter name="MSDN-Help2">

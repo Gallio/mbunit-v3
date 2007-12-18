@@ -13,30 +13,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runner;
+using System.ComponentModel;
+using System.Management.Automation;
 
-namespace Gallio.PowerShellCmdlet.Tests
+namespace Gallio.PowerShellCommands
 {
+    /// <exclude />
     /// <summary>
-    /// Makes it possible to unit test the <see cref="GallioCmdlet" /> cmdlet.
-    /// In particular we need to disable the initialization of a new runtime
-    /// because it will conflict with the test execution environment.
+    /// A PowerShell SnapIn that registers the Gallio Cmdlets.
     /// </summary>
-    internal class InstrumentedGallioCmdlet : GallioCmdlet
+    [RunInstaller(true)]
+    public class GallioSnapIn : PSSnapIn
     {
-        public new TestLauncherResult Execute()
+        /// <summary>
+        /// Gets the description of the snap-in.
+        /// </summary>
+        public override string Description
         {
-            return base.Execute();
+            get { return "Gallio Commands."; }
         }
 
-        protected override TestLauncherResult RunLauncher(TestLauncher launcher)
+        /// <summary>
+        /// Gets the name of the snap-in.
+        /// </summary>
+        public override string Name
         {
-            launcher.RuntimeSetup = null;
-            return base.RunLauncher(launcher);
+            get { return "Gallio"; }
         }
 
-        protected override void ShowReportsIfAsked(TestLauncherResult result)
+        /// <summary>
+        /// Gets the vendor of the snap-in.
+        /// </summary>
+        public override string Vendor
         {
+            get { return "Gallio"; }
         }
     }
 }

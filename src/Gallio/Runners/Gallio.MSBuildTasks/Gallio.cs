@@ -549,6 +549,7 @@ namespace Gallio.MSBuildTasks
             return false;
         }
 
+        /// <exclude />
         /// <summary>
         /// Provided so that the unit tests can override test execution behavior.
         /// </summary>

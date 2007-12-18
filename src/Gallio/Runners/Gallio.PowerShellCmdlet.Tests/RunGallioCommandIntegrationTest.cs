@@ -18,7 +18,7 @@ using System.IO;
 using Gallio.Hosting;
 using MbUnit.Framework;
 
-namespace Gallio.PowerShellCmdlet.Tests
+namespace Gallio.PowerShellCommands.Tests
 {
     /// <summary>
     /// Simple integration tests that ensures that the Cmdlet can be used from PowerShell.
@@ -33,9 +33,9 @@ namespace Gallio.PowerShellCmdlet.Tests
     /// </remarks>
     [TestFixture]
     [Author("Julian Hidalgo")]
-    [TestsOn(typeof(GallioCmdlet))]
+    [TestsOn(typeof(RunGallioCommand))]
     [Category("IntegrationTests")]
-    public class GallioCmdletIntegrationTest
+    public class RunGallioCommandIntegrationTest
     {
         private string executablePath;
         private string workingDirectory;

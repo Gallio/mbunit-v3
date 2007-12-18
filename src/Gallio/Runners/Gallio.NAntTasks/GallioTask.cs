@@ -115,6 +115,7 @@ namespace Gallio.NAntTasks
             nantLogger = this;
         }
 
+        /// <exclude />
         /// <summary>
         /// Initializes a new instance of the <see cref="GallioTask" /> class using
         /// a custom INAntLogger instance.
@@ -387,6 +388,7 @@ namespace Gallio.NAntTasks
 
         #region Private Methods
 
+        /// <exclude />
         /// <summary>
         /// Provided so that the unit tests can override test execution behavior.
         /// </summary>

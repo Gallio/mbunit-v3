@@ -128,9 +128,9 @@ namespace Gallio.Echo
                     launcher.Filter = FilterUtils.ParseTestFilter(arguments.Filter);
                 
                 launcher.EchoResults = !arguments.NoEchoResults;
+                launcher.ShowReports = arguments.ShowReports;
 
                 TestLauncherResult result = launcher.Run();
-                OpenReports(result);
                 DisplayResultSummary(result);
 
                 return result.ResultCode;
@@ -152,31 +152,6 @@ namespace Gallio.Echo
             console.WriteLine();
             console.WriteLine(result.ResultSummary);
             console.WriteLine();
-        }
-
-        private void OpenReports(TestLauncherResult result)
-        {
-            if (arguments.ShowReports)
-            {
-                console.ForegroundColor = ConsoleColor.White;
-                console.WriteLine(Resources.MainClass_OpeningReports);
-                console.ResetColor();
-
-                foreach (string reportPath in result.ReportDocumentPaths)
-                    OpenReport(reportPath);
-            }
-        }
-
-        private void OpenReport(string reportPath)
-        {
-            try
-            {
-                Process.Start(reportPath);
-            }
-            catch (Exception ex)
-            {
-                logger.FatalFormat("Could not open report '{0}' for display.", reportPath, ex);
-            }
         }
 
         private void SetUpLogger()

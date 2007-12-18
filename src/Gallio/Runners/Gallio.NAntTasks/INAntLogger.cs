@@ -17,6 +17,7 @@ using NAnt.Core;
 
 namespace Gallio.NAntTasks
 {
+    /// <exclude />
     /// <summary>
     /// Used to make the NAnt task "unit-testable".
     /// </summary>

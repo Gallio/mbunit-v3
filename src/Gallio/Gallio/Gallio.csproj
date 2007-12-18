@@ -271,6 +271,7 @@
     <Compile Include="Hosting\IAssemblyResolverManager.cs" />
     <Compile Include="Hosting\RuntimeSetup.cs" />
     <Compile Include="Hosting\WindsorRuntime.cs" />
+    <Compile Include="Runner\TestRunnerUtils.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
     <Compile Include="Block.cs" />

@@ -83,9 +83,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility", "MbUnit\MbUnit.Compatibility\MbUnit.Compatibility.csproj", "{F588B51F-786A-48E2-950E-636062F9C302}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCmdlet", "Gallio\Runners\Gallio.PowerShellCmdlet\Gallio.PowerShellCmdlet.csproj", "{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands", "Gallio\Runners\Gallio.PowerShellCmdlet\Gallio.PowerShellCommands.csproj", "{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCmdlet.Tests", "Gallio\Runners\Gallio.PowerShellCmdlet.Tests\Gallio.PowerShellCmdlet.Tests.csproj", "{52E0A229-CE15-4B72-8ACF-F17DCB929A64}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands.Tests", "Gallio\Runners\Gallio.PowerShellCmdlet.Tests\Gallio.PowerShellCommands.Tests.csproj", "{52E0A229-CE15-4B72-8ACF-F17DCB929A64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

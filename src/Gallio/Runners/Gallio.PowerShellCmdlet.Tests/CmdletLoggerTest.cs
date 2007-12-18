@@ -13,33 +13,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
-using System.Management.Automation;
+using System;
+using MbUnit.Framework;
+using Gallio.PowerShellCommands;
 
-namespace Gallio.PowerShellCmdlet
+namespace Gallio.PowerShellCommands.Tests
 {
-    /// <summary>
-    /// A PowerShell SnapIn that registers the Gallio Cmdlet.
-    /// </summary>
-    [RunInstaller(true)]
-    public class GallioCmdletSnapIn : PSSnapIn
+    [TestFixture]
+    [Author("Julian Hidalgo")]
+    [TestsOn(typeof(CmdletLogger))]
+    [Category("UnitTests")]
+    public class CmdletLoggerTest
     {
-        /// <inheritdoc />
-        public override string Description
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void InstantiateLoggerWithNullArgument()
         {
-            get { return "A PowerShell Cmdlet for Gallio."; }
+            new CmdletLogger(null);
         }
 
-        /// <inheritdoc />
-        public override string Name
+        [Test]
+        public void InstantiateLogger()
         {
-            get { return "GallioCmdlet"; }
+            new CmdletLogger(new RunGallioCommand());
         }
 
-        /// <inheritdoc />
-        public override string Vendor
+        [Test]
+        public void CreateChildLogger()
         {
-            get { return "Gallio"; }
+            CmdletLogger logger = new CmdletLogger(new RunGallioCommand());
+            Assert.AreSame(logger.CreateChildLogger("child").GetType(), typeof(CmdletLogger));
         }
     }
 }
