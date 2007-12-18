@@ -102,7 +102,7 @@ namespace Gallio.Model
         /// <returns>The model list</returns>
         public IList<TModel> AsModelList()
         {
-            return new ContravariantList<TInfo, TModel>(this);
+            return new CovariantList<TInfo, TModel>(this);
         }
 
         /// <summary>

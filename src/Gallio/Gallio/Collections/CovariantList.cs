@@ -16,17 +16,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Gallio.Collections
 {
     /// <summary>
-    /// A contravariant list converts a list of the input type to a
-    /// read-only list of the more generic output type.
+    /// A covariant list converts a list of the input type to a
+    /// read-only list of the more generic output type.  The wrapped
+    /// list can be used to mimic covariance in method return types.
     /// </summary>
     /// <typeparam name="TInput">The input list type</typeparam>
     /// <typeparam name="TOutput">The output list type</typeparam>
-    public class ContravariantList<TInput, TOutput> : IList<TOutput>
+    public class CovariantList<TInput, TOutput> : IList<TOutput>
         where TInput : TOutput
     {
         private readonly IList<TInput> inputList;
@@ -36,7 +36,7 @@ namespace Gallio.Collections
         /// </summary>
         /// <param name="inputList">The input list</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="inputList"/> is null</exception>
-        public ContravariantList(IList<TInput> inputList)
+        public CovariantList(IList<TInput> inputList)
         {
             if (inputList == null)
                 throw new ArgumentNullException(@"inputList");

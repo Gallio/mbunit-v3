@@ -282,7 +282,7 @@
     <Compile Include="Hosting\IAssemblyResolver.cs" />
     <Compile Include="Model\Actions\ActionChain.cs" />
     <Compile Include="Model\Actions\ActionDecorator.cs" />
-    <Compile Include="Collections\ContravariantList.cs" />
+    <Compile Include="Collections\CovariantList.cs" />
     <Compile Include="Collections\EmptyArray.cs" />
     <Compile Include="Collections\EmptyDictionary.cs" />
     <Compile Include="Collections\IMultiMap.cs" />
