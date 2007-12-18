@@ -2,9 +2,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}</ProjectGuid>
+    <ProjectGuid>{7A6A5813-CD6C-4515-9C1C-84BC5C1EA173}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.PowerShellCommands</RootNamespace>

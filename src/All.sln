@@ -217,19 +217,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner.Test
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCmdlet", "Gallio\Runners\Gallio.PowerShellCmdlet\Gallio.PowerShellCmdlet.csproj", "{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCmdlet.Tests", "Gallio\Runners\Gallio.PowerShellCmdlet.Tests\Gallio.PowerShellCmdlet.Tests.csproj", "{52E0A229-CE15-4B72-8ACF-F17DCB929A64}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility", "MbUnit\MbUnit.Compatibility\MbUnit.Compatibility.csproj", "{F588B51F-786A-48E2-950E-636062F9C302}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands", "Gallio\Runners\Gallio.PowerShellCommands\Gallio.PowerShellCommands.csproj", "{7A6A5813-CD6C-4515-9C1C-84BC5C1EA173}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands.Tests", "Gallio\Runners\Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests.csproj", "{52E0A229-CE15-4B72-8ACF-F17DCB929A64}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -353,18 +353,18 @@ Global
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F588B51F-786A-48E2-950E-636062F9C302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F588B51F-786A-48E2-950E-636062F9C302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F588B51F-786A-48E2-950E-636062F9C302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F588B51F-786A-48E2-950E-636062F9C302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A6A5813-CD6C-4515-9C1C-84BC5C1EA173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A6A5813-CD6C-4515-9C1C-84BC5C1EA173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A6A5813-CD6C-4515-9C1C-84BC5C1EA173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A6A5813-CD6C-4515-9C1C-84BC5C1EA173}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -397,7 +397,7 @@ Global
 		{EBB6130D-3D29-4313-BAA9-1076BB8572AB} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC} = {7314C58D-3714-4872-885D-309338F09FC1}
-		{AA029EE0-D199-41D1-8D97-BDC5945B3CDD} = {7314C58D-3714-4872-885D-309338F09FC1}
+		{7A6A5813-CD6C-4515-9C1C-84BC5C1EA173} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{52E0A229-CE15-4B72-8ACF-F17DCB929A64} = {7314C58D-3714-4872-885D-309338F09FC1}
 		{A9B54755-56B7-48C1-8941-BB69FCEFFF32} = {4D506DA5-13C1-4B1F-9018-4FDCA066993A}
 		{321FD171-880D-472E-9912-EC844889E11A} = {4D506DA5-13C1-4B1F-9018-4FDCA066993A}
