@@ -44,7 +44,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
 
             this.fixtureExplorer = fixtureExplorer;
 
-            Kind = ComponentKind.Assembly;
+            Kind = TestKinds.Assembly;
         }
 
         /// <inheritdoc />

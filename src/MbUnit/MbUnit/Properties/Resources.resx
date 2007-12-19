@@ -120,13 +120,10 @@
   <data name="MbUnitTestUtils_ExpectedToInvokeAnInstanceMethod" xml:space="preserve">
     <value>Expected to invoke an instance method of a fixture but the fixture instance is not available.</value>
   </data>
-  <data name="MbUnitFrameworkTemplate_MbUnitGallioFrameworkVersionFormat" xml:space="preserve">
+  <data name="MbUnitFrameworkTest_MbUnitFrameworkVersionFormat" xml:space="preserve">
     <value>MbUnit v{0}</value>
   </data>
-  <data name="MbUnitTestState_TemplateBindingDoesNotContainParameter" xml:space="preserve">
-    <value>The template binding does not contain parameter '{0}'.</value>
-  </data>
-  <data name="MbUnitTestState_ErrorWhileBindingValueForParameter" xml:space="preserve">
-    <value>Error while binding value for parameter '{0}'.</value>
+  <data name="MbUnitTestFramework_FrameworkName" xml:space="preserve">
+    <value>MbUnit v3</value>
   </data>
 </root>

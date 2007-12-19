@@ -67,13 +67,13 @@ namespace MbUnit.Tests.Framework.Kernel.Model
 
             RootTest rootTest = testModel.RootTest;
             Assert.IsNull(rootTest.Parent);
-            Assert.AreEqual(ComponentKind.Root, rootTest.Kind);
+            Assert.AreEqual(TestKinds.Root, rootTest.Kind);
             Assert.IsNull(rootTest.CodeElement);
             Assert.AreEqual(1, rootTest.Children.Count);
 
             MbUnitFrameworkTest frameworkTest = (MbUnitFrameworkTest)rootTest.Children[0];
             Assert.AreSame(rootTest, frameworkTest.Parent);
-            Assert.AreEqual(ComponentKind.Framework, frameworkTest.Kind);
+            Assert.AreEqual(TestKinds.Framework, frameworkTest.Kind);
             Assert.IsNull(frameworkTest.CodeElement);
             Assert.AreEqual(expectedVersion, frameworkTest.Version);
             Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
@@ -81,7 +81,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
 
             MbUnitTest assemblyTest = (MbUnitTest) frameworkTest.Children[0];
             Assert.AreSame(frameworkTest, assemblyTest.Parent);
-            Assert.AreEqual(ComponentKind.Assembly, assemblyTest.Kind);
+            Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeElement.CodeReference);
             Assert.AreEqual(sampleAssembly, ((IAssemblyInfo) assemblyTest.CodeElement).Resolve());
             Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
@@ -89,7 +89,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             MbUnitTest typeTest = (MbUnitTest)GetDescendantByName(assemblyTest, "SimpleTest");
             Assert.IsNotNull(typeTest, "Could not find the SimpleTest fixture.");
             Assert.AreSame(assemblyTest, typeTest.Parent);
-            Assert.AreEqual(ComponentKind.Fixture, typeTest.Kind);
+            Assert.AreEqual(TestKinds.Fixture, typeTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), typeTest.CodeElement.CodeReference);
             Assert.AreEqual(typeof(SimpleTest), ((ITypeInfo) typeTest.CodeElement).Resolve());
             Assert.AreEqual("SimpleTest", typeTest.Name);
@@ -98,7 +98,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             MbUnitTest passTest = (MbUnitTest)GetDescendantByName(typeTest, "Pass");
             Assert.IsNotNull(passTest, "Could not find the Pass test.");
             Assert.AreSame(typeTest, passTest.Parent);
-            Assert.AreEqual(ComponentKind.Test, passTest.Kind);
+            Assert.AreEqual(TestKinds.Test, passTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")), passTest.CodeElement.CodeReference);
             Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), ((IMethodInfo) passTest.CodeElement).Resolve());
             Assert.AreEqual("Pass", passTest.Name);
@@ -106,7 +106,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             MbUnitTest failTest = (MbUnitTest)GetDescendantByName(typeTest, "Fail");
             Assert.IsNotNull(failTest, "Could not find the Fail test.");
             Assert.AreSame(typeTest, failTest.Parent);
-            Assert.AreEqual(ComponentKind.Test, failTest.Kind);
+            Assert.AreEqual(TestKinds.Test, failTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")), failTest.CodeElement.CodeReference);
             Assert.AreEqual(typeof(SimpleTest).GetMethod("Fail"), ((IMethodInfo)failTest.CodeElement).Resolve());
             Assert.AreEqual("Fail", failTest.Name);

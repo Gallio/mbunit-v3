@@ -142,20 +142,20 @@ namespace Gallio.Plugin.MbUnit2Adapter.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MbUnit v{0}.
+        /// </summary>
+        internal static string MbUnit2TestExplorer_FrameworkNameWithVersionFormat {
+            get {
+                return ResourceManager.GetString("MbUnit2TestExplorer_FrameworkNameWithVersionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MbUnit v2.
         /// </summary>
         internal static string MbUnit2TestFramework_FrameworkName {
             get {
                 return ResourceManager.GetString("MbUnit2TestFramework_FrameworkName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MbUnit v{0}.
-        /// </summary>
-        internal static string MbUnit2TestFramework_FrameworkTemplateName {
-            get {
-                return ResourceManager.GetString("MbUnit2TestFramework_FrameworkTemplateName", resourceCulture);
             }
         }
     }

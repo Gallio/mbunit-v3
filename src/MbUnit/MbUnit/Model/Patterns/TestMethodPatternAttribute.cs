@@ -62,7 +62,7 @@ namespace MbUnit.Model.Patterns
         protected virtual MbUnitTest CreateMethodTest(ITestBuilder containingTestBuilder, IMethodInfo method)
         {
             MbUnitTest test = new MbUnitTest(method.Name, method);
-            test.Kind = ComponentKind.Test;
+            test.Kind = TestKinds.Test;
             test.IsTestCase = true;
             return test;
         }

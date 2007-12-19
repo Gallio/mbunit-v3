@@ -70,12 +70,12 @@ namespace Gallio.Icarus.AdapterModel
             for (int i = 0; i < list.Count; i++)
             {
                 TestData td = list[i];
-                string componentKind = td.Metadata.GetValue(MetadataKeys.ComponentKind);
+                string componentKind = td.Metadata.GetValue(MetadataKeys.TestKind);
                 if (componentKind != null)
                 {
                     int imgIndex = GetImageIndex(componentKind);
                     TestTreeNode ttnode;
-                    if (componentKind != ComponentKind.Fixture)
+                    if (componentKind != TestKinds.Fixture)
                     {
                         // create an appropriate node
                         ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
@@ -116,13 +116,13 @@ namespace Gallio.Icarus.AdapterModel
             for (int i = 0; i < list.Count; i++)
             {
                 TestData td = list[i];
-                string componentKind = td.Metadata.GetValue(MetadataKeys.ComponentKind);
+                string componentKind = td.Metadata.GetValue(MetadataKeys.TestKind);
                 if (componentKind != null)
                 {
                     switch (componentKind)
                     {
-                        case ComponentKind.Fixture:
-                        case ComponentKind.Test:
+                        case TestKinds.Fixture:
+                        case TestKinds.Test:
                             int imgIndex = GetImageIndex(componentKind);
                             IList<string> metadata = td.Metadata[key];
                             if (metadata.Count == 0)
@@ -144,7 +144,7 @@ namespace Gallio.Icarus.AdapterModel
                                     root.Nodes.Add(metadataNode);
                                 }
                                 // add node in the appropriate place
-                                if (componentKind == ComponentKind.Fixture)
+                                if (componentKind == TestKinds.Fixture)
                                 {
                                     TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
                                     metadataNode.Nodes.Add(ttnode);
@@ -165,7 +165,7 @@ namespace Gallio.Icarus.AdapterModel
                             }
                             break;
                     }
-                    if (componentKind != ComponentKind.Fixture)
+                    if (componentKind != TestKinds.Fixture)
                     {
                         PopulateMetadataTree(key, td.Children, root, parent);
                     }
@@ -177,14 +177,14 @@ namespace Gallio.Icarus.AdapterModel
         {
             switch (componentKind)
             {
-                case ComponentKind.Root:
-                case ComponentKind.Framework:
+                case TestKinds.Root:
+                case TestKinds.Framework:
                     return 0;
-                case ComponentKind.Assembly:
+                case TestKinds.Assembly:
                     return 1;
-                case ComponentKind.Fixture:
+                case TestKinds.Fixture:
                     return 3;
-                case ComponentKind.Test:
+                case TestKinds.Test:
                     return 4;
                 default:
                     return 0;

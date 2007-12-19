@@ -35,11 +35,12 @@ namespace MbUnit.Model
         /// </summary>
         /// <param name="version">The MbUnit framework version</param>
         public MbUnitFrameworkTest(Version version)
-            : base(String.Format(Resources.MbUnitFrameworkTemplate_MbUnitGallioFrameworkVersionFormat, version), null)
+            : base(String.Format(Resources.MbUnitFrameworkTest_MbUnitFrameworkVersionFormat, version), null)
         {
             this.version = version;
 
-            Kind = ComponentKind.Framework;
+            Kind = TestKinds.Framework;
+            BaselineLocalId = Resources.MbUnitTestFramework_FrameworkName;
         }
 
         /// <summary>

@@ -147,7 +147,7 @@
   <data name="MbUnit2TestFramework_FrameworkName" xml:space="preserve">
     <value>MbUnit v2</value>
   </data>
-  <data name="MbUnit2TestFramework_FrameworkTemplateName" xml:space="preserve">
+  <data name="MbUnit2TestExplorer_FrameworkNameWithVersionFormat" xml:space="preserve">
     <value>MbUnit v{0}</value>
   </data>
 </root>

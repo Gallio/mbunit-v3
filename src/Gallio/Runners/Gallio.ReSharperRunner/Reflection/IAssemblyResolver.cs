@@ -13,34 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model.Execution;
-using Gallio.Properties;
+using System.Reflection;
+using Gallio.Model.Reflection;
 
-namespace Gallio.Model
+namespace Gallio.ReSharperRunner.Reflection
 {
     /// <summary>
-    /// The root test in the test tree.
+    /// Resolves assembly references to loaded assemblies.
     /// </summary>
-    public class RootTest : BaseTest
+    internal interface IAssemblyResolver
     {
         /// <summary>
-        /// Creates the root test.
+        /// Resolves an assembly reflection wrapper to an assembly by loading it from disk
+        /// if necessary.
         /// </summary>
-        public RootTest()
-            : base(Resources.RootTest_RootTestName, null)
-        {
-            Kind = TestKinds.Root;
-        }
-
-        /// <inheritdoc />
-        public override Factory<ITestController> TestControllerFactory
-        {
-            get { return CreateTestController; }
-        }
-
-        private static ITestController CreateTestController()
-        {
-            return new RecursiveTestController();
-        }
+        /// <param name="assemblyInfo">The assembly info</param>
+        /// <returns>The resolved assembly</returns>
+        Assembly ResolveAssembly(IAssemblyInfo assemblyInfo);
     }
 }

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using Gallio.Model;
-using Gallio.Model.Reflection;
 using Gallio.Plugin.MbUnit2Adapter.Properties;
 
 namespace Gallio.Plugin.MbUnit2Adapter.Model

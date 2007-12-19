@@ -38,7 +38,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         public NUnitAssemblyTest(IAssemblyInfo assembly, NUnitTestRunner runner)
             : base(assembly.Name, assembly, runner.Test)
         {
-            Kind = ComponentKind.Assembly;
+            Kind = TestKinds.Assembly;
 
             this.runner = runner;
         }

@@ -30,7 +30,7 @@ namespace Gallio.Model
         /// <summary>
         /// Initializes a test parameter.
         /// </summary>
-        /// <param name="name">The name of the component</param>
+        /// <param name="name">The name of the test parameter</param>
         /// <param name="codeElement">The point of definition of the parameter, or null if unknown</param>
         /// <param name="type">The type of the parameter</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
@@ -42,6 +42,18 @@ namespace Gallio.Model
                 throw new ArgumentNullException(@"type");
 
             this.type = type;
+        }
+
+        /// <inheritdoc />
+        public override string Id
+        {
+            get
+            {
+                if (owner != null)
+                    return string.Concat(owner.Id, @"@", Name);
+
+                return Name;
+            }
         }
 
         /// <inheritdoc />

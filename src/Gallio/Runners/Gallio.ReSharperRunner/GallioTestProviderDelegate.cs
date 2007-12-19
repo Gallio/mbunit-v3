@@ -59,28 +59,29 @@ namespace Gallio.ReSharperRunner
 
         public void ExploreAssembly(IMetadataAssembly assembly, IProject project, UnitTestElementConsumer consumer)
         {
-            MetadataReflector reflector = new MetadataReflector(project, ReflectorUtils.GetMetadataLoaderHack(assembly));
+            MetadataReflector reflector = new MetadataReflector(BuiltInAssemblyResolver.Instance, assembly, project);
             IAssemblyInfo assemblyInfo = reflector.Wrap(assembly);
 
             if (assemblyInfo != null)
             {
                 ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-                ITestExplorer explorer = CreateTestExplorer(reflector.ReflectionPolicy);
+                ITestExplorer explorer = CreateTestExplorer(reflector);
 
-                explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
+              explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
             }
         }
 
         public void ExploreFile(IFile psiFile, UnitTestElementLocationConsumer consumer, CheckForInterrupt interrupted)
         {
+            PsiReflector reflector = new PsiReflector(BuiltInAssemblyResolver.Instance, psiFile.GetManager());
             ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-            ITestExplorer explorer = CreateTestExplorer(PsiReflector.GetReflectionPolicy(psiFile.GetManager()));
+            ITestExplorer explorer = CreateTestExplorer(reflector);
 
             psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
             {
                 ITypeDeclaration declaration = element as ITypeDeclaration;
                 if (declaration != null)
-                    ExploreTypeDeclaration(explorer, declaration, consumerAdapter.Consume);
+                    ExploreTypeDeclaration(reflector, explorer, declaration, consumerAdapter.Consume);
             }, delegate(IElement element)
             {
                 if (interrupted())
@@ -91,24 +92,25 @@ namespace Gallio.ReSharperRunner
             }));
         }
 
-        private void ExploreTypeDeclaration(ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
+        private void ExploreTypeDeclaration(PsiReflector reflector, ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
         {
-            ITypeInfo typeInfo = PsiReflector.Wrap(declaration.DeclaredElement);
+            ITypeInfo typeInfo = reflector.Wrap(declaration.DeclaredElement);
 
             if (typeInfo != null)
                 explorer.ExploreType(typeInfo, consumer);
 
             foreach (ITypeDeclaration nestedDeclaration in declaration.NestedTypeDeclarations)
-                ExploreTypeDeclaration(explorer, nestedDeclaration, consumer);
+                ExploreTypeDeclaration(reflector, explorer, nestedDeclaration, consumer);
         }
 
         public bool IsUnitTestElement(IDeclaredElement element)
         {
-            ICodeElementInfo elementInfo = PsiReflector.Wrap(element, false);
+            PsiReflector reflector = new PsiReflector(BuiltInAssemblyResolver.Instance, element.GetManager());
+            ICodeElementInfo elementInfo = reflector.Wrap(element, false);
             if (elementInfo == null)
                 return false;
 
-            ITestExplorer explorer = CreateTestExplorer(PsiReflector.GetReflectionPolicy(element.GetManager()));
+            ITestExplorer explorer = CreateTestExplorer(reflector);
             return explorer.IsTest(elementInfo);
         }
 
@@ -195,8 +197,17 @@ namespace Gallio.ReSharperRunner
 
             private void Consume(ITest test, UnitTestElement parentElement)
             {
-                UnitTestElement element = MapTest(test, parentElement);
-                consumer(element);
+                UnitTestElement element;
+
+                if (ShouldTestBePresented(test))
+                {
+                    element = MapTest(test, parentElement);
+                    consumer(element);
+                }
+                else
+                {
+                    element = null;
+                }
 
                 foreach (ITest childTest in test.Children)
                     Consume(childTest, element);
@@ -204,20 +215,35 @@ namespace Gallio.ReSharperRunner
 
             private UnitTestElement MapTest(ITest test, UnitTestElement parentElement)
             {
-                if (test == null)
-                    return null;
-
                 UnitTestElement element;
                 if (!tests.TryGetValue(test, out element))
                 {
-                    if (parentElement == null)
-                        parentElement = MapTest(test.Parent, null);
-
                     element = new GallioTestElement(test, provider, parentElement);
                     tests.Add(test, element);
                 }
 
                 return element;
+            }
+
+            /// <summary>
+            /// ReSharper does not know how to present tests with a granularity any
+            /// larger than a namespace.  The tree it shows to users in such cases is
+            /// not very helpful because it appear that the root test is a child of the
+            /// project that resides in the root namespace.  So we filter out
+            /// certain kinds of tests from view.
+            /// </summary>
+            private static bool ShouldTestBePresented(ITest test)
+            {
+                switch (test.Metadata.GetValue(MetadataKeys.TestKind))
+                {
+                    case TestKinds.Root:
+                    case TestKinds.Framework:
+                    case TestKinds.Assembly:
+                        return false;
+
+                    default:
+                        return true;
+                }
             }
         }
 

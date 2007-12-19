@@ -99,8 +99,9 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         private static ITest CreateFrameworkTest(Version frameworkVersion)
         {
-            BaseTest frameworkTest = new BaseTest(String.Format(Resources.XunitFrameworkTemplate_FrameworkTemplateName, frameworkVersion), null);
-            frameworkTest.Kind = ComponentKind.Framework;
+            BaseTest frameworkTest = new BaseTest(String.Format(Resources.XunitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
+            frameworkTest.BaselineLocalId = Resources.XunitTestFramework_XunitFrameworkName;
+            frameworkTest.Kind = TestKinds.Framework;
 
             return frameworkTest;
         }
@@ -128,7 +129,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
         private static ITest CreateAssemblyTest(IAssemblyInfo assembly)
         {
             BaseTest assemblyTest = new BaseTest(assembly.Name, assembly);
-            assemblyTest.Kind = ComponentKind.Assembly;
+            assemblyTest.Kind = TestKinds.Assembly;
 
             ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTest.Metadata);
 
@@ -157,7 +158,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
         private static XunitTest CreateTypeTest(XunitTypeInfoAdapter typeInfo, ITestClassCommand testClassCommand)
         {
             XunitTest typeTest = new XunitTest(typeInfo.Target.Name, typeInfo.Target, typeInfo, null);
-            typeTest.Kind = ComponentKind.Fixture;
+            typeTest.Kind = TestKinds.Fixture;
 
             foreach (XunitMethodInfoAdapter methodInfo in testClassCommand.EnumerateTestMethods())
                 typeTest.AddChild(CreateMethodTest(typeInfo, methodInfo));
@@ -173,7 +174,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
         private static XunitTest CreateMethodTest(XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
         {
             XunitTest methodTest = new XunitTest(methodInfo.Name, methodInfo.Target, typeInfo, methodInfo);
-            methodTest.Kind = ComponentKind.Test;
+            methodTest.Kind = TestKinds.Test;
             methodTest.IsTestCase = true;
 
             // Add skip reason.

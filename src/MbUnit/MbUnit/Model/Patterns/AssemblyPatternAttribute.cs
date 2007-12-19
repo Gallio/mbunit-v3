@@ -64,7 +64,7 @@ namespace MbUnit.Model.Patterns
         protected virtual MbUnitTest CreateAssemblyTest(ITestBuilder containingTestBuilder, IAssemblyInfo assembly)
         {
             MbUnitTest test = new MbUnitTest(assembly.Name, assembly);
-            test.Kind = ComponentKind.Assembly;
+            test.Kind = TestKinds.Assembly;
             return test;
         }
 

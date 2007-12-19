@@ -72,27 +72,18 @@ namespace Gallio.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The parameter list already contains a parameter named &apos;{0}&apos;..
         /// </summary>
-        internal static string BaseTemplate_ParameterListAlreadyContainsParameterWithSameName {
+        internal static string BaseTest_ParameterListAlreadyContainsParameterWithSameName {
             get {
-                return ResourceManager.GetString("BaseTemplate_ParameterListAlreadyContainsParameterWithSameName", resourceCulture);
+                return ResourceManager.GetString("BaseTest_ParameterListAlreadyContainsParameterWithSameName", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid number of template arguments for template &apos;{0}&apos;, expected {1} but received {2}..
+        ///   Looks up a localized string similar to The test to be added is already a child of another test..
         /// </summary>
-        internal static string BaseTemplateBinding_InvalidNumberOfTemplateArguments {
+        internal static string BaseTest_TestAlreadyHasAParent {
             get {
-                return ResourceManager.GetString("BaseTemplateBinding_InvalidNumberOfTemplateArguments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing argument for template parameter &apos;{0}&apos; of template &apos;{1}&apos;..
-        /// </summary>
-        internal static string BaseTemplateBinding_MissingArgumentForTemplateParameter {
-            get {
-                return ResourceManager.GetString("BaseTemplateBinding_MissingArgumentForTemplateParameter", resourceCulture);
+                return ResourceManager.GetString("BaseTest_TestAlreadyHasAParent", resourceCulture);
             }
         }
         
@@ -541,24 +532,6 @@ namespace Gallio.Properties {
         internal static string ModelUtils_InvalidSignature {
             get {
                 return ResourceManager.GetString("ModelUtils_InvalidSignature", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The node to be added is already a child of another node..
-        /// </summary>
-        internal static string ModelUtils_NodeAlreadyHasAParent {
-            get {
-                return ResourceManager.GetString("ModelUtils_NodeAlreadyHasAParent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Root.
-        /// </summary>
-        internal static string RootTemplate_RootTemplateName {
-            get {
-                return ResourceManager.GetString("RootTemplate_RootTemplateName", resourceCulture);
             }
         }
         

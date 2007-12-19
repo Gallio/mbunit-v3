@@ -27,7 +27,7 @@ namespace Gallio.Model
     /// </summary>
     /// <remarks>
     /// The base test implementation acts as a simple container for tests.
-    /// Accordingly its kind is set to <see cref="ComponentKind.Group" /> by default.
+    /// Accordingly its kind is set to <see cref="TestKinds.Group" /> by default.
     /// </remarks>
     public class BaseTest : BaseTestComponent, ITest
     {
@@ -36,6 +36,10 @@ namespace Gallio.Model
         private readonly List<ITest> dependencies;
         private ITest parent;
         private bool isTestCase;
+
+        private string cachedId;
+        private string cachedLocalId;
+        private string baselineLocalId;
 
         /// <summary>
         /// Initializes a test initially without a parent.
@@ -50,14 +54,101 @@ namespace Gallio.Model
             dependencies = new List<ITest>();
             children = new List<ITest>();
 
-            Kind = ComponentKind.Group;
+            Kind = TestKinds.Group;
+        }
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="MetadataKeys.TestKind" />
+        /// metadata entry.  (This is a convenience method.)
+        /// </summary>
+        /// <value>
+        /// One of the <see cref="TestKinds" /> constants.
+        /// </value>
+        public string Kind
+        {
+            get { return Metadata.GetValue(MetadataKeys.TestKind); }
+            set { Metadata.SetValue(MetadataKeys.TestKind, value); }
+        }
+
+        /// <inheritdoc />
+        public override string Id
+        {
+            get
+            {
+                // We compute an id using the combined hash of the local ids
+                // from this test up the tree to the root.  A hash is used to
+                // keep the ids relatively short and to prevent people from 
+                // making undue assumptions about the internal structure of an id.
+                if (cachedId == null)
+                {
+                    ulong hash = 0;
+                    UpdateHash(ref hash, LocalId);
+
+                    for (ITest ancestor = parent; ancestor != null; ancestor = ancestor.Parent)
+                        UpdateHash(ref hash, ancestor.LocalId);
+
+                    cachedId = Convert.ToString(unchecked ((long) hash), 16);
+                }
+
+                return cachedId;
+            }
+        }
+
+        private static void UpdateHash(ref ulong hash, string s)
+        {
+            int length = s.Length;
+
+            for (int i = 0; i < length; i++)
+                hash = (hash << 5) ^ (hash >> 59) ^ s[i];
+
+            unchecked { hash *= 0x3E36B306AD118E71L; } // a large prime to scatter the bits around
+        }
+
+        /// <summary>
+        /// Gets or sets an initial approximation of a <see cref="LocalId" />, or null if none.
+        /// The value returned by this method will be checked for uniqueness and amended as necessary
+        /// to produce a truly unique <see cref="LocalId" />.
+        /// </summary>
+        /// <value>
+        /// The default value of this property is <c>null</c> which causes the <see cref="ITestComponent.Name" />
+        /// property to be used as the baseline local id.
+        /// </value>
+        /// <returns>The local id</returns>
+        public string BaselineLocalId
+        {
+            get { return baselineLocalId; }
+            set { baselineLocalId = value; }
         }
 
         /// <inheritdoc />
         public ITest Parent
         {
             get { return parent; }
-            set { parent = value; }
+            set
+            {
+                parent = value;
+                cachedId = null;
+                cachedLocalId = null;
+            }
+        }
+
+        /// <inheritdoc />
+        public string LocalId
+        {
+            get
+            {
+                if (cachedLocalId == null)
+                {
+                    string root = baselineLocalId ?? Name;
+                    cachedLocalId = root;
+
+                    int suffix = 0;
+                    while (!IsLocalIdUniqueAmongSiblings(cachedLocalId))
+                        cachedLocalId = root + (++suffix);
+                }
+
+                return cachedLocalId;
+            }
         }
 
         /// <inheritdoc />
@@ -102,7 +193,7 @@ namespace Gallio.Model
             if (test == null)
                 throw new ArgumentNullException("test");
             if (test.Parent != null)
-                throw new InvalidOperationException(Resources.ModelUtils_NodeAlreadyHasAParent);
+                throw new InvalidOperationException(Resources.BaseTest_TestAlreadyHasAParent);
 
             test.Parent = this;
             children.Add(test);
@@ -131,6 +222,26 @@ namespace Gallio.Model
         public virtual Factory<ITestController> TestControllerFactory
         {
             get { return null; }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return String.Format("[{0}] {1}", Kind, Name);
+        }
+
+        private bool IsLocalIdUniqueAmongSiblings(string localId)
+        {
+            if (parent != null)
+            {
+                foreach (ITest sibling in parent.Children)
+                {
+                    if (sibling != this && sibling.LocalId == localId)
+                        return true;
+                }
+            }
+
+            return true;
         }
     }
 }

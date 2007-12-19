@@ -63,7 +63,7 @@ namespace MbUnit.Model.Patterns
         protected virtual MbUnitTest CreateTest(ITestBuilder containingTestBuilder, ITypeInfo type)
         {
             MbUnitTest test = new MbUnitTest(type.Name, type);
-            test.Kind = ComponentKind.Fixture;
+            test.Kind = TestKinds.Fixture;
             return test;
         }
 

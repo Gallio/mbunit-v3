@@ -23,6 +23,7 @@ namespace Gallio.Model
     public class BaseTestInstance : BaseTestComponent, ITestInstance
     {
         private readonly ITest test;
+        private string id;
 
         /// <summary>
         /// Initializes a test instance with the same name as its test.
@@ -47,6 +48,17 @@ namespace Gallio.Model
                 throw new ArgumentNullException(@"test");
 
             this.test = test;
+        }
+
+        /// <inheritdoc />
+        public override string Id
+        {
+            get
+            { 
+                if (id == null)
+                    id = Guid.NewGuid().ToString();
+                return id;
+            }
         }
 
         /// <inheritdoc />

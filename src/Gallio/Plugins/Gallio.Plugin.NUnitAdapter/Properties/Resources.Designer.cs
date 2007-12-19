@@ -61,24 +61,6 @@ namespace Gallio.Plugin.NUnitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NUnit v{0}.
-        /// </summary>
-        internal static string NUnitFrameworkTemplate_FrameworkTemplateName {
-            get {
-                return ResourceManager.GetString("NUnitFrameworkTemplate_FrameworkTemplateName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot load one or more NUnit test assemblies..
-        /// </summary>
-        internal static string NUnitFrameworkTemplateBinding_CannotLoadNUnitTestAssemblies {
-            get {
-                return ResourceManager.GetString("NUnitFrameworkTemplateBinding_CannotLoadNUnitTestAssemblies", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The test controller has been disposed..
         /// </summary>
         internal static string NUnitTestController_ControllerWasDisposedException {
@@ -129,6 +111,24 @@ namespace Gallio.Plugin.NUnitAdapter.Properties {
         internal static string NUnitTestController_UnhandledExceptionSectionName {
             get {
                 return ResourceManager.GetString("NUnitTestController_UnhandledExceptionSectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot load one or more NUnit test assemblies..
+        /// </summary>
+        internal static string NUnitTestExplorer_CannotLoadNUnitTestAssemblies {
+            get {
+                return ResourceManager.GetString("NUnitTestExplorer_CannotLoadNUnitTestAssemblies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NUnit v{0}.
+        /// </summary>
+        internal static string NUnitTestExplorer_FrameworkNameWithVersionFormat {
+            get {
+                return ResourceManager.GetString("NUnitTestExplorer_FrameworkNameWithVersionFormat", resourceCulture);
             }
         }
         

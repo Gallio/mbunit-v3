@@ -82,8 +82,9 @@ namespace Gallio.Plugin.NUnitAdapter.Model
 
         private static ITest CreateFrameworkTest(Version frameworkVersion)
         {
-            BaseTest frameworkTest = new BaseTest(String.Format(Resources.NUnitFrameworkTemplate_FrameworkTemplateName, frameworkVersion), null);
-            frameworkTest.Kind = ComponentKind.Framework;
+            BaseTest frameworkTest = new BaseTest(String.Format(Resources.NUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
+            frameworkTest.BaselineLocalId = Resources.NUnitTestFramework_NUnitFrameworkName;
+            frameworkTest.Kind = TestKinds.Framework;
 
             return frameworkTest;
         }
@@ -151,7 +152,7 @@ namespace Gallio.Plugin.NUnitAdapter.Model
 
             NUnitTestRunner runner = new NUnitRemoteTestRunner();
             if (!runner.Load(package))
-                throw new ModelException(Resources.NUnitFrameworkTemplateBinding_CannotLoadNUnitTestAssemblies);
+                throw new ModelException(Resources.NUnitTestExplorer_CannotLoadNUnitTestAssemblies);
 
             return runner;
         }
@@ -164,17 +165,17 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             switch (nunitTest.TestType)
             {
                 case @"Test Case":
-                    kind = ComponentKind.Test;
+                    kind = TestKinds.Test;
                     codeElement = ParseTestCaseName(parentTest.CodeElement, nunitTest.TestName.FullName);
                     break;
 
                 case @"Test Fixture":
-                    kind = ComponentKind.Fixture;
+                    kind = TestKinds.Fixture;
                     codeElement = ParseTestFixtureName(parentTest.CodeElement, nunitTest.TestName.FullName);
                     break;
 
                 default:
-                    kind = nunitTest.IsSuite ? ComponentKind.Suite : ComponentKind.Test;
+                    kind = nunitTest.IsSuite ? TestKinds.Suite : TestKinds.Test;
                     codeElement = parentTest.CodeElement;
                     break;
             }

@@ -18,12 +18,12 @@ using System;
 namespace Gallio.Model
 {
     /// <summary>
-    /// Specifies the kind of a test or template component.
+    /// Specifies the kind of a test component.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The component kind is not significant to the MbUnit test runner.  Instead
-    /// it provides a loose classification that may be used to provide appropriate
+    /// The test kind is not very significant to the MbUnit test runner.
+    /// It provides a loose classification that may be used to provide appropriate
     /// decorations when presenting the template in a user interface.
     /// </para>
     /// <para>
@@ -32,57 +32,57 @@ namespace Gallio.Model
     /// in the user interface (albeit perhaps without special affordances.)
     /// </para>
     /// </remarks>
-    /// <seealso cref="MetadataKeys.ComponentKind"/>
-    public static class ComponentKind
+    /// <seealso cref="MetadataKeys.TestKind"/>
+    public static class TestKinds
     {
         /// <summary>
-        /// The component is the root of the test or template tree.
+        /// The test represents the root of the test tree.
         /// </summary>
         public const string Root = "Root";
 
         /// <summary>
-        /// The component encloses all contributions offered by a given test framework.
+        /// The test represents a grouping of all contributions offered by a given test framework.
         /// </summary>
         public const string Framework = "Framework";
 
         /// <summary>
-        /// The component describes the tests contained in a single test assembly.
+        /// The test represents the tests contained in a single test assembly.
         /// </summary>
         public const string Assembly = "Assembly";
 
         /// <summary>
-        /// The component describes the tests contained in a single test namespace.
+        /// The test represents the tests contained in a single test namespace.
         /// </summary>
         public const string Namespace = "Namespace";
 
         /// <summary>
-        /// The component describes a grouping of templates or tests for descriptive purposes.
+        /// The test represents a grouping of tests for descriptive purposes.
         /// </summary>
         public const string Group = "Group";
 
         /// <summary>
-        /// The component describes a test suite.
+        /// The test represents a test suite.
         /// </summary>
         public const string Suite = "Suite";
 
         /// <summary>
-        /// The component describes a test fixture.
+        /// The test represents a test fixture.
         /// </summary>
         public const string Fixture = "Fixture";
 
         /// <summary>
-        /// The component describes a test.
+        /// The test represents a test case.
         /// </summary>
         public const string Test = "Test";
 
         /// <summary>
-        /// The component describes an error placeholder used in place of a test
+        /// The test is an error placeholder used in place of a test
         /// when an error occurs during test enumeration.
         /// </summary>
         public const string Error = "Error";
 
         /// <summary>
-        /// The component is of some other unspecified kind.
+        /// The test is of some other unspecified kind.
         /// </summary>
         /// <remarks>
         /// If none of the built-in kinds are appropriate, you may use the

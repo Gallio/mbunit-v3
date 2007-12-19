@@ -117,29 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BaseTemplateBinding_InvalidNumberOfTemplateArguments" xml:space="preserve">
-    <value>Invalid number of template arguments for template '{0}', expected {1} but received {2}.</value>
-  </data>
-  <data name="BaseTemplateBinding_MissingArgumentForTemplateParameter" xml:space="preserve">
-    <value>Missing argument for template parameter '{0}' of template '{1}'.</value>
-  </data>
   <data name="BaseStep_RootStepName" xml:space="preserve">
     <value>Root</value>
   </data>
-  <data name="BaseTemplate_ParameterListAlreadyContainsParameterWithSameName" xml:space="preserve">
+  <data name="BaseTest_ParameterListAlreadyContainsParameterWithSameName" xml:space="preserve">
     <value>The parameter list already contains a parameter named '{0}'.</value>
   </data>
   <data name="CodeReference_ToString_ParameterName" xml:space="preserve">
     <value>Parameter '{0}' of </value>
   </data>
-  <data name="ModelUtils_NodeAlreadyHasAParent" xml:space="preserve">
-    <value>The node to be added is already a child of another node.</value>
+  <data name="BaseTest_TestAlreadyHasAParent" xml:space="preserve">
+    <value>The test to be added is already a child of another test.</value>
   </data>
   <data name="ModelUtils_InvalidSignature" xml:space="preserve">
     <value>Expected a method with signature ({0}) but found ({1}).</value>
-  </data>
-  <data name="RootTemplate_RootTemplateName" xml:space="preserve">
-    <value>Root</value>
   </data>
   <data name="RootTest_RootTestName" xml:space="preserve">
     <value>Root</value>
@@ -190,22 +181,34 @@
     <value>[Lifecycle: Start ({0})]</value>
   </data>
   <data name="DebugMonitor_LifecycleEvent_SetPhase_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Set Phase ({0})]&#xD;&#xA;	Phase Name: {1}</value>
+    <value>[Lifecycle: Set Phase ({0})]
+	Phase Name: {1}</value>
   </data>
   <data name="DebugMonitor_LifecycleEvent_Finish_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Finish ({0})]&#xD;&#xA;	State:    {1}&#xD;&#xA;	Outcome:  {2}&#xD;&#xA;	Asserts:  {3}&#xD;&#xA;	Duration: {4:0.000}s</value>
+    <value>[Lifecycle: Finish ({0})]
+	State:    {1}
+	Outcome:  {2}
+	Asserts:  {3}
+	Duration: {4:0.000}s</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_Write_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Write ({0})]&#xD;&#xA;	Stream Name: {1}&#xD;&#xA;	Text:        {2}</value>
+    <value>[Execution Log: Write ({0})]
+	Stream Name: {1}
+	Text:        {2}</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_Attach_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Attach ({0})]&#xD;&#xA;	Attachment Name:         {1}&#xD;&#xA;	Attachment Content Type: {2}</value>
+    <value>[Execution Log: Attach ({0})]
+	Attachment Name:         {1}
+	Attachment Content Type: {2}</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Begin Section ({0})]&#xD;&#xA;	Stream Name:  {1}&#xD;&#xA;	Section Name: {2}</value>
+    <value>[Execution Log: Begin Section ({0})]
+	Stream Name:  {1}
+	Section Name: {2}</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_EndSection_EventFormat" xml:space="preserve">
-    <value>[Execution Log: End Section ({0})]&#xD;&#xA;	Stream Name: {1}</value>
+    <value>[Execution Log: End Section ({0})]
+	Stream Name: {1}</value>
   </data>
   <data name="CommandLineOutput_ShortForm" xml:space="preserve">
     <value>(Short form: {0})</value>
@@ -274,10 +277,14 @@
     <value>Parsed argument object is not of the correct type.</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_EmbedExisting_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Embed Existing ({0})]&#xD;&#xA;	Stream Name:     {1}&#xD;&#xA;	Attachment Name: {2}</value>
+    <value>[Execution Log: Embed Existing ({0})]
+	Stream Name:     {1}
+	Attachment Name: {2}</value>
   </data>
   <data name="DebugMonitor_LifecycleEvent_AddMetadata_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Add Metadata ({0})]&#xD;&#xA;	Metadata Key:   {1}&#xD;&#xA;	Metadata Value: {2}</value>
+    <value>[Lifecycle: Add Metadata ({0})]
+	Metadata Key:   {1}
+	Metadata Value: {2}</value>
   </data>
   <data name="DebugMonitor_LifecycleEvent_NewInstance_EventFormat" xml:space="preserve">
     <value>[Lifecycle: NewInstance ({0})]</value>

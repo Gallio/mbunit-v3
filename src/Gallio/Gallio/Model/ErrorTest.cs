@@ -39,7 +39,7 @@ namespace Gallio.Model
             if (description == null)
                 throw new ArgumentNullException("description");
 
-            Kind = ComponentKind.Error;
+            Kind = TestKinds.Error;
 
             Metadata.SetValue(MetadataKeys.Description, description);
         }

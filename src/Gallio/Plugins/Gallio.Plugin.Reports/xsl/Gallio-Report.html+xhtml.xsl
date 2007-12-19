@@ -158,7 +158,7 @@
 
   <xsl:template match="g:children/g:test" mode="summary">
     <xsl:variable name="id" select="@id" />
-    <xsl:variable name="kind" select="g:metadata/g:entry[@key='ComponentKind']/g:value" />
+    <xsl:variable name="kind" select="g:metadata/g:entry[@key='TestKind']/g:value" />
     <xsl:variable name="tests" select="descendant-or-self::g:test[@isTestCase='true']" />
     <xsl:variable name="run" select="$tests[@id = key('status', 'executed')/g:testInstance/@testId]" />
     <xsl:variable name="passed" select="$tests[@id = key('outcome', 'passed')/g:testInstance/@testId]" />
@@ -228,7 +228,7 @@
 
   <xsl:template match="g:children/g:test" mode="details">
     <xsl:variable name="testId" select="@id" />
-    <xsl:variable name="kind" select="g:metadata/g:entry[@key='ComponentKind']/g:value" />
+    <xsl:variable name="kind" select="g:metadata/g:entry[@key='TestKind']/g:value" />
 
     <xsl:variable name="tests" select="descendant-or-self::g:test[@isTestCase='true']" />
     <xsl:variable name="run" select="$tests[@id = key('status', 'executed')/g:testInstance/@testId]" />
@@ -381,7 +381,7 @@
 
   <xsl:template name="print-metadata-entries">
     <xsl:param name="entries" />
-    <xsl:variable name="visibleEntries" select="$entries[@key != 'ComponentKind']" />
+    <xsl:variable name="visibleEntries" select="$entries[@key != 'TestKind']" />
 
     <xsl:if test="$visibleEntries">
       <ul class="metadata">

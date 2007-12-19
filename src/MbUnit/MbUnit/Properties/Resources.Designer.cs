@@ -63,27 +63,18 @@ namespace MbUnit.Properties {
         /// <summary>
         ///   Looks up a localized string similar to MbUnit v{0}.
         /// </summary>
-        internal static string MbUnitFrameworkTemplate_MbUnitGallioFrameworkVersionFormat {
+        internal static string MbUnitFrameworkTest_MbUnitFrameworkVersionFormat {
             get {
-                return ResourceManager.GetString("MbUnitFrameworkTemplate_MbUnitGallioFrameworkVersionFormat", resourceCulture);
+                return ResourceManager.GetString("MbUnitFrameworkTest_MbUnitFrameworkVersionFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error while binding value for parameter &apos;{0}&apos;..
+        ///   Looks up a localized string similar to MbUnit v3.
         /// </summary>
-        internal static string MbUnitTestState_ErrorWhileBindingValueForParameter {
+        internal static string MbUnitTestFramework_FrameworkName {
             get {
-                return ResourceManager.GetString("MbUnitTestState_ErrorWhileBindingValueForParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The template binding does not contain parameter &apos;{0}&apos;..
-        /// </summary>
-        internal static string MbUnitTestState_TemplateBindingDoesNotContainParameter {
-            get {
-                return ResourceManager.GetString("MbUnitTestState_TemplateBindingDoesNotContainParameter", resourceCulture);
+                return ResourceManager.GetString("MbUnitTestFramework_FrameworkName", resourceCulture);
             }
         }
         

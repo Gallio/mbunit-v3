@@ -60,6 +60,35 @@ namespace Gallio.Model
     public interface ITest : ITestComponent
     {
         /// <summary>
+        /// <para>
+        /// Gets a locally unique identifier for this test that satisfies the following conditions:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>The identifier is unique among all siblings of this test belonging to the same parent.</item>
+        /// <item>The identifier is likely to be stable across multiple sessions including
+        /// changes and recompilations of the test projects.</item>
+        /// <item>The identifier is non-null.</item>
+        /// </list>
+        /// <para>
+        /// The local identifier may be the same as the test's name.  However since the name is
+        /// intended for display to end-users, it may contain irrelevant details (such as version
+        /// numbers) that would reduce its long-term stability.  In that case, a different
+        /// local identifier should be selected such as one based on the test's
+        /// <see cref="ITestComponent.CodeElement" /> and an ordering condition among siblings
+        /// to guarantee uniqueness.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The locally unique <see cref="LocalId" /> property may be used to generate the
+        /// globally unique <see cref="ITestComponent.Id" /> property of a test by combining
+        /// it with the locally unique identifiers of its parents.
+        /// </para>
+        /// </remarks>
+        /// <returns>The locally unique identifier</returns>
+        string LocalId { get; }
+
+        /// <summary>
         /// Gets whether this test represents an individual test case
         /// as opposed to a test container such as a fixture or suite.  The value of
         /// this property can be used by the test harness to avoid processing containers

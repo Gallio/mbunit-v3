@@ -75,12 +75,6 @@ namespace Gallio.Model
         public const string Company = "Company";
 
         /// <summary>
-        /// The metadata key used to describe the kind of a component as the
-        /// string representation of one of the <see cref="Model.ComponentKind" /> constants.
-        /// </summary>
-        public const string ComponentKind = "ComponentKind";
-
-        /// <summary>
         /// The metadata key for build/release configuration information associated with a test.
         /// It describes the target environment or usage for the test.
         /// </summary>
@@ -167,6 +161,12 @@ namespace Gallio.Model
         /// May be derived from <c>TestsOnAttribute</c> in MbUnit or its equivalent.
         /// </remarks>
         public const string TestsOn = "TestsOn";
+
+        /// <summary>
+        /// The metadata key used to describe the kind of a test as the
+        /// string representation of one of the <see cref="TestKinds" /> constants.
+        /// </summary>
+        public const string TestKind = "TestKind";
 
         /// <summary>
         /// The metadata key for a title associated with a test.

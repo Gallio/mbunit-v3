@@ -27,6 +27,7 @@ namespace Gallio.Model
         private readonly string fullName;
         private readonly ITestStep parent;
         private readonly ITestInstance testInstance;
+        private string id;
 
         /// <summary>
         /// Gets the localized name of the root step.
@@ -66,7 +67,19 @@ namespace Gallio.Model
 
             this.testInstance = testInstance;
             this.parent = parent;
+
             fullName = GenerateFullName();
+        }
+
+        /// <inheritdoc />
+        public override string Id
+        {
+            get
+            {
+                if (id == null)
+                    id = Guid.NewGuid().ToString();
+                return id;
+            }
         }
 
         /// <inheritdoc />

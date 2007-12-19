@@ -13,9 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Model.Reflection;
 
 namespace Gallio.Model
@@ -24,6 +21,10 @@ namespace Gallio.Model
     /// <para>
     /// A test parameter describes a formal parameter of a <see cref="ITest" />
     /// to which a value be bound to produce a <see cref="ITestInstance" />.
+    /// </para>
+    /// <para>
+    /// The <see cref="ITestComponent.Name" /> property of a test parameter should be
+    /// unique among the set parameters belonging to its <see cref="Owner"/>.
     /// </para>
     /// </summary>
     public interface ITestParameter : ITestComponent

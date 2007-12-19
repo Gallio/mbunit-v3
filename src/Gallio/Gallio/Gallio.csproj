@@ -307,7 +307,7 @@
     <Compile Include="Model\BaseTest.cs" />
     <Compile Include="Model\Reflection\CodeReference.cs" />
     <Compile Include="Model\Reflection\CodeReferenceKind.cs" />
-    <Compile Include="Model\ComponentKind.cs" />
+    <Compile Include="Model\TestKinds.cs" />
     <Compile Include="Model\ITestComponent.cs" />
     <Compile Include="Model\ITestStep.cs" />
     <Compile Include="Model\ITest.cs" />

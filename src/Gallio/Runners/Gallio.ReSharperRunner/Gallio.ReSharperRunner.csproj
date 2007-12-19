@@ -122,6 +122,9 @@
     <Compile Include="Hosting\AssemblyLoader.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Reflection\BaseReSharperReflector.cs" />
+    <Compile Include="Reflection\BuiltInAssemblyResolver.cs" />
+    <Compile Include="Reflection\IAssemblyResolver.cs" />
     <Compile Include="Tasks\GallioRemoteAction.cs" />
     <Compile Include="Tasks\GallioRemoteTaskRunner.cs" />
     <Compile Include="Tasks\GallioRemoteTask.cs" />
@@ -129,7 +132,6 @@
     <Compile Include="Hosting\RuntimeProxy.cs" />
     <Compile Include="Reflection\IDeclaredElementAccessor.cs" />
     <Compile Include="Reflection\IProjectAccessor.cs" />
-    <Compile Include="Reflection\ReflectorUtils.cs" />
     <Compile Include="Tasks\GallioTestRunAction.cs" />
     <Compile Include="Tasks\GallioTestRunTask.cs" />
     <Compile Include="GallioTestProvider.cs" />

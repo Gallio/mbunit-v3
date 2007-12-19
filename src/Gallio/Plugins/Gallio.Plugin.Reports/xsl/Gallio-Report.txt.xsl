@@ -84,7 +84,7 @@
     <xsl:variable name="test" select="//g:test[@id=$testId]" />
 
     <xsl:text>[</xsl:text>
-    <xsl:value-of select="$test/g:metadata/g:entry[@key='ComponentKind']/g:value" />
+    <xsl:value-of select="$test/g:metadata/g:entry[@key='TestKind']/g:value" />
     <xsl:text>] </xsl:text>
     <xsl:value-of select="@fullName" />
     <xsl:text>&#xA;</xsl:text>

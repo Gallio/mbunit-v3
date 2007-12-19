@@ -33,9 +33,8 @@ namespace Gallio.ReSharperRunner.Reflection
     /// </summary>
     /// <todo author="jeff">
     /// Support inherited attribute lookup.
-    /// Support Resolve() method.
     /// </todo>
-    internal class MetadataReflector : IReflectionPolicy
+    internal class MetadataReflector : BaseReSharperReflector, IReflectionPolicy
     {
         private readonly IProject contextProject;
         private readonly MetadataLoader metadataLoader;
@@ -44,12 +43,17 @@ namespace Gallio.ReSharperRunner.Reflection
         /// Creates a reflector with the specified project as its context.
         /// The context project is used to resolve metadata items to declared elements.
         /// </summary>
+        /// <param name="assemblyResolver">The assembly resolver</param>
+        /// <param name="assembly">The assembly provide context for the loader</param>
         /// <param name="contextProject">The context project, or null if none</param>
-        /// <param name="metadataLoader">The metadata loader, or null if none</param>
-        public MetadataReflector(IProject contextProject, MetadataLoader metadataLoader)
+        public MetadataReflector(IAssemblyResolver assemblyResolver, IMetadataAssembly assembly, IProject contextProject)
+            : base(assemblyResolver)
         {
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+
+            metadataLoader = GetMetadataLoaderHack(assembly);
             this.contextProject = contextProject;
-            this.metadataLoader = metadataLoader;
         }
 
         /// <summary>
@@ -58,12 +62,6 @@ namespace Gallio.ReSharperRunner.Reflection
         public IProject ContextProject
         {
             get { return contextProject; }
-        }
-
-        /// <inheritdoc />
-        public IReflectionPolicy ReflectionPolicy
-        {
-            get { return this; }
         }
 
         /// <summary>
@@ -223,6 +221,12 @@ namespace Gallio.ReSharperRunner.Reflection
             return target != null ? new AttributeWrapper(this, target) : null;
         }
 
+        /// <inheritdoc />
+        public override IAssemblyInfo LoadAssembly(AssemblyName assemblyName)
+        {
+            return Wrap(LoadMetadataAssembly(assemblyName));
+        }
+
         private static bool IsConstructor(IMetadataMethod method)
         {
             string name = method.Name;
@@ -364,7 +368,7 @@ namespace Gallio.ReSharperRunner.Reflection
             return null;
         }
 
-        private IMetadataAssembly LoadAssembly(AssemblyName assemblyName)
+        private IMetadataAssembly LoadMetadataAssembly(AssemblyName assemblyName)
         {
             if (metadataLoader == null)
                 throw new InvalidOperationException(String.Format("Cannot load assembly '{0}' because no metadata loader is available.",
@@ -373,9 +377,21 @@ namespace Gallio.ReSharperRunner.Reflection
             return metadataLoader.Load(assemblyName, delegate { return true; });
         }
 
-        IAssemblyInfo IReflectionPolicy.LoadAssembly(AssemblyName assemblyName)
+        private static IMetadataAssembly GetMetadataAssemblyHack(IMetadataTypeInfo typeInfo)
         {
-            return Wrap(LoadAssembly(assemblyName));
+            // HACK: This type contains a reference to its assembly but it
+            //       does not expose it in a useful manner.
+            FieldInfo myAssemblyField = typeInfo.GetType().GetField("myAssembly", BindingFlags.Instance | BindingFlags.NonPublic);
+            return myAssemblyField != null ? (IMetadataAssembly)myAssemblyField.GetValue(typeInfo) : null;
+        }
+
+        private static MetadataLoader GetMetadataLoaderHack(IMetadataAssembly assembly)
+        {
+            // HACK: The assembly contains a reference back to its loader
+            //       which is useful for loading referenced assemblies but it
+            //       does not expose it in a useful manner.
+            PropertyInfo loaderProperty = assembly.GetType().GetProperty("Loader", BindingFlags.Instance | BindingFlags.NonPublic);
+            return loaderProperty != null ? (MetadataLoader)loaderProperty.GetValue(assembly, null) : null;
         }
 
         private abstract class BaseWrapper<TTarget>
@@ -395,14 +411,14 @@ namespace Gallio.ReSharperRunner.Reflection
                 this.target = target;
             }
 
-            public TTarget Target
-            {
-                get { return target; }
-            }
-
             public MetadataReflector Reflector
             {
                 get { return reflector; }
+            }
+
+            public TTarget Target
+            {
+                get { return target; }
             }
 
             public override int GetHashCode()
@@ -566,7 +582,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public Assembly Resolve()
             {
-                return ReflectorUtils.ResolveAssembly(this);
+                return Reflector.ResolveAssembly(this);
             }
 
             public bool Equals(IAssemblyInfo other)
@@ -699,7 +715,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public Type Resolve()
             {
-                return ReflectorUtils.ResolveType(this);
+                return ResolveType(this);
             }
 
             MemberInfo IMemberInfo.Resolve()
@@ -766,11 +782,24 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 get
                 {
-                    IMetadataAssembly assembly = ReflectorUtils.GetMetadataAssemblyHack(TargetInfo);
-                    if (assembly == null)
-                        assembly = Reflector.LoadAssembly(TargetInfo.DeclaringAssemblyName);
+                    IMetadataAssembly assembly = GetMetadataAssemblyHack(TargetInfo);
+                    if (assembly != null)
+                        return Reflector.Wrap(assembly);
 
-                    return Reflector.Wrap(assembly);
+                    AssemblyName assemblyName = TargetInfo.DeclaringAssemblyName;
+                    if (assemblyName != null)
+                        return Reflector.Wrap(Reflector.LoadMetadataAssembly(assemblyName));
+
+                    // Note: ReSharper can sometimes return null for built-in such as System.String.
+                    //       I don't know whether it will do this for other types though.
+                    //       So for now we assume System.
+                    string typeName = TargetInfo.FullyQualifiedName;
+                    Assembly systemAssembly = typeof(String).Assembly;
+                    if (systemAssembly.GetType(typeName, false) != null)
+                        return Gallio.Model.Reflection.Reflector.Wrap(systemAssembly);
+
+                    throw new NotImplementedException(String.Format(
+                        "Cannot determine the assembly to which type '{0}' belongs.", typeName));
                 }
             }
 
@@ -795,20 +824,20 @@ namespace Gallio.ReSharperRunner.Reflection
                 {
                     IMetadataTypeInfo info = TargetInfo;
                     TypeAttributes flags = 0;
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Abstract, info.IsAbstract);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Class, info.IsClass);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Interface, info.IsInterface);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedAssembly, info.IsNestedAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedFamily, info.IsNestedFamily);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedFamANDAssem, info.IsNestedFamilyAndAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedFamORAssem, info.IsNestedFamilyOrAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedPrivate, info.IsNestedPrivate);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NestedPublic, info.IsNestedPublic);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Public, info.IsPublic);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.NotPublic, info.IsNotPublic);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Sealed, info.IsSealed);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.Serializable, info.IsSerializable);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, TypeAttributes.SpecialName, info.IsSpecialName);
+                    AddFlagIfTrue(ref flags, TypeAttributes.Abstract, info.IsAbstract);
+                    AddFlagIfTrue(ref flags, TypeAttributes.Class, info.IsClass);
+                    AddFlagIfTrue(ref flags, TypeAttributes.Interface, info.IsInterface);
+                    AddFlagIfTrue(ref flags, TypeAttributes.NestedAssembly, info.IsNestedAssembly);
+                    AddFlagIfTrue(ref flags, TypeAttributes.NestedFamily, info.IsNestedFamily);
+                    AddFlagIfTrue(ref flags, TypeAttributes.NestedFamANDAssem, info.IsNestedFamilyAndAssembly);
+                    AddFlagIfTrue(ref flags, TypeAttributes.NestedFamORAssem, info.IsNestedFamilyOrAssembly);
+                    AddFlagIfTrue(ref flags, TypeAttributes.NestedPrivate, info.IsNestedPrivate);
+                    AddFlagIfTrue(ref flags, TypeAttributes.NestedPublic, info.IsNestedPublic);
+                    AddFlagIfTrue(ref flags, TypeAttributes.Public, info.IsPublic);
+                    AddFlagIfTrue(ref flags, TypeAttributes.NotPublic, info.IsNotPublic);
+                    AddFlagIfTrue(ref flags, TypeAttributes.Sealed, info.IsSealed);
+                    AddFlagIfTrue(ref flags, TypeAttributes.Serializable, info.IsSerializable);
+                    AddFlagIfTrue(ref flags, TypeAttributes.SpecialName, info.IsSpecialName);
                     return flags;
                 }
             }
@@ -1210,19 +1239,19 @@ namespace Gallio.ReSharperRunner.Reflection
                 get
                 {
                     MethodAttributes flags = 0;
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Abstract, Target.IsAbstract);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Assembly, Target.IsAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Family, Target.IsFamily);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.FamANDAssem, Target.IsFamilyAndAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.FamORAssem, Target.IsFamilyOrAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Final, Target.IsFinal);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.HideBySig, Target.IsHideBySig);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, Target.IsNewSlot);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Private, Target.IsPrivate);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Public, Target.IsPublic);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.SpecialName, Target.IsSpecialName);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Static, Target.IsStatic);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, Target.IsVirtual);
+                    AddFlagIfTrue(ref flags, MethodAttributes.Abstract, Target.IsAbstract);
+                    AddFlagIfTrue(ref flags, MethodAttributes.Assembly, Target.IsAssembly);
+                    AddFlagIfTrue(ref flags, MethodAttributes.Family, Target.IsFamily);
+                    AddFlagIfTrue(ref flags, MethodAttributes.FamANDAssem, Target.IsFamilyAndAssembly);
+                    AddFlagIfTrue(ref flags, MethodAttributes.FamORAssem, Target.IsFamilyOrAssembly);
+                    AddFlagIfTrue(ref flags, MethodAttributes.Final, Target.IsFinal);
+                    AddFlagIfTrue(ref flags, MethodAttributes.HideBySig, Target.IsHideBySig);
+                    AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, Target.IsNewSlot);
+                    AddFlagIfTrue(ref flags, MethodAttributes.Private, Target.IsPrivate);
+                    AddFlagIfTrue(ref flags, MethodAttributes.Public, Target.IsPublic);
+                    AddFlagIfTrue(ref flags, MethodAttributes.SpecialName, Target.IsSpecialName);
+                    AddFlagIfTrue(ref flags, MethodAttributes.Static, Target.IsStatic);
+                    AddFlagIfTrue(ref flags, MethodAttributes.Virtual, Target.IsVirtual);
                     return flags;
                 }
             }
@@ -1278,7 +1307,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ConstructorInfo Resolve()
             {
-                return ReflectorUtils.ResolveConstructor(this);
+                return ResolveConstructor(this);
             }
 
             public bool Equals(IConstructorInfo other)
@@ -1313,7 +1342,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public MethodInfo Resolve()
             {
-                return ReflectorUtils.ResolveMethod(this);
+                return ResolveMethod(this);
             }
         }
 
@@ -1380,7 +1409,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public PropertyInfo Resolve()
             {
-                return ReflectorUtils.ResolveProperty(this);
+                return ResolveProperty(this);
             }
 
             public bool Equals(ISlotInfo other)
@@ -1436,16 +1465,16 @@ namespace Gallio.ReSharperRunner.Reflection
                 get
                 {
                     FieldAttributes flags = 0;
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Assembly, Target.IsAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Family, Target.IsFamily);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.FamANDAssem, Target.IsFamilyAndAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.FamORAssem, Target.IsFamilyOrAssembly);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Private, Target.IsPrivate);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Public, Target.IsPublic);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.SpecialName, Target.IsSpecialName);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Static, Target.IsStatic);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.Literal, Target.IsLiteral);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, FieldAttributes.InitOnly, Target.IsInitOnly);
+                    AddFlagIfTrue(ref flags, FieldAttributes.Assembly, Target.IsAssembly);
+                    AddFlagIfTrue(ref flags, FieldAttributes.Family, Target.IsFamily);
+                    AddFlagIfTrue(ref flags, FieldAttributes.FamANDAssem, Target.IsFamilyAndAssembly);
+                    AddFlagIfTrue(ref flags, FieldAttributes.FamORAssem, Target.IsFamilyOrAssembly);
+                    AddFlagIfTrue(ref flags, FieldAttributes.Private, Target.IsPrivate);
+                    AddFlagIfTrue(ref flags, FieldAttributes.Public, Target.IsPublic);
+                    AddFlagIfTrue(ref flags, FieldAttributes.SpecialName, Target.IsSpecialName);
+                    AddFlagIfTrue(ref flags, FieldAttributes.Static, Target.IsStatic);
+                    AddFlagIfTrue(ref flags, FieldAttributes.Literal, Target.IsLiteral);
+                    AddFlagIfTrue(ref flags, FieldAttributes.InitOnly, Target.IsInitOnly);
                     return flags;
                 }
             }
@@ -1457,7 +1486,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public FieldInfo Resolve()
             {
-                return ReflectorUtils.ResolveField(this);
+                return ResolveField(this);
             }
 
             public bool Equals(ISlotInfo other)
@@ -1505,7 +1534,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public EventInfo Resolve()
             {
-                return ReflectorUtils.ResolveEvent(this);
+                return ResolveEvent(this);
             }
 
             public bool Equals(IEventInfo other)
@@ -1564,9 +1593,9 @@ namespace Gallio.ReSharperRunner.Reflection
                 get
                 {
                     ParameterAttributes flags = 0;
-                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.IsIn);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.IsOut);
-                    ReflectorUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Optional, Target.IsOptional);
+                    AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.IsIn);
+                    AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.IsOut);
+                    AddFlagIfTrue(ref flags, ParameterAttributes.Optional, Target.IsOptional);
                     return flags;
                 }
             }
@@ -1583,7 +1612,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public ParameterInfo Resolve()
             {
-                return ReflectorUtils.ResolveParameter(this);
+                return ResolveParameter(this);
             }
 
             public bool Equals(ISlotInfo other)

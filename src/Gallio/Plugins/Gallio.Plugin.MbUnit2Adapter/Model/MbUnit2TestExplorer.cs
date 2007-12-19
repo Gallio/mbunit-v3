@@ -94,8 +94,9 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
         private static ITest CreateFrameworkTest(Version frameworkVersion)
         {
             BaseTest frameworkTest = new BaseTest(
-                String.Format(Resources.MbUnit2TestFramework_FrameworkTemplateName, frameworkVersion), null);
-            frameworkTest.Kind = ComponentKind.Framework;
+                String.Format(Resources.MbUnit2TestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
+            frameworkTest.BaselineLocalId = Resources.MbUnit2TestFramework_FrameworkName;
+            frameworkTest.Kind = TestKinds.Framework;
 
             return frameworkTest;
         }
@@ -181,7 +182,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
         {
             ITypeInfo fixtureType = Reflector.Wrap(fixture.Type);
             MbUnit2Test test = new MbUnit2Test(fixtureType.CompoundName, fixtureType, fixture, null);
-            test.Kind = ComponentKind.Fixture;
+            test.Kind = TestKinds.Fixture;
 
             // Populate metadata
             foreach (AuthorAttribute2 attrib in AttributeUtils.GetAttributes<AuthorAttribute2>(fixtureType, true))
@@ -224,7 +225,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             ICodeElementInfo codeElement = member ?? Reflector.Wrap(runPipe.FixtureType);
 
             MbUnit2Test test = new MbUnit2Test(runPipe.Name, codeElement, runPipe.Fixture, runPipe);
-            test.Kind = ComponentKind.Test;
+            test.Kind = TestKinds.Test;
             test.IsTestCase = true;
 
             // Populate metadata

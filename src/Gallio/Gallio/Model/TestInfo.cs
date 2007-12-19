@@ -41,6 +41,12 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
+        public string LocalId
+        {
+            get { return Source.LocalId; }
+        }
+
+        /// <inheritdoc />
         public bool IsTestCase
         {
             get { return Source.IsTestCase; }

@@ -75,7 +75,7 @@ namespace Gallio.ReSharperRunner
 
         public override string GetKind()
         {
-            return test.Metadata.GetValue(MetadataKeys.ComponentKind) ?? "Unknown";
+            return test.Metadata.GetValue(MetadataKeys.TestKind) ?? "Unknown";
         }
 
         public override IProject GetProject()

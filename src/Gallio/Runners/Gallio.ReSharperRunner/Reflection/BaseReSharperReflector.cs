@@ -17,74 +17,31 @@ using System;
 using System.Reflection;
 using Gallio.Collections;
 using Gallio.Model.Reflection;
-using JetBrains.Metadata.Reader.API;
-using JetBrains.ProjectModel;
-using JetBrains.ProjectModel.Build;
 
 namespace Gallio.ReSharperRunner.Reflection
 {
     /// <summary>
-    /// Helper functions for the reflector.
+    /// Abstract base class for ReSharper reflector types.
+    /// Provides a means of controlling how and when assembly loading takes
+    /// place.
     /// </summary>
-    internal static class ReflectorUtils
+    internal abstract class BaseReSharperReflector : IReflectionPolicy
     {
-        public static IAssemblyFile GetAssemblyFile(IProject project)
+        private readonly IAssemblyResolver assemblyResolver;
+
+        public BaseReSharperReflector(IAssemblyResolver assemblyResolver)
         {
-            return BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
+            if (assemblyResolver == null)
+                throw new ArgumentNullException("assemblyResolver");
+
+            this.assemblyResolver = assemblyResolver;
         }
 
-        internal static void AddFlagIfTrue(ref TypeAttributes flags, TypeAttributes flagToAdd, bool condition)
-        {
-            if (condition)
-                flags |= flagToAdd;
-        }
-
-        internal static void AddFlagIfTrue(ref MethodAttributes flags, MethodAttributes flagToAdd, bool condition)
-        {
-            if (condition)
-                flags |= flagToAdd;
-        }
-
-        internal static void AddFlagIfTrue(ref FieldAttributes flags, FieldAttributes flagToAdd, bool condition)
-        {
-            if (condition)
-                flags |= flagToAdd;
-        }
-
-        internal static void AddFlagIfTrue(ref PropertyAttributes flags, PropertyAttributes flagToAdd, bool condition)
-        {
-            if (condition)
-                flags |= flagToAdd;
-        }
-
-        internal static void AddFlagIfTrue(ref ParameterAttributes flags, ParameterAttributes flagToAdd, bool condition)
-        {
-            if (condition)
-                flags |= flagToAdd;
-        }
-
-        internal static IMetadataAssembly GetMetadataAssemblyHack(IMetadataTypeInfo typeInfo)
-        {
-            // HACK: This type contains a reference to its assembly but it
-            //       does not expose it in a useful manner.
-            FieldInfo myAssemblyField = typeInfo.GetType().GetField("myAssembly", BindingFlags.Instance | BindingFlags.NonPublic);
-            return myAssemblyField != null ? (IMetadataAssembly)myAssemblyField.GetValue(typeInfo) : null;
-        }
-
-        internal static MetadataLoader GetMetadataLoaderHack(IMetadataAssembly assembly)
-        {
-            // HACK: The assembly contains a reference back to its loader
-            //       which is useful for loading referenced assemblies but it
-            //       does not expose it in a useful manner.
-            PropertyInfo loaderProperty = assembly.GetType().GetProperty("Loader", BindingFlags.Instance | BindingFlags.NonPublic);
-            return loaderProperty != null ? (MetadataLoader)loaderProperty.GetValue(assembly, null) : null;
-        }
-
-        internal static Assembly ResolveAssembly(IAssemblyInfo assembly)
+        protected Assembly ResolveAssembly(IAssemblyInfo assembly)
         {
             try
             {
-                Assembly resolvedAssembly = Assembly.LoadFrom(assembly.Path);
+                Assembly resolvedAssembly = assemblyResolver.ResolveAssembly(assembly);
                 return resolvedAssembly;
             }
             catch (Exception ex)
@@ -93,7 +50,40 @@ namespace Gallio.ReSharperRunner.Reflection
             }
         }
 
-        internal static Type ResolveType(ITypeInfo type)
+        /// <inheritdoc />
+        public abstract IAssemblyInfo LoadAssembly(AssemblyName assemblyName);
+
+        protected static void AddFlagIfTrue(ref TypeAttributes flags, TypeAttributes flagToAdd, bool condition)
+        {
+            if (condition)
+                flags |= flagToAdd;
+        }
+
+        protected static void AddFlagIfTrue(ref MethodAttributes flags, MethodAttributes flagToAdd, bool condition)
+        {
+            if (condition)
+                flags |= flagToAdd;
+        }
+
+        protected static void AddFlagIfTrue(ref FieldAttributes flags, FieldAttributes flagToAdd, bool condition)
+        {
+            if (condition)
+                flags |= flagToAdd;
+        }
+
+        protected static void AddFlagIfTrue(ref PropertyAttributes flags, PropertyAttributes flagToAdd, bool condition)
+        {
+            if (condition)
+                flags |= flagToAdd;
+        }
+
+        protected static void AddFlagIfTrue(ref ParameterAttributes flags, ParameterAttributes flagToAdd, bool condition)
+        {
+            if (condition)
+                flags |= flagToAdd;
+        }
+
+        protected static Type ResolveType(ITypeInfo type)
         {
             try
             {
@@ -137,7 +127,7 @@ namespace Gallio.ReSharperRunner.Reflection
             throw new CodeElementResolveException(type);
         }
 
-        internal static FieldInfo ResolveField(IFieldInfo field)
+        protected static FieldInfo ResolveField(IFieldInfo field)
         {
             try
             {
@@ -156,7 +146,7 @@ namespace Gallio.ReSharperRunner.Reflection
             throw new CodeElementResolveException(field);
         }
 
-        internal static PropertyInfo ResolveProperty(IPropertyInfo property)
+        protected static PropertyInfo ResolveProperty(IPropertyInfo property)
         {
             try
             {
@@ -176,7 +166,7 @@ namespace Gallio.ReSharperRunner.Reflection
             throw new CodeElementResolveException(property);
         }
 
-        internal static EventInfo ResolveEvent(IEventInfo @event)
+        protected static EventInfo ResolveEvent(IEventInfo @event)
         {
             try
             {
@@ -196,7 +186,7 @@ namespace Gallio.ReSharperRunner.Reflection
             throw new CodeElementResolveException(@event);
         }
 
-        internal static ConstructorInfo ResolveConstructor(IConstructorInfo constructor)
+        protected static ConstructorInfo ResolveConstructor(IConstructorInfo constructor)
         {
             try
             {
@@ -217,7 +207,7 @@ namespace Gallio.ReSharperRunner.Reflection
             throw new CodeElementResolveException(constructor);
         }
 
-        internal static MethodInfo ResolveMethod(IMethodInfo method)
+        protected static MethodInfo ResolveMethod(IMethodInfo method)
         {
             try
             {
@@ -244,11 +234,11 @@ namespace Gallio.ReSharperRunner.Reflection
             throw new CodeElementResolveException(method);
         }
 
-        internal static ParameterInfo ResolveParameter(IParameterInfo parameter)
+        protected static ParameterInfo ResolveParameter(IParameterInfo parameter)
         {
             try
             {
-                MethodBase resolvedMethod = (MethodBase) parameter.Member.Resolve();
+                MethodBase resolvedMethod = (MethodBase)parameter.Member.Resolve();
                 ParameterInfo[] resolvedParameters = resolvedMethod.GetParameters();
 
                 int parameterIndex = parameter.Position;

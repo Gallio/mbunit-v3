@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NUnitFrameworkTemplate_FrameworkTemplateName" xml:space="preserve">
+  <data name="NUnitTestExplorer_FrameworkNameWithVersionFormat" xml:space="preserve">
     <value>NUnit v{0}</value>
   </data>
-  <data name="NUnitFrameworkTemplateBinding_CannotLoadNUnitTestAssemblies" xml:space="preserve">
+  <data name="NUnitTestExplorer_CannotLoadNUnitTestAssemblies" xml:space="preserve">
     <value>Cannot load one or more NUnit test assemblies.</value>
   </data>
   <data name="NUnitTestController_RunningNUnitTests" xml:space="preserve">

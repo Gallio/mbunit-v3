@@ -18,6 +18,7 @@ using Gallio.Model.Reflection;
 using MbUnit.Framework;
 using Gallio.Hosting;
 using Gallio.Model;
+using MbUnit.Properties;
 
 namespace MbUnit.Model
 {
@@ -29,7 +30,7 @@ namespace MbUnit.Model
         /// <inheritdoc />
         public override string Name
         {
-            get { return "MbUnit v3"; }
+            get { return Resources.MbUnitTestFramework_FrameworkName; }
         }
 
         /// <inheritdoc />

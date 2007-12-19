@@ -61,15 +61,6 @@ namespace Gallio.Plugin.XunitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to xUnit.Net v{0}.
-        /// </summary>
-        internal static string XunitFrameworkTemplate_FrameworkTemplateName {
-            get {
-                return ResourceManager.GetString("XunitFrameworkTemplate_FrameworkTemplateName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Running xUnit.Net tests..
         /// </summary>
         internal static string XunitTestController_RunningXunitTests {
@@ -84,6 +75,15 @@ namespace Gallio.Plugin.XunitAdapter.Properties {
         internal static string XunitTestController_StatusMessages_RunningTest {
             get {
                 return ResourceManager.GetString("XunitTestController_StatusMessages_RunningTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to xUnit.Net v{0}.
+        /// </summary>
+        internal static string XunitTestExplorer_FrameworkNameWithVersionFormat {
+            get {
+                return ResourceManager.GetString("XunitTestExplorer_FrameworkNameWithVersionFormat", resourceCulture);
             }
         }
         
