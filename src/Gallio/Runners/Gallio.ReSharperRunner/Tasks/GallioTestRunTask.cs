@@ -18,36 +18,58 @@ using System.Xml;
 
 namespace Gallio.ReSharperRunner.Tasks
 {
+    /// <summary>
+    /// This is the root task for running Gallio tests.
+    /// It must always appear first in a task sequence followed by
+    /// any number <see cref="GallioTestItemTask" /> instances that describe the work to
+    /// be done.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Equality comparison is used by ReSharper to coalesce sequences of tasks into a tree.
+    /// Sequential tasks form a chain of nested nodes.  When identical tasks are found they are
+    /// combined and subsequent tasks in the sequence become children of the common ancestor.
+    /// </para>
+    /// <para>
+    /// To ensure that we have full control over the node structure, we introduce a root task
+    /// whose purpose is to gather all of the constituent tasks under a common parent.
+    /// </para>
+    /// </remarks>
     [Serializable]
-    public class GallioTestRunTask : GallioRemoteTask
+    public class GallioTestRunTask : GallioRemoteTask, IEquatable<GallioTestRunTask>
     {
-        private readonly string testId;
-        private readonly string assemblyLocation;
+        /// <summary>
+        /// Gets a shared instance of the task.
+        /// </summary>
+        public static readonly GallioTestRunTask Instance = new GallioTestRunTask();
 
-        public GallioTestRunTask(string testId, string assemblyLocation)
+        public GallioTestRunTask()
         {
-            this.testId = testId;
-            this.assemblyLocation = assemblyLocation;
         }
 
         public GallioTestRunTask(XmlElement element)
             : base(element)
         {
-            testId = GetXmlAttribute(element, "TestId");
-            assemblyLocation = GetXmlAttribute(element, "AssemblyLocation");
-        }
-
-        public override void SaveXml(XmlElement element)
-        {
-            base.SaveXml(element);
-
-            SetXmlAttribute(element, "TestId", testId);
-            SetXmlAttribute(element, "AssemblyLocation", assemblyLocation);
         }
 
         public override GallioRemoteAction CreateAction()
         {
-            return new GallioTestRunAction(this);
+            return new GallioTestRunAction();
+        }
+
+        public bool Equals(GallioTestRunTask other)
+        {
+            return other != null;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as GallioTestRunTask);
+        }
+
+        public override int GetHashCode()
+        {
+            return 0;
         }
     }
 }

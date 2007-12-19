@@ -56,19 +56,23 @@ namespace Gallio.ReSharperRunner.Tasks
         }
 
         /// <summary>
-        /// Executes the task.
+        /// Executes the task recursively.
         /// </summary>
         /// <param name="server">The remote task server</param>
         /// <param name="node">The task execution node</param>
-        public void Execute(IRemoteTaskServer server, TaskExecutionNode node)
+        /// <returns>The execution result</returns>
+        public TaskResult ExecuteRecursive(IRemoteTaskServer server, TaskExecutionNode node)
         {
-            CreateAction().Execute(server, node);
+            return CreateAction().ExecuteRecursive(server, node);
         }
 
         /// <summary>
         /// Gets the action to run.
         /// </summary>
         /// <returns>The action</returns>
-        public abstract GallioRemoteAction CreateAction();
+        public virtual GallioRemoteAction CreateAction()
+        {
+            throw new NotSupportedException("This task does not have an executable remote action.");
+        }
     }
 }

@@ -126,40 +126,30 @@ namespace Gallio.ReSharperRunner
 
         public IList<UnitTestTask> GetTaskSequence(UnitTestElement element, IList<UnitTestElement> explicitElements)
         {
-            List<UnitTestTask> tasks = new List<UnitTestTask>();
-            GallioTestElement self = element as GallioTestElement;
+            GallioTestElement topElement = (GallioTestElement)element;
+            if (!topElement.Test.IsTestCase)
+                return Collections.EmptyArray<UnitTestTask>.Instance;
 
-            PopulateSelfAndAncestorTasks(tasks, self);
-            PopulateDescendentTasks(tasks, self);
+            List<UnitTestTask> tasks = new List<UnitTestTask>();
+
+            // Add the run task.  Must always be first.
+            tasks.Add(new UnitTestTask(null, GallioTestRunTask.Instance));
+
+            // Add the assembly location.
+            tasks.Add(new UnitTestTask(null, new GallioTestAssemblyTask(topElement.GetAssemblyLocation())));
+
+            // Add the test case.
+            tasks.Add(new UnitTestTask(topElement, new GallioTestItemTask(topElement.Test.Id)));
+
+            // Now add each explicit test id directly under the run task so they do not form chains
+            // under other tasks which can produce strange results in the task execution node tree.
+            foreach (GallioTestElement explicitElement in explicitElements)
+            {
+                tasks.Add(new UnitTestTask(null, GallioTestRunTask.Instance));
+                tasks.Add(new UnitTestTask(null, new GallioTestExplicitTask(explicitElement.Test.Id)));
+            }
 
             return tasks;
-        }
-
-        private static void PopulateSelfAndAncestorTasks(ICollection<UnitTestTask> tasks, GallioTestElement element)
-        {
-            if (element != null)
-            {
-                PopulateSelfAndAncestorTasks(tasks, element.Parent as GallioTestElement);
-
-                tasks.Add(CreateUnitTestTask(element));
-            }
-        }
-
-        private static void PopulateDescendentTasks(ICollection<UnitTestTask> tasks, GallioTestElement element)
-        {
-            if (element != null)
-            {
-            tasks.Add(CreateUnitTestTask(element));
-
-            foreach (UnitTestElement childElement in element.Children)
-                PopulateDescendentTasks(tasks, childElement as GallioTestElement);
-            }
-        }
-
-        private static UnitTestTask CreateUnitTestTask(GallioTestElement element)
-        {
-            return new UnitTestTask(element,
-                new GallioTestRunTask(element.Test.Id, element.GetAssemblyLocation()));
         }
 
         public int CompareUnitTestElements(UnitTestElement x, UnitTestElement y)

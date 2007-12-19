@@ -28,7 +28,7 @@ namespace Gallio.ReSharperRunner
     /// <summary>
     /// Represents a Gallio test.
     /// </summary>
-    public class GallioTestElement : UnitTestElement, IEquatable<GallioTestElement>, IComparable<GallioTestElement>
+    public class GallioTestElement : UnitTestElement, IEquatable<GallioTestElement>, IComparable<GallioTestElement>, IComparable
     {
         private readonly ITest test;
 
@@ -148,11 +148,37 @@ namespace Gallio.ReSharperRunner
 
         public int CompareTo(GallioTestElement other)
         {
-            int discriminator = GetTitle().CompareTo(other.GetTitle());
-            if (discriminator != 0)
-                return discriminator;
+            // Find common ancestor.
+            Dictionary<GallioTestElement, GallioTestElement> branches = new Dictionary<GallioTestElement, GallioTestElement>();
+            for (GallioTestElement thisAncestor = this, thisBranch = null;
+                thisAncestor != null;
+                thisBranch = thisAncestor, thisAncestor = thisAncestor.Parent as GallioTestElement)
+                branches.Add(thisAncestor, thisBranch);
 
+            for (GallioTestElement otherAncestor = other, otherBranch = null;
+                otherAncestor != null;
+                otherBranch = otherAncestor, otherAncestor = otherAncestor.Parent as GallioTestElement)
+            {
+                GallioTestElement thisBranch;
+                if (branches.TryGetValue(otherAncestor, out thisBranch))
+                {
+                    // Compare the relative ordering of the branches leading from
+                    // the common ancestor to each child.
+                    int thisOrder = thisBranch != null ? otherAncestor.Children.IndexOf(thisBranch) : -1;
+                    int otherOrder = otherBranch != null ? otherAncestor.Children.IndexOf(otherBranch) : -1;
+
+                    return thisOrder.CompareTo(otherOrder);
+                }
+            }
+
+            // No common ancestor, compare test ids.
             return test.Id.CompareTo(other.Test.Id);
+        }
+
+        public int CompareTo(object obj)
+        {
+            GallioTestElement other = obj as GallioTestElement;
+            return other != null ? CompareTo(other) : 1; // sort gallio test elements after all other kinds
         }
 
         public override string ToString()

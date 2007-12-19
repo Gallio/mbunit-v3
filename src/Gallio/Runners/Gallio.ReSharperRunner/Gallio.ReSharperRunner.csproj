@@ -132,8 +132,11 @@
     <Compile Include="Hosting\RuntimeProxy.cs" />
     <Compile Include="Reflection\IDeclaredElementAccessor.cs" />
     <Compile Include="Reflection\IProjectAccessor.cs" />
-    <Compile Include="Tasks\GallioTestRunAction.cs" />
+    <Compile Include="Tasks\GallioTestAssemblyTask.cs" />
+    <Compile Include="Tasks\GallioTestExplicitTask.cs" />
     <Compile Include="Tasks\GallioTestRunTask.cs" />
+    <Compile Include="Tasks\GallioTestRunAction.cs" />
+    <Compile Include="Tasks\GallioTestItemTask.cs" />
     <Compile Include="GallioTestProvider.cs" />
     <Compile Include="IUnitTestProviderDelegate.cs" />
     <Compile Include="NullTestProviderDelegate.cs" />

@@ -23,10 +23,11 @@ namespace Gallio.ReSharperRunner.Tasks
     public abstract class GallioRemoteAction
     {
         /// <summary>
-        /// Executes the task.
+        /// Executes the task recursively.
         /// </summary>
         /// <param name="server">The remote task server</param>
         /// <param name="node">The task execution node</param>
-        public abstract void Execute(IRemoteTaskServer server, TaskExecutionNode node);
+        /// <returns>The execution result</returns>
+        public abstract TaskResult ExecuteRecursive(IRemoteTaskServer server, TaskExecutionNode node);
     }
 }

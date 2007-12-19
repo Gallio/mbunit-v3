@@ -31,6 +31,8 @@ namespace Gallio.ReSharperRunner.Tasks
     /// <seealso cref="GallioRemoteTask"/> for important remarks related to tasks.
     public class GallioRemoteTaskRunner : RecursiveRemoteTaskRunner
     {
+        private TaskResult executeResult;
+
         public GallioRemoteTaskRunner(IRemoteTaskServer server)
             : base(server)
         {
@@ -53,13 +55,16 @@ namespace Gallio.ReSharperRunner.Tasks
 
         public override TaskResult Finish(TaskExecutionNode node)
         {
-            return RuntimeProxy.IsInitialized ? TaskResult.Success : TaskResult.Error;
+            if (!RuntimeProxy.IsInitialized)
+                return TaskResult.Error;
+
+            return executeResult;
         }
 
         public override void ExecuteRecursive(TaskExecutionNode node)
         {
             GallioRemoteTask rootTask = (GallioRemoteTask)node.RemoteTask;
-            rootTask.Execute(Server, node);
+            executeResult = rootTask.ExecuteRecursive(Server, node);
         }
     }
 }
