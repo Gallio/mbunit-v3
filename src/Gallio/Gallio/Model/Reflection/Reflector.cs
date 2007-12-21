@@ -595,6 +595,11 @@ namespace Gallio.Model.Reflection
                 }
             }
 
+            public TypeCode TypeCode
+            {
+                get { return Type.GetTypeCode(Target); }
+            }
+
             public string AssemblyQualifiedName
             {
                 get { return Target.AssemblyQualifiedName; }
@@ -727,6 +732,21 @@ namespace Gallio.Model.Reflection
             public MethodAttributes MethodAttributes
             {
                 get { return Target.Attributes; }
+            }
+
+            public bool IsAbstract
+            {
+                get { return Target.IsAbstract; }
+            }
+
+            public bool IsPublic
+            {
+                get { return Target.IsPublic; }
+            }
+
+            public bool IsStatic
+            {
+                get { return Target.IsStatic; }
             }
 
             public IList<IParameterInfo> GetParameters()
@@ -883,6 +903,26 @@ namespace Gallio.Model.Reflection
                 get { return Target.Attributes; }
             }
 
+            public bool IsLiteral
+            {
+                get { return Target.IsLiteral; }
+            }
+
+            public bool IsPublic
+            {
+                get { return Target.IsPublic; }
+            }
+
+            public bool IsInitOnly
+            {
+                get { return Target.IsInitOnly; }
+            }
+
+            public bool IsStatic
+            {
+                get { return Target.IsStatic; }
+            }
+
             public override CodeElementKind Kind
             {
                 get { return CodeElementKind.Field; }
@@ -919,6 +959,21 @@ namespace Gallio.Model.Reflection
             public override CodeElementKind Kind
             {
                 get { return CodeElementKind.Event; }
+            }
+
+            public IMethodInfo GetAddMethod()
+            {
+                return Wrap(Target.GetAddMethod());
+            }
+
+            public IMethodInfo GetRaiseMethod()
+            {
+                return Wrap(Target.GetRaiseMethod());
+            }           
+
+            public IMethodInfo GetRemoveMethod()
+            {
+                return Wrap(Target.GetRemoveMethod());
             }
 
             new public EventInfo Resolve()
@@ -1106,7 +1161,7 @@ namespace Gallio.Model.Reflection
                 get { throw new NotSupportedException("Cannot get original constructor of an Attribute object."); }
             }
 
-            public object[] ArgumentValues
+            public object[] InitializedArgumentValues
             {
                 get { throw new NotSupportedException("Cannot get original constructor arguments of an Attribute object."); }
             }
@@ -1114,42 +1169,44 @@ namespace Gallio.Model.Reflection
             public object GetFieldValue(string name)
             {
                 FieldInfo field = attrib.GetType().GetField(name, BindingFlags.Instance | BindingFlags.Public);
-                if (field != null)
+                if (field != null && IsAttributeField(field))
                     return field.GetValue(attrib);
 
-                throw new ArgumentException(String.Format("The attribute does not have a field named '{0}'.", name));
+                throw new ArgumentException(String.Format("The attribute does not have a read/write instance field named '{0}'.", name));
             }
 
             public object GetPropertyValue(string name)
             {
                 PropertyInfo property = attrib.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
-                if (property != null)
+                if (property != null && IsAttributeProperty(property))
                     return property.GetValue(attrib, null);
 
-                throw new ArgumentException(String.Format("The attribute does not have a property named '{0}'.", name));
+                throw new ArgumentException(String.Format("The attribute does not have a read/write instance property named '{0}'.", name));
             }
 
-            public IDictionary<IFieldInfo, object> FieldValues
+            public IDictionary<IFieldInfo, object> InitializedFieldValues
             {
                 get
                 {
                     Dictionary<IFieldInfo, object> values = new Dictionary<IFieldInfo, object>();
 
                     foreach (FieldInfo field in attrib.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
-                        values.Add(Wrap(field), field.GetValue(attrib));
+                        if (IsAttributeField(field))
+                            values.Add(Wrap(field), field.GetValue(attrib));
 
                     return values;
                 }
             }
 
-            public IDictionary<IPropertyInfo, object> PropertyValues
+            public IDictionary<IPropertyInfo, object> InitializedPropertyValues
             {
                 get
                 {
                     Dictionary<IPropertyInfo, object> values = new Dictionary<IPropertyInfo, object>();
 
                     foreach (PropertyInfo property in attrib.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
-                        values.Add(Wrap(property), property.GetValue(attrib, null));
+                        if (IsAttributeProperty(property))
+                            values.Add(Wrap(property), property.GetValue(attrib, null));
 
                     return values;
                 }
@@ -1158,6 +1215,20 @@ namespace Gallio.Model.Reflection
             public object Resolve()
             {
                 return attrib;
+            }
+
+            private bool IsAttributeField(FieldInfo field)
+            {
+                return !field.IsLiteral && !field.IsInitOnly && !field.IsStatic;
+            }
+
+            private bool IsAttributeProperty(PropertyInfo property)
+            {
+                MethodInfo getMethod = property.GetGetMethod();
+                MethodInfo setMethod = property.GetSetMethod();
+                return getMethod != null && setMethod != null
+                    && !getMethod.IsStatic && !getMethod.IsAbstract
+                    && !setMethod.IsStatic && !setMethod.IsAbstract;
             }
         }
 

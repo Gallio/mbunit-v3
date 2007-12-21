@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
 using Gallio.Model.Reflection;
@@ -81,6 +82,109 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             if (condition)
                 flags |= flagToAdd;
+        }
+
+        protected static TypeCode GetTypeCode(ITypeInfo type)
+        {
+            if (type == null)
+                return TypeCode.Empty;
+
+            switch (type.FullName)
+            {
+                case "System.Boolean":
+                    return TypeCode.Boolean;
+                case "System.Byte":
+                    return TypeCode.Byte;
+                case "System.Char":
+                    return TypeCode.Char;
+                case "System.DateTime":
+                    return TypeCode.DateTime;
+                case "System.DBNull":
+                    return TypeCode.DBNull;
+                case "System.Decimal":
+                    return TypeCode.Decimal;
+                case "System.Double":
+                    return TypeCode.Double;
+                case "System.Int16":
+                    return TypeCode.Int16;
+                case "System.Int32":
+                    return TypeCode.Int32;
+                case "System.Int64":
+                    return TypeCode.Int64;
+                case "System.SByte":
+                    return TypeCode.SByte;
+                case "System.Single":
+                    return TypeCode.Single;
+                case "System.String":
+                    return TypeCode.String;
+                case "System.UInt16":
+                    return TypeCode.UInt16;
+                case "System.UInt32":
+                    return TypeCode.UInt32;
+                case "System.UInt64":
+                    return TypeCode.UInt64;
+                default:
+                    return TypeCode.Object;
+            }
+        }
+
+        protected static object GetDefaultValue(ITypeInfo type)
+        {
+            switch (type.TypeCode)
+            {
+                case TypeCode.Boolean:
+                    return default(Boolean);
+                case TypeCode.Byte:
+                    return default(Byte);
+                case TypeCode.Char:
+                    return default(Char);
+                case TypeCode.DateTime:
+                    return default(DateTime);
+                case TypeCode.DBNull:
+                    return default(DBNull);
+                case TypeCode.Decimal:
+                    return default(Decimal);
+                case TypeCode.Double:
+                    return default(Double);
+                case TypeCode.Empty:
+                    return null;
+                case TypeCode.Int16:
+                    return default(Int16);
+                case TypeCode.Int32:
+                    return default(Int32);
+                case TypeCode.Int64:
+                    return default(Int64);
+                case TypeCode.Object:
+                    return default(Object);
+                case TypeCode.SByte:
+                    return default(SByte);
+                case TypeCode.Single:
+                    return default(Single);
+                case TypeCode.String:
+                    return default(String);
+                case TypeCode.UInt16:
+                    return default(UInt16);
+                case TypeCode.UInt32:
+                    return default(UInt32);
+                case TypeCode.UInt64:
+                    return default(UInt64);
+                default:
+                    throw new NotSupportedException("TypeCode not supported.");
+            }
+        }
+
+        protected static bool IsAttributeField(IFieldInfo field)
+        {
+            return !field.IsLiteral && !field.IsInitOnly && !field.IsStatic;
+        }
+
+        protected static bool IsAttributeProperty(IPropertyInfo property)
+        {
+            IMethodInfo getMethod = property.GetGetMethod();
+            IMethodInfo setMethod = property.GetSetMethod();
+            return getMethod != null && setMethod != null
+                && getMethod.IsPublic && ! getMethod.IsAbstract && ! getMethod.IsStatic
+                && setMethod.IsPublic && ! setMethod.IsAbstract && ! setMethod.IsStatic;
         }
 
         protected static Type ResolveType(ITypeInfo type)
@@ -258,14 +362,6 @@ namespace Gallio.ReSharperRunner.Reflection
             return GenericUtils.ConvertAllToArray<IParameterInfo, Type>(function.GetParameters(), delegate(IParameterInfo parameter)
             {
                 return parameter.ValueType.Resolve();
-            });
-        }
-
-        private static Type[] ResolveGenericParameterTypes(IFunctionInfo function)
-        {
-            return GenericUtils.ConvertAllToArray<IGenericParameterInfo, Type>(function.GetGenericParameters(), delegate(IGenericParameterInfo parameter)
-            {
-                return parameter.Resolve();
             });
         }
     }

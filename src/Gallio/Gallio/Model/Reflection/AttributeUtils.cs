@@ -76,12 +76,12 @@ namespace Gallio.Model.Reflection
         public static object CreateAttribute(IAttributeInfo attribute)
         {
             ConstructorInfo constructor = attribute.Constructor.Resolve();
-            object instance = constructor.Invoke(attribute.ArgumentValues);
+            object instance = constructor.Invoke(attribute.InitializedArgumentValues);
 
-            foreach (KeyValuePair<IFieldInfo, object> initializer in attribute.FieldValues)
+            foreach (KeyValuePair<IFieldInfo, object> initializer in attribute.InitializedFieldValues)
                 initializer.Key.Resolve().SetValue(instance, initializer.Value);
 
-            foreach (KeyValuePair<IPropertyInfo, object> initializer in attribute.PropertyValues)
+            foreach (KeyValuePair<IPropertyInfo, object> initializer in attribute.InitializedPropertyValues)
                 initializer.Key.Resolve().SetValue(instance, initializer.Value, null);
 
             return instance;

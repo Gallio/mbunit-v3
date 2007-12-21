@@ -34,6 +34,24 @@ namespace Gallio.Model.Reflection
     public interface IEventInfo : IMemberInfo, IEquatable<IEventInfo>
     {
         /// <summary>
+        /// Gets the add method of the event, or null if none.
+        /// </summary>
+        /// <returns>The add method, or null if none</returns>
+        IMethodInfo GetAddMethod();
+
+        /// <summary>
+        /// Gets the raise method of the event, or null if none.
+        /// </summary>
+        /// <returns>The raise method, or null if none</returns>
+        IMethodInfo GetRaiseMethod();
+
+        /// <summary>
+        /// Gets the remove method of the event, or null if none.
+        /// </summary>
+        /// <returns>The remove method, or null if none</returns>
+        IMethodInfo GetRemoveMethod();
+
+        /// <summary>
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
         /// <returns>The native reflection target</returns>

@@ -30,8 +30,8 @@ namespace MbUnit.Model
     {
         private const string MbUnitAssemblyDisplayName = @"MbUnit";
 
-        public readonly ITestModelBuilder builder;
-        public readonly List<IAssemblyInfo> assemblies;
+        private readonly ITestModelBuilder builder;
+        private readonly List<IAssemblyInfo> assemblies;
 
         /// <summary>
         /// Creates a test explorer.

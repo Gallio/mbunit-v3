@@ -21,7 +21,6 @@ using Gallio.Model.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
-using JetBrains.ReSharper.Psi.Util;
 using JetBrains.ProjectModel.Build;
 
 namespace Gallio.ReSharperRunner.Reflection
@@ -731,6 +730,11 @@ namespace Gallio.ReSharperRunner.Reflection
                 get { throw new InvalidOperationException("Not an array type."); }
             }
 
+            public TypeCode TypeCode
+            {
+                get { return GetTypeCode(this); }
+            }
+
             public virtual bool IsArray
             {
                 get { return false; }
@@ -924,63 +928,105 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
             {
-                List<IConstructorInfo> result = new List<IConstructorInfo>();
-                AddMatchingMembers(result, bindingFlags, TypeElement.Constructors, Reflector.Wrap);
-                return result;
+                return new List<IConstructorInfo>(EnumerateConstructors(bindingFlags));
+            }
+
+            private IEnumerable<IConstructorInfo> EnumerateConstructors(BindingFlags bindingFlags)
+            {
+                return ReSharperBinder.EnumerateConstructors(this, bindingFlags, GetConstructors);
+            }
+
+            private IEnumerable<IConstructorInfo> GetConstructors(ITypeInfo type)
+            {
+                ITypeElement typeElement = ((DeclaredTypeWrapper)type).TypeElement;
+
+                foreach (IConstructor constructor in typeElement.Constructors)
+                    yield return Reflector.Wrap(constructor);
             }
 
             public override IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags)
             {
-                IMethod match = null;
-                foreach (ITypeMember member in MiscUtil.EnumerateMembers(TypeElement, methodName, true))
-                {
-                    IMethod method = member as IMethod;
-                    if (method != null && CheckBindingFlags(bindingFlags, member))
-                    {
-                        if (match != null)
-                            throw new AmbiguousMatchException("Found two matching methods with the same name.");
-
-                        match = method;
-                    }
-                }
-
-                return Reflector.Wrap(match);
+                return ReSharperBinder.GetMemberByName(EnumerateMethods(bindingFlags), methodName);
             }
 
             public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
             {
-                List<IMethodInfo> result = new List<IMethodInfo>();
-                AddMatchingMembers(result, bindingFlags, TypeElement.Methods, Reflector.Wrap);
-                AddMatchingMembers(result, bindingFlags, TypeElement.Operators, Reflector.Wrap);
-                return result;
+                return new List<IMethodInfo>(EnumerateMethods(bindingFlags));
+            }
+
+            private IEnumerable<IMethodInfo> EnumerateMethods(BindingFlags bindingFlags)
+            {
+                return ReSharperBinder.EnumerateMethods(this, bindingFlags, GetMethods);
+            }
+
+            private IEnumerable<IMethodInfo> GetMethods(ITypeInfo type)
+            {
+                ITypeElement typeElement = ((DeclaredTypeWrapper)type).TypeElement;
+
+                foreach (IMethod method in typeElement.Methods)
+                    yield return Reflector.Wrap(method);
+                foreach (IOperator method in typeElement.Operators)
+                    yield return Reflector.Wrap(method);
             }
 
             public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
             {
-                List<IPropertyInfo> result = new List<IPropertyInfo>();
-                AddMatchingMembers(result, bindingFlags, TypeElement.Properties, Reflector.Wrap);
-                return result;
+                return new List<IPropertyInfo>(EnumerateProperties(bindingFlags));
+            }
+
+            private IEnumerable<IPropertyInfo> EnumerateProperties(BindingFlags bindingFlags)
+            {
+                return ReSharperBinder.EnumerateProperties(this, bindingFlags, GetProperties);
+            }
+
+            private IEnumerable<IPropertyInfo> GetProperties(ITypeInfo type)
+            {
+                ITypeElement typeElement = ((DeclaredTypeWrapper)type).TypeElement;
+
+                foreach (IProperty property in typeElement.Properties)
+                    yield return Reflector.Wrap(property);
             }
 
             public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
             {
-                List<IFieldInfo> result = new List<IFieldInfo>();
+                return new List<IFieldInfo>(EnumerateFields(bindingFlags));
+            }
 
-                IClass @class = TypeElement as IClass;
+            private IEnumerable<IFieldInfo> EnumerateFields(BindingFlags bindingFlags)
+            {
+                return ReSharperBinder.EnumerateFields(this, bindingFlags, GetFields);
+            }
+
+            private IEnumerable<IFieldInfo> GetFields(ITypeInfo type)
+            {
+                ITypeElement typeElement = ((DeclaredTypeWrapper)type).TypeElement;
+
+                IClass @class = typeElement as IClass;
                 if (@class != null)
                 {
-                    AddMatchingMembers(result, bindingFlags, @class.Fields, Reflector.Wrap);
-                    AddMatchingMembers(result, bindingFlags, @class.Constants, Reflector.Wrap);
+                    foreach (IField field in @class.Fields)
+                        yield return Reflector.Wrap(field);
+                    foreach (IField field in @class.Constants)
+                        yield return Reflector.Wrap(field);
                 }
-
-                return result;
             }
 
             public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
             {
-                List<IEventInfo> result = new List<IEventInfo>();
-                AddMatchingMembers(result, bindingFlags, TypeElement.Events, Reflector.Wrap);
-                return result;
+                return new List<IEventInfo>(EnumerateEvents(bindingFlags));
+            }
+
+            private IEnumerable<IEventInfo> EnumerateEvents(BindingFlags bindingFlags)
+            {
+                return ReSharperBinder.EnumerateEvents(this, bindingFlags, GetEvents);
+            }
+
+            private IEnumerable<IEventInfo> GetEvents(ITypeInfo type)
+            {
+                ITypeElement typeElement = ((DeclaredTypeWrapper)type).TypeElement;
+
+                foreach (IEvent @event in typeElement.Events)
+                    yield return Reflector.Wrap(@event);
             }
 
             public override IList<IGenericParameterInfo> GetGenericParameters()
@@ -1007,28 +1053,6 @@ namespace Gallio.ReSharperRunner.Reflection
             protected ITypeElement TypeElement
             {
                 get { return Target.GetTypeElement(); }
-            }
-
-            private static void AddMatchingMembers<TInput, TOutput>(ICollection<TOutput> outputCollection,
-                BindingFlags flags, IEnumerable<TInput> members, Converter<TInput, TOutput> converter)
-                where TInput : IModifiersOwner
-            {
-                foreach (TInput member in members)
-                {
-                    if (CheckBindingFlags(flags, member))
-                        outputCollection.Add(converter(member));
-                }
-            }
-
-            private static bool CheckBindingFlags(BindingFlags flags, IModifiersOwner modifiers)
-            {
-                bool @public = modifiers.GetAccessRights() == AccessRights.PUBLIC;
-                bool @static = modifiers.IsStatic;
-
-                return (@public && (flags & BindingFlags.Public) != 0
-                    || !@public && (flags & BindingFlags.NonPublic) != 0)
-                    && (@static && (flags & BindingFlags.Static) != 0
-                    || !@static && (flags & BindingFlags.Instance) != 0);
             }
         }
 
@@ -1293,6 +1317,21 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
+            public bool IsAbstract
+            {
+                get { return Target.IsAbstract; }
+            }
+
+            public bool IsPublic
+            {
+                get { return Target.AccessibilityDomain.DomainType == AccessibilityDomain.AccessibilityDomainType.PUBLIC; }
+            }
+
+            public bool IsStatic
+            {
+                get { return Target.IsStatic; }
+            }
+
             public IList<IParameterInfo> GetParameters()
             {
                 IList<IParameter> parameters = Target.Parameters;
@@ -1498,6 +1537,26 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
+            public bool IsLiteral
+            {
+                get { return Target.IsConstant; }
+            }
+
+            public bool IsPublic
+            {
+                get { return Target.AccessibilityDomain.DomainType == AccessibilityDomain.AccessibilityDomainType.PUBLIC; }
+            }
+
+            public bool IsInitOnly
+            {
+                get { return Target.IsReadonly; }
+            }
+
+            public bool IsStatic
+            {
+                get { return Target.IsStatic; }
+            }
+
             public override CodeElementKind Kind
             {
                 get { return CodeElementKind.Field; }
@@ -1534,6 +1593,21 @@ namespace Gallio.ReSharperRunner.Reflection
             public override MemberInfo ResolveMemberInfo()
             {
                 return Resolve();
+            }
+
+            public IMethodInfo GetAddMethod()
+            {
+                return Reflector.Wrap(Target.Adder);
+            }
+
+            public IMethodInfo GetRaiseMethod()
+            {
+                return Reflector.Wrap(Target.Raiser);
+            }
+
+            public IMethodInfo GetRemoveMethod()
+            {
+                return Reflector.Wrap(Target.Remover);
             }
 
             public EventInfo Resolve()
@@ -1649,7 +1723,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 get { return Reflector.Wrap(Target.Constructor); }
             }
 
-            public object[] ArgumentValues
+            public object[] InitializedArgumentValues
             {
                 get
                 {
@@ -1664,60 +1738,46 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public object GetFieldValue(string name)
             {
-                IClass @class = Target.AttributeType as IClass;
-                if (@class != null)
+                foreach (FieldWrapper field in Type.GetFields(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    foreach (IField field in @class.Fields)
+                    if (field.Name == name && IsAttributeField(field))
                     {
-                        if (field.ShortName == name)
-                        {
-                            ConstantValue2 value = Target.NamedParameter(field);
-                            if (!value.IsBadValue())
-                                return value.Value;
-                        }
+                        ConstantValue2 value = Target.NamedParameter(field.Target);
+                        return GetValueOrDefault(value, field);
                     }
                 }
 
-                throw new ArgumentException(String.Format("The attribute does not have an initialized field named '{0}'.", name));
+                throw new ArgumentException(String.Format("The attribute does not have a read/write instance field named '{0}'.", name));
             }
 
             public object GetPropertyValue(string name)
             {
-                IClass @class = Target.AttributeType as IClass;
-                if (@class != null)
+                foreach (PropertyWrapper property in Type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    foreach (IProperty property in @class.Properties)
+                    if (property.Name == name && IsAttributeProperty(property))
                     {
-                        if (property.ShortName == name)
-                        {
-                            ConstantValue2 value = Target.NamedParameter(property);
-                            if (!value.IsBadValue())
-                                return value.Value;
-                        }
+                        ConstantValue2 value = Target.NamedParameter(property.Target);
+                        return GetValueOrDefault(value, property);
                     }
                 }
 
-                throw new ArgumentException(String.Format("The attribute does not have an initialized property named '{0}'.", name));
+                throw new ArgumentException(String.Format("The attribute does not have a read/write instance property named '{0}'.", name));
             }
 
 
-            public IDictionary<IFieldInfo, object> FieldValues
+            public IDictionary<IFieldInfo, object> InitializedFieldValues
             {
                 get
                 {
                     Dictionary<IFieldInfo, object> values = new Dictionary<IFieldInfo, object>();
 
-                    IClass @class = Target.AttributeType as IClass;
-                    if (@class != null)
+                    foreach (FieldWrapper field in Type.GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        foreach (IField field in @class.Fields)
+                        if (IsAttributeField(field))
                         {
-                            if (!field.IsStatic && ! field.IsReadonly && !field.IsConstant)
-                            {
-                                ConstantValue2 value = Target.NamedParameter(field);
-                                if (!value.IsBadValue())
-                                    values.Add(Reflector.Wrap(field), value.Value);
-                            }
+                            ConstantValue2 value = Target.NamedParameter(field.Target);
+                            if (!value.IsBadValue())
+                                values.Add(field, value.Value);
                         }
                     }
 
@@ -1725,23 +1785,19 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
-            public IDictionary<IPropertyInfo, object> PropertyValues
+            public IDictionary<IPropertyInfo, object> InitializedPropertyValues
             {
                 get
                 {
                     Dictionary<IPropertyInfo, object> values = new Dictionary<IPropertyInfo, object>();
 
-                    IClass @class = Target.AttributeType as IClass;
-                    if (@class != null)
+                    foreach (PropertyWrapper property in Type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        foreach (IProperty property in @class.Properties)
+                        if (IsAttributeProperty(property))
                         {
-                            if (!property.IsStatic && property.IsWritable && !property.IsAbstract)
-                            {
-                                ConstantValue2 value = Target.NamedParameter(property);
-                                if (!value.IsBadValue())
-                                    values.Add(Reflector.Wrap(property), value.Value);
-                            }
+                            ConstantValue2 value = Target.NamedParameter(property.Target);
+                            if (!value.IsBadValue())
+                                values.Add(property, value.Value);
                         }
                     }
 
@@ -1752,6 +1808,13 @@ namespace Gallio.ReSharperRunner.Reflection
             public object Resolve()
             {
                 return AttributeUtils.CreateAttribute(this);
+            }
+
+            private object GetValueOrDefault(ConstantValue2 value, ISlotInfo slot)
+            {
+                if (value.IsBadValue())
+                    return GetDefaultValue(slot.ValueType);
+                return value.Value;
             }
         }
     }

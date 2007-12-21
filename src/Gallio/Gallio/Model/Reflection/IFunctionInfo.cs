@@ -38,6 +38,21 @@ namespace Gallio.Model.Reflection
         MethodAttributes MethodAttributes { get; }
 
         /// <summary>
+        /// Returns true if the method is abstract.
+        /// </summary>
+        bool IsAbstract { get; }
+
+        /// <summary>
+        /// Returns true if the method is public.
+        /// </summary>
+        bool IsPublic { get; }
+
+        /// <summary>
+        /// Returns true if the method is static.
+        /// </summary>
+        bool IsStatic { get; }
+
+        /// <summary>
         /// Gets the parameters of the function.
         /// </summary>
         /// <returns>The parameters</returns>

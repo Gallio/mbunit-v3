@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Gallio.Model.Reflection
 {
@@ -37,6 +35,26 @@ namespace Gallio.Model.Reflection
         /// Gets the field attributes.
         /// </summary>
         FieldAttributes FieldAttributes { get; }
+
+        /// <summary>
+        /// Returns true if the field is a literal set at compile time.
+        /// </summary>
+        bool IsLiteral { get; }
+
+        /// <summary>
+        /// Returns true if the field is public.
+        /// </summary>
+        bool IsPublic { get; }
+
+        /// <summary>
+        /// Returns true if the field is read-only and can only be set from the constructor.
+        /// </summary>
+        bool IsInitOnly { get; }
+
+        /// <summary>
+        /// Returns true if the field is static.
+        /// </summary>
+        bool IsStatic { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

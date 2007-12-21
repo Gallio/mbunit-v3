@@ -125,6 +125,7 @@
     <Compile Include="Reflection\BaseReSharperReflector.cs" />
     <Compile Include="Reflection\BuiltInAssemblyResolver.cs" />
     <Compile Include="Reflection\IAssemblyResolver.cs" />
+    <Compile Include="Reflection\ReSharperBinder.cs" />
     <Compile Include="Tasks\GallioRemoteAction.cs" />
     <Compile Include="Tasks\GallioRemoteTaskRunner.cs" />
     <Compile Include="Tasks\GallioRemoteTask.cs" />

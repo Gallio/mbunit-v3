@@ -94,6 +94,11 @@ namespace Gallio.Model.Reflection
         int ArrayRank { get; }
 
         /// <summary>
+        /// Gets the type's <see cref="TypeCode" />.
+        /// </summary>
+        TypeCode TypeCode { get; }
+
+        /// <summary>
         /// Gets all of the type's interfaces.
         /// </summary>
         /// <returns>The type's interfaces</returns>

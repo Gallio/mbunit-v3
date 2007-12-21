@@ -34,35 +34,37 @@ namespace Gallio.Model.Reflection
         IConstructorInfo Constructor { get; }
 
         /// <summary>
-        /// Gets the attribute constructor argument values.
-        /// </summary>
-        object[] ArgumentValues { get; }
-
-        /// <summary>
         /// Gets an attribute field value.
         /// </summary>
         /// <param name="name">The field name</param>
-        /// <returns>The value</returns>
-        /// <exception cref="ArgumentException">Thrown if there is no field with the specified name</exception>
+        /// <returns>The value, or a default value of the field's type if the field with the specified name
+        /// was not initialized by the attribute declaration</returns>
+        /// <exception cref="ArgumentException">Thrown if there is no read/write instance field with the specified name</exception>
         object GetFieldValue(string name);
 
         /// <summary>
         /// Gets an attribute property value.
         /// </summary>
         /// <param name="name">The property name</param>
-        /// <returns>The value</returns>
-        /// <exception cref="ArgumentException">Thrown if there is no property with the specified name</exception>
+        /// <returns>The value, or a default value of the propery's type if the property with the specified name was not
+        /// initialized by the attribute declaration</returns>
+        /// <exception cref="ArgumentException">Thrown if there is no read/write instance property with the specified name</exception>
         object GetPropertyValue(string name);
 
         /// <summary>
-        /// Gets the attribute field values.
+        /// Gets the initialized attribute constructor argument values.
         /// </summary>
-        IDictionary<IFieldInfo, object> FieldValues { get; }
+        object[] InitializedArgumentValues { get; }
 
         /// <summary>
-        /// Gets the attribute property values.
+        /// Gets the initialized attribute field values.
         /// </summary>
-        IDictionary<IPropertyInfo, object> PropertyValues { get; }
+        IDictionary<IFieldInfo, object> InitializedFieldValues { get; }
+
+        /// <summary>
+        /// Gets the initialized attribute property values.
+        /// </summary>
+        IDictionary<IPropertyInfo, object> InitializedPropertyValues { get; }
 
         /// <summary>
         /// Gets the attribute as an object.

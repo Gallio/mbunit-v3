@@ -141,13 +141,21 @@ namespace Gallio.Plugin.XunitAdapter.Model
             ITest typeTest;
             if (!typeTests.TryGetValue(type, out typeTest))
             {
-                XunitTypeInfoAdapter xunitTypeInfo = new XunitTypeInfoAdapter(type);
-                ITestClassCommand command = TestClassCommandFactory.Make(xunitTypeInfo);
-                if (command != null)
+                try
                 {
-                    typeTest = CreateTypeTest(xunitTypeInfo, command);
-                    assemblyTest.AddChild(typeTest);
+                    XunitTypeInfoAdapter xunitTypeInfo = new XunitTypeInfoAdapter(type);
+                    ITestClassCommand command = TestClassCommandFactory.Make(xunitTypeInfo);
+                    if (command != null)
+                        typeTest = CreateTypeTest(xunitTypeInfo, command);
+                }
+                catch (Exception ex)
+                {
+                    typeTest = new ErrorTest(type, String.Format("An exception occurred while generating an xUnit.Net test from '{0}': {1}", type.FullName, ex));
+                }
 
+                if (typeTest != null)
+                {
+                    assemblyTest.AddChild(typeTest);
                     typeTests.Add(type, typeTest);
                 }
             }
