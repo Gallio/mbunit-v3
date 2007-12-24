@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using Gallio.Icarus.Controls;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
@@ -26,8 +28,11 @@ namespace Gallio.Icarus.Core.Interfaces
         TestModelData BuildTests();
         void RunTests();
         void StopTests();
-        void SetFilter(Filter<ITest> filter);
+        void SetFilter(string filterName, Filter<ITest> filter);
         string GetLogStream(string log);
-        void GenerateReport(string reportType);
+        void GenerateReport();
+        void SaveReportAs(string fileName, string format);
+        void SaveProject(string fileName);
+        IList<string> GetReportTypes();
     }
 }

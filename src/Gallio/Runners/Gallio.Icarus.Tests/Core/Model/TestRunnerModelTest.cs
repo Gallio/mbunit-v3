@@ -80,7 +80,7 @@ namespace Gallio.Icarus.Core.Model.Tests
 
             mocks.ReplayAll();
 
-            testRunnerModel.SetFilter(new AnyFilter<ITest>());
+            testRunnerModel.SetFilter("test", new AnyFilter<ITest>());
         }
     }
 }

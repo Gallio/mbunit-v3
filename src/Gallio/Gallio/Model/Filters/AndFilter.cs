@@ -28,6 +28,12 @@ namespace Gallio.Model.Filters
         private readonly Filter<T>[] filters;
 
         /// <summary>
+        /// Parameterless constructor for serialization.
+        /// </summary>
+        public AndFilter()
+        { }
+
+        /// <summary>
         /// Creates an AND-filter.
         /// </summary>
         /// <param name="filters">The filters that must all jointly be matched.

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
@@ -26,101 +27,97 @@ namespace Gallio.Icarus.Adapter
 {
     public class ProjectAdapter : IProjectAdapter
     {
-        #region Variables
-
-        private readonly IProjectAdapterView _View;
-        private readonly IProjectAdapterModel _Model;
+        private readonly IProjectAdapterView projectAdapterView;
+        private readonly IProjectAdapterModel projectAdapterModel;
         
-        private TestModelData _testModelData;
-        private TestPackageConfig _testPackageConfig;
+        private TestModelData testModelData;
+        private TestPackageConfig testPackageConfig;
 
         private string mode = "";
 
-        #endregion
-
-        #region Properties
-
         public TestModelData TestModelData
         {
-            get { return _testModelData; }
-            set { _testModelData = value; }
+            get { return testModelData; }
+            set { testModelData = value; }
         }
 
         public TestPackageConfig TestPackageConfig
         {
-            get { return _testPackageConfig; }
+            get { return testPackageConfig; }
         }
 
         public string StatusText
         {
-            set { _View.StatusText = value; }
+            set { projectAdapterView.StatusText = value; }
         }
 
         public int CompletedWorkUnits
         {
-            set { _View.CompletedWorkUnits = value; }
+            set { projectAdapterView.CompletedWorkUnits = value; }
         }
 
         public int TotalWorkUnits
         {
-            set { _View.TotalWorkUnits = value; }
+            set { projectAdapterView.TotalWorkUnits = value; }
         }
 
         public string LogBody
         {
-            set { _View.LogBody = value; }
+            set { projectAdapterView.LogBody = value; }
         }
 
-        #endregion
+        public string ReportPath
+        {
+            set { projectAdapterView.ReportPath = value; }
+        }
 
-        #region Events
+        public IList<string> ReportTypes
+        {
+            set { projectAdapterView.ReportTypes = value; }
+        }
 
         public event EventHandler<ProjectEventArgs> GetTestTree;
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
         public event EventHandler<SingleStringEventArgs> GetLogStream;
-        public event EventHandler<SingleStringEventArgs> GenerateReport;
+        public event EventHandler<EventArgs> GetReportTypes;
+        public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
+        public event EventHandler<SingleStringEventArgs> SaveProject;
 
-        #endregion
-
-        #region Constructor
-
-        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model, TestPackageConfig testPackageConfig)
+        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model, TestPackageConfig config)
         {
-            _View = view;
-            _Model = model;
-            _testPackageConfig = testPackageConfig;
+            projectAdapterView = view;
+            projectAdapterModel = model;
+            testPackageConfig = config;
 
             // Wire up event handlers
-            _View.AddAssemblies += _View_AddAssemblies;
-            _View.RemoveAssemblies += _View_RemoveAssemblies;
-            _View.RemoveAssembly += _View_RemoveAssembly;
-            _View.GetTestTree += _View_GetTestTree;
-            _View.RunTests += _View_RunTests;
-            _View.StopTests += _View_StopTests;
-            _View.SetFilter += _View_SetFilter;
-            _View.GetLogStream += _View_GetLogStream;
-            _View.GenerateReport += _View_GenerateReport;
+            projectAdapterView.AddAssemblies += _View_AddAssemblies;
+            projectAdapterView.RemoveAssemblies += _View_RemoveAssemblies;
+            projectAdapterView.RemoveAssembly += _View_RemoveAssembly;
+            projectAdapterView.GetTestTree += _View_GetTestTree;
+            projectAdapterView.RunTests += _View_RunTests;
+            projectAdapterView.StopTests += _View_StopTests;
+            projectAdapterView.SetFilter += _View_SetFilter;
+            projectAdapterView.GetLogStream += _View_GetLogStream;
+            projectAdapterView.GetReportTypes += _View_GetReportTypes;
+            projectAdapterView.SaveReportAs += _View_SaveReportAs;
+            projectAdapterView.SaveProject += _View_SaveProject;
         }
-
-        #endregion
-
-        #region Event handlers
 
         private void _View_AddAssemblies(object sender, AddAssembliesEventArgs e)
         {
-            _testPackageConfig.AssemblyFiles.AddRange(e.Assemblies);
+            testPackageConfig.AssemblyFiles.AddRange(e.Assemblies);
         }
 
         private void _View_RemoveAssemblies(object sender, EventArgs e)
         {
-            _testPackageConfig.AssemblyFiles.Clear();
+            testPackageConfig.AssemblyFiles.Clear();
         }
 
         private void _View_RemoveAssembly(object sender, SingleStringEventArgs e)
         {
-            _testPackageConfig.AssemblyFiles.Remove(e.String);
+            testPackageConfig.AssemblyFiles.Remove(e.String);
         }
 
         private void _View_GetTestTree(object sender, SingleStringEventArgs e)
@@ -128,11 +125,10 @@ namespace Gallio.Icarus.Adapter
             mode = e.String;
             if (GetTestTree != null)
             {
-                GetTestTree(this, new ProjectEventArgs(_testPackageConfig));
+                GetTestTree(this, new ProjectEventArgs(testPackageConfig));
             }
         }
 
-        [DebuggerStepThrough]
         private void _View_GetLogStream(object sender, SingleStringEventArgs e)
         {
             if (GetLogStream != null)
@@ -141,7 +137,6 @@ namespace Gallio.Icarus.Adapter
             }
         }
 
-        [DebuggerStepThrough]
         private void _View_RunTests(object sender, EventArgs e)
         {
             if (RunTests != null)
@@ -150,72 +145,69 @@ namespace Gallio.Icarus.Adapter
             }
         }
 
-        [DebuggerStepThrough]
         private void _View_StopTests(object sender, EventArgs e)
         {
             if (StopTests != null)
-            {
                 StopTests(this, e);
-            }
         }
 
         private void _View_SetFilter(object sender, SetFilterEventArgs e)
         {
             if (SetFilter != null)
             {
-                Filter<ITest> filter = _Model.GetFilter(e.Nodes);
+                Filter<ITest> filter = projectAdapterModel.GetFilter(e.Nodes);
                 if (filter == null)
                 {
                     filter = new NoneFilter<ITest>();
                 }
-                SetFilter(this, new SetFilterEventArgs(filter));
+                SetFilter(this, new SetFilterEventArgs(e.FilterName, filter));
             }
         }
 
-        private void _View_GenerateReport(object sender, SingleStringEventArgs e)
+        private void _View_GetReportTypes(object sender, EventArgs e)
         {
-            if (GenerateReport != null)
-            {
-                GenerateReport(this, e);
-            }
+            if (GetReportTypes != null)
+                GetReportTypes(this, e);
         }
 
-        #endregion
+        private void _View_SaveReportAs(object sender, SaveReportAsEventArgs e)
+        {
+            if (SaveReportAs != null)
+                SaveReportAs(this, e);
+        }
 
-        #region Public methods
+        private void _View_SaveProject(object sender, SingleStringEventArgs e)
+        {
+            if (SaveProject != null)
+                SaveProject(this, e);
+        }
 
         public void DataBind()
         {
-            _View.Assemblies = _Model.BuildAssemblyList(_testPackageConfig.AssemblyFiles);
-            _View.TestTreeCollection = _Model.BuildTestTree(_testModelData, mode);
-            _View.TotalTests(_Model.CountTests(_testModelData));
-            _View.DataBind();
+            projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(testPackageConfig.AssemblyFiles);
+            projectAdapterView.TestTreeCollection = projectAdapterModel.BuildTestTree(testModelData, mode);
+            projectAdapterView.TotalTests(projectAdapterModel.CountTests(testModelData));
+            projectAdapterView.DataBind();
         }
 
-        [DebuggerStepThrough]
         public void Passed(string testId)
         {
-            _View.Passed(testId);
+            projectAdapterView.Passed(testId);
         }
 
-        [DebuggerStepThrough]
         public void Failed(string testId)
         {
-            _View.Failed(testId);
+            projectAdapterView.Failed(testId);
         }
 
-        [DebuggerStepThrough]
         public void Skipped(string testId)
         {
-            _View.Skipped(testId);
+            projectAdapterView.Skipped(testId);
         }
 
-        [DebuggerStepThrough]
         public void Ignored(string testId)
         {
-            _View.Ignored(testId);
+            projectAdapterView.Ignored(testId);
         }
-
-        #endregion
     }
 }

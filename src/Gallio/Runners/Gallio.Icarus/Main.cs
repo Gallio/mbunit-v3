@@ -34,8 +34,6 @@ namespace Gallio.Icarus
 {
     public partial class Main : Form, IProjectAdapterView
     {
-        #region Variables
-
         private TreeNode[] testTreeCollection;
         private ListViewItem[] assemblies;
         private Thread workerThread = null;
@@ -45,10 +43,6 @@ namespace Gallio.Icarus
         private int totalWorkUnits, completedWorkUnits;
         private Timer statusBarTimer;
         
-        #endregion
-
-        #region Properties
-
         public TreeNode[] TestTreeCollection
         {
             set { testTreeCollection = value; }
@@ -79,9 +73,35 @@ namespace Gallio.Icarus
             set { logBody.Text = value; }
         }
 
-        #endregion
+        public string ReportPath
+        {
+            set
+            {
+                Invoke(new MethodInvoker(delegate()
+                {
+                    if (value != "")
+                    {
+                        reportViewer.Url = new Uri(value);
+                    }
+                }));
+            }
+        }
 
-        #region Events
+        public IList<string> ReportTypes
+        {
+            set
+            {
+                Invoke(new MethodInvoker(delegate()
+                {
+                    foreach (string reportType in value)
+                    {
+                        reportTypes.Items.Add(reportType);
+                    }
+                    if (value.Count > 0)
+                        reportTypes.SelectedIndex = 0;
+                }));
+            }
+        }
 
         public event EventHandler<SingleStringEventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
@@ -91,20 +111,12 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
         public event EventHandler<SingleStringEventArgs> GetLogStream;
-        public event EventHandler<SingleStringEventArgs> GenerateReport;
-
-        #endregion
-
-        #region Delegates
+        public event EventHandler<EventArgs> GetReportTypes;
+        public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
+        public event EventHandler<SingleStringEventArgs> SaveProject;
 
         private delegate void SingleParameterMethodDelegate(object o);
-        private delegate void ClearTreeDelegate();
-        private delegate void AddRangeToTreeDelegate(TreeNode[] nodes);
-        private delegate void ClearListDelegate();
-        private delegate void AddRangeToListDelegate(ListViewItem[] items);
         private delegate string GetTreeFilterDelegate();
-
-        #endregion
 
         public Main()
         {
@@ -178,7 +190,13 @@ namespace Gallio.Icarus
             testTree.TestStateImageList = stateImages;
 
             AbortWorkerThread();
-            workerThread = new Thread(new ThreadStart(ThreadedRefreshTree));
+            workerThread = new Thread(delegate()
+            {
+                if (GetReportTypes != null)
+                    GetReportTypes(this, EventArgs.Empty);
+
+                ThreadedRefreshTree();
+            });
             workerThread.Start();
         }
 
@@ -209,36 +227,22 @@ namespace Gallio.Icarus
             stopButton.Enabled = true;
 
             AbortWorkerThread();
-            workerThread = new Thread(new ThreadStart(ThreadedRunTests));
-            workerThread.Start();
-        }
-
-        private void ThreadedRunTests()
-        {
-            // run tests
-            if (RunTests != null)
+            workerThread = new Thread(delegate()
             {
-                RunTests(this, new EventArgs());
-            }
-            // enable/disable buttons
-            toolStripContainer.Invoke(new SingleParameterMethodDelegate(EnableButtons), new object[] { "RunTestsFinished" });
-        }
-
-        private void EnableButtons(object o)
-        {
-            string mode = o as string;
-            if (mode != null)
-            {
-                switch (mode)
+                // run tests
+                if (RunTests != null)
                 {
-                    case "RunTestsFinished":
-                        {
-                            stopButton.Enabled = false;
-                            startButton.Enabled = true;
-                            break;
-                        }
+                    RunTests(this, new EventArgs());
                 }
-            }
+
+                // enable/disable buttons
+                toolStripContainer.Invoke((MethodInvoker)delegate()
+                {
+                    stopButton.Enabled = false;
+                    startButton.Enabled = true;
+                });
+            });
+            workerThread.Start();
         }
 
         private void Main_SizeChanged(object sender, EventArgs e)
@@ -313,7 +317,13 @@ namespace Gallio.Icarus
             saveFile.AddExtension = true;
             saveFile.DefaultExt = "Gallio Projects (*.gallio)|*.gallio";
             saveFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
-            saveFile.ShowDialog();
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                if (SaveProject != null)
+                {
+                    SaveProject(this, new SingleStringEventArgs(saveFile.FileName));
+                }
+            }
         }
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -324,23 +334,17 @@ namespace Gallio.Icarus
             if (openFile.ShowDialog() == DialogResult.OK)
             {
                 AbortWorkerThread();
-                workerThread = new Thread(new ParameterizedThreadStart(ThreadedAddAssemblies));
-                workerThread.Start(openFile.FileNames);
-            }
-        }
-
-        private void ThreadedAddAssemblies(object o)
-        {
-            StatusText = "Adding assemblies...";
-            string[] filenames = (string[]) o;
-            if (filenames != null)
-            {
-                // Add assemblies
-                if (AddAssemblies != null)
+                workerThread = new Thread(delegate()
                 {
-                    AddAssemblies(this, new AddAssembliesEventArgs(filenames));
-                }
-                ThreadedRefreshTree();
+                    StatusText = "Adding assemblies...";
+                    // Add assemblies
+                    if (AddAssemblies != null)
+                    {
+                        AddAssemblies(this, new AddAssembliesEventArgs(openFile.FileNames));
+                    }
+                    ThreadedRefreshTree();
+                });
+                workerThread.Start(openFile.FileNames);
             }
         }
 
@@ -469,30 +473,40 @@ namespace Gallio.Icarus
         public void DataBind()
         {
             // populate tree
-            testTree.Invoke(new ClearTreeDelegate(testTree.Nodes.Clear));
-            testTree.Invoke(new AddRangeToTreeDelegate(testTree.Nodes.AddRange), new object[] { testTreeCollection });
+            testTree.Invoke((MethodInvoker) delegate()
+            {
+                testTree.Nodes.Clear();
+            });
+            testTree.Invoke((MethodInvoker) delegate()
+            {
+                testTree.Nodes.AddRange(testTreeCollection);
+            });
 
             // populate assembly list
-            assemblyList.Invoke(new ClearListDelegate(assemblyList.Items.Clear));
-            assemblyList.Invoke(new AddRangeToListDelegate(assemblyList.Items.AddRange), new object[] { assemblies });
+            assemblyList.Invoke((MethodInvoker) delegate()
+            {
+                assemblyList.Items.Clear();
+            });
+            assemblyList.Invoke((MethodInvoker) delegate()
+            {
+                assemblyList.Items.AddRange(assemblies);
+            });
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AbortWorkerThread();
-            workerThread = new Thread(new ThreadStart(ThreadedRemoveAssemblies));
-            workerThread.Start();
-        }
-
-        private void ThreadedRemoveAssemblies()
-        {
-            // remove assemblies
-            StatusText = "Removing assemblies...";
-            if (RemoveAssemblies != null)
+            workerThread = new Thread(delegate()
             {
-                RemoveAssemblies(this, new EventArgs());
-            }
-            ThreadedRefreshTree();
+                // remove assemblies
+                StatusText = "Removing assemblies...";
+                if (RemoveAssemblies != null)
+                {
+                    RemoveAssemblies(this, new EventArgs());
+                }
+                ThreadedRefreshTree();
+            });
+            workerThread.Start();
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -504,7 +518,7 @@ namespace Gallio.Icarus
             base.OnClosing(e);
         }
 
-        public void AbortWorkerThread()
+        private void AbortWorkerThread()
         {
             if (workerThread != null)
             {
@@ -553,7 +567,10 @@ namespace Gallio.Icarus
         {
             if (testTree.InvokeRequired)
             {
-                testTree.Invoke(new SingleParameterMethodDelegate(Passed), new object[] { o });
+                testTree.Invoke((MethodInvoker) delegate()
+                {
+                    Passed(o);
+                });
             }
             else
             {
@@ -647,7 +664,11 @@ namespace Gallio.Icarus
                 StopTests(this, new EventArgs());
             }
             // enable/disable buttons
-            toolStripContainer.Invoke(new SingleParameterMethodDelegate(EnableButtons), new object[] { "RunTestsFinished" });
+            toolStripContainer.Invoke((MethodInvoker)delegate()
+            {
+                stopButton.Enabled = false;
+                startButton.Enabled = true;
+            });
         }
 
         private void assemblyList_SelectedIndexChanged(object sender, EventArgs e)
@@ -717,7 +738,7 @@ namespace Gallio.Icarus
             {
                 if (SetFilter != null)
                 {
-                    SetFilter(this, new SetFilterEventArgs(testTree.Nodes));
+                    SetFilter(this, new SetFilterEventArgs("Custom", testTree.Nodes));
                 }
                 testTree.Reset(testTree.Nodes);
                 testProgressStatusBar.Clear();
@@ -753,41 +774,44 @@ namespace Gallio.Icarus
             }
         }
 
-        private void reportMenuItem_Click(object sender, EventArgs e)
+        private void btnSaveReportAs_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
-            if (toolStripMenuItem != null)
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.OverwritePrompt = true;
+            saveFile.AddExtension = true;
+            string ext = "All files (*.*)|*.*";
+            switch ((string)reportTypes.SelectedItem)
             {
-                string reportType = "";
-                switch (toolStripMenuItem.Name)
+                case "Xml":
+                case "Xml-Inline":
+                    ext = "XML files (*.xml)|*.xml";
+                    break;
+                case "Html":
+                case "Html-Inline":
+                    ext = "HTML files (*.html)|*.html";
+                    break;
+                case "Xhtml":
+                case "Xhtml-Inline":
+                    ext = "XHTML files (*.xhtml)|*.xhtml";
+                    break;
+                case "Text":
+                    ext = "Text files (*.txt)|*.txt";
+                    break;
+            }
+            saveFile.DefaultExt = ext;
+            saveFile.Filter = ext;
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                if (SaveReportAs != null)
                 {
-                    case "xmlReportMenuItem":
-                        reportType = "xml";
-                        break;
-                    case "textReportMenuItem":
-                        reportType = "text";
-                        break;
-                    case "htmlReportMenuItem":
-                        reportType = "html";
-                        break;
-                    case "xhtmlReportMenuItem":
-                        reportType = "xhtml";
-                        break;
+                    SaveReportAs(this, new SaveReportAsEventArgs(saveFile.FileName, (string)reportTypes.SelectedItem));
                 }
-                AbortWorkerThread();
-                workerThread = new Thread(new ParameterizedThreadStart(ThreadedGenerateReport));
-                //workerThread.Start(reportType);
-                ThreadedGenerateReport(reportType);
             }
         }
 
-        private void ThreadedGenerateReport(object o)
+        private void reportTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string reportType = o as string;
-            if (GenerateReport != null)
-            {
-                GenerateReport(this, new SingleStringEventArgs(reportType));
-            }
+            btnSaveReportAs.Enabled = ((string)reportTypes.SelectedItem != "");
         }
     }
 }

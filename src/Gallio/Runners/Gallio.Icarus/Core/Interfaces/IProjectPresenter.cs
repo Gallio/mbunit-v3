@@ -24,13 +24,16 @@ namespace Gallio.Icarus.Core.Interfaces
         string StatusText { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
+        string ReportPath { set; }
         ITestRunner TestRunner { get; }
         void GetTestTree(object sender, ProjectEventArgs e);
         void RunTests(object sender, EventArgs e);
         void StopTests(object sender, EventArgs e);
         void SetFilter(object sender, SetFilterEventArgs e);
         void GetLogStream(object sender, SingleStringEventArgs e);
-        void GenerateReport(object sender, SingleStringEventArgs e);
+        void GetReportTypes(object sender, EventArgs e);
+        void SaveReportAs(object sender, SaveReportAsEventArgs e);
+        void SaveProject(object sender, SingleStringEventArgs e);
         void Passed(string testId);
         void Failed(string testId);
         void Ignored(string testId);

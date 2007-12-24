@@ -41,7 +41,7 @@ namespace Gallio.ReSharperRunner.Tasks
         private IRemoteTaskServer server;
 
         private HashSet<string> assemblyLocations;
-        private Dictionary<string, GallioTestItemTask> testTasks;
+        private System.Collections.Generic.Dictionary<string, GallioTestItemTask> testTasks;
         private HashSet<string> explicitTestIds;
 
         public override TaskResult ExecuteRecursive(IRemoteTaskServer server, TaskExecutionNode node)
@@ -49,7 +49,7 @@ namespace Gallio.ReSharperRunner.Tasks
             this.server = server;
 
             assemblyLocations = new HashSet<string>();
-            testTasks = new Dictionary<string, GallioTestItemTask>();
+            testTasks = new System.Collections.Generic.Dictionary<string, GallioTestItemTask>();
             explicitTestIds = new HashSet<string>();
 
             ProcessNodeRecursively(node);

@@ -16,6 +16,7 @@
 using System;
 using System.Windows.Forms;
 using Gallio.Icarus.Adapter;
+using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Interfaces;
@@ -44,7 +45,9 @@ namespace Gallio.Icarus.Tests
         private IEventRaiser stopTestsEvent;
         private IEventRaiser setFilterEvent;
         private IEventRaiser getLogStreamEvent;
-        private IEventRaiser generateReportEvent;
+        private IEventRaiser getReportTypesEvent;
+        private IEventRaiser saveReportAsEvent;
+        private IEventRaiser saveProjectEvent;
 
         [SetUp]
         public void SetUp()
@@ -84,9 +87,17 @@ namespace Gallio.Icarus.Tests
             LastCall.IgnoreArguments();
             getLogStreamEvent = LastCall.GetEventRaiser();
 
-            mockView.GenerateReport += null;
+            mockView.GetReportTypes += null;
             LastCall.IgnoreArguments();
-            generateReportEvent = LastCall.GetEventRaiser();
+            getReportTypesEvent = LastCall.GetEventRaiser();
+
+            mockView.SaveReportAs += null;
+            LastCall.IgnoreArguments();
+            saveReportAsEvent = LastCall.GetEventRaiser();
+
+            mockView.SaveProject += null;
+            LastCall.IgnoreArguments();
+            saveProjectEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -163,13 +174,13 @@ namespace Gallio.Icarus.Tests
         public void SetFilterEventHandler_Test()
         {
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            mockPresenter.SetFilter(projectAdapter, new SetFilterEventArgs(new NoneFilter<ITest>()));
+            mockPresenter.SetFilter(projectAdapter, new SetFilterEventArgs("test", new NoneFilter<ITest>()));
             LastCall.IgnoreArguments();
             Expect.Call(mockModel.GetFilter(null)).Return(null);
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, new TestPackageConfig());
             projectAdapter.SetFilter += new EventHandler<SetFilterEventArgs>(mockPresenter.SetFilter);
-            setFilterEvent.Raise(mockView, new SetFilterEventArgs((TreeNodeCollection)null));
+            setFilterEvent.Raise(mockView, new SetFilterEventArgs("test", (TreeNodeCollection)null));
         }
 
         [Test]
@@ -185,15 +196,42 @@ namespace Gallio.Icarus.Tests
         }
 
         [Test]
-        public void GenerateReportEventHandler_Test()
+        public void GetReportTypesEventHandler_Test()
         {
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            mockPresenter.GenerateReport(projectAdapter, new SingleStringEventArgs("generateReportTest"));
+            mockPresenter.GetReportTypes(projectAdapter, EventArgs.Empty);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, new TestPackageConfig());
-            projectAdapter.GenerateReport += new EventHandler<SingleStringEventArgs>(mockPresenter.GenerateReport);
-            generateReportEvent.Raise(mockView, new SingleStringEventArgs("generateReportTest"));
+            projectAdapter.GetReportTypes += new EventHandler<EventArgs>(mockPresenter.GetReportTypes);
+            getReportTypesEvent.Raise(mockView, EventArgs.Empty);
+        }
+
+        [Test]
+        public void SaveReportAsEventHandler_Test()
+        {
+            string fileName = @"C:\test.html";
+            string format = "html";
+            mockPresenter = mocks.CreateMock<IProjectPresenter>();
+            mockPresenter.SaveReportAs(projectAdapter, new SaveReportAsEventArgs(fileName, format));
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel, new TestPackageConfig());
+            projectAdapter.SaveReportAs += new EventHandler<SaveReportAsEventArgs>(mockPresenter.SaveReportAs);
+            saveReportAsEvent.Raise(mockView, new SaveReportAsEventArgs(fileName, format));
+        }
+
+        [Test]
+        public void SaveProjectEventHandler_Test()
+        {
+            SingleStringEventArgs saveProjectEventArgs = new SingleStringEventArgs("filename");
+            mockPresenter = mocks.CreateMock<IProjectPresenter>();
+            mockPresenter.SaveProject(projectAdapter, saveProjectEventArgs);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel, new TestPackageConfig());
+            projectAdapter.SaveProject += new EventHandler<SingleStringEventArgs>(mockPresenter.SaveProject);
+            saveProjectEvent.Raise(mockView, saveProjectEventArgs);
         }
 
         [Test]

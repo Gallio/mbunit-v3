@@ -68,6 +68,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Core\CustomEventArgs\AddAssembliesEventArgs.cs" />
+    <Compile Include="Core\CustomEventArgs\SaveReportAsEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SingleStringEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SetFilterEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\ProjectEventArgs.cs" />

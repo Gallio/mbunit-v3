@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Gallio.Icarus.Core.CustomEventArgs;
 
@@ -29,11 +30,15 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
         event EventHandler<SingleStringEventArgs> GetLogStream;
-        event EventHandler<SingleStringEventArgs> GenerateReport;
+        event EventHandler<EventArgs> GetReportTypes;
+        event EventHandler<SaveReportAsEventArgs> SaveReportAs;
+        event EventHandler<SingleStringEventArgs> SaveProject;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
         string LogBody { set; }
+        string ReportPath { set; }
+        IList<string> ReportTypes { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         void DataBind();

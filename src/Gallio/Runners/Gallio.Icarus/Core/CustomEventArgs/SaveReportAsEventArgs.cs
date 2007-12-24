@@ -14,44 +14,28 @@
 // limitations under the License.
 
 using System;
-using System.Windows.Forms;
-
-using Gallio.Model;
-using Gallio.Model.Filters;
 
 namespace Gallio.Icarus.Core.CustomEventArgs 
 {
-    public class SetFilterEventArgs : EventArgs
+    public class SaveReportAsEventArgs : EventArgs
     {
-        private readonly string filterName;
-        private readonly TreeNodeCollection nodes;
-        private readonly Filter<ITest> filter;
+        private readonly string fileName;
+        private readonly string format;
 
-        public SetFilterEventArgs(string filterName, TreeNodeCollection nodes)
+        public SaveReportAsEventArgs(string fileName, string format)
         {
-            this.filterName = filterName;
-            this.nodes = nodes;
+            this.fileName = fileName;
+            this.format = format;
         }
 
-        public SetFilterEventArgs(string filterName, Filter<ITest> filter)
+        public string FileName
         {
-            this.filterName = filterName;
-            this.filter = filter;
+            get { return fileName; }
         }
 
-        public string FilterName
+        public string Format
         {
-            get { return filterName; }
-        }
-
-        public TreeNodeCollection Nodes
-        {
-            get { return nodes; }
-        }
-
-        public Filter<ITest> Filter
-        {
-            get { return filter; }
+            get { return format; }
         }
     }
 }

@@ -22,29 +22,28 @@ namespace Gallio.Icarus.Core.Presenter
 {
     public class ProjectPresenter : IProjectPresenter
     {
-        #region Variables
-
-        private readonly IProjectAdapter _View;
-        private readonly ITestRunnerModel _TestRunnerModel;
+        private readonly IProjectAdapter projectAdapter;
+        private readonly ITestRunnerModel testRunnerModel;
         private readonly ITestRunner testRunner;
-
-        #endregion
-
-        #region Properties
 
         public string StatusText
         {
-            set { _View.StatusText = value; }
+            set { projectAdapter.StatusText = value; }
         }
 
         public int CompletedWorkUnits
         {
-            set { _View.CompletedWorkUnits = value; }
+            set { projectAdapter.CompletedWorkUnits = value; }
         }
 
         public int TotalWorkUnits
         {
-            set { _View.TotalWorkUnits = value; }
+            set { projectAdapter.TotalWorkUnits = value; }
+        }
+
+        public string ReportPath
+        {
+            set { projectAdapter.ReportPath = value; }
         }
 
         public ITestRunner TestRunner
@@ -52,79 +51,86 @@ namespace Gallio.Icarus.Core.Presenter
             get { return testRunner; }
         }
 
-        #endregion
-
-        #region Constructor
-
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
         {
-            _View = view;
-            _TestRunnerModel = testrunnermodel;
-            _TestRunnerModel.ProjectPresenter = this;
+            projectAdapter = view;
+            testRunnerModel = testrunnermodel;
+            testRunnerModel.ProjectPresenter = this;
 
             testRunner = TestRunnerFactory.CreateIsolatedTestRunner();
             
             // wire up events
-            _View.GetTestTree += GetTestTree;
-            _View.RunTests += RunTests;
-            _View.StopTests += StopTests;
-            _View.SetFilter += SetFilter;
-            _View.GetLogStream += GetLogStream;
-            _View.GenerateReport += GenerateReport;
+            projectAdapter.GetTestTree += GetTestTree;
+            projectAdapter.RunTests += RunTests;
+            projectAdapter.StopTests += StopTests;
+            projectAdapter.SetFilter += SetFilter;
+            projectAdapter.GetLogStream += GetLogStream;
+            projectAdapter.GetReportTypes += GetReportTypes;
+            projectAdapter.SaveReportAs += SaveReportAs;
+            projectAdapter.SaveProject += SaveProject;
         }
-
-        #endregion
 
         public void GetTestTree(object sender, ProjectEventArgs e)
         {
-            _TestRunnerModel.LoadPackage(e.LocalTestPackageConfig);
-            _View.TestModelData = _TestRunnerModel.BuildTests();
-            _View.DataBind();
+            testRunnerModel.LoadPackage(e.LocalTestPackageConfig);
+            projectAdapter.TestModelData = testRunnerModel.BuildTests();
+            projectAdapter.DataBind();
         }
 
         public void RunTests(object sender, EventArgs e)
         {
-            _TestRunnerModel.RunTests();
+            testRunnerModel.RunTests();
+            testRunnerModel.GenerateReport();
         }
 
         public void StopTests(object sender, EventArgs e)
         {
-            _TestRunnerModel.StopTests();
+            testRunnerModel.StopTests();
         }
 
         public void SetFilter(object sender, SetFilterEventArgs e)
         {
-            testRunner.TestExecutionOptions.Filter = e.Filter;
+            testRunnerModel.SetFilter(e.FilterName, e.Filter);
         }
 
         public void GetLogStream(object sender, SingleStringEventArgs e)
         {
-            _View.LogBody = _TestRunnerModel.GetLogStream(e.String);
+            projectAdapter.LogBody = testRunnerModel.GetLogStream(e.String);
         }
 
-        public void GenerateReport(object sender, SingleStringEventArgs e)
+        public void GetReportTypes(object sender, EventArgs e)
         {
-            _TestRunnerModel.GenerateReport(e.String);
+            projectAdapter.ReportTypes = testRunnerModel.GetReportTypes();
+        }
+
+        public void SaveReportAs(object sender, SaveReportAsEventArgs e)
+        {
+            testRunnerModel.SaveReportAs(e.FileName, e.Format);
+        }
+
+        public void SaveProject(object sender, SingleStringEventArgs e)
+        {
+            testRunnerModel.SaveProject(e.String);
         }
 
         public void Passed(string testId)
         {
-            _View.Passed(testId);
+            projectAdapter.Passed(testId);
         }
 
         public void Failed(string testId)
         {
-            _View.Failed(testId);
+            projectAdapter.Failed(testId);
         }
 
         public void Skipped(string testId)
         {
-            _View.Skipped(testId);
+            projectAdapter.Skipped(testId);
         }
 
         public void Ignored(string testId)
         {
-            _View.Ignored(testId);
+            projectAdapter.Ignored(testId);
         }
     }
 }

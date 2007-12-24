@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Hosting;
@@ -31,17 +32,19 @@ namespace Gallio.Icarus.Core.Model
 {
     public class TestRunnerModel : ITestRunnerModel
     {
-        #region Variables
-
         private ReportMonitor reportMonitor = null; 
         private IProjectPresenter projectPresenter = null;
         private IProgressMonitorProvider progressMonitorProvider = null;
         private StatusStripProgressMonitor statusStripProgressMonitor = null;
         private TestRunnerMonitor testRunnerMonitor = null;
+        private GallioProject gallioProject;
+        private IReportManager reportManager;
 
-        #endregion
-
-        #region Properties
+        public TestRunnerModel()
+        {
+            gallioProject = new GallioProject();
+            reportManager = Runtime.Instance.Resolve<IReportManager>();
+        }
 
         public IProjectPresenter ProjectPresenter
         {
@@ -55,17 +58,15 @@ namespace Gallio.Icarus.Core.Model
             }
         }
 
-        #endregion
-
-        #region Methods
-
-        public void LoadPackage(TestPackageConfig testpackage)
+        public void LoadPackage(TestPackageConfig testPackageConfig)
         {
+            gallioProject.TestPackageConfig = testPackageConfig;
+
             // attach report monitor to test runner
             reportMonitor = new ReportMonitor();
             reportMonitor.Attach(projectPresenter.TestRunner);
 
-            projectPresenter.TestRunner.LoadTestPackage(testpackage, new StatusStripProgressMonitor(projectPresenter));
+            projectPresenter.TestRunner.LoadTestPackage(testPackageConfig, new StatusStripProgressMonitor(projectPresenter));
         }
 
         public TestModelData BuildTests()
@@ -92,9 +93,19 @@ namespace Gallio.Icarus.Core.Model
             }
         }
 
-        public void SetFilter(Filter<ITest> filter)
+        public void SetFilter(string filterName, Filter<ITest> filter)
         {
             projectPresenter.TestRunner.TestExecutionOptions.Filter = filter;
+
+            // add/update filter in project
+            if (gallioProject.TestFilters.ContainsKey(filterName))
+            {
+                gallioProject.TestFilters[filterName] = filter.ToString();
+            }
+            else
+            {
+                gallioProject.TestFilters.Add(filterName, filter.ToString());
+            }
         }
 
         public string GetLogStream(string log)
@@ -102,29 +113,30 @@ namespace Gallio.Icarus.Core.Model
             return testRunnerMonitor.GetLogStream(log);
         }
 
-        public void GenerateReport(string reportType)
+        public void GenerateReport()
         {
+            string reportName = "";
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                progressMonitor.BeginTask("Generating reports.", 100);
+                progressMonitor.BeginTask("Generating report.", 100);
 
                 string reportDirectory = GetReportDirectory();
                 Report report = reportMonitor.Report;
-                IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
                 IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, "MbUnit-Report");
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 
                 // Delete the report if it exists already.
                 reportContainer.DeleteReport();
 
-                // Format the report in all of the desired ways.
-                reportManager.Format(reportWriter, reportType, new NameValueCollection(),
+                // Format the report as html.
+                reportManager.Format(reportWriter, "html", new NameValueCollection(),
                     new SubProgressMonitor(progressMonitor, 90));
 
-                progressMonitor.SetStatus("Displaying reports.");
-                foreach (string reportDocumentPath in reportWriter.ReportDocumentPaths)
-                    TestRunnerUtils.ShowReportDocument(Path.Combine(reportDirectory, reportDocumentPath));
+                progressMonitor.SetStatus("Displaying report.");
+                if (reportWriter.ReportDocumentPaths.Count == 1)
+                    reportName = Path.Combine(reportDirectory, reportWriter.ReportDocumentPaths[0]);
             });
+            projectPresenter.ReportPath = reportName;
         }
 
         private static string GetReportDirectory()
@@ -132,11 +144,50 @@ namespace Gallio.Icarus.Core.Model
             string reportDirectory = System.Configuration.ConfigurationManager.AppSettings["reportDirectory"];
 
             if (reportDirectory.Length == 0)
+            {
                 reportDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MbUnit\Reports");
+            }
 
             return reportDirectory;
         }
 
-        #endregion
+        public IList<string> GetReportTypes()
+        {
+            return reportManager.GetFormatterNames();
+        }
+
+        public void SaveReportAs(string fileName, string format)
+        {
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                progressMonitor.BeginTask("Generating report.", 100);
+
+                Report report = reportMonitor.Report;
+                IReportContainer reportContainer = new FileSystemReportContainer(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
+                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+
+                // Delete the report if it exists already.
+                reportContainer.DeleteReport();
+
+                // Format the report in all of the desired ways.
+                reportManager.Format(reportWriter, format, new NameValueCollection(),
+                    new SubProgressMonitor(progressMonitor, 100));
+
+                progressMonitor.SetStatus("Report saved.");
+            });
+        }
+
+        public void SaveProject(string fileName)
+        {
+            try
+            {
+                SerializationUtils.SaveToXml(gallioProject, fileName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 }

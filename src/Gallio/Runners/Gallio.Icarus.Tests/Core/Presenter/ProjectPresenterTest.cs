@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Presenter;
@@ -38,7 +40,9 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         private IEventRaiser stopTestsEvent;
         private IEventRaiser setFilterEvent;
         private IEventRaiser getLogStreamEvent;
-        private IEventRaiser generateReportEvent;
+        private IEventRaiser getReportTypes;
+        private IEventRaiser saveReportAs;
+        private IEventRaiser saveProjectEvent;
 
         [SetUp]
         public void SetUp()
@@ -71,9 +75,17 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             LastCall.IgnoreArguments();
             getLogStreamEvent = LastCall.GetEventRaiser();
 
-            mockAdapter.GenerateReport += null;
+            mockAdapter.GetReportTypes += null;
             LastCall.IgnoreArguments();
-            generateReportEvent = LastCall.GetEventRaiser();
+            getReportTypes = LastCall.GetEventRaiser();
+
+            mockAdapter.SaveReportAs += null;
+            LastCall.IgnoreArguments();
+            saveReportAs = LastCall.GetEventRaiser();
+
+            mockAdapter.SaveProject += null;
+            LastCall.IgnoreArguments();
+            saveProjectEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -121,6 +133,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         public void RunTests_Test()
         {
             mockModel.RunTests();
+            mockModel.GenerateReport();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             runTestsEvent.Raise(mockAdapter, EventArgs.Empty);
@@ -138,11 +151,12 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         [Test]
         public void SetFilter_Test()
         {
+            string filterName = "test";
+            Filter<ITest> filter = new NoneFilter<ITest>();
+            mockModel.SetFilter(filterName, filter);
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            Filter<ITest> filter = new NoneFilter<ITest>();
-            setFilterEvent.Raise(mockAdapter, new SetFilterEventArgs(filter));
-            Assert.AreEqual(filter, projectPresenter.TestRunner.TestExecutionOptions.Filter);
+            setFilterEvent.Raise(mockAdapter, new SetFilterEventArgs(filterName, filter));
         }
 
         [Test]
@@ -156,12 +170,34 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         }
 
         [Test]
-        public void GenerateReport_Test()
+        public void GetReportTypes_Test()
         {
-            mockModel.GenerateReport("generateReportTest");
+            IList<string> reportTypes = new List<string>();
+            Expect.Call(mockModel.GetReportTypes()).Return(reportTypes);
+            mockAdapter.ReportTypes = reportTypes;
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            generateReportEvent.Raise(mockAdapter, new SingleStringEventArgs("generateReportTest"));
+            getReportTypes.Raise(mockAdapter, EventArgs.Empty);
+        }
+
+        [Test]
+        public void SaveReportAs_Test()
+        {
+            string fileName = @"c:\test.txt";
+            string format = "html";
+            mockModel.SaveReportAs(fileName, format);
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            saveReportAs.Raise(mockAdapter, new SaveReportAsEventArgs(fileName, format));
+        }
+
+        [Test]
+        public void SaveProject_Test()
+        {
+            mockModel.SaveProject("filename");
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            saveProjectEvent.Raise(mockAdapter, new SingleStringEventArgs("filename"));
         }
 
         [Test]

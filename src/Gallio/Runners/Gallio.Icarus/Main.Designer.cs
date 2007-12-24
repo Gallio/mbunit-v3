@@ -63,12 +63,6 @@ namespace Gallio.Icarus
             this.removeAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reportsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.xmlReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.htmlReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.xhtmlReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.optionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -137,6 +131,12 @@ namespace Gallio.Icarus
             this.panel2 = new System.Windows.Forms.Panel();
             this.graphsFilterBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.reportTabPage = new System.Windows.Forms.TabPage();
+            this.reportViewer = new System.Windows.Forms.WebBrowser();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.reportTypes = new System.Windows.Forms.ComboBox();
+            this.btnSaveReportAs = new System.Windows.Forms.Button();
+            this.lblReportType = new System.Windows.Forms.Label();
             this.panelResults = new System.Windows.Forms.Panel();
             this.testProgressStatusBar = new Gallio.Icarus.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
@@ -165,6 +165,8 @@ namespace Gallio.Icarus
             this.panel3.SuspendLayout();
             this.performanceMonitorTabPage.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.reportTabPage.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.panelResults.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -285,62 +287,16 @@ namespace Gallio.Icarus
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.reportsToolStripMenuItem1,
-            this.toolStripSeparator8,
             this.optionsMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
-            // reportsToolStripMenuItem1
-            // 
-            this.reportsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.xmlReportMenuItem,
-            this.textReportMenuItem,
-            this.htmlReportMenuItem,
-            this.xhtmlReportMenuItem});
-            this.reportsToolStripMenuItem1.Name = "reportsToolStripMenuItem1";
-            this.reportsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.reportsToolStripMenuItem1.Text = "&Reports";
-            // 
-            // xmlReportMenuItem
-            // 
-            this.xmlReportMenuItem.Name = "xmlReportMenuItem";
-            this.xmlReportMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.xmlReportMenuItem.Text = "&XML report";
-            this.xmlReportMenuItem.Click += new System.EventHandler(this.reportMenuItem_Click);
-            // 
-            // textReportMenuItem
-            // 
-            this.textReportMenuItem.Name = "textReportMenuItem";
-            this.textReportMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.textReportMenuItem.Text = "&Text report";
-            this.textReportMenuItem.Click += new System.EventHandler(this.reportMenuItem_Click);
-            // 
-            // htmlReportMenuItem
-            // 
-            this.htmlReportMenuItem.Name = "htmlReportMenuItem";
-            this.htmlReportMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.htmlReportMenuItem.Text = "&HTML report";
-            this.htmlReportMenuItem.Click += new System.EventHandler(this.reportMenuItem_Click);
-            // 
-            // xhtmlReportMenuItem
-            // 
-            this.xhtmlReportMenuItem.Name = "xhtmlReportMenuItem";
-            this.xhtmlReportMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.xhtmlReportMenuItem.Text = "&XHTML report";
-            this.xhtmlReportMenuItem.Click += new System.EventHandler(this.reportMenuItem_Click);
-            // 
-            // toolStripSeparator8
-            // 
-            this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
-            // 
             // optionsMenuItem
             // 
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.optionsMenuItem.Text = "&Options";
+            this.optionsMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.optionsMenuItem.Text = "&Options...";
             this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
             // helpToolStripMenuItem
@@ -356,19 +312,20 @@ namespace Gallio.Icarus
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
+            this.helpToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
             this.helpToolStripMenuItem1.Text = "&Help";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(111, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(123, 6);
             // 
             // aboutMenuItem
             // 
             this.aboutMenuItem.Name = "aboutMenuItem";
-            this.aboutMenuItem.Size = new System.Drawing.Size(114, 22);
-            this.aboutMenuItem.Text = "&About";
+            this.aboutMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.aboutMenuItem.Text = "&About...";
             this.aboutMenuItem.Click += new System.EventHandler(this.aboutMenuItem_Click);
             // 
             // statusStrip
@@ -755,6 +712,7 @@ namespace Gallio.Icarus
             this.testResultsTabs.Controls.Add(this.testResultsTabPage);
             this.testResultsTabs.Controls.Add(this.logStreamsTabPage);
             this.testResultsTabs.Controls.Add(this.performanceMonitorTabPage);
+            this.testResultsTabs.Controls.Add(this.reportTabPage);
             this.testResultsTabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testResultsTabs.Location = new System.Drawing.Point(0, 61);
             this.testResultsTabs.Name = "testResultsTabs";
@@ -972,6 +930,68 @@ namespace Gallio.Icarus
             this.label4.TabIndex = 0;
             this.label4.Text = "Graphs:";
             // 
+            // reportTabPage
+            // 
+            this.reportTabPage.Controls.Add(this.reportViewer);
+            this.reportTabPage.Controls.Add(this.panel4);
+            this.reportTabPage.Location = new System.Drawing.Point(4, 22);
+            this.reportTabPage.Name = "reportTabPage";
+            this.reportTabPage.Size = new System.Drawing.Size(665, 546);
+            this.reportTabPage.TabIndex = 4;
+            this.reportTabPage.Text = "Report";
+            this.reportTabPage.UseVisualStyleBackColor = true;
+            // 
+            // reportViewer
+            // 
+            this.reportViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.reportViewer.Location = new System.Drawing.Point(0, 42);
+            this.reportViewer.MinimumSize = new System.Drawing.Size(20, 20);
+            this.reportViewer.Name = "reportViewer";
+            this.reportViewer.Size = new System.Drawing.Size(665, 504);
+            this.reportViewer.TabIndex = 3;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.reportTypes);
+            this.panel4.Controls.Add(this.btnSaveReportAs);
+            this.panel4.Controls.Add(this.lblReportType);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(665, 42);
+            this.panel4.TabIndex = 2;
+            // 
+            // reportTypes
+            // 
+            this.reportTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.reportTypes.FormattingEnabled = true;
+            this.reportTypes.Location = new System.Drawing.Point(66, 11);
+            this.reportTypes.Name = "reportTypes";
+            this.reportTypes.Size = new System.Drawing.Size(121, 21);
+            this.reportTypes.TabIndex = 5;
+            this.reportTypes.SelectedIndexChanged += new System.EventHandler(this.reportTypes_SelectedIndexChanged);
+            // 
+            // btnSaveReportAs
+            // 
+            this.btnSaveReportAs.AutoSize = true;
+            this.btnSaveReportAs.Enabled = false;
+            this.btnSaveReportAs.Location = new System.Drawing.Point(193, 11);
+            this.btnSaveReportAs.Name = "btnSaveReportAs";
+            this.btnSaveReportAs.Size = new System.Drawing.Size(51, 23);
+            this.btnSaveReportAs.TabIndex = 4;
+            this.btnSaveReportAs.Text = "Save...";
+            this.btnSaveReportAs.UseVisualStyleBackColor = true;
+            this.btnSaveReportAs.Click += new System.EventHandler(this.btnSaveReportAs_Click);
+            // 
+            // lblReportType
+            // 
+            this.lblReportType.AutoSize = true;
+            this.lblReportType.Location = new System.Drawing.Point(11, 15);
+            this.lblReportType.Name = "lblReportType";
+            this.lblReportType.Size = new System.Drawing.Size(49, 13);
+            this.lblReportType.TabIndex = 3;
+            this.lblReportType.Text = "Save as:";
+            // 
             // panelResults
             // 
             this.panelResults.Controls.Add(this.testProgressStatusBar);
@@ -1081,6 +1101,9 @@ namespace Gallio.Icarus
             this.performanceMonitorTabPage.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.reportTabPage.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.panelResults.ResumeLayout(false);
             this.panelResults.PerformLayout();
             this.trayMenuStrip.ResumeLayout(false);
@@ -1155,11 +1178,6 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ColumnHeader columnHeader11;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem reportsToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem htmlReportMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem xmlReportMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem textReportMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip testTreeMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem expandAllMenuItem;
@@ -1184,7 +1202,13 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ComboBox logStream;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox filterTestResultsCombo;
-        private System.Windows.Forms.ToolStripMenuItem xhtmlReportMenuItem;
+        private System.Windows.Forms.TabPage reportTabPage;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Button btnSaveReportAs;
+        private System.Windows.Forms.Label lblReportType;
+        private System.Windows.Forms.ComboBox reportTypes;
+        private System.Windows.Forms.WebBrowser reportViewer;
     }
 }
+
 
