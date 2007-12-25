@@ -13,12 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using Xunit;
-using Xunit.Extensions;
+using XunitExt;
 
 namespace Gallio.TestResources.Xunit
 {
@@ -27,25 +24,10 @@ namespace Gallio.TestResources.Xunit
     /// </summary>
     public class TheorySample
     {
-        // (This isn't nearly as convenient as in-line Data attributes...)
-        public static DataTable Triangles
-        {
-            get
-            {
-                DataTable triangles = new DataTable();
-                triangles.Columns.Add("a", typeof(int));
-                triangles.Columns.Add("b", typeof(int));
-                triangles.Columns.Add("c", typeof(int));
-
-                triangles.Rows.Add(3, 4, 5);
-                triangles.Rows.Add(6, 8, 10);
-                triangles.Rows.Add(1, 1, 1); // should fail
-                return triangles;
-            }
-        }
-
         [Theory]
-        [DataViaProperty("Triangles")]
+        [InlineData(3, 4, 5)]
+        [InlineData(6, 8, 10)]
+        [InlineData(1, 1, 1)]
         public void Pythagoras(int a, int b, int c)
         {
             Assert.Equal(c * c, a * a + b * b);

@@ -188,10 +188,7 @@
     <Binary Include="$(LibsDir)\Xunit\xunit.xml">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="$(LibsDir)\Xunit\xunit.extensions.dll">
-        <Folder>Xunit</Folder>
-    </Binary>
-    <Binary Include="$(LibsDir)\Xunit\xunit.extensions.xml">
+    <Binary Include="$(LibsDir)\Xunit\xunitext.dll">
         <Folder>Xunit</Folder>
     </Binary>
 

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{70015C50-93E8-4D17-86B0-69F030911C98}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -41,9 +41,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Xunit\xunit.dll</HintPath>
     </Reference>
-    <Reference Include="xunit.extensions, Version=7.9.19.1008, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="xunitext, Version=1.0.0.5, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Xunit\xunit.extensions.dll</HintPath>
+      <HintPath>..\..\..\libs\Xunit\xunitext.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

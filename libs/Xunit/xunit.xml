@@ -10,6 +10,11 @@
             process of running tests.
             </summary>
         </member>
+        <member name="M:Xunit.Assert.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Assert"/> class.
+            </summary>
+        </member>
         <member name="M:Xunit.Assert.Contains``1(``0,System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Verifies that a collection contains a given object.
@@ -675,6 +680,39 @@
             <param name="expected">The expected object value</param>
             <param name="userMessage">The user message to be displayed, or null for the default message</param>
         </member>
+        <member name="T:Xunit.TraceAssertException">
+            <summary>
+            Exception that is thrown when a call to Debug.Assert() fails.
+            </summary>
+        </member>
+        <member name="M:Xunit.TraceAssertException.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Xunit.TraceAssertException"/> class.
+            </summary>
+            <param name="assertMessage">The original assert message</param>
+        </member>
+        <member name="M:Xunit.TraceAssertException.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Xunit.TraceAssertException"/> class.
+            </summary>
+            <param name="assertMessage">The original assert message</param>
+            <param name="assertDetailedMessage">The original assert detailed message</param>
+        </member>
+        <member name="P:Xunit.TraceAssertException.AssertDetailedMessage">
+            <summary>
+            Gets the original assert detailed message.
+            </summary>
+        </member>
+        <member name="P:Xunit.TraceAssertException.AssertMessage">
+            <summary>
+            Gets the original assert message.
+            </summary>
+        </member>
+        <member name="P:Xunit.TraceAssertException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+        </member>
         <member name="T:Xunit.DoesNotContainException">
             <summary>
             Exception thrown when a collection unexpectedly contains the expected value.
@@ -951,6 +989,11 @@
             <param name="testClass">The instance of the test class</param>
             <returns>Returns information about the test run</returns>
         </member>
+        <member name="P:Xunit.Sdk.ITestCommand.Name">
+            <summary>
+            Gets the fully-qualified name of the test method.
+            </summary>
+        </member>
         <member name="P:Xunit.Sdk.ITestCommand.Parameters">
             <summary>
             Gets the parameters that are passed to the test command.
@@ -974,6 +1017,11 @@
             Gets the inner command.
             </summary>
         </member>
+        <member name="P:Xunit.Sdk.DelegatingTestCommand.Name">
+            <summary>
+            Gets the fully-qualified name of the test method.
+            </summary>
+        </member>
         <member name="P:Xunit.Sdk.DelegatingTestCommand.Parameters">
             <summary>
             Gets the parameters that are passed to the test command.
@@ -991,6 +1039,25 @@
             Executes the test method. Creates a new instance of the class
             under tests and passes it to the inner command. Also catches
             any exceptions and converts them into <see cref="T:Xunit.Sdk.FailedResult"/>s.
+            </summary>
+            <param name="testClass">The instance of the test class</param>
+            <returns>Returns information about the test run</returns>
+        </member>
+        <member name="T:Xunit.Sdk.TraceAssertCommand">
+            <summary>
+            A command wrapper which catches Trace.Assert and Debug.Assert failures and turns
+            them into assertion exceptions.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TraceAssertCommand.#ctor(Xunit.Sdk.ITestCommand)">
+            <summary>
+            Creates a new instance of the <see cref="T:Xunit.Sdk.TraceAssertCommand"/> class.
+            </summary>
+            <param name="innerCommand">The command that will be wrapped.</param>
+        </member>
+        <member name="M:Xunit.Sdk.TraceAssertCommand.Execute(System.Object)">
+            <summary>
+            Executes the test method.
             </summary>
             <param name="testClass">The instance of the test class</param>
             <returns>Returns information about the test run</returns>
@@ -1015,6 +1082,35 @@
             </summary>
             <param name="testClass">The instance of the test class</param>
             <returns>Returns information about the test run</returns>
+        </member>
+        <member name="T:Xunit.Sdk.TestTimer">
+            <summary>
+            A timer class used to figure out how long tests take to run. On most .NET implementations
+            this will use the <see cref="T:System.Diagnostics.Stopwatch"/> class because it's a high
+            resolution timer; however, on Silverlight/CoreCLR, it will use <see cref="T:System.DateTime"/>
+            (which will provide lower resolution results).
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestTimer.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:Xunit.Sdk.TestTimer"/> class.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestTimer.Start">
+            <summary>
+            Starts timing.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestTimer.Stop">
+            <summary>
+            Stops timing.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestTimer.ElapsedMilliseconds">
+            <summary>
+            Gets how long the timer ran, in milliseconds. In order for this to be valid,
+            both <see cref="M:Xunit.Sdk.TestTimer.Start"/> and <see cref="M:Xunit.Sdk.TestTimer.Stop"/> must have been called.
+            </summary>
         </member>
         <member name="T:Xunit.TraitAttribute">
             <summary>
@@ -1287,6 +1383,11 @@
             <param name="testClass">The test class instance</param>
             <returns>Returns a <see cref="T:Xunit.Sdk.SkipResult"/></returns>
         </member>
+        <member name="P:Xunit.Sdk.SkipCommand.Name">
+            <summary>
+            Gets the fully-qualified name of the test method.
+            </summary>
+        </member>
         <member name="P:Xunit.Sdk.SkipCommand.Parameters">
             <summary>
             Gets the parameters that are passed to the test command.
@@ -1313,6 +1414,11 @@
             Executes the test method.
             </summary>
             <returns>Returns information about the test run</returns>
+        </member>
+        <member name="P:Xunit.Sdk.TestCommand.Name">
+            <summary>
+            Gets the fully-qualified name of the test method.
+            </summary>
         </member>
         <member name="P:Xunit.Sdk.TestCommand.Parameters">
             <summary>
