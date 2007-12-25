@@ -14,14 +14,14 @@
 // limitations under the License.
 
 using System.Reflection;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 namespace Gallio.ReSharperRunner.Reflection
 {
     /// <summary>
     /// Resolves assembly references to loaded assemblies.
     /// </summary>
-    internal interface IAssemblyResolver
+    public interface IAssemblyResolver
     {
         /// <summary>
         /// Resolves an assembly reflection wrapper to an assembly by loading it from disk

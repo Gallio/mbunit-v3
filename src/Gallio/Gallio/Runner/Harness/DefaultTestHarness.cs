@@ -21,7 +21,7 @@ using Gallio.Core.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Utilities;
 
 namespace Gallio.Runner.Harness

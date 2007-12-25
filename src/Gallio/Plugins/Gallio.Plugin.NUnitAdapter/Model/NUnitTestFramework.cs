@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Plugin.NUnitAdapter.Properties;
 using Gallio.Model;
 

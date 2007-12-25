@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Hosting;
 
 namespace Gallio.Model

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using MbUnit.Framework;
 using Gallio.Hosting;
 using Gallio.Model;

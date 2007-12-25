@@ -15,7 +15,7 @@
 
 using System.Collections.Generic;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.ReSharperRunner.Tasks;
 using JetBrains.CommonControls;

@@ -16,7 +16,7 @@
 using System;
 using Gallio.Model.Execution;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 namespace Gallio.Plugin.XunitAdapter.Model
 {

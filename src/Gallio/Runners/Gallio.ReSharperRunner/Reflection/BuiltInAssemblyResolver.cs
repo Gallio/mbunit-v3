@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Reflection;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 namespace Gallio.ReSharperRunner.Reflection
 {
@@ -27,7 +27,7 @@ namespace Gallio.ReSharperRunner.Reflection
     /// be resolved using the currently configured assembly resolvers are
     /// loaded.
     /// </summary>
-    internal class BuiltInAssemblyResolver : IAssemblyResolver
+    public class BuiltInAssemblyResolver : IAssemblyResolver
     {
         public static readonly BuiltInAssemblyResolver Instance = new BuiltInAssemblyResolver();
 

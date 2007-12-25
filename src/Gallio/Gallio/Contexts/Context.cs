@@ -21,7 +21,7 @@ using Gallio;
 using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Hosting;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Utilities;
 
 namespace Gallio.Contexts

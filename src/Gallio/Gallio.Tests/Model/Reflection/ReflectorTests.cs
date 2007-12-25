@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Permissions;
 using System.Text;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Utilities;
 using MbUnit.Framework;
 

@@ -17,7 +17,7 @@ using System;
 using Gallio.Contexts;
 using Gallio.Logging;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 namespace Gallio.Model.Execution
 {

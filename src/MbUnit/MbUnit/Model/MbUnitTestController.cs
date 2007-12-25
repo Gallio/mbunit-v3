@@ -15,7 +15,7 @@
 
 using System;
 using Gallio;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using MbUnit.Model;
 using Gallio.Model.Execution;
 using Gallio.Core.ProgressMonitoring;

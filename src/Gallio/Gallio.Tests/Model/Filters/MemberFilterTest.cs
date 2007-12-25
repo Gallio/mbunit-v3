@@ -14,7 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Tests;
 using MbUnit2::MbUnit.Framework;
 

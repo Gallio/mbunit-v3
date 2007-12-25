@@ -17,6 +17,7 @@ extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Collections;
 using Gallio.Plugin.MbUnit2Adapter.Properties;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Logging;
@@ -85,7 +86,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             private readonly IList<ITestMonitor> testMonitors;
             private readonly IProgressMonitor progressMonitor;
 
-            private Dictionary<Type, bool> includedFixtureTypes;
+            private HashSet<Type> includedFixtureTypes;
 
             private ITestMonitor assemblyTestMonitor;
             private Dictionary<Fixture, ITestMonitor> fixtureTestMonitors;
@@ -122,7 +123,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                     totalWork += 1;
 
                 // Build a reverse mapping from types and run-pipes to tests.
-                includedFixtureTypes = new Dictionary<Type, bool>();
+                includedFixtureTypes = new HashSet<Type>();
                 fixtureTestMonitors = new Dictionary<Fixture, ITestMonitor>();
                 runPipeTestMonitors = new Dictionary<RunPipe, ITestMonitor>();
                 activeStepMonitors = new Dictionary<ITestMonitor, ITestStepMonitor>();
@@ -143,7 +144,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
                     }
                     else if (runPipe == null)
                     {
-                        includedFixtureTypes[fixture.Type] = true;
+                        includedFixtureTypes.Add(fixture.Type);
                         fixtureTestMonitors[fixture] = testMonitor;
 
                         if (fixture.HasSetUp)
@@ -296,7 +297,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             #region IFixtureFilter
             bool IFixtureFilter.Filter(Type type)
             {
-                return includedFixtureTypes.ContainsKey(type);
+                return includedFixtureTypes.Contains(type);
             }
             #endregion
 

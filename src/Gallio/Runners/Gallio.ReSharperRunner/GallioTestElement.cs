@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
@@ -80,7 +80,7 @@ namespace Gallio.ReSharperRunner
 
         public override IProject GetProject()
         {
-            IProjectAccessor accessor = test.CodeElement as IProjectAccessor;
+            IReSharperCodeElementInfo accessor = test.CodeElement as IReSharperCodeElementInfo;
             return accessor != null ? accessor.Project : null;
         }
 
@@ -118,7 +118,7 @@ namespace Gallio.ReSharperRunner
 
         public override IDeclaredElement GetDeclaredElement()
         {
-            IDeclaredElementAccessor accessor = test.CodeElement as IDeclaredElementAccessor;
+            IReSharperCodeElementInfo accessor = test.CodeElement as IReSharperCodeElementInfo;
             return accessor != null ? accessor.DeclaredElement : null;
         }
 

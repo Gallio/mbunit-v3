@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using MbUnit.Model.Builder;
 using MbUnit.Model.Patterns;
 

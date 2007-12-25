@@ -19,7 +19,7 @@ using System.Diagnostics;
 using Gallio.Contexts;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Logging;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Model.Execution

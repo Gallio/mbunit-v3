@@ -18,7 +18,7 @@ using System.Security.Permissions;
 using Gallio;
 using Gallio.Contexts;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Utilities;
 
 namespace Gallio.Contexts

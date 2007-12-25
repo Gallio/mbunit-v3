@@ -15,7 +15,7 @@
 
 using System.Reflection;
 using Gallio.Contexts;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Model;
 using MbUnit.Framework;
 using Gallio.Runner.Harness;

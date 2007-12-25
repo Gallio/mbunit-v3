@@ -14,7 +14,7 @@
 // limitations under the License.
 
 
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using MbUnit.Model.Builder;
 using MbUnit.Model.Patterns;
 

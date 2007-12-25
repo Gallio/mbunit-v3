@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 namespace Gallio.Model
 {

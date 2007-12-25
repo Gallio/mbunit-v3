@@ -16,7 +16,7 @@
 using System;
 using Gallio.Data;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 namespace MbUnit.Model
 {

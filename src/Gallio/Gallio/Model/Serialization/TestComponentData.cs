@@ -16,7 +16,7 @@
 using System;
 using System.Xml.Serialization;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 namespace Gallio.Model.Serialization
 {

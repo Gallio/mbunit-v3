@@ -17,7 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Permissions;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using MbUnit.Framework;
 using Gallio.Utilities;
 

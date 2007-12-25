@@ -18,7 +18,7 @@ extern alias MbUnit2;
 using System;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 using MbUnit2::MbUnit.Core.Remoting;
 

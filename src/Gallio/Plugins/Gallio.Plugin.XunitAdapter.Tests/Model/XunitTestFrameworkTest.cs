@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Plugin.XunitAdapter.Model;
 using Gallio.TestResources.Xunit;
 using Gallio.TestResources.Xunit.Metadata;

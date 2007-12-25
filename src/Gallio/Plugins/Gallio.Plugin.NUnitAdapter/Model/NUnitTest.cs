@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 
 using NUnitITest = NUnit.Core.ITest;
 using NUnitTestName = NUnit.Core.TestName;

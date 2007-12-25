@@ -16,7 +16,7 @@
 extern alias MbUnit2;
 using System;
 using System.Reflection;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Plugin.MbUnit2Adapter.Model;
 using MbUnit.Framework;
 using Gallio.Model;

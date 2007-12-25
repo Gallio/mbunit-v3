@@ -15,7 +15,7 @@
 
 using System;
 using System.Text;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Model.Serialization;
 

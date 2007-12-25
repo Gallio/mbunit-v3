@@ -14,12 +14,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Model;
-using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Runner;
 
 namespace Gallio.Runner
 {
@@ -31,7 +29,7 @@ namespace Gallio.Runner
     public sealed class GallioProject
     {
         private TestPackageConfig testPackageConfig;
-        private Dictionary<string, string> testFilters;
+        private XmlSerializableDictionary<string, string> testFilters;
 
         /// <summary>
         /// Creates an empty project.
@@ -39,7 +37,7 @@ namespace Gallio.Runner
         public GallioProject()
         {
             testPackageConfig = new TestPackageConfig();
-            testFilters = new Dictionary<string, string>();
+            testFilters = new XmlSerializableDictionary<string, string>();
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace Gallio.Runner
         /// A list of test filters for the project.
         /// </summary>
         [XmlElement("testFilters")]
-        public Dictionary<string, string> TestFilters
+        public XmlSerializableDictionary<string, string> TestFilters
         {
             get { return testFilters; }
             set { testFilters = value; }

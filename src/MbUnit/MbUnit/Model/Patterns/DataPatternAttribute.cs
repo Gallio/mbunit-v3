@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Data;
 using Gallio.Model;
-using Gallio.Model.Reflection;
+using Gallio.Reflection;
 using MbUnit.Model.Builder;
 
 namespace MbUnit.Model.Patterns
