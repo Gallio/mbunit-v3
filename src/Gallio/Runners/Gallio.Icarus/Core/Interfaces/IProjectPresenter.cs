@@ -33,7 +33,6 @@ namespace Gallio.Icarus.Core.Interfaces
         void GetLogStream(object sender, SingleStringEventArgs e);
         void GetReportTypes(object sender, EventArgs e);
         void SaveReportAs(object sender, SaveReportAsEventArgs e);
-        void SaveProject(object sender, SingleStringEventArgs e);
         void Passed(string testId);
         void Failed(string testId);
         void Ignored(string testId);

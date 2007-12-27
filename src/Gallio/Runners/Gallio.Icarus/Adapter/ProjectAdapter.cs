@@ -22,6 +22,8 @@ using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Runner;
+using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus.Adapter
 {
@@ -31,7 +33,8 @@ namespace Gallio.Icarus.Adapter
         private readonly IProjectAdapterModel projectAdapterModel;
         
         private TestModelData testModelData;
-        private TestPackageConfig testPackageConfig;
+        private Project project;
+        private Filter<ITest> filter;
 
         private string mode = "";
 
@@ -43,7 +46,8 @@ namespace Gallio.Icarus.Adapter
 
         public TestPackageConfig TestPackageConfig
         {
-            get { return testPackageConfig; }
+            get { return project.TestPackageConfig; }
+            set { project.TestPackageConfig = value; }
         }
 
         public string StatusText
@@ -76,6 +80,11 @@ namespace Gallio.Icarus.Adapter
             set { projectAdapterView.ReportTypes = value; }
         }
 
+        public Exception Exception
+        {
+            set { projectAdapterView.Exception = value; }
+        }
+
         public event EventHandler<ProjectEventArgs> GetTestTree;
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> StopTests;
@@ -83,53 +92,56 @@ namespace Gallio.Icarus.Adapter
         public event EventHandler<SingleStringEventArgs> GetLogStream;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
-        public event EventHandler<SingleStringEventArgs> SaveProject;
 
-        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model, TestPackageConfig config)
+        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
             projectAdapterView = view;
             projectAdapterModel = model;
-            testPackageConfig = config;
+
+            project = new Project();
+            filter = new NoneFilter<ITest>();
 
             // Wire up event handlers
-            projectAdapterView.AddAssemblies += _View_AddAssemblies;
-            projectAdapterView.RemoveAssemblies += _View_RemoveAssemblies;
-            projectAdapterView.RemoveAssembly += _View_RemoveAssembly;
-            projectAdapterView.GetTestTree += _View_GetTestTree;
-            projectAdapterView.RunTests += _View_RunTests;
-            projectAdapterView.StopTests += _View_StopTests;
-            projectAdapterView.SetFilter += _View_SetFilter;
-            projectAdapterView.GetLogStream += _View_GetLogStream;
-            projectAdapterView.GetReportTypes += _View_GetReportTypes;
-            projectAdapterView.SaveReportAs += _View_SaveReportAs;
-            projectAdapterView.SaveProject += _View_SaveProject;
+            projectAdapterView.AddAssemblies += AddAssembliesEventHandler;
+            projectAdapterView.RemoveAssemblies += RemoveAssembliesEventHandler;
+            projectAdapterView.RemoveAssembly += RemoveAssemblyEventHandler;
+            projectAdapterView.GetTestTree += GetTestTreeEventHandler;
+            projectAdapterView.RunTests += RunTestsEventHandler;
+            projectAdapterView.StopTests += StopTestsEventHandler;
+            projectAdapterView.SetFilter += SetFilterEventHandler;
+            projectAdapterView.GetLogStream += GetLogStreamEventHandler;
+            projectAdapterView.GetReportTypes += GetReportTypesEventHandler;
+            projectAdapterView.SaveReportAs += SaveReportAsEventHandler;
+            projectAdapterView.SaveProject += SaveProjectEventHandler;
+            projectAdapterView.OpenProject += OpenProjectEventHandler;
+            projectAdapterView.NewProject += NewProjectEventHandler;
         }
 
-        private void _View_AddAssemblies(object sender, AddAssembliesEventArgs e)
+        private void AddAssembliesEventHandler(object sender, AddAssembliesEventArgs e)
         {
-            testPackageConfig.AssemblyFiles.AddRange(e.Assemblies);
+            project.TestPackageConfig.AssemblyFiles.AddRange(e.Assemblies);
         }
 
-        private void _View_RemoveAssemblies(object sender, EventArgs e)
+        private void RemoveAssembliesEventHandler(object sender, EventArgs e)
         {
-            testPackageConfig.AssemblyFiles.Clear();
+            project.TestPackageConfig.AssemblyFiles.Clear();
         }
 
-        private void _View_RemoveAssembly(object sender, SingleStringEventArgs e)
+        private void RemoveAssemblyEventHandler(object sender, SingleStringEventArgs e)
         {
-            testPackageConfig.AssemblyFiles.Remove(e.String);
+            project.TestPackageConfig.AssemblyFiles.Remove(e.String);
         }
 
-        private void _View_GetTestTree(object sender, SingleStringEventArgs e)
+        private void GetTestTreeEventHandler(object sender, SingleStringEventArgs e)
         {
             mode = e.String;
             if (GetTestTree != null)
             {
-                GetTestTree(this, new ProjectEventArgs(testPackageConfig));
+                GetTestTree(this, new ProjectEventArgs(project.TestPackageConfig));
             }
         }
 
-        private void _View_GetLogStream(object sender, SingleStringEventArgs e)
+        private void GetLogStreamEventHandler(object sender, SingleStringEventArgs e)
         {
             if (GetLogStream != null)
             {
@@ -137,54 +149,99 @@ namespace Gallio.Icarus.Adapter
             }
         }
 
-        private void _View_RunTests(object sender, EventArgs e)
+        private void RunTestsEventHandler(object sender, EventArgs e)
         {
+            // add/update "last run" filter in project
+            UpdateProjectFilter("LastRun", filter);
+
+            // run tests
             if (RunTests != null)
-            {
                 RunTests(this, e);
-            }
         }
 
-        private void _View_StopTests(object sender, EventArgs e)
+        private void StopTestsEventHandler(object sender, EventArgs e)
         {
             if (StopTests != null)
                 StopTests(this, e);
         }
 
-        private void _View_SetFilter(object sender, SetFilterEventArgs e)
+        private void SetFilterEventHandler(object sender, SetFilterEventArgs e)
         {
             if (SetFilter != null)
             {
-                Filter<ITest> filter = projectAdapterModel.GetFilter(e.Nodes);
+                filter = projectAdapterModel.GetFilter(e.Nodes);
                 if (filter == null)
-                {
                     filter = new NoneFilter<ITest>();
-                }
+                UpdateProjectFilter(e.FilterName, filter);
                 SetFilter(this, new SetFilterEventArgs(e.FilterName, filter));
             }
         }
 
-        private void _View_GetReportTypes(object sender, EventArgs e)
+        public void UpdateProjectFilter(string filterName, Filter<ITest> filter)
+        {
+            foreach (FilterInfo filterInfo in project.TestFilters)
+            {
+                if (filterInfo.FilterName == filterName)
+                {
+                    filterInfo.Filter = filter.ToString();
+                    return;
+                }
+            }
+            project.TestFilters.Add(new FilterInfo(filterName, filter.ToString()));
+        }
+
+        private void GetReportTypesEventHandler(object sender, EventArgs e)
         {
             if (GetReportTypes != null)
                 GetReportTypes(this, e);
         }
 
-        private void _View_SaveReportAs(object sender, SaveReportAsEventArgs e)
+        private void SaveReportAsEventHandler(object sender, SaveReportAsEventArgs e)
         {
             if (SaveReportAs != null)
                 SaveReportAs(this, e);
         }
 
-        private void _View_SaveProject(object sender, SingleStringEventArgs e)
+        private void SaveProjectEventHandler(object sender, SingleStringEventArgs e)
         {
-            if (SaveProject != null)
-                SaveProject(this, e);
+            try
+            {
+                SerializationUtils.SaveToXml(project, e.String);
+            }
+            catch (Exception ex)
+            {
+                projectAdapterView.Exception = ex;
+            }
+        }
+
+        private void OpenProjectEventHandler(object sender, SingleStringEventArgs e)
+        {
+            try
+            {
+                project = SerializationUtils.LoadFromXml<Project>(e.String);
+                foreach (FilterInfo filterInfo in project.TestFilters)
+                {
+                    if (filterInfo.FilterName == "Latest")
+                    {
+                        //filter = FilterUtils.ParseTestFilter(filterInfo.Filter);
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                projectAdapterView.Exception = ex;
+            }
+        }
+
+        private void NewProjectEventHandler(object sender, EventArgs e)
+        {
+            project = new Project();
         }
 
         public void DataBind()
         {
-            projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(testPackageConfig.AssemblyFiles);
+            projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
             projectAdapterView.TestTreeCollection = projectAdapterModel.BuildTestTree(testModelData, mode);
             projectAdapterView.TotalTests(projectAdapterModel.CountTests(testModelData));
             projectAdapterView.DataBind();

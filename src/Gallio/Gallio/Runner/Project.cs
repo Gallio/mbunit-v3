@@ -14,30 +14,31 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 
-namespace Gallio.Runner
+namespace Gallio.Runner.Projects
 {
     /// <summary>
     /// Gallio project container.
     /// </summary>
-    [Serializable, XmlRoot("gallioProject", Namespace = SerializationUtils.XmlNamespace)]
+    [Serializable]
+    [XmlRoot("project", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public sealed class GallioProject
+    public sealed class Project
     {
         private TestPackageConfig testPackageConfig;
-        private XmlSerializableDictionary<string, string> testFilters;
+        private List<FilterInfo> testFilters;
 
         /// <summary>
         /// Creates an empty project.
         /// </summary>
-        public GallioProject()
+        public Project()
         {
             testPackageConfig = new TestPackageConfig();
-            testFilters = new XmlSerializableDictionary<string, string>();
+            testFilters = new List<FilterInfo>();
         }
 
         /// <summary>
@@ -53,8 +54,8 @@ namespace Gallio.Runner
         /// <summary>
         /// A list of test filters for the project.
         /// </summary>
-        [XmlElement("testFilters")]
-        public XmlSerializableDictionary<string, string> TestFilters
+        [XmlArray("testFilters"), XmlArrayItem("testFilter", typeof(FilterInfo))]
+        public List<FilterInfo> TestFilters
         {
             get { return testFilters; }
             set { testFilters = value; }

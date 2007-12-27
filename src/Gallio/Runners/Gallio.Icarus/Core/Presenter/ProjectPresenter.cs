@@ -67,7 +67,6 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.GetLogStream += GetLogStream;
             projectAdapter.GetReportTypes += GetReportTypes;
             projectAdapter.SaveReportAs += SaveReportAs;
-            projectAdapter.SaveProject += SaveProject;
         }
 
         public void GetTestTree(object sender, ProjectEventArgs e)
@@ -90,7 +89,7 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void SetFilter(object sender, SetFilterEventArgs e)
         {
-            testRunnerModel.SetFilter(e.FilterName, e.Filter);
+            testRunner.TestExecutionOptions.Filter = e.Filter;
         }
 
         public void GetLogStream(object sender, SingleStringEventArgs e)
@@ -106,11 +105,6 @@ namespace Gallio.Icarus.Core.Presenter
         public void SaveReportAs(object sender, SaveReportAsEventArgs e)
         {
             testRunnerModel.SaveReportAs(e.FileName, e.Format);
-        }
-
-        public void SaveProject(object sender, SingleStringEventArgs e)
-        {
-            testRunnerModel.SaveProject(e.String);
         }
 
         public void Passed(string testId)

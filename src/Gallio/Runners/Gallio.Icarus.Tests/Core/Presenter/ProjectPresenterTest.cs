@@ -42,7 +42,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         private IEventRaiser getLogStreamEvent;
         private IEventRaiser getReportTypes;
         private IEventRaiser saveReportAs;
-        private IEventRaiser saveProjectEvent;
 
         [SetUp]
         public void SetUp()
@@ -82,10 +81,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mockAdapter.SaveReportAs += null;
             LastCall.IgnoreArguments();
             saveReportAs = LastCall.GetEventRaiser();
-
-            mockAdapter.SaveProject += null;
-            LastCall.IgnoreArguments();
-            saveProjectEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -153,7 +148,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             string filterName = "test";
             Filter<ITest> filter = new NoneFilter<ITest>();
-            mockModel.SetFilter(filterName, filter);
+            //mockModel.SetFilter(filterName, filter);
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             setFilterEvent.Raise(mockAdapter, new SetFilterEventArgs(filterName, filter));
@@ -189,15 +184,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             saveReportAs.Raise(mockAdapter, new SaveReportAsEventArgs(fileName, format));
-        }
-
-        [Test]
-        public void SaveProject_Test()
-        {
-            mockModel.SaveProject("filename");
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            saveProjectEvent.Raise(mockAdapter, new SingleStringEventArgs("filename"));
         }
 
         [Test]

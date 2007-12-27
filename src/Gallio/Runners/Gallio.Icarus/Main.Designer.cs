@@ -72,8 +72,8 @@ namespace Gallio.Icarus
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.newProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.openProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.reloadToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -205,6 +205,7 @@ namespace Gallio.Icarus
             this.newProjectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.newProjectToolStripMenuItem.Text = "&New Project";
+            this.newProjectToolStripMenuItem.Click += new System.EventHandler(this.newProjectToolStripMenuItem_Click);
             // 
             // openProjectMenuItem
             // 
@@ -227,6 +228,7 @@ namespace Gallio.Icarus
             this.saveProjectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.saveProjectToolStripMenuItem.Text = "&Save Project";
+            this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.saveProjectToolStripMenuItem_Click);
             // 
             // saveProjectAsToolStripMenuItem
             // 
@@ -359,8 +361,8 @@ namespace Gallio.Icarus
             // 
             this.mainToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton1,
-            this.toolStripButton2,
+            this.newProjectToolStripButton,
+            this.openProjectToolStripButton,
             this.toolStripSeparator1,
             this.reloadToolbarButton,
             this.toolStripSeparator6,
@@ -370,28 +372,30 @@ namespace Gallio.Icarus
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(256, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(287, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
-            // toolStripButton1
+            // newProjectToolStripButton
             // 
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(48, 22);
-            this.toolStripButton1.Text = "New";
-            this.toolStripButton1.ToolTipText = "New Project";
+            this.newProjectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("newProjectToolStripButton.Image")));
+            this.newProjectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.newProjectToolStripButton.Name = "newProjectToolStripButton";
+            this.newProjectToolStripButton.Size = new System.Drawing.Size(48, 22);
+            this.newProjectToolStripButton.Text = "New";
+            this.newProjectToolStripButton.ToolTipText = "New Project";
+            this.newProjectToolStripButton.Click += new System.EventHandler(this.newProjectToolStripButton_Click);
             // 
-            // toolStripButton2
+            // openProjectToolStripButton
             // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton2.Text = "Open";
-            this.toolStripButton2.ToolTipText = "Open Project";
+            this.openProjectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.openProjectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openProjectToolStripButton.Image")));
+            this.openProjectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.openProjectToolStripButton.Name = "openProjectToolStripButton";
+            this.openProjectToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.openProjectToolStripButton.Text = "Open";
+            this.openProjectToolStripButton.ToolTipText = "Open Project";
+            this.openProjectToolStripButton.Click += new System.EventHandler(this.openProjectToolStripButton_Click);
             // 
             // toolStripSeparator1
             // 
@@ -1068,8 +1072,8 @@ namespace Gallio.Icarus
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Main";
             this.Text = "Gallio Icarus {0}.{1}";
-            this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
             this.Load += new System.EventHandler(this.Form_Load);
+            this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -1122,8 +1126,8 @@ namespace Gallio.Icarus
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStrip mainToolStrip;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton newProjectToolStripButton;
+        private System.Windows.Forms.ToolStripButton openProjectToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton startButton;
         private System.Windows.Forms.ToolStripButton stopButton;

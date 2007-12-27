@@ -30,12 +30,12 @@ namespace Gallio.Icarus.Core.Interfaces
         event EventHandler<SingleStringEventArgs> GetLogStream;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
-        event EventHandler<SingleStringEventArgs> SaveProject;
         TestModelData TestModelData { set; }
         string StatusText { set; }
         string LogBody { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
+        Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         void DataBind();

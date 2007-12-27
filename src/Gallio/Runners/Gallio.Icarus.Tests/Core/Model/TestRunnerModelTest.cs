@@ -69,18 +69,5 @@ namespace Gallio.Icarus.Core.Model.Tests
             testRunnerModel.BuildTests();
             testRunnerModel.RunTests();
         }
-
-        [Test]
-        public void SetFilter_Test()
-        {
-            mockAdapter = MockRepository.GenerateStub<IProjectAdapter>();
-            mockModel = MockRepository.GenerateStub<ITestRunnerModel>();
-            mockProjectPresenter = mocks.CreateMock<ProjectPresenter>(mockAdapter, mockModel);
-            testRunnerModel.ProjectPresenter = mockProjectPresenter;
-
-            mocks.ReplayAll();
-
-            testRunnerModel.SetFilter("test", new AnyFilter<ITest>());
-        }
     }
 }

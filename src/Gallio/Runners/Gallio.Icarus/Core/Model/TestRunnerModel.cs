@@ -37,12 +37,10 @@ namespace Gallio.Icarus.Core.Model
         private IProgressMonitorProvider progressMonitorProvider = null;
         private IProgressMonitor runTestsProgressMonitor = null;
         private TestRunnerMonitor testRunnerMonitor = null;
-        private GallioProject gallioProject;
         private IReportManager reportManager;
 
         public TestRunnerModel()
         {
-            gallioProject = new GallioProject();
             reportManager = Runtime.Instance.Resolve<IReportManager>();
         }
 
@@ -60,8 +58,6 @@ namespace Gallio.Icarus.Core.Model
 
         public void LoadPackage(TestPackageConfig testPackageConfig)
         {
-            gallioProject.TestPackageConfig = testPackageConfig;
-
             // attach report monitor to test runner
             reportMonitor = new ReportMonitor();
             reportMonitor.Attach(projectPresenter.TestRunner);
@@ -102,21 +98,6 @@ namespace Gallio.Icarus.Core.Model
             if (runTestsProgressMonitor != null)
             {
                 runTestsProgressMonitor.Cancel();
-            }
-        }
-
-        public void SetFilter(string filterName, Filter<ITest> filter)
-        {
-            projectPresenter.TestRunner.TestExecutionOptions.Filter = filter;
-
-            // add/update filter in project
-            if (gallioProject.TestFilters.ContainsKey(filterName))
-            {
-                gallioProject.TestFilters[filterName] = filter.ToString();
-            }
-            else
-            {
-                gallioProject.TestFilters.Add(filterName, filter.ToString());
             }
         }
 
@@ -186,19 +167,6 @@ namespace Gallio.Icarus.Core.Model
 
                 progressMonitor.SetStatus("Report saved.");
             });
-        }
-
-        public void SaveProject(string fileName)
-        {
-            try
-            {
-                SerializationUtils.SaveToXml(gallioProject, fileName);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
         }
     }
 }

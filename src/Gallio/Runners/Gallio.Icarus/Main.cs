@@ -42,6 +42,8 @@ namespace Gallio.Icarus
         private string statusText = "Ready...";
         private int totalWorkUnits, completedWorkUnits;
         private Timer statusBarTimer;
+
+        private string projectFileName = String.Empty;
         
         public TreeNode[] TestTreeCollection
         {
@@ -103,6 +105,25 @@ namespace Gallio.Icarus
             }
         }
 
+        public Exception Exception
+        {
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        Exception = value;
+                    }));
+                }
+                else
+                {
+                    MessageBox.Show(String.Format("Message: {0}\nStack trace: {1}", value.Message, value.StackTrace), "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
         public event EventHandler<SingleStringEventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
@@ -114,9 +135,8 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         public event EventHandler<SingleStringEventArgs> SaveProject;
-
-        private delegate void SingleParameterMethodDelegate(object o);
-        private delegate string GetTreeFilterDelegate();
+        public event EventHandler<SingleStringEventArgs> OpenProject;
+        public event EventHandler<EventArgs> NewProject;
 
         public Main()
         {
@@ -302,28 +322,57 @@ namespace Gallio.Icarus
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            OpenProjectFromFile();
+        }
+
+        private void OpenProjectFromFile()
+        {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
-            DialogResult res = openFile.ShowDialog();
-
-            if (res == DialogResult.OK)
-                MessageBox.Show(Path.GetFileName(openFile.FileName), Path.GetDirectoryName(openFile.FileName));
+            if (openFile.ShowDialog() == DialogResult.OK)
+            {
+                //AbortWorkerThread();
+                //workerThread = new Thread(delegate()
+                //{
+                //    StatusText = "Opening project";
+                    if (OpenProject != null)
+                        OpenProject(this, new SingleStringEventArgs(openFile.FileName));
+                    ThreadedRefreshTree();
+                //});
+                //workerThread.Start();
+            }
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFile = new SaveFileDialog();
-            saveFile.OverwritePrompt = true;
-            saveFile.AddExtension = true;
-            saveFile.DefaultExt = "Gallio Projects (*.gallio)|*.gallio";
-            saveFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
-            if (saveFile.ShowDialog() == DialogResult.OK)
+            projectFileName = string.Empty;
+            SaveProjectToFile();
+        }
+
+        private void SaveProjectToFile()
+        {
+            if (projectFileName == String.Empty)
             {
-                if (SaveProject != null)
+                SaveFileDialog saveFile = new SaveFileDialog();
+                saveFile.OverwritePrompt = true;
+                saveFile.AddExtension = true;
+                saveFile.DefaultExt = "Gallio Projects (*.gallio)|*.gallio";
+                saveFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
+                if (saveFile.ShowDialog() == DialogResult.OK)
                 {
-                    SaveProject(this, new SingleStringEventArgs(saveFile.FileName));
+                    projectFileName = saveFile.FileName;
                 }
             }
+            AbortWorkerThread();
+            workerThread = new Thread(delegate()
+            {
+                StatusText = "Saving project";
+                if (SaveProject != null)
+                {
+                    SaveProject(this, new SingleStringEventArgs(projectFileName));
+                }
+            });
+            workerThread.Start();
         }
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -344,7 +393,7 @@ namespace Gallio.Icarus
                     }
                     ThreadedRefreshTree();
                 });
-                workerThread.Start(openFile.FileNames);
+                workerThread.Start();
             }
         }
 
@@ -356,14 +405,18 @@ namespace Gallio.Icarus
                 GetTestTree(this, new SingleStringEventArgs(GetTreeFilter()));
             }
             //testTree.Invoke(new MethodInvoker(testTree.Sort));
-            StatusText = "Ready...";
         }
 
         private string GetTreeFilter()
         {
             if (treeFilterCombo.InvokeRequired)
             {
-                return (string)treeFilterCombo.Invoke(new GetTreeFilterDelegate(GetTreeFilter));
+                string treeFilter = "";
+                treeFilterCombo.Invoke((MethodInvoker)delegate()
+                {
+                    treeFilter = (string)treeFilterCombo.SelectedItem;
+                });
+                return treeFilter;
             }
             else
             {
@@ -529,7 +582,6 @@ namespace Gallio.Icarus
                     workerThread.Abort();
                     workerThread.Join(2000);
                     workerThread = null;
-                    StatusText = "Ready...";
                 }
                 catch (Exception ex)
                 {
@@ -563,112 +615,102 @@ namespace Gallio.Icarus
             toolStripProgressBar.Value = completedWorkUnits;
         }
 
-        public void Passed(object o)
+        public void Passed(string testId)
         {
             if (testTree.InvokeRequired)
             {
-                testTree.Invoke((MethodInvoker) delegate()
+                testTree.Invoke((MethodInvoker)delegate()
                 {
-                    Passed(o);
+                    Passed(testId);
                 });
             }
             else
             {
-                string testId = o as string;
-                if (testId != null)
-                {
-                    testProgressStatusBar.Passed++;
-                    testTree.UpdateTestState(testId, TestState.Success);
-                }
+                testProgressStatusBar.Passed++;
+                testTree.UpdateTestState(testId, TestState.Success);
             }
         }
 
-        public void Failed(object o)
+        public void Failed(string testId)
         {
             if (testTree.InvokeRequired)
             {
-                testTree.Invoke(new SingleParameterMethodDelegate(Failed), new object[] { o });
+                testTree.Invoke((MethodInvoker)delegate()
+                {
+                    Failed(testId);
+                });
             }
             else
             {
-                string testId = o as string;
-                if (testId != null)
-                {
-                    testProgressStatusBar.Failed++;
-                    testTree.UpdateTestState(testId, TestState.Failed);
-                }
+                testProgressStatusBar.Failed++;
+                testTree.UpdateTestState(testId, TestState.Failed);
             }
         }
 
-        public void Ignored(object o)
+        public void Ignored(string testId)
         {
             if (testTree.InvokeRequired)
             {
-                testTree.Invoke(new SingleParameterMethodDelegate(Ignored), new object[] { o });
+                testTree.Invoke((MethodInvoker)delegate()
+                {
+                    Ignored(testId);
+                });
             }
             else
             {
-                string testId = o as string;
-                if (testId != null)
-                {
-                    testProgressStatusBar.Ignored++;
-                    testTree.UpdateTestState(testId, TestState.Ignored);
-                }
+                testProgressStatusBar.Ignored++;
+                testTree.UpdateTestState(testId, TestState.Ignored);
             }
         }
 
-        public void Skipped(object o)
+        public void Skipped(string testId)
         {
             if (testTree.InvokeRequired)
             {
-                testTree.Invoke(new SingleParameterMethodDelegate(Skipped), new object[] { o });
+                testTree.Invoke((MethodInvoker)delegate()
+                {
+                    Skipped(testId);
+                });
             }
             else
             {
-                string testId = o as string;
-                if (testId != null)
-                {
-                    testProgressStatusBar.Skipped++;
-                    testTree.UpdateTestState(testId, TestState.Skipped);
-                }
+                testProgressStatusBar.Skipped++;
+                testTree.UpdateTestState(testId, TestState.Skipped);
             }
         }
 
-        public void TotalTests(object o)
+        public void TotalTests(int totalTests)
         {
             if (testProgressStatusBar.InvokeRequired)
             {
-                testProgressStatusBar.Invoke(new SingleParameterMethodDelegate(TotalTests), new object[] { o });
+                testTree.Invoke((MethodInvoker)delegate()
+                {
+                    TotalTests(totalTests);
+                });
             }
             else
             {
-                int? totalTests = o as int?;
-                if (totalTests != null)
-                {
-                    testProgressStatusBar.Total = (int) totalTests;
-                }
+                testProgressStatusBar.Total = totalTests;
             }
         }
 
         private void stopButton_Click(object sender, EventArgs e)
         {
             AbortWorkerThread();
-            workerThread = new Thread(new ThreadStart(ThreadedStopTests));
-            workerThread.Start();
-        }
-
-        private void ThreadedStopTests()
-        {
-            if (StopTests != null)
+            workerThread = new Thread(delegate()
             {
-                StopTests(this, new EventArgs());
-            }
-            // enable/disable buttons
-            toolStripContainer.Invoke((MethodInvoker)delegate()
-            {
-                stopButton.Enabled = false;
-                startButton.Enabled = true;
+                if (StopTests != null)
+                {
+                    StopTests(this, new EventArgs());
+                }
+                // enable/disable buttons
+                toolStripContainer.Invoke((MethodInvoker)delegate()
+                {
+                    stopButton.Enabled = false;
+                    startButton.Enabled = true;
+                });
             });
+            workerThread.Start();
         }
 
         private void assemblyList_SelectedIndexChanged(object sender, EventArgs e)
@@ -738,7 +780,7 @@ namespace Gallio.Icarus
             {
                 if (SetFilter != null)
                 {
-                    SetFilter(this, new SetFilterEventArgs("Custom", testTree.Nodes));
+                    SetFilter(this, new SetFilterEventArgs("Latest", testTree.Nodes));
                 }
                 testTree.Reset(testTree.Nodes);
                 testProgressStatusBar.Clear();
@@ -812,6 +854,38 @@ namespace Gallio.Icarus
         private void reportTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             btnSaveReportAs.Enabled = ((string)reportTypes.SelectedItem != "");
+        }
+
+        private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveProjectToFile();
+        }
+
+        private void openProjectToolStripButton_Click(object sender, EventArgs e)
+        {
+            OpenProjectFromFile();
+        }
+
+        private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateNewProject();
+        }
+
+        private void CreateNewProject()
+        {
+            AbortWorkerThread();
+            workerThread = new Thread(delegate()
+            {
+                if (NewProject != null)
+                    NewProject(this, EventArgs.Empty);
+                ThreadedRefreshTree();
+            });
+            workerThread.Start();
+        }
+
+        private void newProjectToolStripButton_Click(object sender, EventArgs e)
+        {
+            CreateNewProject();
         }
     }
 }

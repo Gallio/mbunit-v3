@@ -28,11 +28,9 @@ namespace Gallio.Icarus.Core.Interfaces
         TestModelData BuildTests();
         void RunTests();
         void StopTests();
-        void SetFilter(string filterName, Filter<ITest> filter);
         string GetLogStream(string log);
         void GenerateReport();
         void SaveReportAs(string fileName, string format);
-        void SaveProject(string fileName);
         IList<string> GetReportTypes();
     }
 }

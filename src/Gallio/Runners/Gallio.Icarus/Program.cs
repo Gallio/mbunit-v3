@@ -50,8 +50,9 @@ namespace Gallio.Icarus
 
                 // wire up model
                 Main main = new Main();
-                ProjectPresenter projectPresenter = new ProjectPresenter(new ProjectAdapter(main, new ProjectAdapterModel(), testPackageConfig), 
-                    new TestRunnerModel());
+                ProjectAdapter projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
+                projectAdapter.TestPackageConfig = testPackageConfig;
+                ProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, new TestRunnerModel());
 
                 Application.Run(main);
             }

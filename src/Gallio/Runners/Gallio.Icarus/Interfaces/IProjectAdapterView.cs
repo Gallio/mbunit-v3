@@ -33,19 +33,22 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         event EventHandler<SingleStringEventArgs> SaveProject;
+        event EventHandler<SingleStringEventArgs> OpenProject;
+        event EventHandler<EventArgs> NewProject;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
         string LogBody { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
+        Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         void DataBind();
-        void Passed(object o);
-        void Failed(object o);
-        void Ignored(object o);
-        void Skipped(object o);
-        void TotalTests(object o);
+        void Passed(string testId);
+        void Failed(string testId);
+        void Ignored(string testId);
+        void Skipped(string testId);
+        void TotalTests(int totalTests);
     }
 }
