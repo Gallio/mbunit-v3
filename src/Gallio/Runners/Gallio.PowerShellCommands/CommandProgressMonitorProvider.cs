@@ -33,7 +33,7 @@ namespace Gallio.PowerShellCommands
 
         protected override IProgressMonitorPresenter GetPresenter()
         {
-            return new CommandProgressMonitorPresenter(cmdlet, -1);
+            return new CommandProgressMonitorPresenter(cmdlet);
         }
     }
 }

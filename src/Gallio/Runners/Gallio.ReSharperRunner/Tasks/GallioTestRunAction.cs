@@ -18,7 +18,6 @@ using Gallio.Collections;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Logging;
 using Gallio.Model;
-using Gallio.Model.Execution;
 using Gallio.Model.Filters;
 using Gallio.Runner;
 using Gallio.Runner.Monitors;
@@ -103,13 +102,12 @@ namespace Gallio.ReSharperRunner.Tasks
                     {
                         return new EqualityFilter<string>(testId);
                     })));
-                runner.EventDispatcher.Lifecycle += TestStepLifecycleEvent;
 
                 // Install the listeners.
                 ReportMonitor reportMonitor = new ReportMonitor();
                 reportMonitor.Attach(runner);
                 reportMonitor.TestStepStarting += TestStepStarting;
-                reportMonitor.TestStepLifecyclePhaseChanged += TestStepPhaseChanged;
+                reportMonitor.TestStepLifecyclePhaseChanged += TestStepLifecyclePhaseChanged;
                 reportMonitor.TestStepFinished += TestStepFinished;
 
                 // Run the tests.
@@ -128,7 +126,7 @@ namespace Gallio.ReSharperRunner.Tasks
             }
         }
 
-        private void TestStepPhaseChanged(object sender, TestStepRunEventArgs e)
+        private void TestStepLifecyclePhaseChanged(object sender, TestStepRunEventArgs e)
         {
             GallioTestItemTask testTask;
             if (testTasks.TryGetValue(e.TestData.Id, out testTask))

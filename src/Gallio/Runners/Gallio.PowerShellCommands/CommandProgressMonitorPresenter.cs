@@ -23,35 +23,24 @@ namespace Gallio.PowerShellCommands
     internal class CommandProgressMonitorPresenter : BaseProgressMonitorPresenter
     {
         private readonly BaseCommand cmdlet;
-        private readonly int parentActivityId;
-        private readonly int activityId;
 
-        public CommandProgressMonitorPresenter(BaseCommand cmdlet, int parentActivityId)
+        public CommandProgressMonitorPresenter(BaseCommand cmdlet)
         {
             if (cmdlet == null)
                 throw new ArgumentNullException("cmdlet");
 
             this.cmdlet = cmdlet;
-            this.parentActivityId = parentActivityId;
-
-            activityId = parentActivityId + 1;
         }
 
         protected override void Initialize()
         {
             ProgressMonitor.TaskFinished += HandleTaskFinished;
             ProgressMonitor.Changed += HandleChanged;
-            ProgressMonitor.SubProgressMonitorCreated += HandleSubProgressMonitorCreated;
 
             cmdlet.StopRequested += HandleStopRequested;
 
             if (cmdlet.Stopping)
                 ProgressMonitor.Cancel();
-        }
-
-        private void HandleSubProgressMonitorCreated(object sender, SubProgressMonitorCreatedEventArgs e)
-        {
-            new CommandProgressMonitorPresenter(cmdlet, activityId).Present(e.SubProgressMonitor); 
         }
 
         private void HandleTaskFinished(object sender, EventArgs e)
@@ -61,16 +50,23 @@ namespace Gallio.PowerShellCommands
 
         private void HandleChanged(object sender, EventArgs e)
         {
-            string status = ProgressMonitor.Status;
-            if (status.Length == 0)
-                status = @" "; // workaround Cmdlet API constraints.
+            int percentComplete = -1;
+            string status = ProgressMonitor.LeafSubTaskName;
 
-            ProgressRecord progressRecord = new ProgressRecord(activityId, ProgressMonitor.TaskName, status);
+            if (!double.IsNaN(ProgressMonitor.RemainingWorkUnits))
+            {
+                percentComplete = (int)Math.Ceiling((ProgressMonitor.TotalWorkUnits - ProgressMonitor.RemainingWorkUnits) * 100 / ProgressMonitor.TotalWorkUnits);
+                status = String.Format("{0,3}% complete.  {1}", percentComplete, status);
+            }
+            else if (status.Length == 0)
+            {
+                status = @" ";
+            }
+
+            ProgressRecord progressRecord = new ProgressRecord(0, ProgressMonitor.TaskName, status);
             progressRecord.RecordType = ProgressMonitor.IsRunning ? ProgressRecordType.Processing : ProgressRecordType.Completed;
-            progressRecord.ParentActivityId = parentActivityId;
-
-            if (! double.IsNaN(ProgressMonitor.RemainingWorkUnits))
-                progressRecord.PercentComplete = (int)Math.Ceiling((ProgressMonitor.TotalWorkUnits - ProgressMonitor.RemainingWorkUnits) * 100 / ProgressMonitor.TotalWorkUnits);
+            progressRecord.CurrentOperation = ProgressMonitor.Leaf.Status;
+            progressRecord.PercentComplete = percentComplete;
 
             cmdlet.PostMessage(delegate
             {
