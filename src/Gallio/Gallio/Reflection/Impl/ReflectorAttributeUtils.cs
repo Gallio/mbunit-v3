@@ -86,7 +86,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>True if the property is assignable</returns>
         public static bool IsAttributeProperty(IPropertyInfo property)
         {
-            IMethodInfo setMethod = property.GetSetMethod();
+            IMethodInfo setMethod = property.SetMethod;
             return setMethod != null && setMethod.IsPublic && ! setMethod.IsAbstract && ! setMethod.IsStatic;
         }
 

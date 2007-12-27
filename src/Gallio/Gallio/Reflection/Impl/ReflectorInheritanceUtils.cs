@@ -122,7 +122,7 @@ namespace Gallio.Reflection.Impl
 
         private static void PopulateSuperInterfaces(ITypeInfo type, HashSet<ITypeInfo> interfaces)
         {
-            foreach (ITypeInfo @interface in type.GetInterfaces())
+            foreach (ITypeInfo @interface in type.Interfaces)
             {
                 interfaces.Add(type);
                 PopulateSuperInterfaces(@interface, interfaces);

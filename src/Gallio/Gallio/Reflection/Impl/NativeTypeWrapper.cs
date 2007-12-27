@@ -108,10 +108,13 @@ namespace Gallio.Reflection.Impl
             get { return CodeElementKind.Type; }
         }
 
-        public IList<ITypeInfo> GetInterfaces()
+        public IList<ITypeInfo> Interfaces
         {
-            Type[] interfaces = Target.GetInterfaces();
-            return Array.ConvertAll<Type, ITypeInfo>(interfaces, Reflector.Wrap);
+            get
+            {
+                Type[] interfaces = Target.GetInterfaces();
+                return Array.ConvertAll<Type, ITypeInfo>(interfaces, Reflector.Wrap);
+            }
         }
 
         public IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
@@ -149,10 +152,13 @@ namespace Gallio.Reflection.Impl
             return Array.ConvertAll<EventInfo, IEventInfo>(events, Reflector.Wrap);
         }
 
-        public IList<IGenericParameterInfo> GetGenericParameters()
+        public IList<IGenericParameterInfo> GenericParameters
         {
-            Type[] parameters = Target.GetGenericArguments();
-            return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, Reflector.WrapAsGenericParameter);
+            get
+            {
+                Type[] parameters = Target.GetGenericArguments();
+                return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, Reflector.WrapAsGenericParameter);
+            }
         }
 
         public bool IsAssignableFrom(ITypeInfo type)

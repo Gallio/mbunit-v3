@@ -52,14 +52,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return CodeElementKind.Property; }
         }
 
-        public IMethodInfo GetGetMethod()
+        public IMethodInfo GetMethod
         {
-            return Reflector.Wrap(Target.Getter(false));
+            get { return Reflector.Wrap(Target.Getter(false)); }
         }
 
-        public IMethodInfo GetSetMethod()
+        public IMethodInfo SetMethod
         {
-            return Reflector.Wrap(Target.Setter(false));
+            get { return Reflector.Wrap(Target.Setter(false)); }
         }
 
         public override MemberInfo ResolveMemberInfo()

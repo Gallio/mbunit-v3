@@ -67,7 +67,7 @@ namespace Gallio.Model.Filters
                         return true;
                 }
 
-                foreach (ITypeInfo @interface in type.GetInterfaces())
+                foreach (ITypeInfo @interface in type.Interfaces)
                     if (IsMatchForType(@interface))
                         return true;
             }

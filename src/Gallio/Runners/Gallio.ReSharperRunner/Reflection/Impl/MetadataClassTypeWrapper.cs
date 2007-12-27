@@ -118,10 +118,13 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
-        public override IList<ITypeInfo> GetInterfaces()
+        public override IList<ITypeInfo> Interfaces
         {
-            IMetadataClassType[] interfaces = TypeInfo.Interfaces;
-            return Array.ConvertAll<IMetadataClassType, ITypeInfo>(interfaces, Reflector.Wrap);
+            get
+            {
+                IMetadataClassType[] interfaces = TypeInfo.Interfaces;
+                return Array.ConvertAll<IMetadataClassType, ITypeInfo>(interfaces, Reflector.Wrap);
+            }
         }
 
         public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
@@ -236,11 +239,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 return EnumerateAttributesForEntity(((MetadataClassTypeWrapper)member).TypeInfo);
             });
         }
-        
-        public override IList<IGenericParameterInfo> GetGenericParameters()
+
+        public override IList<IGenericParameterInfo> GenericParameters
         {
-            IMetadataGenericArgument[] parameters = TypeInfo.GenericParameters;
-            return Array.ConvertAll<IMetadataGenericArgument, IGenericParameterInfo>(parameters, Reflector.Wrap);
+            get
+            {
+                IMetadataGenericArgument[] parameters = TypeInfo.GenericParameters;
+                return Array.ConvertAll<IMetadataGenericArgument, IGenericParameterInfo>(parameters, Reflector.Wrap);
+            }
         }
 
         private string NamespaceName

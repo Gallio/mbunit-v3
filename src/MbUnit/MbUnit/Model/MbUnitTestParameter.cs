@@ -49,7 +49,7 @@ namespace MbUnit.Model
             {
                 IFunctionInfo function = parameter.Member as IFunctionInfo;
                 if (function != null)
-                    Index += function.GetGenericParameters().Count;
+                    Index += function.GenericParameters.Count;
             }
         }
 

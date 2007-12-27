@@ -37,19 +37,19 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Resolve();
         }
 
-        public IMethodInfo GetAddMethod()
+        public IMethodInfo AddMethod
         {
-            return Reflector.Wrap(Target.Adder);
+            get { return Reflector.Wrap(Target.Adder); }
         }
 
-        public IMethodInfo GetRaiseMethod()
+        public IMethodInfo RaiseMethod
         {
-            return Reflector.Wrap(Target.Raiser);
+            get { return Reflector.Wrap(Target.Raiser); }
         }
 
-        public IMethodInfo GetRemoveMethod()
+        public IMethodInfo RemoveMethod
         {
-            return Reflector.Wrap(Target.Remover);
+            get { return Reflector.Wrap(Target.Remover); }
         }
 
         public EventInfo Resolve()

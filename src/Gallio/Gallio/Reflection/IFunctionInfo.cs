@@ -56,13 +56,13 @@ namespace Gallio.Reflection
         /// Gets the parameters of the function.
         /// </summary>
         /// <returns>The parameters</returns>
-        IList<IParameterInfo> GetParameters();
+        IList<IParameterInfo> Parameters { get; }
 
         /// <summary>
         /// Gets the generic parameters of the function.
         /// </summary>
         /// <returns>The generic parameters</returns>
-        IList<IGenericParameterInfo> GetGenericParameters();
+        IList<IGenericParameterInfo> GenericParameters { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

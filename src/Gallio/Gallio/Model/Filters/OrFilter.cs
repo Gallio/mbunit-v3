@@ -28,12 +28,6 @@ namespace Gallio.Model.Filters
         private readonly Filter<T>[] filters;
 
         /// <summary>
-        /// Parameterless constructor for serialization.
-        /// </summary>
-        public OrFilter()
-        { }
-
-        /// <summary>
         /// Creates an OR-filter.
         /// </summary>
         /// <param name="filters">The filters from which at least one match must be found.

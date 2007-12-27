@@ -102,8 +102,8 @@ namespace Gallio.Reflection.Impl
         {
             return EnumerateMembers(type, bindingFlags, memberProvider, delegate(IPropertyInfo property, out bool isPublic, out bool isStatic, out string signature)
             {
-                IMethodInfo getMethod = property.GetGetMethod();
-                IMethodInfo setMethod = property.GetSetMethod();
+                IMethodInfo getMethod = property.GetMethod;
+                IMethodInfo setMethod = property.SetMethod;
 
                 isPublic = getMethod != null && getMethod.IsPublic
                     || setMethod != null && setMethod.IsPublic;
@@ -125,9 +125,9 @@ namespace Gallio.Reflection.Impl
         {
             return EnumerateMembers(type, bindingFlags, memberProvider, delegate(IEventInfo @event, out bool isPublic, out bool isStatic, out string signature)
             {
-                IMethodInfo addMethod = @event.GetAddMethod();
-                IMethodInfo raiseMethod = @event.GetRaiseMethod();
-                IMethodInfo removeMethod = @event.GetRemoveMethod();
+                IMethodInfo addMethod = @event.AddMethod;
+                IMethodInfo raiseMethod = @event.RaiseMethod;
+                IMethodInfo removeMethod = @event.RemoveMethod;
 
                 isPublic = addMethod != null && addMethod.IsPublic
                     || raiseMethod != null && raiseMethod.IsPublic
@@ -173,13 +173,13 @@ namespace Gallio.Reflection.Impl
 
                 StringBuilder signatureBuilder = new StringBuilder(method.Name);
                 
-                foreach (IGenericParameterInfo genericParameter in method.GetGenericParameters())
+                foreach (IGenericParameterInfo genericParameter in method.GenericParameters)
                 {
                     signatureBuilder.Append(':');
                     signatureBuilder.Append(genericParameter.Name);
                 }
 
-                foreach (IParameterInfo parameter in method.GetParameters())
+                foreach (IParameterInfo parameter in method.Parameters)
                 {
                     signatureBuilder.Append(':');
                     signatureBuilder.Append(parameter.Name);

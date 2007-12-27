@@ -204,7 +204,8 @@ namespace Gallio.Reflection.Impl
                 Type resolvedType = constructor.DeclaringType.Resolve();
                 Type[] resolvedParameterTypes = ResolveParameterTypes(constructor);
                 ConstructorInfo resolvedConstructor = resolvedType.GetConstructor(
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static,
+                    BindingFlags.Public | BindingFlags.NonPublic
+                    | (constructor.IsStatic ? BindingFlags.Static : BindingFlags.Instance),
                     null, resolvedParameterTypes, null);
 
                 if (resolvedConstructor != null)
@@ -290,7 +291,7 @@ namespace Gallio.Reflection.Impl
 
         private static Type[] ResolveParameterTypes(IFunctionInfo function)
         {
-            return GenericUtils.ConvertAllToArray<IParameterInfo, Type>(function.GetParameters(), delegate(IParameterInfo parameter)
+            return GenericUtils.ConvertAllToArray<IParameterInfo, Type>(function.Parameters, delegate(IParameterInfo parameter)
             {
                 return parameter.ValueType.Resolve();
             });

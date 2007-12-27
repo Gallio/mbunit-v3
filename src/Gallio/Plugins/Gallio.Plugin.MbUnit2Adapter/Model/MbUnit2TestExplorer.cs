@@ -71,6 +71,20 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             }
         }
 
+        /// <inheritdoc />
+        public override void ExploreType(ITypeInfo type, Action<ITest> consumer)
+        {
+            // TODO: Optimize me to only populate what's strictly required.
+            ExploreAssembly(type.Assembly, delegate(ITest assemblyTest)
+            {
+                foreach (ITest test in assemblyTest.Children)
+                {
+                    if (test.CodeElement.Equals(type))
+                        consumer(test);
+                }
+            });
+        }
+
         private static Version GetFrameworkVersion(IAssemblyInfo assembly)
         {
             AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, MbUnitFrameworkAssemblyDisplayName);
@@ -109,26 +123,20 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
 
             try
             {
-                FixtureExplorer fixtureExplorer = InitializeFixtureExplorer(assembly);
-
-                assemblyTest = CreateAssemblyTest(fixtureExplorer, assembly);
-
-                foreach (Fixture fixture in fixtureExplorer.FixtureGraph.Fixtures)
+                Assembly loadedAssembly;
+                try
                 {
-                    MbUnit2Test fixtureTest = CreateFixtureTest(fixture);
-
-                    foreach (RunPipeStarter starter in fixture.Starters)
-                    {
-                        MbUnit2Test test = CreateTest(starter.Pipe);
-
-                        fixtureTest.AddChild(test);
-                    }
-
-                    assemblyTest.AddChild(fixtureTest);
+                    loadedAssembly = assembly.Resolve();
+                }
+                catch (CodeElementResolveException)
+                {
+                    loadedAssembly = null;
                 }
 
-                foreach (string assemblyName in fixtureExplorer.GetDependentAssemblies())
-                    unresolvedDependencies.Add(new KeyValuePair<ITest, string>(assemblyTest, assemblyName));
+                if (loadedAssembly != null)
+                    assemblyTest = MbUnit2NativeTestExplorer.BuildAssemblyTest(loadedAssembly, unresolvedDependencies);
+                else
+                    assemblyTest = MbUnit2ReflectiveTestExplorer.BuildAssemblyTest(assembly, unresolvedDependencies);
             }
             catch (Exception ex)
             {
@@ -154,138 +162,6 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
 
             assemblyTests.Add(assembly, assemblyTest);
             return assemblyTest;
-        }
-
-        private static FixtureExplorer InitializeFixtureExplorer(IAssemblyInfo assembly)
-        {
-            FixtureExplorer fixtureExplorer = new FixtureExplorer(assembly.Resolve());
-            fixtureExplorer.Filter = new AnyFixtureFilter();
-            fixtureExplorer.Explore();
-
-            AnyRunPipeFilter runPipeFilter = new AnyRunPipeFilter();
-            foreach (Fixture fixture in fixtureExplorer.FixtureGraph.Fixtures)
-                fixture.Load(runPipeFilter);
-
-            return fixtureExplorer;
-        }
-
-        private static MbUnit2AssemblyTest CreateAssemblyTest(FixtureExplorer fixtureExplorer, IAssemblyInfo assembly)
-        {
-            MbUnit2AssemblyTest test = new MbUnit2AssemblyTest(fixtureExplorer, assembly);
-
-            // Add assembly-level metadata.
-            ModelUtils.PopulateMetadataFromAssembly(assembly, test.Metadata);
-
-            return test;
-        }
-
-        private static MbUnit2Test CreateFixtureTest(Fixture fixture)
-        {
-            ITypeInfo fixtureType = Reflector.Wrap(fixture.Type);
-            MbUnit2Test test = new MbUnit2Test(fixtureType.CompoundName, fixtureType, fixture, null);
-            test.Kind = TestKinds.Fixture;
-
-            // Populate metadata
-            foreach (AuthorAttribute2 attrib in AttributeUtils.GetAttributes<AuthorAttribute2>(fixtureType, true))
-            {
-                if (!String.IsNullOrEmpty(attrib.Name))
-                    test.Metadata.Add(MetadataKeys.AuthorName, attrib.Name);
-                if (!String.IsNullOrEmpty(attrib.EMail) && attrib.EMail != @"unspecified")
-                    test.Metadata.Add(MetadataKeys.AuthorEmail, attrib.EMail);
-                if (!String.IsNullOrEmpty(attrib.HomePage) && attrib.HomePage != @"unspecified")
-                    test.Metadata.Add(MetadataKeys.AuthorHomepage, attrib.HomePage);
-            }
-            foreach (FixtureCategoryAttribute2 attrib in AttributeUtils.GetAttributes<FixtureCategoryAttribute2>(fixtureType, true))
-            {
-                test.Metadata.Add(MetadataKeys.CategoryName, attrib.Category);
-            }
-            foreach (TestsOnAttribute2 attrib in AttributeUtils.GetAttributes<TestsOnAttribute2>(fixtureType, true))
-            {
-                test.Metadata.Add(MetadataKeys.TestsOn, attrib.TestedType.AssemblyQualifiedName);
-            }
-            foreach (ImportanceAttribute2 attrib in AttributeUtils.GetAttributes<ImportanceAttribute2>(fixtureType, true))
-            {
-                test.Metadata.Add(MetadataKeys.Importance, attrib.Importance.ToString());
-            }
-            foreach (TestFixturePatternAttribute2 attrib in AttributeUtils.GetAttributes<TestFixturePatternAttribute2>(fixtureType, true))
-            {
-                if (!String.IsNullOrEmpty(attrib.Description))
-                    test.Metadata.Add(MetadataKeys.Description, attrib.Description);
-            }
-
-            string xmlDocumentation = fixtureType.GetXmlDocumentation();
-            if (xmlDocumentation != null)
-                test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
-
-            return test;
-        }
-
-        private static MbUnit2Test CreateTest(RunPipe runPipe)
-        {
-            IMemberInfo member = GuessMemberInfoFromRunPipe(runPipe);
-            ICodeElementInfo codeElement = member ?? Reflector.Wrap(runPipe.FixtureType);
-
-            MbUnit2Test test = new MbUnit2Test(runPipe.Name, codeElement, runPipe.Fixture, runPipe);
-            test.Kind = TestKinds.Test;
-            test.IsTestCase = true;
-
-            // Populate metadata
-            if (member != null)
-            {
-                foreach (TestPatternAttribute2 attrib in AttributeUtils.GetAttributes<TestPatternAttribute2>(member, true))
-                {
-                    if (!String.IsNullOrEmpty(attrib.Description))
-                        test.Metadata.Add(MetadataKeys.Description, attrib.Description);
-                }
-
-                string xmlDocumentation = member.GetXmlDocumentation();
-                if (xmlDocumentation != null)
-                    test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
-            }
-
-            return test;
-        }
-
-        /// <summary>
-        /// MbUnit v2 does not expose the MemberInfo directly.  Arguably
-        /// that allows more general filtering rules than Gallio's simple
-        /// CodeReference but it is a bit of a nuisance for us here.
-        /// So to avoid breaking the MbUnit v2 API, we resort to a
-        /// hack based on guessing the right method.
-        /// </summary>
-        private static IMemberInfo GuessMemberInfoFromRunPipe(RunPipe runPipe)
-        {
-            foreach (RunInvokerVertex vertex in runPipe.Invokers)
-            {
-                if (!vertex.HasInvoker)
-                    continue;
-
-                IRunInvoker invoker = vertex.Invoker;
-                if (invoker.Generator.IsTest)
-                {
-                    // Note: This is the hack.
-                    //       We assume the run invoker's name matches the name of
-                    //       the actual member and that the member is public and is
-                    //       declared by the fixture type.  That should be true with
-                    //       all built-in MbUnit v2 invokers.  -- Jeff.
-                    Type fixtureType = runPipe.FixtureType;
-                    string probableMemberName = invoker.Name;
-
-                    // Strip off arguments from a RowTest's member name.  eg. FooMember(123, 456)
-                    int parenthesis = probableMemberName.IndexOf('(');
-                    if (parenthesis >= 0)
-                        probableMemberName = probableMemberName.Substring(0, parenthesis);
-
-                    foreach (MemberInfo member in fixtureType.GetMember(probableMemberName,
-                        BindingFlags.Public | BindingFlags.Instance))
-                    {
-                        if (invoker.ContainsMemberInfo(member))
-                            return Reflector.Wrap(member);
-                    }
-                }
-            }
-
-            return null;
         }
     }
 }

@@ -81,7 +81,7 @@ namespace MbUnit.Model.Patterns
             foreach (IPattern pattern in typeTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(type))
                 pattern.ProcessTest(typeTestBuilder, type);
 
-            foreach (IGenericParameterInfo parameter in type.GetGenericParameters())
+            foreach (IGenericParameterInfo parameter in type.GenericParameters)
                 ProcessSlot(typeTestBuilder, parameter);
 
             foreach (IFieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
@@ -153,7 +153,7 @@ namespace MbUnit.Model.Patterns
         /// <returns>True if the constructor was consumed</returns>
         protected virtual bool ProcessConstructorFallback(ITestBuilder typeTestBuilder, IConstructorInfo constructor)
         {
-            foreach (IParameterInfo parameter in constructor.GetParameters())
+            foreach (IParameterInfo parameter in constructor.Parameters)
                 ProcessSlot(typeTestBuilder, parameter);
 
             return true;

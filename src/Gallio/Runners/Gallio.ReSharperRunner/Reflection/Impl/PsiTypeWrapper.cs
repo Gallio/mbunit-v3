@@ -99,14 +99,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public abstract ITypeInfo BaseType { get; }
         public abstract string FullName { get; }
         public abstract TypeAttributes TypeAttributes { get; }
-        public abstract IList<ITypeInfo> GetInterfaces();
+        public abstract IList<ITypeInfo> Interfaces { get; }
         public abstract IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
         public abstract IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags);
         public abstract IList<IMethodInfo> GetMethods(BindingFlags bindingFlags);
         public abstract IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
         public abstract IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
         public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
-        public abstract IList<IGenericParameterInfo> GetGenericParameters();
+        public abstract IList<IGenericParameterInfo> GenericParameters { get; }
 
         public Type Resolve()
         {

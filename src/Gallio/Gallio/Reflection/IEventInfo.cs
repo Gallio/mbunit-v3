@@ -37,19 +37,19 @@ namespace Gallio.Reflection
         /// Gets the add method of the event, or null if none.
         /// </summary>
         /// <returns>The add method, or null if none</returns>
-        IMethodInfo GetAddMethod();
+        IMethodInfo AddMethod { get; }
 
         /// <summary>
         /// Gets the raise method of the event, or null if none.
         /// </summary>
         /// <returns>The raise method, or null if none</returns>
-        IMethodInfo GetRaiseMethod();
+        IMethodInfo RaiseMethod { get; }
 
         /// <summary>
         /// Gets the remove method of the event, or null if none.
         /// </summary>
         /// <returns>The remove method, or null if none</returns>
-        IMethodInfo GetRemoveMethod();
+        IMethodInfo RemoveMethod { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

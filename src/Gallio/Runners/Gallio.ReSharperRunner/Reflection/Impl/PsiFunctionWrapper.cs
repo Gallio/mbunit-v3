@@ -84,16 +84,22 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Target.IsStatic; }
         }
 
-        public IList<IParameterInfo> GetParameters()
+        public IList<IParameterInfo> Parameters
         {
-            IList<IParameter> parameters = Target.Parameters;
-            return GenericUtils.ConvertAllToArray<IParameter, IParameterInfo>(parameters, Reflector.Wrap);
+            get
+            {
+                IList<IParameter> parameters = Target.Parameters;
+                return GenericUtils.ConvertAllToArray<IParameter, IParameterInfo>(parameters, Reflector.Wrap);
+            }
         }
 
-        public IList<IGenericParameterInfo> GetGenericParameters()
+        public IList<IGenericParameterInfo> GenericParameters
         {
-            ITypeParameter[] parameter = Target.GetSignature(null).GetTypeParameters();
-            return Array.ConvertAll<ITypeParameter, IGenericParameterInfo>(parameter, Reflector.Wrap);
+            get
+            {
+                ITypeParameter[] parameter = Target.GetSignature(null).GetTypeParameters();
+                return Array.ConvertAll<ITypeParameter, IGenericParameterInfo>(parameter, Reflector.Wrap);
+            }
         }
 
         public override MemberInfo ResolveMemberInfo()

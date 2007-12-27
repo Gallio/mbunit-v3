@@ -81,10 +81,10 @@ namespace MbUnit.Model.Patterns
             foreach (IPattern pattern in methodTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(method))
                 pattern.ProcessTest(methodTestBuilder, method);
 
-            foreach (IGenericParameterInfo parameter in method.GetGenericParameters())
+            foreach (IGenericParameterInfo parameter in method.GenericParameters)
                 ProcessSlot(methodTestBuilder, parameter);
 
-            foreach (IParameterInfo parameter in method.GetParameters())
+            foreach (IParameterInfo parameter in method.Parameters)
                 ProcessSlot(methodTestBuilder, parameter);
         }
 

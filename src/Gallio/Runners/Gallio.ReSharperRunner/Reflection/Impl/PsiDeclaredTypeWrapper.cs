@@ -143,18 +143,21 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
-        public override IList<ITypeInfo> GetInterfaces()
+        public override IList<ITypeInfo> Interfaces
         {
-            List<ITypeInfo> interfaces = new List<ITypeInfo>();
-
-            foreach (IDeclaredType superType in Target.GetSuperTypes())
+            get
             {
-                IInterface @interface = superType.GetTypeElement() as IInterface;
-                if (@interface != null)
-                    interfaces.Add(Reflector.Wrap(@interface));
-            }
+                List<ITypeInfo> interfaces = new List<ITypeInfo>();
 
-            return interfaces;
+                foreach (IDeclaredType superType in Target.GetSuperTypes())
+                {
+                    IInterface @interface = superType.GetTypeElement() as IInterface;
+                    if (@interface != null)
+                        interfaces.Add(Reflector.Wrap(@interface));
+                }
+
+                return interfaces;
+            }
         }
 
         public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
@@ -260,10 +263,13 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 yield return Reflector.Wrap(@event);
         }
 
-        public override IList<IGenericParameterInfo> GetGenericParameters()
+        public override IList<IGenericParameterInfo> GenericParameters
         {
-            ITypeParameter[] parameter = TypeElement.TypeParameters;
-            return Array.ConvertAll<ITypeParameter, IGenericParameterInfo>(parameter, Reflector.Wrap);
+            get
+            {
+                ITypeParameter[] parameter = TypeElement.TypeParameters;
+                return Array.ConvertAll<ITypeParameter, IGenericParameterInfo>(parameter, Reflector.Wrap);
+            }
         }
 
         public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using JetBrains.Metadata.Reader.API;
@@ -48,7 +49,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
             foreach (IMetadataCustomAttributeFieldInitialization initialization in Target.InitializedFields)
                 if (initialization.Field.Name == name)
-                    return initialization.Value;
+                    return ResolveObject(initialization.Value);
 
             foreach (IFieldInfo field in Type.GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -63,7 +64,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
             foreach (IMetadataCustomAttributePropertyInitialization initialization in Target.InitializedProperties)
                 if (initialization.Property.Name == name)
-                    return initialization.Value;
+                    return ResolveObject(initialization.Value);
 
             foreach (IPropertyInfo property in Type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -82,7 +83,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 Dictionary<IFieldInfo, object> values = new Dictionary<IFieldInfo, object>(initializations.Length);
 
                 foreach (IMetadataCustomAttributeFieldInitialization initialization in initializations)
-                    values.Add(Reflector.Wrap(initialization.Field), initialization.Value);
+                    values.Add(Reflector.Wrap(initialization.Field), ResolveObject(initialization.Value));
 
                 return values;
             }
@@ -96,7 +97,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 Dictionary<IPropertyInfo, object> values = new Dictionary<IPropertyInfo, object>(initializations.Length);
 
                 foreach (IMetadataCustomAttributePropertyInitialization initialization in initializations)
-                    values.Add(Reflector.Wrap(initialization.Property), initialization.Value);
+                    values.Add(Reflector.Wrap(initialization.Property), ResolveObject(initialization.Value));
 
                 return values;
             }
@@ -105,6 +106,35 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public object Resolve()
         {
             return ReflectorAttributeUtils.CreateAttribute(this);
+        }
+
+        private object ResolveObject(object value)
+        {
+            if (value != null)
+            {
+                IMetadataType type = value as IMetadataType;
+                if (type != null)
+                    return ResolveType(type);
+
+                Type valueType = value.GetType();
+                if (valueType.IsArray)
+                {
+                    Type elementType = valueType.GetElementType();
+
+                    if (elementType == typeof(IMetadataType))
+                        return GenericUtils.ConvertAllToArray<IMetadataType, Type>((IMetadataType[])value, ResolveType);
+
+                    if (elementType == typeof(Object))
+                        return GenericUtils.ConvertAllToArray<object, object>((object[])value, ResolveObject);
+                }
+            }
+            
+            return value;
+        }
+
+        private Type ResolveType(IMetadataType type)
+        {
+            return Reflector.Wrap(type).Resolve();
         }
     }
 }

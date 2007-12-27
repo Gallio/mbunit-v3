@@ -63,7 +63,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         public bool HasInterface(Type interfaceType)
         {
-            foreach (ITypeInfo @interface in target.GetInterfaces())
+            foreach (ITypeInfo @interface in target.Interfaces)
             {
                 if (@interface.FullName == interfaceType.FullName)
                     return true;

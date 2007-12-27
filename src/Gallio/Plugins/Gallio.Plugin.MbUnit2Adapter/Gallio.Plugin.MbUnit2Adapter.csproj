@@ -49,6 +49,9 @@
   <ItemGroup>
     <Compile Include="Model\MbUnit2AssemblyBindingRedirect.cs" />
     <Compile Include="Model\MbUnit2AssemblyTest.cs" />
+    <Compile Include="Model\MbUnit2MetadataUtils.cs" />
+    <Compile Include="Model\MbUnit2NativeTestExplorer.cs" />
+    <Compile Include="Model\MbUnit2ReflectiveTestExplorer.cs" />
     <Compile Include="Model\MbUnit2Test.cs" />
     <Compile Include="Model\MbUnit2TestController.cs" />
     <Compile Include="Model\MbUnit2TestExplorer.cs" />

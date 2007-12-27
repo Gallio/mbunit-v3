@@ -129,7 +129,7 @@ namespace Gallio.Reflection
         /// <exception cref="ModelException">Thrown if the method has a different signature</exception>
         public static void CheckMethodSignature(IMethodInfo method, params ITypeInfo[] signature)
         {
-            IList<IParameterInfo> parameters = method.GetParameters();
+            IList<IParameterInfo> parameters = method.Parameters;
             if (parameters.Count == signature.Length)
             {
                 for (int i = 0; i < parameters.Count; i++)
@@ -215,8 +215,8 @@ namespace Gallio.Reflection
         public static bool CanGetAndSetNonStatic(IPropertyInfo property)
         {
             return property != null
-                && CanInvokeNonStatic(property.GetGetMethod())
-                && CanInvokeNonStatic(property.GetSetMethod());
+                && CanInvokeNonStatic(property.GetMethod)
+                && CanInvokeNonStatic(property.SetMethod);
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Gallio.Reflection
                     return true;
             }
 
-            foreach (ITypeInfo interfaceType in type.GetInterfaces())
+            foreach (ITypeInfo interfaceType in type.Interfaces)
             {
                 if (interfaceType.FullName == qualifiedTypeName)
                     return true;

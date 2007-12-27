@@ -66,9 +66,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return EffectiveClassType.TypeAttributes; }
         }
 
-        public override IList<ITypeInfo> GetInterfaces()
+        public override IList<ITypeInfo> Interfaces
         {
-            return EffectiveClassType.GetInterfaces();
+            get { return EffectiveClassType.Interfaces; }
         }
 
         public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
@@ -101,9 +101,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return EffectiveClassType.GetEvents(bindingFlags);
         }
 
-        public override IList<IGenericParameterInfo> GetGenericParameters()
+        public override IList<IGenericParameterInfo> GenericParameters
         {
-            return EmptyArray<IGenericParameterInfo>.Instance;
+            get { return EmptyArray<IGenericParameterInfo>.Instance; }
         }
 
         public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)

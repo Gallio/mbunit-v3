@@ -46,14 +46,14 @@ namespace Gallio.Reflection.Impl
             get { return CodeElementKind.Property; }
         }
 
-        public IMethodInfo GetGetMethod()
+        public IMethodInfo GetMethod
         {
-            return Reflector.Wrap(Target.GetGetMethod());
+            get { return Reflector.Wrap(Target.GetGetMethod()); }
         }
 
-        public IMethodInfo GetSetMethod()
+        public IMethodInfo SetMethod
         {
-            return Reflector.Wrap(Target.GetSetMethod());
+            get { return Reflector.Wrap(Target.GetSetMethod()); }
         }
 
         new public PropertyInfo Resolve()

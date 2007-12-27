@@ -102,7 +102,13 @@ namespace Gallio.Reflection
         /// Gets all of the type's interfaces.
         /// </summary>
         /// <returns>The type's interfaces</returns>
-        IList<ITypeInfo> GetInterfaces();
+        IList<ITypeInfo> Interfaces { get; }
+
+        /// <summary>
+        /// Gets the generic parameters of the type.
+        /// </summary>
+        /// <returns>The generic parameters</returns>
+        IList<IGenericParameterInfo> GenericParameters { get; }
 
         /// <summary>
         /// Gets all constructors of the type that satisfy the binding flags.
@@ -146,12 +152,6 @@ namespace Gallio.Reflection
         /// <param name="bindingFlags">The method binding flags</param>
         /// <returns>The events</returns>
         IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
-
-        /// <summary>
-        /// Gets the generic parameters of the type.
-        /// </summary>
-        /// <returns>The generic parameters</returns>
-        IList<IGenericParameterInfo> GetGenericParameters();
 
         /// <summary>
         /// Returns true if variables of this type can be assigned with values of the specified type.

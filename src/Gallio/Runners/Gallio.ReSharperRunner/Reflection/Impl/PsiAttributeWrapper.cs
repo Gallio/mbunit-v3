@@ -55,7 +55,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                     if (rawValue.IsBadValue())
                         break;
 
-                    values.Add(rawValue.Value);
+                    values.Add(ResolveObject(rawValue.Value));
                 }
 
                 int lastParameterIndex = parameters.Count - 1;
@@ -118,7 +118,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                     {
                         ConstantValue2 value = Target.NamedParameter(field.Target);
                         if (!value.IsBadValue())
-                            values.Add(field, value.Value);
+                            values.Add(field, ResolveObject(value.Value));
                     }
                 }
 
@@ -138,7 +138,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                     {
                         ConstantValue2 value = Target.NamedParameter(property.Target);
                         if (!value.IsBadValue())
-                            values.Add(property, value.Value);
+                            values.Add(property, ResolveObject(value.Value));
                     }
                 }
 
@@ -155,7 +155,28 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
             if (value.IsBadValue())
                 return ReflectorTypeUtils.GetDefaultValue(slot.ValueType);
-            return value.Value;
+            return ResolveObject(value.Value);
+        }
+
+        private object ResolveObject(object value)
+        {
+            if (value != null)
+            {
+                IType type = value as IType;
+                if (type != null)
+                    return ResolveType(type);
+
+                // TODO: It's not clear to me that the PSI internal implementation is complete!
+                //       I found a special case for mapping types but nothing for arrays.
+                //       So I've omitted the array code from here for now.  -- Jeff.
+            }
+
+            return value;
+        }
+
+        private Type ResolveType(IType type)
+        {
+            return Reflector.Wrap(type, false).Resolve();
         }
     }
 }

@@ -40,13 +40,13 @@ namespace Gallio.Reflection
         /// Gets the get method of the property, or null if none.
         /// </summary>
         /// <returns>The get method, or null if none</returns>
-        IMethodInfo GetGetMethod();
+        IMethodInfo GetMethod { get; }
 
         /// <summary>
         /// Gets the set method of the property, or null if none.
         /// </summary>
         /// <returns>The set method, or null if none</returns>
-        IMethodInfo GetSetMethod();
+        IMethodInfo SetMethod { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

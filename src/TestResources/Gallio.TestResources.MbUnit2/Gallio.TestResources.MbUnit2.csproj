@@ -50,6 +50,7 @@
     <Compile Include="Metadata\TestDescriptionSample.cs" />
     <Compile Include="Metadata\TestsOnSample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RowTestSample.cs" />
     <Compile Include="SimpleTest.cs" />
   </ItemGroup>
   <ItemGroup>

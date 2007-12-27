@@ -30,19 +30,19 @@ namespace Gallio.Reflection.Impl
             get { return CodeElementKind.Event; }
         }
 
-        public IMethodInfo GetAddMethod()
+        public IMethodInfo AddMethod
         {
-            return Reflector.Wrap(Target.GetAddMethod());
+            get { return Reflector.Wrap(Target.GetAddMethod()); }
         }
 
-        public IMethodInfo GetRaiseMethod()
+        public IMethodInfo RaiseMethod
         {
-            return Reflector.Wrap(Target.GetRaiseMethod());
-        }           
+            get { return Reflector.Wrap(Target.GetRaiseMethod()); }
+        }
 
-        public IMethodInfo GetRemoveMethod()
+        public IMethodInfo RemoveMethod
         {
-            return Reflector.Wrap(Target.GetRemoveMethod());
+            get { return Reflector.Wrap(Target.GetRemoveMethod()); }
         }
 
         new public EventInfo Resolve()

@@ -48,16 +48,22 @@ namespace Gallio.Reflection.Impl
             get { return Target.IsStatic; }
         }
 
-        public IList<IParameterInfo> GetParameters()
+        public IList<IParameterInfo> Parameters
         {
-            ParameterInfo[] parameters = Target.GetParameters();
-            return Array.ConvertAll<ParameterInfo, IParameterInfo>(parameters, Reflector.Wrap);
+            get
+            {
+                ParameterInfo[] parameters = Target.GetParameters();
+                return Array.ConvertAll<ParameterInfo, IParameterInfo>(parameters, Reflector.Wrap);
+            }
         }
 
-        public IList<IGenericParameterInfo> GetGenericParameters()
+        public IList<IGenericParameterInfo> GenericParameters
         {
-            Type[] parameters = Target.GetGenericArguments();
-            return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, Reflector.WrapAsGenericParameter);
+            get
+            {
+                Type[] parameters = Target.GetGenericArguments();
+                return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, Reflector.WrapAsGenericParameter);
+            }
         }
 
         new public MethodBase Resolve()
