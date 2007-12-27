@@ -14,17 +14,17 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Core.ConsoleSupport;
 using Gallio.Core.ProgressMonitoring;
 
 namespace Gallio.Core.ProgressMonitoring
 {
     /// <summary>
-    /// Runs tasks with a <see cref="RichConsoleProgressMonitor" />.
+    /// A console progress monitor displays a simple tally of the amount of work
+    /// to be done on the main task as a bar chart.  The progress monitor responds
+    /// to cancelation events at the console.
     /// </summary>
-    public class RichConsoleProgressMonitorProvider : IProgressMonitorProvider
+    public class RichConsoleProgressMonitorProvider : BaseProgressMonitorProvider
     {
         private readonly IRichConsole console;
 
@@ -42,14 +42,9 @@ namespace Gallio.Core.ProgressMonitoring
         }
 
         /// <inheritdoc />
-        public void Run(TaskWithProgress task)
+        protected override IProgressMonitorPresenter GetPresenter()
         {
-            using (RichConsoleProgressMonitor progressMonitor = new RichConsoleProgressMonitor(console))
-            {
-                progressMonitor.ThrowIfCanceled();
-                task(progressMonitor);
-                progressMonitor.ThrowIfCanceled();
-            }
+            return new RichConsoleProgressMonitorPresenter(console);
         }
     }
 }

@@ -14,13 +14,15 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Monitors
 {
     /// <summary>
-    /// Provides report information for a test step that is beginning or ending.
+    /// Provides report information for a test step that is beginning or ending
+    /// or transitioning between phases.
     /// </summary>
     [Serializable]
     public class TestStepRunEventArgs : EventArgs
@@ -29,6 +31,7 @@ namespace Gallio.Runner.Monitors
         private readonly TestData testData;
         private readonly TestInstanceRun testInstanceRun;
         private readonly TestStepRun testStepRun;
+        private readonly string lifecyclePhase;
 
         /// <summary>
         /// Creates event arguments about a step.
@@ -37,9 +40,10 @@ namespace Gallio.Runner.Monitors
         /// <param name="testData">The test data</param>
         /// <param name="testInstanceRun">The test instance run element that contains the test step</param>
         /// <param name="testStepRun">The test step run element</param>
+        /// <param name="lifecyclePhase">The test step's lifecycle phase, or an empty string if starting or ending</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="testData"/>
         /// <paramref name="testInstanceRun"/> or <paramref name="testStepRun"/> is null</exception>
-        public TestStepRunEventArgs(Report report, TestData testData, TestInstanceRun testInstanceRun, TestStepRun testStepRun)
+        public TestStepRunEventArgs(Report report, TestData testData, TestInstanceRun testInstanceRun, TestStepRun testStepRun, string lifecyclePhase)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
@@ -49,11 +53,14 @@ namespace Gallio.Runner.Monitors
                 throw new ArgumentNullException("testInstanceRun");
             if (testStepRun == null)
                 throw new ArgumentNullException("testStepRun");
+            if (lifecyclePhase == null)
+                throw new ArgumentNullException("lifecyclePhase");
 
             this.report = report;
             this.testData = testData;
             this.testInstanceRun = testInstanceRun;
             this.testStepRun = testStepRun;
+            this.lifecyclePhase = lifecyclePhase;
         }
 
         /// <summary>
@@ -86,6 +93,15 @@ namespace Gallio.Runner.Monitors
         public TestStepRun TestStepRun
         {
             get { return testStepRun; }
+        }
+
+        /// <summary>
+        /// Gets the current test step's lifecycle phase, or an empty string if starting or ending.
+        /// </summary>
+        /// <seealso cref="LifecyclePhases"/>
+        public string LifecyclePhase
+        {
+            get { return lifecyclePhase; }
         }
     }
 }

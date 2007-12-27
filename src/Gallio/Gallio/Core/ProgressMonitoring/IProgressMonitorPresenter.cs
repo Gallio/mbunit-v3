@@ -13,20 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Gallio.Core.ProgressMonitoring
 {
     /// <summary>
-    /// Creates instances of null progress monitors that do nothing.
+    /// A progress monitor presenter attaches a progress monitor to a view.
     /// </summary>
-    public static class NullProgressMonitor
+    public interface IProgressMonitorPresenter
     {
         /// <summary>
-        /// Creates a null progress monitor.
+        /// Presents an observable progress monitor.
         /// </summary>
-        /// <returns>The null progress monitor</returns>
-        public static IProgressMonitor CreateInstance()
-        {
-            return new ObservableProgressMonitor();
-        }
+        /// <param name="progressMonitor">The progress monitor to present</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the presenter does not support being
+        /// reused to present multiple progress monitors</exception>
+        void Present(ObservableProgressMonitor progressMonitor);
     }
 }

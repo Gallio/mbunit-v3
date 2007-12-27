@@ -53,17 +53,17 @@ namespace Gallio.Runner.Domains
         /// <inheritdoc />
         protected override void InternalDispose()
         {
-            Disconnect(new NullProgressMonitor());
+            Disconnect(NullProgressMonitor.CreateInstance());
         }
 
         /// <inheritdoc />
         protected override TestPackageData InternalLoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
-            Connect(packageConfig, new SubProgressMonitor(progressMonitor, 0.1));
+            Connect(packageConfig, progressMonitor.CreateSubProgressMonitor(0.1));
 
             try
             {
-                proxy.LoadTestPackage(packageConfig, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 0.9)));
+                proxy.LoadTestPackage(packageConfig, new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(0.9)));
                 return proxy.TestPackageData; 
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace Gallio.Runner.Domains
         {
             try
             {
-                proxy.BuildTestModel(options, new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)));
+                proxy.BuildTestModel(options, new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(1)));
                 return proxy.TestModelData;
             }
             catch (Exception ex)
@@ -91,7 +91,7 @@ namespace Gallio.Runner.Domains
         {
             try
             {
-                proxy.RunTests(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 1)), options);
+                proxy.RunTests(new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(1)), options);
             }
             catch (Exception ex)
             {
@@ -105,7 +105,7 @@ namespace Gallio.Runner.Domains
             try
             {
                 if (proxy != null)
-                    proxy.UnloadPackage(new RemoteProgressMonitor(new SubProgressMonitor(progressMonitor, 0.9)));
+                    proxy.UnloadPackage(new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(0.9)));
             }
             catch (Exception ex)
             {
@@ -113,7 +113,7 @@ namespace Gallio.Runner.Domains
             }
             finally
             {
-                Disconnect(new SubProgressMonitor(progressMonitor, 0.1));
+                Disconnect(progressMonitor.CreateSubProgressMonitor(0.1));
             }
         }
 

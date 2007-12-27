@@ -22,45 +22,55 @@ using Gallio.Properties;
 namespace Gallio.Core.ProgressMonitoring
 {
     /// <summary>
-    /// A console progress monitor displays a simple tally of the amount of work
+    /// A console progress monitor presenter displays a simple tally of the amount of work
     /// to be done on the main task as a bar chart.  The progress monitor responds
     /// to cancelation events at the console.
     /// </summary>
-    public class RichConsoleProgressMonitor : TextualProgressMonitor
+    public class RichConsoleProgressMonitorPresenter : BaseProgressMonitorPresenter
     {
         private readonly IRichConsole console;
+
         private int newlinesWritten;
         private bool bannerPrinted;
         private int width;
         private bool footerInitialized;
 
         /// <summary>
-        /// Creates a console progress monitor.
+        /// Creates a console presenter for a progress monitor.
         /// </summary>
+        /// <param name="console">The console</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="console"/> is null</exception>
-        public RichConsoleProgressMonitor(IRichConsole console)
+        public RichConsoleProgressMonitorPresenter(IRichConsole console)
         {
             if (console == null)
-                throw new ArgumentNullException(@"console");
+                throw new ArgumentNullException("console");
 
             this.console = console;
-
-            console.Cancel += HandleCancel;
         }
 
         /// <inheritdoc />
-        protected override void OnDone()
+        protected override void Initialize()
         {
-            console.Cancel -= HandleCancel;
+            ProgressMonitor.TaskFinished += HandleTaskFinished;
+            ProgressMonitor.Changed += HandleChanged;
 
-            if (IsCanceled)
-                console.IsCanceled = false;
-
-            base.OnDone();
+            console.Cancel += HandleConsoleCancel;
         }
 
-        /// <inheritdoc />
-        protected override void UpdateDisplay()
+        private void HandleTaskFinished(object sender, EventArgs e)
+        {
+            console.Cancel -= HandleConsoleCancel;
+
+            if (ProgressMonitor.IsCanceled)
+                console.IsCanceled = false;
+        }
+
+        private void HandleConsoleCancel(object sender, EventArgs e)
+        {
+            ProgressMonitor.Cancel();
+        }
+
+        private void HandleChanged(object sender, EventArgs e)
         {
             lock (console.SyncRoot)
             {
@@ -71,7 +81,7 @@ namespace Gallio.Core.ProgressMonitoring
                 if (console.IsRedirected)
                     return;
 
-                if (IsDone)
+                if (ProgressMonitor.IsDone)
                 {
                     footerInitialized = false;
                     console.SetFooter(null, null);
@@ -96,7 +106,7 @@ namespace Gallio.Core.ProgressMonitoring
                 width = console.Width;
 
                 console.ForegroundColor = ConsoleColor.White;
-                console.WriteLine(StringUtils.TruncateWithEllipsis(TaskName, width - 1));
+                console.WriteLine(StringUtils.TruncateWithEllipsis(ProgressMonitor.TaskName, width - 1));
                 console.ResetColor();
 
                 bannerPrinted = true;
@@ -143,21 +153,21 @@ namespace Gallio.Core.ProgressMonitoring
 
             // Write the progress monitor.
             console.ForegroundColor = ConsoleColor.White;
-            console.Write(StringUtils.TruncateWithEllipsis(Sanitize(TaskName), width - 20).PadRight(width - 19));
+            console.Write(StringUtils.TruncateWithEllipsis(Sanitize(ProgressMonitor.TaskName), width - 20).PadRight(width - 19));
 
-            if (!IsDone && !double.IsNaN(TotalWorkUnits))
+            if (!ProgressMonitor.IsDone && !double.IsNaN(ProgressMonitor.TotalWorkUnits))
             {
                 console.ForegroundColor = ConsoleColor.Yellow;
                 console.Write('[');
                 console.ForegroundColor = ConsoleColor.DarkYellow;
-                console.Write(new string('=', (int)Math.Round(CompletedWorkUnits * 10 / TotalWorkUnits)).PadRight(10));
+                console.Write(new string('=', (int)Math.Round(ProgressMonitor.CompletedWorkUnits * 10 / ProgressMonitor.TotalWorkUnits)).PadRight(10));
                 console.ForegroundColor = ConsoleColor.Yellow;
                 console.Write(@"] ");
-                console.Write(Math.Floor(CompletedWorkUnits * 100 / TotalWorkUnits).ToString());
+                console.Write(Math.Floor(ProgressMonitor.CompletedWorkUnits * 100 / ProgressMonitor.TotalWorkUnits).ToString());
                 console.Write('%');
                 NewLine(inplace);
 
-                string sanitizedSubTaskName = Sanitize(CurrentSubTaskName);
+                string sanitizedSubTaskName = Sanitize(ProgressMonitor.LeafSubTaskName);
                 if (sanitizedSubTaskName.Length != 0)
                 {
                     console.ForegroundColor = ConsoleColor.Gray;
@@ -166,7 +176,7 @@ namespace Gallio.Core.ProgressMonitoring
                     NewLine(inplace);
                 }
 
-                string sanitizedStatus = Sanitize(Status);
+                string sanitizedStatus = Sanitize(ProgressMonitor.Leaf.Status);
                 if (sanitizedStatus.Length != 0)
                 {
                     console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -178,11 +188,11 @@ namespace Gallio.Core.ProgressMonitoring
             else
                 NewLine(inplace);
 
-            if (IsCanceled)
+            if (ProgressMonitor.IsCanceled)
             {
                 console.ForegroundColor = ConsoleColor.Red;
                 console.Write(@"    ");
-                console.Write(IsDone ? Resources.ConsoleProgressMonitor_CanceledBanner : Resources.ConsoleProgressMonitor_CancelingBanner);
+                console.Write(ProgressMonitor.IsDone ? Resources.ConsoleProgressMonitor_CanceledBanner : Resources.ConsoleProgressMonitor_CancelingBanner);
                 NewLine(inplace);
             }
 
@@ -213,12 +223,6 @@ namespace Gallio.Core.ProgressMonitoring
         {
             console.CursorLeft = 0;
             console.Write(new string(' ', width));
-        }
-
-        private void HandleCancel(object sender, EventArgs e)
-        {
-            NotifyCanceled();
-            UpdateDisplay();
         }
 
         /// <summary>

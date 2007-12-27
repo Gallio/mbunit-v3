@@ -105,7 +105,7 @@ namespace Gallio.Runner.Domains
             {
                 progressMonitor.BeginTask("Loading test package.", 1.05);
 
-                UnloadPackage(new SubProgressMonitor(progressMonitor, 0.05));
+                UnloadPackage(progressMonitor.CreateSubProgressMonitor(0.05));
 
                 packageData = InternalLoadTestPackage(packageConfig, progressMonitor);
             }

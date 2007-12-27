@@ -20,45 +20,53 @@ using Gallio.Core.ProgressMonitoring;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring
 {
-    public class StatusStripProgressMonitor : TextualProgressMonitor
+    public class StatusStripProgressMonitorPresenter : BaseProgressMonitorPresenter
     {
-        private IProjectPresenter presenter;
+        private readonly IProjectPresenter presenter;
 
-        public StatusStripProgressMonitor(IProjectPresenter presenter)
+        public StatusStripProgressMonitorPresenter(IProjectPresenter presenter)
         {
             this.presenter = presenter;
         }
 
-        protected override void OnBeginTask(string taskName, double totalWorkUnits)
+        protected override void Initialize()
         {
-            presenter.TotalWorkUnits = Convert.ToInt32(totalWorkUnits);
-            base.OnBeginTask(taskName, totalWorkUnits);
+            ProgressMonitor.TaskStarting += HandleTaskStarting;
+            ProgressMonitor.TaskFinished += HandleTaskFinished;
+            ProgressMonitor.Canceled += HandleCanceled;
+            ProgressMonitor.Changed += HandleChanged;
+        }
+
+        private void HandleTaskStarting(object sender, EventArgs e)
+        {
+            presenter.TotalWorkUnits = Convert.ToInt32(ProgressMonitor.TotalWorkUnits);
         }
 
         /// <inheritdoc />
-        protected override void UpdateDisplay()
+        private void HandleChanged(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(TaskName);
-            if (CurrentSubTaskName != "")
+            sb.Append(ProgressMonitor.TaskName);
+
+            string currentSubTaskName = ProgressMonitor.LeafSubTaskName;
+            if (currentSubTaskName != "")
             {
                 sb.Append(" - ");
-                sb.Append(CurrentSubTaskName);
+                sb.Append(currentSubTaskName);
             }
+
             presenter.StatusText = sb.ToString();
-            presenter.CompletedWorkUnits = Convert.ToInt32(CompletedWorkUnits);
+            presenter.CompletedWorkUnits = Convert.ToInt32(ProgressMonitor.CompletedWorkUnits);
         }
 
-        protected override void OnDone()
+        private void HandleTaskFinished(object sender, EventArgs e)
         {
-            base.OnDone();
             presenter.StatusText = "Ready...";
             presenter.CompletedWorkUnits = 0;
         }
 
-        protected override void OnCancel()
+        private void HandleCanceled(object sender, EventArgs e)
         {
-            base.OnCancel();
             presenter.StatusText = "Cancelled";
         }
     }

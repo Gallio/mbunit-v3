@@ -35,7 +35,7 @@ namespace Gallio.Icarus.Core.Model
         private ReportMonitor reportMonitor = null; 
         private IProjectPresenter projectPresenter = null;
         private IProgressMonitorProvider progressMonitorProvider = null;
-        private StatusStripProgressMonitor statusStripProgressMonitor = null;
+        private IProgressMonitor runTestsProgressMonitor = null;
         private TestRunnerMonitor testRunnerMonitor = null;
         private GallioProject gallioProject;
         private IReportManager reportManager;
@@ -66,12 +66,19 @@ namespace Gallio.Icarus.Core.Model
             reportMonitor = new ReportMonitor();
             reportMonitor.Attach(projectPresenter.TestRunner);
 
-            projectPresenter.TestRunner.LoadTestPackage(testPackageConfig, new StatusStripProgressMonitor(projectPresenter));
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                projectPresenter.TestRunner.LoadTestPackage(testPackageConfig, progressMonitor);
+            });
         }
 
         public TestModelData BuildTests()
         {
-            projectPresenter.TestRunner.BuildTestModel(new StatusStripProgressMonitor(projectPresenter));
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                projectPresenter.TestRunner.BuildTestModel(progressMonitor);
+            });
+ 
             return projectPresenter.TestRunner.TestModelData;
         }
 
@@ -79,17 +86,22 @@ namespace Gallio.Icarus.Core.Model
         {
             testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor);
             testRunnerMonitor.Attach(projectPresenter.TestRunner);
-            statusStripProgressMonitor = new StatusStripProgressMonitor(projectPresenter);
-            projectPresenter.TestRunner.RunTests(statusStripProgressMonitor);
-            statusStripProgressMonitor.Done();
+
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                runTestsProgressMonitor = progressMonitor;
+
+                projectPresenter.TestRunner.RunTests(progressMonitor);
+            });
+
             testRunnerMonitor.Detach();
         }
 
         public void StopTests()
         {
-            if (statusStripProgressMonitor != null)
+            if (runTestsProgressMonitor != null)
             {
-                statusStripProgressMonitor.Cancel();
+                runTestsProgressMonitor.Cancel();
             }
         }
 
@@ -129,8 +141,7 @@ namespace Gallio.Icarus.Core.Model
                 reportContainer.DeleteReport();
 
                 // Format the report as html.
-                reportManager.Format(reportWriter, "html", new NameValueCollection(),
-                    new SubProgressMonitor(progressMonitor, 90));
+                reportManager.Format(reportWriter, "html", new NameValueCollection(), progressMonitor.CreateSubProgressMonitor(90));
 
                 progressMonitor.SetStatus("Displaying report.");
                 if (reportWriter.ReportDocumentPaths.Count == 1)
@@ -171,7 +182,7 @@ namespace Gallio.Icarus.Core.Model
 
                 // Format the report in all of the desired ways.
                 reportManager.Format(reportWriter, format, new NameValueCollection(),
-                    new SubProgressMonitor(progressMonitor, 100));
+                    progressMonitor.CreateSubProgressMonitor(100));
 
                 progressMonitor.SetStatus("Report saved.");
             });

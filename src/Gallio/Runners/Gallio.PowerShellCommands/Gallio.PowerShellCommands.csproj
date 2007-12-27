@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseCommand.cs" />
-    <Compile Include="CommandProgressMonitor.cs" />
+    <Compile Include="CommandProgressMonitorPresenter.cs" />
     <Compile Include="CommandProgressMonitorProvider.cs" />
     <Compile Include="RunGallioCommand.cs" />
     <Compile Include="GallioSnapIn.cs">

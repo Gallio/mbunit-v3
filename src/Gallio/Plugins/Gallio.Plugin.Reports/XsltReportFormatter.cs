@@ -121,7 +121,7 @@ namespace Gallio.Plugin.Reports
 
                 if (attachmentContentDisposition == ExecutionLogAttachmentContentDisposition.Link)
                 {
-                    reportWriter.SaveReportAttachments(new SubProgressMonitor(progressMonitor, 5));
+                    reportWriter.SaveReportAttachments(progressMonitor.CreateSubProgressMonitor(5));
                 }
             }
         }

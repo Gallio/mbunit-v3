@@ -19,20 +19,20 @@ using Castle.Core.Logging;
 namespace Gallio.Core.ProgressMonitoring
 {
     /// <summary>
-    /// Implementation of <see cref="IProgressMonitor" />
-    /// that logs messages to an <see cref="ILogger" />.
+    /// Displays progress by writing a series of messages to an <see cref="ILogger" /> as the name
+    /// of the current task changes.
     /// </summary>
-    public class LogProgressMonitor : TextualProgressMonitor
+    public class LogProgressMonitorPresenter : BaseProgressMonitorPresenter
     {
         private readonly ILogger logger;
         private string previousTaskName = string.Empty;
 
         /// <summary>
-        /// Create a logged progress monitor.
+        /// Create a logged progress monitor presenter.
         /// </summary>
         /// <param name="logger">A logger instance to which messages will be written</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
-        public LogProgressMonitor(ILogger logger)
+        public LogProgressMonitorPresenter(ILogger logger)
         {
             if (logger == null)
                 throw new ArgumentNullException(@"logger");
@@ -41,12 +41,19 @@ namespace Gallio.Core.ProgressMonitoring
         }
 
         /// <inheritdoc />
-        protected override void UpdateDisplay()
+        protected override void Initialize()
         {
-            if (previousTaskName.CompareTo(TaskName) != 0)
+            ProgressMonitor.Changed += HandleChanged;
+        }
+
+        private void HandleChanged(object sender, EventArgs e)
+        {
+            string currentTaskName = ProgressMonitor.TaskName;
+
+            if (previousTaskName.CompareTo(currentTaskName) != 0)
             {
-                previousTaskName = TaskName;
-                logger.Info(TaskName);
+                previousTaskName = currentTaskName;
+                logger.Info(currentTaskName);
             }
         }
     }

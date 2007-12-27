@@ -573,7 +573,7 @@ namespace Gallio.Runner
                 foreach (string reportFormat in reportFormats)
                 {
                     reportManager.Format(reportWriter, reportFormat, reportFormatOptions,
-                        new SubProgressMonitor(progressMonitor, 1));
+                        progressMonitor.CreateSubProgressMonitor(1));
                 }
 
                 // Save the full paths of the documents.

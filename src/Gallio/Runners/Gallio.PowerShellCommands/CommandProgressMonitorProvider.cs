@@ -19,7 +19,7 @@ using Gallio.Core.ProgressMonitoring;
 namespace Gallio.PowerShellCommands
 {
     /// <exclude />
-    internal class CommandProgressMonitorProvider : IProgressMonitorProvider
+    internal class CommandProgressMonitorProvider : BaseProgressMonitorProvider
     {
         private readonly BaseCommand cmdlet;
 
@@ -31,12 +31,9 @@ namespace Gallio.PowerShellCommands
             this.cmdlet = cmdlet;
         }
 
-        public void Run(TaskWithProgress task)
+        protected override IProgressMonitorPresenter GetPresenter()
         {
-            using (CommandProgressMonitor progressMonitor = new CommandProgressMonitor(cmdlet))
-            {
-                task(progressMonitor);
-            }
+            return new CommandProgressMonitorPresenter(cmdlet, -1);
         }
     }
 }

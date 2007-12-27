@@ -73,9 +73,25 @@
     <Compile Include="Core\ConsoleSupport\ResponseFileReader.cs" />
     <Compile Include="Core\ConsoleSupport\IRichConsole.cs" />
     <Compile Include="Core\ConsoleSupport\RichConsoleLogger.cs" />
-    <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\BaseProgressMonitorPresenter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
+    <Compile Include="Core\ProgressMonitoring\CancelableProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\IProgressMonitorPresenter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ProgressMonitoring\LogProgressMonitorPresenter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ProgressMonitoring\NullProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\NullProgressMonitorPresenter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitorPresenter.cs" />
     <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
     <Compile Include="Core\ConsoleSupport\NativeConsole.cs" />
+    <Compile Include="Core\ProgressMonitoring\SubProgressMonitorCreatedEventArgs.cs" />
     <Compile Include="Data\DataBinder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -236,15 +252,12 @@
     <Compile Include="Model\Serialization\TestModelData.cs" />
     <Compile Include="Model\TestResult.cs" />
     <Compile Include="Logging\TrackingLogWriter.cs" />
-    <Compile Include="Core\ProgressMonitoring\BaseProgressMonitor.cs" />
+    <Compile Include="Core\ProgressMonitoring\ObservableProgressMonitor.cs" />
     <Compile Include="Core\ProgressMonitoring\IProgressMonitor.cs" />
     <Compile Include="Core\ProgressMonitoring\IProgressMonitorProvider.cs" />
-    <Compile Include="Core\ProgressMonitoring\NullProgressMonitor.cs" />
     <Compile Include="Core\ProgressMonitoring\NullProgressMonitorProvider.cs" />
     <Compile Include="Core\ProgressMonitoring\RemoteProgressMonitor.cs" />
-    <Compile Include="Core\ProgressMonitoring\SubProgressMonitor.cs" />
     <Compile Include="Core\ProgressMonitoring\TaskWithProgress.cs" />
-    <Compile Include="Core\ProgressMonitoring\TrackingProgressMonitor.cs" />
     <Compile Include="Runner\Reports\DefaultReportManager.cs" />
     <Compile Include="Runner\Reports\ExecutionLog.cs" />
     <Compile Include="Runner\Reports\ExecutionLogAttachment.cs" />
@@ -278,7 +291,6 @@
     <Compile Include="Runner\ITestRunner.cs" />
     <Compile Include="Runner\Domains\LocalTestDomain.cs" />
     <Compile Include="Runner\Domains\LocalTestDomainFactory.cs" />
-    <Compile Include="Core\ProgressMonitoring\LogProgressMonitor.cs" />
     <Compile Include="Core\ProgressMonitoring\LogProgressMonitorProvider.cs" />
     <Compile Include="Runner\Monitors\BaseTestRunnerMonitor.cs" />
     <Compile Include="Runner\Monitors\DebugMonitor.cs" />
@@ -289,7 +301,6 @@
     <Compile Include="Runner\Domains\RemoteTestDomain.cs" />
     <Compile Include="Runner\ResultCode.cs" />
     <Compile Include="Runner\TestLauncher.cs" />
-    <Compile Include="Core\ProgressMonitoring\TextualProgressMonitor.cs" />
     <Compile Include="Hosting\DefaultAssemblyResolverManager.cs" />
     <Compile Include="Contexts\DefaultContextManager.cs" />
     <Compile Include="Hosting\DefaultXmlDocumentationResolver.cs" />

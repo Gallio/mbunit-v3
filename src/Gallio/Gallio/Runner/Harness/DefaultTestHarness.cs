@@ -154,7 +154,7 @@ namespace Gallio.Runner.Harness
 
                 progressMonitor.Worked(1);
 
-                LoadAssemblies(new SubProgressMonitor(progressMonitor, 8), packageConfig.AssemblyFiles);
+                LoadAssemblies(progressMonitor.CreateSubProgressMonitor(8), packageConfig.AssemblyFiles);
 
                 progressMonitor.SetStatus("Performing post-processing.");
 
@@ -259,12 +259,12 @@ namespace Gallio.Runner.Harness
                     ITestPlan plan = testPlanFactory.CreateTestPlan(eventDispatcher);
                     try
                     {
-                        plan.ScheduleTests(new SubProgressMonitor(progressMonitor, 5), model, options);
-                        plan.RunTests(new SubProgressMonitor(progressMonitor, 80));
+                        plan.ScheduleTests(progressMonitor.CreateSubProgressMonitor(5), model, options);
+                        plan.RunTests(progressMonitor.CreateSubProgressMonitor(80));
                     }
                     finally
                     {
-                        plan.CleanUpTests(new SubProgressMonitor(progressMonitor, 5));
+                        plan.CleanUpTests(progressMonitor.CreateSubProgressMonitor(5));
                     }
                 }
                 finally

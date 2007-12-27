@@ -177,7 +177,7 @@ namespace Gallio.Runner.Reports
                 if (attachmentContentDisposition == ExecutionLogAttachmentContentDisposition.Link && attachmentCount != 0)
                 {
                     progressMonitor.ThrowIfCanceled();
-                    SaveReportAttachments(new SubProgressMonitor(progressMonitor, attachmentCount));
+                    SaveReportAttachments(progressMonitor.CreateSubProgressMonitor(attachmentCount));
                 }
 
                 AddReportDocumentPath(reportPath);

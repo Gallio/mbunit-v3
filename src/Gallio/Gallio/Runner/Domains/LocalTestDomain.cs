@@ -66,21 +66,21 @@ namespace Gallio.Runner.Domains
             if (Listener != null)
                 harness.EventDispatcher.Listeners.Add(Listener);
 
-            harness.LoadTestPackage(packageConfig, new SubProgressMonitor(progressMonitor, 0.9));
+            harness.LoadTestPackage(packageConfig, progressMonitor.CreateSubProgressMonitor(0.9));
             return new TestPackageData(harness.TestPackage);
         }
 
         /// <inheritdoc />
         protected override TestModelData InternalBuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
-            harness.BuildTestModel(options, new SubProgressMonitor(progressMonitor, 1));
+            harness.BuildTestModel(options, progressMonitor.CreateSubProgressMonitor(1));
             return new TestModelData(harness.TestModel);
         }
 
         /// <inheritdoc />
         protected override void InternalRunTests(TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            harness.RunTests(options, new SubProgressMonitor(progressMonitor, 1));
+            harness.RunTests(options, progressMonitor.CreateSubProgressMonitor(1));
         }
 
         /// <inheritdoc />

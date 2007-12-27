@@ -44,6 +44,7 @@ namespace Gallio.Runner.Monitors
         private Stopwatch durationStopwatch;
 
         private EventHandler<TestStepRunEventArgs> testStepStarting;
+        private EventHandler<TestStepRunEventArgs> testStepLifecyclePhaseChanged;
         private EventHandler<TestStepRunEventArgs> testStepFinished;
 
         /// <summary>
@@ -80,6 +81,20 @@ namespace Gallio.Runner.Monitors
         {
             add { lock (report) testStepStarting += value; }
             remove { lock (report) testStepStarting -= value; }
+        }
+
+        /// <summary>
+        /// The event fired when a test step transitions between phases.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="Report" /> instance is locked for the duration of this
+        /// event to prevent race conditions.  Do not perform long-running operations
+        /// when processing this event.  Also beware of potential deadlocks!
+        /// </remarks>
+        public event EventHandler<TestStepRunEventArgs> TestStepLifecyclePhaseChanged
+        {
+            add { lock (report) testStepLifecyclePhaseChanged += value; }
+            remove { lock (report) testStepLifecyclePhaseChanged -= value; }
         }
 
         /// <summary>
@@ -224,7 +239,11 @@ namespace Gallio.Runner.Monitors
                     }
 
                     case LifecycleEventType.SetPhase:
+                    {
+                        TestStepState state = GetStepData(e.StepId);
+                        NotifyStepLifecyclePhaseChanged(state, e.PhaseName);
                         break;
+                    }
 
                     case LifecycleEventType.AddMetadata:
                     {
@@ -271,11 +290,26 @@ namespace Gallio.Runner.Monitors
             {
                 try
                 {
-                    testStepStarting(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun));
+                    testStepStarting(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, ""));
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(String.Format("Step starting event handler threw an exception: {0}", ex));
+                    Debug.WriteLine(String.Format("Test step starting event handler threw an exception: {0}", ex));
+                }
+            }
+        }
+
+        private void NotifyStepLifecyclePhaseChanged(TestStepState state, string lifecyclePhase)
+        {
+            if (testStepLifecyclePhaseChanged != null)
+            {
+                try
+                {
+                    testStepLifecyclePhaseChanged(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, lifecyclePhase));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(String.Format("Test step phase change event handler threw an exception: {0}", ex));
                 }
             }
         }
@@ -286,11 +320,11 @@ namespace Gallio.Runner.Monitors
             {
                 try
                 {
-                    testStepFinished(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun));
+                    testStepFinished(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, ""));
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(String.Format("Step finished event handler threw an exception: {0}", ex));
+                    Debug.WriteLine(String.Format("Test step finished event handler threw an exception: {0}", ex));
                 }
             }
         }

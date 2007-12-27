@@ -16,9 +16,10 @@
 namespace Gallio.Core.ProgressMonitoring
 {
     /// <summary>
-    /// Runs tasks with <see cref="NullProgressMonitor" />.
+    /// Runs tasks without reporting any progress.  Argument validation and state
+    /// changes are still noted but they do not have any outward effect.
     /// </summary>
-    public sealed class NullProgressMonitorProvider : IProgressMonitorProvider
+    public sealed class NullProgressMonitorProvider : BaseProgressMonitorProvider
     {
         private static readonly NullProgressMonitorProvider instance = new NullProgressMonitorProvider();
 
@@ -35,9 +36,9 @@ namespace Gallio.Core.ProgressMonitoring
         }
 
         /// <inheritdoc />
-        public void Run(TaskWithProgress task)
+        protected override IProgressMonitorPresenter GetPresenter()
         {
-            task(new NullProgressMonitor());
+            return NullProgressMonitorPresenter.Instance;
         }
     }
 }

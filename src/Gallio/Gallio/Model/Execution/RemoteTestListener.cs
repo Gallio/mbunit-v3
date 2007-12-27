@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 
 namespace Gallio.Model.Execution
 {
@@ -23,9 +22,14 @@ namespace Gallio.Model.Execution
     /// The wrapper can be passed to another AppDomain and communication occurs over
     /// .Net remoting.
     /// </summary>
-    /// <remarks>
-    /// The implementation is defined so as to guard failures in the remoting channel.
-    /// </remarks>
+    /// <todo author="jeff">
+    /// While it would be great to catch and log exceptions, the question is where.
+    /// If we write them out as debug/trace information then we might end up in
+    /// a recursive cycle because we trap those writes and send them back in
+    /// here.  So we'll die of a StackOverflowException due to some remoting goofiness.
+    /// So basically short of inventing a new place to log errors
+    /// we're screwed.  -- Jeff.
+    /// </todo>
     [Serializable]
     public sealed class RemoteTestListener : ITestListener
     {
@@ -47,27 +51,13 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         public void NotifyLifecycleEvent(LifecycleEventArgs e)
         {
-            try
-            {
-                forwarder.NotifyTestLifecycleEvent(e);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Failed to send a TestLifecycle event to the remote event listener: " + ex);
-            }
+            forwarder.NotifyTestLifecycleEvent(e);
         }
 
         /// <inheritdoc />
         public void NotifyLogEvent(LogEventArgs e)
         {
-            try
-            {
-                forwarder.NotifyTestExecutionLogEvent(e);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Failed to send a TestExecutionLog event to the remote event listener: " + ex);
-            }
+            forwarder.NotifyTestExecutionLogEvent(e);
         }
 
         /// <summary>

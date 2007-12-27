@@ -51,7 +51,7 @@ namespace Gallio.Model.Execution
                 // Delegate to the associated controller, if present.
                 using (ITestController controller = factory())
                 {
-                    controller.RunTests(new SubProgressMonitor(progressMonitor, testMonitor.TestCount), testMonitor);
+                    controller.RunTests(progressMonitor.CreateSubProgressMonitor(testMonitor.TestCount), testMonitor);
                 }
             }
             else

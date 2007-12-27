@@ -13,20 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Gallio.Core.ProgressMonitoring
 {
     /// <summary>
-    /// Creates instances of null progress monitors that do nothing.
+    /// A null progress monitor presenter simply does nothing.
     /// </summary>
-    public static class NullProgressMonitor
+    public sealed class NullProgressMonitorPresenter : IProgressMonitorPresenter
     {
         /// <summary>
-        /// Creates a null progress monitor.
+        /// Gets the singleton instance of the presenter.
         /// </summary>
-        /// <returns>The null progress monitor</returns>
-        public static IProgressMonitor CreateInstance()
+        public static readonly NullProgressMonitorPresenter Instance = new NullProgressMonitorPresenter();
+
+        private NullProgressMonitorPresenter()
         {
-            return new ObservableProgressMonitor();
+        }
+
+        /// <inheritdoc />
+        public void Present(ObservableProgressMonitor progressMonitor)
+        {
         }
     }
 }

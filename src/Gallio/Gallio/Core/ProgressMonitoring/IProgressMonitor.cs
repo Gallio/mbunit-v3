@@ -63,7 +63,7 @@ namespace Gallio.Core.ProgressMonitoring
     ///     }
     ///     progressMonitor.SetStatus("");
     /// 
-    ///     DoExpensiveTask(new SubProgressMonitor(progressMonitor, CostOfRunningExpensiveTask));
+    ///     DoExpensiveTask(progressMonitor.CreateSubProgressMonitor(CostOfRunningExpensiveTask));
     /// }
     /// </code>
     /// </example>
@@ -188,54 +188,41 @@ namespace Gallio.Core.ProgressMonitoring
         /// </para>
         /// <para>
         /// If there are any currently active subtasks, they are automatically
-        /// ended by this method exactly as if <see cref="EndSubTask" /> had been
-        /// called a sufficient number of times to end them.  The reason we do this
-        /// (rather than throw an error) is to simplify error recovery in situations
-        /// where the main task may have been abruptly aborted without proper cleanup
-        /// of its inner state.  This can happen in situations where severe exceptions
-        /// bubble up to the main task.  It seems preferable to tolerate the situation
-        /// than to exacerbate it by enforcing stricter rules.
+        /// ended by this method exactly as if each subtask's <see cref="IProgressMonitor" />
+        /// had been notified that the work was done.  This policy simplifies error
+        /// recovery in situations where the main task may have been abruptly aborted
+        /// without proper cleanup of its subtasks such as when severe exceptions occur.
+        /// It is preferable to tolerate the error rather than to exacerbate it by enforcing
+        /// stricter rules on subtasks.
         /// </para>
         /// </remarks>
         void Done();
 
         /// <summary>
-        /// Begins a subtask nested within the current task or subtask.
-        /// Resets the current status to the empty string.
-        /// A subtask represents a segment of the total work being performed
-        /// by a task.
+        /// <para>
+        /// Creates a sub-progress monitor that represents a given number of
+        /// work-units as a sub-task of this progress monitor.
+        /// </para>
+        /// <para>
+        /// Using sub-tasks allows multiple tasks to be composed into longer sequences
+        /// that each contribute a predetermined portion of the total work.
+        /// </para>
+        /// <para>
+        /// As the sub-task performs work its parent task is notified of progress
+        /// in proportion to the number of work units that it represents.  Likewise the
+        /// parent is notified of cancelation if the child is canceled and vice-versa.
+        /// </para>
         /// </summary>
         /// <remarks>
-        /// <para>
-        /// This method is called by <see cref="SubProgressMonitor" /> as a new
-        /// task or sub-task begins.
-        /// </para>
-        /// <para>
-        /// Not safe for use by multiple concurrent threads.
-        /// </para>
+        /// It it still necessary to call <see cref="IProgressMonitor.BeginTask" /> on the
+        /// sub-progress monitor to begin processing the sub-task.
         /// </remarks>
-        /// <param name="subTaskName">The name of the current subtask</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="subTaskName"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the task is not running</exception>
-        void BeginSubTask(string subTaskName);
-
-        /// <summary>
-        /// Ends the current subtask.
-        /// Resets the current status to the empty string.
-        /// Subtasks are usually managed by a <see cref="SubProgressMonitor" />.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This method is called by <see cref="SubProgressMonitor" /> as a new
-        /// task or sub-task begins.
-        /// </para>
-        /// <para>
-        /// Not safe for use by multiple concurrent threads.
-        /// </para>
-        /// </remarks>
-        /// <exception cref="InvalidOperationException">Thrown if the task is not running
-        /// or if there is no current subtask</exception>
-        void EndSubTask();
+        /// <param name="parentWorkUnits">The total number of work units of the parent task
+        /// that are to be represented by the sub-task.  When the sub-task completes, this much
+        /// work will have been performed on the parent.
+        /// Must be a finite value greater than or equal to 0.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="parentWorkUnits"/> is not valid</exception>
+        IProgressMonitor CreateSubProgressMonitor(double parentWorkUnits);
 
         /// <summary>
         /// Throws an <see cref="OperationCanceledException" /> if the operation

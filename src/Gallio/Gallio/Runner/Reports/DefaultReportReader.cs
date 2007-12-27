@@ -80,7 +80,7 @@ namespace Gallio.Runner.Reports
                 if (loadAttachmentContents)
                 {
                     progressMonitor.ThrowIfCanceled();
-                    LoadReportAttachments(report, new SubProgressMonitor(progressMonitor, 9));
+                    LoadReportAttachments(report, progressMonitor.CreateSubProgressMonitor(9));
                 }
 
                 return report;

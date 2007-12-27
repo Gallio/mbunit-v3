@@ -22,9 +22,9 @@ using Gallio.Core.ProgressMonitoring;
 namespace Gallio.Icarus.Core.ProgressMonitoring
 {
     /// <summary>
-    /// Runs tasks with a <see cref="StatusStripProgressMonitor" />.
+    /// Runs tasks with a <see cref="StatusStripProgressMonitorPresenter" />.
     /// </summary>
-    public class StatusStripProgressMonitorProvider : IProgressMonitorProvider
+    public class StatusStripProgressMonitorProvider : BaseProgressMonitorProvider
     {
         private readonly IProjectPresenter presenter;
 
@@ -42,14 +42,9 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         }
 
         /// <inheritdoc />
-        public void Run(TaskWithProgress task)
+        protected override IProgressMonitorPresenter GetPresenter()
         {
-            using (StatusStripProgressMonitor progressMonitor = new StatusStripProgressMonitor(presenter))
-            {
-                progressMonitor.ThrowIfCanceled();
-                task(progressMonitor);
-                progressMonitor.ThrowIfCanceled();
-            }
+            return new StatusStripProgressMonitorPresenter(presenter);
         }
     }
 }

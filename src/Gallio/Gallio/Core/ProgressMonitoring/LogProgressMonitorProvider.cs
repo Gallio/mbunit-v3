@@ -19,9 +19,10 @@ using Castle.Core.Logging;
 namespace Gallio.Core.ProgressMonitoring
 {
     /// <summary>
-    /// Runs tasks with a <see cref="LogProgressMonitor" />.
+    /// Displays progress by writing a series of messages to an <see cref="ILogger" /> as the name
+    /// of the current task changes.
     /// </summary>
-    public class LogProgressMonitorProvider : IProgressMonitorProvider
+    public class LogProgressMonitorProvider : BaseProgressMonitorProvider
     {
         private readonly ILogger logger;
 
@@ -39,12 +40,9 @@ namespace Gallio.Core.ProgressMonitoring
         }
 
         /// <inheritdoc />
-        public void Run(TaskWithProgress task)
+        protected override IProgressMonitorPresenter GetPresenter()
         {
-            using (LogProgressMonitor progressMonitor = new LogProgressMonitor(logger))
-            {
-                task(progressMonitor);
-            }
+            return new LogProgressMonitorPresenter(logger);
         }
     }
 }

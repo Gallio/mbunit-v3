@@ -31,7 +31,7 @@ namespace Gallio.Core.ProgressMonitoring
     /// </remarks>
     /// <seealso cref="IProgressMonitor"/> for important thread-safety and usage remarks.
     [Serializable]
-    public sealed class RemoteProgressMonitor : BaseProgressMonitor, IDeserializationCallback
+    public sealed class RemoteProgressMonitor : CancelableProgressMonitor, IDeserializationCallback
     {
         private readonly Forwarder forwarder;
 
@@ -46,7 +46,7 @@ namespace Gallio.Core.ProgressMonitoring
         public RemoteProgressMonitor(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
-                throw new ArgumentNullException(@"progressMonitor");
+                throw new ArgumentNullException("progressMonitor");
 
             forwarder = new Forwarder(progressMonitor);
         }
@@ -58,39 +58,33 @@ namespace Gallio.Core.ProgressMonitoring
         }
 
         /// <inheritdoc />
-        protected override void OnBeginTask(string taskName, double totalWorkUnits)
+        public override void BeginTask(string taskName, double totalWorkUnits)
         {
             forwarder.BeginTask(taskName, totalWorkUnits);
         }
 
         /// <inheritdoc />
-        protected override void OnBeginSubTask(string subTaskName)
-        {
-            forwarder.BeginSubTask(subTaskName);
-        }
-
-        /// <inheritdoc />
-        protected override void OnEndSubTask()
-        {
-            forwarder.EndSubTask();
-        }
-
-        /// <inheritdoc />
-        protected override void OnDone()
-        {
-            forwarder.Done();
-        }
-
-        /// <inheritdoc />
-        protected override void OnSetStatus(string status)
+        public override void SetStatus(string status)
         {
             forwarder.SetStatus(status);
         }
 
         /// <inheritdoc />
-        protected override void OnWorked(double workUnits)
+        public override void Worked(double workUnits)
         {
             forwarder.Worked(workUnits);
+        }
+
+        /// <inheritdoc />
+        public override void Done()
+        {
+            forwarder.Done();
+        }
+
+        /// <inheritdoc />
+        public override IProgressMonitor CreateSubProgressMonitor(double parentWorkUnits)
+        {
+            return forwarder.CreateSubProgressMonitor(parentWorkUnits);
         }
 
         /// <inheritdoc />
@@ -136,14 +130,9 @@ namespace Gallio.Core.ProgressMonitoring
                 progressMonitor.Done();
             }
 
-            public void BeginSubTask(string subTaskName)
+            public IProgressMonitor CreateSubProgressMonitor(double parentWorkUnits)
             {
-                progressMonitor.BeginSubTask(subTaskName);
-            }
-
-            public void EndSubTask()
-            {
-                progressMonitor.EndSubTask();
+                return new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(parentWorkUnits));
             }
 
             public void RegisterDispatcher(Dispatcher dispatcher)
