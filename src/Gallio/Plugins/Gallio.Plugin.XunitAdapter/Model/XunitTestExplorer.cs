@@ -150,7 +150,9 @@ namespace Gallio.Plugin.XunitAdapter.Model
                 }
                 catch (Exception ex)
                 {
-                    typeTest = new ErrorTest(type, String.Format("An exception occurred while generating an xUnit.Net test from '{0}': {1}", type.FullName, ex));
+                    typeTest = new ErrorTest(type,
+                        String.Format("An exception occurred while generating an xUnit.Net test from '{0}'.", type.FullName),
+                        ex.ToString());
                 }
 
                 if (typeTest != null)

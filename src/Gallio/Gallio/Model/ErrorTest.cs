@@ -31,17 +31,19 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="codeElement">The code element that was being processed
         /// when the error was encountered, or null if unknown</param>
-        /// <param name="description">The description of the error</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="description"/> is null</exception>
-        public ErrorTest(ICodeElementInfo codeElement, string description)
-            : base("Error!", codeElement)
+        /// <param name="shortDescription">The short description of the error to use as part of the test name</param>
+        /// <param name="longDescription">The long description of the error to use as metadata, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="shortDescription"/> is null</exception>
+        public ErrorTest(ICodeElementInfo codeElement, string shortDescription, string longDescription)
+            : base(String.Format("Error!  {0}", shortDescription), codeElement)
         {
-            if (description == null)
-                throw new ArgumentNullException("description");
+            if (shortDescription == null)
+                throw new ArgumentNullException("shortDescription");
 
             Kind = TestKinds.Error;
 
-            Metadata.SetValue(MetadataKeys.Description, description);
+            if (longDescription != null)
+                Metadata.SetValue(MetadataKeys.Description, longDescription);
         }
 
         /// <inheritdoc />

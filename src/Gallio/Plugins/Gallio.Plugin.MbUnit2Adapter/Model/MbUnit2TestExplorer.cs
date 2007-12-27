@@ -133,7 +133,8 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             catch (Exception ex)
             {
                 assemblyTest = new ErrorTest(assembly,
-                    String.Format("An exception occurred while enumerating MbUnit v2 tests in assembly '{0}'.  {1}", assembly.Name, ex));
+                    String.Format("An exception occurred while enumerating MbUnit v2 tests in assembly '{0}'.", assembly.Name),
+                    ex.ToString());
             }
 
             for (int i = 0; i < unresolvedDependencies.Count; i++)

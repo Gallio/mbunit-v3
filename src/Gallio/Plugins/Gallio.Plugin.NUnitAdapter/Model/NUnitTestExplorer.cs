@@ -114,7 +114,8 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             catch (Exception ex)
             {
                 return new ErrorTest(assembly,
-                    String.Format("Could not resolve location of assembly '{0}'.  {1}", assembly.Name, ex));
+                    String.Format("Could not resolve location of assembly '{0}'.", assembly.Name),
+                    ex.ToString());
             }
 
             try
@@ -132,7 +133,8 @@ namespace Gallio.Plugin.NUnitAdapter.Model
             catch (Exception ex)
             {
                 return new ErrorTest(null,
-                    String.Format("An exception occurred while enumerating NUnit tests.  {0}", ex));
+                    "An exception occurred while enumerating NUnit tests.",
+                    ex.ToString());
             }
         }
 

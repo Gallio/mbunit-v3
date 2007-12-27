@@ -140,6 +140,8 @@ namespace Gallio.ReSharperRunner.Tasks
             GallioTestItemTask testTask;
             if (testTasks.TryGetValue(e.TestData.Id, out testTask))
             {
+                server.TaskProgress(testTask, "");
+
                 foreach (ExecutionLogStream stream in e.TestStepRun.ExecutionLog.Streams)
                     SubmitLogStreamContents(testTask, stream);
 
