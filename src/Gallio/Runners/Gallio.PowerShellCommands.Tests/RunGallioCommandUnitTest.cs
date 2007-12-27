@@ -50,7 +50,7 @@ namespace Gallio.PowerShellCommands.Tests
         public void RunWithNoArguments()
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
-            TestLauncherResult result = command.Execute();
+            TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.NoTests);
             // If nothing ran then all the statistics properties should be set to zero
@@ -70,7 +70,7 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.ReportTypes = null;
             // Just make sure it doesn't crash
-            Assert.IsNotNull(command.Execute());
+            Assert.IsNotNull(command.ExecuteWithMessagePump());
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.ReportTypes = new string[] { String.Empty };
             // Just make sure it doesn't crash
-            Assert.IsNotNull(command.Execute());
+            Assert.IsNotNull(command.ExecuteWithMessagePump());
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.ReportDirectory = null;
             // Just make sure it doesn't crash
-            Assert.IsNotNull(command.Execute());
+            Assert.IsNotNull(command.ExecuteWithMessagePump());
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.ReportNameFormat = null;
             // Just make sure it doesn't crash
-            Assert.IsNotNull(command.Execute());
+            Assert.IsNotNull(command.ExecuteWithMessagePump());
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace Gallio.PowerShellCommands.Tests
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
-            TestLauncherResult result = command.Execute();
+            TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
         }
@@ -116,7 +116,7 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
             command.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests";
-            TestLauncherResult result = command.Execute();
+            TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
             Assert.AreEqual(result.Statistics.TestCount, 2);
@@ -134,7 +134,7 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
             command.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests";
-            TestLauncherResult result = command.Execute();
+            TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
             Assert.AreEqual(result.Statistics.TestCount, 2);
@@ -152,7 +152,7 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
             command.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests & Member: Pass";
-            TestLauncherResult result = command.Execute();
+            TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
             Assert.AreEqual(result.Statistics.TestCount, 1);
@@ -169,7 +169,7 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
             command.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests & Member: Fail";
-            TestLauncherResult result = command.Execute();
+            TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
             Assert.AreEqual(result.Statistics.TestCount, 1);
@@ -187,23 +187,12 @@ namespace Gallio.PowerShellCommands.Tests
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
             command.Filter = "Type: Gallio.TestResources.MbUnit.IgnoredTests";
-            TestLauncherResult result = command.Execute();
+            TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
-            Assert.AreEqual(result.Statistics.TestCount, 2);
-            Assert.AreEqual(result.Statistics.IgnoreCount, 2);
+            Assert.AreEqual(result.Statistics.TestCount, 1);
+            Assert.AreEqual(result.Statistics.IgnoreCount, 1);
             Assert.GreaterThan(result.Statistics.Duration, 0);
-        }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))] // throw by ThrowTerminatingError
-        public void ExecutionFailure()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.HintDirectories = new string[] { null };
-            command.PluginDirectories = new string[] { null };
-            TestLauncherResult result = command.Execute();
-            Assert.IsNotNull(result);
         }
 
         #endregion

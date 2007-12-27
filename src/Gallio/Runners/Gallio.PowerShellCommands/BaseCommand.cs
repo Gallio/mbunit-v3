@@ -166,6 +166,11 @@ namespace Gallio.PowerShellCommands
                     }
                     catch (PipelineStoppedException)
                     {
+                        // May be thrown if the pipeline has already quit.
+                    }
+                    catch (NotImplementedException)
+                    {
+                        // May be thrown if the host does not implement WriteError.
                     }
                 }
             }

@@ -25,9 +25,9 @@ namespace Gallio.PowerShellCommands.Tests
     /// </summary>
     internal class InstrumentedRunGallioCommand : RunGallioCommand
     {
-        public new TestLauncherResult Execute()
+        public new TestLauncherResult ExecuteWithMessagePump()
         {
-            return base.Execute();
+            return base.ExecuteWithMessagePump();
         }
 
         protected override TestLauncherResult RunLauncher(TestLauncher launcher)

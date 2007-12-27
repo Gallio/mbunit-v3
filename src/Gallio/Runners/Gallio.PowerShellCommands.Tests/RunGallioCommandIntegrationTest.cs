@@ -50,13 +50,7 @@ namespace Gallio.PowerShellCommands.Tests
                 );
             workingDirectory = Path.GetDirectoryName((Loader.GetAssemblyLocalPath(GetType().Assembly)));
             ProcessRunner runner = new ProcessRunner(executablePath,
-                "\"& '"
-                // We need the full path to the script file
-                + Path.Combine(
-                    Path.GetFullPath(workingDirectory + @"\..\"),
-                    @"TestBuildFiles\BuildScript.ps1"
-                    )
-                + "'\"");
+                "\"& Add-PSSnapIn Gallio; Run-Gallio '..\\..\\..\\..\\TestResources\\Gallio.TestResources.MbUnit\\bin\\Gallio.TestResources.MbUnit.dll' -verbose\"");
             runner.WorkingDirectory = workingDirectory;
 
             runner.Run(10000);

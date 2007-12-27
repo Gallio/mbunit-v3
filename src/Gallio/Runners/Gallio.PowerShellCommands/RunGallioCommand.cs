@@ -277,10 +277,13 @@ namespace Gallio.PowerShellCommands
             string oldDirectory = Environment.CurrentDirectory;
             try
             {
-                // FIXME: Will this throw an exception if the current path is
-                //        within a virtual file system?
-                string resolvedDirectory = SessionState.Path.CurrentFileSystemLocation.Path;
-                Environment.CurrentDirectory = resolvedDirectory;
+                if (SessionState != null)
+                {
+                    // FIXME: Will this throw an exception if the current path is
+                    //        within a virtual file system?
+                    string resolvedDirectory = SessionState.Path.CurrentFileSystemLocation.Path;
+                    Environment.CurrentDirectory = resolvedDirectory;
+                }
 
                 return Execute();
             }
