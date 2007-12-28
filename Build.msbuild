@@ -5,6 +5,7 @@
     <BuildBinDir>$(BuildDir)\bin</BuildBinDir>
     <BuildReportsDir>$(BuildDir)\reports</BuildReportsDir>
     <BuildDocsDir>$(BuildDir)\docs</BuildDocsDir>
+    <BuildReleaseDir>$(BuildDir)\release</BuildReleaseDir>
     <LibsDir>$(RootDir)\libs</LibsDir>
     <SourceDir>$(RootDir)\src</SourceDir>
 
@@ -348,6 +349,6 @@
   </Target>
 
   <Target Name="CreateBuildDir">
-    <MakeDir Directories="$(BuildDir);$(BuildBinDir);$(BuildReportsDir);$(BuildDocsDir)" />
+    <MakeDir Directories="$(BuildDir);$(BuildBinDir);$(BuildReportsDir);$(BuildDocsDir);$(BuildReleaseDir)" />
   </Target>
 </Project>
