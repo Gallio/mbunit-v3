@@ -350,8 +350,9 @@
 
   <Target Name="BuildZip"
           DependsOnTargets="CreateBuildDir">
-    <CreateItem Include="$(BuildBinDir)\**\*.*;$(BuildDocsDir)\**\*.*">
-      <Output TaskItem="Include" ItemName="ZipFiles" />
+    <CreateItem Include="$(BuildBinDir)\**\*.*;$(BuildDocsDir)\**\*.*"
+                Exclude="$(BuildDocsDir)\chm\ndoc_msdn_temp\**\*.*">
+      <Output TaskParameter="Include" ItemName="ZipFiles" />
     </CreateItem>
 
     <Zip Files="@(ZipFiles)"
