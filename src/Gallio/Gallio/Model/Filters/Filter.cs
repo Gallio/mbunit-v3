@@ -19,7 +19,7 @@ namespace Gallio.Model.Filters
 {
     /// <summary>
     /// A filter is a serializable predicate.  The framework uses filters to select
-    /// among templates and tests discovered through the process of test enumeration.
+    /// among tests discovered through the process of test enumeration.
     /// </summary>
     /// <remarks>
     /// Filters must be serializable objects defined in the framework assembly
@@ -39,5 +39,22 @@ namespace Gallio.Model.Filters
         /// <param name="value">The value to consider, never null</param>
         /// <returns>True if the filter matches the value</returns>
         public abstract bool IsMatch(T value);
+
+        /// <summary>
+        /// Accepts a visitor and performs double-dispatch.
+        /// </summary>
+        /// <param name="visitor">The visitor, never null</param>
+        public abstract void Accept(IFilterVisitor visitor);
+
+        /// <summary>
+        /// Formats the filter to a string suitable for parsing by <see cref="FilterParser{T}" />.
+        /// </summary>
+        /// <returns>The formatted filter expression</returns>
+        public string ToFilterExpr()
+        {
+            FilterFormatter formatter = new FilterFormatter();
+            Accept(formatter);
+            return formatter.ToString();
+        }
     }
 }

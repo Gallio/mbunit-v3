@@ -38,6 +38,14 @@ namespace Gallio.Model.Filters
             this.filter = filter;
         }
 
+        /// <summary>
+        /// Gets the filter to be negated.
+        /// </summary>
+        public Filter<T> Filter
+        {
+            get { return filter; }
+        }
+
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
@@ -45,9 +53,15 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override void Accept(IFilterVisitor visitor)
+        {
+            visitor.VisitNotFilter(this);
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
-            return "Not(" + filter + ")";
+            return @"Not(" + filter + @")";
         }
     }
 }

@@ -75,6 +75,7 @@
     <Compile Include="Data\GeneratorsTest.cs" />
     <Compile Include="Hosting\LoaderTest.cs" />
     <Compile Include="Model\Filters\EqualityFilterTest.cs" />
+    <Compile Include="Model\Filters\FilterFormatterTest.cs" />
     <Compile Include="Model\Filters\FilterLexerTest.cs" />
     <Compile Include="Model\Filters\FilterParserTest.cs" />
     <Compile Include="Model\Filters\ModelComponentFilterFactoryTest.cs" />

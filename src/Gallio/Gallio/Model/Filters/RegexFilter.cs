@@ -40,6 +40,14 @@ namespace Gallio.Model.Filters
             this.regex = regex;
         }
 
+        /// <summary>
+        /// Gets the regular expression for matching strings.
+        /// </summary>
+        public Regex Regex
+        {
+            get { return regex; }
+        }
+
         /// <inheritdoc />
         public override bool IsMatch(string value)
         {
@@ -47,9 +55,15 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override void Accept(IFilterVisitor visitor)
+        {
+            visitor.VisitRegexFilter(this);
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
-            return "Regex('" + regex + "')";
+            return @"Regex('" + regex + @"', " + regex.Options + @")";
         }
     }
 }

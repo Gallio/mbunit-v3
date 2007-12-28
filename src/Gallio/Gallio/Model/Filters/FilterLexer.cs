@@ -89,7 +89,7 @@ namespace Gallio.Model.Filters
                 {
                     MatchQuotedWord(c);
                 }
-                else if (IsString(c))
+                else if (IsWordChar(c))
                 {
                     MatchUnquotedWord();
                 }
@@ -106,7 +106,7 @@ namespace Gallio.Model.Filters
             int startPosition = inputPosition + 1;
             chars.Append(ConsumeNextChar());
             int nextChar = input.Peek();
-            while (nextChar != -1 && IsString((char)nextChar))
+            while (nextChar != -1 && IsWordChar((char)nextChar))
             {
                 chars.Append(ConsumeNextChar());
                 nextChar = input.Peek();
@@ -246,7 +246,7 @@ namespace Gallio.Model.Filters
             return c == '"' || c == '\'';
         }
 
-        private static bool IsString(char c)
+        internal static bool IsWordChar(char c)
         {
             return char.IsLetterOrDigit(c) || c == '_' || c == '\\' || c == '-' || c == '+' || c == '.' || c == '*' || c == '@';
         }

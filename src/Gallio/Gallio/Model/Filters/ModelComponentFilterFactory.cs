@@ -51,6 +51,8 @@ namespace Gallio.Model.Filters
                     return new NamespaceFilter<T>(valueFilter);
                 case "Type":
                     return new TypeFilter<T>(valueFilter, true);
+                case "ExactType":
+                    return new TypeFilter<T>(valueFilter, false);
                 case "Member":
                     return new MemberFilter<T>(valueFilter);
                 default:

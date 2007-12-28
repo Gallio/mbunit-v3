@@ -25,7 +25,7 @@ namespace Gallio.Model.Filters
     /// matches the specified assembly name filter.
     /// </summary>
     [Serializable]
-    public class AssemblyFilter<T> : BasePropertyFilter<T> where T : ITestComponent
+    public class AssemblyFilter<T> : PropertyFilter<T> where T : ITestComponent
     {
         /// <summary>
         /// Creates an assembly filter.
@@ -44,6 +44,12 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override string Key
+        {
+            get { return @"Assembly"; }
+        }
+
+        /// <inheritdoc />
         public override bool IsMatch(T value)
         {
             IAssemblyInfo assembly = ReflectionUtils.GetAssembly(value.CodeElement);
@@ -57,7 +63,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Assembly(" + ValueFilter + ")";
+            return @"Assembly(" + ValueFilter + @")";
         }
     }
 }

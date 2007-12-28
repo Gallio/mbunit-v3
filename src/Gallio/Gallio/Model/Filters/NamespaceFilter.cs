@@ -24,7 +24,7 @@ namespace Gallio.Model.Filters
     /// matches the specified namespace name.
     /// </summary>
     [Serializable]
-    public class NamespaceFilter<T> : BasePropertyFilter<T> where T : ITestComponent
+    public class NamespaceFilter<T> : PropertyFilter<T> where T : ITestComponent
     {
         /// <summary>
         /// Creates a namespace filter.
@@ -35,6 +35,12 @@ namespace Gallio.Model.Filters
         public NamespaceFilter(Filter<string> namespaceNameFilter)
             : base(namespaceNameFilter)
         {
+        }
+
+        /// <inheritdoc />
+        public override string Key
+        {
+            get { return @"Namespace"; }
         }
 
         /// <inheritdoc />
@@ -50,7 +56,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Namespace(" + ValueFilter + ")";
+            return @"Namespace(" + ValueFilter + @")";
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Gallio.Model.Filters
     /// has a key with a value that matches the value filter.
     /// </summary>
     [Serializable]
-    public class MetadataFilter<T> : BasePropertyFilter<T> where T : ITestComponent
+    public class MetadataFilter<T> : PropertyFilter<T> where T : ITestComponent
     {
         private readonly string key;
 
@@ -43,6 +43,12 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override string Key
+        {
+            get { return key; }
+        }
+
+        /// <inheritdoc />
         public override bool IsMatch(T value)
         {
             foreach (string assocValue in value.Metadata[key])
@@ -55,7 +61,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Metadata('" + key + "', " + ValueFilter + ")";
+            return @"Metadata('" + key + @"', " + ValueFilter + @")";
         }
     }
 }

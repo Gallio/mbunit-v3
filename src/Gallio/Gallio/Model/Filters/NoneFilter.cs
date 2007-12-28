@@ -30,9 +30,15 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override void Accept(IFilterVisitor visitor)
+        {
+            visitor.VisitNoneFilter(this);
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
-            return "None()";
+            return @"None()";
         }
     }
 }

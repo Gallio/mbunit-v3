@@ -23,7 +23,7 @@ namespace Gallio.Model.Filters
     /// matches the specified id filter.
     /// </summary>
     [Serializable]
-    public class IdFilter<T> : BasePropertyFilter<T> where T : ITestComponent
+    public class IdFilter<T> : PropertyFilter<T> where T : ITestComponent
     {
         /// <summary>
         /// Creates an identity filter.
@@ -36,6 +36,12 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override string Key
+        {
+            get { return @"Id"; }
+        }
+
+        /// <inheritdoc />
         public override bool IsMatch(T value)
         {
             return ValueFilter.IsMatch(value.Id);
@@ -44,7 +50,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Id(" + ValueFilter + ")";
+            return @"Id(" + ValueFilter + @")";
         }
     }
 }

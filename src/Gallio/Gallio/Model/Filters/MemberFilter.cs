@@ -26,7 +26,7 @@ namespace Gallio.Model.Filters
     /// a <see cref="TypeFilter" /> to ensure the accuracy of the member match.
     /// </summary>
     [Serializable]
-    public class MemberFilter<T> : BasePropertyFilter<T> where T : ITestComponent
+    public class MemberFilter<T> : PropertyFilter<T> where T : ITestComponent
     {
         /// <summary>
         /// Creates a member filter.
@@ -36,6 +36,12 @@ namespace Gallio.Model.Filters
         public MemberFilter(Filter<string> memberNameFilter)
             : base(memberNameFilter)
         {
+        }
+
+        /// <inheritdoc />
+        public override string Key
+        {
+            get { return @"Member"; }
         }
 
         /// <inheritdoc />
@@ -51,7 +57,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Member(" + ValueFilter + ")";
+            return @"Member(" + ValueFilter + @")";
         }
     }
 }

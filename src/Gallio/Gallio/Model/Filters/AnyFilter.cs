@@ -30,9 +30,15 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override void Accept(IFilterVisitor visitor)
+        {
+            visitor.VisitAnyFilter(this);
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
-            return "Any()";
+            return @"Any()";
         }
     }
 }

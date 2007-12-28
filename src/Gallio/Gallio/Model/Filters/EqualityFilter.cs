@@ -37,6 +37,14 @@ namespace Gallio.Model.Filters
             this.comparand = comparand;
         }
 
+        /// <summary>
+        /// Gets the value to compare for equality.
+        /// </summary>
+        public T Comparand
+        {
+            get { return comparand; }
+        }
+
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
@@ -44,9 +52,15 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override void Accept(IFilterVisitor visitor)
+        {
+            visitor.VisitEqualityFilter(this);
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
-            return "Equality('" + comparand + "')";
+            return @"Equality('" + comparand + @"')";
         }
     }
 }

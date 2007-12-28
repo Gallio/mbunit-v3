@@ -41,6 +41,15 @@ namespace Gallio.Model.Filters
             this.filters = filters;
         }
 
+        /// <summary>
+        /// Gets the filters that must jointly be matched.
+        /// If the array is empty, the filter matches everything.
+        /// </summary>
+        public Filter<T>[] Filters
+        {
+            get { return filters; }
+        }
+
         /// <inheritdoc />
         public override bool IsMatch(T value)
         {
@@ -51,20 +60,26 @@ namespace Gallio.Model.Filters
         }
 
         /// <inheritdoc />
+        public override void Accept(IFilterVisitor visitor)
+        {
+            visitor.VisitAndFilter(this);
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
-            result.Append("And({ ");
+            result.Append(@"And({ ");
 
-            foreach (Filter<T> filter in filters)
+            for (int i = 0; i < filters.Length; i++)
             {
-                if (result.Length != 6)
-                    result.Append(", ");
+                if (i != 0)
+                    result.Append(@", ");
 
-                result.Append(filter);
+                result.Append(filters[i]);
             }
 
-            result.Append(" })");
+            result.Append(@" })");
             return result.ToString();
         }
     }

@@ -23,7 +23,7 @@ namespace Gallio.Model.Filters
     /// against a string value filter.
     /// </summary>
     [Serializable]
-    public abstract class BasePropertyFilter<T> : Filter<T>
+    public abstract class PropertyFilter<T> : Filter<T>
     {
         private readonly Filter<string> valueFilter;
 
@@ -32,7 +32,7 @@ namespace Gallio.Model.Filters
         /// </summary>
         /// <param name="valueFilter">The string value filter</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="valueFilter"/> is null</exception>
-        public BasePropertyFilter(Filter<string> valueFilter)
+        public PropertyFilter(Filter<string> valueFilter)
         {
             if (valueFilter == null)
                 throw new ArgumentNullException("valueFilter");
@@ -41,11 +41,22 @@ namespace Gallio.Model.Filters
         }
 
         /// <summary>
+        /// Gets the key that represents the filtered property.
+        /// </summary>
+        public abstract string Key { get; }
+
+        /// <summary>
         /// Gets the string value filter.
         /// </summary>
-        protected Filter<string> ValueFilter
+        public Filter<string> ValueFilter
         {
             get { return valueFilter; }
+        }
+
+        /// <inheritdoc />
+        public override void Accept(IFilterVisitor visitor)
+        {
+            visitor.VisitPropertyFilter(this);
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Gallio.Model.Filters
     /// <example>
     /// <include file='../../../../Gallio/docs/FilterSyntax.xml' path='doc/example/*' />
     /// </example>
+    /// <seealso cref="FilterFormatter"/>
     public class FilterParser<T>
     {
         private readonly IFilterFactory<T> factory;

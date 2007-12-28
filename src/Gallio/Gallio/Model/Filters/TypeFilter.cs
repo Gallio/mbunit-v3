@@ -25,7 +25,7 @@ namespace Gallio.Model.Filters
     /// matches the specified type name.
     /// </summary>
     [Serializable]
-    public class TypeFilter<T> : BasePropertyFilter<T> where T : ITestComponent
+    public class TypeFilter<T> : PropertyFilter<T> where T : ITestComponent
     {
         private readonly bool includeDerivedTypes;
 
@@ -47,6 +47,12 @@ namespace Gallio.Model.Filters
             : base(typeNameFilter)
         {
             this.includeDerivedTypes = includeDerivedTypes;
+        }
+
+        /// <inheritdoc />
+        public override string Key
+        {
+            get { return includeDerivedTypes ? @"Type" : @"ExactType"; }
         }
 
         /// <inheritdoc />
@@ -85,7 +91,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Type(" + ValueFilter + ", " + includeDerivedTypes + ")";
+            return @"Type(" + ValueFilter + @", " + includeDerivedTypes + @")";
         }
     }
 }
