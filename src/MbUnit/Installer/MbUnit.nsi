@@ -8,13 +8,14 @@
 !define APPNAMEANDVERSION "MbUnit v${VERSION}"
 !define LIBSDIR "..\..\..\libs"
 !define BUILDDIR "..\..\..\build"
+!define RELEASEDIR "${BUILDDIR}\release"
 
 !include "StrRep.nsh"
 
 ; Main Install settings
 Name "${APPNAMEANDVERSION}"
 InstallDir "$PROGRAMFILES\MbUnit v3"
-OutFile "${BUILDDIR}\MbUnit-Setup.exe"
+OutFile "${RELEASEDIR}\MbUnit-${VERSION}-Setup.exe"
 
 BrandingText "mbunit.com"
 
@@ -22,9 +23,6 @@ InstType "Full"
 InstType "Typical"
 
 ; Constants
-!define SF_SELECTED 1
-!define SF_RO 16
-
 !define /math SF_SELECTED_MASK 255 - ${SF_SELECTED}
 !define /math SF_RO_MASK 255 - ${SF_RO}
 

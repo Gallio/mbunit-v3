@@ -258,7 +258,7 @@
   </ItemGroup>
 
   <Target Name="Build"
-          DependsOnTargets="BuildCSharpProjects;CopyBinaries;BuildXMLDocs" />
+          DependsOnTargets="BuildCSharpProjects;CopyBinaries" />
 
   <Target Name="Clean"
           DependsOnTargets="CleanCSharpProjects">
@@ -275,10 +275,19 @@
              Condition="'$(MbUnitExitCode)'!='0'" />
   </Target>
 
+  <Target Name="TestNonInteractive">
+    <Exec Command="&quot;$(BuildBinDir)\Gallio.Echo.exe&quot; /report-name:test-report /report-type:Xml /report-directory:&quot;$(BuildReportsDir)&quot; @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
+    </Exec>
+    <Warning Text="Some MbUnit tests failed!"
+             Condition="'$(MbUnitExitCode)'!='0'" />
+  </Target>
+
   <Target Name="Release"
-          DependsOnTargets="Clean;Build;Test;BuildAPIDocs;BuildInstaller" />
+          DependsOnTargets="Clean;Build;Test;BuildDocs;BuildInstaller" />
           
-  <Target Name="BuildServer" DependsOnTargets="Clean;Build;BuildAPIDocs;BuildInstaller" />
+  <Target Name="BuildServer" DependsOnTargets="Clean;Build;TestNonInteractive;BuildDocs;BuildInstaller" />
 
   <Target Name="BuildCSharpProjects"
           DependsOnTargets="CreateBuildDir">
@@ -304,16 +313,16 @@
           DestinationFolder="$(BuildBinDir)\%(Binary.Folder)\%(RecursiveDir)" />
   </Target>
 
+  <Target Name="BuildDocs"
+          DependsOnTargets="BuildXMLDocs;BuildCHMDocs;BuildHxSDocs" />
+
   <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
   <Target Name="BuildXMLDocs">
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=Intellisense -project=&quot;%(NDocProject.Identity)&quot;" />
     <Delete Files="$(BuildBinDir)\ndoc_qa.log;$(BuildBinDir)\ndoc_build.log" />
   </Target>
 
-  <Target Name="BuildAPIDocs"
-          DependsOnTargets="BuildAPIDocs-CHM;BuildAPIDocs-HxS" />
-
-  <Target Name="BuildAPIDocs-CHM">
+  <Target Name="BuildCHMDocs">
     <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in libs\Setup Files for the Microsoft HTML Help Workshop installer."
              Condition="! Exists('$(HTMLHelpCompilerPath)')" />
 
@@ -321,7 +330,7 @@
           Condition="Exists('$(HTMLHelpCompilerPath)')" />
   </Target>
 
-  <Target Name="BuildAPIDocs-HxS">
+  <Target Name="BuildHxSDocs">
     <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (Hxs) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the Visual Studio 2005 SDK installer."
            Condition="! Exists('$(VS2005SDKHelpPath)')" />
 
