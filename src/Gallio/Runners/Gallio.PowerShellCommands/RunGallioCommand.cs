@@ -238,7 +238,7 @@ namespace Gallio.PowerShellCommands
 
         #region Protected Methods
 
-        /// <inheritdoc />
+        /// <exclude />
         protected override void EndProcessing()
         {
             try
