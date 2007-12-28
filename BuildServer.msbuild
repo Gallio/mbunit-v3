@@ -1,0 +1,8 @@
+<Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Version>$(CCNetLabel)</Version>
+    <NonInteractive>true</NonInteractive>
+  </PropertyGroup>
+
+  <Import Project="Build.msbuild" />
+</Project>

@@ -9,13 +9,16 @@
     <LibsDir>$(RootDir)\libs</LibsDir>
     <SourceDir>$(RootDir)\src</SourceDir>
 
-    <Version Condition="'$(Version)'==''">$(CCNetLabel)</Version>
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
+    <NonInteractive Condition="'$(NonInteractive)'==''">false</NonInteractive>
 
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
     <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
     <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
+    <MSBuildCommunityTasksPath>$(LibsDir)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
   </PropertyGroup>
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
 
   <!-- The C# projects to compile. -->
   <ItemGroup>
@@ -269,26 +272,23 @@
 
   <Target Name="Test">
     <Exec Command="&quot;$(BuildBinDir)\Gallio.Echo.exe&quot; /report-type:Html /report-directory:&quot;$(BuildReportsDir)&quot; /show-reports @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
+          Condition="! $(NonInteractive)"
           IgnoreExitCode="true">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
     </Exec>
-    <Warning Text="Some MbUnit tests failed!"
-             Condition="'$(MbUnitExitCode)'!='0'" />
-  </Target>
 
-  <Target Name="TestNonInteractive">
-    <Exec Command="&quot;$(BuildBinDir)\Gallio.Echo.exe&quot; /report-name:test-report /report-type:Xml /report-directory:&quot;$(BuildReportsDir)&quot; @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
+    <Exec Command="&quot;$(BuildBinDir)\Gallio.Echo.exe&quot; /report-name-format:test-report /report-type:Xml /report-directory:&quot;$(BuildReportsDir)&quot; @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
+          Condition="$(NonInteractive)"
           IgnoreExitCode="true">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
     </Exec>
+
     <Warning Text="Some MbUnit tests failed!"
              Condition="'$(MbUnitExitCode)'!='0'" />
   </Target>
 
   <Target Name="Release"
-          DependsOnTargets="Clean;Build;Test;BuildDocs;BuildInstaller" />
-          
-  <Target Name="BuildServer" DependsOnTargets="Clean;Build;TestNonInteractive;BuildDocs;BuildInstaller" />
+          DependsOnTargets="Clean;Build;Test;BuildDocs;BuildInstaller;BuildZip" />
 
   <Target Name="BuildCSharpProjects"
           DependsOnTargets="CreateBuildDir">
@@ -346,6 +346,18 @@
 
     <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) &quot;$(SourceDir)\MbUnit\Installer\MbUnit.nsi&quot;"
           Condition="Exists('$(NSISPath)')" />
+  </Target>
+
+  <Target Name="BuildZip"
+          DependsOnTargets="CreateBuildDir">
+    <CreateItem Include="$(BuildBinDir)\**\*.*;$(BuildDocsDir)\**\*.*">
+      <Output TaskItem="Include" ItemName="ZipFiles" />
+    </CreateItem>
+
+    <Zip Files="@(ZipFiles)"
+         WorkingDirectory="$(BuildDir)"
+         ZipFileName="$(BuildReleaseDir)\MbUnit-$(Version).zip"
+         ZipLevel="9" />
   </Target>
 
   <Target Name="CreateBuildDir">
