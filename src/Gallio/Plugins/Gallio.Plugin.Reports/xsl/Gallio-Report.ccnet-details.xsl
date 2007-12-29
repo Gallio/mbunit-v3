@@ -5,12 +5,12 @@
   <xsl:output method="html" indent="yes" encoding="utf-8" omit-xml-declaration="yes" />
   <xsl:param name="resourceRoot" select="''" />
 
-  <xsl:variable name="cssDir"></xsl:variable>
-  <xsl:variable name="jsDir"></xsl:variable>
-  <xsl:variable name="imgDir">/images/</xsl:variable>
+  <xsl:variable name="cssDir">/gallio/css/</xsl:variable>
+  <xsl:variable name="jsDir">/gallio/js/</xsl:variable>
+  <xsl:variable name="imgDir">/gallio/img/</xsl:variable>
 
   <xsl:template match="/">
-    <xsl:apply-templates select="/" mode="html-fragment" />
+    <xsl:apply-templates select="//g:report" mode="html-fragment" />
   </xsl:template>
   
   <!-- Include the base HTML / XHTML report template -->

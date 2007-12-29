@@ -24,7 +24,7 @@
             <property name="CleanIntermediates" value="True" />
         </documenter>
         <documenter name="MSDN-CHM">
-            <property name="OutputDirectory" value="..\..\..\build\docs\chm\" />
+            <property name="OutputDirectory" value="..\..\..\build\docs\" />
             <property name="HtmlHelpName" value="MbUnit" />
             <property name="Title" value="MbUnit API" />
             <property name="UseAssemblyShadowCache" value="False" />

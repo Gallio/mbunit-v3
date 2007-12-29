@@ -34,7 +34,7 @@ InstType "Typical"
 ; Pages
 !insertmacro MUI_PAGE_WELCOME
 Page custom AddRemovePageEnter AddRemovePageLeave
-!insertmacro MUI_PAGE_LICENSE "${BUILDDIR}\bin\MbUnit License.txt"
+!insertmacro MUI_PAGE_LICENSE "${BUILDDIR}\docs\MbUnit License.txt"
 Page custom UserSelectionPageEnter UserSelectionPageLeave
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
@@ -60,7 +60,7 @@ Var UserContext
 
 ; Detect whether any components are missing
 !tempfile DETECT_TEMP
-!system 'if not exist "${BUILDDIR}\docs\chm\MbUnit.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
+!system 'if not exist "${BUILDDIR}\docs\MbUnit.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${BUILDDIR}\docs\vs2005\MbUnit.HxS" echo !define MISSING_VS2005_HELP >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
 !delfile "${DETECT_TEMP}"
@@ -82,9 +82,6 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR"
-	File "${BUILDDIR}\bin\ASL - Apache Software Foundation License.txt"
-	File "${BUILDDIR}\bin\MbUnit License.txt"
-	File "${BUILDDIR}\bin\Release Notes.txt"
 	File "MbUnit Website.url"
 	File "MbUnit Online Documentation.url"
 
@@ -101,7 +98,10 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	File "${BUILDDIR}\bin\MbUnit.xml"
 
 	SetOutPath "$INSTDIR\bin\Reports"
-	File /r "${BUILDDIR}\bin\Reports\*"
+	File /r "${BUILDDIR}\bin\Reports\*.txt"
+
+	SetOutPath "$INSTDIR\docs"
+	File "${BUILDDIR}\docs\*.txt"
 
 	; Create Shortcuts
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
@@ -352,7 +352,7 @@ Section "Standalone Help Docs" CHMHelpSection
 	SetOutPath "$INSTDIR"
 
 	SetOutPath "$INSTDIR\docs"
-	File "${BUILDDIR}\docs\chm\MbUnit.chm"
+	File "${BUILDDIR}\docs\MbUnit.chm"
 
 	; Create Shortcuts
 	CreateShortCut "$INSTDIR\MbUnit Offline Documentation.lnk" "$INSTDIR\docs\MbUnit.chm"
@@ -597,4 +597,5 @@ Function UserSelectionPageLeave
 		StrCpy $UserContext "current"
 	Done:
 FunctionEnd
+
 

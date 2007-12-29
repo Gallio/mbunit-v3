@@ -78,10 +78,6 @@
 
   <!-- The binaries to copy into the build folder after compilation. -->
   <ItemGroup>
-    <Binary Include="$(RootDir)\MbUnit License.txt" />
-    <Binary Include="$(RootDir)\Release Notes.txt" />
-    <Binary Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
-
     <Binary Include="$(LibsDir)\Castle\bin\Castle.Core.dll" />
     <Binary Include="$(LibsDir)\Castle\bin\Castle.MicroKernel.dll" />
     <Binary Include="$(LibsDir)\Castle\bin\Castle.Windsor.dll" />
@@ -243,6 +239,14 @@
     </Binary>
   </ItemGroup>
 
+  <!-- The documents to copy into the docs folder. -->
+  <ItemGroup>
+    <Document Include="$(RootDir)\MbUnit License.txt" />
+    <Document Include="$(RootDir)\Release Notes.txt" />
+    <Document Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
+    <Document Include="$(SourceDir)\Gallio\Docs\*.txt" />
+  </ItemGroup>
+
   <!-- The test assemblies to run. -->
   <ItemGroup>
     <TestAssembly Include="$(SourceDir)\Gallio\Gallio.Tests\bin\Gallio.Tests.dll" />
@@ -262,7 +266,7 @@
   </ItemGroup>
 
   <Target Name="Build"
-          DependsOnTargets="BuildCSharpProjects;CopyBinaries" />
+          DependsOnTargets="BuildCSharpProjects;CopyBinaries;CopyDocuments" />
 
   <Target Name="Clean"
           DependsOnTargets="CleanCSharpProjects">
@@ -314,6 +318,11 @@
           DestinationFolder="$(BuildBinDir)\%(Binary.Folder)\%(RecursiveDir)" />
   </Target>
 
+  <Target Name="CopyDocuments">
+    <Copy SourceFiles="@(Document)"
+          DestinationFolder="$(BuildDocsDir)\%(Document.Folder)\%(RecursiveDir)" />
+  </Target>
+
   <Target Name="BuildDocs"
           DependsOnTargets="BuildXMLDocs;BuildCHMDocs;BuildHxSDocs" />
 
@@ -351,7 +360,7 @@
   <Target Name="BuildZip"
           DependsOnTargets="CreateBuildDir">
     <CreateItem Include="$(BuildBinDir)\**\*.*;$(BuildDocsDir)\**\*.*"
-                Exclude="$(BuildDocsDir)\chm\ndoc_msdn_temp\**\*.*">
+                Exclude="$(BuildDocsDir)\ndoc_msdn_temp\**\*.*">
       <Output TaskParameter="Include" ItemName="ZipFiles" />
     </CreateItem>
 

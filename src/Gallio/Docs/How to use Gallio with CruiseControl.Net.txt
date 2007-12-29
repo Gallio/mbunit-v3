@@ -1,0 +1,76 @@
+How to use Gallio with CruiseControl.Net
+========================================
+
+Using Gallio in CruiseControl.Net is very straightforward.
+
+
+CONFIGURING THE SERVER
+----------------------
+
+For the server, we need to ensure that the build script runs the tests and generates an XML
+formatted Gallio Test Report that is then merged into the CruiseControl.Net artifacts file
+with the <merge> publisher task.
+
+You can use any of the supported Gallio test runners to run your tests such as Gallio.Echo,
+Gallio.MSBuildTasks, Gallio.NAntTasks or Gallio.PowerShellCmdlet.  The important thing is
+to provide appropriate arguments to the test runner such that an XML report is generated
+so that the test results can be saved for subsequent display in the dashboard.
+
+Here is one way to do this:
+
+1. Edit the "ccnet.config" file in the CruiseControl.Net "server" folder.
+
+     * Within the <tasks> element, add a line similar to the following AFTER the tasks that
+       build your project.  This will run the tests in your test assembly and generate an
+       XML test report in the project working directory.
+
+         <exec>
+            <executable>$$$PathToGallioInstallationFolder$$$\bin\Gallio.Echo.exe</executable>
+            <buildArgs>/rnf:test-report /rt:Xml /v:Quiet $$$MyTestAssembly.dll$$$</buildArgs>
+         </exec>
+
+     * Within the <publishers> element, add a line similar to the following BEFORE the
+       <xmllogger> task element.  This will merge the XML test report into the build artifacts.
+
+          <merge><files><file>test-report.xml</file></files></merge>
+
+2. Double-check:
+
+     * The XML test report is being generated as part of a build task.
+     * The XML test report is being merged into the CruiseControl.Net artifacts file
+       as part of a publisher task.
+
+3. There is normally no need to restart the CruiseControl.Net server since it automatically
+   detects changes to the "ccnet.config" file.
+
+
+CONFIGURING THE DASHBOARD
+-------------------------
+
+For the dashboard, we need to add some new resources that are used to render the Gallio Test Report
+we must update the dashboard configuration file to include the new test report plugin.
+
+1. Create a directory called "gallio" within the CruiseControl.Net "webdashboard" folder.
+
+2. Copy the following directories from the "bin\Reports" folder in the Gallio installation
+   directory into the newly created "gallio" folder above:
+
+     * bin\Reports\css
+     * bin\Reports\img
+     * bin\Reports\js
+     * bin\Reports\xsl
+
+3. Edit the "dashboard.config" file in the CruiseControl.Net "webdashboard" folder.
+
+     * Within the <buildPlugins> element, add the following line:
+
+          <xslReportBuildPlugin description="Gallio Test Report"
+                                actionName="GallioTestReport"
+                                xslFileName="gallio\xsl\Gallio-Report.ccnet-details.xsl" />
+
+4. Double-check:
+
+     * The "webdashboard" folder now contains "gallio\css", "gallio\img", "gallio\js", "gallio\xml".
+     * The "dashboard.config" file has been edited to include the new build report section.
+
+5. Restart the CruiseControl.Net web application.  (eg. By resetting IIS.)

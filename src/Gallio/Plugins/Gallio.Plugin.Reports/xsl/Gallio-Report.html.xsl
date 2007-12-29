@@ -11,7 +11,7 @@
   <xsl:variable name="imgDir"><xsl:if test="$resourceRoot != ''"><xsl:value-of select="$resourceRoot"/>/</xsl:if>img/</xsl:variable>
 
   <xsl:template match="/">
-    <xsl:apply-templates select="/" mode="html-document" />
+    <xsl:apply-templates select="/g:report" mode="html-document" />
   </xsl:template>
   
   <!-- Include the base HTML / XHTML report template -->

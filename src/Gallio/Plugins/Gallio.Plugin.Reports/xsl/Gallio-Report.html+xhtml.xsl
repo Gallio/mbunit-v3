@@ -3,10 +3,10 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:g="http://www.mbunit.com/gallio"
                 xmlns="http://www.w3.org/1999/xhtml">
-  <xsl:key name="outcome" match="/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun" use="g:testStepRun/g:result/@outcome" />
-  <xsl:key name="status" match="/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun" use="g:testStepRun/g:result/@status" />
+  <xsl:key name="outcome" match="//g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun" use="g:testStepRun/g:result/@outcome" />
+  <xsl:key name="status" match="//g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun" use="g:testStepRun/g:result/@status" />
   
-  <xsl:template match="/" mode="xhtml-document">
+  <xsl:template match="g:report" mode="xhtml-document">
     <html xml:lang="en" lang="en" dir="ltr">
       <head>
         <title>Gallio Test Report</title>
@@ -15,36 +15,42 @@
           <xsl:comment> comment inserted for Internet Explorer </xsl:comment>
         </script>
       </head>
-      <body>
-        <xsl:apply-templates select="g:report" />
+      <body class="gallio-report">
+        <xsl:apply-templates select="." mode="xhtml-body" />
       </body>
     </html>
   </xsl:template>
   
-  <xsl:template match="/" mode="html-document">
+  <xsl:template match="g:report" mode="html-document">
     <xsl:call-template name="strip-namespace">
-      <xsl:with-param name="nodes"><xsl:apply-templates select="/" mode="xhtml-document" /></xsl:with-param>
+      <xsl:with-param name="nodes"><xsl:apply-templates select="." mode="xhtml-document" /></xsl:with-param>
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="/" mode="xhtml-fragment">
-    <div class="mbunit-report">
+  <xsl:template match="g:report" mode="xhtml-fragment">
+    <div class="gallio-report">
+      <!-- Technically a link element should not appear outside of the "head"
+           but most browsers tolerate it and this gives us better out of the box
+           support in embedded environments like CCNet since no changes need to
+           be made to the stylesheets of the containing application.
+      -->
+      <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.css" />
       <script type="text/javascript" src="{$jsDir}Gallio-Report.js">
         <xsl:comment> comment inserted for Internet Explorer </xsl:comment>
       </script>
       
-      <xsl:apply-templates select="g:report" />
+      <xsl:apply-templates select="." mode="xhtml-body" />
     </div>
   </xsl:template>
 
-  <xsl:template match="/" mode="html-fragment">
+  <xsl:template match="g:report" mode="html-fragment">
     <xsl:call-template name="strip-namespace">
-      <xsl:with-param name="nodes"><xsl:apply-templates select="/" mode="xhtml-fragment" /></xsl:with-param>
+      <xsl:with-param name="nodes"><xsl:apply-templates select="." mode="xhtml-fragment" /></xsl:with-param>
     </xsl:call-template>
   </xsl:template>
 
   
-  <xsl:template match="g:report">
+  <xsl:template match="g:report" mode="xhtml-body">
     <div id="header">
       <h1>Gallio Test Report</h1>
     </div>
@@ -143,9 +149,9 @@
       <h2>Summary</h2>
       <div class="section-content">
         <xsl:choose>
-          <xsl:when test="g:children/g:test[@id=/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
+          <xsl:when test="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
             <ul>
-              <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="summary" />
+              <xsl:apply-templates select="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="summary" />
             </ul>
           </xsl:when>
           <xsl:otherwise>
@@ -200,9 +206,9 @@
         (<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />)
       </div>
 
-      <xsl:if test="g:children/g:test[@id=/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId] and $kind != 'Fixture' ">
+      <xsl:if test="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId] and $kind != 'Fixture' ">
         <ul id="summaryPanel-{$id}">
-          <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="summary" />
+          <xsl:apply-templates select="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="summary" />
         </ul>
       </xsl:if>
     </li>
@@ -213,9 +219,9 @@
       <h2>Details</h2>
       <div class="section-content">
         <xsl:choose>
-          <xsl:when test="g:children/g:test[@id=/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
+          <xsl:when test="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
             <ul class="testInstanceRunContainer">
-              <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="details" />
+              <xsl:apply-templates select="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="details" />
             </ul>
           </xsl:when>
           <xsl:otherwise>
@@ -238,12 +244,12 @@
     <xsl:variable name="ignored" select="$tests[@id = key('status', 'ignored')/g:testInstance/@testId]" />
     <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/g:testInstance/@testId]" />
 
-    <xsl:variable name="testInstanceRun" select="/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun[g:testInstance/@testId=$testId]" />
+    <xsl:variable name="testInstanceRun" select="ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun[g:testInstance/@testId=$testId]" />
     <xsl:variable name="rootTestStepRun" select="$testInstanceRun/g:testStepRun" />
     <xsl:variable name="rootStepResult" select="$rootTestStepRun/g:result" />
 
     <xsl:variable name="allTestAndFixtures" select="descendant-or-self::g:test" />
-    <xsl:variable name="resultsForAllDescendants" select="/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun[g:testInstance/@testId = $allTestAndFixtures/@id]//g:testStepRun/g:result" />
+    <xsl:variable name="resultsForAllDescendants" select="ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun[g:testInstance/@testId = $allTestAndFixtures/@id]//g:testStepRun/g:result" />
     <xsl:variable name="assertions" select="sum($resultsForAllDescendants/@assertCount)" />
 
     <xsl:variable name="nestingLevel" select="count(ancestor::g:test)" />
@@ -325,9 +331,9 @@
           <xsl:apply-templates select="$rootTestStepRun" mode="details-content" />
         </div>
 
-        <xsl:if test="g:children/g:test[@id=/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
+        <xsl:if test="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
           <ul class="testInstanceRunContainer">
-            <xsl:apply-templates select="g:children/g:test[@id=/g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="details" />
+            <xsl:apply-templates select="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="details" />
           </ul>
         </xsl:if>
       </div>
