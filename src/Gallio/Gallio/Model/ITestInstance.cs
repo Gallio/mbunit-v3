@@ -30,7 +30,7 @@ namespace Gallio.Model
         ITest Test { get; }
 
         /// <summary>
-        /// Returns true if the test instance is dynamic cannot not be created with certainty
+        /// Returns true if the test instance is dynamic and cannot not be known with certainty
         /// prior to test execution because its parameters are bound to values that
         /// may be unavailable ahead of time, may change over time or that may be
         /// expensive to obtain.

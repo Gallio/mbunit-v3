@@ -239,12 +239,16 @@
     </Binary>
   </ItemGroup>
 
-  <!-- The documents to copy into the docs folder. -->
+  <!-- Documents to copy into the docs folder. -->
   <ItemGroup>
-    <Document Include="$(RootDir)\MbUnit License.txt" />
-    <Document Include="$(RootDir)\Release Notes.txt" />
-    <Document Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
     <Document Include="$(SourceDir)\Gallio\Docs\*.txt" />
+  </ItemGroup>
+
+  <!-- Other files to copy into the build folder. -->
+  <ItemGroup>
+    <File Include="$(RootDir)\MbUnit License.txt" />
+    <File Include="$(RootDir)\Release Notes.txt" />
+    <File Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
   </ItemGroup>
 
   <!-- The test assemblies to run. -->
@@ -266,7 +270,7 @@
   </ItemGroup>
 
   <Target Name="Build"
-          DependsOnTargets="BuildCSharpProjects;CopyBinaries;CopyDocuments" />
+          DependsOnTargets="BuildCSharpProjects;CopyFiles" />
 
   <Target Name="Clean"
           DependsOnTargets="CleanCSharpProjects">
@@ -313,14 +317,13 @@
              " />
   </Target>
 
-  <Target Name="CopyBinaries">
+  <Target Name="CopyFiles">
     <Copy SourceFiles="@(Binary)"
           DestinationFolder="$(BuildBinDir)\%(Binary.Folder)\%(RecursiveDir)" />
-  </Target>
-
-  <Target Name="CopyDocuments">
     <Copy SourceFiles="@(Document)"
           DestinationFolder="$(BuildDocsDir)\%(Document.Folder)\%(RecursiveDir)" />
+    <Copy SourceFiles="@(File)"
+          DestinationFolder="$(BuildDir)\%(File.Folder)\%(RecursiveDir)" />
   </Target>
 
   <Target Name="BuildDocs"
