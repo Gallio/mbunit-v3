@@ -31,7 +31,7 @@ InstType "Typical"
 !define MUI_ABORTWARNING
 !include "MUI.nsh"
 
-; Pages
+; Installer pages
 !insertmacro MUI_PAGE_WELCOME
 Page custom AddRemovePageEnter AddRemovePageLeave
 !insertmacro MUI_PAGE_LICENSE "${BUILDDIR}\MbUnit License.txt"
@@ -41,6 +41,7 @@ Page custom UserSelectionPageEnter UserSelectionPageLeave
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
+; Uninstaller pages
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 
@@ -212,13 +213,13 @@ SectionEnd
 Var ReSharperInstallDir
 Var ReSharperPluginDir
 !macro GetReSharperPluginDir RSVersion VSVersion
-        ClearErrors
+	ClearErrors
 	ReadRegStr $0 HKCU "Software\JetBrains\ReSharper\${RSVersion}\${VSVersion}" "InstallDir"
 	IfErrors +3
 		StrCpy $ReSharperInstallDir $0
 		Goto +8
 
-        ClearErrors
+	ClearErrors
 	ReadRegStr $0 HKLM "Software\JetBrains\ReSharper\${RSVersion}\${VSVersion}" "InstallDir"
 	IfErrors +3
 		StrCpy $ReSharperInstallDir $0
@@ -323,20 +324,20 @@ Section "TestDriven.Net Runner for Other Supported Frameworks" TDNetAddInOtherFr
 	SetOverwrite on
 	
 	; Registry Keys
-        SectionGetFlags ${MbUnit2PluginSection} $0
-        IntOp $0 $0 & ${SF_SELECTED}
+	SectionGetFlags ${MbUnit2PluginSection} $0
+	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoMbUnit2
 		!insertmacro InstallTDNetRunner "Gallio_MbUnit2" "MbUnit.Framework" "5"
 	NoMbUnit2:
 
-        SectionGetFlags ${NUnitPluginSection} $0
-        IntOp $0 $0 & ${SF_SELECTED}
+	SectionGetFlags ${NUnitPluginSection} $0
+	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoNUnit
 		!insertmacro InstallTDNetRunner "Gallio_NUnit" "nunit.framework" "5"
 	NoNUnit:
 
-        SectionGetFlags ${XunitPluginSection} $0
-        IntOp $0 $0 & ${SF_SELECTED}
+	SectionGetFlags ${XunitPluginSection} $0
+	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoXunit
 		!insertmacro InstallTDNetRunner "Gallio_Xunit" "xunit" "5"
 	NoXunit:
@@ -489,7 +490,7 @@ Function .onInit
 	!ifndef MISSING_VS2005_HELP
 	; Check if VS 2005 Standard or above is installed.
 	; Specifically exclude Express editions.
-        ClearErrors
+	ClearErrors
 	ReadRegDWORD $0 HKLM "Software\Microsoft\DevDiv\VS\Servicing\8.0" "SP"
 	IfErrors 0 +3
 		SectionSetFlags ${VS2005HelpSection} ${SF_RO}
@@ -499,7 +500,7 @@ FunctionEnd
 
 ; Uninstaller initialization code.
 Function un.onInit
-        ClearErrors
+	ClearErrors
 	ReadRegStr $0 HKCU "Software\${APPNAME}" ""
 	IfErrors NotInstalledForUser
 		SetShellVarContext current
@@ -508,7 +509,7 @@ Function un.onInit
 		Goto Installed
 	NotInstalledForUser:
 
-        ClearErrors
+	ClearErrors
 	ReadRegStr $0 HKLM "Software\${APPNAME}" ""
 	IfErrors NotInstalledForSystem
 		SetShellVarContext all
@@ -528,12 +529,12 @@ Function .onSelChange
 	; Only allow selection of the TDNet addin for other frameworks
 	; when at least one of them is selected and the TDNet addin is
 	; being installed
-        SectionGetFlags ${MbUnit2PluginSection} $0
+	SectionGetFlags ${MbUnit2PluginSection} $0
 
-        SectionGetFlags ${NUnitPluginSection} $1
+	SectionGetFlags ${NUnitPluginSection} $1
 	IntOp $0 $0 | $1
 
-        SectionGetFlags ${XunitPluginSection} $1
+	SectionGetFlags ${XunitPluginSection} $1
 	IntOp $0 $0 | $1
 
 	SectionGetFlags ${TDNetAddInSection} $1
@@ -555,7 +556,7 @@ FunctionEnd
 ; Add-remove page.
 Var OLD_INSTALL_DIR
 Function AddRemovePageEnter
-        ClearErrors
+	ClearErrors
 	ReadRegStr $OLD_INSTALL_DIR HKCU "Software\${APPNAME}" ""
 	IfErrors 0 AlreadyInstalled
 	ReadRegStr $OLD_INSTALL_DIR HKLM "Software\${APPNAME}" ""
