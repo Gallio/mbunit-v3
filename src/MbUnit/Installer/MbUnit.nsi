@@ -34,7 +34,7 @@ InstType "Typical"
 ; Pages
 !insertmacro MUI_PAGE_WELCOME
 Page custom AddRemovePageEnter AddRemovePageLeave
-!insertmacro MUI_PAGE_LICENSE "${BUILDDIR}\docs\MbUnit License.txt"
+!insertmacro MUI_PAGE_LICENSE "${BUILDDIR}\MbUnit License.txt"
 Page custom UserSelectionPageEnter UserSelectionPageLeave
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
