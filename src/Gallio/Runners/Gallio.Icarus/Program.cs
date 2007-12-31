@@ -22,6 +22,8 @@ using Gallio.Icarus.Core.Presenter;
 using Gallio.Core.ConsoleSupport;
 using Gallio.Hosting;
 using Gallio.Model;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus
 {
@@ -39,19 +41,10 @@ namespace Gallio.Icarus
             Runtime.Initialize(new RuntimeSetup());
             try
             {
-                // parse command line arguments
-                CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
-                Arguments arguments = new Arguments();
-                TestPackageConfig testPackageConfig = new TestPackageConfig();
-                if (argumentParser.Parse(args, arguments, delegate { }))
-                {
-                    testPackageConfig.AssemblyFiles.AddRange(arguments.Assemblies);
-                }
-
                 // wire up model
                 Main main = new Main();
                 ProjectAdapter projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
-                projectAdapter.TestPackageConfig = testPackageConfig;
+                projectAdapter.Project = ParseArguments(args);
                 ProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, new TestRunnerModel());
 
                 Application.Run(main);
@@ -60,6 +53,35 @@ namespace Gallio.Icarus
             {
                 Runtime.Shutdown();
             }
+        }
+
+        private static Project ParseArguments(string[] args)
+        {
+            // parse command line arguments
+            CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
+            Arguments arguments = new Arguments();
+            Project project = new Project();
+            if (argumentParser.Parse(args, arguments, delegate { }))
+            {
+                foreach (string file in arguments.Assemblies)
+                {
+                    if (file.EndsWith(".gallio"))
+                    {
+                        try
+                        {
+                            project = SerializationUtils.LoadFromXml<Project>(file);
+                        }
+                        catch (Exception)
+                        { }
+                        return project;
+                    }
+                    else
+                    {
+                        project.TestPackageConfig.AssemblyFiles.Add(file);
+                    }
+                }
+            }
+            return project;
         }
     }
 }

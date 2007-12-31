@@ -101,9 +101,17 @@ namespace Gallio.Icarus.Core.Model
             }
         }
 
-        public string GetLogStream(string log)
+        public IList<string> GetAvailableLogStreams(string testId)
         {
-            return testRunnerMonitor.GetLogStream(log);
+            if (testRunnerMonitor != null)
+                return testRunnerMonitor.GetAvailableLogStreams(testId);
+            else
+                return new List<string>();
+        }
+
+        public string GetLogStream(string logStream, string testId)
+        {
+            return testRunnerMonitor.GetLogStream(logStream, testId);
         }
 
         public void GenerateReport()

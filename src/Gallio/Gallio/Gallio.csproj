@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -205,7 +205,6 @@
     <Compile Include="Model\TestParameterInfoList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Runner\FilterInfo.cs" />
     <Compile Include="Runner\Harness\ConsoleTestEnvironment.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarness.cs" />
     <Compile Include="Runner\Harness\DefaultTestHarnessFactory.cs" />
@@ -215,7 +214,8 @@
     <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
     <Compile Include="Model\ITestExplorer.cs" />
     <Compile Include="Runner\Harness\UnhandledExceptionTestEnvironment.cs" />
-    <Compile Include="Runner\Project.cs" />
+    <Compile Include="Runner\Projects\FilterInfo.cs" />
+    <Compile Include="Runner\Projects\Project.cs" />
     <Compile Include="Runner\Reports\ExecutionLogAttachmentContentDisposition.cs" />
     <Compile Include="Runner\Reports\DefaultReportReader.cs" />
     <Compile Include="Runner\Reports\DefaultReportWriter.cs" />

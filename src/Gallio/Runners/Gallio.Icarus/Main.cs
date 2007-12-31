@@ -27,6 +27,10 @@ using Gallio.Icarus.Controls.Enums;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
 using Gallio.Icarus.Properties;
+using Gallio.Model;
+using Gallio.Model.Filters;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
 using ZedGraph;
 using Timer=System.Timers.Timer;
 
@@ -93,7 +97,14 @@ namespace Gallio.Icarus
         {
             set
             {
-                Invoke(new MethodInvoker(delegate()
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        ReportTypes = value;
+                    }));
+                }
+                else
                 {
                     foreach (string reportType in value)
                     {
@@ -101,7 +112,33 @@ namespace Gallio.Icarus
                     }
                     if (value.Count > 0)
                         reportTypes.SelectedIndex = 0;
-                }));
+                }
+            }
+        }
+
+        public IList<string> AvailableLogStreams
+        {
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate()
+                    {
+                        AvailableLogStreams = value;
+                    });
+                }
+                else
+                {
+                    logStream.Items.Clear();
+                    foreach (string log in value)
+                    {
+                        logStream.Items.Add(log);
+                    }
+                    if (logStream.Items.Count > 0)
+                        logStream.SelectedIndex = 0;
+                    
+                    UpdateLogBody();
+                }
             }
         }
 
@@ -131,12 +168,13 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
-        public event EventHandler<SingleStringEventArgs> GetLogStream;
+        public event EventHandler<GetLogStreamEventArgs> GetLogStream;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         public event EventHandler<SingleStringEventArgs> SaveProject;
         public event EventHandler<SingleStringEventArgs> OpenProject;
         public event EventHandler<EventArgs> NewProject;
+        public event EventHandler<SingleStringEventArgs> GetAvailableLogStreams;
 
         public Main()
         {
@@ -205,7 +243,6 @@ namespace Gallio.Icarus
             treeFilterCombo.SelectedIndex = 0;
             filterTestResultsCombo.SelectedIndex = 0;
             graphsFilterBox1.SelectedIndex = 0;
-            logStream.SelectedIndex = 0;
 
             testTree.TestStateImageList = stateImages;
 
@@ -287,37 +324,45 @@ namespace Gallio.Icarus
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            //trayIcon.Icon = Resources.FailMb;
-            //trayIcon.ShowBalloonTip(5, "Gallio Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
-            //                        ToolTipIcon.Error);
-            List<TaskButton> taskButtons = new List<TaskButton>();
+            ////trayIcon.Icon = Resources.FailMb;
+            ////trayIcon.ShowBalloonTip(5, "Gallio Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
+            ////                        ToolTipIcon.Error);
+            //List<TaskButton> taskButtons = new List<TaskButton>();
 
-            TaskButton button1 = new TaskButton();
-            button1.Text = "Button 1";
-            button1.Icon = Resources.tick;
-            button1.Description = "This is the first button, it should explain what the option does.";
-            taskButtons.Add(button1);
+            //TaskButton button1 = new TaskButton();
+            //button1.Text = "Button 1";
+            //button1.Icon = Resources.tick;
+            //button1.Description = "This is the first button, it should explain what the option does.";
+            //taskButtons.Add(button1);
 
-            TaskButton button2 = new TaskButton();
-            button2.Text = "Button 2";
-            button2.Icon = Resources.help_browser;
-            button2.Description =
-                "This is the second button, much the same as the first button but this one demonstrates that the text will wrap onto the next line.";
-            taskButtons.Add(button2);
+            //TaskButton button2 = new TaskButton();
+            //button2.Text = "Button 2";
+            //button2.Icon = Resources.help_browser;
+            //button2.Description =
+            //    "This is the second button, much the same as the first button but this one demonstrates that the text will wrap onto the next line.";
+            //taskButtons.Add(button2);
 
-            TaskButton button3 = new TaskButton();
-            button3.Text = "Close Window";
-            button3.Icon = Resources.cross;
-            button3.Description = "Saves all changes and exits the application.";
-            taskButtons.Add(button3);
+            //TaskButton button3 = new TaskButton();
+            //button3.Text = "Close Window";
+            //button3.Icon = Resources.cross;
+            //button3.Description = "Saves all changes and exits the application.";
+            //taskButtons.Add(button3);
 
-            TaskButton res = TaskDialog.Show("Title Text",
-                                             "Description about the problem and what you need to do to resolve it. Each button can have its own description too.",
-                                             taskButtons);
-            if (res == button2)
-                MessageBox.Show("Button 2 was clicked.");
-            else if (res == button1)
-                MessageBox.Show("Button 1 was clicked.");
+            //TaskButton res = TaskDialog.Show("Title Text",
+            //                                 "Description about the problem and what you need to do to resolve it. Each button can have its own description too.",
+            //                                 taskButtons);
+            //if (res == button2)
+            //    MessageBox.Show("Button 2 was clicked.");
+            //else if (res == button1)
+            //    MessageBox.Show("Button 1 was clicked.");
+
+            AbortWorkerThread();
+            workerThread = new Thread(delegate()
+            {
+                StatusText = "Reloading...";
+                ThreadedRefreshTree();
+            });
+            workerThread.Start();
         }
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -404,7 +449,6 @@ namespace Gallio.Icarus
             {
                 GetTestTree(this, new SingleStringEventArgs(GetTreeFilter()));
             }
-            //testTree.Invoke(new MethodInvoker(testTree.Sort));
         }
 
         private string GetTreeFilter()
@@ -503,6 +547,8 @@ namespace Gallio.Icarus
 
                 testProgressStatusBar.Clear();
                 testProgressStatusBar.Total = 50;
+
+                testResultsList.Items.Clear();
             }
         }
 
@@ -525,25 +571,26 @@ namespace Gallio.Icarus
 
         public void DataBind()
         {
-            // populate tree
-            testTree.Invoke((MethodInvoker) delegate()
+            if (InvokeRequired)
             {
+                Invoke((MethodInvoker)delegate()
+                {
+                    DataBind();
+                });
+            }
+            else
+            {
+                // populate tree
                 testTree.Nodes.Clear();
-            });
-            testTree.Invoke((MethodInvoker) delegate()
-            {
                 testTree.Nodes.AddRange(testTreeCollection);
-            });
 
-            // populate assembly list
-            assemblyList.Invoke((MethodInvoker) delegate()
-            {
+                // populate assembly list
                 assemblyList.Items.Clear();
-            });
-            assemblyList.Invoke((MethodInvoker) delegate()
-            {
                 assemblyList.Items.AddRange(assemblies);
-            });
+
+                // clear test results
+                testResultsList.Items.Clear();
+            }
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -615,67 +662,36 @@ namespace Gallio.Icarus
             toolStripProgressBar.Value = completedWorkUnits;
         }
 
-        public void Passed(string testId)
+        public void Update(TestData testData, TestStepRun testStepRun)
         {
-            if (testTree.InvokeRequired)
+            if (InvokeRequired)
             {
-                testTree.Invoke((MethodInvoker)delegate()
+                Invoke((MethodInvoker)delegate()
                 {
-                    Passed(testId);
+                    Update(testData, testStepRun);
                 });
             }
             else
             {
-                testProgressStatusBar.Passed++;
-                testTree.UpdateTestState(testId, TestState.Success);
-            }
-        }
-
-        public void Failed(string testId)
-        {
-            if (testTree.InvokeRequired)
-            {
-                testTree.Invoke((MethodInvoker)delegate()
+                switch (testStepRun.Result.Outcome)
                 {
-                    Failed(testId);
-                });
-            }
-            else
-            {
-                testProgressStatusBar.Failed++;
-                testTree.UpdateTestState(testId, TestState.Failed);
-            }
-        }
-
-        public void Ignored(string testId)
-        {
-            if (testTree.InvokeRequired)
-            {
-                testTree.Invoke((MethodInvoker)delegate()
-                {
-                    Ignored(testId);
-                });
-            }
-            else
-            {
-                testProgressStatusBar.Ignored++;
-                testTree.UpdateTestState(testId, TestState.Ignored);
-            }
-        }
-
-        public void Skipped(string testId)
-        {
-            if (testTree.InvokeRequired)
-            {
-                testTree.Invoke((MethodInvoker)delegate()
-                {
-                    Skipped(testId);
-                });
-            }
-            else
-            {
-                testProgressStatusBar.Skipped++;
-                testTree.UpdateTestState(testId, TestState.Skipped);
+                    case TestOutcome.Passed:
+                        testProgressStatusBar.Passed++;
+                        testTree.UpdateTestState(testData.Id, TestState.Success);
+                        break;
+                    case TestOutcome.Failed:
+                        testProgressStatusBar.Failed++;
+                        testTree.UpdateTestState(testData.Id, TestState.Failed);
+                        break;
+                    case TestOutcome.Inconclusive:
+                        testProgressStatusBar.Ignored++;
+                        testTree.UpdateTestState(testData.Id, TestState.Ignored);
+                        break;
+                }
+                TimeSpan duration = (testStepRun.EndTime - testStepRun.StartTime);
+                testResultsList.Items.Add(new ListViewItem(new string[] { testData.Name, testStepRun.Result.Outcome.ToString(), 
+                    duration.TotalMilliseconds.ToString(), testData.CodeReference.TypeName, testData.CodeReference.NamespaceName, 
+                    testData.CodeReference.AssemblyName }));
             }
         }
 
@@ -761,8 +777,8 @@ namespace Gallio.Icarus
                     removeAssemblyToolStripMenuItem2.Enabled = false;
                 }
 
-                // display log stream (if available)
-                UpdateLogBody(node);
+                if (GetAvailableLogStreams != null)
+                    GetAvailableLogStreams(this, new SingleStringEventArgs(node.Name));
             }
         }
 
@@ -797,23 +813,18 @@ namespace Gallio.Icarus
 
         private void logStream_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TestTreeNode node = testTree.SelectedNode as TestTreeNode;
-            if (node != null)
-            {
-                UpdateLogBody(node);
-            }
+            UpdateLogBody();
         }
 
-        private void UpdateLogBody(TestTreeNode node)
+        private void UpdateLogBody()
         {
-            // display log stream (if available)
-            if (node.SelectedImageIndex == 4 && node.TestState != TestState.Undefined)
-            {
-                if (GetLogStream != null && logStream.SelectedItem != null)
-                {
-                    GetLogStream(this, new SingleStringEventArgs(logStream.SelectedItem.ToString() + node.Name));
-                }
-            }
+            TestTreeNode node = testTree.SelectedNode as TestTreeNode;
+            if (node != null && node.SelectedImageIndex == 4 && node.TestState != TestState.Undefined &&
+                GetLogStream != null && logStream.SelectedItem != null)
+                // display log stream (if available)
+                GetLogStream(this, new GetLogStreamEventArgs(logStream.SelectedItem.ToString(), node.Name));
+            else
+                logBody.Clear();
         }
 
         private void btnSaveReportAs_Click(object sender, EventArgs e)
@@ -886,6 +897,20 @@ namespace Gallio.Icarus
         private void newProjectToolStripButton_Click(object sender, EventArgs e)
         {
             CreateNewProject();
+        }
+
+        private void testResultsList_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+
+        }
+
+        public void ApplyFilter(Filter<ITest> filter)
+        {
+        }
+
+        private void logStreamsTabPage_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

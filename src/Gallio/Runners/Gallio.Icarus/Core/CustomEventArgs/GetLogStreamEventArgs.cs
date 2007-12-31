@@ -13,25 +13,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using Gallio.Icarus.Controls;
+using System;
+using System.Windows.Forms;
+
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Serialization;
 
-namespace Gallio.Icarus.Core.Interfaces
+namespace Gallio.Icarus.Core.CustomEventArgs 
 {
-    public interface ITestRunnerModel
+    public class GetLogStreamEventArgs : EventArgs
     {
-        IProjectPresenter ProjectPresenter { set; }
-        void LoadPackage(TestPackageConfig testpackage);
-        TestModelData BuildTests();
-        void RunTests();
-        void StopTests();
-        string GetLogStream(string logStream, string testId);
-        void GenerateReport();
-        void SaveReportAs(string fileName, string format);
-        IList<string> GetReportTypes();
-        IList<string> GetAvailableLogStreams(string testId);
+        private readonly string logStream;
+        private readonly string testId;
+
+        public GetLogStreamEventArgs(string logStream, string testId)
+        {
+            this.logStream = logStream;
+            this.testId = testId;
+        }
+
+        public string LogStream
+        {
+            get { return logStream; }
+        }
+
+        public string TestId
+        {
+            get { return testId; }
+        }
     }
 }

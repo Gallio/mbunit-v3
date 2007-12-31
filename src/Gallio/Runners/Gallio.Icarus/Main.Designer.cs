@@ -106,18 +106,16 @@ namespace Gallio.Icarus
             this.removeAssemblyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.treeFilterCombo = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblSortTreeBy = new System.Windows.Forms.Label();
             this.testResultsTabs = new System.Windows.Forms.TabControl();
             this.testResultsTabPage = new System.Windows.Forms.TabPage();
             this.testResultsList = new System.Windows.Forms.ListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader7 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader8 = new System.Windows.Forms.ColumnHeader();
+            this.TestCol = new System.Windows.Forms.ColumnHeader();
+            this.ResultCol = new System.Windows.Forms.ColumnHeader();
+            this.DurationCol = new System.Windows.Forms.ColumnHeader();
+            this.TypeCol = new System.Windows.Forms.ColumnHeader();
+            this.NamespaceCol = new System.Windows.Forms.ColumnHeader();
+            this.AssemblyCol = new System.Windows.Forms.ColumnHeader();
             this.resultsFilterPanel = new System.Windows.Forms.Panel();
             this.filterTestResultsCombo = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -372,7 +370,7 @@ namespace Gallio.Icarus
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(287, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(256, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
@@ -677,7 +675,7 @@ namespace Gallio.Icarus
             // panel1
             // 
             this.panel1.Controls.Add(this.treeFilterCombo);
-            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.lblSortTreeBy);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(5, 5);
             this.panel1.Name = "panel1";
@@ -696,20 +694,20 @@ namespace Gallio.Icarus
             "Categories",
             "Importance",
             "TestsOn"});
-            this.treeFilterCombo.Location = new System.Drawing.Point(53, 3);
+            this.treeFilterCombo.Location = new System.Drawing.Point(70, 3);
             this.treeFilterCombo.Name = "treeFilterCombo";
-            this.treeFilterCombo.Size = new System.Drawing.Size(260, 21);
+            this.treeFilterCombo.Size = new System.Drawing.Size(243, 21);
             this.treeFilterCombo.TabIndex = 1;
             this.treeFilterCombo.SelectedIndexChanged += new System.EventHandler(this.treeFilterCombo_SelectedIndexChanged);
             // 
-            // label1
+            // lblSortTreeBy
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Filter By";
+            this.lblSortTreeBy.AutoSize = true;
+            this.lblSortTreeBy.Location = new System.Drawing.Point(3, 6);
+            this.lblSortTreeBy.Name = "lblSortTreeBy";
+            this.lblSortTreeBy.Size = new System.Drawing.Size(61, 13);
+            this.lblSortTreeBy.TabIndex = 0;
+            this.lblSortTreeBy.Text = "Sort tree by";
             // 
             // testResultsTabs
             // 
@@ -739,14 +737,12 @@ namespace Gallio.Icarus
             // testResultsList
             // 
             this.testResultsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5,
-            this.columnHeader6,
-            this.columnHeader7,
-            this.columnHeader8});
+            this.TestCol,
+            this.ResultCol,
+            this.DurationCol,
+            this.TypeCol,
+            this.NamespaceCol,
+            this.AssemblyCol});
             this.testResultsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testResultsList.Location = new System.Drawing.Point(3, 42);
             this.testResultsList.Name = "testResultsList";
@@ -754,38 +750,34 @@ namespace Gallio.Icarus
             this.testResultsList.TabIndex = 0;
             this.testResultsList.UseCompatibleStateImageBehavior = false;
             this.testResultsList.View = System.Windows.Forms.View.Details;
+            this.testResultsList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.testResultsList_ColumnClick);
             // 
-            // columnHeader1
+            // TestCol
             // 
-            this.columnHeader1.Text = "Assembly";
-            this.columnHeader1.Width = 95;
+            this.TestCol.Text = "Test";
+            this.TestCol.Width = 200;
             // 
-            // columnHeader2
+            // ResultCol
             // 
-            this.columnHeader2.Text = "Fixture";
-            this.columnHeader2.Width = 98;
+            this.ResultCol.Text = "Result";
+            this.ResultCol.Width = 100;
             // 
-            // columnHeader3
+            // DurationCol
             // 
-            this.columnHeader3.Text = "Test";
-            this.columnHeader3.Width = 93;
+            this.DurationCol.Text = "Duration (ms)";
+            this.DurationCol.Width = 100;
             // 
-            // columnHeader4
+            // TypeCol
             // 
-            this.columnHeader4.Text = "Result";
-            this.columnHeader4.Width = 106;
+            this.TypeCol.Text = "Type";
             // 
-            // columnHeader5
+            // NamespaceCol
             // 
-            this.columnHeader5.Text = "Avg";
+            this.NamespaceCol.Text = "Namespace";
             // 
-            // columnHeader6
+            // AssemblyCol
             // 
-            this.columnHeader6.Text = "%";
-            // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Text = "Ops/s";
+            this.AssemblyCol.Text = "Assembly";
             // 
             // resultsFilterPanel
             // 
@@ -830,6 +822,7 @@ namespace Gallio.Icarus
             this.logStreamsTabPage.TabIndex = 3;
             this.logStreamsTabPage.Text = "Log Streams";
             this.logStreamsTabPage.UseVisualStyleBackColor = true;
+            this.logStreamsTabPage.Click += new System.EventHandler(this.logStreamsTabPage_Click);
             // 
             // logBody
             // 
@@ -854,14 +847,6 @@ namespace Gallio.Icarus
             // 
             this.logStream.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.logStream.FormattingEnabled = true;
-            this.logStream.Items.AddRange(new object[] {
-            "ConsoleInput",
-            "ConsoleOutput",
-            "ConsoleError",
-            "DebugTrace",
-            "Warnings",
-            "Failures",
-            "Log"});
             this.logStream.Location = new System.Drawing.Point(75, 9);
             this.logStream.Name = "logStream";
             this.logStream.Size = new System.Drawing.Size(189, 21);
@@ -1148,7 +1133,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ComboBox treeFilterCombo;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblSortTreeBy;
         private System.Windows.Forms.TabControl testResultsTabs;
         private System.Windows.Forms.TabPage testResultsTabPage;
         private System.Windows.Forms.TabPage performanceMonitorTabPage;
@@ -1159,14 +1144,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ImageList treeImages;
         private System.Windows.Forms.ListView testResultsList;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
-        private System.Windows.Forms.ColumnHeader columnHeader6;
-        private System.Windows.Forms.ColumnHeader columnHeader7;
-        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader TestCol;
+        private System.Windows.Forms.ColumnHeader ResultCol;
+        private System.Windows.Forms.ColumnHeader DurationCol;
         private TestTreeView testTree;
         private System.Windows.Forms.ImageList stateImages;
         private TestStatusBar testProgressStatusBar;
@@ -1212,6 +1192,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.Label lblReportType;
         private System.Windows.Forms.ComboBox reportTypes;
         private System.Windows.Forms.WebBrowser reportViewer;
+        private System.Windows.Forms.ColumnHeader TypeCol;
+        private System.Windows.Forms.ColumnHeader NamespaceCol;
+        private System.Windows.Forms.ColumnHeader AssemblyCol;
     }
 }
 

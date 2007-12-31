@@ -25,6 +25,7 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
@@ -52,6 +53,7 @@ namespace Gallio.Icarus.Tests
         private IEventRaiser saveProjectEvent;
         private IEventRaiser openProjectEvent;
         private IEventRaiser newProjectEvent;
+        private IEventRaiser getAvailableLogStreamsEvent;
 
         [SetUp]
         public void SetUp()
@@ -110,6 +112,10 @@ namespace Gallio.Icarus.Tests
             mockView.NewProject += null;
             LastCall.IgnoreArguments();
             newProjectEvent = LastCall.GetEventRaiser();
+
+            mockView.GetAvailableLogStreams += null;
+            LastCall.IgnoreArguments();
+            getAvailableLogStreamsEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -119,7 +125,7 @@ namespace Gallio.Icarus.Tests
 
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             addAssembliesEvent.Raise(mockView, new AddAssembliesEventArgs(new string[] { "test.dll" }));
-            Assert.IsTrue(projectAdapter.TestPackageConfig.AssemblyFiles.Contains("test.dll"));
+            Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Contains("test.dll"));
         }
 
         [Test]
@@ -128,10 +134,10 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
 
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.TestPackageConfig.AssemblyFiles.Add("test.dll");
-            Assert.IsTrue(projectAdapter.TestPackageConfig.AssemblyFiles.Count == 1);
+            projectAdapter.Project.TestPackageConfig.AssemblyFiles.Add("test.dll");
+            Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 1);
             removeAssembliesEvent.Raise(mockView, EventArgs.Empty);
-            Assert.IsTrue(projectAdapter.TestPackageConfig.AssemblyFiles.Count == 0);
+            Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 0);
         }
 
         [Test]
@@ -140,12 +146,12 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
 
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.TestPackageConfig.AssemblyFiles.Add("test.dll");
-            Assert.IsTrue(projectAdapter.TestPackageConfig.AssemblyFiles.Count == 1);
+            projectAdapter.Project.TestPackageConfig.AssemblyFiles.Add("test.dll");
+            Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 1);
             removeAssemblyEvent.Raise(mockView, new SingleStringEventArgs("test2.dll"));
-            Assert.IsTrue(projectAdapter.TestPackageConfig.AssemblyFiles.Count == 1);
+            Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 1);
             removeAssemblyEvent.Raise(mockView, new SingleStringEventArgs("test.dll"));
-            Assert.IsTrue(projectAdapter.TestPackageConfig.AssemblyFiles.Count == 0);
+            Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 0);
         }
 
         [Test]
@@ -196,18 +202,6 @@ namespace Gallio.Icarus.Tests
         }
 
         [Test]
-        public void GetLogStreamEventHandler_Test()
-        {
-            mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            mockPresenter.GetLogStream(projectAdapter, new SingleStringEventArgs(""));
-            LastCall.IgnoreArguments();
-            mocks.ReplayAll();
-            projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.GetLogStream += new EventHandler<SingleStringEventArgs>(mockPresenter.GetLogStream);
-            getLogStreamEvent.Raise(mockView, new SingleStringEventArgs(""));
-        }
-
-        [Test]
         public void GetReportTypesEventHandler_Test()
         {
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
@@ -238,7 +232,7 @@ namespace Gallio.Icarus.Tests
         {
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.TestPackageConfig.AssemblyFiles.Add("test.dll");
+            projectAdapter.Project.TestPackageConfig.AssemblyFiles.Add("test.dll");
             string fileName = Path.GetTempFileName();
             saveProjectEvent.Raise(mockView, new SingleStringEventArgs(fileName));
             Project project = SerializationUtils.LoadFromXml<Project>(fileName);
@@ -255,9 +249,9 @@ namespace Gallio.Icarus.Tests
             project.TestPackageConfig.AssemblyFiles.Add("test.dll");
             string fileName = Path.GetTempFileName();
             SerializationUtils.SaveToXml(project, fileName);
-            Assert.AreEqual(0, projectAdapter.TestPackageConfig.AssemblyFiles.Count);
+            Assert.AreEqual(0, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
             openProjectEvent.Raise(mockView, new SingleStringEventArgs(fileName));
-            Assert.AreEqual(1, projectAdapter.TestPackageConfig.AssemblyFiles.Count);
+            Assert.AreEqual(1, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
         }
 
         [Test]
@@ -265,10 +259,23 @@ namespace Gallio.Icarus.Tests
         {
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.TestPackageConfig.AssemblyFiles.Add("test.dll");
-            Assert.AreEqual(1, projectAdapter.TestPackageConfig.AssemblyFiles.Count);
+            projectAdapter.Project.TestPackageConfig.AssemblyFiles.Add("test.dll");
+            Assert.AreEqual(1, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
             newProjectEvent.Raise(mockView, EventArgs.Empty);
-            Assert.AreEqual(0, projectAdapter.TestPackageConfig.AssemblyFiles.Count);
+            Assert.AreEqual(0, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
+        }
+
+        [Test]
+        public void GetAvailableLogStreamsEventHandler_Test()
+        {
+            string testId = "test";
+            mockPresenter = mocks.CreateMock<IProjectPresenter>();
+            mockPresenter.GetAvailableLogStreams(projectAdapter, new SingleStringEventArgs(testId));
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.GetAvailableLogStreams += new EventHandler<SingleStringEventArgs>(mockPresenter.GetAvailableLogStreams);
+            getAvailableLogStreamsEvent.Raise(mockView, new SingleStringEventArgs(testId));
         }
 
         [Test]
@@ -324,8 +331,8 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.TestPackageConfig = testPackageConfig;
-            Assert.AreEqual(testPackageConfig, projectAdapter.TestPackageConfig);
+            projectAdapter.Project.TestPackageConfig = testPackageConfig;
+            Assert.AreEqual(testPackageConfig, projectAdapter.Project.TestPackageConfig);
         }
 
         [Test]
@@ -350,39 +357,14 @@ namespace Gallio.Icarus.Tests
         }
 
         [Test]
-        public void Passed_Test()
+        public void Update_Test()
         {
-            mockView.Passed("test1");
+            TestData testData = new TestData("test1", "test1");
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testInstanceId"));
+            mockView.Update(testData, testStepRun);
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.Passed("test1");
-        }
-
-        [Test]
-        public void Failed_Test()
-        {
-            mockView.Failed("test1");
-            mocks.ReplayAll();
-            projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.Failed("test1");
-        }
-
-        [Test]
-        public void Skipped_Test()
-        {
-            mockView.Skipped("test1");
-            mocks.ReplayAll();
-            projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.Skipped("test1");
-        }
-
-        [Test]
-        public void Ignored_Test()
-        {
-            mockView.Ignored("test1");
-            mocks.ReplayAll();
-            projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.Ignored("test1");
+            projectAdapter.Update(testData, testStepRun);
         }
     }
 }

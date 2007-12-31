@@ -15,7 +15,10 @@
 
 using System;
 using Gallio.Icarus.Core.CustomEventArgs;
+using Gallio.Model;
+using Gallio.Model.Serialization;
 using Gallio.Runner;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Core.Interfaces
 {
@@ -30,12 +33,9 @@ namespace Gallio.Icarus.Core.Interfaces
         void RunTests(object sender, EventArgs e);
         void StopTests(object sender, EventArgs e);
         void SetFilter(object sender, SetFilterEventArgs e);
-        void GetLogStream(object sender, SingleStringEventArgs e);
         void GetReportTypes(object sender, EventArgs e);
         void SaveReportAs(object sender, SaveReportAsEventArgs e);
-        void Passed(string testId);
-        void Failed(string testId);
-        void Ignored(string testId);
-        void Skipped(string testId);
+        void GetAvailableLogStreams(object sender, SingleStringEventArgs e);
+        void Update(TestData testData, TestStepRun testStepRun);
     }
 }

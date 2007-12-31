@@ -16,7 +16,10 @@
 using System;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
+using Gallio.Model;
+using Gallio.Model.Serialization;
 using Gallio.Runner;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Core.Presenter
 {
@@ -67,6 +70,7 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.GetLogStream += GetLogStream;
             projectAdapter.GetReportTypes += GetReportTypes;
             projectAdapter.SaveReportAs += SaveReportAs;
+            projectAdapter.GetAvailableLogStreams += GetAvailableLogStreams;
         }
 
         public void GetTestTree(object sender, ProjectEventArgs e)
@@ -92,9 +96,9 @@ namespace Gallio.Icarus.Core.Presenter
             testRunner.TestExecutionOptions.Filter = e.Filter;
         }
 
-        public void GetLogStream(object sender, SingleStringEventArgs e)
+        private void GetLogStream(object sender, GetLogStreamEventArgs e)
         {
-            projectAdapter.LogBody = testRunnerModel.GetLogStream(e.String);
+            projectAdapter.LogBody = testRunnerModel.GetLogStream(e.LogStream, e.TestId);
         }
 
         public void GetReportTypes(object sender, EventArgs e)
@@ -107,24 +111,14 @@ namespace Gallio.Icarus.Core.Presenter
             testRunnerModel.SaveReportAs(e.FileName, e.Format);
         }
 
-        public void Passed(string testId)
+        public void GetAvailableLogStreams(object sender, SingleStringEventArgs e)
         {
-            projectAdapter.Passed(testId);
+            projectAdapter.AvailableLogStreams = testRunnerModel.GetAvailableLogStreams(e.String);
         }
 
-        public void Failed(string testId)
+        public void Update(TestData testData, TestStepRun testStepRun)
         {
-            projectAdapter.Failed(testId);
-        }
-
-        public void Skipped(string testId)
-        {
-            projectAdapter.Skipped(testId);
-        }
-
-        public void Ignored(string testId)
-        {
-            projectAdapter.Ignored(testId);
+            projectAdapter.Update(testData, testStepRun);
         }
     }
 }

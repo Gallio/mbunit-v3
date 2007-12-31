@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
     {
         private readonly ReportMonitor reportMonitor;
         private readonly IProjectPresenter presenter;
-        private Dictionary<string, string> logStreams;
+        private Dictionary<string, Dictionary<string, string>> logStreams;
 
         public TestRunnerMonitor(IProjectPresenter presenter, ReportMonitor reportMonitor)
         {
@@ -39,7 +39,7 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
             this.presenter = presenter;
             this.reportMonitor = reportMonitor;
-            logStreams = new Dictionary<string, string>();
+            logStreams = new Dictionary<string, Dictionary<string, string>>();
         }
 
         /// <inheritdoc />
@@ -59,50 +59,45 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
             // Ignore tests that aren't test cases & nested test steps.
-            TestData testData = e.TestData;
-            if (!testData.IsTestCase || e.TestStepRun.Step.ParentId != null)
+            if (!e.TestData.IsTestCase || e.TestStepRun.Step.ParentId != null)
                 return;
 
-            switch (e.TestStepRun.Result.Outcome)
-            {
-                case TestOutcome.Passed:
-                    presenter.Passed(e.TestData.Id);
-                    break;
-
-                case TestOutcome.Failed:
-                    presenter.Failed(e.TestData.Id);
-                    break;
-
-                case TestOutcome.Inconclusive:
-                    presenter.Ignored(e.TestData.Id);
-                    break;
-            }
+            presenter.Update(e.TestData, e.TestStepRun);
 
             // store log streams
             foreach (ExecutionLogStream els in e.TestStepRun.ExecutionLog.Streams)
             {
                 string key = els.Name + e.TestData.Id;
-                if (logStreams.ContainsKey(key))
+                if (logStreams.ContainsKey(e.TestData.Id))
                 {
-                    logStreams[key] += els.ToString();
+                    if (logStreams[e.TestData.Id].ContainsKey(els.Name))
+                        logStreams[e.TestData.Id][els.Name] += els.ToString();
+                    else
+                        logStreams[e.TestData.Id].Add(els.Name, els.ToString());
                 }
                 else
                 {
-                    logStreams.Add(key, els.ToString());
+                    Dictionary<string, string> logs = new Dictionary<string, string>();
+                    logs.Add(els.Name, els.ToString());
+                    logStreams.Add(e.TestData.Id, logs);
                 }
             }
         }
 
-        public string GetLogStream(string log)
+        public IList<string> GetAvailableLogStreams(string testId)
         {
-            if (logStreams.ContainsKey(log))
-            {
-                return logStreams[log];
-            }
-            else
-            {
-                return string.Empty;
-            }
+            List<string> logs = new List<string>();
+            if (logStreams.ContainsKey(testId))
+                logs.AddRange(logStreams[testId].Keys);
+            return logs;
+        }
+
+        public string GetLogStream(string logStream, string testId)
+        {
+            if (logStreams.ContainsKey(testId))
+                if (logStreams[testId].ContainsKey(logStream))
+                    return logStreams[testId][logStream];
+            return string.Empty;
         }
     }
 }

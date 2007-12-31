@@ -24,6 +24,7 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Adapter
 {
@@ -44,10 +45,10 @@ namespace Gallio.Icarus.Adapter
             set { testModelData = value; }
         }
 
-        public TestPackageConfig TestPackageConfig
+        public Project Project
         {
-            get { return project.TestPackageConfig; }
-            set { project.TestPackageConfig = value; }
+            get { return project; }
+            set { project = value; }
         }
 
         public string StatusText
@@ -80,6 +81,11 @@ namespace Gallio.Icarus.Adapter
             set { projectAdapterView.ReportTypes = value; }
         }
 
+        public IList<string> AvailableLogStreams
+        {
+            set { projectAdapterView.AvailableLogStreams = value; }
+        }
+
         public Exception Exception
         {
             set { projectAdapterView.Exception = value; }
@@ -89,9 +95,10 @@ namespace Gallio.Icarus.Adapter
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
-        public event EventHandler<SingleStringEventArgs> GetLogStream;
+        public event EventHandler<GetLogStreamEventArgs> GetLogStream;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
+        public event EventHandler<SingleStringEventArgs> GetAvailableLogStreams;
 
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
@@ -115,6 +122,7 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.SaveProject += SaveProjectEventHandler;
             projectAdapterView.OpenProject += OpenProjectEventHandler;
             projectAdapterView.NewProject += NewProjectEventHandler;
+            projectAdapterView.GetAvailableLogStreams += GetAvailableLogStreamsEventHandler;
         }
 
         private void AddAssembliesEventHandler(object sender, AddAssembliesEventArgs e)
@@ -141,7 +149,7 @@ namespace Gallio.Icarus.Adapter
             }
         }
 
-        private void GetLogStreamEventHandler(object sender, SingleStringEventArgs e)
+        private void GetLogStreamEventHandler(object sender, GetLogStreamEventArgs e)
         {
             if (GetLogStream != null)
             {
@@ -183,11 +191,11 @@ namespace Gallio.Icarus.Adapter
             {
                 if (filterInfo.FilterName == filterName)
                 {
-                    filterInfo.Filter = filter.ToString();
+                    filterInfo.Filter = filter.ToFilterExpr();
                     return;
                 }
             }
-            project.TestFilters.Add(new FilterInfo(filterName, filter.ToString()));
+            project.TestFilters.Add(new FilterInfo(filterName, filter.ToFilterExpr()));
         }
 
         private void GetReportTypesEventHandler(object sender, EventArgs e)
@@ -223,8 +231,9 @@ namespace Gallio.Icarus.Adapter
                 {
                     if (filterInfo.FilterName == "Latest")
                     {
-                        //filter = FilterUtils.ParseTestFilter(filterInfo.Filter);
-                        break;
+                        filter = FilterUtils.ParseTestFilter(filterInfo.Filter);
+                        projectAdapterView.ApplyFilter(filter);
+                        SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, filter));
                     }
                 }
             }
@@ -239,6 +248,12 @@ namespace Gallio.Icarus.Adapter
             project = new Project();
         }
 
+        private void GetAvailableLogStreamsEventHandler(object sender, SingleStringEventArgs e)
+        {
+            if (GetAvailableLogStreams != null)
+                GetAvailableLogStreams(this, e);
+        }
+
         public void DataBind()
         {
             projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
@@ -247,24 +262,9 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.DataBind();
         }
 
-        public void Passed(string testId)
+        public void Update(TestData testData, TestStepRun testStepRun)
         {
-            projectAdapterView.Passed(testId);
-        }
-
-        public void Failed(string testId)
-        {
-            projectAdapterView.Failed(testId);
-        }
-
-        public void Skipped(string testId)
-        {
-            projectAdapterView.Skipped(testId);
-        }
-
-        public void Ignored(string testId)
-        {
-            projectAdapterView.Ignored(testId);
+            projectAdapterView.Update(testData, testStepRun);
         }
     }
 }

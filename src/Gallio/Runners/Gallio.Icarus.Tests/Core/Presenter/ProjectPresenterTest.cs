@@ -22,6 +22,8 @@ using Gallio.Icarus.Core.Presenter;
 using Gallio.Icarus.Tests;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
@@ -40,8 +42,9 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         private IEventRaiser stopTestsEvent;
         private IEventRaiser setFilterEvent;
         private IEventRaiser getLogStreamEvent;
-        private IEventRaiser getReportTypes;
-        private IEventRaiser saveReportAs;
+        private IEventRaiser getReportTypesEvent;
+        private IEventRaiser saveReportAsEvent;
+        private IEventRaiser getAvailableLogStreamsEvent;
 
         [SetUp]
         public void SetUp()
@@ -76,11 +79,15 @@ namespace Gallio.Icarus.Core.Presenter.Tests
 
             mockAdapter.GetReportTypes += null;
             LastCall.IgnoreArguments();
-            getReportTypes = LastCall.GetEventRaiser();
+            getReportTypesEvent = LastCall.GetEventRaiser();
 
             mockAdapter.SaveReportAs += null;
             LastCall.IgnoreArguments();
-            saveReportAs = LastCall.GetEventRaiser();
+            saveReportAsEvent = LastCall.GetEventRaiser();
+
+            mockAdapter.GetAvailableLogStreams += null;
+            LastCall.IgnoreArguments();
+            getAvailableLogStreamsEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -157,11 +164,11 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         [Test]
         public void GetLogStream_Test()
         {
-            Expect.Call(mockModel.GetLogStream("getLogStreamTest")).Return("blah blah");
+            Expect.Call(mockModel.GetLogStream("test", "test1")).Return("blah blah");
             mockAdapter.LogBody = "blah blah";
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            getLogStreamEvent.Raise(mockAdapter, new SingleStringEventArgs("getLogStreamTest"));
+            getLogStreamEvent.Raise(mockAdapter, new GetLogStreamEventArgs("test", "test1"));
         }
 
         [Test]
@@ -172,7 +179,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mockAdapter.ReportTypes = reportTypes;
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            getReportTypes.Raise(mockAdapter, EventArgs.Empty);
+            getReportTypesEvent.Raise(mockAdapter, EventArgs.Empty);
         }
 
         [Test]
@@ -183,43 +190,30 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mockModel.SaveReportAs(fileName, format);
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            saveReportAs.Raise(mockAdapter, new SaveReportAsEventArgs(fileName, format));
+            saveReportAsEvent.Raise(mockAdapter, new SaveReportAsEventArgs(fileName, format));
         }
 
         [Test]
-        public void Passed_Test()
+        public void GetAvailableLogStreamsEventHandler_Test()
         {
-            mockAdapter.Passed("test1");
+            string testId = "test";
+            List<string> streams = new List<string>();
+            Expect.Call(mockModel.GetAvailableLogStreams(testId)).Return(streams);
+            mockAdapter.AvailableLogStreams = streams;
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.Passed("test1");
+            getAvailableLogStreamsEvent.Raise(mockAdapter, new SingleStringEventArgs(testId));
         }
 
         [Test]
-        public void Failed_Test()
+        public void Update_Test()
         {
-            mockAdapter.Failed("test1");
+            TestData testData = new TestData("test1", "test1");
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testInstanceId"));
+            mockAdapter.Update(testData, testStepRun);
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.Failed("test1");
-        }
-
-        [Test]
-        public void Skipped_Test()
-        {
-            mockAdapter.Skipped("test1");
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.Skipped("test1");
-        }
-
-        [Test]
-        public void Ignored_Test()
-        {
-            mockAdapter.Ignored("test1");
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.Ignored("test1");
+            projectPresenter.Update(testData, testStepRun);
         }
     }
 }
