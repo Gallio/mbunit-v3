@@ -27,43 +27,14 @@ namespace Gallio.Icarus.Controls
         private TestState testState = TestState.Undefined;
         private string codeBase = "";
 
-        #region Constructors
-
-        public TestTreeNode()
-        {
-        }
-
-        public TestTreeNode(string text)
-            : base(text)
-        {
-        }
-
-        public TestTreeNode(string text, TestTreeNode[] children)
-            : base(text, children)
-        {
-        }
-
-        public TestTreeNode(string text, int imageIndex, int selectedImageIndex)
-            : base(text, imageIndex, selectedImageIndex)
-        {
-        }
-
-        public TestTreeNode(string text, string id, int imgIndex)
+        public TestTreeNode(string text, string id, int imgIndex, bool initialCheckState)
             : base(text, imgIndex, imgIndex)
         {
             Name = id;
-            Checked = true;
-            CheckState = CheckBoxStates.Checked;
+            Checked = initialCheckState;
+            if (initialCheckState)
+                CheckState = CheckBoxStates.Checked;
         }
-
-        public TestTreeNode(string text, int imageIndex, int selectedImageIndex, TestTreeNode[] children)
-            : base(text, imageIndex, selectedImageIndex, children)
-        {
-        }
-
-        #endregion
-
-        #region Properties
 
         [Category("Behaviour"),
          Description("The current state of the node's checkbox, Unchecked, Checked, or Indeterminate"),
@@ -162,10 +133,6 @@ namespace Gallio.Icarus.Controls
             get { return codeBase; }
             set { codeBase = value; }
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Manages state changes from one state to the next.
@@ -326,8 +293,6 @@ namespace Gallio.Icarus.Controls
                 tv.EndUpdate();
             }
         }
-
-        #endregion
     }
 }
 

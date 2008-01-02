@@ -41,7 +41,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void BuildNamespaceTestTree_Test()
         {
-            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
+            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces", true);
             Assert.AreEqual(1, treeNodes.Length);
 
             // check Root node
@@ -109,7 +109,7 @@ namespace Gallio.Icarus.Tests
             string[] names = new string[] { "Authors", "Categories", "Importance", "TestsOn" };
             foreach (string name in names)
             {
-                TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), name);
+                TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), name, true);
                 Assert.AreEqual(1, treeNodes.Length);
 
                 // check Root node
@@ -117,6 +117,7 @@ namespace Gallio.Icarus.Tests
                 Assert.AreEqual("Root", node.Name);
                 Assert.AreEqual(0, node.ImageIndex);
                 Assert.AreEqual(2, node.Nodes.Count);
+                Assert.IsTrue(node.Checked);
 
                 // check None node
                 node = node.Nodes[0];
@@ -230,12 +231,12 @@ namespace Gallio.Icarus.Tests
         public void GetFilter_Test()
         {
             TreeView treeView = new TreeView();
-            TestTreeNode root = new TestTreeNode("Root", "Root", 0);
+            TestTreeNode root = new TestTreeNode("Root", "Root", 0, true);
             root.CheckState = CheckBoxStates.Indeterminate;
-            TestTreeNode child = new TestTreeNode("Child", "Child", 2);
+            TestTreeNode child = new TestTreeNode("Child", "Child", 2, true);
             child.CheckState = CheckBoxStates.Checked;
             root.Nodes.Add(child);
-            TestTreeNode child2 = new TestTreeNode("Child2", "Child2", 3);
+            TestTreeNode child2 = new TestTreeNode("Child2", "Child2", 3, true);
             child2.CheckState = CheckBoxStates.Checked;
             child.Nodes.Add(child2);
             treeView.Nodes.Add(root);

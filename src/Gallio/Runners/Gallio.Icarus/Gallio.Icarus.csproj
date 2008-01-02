@@ -71,6 +71,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Core\CustomEventArgs\AddAssembliesEventArgs.cs" />
+    <Compile Include="Core\CustomEventArgs\OpenProjectEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\GetLogStreamEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SaveReportAsEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SingleStringEventArgs.cs" />

@@ -145,7 +145,7 @@ namespace Gallio.Icarus.Adapter
             mode = e.String;
             if (GetTestTree != null)
             {
-                GetTestTree(this, new ProjectEventArgs(project.TestPackageConfig));
+                GetTestTree(this, new ProjectEventArgs(project.TestPackageConfig, true));
             }
         }
 
@@ -222,11 +222,16 @@ namespace Gallio.Icarus.Adapter
             }
         }
 
-        private void OpenProjectEventHandler(object sender, SingleStringEventArgs e)
+        private void OpenProjectEventHandler(object sender, OpenProjectEventArgs e)
         {
             try
             {
-                project = SerializationUtils.LoadFromXml<Project>(e.String);
+                project = SerializationUtils.LoadFromXml<Project>(e.FileName);
+                mode = e.Mode;
+                if (GetTestTree != null)
+                {
+                    GetTestTree(this, new ProjectEventArgs(project.TestPackageConfig, false));
+                }
                 foreach (FilterInfo filterInfo in project.TestFilters)
                 {
                     if (filterInfo.FilterName == "Latest")
@@ -254,10 +259,10 @@ namespace Gallio.Icarus.Adapter
                 GetAvailableLogStreams(this, e);
         }
 
-        public void DataBind()
+        public void DataBind(bool initialCheckState)
         {
             projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
-            projectAdapterView.TestTreeCollection = projectAdapterModel.BuildTestTree(testModelData, mode);
+            projectAdapterView.TestTreeCollection = projectAdapterModel.BuildTestTree(testModelData, mode, initialCheckState);
             projectAdapterView.TotalTests(projectAdapterModel.CountTests(testModelData));
             projectAdapterView.DataBind();
         }

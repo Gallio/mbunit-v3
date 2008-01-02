@@ -24,7 +24,7 @@ namespace Gallio.Icarus.Interfaces
 {
     public interface IProjectAdapterModel
     {
-        TreeNode[] BuildTestTree(TestModelData testModelData, string mode);
+        TreeNode[] BuildTestTree(TestModelData testModelData, string mode, bool initialCheckState);
         int CountTests(TestModelData testModelData);
         ListViewItem[] BuildAssemblyList(List<string> assemblyList);
         Filter<ITest> GetFilter(TreeNodeCollection treeNodeCollection);

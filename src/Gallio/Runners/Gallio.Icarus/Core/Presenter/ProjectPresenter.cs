@@ -75,9 +75,9 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void GetTestTree(object sender, ProjectEventArgs e)
         {
-            testRunnerModel.LoadPackage(e.LocalTestPackageConfig);
+            testRunnerModel.LoadPackage(e.TestPackageConfig);
             projectAdapter.TestModelData = testRunnerModel.BuildTests();
-            projectAdapter.DataBind();
+            projectAdapter.DataBind(e.InitialCheckState);
         }
 
         public void RunTests(object sender, EventArgs e)

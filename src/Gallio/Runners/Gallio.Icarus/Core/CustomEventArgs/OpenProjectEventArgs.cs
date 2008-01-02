@@ -14,29 +14,27 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
 
 namespace Gallio.Icarus.Core.CustomEventArgs 
 {
-    public class ProjectEventArgs : EventArgs
+    public class OpenProjectEventArgs : EventArgs
     {
-        private readonly TestPackageConfig testPackageConfig;
-        private readonly bool initialCheckState;
+        private readonly string fileName, mode;
 
-        public ProjectEventArgs(TestPackageConfig testPackageConfig, bool initialCheckState)
+        public OpenProjectEventArgs(string fileName, string mode)
         {
-            this.initialCheckState = initialCheckState;
-            this.testPackageConfig = testPackageConfig;
-        }
-        
-        public TestPackageConfig TestPackageConfig
-        {
-            get { return testPackageConfig; }
+            this.fileName = fileName;
+            this.mode = mode;
         }
 
-        public bool InitialCheckState
+        public string FileName
         {
-            get { return initialCheckState; }
+            get { return fileName; }
+        }
+
+        public string Mode
+        {
+            get { return mode; }
         }
     }
 }

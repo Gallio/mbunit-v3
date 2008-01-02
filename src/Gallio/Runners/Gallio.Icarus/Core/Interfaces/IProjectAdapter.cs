@@ -44,7 +44,7 @@ namespace Gallio.Icarus.Core.Interfaces
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
-        void DataBind();
+        void DataBind(bool initialCheckState);
         void Update(TestData testData, TestStepRun testStepRun);
     }
 }

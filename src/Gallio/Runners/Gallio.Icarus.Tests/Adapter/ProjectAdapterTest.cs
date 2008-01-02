@@ -158,7 +158,7 @@ namespace Gallio.Icarus.Tests
         public void GetTestTreeEventHandler_Test()
         {
             mockPresenter = MockRepository.GenerateStub<IProjectPresenter>();
-            mockPresenter.GetTestTree(projectAdapter, new ProjectEventArgs(new TestPackageConfig()));
+            mockPresenter.GetTestTree(projectAdapter, new ProjectEventArgs(new TestPackageConfig(), true));
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.GetTestTree += new EventHandler<ProjectEventArgs>(mockPresenter.GetTestTree);
@@ -250,7 +250,7 @@ namespace Gallio.Icarus.Tests
             string fileName = Path.GetTempFileName();
             SerializationUtils.SaveToXml(project, fileName);
             Assert.AreEqual(0, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
-            openProjectEvent.Raise(mockView, new SingleStringEventArgs(fileName));
+            openProjectEvent.Raise(mockView, new OpenProjectEventArgs(fileName, "Namespace"));
             Assert.AreEqual(1, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
         }
 
@@ -344,7 +344,7 @@ namespace Gallio.Icarus.Tests
             Expect.Call(mockModel.BuildAssemblyList(testPackageConfig.AssemblyFiles)).Return(new ListViewItem[0]);
             mockView.TestTreeCollection = null;
             LastCall.IgnoreArguments();
-            Expect.Call(mockModel.BuildTestTree(null, "")).IgnoreArguments().Return(new TreeNode[0]);
+            Expect.Call(mockModel.BuildTestTree(null, "", true)).IgnoreArguments().Return(new TreeNode[0]);
             mockView.TotalTests(0);
             LastCall.IgnoreArguments();
             Expect.Call(mockModel.CountTests(null)).IgnoreArguments().Return(0);
@@ -353,7 +353,7 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
 
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.DataBind();
+            projectAdapter.DataBind(true);
         }
 
         [Test]

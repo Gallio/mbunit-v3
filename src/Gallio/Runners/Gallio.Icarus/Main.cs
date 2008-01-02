@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -171,7 +170,7 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         public event EventHandler<SingleStringEventArgs> SaveProject;
-        public event EventHandler<SingleStringEventArgs> OpenProject;
+        public event EventHandler<OpenProjectEventArgs> OpenProject;
         public event EventHandler<EventArgs> NewProject;
         public event EventHandler<SingleStringEventArgs> GetAvailableLogStreams;
 
@@ -383,8 +382,7 @@ namespace Gallio.Icarus
                 //{
                 //    StatusText = "Opening project";
                     if (OpenProject != null)
-                        OpenProject(this, new SingleStringEventArgs(openFile.FileName));
-                    ThreadedRefreshTree();
+                        OpenProject(this, new OpenProjectEventArgs(openFile.FileName, GetTreeFilter()));
                 //});
                 //workerThread.Start();
             }
@@ -698,7 +696,7 @@ namespace Gallio.Icarus
 
                 // update test results list
                 testResultsList.UpdateTestResults(testData.Name, testStepRun.Result.Outcome.ToString(), foreColor, 
-                    (testStepRun.EndTime - testStepRun.StartTime).ToString(), testData.CodeReference.TypeName, 
+                    (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds.ToString(), testData.CodeReference.TypeName, 
                     testData.CodeReference.NamespaceName, testData.CodeReference.AssemblyName);
             }
         }
@@ -909,6 +907,23 @@ namespace Gallio.Icarus
 
         public void ApplyFilter(Filter<ITest> filter)
         {
+            if (filter is NoneFilter<ITest>)
+                return;
+            if (filter is OrFilter<ITest>)
+            {
+                OrFilter<ITest> orFilter = (OrFilter<ITest>)filter;
+                foreach (Filter<ITest> childFilter in orFilter.Filters)
+                {
+                    ApplyFilter(childFilter);
+                }
+            }
+            else if (filter is IdFilter<ITest>)
+            {
+                IdFilter<ITest> idFilter = (IdFilter<ITest>)filter;
+                TreeNode[] nodes = testTree.Nodes.Find(idFilter.ToString().Substring(13, 16), true);
+                foreach (TestTreeNode n in nodes)
+                    n.Toggle();
+            }
         }
 
         private void logStreamsTabPage_Click(object sender, EventArgs e)

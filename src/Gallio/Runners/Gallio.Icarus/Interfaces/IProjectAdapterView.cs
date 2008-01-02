@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         event EventHandler<SingleStringEventArgs> SaveProject;
-        event EventHandler<SingleStringEventArgs> OpenProject;
+        event EventHandler<OpenProjectEventArgs> OpenProject;
         event EventHandler<EventArgs> NewProject;
         event EventHandler<SingleStringEventArgs> GetAvailableLogStreams;
         TreeNode[] TestTreeCollection { set; }

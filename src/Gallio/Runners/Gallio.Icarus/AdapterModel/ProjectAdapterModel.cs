@@ -36,36 +36,36 @@ namespace Gallio.Icarus.AdapterModel
         /// </summary>
         /// <param name="testModelData">gallio test tree</param>
         /// <returns></returns>
-        public TreeNode[] BuildTestTree(TestModelData testModelData, string mode)
+        public TreeNode[] BuildTestTree(TestModelData testModelData, string mode, bool initialCheckState)
         {
-            TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, 0);
+            TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, 0, initialCheckState);
             switch (mode)
             {
                 case "Namespaces":
-                    PopulateNamespaceTree(testModelData.RootTest.Children, root);
+                    PopulateNamespaceTree(testModelData.RootTest.Children, root, initialCheckState);
                     break;
 
                 case "Authors":
-                    PopulateMetadataTree(MetadataKeys.AuthorName, testModelData.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.AuthorName, testModelData.RootTest.Children, root, root, initialCheckState);
                     break;
 
                 case "Categories":
-                    PopulateMetadataTree(MetadataKeys.CategoryName, testModelData.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.CategoryName, testModelData.RootTest.Children, root, root, initialCheckState);
                     break;
                 
                 case "Importance":
-                    PopulateMetadataTree(MetadataKeys.Importance, testModelData.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.Importance, testModelData.RootTest.Children, root, root, initialCheckState);
                     break;
 
                 case "TestsOn":
-                    PopulateMetadataTree(MetadataKeys.TestsOn, testModelData.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.TestsOn, testModelData.RootTest.Children, root, root, initialCheckState);
                     break;
             }
             root.ExpandAll();
             return new TreeNode[] { root };
         }
 
-        private void PopulateNamespaceTree(List<TestData> list, TestTreeNode parent)
+        private void PopulateNamespaceTree(List<TestData> list, TestTreeNode parent, bool initialCheckState)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -78,7 +78,7 @@ namespace Gallio.Icarus.AdapterModel
                     if (componentKind != TestKinds.Fixture)
                     {
                         // create an appropriate node
-                        ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                        ttnode = new TestTreeNode(td.Name, td.Id, imgIndex, initialCheckState);
                         string codeBase = td.Metadata.GetValue(MetadataKeys.CodeBase);
                         if (codeBase != null)
                         {
@@ -98,20 +98,20 @@ namespace Gallio.Icarus.AdapterModel
                         }
                         else
                         {
-                            nsNode = new TestTreeNode(nameSpace, nameSpace, 2);
+                            nsNode = new TestTreeNode(nameSpace, nameSpace, 2, initialCheckState);
                             parent.Nodes.Add(nsNode);
                         }
                         // add the fixture to the namespace
-                        ttnode = new TestTreeNode(td.Name, td.Id, 3);
+                        ttnode = new TestTreeNode(td.Name, td.Id, 3, initialCheckState);
                         nsNode.Nodes.Add(ttnode);
                     }
                     // process child nodes
-                    PopulateNamespaceTree(td.Children, ttnode);
+                    PopulateNamespaceTree(td.Children, ttnode, initialCheckState);
                 }
             }
         }
 
-        private void PopulateMetadataTree(string key, List<TestData> list, TestTreeNode root, TestTreeNode parent)
+        private void PopulateMetadataTree(string key, List<TestData> list, TestTreeNode root, TestTreeNode parent, bool initialCheckState)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -140,19 +140,19 @@ namespace Gallio.Icarus.AdapterModel
                                 }
                                 else
                                 {
-                                    metadataNode = new TestTreeNode(m, m, 0);
+                                    metadataNode = new TestTreeNode(m, m, 0, initialCheckState);
                                     root.Nodes.Add(metadataNode);
                                 }
                                 // add node in the appropriate place
                                 if (componentKind == TestKinds.Fixture)
                                 {
-                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex, initialCheckState);
                                     metadataNode.Nodes.Add(ttnode);
-                                    PopulateMetadataTree(key, td.Children, root, ttnode);
+                                    PopulateMetadataTree(key, td.Children, root, ttnode, initialCheckState);
                                 }
                                 else
                                 {
-                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex, initialCheckState);
                                     if (m != "None")
                                     {
                                         metadataNode.Nodes.Add(ttnode);
@@ -167,7 +167,7 @@ namespace Gallio.Icarus.AdapterModel
                     }
                     if (componentKind != TestKinds.Fixture)
                     {
-                        PopulateMetadataTree(key, td.Children, root, parent);
+                        PopulateMetadataTree(key, td.Children, root, parent, initialCheckState);
                     }
                 }
             }
