@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -41,12 +42,10 @@ namespace Gallio.Icarus
         private TreeNode[] testTreeCollection;
         private ListViewItem[] assemblies;
         private Thread workerThread = null;
-        
         // status bar
-        private string statusText = "Ready...";
+        private string statusText = string.Empty;
         private int totalWorkUnits, completedWorkUnits;
         private Timer statusBarTimer;
-
         private string projectFileName = String.Empty;
         
         public TreeNode[] TestTreeCollection
@@ -186,17 +185,20 @@ namespace Gallio.Icarus
             statusBarTimer.Enabled = true;
             statusBarTimer.Elapsed += new ElapsedEventHandler(statusBarTimer_Elapsed);
             statusBarTimer.Start();
+        }
 
+        private void UpdateGraph()
+        {
             GraphPane graphPane = zedGraphControl1.GraphPane;
             graphPane.Title.Text = "Total Test Results";
             graphPane.XAxis.Title.Text = "Number of Tests";
             graphPane.YAxis.Title.Text = "Test Suites";
 
             // Make up some data points
-            string[] labels = {"Class 1", "Class 2"};
-            double[] x = {1, 2};
-            double[] x2 = {1, 5};
-            double[] x3 = {4, 10};
+            string[] labels = { "Class 1", "Class 2" };
+            double[] x = { 1, 2 };
+            double[] x2 = { 1, 5 };
+            double[] x3 = { 4, 10 };
 
             // Generate a red bar with "Curve 1" in the legend
             BarItem myCurve = graphPane.AddBar("Fail", x, null, Color.Red);
@@ -673,25 +675,31 @@ namespace Gallio.Icarus
             }
             else
             {
+                // update test tree
+                Color foreColor = testResultsList.ForeColor;
                 switch (testStepRun.Result.Outcome)
                 {
                     case TestOutcome.Passed:
                         testProgressStatusBar.Passed++;
                         testTree.UpdateTestState(testData.Id, TestState.Success);
+                        foreColor = Color.Green;
                         break;
                     case TestOutcome.Failed:
                         testProgressStatusBar.Failed++;
                         testTree.UpdateTestState(testData.Id, TestState.Failed);
+                        foreColor = Color.Red;
                         break;
                     case TestOutcome.Inconclusive:
                         testProgressStatusBar.Ignored++;
                         testTree.UpdateTestState(testData.Id, TestState.Ignored);
+                        foreColor = Color.Yellow;
                         break;
                 }
-                TimeSpan duration = (testStepRun.EndTime - testStepRun.StartTime);
-                testResultsList.Items.Add(new ListViewItem(new string[] { testData.Name, testStepRun.Result.Outcome.ToString(), 
-                    duration.TotalMilliseconds.ToString(), testData.CodeReference.TypeName, testData.CodeReference.NamespaceName, 
-                    testData.CodeReference.AssemblyName }));
+
+                // update test results list
+                testResultsList.UpdateTestResults(testData.Name, testStepRun.Result.Outcome.ToString(), foreColor, 
+                    (testStepRun.EndTime - testStepRun.StartTime).ToString(), testData.CodeReference.TypeName, 
+                    testData.CodeReference.NamespaceName, testData.CodeReference.AssemblyName);
             }
         }
 
@@ -899,11 +907,6 @@ namespace Gallio.Icarus
             CreateNewProject();
         }
 
-        private void testResultsList_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-
-        }
-
         public void ApplyFilter(Filter<ITest> filter)
         {
         }
@@ -912,5 +915,5 @@ namespace Gallio.Icarus
         {
 
         }
-    }
+    }	
 }
