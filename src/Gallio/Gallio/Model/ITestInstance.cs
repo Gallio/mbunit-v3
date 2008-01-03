@@ -30,6 +30,12 @@ namespace Gallio.Model
         ITest Test { get; }
 
         /// <summary>
+        /// Gets the parent of this test instance, or null if this is
+        /// the root test instance.
+        /// </summary>
+        ITestInstance Parent { get; }
+
+        /// <summary>
         /// Returns true if the test instance is dynamic and cannot not be known with certainty
         /// prior to test execution because its parameters are bound to values that
         /// may be unavailable ahead of time, may change over time or that may be

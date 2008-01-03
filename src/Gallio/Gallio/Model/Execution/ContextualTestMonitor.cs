@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Collections;
+using Gallio.Contexts;
 
 namespace Gallio.Model.Execution
 {
@@ -84,25 +86,13 @@ namespace Gallio.Model.Execution
         {
             get
             {
-                yield return this;
-
-                foreach (ITestMonitor child in children)
-                    foreach (ITestMonitor descendant in child.PreOrderTraversal)
-                        yield return descendant;
+                return TreeUtils.GetPreOrderTraversal<ITestMonitor>(this, GetChildren);
             }
         }
 
-        /// <inheritdoc />
-        public IEnumerable<ITestMonitor> PostOrderTraversal
+        private static IEnumerable<ITestMonitor> GetChildren(ITestMonitor node)
         {
-            get
-            {
-                foreach (ITestMonitor child in children)
-                    foreach (ITestMonitor descendant in child.PostOrderTraversal)
-                        yield return descendant;
-
-                yield return this;
-            }
+            return node.Children;
         }
 
         /// <inheritdoc />
@@ -127,7 +117,9 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         public ITestStepMonitor StartTestInstance()
         {
-            return StartTestInstance(new BaseTestStep(new BaseTestInstance(test)));
+            Context context = Context.CurrentContext;
+            return StartTestInstance(new BaseTestStep(new BaseTestInstance(test,
+                context != null ? context.TestInstance : null)));
         }
 
         /// <summary>

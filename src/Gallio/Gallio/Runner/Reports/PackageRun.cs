@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Runner.Reports
@@ -27,8 +28,8 @@ namespace Gallio.Runner.Reports
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class PackageRun
     {
-        private readonly List<TestInstanceRun> testInstanceRuns;
         private PackageRunStatistics statistics;
+        private TestInstanceRun rootTestInstanceRun;
         private DateTime startTime;
         private DateTime endTime;
 
@@ -37,7 +38,6 @@ namespace Gallio.Runner.Reports
         /// </summary>
         public PackageRun()
         {
-            testInstanceRuns = new List<TestInstanceRun>();
         }
 
         /// <summary>
@@ -61,13 +61,15 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Gets the list of test runs performed as part of the package run.
+        /// Gets or sets the root test run, or null if the root test instance
+        /// has not run.
         /// </summary>
-        [XmlArray("testInstanceRuns", Namespace=SerializationUtils.XmlNamespace, IsNullable=false)]
-        [XmlArrayItem("testInstanceRun", typeof(TestInstanceRun), Namespace=SerializationUtils.XmlNamespace, IsNullable=false)]
-        public List<TestInstanceRun> TestInstanceRuns
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("testInstanceRun", IsNullable = true)]
+        public TestInstanceRun RootTestInstanceRun
         {
-            get { return testInstanceRuns; }
+            get { return rootTestInstanceRun; }
+            set { rootTestInstanceRun = value; }
         }
 
         /// <summary>
@@ -92,17 +94,20 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Recursively enumerates all test run steps.
+        /// Recursively enumerates all test instance runs.
         /// </summary>
         [XmlIgnore]
-        public IEnumerable<TestStepRun> TestStepRuns
+        public IEnumerable<TestInstanceRun> TestInstanceRuns
         {
             get
             {
-                foreach (TestInstanceRun testInstanceRun in testInstanceRuns)
-                    foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
-                        yield return testStepRun;
+                return TreeUtils.GetPreOrderTraversal(rootTestInstanceRun, GetChildren);
             }
+        }
+
+        private static IEnumerable<TestInstanceRun> GetChildren(TestInstanceRun node)
+        {
+            return node.Children;
         }
     }
 }

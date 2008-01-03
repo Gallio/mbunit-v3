@@ -19,7 +19,6 @@ using System.Drawing;
 using System.Xml.Serialization;
 using Gallio.Contexts;
 using Gallio.Logging;
-using Gallio.Hosting;
 
 namespace Gallio.Logging
 {
@@ -500,8 +499,10 @@ namespace Gallio.Logging
         }
 
         /// <summary>
+        /// <para>
         /// Begins a section with the specified name.
         /// Execution log sections may be nested.
+        /// </para>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
@@ -525,7 +526,9 @@ namespace Gallio.Logging
         }
 
         /// <summary>
+        /// <para>
         /// Ends the current section.
+        /// </para>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
@@ -560,6 +563,36 @@ namespace Gallio.Logging
         public static Attachment Embed(Attachment attachment)
         {
             return Default.Embed(attachment);
+        }
+
+        /// <summary>
+        /// Embeds an existing attachment into the stream.  This method can be used to
+        /// repeatedly embed an existing attachment at multiple points in multiple
+        /// streams without needing to keep the <see cref="Attachment" /> instance
+        /// itself around.  This can help to reduce memory footprint since the
+        /// original <see cref="Attachment" /> instance can be garbage collected shortly
+        /// after it is first attached.
+        /// <para>
+        /// This is a convenience method that forwards the request to the current default
+        /// log stream writer as returned by the <see cref="Default" /> property.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// Only one copy of an attachment instance is saved with an execution log even if
+        /// <see cref="LogWriter.Attach" /> or <see cref="LogStreamWriter.Embed" /> are
+        /// called multiple times with the same instance.  However, an attachment instance
+        /// can be embedded multiple times into multiple execution log streams since each
+        /// embedded copy is represented as a link to the same common attachment instance.
+        /// </remarks>
+        /// <param name="attachmentName">The name of the existing attachment to embed</param>
+        /// <seealso cref="LogWriter.Attach"/>
+        /// <seealso cref="LogStreamWriter.Embed"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if no attachment with the specified
+        /// name has been attached to the log</exception>
+        public static void EmbedExisting(string attachmentName)
+        {
+            Default.EmbedExisting(attachmentName);
         }
 
         /// <summary>

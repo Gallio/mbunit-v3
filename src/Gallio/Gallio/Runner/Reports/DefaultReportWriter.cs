@@ -244,9 +244,12 @@ namespace Gallio.Runner.Reports
 
             if (report.PackageRun != null)
             {
-                foreach (TestStepRun stepRun in report.PackageRun.TestStepRuns)
+                foreach (TestInstanceRun testInstanceRun in report.PackageRun.TestInstanceRuns)
                 {
-                    count += stepRun.ExecutionLog.Attachments.Count;
+                    foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
+                    {
+                        count += testStepRun.ExecutionLog.Attachments.Count;
+                    }
                 }
             }
 

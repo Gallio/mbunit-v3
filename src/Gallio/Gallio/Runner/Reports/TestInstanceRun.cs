@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Runner.Reports
@@ -28,6 +29,7 @@ namespace Gallio.Runner.Reports
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class TestInstanceRun
     {
+        private readonly List<TestInstanceRun> children;
         private TestInstanceData testInstance;
         private TestStepRun rootTestStepRun;
 
@@ -36,6 +38,7 @@ namespace Gallio.Runner.Reports
         /// </summary>
         private TestInstanceRun()
         {
+            children = new List<TestInstanceRun>();
         }
 
         /// <summary>
@@ -46,6 +49,7 @@ namespace Gallio.Runner.Reports
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testInstance" /> 
         /// or <paramref name="rootTestStepRun"/> is null</exception>
         public TestInstanceRun(TestInstanceData testInstance, TestStepRun rootTestStepRun)
+            : this()
         {
             if (testInstance == null)
                 throw new ArgumentNullException("testInstance");
@@ -73,6 +77,16 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
+        /// Gets the list of child test instance runs.
+        /// </summary>
+        [XmlArray("children", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlArrayItem("testInstanceRun", typeof(TestInstanceRun), IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        public List<TestInstanceRun> Children
+        {
+            get { return children; }
+        }
+
+        /// <summary>
         /// Gets or sets the root test step run of the test instance.
         /// The value cannot be null because a test instance must have a root step.
         /// </summary>
@@ -90,24 +104,20 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Recursively enumerates all test run steps.
+        /// Recursively enumerates all test steps runs.
         /// </summary>
         [XmlIgnore]
         public IEnumerable<TestStepRun> TestStepRuns
         {
             get
             {
-                return EnumerateStepRunsRecursively(rootTestStepRun);
+                return TreeUtils.GetPreOrderTraversal(rootTestStepRun, GetChildren);
             }
         }
 
-        private static IEnumerable<TestStepRun> EnumerateStepRunsRecursively(TestStepRun parent)
+        private static IEnumerable<TestStepRun> GetChildren(TestStepRun node)
         {
-            yield return parent;
-
-            foreach (TestStepRun child in parent.Children)
-                foreach (TestStepRun stepRun in EnumerateStepRunsRecursively(child))
-                    yield return stepRun;
-        }    
+            return node.Children;
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace Gallio.Model.Serialization
     public sealed class TestInstanceData : TestComponentData
     {
         private string testId;
+        private string parentId;
         private bool isDynamic;
 
         /// <summary>
@@ -68,6 +69,9 @@ namespace Gallio.Model.Serialization
         {
             testId = source.Test.Id;
             isDynamic = source.IsDynamic;
+
+            if (source.Parent != null)
+                parentId = source.Parent.Id;
         }
 
         /// <summary>
@@ -95,6 +99,23 @@ namespace Gallio.Model.Serialization
                 if (value == null)
                     throw new ArgumentNullException(@"value");
                 testId = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the id of the parent test instance to which the step belongs.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <seealso cref="ITestInstance.Parent"/>
+        [XmlAttribute("parentId")]
+        public string ParentId
+        {
+            get { return parentId; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                parentId = value;
             }
         }
     }

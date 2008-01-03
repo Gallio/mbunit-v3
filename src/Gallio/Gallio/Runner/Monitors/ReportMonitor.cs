@@ -39,6 +39,7 @@ namespace Gallio.Runner.Monitors
     {
         private readonly Dictionary<string, TestStepState> states;
         private readonly Dictionary<string, TestInstanceData> testInstances;
+        private readonly Dictionary<string, TestInstanceRun> testInstanceRuns;
 
         private Report report;
         private Stopwatch durationStopwatch;
@@ -54,6 +55,7 @@ namespace Gallio.Runner.Monitors
         {
             states = new Dictionary<string, TestStepState>();
             testInstances = new Dictionary<string, TestInstanceData>();
+            testInstanceRuns = new Dictionary<string, TestInstanceRun>();
             report = new Report();
         }
 
@@ -176,8 +178,7 @@ namespace Gallio.Runner.Monitors
         {
             lock (report)
             {
-                states.Clear();
-                testInstances.Clear();
+                Reset();
 
                 report.PackageRun = new PackageRun();
                 report.PackageRun.StartTime = DateTime.Now;
@@ -189,12 +190,18 @@ namespace Gallio.Runner.Monitors
         {
             lock (report)
             {
-                states.Clear();
-                testInstances.Clear();
+                Reset();
 
                 report.PackageRun.EndTime = DateTime.Now;
                 report.PackageRun.Statistics.Duration = durationStopwatch.Elapsed.TotalSeconds;
             }
+        }
+
+        private void Reset()
+        {
+            states.Clear();
+            testInstances.Clear();
+            testInstanceRuns.Clear();
         }
 
         private void HandleLifecycleEvent(object sender, LifecycleEventArgs e)
@@ -220,7 +227,17 @@ namespace Gallio.Runner.Monitors
                         if (e.TestStepData.ParentId == null)
                         {
                             TestInstanceRun testInstanceRun = new TestInstanceRun(testInstanceData, testStepRun);
-                            report.PackageRun.TestInstanceRuns.Add(testInstanceRun);
+                            testInstanceRuns.Add(testInstanceData.Id, testInstanceRun);
+
+                            if (testInstanceData.ParentId != null)
+                            {
+                                TestInstanceRun parentTestInstanceRun = testInstanceRuns[testInstanceData.ParentId];
+                                parentTestInstanceRun.Children.Add(testInstanceRun);
+                            }
+                            else
+                            {
+                                report.PackageRun.RootTestInstanceRun = testInstanceRun;
+                            }
 
                             state = new TestStepState(testData, testInstanceRun, testStepRun);
                         }

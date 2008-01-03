@@ -3452,7 +3452,9 @@ namespace MbUnit.Framework
         #region Assert Count
         public static void IncrementAssertCount()
         {
-            Context.CurrentContext.IncrementAssertCount();
+            Context context = Context.CurrentContext;
+            if (context != null)
+                context.IncrementAssertCount();
         }
         #endregion
 

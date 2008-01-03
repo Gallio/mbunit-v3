@@ -108,7 +108,13 @@ namespace Gallio.Contexts
             get
             {
                 if (cachedContextManager == null)
-                    cachedContextManager = Runtime.Instance.Resolve<IContextManager>();
+                {
+                    if (Runtime.IsInitialized)
+                        cachedContextManager = Runtime.Instance.Resolve<IContextManager>();
+                    else
+                        cachedContextManager = new StubContextManager();
+                }
+
                 return cachedContextManager;
             }
         }

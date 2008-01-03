@@ -15,6 +15,7 @@
 
 using System;
 using System.Text;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Model.Serialization;
@@ -72,7 +73,7 @@ namespace Gallio.Tests.Integration
             TestData data = GetTestInfo(codeReference);
             if (data != null)
             {
-                return Report.PackageRun.TestInstanceRuns.Find(delegate(TestInstanceRun run)
+                return GenericUtils.Find(Report.PackageRun.TestInstanceRuns, delegate(TestInstanceRun run)
                 {
                     return run.TestInstance.TestId == data.Id;
                 });

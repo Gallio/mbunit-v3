@@ -25,7 +25,7 @@ namespace Gallio.Tests.Runner.Reports
     [TestFixture]
     [TestsOn(typeof(TestStepRun))]
     [Author("Vadim")]
-    public class StepRunTests
+    public class TestStepRunTests
     {
         private TestStepRun testStepRun;
 

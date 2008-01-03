@@ -23,15 +23,18 @@ namespace Gallio.Model
     public class BaseTestInstance : BaseTestComponent, ITestInstance
     {
         private readonly ITest test;
+        private readonly ITestInstance parent;
         private string id;
 
         /// <summary>
         /// Initializes a test instance with the same name as its test.
         /// </summary>
         /// <param name="test">The test of which this is an instance</param>
+        /// <param name="parent">The parent test instance, or null if this is to be the
+        /// root test instance</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
-        public BaseTestInstance(ITest test)
-            : this(test, test.Name)
+        public BaseTestInstance(ITest test, ITestInstance parent)
+            : this(test, parent, test.Name)
         {
         }
 
@@ -39,15 +42,18 @@ namespace Gallio.Model
         /// Initializes a test instance.
         /// </summary>
         /// <param name="test">The test of which this is an instance</param>
+        /// <param name="parent">The parent test instance, or null if this is to be the
+        /// root test instance</param>
         /// <param name="name">The name of the test instance</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name" /> or <paramref name="test"/> is null</exception>
-        public BaseTestInstance(ITest test, string name)
+        public BaseTestInstance(ITest test, ITestInstance parent, string name)
             : base(name, test.CodeElement)
         {
             if (test == null)
                 throw new ArgumentNullException(@"test");
 
             this.test = test;
+            this.parent = parent;
         }
 
         /// <inheritdoc />
@@ -65,6 +71,12 @@ namespace Gallio.Model
         public ITest Test
         {
             get { return test; }
+        }
+
+        /// <inheritdoc />
+        public ITestInstance Parent
+        {
+            get { return parent; }
         }
 
         /// <inheritdoc />

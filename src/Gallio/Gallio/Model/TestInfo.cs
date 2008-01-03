@@ -123,7 +123,7 @@ namespace Gallio.Model
             throw new NotSupportedException();
         }
 
-        IEnumerable<ITestInstance> ITest.GetInstances(bool guessDynamicInstances)
+        IEnumerable<ITestInstance> ITest.GetInstances(ITestInstance parentTestInstance, bool guessDynamicInstances)
         {
             throw new NotSupportedException();
         }

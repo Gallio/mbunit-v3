@@ -207,10 +207,13 @@ namespace Gallio.Model
         /// on actual test execution behavior that is observed.
         /// </para>
         /// </summary>
+        /// <param name="parentTestInstance">The parent test instance, or null if there is
+        /// no parent because the root test instance is to be obtained</param>
         /// <param name="guessDynamicInstances">If true, tries to obtain dynamic
         /// test instances based on currently available information</param>
         /// <returns>The enumeration of statically known test instances</returns>
         /// <seealso cref="ITestInstance.IsDynamic"/>
-        IEnumerable<ITestInstance> GetInstances(bool guessDynamicInstances);
+        IEnumerable<ITestInstance> GetInstances(ITestInstance parentTestInstance,
+            bool guessDynamicInstances);
     }
 }

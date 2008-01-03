@@ -3,9 +3,6 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:g="http://www.mbunit.com/gallio"
                 xmlns="http://www.w3.org/1999/xhtml">
-  <xsl:key name="outcome" match="//g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun" use="g:testStepRun/g:result/@outcome" />
-  <xsl:key name="status" match="//g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun" use="g:testStepRun/g:result/@status" />
-  
   <xsl:template match="g:report" mode="xhtml-document">
     <html xml:lang="en" lang="en" dir="ltr">
       <head>
@@ -55,9 +52,9 @@
       <h1>Gallio Test Report</h1>
     </div>
     <xsl:apply-templates select="g:package/g:assemblyFiles" />
-    <xsl:apply-templates select="g:packageRun" />
-    <xsl:apply-templates select="g:testModel/g:test" mode="summary"/>
-    <xsl:apply-templates select="g:testModel/g:test" mode="details"/>
+    <xsl:apply-templates select="g:packageRun" mode="statistics" />
+    <xsl:apply-templates select="g:packageRun" mode="summary"/>
+    <xsl:apply-templates select="g:packageRun" mode="details"/>
   </xsl:template>
 
   <xsl:template match="g:package/g:assemblyFiles">
@@ -75,7 +72,7 @@
     </div>
   </xsl:template>
 
-  <xsl:template match="g:packageRun">
+  <xsl:template match="g:packageRun" mode="statistics">
     <div id="Statistics" class="section">
       <h2>Statistics</h2>
       <div id="statistics-section-content" class="section-content">
@@ -144,14 +141,14 @@
     </tr>
   </xsl:template>
 
-  <xsl:template match="g:testModel/g:test" mode="summary">
+  <xsl:template match="g:packageRun" mode="summary">
     <div id="Summary" class="section">
       <h2>Summary</h2>
       <div class="section-content">
         <xsl:choose>
-          <xsl:when test="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
+          <xsl:when test="g:testInstanceRun/g:children/g:testInstanceRun">
             <ul>
-              <xsl:apply-templates select="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="summary" />
+              <xsl:apply-templates select="g:testInstanceRun/g:children/g:testInstanceRun" mode="summary" />
             </ul>
           </xsl:when>
           <xsl:otherwise>
@@ -162,21 +159,22 @@
     </div>
   </xsl:template>
 
-  <xsl:template match="g:children/g:test" mode="summary">
-    <xsl:variable name="id" select="@id" />
-    <xsl:variable name="kind" select="g:metadata/g:entry[@key='TestKind']/g:value" />
-    <xsl:variable name="tests" select="descendant-or-self::g:test[@isTestCase='true']" />
-    <xsl:variable name="run" select="$tests[@id = key('status', 'executed')/g:testInstance/@testId]" />
-    <xsl:variable name="passed" select="$tests[@id = key('outcome', 'passed')/g:testInstance/@testId]" />
-    <xsl:variable name="failed" select="$tests[@id = key('outcome', 'failed')/g:testInstance/@testId]" />
-    <xsl:variable name="inconclusive" select="$tests[@id = key('outcome', 'inconclusive')/g:testInstance/@testId]" />
-    <xsl:variable name="ignored" select="$tests[@id = key('status', 'ignored')/g:testInstance/@testId]" />
-    <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/g:testInstance/@testId]" />
+  <xsl:template match="g:testInstanceRun" mode="summary">
+    <xsl:variable name="id" select="g:testInstance/@id" />
+    <xsl:variable name="testId" select="g:testInstance/@testId" />
+    <xsl:variable name="test" select="ancestor::g:report/g:testModel/descendant::g:test[@id = $testId]" />
+    
+    <xsl:variable name="testCases" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
+    <xsl:variable name="testCaseResults" select="descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]/g:testStepRun/g:result" />
+
+    <xsl:variable name="passedOutcomeCount" select="count($testCaseResults[@outcome = 'passed'])" />
+    <xsl:variable name="failedOutcomeCount" select="count($testCaseResults[@outcome = 'failed'])" />
+    <xsl:variable name="inconclusiveOutcomeCount" select="count($testCaseResults[@outcome = 'inconclusive'])" />
 
     <li>
       <div>
         <xsl:choose>
-          <xsl:when test="g:children/g:test and $kind != 'Fixture'">
+          <xsl:when test="g:children/g:testInstanceRun">
             <xsl:call-template name="toggle">
               <xsl:with-param name="href">summaryPanel-<xsl:value-of select="$id"/></xsl:with-param>
             </xsl:call-template>
@@ -186,42 +184,44 @@
           </xsl:otherwise>
         </xsl:choose>
 
+        <!--
         <xsl:call-template name="icon">
           <xsl:with-param name="kind" select="$kind" />
         </xsl:call-template>
+        -->
 
-        <a href="#testInstanceRun-{@id}"><xsl:value-of select="@name" /></a>
+        <a href="#testInstanceRun-{$id}"><xsl:value-of select="g:testInstance/@name" /></a>
 
         <xsl:call-template name="progressBar">
           <xsl:with-param name="passed">
-            <xsl:value-of select="count($passed)" />
+            <xsl:value-of select="$passedOutcomeCount" />
           </xsl:with-param>
           <xsl:with-param name="failed">
-            <xsl:value-of select="count($failed)" />
+            <xsl:value-of select="$failedOutcomeCount" />
           </xsl:with-param>
           <xsl:with-param name="inconclusive">
-            <xsl:value-of select="count($inconclusive)" />
+            <xsl:value-of select="$inconclusiveOutcomeCount" />
           </xsl:with-param>
         </xsl:call-template>
-        (<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />)
+        (<xsl:value-of select="$passedOutcomeCount" />/<xsl:value-of select="$failedOutcomeCount" />/<xsl:value-of select="$inconclusiveOutcomeCount" />)
       </div>
 
-      <xsl:if test="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId] and $kind != 'Fixture' ">
+      <xsl:if test="g:children/g:testInstanceRun">
         <ul id="summaryPanel-{$id}">
-          <xsl:apply-templates select="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="summary" />
+          <xsl:apply-templates select="g:children/g:testInstanceRun" mode="summary" />
         </ul>
       </xsl:if>
     </li>
   </xsl:template>
 
-  <xsl:template match="g:testModel/g:test" mode="details">
+  <xsl:template match="g:packageRun" mode="details">
     <div id="Details" class="section">
       <h2>Details</h2>
       <div class="section-content">
         <xsl:choose>
-          <xsl:when test="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
+          <xsl:when test="g:testInstanceRun/g:children/g:testInstanceRun">
             <ul class="testInstanceRunContainer">
-              <xsl:apply-templates select="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="details" />
+              <xsl:apply-templates select="g:testInstanceRun/g:children/g:testInstanceRun" mode="details" />
             </ul>
           </xsl:when>
           <xsl:otherwise>
@@ -232,79 +232,82 @@
     </div>
   </xsl:template>
 
-  <xsl:template match="g:children/g:test" mode="details">
-    <xsl:variable name="testId" select="@id" />
-    <xsl:variable name="kind" select="g:metadata/g:entry[@key='TestKind']/g:value" />
+  <xsl:template match="g:testInstanceRun" mode="details">
+    <xsl:variable name="id" select="g:testInstance/@id" />
+    <xsl:variable name="testId" select="g:testInstance/@testId" />
+    <xsl:variable name="test" select="ancestor::g:report/g:testModel/descendant::g:test[@id = $testId]" />
+    
+    <xsl:variable name="metadataEntries" select="$test/g:metadata/g:entry|g:testInstance/g:metadata/g:entry|g:testStepRun/g:step/g:metadata/g:entry" />
+    <xsl:variable name="kind" select="$metadataEntries[@key='TestKind']/g:value" />
+    
+    <xsl:variable name="testCases" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
+    <xsl:variable name="testCaseResults" select="descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]/g:testStepRun/g:result" />
 
-    <xsl:variable name="tests" select="descendant-or-self::g:test[@isTestCase='true']" />
-    <xsl:variable name="run" select="$tests[@id = key('status', 'executed')/g:testInstance/@testId]" />
-    <xsl:variable name="passed" select="$tests[@id = key('outcome', 'passed')/g:testInstance/@testId]" />
-    <xsl:variable name="failed" select="$tests[@id = key('outcome', 'failed')/g:testInstance/@testId]" />
-    <xsl:variable name="inconclusive" select="$tests[@id = key('outcome', 'inconclusive')/g:testInstance/@testId]" />
-    <xsl:variable name="ignored" select="$tests[@id = key('status', 'ignored')/g:testInstance/@testId]" />
-    <xsl:variable name="skipped" select="$tests[@id = key('status', 'skipped')/g:testInstance/@testId]" />
+    <xsl:variable name="passedOutcomeCount" select="count($testCaseResults[@outcome = 'passed'])" />
+    <xsl:variable name="failedOutcomeCount" select="count($testCaseResults[@outcome = 'failed'])" />
+    <xsl:variable name="inconclusiveOutcomeCount" select="count($testCaseResults[@outcome = 'inconclusive'])" />
+    
+    <xsl:variable name="executedStatusCount" select="count($testCaseResults[@status = 'executed'])" />
+    <xsl:variable name="ignoredStatusCount" select="count($testCaseResults[@status = 'ignored'])" />
+    <xsl:variable name="skippedStatusCount" select="count($testCaseResults[@status = 'skipped'])" />
 
-    <xsl:variable name="testInstanceRun" select="ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun[g:testInstance/@testId=$testId]" />
-    <xsl:variable name="rootTestStepRun" select="$testInstanceRun/g:testStepRun" />
-    <xsl:variable name="rootStepResult" select="$rootTestStepRun/g:result" />
+    <xsl:variable name="totalAssertCount" select="sum($testCaseResults/@assertCount)" />
 
-    <xsl:variable name="allTestAndFixtures" select="descendant-or-self::g:test" />
-    <xsl:variable name="resultsForAllDescendants" select="ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun[g:testInstance/@testId = $allTestAndFixtures/@id]//g:testStepRun/g:result" />
-    <xsl:variable name="assertions" select="sum($resultsForAllDescendants/@assertCount)" />
+    <xsl:variable name="nestingLevel" select="count(ancestor::g:testInstanceRun)" />
 
-    <xsl:variable name="nestingLevel" select="count(ancestor::g:test)" />
-
-    <li id="testInstanceRun-{$testId}">
+    <li id="testInstanceRun-{$id}">
       <div class="testInstanceRunHeading testInstanceRunHeading-Level{$nestingLevel}">
         <xsl:call-template name="toggle">
-          <xsl:with-param name="href">testInstanceRunPanel-<xsl:value-of select="$testId"/></xsl:with-param>
+          <xsl:with-param name="href">testInstanceRunPanel-<xsl:value-of select="$id"/></xsl:with-param>
         </xsl:call-template>
+        <!--
         <xsl:call-template name="icon">
           <xsl:with-param name="kind" select="$kind" />
         </xsl:call-template>
+        -->
 
-        <xsl:value-of select="@name" />
+        <xsl:value-of select="g:testInstance/@name" />
 
         <xsl:choose>
-          <xsl:when test="g:children/g:test">
+          <xsl:when test="g:children/g:testInstanceRun">
           <xsl:call-template name="progressBar">
             <xsl:with-param name="passed">
-              <xsl:value-of select="count($passed)" />
+              <xsl:value-of select="$passedOutcomeCount" />
             </xsl:with-param>
             <xsl:with-param name="failed">
-              <xsl:value-of select="count($failed)" />
+              <xsl:value-of select="$failedOutcomeCount" />
             </xsl:with-param>
             <xsl:with-param name="inconclusive">
-              <xsl:value-of select="count($inconclusive)" />
+              <xsl:value-of select="$inconclusiveOutcomeCount" />
             </xsl:with-param>
           </xsl:call-template>
-          (<xsl:value-of select="count($passed)" />/<xsl:value-of select="count($failed)" />/<xsl:value-of select="count($inconclusive)" />)
+          (<xsl:value-of select="$passedOutcomeCount" />/<xsl:value-of select="$failedOutcomeCount" />/<xsl:value-of select="$inconclusiveOutcomeCount" />)
           </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="outcomeBar">
-              <xsl:with-param name="outcome" select="$rootStepResult/@outcome" />
+              <xsl:with-param name="outcome" select="g:testStepRun/g:result/@outcome" />
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
       </div>
 
-      <div id="testInstanceRunPanel-{$testId}" class="testInstanceRunPanel">
+      <div id="testInstanceRunPanel-{$id}" class="testInstanceRunPanel">
         <xsl:choose>
           <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
             <table class="statistics-table">
               <tr class="alternate-row">
                 <td>Results:</td>
                 <td>
-                  <xsl:value-of select="count($run)" /> run,
-                  <xsl:value-of select="count($passed)" /> passed,
-                  <xsl:value-of select="count($failed)" /> failed,
-                  <xsl:value-of select="count($inconclusive)" /> inconclusive (<xsl:value-of select="count($ignored)" /> ignored / <xsl:value-of select="count($skipped)" /> skipped)
+                  <xsl:value-of select="$executedStatusCount" /> run,
+                  <xsl:value-of select="$passedOutcomeCount" /> passed,
+                  <xsl:value-of select="$failedOutcomeCount" /> failed,
+                  <xsl:value-of select="$inconclusiveOutcomeCount" /> inconclusive (<xsl:value-of select="$ignoredStatusCount" /> ignored / <xsl:value-of select="$skippedStatusCount" /> skipped)
                 </td>
               </tr>
               <tr>
                 <td>Duration:</td>
                 <td>
-                  <xsl:value-of select="format-number($rootStepResult/@duration, '0.00')" />s
+                  <xsl:value-of select="format-number(g:testStepRun/g:result/@duration, '0.00')" />s
                 </td>
               </tr>
               <tr class="alternate-row">
@@ -312,28 +315,28 @@
                   Assertions:
                 </td>
                 <td>
-                  <xsl:value-of select="$assertions" />
+                  <xsl:value-of select="$totalAssertCount" />
                 </td>
               </tr>
             </table>
           </xsl:when>
           <xsl:otherwise>
-            Duration: <xsl:value-of select="format-number($rootStepResult/@duration, '0.00')" />s,
-            Assertions: <xsl:value-of select="$assertions"/>.
+            Duration: <xsl:value-of select="format-number(g:testStepRun/g:result/@duration, '0.00')" />s,
+            Assertions: <xsl:value-of select="$totalAssertCount"/>.
           </xsl:otherwise>
         </xsl:choose>
 
         <xsl:call-template name="print-metadata-entries">
-          <xsl:with-param name="entries" select="g:metadata/g:entry|$testInstanceRun/g:testInstance/g:metadata/g:entry|$rootTestStepRun/g:step/g:metadata/g:entry" />
+          <xsl:with-param name="entries" select="$metadataEntries" />
         </xsl:call-template>
 
-        <div id="testStepRun-{$rootTestStepRun/g:step/@id}" class="testStepRun">
-          <xsl:apply-templates select="$rootTestStepRun" mode="details-content" />
+        <div id="testStepRun-{g:testStepRun/g:step/@id}" class="testStepRun">
+          <xsl:apply-templates select="g:testStepRun" mode="details-content" />
         </div>
 
-        <xsl:if test="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]">
+        <xsl:if test="g:children/g:testInstanceRun">
           <ul class="testInstanceRunContainer">
-            <xsl:apply-templates select="g:children/g:test[@id=ancestor::g:report/g:packageRun/g:testInstanceRuns/g:testInstanceRun/g:testInstance/@testId]" mode="details" />
+            <xsl:apply-templates select="g:children/g:testInstanceRun" mode="details" />
           </ul>
         </xsl:if>
       </div>
@@ -525,10 +528,11 @@
     </xsl:choose>
   </xsl:template>
 
+  <!--
   <xsl:template name="icon">
     <xsl:param name="kind" />
 
-    <!--<img>
+    <img>
       <xsl:choose>
         <xsl:when test="$kind = 'Fixture'">
           <xsl:attribute name="src">{$imgDir}Fixture.png</xsl:attribute>
@@ -543,8 +547,9 @@
           <xsl:attribute name="alt">Container Icon</xsl:attribute>
         </xsl:otherwise>
       </xsl:choose>
-    </img>-->
+    </img>
   </xsl:template>
+  -->
 
   <!-- Outcome bar -->
   <xsl:template name="outcomeBar">

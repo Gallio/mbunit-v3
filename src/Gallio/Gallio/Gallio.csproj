@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -64,6 +64,8 @@
   <ItemGroup>
     <Compile Include="Collections\HashSet.cs" />
     <Compile Include="Contexts\Step.cs" />
+    <Compile Include="Contexts\StubContext.cs" />
+    <Compile Include="Contexts\StubContextManager.cs" />
     <Compile Include="Core\ConsoleSupport\CommandLineArgumentAttribute.cs" />
     <Compile Include="Core\ConsoleSupport\CommandLineArgumentFlags.cs" />
     <Compile Include="Core\ConsoleSupport\CommandLineArgumentParser.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Factory.cs" />
     <Compile Include="Hosting\IRuntimeFactory.cs" />
     <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
+    <Compile Include="Logging\TextLogWriter.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
     <Compile Include="Logging\ContextualLogTextWriter.cs" />
     <Compile Include="Logging\ContextualLogTraceListener.cs" />
@@ -311,6 +314,7 @@
     <Compile Include="Hosting\WindsorRuntime.cs" />
     <Compile Include="Runner\TestRunnerUtils.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
+    <Compile Include="Collections\TreeUtils.cs" />
     <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Logging\ClientException.cs" />

@@ -210,10 +210,10 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<ITestInstance> GetInstances(bool guessDynamicInstances)
+        public virtual IEnumerable<ITestInstance> GetInstances(ITestInstance parentTestInstance, bool guessDynamicInstances)
         {
             if (parameters.Count == 0)
-                return new ITestInstance[] { new BaseTestInstance(this) };
+                return new ITestInstance[] { new BaseTestInstance(this, parentTestInstance) };
             else
                 return EmptyArray<ITestInstance>.Instance;
         }

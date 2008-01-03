@@ -56,6 +56,17 @@ namespace Gallio.Model
             get { return Test; }
         }
 
+        /// <inheritdoc />
+        public TestInstanceInfo Parent
+        {
+            get { return Source.Parent != null ? new TestInstanceInfo(Source.Parent) : null; }
+        }
+
+        ITestInstance ITestInstance.Parent
+        {
+            get { return Parent; }
+        }
+
         object ITestInstance.GetParameterValue(ITestParameter parameter)
         {
             throw new NotSupportedException();

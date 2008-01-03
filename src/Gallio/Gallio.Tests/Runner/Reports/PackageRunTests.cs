@@ -37,12 +37,6 @@ namespace Gallio.Tests.Runner.Reports
         }
 
         [Test]
-        public void ConstructorTest()
-        {
-            Assert.AreEqual(0, _packageRun.TestInstanceRuns.Count);
-        }
-
-        [Test]
         public void StatisticsGetTest()
         {
             Assert.IsNotNull(_packageRun.Statistics);
@@ -74,8 +68,8 @@ namespace Gallio.Tests.Runner.Reports
         {
             XmlSerializer serializer = new XmlSerializer(typeof(PackageRun));
             StringWriter writer = new StringWriter();
-            _packageRun.TestInstanceRuns.Add(new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"))));
+            _packageRun.RootTestInstanceRun = new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
+                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId")));
             serializer.Serialize(writer, _packageRun);
 
             PackageRun deserializedPackageRun = (PackageRun)serializer.Deserialize(new StringReader(writer.ToString()));
@@ -83,15 +77,16 @@ namespace Gallio.Tests.Runner.Reports
         }
 
         [Test]
-        public void StepRuns()
+        public void TestInstanceRuns()
         {
-            TestStepRun testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"));
-            testStepRun.Children.Add(new TestStepRun(new TestStepData("childId", "childName", "childFullName", "testId")));
-            TestInstanceRun testRun = new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false), testStepRun);
-            _packageRun.TestInstanceRuns.Add(testRun);
+            TestInstanceRun testRun = new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
+                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId")));
+            testRun.Children.Add(new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
+                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"))));
+            _packageRun.RootTestInstanceRun = testRun;
 
-            CollectionAssert.AreElementsEqual(new TestStepRun[] { testStepRun, testStepRun.Children[0] },
-                _packageRun.TestStepRuns);
+            CollectionAssert.AreElementsEqual(new TestInstanceRun[] { testRun, testRun.Children[0] },
+                _packageRun.TestInstanceRuns);
         }
     }
 }

@@ -67,12 +67,6 @@ namespace Gallio.Model.Execution
         IEnumerable<ITestMonitor> PreOrderTraversal { get; }
 
         /// <summary>
-        /// Enumerates this monitor and all of its descendants in post-order tree
-        /// traversal.
-        /// </summary>
-        IEnumerable<ITestMonitor> PostOrderTraversal { get; }
-
-        /// <summary>
         /// Gets a list consisting of this monitor and all of its descendants as
         /// enumerated by pre-order tree traversal.
         /// </summary>
@@ -95,7 +89,8 @@ namespace Gallio.Model.Execution
         ITestStepMonitor StartTestInstance(ITestStep rootStep);
 
         /// <summary>
-        /// Starts the root step of a new test instance and returns its step monitor
+        /// Starts the root step of a new test instance as a child of the currently
+        /// executing test instance and returns its step monitor
         /// using a default implementation of <see cref="ITestStep" />.
         /// </summary>
         /// <returns>The monitor for the root step of the test instance</returns>
