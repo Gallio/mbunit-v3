@@ -17,6 +17,7 @@ using Gallio.Icarus.Controls;
 using TestStatusBar = Gallio.Icarus.Controls.TestStatusBar;
 using TestTreeView = Gallio.Icarus.Controls.TestTreeView;
 using TestResultsList = Gallio.Icarus.Controls.TestResultsList;
+using TestResultsGraph = Gallio.Icarus.Controls.TestResultsGraph;
 
 namespace Gallio.Icarus
 {
@@ -85,10 +86,6 @@ namespace Gallio.Icarus
             this.treeImages = new System.Windows.Forms.ImageList(this.components);
             this.stateImages = new System.Windows.Forms.ImageList(this.components);
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
-            this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.projectTabs = new System.Windows.Forms.TabControl();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.testTree = new Gallio.Icarus.Controls.TestTreeView();
             this.testTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,19 +95,26 @@ namespace Gallio.Icarus
             this.resetTestsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.removeAssemblyToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.assemblyListMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.removeAssemblyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.projectTabs = new System.Windows.Forms.TabControl();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.testTree = new Gallio.Icarus.Controls.TestTreeView();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.assemblyList = new System.Windows.Forms.ListView();
             this.columnHeader9 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader10 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader11 = new System.Windows.Forms.ColumnHeader();
-            this.assemblyListMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.removeAssemblyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.treeFilterCombo = new System.Windows.Forms.ComboBox();
             this.lblSortTreeBy = new System.Windows.Forms.Label();
             this.testResultsTabs = new System.Windows.Forms.TabControl();
             this.testResultsTabPage = new System.Windows.Forms.TabPage();
-            this.testResultsList = new TestResultsList();
+            this.testResultsList = new Gallio.Icarus.Controls.TestResultsList();
             this.TestCol = new System.Windows.Forms.ColumnHeader();
             this.ResultCol = new System.Windows.Forms.ColumnHeader();
             this.DurationCol = new System.Windows.Forms.ColumnHeader();
@@ -126,7 +130,7 @@ namespace Gallio.Icarus
             this.logStream = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.performanceMonitorTabPage = new System.Windows.Forms.TabPage();
-            this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
+            this.testResultsGraph = new Gallio.Icarus.Controls.TestResultsGraph();
             this.panel2 = new System.Windows.Forms.Panel();
             this.graphsFilterBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -139,23 +143,21 @@ namespace Gallio.Icarus
             this.panelResults = new System.Windows.Forms.Panel();
             this.testProgressStatusBar = new Gallio.Icarus.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
-            this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer.SuspendLayout();
+            this.testTreeMenuStrip.SuspendLayout();
+            this.assemblyListMenuStrip.SuspendLayout();
+            this.trayMenuStrip.SuspendLayout();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             this.projectTabs.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.testTreeMenuStrip.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            this.assemblyListMenuStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.testResultsTabs.SuspendLayout();
             this.testResultsTabPage.SuspendLayout();
@@ -167,7 +169,6 @@ namespace Gallio.Icarus
             this.reportTabPage.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panelResults.SuspendLayout();
-            this.trayMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -488,67 +489,6 @@ namespace Gallio.Icarus
             // 
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.mainToolStrip);
             // 
-            // splitContainer
-            // 
-            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer.Name = "splitContainer";
-            // 
-            // splitContainer.Panel1
-            // 
-            this.splitContainer.Panel1.Controls.Add(this.projectTabs);
-            this.splitContainer.Panel1.Controls.Add(this.panel1);
-            this.splitContainer.Panel1.Padding = new System.Windows.Forms.Padding(5, 5, 0, 3);
-            // 
-            // splitContainer.Panel2
-            // 
-            this.splitContainer.Panel2.Controls.Add(this.testResultsTabs);
-            this.splitContainer.Panel2.Controls.Add(this.panelResults);
-            this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(0, 5, 5, 3);
-            this.splitContainer.Size = new System.Drawing.Size(1003, 636);
-            this.splitContainer.SplitterDistance = 321;
-            this.splitContainer.TabIndex = 4;
-            // 
-            // projectTabs
-            // 
-            this.projectTabs.Controls.Add(this.tabPage3);
-            this.projectTabs.Controls.Add(this.tabPage5);
-            this.projectTabs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.projectTabs.Location = new System.Drawing.Point(5, 36);
-            this.projectTabs.Name = "projectTabs";
-            this.projectTabs.SelectedIndex = 0;
-            this.projectTabs.Size = new System.Drawing.Size(316, 597);
-            this.projectTabs.TabIndex = 2;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.testTree);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(308, 571);
-            this.tabPage3.TabIndex = 0;
-            this.tabPage3.Text = "Class View";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // testTree
-            // 
-            this.testTree.CheckBoxes = true;
-            this.testTree.ContextMenuStrip = this.testTreeMenuStrip;
-            this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.testTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.testTree.HideSelection = false;
-            this.testTree.ImageIndex = 0;
-            this.testTree.ImageList = this.treeImages;
-            this.testTree.Location = new System.Drawing.Point(3, 3);
-            this.testTree.Name = "testTree";
-            this.testTree.SelectedImageIndex = 0;
-            this.testTree.Size = new System.Drawing.Size(302, 565);
-            this.testTree.TabIndex = 2;
-            this.testTree.TestStateImageList = this.stateImages;
-            this.testTree.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.testTree_AfterCheck);
-            this.testTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.testTree_AfterSelect);
-            // 
             // testTreeMenuStrip
             // 
             this.testTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -614,6 +554,105 @@ namespace Gallio.Icarus
             this.removeAssemblyToolStripMenuItem2.Text = "Remove Assembly";
             this.removeAssemblyToolStripMenuItem2.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem2_Click);
             // 
+            // assemblyListMenuStrip
+            // 
+            this.assemblyListMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeAssemblyToolStripMenuItem1});
+            this.assemblyListMenuStrip.Name = "assemblyListMenuStrip";
+            this.assemblyListMenuStrip.Size = new System.Drawing.Size(173, 26);
+            // 
+            // removeAssemblyToolStripMenuItem1
+            // 
+            this.removeAssemblyToolStripMenuItem1.Enabled = false;
+            this.removeAssemblyToolStripMenuItem1.Name = "removeAssemblyToolStripMenuItem1";
+            this.removeAssemblyToolStripMenuItem1.Size = new System.Drawing.Size(172, 22);
+            this.removeAssemblyToolStripMenuItem1.Text = "Remove Assembly";
+            this.removeAssemblyToolStripMenuItem1.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem1_Click);
+            // 
+            // trayIcon
+            // 
+            this.trayIcon.BalloonTipText = "All tests are good";
+            this.trayIcon.ContextMenuStrip = this.trayMenuStrip;
+            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
+            this.trayIcon.Text = "Gallio Icarus";
+            this.trayIcon.Visible = true;
+            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
+            // 
+            // trayMenuStrip
+            // 
+            this.trayMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ExitMenuItem});
+            this.trayMenuStrip.Name = "trayMenuStrip";
+            this.trayMenuStrip.Size = new System.Drawing.Size(104, 26);
+            // 
+            // ExitMenuItem
+            // 
+            this.ExitMenuItem.Name = "ExitMenuItem";
+            this.ExitMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.ExitMenuItem.Text = "Exit";
+            this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
+            // 
+            // splitContainer
+            // 
+            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer.Name = "splitContainer";
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.projectTabs);
+            this.splitContainer.Panel1.Controls.Add(this.panel1);
+            this.splitContainer.Panel1.Padding = new System.Windows.Forms.Padding(5, 5, 0, 3);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.testResultsTabs);
+            this.splitContainer.Panel2.Controls.Add(this.panelResults);
+            this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(0, 5, 5, 3);
+            this.splitContainer.Size = new System.Drawing.Size(1003, 636);
+            this.splitContainer.SplitterDistance = 321;
+            this.splitContainer.TabIndex = 4;
+            // 
+            // projectTabs
+            // 
+            this.projectTabs.Controls.Add(this.tabPage3);
+            this.projectTabs.Controls.Add(this.tabPage5);
+            this.projectTabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.projectTabs.Location = new System.Drawing.Point(5, 36);
+            this.projectTabs.Name = "projectTabs";
+            this.projectTabs.SelectedIndex = 0;
+            this.projectTabs.Size = new System.Drawing.Size(316, 597);
+            this.projectTabs.TabIndex = 2;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.testTree);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(308, 571);
+            this.tabPage3.TabIndex = 0;
+            this.tabPage3.Text = "Class View";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // testTree
+            // 
+            this.testTree.CheckBoxes = true;
+            this.testTree.ContextMenuStrip = this.testTreeMenuStrip;
+            this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.testTree.HideSelection = false;
+            this.testTree.ImageIndex = 0;
+            this.testTree.ImageList = this.treeImages;
+            this.testTree.Location = new System.Drawing.Point(3, 3);
+            this.testTree.Name = "testTree";
+            this.testTree.SelectedImageIndex = 0;
+            this.testTree.Size = new System.Drawing.Size(302, 565);
+            this.testTree.TabIndex = 2;
+            this.testTree.TestStateImageList = this.stateImages;
+            this.testTree.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.testTree_AfterCheck);
+            this.testTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.testTree_AfterSelect);
+            // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.assemblyList);
@@ -657,21 +696,6 @@ namespace Gallio.Icarus
             // 
             this.columnHeader11.Text = "Location";
             this.columnHeader11.Width = 128;
-            // 
-            // assemblyListMenuStrip
-            // 
-            this.assemblyListMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.removeAssemblyToolStripMenuItem1});
-            this.assemblyListMenuStrip.Name = "assemblyListMenuStrip";
-            this.assemblyListMenuStrip.Size = new System.Drawing.Size(173, 26);
-            // 
-            // removeAssemblyToolStripMenuItem1
-            // 
-            this.removeAssemblyToolStripMenuItem1.Enabled = false;
-            this.removeAssemblyToolStripMenuItem1.Name = "removeAssemblyToolStripMenuItem1";
-            this.removeAssemblyToolStripMenuItem1.Size = new System.Drawing.Size(172, 22);
-            this.removeAssemblyToolStripMenuItem1.Text = "Remove Assembly";
-            this.removeAssemblyToolStripMenuItem1.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem1_Click);
             // 
             // panel1
             // 
@@ -864,7 +888,7 @@ namespace Gallio.Icarus
             // 
             // performanceMonitorTabPage
             // 
-            this.performanceMonitorTabPage.Controls.Add(this.zedGraphControl1);
+            this.performanceMonitorTabPage.Controls.Add(this.testResultsGraph);
             this.performanceMonitorTabPage.Controls.Add(this.panel2);
             this.performanceMonitorTabPage.Location = new System.Drawing.Point(4, 22);
             this.performanceMonitorTabPage.Name = "performanceMonitorTabPage";
@@ -874,19 +898,19 @@ namespace Gallio.Icarus
             this.performanceMonitorTabPage.Text = "Performance Monitor";
             this.performanceMonitorTabPage.UseVisualStyleBackColor = true;
             // 
-            // zedGraphControl1
+            // testResultsGraph
             // 
-            this.zedGraphControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.zedGraphControl1.Location = new System.Drawing.Point(3, 45);
-            this.zedGraphControl1.Name = "zedGraphControl1";
-            this.zedGraphControl1.ScrollMaxX = 0;
-            this.zedGraphControl1.ScrollMaxY = 0;
-            this.zedGraphControl1.ScrollMaxY2 = 0;
-            this.zedGraphControl1.ScrollMinX = 0;
-            this.zedGraphControl1.ScrollMinY = 0;
-            this.zedGraphControl1.ScrollMinY2 = 0;
-            this.zedGraphControl1.Size = new System.Drawing.Size(659, 498);
-            this.zedGraphControl1.TabIndex = 0;
+            this.testResultsGraph.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testResultsGraph.Location = new System.Drawing.Point(3, 45);
+            this.testResultsGraph.Name = "testResultsGraph";
+            this.testResultsGraph.ScrollMaxX = 0;
+            this.testResultsGraph.ScrollMaxY = 0;
+            this.testResultsGraph.ScrollMaxY2 = 0;
+            this.testResultsGraph.ScrollMinX = 0;
+            this.testResultsGraph.ScrollMinY = 0;
+            this.testResultsGraph.ScrollMinY2 = 0;
+            this.testResultsGraph.Size = new System.Drawing.Size(659, 498);
+            this.testResultsGraph.TabIndex = 0;
             // 
             // panel2
             // 
@@ -903,12 +927,14 @@ namespace Gallio.Icarus
             this.graphsFilterBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.graphsFilterBox1.FormattingEnabled = true;
             this.graphsFilterBox1.Items.AddRange(new object[] {
-            "Total Test Results",
-            "Test Execution Time"});
+            "Test results by Type",
+            "Test results by Namespace",
+            "Test results by Assembly"});
             this.graphsFilterBox1.Location = new System.Drawing.Point(58, 10);
             this.graphsFilterBox1.Name = "graphsFilterBox1";
             this.graphsFilterBox1.Size = new System.Drawing.Size(189, 21);
             this.graphsFilterBox1.TabIndex = 2;
+            this.graphsFilterBox1.SelectedIndexChanged += new System.EventHandler(this.graphsFilterBox1_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -1022,29 +1048,6 @@ namespace Gallio.Icarus
             this.label2.TabIndex = 0;
             this.label2.Text = "Test Status";
             // 
-            // trayIcon
-            // 
-            this.trayIcon.BalloonTipText = "All tests are good";
-            this.trayIcon.ContextMenuStrip = this.trayMenuStrip;
-            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
-            this.trayIcon.Text = "Gallio Icarus";
-            this.trayIcon.Visible = true;
-            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
-            // 
-            // trayMenuStrip
-            // 
-            this.trayMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExitMenuItem});
-            this.trayMenuStrip.Name = "trayMenuStrip";
-            this.trayMenuStrip.Size = new System.Drawing.Size(104, 26);
-            // 
-            // ExitMenuItem
-            // 
-            this.ExitMenuItem.Name = "ExitMenuItem";
-            this.ExitMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.ExitMenuItem.Text = "Exit";
-            this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1070,14 +1073,15 @@ namespace Gallio.Icarus
             this.toolStripContainer.TopToolStripPanel.PerformLayout();
             this.toolStripContainer.ResumeLayout(false);
             this.toolStripContainer.PerformLayout();
+            this.testTreeMenuStrip.ResumeLayout(false);
+            this.assemblyListMenuStrip.ResumeLayout(false);
+            this.trayMenuStrip.ResumeLayout(false);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.ResumeLayout(false);
             this.projectTabs.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
-            this.testTreeMenuStrip.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
-            this.assemblyListMenuStrip.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.testResultsTabs.ResumeLayout(false);
@@ -1095,7 +1099,6 @@ namespace Gallio.Icarus
             this.panel4.PerformLayout();
             this.panelResults.ResumeLayout(false);
             this.panelResults.PerformLayout();
-            this.trayMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1168,7 +1171,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem collapseAllMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem expandFailedMenuItem;
-        private ZedGraph.ZedGraphControl zedGraphControl1;
+        private TestResultsGraph testResultsGraph;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox graphsFilterBox1;

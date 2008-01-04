@@ -60,6 +60,9 @@
     </Compile>
     <Compile Include="AdapterModel\ProjectAdapterModel.cs" />
     <Compile Include="Adapter\ProjectAdapter.cs" />
+    <Compile Include="Controls\TestResultsGraph.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\TestResultsList.cs">
       <SubType>Component</SubType>
     </Compile>

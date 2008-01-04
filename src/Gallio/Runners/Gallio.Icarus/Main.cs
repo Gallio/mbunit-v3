@@ -185,55 +185,9 @@ namespace Gallio.Icarus
             statusBarTimer.Enabled = true;
             statusBarTimer.Elapsed += new ElapsedEventHandler(statusBarTimer_Elapsed);
             statusBarTimer.Start();
-        }
 
-        private void UpdateGraph()
-        {
-            GraphPane graphPane = zedGraphControl1.GraphPane;
-            graphPane.Title.Text = "Total Test Results";
-            graphPane.XAxis.Title.Text = "Number of Tests";
-            graphPane.YAxis.Title.Text = "Test Suites";
-
-            // Make up some data points
-            string[] labels = { "Class 1", "Class 2" };
-            double[] x = { 1, 2 };
-            double[] x2 = { 1, 5 };
-            double[] x3 = { 4, 10 };
-
-            // Generate a red bar with "Curve 1" in the legend
-            BarItem myCurve = graphPane.AddBar("Fail", x, null, Color.Red);
-            // Fill the bar with a red-white-red color gradient for a 3d look
-            myCurve.Bar.Fill = new Fill(Color.Red, Color.White, Color.Red, 90f);
-
-            // Generate a blue bar with "Curve 2" in the legend
-            myCurve = graphPane.AddBar("Ignore", x2, null, Color.Yellow);
-            // Fill the bar with a Blue-white-Blue color gradient for a 3d look
-            myCurve.Bar.Fill = new Fill(Color.Blue, Color.White, Color.Blue, 90f);
-
-            // Generate a green bar with "Curve 3" in the legend
-            myCurve = graphPane.AddBar("Pass", x3, null, Color.Green);
-            // Fill the bar with a Green-white-Green color gradient for a 3d look
-            myCurve.Bar.Fill = new Fill(Color.Green, Color.White, Color.Green, 90f);
-
-            // Draw the Y tics between the labels instead of at the labels
-            graphPane.YAxis.MajorTic.IsBetweenLabels = true;
-
-            // Set the YAxis labels
-            graphPane.YAxis.Scale.TextLabels = labels;
-            // Set the YAxis to Text type
-            graphPane.YAxis.Type = AxisType.Text;
-
-            // Set the bar type to stack, which stacks the bars by automatically accumulating the values
-            graphPane.BarSettings.Type = BarType.Stack;
-
-            // Make the bars horizontal by setting the BarBase to "Y"
-            graphPane.BarSettings.Base = BarBase.Y;
-
-            // Fill the chart background with a color gradient
-            graphPane.Chart.Fill = new Fill(Color.White,
-                                            Color.FromArgb(255, 255, 166), 45.0F);
-
-            zedGraphControl1.AxisChange();
+            // refresh graph
+            testResultsGraph.DisplayGraph();
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -295,7 +249,7 @@ namespace Gallio.Icarus
                 }
 
                 // enable/disable buttons
-                toolStripContainer.Invoke((MethodInvoker)delegate()
+                Invoke((MethodInvoker)delegate()
                 {
                     stopButton.Enabled = false;
                     startButton.Enabled = true;
@@ -695,11 +649,15 @@ namespace Gallio.Icarus
                         break;
                 }
 
-                // update test results list
                 CodeReference codeReference = testData.CodeReference ?? CodeReference.Unknown;
-
+                
+                // update test results list
                 testResultsList.UpdateTestResults(testData.Name, testStepRun.Result.Outcome.ToString(), foreColor, 
                     (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds.ToString(), codeReference.TypeName, 
+                    codeReference.NamespaceName, codeReference.AssemblyName);
+
+                // update test results graph
+                testResultsGraph.UpdateTestResults(testStepRun.Result.Outcome.ToString(), codeReference.TypeName,
                     codeReference.NamespaceName, codeReference.AssemblyName);
             }
         }
@@ -932,6 +890,11 @@ namespace Gallio.Icarus
         private void logStreamsTabPage_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void graphsFilterBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            testResultsGraph.Mode = (string)graphsFilterBox1.SelectedItem;
         }
     }	
 }
