@@ -76,6 +76,11 @@ namespace Gallio.Reflection.Impl
             return null;
         }
 
+        public SourceLocation GetSourceLocation()
+        {
+            return null;
+        }
+
         public override string ToString()
         {
             return name;

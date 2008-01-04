@@ -154,12 +154,11 @@ namespace Gallio.Echo
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
-             ShortName = "stm",
-             LongName = "save-test-model",
-             Description = "Save the test model to a file as XML.",
-             ValueLabel = "file"
+             ShortName = "dnr",
+             LongName = "do-not-run",
+             Description = "Load the tests but does not run them.  This option may be used to produce a report that contains test metadata for consumption by other tools."
              )]
-        public string SaveTestModel;
+        public bool DoNotRun;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
@@ -200,7 +199,7 @@ namespace Gallio.Echo
 
             sw.WriteLine("Verbosity: {0}", Verbosity);
             sw.WriteLine("No Echo Results: {0}", NoEchoResults);
-            sw.WriteLine("Save Test Model: {0}", SaveTestModel);
+            sw.WriteLine("Save Test Model: {0}", DoNotRun);
             sw.WriteLine("Shadow Copy Files: {0}", ShadowCopyFiles);
             return sw.ToString();
         }

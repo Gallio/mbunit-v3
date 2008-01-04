@@ -43,6 +43,7 @@ namespace Gallio.Reflection
 
         /// <summary>
         /// Gets a <see cref="CodeReference" /> for this code element.
+        /// This value is never null.
         /// </summary>
         /// <returns>The code reference</returns>
         CodeReference CodeReference { get; }
@@ -90,5 +91,12 @@ namespace Gallio.Reflection
         /// </summary>
         /// <returns>The XML documentation or null if none available</returns>
         string GetXmlDocumentation();
+
+        /// <summary>
+        /// Gets the source location of the declaration of this code element, or
+        /// null if not available.
+        /// </summary>
+        /// <returns>The source location</returns>
+        SourceLocation GetSourceLocation();
     }
 }

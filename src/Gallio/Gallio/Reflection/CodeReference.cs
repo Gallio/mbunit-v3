@@ -14,14 +14,11 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Reflection;
-using System.Security.Permissions;
 using System.Text;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
 using Gallio.Properties;
-using Gallio.Utilities;
 
 namespace Gallio.Reflection
 {
@@ -32,7 +29,7 @@ namespace Gallio.Reflection
     /// </summary>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class CodeReference
+    public class CodeReference : IEquatable<CodeReference>
     {
         /// <summary>
         /// Gets an empty code reference used to indicate that the actual
@@ -298,7 +295,12 @@ namespace Gallio.Reflection
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            CodeReference other = obj as CodeReference;
+            return Equals(obj as CodeReference);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(CodeReference other)
+        {
             return other != null
                    && assemblyName == other.assemblyName
                    && namespaceName == other.namespaceName

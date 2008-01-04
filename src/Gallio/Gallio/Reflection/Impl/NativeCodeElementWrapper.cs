@@ -72,6 +72,11 @@ namespace Gallio.Reflection.Impl
 
         public abstract string GetXmlDocumentation();
 
+        public virtual SourceLocation GetSourceLocation()
+        {
+            return null;
+        }
+
         public override string ToString()
         {
             return Target.ToString();

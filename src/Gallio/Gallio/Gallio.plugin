@@ -44,10 +44,6 @@
                  service="Gallio.Model.Execution.ITestPlanFactory, Gallio"
                  type="Gallio.Model.Execution.DependencyTestPlanFactory, Gallio" />
 
-      <component id="Core.XmlDocumentationResolver"
-                 service="Gallio.Hosting.IXmlDocumentationResolver, Gallio"
-                 type="Gallio.Hosting.DefaultXmlDocumentationResolver, Gallio" />
-
       <component id="Core.ContextManager"
                  service="Gallio.Contexts.IContextManager, Gallio"
                  type="Gallio.Contexts.DefaultContextManager, Gallio" />

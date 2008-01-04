@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Gallio.Hosting;
+using Gallio.Reflection;
 
 namespace Gallio.Hosting
 {
@@ -28,14 +29,12 @@ namespace Gallio.Hosting
     public static class Loader
     {
         private static IAssemblyResolverManager cachedAssemblyResolverManager;
-        private static IXmlDocumentationResolver cachedDocumentationResolver;
 
         static Loader()
         {
             Runtime.InstanceChanged += delegate
             {
                 cachedAssemblyResolverManager = null;
-                cachedDocumentationResolver = null;
             };
         }
 
@@ -49,19 +48,6 @@ namespace Gallio.Hosting
                 if (cachedAssemblyResolverManager == null)
                     cachedAssemblyResolverManager = Runtime.Instance.Resolve<IAssemblyResolverManager>();
                 return cachedAssemblyResolverManager;
-            }
-        }
-
-        /// <summary>
-        /// Gets the XML documentation resolver.
-        /// </summary>
-        public static IXmlDocumentationResolver XmlDocumentationResolver
-        {
-            get
-            {
-                if (cachedDocumentationResolver == null)
-                    cachedDocumentationResolver = Runtime.Instance.Resolve<IXmlDocumentationResolver>();
-                return cachedDocumentationResolver;
             }
         }
 

@@ -55,6 +55,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="ISymWrapper" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -121,7 +122,10 @@
     <Compile Include="Data\DataBindingException.cs" />
     <Compile Include="Data\ScalarDataRow.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />
+    <Compile Include="Reflection\IDebugSymbolResolver.cs" />
     <Compile Include="Hosting\IRuntimeFactory.cs" />
+    <Compile Include="Reflection\SourceLocation.cs" />
     <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
     <Compile Include="Logging\TextLogWriter.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
@@ -308,7 +312,7 @@
     <Compile Include="Runner\TestLauncher.cs" />
     <Compile Include="Hosting\DefaultAssemblyResolverManager.cs" />
     <Compile Include="Contexts\DefaultContextManager.cs" />
-    <Compile Include="Hosting\DefaultXmlDocumentationResolver.cs" />
+    <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolver.cs" />
     <Compile Include="Hosting\IAssemblyResolverManager.cs" />
     <Compile Include="Hosting\RuntimeSetup.cs" />
     <Compile Include="Hosting\WindsorRuntime.cs" />
@@ -367,7 +371,7 @@
     <Compile Include="Model\TestStatus.cs" />
     <Compile Include="Contexts\IContextManager.cs" />
     <Compile Include="Hosting\IRuntime.cs" />
-    <Compile Include="Hosting\IXmlDocumentationResolver.cs" />
+    <Compile Include="Reflection\IXmlDocumentationResolver.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\GenericUtils.cs" />
     <Compile Include="Model\Serialization\SerializationUtils.cs" />

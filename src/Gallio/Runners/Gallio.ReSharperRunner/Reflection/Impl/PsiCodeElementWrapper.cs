@@ -76,6 +76,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return null;
         }
 
+        public virtual SourceLocation GetSourceLocation()
+        {
+            return null;
+        }
+
         public override string ToString()
         {
             return Name;

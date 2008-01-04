@@ -16,12 +16,12 @@
 using System;
 using System.Reflection;
 using Castle.Core.Logging;
-using Gallio.Hosting;
+using Gallio.Reflection.Impl;
 using Gallio.Tests;
 using Gallio.TestResources.MbUnit;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Hosting
+namespace Gallio.Tests.Reflection.Impl
 {
     [TestFixture]
     [Author("Jeff")]

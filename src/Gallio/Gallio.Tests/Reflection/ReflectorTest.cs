@@ -22,11 +22,11 @@ using Gallio.Reflection;
 using Gallio.Utilities;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Model.Reflection
+namespace Gallio.Tests.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(Reflector))]
-    public class ReflectorTests
+    public class ReflectorTest
     {
         [Test]
         public void Resolve_Null_ReturnsNull()
@@ -54,7 +54,7 @@ namespace Gallio.Tests.Model.Reflection
         [Test]
         public void WrapAssembly()
         {
-            Assembly target = typeof(ReflectorTests).Assembly;
+            Assembly target = typeof(ReflectorTest).Assembly;
             IAssemblyInfo info = Reflector.Wrap(target);
 
             Assert.AreEqual(info.FullName, target.FullName);
@@ -98,6 +98,19 @@ namespace Gallio.Tests.Model.Reflection
         {
             IFunctionInfo r = Reflector.GetExecutingFunction();
             Assert.AreEqual("GetExecutingFunction", r.Name);
+        }
+
+        [Test]
+        public void GetSourceLocation_ReturnsNullForNamespaces()
+        {
+            Assert.IsNull(Reflector.WrapNamespace("foo").GetSourceLocation());
+        }
+
+        [Test]
+        public void GetSourceLocation_ReturnsMethodSourceFile()
+        {
+            SourceLocation location = Reflector.GetExecutingFunction().GetSourceLocation();
+            StringAssert.EndsWith(location.Filename, GetType().Name + ".cs");
         }
     }
 }

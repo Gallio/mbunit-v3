@@ -37,7 +37,7 @@ namespace Gallio.Tests.Model
             AreEqual(expected.RootTest, actual.RootTest);
         }
 
-        public static void AreEqual(TestData expected, TestData actual)
+        public static void AreEqual(TestComponentData expected, TestComponentData actual)
         {
             if (expected == null)
             {
@@ -47,10 +47,23 @@ namespace Gallio.Tests.Model
 
             Assert.AreEqual(expected.Id, actual.Id);
             Assert.AreEqual(expected.Name, actual.Name);
-            Assert.AreEqual(expected.IsTestCase, actual.IsTestCase);
-            AreEqual(expected.CodeReference, actual.CodeReference);
-            AreEqual(expected.Metadata, actual.Metadata);
+            Assert.AreEqual(expected.CodeReference, actual.CodeReference);
+            Assert.AreEqual(expected.SourceLocation, actual.SourceLocation);
 
+            AreEqual(expected.Metadata, actual.Metadata);
+        }
+
+        public static void AreEqual(TestData expected, TestData actual)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual);
+                return;
+            }
+
+            AreEqual((TestComponentData)expected, actual);
+
+            Assert.AreEqual(expected.IsTestCase, actual.IsTestCase);
             MbUnit.Framework.InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
             MbUnit.Framework.InterimAssert.WithPairs(expected.Parameters, actual.Parameters, AreEqual);
         }
@@ -63,12 +76,10 @@ namespace Gallio.Tests.Model
                 return;
             }
 
-            Assert.AreEqual(expected.Id, actual.Id);
-            Assert.AreEqual(expected.Name, actual.Name);
+            AreEqual((TestComponentData)expected, actual);
+
             Assert.AreEqual(expected.Index, actual.Index);
             Assert.AreEqual(expected.TypeName, actual.TypeName);
-            AreEqual(expected.CodeReference, actual.CodeReference);
-            AreEqual(expected.Metadata, actual.Metadata);
         }
 
         public static void AreEqual(MetadataMap expected, MetadataMap actual)
@@ -82,21 +93,6 @@ namespace Gallio.Tests.Model
             MbUnit.Framework.InterimAssert.WithKeyedPairs(expected, actual, CollectionAssert.AreElementsEqual);
         }
 
-        public static void AreEqual(CodeReference expected, CodeReference actual)
-        {
-            if (expected == null)
-            {
-                Assert.IsNull(actual);
-                return;
-            }
-
-            Assert.AreEqual(expected.AssemblyName, actual.AssemblyName);
-            Assert.AreEqual(expected.NamespaceName, actual.NamespaceName);
-            Assert.AreEqual(expected.TypeName, actual.TypeName);
-            Assert.AreEqual(expected.MemberName, actual.MemberName);
-            Assert.AreEqual(expected.ParameterName, actual.ParameterName);
-        }
-
         public static void AreEqual(TestStepData expected, TestStepData actual)
         {
             if (expected == null)
@@ -105,13 +101,11 @@ namespace Gallio.Tests.Model
                 return;
             }
 
-            Assert.AreEqual(expected.Id, actual.Id);
-            Assert.AreEqual(expected.Name, actual.Name);
+            AreEqual((TestComponentData)expected, actual);
+
             Assert.AreEqual(expected.FullName, actual.FullName);
             Assert.AreEqual(expected.ParentId, actual.ParentId);
             Assert.AreEqual(expected.TestInstanceId, actual.TestInstanceId);
-            AreEqual(expected.CodeReference, actual.CodeReference);
-            AreEqual(expected.Metadata, actual.Metadata);
         }
 
         public static void AreEqual(TestInstanceData expected, TestInstanceData actual)
@@ -122,12 +116,10 @@ namespace Gallio.Tests.Model
                 return;
             }
 
-            Assert.AreEqual(expected.Id, actual.Id);
-            Assert.AreEqual(expected.Name, actual.Name);
+            AreEqual((TestComponentData)expected, actual);
+
             Assert.AreEqual(expected.TestId, actual.TestId);
             Assert.AreEqual(expected.IsDynamic, actual.IsDynamic);
-            AreEqual(expected.CodeReference, actual.CodeReference);
-            AreEqual(expected.Metadata, actual.Metadata);
         }
 
         public static void AreEqual(TestResult expected, TestResult actual)

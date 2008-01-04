@@ -83,7 +83,9 @@
     <Compile Include="Model\Filters\FilterParserTest.cs" />
     <Compile Include="Model\Filters\ModelComponentFilterFactoryTest.cs" />
     <Compile Include="Model\Filters\RegexFilterTest.cs" />
-    <Compile Include="Model\Reflection\ReflectorTests.cs" />
+    <Compile Include="Reflection\CodeReferenceTest.cs" />
+    <Compile Include="Reflection\Impl\ComDebugSymbolResolverTest.cs" />
+    <Compile Include="Reflection\ReflectorTest.cs" />
     <Compile Include="Runner\Reports\FileSystemReportContainerTest.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />
@@ -101,7 +103,6 @@
     <Compile Include="Model\Filters\NotFilterTest.cs" />
     <Compile Include="Model\Filters\OrFilterTest.cs" />
     <Compile Include="Model\Filters\TypeFilterTest.cs" />
-    <Compile Include="Model\Reflection\CodeReferenceTest.cs" />
     <Compile Include="Model\MetadataMapTest.cs" />
     <Compile Include="Collections\GenericUtilsTest.cs" />
     <Compile Include="Runner\Reports\MockTestDataFactory.cs" />
@@ -113,7 +114,7 @@
     <Compile Include="Runner\Reports\TestStepRunTests.cs" />
     <Compile Include="Runner\Reports\TestInstanceRunTests.cs" />
     <Compile Include="Runner\TestLauncherTest.cs" />
-    <Compile Include="Hosting\DefaultXmlDocumentationResolverTest.cs" />
+    <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolverTest.cs" />
     <Compile Include="Collections\TreeUtilsTest.cs" />
   </ItemGroup>
   <ItemGroup>

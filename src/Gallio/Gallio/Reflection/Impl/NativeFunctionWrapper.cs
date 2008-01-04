@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Hosting;
 
 namespace Gallio.Reflection.Impl
 {
@@ -73,7 +72,12 @@ namespace Gallio.Reflection.Impl
 
         public override string GetXmlDocumentation()
         {
-            return Loader.XmlDocumentationResolver.GetXmlDocumentation(Target);
+            return Reflector.XmlDocumentationResolver.GetXmlDocumentation(Target);
+        }
+
+        public override SourceLocation GetSourceLocation()
+        {
+            return Reflector.DebugSymbolResolver.GetSourceLocationForMethod(Target.DeclaringType.Assembly.Location, Target.MetadataToken);
         }
 
         public bool Equals(IFunctionInfo other)

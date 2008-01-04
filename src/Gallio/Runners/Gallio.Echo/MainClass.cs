@@ -122,7 +122,7 @@ namespace Gallio.Echo
 
                 GenericUtils.AddAll(arguments.ReportTypes, launcher.ReportFormats);
 
-                launcher.TestModelFilename = arguments.SaveTestModel;
+                launcher.DoNotRun = arguments.DoNotRun;
 
                 if (!String.IsNullOrEmpty(arguments.Filter))
                     launcher.Filter = FilterUtils.ParseTestFilter(arguments.Filter);

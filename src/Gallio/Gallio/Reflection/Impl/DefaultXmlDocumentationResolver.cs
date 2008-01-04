@@ -20,8 +20,9 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using Gallio.Hosting;
+using Gallio.Reflection;
 
-namespace Gallio.Hosting
+namespace Gallio.Reflection.Impl
 {
     /// <summary>
     /// The default XML documentation resolver reads XML documentation files on

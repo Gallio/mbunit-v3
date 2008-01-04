@@ -72,7 +72,7 @@ namespace Gallio.Reflection.Impl
 
         public override string GetXmlDocumentation()
         {
-            return Loader.XmlDocumentationResolver.GetXmlDocumentation(Target);
+            return Reflector.XmlDocumentationResolver.GetXmlDocumentation(Target);
         }
 
         public bool Equals(ISlotInfo other)

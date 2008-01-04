@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 
-namespace Gallio.Hosting
+namespace Gallio.Reflection
 {
     /// <summary>
     /// Resolves members to XML documentation contents.

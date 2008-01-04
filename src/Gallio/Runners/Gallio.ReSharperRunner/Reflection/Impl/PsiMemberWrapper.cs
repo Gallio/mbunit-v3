@@ -17,7 +17,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection.Impl;
+using JetBrains.ReSharper.Editor;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Tree;
+using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
 {
@@ -32,6 +35,22 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public override IDeclaredElement DeclaredElement
         {
             get { return Target; }
+        }
+
+        public override SourceLocation GetSourceLocation()
+        {
+            IDeclaration[] decl = Target.GetDeclarations();
+            if (decl.Length == 0)
+                return null;
+
+            ReSharperDocumentRange range = decl[0].GetDocumentRange();
+            if (!range.IsValid)
+                return null;
+
+            string filename = decl[0].GetProjectFile().Location.FullPath;
+            DocumentCoords start = range.Document.GetCoordsByOffset(range.TextRange.StartOffset);
+
+            return new SourceLocation(filename, start.Line, start.Column);
         }
 
         public override string Name

@@ -25,7 +25,6 @@ using Gallio.Core.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Serialization;
 using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
 
@@ -73,7 +72,7 @@ namespace Gallio.Runner
 
         private Factory<ITestRunner> testRunnerFactory;
         private bool echoResults;
-        private string testModelFilename;
+        private bool doNotRun;
 
         private string reportDirectory;
         private string reportNameFormat;
@@ -302,24 +301,25 @@ namespace Gallio.Runner
 
         /// <summary>
         /// <para>
-        /// Gets or sets name of a file to which the test model should be persisted,
-        /// or <c>null</c> if none.
+        /// Gets or sets whether to skip test execution.
+        /// This option may be used to produce a report that contains test
+        /// metadata for consumption by other tools.
         /// </para>
         /// <para>
-        /// The default value is <c>null</c>.
+        /// The default value is <c>false</c>.
         /// </para>
         /// </summary>
-        public string TestModelFilename
+        public bool DoNotRun
         {
             get
             {
                 ThrowIfDisposed();
-                return testModelFilename;
+                return doNotRun;
             }
             set
             {
                 ThrowIfDisposed();
-                testModelFilename = value;
+                doNotRun = value;
             }
         }
 
@@ -501,18 +501,21 @@ namespace Gallio.Runner
                         return result;
 
                     // Run tests.
-                    try
+                    if (!doNotRun)
                     {
-                        RunTests(runner);
+                        try
+                        {
+                            RunTests(runner);
 
-                        if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
-                            result.SetResultCode(ResultCode.Failure);
-                        else if (reportMonitor.Report.PackageRun.Statistics.TestCount == 0)
-                            result.SetResultCode(ResultCode.NoTests);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        result.SetResultCode(ResultCode.Canceled);
+                            if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
+                                result.SetResultCode(ResultCode.Failure);
+                            else if (reportMonitor.Report.PackageRun.Statistics.TestCount == 0)
+                                result.SetResultCode(ResultCode.NoTests);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            result.SetResultCode(ResultCode.Canceled);
+                        }
                     }
 
                     // Generate reports even if the test run is canceled, unless this step
@@ -696,7 +699,6 @@ namespace Gallio.Runner
                 ApplyFilter(runner);
                 LoadTestPackage(runner);
                 BuildTestModel(runner);
-                PersistTestModel(runner);
                 return true;
             }
             catch (OperationCanceledException)
@@ -817,19 +819,6 @@ namespace Gallio.Runner
             {
                 runner.RunTests(progressMonitor);
             });
-        }
-
-        private void PersistTestModel(ITestRunner runner)
-        {
-            if (testModelFilename != null)
-            {
-                progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
-                {
-                    progressMonitor.BeginTask("Saving test model.", 1);
-                    progressMonitor.SetStatus(testModelFilename);
-                    SerializationUtils.SaveToXml(runner.TestModelData, testModelFilename);
-                });
-            }
         }
 
         private IReportContainer CreateReportContainer(Report report)

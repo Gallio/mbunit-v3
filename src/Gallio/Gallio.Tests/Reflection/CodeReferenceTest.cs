@@ -21,7 +21,7 @@ using Gallio.Reflection;
 using MbUnit.Framework;
 using Gallio.Utilities;
 
-namespace Gallio.Tests.Model.Reflection
+namespace Gallio.Tests.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(CodeReference))]

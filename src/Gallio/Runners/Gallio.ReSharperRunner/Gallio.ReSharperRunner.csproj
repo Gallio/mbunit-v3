@@ -69,6 +69,10 @@
       <HintPath>..\..\..\..\libs\ReSharper3\JetBrains.ReSharper.DocumentManager.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="JetBrains.ReSharper.DocumentModel, Version=3.0.517.8, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\libs\ReSharper3\JetBrains.ReSharper.DocumentModel.dll</HintPath>
+    </Reference>
     <Reference Include="JetBrains.ReSharper.ProjectModel, Version=3.0.517.8, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\libs\ReSharper3\JetBrains.ReSharper.ProjectModel.dll</HintPath>
