@@ -23,6 +23,7 @@ using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Reflection;
 
 namespace Gallio.Icarus.AdapterModel
 {
@@ -89,18 +90,20 @@ namespace Gallio.Icarus.AdapterModel
                     else
                     {
                         // fixtures need special treatment to insert the namespace layer!
-                        string nameSpace = td.CodeReference.NamespaceName;
+                        string @namespace = (td.CodeReference ?? CodeReference.Unknown).NamespaceName ?? "";
+
                         // find the namespace node (or add if it doesn't exist)
                         TestTreeNode nsNode;
-                        if (parent.Nodes.ContainsKey(nameSpace))
+                        if (parent.Nodes.ContainsKey(@namespace))
                         {
-                            nsNode = parent.Nodes.Find(nameSpace, false)[0] as TestTreeNode;
+                            nsNode = parent.Nodes.Find(@namespace, false)[0] as TestTreeNode;
                         }
                         else
                         {
-                            nsNode = new TestTreeNode(nameSpace, nameSpace, 2, initialCheckState);
+                            nsNode = new TestTreeNode(@namespace, @namespace, 2, initialCheckState);
                             parent.Nodes.Add(nsNode);
                         }
+
                         // add the fixture to the namespace
                         ttnode = new TestTreeNode(td.Name, td.Id, 3, initialCheckState);
                         nsNode.Nodes.Add(ttnode);

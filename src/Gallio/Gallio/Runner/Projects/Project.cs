@@ -44,7 +44,7 @@ namespace Gallio.Runner.Projects
         /// <summary>
         /// The test package.
         /// </summary>
-        [XmlElement("testPackageConfig")]
+        [XmlElement("testPackageConfig", IsNullable=false)]
         public TestPackageConfig TestPackageConfig
         {
             get { return testPackageConfig; }
@@ -54,7 +54,8 @@ namespace Gallio.Runner.Projects
         /// <summary>
         /// A list of test filters for the project.
         /// </summary>
-        [XmlArray("testFilters"), XmlArrayItem("testFilter", typeof(FilterInfo))]
+        [XmlArray("testFilters", IsNullable=false)]
+        [XmlArrayItem("testFilter", typeof(FilterInfo), IsNullable=false)]
         public List<FilterInfo> TestFilters
         {
             get { return testFilters; }

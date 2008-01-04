@@ -36,7 +36,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the test package configuration for the report, or null if none.
         /// </summary>
-        [XmlElement("packageConfig", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlElement("packageConfig", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
         public TestPackageConfig PackageConfig
         {
             get { return packageConfig; }
@@ -46,7 +46,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the test model for the report, or null if none.
         /// </summary>
-        [XmlElement("testModel", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlElement("testModel", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
         public TestModelData TestModelData
         {
             get { return testModelData; }
@@ -56,7 +56,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the package run information included in the report, or null if none.
         /// </summary>
-        [XmlElement("packageRun", IsNullable = true, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlElement("packageRun", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
         public PackageRun PackageRun
         {
             get { return packageRun; }

@@ -56,7 +56,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the test package configuration.
         /// </summary>
-        [XmlElement("config")]
+        [XmlElement("config", IsNullable=false)]
         public TestPackageConfig Config
         {
             get { return config; }

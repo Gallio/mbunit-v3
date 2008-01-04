@@ -33,7 +33,7 @@ namespace Gallio.Runner.Projects
         /// <summary>
         /// The name of the filter.
         /// </summary>
-        [XmlElement("filterName")]
+        [XmlAttribute("filterName")]
         public string FilterName
         {
             get { return filterName; }
@@ -43,7 +43,7 @@ namespace Gallio.Runner.Projects
         /// <summary>
         /// A string representation of the filter.
         /// </summary>
-        [XmlElement("filter")]
+        [XmlAttribute("filter")]
         public string Filter
         {
             get { return filter; }

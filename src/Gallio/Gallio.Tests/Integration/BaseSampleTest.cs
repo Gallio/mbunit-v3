@@ -61,7 +61,7 @@ namespace Gallio.Tests.Integration
         {
             foreach (TestData info in Report.TestModelData.Tests.Values)
             {
-                if (info.CodeReference.Equals(codeReference))
+                if (Equals(info.CodeReference, codeReference))
                     return info;
             }
 

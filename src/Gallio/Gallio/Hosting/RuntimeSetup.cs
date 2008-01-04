@@ -46,7 +46,7 @@ namespace Gallio.Hosting
         /// to create the runtime.  If the value is null, the built-in
         /// default runtime factory will be used.
         /// </summary>
-        [XmlElement("runtimeFactoryType", IsNullable=true)]
+        [XmlElement("runtimeFactoryType", IsNullable=false)]
         public string RuntimeFactoryType
         {
             get { return runtimeFactoryType; }

@@ -64,8 +64,7 @@ namespace Gallio.Runner.Reports
         /// Gets or sets the root test run, or null if the root test instance
         /// has not run.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("testInstanceRun", IsNullable = true)]
+        [XmlElement("testInstanceRun", IsNullable = false)]
         public TestInstanceRun RootTestInstanceRun
         {
             get { return rootTestInstanceRun; }

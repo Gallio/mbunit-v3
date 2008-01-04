@@ -30,6 +30,7 @@ using Gallio.Icarus.Properties;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using ZedGraph;
 using Timer=System.Timers.Timer;
@@ -695,9 +696,11 @@ namespace Gallio.Icarus
                 }
 
                 // update test results list
+                CodeReference codeReference = testData.CodeReference ?? CodeReference.Unknown;
+
                 testResultsList.UpdateTestResults(testData.Name, testStepRun.Result.Outcome.ToString(), foreColor, 
-                    (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds.ToString(), testData.CodeReference.TypeName, 
-                    testData.CodeReference.NamespaceName, testData.CodeReference.AssemblyName);
+                    (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds.ToString(), codeReference.TypeName, 
+                    codeReference.NamespaceName, codeReference.AssemblyName);
             }
         }
 

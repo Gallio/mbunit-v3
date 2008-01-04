@@ -23,6 +23,7 @@ using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Reflection;
 using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests
@@ -190,7 +191,7 @@ namespace Gallio.Icarus.Tests
             assembly.Metadata.SetValue(MetadataKeys.CodeBase, "CodeBase");
             framework.Children.Add(assembly);
             TestData fixture = new TestData("Fixture", "Fixture");
-            fixture.CodeReference.NamespaceName = "Namespace";
+            fixture.CodeReference = CodeReference.CreateFromNamespace("Namespace");
             fixture.Metadata.SetValue(MetadataKeys.TestKind, "Fixture");
             assembly.Children.Add(fixture);
             TestData test1 = new TestData("Test1", "Test1");
@@ -206,7 +207,7 @@ namespace Gallio.Icarus.Tests
             test2.IsTestCase = true;
             fixture.Children.Add(test2);
             TestData fixture2 = new TestData("Fixture2", "Fixture2");
-            fixture2.CodeReference.NamespaceName = "Namespace";
+            fixture2.CodeReference = CodeReference.CreateFromNamespace("Namespace");
             fixture2.Metadata.SetValue(MetadataKeys.TestKind, "Fixture");
             assembly.Children.Add(fixture2);
             TestData test3 = new TestData("Test3", "Test3");
