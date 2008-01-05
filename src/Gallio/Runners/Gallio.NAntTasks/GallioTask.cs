@@ -82,7 +82,7 @@ namespace Gallio.NAntTasks
     /// </code>
     /// </example>
     [TaskName(@"gallio")]
-    public class GallioTask : Task, INAntLogger
+    public class GallioTask : Task
     {
         #region Private Members
 
@@ -95,39 +95,16 @@ namespace Gallio.NAntTasks
         private string reportDirectory = String.Empty;
         private string resultProperty;
         private string resultPropertiesPrefix;
-        private readonly INAntLogger nantLogger;
 
         #endregion
 
         #region Public Instance Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GallioTask" /> class.
+        /// Initializes a new instance of a <see cref="GallioTask" />.
         /// </summary>
         public GallioTask()
         {
-            // This must be confusing, but in the unit tests for some reason the
-            // Log method will fail with a NullReferenceException, so in order to
-            // avoid that we make the task implement the INAntLogger interface and
-            // also to contain a INAntLogger member. This way in the unit tests we
-            // will log to a stubbed logger, and in the default case the calls will
-            // be redirected to the task itself.
-            nantLogger = this;
-        }
-
-        /// <exclude />
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GallioTask" /> class using
-        /// a custom INAntLogger instance.
-        /// </summary>
-        /// <param name="nantLogger">The <see cref="INAntLogger" /> object that will be used
-        /// to log messages.</param>
-        internal GallioTask(INAntLogger nantLogger)
-        {
-            if (nantLogger == null)
-                throw new ArgumentNullException("nantLogger");
-            // See the comments in the default constructor
-            this.nantLogger = nantLogger;
         }
 
         #endregion
@@ -345,7 +322,7 @@ namespace Gallio.NAntTasks
             // We don't catch exceptions here because NAnt takes care of that job,
             // and decides whether to let them through based on the value of the
             // FailOnError
-            NAntLogger logger = new NAntLogger(nantLogger);
+            TaskLogger logger = new TaskLogger(this);
 
             DisplayVersion();
 
@@ -439,7 +416,8 @@ namespace Gallio.NAntTasks
         private void DisplayVersion()
         {
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            nantLogger.Log(Level.Info, String.Format(Resources.TaskNameAndVersion,
+
+            Log(Level.Info, String.Format(Resources.TaskNameAndVersion,
                 appVersion.Major, appVersion.Minor, appVersion.Build));
         }
 

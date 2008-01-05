@@ -49,7 +49,7 @@ namespace Gallio.Tests.Reflection.Impl
             SourceLocation sourceLocation = DebugSymbolUtils.GetSourceLocation(typeof(Sample).GetMethod("ConcreteMethod"));
 
             StringAssert.EndsWith(sourceLocation.Filename, GetType().Name + ".cs");
-            Assert.AreEqual(1000, sourceLocation.Line);
+            Assert.Between(sourceLocation.Line, 1000, 1003);
             Assert.GreaterEqualThan(sourceLocation.Column, 1);
         }
 
@@ -97,8 +97,8 @@ namespace Gallio.Tests.Reflection.Impl
 
         private abstract class Sample
         {
-            public void ConcreteMethod()
 #line 1000
+            public void ConcreteMethod()
             {
                 ConcreteMethod();
             }

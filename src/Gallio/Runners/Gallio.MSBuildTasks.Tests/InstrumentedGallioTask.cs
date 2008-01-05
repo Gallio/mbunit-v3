@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Contexts;
 using Gallio.Runner;
 
 namespace Gallio.MSBuildTasks.Tests
@@ -31,7 +32,9 @@ namespace Gallio.MSBuildTasks.Tests
         {
             launcher.RuntimeSetup = null;
             launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
-            return base.RunLauncher(launcher);
+
+            using (Context.EnterContext(null))
+                return base.RunLauncher(launcher);
         }
     }
 }

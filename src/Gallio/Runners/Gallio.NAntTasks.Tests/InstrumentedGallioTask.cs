@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Contexts;
 using Gallio.Runner;
 using Gallio.NAntTasks;
 using NAnt.Core;
@@ -43,11 +44,6 @@ namespace Gallio.NAntTasks.Tests
         // in the PropertyDictionary constructor
         private readonly PropertyDictionary properties = new PropertyDictionary(null);
 
-        internal InstrumentedGallioTask(INAntLogger nantLogger)
-            : base(nantLogger)
-        {
-        }
-
         public new void Execute()
         {
             // We call the ExecuteTask directly instead of the Execute method
@@ -63,7 +59,19 @@ namespace Gallio.NAntTasks.Tests
         {
             launcher.RuntimeSetup = null;
             launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
-            return base.RunLauncher(launcher);
+
+            using (Context.EnterContext(null))
+                return base.RunLauncher(launcher);
+        }
+
+        public override void Log(Level messageLevel, string message)
+        {
+            // Stubbed out.
+        }
+
+        public override void Log(Level messageLevel, string message, params object[] args)
+        {
+            // Stubbed out.
         }
     }
 }

@@ -40,7 +40,6 @@ namespace Gallio.NAntTasks.Tests
     {
         #region Private Members
 
-        private INAntLogger stubbedNAntLogger;
         private FileSet[] assemblies;
         private readonly string resultProperty = "ExitCode";
         private readonly string resultPropertiesPrefix = "Gallio.";
@@ -52,7 +51,6 @@ namespace Gallio.NAntTasks.Tests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            stubbedNAntLogger = MockRepository.GenerateStub<INAntLogger>();
             FileSet fs = new FileSet();
             string testAssemblyPath = new Uri(typeof(SimpleTest).Assembly.CodeBase).LocalPath;
             fs.FileNames.Add(testAssemblyPath);
@@ -63,13 +61,6 @@ namespace Gallio.NAntTasks.Tests
 
         #region Tests
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void InstantiateWithNullArgument()
-        {
-            new GallioTask(null);
-        }
-        
         [Test]
         public void RunWithNoArguments()
         {
@@ -245,7 +236,7 @@ namespace Gallio.NAntTasks.Tests
 
         private InstrumentedGallioTask CreateTask()
         {
-            InstrumentedGallioTask task = new InstrumentedGallioTask(stubbedNAntLogger);
+            InstrumentedGallioTask task = new InstrumentedGallioTask();
             task.InitializeTaskConfiguration();
             task.FailOnError = false;
             task.ResultProperty = resultProperty;

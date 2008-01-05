@@ -514,7 +514,7 @@ namespace Gallio.MSBuildTasks
         {
             DisplayVersion();
 
-            MSBuildLogger logger = new MSBuildLogger(Log);
+            TaskLogger logger = new TaskLogger(Log);
 
             using (TestLauncher launcher = new TestLauncher())
             {

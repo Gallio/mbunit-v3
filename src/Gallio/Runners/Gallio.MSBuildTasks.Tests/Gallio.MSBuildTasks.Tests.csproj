@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstrumentedGallioTask.cs" />
-    <Compile Include="MSBuildLoggerTest.cs" />
+    <Compile Include="TaskLoggerTest.cs" />
     <Compile Include="GallioTaskIntegrationTest.cs" />
     <Compile Include="GallioTaskUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

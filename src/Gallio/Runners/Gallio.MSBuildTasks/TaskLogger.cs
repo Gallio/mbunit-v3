@@ -25,16 +25,11 @@ namespace Gallio.MSBuildTasks
     /// <summary>
     /// Logs messages to a <see cref="TaskLoggingHelper" /> instance.
     /// </summary>
-    internal class MSBuildLogger : LevelFilteredLogger
+    internal class TaskLogger : LevelFilteredLogger
     {
         private readonly TaskLoggingHelper taskLogger;
         
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MSBuildLogger" /> class.
-        /// </summary>
-        /// <param name="taskLogger">The <see cref="TaskLoggingHelper" /> instance to channel
-        /// log messages to.</param>
-        public MSBuildLogger(TaskLoggingHelper taskLogger)
+        public TaskLogger(TaskLoggingHelper taskLogger)
         {
             if (taskLogger == null)
                 throw new ArgumentNullException("taskLogger");
@@ -42,13 +37,6 @@ namespace Gallio.MSBuildTasks
             Level = LoggerLevel.Debug;
         }
 
-        /// <summary>
-        /// Logs a message.
-        /// </summary>
-        /// <param name="level">The log level.</param>
-        /// <param name="name">Not used.</param>
-        /// <param name="message">The message to log.</param>
-        /// <param name="exception">The exception to log (it can be null).</param>
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
             if (exception != null)
@@ -75,11 +63,9 @@ namespace Gallio.MSBuildTasks
             }
         }
 
-        /// <inheritdoc />
         public override ILogger CreateChildLogger(string name)
         {
-            //TODO: Check why are we ignoring the name
-            return new MSBuildLogger(taskLogger);
+            return new TaskLogger(taskLogger);
         }
     }
 }

@@ -15,32 +15,27 @@
 
 using System;
 using Castle.Core.Logging;
+using NAnt.Core;
 
 namespace Gallio.NAntTasks
 {
     /// <exclude />
     /// <summary>
-    /// An ILogger implementation that logs messages to a INAntLogger object.
+    /// An <see cref="ILogger" /> implementation that logs messages to a <see cref="Task" /> object.
     /// </summary>
-    internal class NAntLogger : LevelFilteredLogger
+    internal class TaskLogger : LevelFilteredLogger
     {
-        private readonly INAntLogger task;
+        private readonly Task task;
 
-        /// <summary>
-        /// Initializes a new instance of the NAntLogger class using
-        /// a custom INAntLogger instance.
-        /// </summary>
-        /// <param name="task">The INAntLogger where the messages will be channeled
-        /// to.</param>
-        public NAntLogger(INAntLogger task)
+        public TaskLogger(Task task)
         {
             if (task == null)
                 throw new ArgumentNullException("task");
+
             this.task = task;
             Level = LoggerLevel.Debug;
         }
 
-        /// <inheritdoc />
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
             if (exception != null)
@@ -67,10 +62,9 @@ namespace Gallio.NAntTasks
             }
         }
 
-        /// <inheritdoc />
         public override ILogger CreateChildLogger(string name)
         {
-            return new NAntLogger(task);
+            return new TaskLogger(task);
         }
     }
 }

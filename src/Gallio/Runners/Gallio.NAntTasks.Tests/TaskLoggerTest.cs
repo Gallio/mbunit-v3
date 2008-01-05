@@ -15,38 +15,35 @@
 
 using System;
 using MbUnit.Framework;
-using Gallio.MSBuildTasks;
-using Microsoft.Build.Utilities;
+using Gallio.NAntTasks;
 
-namespace Gallio.MSBuildTasks.Tests
+namespace Gallio.NAntTasks.Tests
 {
     [TestFixture]
     [Author("Julian Hidalgo")]
-    [TestsOn(typeof(MSBuildLogger))]
-    public class MSBuildLoggerTest
+    [TestsOn(typeof(TaskLogger))]
+    public class TaskLoggerTest
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void InstantiateLoggerWithNullArgument()
         {
-            new MSBuildLogger(null);
+            new TaskLogger(null);
         }
 
         [Test]
         public void InstantiateLogger()
         {
-            Gallio task = new Gallio();
-            TaskLoggingHelper taskLogger = new TaskLoggingHelper(task);
-            new MSBuildLogger(taskLogger);
+            GallioTask task = new GallioTask();
+            new TaskLogger(task);
         }
 
         [Test]
         public void CreateChildLogger()
         {
-            Gallio task = new Gallio();
-            TaskLoggingHelper taskLogger = new TaskLoggingHelper(task);
-            MSBuildLogger logger = new MSBuildLogger(taskLogger);
-            Assert.AreSame(logger.CreateChildLogger("child").GetType(), typeof (MSBuildLogger));
+            GallioTask task = new GallioTask();
+            TaskLogger logger = new TaskLogger(task);
+            Assert.AreSame(logger.CreateChildLogger("child").GetType(), typeof(TaskLogger));
         }
     }
 }
