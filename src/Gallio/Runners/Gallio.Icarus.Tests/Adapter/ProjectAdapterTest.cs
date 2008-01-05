@@ -158,11 +158,11 @@ namespace Gallio.Icarus.Tests
         public void GetTestTreeEventHandler_Test()
         {
             mockPresenter = MockRepository.GenerateStub<IProjectPresenter>();
-            mockPresenter.GetTestTree(projectAdapter, new ProjectEventArgs(new TestPackageConfig(), true));
+            mockPresenter.GetTestTree(projectAdapter, new GetTestTreeEventArgs("mode", true, true, projectAdapter.Project.TestPackageConfig));
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.GetTestTree += new EventHandler<ProjectEventArgs>(mockPresenter.GetTestTree);
-            getTestTreeEvent.Raise(mockView, new SingleStringEventArgs("mode"));
+            projectAdapter.GetTestTree += new EventHandler<GetTestTreeEventArgs>(mockPresenter.GetTestTree);
+            getTestTreeEvent.Raise(mockView, new GetTestTreeEventArgs("mode", true));
         }
 
         [Test]
@@ -353,7 +353,7 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
 
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.DataBind(true);
+            projectAdapter.DataBind("mode", true);
         }
 
         [Test]

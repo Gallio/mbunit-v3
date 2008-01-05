@@ -73,11 +73,14 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.GetAvailableLogStreams += GetAvailableLogStreams;
         }
 
-        public void GetTestTree(object sender, ProjectEventArgs e)
+        public void GetTestTree(object sender, GetTestTreeEventArgs e)
         {
-            testRunnerModel.LoadPackage(e.TestPackageConfig);
-            projectAdapter.TestModelData = testRunnerModel.BuildTests();
-            projectAdapter.DataBind(e.InitialCheckState);
+            if (e.ReloadTestModelData)
+            {
+                testRunnerModel.LoadPackage(e.TestPackageConfig);
+                projectAdapter.TestModelData = testRunnerModel.BuildTests();
+            }
+            projectAdapter.DataBind(e.Mode, e.InitialCheckState);
         }
 
         public void RunTests(object sender, EventArgs e)

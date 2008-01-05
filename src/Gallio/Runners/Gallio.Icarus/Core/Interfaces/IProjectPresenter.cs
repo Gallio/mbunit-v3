@@ -29,7 +29,7 @@ namespace Gallio.Icarus.Core.Interfaces
         int TotalWorkUnits { set; }
         string ReportPath { set; }
         ITestRunner TestRunner { get; }
-        void GetTestTree(object sender, ProjectEventArgs e);
+        void GetTestTree(object sender, GetTestTreeEventArgs e);
         void RunTests(object sender, EventArgs e);
         void StopTests(object sender, EventArgs e);
         void SetFilter(object sender, SetFilterEventArgs e);

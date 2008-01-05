@@ -26,7 +26,7 @@ namespace Gallio.Icarus.Core.Interfaces
 {
     public interface IProjectAdapter
     {
-        event EventHandler<ProjectEventArgs> GetTestTree;
+        event EventHandler<GetTestTreeEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
@@ -44,7 +44,7 @@ namespace Gallio.Icarus.Core.Interfaces
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
-        void DataBind(bool initialCheckState);
+        void DataBind(string mode, bool initialCheckState);
         void Update(TestData testData, TestStepRun testStepRun);
     }
 }

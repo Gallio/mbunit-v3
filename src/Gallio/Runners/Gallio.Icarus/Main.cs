@@ -160,7 +160,7 @@ namespace Gallio.Icarus
             }
         }
 
-        public event EventHandler<SingleStringEventArgs> GetTestTree;
+        public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
         public event EventHandler<SingleStringEventArgs> RemoveAssembly;
@@ -207,8 +207,7 @@ namespace Gallio.Icarus
             {
                 if (GetReportTypes != null)
                     GetReportTypes(this, EventArgs.Empty);
-
-                ThreadedRefreshTree();
+                ThreadedReloadTree();
             });
             workerThread.Start();
         }
@@ -234,6 +233,7 @@ namespace Gallio.Icarus
             testTree.BeginUpdate();
             testTree.Reset(testTree.Nodes);
             testTree.EndUpdate();
+            testResultsList.Clear();
             
             statusText = "Running tests...";
             startButton.Enabled = false;
@@ -278,45 +278,48 @@ namespace Gallio.Icarus
             }
         }
 
+        //private void ShowTaskDialog()
+        //{
+        //    //trayIcon.Icon = Resources.FailMb;
+        //    //trayIcon.ShowBalloonTip(5, "Gallio Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
+        //    //                        ToolTipIcon.Error);
+        //    List<TaskButton> taskButtons = new List<TaskButton>();
+
+        //    TaskButton button1 = new TaskButton();
+        //    button1.Text = "Button 1";
+        //    button1.Icon = Resources.tick;
+        //    button1.Description = "This is the first button, it should explain what the option does.";
+        //    taskButtons.Add(button1);
+
+        //    TaskButton button2 = new TaskButton();
+        //    button2.Text = "Button 2";
+        //    button2.Icon = Resources.help_browser;
+        //    button2.Description =
+        //        "This is the second button, much the same as the first button but this one demonstrates that the text will wrap onto the next line.";
+        //    taskButtons.Add(button2);
+
+        //    TaskButton button3 = new TaskButton();
+        //    button3.Text = "Close Window";
+        //    button3.Icon = Resources.cross;
+        //    button3.Description = "Saves all changes and exits the application.";
+        //    taskButtons.Add(button3);
+
+        //    TaskButton res = TaskDialog.Show("Title Text",
+        //                                     "Description about the problem and what you need to do to resolve it. Each button can have its own description too.",
+        //                                     taskButtons);
+        //    if (res == button2)
+        //        MessageBox.Show("Button 2 was clicked.");
+        //    else if (res == button1)
+        //        MessageBox.Show("Button 1 was clicked.");
+        //}
+
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            ////trayIcon.Icon = Resources.FailMb;
-            ////trayIcon.ShowBalloonTip(5, "Gallio Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
-            ////                        ToolTipIcon.Error);
-            //List<TaskButton> taskButtons = new List<TaskButton>();
-
-            //TaskButton button1 = new TaskButton();
-            //button1.Text = "Button 1";
-            //button1.Icon = Resources.tick;
-            //button1.Description = "This is the first button, it should explain what the option does.";
-            //taskButtons.Add(button1);
-
-            //TaskButton button2 = new TaskButton();
-            //button2.Text = "Button 2";
-            //button2.Icon = Resources.help_browser;
-            //button2.Description =
-            //    "This is the second button, much the same as the first button but this one demonstrates that the text will wrap onto the next line.";
-            //taskButtons.Add(button2);
-
-            //TaskButton button3 = new TaskButton();
-            //button3.Text = "Close Window";
-            //button3.Icon = Resources.cross;
-            //button3.Description = "Saves all changes and exits the application.";
-            //taskButtons.Add(button3);
-
-            //TaskButton res = TaskDialog.Show("Title Text",
-            //                                 "Description about the problem and what you need to do to resolve it. Each button can have its own description too.",
-            //                                 taskButtons);
-            //if (res == button2)
-            //    MessageBox.Show("Button 2 was clicked.");
-            //else if (res == button1)
-            //    MessageBox.Show("Button 1 was clicked.");
-
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
                 StatusText = "Reloading...";
-                ThreadedRefreshTree();
+                ThreadedReloadTree();
             });
             workerThread.Start();
         }
@@ -332,14 +335,14 @@ namespace Gallio.Icarus
             openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
             if (openFile.ShowDialog() == DialogResult.OK)
             {
-                //AbortWorkerThread();
-                //workerThread = new Thread(delegate()
-                //{
-                //    StatusText = "Opening project";
+                AbortWorkerThread();
+                workerThread = new Thread(delegate()
+                {
+                    StatusText = "Opening project";
                     if (OpenProject != null)
                         OpenProject(this, new OpenProjectEventArgs(openFile.FileName, GetTreeFilter()));
-                //});
-                //workerThread.Start();
+                });
+                workerThread.Start();
             }
         }
 
@@ -386,24 +389,18 @@ namespace Gallio.Icarus
                 workerThread = new Thread(delegate()
                 {
                     StatusText = "Adding assemblies...";
-                    // Add assemblies
                     if (AddAssemblies != null)
-                    {
                         AddAssemblies(this, new AddAssembliesEventArgs(openFile.FileNames));
-                    }
-                    ThreadedRefreshTree();
+                    ThreadedReloadTree();
                 });
                 workerThread.Start();
             }
         }
 
-        private void ThreadedRefreshTree()
+        private void ThreadedReloadTree()
         {
-            // Load test tree
             if (GetTestTree != null)
-            {
-                GetTestTree(this, new SingleStringEventArgs(GetTreeFilter()));
-            }
+                GetTestTree(this, new GetTestTreeEventArgs(GetTreeFilter(), true));
         }
 
         private string GetTreeFilter()
@@ -556,10 +553,8 @@ namespace Gallio.Icarus
                 // remove assemblies
                 StatusText = "Removing assemblies...";
                 if (RemoveAssemblies != null)
-                {
                     RemoveAssemblies(this, new EventArgs());
-                }
-                ThreadedRefreshTree();
+                ThreadedReloadTree();
             });
             workerThread.Start();
         }
@@ -711,20 +706,31 @@ namespace Gallio.Icarus
         private void removeAssemblyToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             AbortWorkerThread();
-            workerThread = new Thread(new ParameterizedThreadStart(ThreadedRemoveAssembly));
-            workerThread.Start(assemblyList.SelectedItems[0].SubItems[2].Text);
+            workerThread = new Thread(delegate()
+            {
+                ThreadedRemoveAssembly(assemblyList.SelectedItems[0].SubItems[2].Text);
+            });
+            workerThread.Start();
         }
 
-        private void ThreadedRemoveAssembly(object o)
+        private void removeAssemblyToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            string assembly = o as string;
+            TestTreeNode node = (TestTreeNode)testTree.SelectedNode;
+            AbortWorkerThread();
+            workerThread = new Thread(delegate()
+            {
+                ThreadedRemoveAssembly(node.CodeBase);
+            });
+            workerThread.Start();
+        }
+
+        private void ThreadedRemoveAssembly(string assembly)
+        {
             // remove assemblies
             StatusText = "Removing assembly...";
             if (RemoveAssembly != null)
-            {
                 RemoveAssembly(this, new SingleStringEventArgs(assembly));
-            }
-            ThreadedRefreshTree();
+            ThreadedReloadTree();
         }
 
         private void testTree_AfterSelect(object sender, TreeViewEventArgs e)
@@ -749,14 +755,6 @@ namespace Gallio.Icarus
             }
         }
 
-        private void removeAssemblyToolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            AbortWorkerThread();
-            workerThread = new Thread(new ParameterizedThreadStart(ThreadedRemoveAssembly));
-            TestTreeNode node = testTree.SelectedNode as TestTreeNode;
-            workerThread.Start(node.CodeBase);
-        }
-
         private void testTree_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (e.Action != TreeViewAction.Unknown)
@@ -774,7 +772,11 @@ namespace Gallio.Icarus
         private void treeFilterCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
             AbortWorkerThread();
-            workerThread = new Thread(new ThreadStart(ThreadedRefreshTree));
+            workerThread = new Thread(delegate()
+            {
+                if (GetTestTree != null)
+                    GetTestTree(this, new GetTestTreeEventArgs(GetTreeFilter(), false));
+            });
             workerThread.Start();
         }
 
@@ -856,7 +858,7 @@ namespace Gallio.Icarus
             {
                 if (NewProject != null)
                     NewProject(this, EventArgs.Empty);
-                ThreadedRefreshTree();
+                ThreadedReloadTree();
             });
             workerThread.Start();
         }
@@ -895,6 +897,25 @@ namespace Gallio.Icarus
         private void graphsFilterBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             testResultsGraph.Mode = (string)graphsFilterBox1.SelectedItem;
+        }
+
+        private void filterTestResultsCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch ((string)filterTestResultsCombo.SelectedItem)
+            {
+                case "All tests":
+                    testResultsList.Filter = string.Empty;
+                    break;
+                case "Passed tests":
+                    testResultsList.Filter = "Passed";
+                    break;
+                case "Failed tests":
+                    testResultsList.Filter = "Failed";
+                    break;
+                case "Inconclusive tests":
+                    testResultsList.Filter = "Inconclusive";
+                    break;
+            }
         }
     }	
 }

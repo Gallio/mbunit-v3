@@ -25,11 +25,25 @@ namespace Gallio.Icarus.Controls
     public class TestResultsList : ListView
     {
         private TestResultsListColumnSorter columnSorter;
+        private List<ListViewItem> passed, failed, inconclusive;
+        private string filter = string.Empty;
+
+        public string Filter
+        {
+            set
+            {
+                filter = value;
+                FilterItems();
+            }
+        }
 
         public TestResultsList()
         {
             columnSorter = new TestResultsListColumnSorter();
             ListViewItemSorter = columnSorter;
+            passed = new List<ListViewItem>();
+            failed = new List<ListViewItem>();
+            inconclusive = new List<ListViewItem>();
         }
 
         protected override void OnColumnClick(ColumnClickEventArgs e)
@@ -67,7 +81,52 @@ namespace Gallio.Icarus.Controls
             lvi.UseItemStyleForSubItems = false;
             lvi.SubItems.Add(new ListViewItem.ListViewSubItem(lvi, testOutcome, foreColor, BackColor, Font));
             lvi.SubItems.AddRange(new string[] { duration, typeName, namespaceName, assemblyName });
-            Items.Add(lvi);
+            switch (testOutcome)
+            {
+                case "Passed":
+                    passed.Add(lvi);
+                    break;
+                case "Failed":
+                    failed.Add(lvi);
+                    break;
+                case "Inconclusive":
+                    inconclusive.Add(lvi);
+                    break;
+            }
+            if (filter == string.Empty || testOutcome == filter)
+            {
+                Items.Add((ListViewItem)lvi.Clone());
+            }
+        }
+
+        private void FilterItems()
+        {
+            Items.Clear();
+            switch (filter)
+            {
+                case "Passed":
+                    Items.AddRange(passed.ToArray());
+                    break;
+                case "Failed":
+                    Items.AddRange(failed.ToArray());
+                    break;
+                case "Inconclusive":
+                    Items.AddRange(inconclusive.ToArray());
+                    break;
+                default:
+                    Items.AddRange(failed.ToArray());
+                    Items.AddRange(inconclusive.ToArray());
+                    Items.AddRange(passed.ToArray());
+                    break;
+            }
+        }
+
+        public new void Clear()
+        {
+            Items.Clear();
+            passed.Clear();
+            failed.Clear();
+            inconclusive.Clear();
         }
     }
 
