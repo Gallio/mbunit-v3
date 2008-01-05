@@ -70,11 +70,6 @@ namespace Gallio.Reflection.Impl
             return Target;
         }
 
-        public override string GetXmlDocumentation()
-        {
-            return Reflector.XmlDocumentationResolver.GetXmlDocumentation(Target);
-        }
-
         public bool Equals(ISlotInfo other)
         {
             return Equals((object)other);

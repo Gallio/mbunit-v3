@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Utilities;
 
 namespace Gallio.Logging
 {
@@ -39,7 +40,7 @@ namespace Gallio.Logging
             if (contentType == null)
                 throw new ArgumentNullException("contentType");
 
-            this.name = name ?? Guid.NewGuid().ToString();
+            this.name = name ?? Hash64.CreateUniqueHash().ToString();
             this.contentType = contentType;
         }
 

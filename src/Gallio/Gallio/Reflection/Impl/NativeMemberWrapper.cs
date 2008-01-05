@@ -45,6 +45,11 @@ namespace Gallio.Reflection.Impl
             get { return CodeReference.CreateFromMember(Target); }
         }
 
+        public override string GetXmlDocumentation()
+        {
+            return XmlDocumentationUtils.GetXmlDocumentation(Target);
+        }
+
         public ITypeInfo DeclaringType
         {
             get { return Reflector.Wrap(Target.DeclaringType); }

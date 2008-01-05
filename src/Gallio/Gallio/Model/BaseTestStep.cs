@@ -16,6 +16,7 @@
 using System;
 using Gallio.Reflection;
 using Gallio.Properties;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -77,7 +78,7 @@ namespace Gallio.Model
             get
             {
                 if (id == null)
-                    id = Guid.NewGuid().ToString();
+                    id = Hash64.CreateUniqueHash().ToString();
                 return id;
             }
         }

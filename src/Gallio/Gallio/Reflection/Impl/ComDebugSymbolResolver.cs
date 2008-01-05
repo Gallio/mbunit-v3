@@ -1,4 +1,19 @@
-﻿using System;
+// Copyright 2007 MbUnit Project - http://www.mbunit.com/
+// Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
 using System.IO;
@@ -32,14 +47,14 @@ namespace Gallio.Reflection.Impl
         private readonly Dictionary<string, ISymbolReader> symbolReaders = new Dictionary<string, ISymbolReader>();
 
         /// <inheritdoc />
-        public SourceLocation GetSourceLocationForMethod(string assemblyFile, int methodToken)
+        public SourceLocation GetSourceLocationForMethod(string assemblyPath, int methodToken)
         {
-            if (assemblyFile == null)
-                throw new ArgumentNullException("assemblyFile");
+            if (assemblyPath == null)
+                throw new ArgumentNullException("assemblyPath");
 
             try
             {
-                ISymbolReader reader = GetSymbolReader(assemblyFile);
+                ISymbolReader reader = GetSymbolReader(assemblyPath);
                 if (reader == null)
                     return null;
 
@@ -55,7 +70,17 @@ namespace Gallio.Reflection.Impl
 
                 method.GetSequencePoints(offsets, docs, lines, columns, endLines, endColumns);
 
-                return new SourceLocation(docs[0].URL, lines[0], columns[0]);
+                // The first sequence point of a method sometimes refers to a very large invalid
+                // line number and a column number of 0.  We ignore this sequence point and
+                // look for the next one.
+                for (int i = 0; i < seqPtCount; i++)
+                {
+                    if (columns[i] != 0)
+                        return new SourceLocation(docs[i].URL, lines[i], columns[i]);
+                }
+
+                // Fallback on file information only.
+                return new SourceLocation(docs[0].URL, 0, 0);
             }
             catch (COMException ex)
             {
@@ -65,15 +90,17 @@ namespace Gallio.Reflection.Impl
             }
         }
 
-        private ISymbolReader GetSymbolReader(string assemblyFile)
+        private ISymbolReader GetSymbolReader(string assemblyPath)
         {
+            assemblyPath = Path.GetFullPath(assemblyPath);
+
             lock (symbolReaders)
             {
                 ISymbolReader symbolReader;
-                if (!symbolReaders.TryGetValue(assemblyFile, out symbolReader))
+                if (!symbolReaders.TryGetValue(assemblyPath, out symbolReader))
                 {
-                    symbolReader = CreateSymbolReader(assemblyFile, null);
-                    symbolReaders.Add(assemblyFile, symbolReader);
+                    symbolReader = CreateSymbolReader(assemblyPath, null);
+                    symbolReaders.Add(assemblyPath, symbolReader);
                 }
 
                 return symbolReader;

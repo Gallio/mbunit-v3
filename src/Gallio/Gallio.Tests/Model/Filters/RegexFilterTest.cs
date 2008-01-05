@@ -38,18 +38,19 @@ namespace Gallio.Tests.Model.Filters
         {
             string someExpression = "Some Expression *";
             RegexFilter filter = new RegexFilter(new Regex(someExpression));
-            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "')");
+            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "', None)");
         }
 
         [RowTest]
-        [Row("Acb")]
-        [Row("Acbb")]
-        [Row("Accb")]
-        public void Matches(string expressionToMatch)
+        [Row("Acb", RegexOptions.None)]
+        [Row("Acbb", RegexOptions.None)]
+        [Row("Accb", RegexOptions.None)]
+        [Row("acb", RegexOptions.IgnoreCase)]
+        public void Matches(string expressionToMatch, RegexOptions regexOptions)
         {
             string someExpression = "A*b+";
-            RegexFilter filter = new RegexFilter(new Regex(someExpression));
-            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "')");
+            RegexFilter filter = new RegexFilter(new Regex(someExpression, regexOptions));
+            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "', " + regexOptions + ")");
             Assert.IsTrue(filter.IsMatch(expressionToMatch));
         }
 
@@ -62,7 +63,7 @@ namespace Gallio.Tests.Model.Filters
         {
             string someExpression = "A*b+";
             RegexFilter filter = new RegexFilter(new Regex(someExpression));
-            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "')");
+            Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "', None)");
             Assert.IsFalse(filter.IsMatch(expressionToMatch));
         }
     }

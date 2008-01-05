@@ -16,11 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Xml;
-using Gallio.Hosting;
-using Gallio.Reflection;
 
 namespace Gallio.Reflection.Impl
 {
@@ -35,86 +32,38 @@ namespace Gallio.Reflection.Impl
     /// </remarks>
     public class DefaultXmlDocumentationResolver : IXmlDocumentationResolver
     {
-        private readonly Dictionary<Assembly, CachedDocument> cachedDocuments;
+        private readonly Dictionary<string, CachedDocument> cachedDocuments;
 
         /// <summary>
         /// Creates an XML documentation loader.
         /// </summary>
         public DefaultXmlDocumentationResolver()
         {
-            cachedDocuments = new Dictionary<Assembly, CachedDocument>();
+            cachedDocuments = new Dictionary<string, CachedDocument>();
         }
 
         /// <inheritdoc />
-        public string GetXmlDocumentation(Type type)
+        public string GetXmlDocumentation(string assemblyPath, string memberId)
         {
-            if (type == null)
-                throw new ArgumentNullException(@"type");
+            if (assemblyPath == null)
+                throw new ArgumentNullException("assemblyPath");
+            if (memberId == null)
+                throw new ArgumentNullException("memberId");
 
-            CachedDocument document = GetDocument(type.Assembly);
-            return document != null ? document.GetXmlDocumentation(FormatId(type)) : null;
+            CachedDocument document = GetDocument(assemblyPath);
+            return document != null ? document.GetXmlDocumentation(memberId) : null;
         }
 
-        /// <inheritdoc />
-        public string GetXmlDocumentation(FieldInfo field)
+        private CachedDocument GetDocument(string assemblyPath)
         {
-            if (field == null)
-                throw new ArgumentNullException(@"field");
+            assemblyPath = Path.GetFullPath(assemblyPath);
 
-            CachedDocument document = GetDocument(field.DeclaringType.Assembly);
-            return document != null ? document.GetXmlDocumentation(FormatId(field)) : null;
-        }
-
-        /// <inheritdoc />
-        public string GetXmlDocumentation(PropertyInfo property)
-        {
-            if (property == null)
-                throw new ArgumentNullException(@"property");
-
-            CachedDocument document = GetDocument(property.DeclaringType.Assembly);
-            return document != null ? document.GetXmlDocumentation(FormatId(property)) : null;
-        }
-
-        /// <inheritdoc />
-        public string GetXmlDocumentation(EventInfo @event)
-        {
-            if (@event == null)
-                throw new ArgumentNullException(@"event");
-
-            CachedDocument document = GetDocument(@event.DeclaringType.Assembly);
-            return document != null ? document.GetXmlDocumentation(FormatId(@event)) : null;
-        }
-
-        /// <inheritdoc />
-        public string GetXmlDocumentation(MethodBase method)
-        {
-            if (method == null)
-                throw new ArgumentNullException(@"method");
-
-            CachedDocument document = GetDocument(method.DeclaringType.Assembly);
-            return document != null ? document.GetXmlDocumentation(FormatId(method)) : null;
-        }
-
-        /// <inheritdoc />
-        public string GetXmlDocumentation(MemberInfo member)
-        {
-            if (member == null)
-                throw new ArgumentNullException(@"member");
-
-            Type type = member as Type ?? member.DeclaringType;
-            CachedDocument document = GetDocument(type.Assembly);
-            return document != null ? document.GetXmlDocumentation(FormatId(member)) : null;
-        }
-
-        private CachedDocument GetDocument(Assembly assembly)
-        {
             lock (cachedDocuments)
             {
                 CachedDocument document;
-                if (cachedDocuments.TryGetValue(assembly, out document))
+                if (cachedDocuments.TryGetValue(assemblyPath, out document))
                     return document;
 
-                string assemblyPath = Loader.GetAssemblyLocalPath(assembly);
                 if (assemblyPath != null)
                 {
                     string documentPath = Path.ChangeExtension(assemblyPath, @".xml");
@@ -122,241 +71,13 @@ namespace Gallio.Reflection.Impl
                     if (File.Exists(documentPath))
                     {
                         document = CachedDocument.Load(documentPath);
-                        cachedDocuments.Add(assembly, document);
+                        cachedDocuments.Add(assemblyPath, document);
                         return document;
                     }
                 }
 
-                cachedDocuments.Add(assembly, null);
+                cachedDocuments.Add(assemblyPath, null);
                 return null;
-            }
-        }
-
-        private static string FormatId(Type type)
-        {
-            StringBuilder str = new StringBuilder(@"T:");
-            AppendType(str, type, true);
-            return str.ToString();
-        }
-
-        private static string FormatId(FieldInfo field)
-        {
-            StringBuilder str = new StringBuilder(@"F:");
-            AppendType(str, field.DeclaringType, true);
-            str.Append('.');
-            AppendMemberName(str, field);
-            return str.ToString();
-        }
-
-        private static string FormatId(PropertyInfo property)
-        {
-            // Note: To handle indexers with parameters bound to generic type arguments
-            //       of the declaring type, we need to throw away all specialization of the property.
-            //       We can do that by locating the same property on the generic type definition
-            //       by its metadata token.  The framework doesn't help us out much here since
-            //       we can't just resolve the metadata token for a property like we can for methods.
-            ParameterInfo[] parameters = property.GetIndexParameters();
-            if (parameters.Length != 0 && property.DeclaringType.IsGenericType
-                && ! property.DeclaringType.IsGenericTypeDefinition)
-            {
-                Type genericTypeDefn = property.DeclaringType.GetGenericTypeDefinition();
-                PropertyInfo unboundProperty = genericTypeDefn.GetProperty(property.Name,
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-
-                if (unboundProperty == null || unboundProperty.MetadataToken != property.MetadataToken)
-                    throw new NotSupportedException(String.Format("Could not resolve property '{0}' that was declared on a generic type.",
-                        property));
-
-                property = unboundProperty;
-                parameters = property.GetIndexParameters();
-            }
-
-            StringBuilder str = new StringBuilder(@"P:");
-            AppendType(str, property.DeclaringType, true);
-            str.Append('.');
-            AppendMemberName(str, property);
-            AppendParameterList(str, parameters);
-            return str.ToString();
-        }
-
-        private static string FormatId(EventInfo @event)
-        {
-            StringBuilder str = new StringBuilder(@"E:");
-            AppendType(str, @event.DeclaringType, true);
-            str.Append('.');
-            AppendMemberName(str, @event);
-            return str.ToString();
-        }
-
-        private static string FormatId(MethodBase method)
-        {
-            // Note: To handle methods with parameters (or return type in the case of conversion
-            //       operators) bound to generic type arguments of the declaring type, we need to
-            //       throw away all specialization of the method.  We can do that by resolving
-            //       the raw method token.
-            if (method.DeclaringType.IsGenericType)
-                method = method.Module.ResolveMethod(method.MetadataToken);
-
-            StringBuilder str = new StringBuilder(@"M:");
-            AppendType(str, method.DeclaringType, true);
-            str.Append('.');
-            AppendMemberName(str, method);
-
-            if (method.IsGenericMethod)
-            {
-                str.Append(@"``");
-                str.Append(method.GetGenericArguments().Length);
-            }
-
-            AppendParameterList(str, method.GetParameters());
-
-            if (method.IsSpecialName
-                && (method.Name == @"op_Implicit" || method.Name == @"op_Explicit"))
-            {
-                str.Append('~');
-                AppendType(str, ((MethodInfo)method).ReturnType, false);
-            }
-
-            return str.ToString();
-        }
-
-        private static string FormatId(MemberInfo member)
-        {
-            switch (member.MemberType)
-            {
-                case MemberTypes.Constructor:
-                case MemberTypes.Method:
-                    return FormatId((MethodBase) member);
-
-                case MemberTypes.Event:
-                    return FormatId((EventInfo) member);
-
-                case MemberTypes.Field:
-                    return FormatId((FieldInfo) member);
-
-                case MemberTypes.Property:
-                    return FormatId((PropertyInfo) member);
-
-                case MemberTypes.NestedType:
-                case MemberTypes.TypeInfo:
-                    return FormatId((Type) member);
-
-                case MemberTypes.Custom:
-                default:
-                    // Note: XML doc spec doesn't say anything about custom members.
-                    //       Using the "!" prefix flags the reference as an error which seems reasonable.
-                    StringBuilder str = new StringBuilder(@"!:");
-                    AppendType(str, member.DeclaringType, true);
-                    str.Append('.');
-                    AppendMemberName(str, member);
-                    return str.ToString();
-            }
-        }
-
-        private static void AppendType(StringBuilder str, Type type, bool useGenericDefinition)
-        {
-            // TODO: Handle custom type modifiers, pinned types, generic arrays,
-            //       ranked arrays, and function pointer types
-            if (type.HasElementType)
-            {
-                Type elementType = type.GetElementType();
-                AppendType(str, elementType, useGenericDefinition);
-
-                if (type.IsArray)
-                {
-                    str.Append(@"[]");
-                }
-                else if (type.IsByRef)
-                {
-                    str.Append('@');
-                }
-                else if (type.IsPointer)
-                {
-                    str.Append('*');
-                }
-                else
-                {
-                    // Don't know what to do with this.
-                    str.Append('?');
-                }
-
-                return;
-            }
-
-            if (type.IsGenericParameter)
-            {
-                // Generic method parameters use 2 back-ticks instead of 1.
-                if (type.DeclaringMethod != null)
-                    str.Append('`');
-                str.Append('`');
-                str.Append(type.GenericParameterPosition);
-                return;
-            }
-
-            if (type.IsNested)
-            {
-                AppendType(str, type.DeclaringType, true);
-                str.Append('.');
-            }
-            else
-            {
-                string @namespace = type.Namespace;
-                if (@namespace.Length != 0)
-                {
-                    str.Append(type.Namespace);
-                    str.Append('.');
-                }
-            }
-
-            AppendMemberName(str, type);
-
-            if (type.IsGenericType)
-            {
-                // Note: The Type's Name already includes `x where x is the number of generic arguments.
-                //       So if we just need the id of the generic type definition, we're done.
-                //       Otherwise we need to strip off this token and append the concrete types
-                //       of the arguments.  That case occurs when closed generic types appear in
-                //       method signatures.
-                if (! useGenericDefinition && ! type.IsGenericTypeDefinition)
-                {
-                    while (str[str.Length - 1] != '`')
-                        str.Length -= 1;
-
-                    str[str.Length - 1] = '{';
-
-                    foreach (Type argument in type.GetGenericArguments())
-                    {
-                        AppendType(str, argument, false);
-                        str.Append(',');
-                    }
-
-                    str[str.Length - 1] = '}';
-                }
-            }
-        }
-
-        private static void AppendMemberName(StringBuilder str, MemberInfo member)
-        {
-            int oldLength = str.Length;
-            string memberName = member.Name;
-
-            str.Append(memberName);
-            str.Replace('.', '#', oldLength, memberName.Length);
-        }
-
-        private static void AppendParameterList(StringBuilder str, ParameterInfo[] parameters)
-        {
-            if (parameters.Length != 0)
-            {
-                str.Append('(');
-
-                foreach (ParameterInfo parameter in parameters)
-                {
-                    AppendType(str, parameter.ParameterType, false);
-                    str.Append(',');
-                }
-
-                str[str.Length - 1] = ')';
             }
         }
 

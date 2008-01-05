@@ -189,6 +189,46 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
+        /// Enters the null context with the current thread.
+        /// </summary>
+        /// <remarks>
+        /// Conceptually this method pushes the specified context onto the context
+        /// stack for the current thread.  It then returns a cookie that can be used
+        /// to restore the current thread's context to its previous value.
+        /// </remarks>
+        /// <param name="context">The context to enter, or null to enter a scope
+        /// without a context</param>
+        /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
+        /// <seealso cref="ContextCookie"/>
+        public static ContextCookie EnterContext(Context context)
+        {
+            return ContextManager.EnterContext(context);
+        }
+
+        /// <summary>
+        /// Runs a block of code with a null context.
+        /// </summary>
+        /// <remarks>
+        /// Conceptually this method pushes the specified context onto the context stack
+        /// of the current thread so that it becomes the current context, runs the block,
+        /// then unwinds the context stack for the current thread until this test context
+        /// is again popped off the top.
+        /// </remarks>
+        /// <param name="context">The context within which to run the block, or null to run the
+        /// block without a context</param>
+        /// <param name="block">The block to run</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
+        /// <exception cref="Exception">Any exception thrown by the block</exception>
+        public static void RunWithContext(Context context, Block block)
+        {
+            if (block == null)
+                throw new ArgumentNullException(@"block");
+
+            using (EnterContext(context))
+                block();
+        }
+
+        /// <summary>
         /// Gets the parent context or null if this context has no parent.
         /// </summary>
         public Context Parent
@@ -427,11 +467,7 @@ namespace Gallio.Contexts
         /// <exception cref="Exception">Any exception thrown by the block</exception>
         public void Run(Block block)
         {
-            if (block == null)
-                throw new ArgumentNullException(@"block");
-
-            using (Enter())
-                block();
+            RunWithContext(this, block);
         }
 
         /// <summary>
@@ -562,7 +598,7 @@ namespace Gallio.Contexts
         /// Enters this context with the current thread.
         /// </summary>
         /// <remarks>
-        /// Conceptually this method pushes the specified context onto the context
+        /// Conceptually this method pushes this context onto the context
         /// stack for the current thread.  It then returns a cookie that can be used
         /// to restore the current thread's context to its previous value.
         /// </remarks>
@@ -570,7 +606,7 @@ namespace Gallio.Contexts
         /// <seealso cref="ContextCookie"/>
         public ContextCookie Enter()
         {
-            return ContextManager.EnterContext(this);
+            return EnterContext(this);
         }
 
         /// <summary>

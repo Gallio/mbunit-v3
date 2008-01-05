@@ -64,6 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\HashSet.cs" />
+    <Compile Include="Concurrency\Task.cs" />
+    <Compile Include="Concurrency\TaskContainer.cs" />
+    <Compile Include="Concurrency\TaskEventArgs.cs" />
+    <Compile Include="Concurrency\TaskResult.cs" />
+    <Compile Include="Concurrency\ThreadTask.cs" />
     <Compile Include="Contexts\Step.cs" />
     <Compile Include="Contexts\StubContext.cs" />
     <Compile Include="Contexts\StubContextManager.cs" />
@@ -122,9 +127,11 @@
     <Compile Include="Data\DataBindingException.cs" />
     <Compile Include="Data\ScalarDataRow.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />
-    <Compile Include="Reflection\IDebugSymbolResolver.cs" />
+    <Compile Include="Reflection\Impl\IDebugSymbolResolver.cs" />
     <Compile Include="Hosting\IRuntimeFactory.cs" />
+    <Compile Include="Reflection\Impl\XmlDocumentationUtils.cs" />
     <Compile Include="Reflection\SourceLocation.cs" />
     <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
     <Compile Include="Logging\TextLogWriter.cs" />
@@ -319,6 +326,7 @@
     <Compile Include="Runner\TestRunnerUtils.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Collections\TreeUtils.cs" />
+    <Compile Include="Utilities\Hash64.cs" />
     <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Logging\ClientException.cs" />
@@ -371,7 +379,7 @@
     <Compile Include="Model\TestStatus.cs" />
     <Compile Include="Contexts\IContextManager.cs" />
     <Compile Include="Hosting\IRuntime.cs" />
-    <Compile Include="Reflection\IXmlDocumentationResolver.cs" />
+    <Compile Include="Reflection\Impl\IXmlDocumentationResolver.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\GenericUtils.cs" />
     <Compile Include="Model\Serialization\SerializationUtils.cs" />

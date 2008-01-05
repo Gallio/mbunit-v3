@@ -17,7 +17,6 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Permissions;
-using System.Threading;
 using Gallio.Reflection.Impl;
 using Gallio.Utilities;
 
@@ -29,41 +28,12 @@ namespace Gallio.Reflection
     /// </summary>
     public static class Reflector
     {
-        private static IXmlDocumentationResolver documentationResolver;
-        private static IDebugSymbolResolver debugSymbolResolver;
-
         /// <summary>
         /// Gets the singleton instance of the standard <see cref="IReflectionPolicy" />.
         /// </summary>
         public static IReflectionPolicy ReflectionPolicy
         {
             get { return NativeReflectionPolicy.Instance; }
-        }
-
-        /// <summary>
-        /// Gets the XML documentation resolver.
-        /// </summary>
-        public static IXmlDocumentationResolver XmlDocumentationResolver
-        {
-            get
-            {
-                if (documentationResolver == null)
-                    Interlocked.CompareExchange<IXmlDocumentationResolver>(ref documentationResolver, new DefaultXmlDocumentationResolver(), null);
-                return documentationResolver;
-            }
-        }
-
-        /// <summary>
-        /// Gets the debug symbol resolver.
-        /// </summary>
-        public static IDebugSymbolResolver DebugSymbolResolver
-        {
-            get
-            {
-                if (debugSymbolResolver == null)
-                    Interlocked.CompareExchange<IDebugSymbolResolver>(ref debugSymbolResolver, new ComDebugSymbolResolver(), null);
-                return debugSymbolResolver;
-            }
         }
 
         /// <summary>

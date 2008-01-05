@@ -171,9 +171,9 @@ namespace Gallio.Reflection.Impl
             return Target;
         }
 
-        public override string GetXmlDocumentation()
+        public override SourceLocation GetSourceLocation()
         {
-            return Reflector.XmlDocumentationResolver.GetXmlDocumentation(Target);
+            return DebugSymbolUtils.GetSourceLocation(Target);
         }
 
         public bool Equals(ITypeInfo other)

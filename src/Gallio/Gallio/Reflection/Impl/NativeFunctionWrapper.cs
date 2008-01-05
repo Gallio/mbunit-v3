@@ -70,14 +70,9 @@ namespace Gallio.Reflection.Impl
             return Target;
         }
 
-        public override string GetXmlDocumentation()
-        {
-            return Reflector.XmlDocumentationResolver.GetXmlDocumentation(Target);
-        }
-
         public override SourceLocation GetSourceLocation()
         {
-            return Reflector.DebugSymbolResolver.GetSourceLocationForMethod(Target.DeclaringType.Assembly.Location, Target.MetadataToken);
+            return DebugSymbolUtils.GetSourceLocation(Target);
         }
 
         public bool Equals(IFunctionInfo other)

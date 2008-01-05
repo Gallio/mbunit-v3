@@ -95,14 +95,14 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
             Assert.IsFalse(fixtureTest.IsTestCase);
             Assert.AreEqual(2, fixtureTest.Children.Count);
 
-            MbUnit2Test passTest = (MbUnit2Test)GetDescendantByName(fixtureTest, "SimpleTest.Pass");
-            MbUnit2Test failTest = (MbUnit2Test)GetDescendantByName(fixtureTest, "SimpleTest.Fail");
+            MbUnit2Test passTest = (MbUnit2Test)GetDescendantByName(fixtureTest, "Pass");
+            MbUnit2Test failTest = (MbUnit2Test)GetDescendantByName(fixtureTest, "Fail");
 
             Assert.AreSame(fixtureTest, passTest.Parent);
             Assert.AreEqual(TestKinds.Test, passTest.Kind);
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.TestResources.MbUnit2", "Gallio.TestResources.MbUnit2.SimpleTest", "Pass", null),
                 passTest.CodeElement.CodeReference);
-            Assert.AreEqual("SimpleTest.Pass", passTest.Name);
+            Assert.AreEqual("Pass", passTest.Name);
             Assert.IsTrue(passTest.IsTestCase);
             Assert.AreEqual(0, passTest.Children.Count);
 
@@ -110,7 +110,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
             Assert.AreEqual(TestKinds.Test, failTest.Kind);
             Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.TestResources.MbUnit2", "Gallio.TestResources.MbUnit2.SimpleTest", "Fail", null),
                 failTest.CodeElement.CodeReference);
-            Assert.AreEqual("SimpleTest.Fail", failTest.Name);
+            Assert.AreEqual("Fail", failTest.Name);
             Assert.IsTrue(failTest.IsTestCase);
             Assert.AreEqual(0, failTest.Children.Count);
         }
@@ -121,8 +121,8 @@ namespace Gallio.Plugin.MbUnit2Adapter.Tests.Model
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
-            MbUnit2Test passTest = (MbUnit2Test)GetDescendantByName(test, "SimpleTest.Pass");
-            MbUnit2Test failTest = (MbUnit2Test)GetDescendantByName(test, "SimpleTest.Fail");
+            MbUnit2Test passTest = (MbUnit2Test)GetDescendantByName(test, "Pass");
+            MbUnit2Test failTest = (MbUnit2Test)GetDescendantByName(test, "Fail");
 
             Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
             Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));

@@ -19,6 +19,7 @@ using Gallio.Collections;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Properties;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -81,27 +82,17 @@ namespace Gallio.Model
                 // making undue assumptions about the internal structure of an id.
                 if (cachedId == null)
                 {
-                    ulong hash = 0;
-                    UpdateHash(ref hash, LocalId);
+                    Hash64 hash = new Hash64();
+                    hash = hash.Add(LocalId);
 
                     for (ITest ancestor = parent; ancestor != null; ancestor = ancestor.Parent)
-                        UpdateHash(ref hash, ancestor.LocalId);
+                        hash = hash.Add(ancestor.LocalId);
 
-                    cachedId = Convert.ToString(unchecked ((long) hash), 16);
+                    cachedId = hash.ToString();
                 }
 
                 return cachedId;
             }
-        }
-
-        private static void UpdateHash(ref ulong hash, string s)
-        {
-            int length = s.Length;
-
-            for (int i = 0; i < length; i++)
-                hash = (hash << 5) ^ (hash >> 59) ^ s[i];
-
-            unchecked { hash *= 0x3E36B306AD118E71L; } // a large prime to scatter the bits around
         }
 
         /// <summary>

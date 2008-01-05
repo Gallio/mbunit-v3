@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -60,9 +61,9 @@ namespace Gallio.Model
         public override string Id
         {
             get
-            { 
+            {
                 if (id == null)
-                    id = Guid.NewGuid().ToString();
+                    id = Hash64.CreateUniqueHash().ToString();
                 return id;
             }
         }

@@ -100,7 +100,7 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
             IMemberInfo member = GuessMemberInfoFromRunPipe(runPipe);
             ICodeElementInfo codeElement = member ?? Reflector.Wrap(runPipe.FixtureType);
 
-            MbUnit2Test test = new MbUnit2Test(runPipe.Name, codeElement, runPipe.Fixture, runPipe);
+            MbUnit2Test test = new MbUnit2Test(runPipe.ShortName, codeElement, runPipe.Fixture, runPipe);
             test.Kind = TestKinds.Test;
             test.IsTestCase = true;
 

@@ -16,6 +16,7 @@
 using System;
 using System.Reflection;
 using Castle.Core.Logging;
+using Gallio.Hosting;
 using Gallio.Reflection.Impl;
 using Gallio.Tests;
 using Gallio.TestResources.MbUnit;
@@ -37,279 +38,37 @@ namespace Gallio.Tests.Reflection.Impl
             resolver = new DefaultXmlDocumentationResolver();
         }
 
-        [Test]
-        [ExpectedArgumentNullException]
-        public void GetXmlDocumentation_Type_ThrowsIfNull()
+        [Test, ExpectedArgumentNullException]
+        public void GetXmlDocumentation_ThrowsIfAssemblyPathIsNull()
         {
-            resolver.GetXmlDocumentation((Type)null);
+            resolver.GetXmlDocumentation(null, "foo");
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void GetXmlDocumentation_ThrowsIfMemberIdIsNull()
+        {
+            resolver.GetXmlDocumentation("foo", null);
         }
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void GetXmlDocumentation_Field_ThrowsIfNull()
+        public void GetXmlDocumentation_ReturnsNullIfAssemblyDoesNotExist()
         {
-            resolver.GetXmlDocumentation((FieldInfo)null);
+            Assert.IsNull(resolver.GetXmlDocumentation("NoSuchAssembly", "T:AType"));
         }
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void GetXmlDocumentation_Property_ThrowsIfNull()
-        {
-            resolver.GetXmlDocumentation((PropertyInfo)null);
-        }
-
-        [Test]
-        [ExpectedArgumentNullException]
-        public void GetXmlDocumentation_Event_ThrowsIfNull()
-        {
-            resolver.GetXmlDocumentation((EventInfo)null);
-        }
-
-        [Test]
-        [ExpectedArgumentNullException]
-        public void GetXmlDocumentation_Method_ThrowsIfNull()
-        {
-            resolver.GetXmlDocumentation((MethodBase)null);
-        }
-
-        [Test]
-        [ExpectedArgumentNullException]
-        public void GetXmlDocumentation_Member_ThrowsIfNull()
-        {
-            resolver.GetXmlDocumentation((MemberInfo)null);
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Type_ReturnsNullIfUndocumented()
-        {
-            Type type = typeof(DocumentedClass.UndocumentedNestedClass);
-            Assert.IsNull(resolver.GetXmlDocumentation(type));
-            Assert.IsNull(resolver.GetXmlDocumentation((MemberInfo) type));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Field_ReturnsNullIfUndocumented()
-        {
-            FieldInfo field = typeof(DocumentedClass.UndocumentedNestedClass).GetField("UndocumentedField");
-            Assert.IsNull(resolver.GetXmlDocumentation(field));
-            Assert.IsNull(resolver.GetXmlDocumentation((MemberInfo)field));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Property_ReturnsNullIfUndocumented()
-        {
-            PropertyInfo property = typeof(DocumentedClass.UndocumentedNestedClass).GetProperty("UndocumentedProperty");
-            Assert.IsNull(resolver.GetXmlDocumentation(property));
-            Assert.IsNull(resolver.GetXmlDocumentation((MemberInfo)property));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Event_ReturnsNullIfUndocumented()
-        {
-            EventInfo @event = typeof(DocumentedClass.UndocumentedNestedClass).GetEvent("UndocumentedEvent");
-            Assert.IsNull(resolver.GetXmlDocumentation(@event));
-            Assert.IsNull(resolver.GetXmlDocumentation((MemberInfo)@event));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Method_ReturnsNullIfUndocumented()
-        {
-            MethodInfo method = typeof(DocumentedClass.UndocumentedNestedClass).GetMethod("UndocumentedMethod");
-            Assert.IsNull(resolver.GetXmlDocumentation(method));
-            Assert.IsNull(resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Type()
+        public void GetXmlDocumentation_GetsDocumentationForDocumentedMember()
         {
             Type type = typeof(DocumentedClass);
             Assert.AreEqual("<summary>\nA documented class.\n</summary>\n<remarks>\nThe XML documentation of this test is significant.\n  Including the leading whitespace on this line.\n    And the extra 8 trailing spaces on this line!\n</remarks>",
-                resolver.GetXmlDocumentation(type));
-            Assert.AreEqual("<summary>\nA documented class.\n</summary>\n<remarks>\nThe XML documentation of this test is significant.\n  Including the leading whitespace on this line.\n    And the extra 8 trailing spaces on this line!\n</remarks>",
-                resolver.GetXmlDocumentation((MemberInfo) type));
+                resolver.GetXmlDocumentation(Loader.GetAssemblyLocalPath(type.Assembly), "T:" + type.FullName));
         }
 
         [Test]
-        public void GetXmlDocumentation_GenericNestedType()
+        public void GetXmlDocumentation_ReturnsNullForUndocumentedMember()
         {
-            Type type = typeof(DocumentedClass.GenericNestedClass<int>);
-            Assert.AreEqual("<summary>\nA documented generic nested class.\n</summary>",
-                resolver.GetXmlDocumentation(type));
-            Assert.AreEqual("<summary>\nA documented generic nested class.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo) type));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_GenericNestedTypeDefinition()
-        {
-            Type type = typeof(DocumentedClass.GenericNestedClass<>);
-            Assert.AreEqual("<summary>\nA documented generic nested class.\n</summary>",
-                resolver.GetXmlDocumentation(type));
-            Assert.AreEqual("<summary>\nA documented generic nested class.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)type));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Field()
-        {
-            FieldInfo field = typeof(DocumentedClass).GetField("DocumentedField");
-            Assert.AreEqual("<summary>\nA documented field.\n</summary>",
-                resolver.GetXmlDocumentation(field));
-            Assert.AreEqual("<summary>\nA documented field.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)field));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Property()
-        {
-            PropertyInfo property = typeof(DocumentedClass).GetProperty("DocumentedProperty");
-            Assert.AreEqual("<summary>\nA documented property.\n</summary>",
-                resolver.GetXmlDocumentation(property));
-            Assert.AreEqual("<summary>\nA documented property.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)property));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Event()
-        {
-            EventInfo @event = typeof(DocumentedClass).GetEvent("DocumentedEvent");
-            Assert.AreEqual("<summary>\nA documented event.\n</summary>",
-                resolver.GetXmlDocumentation(@event));
-            Assert.AreEqual("<summary>\nA documented event.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)@event));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Indexer()
-        {
-            PropertyInfo property = typeof(DocumentedClass).GetProperty("Item");
-            Assert.AreEqual("<summary>\nA documented indexer.\n</summary>",
-                resolver.GetXmlDocumentation(property));
-            Assert.AreEqual("<summary>\nA documented indexer.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)property));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Method()
-        {
-            MethodInfo method = typeof(DocumentedClass).GetMethod("DocumentedMethod", new Type[] { });
-            Assert.AreEqual("<summary>\nA documented method.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented method.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_OverloadedMethodWithParameters()
-        {
-            MethodInfo method = typeof(DocumentedClass).GetMethod("DocumentedMethod",
-                new Type[] { typeof(int), typeof(DocumentedClass), typeof(DocumentedClass.GenericNestedClass<int>) });
-            Assert.AreEqual("<summary>\nA documented overloaded method with parameters.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented overloaded method with parameters.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_GenericMethodWithParameters()
-        {
-            MethodInfo method = typeof(DocumentedClass.GenericNestedClass<int>).
-                GetMethod("DocumentedGenericMethodWithParameters");
-            Assert.AreEqual("<summary>\nA documented generic method with parameters.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented generic method with parameters.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_GenericMethodDefinitionWithParameters()
-        {
-            MethodInfo method = typeof(DocumentedClass.GenericNestedClass<int>).
-                GetMethod("DocumentedGenericMethodWithParameters").GetGenericMethodDefinition();
-            Assert.AreEqual("<summary>\nA documented generic method with parameters.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented generic method with parameters.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_GenericIndexer()
-        {
-            PropertyInfo method = typeof(DocumentedClass.GenericNestedClass<int>).GetProperty("Item");
-            Assert.AreEqual("<summary>\nA documented generic indexer.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented generic indexer.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_OperatorMethod()
-        {
-            MethodInfo method = typeof(DocumentedClass).GetMethod("op_Addition");
-            Assert.AreEqual("<summary>\nA documented operator.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented operator.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_ImplicitConversionOperatorMethod()
-        {
-            MethodInfo method = typeof(DocumentedClass).GetMethod("op_Implicit");
-            Assert.AreEqual("<summary>\nA documented implicit conversion operator.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented implicit conversion operator.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_ExplicitConversionOperatorMethod()
-        {
-            MethodInfo method = typeof(DocumentedClass).GetMethod("op_Explicit");
-            Assert.AreEqual("<summary>\nA documented explicit conversion operator.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented explicit conversion operator.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_ConstructorMethod()
-        {
-            ConstructorInfo method = typeof(DocumentedClass).GetConstructor(new Type[] { });
-            Assert.AreEqual("<summary>\nA documented constructor.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented constructor.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_ConstructorMethodWithParameters()
-        {
-            ConstructorInfo method = typeof(DocumentedClass).GetConstructor(new Type[] { typeof(int) });
-            Assert.AreEqual("<summary>\nA documented constructor with parameters.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented constructor with parameters.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_Finalizer()
-        {
-            MethodInfo method = typeof(DocumentedClass).GetMethod("Finalize", BindingFlags.Instance | BindingFlags.NonPublic);
-            Assert.AreEqual("<summary>\nA documented finalizer.\n</summary>",
-                resolver.GetXmlDocumentation(method));
-            Assert.AreEqual("<summary>\nA documented finalizer.\n</summary>",
-                resolver.GetXmlDocumentation((MemberInfo)method));
-        }
-
-        [Test]
-        public void GetXmlDocumentation_ReturnsNullIfXmlDocFileNotFound()
-        {
-            ILogger mockLogger = Mocks.CreateMock<ILogger>();
-            Mocks.ReplayAll();
-
-            // The mock logger's type can't possibly have documentation because it is dynamically generated.
-            Assert.IsNull(resolver.GetXmlDocumentation(mockLogger.GetType()));
+            Type type = typeof(DocumentedClass.UndocumentedNestedClass);
+            Assert.IsNull(resolver.GetXmlDocumentation(Loader.GetAssemblyLocalPath(type.Assembly), "T:" + type.FullName));
         }
     }
 }

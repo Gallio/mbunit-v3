@@ -20,7 +20,9 @@ using Gallio.Contexts;
 namespace Gallio.Contexts
 {
     /// <summary>
+    /// <para>
     /// The context manager tracks the <see cref="Context" /> associated with threads.
+    /// </para>
     /// </summary>
     /// <remarks>
     /// All context manager operations are thread safe.
@@ -28,8 +30,25 @@ namespace Gallio.Contexts
     public interface IContextManager
     {
         /// <summary>
+        /// <para>
         /// Gets the context of the current thread, or null if there is no
         /// current context.
+        /// </para>
+        /// <para>
+        /// A thread's current context is determined in the following manner:
+        /// <list type="bullet">
+        /// <item>If the thread's context stack is not empty then the top-most item of the
+        /// stack is used.  <see cref="EnterContext" /> pushed a new item on this stack.</item>
+        /// <item>Otherwise, if the thread has an default context, then it is used.
+        /// <see cref="SetThreadDefaultContext" /> sets the default context for a thread.</item>
+        /// <item>Otherwise, the <see cref="GlobalContext" /> is used.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Context information may flow across threads by inheritance such that a child
+        /// thread acquires the context of its parent.  However, each thread has its own
+        /// context stack distinct from that of any other.
+        /// </para>
         /// </summary>
         Context CurrentContext { get; }
 
@@ -44,9 +63,8 @@ namespace Gallio.Contexts
         /// Enters a context.
         /// </para>
         /// </summary>
-        /// <param name="context">The context to enter</param>
+        /// <param name="context">The context to enter, or null to enter a scope without a context</param>
         /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
         ContextCookie EnterContext(Context context);
 
         /// <summary>

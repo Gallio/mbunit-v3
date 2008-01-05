@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Castle.Core.Logging;
+using Gallio.Contexts;
 using Gallio.Model;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
@@ -85,7 +86,12 @@ namespace Gallio.Tests.Integration
                 launcher.ReportFormats.Add(@"Text");
 
                 using (logStreamWriter.BeginSection("Debug Output"))
-                    result = launcher.Run();
+                {
+                    Context.RunWithContext(null, delegate
+                    {
+                        result = launcher.Run();
+                    });
+                }
 
                 using (logStreamWriter.BeginSection("Text Report"))
                 {

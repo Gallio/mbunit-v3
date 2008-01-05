@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System.Reflection;
-using Gallio.Hosting;
 
 namespace Gallio.Reflection.Impl
 {
@@ -48,11 +47,6 @@ namespace Gallio.Reflection.Impl
         new public EventInfo Resolve()
         {
             return Target;
-        }
-
-        public override string GetXmlDocumentation()
-        {
-            return Reflector.XmlDocumentationResolver.GetXmlDocumentation(Target);
         }
 
         public bool Equals(IEventInfo other)

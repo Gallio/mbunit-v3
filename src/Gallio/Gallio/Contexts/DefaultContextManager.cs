@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using Gallio.Contexts;
@@ -67,9 +68,6 @@ namespace Gallio.Contexts
         /// <inheritdoc />
         public ContextCookie EnterContext(Context context)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
             InternalContextLink previousTopLink = TopContextLinkForCurrentThread;
             TopContextLinkForCurrentThread = new InternalContextLink(previousTopLink, context);
 
@@ -147,10 +145,30 @@ namespace Gallio.Contexts
         /// <summary>
         /// Gets or sets the top context link for the current thread.
         /// </summary>
+        /// <remarks>
+        /// The trick here is to wrap the context link up in an <see cref="ObjectHandle" />.
+        /// This enables the context link to reside in the logical call context (so it flows
+        /// across threads) while preventing it from actually getting serialized during
+        /// remote calls (which won't work).  On the other hand, during callbacks from
+        /// remote calls we will be able to unwrap the context link and keep going.
+        /// </remarks>
         private InternalContextLink TopContextLinkForCurrentThread
         {
-            get { return (InternalContextLink)CallContext.GetData(contextKey); }
-            set { CallContext.SetData(contextKey, value); }
+            get
+            {
+                ObjectHandle handle = (ObjectHandle) CallContext.LogicalGetData(contextKey);
+                if (handle == null)
+                    return null;
+
+                return (InternalContextLink)handle.Unwrap();
+            }
+            set
+            {
+                if (value == null)
+                    CallContext.FreeNamedDataSlot(contextKey);
+                else
+                    CallContext.LogicalSetData(contextKey, new ObjectHandle(value));
+            }
         }
 
         /// <summary>
