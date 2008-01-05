@@ -74,6 +74,9 @@ namespace Gallio.Runner.Reports
                     progressMonitor.ThrowIfCanceled();
                     report = (Report)serializer.Deserialize(stream);
                 }
+
+                FixImplicitIds(report);
+
                 progressMonitor.Worked(1);
                 progressMonitor.SetStatus(@"");
 
@@ -85,6 +88,33 @@ namespace Gallio.Runner.Reports
 
                 return report;
             }
+        }
+
+        private static void FixImplicitIds(Report report)
+        {
+            if (report.PackageRun != null && report.PackageRun.RootTestInstanceRun != null)
+                FixImplicitIds(report.PackageRun.RootTestInstanceRun, null);
+        }
+
+        private static void FixImplicitIds(TestInstanceRun testInstanceRun, string parentId)
+        {
+            testInstanceRun.TestInstance.ParentId = parentId;
+
+            string id = testInstanceRun.TestInstance.Id;
+            foreach (TestInstanceRun child in testInstanceRun.Children)
+                FixImplicitIds(child, id);
+
+            FixImplicitIds(testInstanceRun.RootTestStepRun, null, id);
+        }
+
+        private static void FixImplicitIds(TestStepRun testStepRun, string parentId, string testInstanceId)
+        {
+            testStepRun.Step.ParentId = parentId;
+            testStepRun.Step.TestInstanceId = testInstanceId;
+
+            string id = testStepRun.Step.Id;
+            foreach (TestStepRun child in testStepRun.Children)
+                FixImplicitIds(child, id, testInstanceId);
         }
 
         /// <inheritdoc />

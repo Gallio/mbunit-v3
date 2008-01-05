@@ -103,20 +103,14 @@ namespace Gallio.Model.Serialization
         }
 
         /// <summary>
-        /// Gets or sets the id of the parent test instance to which the step belongs.
+        /// Gets or sets the id of the parent test instance to which the step belongs, or null if none.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         /// <seealso cref="ITestInstance.Parent"/>
         [XmlAttribute("parentId")]
         public string ParentId
         {
             get { return parentId; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                parentId = value;
-            }
+            set { parentId = value; }
         }
     }
 }

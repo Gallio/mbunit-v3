@@ -21,6 +21,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Core.ProgressMonitoring;
 using Gallio.Logging;
+using Gallio.Model.Serialization;
 
 namespace Gallio.Runner.Reports
 {
@@ -95,11 +96,18 @@ namespace Gallio.Runner.Reports
                 ignoreAttributes.XmlIgnore = true;
                 XmlAttributeOverrides overrides = new XmlAttributeOverrides();
 
+                // Prune unnecessary ids that can be determined implicitly from the report structure.
+                overrides.Add(typeof(TestInstanceData), @"ParentId", ignoreAttributes);
+                overrides.Add(typeof(TestStepData), @"ParentId", ignoreAttributes);
+                overrides.Add(typeof(TestStepData), @"TestInstanceId", ignoreAttributes);
+
+                // Only include content path when linking.
                 if (attachmentContentDisposition != ExecutionLogAttachmentContentDisposition.Link)
                 {
                     overrides.Add(typeof(ExecutionLogAttachment), @"ContentPath", ignoreAttributes);
                 }
 
+                // Only include content data when inline.
                 if (attachmentContentDisposition != ExecutionLogAttachmentContentDisposition.Inline)
                 {
                     overrides.Add(typeof(ExecutionLogAttachment), @"InnerText", ignoreAttributes);
@@ -107,6 +115,7 @@ namespace Gallio.Runner.Reports
                     overrides.Add(typeof(ExecutionLogAttachment), @"Encoding", ignoreAttributes);
                 }
 
+                // Munge the content paths and content disposition.
                 if (report.PackageRun != null)
                 {
                     foreach (TestInstanceRun testInstanceRun in report.PackageRun.TestInstanceRuns)
@@ -126,6 +135,7 @@ namespace Gallio.Runner.Reports
                     }
                 }
 
+                // Serialize the report.
                 XmlSerializer serializer = new XmlSerializer(typeof(Report), overrides);
                 serializer.Serialize(xmlWriter, report);
             }
