@@ -100,6 +100,9 @@ namespace Gallio.Runner.Reports
         {
             get
             {
+                if (rootTestInstanceRun == null)
+                    return EmptyArray<TestInstanceRun>.Instance;
+
                 return TreeUtils.GetPreOrderTraversal(rootTestInstanceRun, GetChildren);
             }
         }

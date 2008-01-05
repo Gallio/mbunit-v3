@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Reflection;
+using Gallio.Contexts;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -33,7 +34,9 @@ namespace Gallio.TDNetRunner.Tests
         protected override TestLauncherResult RunLauncher(TestLauncher launcher)
         {
             launcher.RuntimeSetup = null;
-            return base.RunLauncher(launcher);
+
+            using (Context.EnterContext(null))
+                return base.RunLauncher(launcher);
         }
 
         public new TDF.TestRunState Run(TDF.ITestListener testListener, Assembly assembly, Filter<ITest> filter)
