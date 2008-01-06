@@ -1,4 +1,4 @@
-// Copyright 2007 MbUnit Project - http://www.mbunit.com/
+// Copyright 2008 MbUnit Project - http://www.mbunit.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Test")]
 [assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("MbUnit")]
-[assembly: AssemblyCopyright("Copyright © 2007 MbUnit Project - http://www.mbunit.com/")]
+[assembly: AssemblyCopyright("Copyright © 2008 MbUnit Project - http://www.mbunit.com/")]
 [assembly: AssemblyTrademark("MbUnit")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyInformationalVersion("1.2.3.4")]
