@@ -31,7 +31,7 @@ namespace Gallio.Model.Serialization
         private string id;
         private string name;
         private CodeReference codeReference;
-        private SourceLocation sourceLocation;
+        private CodeLocation codeLocation;
         private MetadataMap metadata;
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Gallio.Model.Serialization
                 if (codeReference.Kind == CodeReferenceKind.Unknown)
                     codeReference = null;
 
-                sourceLocation = codeElement.GetSourceLocation();
+                codeLocation = codeElement.GetCodeLocation();
             }
 
             metadata = source.Metadata.Copy();
@@ -129,14 +129,14 @@ namespace Gallio.Model.Serialization
         }
 
         /// <summary>
-        /// Gets or sets the source location, or null if unknown.
+        /// Gets or sets the code location, or null if unknown.
         /// </summary>
         /// <seealso cref="ITestComponent.CodeElement"/>
-        [XmlElement("sourceLocation", IsNullable = false)]
-        public SourceLocation SourceLocation
+        [XmlElement("codeLocation", IsNullable = false)]
+        public CodeLocation CodeLocation
         {
-            get { return sourceLocation; }
-            set { sourceLocation = value; }
+            get { return codeLocation; }
+            set { codeLocation = value; }
         }
 
         /// <summary>

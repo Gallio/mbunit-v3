@@ -132,7 +132,7 @@
     <Compile Include="Reflection\Impl\IDebugSymbolResolver.cs" />
     <Compile Include="Hosting\IRuntimeFactory.cs" />
     <Compile Include="Reflection\Impl\XmlDocumentationUtils.cs" />
-    <Compile Include="Reflection\SourceLocation.cs" />
+    <Compile Include="Reflection\CodeLocation.cs" />
     <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
     <Compile Include="Logging\TextLogWriter.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />

@@ -93,10 +93,11 @@ namespace Gallio.Reflection
         string GetXmlDocumentation();
 
         /// <summary>
-        /// Gets the source location of the declaration of this code element, or
-        /// null if not available.
+        /// Gets the location of a resource that contains the declaration of this code element, or
+        /// null if not available.  The location may refer to the code element's source code
+        /// or to the location of its compiled assembly.
         /// </summary>
-        /// <returns>The source location</returns>
-        SourceLocation GetSourceLocation();
+        /// <returns>The code location</returns>
+        CodeLocation GetCodeLocation();
     }
 }

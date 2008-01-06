@@ -52,7 +52,9 @@ namespace Gallio.PowerShellCommands
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
         private string filter;
-        private SwitchParameter showReports = false;
+        private SwitchParameter showReports;
+        private SwitchParameter doNotRun;
+        private SwitchParameter noEchoResults;
 
         #endregion
 
@@ -234,6 +236,29 @@ namespace Gallio.PowerShellCommands
             set { showReports = value; }
         }
 
+        /// <summary>
+        /// Sets whether to load the tests but not run them.  This option may be used to produce a
+        /// report that contains test metadata for consumption by other tools.
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("dnr", "do-not-run")]
+        public SwitchParameter DoNotRun
+        {
+            set { doNotRun = value; }
+        }
+
+        /// <summary>
+        /// Sets whether to echo results to the screen as tests finish.  If this option is specified
+        /// only the final summary statistics are displayed.  Otherwise test results are echoed to the
+        /// console in varying detail depending on the current verbosity level.
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("ne", "no-echo-results")]
+        public SwitchParameter NoEchoResults
+        {
+            set { noEchoResults = value; }
+        }
+
         #endregion
 
         #region Protected Methods
@@ -303,6 +328,8 @@ namespace Gallio.PowerShellCommands
                 launcher.Filter = GetFilter();
                 launcher.RuntimeSetup = new RuntimeSetup();
                 launcher.ShowReports = showReports.IsPresent;
+                launcher.DoNotRun = doNotRun.IsPresent;
+                launcher.EchoResults = !noEchoResults.IsPresent;
 
                 AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
                 AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);

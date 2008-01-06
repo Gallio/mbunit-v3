@@ -48,7 +48,7 @@ namespace Gallio.Tests.Model
             Assert.AreEqual(expected.Id, actual.Id);
             Assert.AreEqual(expected.Name, actual.Name);
             Assert.AreEqual(expected.CodeReference, actual.CodeReference);
-            Assert.AreEqual(expected.SourceLocation, actual.SourceLocation);
+            Assert.AreEqual(expected.CodeLocation, actual.CodeLocation);
 
             AreEqual(expected.Metadata, actual.Metadata);
         }

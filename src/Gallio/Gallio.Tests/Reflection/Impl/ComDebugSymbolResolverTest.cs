@@ -38,18 +38,18 @@ namespace Gallio.Tests.Reflection.Impl
         [Test]
         public void GetSourceLocationForMethod_ReturnsValidLocationForConcreteMethod()
         {
-            SourceLocation sourceLocation = GetSourceLocationForMethod("ConcreteMethod");
+            CodeLocation codeLocation = GetSourceLocationForMethod("ConcreteMethod");
 
-            StringAssert.EndsWith(sourceLocation.Filename, GetType().Name + ".cs");
-            Assert.Between(sourceLocation.Line, 1000, 1003);
-            Assert.GreaterEqualThan(sourceLocation.Column, 1);
+            StringAssert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
+            Assert.Between(codeLocation.Line, 1000, 1003);
+            Assert.GreaterEqualThan(codeLocation.Column, 1);
         }
 
         [Test]
         public void GetSourceLocationForMethod_ReturnsNullIfMethodIsAbstract()
         {
-            SourceLocation sourceLocation = GetSourceLocationForMethod("AbstractMethod");
-            Assert.IsNull(sourceLocation);
+            CodeLocation codeLocation = GetSourceLocationForMethod("AbstractMethod");
+            Assert.IsNull(codeLocation);
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Gallio.Tests.Reflection.Impl
             new ComDebugSymbolResolver().GetSourceLocationForMethod(GetType().Assembly.Location, 0);
         }
 
-        private SourceLocation GetSourceLocationForMethod(string methodName)
+        private CodeLocation GetSourceLocationForMethod(string methodName)
         {
             ComDebugSymbolResolver resolver = new ComDebugSymbolResolver();
 

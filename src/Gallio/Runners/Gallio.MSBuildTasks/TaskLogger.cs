@@ -27,13 +27,13 @@ namespace Gallio.MSBuildTasks
     /// </summary>
     internal class TaskLogger : LevelFilteredLogger
     {
-        private readonly TaskLoggingHelper taskLogger;
+        private readonly TaskLoggingHelper taskLoggingHelper;
         
-        public TaskLogger(TaskLoggingHelper taskLogger)
+        public TaskLogger(TaskLoggingHelper taskLoggingHelper)
         {
-            if (taskLogger == null)
-                throw new ArgumentNullException("taskLogger");
-            this.taskLogger = taskLogger;
+            if (taskLoggingHelper == null)
+                throw new ArgumentNullException("taskLoggingHelper");
+            this.taskLoggingHelper = taskLoggingHelper;
             Level = LoggerLevel.Debug;
         }
 
@@ -46,26 +46,26 @@ namespace Gallio.MSBuildTasks
             {
                 case LoggerLevel.Fatal:
                 case LoggerLevel.Error:
-                    taskLogger.LogError(message);
+                    taskLoggingHelper.LogError(message);
                     break;
 
                 case LoggerLevel.Warn:
-                    taskLogger.LogWarning(message);
+                    taskLoggingHelper.LogWarning(message);
                     break;
 
                 case LoggerLevel.Info:
-                    taskLogger.LogMessage(MessageImportance.Normal, message);
+                    taskLoggingHelper.LogMessage(MessageImportance.High, message);
                     break;
 
                 case LoggerLevel.Debug:
-                    taskLogger.LogMessage(MessageImportance.Low, message);
+                    taskLoggingHelper.LogMessage(MessageImportance.Low, message);
                     break;
             }
         }
 
         public override ILogger CreateChildLogger(string name)
         {
-            return new TaskLogger(taskLogger);
+            return this;
         }
     }
 }

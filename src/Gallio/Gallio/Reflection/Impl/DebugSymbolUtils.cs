@@ -42,13 +42,13 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Gets the source location of the declaration of a type, or
+        /// Gets the location of a source file that contains the declaration of a type, or
         /// null if not available.
         /// </summary>
-        /// <param name="type">The method</param>
-        /// <returns>The source location, or null if unknown</returns>
+        /// <param name="type">The type</param>
+        /// <returns>The code location, or null if unknown</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
-        public static SourceLocation GetSourceLocation(Type type)
+        public static CodeLocation GetSourceLocation(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -57,22 +57,22 @@ namespace Gallio.Reflection.Impl
                 ?? GuessSourceLocationForType(type, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
         }
 
-        private static SourceLocation GuessSourceLocationForType(Type type, BindingFlags bindingFlags)
+        private static CodeLocation GuessSourceLocationForType(Type type, BindingFlags bindingFlags)
         {
             return GuessSourceLocationForTypeFromItsMethods(type.GetConstructors(bindingFlags))
                 ?? GuessSourceLocationForTypeFromItsMethods(type.GetMethods(bindingFlags));
         }
 
-        private static SourceLocation GuessSourceLocationForTypeFromItsMethods(IEnumerable<MethodBase> methods)
+        private static CodeLocation GuessSourceLocationForTypeFromItsMethods(IEnumerable<MethodBase> methods)
         {
             foreach (MethodBase method in methods)
             {
-                SourceLocation sourceLocation = GetSourceLocation(method);
-                if (sourceLocation != null)
+                CodeLocation codeLocation = GetSourceLocation(method);
+                if (codeLocation != null)
                 {
-                    sourceLocation.Line = 0;
-                    sourceLocation.Column = 0;
-                    return sourceLocation;
+                    codeLocation.Line = 0;
+                    codeLocation.Column = 0;
+                    return codeLocation;
                 }
             }
 
@@ -80,13 +80,13 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Gets the source location of the declaration of a method, or
+        /// Gets the location of a source file that contains the declaration of a method, or
         /// null if not available.
         /// </summary>
         /// <param name="method">The method</param>
         /// <returns>The source location, or null if unknown</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
-        public static SourceLocation GetSourceLocation(MethodBase method)
+        public static CodeLocation GetSourceLocation(MethodBase method)
         {
             if (method == null)
                 throw new ArgumentNullException("method");

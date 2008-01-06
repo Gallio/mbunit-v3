@@ -72,7 +72,7 @@ namespace Gallio.Reflection.Impl
 
         public abstract string GetXmlDocumentation();
 
-        public virtual SourceLocation GetSourceLocation()
+        public virtual CodeLocation GetCodeLocation()
         {
             return null;
         }

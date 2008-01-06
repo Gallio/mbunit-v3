@@ -16,8 +16,6 @@
 extern alias MbUnit2;
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Reflection;
 using MbUnit.Framework.Xml;
 using MbUnit2::MbUnit.Framework;
@@ -25,8 +23,8 @@ using MbUnit2::MbUnit.Framework;
 namespace Gallio.Tests.Reflection
 {
     [TestFixture]
-    [TestsOn(typeof(SourceLocation))]
-    public class SourceLocationTest
+    [TestsOn(typeof(CodeLocation))]
+    public class CodeLocationTest
     {
         [RowTest]
         [Row("file", 1, 1)]
@@ -38,8 +36,8 @@ namespace Gallio.Tests.Reflection
         [Row(null, 1, 1, ExpectedException = typeof(ArgumentNullException))]
         public void Constructor(string filename, int line, int column)
         {
-            SourceLocation location = new SourceLocation(filename, line, column);
-            Assert.AreEqual(filename, location.Filename);
+            CodeLocation location = new CodeLocation(filename, line, column);
+            Assert.AreEqual(filename, location.Path);
             Assert.AreEqual(line, location.Line);
             Assert.AreEqual(column, location.Column);
         }
@@ -54,13 +52,13 @@ namespace Gallio.Tests.Reflection
         [Row(null, 1, 1, ExpectedException = typeof(ArgumentNullException))]
         public void Setters(string filename, int line, int column)
         {
-            SourceLocation location = new SourceLocation("", 0, 0);
+            CodeLocation location = new CodeLocation("", 0, 0);
 
-            location.Filename = filename;
+            location.Path = filename;
             location.Line = line;
             location.Column = column;
 
-            Assert.AreEqual(filename, location.Filename);
+            Assert.AreEqual(filename, location.Path);
             Assert.AreEqual(line, location.Line);
             Assert.AreEqual(column, location.Column);
         }
@@ -68,7 +66,7 @@ namespace Gallio.Tests.Reflection
         [Test]
         public void TypeIsXmlSerializable()
         {
-            XmlSerializationAssert.IsXmlSerializable(typeof(SourceLocation));
+            XmlSerializationAssert.IsXmlSerializable(typeof(CodeLocation));
         }
     }
 }

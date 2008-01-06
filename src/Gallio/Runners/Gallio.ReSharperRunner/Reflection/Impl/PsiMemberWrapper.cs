@@ -37,7 +37,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Target; }
         }
 
-        public override SourceLocation GetSourceLocation()
+        public override CodeLocation GetCodeLocation()
         {
             IDeclaration[] decl = Target.GetDeclarations();
             if (decl.Length == 0)
@@ -50,7 +50,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             string filename = decl[0].GetProjectFile().Location.FullPath;
             DocumentCoords start = range.Document.GetCoordsByOffset(range.TextRange.StartOffset);
 
-            return new SourceLocation(filename, start.Line, start.Column);
+            return new CodeLocation(filename, start.Line, start.Column);
         }
 
         public override string Name

@@ -47,7 +47,7 @@ namespace Gallio.Reflection.Impl
         private readonly Dictionary<string, ISymbolReader> symbolReaders = new Dictionary<string, ISymbolReader>();
 
         /// <inheritdoc />
-        public SourceLocation GetSourceLocationForMethod(string assemblyPath, int methodToken)
+        public CodeLocation GetSourceLocationForMethod(string assemblyPath, int methodToken)
         {
             if (assemblyPath == null)
                 throw new ArgumentNullException("assemblyPath");
@@ -76,11 +76,11 @@ namespace Gallio.Reflection.Impl
                 for (int i = 0; i < seqPtCount; i++)
                 {
                     if (columns[i] != 0)
-                        return new SourceLocation(docs[i].URL, lines[i], columns[i]);
+                        return new CodeLocation(docs[i].URL, lines[i], columns[i]);
                 }
 
                 // Fallback on file information only.
-                return new SourceLocation(docs[0].URL, 0, 0);
+                return new CodeLocation(docs[0].URL, 0, 0);
             }
             catch (COMException ex)
             {

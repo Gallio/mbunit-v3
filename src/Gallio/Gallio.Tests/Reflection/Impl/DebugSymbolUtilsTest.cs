@@ -46,11 +46,11 @@ namespace Gallio.Tests.Reflection.Impl
         [Test]
         public void GetSourceLocation_Method_ReturnsValidLocationForConcreteMethod()
         {
-            SourceLocation sourceLocation = DebugSymbolUtils.GetSourceLocation(typeof(Sample).GetMethod("ConcreteMethod"));
+            CodeLocation codeLocation = DebugSymbolUtils.GetSourceLocation(typeof(Sample).GetMethod("ConcreteMethod"));
 
-            StringAssert.EndsWith(sourceLocation.Filename, GetType().Name + ".cs");
-            Assert.Between(sourceLocation.Line, 1000, 1003);
-            Assert.GreaterEqualThan(sourceLocation.Column, 1);
+            StringAssert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
+            Assert.Between(codeLocation.Line, 1000, 1003);
+            Assert.GreaterEqualThan(codeLocation.Column, 1);
         }
 
         [Test, ExpectedArgumentNullException]
@@ -88,11 +88,11 @@ namespace Gallio.Tests.Reflection.Impl
         [Row(typeof(TypeWithNonPublicStaticProperty))]
         public void GetSourceLocation_Type_ReturnsCorrectFileNameIfTypeHasMethodsConstructorsOrProperties(Type type)
         {
-            SourceLocation sourceLocation = DebugSymbolUtils.GetSourceLocation(type);
+            CodeLocation codeLocation = DebugSymbolUtils.GetSourceLocation(type);
 
-            StringAssert.EndsWith(sourceLocation.Filename, GetType().Name + ".cs");
-            Assert.AreEqual(0, sourceLocation.Line);
-            Assert.AreEqual(0, sourceLocation.Column);
+            StringAssert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
+            Assert.AreEqual(0, codeLocation.Line);
+            Assert.AreEqual(0, codeLocation.Column);
         }
 
         private abstract class Sample

@@ -20,56 +20,58 @@ using Gallio.Model.Serialization;
 namespace Gallio.Reflection
 {
     /// <summary>
-    /// Specifies a position within a source file.
+    /// Specifies the location of a code element as a position within a file.
     /// </summary>
     /// <remarks>
     /// Lines and columns are numbered starting from 1.
     /// </remarks>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class SourceLocation : IEquatable<SourceLocation>
+    public class CodeLocation : IEquatable<CodeLocation>
     {
-        private string filename;
+        private string path;
         private int line;
         private int column;
 
         /// <summary>
-        /// Creates an uninitialized instance for Xml deserialization.
+        /// Creates an empty code location with a blank path and no line or column number information.
         /// </summary>
-        private SourceLocation()
+        public CodeLocation()
         {
-            filename = "";
+            path = @"";
         }
 
         /// <summary>
         /// Creates a document range.
         /// </summary>
-        /// <param name="filename">The source file name</param>
+        /// <param name="path">The path or Uri of a resource that contains the code element,
+        /// such as a source file or assembly</param>
         /// <param name="line">The line number, or 0 if unknown</param>
         /// <param name="column">The column number, or 0 if unknown</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filename"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="line"/> or <paramref name="column"/>
         /// is less than 0</exception>
-        public SourceLocation(string filename, int line, int column)
+        public CodeLocation(string path, int line, int column)
         {
-            Filename = filename;
+            Path = path;
             Line = line;
             Column = column;
         }
 
         /// <summary>
-        /// Gets or sets the source file name.
+        /// Gets or sets the path or Uri of a resource that contains the code element, such as
+        /// a source file or assembly.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlAttribute("filename")]
-        public string Filename
+        [XmlAttribute("path")]
+        public string Path
         {
-            get { return filename; }
+            get { return path; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
-                filename = value;
+                path = value;
             }
         }
 
@@ -108,14 +110,14 @@ namespace Gallio.Reflection
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return Equals(obj as SourceLocation);
+            return Equals(obj as CodeLocation);
         }
 
         /// <inheritdoc />
-        public bool Equals(SourceLocation other)
+        public bool Equals(CodeLocation other)
         {
             return other != null
-                && filename == other.filename
+                && path == other.path
                 && line == other.line
                 && column == other.column;
         }
@@ -123,7 +125,7 @@ namespace Gallio.Reflection
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return filename.GetHashCode() ^ (line << 5) ^ column;
+            return path.GetHashCode() ^ (line << 5) ^ column;
         }
     }
 }

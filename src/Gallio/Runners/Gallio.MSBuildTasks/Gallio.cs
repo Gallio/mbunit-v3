@@ -83,7 +83,10 @@ namespace Gallio.MSBuildTasks
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
-        private bool ignoreFailures = false;
+        private bool ignoreFailures;
+        private bool showReports;
+        private bool doNotRun;
+        private bool echoResults = true;
         private int exitCode;
         private int testCount;
         private int passCount;
@@ -227,11 +230,41 @@ namespace Gallio.MSBuildTasks
         }
 
         /// <summary>
-        /// Sets whether or not to halt on failure.
+        /// Sets whether test failures will be ignored and allow the build to proceed.
+        /// When set to <c>false</c>, test failures will cause the build to fail.
         /// </summary>
         public bool IgnoreFailures
         {
             set { ignoreFailures = value; }
+        }
+
+        /// <summary>
+        /// Sets whether to show generated reports in a window using the default system application
+        /// registered to the report file type.
+        /// </summary>
+        public bool ShowReports
+        {
+            set { showReports = value; }
+        }
+
+        /// <summary>
+        /// Sets whether to load the tests but not run them.  This option may be used to produce a
+        /// report that contains test metadata for consumption by other tools.
+        /// </summary>
+        public bool DoNotRun
+        {
+            set { doNotRun = value; }
+        }
+
+        /// <summary>
+        /// Sets whether to echo results to the screen as tests finish.  If this option is set
+        /// to true, the default, test results are echoed to the console
+        /// in varying detail depending on the current verbosity level.  Otherwise
+        /// only final summary statistics are displayed.
+        /// </summary>
+        public bool EchoResults
+        {
+            set { echoResults = value; }
         }
 
         /// <summary>
@@ -521,7 +554,12 @@ namespace Gallio.MSBuildTasks
                 launcher.Logger = logger;
                 launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
                 launcher.Filter = GetFilter();
+                launcher.ShowReports = showReports;
+                launcher.DoNotRun = doNotRun;
                 launcher.RuntimeSetup = new RuntimeSetup();
+
+                if (echoResults)
+                    launcher.CustomMonitors.Add(new TaskTestRunnerMonitor(Log, launcher.ReportMonitor));
 
                 AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
                 AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);

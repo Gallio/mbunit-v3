@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using Gallio.Reflection;
 
 using XunitAttributeInfo = Xunit.Sdk.IAttributeInfo;
@@ -50,9 +51,14 @@ namespace Gallio.Plugin.XunitAdapter.Model
             {
                 // Note: xUnit.Net looks for attribute property values even in cases
                 // where they are not initialized via the property such as the
-                // Name property of a Trait.  So we eat the exception and return
-                // a default value, which is similar to what xUnit.Net does itself.
-                return default(TValue);
+                // Name property of a Trait.  So we eat the exception and try to 
+                // fall back on the property of the real attribute instance itself.
+                object attrib = target.Resolve();
+                PropertyInfo property = attrib.GetType().GetProperty(propertyName);
+                if (property == null)
+                    throw;
+
+                return (TValue)property.GetValue(attrib, null);
             }
         }
     }

@@ -76,7 +76,7 @@ namespace Gallio.Reflection.Impl
             return null;
         }
 
-        public SourceLocation GetSourceLocation()
+        public CodeLocation GetCodeLocation()
         {
             return null;
         }

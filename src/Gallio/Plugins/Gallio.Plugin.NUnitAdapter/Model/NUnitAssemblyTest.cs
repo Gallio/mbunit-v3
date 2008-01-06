@@ -57,8 +57,6 @@ namespace Gallio.Plugin.NUnitAdapter.Model
         /// <inheritdoc />
         public override void ProcessTestNames(Action<NUnitTestName> action)
         {
-            base.ProcessTestNames(action);
-
             foreach (NUnitITest test in Test.Tests)
                 action(test.TestName);
         }

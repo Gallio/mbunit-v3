@@ -80,7 +80,7 @@ namespace Gallio.MSBuildTasks.Tests
                 " /p:GallioPath=\"", Loader.InstallationPath, "\""));
             runner.WorkingDirectory = workingDirectory;
 
-            runner.Run(10000);
+            runner.Run(30000);
             Assert.AreEqual(expectedResult, runner.ExitCode == 0, "Unexpected exit code.");
         }
     }

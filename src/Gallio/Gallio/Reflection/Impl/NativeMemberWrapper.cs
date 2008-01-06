@@ -50,6 +50,11 @@ namespace Gallio.Reflection.Impl
             return XmlDocumentationUtils.GetXmlDocumentation(Target);
         }
 
+        public override CodeLocation GetCodeLocation()
+        {
+            return DeclaringType.GetCodeLocation();
+        }
+
         public ITypeInfo DeclaringType
         {
             get { return Reflector.Wrap(Target.DeclaringType); }

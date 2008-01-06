@@ -164,54 +164,56 @@
     <xsl:variable name="testId" select="g:testInstance/@testId" />
     <xsl:variable name="test" select="ancestor::g:report/g:testModel/descendant::g:test[@id = $testId]" />
     
-    <xsl:variable name="testCases" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
-    <xsl:variable name="testCaseResults" select="descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]/g:testStepRun/g:result" />
+    <xsl:if test="$test/@isTestCase = 'false'">
+      <xsl:variable name="testCases" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
+      <xsl:variable name="testCaseResults" select="descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]/g:testStepRun/g:result" />
 
-    <xsl:variable name="passedOutcomeCount" select="count($testCaseResults[@outcome = 'passed'])" />
-    <xsl:variable name="failedOutcomeCount" select="count($testCaseResults[@outcome = 'failed'])" />
-    <xsl:variable name="inconclusiveOutcomeCount" select="count($testCaseResults[@outcome = 'inconclusive'])" />
+      <xsl:variable name="passedOutcomeCount" select="count($testCaseResults[@outcome = 'passed'])" />
+      <xsl:variable name="failedOutcomeCount" select="count($testCaseResults[@outcome = 'failed'])" />
+      <xsl:variable name="inconclusiveOutcomeCount" select="count($testCaseResults[@outcome = 'inconclusive'])" />
 
-    <li>
-      <div>
-        <xsl:choose>
-          <xsl:when test="g:children/g:testInstanceRun">
-            <xsl:call-template name="toggle">
-              <xsl:with-param name="href">summaryPanel-<xsl:value-of select="$id"/></xsl:with-param>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:call-template name="toggle-stop" />
-          </xsl:otherwise>
-        </xsl:choose>
+      <li>
+        <div>
+          <xsl:choose>
+            <xsl:when test="g:children/g:testInstanceRun">
+              <xsl:call-template name="toggle">
+                <xsl:with-param name="href">summaryPanel-<xsl:value-of select="$id"/></xsl:with-param>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="toggle-stop" />
+            </xsl:otherwise>
+          </xsl:choose>
 
-        <!--
-        <xsl:call-template name="icon">
-          <xsl:with-param name="kind" select="$kind" />
-        </xsl:call-template>
-        -->
+          <!--
+          <xsl:call-template name="icon">
+            <xsl:with-param name="kind" select="$kind" />
+          </xsl:call-template>
+          -->
 
-        <a href="#testInstanceRun-{$id}"><xsl:value-of select="g:testInstance/@name" /></a>
+          <a href="#testInstanceRun-{$id}"><xsl:value-of select="g:testInstance/@name" /></a>
 
-        <xsl:call-template name="progressBar">
-          <xsl:with-param name="passed">
-            <xsl:value-of select="$passedOutcomeCount" />
-          </xsl:with-param>
-          <xsl:with-param name="failed">
-            <xsl:value-of select="$failedOutcomeCount" />
-          </xsl:with-param>
-          <xsl:with-param name="inconclusive">
-            <xsl:value-of select="$inconclusiveOutcomeCount" />
-          </xsl:with-param>
-        </xsl:call-template>
-        (<xsl:value-of select="$passedOutcomeCount" />/<xsl:value-of select="$failedOutcomeCount" />/<xsl:value-of select="$inconclusiveOutcomeCount" />)
-      </div>
+          <xsl:call-template name="progressBar">
+            <xsl:with-param name="passed">
+              <xsl:value-of select="$passedOutcomeCount" />
+            </xsl:with-param>
+            <xsl:with-param name="failed">
+              <xsl:value-of select="$failedOutcomeCount" />
+            </xsl:with-param>
+            <xsl:with-param name="inconclusive">
+              <xsl:value-of select="$inconclusiveOutcomeCount" />
+            </xsl:with-param>
+          </xsl:call-template>
+          (<xsl:value-of select="$passedOutcomeCount" />/<xsl:value-of select="$failedOutcomeCount" />/<xsl:value-of select="$inconclusiveOutcomeCount" />)
+        </div>
 
-      <xsl:if test="g:children/g:testInstanceRun">
-        <ul id="summaryPanel-{$id}">
-          <xsl:apply-templates select="g:children/g:testInstanceRun" mode="summary" />
-        </ul>
-      </xsl:if>
-    </li>
+        <xsl:if test="g:children/g:testInstanceRun">
+          <ul id="summaryPanel-{$id}">
+            <xsl:apply-templates select="g:children/g:testInstanceRun" mode="summary" />
+          </ul>
+        </xsl:if>
+      </li>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="g:packageRun" mode="details">

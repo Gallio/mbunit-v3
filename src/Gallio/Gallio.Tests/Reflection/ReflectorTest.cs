@@ -103,14 +103,14 @@ namespace Gallio.Tests.Reflection
         [Test]
         public void GetSourceLocation_ReturnsNullForNamespaces()
         {
-            Assert.IsNull(Reflector.WrapNamespace("foo").GetSourceLocation());
+            Assert.IsNull(Reflector.WrapNamespace("foo").GetCodeLocation());
         }
 
         [Test]
         public void GetSourceLocation_ReturnsMethodSourceFile()
         {
-            SourceLocation location = Reflector.GetExecutingFunction().GetSourceLocation();
-            StringAssert.EndsWith(location.Filename, GetType().Name + ".cs");
+            CodeLocation location = Reflector.GetExecutingFunction().GetCodeLocation();
+            StringAssert.EndsWith(location.Path, GetType().Name + ".cs");
         }
     }
 }

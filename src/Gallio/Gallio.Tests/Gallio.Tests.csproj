@@ -89,7 +89,7 @@
     <Compile Include="Reflection\Impl\DebugSymbolUtilsTest.cs" />
     <Compile Include="Reflection\Impl\XmlDocumentationUtilsTest.cs" />
     <Compile Include="Reflection\ReflectorTest.cs" />
-    <Compile Include="Reflection\SourceLocationTest.cs" />
+    <Compile Include="Reflection\CodeLocationTest.cs" />
     <Compile Include="Runner\Reports\FileSystemReportContainerTest.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />

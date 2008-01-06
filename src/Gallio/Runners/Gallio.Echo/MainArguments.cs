@@ -148,7 +148,7 @@ namespace Gallio.Echo
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "ne",
              LongName = "no-echo-results",
-             Description = "Do not echo results to the screen as tests finish.  Unless this option is specified, test results are echoed to the console in varying detail depending on the current verbosity level."
+             Description = "Do not echo results to the screen as tests finish.  If this option is specified, only the final summary statistics are displayed.  Otherwise test results are echoed to the console in varying detail depending on the current verbosity level."
              )]
         public bool NoEchoResults;
 

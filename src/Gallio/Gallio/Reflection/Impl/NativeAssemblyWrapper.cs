@@ -89,6 +89,11 @@ namespace Gallio.Reflection.Impl
             return null;
         }
 
+        public override CodeLocation GetCodeLocation()
+        {
+            return new CodeLocation(Path, 0, 0);
+        }
+
         public bool Equals(IAssemblyInfo other)
         {
             return Equals((object)other);

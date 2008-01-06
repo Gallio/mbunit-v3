@@ -20,6 +20,9 @@
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
 
+  <!-- Note: The tasks assembly gets loaded lazily. -->
+  <UsingTask AssemblyFile="$(BuildBinDir)\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
+
   <!-- The C# projects to compile. -->
   <ItemGroup>
     <CSharpProject Include="$(SourceDir)\Gallio\Gallio\Gallio.csproj" />
@@ -279,17 +282,22 @@
   </Target>
 
   <Target Name="Test">
-    <Exec Command="&quot;$(BuildBinDir)\Gallio.Echo.exe&quot; /report-type:Html /report-directory:&quot;$(BuildReportsDir)&quot; /show-reports @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
-          Condition="! $(NonInteractive)"
-          IgnoreExitCode="true">
+    <Gallio Condition="! $(NonInteractive)"
+            Assemblies="@(TestAssembly)"
+            ReportDirectory="$(BuildReportsDir)"
+            ReportTypes="Html"
+            IgnoreFailures="true"
+            ShowReports="true">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
-    </Exec>
+    </Gallio>
 
-    <Exec Command="&quot;$(BuildBinDir)\Gallio.Echo.exe&quot; /report-name-format:test-report /report-type:Xml /report-directory:&quot;$(BuildReportsDir)&quot; @(TestAssembly->'&quot;%(Identity)&quot;', ' ')"
-          Condition="$(NonInteractive)"
-          IgnoreExitCode="true">
+    <Gallio Condition="$(NonInteractive)"
+            Assemblies="@(TestAssembly)"
+            ReportDirectory="$(BuildReportsDir)"
+            ReportTypes="Xml"
+            IgnoreFailures="true">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
-    </Exec>
+    </Gallio>
 
     <Warning Text="Some MbUnit tests failed!"
              Condition="'$(MbUnitExitCode)'!='0'" />

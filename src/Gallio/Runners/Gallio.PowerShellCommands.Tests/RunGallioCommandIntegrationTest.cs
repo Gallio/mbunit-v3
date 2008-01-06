@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.IO;
 using Gallio.Hosting;
 using MbUnit.Framework;
@@ -40,6 +41,25 @@ namespace Gallio.PowerShellCommands.Tests
         private string executablePath;
         private string workingDirectory;
 
+        private Hashtable state;
+
+        [SetUp]
+        public void InstallSnapIn()
+        {
+            Hashtable state = new Hashtable();
+            new GallioSnapIn().Install(state);
+        }
+
+        [TearDown]
+        public void UninstallSnapIn()
+        {
+            if (state != null)
+            {
+                new GallioSnapIn().Uninstall(state);
+                state = null;
+            }
+        }
+
         [Test]
         public void RunPowerShell()
         {
@@ -48,13 +68,17 @@ namespace Gallio.PowerShellCommands.Tests
                 Environment.GetFolderPath(Environment.SpecialFolder.System),
                 @"windowspowershell\v1.0\powershell.exe"
                 );
+
             workingDirectory = Path.GetDirectoryName((Loader.GetAssemblyLocalPath(GetType().Assembly)));
+
             ProcessRunner runner = new ProcessRunner(executablePath,
-                "\"& Add-PSSnapIn Gallio; Run-Gallio '..\\..\\..\\..\\TestResources\\Gallio.TestResources.MbUnit\\bin\\Gallio.TestResources.MbUnit.dll' -verbose\"");
+               "\"& Add-PSSnapIn Gallio; Run-Gallio '..\\..\\..\\..\\TestResources\\Gallio.TestResources.MbUnit\\bin\\Gallio.TestResources.MbUnit.dll' -verbose -filter Type:SimpleTest \"");
             runner.WorkingDirectory = workingDirectory;
 
-            runner.Run(10000);
-            Assert.AreEqual(runner.ExitCode, 0, "Unexpected exit code.");
+            runner.Run(30000);
+
+            Assert.Contains(runner.ConsoleOutput, "Run: 2, Passed: 1, Failed: 1");
+            Assert.AreEqual(runner.ExitCode, 1, "Unexpected exit code.");
         }
     }
 }

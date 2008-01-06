@@ -95,17 +95,9 @@ namespace Gallio.NAntTasks
         private string reportDirectory = String.Empty;
         private string resultProperty;
         private string resultPropertiesPrefix;
-
-        #endregion
-
-        #region Public Instance Constructor
-
-        /// <summary>
-        /// Initializes a new instance of a <see cref="GallioTask" />.
-        /// </summary>
-        public GallioTask()
-        {
-        }
+        private bool showReports;
+        private bool doNotRun;
+        private bool echoResults = true;
 
         #endregion
 
@@ -228,6 +220,38 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
+        /// Sets whether to show generated reports in a window using the default system application
+        /// registered to the report file type.
+        /// </summary>
+        [TaskAttribute("show-reports", Required = false)]
+        public bool ShowReports
+        {
+            set { showReports = value; }
+        }
+
+        /// <summary>
+        /// Sets whether to load the tests but not run them.  This option may be used to produce a
+        /// report that contains test metadata for consumption by other tools.
+        /// </summary>
+        [TaskAttribute("do-not-run", Required = false)]
+        public bool DoNotRun
+        {
+            set { doNotRun = value; }
+        }
+
+        /// <summary>
+        /// Sets whether to echo results to the screen as tests finish.  If this option is set
+        /// to true, the default, test results are echoed to the console
+        /// in varying detail depending on the current verbosity level.  Otherwise
+        /// only the final summary statistics are displayed.
+        /// </summary>
+        [TaskAttribute("echo-results", Required = false)]
+        public bool EchoResults
+        {
+            set { echoResults = value; }
+        }
+
+        /// <summary>
         /// Sets the name of a NAnt property in which the exit code of the tests execution
         /// should be stored.
         /// </summary>
@@ -331,6 +355,9 @@ namespace Gallio.NAntTasks
                 launcher.Logger = logger;
                 launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
                 launcher.Filter = GetFilter();
+                launcher.ShowReports = showReports;
+                launcher.DoNotRun = doNotRun;
+                launcher.EchoResults = echoResults;
                 launcher.RuntimeSetup = new RuntimeSetup();
 
                 AddAssemblies(launcher);
