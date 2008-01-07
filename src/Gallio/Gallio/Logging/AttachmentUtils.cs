@@ -57,9 +57,9 @@ namespace Gallio.Logging
         /// <param name="xhtml">The xhtml string, not null</param>
         /// <returns>The attachment</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
-        public static XmlAttachment CreateXHtmlAttachment(string name, string xhtml)
+        public static TextAttachment CreateXHtmlAttachment(string name, string xhtml)
         {
-            return new XmlAttachment(name, MimeTypes.XHtml, xhtml);
+            return new TextAttachment(name, MimeTypes.XHtml, xhtml);
         }
 
         /// <summary>
@@ -69,9 +69,9 @@ namespace Gallio.Logging
         /// <param name="xml">The XML string, not null</param>
         /// <returns>The attachment</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
-        public static XmlAttachment CreateXmlAttachment(string name, string xml)
+        public static TextAttachment CreateXmlAttachment(string name, string xml)
         {
-            return new XmlAttachment(name, MimeTypes.Xml, xml);
+            return new TextAttachment(name, MimeTypes.Xml, xml);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Gallio.Logging
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <param name="xmlSerializer">The xml serializer to use, or null to use the default based on the object's type</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment CreateObjectAsXmlAttachment(string name, object obj, XmlSerializer xmlSerializer)
+        public static TextAttachment CreateObjectAsXmlAttachment(string name, object obj, XmlSerializer xmlSerializer)
         {
             if (obj == null)
                 throw new ArgumentNullException("obj");

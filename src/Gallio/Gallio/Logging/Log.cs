@@ -199,7 +199,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
-        public static XmlAttachment AttachXHtml(string attachmentName, string xhtml)
+        public static TextAttachment AttachXHtml(string attachmentName, string xhtml)
         {
             return Writer.AttachXHtml(attachmentName, xhtml);
         }
@@ -218,7 +218,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
-        public static XmlAttachment AttachXml(string attachmentName, string xml)
+        public static TextAttachment AttachXml(string attachmentName, string xml)
         {
             return Writer.AttachXml(attachmentName, xml);
         }
@@ -257,7 +257,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment AttachObjectAsXml(string attachmentName, object obj)
+        public static TextAttachment AttachObjectAsXml(string attachmentName, object obj)
         {
             return Writer.AttachObjectAsXml(attachmentName, obj);
         }
@@ -279,7 +279,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
+        public static TextAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
             return Writer.AttachObjectAsXml(attachmentName, obj, xmlSerializer);
         }
@@ -647,7 +647,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
-        public static XmlAttachment EmbedXHtml(string attachmentName, string xhtml)
+        public static TextAttachment EmbedXHtml(string attachmentName, string xhtml)
         {
             return Default.EmbedXHtml(attachmentName, xhtml);
         }
@@ -666,7 +666,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
-        public static XmlAttachment EmbedXml(string attachmentName, string xml)
+        public static TextAttachment EmbedXml(string attachmentName, string xml)
         {
             return Default.EmbedXml(attachmentName, xml);
         }
@@ -705,7 +705,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment EmbedObjectAsXml(string attachmentName, object obj)
+        public static TextAttachment EmbedObjectAsXml(string attachmentName, object obj)
         {
             return Default.EmbedObjectAsXml(attachmentName, obj);
         }
@@ -727,7 +727,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public static XmlAttachment EmbedObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
+        public static TextAttachment EmbedObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
             return Default.EmbedObjectAsXml(attachmentName, obj, xmlSerializer);
         }

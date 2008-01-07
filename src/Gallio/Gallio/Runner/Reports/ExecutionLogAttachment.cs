@@ -42,7 +42,6 @@ namespace Gallio.Runner.Reports
         private ExecutionLogAttachmentContentDisposition contentDisposition;
         private string innerText;
         private string contentPath;
-        private XmlElement[] innerXml;
         private Attachment contents;
 
         /// <summary>
@@ -75,10 +74,9 @@ namespace Gallio.Runner.Reports
         /// <param name="contentType">The content type</param>
         /// <param name="encoding">The content encoding</param>
         /// <param name="innerText">The inner text or "" if none</param>
-        /// <param name="innerXml">The inner Xml or an empty array if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="contentType"/> is null</exception>
         public ExecutionLogAttachment(string name, string contentType,
-            ExecutionLogAttachmentEncoding encoding, string innerText, XmlElement[] innerXml)
+            ExecutionLogAttachmentEncoding encoding, string innerText)
         {
             if (name == null)
                 throw new ArgumentNullException(@"name");
@@ -89,7 +87,6 @@ namespace Gallio.Runner.Reports
             this.contentType = contentType;
             this.encoding = encoding;
             this.innerText = innerText;
-            this.innerXml = innerXml;
         }
 
         /// <summary>
@@ -140,7 +137,7 @@ namespace Gallio.Runner.Reports
 
         /// <summary>
         /// Gets or sets the encoding of the attachment.
-        /// This value specifies how the attachment is embedded in Xml.
+        /// This value specifies how the attachment is represented in Xml.
         /// </summary>
         [XmlAttribute("encoding")]
         public ExecutionLogAttachmentEncoding Encoding
@@ -190,23 +187,9 @@ namespace Gallio.Runner.Reports
             set { innerText = value; }
         }
 
-        /// <summary>
-        /// Gets or sets the attachment content serialized as Xml, possibly null if none.
-        /// </summary>
-        [XmlAnyElement]
-        public XmlElement[] InnerXml
-        {
-            get
-            {
-                EnsureAttachmentSerialized();
-                return innerXml;
-            }
-            set { innerXml = value; }
-        }
-
         private void EnsureAttachmentSerialized()
         {
-            if (innerXml == null && innerText == null)
+            if (innerText == null)
             {
                 if (contents == null)
                     throw new InvalidOperationException("The attachment property is not initialized so its contents cannot be serialized.");
@@ -223,18 +206,11 @@ namespace Gallio.Runner.Reports
                     throw new InvalidOperationException("The attachment is missing its name attribute.");
                 if (contentType == null)
                     throw new InvalidOperationException("The attachment is missing its contentType attribute.");
-                if (innerText == null && innerXml == null)
-                    throw new InvalidOperationException("The attachment is missing its text or xml contents.");
+                if (innerText == null)
+                    throw new InvalidOperationException("The attachment is missing its text contents.");
 
                 switch (encoding)
                 {
-                    case ExecutionLogAttachmentEncoding.Xml:
-                        if (innerXml == null || innerXml.Length == 0)
-                            throw new XmlException("The xml encoded attachment is missing its xml contents.");
-
-                        contents = new XmlAttachment(name, contentType, innerXml[0]);
-                        break;
-
                     case ExecutionLogAttachmentEncoding.Text:
                         if (innerText == null)
                             throw new XmlException("The text encoded attachment is missing its text contents.");
@@ -260,21 +236,12 @@ namespace Gallio.Runner.Reports
         {
             encoding = ExecutionLogAttachmentEncoding.Text;
             innerText = attachment.Text;
-            innerXml = null;
-        }
-
-        void IAttachmentVisitor.VisitXmlAttachment(XmlAttachment attachment)
-        {
-            encoding = ExecutionLogAttachmentEncoding.Xml;
-            innerText = null;
-            innerXml = new XmlElement[] { attachment.XmlElement };
         }
 
         void IAttachmentVisitor.VisitBinaryAttachment(BinaryAttachment attachment)
         {
             encoding = ExecutionLogAttachmentEncoding.Base64;
             innerText = Convert.ToBase64String(attachment.Data, Base64FormattingOptions.None);
-            innerXml = null;
         }
     }
 }

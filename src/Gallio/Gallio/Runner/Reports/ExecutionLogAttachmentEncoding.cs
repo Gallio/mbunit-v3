@@ -34,12 +34,6 @@ namespace Gallio.Runner.Reports
         Text,
 
         /// <summary>
-        /// The attachment is encoded in XML as child elements.
-        /// </summary>
-        [XmlEnum("xml")]
-        Xml,
-
-        /// <summary>
         /// The attachment is encoded as base 64 text string.
         /// </summary>
         [XmlEnum("base64")]

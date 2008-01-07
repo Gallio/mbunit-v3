@@ -178,13 +178,6 @@ namespace Gallio.Runner.Reports
                             }
                             break;
 
-                        case ExecutionLogAttachmentEncoding.Xml:
-                            {
-                                string text = ReadAllText(attachmentStream);
-                                attachment.Contents = new XmlAttachment(attachment.Name, attachment.ContentType, text);
-                            }
-                            break;
-
                         case ExecutionLogAttachmentEncoding.Base64:
                             {
                                 byte[] data = ReadAllBytes(attachmentStream);

@@ -36,7 +36,7 @@ namespace Gallio.Runner.Reports
 
         /// <summary>
         /// The attachment content is included inline as <see cref="ExecutionLogAttachment.InnerText" />
-        /// or <see cref="ExecutionLogAttachment.InnerXml" /> with a given <see cref="ExecutionLogAttachment.Encoding" />.
+        /// with a given <see cref="ExecutionLogAttachment.Encoding" />.
         /// </summary>
         Inline
     }

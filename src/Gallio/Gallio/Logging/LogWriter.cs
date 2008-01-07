@@ -127,9 +127,9 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
-        public XmlAttachment AttachXHtml(string attachmentName, string xhtml)
+        public TextAttachment AttachXHtml(string attachmentName, string xhtml)
         {
-            return (XmlAttachment)Attach(AttachmentUtils.CreateXHtmlAttachment(attachmentName, xhtml));
+            return (TextAttachment)Attach(AttachmentUtils.CreateXHtmlAttachment(attachmentName, xhtml));
         }
 
         /// <summary>
@@ -142,9 +142,9 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
-        public XmlAttachment AttachXml(string attachmentName, string xml)
+        public TextAttachment AttachXml(string attachmentName, string xml)
         {
-            return (XmlAttachment)Attach(AttachmentUtils.CreateXmlAttachment(attachmentName, xml));
+            return (TextAttachment)Attach(AttachmentUtils.CreateXmlAttachment(attachmentName, xml));
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public XmlAttachment AttachObjectAsXml(string attachmentName, object obj)
+        public TextAttachment AttachObjectAsXml(string attachmentName, object obj)
         {
             return AttachObjectAsXml(attachmentName, obj, null);
         }
@@ -191,9 +191,9 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
-        public XmlAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
+        public TextAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
-            return (XmlAttachment)Attach(AttachmentUtils.CreateObjectAsXmlAttachment(attachmentName, obj, xmlSerializer));
+            return (TextAttachment)Attach(AttachmentUtils.CreateObjectAsXmlAttachment(attachmentName, obj, xmlSerializer));
         }
 
         /// <summary>

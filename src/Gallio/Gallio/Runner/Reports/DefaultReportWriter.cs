@@ -281,12 +281,6 @@ namespace Gallio.Runner.Reports
                     writer.Write(attachment.Text);
             }
 
-            public void VisitXmlAttachment(XmlAttachment attachment)
-            {
-                using (StreamWriter writer = new StreamWriter(attachmentStream, Encoding.UTF8))
-                    writer.Write(attachment.XmlString);
-            }
-
             public void VisitBinaryAttachment(BinaryAttachment attachment)
             {
                 byte[] bytes = attachment.Data;
