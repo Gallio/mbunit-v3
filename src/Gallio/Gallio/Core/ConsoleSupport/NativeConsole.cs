@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Gallio;
+using Gallio.Utilities;
 
 namespace Gallio.Core.ConsoleSupport
 {
@@ -152,8 +153,7 @@ namespace Gallio.Core.ConsoleSupport
                     currentCancelHandlers = cancelHandlers;
                 }
 
-                if (currentCancelHandlers != null)
-                    currentCancelHandlers(null, EventArgs.Empty);
+                EventHandlerUtils.SafeInvoke(currentCancelHandlers, null, EventArgs.Empty);
             }
         }
 

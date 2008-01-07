@@ -483,7 +483,7 @@ namespace Gallio.Runner
             logger.Info("Initializing the test runner.");
 
             if (runtimeSetup != null)
-                Runtime.Initialize(runtimeSetup);
+                Runtime.Initialize(runtimeSetup, logger);
 
             try
             {

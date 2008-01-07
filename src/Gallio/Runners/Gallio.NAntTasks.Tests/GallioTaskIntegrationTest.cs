@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using Gallio.Concurrency;
 using MbUnit2::MbUnit.Framework;
 using System;
 using System.Diagnostics;
@@ -21,7 +22,6 @@ using System.IO;
 using System.Reflection;
 using Gallio.Hosting;
 using Gallio.Runner;
-using ProcessRunner = MbUnit.Framework.ProcessRunner;
 
 namespace Gallio.NAntTasks.Tests
 {
@@ -72,13 +72,13 @@ namespace Gallio.NAntTasks.Tests
             so NAnt should return true.")]
         public void RunNAnt(string target, bool expectedResult)
         {
-            ProcessRunner runner = new ProcessRunner(executablePath,
+            ProcessTask task = new ProcessTask(executablePath,
                 String.Concat("/f:Integration.build ", target,
                 " /D:GallioPath=\"", Loader.InstallationPath, "\""));
-            runner.WorkingDirectory = workingDirectory;
+            task.WorkingDirectory = workingDirectory;
 
-            runner.Run(30000);
-            Assert.AreEqual(expectedResult, runner.ExitCode == 0, "Unexpected exit code.");
+            Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");
+            Assert.AreEqual(expectedResult, task.ExitCode == 0, "Unexpected exit code.");
         }
     }
 }

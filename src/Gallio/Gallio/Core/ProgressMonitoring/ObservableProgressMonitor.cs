@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Utilities;
 
 namespace Gallio.Core.ProgressMonitoring
 {
@@ -284,8 +285,7 @@ namespace Gallio.Core.ProgressMonitoring
         /// <param name="totalWorkUnits">The total number of work units</param>
         protected virtual void OnBeginTask(string taskName, double totalWorkUnits)
         {
-            if (TaskStarting != null)
-                TaskStarting(this, EventArgs.Empty);
+            EventHandlerUtils.SafeInvoke(TaskStarting, this, EventArgs.Empty);
 
             OnChange();
         }
@@ -305,8 +305,7 @@ namespace Gallio.Core.ProgressMonitoring
         {
             OnChange();
 
-            if (TaskFinished != null)
-                TaskFinished(this, EventArgs.Empty);
+            EventHandlerUtils.SafeInvoke(TaskFinished, this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -341,8 +340,7 @@ namespace Gallio.Core.ProgressMonitoring
         /// </summary>
         protected virtual void OnChange()
         {
-            if (Changed != null)
-                Changed(this, EventArgs.Empty);
+            EventHandlerUtils.SafeInvoke(Changed, this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -350,8 +348,7 @@ namespace Gallio.Core.ProgressMonitoring
         /// </summary>
         protected virtual void OnSubProgressMonitorCreated(ObservableProgressMonitor subProgressMonitor)
         {
-            if (SubProgressMonitorCreated != null)
-                SubProgressMonitorCreated(this, new SubProgressMonitorCreatedEventArgs(subProgressMonitor));
+            EventHandlerUtils.SafeInvoke(SubProgressMonitorCreated, this, new SubProgressMonitorCreatedEventArgs(subProgressMonitor));
         }
 
         /// <summary>
@@ -399,8 +396,8 @@ namespace Gallio.Core.ProgressMonitoring
         /// </summary>
         protected class SubProgressMonitor : ObservableProgressMonitor
         {
-            private ObservableProgressMonitor parent;
-            private double parentWorkUnits;
+            private readonly ObservableProgressMonitor parent;
+            private readonly double parentWorkUnits;
             private bool beganTask;
 
             /// <summary>

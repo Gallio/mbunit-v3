@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Contexts;
+using Gallio.Hosting;
 using Gallio.Logging;
 
 namespace Gallio.Runner.Harness
@@ -50,10 +51,9 @@ namespace Gallio.Runner.Harness
                     if (ex != null)
                         Context.CurrentContext.LogWriter[LogStreamNames.Warnings].WriteException(ex, "An unhandled exception occurred.");
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Ignore any exceptions we encounter logging the exception since there isn't
-                    // much we can do anyways.
+                    Panic.UnhandledException("An exception occurred while attempting to log an unhandled exception in the AppDomain.", ex);
                 }
             }
         }

@@ -16,6 +16,8 @@
 using System;
 using System.Diagnostics;
 using Gallio.Hosting;
+using Gallio.Utilities;
+using Castle.Core.Logging;
 
 namespace Gallio.Hosting
 {
@@ -41,6 +43,18 @@ namespace Gallio.Hosting
                     throw new InvalidOperationException("The runtime has not been initialized.");
 
                 return instance;
+            }
+        }
+
+        /// <summary>
+        /// Gets the runtime's logger, or a <see cref="NullLogger" /> if the runtime is not initialized.
+        /// </summary>
+        public static ILogger Logger
+        {
+            get
+            {
+                IRuntime cachedInstance = instance;
+                return cachedInstance != null ? cachedInstance.Resolve<ILogger>() : NullLogger.Instance;
             }
         }
 
@@ -82,10 +96,16 @@ namespace Gallio.Hosting
         /// </para>
         /// </summary>
         /// <param name="setup">The runtime setup parameters</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="setup"/> is null</exception>
+        /// <param name="logger">The runtime logging service</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="setup"/> or <paramref name="logger"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if the runtime has already been initialized</exception>
-        public static void Initialize(RuntimeSetup setup)
+        public static void Initialize(RuntimeSetup setup, ILogger logger)
         {
+            if (setup == null)
+                throw new ArgumentNullException("setup");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
             if (IsInitialized)
                 throw new InvalidOperationException("The runtime has already been started.");
 
@@ -96,7 +116,7 @@ namespace Gallio.Hosting
             try
             {
                 SetRuntime(runtime);
-                runtime.Initialize();
+                runtime.Initialize(logger);
             }
             catch (Exception)
             {
@@ -146,8 +166,7 @@ namespace Gallio.Hosting
             EventHandler instanceChangedHandlers = InstanceChanged;
             instance = runtime;
 
-            if (instanceChangedHandlers != null)
-                instanceChangedHandlers(null, EventArgs.Empty);
+            EventHandlerUtils.SafeInvoke(instanceChangedHandlers, null, EventArgs.Empty);
         }
     }
 }

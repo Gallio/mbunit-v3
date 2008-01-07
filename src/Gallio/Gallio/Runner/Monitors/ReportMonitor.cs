@@ -19,6 +19,7 @@ using System.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Monitors
 {
@@ -303,47 +304,17 @@ namespace Gallio.Runner.Monitors
 
         private void NotifyStepStarting(TestStepState state)
         {
-            if (testStepStarting != null)
-            {
-                try
-                {
-                    testStepStarting(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, ""));
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(String.Format("Test step starting event handler threw an exception: {0}", ex));
-                }
-            }
+            EventHandlerUtils.SafeInvoke(testStepStarting, this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, ""));
         }
 
         private void NotifyStepLifecyclePhaseChanged(TestStepState state, string lifecyclePhase)
         {
-            if (testStepLifecyclePhaseChanged != null)
-            {
-                try
-                {
-                    testStepLifecyclePhaseChanged(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, lifecyclePhase));
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(String.Format("Test step phase change event handler threw an exception: {0}", ex));
-                }
-            }
+            EventHandlerUtils.SafeInvoke(testStepLifecyclePhaseChanged, this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, lifecyclePhase));
         }
 
         private void NotifyStepFinished(TestStepState state)
         {
-            if (testStepFinished != null)
-            {
-                try
-                {
-                    testStepFinished(this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, ""));
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(String.Format("Test step finished event handler threw an exception: {0}", ex));
-                }
-            }
+            EventHandlerUtils.SafeInvoke(testStepFinished, this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, ""));
         }
 
         private sealed class TestStepState

@@ -21,6 +21,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 using Castle.Core;
+using Castle.Core.Logging;
 using Castle.Core.Resource;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
@@ -113,10 +114,14 @@ namespace Gallio.Hosting
         }
 
         /// <inheritdoc />
-        public void Initialize()
+        public void Initialize(ILogger logger)
         {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
             ThrowIfDisposed();
 
+            container.Kernel.AddComponentInstance(@"Core.Logger", typeof(ILogger), logger);
             container.Kernel.AddComponentInstance(@"Core.Runtime", typeof(IRuntime), this);
             container.Kernel.AddComponentInstance(@"Core.AssemblyResolverManager", typeof(IAssemblyResolverManager), assemblyResolverManager);
 

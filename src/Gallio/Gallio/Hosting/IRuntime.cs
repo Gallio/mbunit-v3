@@ -15,6 +15,7 @@
 
 using System;
 using Castle.Core;
+using Castle.Core.Logging;
 
 namespace Gallio.Hosting
 {
@@ -29,8 +30,15 @@ namespace Gallio.Hosting
     /// files.
     /// </para>
     /// </summary>
-    public interface IRuntime : IDisposable, IInitializable
+    public interface IRuntime : IDisposable
     {
+        /// <summary>
+        /// Initializes the runtime.
+        /// </summary>
+        /// <param name="logger">The runtime logging service</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        void Initialize(ILogger logger);
+
         /// <summary>
         /// Resolves a reference to a component that implements the specified service.
         /// </summary>

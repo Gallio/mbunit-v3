@@ -14,21 +14,19 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Threading;
+using Gallio.Hosting;
 using Gallio.Logging;
 
-namespace MbUnit.Framework
+namespace Gallio.Concurrency
 {
     /// <summary>
-    /// A process runner provides support for launching external processes
-    /// as part of integration tests.  By default, the output of the process
-    /// is copied to the test log.
+    /// A process task provides support for launching external processes
+    /// and collecting their output.  By default, the output is written
+    /// to the <see cref="Log.Default" /> log stream.
     /// </summary>
-    public class ProcessRunner
+    public class ProcessTask : Task
     {
         private readonly string executablePath;
         private readonly string arguments;
@@ -44,13 +42,14 @@ namespace MbUnit.Framework
         private Process process;
 
         /// <summary>
-        /// Creates a process runner.
+        /// Creates a process task.
         /// </summary>
         /// <param name="executablePath">The path of the executable executable</param>
         /// <param name="arguments">The arguments for the executable</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>
         /// or <paramref name="arguments"/> is null</exception>
-        public ProcessRunner(string executablePath, string arguments)
+        public ProcessTask(string executablePath, string arguments)
+            : base(executablePath + @" " + arguments)
         {
             if (executablePath == null)
                 throw new ArgumentNullException(@"executablePath");
@@ -201,43 +200,8 @@ namespace MbUnit.Framework
             }
         }
 
-        /// <summary>
-        /// Runs the process synchronously with no timeout.
-        /// </summary>
-        /// <returns>The exit code of the process</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the process has already been started</exception>
-        public int Run()
-        {
-            return Run(Timeout.Infinite);
-        }
-
-        /// <summary>
-        /// <para>
-        /// Runs the process synchronously with the specified timeout.
-        /// </para>
-        /// <para>
-        /// If the process runs for longer than <paramref name="timeoutMilliseconds"/>
-        /// then it is automatically killed.
-        /// </para>
-        /// </summary>
-        /// <param name="timeoutMilliseconds">The timeout in milliseconds, or <see cref="Timeout.Infinite" /> if none</param>
-        /// <returns>The exit code of the process</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the process has already been started</exception>
-        public int Run(int timeoutMilliseconds)
-        {
-            Start();
-
-            if (!WaitForExit(timeoutMilliseconds))
-                Kill();
-
-            return ExitCode;
-        }
-
-        /// <summary>
-        /// Starts the process asynchronously.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the process has already been started</exception>
-        public void Start()
+        /// <inheritdoc />
+        protected override void StartImpl()
         {
             if (process != null)
                 throw new InvalidOperationException("The process has already been started.");
@@ -254,83 +218,92 @@ namespace MbUnit.Framework
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
 
-            startInfo.RedirectStandardOutput = logStreamWriter != null || consoleOutputCaptureWriter != null;
-            startInfo.RedirectStandardError = logStreamWriter != null || consoleErrorCaptureWriter != null;
+            process = new Process();
+            process.StartInfo = startInfo;
+            process.EnableRaisingEvents = true;
+            process.Exited += ProcessExited;
+
+            ConfigureLogging();
 
             // Start the process.
-            process = Process.Start(startInfo);
+            process.Start();
 
-            // Configure the streams.
-            ConfigureLogging();
-            ConfigureOutputCapture();
-            ConfigureErrorCapture();
-
-            if (startInfo.RedirectStandardOutput)
-                process.BeginOutputReadLine();
-            if (startInfo.RedirectStandardError)
-                process.BeginErrorReadLine();
+            StartLogging();
         }
 
-        /// <summary>
-        /// Kills the process if it is running.
-        /// </summary>
-        public void Kill()
+        private void ProcessExited(object sender, EventArgs e)
+        {
+            StopLogging();
+
+            NotifyTerminated(TaskResult.CreateFromValue(process.ExitCode));
+        }
+
+        /// <inheritdoc />
+        protected override void AbortImpl()
         {
             if (process != null && !process.HasExited)
+            {
+                LogAbort();
+
                 process.Kill();
-        }
-
-        /// <summary>
-        /// <para>
-        /// Waits for the process to exit.
-        /// </para>
-        /// <para>
-        /// Returns immediately if the process has already exited.
-        /// </para>
-        /// </summary>
-        /// <param name="timeoutMilliseconds">The number of milliseconds to wait, or 
-        /// <see cref="Timeout.Infinite" /> to wait indefinitely</param>
-        /// <returns>True if the process exited, false if a timeout occurred</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the process has not been started</exception>
-        public bool WaitForExit(int timeoutMilliseconds)
-        {
-            return process.WaitForExit(timeoutMilliseconds);
-        }
-
-        private void ConfigureOutputCapture()
-        {
-            if (consoleOutputCaptureWriter != null)
-            {
-                process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
-                {
-                    consoleOutputCaptureWriter.WriteLine(e.Data);
-                };
             }
         }
 
-        private void ConfigureErrorCapture()
+        /// <inheritdoc />
+        protected override bool JoinImpl(TimeSpan timeout)
         {
-            if (consoleErrorCaptureWriter != null)
-            {
-                process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
-                {
-                    consoleErrorCaptureWriter.WriteLine(e.Data);
-                };
-            }
+            return process.WaitForExit((int) timeout.TotalMilliseconds);
         }
 
         private void ConfigureLogging()
         {
-            if (logStreamWriter == null)
-                return;
+            if (logStreamWriter != null)
+            {
+                process.StartInfo.RedirectStandardOutput = true;
+                process.OutputDataReceived += WriteDataReceivedToLog;
 
+                process.StartInfo.RedirectStandardError = true;
+                process.ErrorDataReceived += WriteDataReceivedToLog;
+            }
+
+            if (consoleOutputCaptureWriter != null)
+            {
+                process.StartInfo.RedirectStandardOutput = true;
+                process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e) { consoleOutputCaptureWriter.WriteLine(e.Data); };
+            }
+
+            if (consoleErrorCaptureWriter != null)
+            {
+                process.StartInfo.RedirectStandardError = true;
+                process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) { consoleErrorCaptureWriter.WriteLine(e.Data); };
+            }
+        }
+
+        private void StartLogging()
+        {
+            if (logStreamWriter != null)
+                BeginLogSection();
+
+            if (process.StartInfo.RedirectStandardOutput)
+                process.BeginOutputReadLine();
+            if (process.StartInfo.RedirectStandardError)
+                process.BeginErrorReadLine();
+        }
+
+        private void StopLogging()
+        {
+            if (process.StartInfo.RedirectStandardOutput)
+                process.CancelOutputRead();
+            if (process.StartInfo.RedirectStandardError)
+                process.CancelErrorRead();
+
+            if (logStreamWriter != null)
+                EndLogSection();
+        }
+
+        private void BeginLogSection()
+        {
             logStreamWriter.BeginSection(String.Concat("Run Process: " + executablePath, @" ", arguments));
-
-            process.OutputDataReceived += WriteDataReceivedToLog;
-            process.ErrorDataReceived += WriteDataReceivedToLog;
-
-            process.EnableRaisingEvents = true;
-            process.Exited += EndLogSection;
         }
 
         private void WriteDataReceivedToLog(object sender, DataReceivedEventArgs e)
@@ -339,15 +312,13 @@ namespace MbUnit.Framework
             {
                 logStreamWriter.WriteLine(e.Data);
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore exceptions.  It can happen that the test
-                // aborts before the process terminates such that the log
-                // stream becomes no longer writable.
+                Panic.UnhandledException("Cannot write process task output to the log stream.", ex);
             }
         }
 
-        private void EndLogSection(object sender, EventArgs e)
+        private void EndLogSection()
         {
             try
             {
@@ -356,11 +327,24 @@ namespace MbUnit.Framework
 
                 logStreamWriter.EndSection();
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore exceptions.  It can happen that the test
-                // aborts before the process terminates such that the
-                // stream becomes no longer writable.
+                Panic.UnhandledException("Cannot write process task section end message to the log stream.", ex);
+            }
+        }
+
+        private void LogAbort()
+        {
+            try
+            {
+                if (logStreamWriter != null)
+                {
+                    logStreamWriter.BeginSection("Abort requested.  Killing the process!").Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("Cannot write process task abort message to the log stream.", ex);
             }
         }
     }

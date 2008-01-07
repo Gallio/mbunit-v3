@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Gallio.Hosting;
 using Gallio.Logging;
 
 namespace Gallio.Logging
@@ -58,19 +59,40 @@ namespace Gallio.Logging
         /// <inheritdoc />
         public override void Write(char value)
         {
-            CurrentLogStreamWriter.Write(value);
+            try
+            {
+                CurrentLogStreamWriter.Write(value);
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("Could not write to the log stream.", ex);
+            }
         }
 
         /// <inheritdoc />
         public override void Write(string value)
         {
-            CurrentLogStreamWriter.Write(value);
+            try
+            {
+                CurrentLogStreamWriter.Write(value);
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("Could not write to the log stream.", ex);
+            }
         }
 
         /// <inheritdoc />
         public override void Write(char[] buffer, int index, int count)
         {
-            CurrentLogStreamWriter.Write(buffer, index, count);
+            try
+            {
+                CurrentLogStreamWriter.Write(buffer, index, count);
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("Could not write to the log stream.", ex);
+            }
         }
 
         private LogStreamWriter CurrentLogStreamWriter

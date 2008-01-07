@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using Gallio.Collections;
+using Gallio.Utilities;
 
 namespace Gallio.Concurrency
 {
@@ -88,24 +89,9 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
-        /// Asynchronously interrupts all of the tasks currently running within the container.
-        /// </summary>
-        /// <seealso cref="Task.Interrupt"/>
-        /// <seealso cref="AbortAll"/>
-        public void InterruptAll()
-        {
-            lock (this)
-            {
-                foreach (Task task in activeTasks)
-                    task.Interrupt();
-            }
-        }
-
-        /// <summary>
         /// Asynchronously aborts all of the tasks currently running within the container.
         /// </summary>
         /// <seealso cref="Task.Abort"/>
-        /// <seealso cref="InterruptAll"/>
         public void AbortAll()
         {
             lock (this)
@@ -185,8 +171,7 @@ namespace Gallio.Concurrency
                 cachedChain = started;
             }
 
-            if (cachedChain != null)
-                cachedChain(this, e);
+            EventHandlerUtils.SafeInvoke(cachedChain, this, e);
         }
 
         private void HandleTaskAborted(object sender, TaskEventArgs e)
@@ -195,8 +180,7 @@ namespace Gallio.Concurrency
             lock (this)
                 cachedChain = aborted;
 
-            if (cachedChain != null)
-                cachedChain(this, e);
+            EventHandlerUtils.SafeInvoke(cachedChain, this, e);
         }
 
         private void HandleTaskTerminated(object sender, TaskEventArgs e)
@@ -208,8 +192,7 @@ namespace Gallio.Concurrency
                 cachedChain = terminated;
             }
 
-            if (cachedChain != null)
-                cachedChain(this, e);
+            EventHandlerUtils.SafeInvoke(cachedChain, this, e);
         }
     }
 }

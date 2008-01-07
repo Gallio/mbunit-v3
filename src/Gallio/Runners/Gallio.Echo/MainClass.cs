@@ -21,6 +21,7 @@ using Gallio.Echo.Properties;
 using Gallio.Collections;
 using Gallio.Core.ConsoleSupport;
 using Gallio.Core.ProgressMonitoring;
+using Gallio.Logging;
 using Gallio.Model.Filters;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
@@ -238,7 +239,7 @@ namespace Gallio.Echo
             if (arguments.PluginDirectories != null)
                 setup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
-            Runtime.Initialize(setup);
+            Runtime.Initialize(setup, logger);
             try
             {
                 IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();

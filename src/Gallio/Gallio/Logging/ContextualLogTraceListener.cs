@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Diagnostics;
+using Gallio.Hosting;
 using Gallio.Logging;
 
 namespace Gallio.Logging
@@ -40,7 +42,14 @@ namespace Gallio.Logging
         {
             WriteIndentIfNeeded();
 
-            CurrentLogStreamWriter.Write(message);
+            try
+            {
+                CurrentLogStreamWriter.Write(message);
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("Could not write to the log stream.", ex);
+            }
         }
 
         /// <inheritdoc />
@@ -48,7 +57,14 @@ namespace Gallio.Logging
         {
             WriteIndentIfNeeded();
 
-            CurrentLogStreamWriter.WriteLine(message);
+            try
+            {
+                CurrentLogStreamWriter.WriteLine(message);
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("Could not write to the log stream.", ex);
+            }
         }
 
         /// <inheritdoc />

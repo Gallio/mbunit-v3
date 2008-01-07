@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading;
+using Gallio.Utilities;
 
 namespace Gallio.Concurrency
 {
@@ -160,29 +162,6 @@ namespace Gallio.Concurrency
 
         /// <summary>
         /// <para>
-        /// Asynchronously interrupts the task.
-        /// </para>
-        /// <para>
-        /// Does nothing if the task is not running.
-        /// </para>
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// A typical implementation of this method may cause a <see cref="ThreadInterruptedException" />
-        /// to be thrown within the task's thread the next time it blocks and enters the
-        /// <see cref="ThreadState.WaitSleepJoin" /> thread state.  Therefore interrupting
-        /// a task may have no effect in certain conditions.
-        /// </para>
-        /// </remarks>
-        /// <seealso cref="System.Threading.Thread.Interrupt"/>
-        /// <seealso cref="Abort"/>
-        public void Interrupt()
-        {
-            InterruptImpl();
-        }
-
-        /// <summary>
-        /// <para>
         /// Asynchronously aborts the task.
         /// </para>
         /// <para>
@@ -201,7 +180,6 @@ namespace Gallio.Concurrency
         /// </para>
         /// </remarks>
         /// <seealso cref="System.Threading.Thread.Abort()"/>
-        /// <seealso cref="Interrupt"/>
         /// <seealso cref="IsAborted"/>
         public void Abort()
         {
@@ -247,16 +225,28 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
+        /// Starts the task and waits for it to complete until the timeout expires.
+        /// If the timeout expires, aborts the task and returns <c>false</c>.
+        /// </summary>
+        /// <param name="timeout">The timeout</param>
+        /// <returns>True if the task ran to completion within the specified time span,
+        /// false if the task was aborted</returns>
+        public bool Run(TimeSpan timeout)
+        {
+            Start();
+
+            if (Join(timeout))
+                return true;
+
+            Abort();
+            return false;
+        }
+
+        /// <summary>
         /// Starts the task.
         /// </summary>
         /// <seealso cref="Start"/>
         protected abstract void StartImpl();
-
-        /// <summary>
-        /// Interrupts the task.
-        /// </summary>
-        /// <seealso cref="Interrupt"/>
-        protected abstract void InterruptImpl();
 
         /// <summary>
         /// Aborts the task.
@@ -303,8 +293,7 @@ namespace Gallio.Concurrency
                 chain = Signal;
             }
 
-            if (cachedChain != null)
-                cachedChain(this, new TaskEventArgs(this));
+            EventHandlerUtils.SafeInvoke(cachedChain, this, new TaskEventArgs(this));
         }
 
         private void AddHandler(ref EventHandler<TaskEventArgs> chain, EventHandler<TaskEventArgs> handler)

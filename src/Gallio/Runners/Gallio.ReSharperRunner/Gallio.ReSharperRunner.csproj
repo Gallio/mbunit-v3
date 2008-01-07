@@ -126,6 +126,7 @@
     <Compile Include="Hosting\AssemblyLoader.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Hosting\ReSharperLogger.cs" />
     <Compile Include="Reflection\Impl\IPsiTypeWrapper.cs" />
     <Compile Include="Reflection\Impl\PsiArrayTypeWrapper.cs" />
     <Compile Include="Reflection\Impl\PsiAssemblyWrapper.cs" />

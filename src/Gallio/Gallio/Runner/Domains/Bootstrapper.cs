@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Castle.Core.Logging;
 using Gallio.Hosting;
 using Gallio.Runner.Harness;
 using Gallio.Utilities;
@@ -30,10 +31,11 @@ namespace Gallio.Runner.Domains
         /// Initializes the AppDomain's runtime environment.
         /// </summary>
         /// <param name="runtimeSetup">The runtime setup</param>
+        /// <param name="logger">The runtime logging service</param>
         /// <exception cref="InvalidOperationException">Thrown if the runtime has already been initialized</exception>
-        public void Initialize(RuntimeSetup runtimeSetup)
+        public void Initialize(RuntimeSetup runtimeSetup, ILogger logger)
         {
-            Runtime.Initialize(runtimeSetup);
+            Runtime.Initialize(runtimeSetup, logger);
         }
 
         /// <summary>

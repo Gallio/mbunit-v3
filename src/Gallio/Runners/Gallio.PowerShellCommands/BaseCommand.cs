@@ -19,6 +19,7 @@ using System.Management.Automation;
 using System.Threading;
 using Castle.Core.Logging;
 using Gallio.Core.ProgressMonitoring;
+using Gallio.Utilities;
 
 namespace Gallio.PowerShellCommands
 {
@@ -190,8 +191,7 @@ namespace Gallio.PowerShellCommands
             lock (this)
                 handler = stopRequested;
 
-            if (handler != null)
-                handler(this, EventArgs.Empty);
+            EventHandlerUtils.SafeInvoke(handler, this, EventArgs.Empty);
         }
     }
 }

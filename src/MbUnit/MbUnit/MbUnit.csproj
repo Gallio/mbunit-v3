@@ -69,7 +69,6 @@
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
-    <Compile Include="Framework\ProcessRunner.cs" />
     <Compile Include="Model\Patterns\AssemblyDecoratorPatternAttribute.cs">
       <SubType>Code</SubType>
     </Compile>

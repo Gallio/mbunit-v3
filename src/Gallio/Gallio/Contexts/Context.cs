@@ -663,6 +663,7 @@ namespace Gallio.Contexts
                 // Log any exceptions that occur.
                 using (Enter())
                 {
+
                     foreach (EventHandler handler in oldDisposedHandlers.GetInvocationList())
                     {
                         try
@@ -671,8 +672,15 @@ namespace Gallio.Contexts
                         }
                         catch (Exception ex)
                         {
-                            LogWriter[LogStreamNames.Failures].WriteLine(
-                                "An exception occurred while executing a Context Dispose handler:\n{0}", ex);
+                            try
+                            {
+                                LogWriter[LogStreamNames.Failures].WriteLine(
+                                    "An exception occurred while executing a Context Dispose handler:\n{0}", ex);
+                            }
+                            catch (Exception)
+                            {
+                                Panic.UnhandledException("An exception occurred while executing a Context Dispose handler.", ex);
+                            }
                         }
                     }
                 }

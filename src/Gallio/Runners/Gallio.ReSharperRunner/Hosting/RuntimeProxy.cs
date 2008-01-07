@@ -218,7 +218,7 @@ namespace Gallio.ReSharperRunner.Hosting
                 RuntimeSetup setup = new RuntimeSetup();
                 setup.ConfigurationFilePath = configFilePath;
 
-                Runtime.Initialize(setup);
+                Runtime.Initialize(setup, new ReSharperLogger());
             }
 
             public static void ThrowAnExceptionIfTheRuntimeAssemblyIsNotAccessible()

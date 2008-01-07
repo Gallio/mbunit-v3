@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using Gallio.Concurrency;
 using Gallio.Hosting;
 using MbUnit.Framework;
 
@@ -71,14 +72,14 @@ namespace Gallio.PowerShellCommands.Tests
 
             workingDirectory = Path.GetDirectoryName((Loader.GetAssemblyLocalPath(GetType().Assembly)));
 
-            ProcessRunner runner = new ProcessRunner(executablePath,
+            ProcessTask task = new ProcessTask(executablePath,
                "\"& Add-PSSnapIn Gallio; Run-Gallio '..\\..\\..\\..\\TestResources\\Gallio.TestResources.MbUnit\\bin\\Gallio.TestResources.MbUnit.dll' -verbose -filter Type:SimpleTest \"");
-            runner.WorkingDirectory = workingDirectory;
+            task.WorkingDirectory = workingDirectory;
 
-            runner.Run(30000);
+            Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");
 
-            Assert.Contains(runner.ConsoleOutput, "Run: 2, Passed: 1, Failed: 1");
-            Assert.AreEqual(runner.ExitCode, 1, "Unexpected exit code.");
+            Assert.Contains(task.ConsoleOutput, "Run: 2, Passed: 1, Failed: 1");
+            Assert.AreEqual(task.ExitCode, 1, "Unexpected exit code.");
         }
     }
 }

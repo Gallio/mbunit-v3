@@ -188,7 +188,6 @@ namespace Gallio.Tests.Contexts
 
             TaskManager.StartThreadTask("A different thread.", delegate
             {
-                Thread.Sleep(30000);
                 InterimAssert.Throws<InvalidOperationException>(delegate { cookie.Dispose(); });
             });
 

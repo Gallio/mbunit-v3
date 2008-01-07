@@ -15,13 +15,13 @@
 
 extern alias MbUnit2;
 using System.Text;
+using Gallio.Concurrency;
 using MbUnit2::MbUnit.Framework;
 using Gallio.Hosting;
 using System;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using ProcessRunner=MbUnit.Framework.ProcessRunner;
 
 namespace Gallio.MSBuildTasks.Tests
 {
@@ -75,13 +75,13 @@ namespace Gallio.MSBuildTasks.Tests
             so MSBuild should return true.")]
         public void RunMSBuild(string target, bool expectedResult)
         {
-            ProcessRunner runner = new ProcessRunner(executablePath,
+            ProcessTask task = new ProcessTask(executablePath,
                 String.Concat("Integration.proj /t:", target,
                 " /p:GallioPath=\"", Loader.InstallationPath, "\""));
-            runner.WorkingDirectory = workingDirectory;
+            task.WorkingDirectory = workingDirectory;
 
-            runner.Run(30000);
-            Assert.AreEqual(expectedResult, runner.ExitCode == 0, "Unexpected exit code.");
+            Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");
+            Assert.AreEqual(expectedResult, task.ExitCode == 0, "Unexpected exit code.");
         }
     }
 }

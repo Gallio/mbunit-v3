@@ -16,6 +16,7 @@
 using System;
 using System.Threading;
 using Gallio;
+using Gallio.Hosting;
 
 namespace Gallio.Concurrency
 {
@@ -90,16 +91,6 @@ namespace Gallio.Concurrency
         }
 
         /// <inheritdoc />
-        protected override void InterruptImpl()
-        {
-            lock (this)
-            {
-                if (thread != null)
-                    thread.Interrupt();
-            }
-        }
-
-        /// <inheritdoc />
         protected override void AbortImpl()
         {
             lock (this)
@@ -124,26 +115,33 @@ namespace Gallio.Concurrency
         {
             try
             {
-                object value = RunUserCode();
-                ClearInterruptedFlag();
-
-                NotifyTerminated(TaskResult.CreateFromValue(value));
-            }
-            catch (ThreadAbortException ex)
-            {
-                if (ex.ExceptionState == abortToken)
+                try
                 {
-                    Thread.ResetAbort();
+                    object value = RunUserCode();
                     ClearInterruptedFlag();
-                }
 
-                NotifyTerminated(TaskResult.CreateFromException(ex));
+                    NotifyTerminated(TaskResult.CreateFromValue(value));
+                }
+                catch (ThreadAbortException ex)
+                {
+                    if (ex.ExceptionState == abortToken)
+                    {
+                        Thread.ResetAbort();
+                        ClearInterruptedFlag();
+                    }
+
+                    NotifyTerminated(TaskResult.CreateFromException(ex));
+                }
+                catch (Exception ex)
+                {
+                    ClearInterruptedFlag();
+
+                    NotifyTerminated(TaskResult.CreateFromException(ex));
+                }
             }
             catch (Exception ex)
             {
-                ClearInterruptedFlag();
-
-                NotifyTerminated(TaskResult.CreateFromException(ex));
+                Panic.UnhandledException("An unhandled exception occurred in a thread task.", ex);
             }
         }
 

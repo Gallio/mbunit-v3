@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Hosting;
 
 namespace Gallio.Model.Execution
 {
@@ -22,14 +23,6 @@ namespace Gallio.Model.Execution
     /// The wrapper can be passed to another AppDomain and communication occurs over
     /// .Net remoting.
     /// </summary>
-    /// <todo author="jeff">
-    /// While it would be great to catch and log exceptions, the question is where.
-    /// If we write them out as debug/trace information then we might end up in
-    /// a recursive cycle because we trap those writes and send them back in
-    /// here.  So we'll die of a StackOverflowException due to some remoting goofiness.
-    /// So basically short of inventing a new place to log errors
-    /// we're screwed.  -- Jeff.
-    /// </todo>
     [Serializable]
     public sealed class RemoteTestListener : ITestListener
     {
@@ -51,13 +44,27 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         public void NotifyLifecycleEvent(LifecycleEventArgs e)
         {
-            forwarder.NotifyTestLifecycleEvent(e);
+            try
+            {
+                forwarder.NotifyLifecycleEvent(e);
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("Could not remotely dispatch lifecycle event.", ex);
+            }
         }
 
         /// <inheritdoc />
         public void NotifyLogEvent(LogEventArgs e)
         {
-            forwarder.NotifyTestExecutionLogEvent(e);
+            try
+            {
+                forwarder.NotifyLogEvent(e);
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("Could not remotely dispatch log event.", ex);
+            }
         }
 
         /// <summary>
@@ -72,14 +79,28 @@ namespace Gallio.Model.Execution
                 this.listener = listener;
             }
 
-            public void NotifyTestLifecycleEvent(LifecycleEventArgs e)
+            public void NotifyLifecycleEvent(LifecycleEventArgs e)
             {
-                listener.NotifyLifecycleEvent(e);
+                try
+                {
+                    listener.NotifyLifecycleEvent(e);
+                }
+                catch (Exception ex)
+                {
+                    Panic.UnhandledException("Could not locally dispatch lifecycle event.", ex);
+                }
             }
 
-            public void NotifyTestExecutionLogEvent(LogEventArgs e)
+            public void NotifyLogEvent(LogEventArgs e)
             {
-                listener.NotifyLogEvent(e);
+                try
+                {
+                    listener.NotifyLogEvent(e);
+                }
+                catch (Exception ex)
+                {
+                    Panic.UnhandledException("Could not locally dispatch log event.", ex);
+                }
             }
         }
     }

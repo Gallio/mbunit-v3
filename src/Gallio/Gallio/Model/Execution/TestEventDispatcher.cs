@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Hosting;
+using Gallio.Utilities;
 
 namespace Gallio.Model.Execution
 {
@@ -53,23 +55,43 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         public void NotifyLogEvent(LogEventArgs e)
         {
-            if (ExecutionLog != null)
-                ExecutionLog(this, e);
+            EventHandlerUtils.SafeInvoke(ExecutionLog, this, e);
 
             if (listeners != null)
+            {
                 foreach (ITestListener listener in listeners)
-                    listener.NotifyLogEvent(e);
+                {
+                    try
+                    {
+                        listener.NotifyLogEvent(e);
+                    }
+                    catch (Exception ex)
+                    {
+                        Panic.UnhandledException("A log event listener threw an exception.", ex);
+                    }
+                }
+            }
         }
 
         /// <inheritdoc />
         public void NotifyLifecycleEvent(LifecycleEventArgs e)
         {
-            if (Lifecycle != null)
-                Lifecycle(this, e);
+            EventHandlerUtils.SafeInvoke(Lifecycle, this, e);
 
             if (listeners != null)
+            {
                 foreach (ITestListener listener in listeners)
-                    listener.NotifyLifecycleEvent(e);
+                {
+                    try
+                    {
+                        listener.NotifyLifecycleEvent(e);
+                    }
+                    catch (Exception ex)
+                    {
+                        Panic.UnhandledException("A lifecycle event listener threw an exception.", ex);
+                    }
+                }
+            }
         }
     }
 }

@@ -181,7 +181,7 @@ namespace Gallio.Runner.Domains
             try
             {
                 bootstrapper = CreateRemoteInstance<Bootstrapper>();
-                bootstrapper.Initialize(runtimeSetup);
+                bootstrapper.Initialize(runtimeSetup, RemoteLogger.Wrap(Runtime.Logger));
 
                 return bootstrapper.CreateTestDomain();
             }

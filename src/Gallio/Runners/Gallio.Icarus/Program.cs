@@ -38,7 +38,8 @@ namespace Gallio.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Runtime.Initialize(new RuntimeSetup());
+            // TODO: Should use some kind of GUI-based logger.
+            Runtime.Initialize(new RuntimeSetup(), new RichConsoleLogger(NativeConsole.Instance));
             try
             {
                 // wire up model

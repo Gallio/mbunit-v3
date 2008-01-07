@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\HashSet.cs" />
+    <Compile Include="Concurrency\ProcessTask.cs" />
     <Compile Include="Concurrency\Task.cs" />
     <Compile Include="Concurrency\TaskContainer.cs" />
     <Compile Include="Concurrency\TaskEventArgs.cs" />
@@ -127,6 +128,9 @@
     <Compile Include="Data\DataBindingException.cs" />
     <Compile Include="Data\ScalarDataRow.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Runner\Domains\RemoteLogger.cs" />
+    <Compile Include="Utilities\EventHandlerUtils.cs" />
+    <Compile Include="Hosting\Panic.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />
     <Compile Include="Reflection\Impl\IDebugSymbolResolver.cs" />

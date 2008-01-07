@@ -19,6 +19,7 @@ using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Domains;
+using Gallio.Utilities;
 
 namespace Gallio.Runner
 {
@@ -181,8 +182,7 @@ namespace Gallio.Runner
             }
             finally
             {
-                if (LoadTestPackageComplete != null)
-                    LoadTestPackageComplete(this, EventArgs.Empty);
+                EventHandlerUtils.SafeInvoke(LoadTestPackageComplete, this, EventArgs.Empty);
             }
         }
 
@@ -199,8 +199,7 @@ namespace Gallio.Runner
             }
             finally
             {
-                if (BuildTestModelComplete != null)
-                    BuildTestModelComplete(this, EventArgs.Empty);
+                EventHandlerUtils.SafeInvoke(BuildTestModelComplete, this, EventArgs.Empty);
             }
         }
 
@@ -213,15 +212,13 @@ namespace Gallio.Runner
 
             try
             {
-                if (RunTestsStarting != null)
-                    RunTestsStarting(this, EventArgs.Empty);
+                EventHandlerUtils.SafeInvoke(RunTestsStarting, this, EventArgs.Empty);
 
                 Domain.RunTests(progressMonitor, testExecutionOptions);
             }
             finally
             {
-                if (RunTestsComplete != null)
-                    RunTestsComplete(this, EventArgs.Empty);
+                EventHandlerUtils.SafeInvoke(RunTestsComplete, this, EventArgs.Empty);
             }
         }
 
