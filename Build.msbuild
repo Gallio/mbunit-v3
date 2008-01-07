@@ -39,6 +39,7 @@
     <CSharpProject Include="$(SourceDir)\MbUnit\Samples\MbUnit.Samples\MbUnit.Samples.csproj" />
 
     <CSharpProject Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.Reports\Gallio.Plugin.Reports.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.Reports.Tests\Gallio.Plugin.Reports.Tests.csproj" />
 
     <CSharpProject Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.MbUnit2Adapter\Gallio.Plugin.MbUnit2Adapter.csproj" />
     <CSharpProject Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.MbUnit2Adapter.Tests\Gallio.Plugin.MbUnit2Adapter.Tests.csproj" />
@@ -259,6 +260,7 @@
     <TestAssembly Include="$(SourceDir)\Gallio\Gallio.Tests\bin\Gallio.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\MbUnit\MbUnit.Tests\bin\MbUnit.Tests.dll" />
 
+    <TestAssembly Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.Reports.Tests\bin\Gallio.Plugin.Reports.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.MbUnit2Adapter.Tests\bin\Gallio.Plugin.MbUnit2Adapter.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.NUnitAdapter.Tests\bin\Gallio.Plugin.NUnitAdapter.Tests.dll" />
     <TestAssembly Include="$(SourceDir)\Gallio\Plugins\Gallio.Plugin.XunitAdapter.Tests\bin\Gallio.Plugin.XunitAdapter.Tests.dll" />

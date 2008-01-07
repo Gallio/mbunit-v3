@@ -50,7 +50,6 @@ namespace Gallio.Plugin.Reports
     /// </summary>
     public class XsltReportFormatter : BaseReportFormatter
     {
-        private readonly string name;
         private readonly string extension;
         private readonly string contentLocalPath;
         private readonly string xsltPath;
@@ -70,11 +69,10 @@ namespace Gallio.Plugin.Reports
         /// to the report directory relative to the content directory</param>
         /// <exception cref="ArgumentNullException">Thrown if any arguments are null</exception>
         public XsltReportFormatter(IRuntime runtime, string name, string extension, string contentUri, string xsltPath, string[] resourcePaths)
+            : base(name)
         {
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");
-            if (name == null)
-                throw new ArgumentNullException(@"name");
             if (extension == null)
                 throw new ArgumentNullException(@"extension");
             if (contentUri == null)
@@ -84,20 +82,11 @@ namespace Gallio.Plugin.Reports
             if (resourcePaths == null || Array.IndexOf(resourcePaths, null) >= 0)
                 throw new ArgumentNullException(@"resourcePaths");
 
-            this.name = name;
             this.extension = extension;
 
             contentLocalPath = runtime.MapUriToLocalPath(new Uri(contentUri));
             this.xsltPath = xsltPath;
             this.resourcePaths = resourcePaths;
-
-            LoadTransform();
-        }
-
-        /// <inheritdoc />
-        public override string Name
-        {
-            get { return name; }
         }
 
         /// <inheritdoc />
@@ -107,7 +96,7 @@ namespace Gallio.Plugin.Reports
 
             using (progressMonitor)
             {
-                progressMonitor.BeginTask(String.Format("Formatting report as {0}.", name), 10);
+                progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10);
 
                 progressMonitor.SetStatus("Applying XSL transform.");
                 ApplyTransform(reportWriter, attachmentContentDisposition, options);
@@ -131,7 +120,13 @@ namespace Gallio.Plugin.Reports
         /// </summary>
         protected XslCompiledTransform Transform
         {
-            get { return transform; }
+            get
+            {
+                if (transform == null)
+                    transform = LoadTransform(Path.Combine(contentLocalPath, xsltPath));
+
+                return transform;
+            }
         }
 
         /// <summary>
@@ -149,7 +144,7 @@ namespace Gallio.Plugin.Reports
 
             using (StreamWriter writer = new StreamWriter(reportWriter.ReportContainer.OpenReportFile(
                 reportPath, FileMode.Create, FileAccess.Write), Encoding.UTF8))
-                transform.Transform(document, arguments, writer);
+                Transform.Transform(document, arguments, writer);
 
             reportWriter.AddReportDocumentPath(reportPath);
         }
@@ -176,15 +171,22 @@ namespace Gallio.Plugin.Reports
             arguments.AddParam(@"resourceRoot", @"", reportName);
         }
 
-        private void LoadTransform()
+        /// <summary>
+        /// Loads the XSL transform.
+        /// </summary>
+        /// <param name="resolvedXsltPath">The full path of the XSLT</param>
+        /// <returns>The transform</returns>
+        protected virtual XslCompiledTransform LoadTransform(string resolvedXsltPath)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.ValidationType = ValidationType.None;
             settings.XmlResolver = GetContentResolver();
 
-            transform = new XslCompiledTransform();
-            using (XmlReader reader = XmlReader.Create(Path.Combine(contentLocalPath, xsltPath), settings))
+            XslCompiledTransform transform = new XslCompiledTransform();
+            using (XmlReader reader = XmlReader.Create(resolvedXsltPath, settings))
                 transform.Load(reader);
+
+            return transform;
         }
 
         private static XPathDocument SerializeReportToXPathDocument(IReportWriter reportWriter,

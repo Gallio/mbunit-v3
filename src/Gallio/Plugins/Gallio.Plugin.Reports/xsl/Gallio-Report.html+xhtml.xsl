@@ -418,6 +418,14 @@
         <xsl:apply-templates select="g:streams/g:stream" mode="stream">
           <xsl:with-param name="attachments" select="g:attachments" />
         </xsl:apply-templates>
+        
+        <xsl:if test="g:attachments/g:attachment">
+          <div class="logAttachmentList">
+            Attachments: <xsl:for-each select="g:attachments/g:attachment">
+              <xsl:apply-templates select="." mode="link" /><xsl:if test="position() != last()">, </xsl:if>
+            </xsl:for-each>.
+          </div>
+        </xsl:if>
       </div>
     </xsl:if>
   </xsl:template>
@@ -482,34 +490,45 @@
   <xsl:template match="g:embed" mode="stream">
     <xsl:param name="attachments" />
     <xsl:variable name="attachmentName" select="@attachmentName" />
-    <xsl:variable name="attachment" select="$attachments/g:attachment[@name=$attachmentName]" />
     
-    <xsl:variable name="isImage" select="starts-with($attachment/@contentType, 'image/')" />
-
-    <div class="logAttachment">
-      <xsl:choose>
-        <xsl:when test="$attachment/@contentDisposition = 'Link'">
-          <xsl:variable name="attachmentUri" select="translate($attachment/@contentPath, '\', '/')" />
-          <xsl:choose>
-            <xsl:when test="$isImage">
-              <img src="{$attachmentUri}" alt="Attachment: {$attachmentName}" />
-            </xsl:when>
-            <xsl:otherwise>
-              <em>Attachment: </em>
-              <a href="{$attachmentUri}"><xsl:value-of select="$attachmentName" /></a>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:when>
-        <xsl:when test="$attachment/@contentDisposition = 'Inline' and $isImage and $attachment/@encoding = 'base64'">
-          <img src="data:{$attachment/@contentType};base64,{$attachment/text()}" alt="Attachment: {$attachmentName}" />
-        </xsl:when>
-        <xsl:otherwise>
-          <em>Attachment: </em>
-          <xsl:value-of select="$attachmentName" />
-          (content not available)
-        </xsl:otherwise>
-      </xsl:choose>
+    <div class="logAttachmentEmbedding">
+      <xsl:apply-templates select="$attachments/g:attachment[@name=$attachmentName]" mode="embed" />
     </div>
+  </xsl:template>
+
+  <xsl:template match="g:attachment" mode="embed">
+    <xsl:variable name="isImage" select="starts-with(@contentType, 'image/')" />
+    <xsl:choose>
+      <xsl:when test="@contentDisposition = 'Link'">
+        <xsl:variable name="attachmentUri" select="translate(@contentPath, '\', '/')" />
+        <xsl:choose>
+          <xsl:when test="$isImage">
+            <img src="{$attachmentUri}" alt="Attachment: {@name}" />
+          </xsl:when>
+          <xsl:otherwise>
+            Attachment: <a href="{$attachmentUri}"><xsl:value-of select="@name" /></a>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:when test="@contentDisposition = 'Inline' and $isImage and @encoding = 'base64'">
+        <img src="data:{@contentType};base64,{text()}" alt="Attachment: {@name}" />
+      </xsl:when>
+      <xsl:otherwise>
+        Attachment: <xsl:value-of select="@name" /> (n/a)
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="g:attachment" mode="link">
+    <xsl:choose>
+      <xsl:when test="@contentDisposition = 'Link'">
+        <xsl:variable name="attachmentUri" select="translate(@contentPath, '\', '/')" />        
+        <a href="{$attachmentUri}"><xsl:value-of select="@name" /></a>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@name" /> (n/a)
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="print-text-with-line-breaks">

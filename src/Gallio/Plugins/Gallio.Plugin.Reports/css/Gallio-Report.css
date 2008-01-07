@@ -217,9 +217,17 @@
 	margin: 5px 0px 5px 0px;
 }
 
-.gallio-report .logAttachment
+.gallio-report .logAttachmentList
 {
 	font-size: 10pt;
+	font-style: italic;
+}
+
+.gallio-report .logAttachmentEmbedding
+{
+	font-size: 10pt;
+	font-style: italic;
+	padding: 5px 10px 5px 10px;
 }
 
 .gallio-report .logStream

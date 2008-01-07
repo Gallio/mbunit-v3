@@ -44,24 +44,14 @@ namespace Gallio.Plugin.Reports
     /// </summary>
     public class XmlReportFormatter : BaseReportFormatter
     {
-        private readonly string name;
-
         /// <summary>
         /// Creates an Xml report formatter.
         /// </summary>
         /// <param name="name">The formatter name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
         public XmlReportFormatter(string name)
+            : base(name)
         {
-            if (name == null)
-                throw new ArgumentNullException(@"name");
-
-            this.name = name;
-        }
-
-        /// <inheritdoc />
-        public override string Name
-        {
-            get { return name; }
         }
 
         /// <inheritdoc />

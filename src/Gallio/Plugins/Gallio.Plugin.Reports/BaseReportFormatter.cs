@@ -27,12 +27,26 @@ namespace Gallio.Plugin.Reports
     /// </summary>
     public abstract class BaseReportFormatter : IReportFormatter
     {
+        private readonly string name;
         private ExecutionLogAttachmentContentDisposition defaultAttachmentContentDisposition;
 
         /// <summary>
         /// Gets the name of the option that how attachments are saved.
         /// </summary>
         public const string AttachmentContentDispositionOption = @"AttachmentContentDisposition";
+
+        /// <summary>
+        /// Creates a report formatter.
+        /// </summary>
+        /// <param name="name">The formatter name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        protected BaseReportFormatter(string name)
+        {
+            if (name == null)
+                throw new ArgumentNullException(@"name");
+
+            this.name = name;
+        }
 
         /// <summary>
         /// Gets or sets the default attachment content disposition.
@@ -68,7 +82,10 @@ namespace Gallio.Plugin.Reports
         }
 
         /// <inheritdoc />
-        public abstract string Name { get; }
+        public string Name
+        {
+            get { return name; }
+        }
 
         /// <inheritdoc />
         public abstract void Format(IReportWriter reportWriter, NameValueCollection formatterOptions,
