@@ -38,6 +38,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Host.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -57,17 +58,17 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+
+  <PropertyGroup>
+    <GallioProjectOutputPath>..\Gallio\bin</GallioProjectOutputPath>
+  </PropertyGroup>
   <Target Name="BeforeBuild">
+    <Delete Files="$(GallioProjectOutputPath)\$(TargetFileName)"
+            Condition="Exists('$(GallioProjectOutputPath)\$(TargetFileName)')" />
   </Target>
   <Target Name="AfterBuild">
+    <Copy SourceFiles="$(TargetPath)"
+          DestinationFolder="$(GallioProjectOutputPath)"
+          Condition="Exists('$(TargetPath)')" />
   </Target>
-  -->
-  <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetPath)" "$(SolutionDir)Gallio\Gallio\bin"
-</PostBuildEvent>
-    <PreBuildEvent>if exist "$(SolutionDir)Gallio\Gallio\bin\$(TargetFileName)" del "$(SolutionDir)Gallio\Gallio\bin\$(TargetFileName)"
-</PreBuildEvent>
-  </PropertyGroup>
 </Project>

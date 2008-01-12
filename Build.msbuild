@@ -27,6 +27,7 @@
   <!-- The C# projects to compile. -->
   <ItemGroup>
     <CSharpProject Include="$(SourceDir)\Gallio\Gallio\Gallio.csproj" />
+    <CSharpProject Include="$(SourceDir)\Gallio\Gallio.Host\Gallio.Host.csproj" />
     <CSharpProject Include="$(SourceDir)\MbUnit\MbUnit\MbUnit.csproj" />
 
     <CSharpProject Include="$(SourceDir)\TestResources\Gallio.TestResources.MbUnit\Gallio.TestResources.MbUnit.csproj" />
