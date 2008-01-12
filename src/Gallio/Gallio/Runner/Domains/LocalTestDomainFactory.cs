@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Castle.Core;
 using Gallio.Hosting;
 using Gallio.Runner.Harness;
 
@@ -28,8 +27,7 @@ namespace Gallio.Runner.Domains
     /// because the tests will run within the current <see cref="AppDomain" /> and
     /// <see cref="Runtime"/>.
     /// </remarks>
-    [Singleton]
-    public class LocalTestDomainFactory : ITestDomainFactory
+    public class LocalTestDomainFactory : MarshalByRefObject, ITestDomainFactory
     {
         private readonly ITestHarnessFactory harnessFactory;
 

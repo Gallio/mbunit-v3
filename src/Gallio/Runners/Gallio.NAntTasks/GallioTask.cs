@@ -33,7 +33,7 @@ using System.Globalization;
 using System.Reflection;
 using Gallio.NAntTasks.Properties;
 using Gallio.Collections;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Model.Filters;

@@ -60,7 +60,7 @@ namespace Gallio.Icarus.Core.Presenter
             testRunnerModel = testrunnermodel;
             testRunnerModel.ProjectPresenter = this;
 
-            testRunner = TestRunnerFactory.CreateIsolatedTestRunner();
+            testRunner = TestRunnerFactory.CreateIsolatedAppDomainTestRunner();
             
             // wire up events
             projectAdapter.GetTestTree += GetTestTree;

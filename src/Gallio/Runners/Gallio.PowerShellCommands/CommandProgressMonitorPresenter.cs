@@ -15,7 +15,7 @@
 
 using System;
 using System.Management.Automation;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 
 namespace Gallio.PowerShellCommands
 {

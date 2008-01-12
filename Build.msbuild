@@ -11,6 +11,7 @@
 
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
     <NonInteractive Condition="'$(NonInteractive)'==''">false</NonInteractive>
+    <Coverage Condition="'$(Coverage)'==''">true</Coverage>
 
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
     <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
@@ -92,7 +93,10 @@
     <Binary Include="$(LibsDir)\ReferenceAssemblies\System.Management.Automation.dll" />
 
     <Binary Include="$(SourceDir)\Gallio\Gallio\bin\Gallio.dll" />
+    <Binary Include="$(SourceDir)\Gallio\Gallio\bin\Gallio.XmlSerializers.dll" />
     <Binary Include="$(SourceDir)\Gallio\Gallio\Gallio.plugin" />
+
+    <Binary Include="$(SourceDir)\Gallio\Gallio.Host\bin\Gallio.Host.exe" />
 
     <Binary Include="$(SourceDir)\MbUnit\MbUnit\bin\MbUnit.dll" />
     <Binary Include="$(SourceDir)\MbUnit\MbUnit\MbUnit.plugin" />

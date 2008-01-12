@@ -35,8 +35,9 @@ namespace Gallio.Hosting
         /// deferred initialization once the global runtime <see cref="Runtime.Instance" />
         /// property has been set.
         /// </remarks>
-        /// <param name="setup">The runtime setup options, never null</param>
+        /// <param name="runtimeSetup">The runtime setup options</param>
         /// <returns>The runtime</returns>
-        IRuntime CreateRuntime(RuntimeSetup setup);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimeSetup"/> is null</exception>
+        IRuntime CreateRuntime(RuntimeSetup runtimeSetup);
     }
 }

@@ -28,14 +28,6 @@
                  service="Gallio.Runner.Harness.ITestEnvironment, Gallio"
                  type="Gallio.Runner.Harness.UnhandledExceptionTestEnvironment, Gallio" />
       
-      <component id="Core.IsolatedTestDomainFactory"
-                 service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
-                 type="Gallio.Runner.Domains.IsolatedTestDomainFactory, Gallio" />
-
-      <component id="Core.LocalTestDomainFactory"
-                 service="Gallio.Runner.Domains.LocalTestDomainFactory, Gallio"
-                 type="Gallio.Runner.Domains.LocalTestDomainFactory, Gallio" />
-
       <component id="Core.ReportManager"
                  service="Gallio.Runner.Reports.IReportManager, Gallio"
                  type="Gallio.Runner.Reports.DefaultReportManager, Gallio" />

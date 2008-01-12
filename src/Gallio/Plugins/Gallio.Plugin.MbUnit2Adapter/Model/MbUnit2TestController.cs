@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Collections;
 using Gallio.Plugin.MbUnit2Adapter.Properties;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Execution;

@@ -18,7 +18,7 @@ using System.Diagnostics;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Model.Execution;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Runner.Domains;
 

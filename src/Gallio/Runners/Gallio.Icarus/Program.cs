@@ -19,7 +19,7 @@ using Gallio.Icarus.Adapter;
 using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Core.Model;
 using Gallio.Icarus.Core.Presenter;
-using Gallio.Core.ConsoleSupport;
+using Gallio.Hosting.ConsoleSupport;
 using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Model.Serialization;

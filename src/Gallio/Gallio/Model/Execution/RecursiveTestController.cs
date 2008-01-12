@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Model;
 
 namespace Gallio.Model.Execution

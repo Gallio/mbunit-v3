@@ -16,7 +16,7 @@
 extern alias MbUnit2;
 using System;
 using System.IO;
-using Gallio.Core.ConsoleSupport;
+using Gallio.Hosting.ConsoleSupport;
 using MbUnit2::MbUnit.Framework;
 
 namespace Gallio.Tests.Core.ConsoleSupport

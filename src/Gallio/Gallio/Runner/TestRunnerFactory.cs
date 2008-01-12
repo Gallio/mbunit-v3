@@ -39,15 +39,28 @@ namespace Gallio.Runner
 
         /// <summary>
         /// Creates a test runner that runs tests in an isolated <see cref="AppDomain" /> using
-        /// an <see cref="IsolatedTestDomain" />.
+        /// a <see cref="HostTestDomain" /> configured with <see cref="IsolatedAppDomainHostFactory" />.
         /// </summary>
         /// <remarks>
         /// The <see cref="Runtime" /> must be initialized prior to calling this method.
         /// </remarks>
         /// <returns>The test runner</returns>
-        public static ITestRunner CreateIsolatedTestRunner()
+        public static ITestRunner CreateIsolatedAppDomainTestRunner()
         {
-            return new DefaultTestRunner(new IsolatedTestDomainFactory());
+            return new DefaultTestRunner(new HostTestDomainFactory(new IsolatedAppDomainHostFactory()));
+        }
+
+        /// <summary>
+        /// Creates a test runner that runs tests in an isolated process using
+        /// a <see cref="HostTestDomain" /> configured with <see cref="IsolatedProcessHostFactory" />.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="Runtime" /> must be initialized prior to calling this method.
+        /// </remarks>
+        /// <returns>The test runner</returns>
+        public static ITestRunner CreateIsolatedProcessTestRunner()
+        {
+            return new DefaultTestRunner(new HostTestDomainFactory(new IsolatedProcessHostFactory()));
         }
     }
 }

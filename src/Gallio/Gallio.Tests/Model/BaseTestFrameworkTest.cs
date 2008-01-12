@@ -21,7 +21,7 @@ using MbUnit.Framework;
 using Gallio.Runner.Harness;
 using Gallio.Hosting;
 using Gallio.Model.Execution;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 
 namespace Gallio.Tests.Model
 {

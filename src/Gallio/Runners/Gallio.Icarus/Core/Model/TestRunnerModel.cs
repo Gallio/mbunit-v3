@@ -17,7 +17,7 @@ using System;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.IO;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.ProgressMonitoring;

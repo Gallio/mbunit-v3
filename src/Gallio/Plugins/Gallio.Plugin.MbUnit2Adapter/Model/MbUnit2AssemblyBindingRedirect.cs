@@ -16,6 +16,8 @@
 extern alias MbUnit2;
 
 using System.Reflection;
+using Gallio.Hosting;
+using Gallio.Model;
 using Gallio.Runner.Domains;
 
 namespace Gallio.Plugin.MbUnit2Adapter.Model
@@ -26,13 +28,13 @@ namespace Gallio.Plugin.MbUnit2Adapter.Model
     /// they were built against differs from the plugin so long as no breaking API
     /// changes are encountered.
     /// </summary>
-    internal class MbUnit2AssemblyBindingRedirect : IIsolatedTestDomainContributor
+    internal class MbUnit2AssemblyBindingRedirect : IHostTestDomainContributor
     {
         /// <inheritdoc />
-        public void Apply(IsolatedTestDomain domain)
+        public void ConfigureHost(HostSetup hostSetup, TestPackageConfig packageConfig)
         {
             Assembly frameworkAssembly = typeof(MbUnit2::MbUnit.Framework.Assert).Assembly;
-            domain.AddBootstrapAssembly(frameworkAssembly, true);
+            hostSetup.Configuration.AddAssemblyBinding(frameworkAssembly, true);
         }
     }
 }

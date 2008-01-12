@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Specialized;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
 using MbUnit.Framework;

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml.Serialization;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Logging;
 
 namespace Gallio.Runner.Reports

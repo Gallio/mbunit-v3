@@ -15,7 +15,7 @@
 
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Filters;

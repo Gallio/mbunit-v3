@@ -16,7 +16,7 @@
 using System;
 using System.Text;
 using Gallio.Icarus.Core.Interfaces;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring
 {

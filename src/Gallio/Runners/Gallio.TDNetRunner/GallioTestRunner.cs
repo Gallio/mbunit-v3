@@ -19,7 +19,7 @@ using System.IO;
 using System.Reflection;
 using Castle.Core.Logging;
 using Gallio.TDNetRunner.Properties;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -137,14 +137,6 @@ namespace Gallio.TDNetRunner
                 launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
                 launcher.Filter = filter;
                 launcher.RuntimeSetup = new RuntimeSetup();
-
-                // Note: TD.Net crashes during debugging when using an isolated test runner.
-                //       In principle we shouldn't have to use an isolated test runner anyways
-                //       because it's already isolated.  In practice it's not that simple.
-                //       Test frameworks might want to set up assembly binding redirects
-                //       to ensure correct behavior in the presence of multiple versions of the
-                //       same framework.  Ugh.  -- Jeff.
-                launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
 
                 // This monitor will inform the user in real-time what's going on
                 launcher.CustomMonitors.Add(new TDNetLogMonitor(testListener, launcher.ReportMonitor));

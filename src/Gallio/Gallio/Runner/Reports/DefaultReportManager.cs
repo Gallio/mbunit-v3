@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Castle.Core;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
 
 namespace Gallio.Runner.Reports

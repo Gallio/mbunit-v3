@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Gallio.Hosting
 {
@@ -25,9 +23,12 @@ namespace Gallio.Hosting
     public class WindsorRuntimeFactory : IRuntimeFactory
     {
         /// <inheritdoc />
-        public IRuntime CreateRuntime(RuntimeSetup setup)
+        public IRuntime CreateRuntime(RuntimeSetup runtimeSetup)
         {
-            return new WindsorRuntime(new DefaultAssemblyResolverManager(), setup);
+            if (runtimeSetup == null)
+                throw new ArgumentNullException("runtimeSetup");
+
+            return new WindsorRuntime(new DefaultAssemblyResolverManager(), runtimeSetup);
         }
     }
 }

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.MSBuildTasks.Properties;
 using Gallio.Collections;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -534,7 +534,7 @@ namespace Gallio.MSBuildTasks
             catch (Exception ex)
             {
                 Log.LogError(Resources.UnexpectedErrorDuringExecution);
-                Log.LogErrorFromException(ex, true);
+                Log.LogErrorFromException(ex, true, true, null);
                 return ignoreFailures;
             }
         }

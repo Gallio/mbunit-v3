@@ -11,6 +11,8 @@
     <AssemblyName>Gallio</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
+    <SGenUseProxyTypes>false</SGenUseProxyTypes>
+    <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,6 +28,7 @@
     <WarningsAsErrors>
     </WarningsAsErrors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +40,7 @@
     <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\Gallio.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
@@ -60,6 +64,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -73,34 +78,6 @@
     <Compile Include="Contexts\Step.cs" />
     <Compile Include="Contexts\StubContext.cs" />
     <Compile Include="Contexts\StubContextManager.cs" />
-    <Compile Include="Core\ConsoleSupport\CommandLineArgumentAttribute.cs" />
-    <Compile Include="Core\ConsoleSupport\CommandLineArgumentFlags.cs" />
-    <Compile Include="Core\ConsoleSupport\CommandLineArgumentParser.cs" />
-    <Compile Include="Core\ConsoleSupport\CommandLineErrorReporter.cs" />
-    <Compile Include="Core\ConsoleSupport\CommandLineOutput.cs" />
-    <Compile Include="Core\ConsoleSupport\DefaultCommandLineArgumentAttribute.cs" />
-    <Compile Include="Core\ConsoleSupport\ResponseFileReader.cs" />
-    <Compile Include="Core\ConsoleSupport\IRichConsole.cs" />
-    <Compile Include="Core\ConsoleSupport\RichConsoleLogger.cs" />
-    <Compile Include="Core\ProgressMonitoring\BaseProgressMonitorPresenter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
-    <Compile Include="Core\ProgressMonitoring\CancelableProgressMonitor.cs" />
-    <Compile Include="Core\ProgressMonitoring\IProgressMonitorPresenter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\ProgressMonitoring\LogProgressMonitorPresenter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\ProgressMonitoring\NullProgressMonitor.cs" />
-    <Compile Include="Core\ProgressMonitoring\NullProgressMonitorPresenter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitorPresenter.cs" />
-    <Compile Include="Core\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
-    <Compile Include="Core\ConsoleSupport\NativeConsole.cs" />
-    <Compile Include="Core\ProgressMonitoring\SubProgressMonitorCreatedEventArgs.cs" />
     <Compile Include="Data\DataBinder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -128,7 +105,56 @@
     <Compile Include="Data\DataBindingException.cs" />
     <Compile Include="Data\ScalarDataRow.cs" />
     <Compile Include="Factory.cs" />
-    <Compile Include="Runner\Domains\RemoteLogger.cs" />
+    <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentAttribute.cs" />
+    <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentFlags.cs" />
+    <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentParser.cs" />
+    <Compile Include="Hosting\ConsoleSupport\CommandLineErrorReporter.cs" />
+    <Compile Include="Hosting\ConsoleSupport\CommandLineOutput.cs" />
+    <Compile Include="Hosting\ConsoleSupport\ConsoleProgram.cs" />
+    <Compile Include="Hosting\ConsoleSupport\DefaultCommandLineArgumentAttribute.cs" />
+    <Compile Include="Hosting\ConsoleSupport\IRichConsole.cs" />
+    <Compile Include="Hosting\ConsoleSupport\NativeConsole.cs" />
+    <Compile Include="Hosting\ConsoleSupport\ResponseFileReader.cs" />
+    <Compile Include="Hosting\ConsoleSupport\RichConsoleLogger.cs" />
+    <Compile Include="Hosting\HostConfiguration.cs" />
+    <Compile Include="Hosting\HostException.cs" />
+    <Compile Include="Hosting\HostServiceChannelInterop.cs" />
+    <Compile Include="Hosting\HostSetup.cs" />
+    <Compile Include="Hosting\IRemoteHostService.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\CancelableProgressMonitor.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\IProgressMonitor.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\IProgressMonitorPresenter.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\IProgressMonitorProvider.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\LogProgressMonitorPresenter.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\LogProgressMonitorProvider.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\NullProgressMonitor.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\NullProgressMonitorPresenter.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\NullProgressMonitorProvider.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\ObservableProgressMonitor.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\RemoteProgressMonitor.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\RichConsoleProgressMonitorPresenter.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\SubProgressMonitorCreatedEventArgs.cs" />
+    <Compile Include="Hosting\ProgressMonitoring\TaskWithProgress.cs" />
+    <Compile Include="Hosting\RemoteHost.cs" />
+    <Compile Include="Hosting\IHost.cs" />
+    <Compile Include="Hosting\IHostFactory.cs" />
+    <Compile Include="Hosting\IsolatedAppDomainHostFactory.cs" />
+    <Compile Include="Hosting\IsolatedProcessHostFactory.cs" />
+    <Compile Include="Hosting\HostService.cs" />
+    <Compile Include="Hosting\BaseHostFactory.cs" />
+    <Compile Include="Hosting\Channels\BaseChannel.cs" />
+    <Compile Include="Hosting\Channels\BaseClientChannel.cs" />
+    <Compile Include="Hosting\Channels\BaseServerChannel.cs" />
+    <Compile Include="Hosting\Channels\BinaryIpcClientChannel.cs" />
+    <Compile Include="Hosting\Channels\IClientChannel.cs" />
+    <Compile Include="Hosting\Channels\IServerChannel.cs" />
+    <Compile Include="Hosting\Channels\BinaryIpcServerChannel.cs" />
+    <Compile Include="Hosting\RemoteLogger.cs" />
+    <Compile Include="Runner\Domains\HostTestDomain.cs" />
+    <Compile Include="Runner\Domains\IHostTestDomainContributor.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
     <Compile Include="Hosting\Panic.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
@@ -272,12 +298,6 @@
     <Compile Include="Model\Serialization\TestModelData.cs" />
     <Compile Include="Model\TestResult.cs" />
     <Compile Include="Logging\TrackingLogWriter.cs" />
-    <Compile Include="Core\ProgressMonitoring\ObservableProgressMonitor.cs" />
-    <Compile Include="Core\ProgressMonitoring\IProgressMonitor.cs" />
-    <Compile Include="Core\ProgressMonitoring\IProgressMonitorProvider.cs" />
-    <Compile Include="Core\ProgressMonitoring\NullProgressMonitorProvider.cs" />
-    <Compile Include="Core\ProgressMonitoring\RemoteProgressMonitor.cs" />
-    <Compile Include="Core\ProgressMonitoring\TaskWithProgress.cs" />
     <Compile Include="Runner\Reports\DefaultReportManager.cs" />
     <Compile Include="Runner\Reports\ExecutionLog.cs" />
     <Compile Include="Runner\Reports\ExecutionLogAttachment.cs" />
@@ -300,18 +320,14 @@
     <Compile Include="Runner\Reports\TestStepRun.cs" />
     <Compile Include="Runner\DefaultTestRunner.cs" />
     <Compile Include="Runner\Domains\BaseTestDomain.cs" />
-    <Compile Include="Runner\Domains\Bootstrapper.cs" />
     <Compile Include="Runner\RunnerException.cs" />
     <Compile Include="Model\Filters\FilterParser.cs" />
-    <Compile Include="Runner\Domains\IIsolatedTestDomainContributor.cs" />
-    <Compile Include="Runner\Domains\IsolatedTestDomain.cs" />
-    <Compile Include="Runner\Domains\IsolatedTestDomainFactory.cs" />
+    <Compile Include="Runner\Domains\HostTestDomainFactory.cs" />
     <Compile Include="Runner\Domains\ITestDomain.cs" />
     <Compile Include="Runner\Domains\ITestDomainFactory.cs" />
     <Compile Include="Runner\ITestRunner.cs" />
     <Compile Include="Runner\Domains\LocalTestDomain.cs" />
     <Compile Include="Runner\Domains\LocalTestDomainFactory.cs" />
-    <Compile Include="Core\ProgressMonitoring\LogProgressMonitorProvider.cs" />
     <Compile Include="Runner\Monitors\BaseTestRunnerMonitor.cs" />
     <Compile Include="Runner\Monitors\DebugMonitor.cs" />
     <Compile Include="Runner\Monitors\ITestRunnerMonitor.cs" />
@@ -415,9 +431,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Runner\Domains\IsolatedTestDomain.config.template" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Gallio.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -428,4 +441,32 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+
+    <!-- This target overrides the built-in SGen target from the .Net Framework v2.0
+    Microsoft.Common.targets with the version used in .Net Framework v3.5.
+    This resolves an issue with a serialization assembly only being generated
+    for web service proxy types. -->
+    <Target
+        Name="GenerateSerializationAssemblies"
+        Condition="'$(_SGenGenerateSerializationAssembliesConfig)' == 'On' or ('@(WebReferenceUrl)'!='' and '$(_SGenGenerateSerializationAssembliesConfig)' == 'Auto')"
+        DependsOnTargets="AssignTargetPaths;Compile;ResolveKeySource"
+        Inputs="$(MSBuildAllProjects);@(IntermediateAssembly)"
+        Outputs="$(IntermediateOutputPath)$(_SGenDllName)">
+
+        <SGen
+            BuildAssemblyName="$(TargetFileName)"
+            BuildAssemblyPath="$(IntermediateOutputPath)"
+            References="@(ReferencePath)"
+            ShouldGenerateSerializer="$(SGenShouldGenerateSerializer)"
+            UseProxyTypes="$(SGenUseProxyTypes)"
+            KeyContainer="$(KeyContainerName)"
+            KeyFile="$(KeyOriginatorFile)"
+            DelaySign="$(DelaySign)"
+            ToolPath="$(SGenToolPath)">
+
+            <Output TaskParameter="SerializationAssembly" ItemName="SerializationAssembly"/>
+
+        </SGen>
+
+    </Target>
 </Project>

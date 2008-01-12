@@ -21,12 +21,12 @@ using Gallio.Model.Serialization;
 namespace Gallio.Hosting
 {
     /// <summary>
-    /// Provides configuration parameters for setting up the runtime.
+    /// Provides configuration parameters for setting up the <see cref="Runtime" />.
     /// </summary>
     [Serializable]
     [XmlRoot("runtimeSetup", Namespace = SerializationUtils.XmlNamespace)]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public class RuntimeSetup
+    public sealed class RuntimeSetup
     {
         private readonly List<string> pluginDirectories;
         private string runtimeFactoryType;
@@ -85,7 +85,7 @@ namespace Gallio.Hosting
         /// Creates a deep copy of the runtime setup parameters.
         /// </summary>
         /// <returns>The copy</returns>
-        public virtual RuntimeSetup Copy()
+        public RuntimeSetup Copy()
         {
             RuntimeSetup copy = new RuntimeSetup();
             copy.pluginDirectories.AddRange(pluginDirectories);

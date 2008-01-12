@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Model.Execution;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Model;
 
 namespace Gallio.Model.Execution

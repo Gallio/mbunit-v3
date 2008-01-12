@@ -21,7 +21,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Castle.Core.Logging;
-using Gallio.Core.ProgressMonitoring;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -90,7 +90,7 @@ namespace Gallio.Runner
         public TestLauncher()
         {
             testPackageConfig = new TestPackageConfig();
-            testRunnerFactory = Runner.TestRunnerFactory.CreateIsolatedTestRunner;
+            testRunnerFactory = Runner.TestRunnerFactory.CreateIsolatedAppDomainTestRunner;
 
             reportDirectory = @"";
             reportNameFormat = @"test-report-{0}-{1}";
@@ -255,7 +255,7 @@ namespace Gallio.Runner
         /// test execution time.
         /// </para>
         /// <para>
-        /// The default value is <see cref="Runner.TestRunnerFactory.CreateIsolatedTestRunner"/>.
+        /// The default value is <see cref="Runner.TestRunnerFactory.CreateIsolatedAppDomainTestRunner"/>.
         /// </para>
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
