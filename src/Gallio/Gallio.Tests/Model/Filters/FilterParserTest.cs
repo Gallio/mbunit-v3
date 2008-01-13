@@ -111,7 +111,7 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [CombinatorialTest]
-        public void FilterWithRegexValue2(
+        public void FilterWithRegexValue(
             [UsingFactories("Types")] string type,
             [UsingFactories("MatchTypes")] string matchType)
         {
@@ -119,7 +119,11 @@ namespace Gallio.Tests.Model.Filters
             Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             string filterType = GetFilterTypeForMatchType(matchType);
-            Assert.AreEqual(parsedFilter.ToString(), "Type("+ filterType + "('" + type.Substring(1, type.Length - 2) + "'), True)");
+            Assert.AreEqual(parsedFilter.ToString(), "Type(" + filterType 
+                + "('" + type.Substring(1, type.Length - 2) 
+                + "'"
+                + (matchType == "~" ? ", Compiled" : "")
+                + "), True)");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
             Assert.IsFalse(parsedFilter.IsMatch(fixture2));
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
