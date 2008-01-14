@@ -104,12 +104,11 @@ namespace Gallio.Echo
              LongName = "filter",
              Description =
                    "A filter expression consists of one or more filter rules\n"
-                 + "that may be combined using 'and', 'or', and 'not'\n"
-                 + "(equivalently '&', '|', and '!') and grouped with\n"
-                 + "parentheses. A filter rule consists of a filter key\n"
-                 + "followed by one or more comma-delimited matching values\n"
-                 + "in the form:\n"
-                 + "key: value, \"quoted value\", ~\"regular expression\"\n"
+                 + "that may be combined using 'and', 'or', and 'not' and\n"
+                 + "grouped with parentheses. A filter rule consists of a\n"
+                 + "filter key followed by one or more comma-delimited\n" 
+                 + "matching values in the form:\n"
+                 + "key: value, \"quoted value\", /regular expression/\n"
                  + "A filter key may be 'Id', 'Name', 'Assembly', 'Namespace',\n"
                  + "'Type', 'Member' or any custom metadata key such as\n"
                  + "'Category' and 'AuthorName'.\n  Examples:\n"

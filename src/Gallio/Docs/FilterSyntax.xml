@@ -17,11 +17,11 @@
     <para>
       <code>
         <![CDATA[
-     OR               ::= "or"  | "|"            # Not case-sensitive
-     AND              ::= "and" | "&"            # Not case-sensitive
-     NOT              ::= "not" | "!"            # Not case-sensitive
+     OR               ::= "or"                   # Not case-sensitive
+     AND              ::= "and"                  # Not case-sensitive
+     NOT              ::= "not"                  # Not case-sensitive
 
-     <unquotedWord>   ::= [a-zA-Z0-9_\-+.*@]+
+     <unquotedWord>   ::= [^:,*()/\"']+
     
      <quotedWord>     ::= '"' ([^"] | \")* '"'   # String of any character but " enclosed by double quotation marks
                       | "'" ([^'] | \')* "'"     # String of any character but ' enclosed by single quotation marks
@@ -32,11 +32,13 @@
      <key>            ::= <word>
     
      <value>          ::= <word>                 # Value specified by exact string
-                      | "~" <word>               # Value specified by regular expression
+                      | "/" <word> "/"           # Value specified by regular expression
+                      | "/" <word> "/i"          # Value specified by case insensitive regular expression
     
      <matchSequence>  ::= <value> (',' <value>)* # One or more comma-separated values
     
-     <filter>         ::= <key> ":" matchSeq>
+     <filter>         ::= "*"                    # Any
+                      | <key> ":" matchSeq>
                       | <filter> OR filter>      # Combine filters with OR
                       | <filter> AND filter>     # Combine filters with AND
                       | NOT <filter>             # Negate filter
@@ -58,6 +60,9 @@
       </item>
       <item>
         Within a double quotation mark delimited string, \" will be interpreted as ".
+      </item>
+      <item>
+        Within a regular expression string, \/ will be interpreted as /.
       </item>
       <item>
         Currently the following filter keys are recognized:
@@ -137,7 +142,7 @@
       </item>
 
       <item>
-        <term>Type:~Fixture* and Member:Test2</term>
+        <term>Type:/Fixture*/ and Member:Test2</term>
         <description>Only Fixture1.Test2 and Fixture2.Test2 will be run.</description>
       </item>
 
@@ -152,16 +157,11 @@
       </item>
 
       <item>
-        <term>("Type": 'Fixture1' and "Member":~"Test*") or (Type : Fixture2 and Member: ~Test*)</term>
+        <term>("Type": 'Fixture1' and "Member":/Test*/) or (Type : Fixture2 and Member: /Test*/)</term>
         <description>All the tests will be run. This example also shows that you can enclose key and
         values with quotation marks, and group expressions with parentheses.</description>
       </item>
 
-      <item>
-        <term>("Type": 'Fixture1' &amp; "Member":~"Test*") | (Type : Fixture2 &amp; Member: ~Test*)</term>
-        <description>The same as above, but using &amp; and | instead of 'and' and 'or'.
-        </description>
-      </item>
     </list>
   </example>
 </doc>

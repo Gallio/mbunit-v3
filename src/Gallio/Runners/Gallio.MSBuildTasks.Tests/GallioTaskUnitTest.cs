@@ -171,7 +171,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests & Member: Pass";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests and Member: Pass";
             Assert.IsTrue(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Success);
             Assert.AreEqual(task.TestCount, 1);
@@ -187,7 +187,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             Gallio task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests & Member: Fail";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests and Member: Fail";
             Assert.IsFalse(task.Execute());
             Assert.AreEqual(task.ExitCode, ResultCode.Failure);
             Assert.AreEqual(task.TestCount, 1);

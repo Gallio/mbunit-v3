@@ -31,12 +31,20 @@ namespace Gallio.Tests.Model.Filters
         [Row("Key: /reg ex/i")]
         [Row("Key: 'value 1', value2, /value3/, /value\\/4/i, 'value \"5', 'value \\'6'")]
         [Row("(Assembly: 'foo, bar' and Id: SomeId and Member: Member and Key: 'This Value' and Namespace: Foo.Bar and Type: This.Type)")]
-        [Row("not (Abc: 123 and not (Def: 456 or not Ghi: 789)")]
+        [Row("not (Abc: 123 and not (Def: 456 or not Ghi: 789))")]
         [Row("not (not not (((Abc: def))))")]
+        [Row(@"Abc: /123 456 \/ 789/i")]        
         public void RoundTripFormatting(string filterExpr)
         {
             Filter<ITest> filter = FilterUtils.ParseTestFilter(filterExpr);
-            Assert.AreEqual(filterExpr, filter.ToFilterExpr());
+                        
+            string formattedFilterExpression = filter.ToFilterExpr();
+            Filter<ITest> filterFromFormattedFilterExpression = FilterUtils.ParseTestFilter(formattedFilterExpression);
+
+            // The exact filter expression may be different (redundant parentheses are lost for
+            // example), so we compare the final structure of the filters created by parsing the
+            // original expression and the formatted filter expression
+            Assert.AreEqual(filterFromFormattedFilterExpression.ToString(), filter.ToString());
         }
     }
 }

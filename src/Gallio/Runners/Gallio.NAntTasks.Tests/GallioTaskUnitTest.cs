@@ -179,7 +179,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests & Member: Pass";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests and Member: Pass";
             task.Execute();
             AssertResult(task, ResultCode.Success);
             AssertResultProperty(task, "TestCount", 1);
@@ -195,7 +195,7 @@ namespace Gallio.NAntTasks.Tests
         {
             InstrumentedGallioTask task = CreateTask();
             task.Assemblies = assemblies;
-            task.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests & Member: Fail";
+            task.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests and Member: Fail";
             task.Execute();
             AssertResult(task, ResultCode.Failure);
             AssertResultProperty(task, "TestCount", 1);

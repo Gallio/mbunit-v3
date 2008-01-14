@@ -428,6 +428,60 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Colon expected.
+        /// </summary>
+        internal static string FilterParser_ColonExpected {
+            get {
+                return ResourceManager.GetString("FilterParser_ColonExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comma expected.
+        /// </summary>
+        internal static string FilterParser_CommaExpected {
+            get {
+                return ResourceManager.GetString("FilterParser_CommaExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The filter expression can&apos;t be empty.
+        /// </summary>
+        internal static string FilterParser_EmptyFilterError {
+            get {
+                return ResourceManager.GetString("FilterParser_EmptyFilterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right bracket expected.
+        /// </summary>
+        internal static string FilterParser_RightBracketExpected {
+            get {
+                return ResourceManager.GetString("FilterParser_RightBracketExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String literal expected.
+        /// </summary>
+        internal static string FilterParser_StringLiteralExpected {
+            get {
+                return ResourceManager.GetString("FilterParser_StringLiteralExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value expected.
+        /// </summary>
+        internal static string FilterParser_ValueExpected {
+            get {
+                return ResourceManager.GetString("FilterParser_ValueExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [{0}] {1}.
         /// </summary>
         internal static string LogMonitor_HeaderFormat {

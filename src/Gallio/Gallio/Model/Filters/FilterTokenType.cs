@@ -22,12 +22,14 @@ namespace Gallio.Model.Filters
         Colon,
         Comma,
         Error,
+        CaseInsensitiveModifier,
         LeftBracket,
         Not,
         Or,
         QuotedWord,
         RightBracket,
-        Tilde,
-        UnquotedWord
+        RegexWord,
+        Star,
+        UnquotedWord        
     }
 }

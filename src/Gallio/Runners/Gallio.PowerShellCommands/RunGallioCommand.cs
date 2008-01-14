@@ -51,7 +51,7 @@ namespace Gallio.PowerShellCommands
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
-        private string filter;
+        private string filter = "*";
         private SwitchParameter showReports;
         private SwitchParameter doNotRun;
         private SwitchParameter noEchoResults;

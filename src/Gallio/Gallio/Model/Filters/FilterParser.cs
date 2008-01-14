@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Gallio.Model.Filters;
+using Gallio.Properties;
 
 namespace Gallio.Model.Filters
 {
@@ -62,7 +63,8 @@ namespace Gallio.Model.Filters
         private Filter<T> MatchFilter(FilterLexer lexer)
         {
             if (lexer.Tokens.Count == 0)
-                return new AnyFilter<T>();
+                throw new FilterRecognitionException(Resources.FilterParser_EmptyFilterError);
+            
             return MatchOrFilter(lexer);
         }
 
@@ -130,13 +132,22 @@ namespace Gallio.Model.Filters
                     filter = MatchOrFilter(lexer);
                     MatchRightBracket(lexer);
                 }
-                else
+                else if (nextToken.Type == FilterTokenType.Star)
+                {
+                    lexer.GetNextToken();
+                    return new AnyFilter<T>();
+                }
+                else if (IsWord(nextToken))
                 {
                     string key = MatchKey(lexer);
                     MatchColon(lexer);
 
                     Filter<string> valueFilter = MatchMatchSequence(lexer);
                     return factory.CreateFilter(key, valueFilter);
+                }                
+                else
+                {
+                    filter = MatchOrFilter(lexer);
                 }
             }
 
@@ -148,7 +159,7 @@ namespace Gallio.Model.Filters
             FilterToken nextToken = lexer.LookAhead(1);
             if (nextToken == null || IsNotWord(nextToken))
             {
-                throw new Exception("String literal expected");
+                throw new FilterRecognitionException(Resources.FilterParser_StringLiteralExpected);
             }
             lexer.GetNextToken();
 
@@ -160,7 +171,7 @@ namespace Gallio.Model.Filters
             FilterToken nextToken = lexer.LookAhead(1);
             if (nextToken == null || nextToken.Type != FilterTokenType.Colon)
             {
-                throw new Exception("Colon expected");
+                throw new FilterRecognitionException(Resources.FilterParser_ColonExpected);
             }
             lexer.GetNextToken();
         }
@@ -186,31 +197,29 @@ namespace Gallio.Model.Filters
 
         private static Filter<string> MatchValue(FilterLexer lexer)
         {
-            bool useRegexFilter = false;
             FilterToken nextToken = lexer.LookAhead(1);
             if (nextToken != null)
             {
-                if (nextToken.Type == FilterTokenType.Tilde)
+                if (nextToken.Type == FilterTokenType.RegexWord)
                 {
                     lexer.GetNextToken();
-                    nextToken = lexer.LookAhead(1);
-                    useRegexFilter = true;
+                    RegexOptions options = RegexOptions.Compiled;
+                    FilterToken caseInsensitiveToken = lexer.LookAhead(1);
+                    if (caseInsensitiveToken != null && caseInsensitiveToken.Type == FilterTokenType.CaseInsensitiveModifier)
+                    {
+                        options |= RegexOptions.IgnoreCase;
+                        lexer.GetNextToken();
+                    }
+                    return new RegexFilter(new Regex(nextToken.Text, options));
                 }
-                if (IsWord(nextToken))
+                else if (IsWord(nextToken))
                 {
                     lexer.GetNextToken();
-                    if (useRegexFilter)
-                    {
-                        return new RegexFilter(new Regex(nextToken.Text, RegexOptions.Compiled));
-                    }
-                    else
-                    {
-                        return new EqualityFilter<string>(nextToken.Text);
-                    }
+                    return new EqualityFilter<string>(nextToken.Text);
                 }
             }
 
-            throw new Exception("Value expected");
+            throw new FilterRecognitionException(Resources.FilterParser_ValueExpected);
         }
 
         private static void MatchRightBracket(FilterLexer lexer)
@@ -218,7 +227,7 @@ namespace Gallio.Model.Filters
             FilterToken nextToken = lexer.LookAhead(1);
             if (nextToken == null || nextToken.Type != FilterTokenType.RightBracket)
             {
-                throw new Exception("Right bracket expected");
+                throw new FilterRecognitionException(Resources.FilterParser_RightBracketExpected);
             }
             lexer.GetNextToken();
         }
@@ -228,7 +237,7 @@ namespace Gallio.Model.Filters
             FilterToken nextToken = lexer.LookAhead(1);
             if (nextToken == null || nextToken.Type != FilterTokenType.Comma)
             {
-                throw new Exception("Comma expected");
+                throw new FilterRecognitionException(Resources.FilterParser_CommaExpected);
             }
             lexer.GetNextToken();
         }
@@ -246,8 +255,13 @@ namespace Gallio.Model.Filters
 
     internal class FilterRecognitionException : Exception
     {
+        internal FilterRecognitionException(string message)
+            : base(message)
+        {
+        }
+
         internal FilterRecognitionException(FilterTokenType expected, FilterToken[] found)
-            : base("Expected character '" + expected + "', but '" + found + "' was found instead.")
+            : this("Expected character '" + expected + "', but '" + found + "' was found instead.")
         {
         }
     }

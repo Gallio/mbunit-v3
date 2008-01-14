@@ -22,11 +22,17 @@ namespace Gallio.Model.Filters
 {
     internal sealed class FilterLexer
     {
+        private readonly static Dictionary<char, FilterTokenType> singleCharacterTokens = new Dictionary<char, FilterTokenType>();
         private readonly List<FilterToken> tokens = new List<FilterToken>();
         private readonly StringReader input = null;
         private readonly string filter;
         private int inputPosition = -1;
         private int tokenStreamPosition = -1;
+
+        static FilterLexer()
+        {
+            AddSingleCharacterTokens();
+        }
 
         internal FilterLexer(string filter)
         {
@@ -72,22 +78,24 @@ namespace Gallio.Model.Filters
 
         private void Scan()
         {
-            Dictionary<char, FilterTokenType> singleCharacterTokens = GetSingleCharacterTokens();
-
             while (input.Peek() != -1)
             {
                 char c = (char)input.Peek();
                 if (char.IsWhiteSpace(c))
                 {
                     input.Read();
-                }
+                }                
                 else if (singleCharacterTokens.ContainsKey(c))
                 {
                     Match(c.ToString(), singleCharacterTokens[c]);
                 }
-                else if (IsQuotationMark(c))
+                else if (IsWordDelimiter(c))
                 {
-                    MatchQuotedWord(c);
+                    MatchDelimitedWord(c);
+                    if (c == '/')
+                    {
+                        MatchCaseInsensitiveModifier();
+                    }
                 }
                 else if (IsWordChar(c))
                 {
@@ -123,34 +131,34 @@ namespace Gallio.Model.Filters
             }
         }
 
-        private void MatchQuotedWord(char quotationMark)
+        private void MatchDelimitedWord(char delimiter)
         {
             StringBuilder chars = new StringBuilder();
             int startPosition = inputPosition + 1;
             char previousChar = (char)0;
-            bool finalQuotationMarkFound = false;
+            bool finalDelimiterFound = false;
 
             ConsumeNextChar();
             while (input.Peek() != -1)
             {
                 char nextChar = (char)input.Peek();
-                if (nextChar == quotationMark)
+                if (nextChar == delimiter)
                 {
                     if (previousChar != '\\')
                     {
                         ConsumeNextChar();
-                        finalQuotationMarkFound = true;
+                        finalDelimiterFound = true;
                         break;
                     }
                     else
                     {
-                        // Add the quotation mark
+                        // Add the delimiter
                         chars.Append(ConsumeNextChar());
                     }
                 }
                 else
                 {
-                    // previousChar was a \ but not followed by a quotation mark
+                    // previousChar was a \ but not followed by a delimiter
                     if (previousChar == '\\')
                     {
                         chars.Append('\\');
@@ -164,11 +172,31 @@ namespace Gallio.Model.Filters
                 }
                 previousChar = nextChar;
             }
-            tokens.Add(new FilterToken(FilterTokenType.QuotedWord, chars.ToString(), startPosition));
-            if (!finalQuotationMarkFound)
+            tokens.Add(new FilterToken(GetTokenTypeForDelimiter(delimiter), chars.ToString(), startPosition));
+            if (!finalDelimiterFound)
             {
                 tokens.Add(new FilterToken(FilterTokenType.Error, null, inputPosition));
             }
+        }
+
+        private void MatchCaseInsensitiveModifier()
+        {
+            if (input.Peek() != -1)
+            {
+                char nextChar = (char)input.Peek();
+                if (nextChar == 'i')
+                {
+                    ConsumeNextChar();
+                    tokens.Add(new FilterToken(FilterTokenType.CaseInsensitiveModifier, null, inputPosition));                    
+                }
+            }
+        }
+
+        private static FilterTokenType GetTokenTypeForDelimiter(char c)
+        {
+            if (c == '/')
+                return FilterTokenType.RegexWord;
+            return FilterTokenType.QuotedWord;
         }
 
         private char ConsumeNextChar()
@@ -226,29 +254,25 @@ namespace Gallio.Model.Filters
             tokens.Add(new FilterToken(filterTokenType, null, startPosition));
         }
 
-        private static Dictionary<char, FilterTokenType> GetSingleCharacterTokens()
+        private static void AddSingleCharacterTokens()
         {
-            Dictionary<char, FilterTokenType> singleCharacterTokens = new Dictionary<char, FilterTokenType>();
             singleCharacterTokens.Add(':', FilterTokenType.Colon);
-            singleCharacterTokens.Add('&', FilterTokenType.And);
-            singleCharacterTokens.Add('!', FilterTokenType.Not);
-            singleCharacterTokens.Add('|', FilterTokenType.Or);
             singleCharacterTokens.Add('(', FilterTokenType.LeftBracket);
             singleCharacterTokens.Add(')', FilterTokenType.RightBracket);
             singleCharacterTokens.Add(',', FilterTokenType.Comma);
-            singleCharacterTokens.Add('~', FilterTokenType.Tilde);
-
-            return singleCharacterTokens;
+            singleCharacterTokens.Add('*', FilterTokenType.Star);
         }
 
-        private static bool IsQuotationMark(char c)
+        private static bool IsWordDelimiter(char c)
         {
-            return c == '"' || c == '\'';
+            return c == '"' || c == '\'' || c == '/';
         }
 
         internal static bool IsWordChar(char c)
         {
-            return char.IsLetterOrDigit(c) || c == '_' || c == '\\' || c == '-' || c == '+' || c == '.' || c == '*' || c == '@';
+            return (!singleCharacterTokens.ContainsKey(c)) 
+                && (c != '"') 
+                && (!char.IsWhiteSpace(c));
         }
     }
 }

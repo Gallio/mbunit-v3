@@ -79,7 +79,7 @@ namespace Gallio.MSBuildTasks
         private ITaskItem[] assemblies;
         private ITaskItem[] pluginDirectories;
         private ITaskItem[] hintDirectories;
-        private string filter;
+        private string filter = "*";
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;

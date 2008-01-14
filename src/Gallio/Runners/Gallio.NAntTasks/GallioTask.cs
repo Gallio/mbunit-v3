@@ -89,7 +89,7 @@ namespace Gallio.NAntTasks
         private FileSet[] assemblies;
         private DirSet[] pluginDirectories;
         private DirSet[] hintDirectories;
-        private string filter;
+        private string filter = "*";
         private string reportTypes = @"";
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;

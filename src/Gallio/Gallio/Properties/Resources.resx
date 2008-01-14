@@ -289,4 +289,22 @@
   <data name="DebugMonitor_LifecycleEvent_NewInstance_EventFormat" xml:space="preserve">
     <value>[Lifecycle: NewInstance ({0})]</value>
   </data>
+  <data name="FilterParser_EmptyFilterError" xml:space="preserve">
+    <value>The filter expression can't be empty</value>
+  </data>
+  <data name="FilterParser_ColonExpected" xml:space="preserve">
+    <value>Colon expected</value>
+  </data>
+  <data name="FilterParser_CommaExpected" xml:space="preserve">
+    <value>Comma expected</value>
+  </data>
+  <data name="FilterParser_RightBracketExpected" xml:space="preserve">
+    <value>Right bracket expected</value>
+  </data>
+  <data name="FilterParser_StringLiteralExpected" xml:space="preserve">
+    <value>String literal expected</value>
+  </data>
+  <data name="FilterParser_ValueExpected" xml:space="preserve">
+    <value>Value expected</value>
+  </data>
 </root>

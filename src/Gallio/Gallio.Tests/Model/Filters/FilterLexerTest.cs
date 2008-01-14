@@ -28,23 +28,16 @@ namespace Gallio.Tests.Model.Filters
         [RowTest]
         [Row(null)]
         [Row("")]
-        public void NullFilter(string filter)
+        [Row("\t")]
+        [Row("\n \n")]
+        public void Empty(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.IsNotNull(lexer);
             Assert.AreEqual(0, lexer.Tokens.Count);
             Assert.IsNull(lexer.GetNextToken());
             Assert.IsNull(lexer.LookAhead(1));
-        }
-
-        [RowTest]
-        [Row(" ")]
-        [Row("\t")]
-        [Row("\n \n")]
-        public void WhiteSpaceOnly(string filter)
-        {
-            FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 0);
+            Assert.IsNull(lexer.GetNextToken());
         }
 
         [RowTest]
@@ -55,45 +48,43 @@ namespace Gallio.Tests.Model.Filters
         [Row("and", "And")]
         [Row("And", "And")]
         [Row("aNd", "And")]
-        [Row("AND", "And")]
-        [Row("&", "And")]
+        [Row("AND", "And")]        
         [Row("or", "Or")]
-        [Row("OR", "Or")]
-        [Row("|", "Or")]
+        [Row("OR", "Or")]        
         [Row("not", "Not")]
-        [Row("NOT", "Not")]
-        [Row("!", "Not")]
+        [Row("NOT", "Not")]        
         [Row(":", "Colon")]
         [Row(",", "Comma")]
+        [Row("*", "Star")]
         public void SingleElement(string filter, string type)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 1);
             FilterToken filterToken = lexer.Tokens[0];
-            Assert.AreEqual(filterToken.Type, Enum.Parse(typeof(FilterTokenType), type));
+            Assert.AreEqual(filterToken.Type, ParseTokenType(type));
             Assert.AreEqual(filterToken.Position, 0);
             Assert.AreEqual(filterToken.Text, null);
         }
                 
-        [RowTest]
+        //[RowTest]
         //[Row("#", 0)]
         //[Row("aaaaaaaa#bbbbbbb", 8)]
         //[Row("aaaaaaaaa#bbbbbb", 9)]
         //[Row("aaaaaaaaaa#bbbbb", 10)]
         //[Row("aaaaaaaaaaa#bbbb", 11)]
-        public void BadInput(string filter, int position)
-        {
-            string exceptionMessage = null;
-            try
-            {
-                new FilterLexer(filter);
-            }
-            catch (Exception e)
-            {
-                exceptionMessage = e.Message;
-            }
-            Assert.AreEqual(exceptionMessage, "Unexpected character '#' found at position " + position);
-        }
+        //public void BadInput(string filter, int position)
+        //{
+        //    string exceptionMessage = null;
+        //    try
+        //    {
+        //        new FilterLexer(filter);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        exceptionMessage = e.Message;
+        //    }
+        //    Assert.AreEqual(exceptionMessage, "Unexpected character '#' found at position " + position);
+        //}
 
         [RowTest]
         [Row("anX")]
@@ -104,7 +95,10 @@ namespace Gallio.Tests.Model.Filters
         [Row("no")]
         [Row("andOr")]
         [Row("orAnd")]
-        public void SingleMalformedElement(string filter)
+        [Row("&")]
+        [Row("|")]
+        [Row("!")]
+        public void UnrecognizedElement(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 1);
@@ -117,7 +111,6 @@ namespace Gallio.Tests.Model.Filters
         [RowTest]
         [Row("()", "LeftBracket", "RightBracket")]
         [Row(")(", "RightBracket", "LeftBracket")]
-        [Row("&!", "And", "Not")]
         public void TwoElements(string filter, string type1, string type2)
         {
             FilterLexer lexer = new FilterLexer(filter);
@@ -159,14 +152,15 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [RowTest]
-        [Row("\"abcdefghijklmnopqrstA)#)348038403[:LÑ\"")]
-        [Row("'abcdefghijklmnopqrstA)#)348038403[:LÑ'")]
-        public void QuotedElement(string filter)
+        [Row("\"abcdefghijklmnopqrstA)#)348038403[:LÑ\"", "QuotedWord")]
+        [Row("'abcdefghijklmnopqrstA)#)348038403[:LÑ'", "QuotedWord")]
+        [Row("/abcdefghijklmnopqrstA)#)348038403[:LÑ/", "RegexWord")]
+        public void DelimiteddElement(string filter, string type)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 1);
             FilterToken firstFilterToken = lexer.Tokens[0];
-            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.QuotedWord);
+            Assert.AreEqual(firstFilterToken.Type, ParseTokenType(type));
             Assert.AreEqual(firstFilterToken.Position, 0);
             Assert.AreEqual(firstFilterToken.Text, GetUnquotedString(filter));
         }
@@ -174,7 +168,8 @@ namespace Gallio.Tests.Model.Filters
         [RowTest]
         [Row("\"abcdefghijklmnopqrst")]
         [Row("'abcdefghijklmnopqrst")]
-        public void QuotedElementWithMissingEndQuotationMark(string filter)
+        [Row("/abcdefghijklmnopqrst")]
+        public void DelimitedElementWithMissingEndDelimiter(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 2);
@@ -185,35 +180,93 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [RowTest]
-        [Row("\"abcde\\\"fghijklmnopqrstA)#)348038403[:LÑ\"")]
-        [Row(@"'abcdefg\'hijklmnopqrstA)#)348038403[:LÑ'")]
-        public void QuotedElementWithEscapedQuotationMarks(string filter)
+        [Row("\"abcde\\\"fghijklmnopqrstA)#)348038403[:LÑ\"", "QuotedWord")]
+        [Row(@"'abcdefg\'hijklmnopqrstA)#)348038403[:LÑ'", "QuotedWord")]
+        [Row(@"/123 456 \/ 789/", "RegexWord")]
+        public void DelimitedElementWithEscapedDelimiter(string filter, string tokenType)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 1);
             FilterToken firstFilterToken = lexer.Tokens[0];
-            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.QuotedWord);
+            Assert.AreEqual(firstFilterToken.Type, ParseTokenType(tokenType));
             Assert.AreEqual(firstFilterToken.Position, 0);
             Assert.AreEqual(firstFilterToken.Text, GetUnquotedString(filter));
         }
 
         [RowTest]
-        [Row("\"Author\"", "Author")]
-        [Row("\"A\\\"uthor\"", "A\"uthor")]
-        [Row("\"Author\\\"\"", "Author\"")]
-        [Row("'Author'", "Author")]
-        [Row("'A\\'uthor'", "A'uthor")]
-        [Row("'Author\\''", "Author'")]
-        [Row("'A\\\"uthor'", "A\\\"uthor")]
-        [Row("\"Author\\'\"", "Author\\'")]
-        public void QuotationMarksAreUnescaped(string filter, string expected)
+        [Row("\"Author\"", "Author", "QuotedWord")]
+        [Row("\"A\\\"uthor\"", "A\"uthor", "QuotedWord")]
+        [Row("\"Author\\\"\"", "Author\"", "QuotedWord")]
+        [Row("'Author'", "Author", "QuotedWord")]
+        [Row("'A\\'uthor'", "A'uthor", "QuotedWord")]
+        [Row("'Author\\''", "Author'", "QuotedWord")]
+        [Row("'A\\\"uthor'", "A\\\"uthor", "QuotedWord")]
+        [Row("\"Author\\'\"", "Author\\'", "QuotedWord")]
+        [Row("/Author/", "Author", "RegexWord")]
+        [Row(@"/\/Author\//", "/Author/", "RegexWord")]
+        public void DelimitersAreUnescaped(string filter, string expected, string tokenType)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 1);
             FilterToken firstFilterToken = lexer.Tokens[0];
-            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.QuotedWord);
+            Assert.AreEqual(firstFilterToken.Type, ParseTokenType(tokenType));
             Assert.AreEqual(firstFilterToken.Position, 0);
             Assert.AreEqual(firstFilterToken.Text, expected);
+        }
+
+        [RowTest]
+        [Row(@"/Regex/", "Regex")]
+        [Row(@"//", "")]
+        public void Regex(string key, string text)
+        {
+            string filter = key;
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, 1);
+
+            FilterToken firstFilterToken = lexer.Tokens[0];
+            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.RegexWord);
+            Assert.AreEqual(firstFilterToken.Position, 0);
+            Assert.AreEqual(firstFilterToken.Text, text);
+        }
+
+        [RowTest]
+        [Row(@"/Regex/i", "Regex")]
+        [Row(@"//i", "")]
+        public void CaseInsensitiveRegex(string key, string text)
+        {
+            string filter = key;
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, 2);
+
+            FilterToken firstFilterToken = lexer.Tokens[0];
+            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.RegexWord);
+            Assert.AreEqual(firstFilterToken.Position, 0);
+            Assert.AreEqual(firstFilterToken.Text, text);
+
+            FilterToken secondToken = lexer.Tokens[1];
+            Assert.AreEqual(secondToken.Type, FilterTokenType.CaseInsensitiveModifier);
+            Assert.AreEqual(secondToken.Position, key.Length - 1);
+            Assert.AreEqual(secondToken.Text, null);
+        }
+
+        [RowTest]
+        [Row(@"/Regex/ i", "Regex")]
+        [Row(@"//@i", "")]
+        [Row("//\ti", "")]
+        [Row(@"//  i", "")]
+        public void CaseSensitiveRegex(string key, string text)
+        {
+            string filter = key;
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, 2);
+
+            FilterToken firstFilterToken = lexer.Tokens[0];
+            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.RegexWord);
+            Assert.AreEqual(firstFilterToken.Position, 0);
+            Assert.AreEqual(firstFilterToken.Text, text);
+
+            FilterToken secondToken = lexer.Tokens[1];
+            Assert.AreEqual(secondToken.Type, FilterTokenType.UnquotedWord);
         }
 
         [RowTest]
@@ -287,7 +340,16 @@ namespace Gallio.Tests.Model.Filters
             {
                 unquotedString = unquotedString.Replace("\\'", "'");
             }
+            else if (quotedString[0] == '/')
+            {
+                unquotedString = unquotedString.Replace(@"\/", "/");
+            }
             return unquotedString;
+        }
+
+        private static object ParseTokenType(string type)
+        {
+            return Enum.Parse(typeof(FilterTokenType), type);
         }
     }
 }
