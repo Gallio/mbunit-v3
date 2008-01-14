@@ -197,6 +197,7 @@ namespace Gallio.Echo
                 string[] formatterNames = GenericUtils.ToArray(reportManager.GetFormatterNames());
                 Array.Sort(formatterNames);
 
+                base.ShowHelp();
                 Console.WriteLine();
                 Console.WriteLine(String.Format(Resources.MainClass_SupportedReportTypesMessage,
                     string.Join(@", ", formatterNames)));
