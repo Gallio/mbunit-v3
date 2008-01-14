@@ -17,6 +17,12 @@
     <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
     <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
     <MSBuildCommunityTasksPath>$(LibsDir)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+
+    <CSharpProperties>
+      Configuration=Release;
+      Version=$(Version);
+      CustomAfterMicrosoftCommonTargets=$(RootDir)\Build.Custom.Targets;
+    </CSharpProperties>
   </PropertyGroup>
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
@@ -282,6 +288,9 @@
   <Target Name="Build"
           DependsOnTargets="BuildCSharpProjects;CopyFiles" />
 
+  <Target Name="Rebuild"
+          DependsOnTargets="RebuildCSharpProjects;CopyFiles" />
+
   <Target Name="Clean"
           DependsOnTargets="CleanCSharpProjects">
     <RemoveDir Directories="$(BuildDir)"
@@ -313,26 +322,26 @@
   <Target Name="Release"
           DependsOnTargets="Clean;Build;Test;BuildDocs;BuildInstaller;BuildZip" />
 
-  <Target Name="BuildCSharpProjects"
-          DependsOnTargets="CreateBuildDir">
+  <Target Name="BuildCSharpProjects">
     <MSBuild Projects="@(CSharpProject)"
              Targets="Build"
-             Properties="
-               Configuration=Release;
-               Version=$(Version);
-               CustomAfterMicrosoftCommonTargets=$(RootDir)\Build.Custom.Targets;
-             " />
+             Properties="$(CSharpProperties)" />
+  </Target>
+
+  <Target Name="RebuildCSharpProjects">
+    <MSBuild Projects="@(CSharpProject)"
+             Targets="Rebuild"
+             Properties="$(CSharpProperties)" />
   </Target>
 
   <Target Name="CleanCSharpProjects">
     <MSBuild Projects="@(CSharpProject)"
              Targets="Clean"
-             Properties="
-               Configuration=Release;
-             " />
+             Properties="$(CSharpProperties)" />
   </Target>
 
-  <Target Name="CopyFiles">
+  <Target Name="CopyFiles"
+          DependsOnTargets="CreateBuildDir">
     <Copy SourceFiles="@(Binary)"
           DestinationFolder="$(BuildBinDir)\%(Binary.Folder)\%(RecursiveDir)" />
     <Copy SourceFiles="@(Document)"
