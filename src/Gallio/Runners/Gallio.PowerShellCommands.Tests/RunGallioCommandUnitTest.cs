@@ -151,7 +151,7 @@ namespace Gallio.PowerShellCommands.Tests
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
-            command.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests & Member: Pass";
+            command.Filter = "Type: Gallio.TestResources.MbUnit.PassingTests and Member: Pass";
             TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Success);
@@ -168,7 +168,7 @@ namespace Gallio.PowerShellCommands.Tests
         {
             InstrumentedRunGallioCommand command = CreateCmdlet();
             command.Assemblies = assemblies;
-            command.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests & Member: Fail";
+            command.Filter = "Type: Gallio.TestResources.MbUnit.FailingTests and Member: Fail";
             TestLauncherResult result = command.ExecuteWithMessagePump();
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ResultCode, ResultCode.Failure);
