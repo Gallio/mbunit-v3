@@ -104,7 +104,7 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	File "${BUILDDIR}\bin\MbUnit.xml"
 
 	SetOutPath "$INSTDIR\bin\Reports"
-	File /r "${BUILDDIR}\bin\Reports\*.txt"
+	File /r "${BUILDDIR}\bin\Reports\*"
 
 	SetOutPath "$INSTDIR\docs"
 	File "${BUILDDIR}\docs\*.txt"
