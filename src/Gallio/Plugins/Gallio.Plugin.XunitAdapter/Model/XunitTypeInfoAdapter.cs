@@ -79,7 +79,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         public Type Type
         {
-            get { return target.Resolve(); }
+            get { return target.Resolve(false); }
         }
 
         public override string ToString()

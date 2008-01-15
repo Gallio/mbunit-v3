@@ -184,6 +184,10 @@ namespace Gallio.Echo
 
         protected override void ShowHelp()
         {
+            // Show argument only help first because what we do next might take a little while
+            // and we want to make the program appear responsive.
+            base.ShowHelp();
+
             // Print out options related to the currently available set of plugins.
             RuntimeSetup setup = new RuntimeSetup();
             if (Arguments != null && Arguments.PluginDirectories != null)
@@ -197,7 +201,6 @@ namespace Gallio.Echo
                 string[] formatterNames = GenericUtils.ToArray(reportManager.GetFormatterNames());
                 Array.Sort(formatterNames);
 
-                base.ShowHelp();
                 Console.WriteLine();
                 Console.WriteLine(String.Format(Resources.MainClass_SupportedReportTypesMessage,
                     string.Join(@", ", formatterNames)));

@@ -44,7 +44,7 @@ namespace Gallio.Reflection.Impl
             get { return Reflector.Wrap(Target.GetRemoveMethod()); }
         }
 
-        new public EventInfo Resolve()
+        new public EventInfo Resolve(bool throwOnError)
         {
             return Target;
         }

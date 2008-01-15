@@ -114,6 +114,7 @@
     </Compile>
     <Compile Include="Hosting\ReSharperLogger.cs" />
     <Compile Include="Reflection\Impl\IPsiTypeWrapper.cs" />
+    <Compile Include="Reflection\Impl\MetadataReturnValueWrapper.cs" />
     <Compile Include="Reflection\Impl\PsiArrayTypeWrapper.cs" />
     <Compile Include="Reflection\Impl\PsiAssemblyWrapper.cs" />
     <Compile Include="Reflection\Impl\PsiAttributeWrapper.cs" />

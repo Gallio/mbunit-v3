@@ -37,19 +37,24 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.Wrap(Target.ReturnValue.Type); }
         }
 
+        public IParameterInfo ReturnParameter
+        {
+            get { return Reflector.Wrap(Target.ReturnValue); }
+        }
+
         public override CodeElementKind Kind
         {
             get { return CodeElementKind.Method; }
         }
 
-        public override MethodBase ResolveMethodBase()
+        public override MethodBase ResolveMethodBase(bool throwOnError)
         {
-            return Resolve();
+            return Resolve(throwOnError);
         }
 
-        public MethodInfo Resolve()
+        public MethodInfo Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveMethod(this);
+            return ReflectorResolveUtils.ResolveMethod(this, throwOnError);
         }
 
         public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)

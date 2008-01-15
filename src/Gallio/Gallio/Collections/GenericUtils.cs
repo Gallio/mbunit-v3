@@ -77,6 +77,17 @@ namespace Gallio.Collections
         }
 
         /// <summary>
+        /// Copies all of the elements of the input enumerable to an array.
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="enumerable">The input enumerable</param>
+        /// <returns>The output array</returns>
+        public static T[] ToArray<T>(IEnumerable<T> enumerable)
+        {
+            return new List<T>(enumerable).ToArray();
+        }
+
+        /// <summary>
         /// Copies all of the elements of the input collection to an array.
         /// </summary>
         /// <typeparam name="T">The element type</typeparam>

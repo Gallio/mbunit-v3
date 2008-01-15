@@ -127,7 +127,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
                         if (test != null)
                         {
-                            testMethods.Add(test.MethodInfo.Target.Resolve());
+                            testMethods.Add(test.MethodInfo.Target.Resolve(false));
                             testMonitors.Add(child);
                         }
                     }

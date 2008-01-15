@@ -36,14 +36,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return CodeElementKind.Constructor; }
         }
 
-        public override MethodBase ResolveMethodBase()
+        public override MethodBase ResolveMethodBase(bool throwOnError)
         {
-            return Resolve();
+            return Resolve(throwOnError);
         }
 
-        public ConstructorInfo Resolve()
+        public ConstructorInfo Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveConstructor(this);
+            return ReflectorResolveUtils.ResolveConstructor(this, throwOnError);
         }
 
         public bool Equals(IConstructorInfo other)

@@ -55,7 +55,7 @@ namespace Gallio.Reflection.Impl
             get { return Reflector.Wrap(Target.GetSetMethod()); }
         }
 
-        new public PropertyInfo Resolve()
+        new public PropertyInfo Resolve(bool throwOnError)
         {
             return Target;
         }

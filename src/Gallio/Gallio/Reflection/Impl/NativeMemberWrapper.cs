@@ -40,6 +40,11 @@ namespace Gallio.Reflection.Impl
             }
         }
 
+        public MemberTypes MemberType
+        {
+            get { return Target.MemberType; }
+        }
+
         public override CodeReference CodeReference
         {
             get { return CodeReference.CreateFromMember(Target); }
@@ -60,7 +65,7 @@ namespace Gallio.Reflection.Impl
             get { return Reflector.Wrap(Target.DeclaringType); }
         }
 
-        public MemberInfo Resolve()
+        public MemberInfo Resolve(bool throwOnError)
         {
             return Target;
         }

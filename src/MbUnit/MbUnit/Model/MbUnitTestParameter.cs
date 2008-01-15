@@ -77,7 +77,7 @@ namespace MbUnit.Model
             get
             {
                 if (binding.Binding == null)
-                    binding = new DataBindingWithSourceName("", new DataBinding(Type.Resolve(), Name, Index));
+                    binding = new DataBindingWithSourceName("", new DataBinding(Type.Resolve(false), Name, Index));
                 return binding;
             }
             set

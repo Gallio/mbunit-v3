@@ -151,27 +151,31 @@ namespace Gallio.ReSharperRunner.Tasks
 
         private void SubmitLogStreamContents(GallioTestItemTask testTask, ExecutionLogStream stream)
         {
+            string contents = string.Concat("*** ", stream.Name, " ***\n", stream.ToString(), "\n");
+
             switch (stream.Name)
             {
                 case LogStreamNames.ConsoleOutput:
                 default:
-                    server.TaskOutput(testTask, stream.ToString(), TaskOutputType.STDOUT);
+                    server.TaskOutput(testTask, contents, TaskOutputType.STDOUT);
                     break;
 
                 case LogStreamNames.ConsoleError:
-                    server.TaskOutput(testTask, stream.ToString(), TaskOutputType.STDERR);
+                    server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
                     break;
 
                 case LogStreamNames.DebugTrace:
-                    server.TaskOutput(testTask, stream.ToString(), TaskOutputType.DEBUGTRACE);
+                    server.TaskOutput(testTask, contents, TaskOutputType.DEBUGTRACE);
                     break;
 
                 case LogStreamNames.Warnings:
-                    server.TaskExplain(testTask, stream.ToString());
+                    //server.TaskExplain(testTask, stream.ToString());
+                    server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
                     break;
             
                 case LogStreamNames.Failures:
-                    server.TaskError(testTask, stream.ToString());
+                    //server.TaskError(testTask, stream.ToString());
+                    server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
                     break;
             }
         }

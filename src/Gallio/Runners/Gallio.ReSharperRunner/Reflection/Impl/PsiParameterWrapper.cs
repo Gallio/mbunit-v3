@@ -90,9 +90,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return EnumerateAttributesForElement(Target, inherit);
         }
 
-        public ParameterInfo Resolve()
+        public ParameterInfo Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveParameter(this);
+            return ReflectorResolveUtils.ResolveParameter(this, throwOnError);
         }
 
         public bool Equals(ISlotInfo other)

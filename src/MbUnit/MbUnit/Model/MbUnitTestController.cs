@@ -117,7 +117,7 @@ namespace MbUnit.Model
 
                 ITypeInfo type = state.Test.CodeElement as ITypeInfo;
                 if (type != null)
-                    state.FixtureInstance = Activator.CreateInstance(type.Resolve());
+                    state.FixtureInstance = Activator.CreateInstance(type.Resolve(true));
                 else if (parentState != null)
                     state.FixtureInstance = parentState.FixtureInstance;
             }, "An exception occurred during initialization.");

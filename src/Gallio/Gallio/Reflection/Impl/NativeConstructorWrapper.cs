@@ -29,7 +29,7 @@ namespace Gallio.Reflection.Impl
             get { return CodeElementKind.Constructor; }
         }
 
-        new public ConstructorInfo Resolve()
+        new public ConstructorInfo Resolve(bool throwOnError)
         {
             return Target;
         }

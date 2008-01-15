@@ -153,6 +153,15 @@
     <Compile Include="Hosting\Channels\IServerChannel.cs" />
     <Compile Include="Hosting\Channels\BinaryIpcServerChannel.cs" />
     <Compile Include="Hosting\RemoteLogger.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedMethodInfo.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedConstructorInfo.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedEventInfo.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedFieldInfo.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedMemberInfo.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedMethodBase.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedParameterInfo.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedPropertyInfo.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedType.cs" />
     <Compile Include="Runner\Domains\HostTestDomain.cs" />
     <Compile Include="Runner\Domains\IHostTestDomainContributor.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
@@ -441,32 +450,13 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
-    <!-- This target overrides the built-in SGen target from the .Net Framework v2.0
+  <!-- This target overrides the built-in SGen target from the .Net Framework v2.0
     Microsoft.Common.targets with the version used in .Net Framework v3.5.
     This resolves an issue with a serialization assembly only being generated
     for web service proxy types. -->
-    <Target
-        Name="GenerateSerializationAssemblies"
-        Condition="'$(_SGenGenerateSerializationAssembliesConfig)' == 'On' or ('@(WebReferenceUrl)'!='' and '$(_SGenGenerateSerializationAssembliesConfig)' == 'Auto')"
-        DependsOnTargets="AssignTargetPaths;Compile;ResolveKeySource"
-        Inputs="$(MSBuildAllProjects);@(IntermediateAssembly)"
-        Outputs="$(IntermediateOutputPath)$(_SGenDllName)">
-
-        <SGen
-            BuildAssemblyName="$(TargetFileName)"
-            BuildAssemblyPath="$(IntermediateOutputPath)"
-            References="@(ReferencePath)"
-            ShouldGenerateSerializer="$(SGenShouldGenerateSerializer)"
-            UseProxyTypes="$(SGenUseProxyTypes)"
-            KeyContainer="$(KeyContainerName)"
-            KeyFile="$(KeyOriginatorFile)"
-            DelaySign="$(DelaySign)"
-            ToolPath="$(SGenToolPath)">
-
-            <Output TaskParameter="SerializationAssembly" ItemName="SerializationAssembly"/>
-
-        </SGen>
-
-    </Target>
+  <Target Name="GenerateSerializationAssemblies" Condition="'$(_SGenGenerateSerializationAssembliesConfig)' == 'On' or ('@(WebReferenceUrl)'!='' and '$(_SGenGenerateSerializationAssembliesConfig)' == 'Auto')" DependsOnTargets="AssignTargetPaths;Compile;ResolveKeySource" Inputs="$(MSBuildAllProjects);@(IntermediateAssembly)" Outputs="$(IntermediateOutputPath)$(_SGenDllName)">
+    <SGen BuildAssemblyName="$(TargetFileName)" BuildAssemblyPath="$(IntermediateOutputPath)" References="@(ReferencePath)" ShouldGenerateSerializer="$(SGenShouldGenerateSerializer)" UseProxyTypes="$(SGenUseProxyTypes)" KeyContainer="$(KeyContainerName)" KeyFile="$(KeyOriginatorFile)" DelaySign="$(DelaySign)" ToolPath="$(SGenToolPath)">
+      <Output TaskParameter="SerializationAssembly" ItemName="SerializationAssembly" />
+    </SGen>
+  </Target>
 </Project>

@@ -45,6 +45,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.WrapOpenType(Target.DeclaringType); }
         }
 
+        public bool IsGenericMethodDefinition
+        {
+            get { return Target.GenericArguments.Length != 0; }
+        }
+
         public MethodAttributes MethodAttributes
         {
             get
@@ -100,17 +105,17 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
-        public override MemberInfo ResolveMemberInfo()
+        public override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
-            return ResolveMethodBase();
+            return ResolveMethodBase(throwOnError);
         }
 
-        MethodBase IFunctionInfo.Resolve()
+        MethodBase IFunctionInfo.Resolve(bool throwOnError)
         {
-            return ResolveMethodBase();
+            return ResolveMethodBase(throwOnError);
         }
 
-        public abstract MethodBase ResolveMethodBase();
+        public abstract MethodBase ResolveMethodBase(bool throwOnError);
 
         public bool Equals(IFunctionInfo other)
         {

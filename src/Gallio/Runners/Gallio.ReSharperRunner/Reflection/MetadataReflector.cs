@@ -201,6 +201,16 @@ namespace Gallio.ReSharperRunner.Reflection
         }
 
         /// <summary>
+        /// Obtains a reflection wrapper for a return value.
+        /// </summary>
+        /// <param name="target">The return value, or null if none</param>
+        /// <returns>The reflection wrapper, or null if none</returns>
+        public IParameterInfo Wrap(IMetadataReturnValue target)
+        {
+            return target != null ? new MetadataReturnValueWrapper(this, target) : null;
+        }
+
+        /// <summary>
         /// Obtains a reflection wrapper for a generic parameter.
         /// </summary>
         /// <param name="target">The generic parameter, or null if none</param>
@@ -357,6 +367,12 @@ namespace Gallio.ReSharperRunner.Reflection
                         return parameter;
             }
 
+            return null;
+        }
+
+        internal IParameter GetDeclaredElementWithLock(IMetadataReturnValue metadataParameter)
+        {
+            // FIXME: Not sure which ReSharper code model element represents a return value.
             return null;
         }
 

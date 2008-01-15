@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Reflection;
+using Gallio.Reflection.Impl;
 using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.ReSharper.Editor;
 using JetBrains.ReSharper.Psi;
@@ -87,12 +88,12 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return EnumerateAttributesForElement(Target, inherit);
         }
 
-        MemberInfo IMemberInfo.Resolve()
+        MemberInfo IMemberInfo.Resolve(bool throwOnError)
         {
-            return ResolveMemberInfo();
+            return ResolveMemberInfo(throwOnError);
         }
 
-        public abstract MemberInfo ResolveMemberInfo();
+        public abstract MemberInfo ResolveMemberInfo(bool throwOnError);
 
         public bool Equals(IMemberInfo other)
         {

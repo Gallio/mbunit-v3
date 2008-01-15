@@ -49,9 +49,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return CodeElementKind.Event; }
         }
 
-        public override MemberInfo ResolveMemberInfo()
+        public override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
-            return Resolve();
+            return Resolve(throwOnError);
         }
 
         public IMethodInfo AddMethod
@@ -69,9 +69,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.WrapMethod(Target.Remover); }
         }
 
-        public EventInfo Resolve()
+        public EventInfo Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveEvent(this);
+            return ReflectorResolveUtils.ResolveEvent(this, throwOnError);
         }
 
         public bool Equals(IEventInfo other)

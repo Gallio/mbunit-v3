@@ -60,7 +60,7 @@ namespace Gallio.Reflection.Impl
             get { return CodeElementKind.Parameter; }
         }
 
-        public ParameterInfo Resolve()
+        public ParameterInfo Resolve(bool throwOnError)
         {
             return Target;
         }

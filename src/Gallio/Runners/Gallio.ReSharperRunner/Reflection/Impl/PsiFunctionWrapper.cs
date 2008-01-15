@@ -69,6 +69,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
+        public bool IsGenericMethodDefinition
+        {
+            get { return Target.GetSignature(null).GetTypeParameters().Length != 0; }
+        }
+
         public bool IsAbstract
         {
             get { return Target.IsAbstract; }
@@ -102,17 +107,17 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
-        public override MemberInfo ResolveMemberInfo()
+        public override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
-            return ResolveMethodBase();
+            return ResolveMethodBase(throwOnError);
         }
 
-        MethodBase IFunctionInfo.Resolve()
+        MethodBase IFunctionInfo.Resolve(bool throwOnError)
         {
-            return ResolveMethodBase();
+            return ResolveMethodBase(throwOnError);
         }
 
-        public abstract MethodBase ResolveMethodBase();
+        public abstract MethodBase ResolveMethodBase(bool throwOnError);
 
         public bool Equals(IFunctionInfo other)
         {

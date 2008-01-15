@@ -91,7 +91,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.AreSame(assemblyTest, typeTest.Parent);
             Assert.AreEqual(TestKinds.Fixture, typeTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), typeTest.CodeElement.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest), ((ITypeInfo) typeTest.CodeElement).Resolve());
+            Assert.AreEqual(typeof(SimpleTest), ((ITypeInfo) typeTest.CodeElement).Resolve(true));
             Assert.AreEqual("SimpleTest", typeTest.Name);
             Assert.AreEqual(2, typeTest.Children.Count);
 
@@ -100,7 +100,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.AreSame(typeTest, passTest.Parent);
             Assert.AreEqual(TestKinds.Test, passTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")), passTest.CodeElement.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), ((IMethodInfo) passTest.CodeElement).Resolve());
+            Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), ((IMethodInfo) passTest.CodeElement).Resolve(true));
             Assert.AreEqual("Pass", passTest.Name);
 
             MbUnitTest failTest = (MbUnitTest)GetDescendantByName(typeTest, "Fail");
@@ -108,7 +108,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.AreSame(typeTest, failTest.Parent);
             Assert.AreEqual(TestKinds.Test, failTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")), failTest.CodeElement.CodeReference);
-            Assert.AreEqual(typeof(SimpleTest).GetMethod("Fail"), ((IMethodInfo)failTest.CodeElement).Resolve());
+            Assert.AreEqual(typeof(SimpleTest).GetMethod("Fail"), ((IMethodInfo)failTest.CodeElement).Resolve(true));
             Assert.AreEqual("Fail", failTest.Name);
         }
 

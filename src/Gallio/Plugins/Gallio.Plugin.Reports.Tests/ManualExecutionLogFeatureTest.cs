@@ -78,7 +78,11 @@ namespace Gallio.Plugin.Reports.Tests
         {
             Log.Failures.WriteLine("A failure.");
             Log.Warnings.WriteLine("A warning.");
-            Log.WriteLine("Some log output.");
+            Log.ConsoleInput.WriteLine("Console input.");
+            Log.ConsoleOutput.WriteLine("Console output.");
+            Log.ConsoleError.WriteLine("Console error.");
+            Log.DebugTrace.WriteLine("Debug / trace.");
+            Log.WriteLine("Default log stream.");
         }
 
         [Test]

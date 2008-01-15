@@ -76,6 +76,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return false; }
         }
 
+        public virtual bool IsGenericTypeDefinition
+        {
+            get { return false; }
+        }
+
         public TypeCode TypeCode
         {
             get { return ReflectorTypeUtils.GetTypeCode(this); }
@@ -98,14 +103,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public abstract IList<IGenericParameterInfo> GenericParameters { get; }
         public abstract bool IsAssignableFrom(ITypeInfo type);
 
-        public Type Resolve()
+        public Type Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveType(this);
+            return ReflectorResolveUtils.ResolveType(this, throwOnError);
         }
 
-        MemberInfo IMemberInfo.Resolve()
+        MemberInfo IMemberInfo.Resolve(bool throwOnError)
         {
-            return Resolve();
+            return Resolve(throwOnError);
         }
 
         public override int GetHashCode()

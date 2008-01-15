@@ -93,6 +93,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return false; }
         }
 
+        public override bool IsGenericTypeDefinition
+        {
+            get { return Target.IsOpenType; }
+        }
+
         public override TypeAttributes TypeAttributes
         {
             get

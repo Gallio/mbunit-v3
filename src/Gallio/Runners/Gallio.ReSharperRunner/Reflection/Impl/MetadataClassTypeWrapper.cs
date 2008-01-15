@@ -232,6 +232,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             throw new NotImplementedException();
         }
 
+        public override bool IsGenericTypeDefinition
+        {
+            get
+            {
+                return Target.Arguments.Length != Target.Type.GenericParameters.Length;
+            }
+        }
+
         public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
         {
             return ReflectorAttributeUtils.EnumerateTypeAttributes(this, inherit, delegate(ITypeInfo member)

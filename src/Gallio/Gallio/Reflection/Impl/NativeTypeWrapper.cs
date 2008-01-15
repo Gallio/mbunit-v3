@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Hosting;
 using Gallio.Reflection.Impl;
 
 namespace Gallio.Reflection.Impl
@@ -71,6 +70,11 @@ namespace Gallio.Reflection.Impl
         public bool IsGenericParameter
         {
             get { return Target.IsGenericParameter; }
+        }
+
+        public bool IsGenericTypeDefinition
+        {
+            get { return Target.IsGenericTypeDefinition; }
         }
 
         public int ArrayRank
@@ -163,10 +167,10 @@ namespace Gallio.Reflection.Impl
 
         public bool IsAssignableFrom(ITypeInfo type)
         {
-            return Target.IsAssignableFrom(type.Resolve());
+            return Target.IsAssignableFrom(type.Resolve(true));
         }
 
-        new public Type Resolve()
+        new public Type Resolve(bool throwOnError)
         {
             return Target;
         }

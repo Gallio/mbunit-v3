@@ -19,6 +19,8 @@ using System.Reflection;
 
 namespace Gallio.Reflection.Impl
 {
+    // TODO: We could wrap CustomAttributeData to get the positional and
+    //       named parameter information.
     internal sealed class NativeAttributeWrapper : IAttributeInfo
     {
         private readonly Attribute attrib;

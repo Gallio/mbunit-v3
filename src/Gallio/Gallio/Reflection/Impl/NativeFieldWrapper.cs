@@ -65,7 +65,7 @@ namespace Gallio.Reflection.Impl
             get { return CodeElementKind.Field; }
         }
 
-        new public FieldInfo Resolve()
+        new public FieldInfo Resolve(bool throwOnError)
         {
             return Target;
         }

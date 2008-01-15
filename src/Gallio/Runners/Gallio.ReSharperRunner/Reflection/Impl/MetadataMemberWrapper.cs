@@ -15,6 +15,7 @@
 
 using System.Reflection;
 using Gallio.Reflection;
+using Gallio.Reflection.Impl;
 using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.Metadata.Reader.API;
 
@@ -49,12 +50,12 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public abstract ITypeInfo DeclaringType { get; }
 
-        MemberInfo IMemberInfo.Resolve()
+        MemberInfo IMemberInfo.Resolve(bool throwOnError)
         {
-            return ResolveMemberInfo();
+            return ResolveMemberInfo(throwOnError);
         }
 
-        public abstract MemberInfo ResolveMemberInfo();
+        public abstract MemberInfo ResolveMemberInfo(bool throwOnError);
 
         public bool Equals(IMemberInfo other)
         {

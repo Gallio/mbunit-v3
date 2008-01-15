@@ -44,7 +44,7 @@ namespace MbUnit.Model
 
             return delegate(MbUnitTestState state)
             {
-                MethodInfo resolvedMethod = method.Resolve();
+                MethodInfo resolvedMethod = method.Resolve(true);
                 try
                 {
                     if (resolvedMethod.IsStatic)

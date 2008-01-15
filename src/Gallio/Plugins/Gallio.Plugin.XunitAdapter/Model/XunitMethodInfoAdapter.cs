@@ -71,7 +71,7 @@ namespace Gallio.Plugin.XunitAdapter.Model
 
         public MethodInfo MethodInfo
         {
-            get { return target.Resolve(); }
+            get { return target.Resolve(false); }
         }
 
         public string Name

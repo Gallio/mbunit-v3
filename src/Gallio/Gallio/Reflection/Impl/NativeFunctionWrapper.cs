@@ -37,6 +37,11 @@ namespace Gallio.Reflection.Impl
             get { return Target.IsAbstract; }
         }
 
+        public bool IsGenericMethodDefinition
+        {
+            get { return Target.IsGenericMethodDefinition; }
+        }
+
         public bool IsPublic
         {
             get { return Target.IsPublic; }
@@ -65,7 +70,7 @@ namespace Gallio.Reflection.Impl
             }
         }
 
-        new public MethodBase Resolve()
+        new public MethodBase Resolve(bool throwOnError)
         {
             return Target;
         }

@@ -39,7 +39,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public override bool IsByRef
         {
-            get{ return true; }
+            get { return true; }
         }
 
         public override ITypeInfo EffectiveClassType

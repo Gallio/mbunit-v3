@@ -176,7 +176,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         private Type ResolveType(IType type)
         {
-            return Reflector.Wrap(type, false).Resolve();
+            return Reflector.Wrap(type, false).Resolve(false);
         }
     }
 }

@@ -57,14 +57,14 @@ namespace Gallio.Reflection.Impl
         /// <returns>The attribute instance</returns>
         public static object CreateAttribute(IAttributeInfo attribute)
         {
-            ConstructorInfo constructor = attribute.Constructor.Resolve();
+            ConstructorInfo constructor = attribute.Constructor.Resolve(true);
             object instance = constructor.Invoke(attribute.InitializedArgumentValues);
 
             foreach (KeyValuePair<IFieldInfo, object> initializer in attribute.InitializedFieldValues)
-                initializer.Key.Resolve().SetValue(instance, initializer.Value);
+                initializer.Key.Resolve(true).SetValue(instance, initializer.Value);
 
             foreach (KeyValuePair<IPropertyInfo, object> initializer in attribute.InitializedPropertyValues)
-                initializer.Key.Resolve().SetValue(instance, initializer.Value, null);
+                initializer.Key.Resolve(true).SetValue(instance, initializer.Value, null);
 
             return instance;
         }

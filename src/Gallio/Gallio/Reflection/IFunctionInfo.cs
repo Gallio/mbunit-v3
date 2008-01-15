@@ -43,6 +43,11 @@ namespace Gallio.Reflection
         bool IsAbstract { get; }
 
         /// <summary>
+        /// Returns true if this is a generic method definition.
+        /// </summary>
+        bool IsGenericMethodDefinition { get; }
+
+        /// <summary>
         /// Returns true if the method is public.
         /// </summary>
         bool IsPublic { get; }
@@ -67,8 +72,11 @@ namespace Gallio.Reflection
         /// <summary>
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
+        /// <param name="throwOnError">If true, throws an exception if the target could
+        /// not be resolved, otherwise returns a reflection object that represents an
+        /// unresolved member which may only support a subset of the usual operations</param>
         /// <returns>The native reflection target</returns>
         /// <exception cref="CodeElementResolveException">Thrown if the target cannot be resolved</exception>
-        new MethodBase Resolve();
+        new MethodBase Resolve(bool throwOnError);
     }
 }

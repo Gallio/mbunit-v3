@@ -1,32 +1,16 @@
-// Copyright 2008 MbUnit Project - http://www.mbunit.com/
-// Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
-using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ReSharper.Psi;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
 {
-    internal sealed class MetadataParameterWrapper : MetadataCodeElementWrapper<IMetadataParameter>, IParameterInfo
+    internal sealed class MetadataReturnValueWrapper : MetadataCodeElementWrapper<IMetadataReturnValue>, IParameterInfo
     {
-        public MetadataParameterWrapper(MetadataReflector reflector, IMetadataParameter target)
+        public MetadataReturnValueWrapper(MetadataReflector reflector, IMetadataReturnValue target)
             : base(reflector, target)
         {
         }
@@ -38,7 +22,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public override string Name
         {
-            get { return Target.Name; }
+            get { return "<return>"; }
         }
 
         public override CodeReference CodeReference
@@ -58,10 +42,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public int Position
         {
-            get
-            {
-                return Array.IndexOf(Target.DeclaringMethod.Parameters, Target);
-            }
+            get { return 0; }
         }
 
         public IMemberInfo Member
@@ -71,14 +52,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public ParameterAttributes ParameterAttributes
         {
-            get
-            {
-                ParameterAttributes flags = 0;
-                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.IsIn);
-                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.IsOut);
-                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Optional, Target.IsOptional);
-                return flags;
-            }
+            get { return ParameterAttributes.Retval; }
         }
 
         public override CodeElementKind Kind
@@ -105,7 +79,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
             return ReflectorAttributeUtils.EnumerateParameterAttributes(this, inherit, delegate(IParameterInfo member)
             {
-                return EnumerateAttributesForEntity(((MetadataParameterWrapper)member).Target);
+                return EnumerateAttributesForEntity(((MetadataReturnValueWrapper)member).Target);
             });
         }
     }

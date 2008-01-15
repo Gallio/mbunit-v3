@@ -88,6 +88,11 @@ namespace Gallio.Reflection
         bool IsGenericParameter { get; }
 
         /// <summary>
+        /// Returns true if the type is a generic type definition.
+        /// </summary>
+        bool IsGenericTypeDefinition { get; }
+
+        /// <summary>
         /// Gets the rank of the array type.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the type is not an array type</exception>
@@ -163,8 +168,11 @@ namespace Gallio.Reflection
         /// <summary>
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
+        /// <param name="throwOnError">If true, throws an exception if the target could
+        /// not be resolved, otherwise returns a reflection object that represents an
+        /// unresolved member which may only support a subset of the usual operations</param>
         /// <returns>The native reflection target</returns>
         /// <exception cref="CodeElementResolveException">Thrown if the target cannot be resolved</exception>
-        new Type Resolve();
+        new Type Resolve(bool throwOnError);
     }
 }

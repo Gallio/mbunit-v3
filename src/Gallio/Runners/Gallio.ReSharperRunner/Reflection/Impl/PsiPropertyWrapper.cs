@@ -62,14 +62,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.Wrap(Target.Setter(false)); }
         }
 
-        public override MemberInfo ResolveMemberInfo()
+        public override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
-            return Resolve();
+            return Resolve(throwOnError);
         }
 
-        public PropertyInfo Resolve()
+        public PropertyInfo Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveProperty(this);
+            return ReflectorResolveUtils.ResolveProperty(this, throwOnError);
         }
 
         public bool Equals(ISlotInfo other)

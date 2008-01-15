@@ -134,7 +134,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         private Type ResolveType(IMetadataType type)
         {
-            return Reflector.Wrap(type).Resolve();
+            return Reflector.Wrap(type).Resolve(false);
         }
     }
 }

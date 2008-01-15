@@ -39,10 +39,19 @@ namespace Gallio.Reflection
         ITypeInfo ReturnType { get; }
 
         /// <summary>
+        /// Gets the method return parameter object that contains information
+        /// about the return value and its attributes.
+        /// </summary>
+        IParameterInfo ReturnParameter { get; }
+
+        /// <summary>
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
+        /// <param name="throwOnError">If true, throws an exception if the target could
+        /// not be resolved, otherwise returns a reflection object that represents an
+        /// unresolved member which may only support a subset of the usual operations</param>
         /// <returns>The native reflection target</returns>
         /// <exception cref="NotSupportedException">Thrown if the target cannot be resolved</exception>
-        new MethodInfo Resolve();
+        new MethodInfo Resolve(bool throwOnError);
     }
 }

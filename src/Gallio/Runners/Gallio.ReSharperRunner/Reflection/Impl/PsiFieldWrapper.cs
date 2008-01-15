@@ -37,9 +37,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return 0; }
         }
 
-        public override MemberInfo ResolveMemberInfo()
+        public override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
-            return Resolve();
+            return Resolve(throwOnError);
         }
 
         public FieldAttributes FieldAttributes
@@ -102,9 +102,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return CodeElementKind.Field; }
         }
 
-        public FieldInfo Resolve()
+        public FieldInfo Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveField(this);
+            return ReflectorResolveUtils.ResolveField(this, throwOnError);
         }
 
         public bool Equals(ISlotInfo other)

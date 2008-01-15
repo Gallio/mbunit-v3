@@ -92,6 +92,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return false; }
         }
 
+        public virtual bool IsGenericTypeDefinition
+        {
+            get { return false; }
+        }
+
         public abstract string CompoundName { get; }
         public abstract ITypeInfo DeclaringType { get; }
         public abstract IAssemblyInfo Assembly { get; }
@@ -108,14 +113,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
         public abstract IList<IGenericParameterInfo> GenericParameters { get; }
 
-        public Type Resolve()
+        public Type Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveType(this);
+            return ReflectorResolveUtils.ResolveType(this, throwOnError);
         }
 
-        MemberInfo IMemberInfo.Resolve()
+        MemberInfo IMemberInfo.Resolve(bool throwOnError)
         {
-            return Resolve();
+            return Resolve(throwOnError);
         }
 
         public bool Equals(IMemberInfo other)

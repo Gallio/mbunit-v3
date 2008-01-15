@@ -30,12 +30,17 @@ namespace Gallio.Reflection.Impl
             get { return Reflector.Wrap(Target.ReturnType); }
         }
 
+        public IParameterInfo ReturnParameter
+        {
+            get { return Reflector.Wrap(Target.ReturnParameter); }
+        }
+
         public override CodeElementKind Kind
         {
             get { return CodeElementKind.Method; }
         }
 
-        new public MethodInfo Resolve()
+        new public MethodInfo Resolve(bool throwOnError)
         {
             return Target;
         }
