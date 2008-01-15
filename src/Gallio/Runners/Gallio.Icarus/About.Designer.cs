@@ -51,14 +51,8 @@ namespace Gallio.Icarus
             this.label2 = new System.Windows.Forms.Label();
             this.componentList = new System.Windows.Forms.ListBox();
             this.websiteLink = new System.Windows.Forms.LinkLabel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.projectContributorsLabel = new System.Windows.Forms.Label();
-            this.projectLeadsLabel = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -84,7 +78,7 @@ namespace Gallio.Icarus
             // buttonClose
             // 
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point(333, 321);
+            this.buttonClose.Location = new System.Drawing.Point(333, 268);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(88, 23);
             this.buttonClose.TabIndex = 2;
@@ -97,7 +91,7 @@ namespace Gallio.Icarus
             this.versionLabel.AutoSize = true;
             this.versionLabel.Location = new System.Drawing.Point(12, 82);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(168, 13);
+            this.versionLabel.Size = new System.Drawing.Size(160, 13);
             this.versionLabel.TabIndex = 3;
             this.versionLabel.Text = "Gallio Icarus - Version {0}.{1}.{2}";
             // 
@@ -106,7 +100,7 @@ namespace Gallio.Icarus
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 112);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(147, 13);
+            this.label2.Size = new System.Drawing.Size(139, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Installed Gallio components:";
             // 
@@ -115,7 +109,7 @@ namespace Gallio.Icarus
             this.componentList.FormattingEnabled = true;
             this.componentList.Location = new System.Drawing.Point(12, 128);
             this.componentList.Name = "componentList";
-            this.componentList.Size = new System.Drawing.Size(409, 95);
+            this.componentList.Size = new System.Drawing.Size(409, 134);
             this.componentList.TabIndex = 5;
             // 
             // websiteLink
@@ -130,63 +124,11 @@ namespace Gallio.Icarus
             this.websiteLink.Text = "Website: http://www.mbunit.com/";
             this.websiteLink.UseCompatibleTextRendering = true;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.projectContributorsLabel);
-            this.groupBox1.Controls.Add(this.projectLeadsLabel);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(12, 230);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(315, 114);
-            this.groupBox1.TabIndex = 7;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "MbUnit Project Contributors";
-            // 
-            // projectContributorsLabel
-            // 
-            this.projectContributorsLabel.Location = new System.Drawing.Point(22, 75);
-            this.projectContributorsLabel.Name = "projectContributorsLabel";
-            this.projectContributorsLabel.Size = new System.Drawing.Size(287, 31);
-            this.projectContributorsLabel.TabIndex = 3;
-            this.projectContributorsLabel.Text = "Ben Hall, Graham Hay, Johan Appelgren, Joey Calisay, David Parkinson, Jeff Brown," +
-    " Marc Stober, Mark Haley";
-            // 
-            // projectLeadsLabel
-            // 
-            this.projectLeadsLabel.AutoSize = true;
-            this.projectLeadsLabel.Location = new System.Drawing.Point(22, 35);
-            this.projectLeadsLabel.Name = "projectLeadsLabel";
-            this.projectLeadsLabel.Size = new System.Drawing.Size(86, 13);
-            this.projectLeadsLabel.TabIndex = 2;
-            this.projectLeadsLabel.Text = "Andrew Stopford";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(7, 59);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(75, 13);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "Contributors";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(7, 20);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(85, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Project Leads";
-            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(433, 357);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(433, 303);
             this.Controls.Add(this.websiteLink);
             this.Controls.Add(this.componentList);
             this.Controls.Add(this.label2);
@@ -203,8 +145,6 @@ namespace Gallio.Icarus
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -219,10 +159,5 @@ namespace Gallio.Icarus
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ListBox componentList;
         private System.Windows.Forms.LinkLabel websiteLink;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label projectContributorsLabel;
-        private System.Windows.Forms.Label projectLeadsLabel;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
     }
 }
