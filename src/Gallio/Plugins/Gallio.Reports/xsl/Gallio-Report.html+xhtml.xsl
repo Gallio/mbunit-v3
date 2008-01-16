@@ -500,7 +500,7 @@
     <xsl:variable name="isImage" select="starts-with(@contentType, 'image/')" />
     <xsl:choose>
       <xsl:when test="$attachmentBrokerUrl != ''">
-        <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
+        <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
         <xsl:choose>
           <xsl:when test="$isImage">
             <img src="{$attachmentBrokerQuery}" alt="Attachment: {@name}" />
