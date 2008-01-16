@@ -1,0 +1,47 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CSharpProject Include="MbUnit\MbUnit.csproj" />
+    
+    <CSharpProject Include="MbUnit.TestResources\MbUnit.TestResourcescsproj" />
+    <CSharpProject Include="MbUnit.Tests\MbUnit.Tests.csproj" />
+
+    <CSharpProject Include="Samples\MbUnit.Samples\MbUnit.Samples.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="MbUnit\bin\MbUnit.dll" />
+    <Binary Include="MbUnit\MbUnit.plugin" />
+
+    <Binary Include="Samples\*.sln">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="Samples\**\*.cs" Exclude="Samples\**\AdditionalAssemblyInfo.cs">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="Samples\**\*.resx">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="Samples\**\*.png">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="Samples\**\*.csproj">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="Samples\MbUnit.Samples\bin\MbUnit.Samples.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\WatiN\bin\Interop.SHDocVw.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\WatiN\bin\Microsoft.mshtml.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(LibsDir)\WatiN\bin\WatiN.Core.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="MbUnit.Tests\bin\MbUnit.Tests.dll" />
+  </ItemGroup>
+</Project>

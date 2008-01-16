@@ -17,7 +17,7 @@ using System;
 using System.Reflection;
 using Castle.Core.Logging;
 using Gallio.Reflection.Impl;
-using Gallio.TestResources.MbUnit;
+using MbUnit.TestResources;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Reflection.Impl

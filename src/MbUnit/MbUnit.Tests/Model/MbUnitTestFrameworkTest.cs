@@ -19,7 +19,7 @@ using Gallio.Reflection;
 using MbUnit.Framework;
 using MbUnit.Model;
 using Gallio.Model;
-using Gallio.TestResources.MbUnit;
+using MbUnit.TestResources;
 using Gallio.Tests.Model;
 
 namespace MbUnit.Tests.Framework.Kernel.Model

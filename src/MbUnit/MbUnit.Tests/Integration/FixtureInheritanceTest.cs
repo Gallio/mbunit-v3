@@ -19,7 +19,7 @@ using Gallio.Runner.Reports;
 using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Tests.Integration;
-using Gallio.TestResources.MbUnit.Fixtures;
+using MbUnit.TestResources.Fixtures;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Integration

@@ -1,0 +1,9 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CSharpProject Include="Gallio.CCNetDashboardPlugin\Gallio.CCNetDashboardPlugin.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.CCNetDashboardPlugin\bin\Gallio.CCNetDashboardPlugin.dll" />
+  </ItemGroup>
+</Project>

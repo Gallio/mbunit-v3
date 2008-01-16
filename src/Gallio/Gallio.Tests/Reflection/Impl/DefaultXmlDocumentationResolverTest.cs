@@ -19,7 +19,7 @@ using Castle.Core.Logging;
 using Gallio.Hosting;
 using Gallio.Reflection.Impl;
 using Gallio.Tests;
-using Gallio.TestResources.MbUnit;
+using MbUnit.TestResources;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Reflection.Impl

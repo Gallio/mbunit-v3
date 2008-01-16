@@ -1,0 +1,14 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CSharpProject Include="Gallio.NAntTasks\Gallio.NAntTasks.csproj" />
+    <CSharpProject Include="Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.NAntTasks.Tests\bin\Gallio.NAntTasks.Tests.dll" />
+  </ItemGroup>
+</Project>
