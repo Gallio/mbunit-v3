@@ -50,7 +50,7 @@ namespace CCNet.Gallio.WebDashboard.Plugin
 
         public ConditionalGetFingerprint GetFingerprint(IRequest request)
         {
-            return fingerprintFactory.BuildFromRequest(request);
+            return fingerprintFactory.BuildFromDate(DateTime.MinValue);
         }
 
         private static XPathNavigator FindTestStepNode(XPathNavigator rootNavigator, IXmlNamespaceResolver resolver, string stepId)
