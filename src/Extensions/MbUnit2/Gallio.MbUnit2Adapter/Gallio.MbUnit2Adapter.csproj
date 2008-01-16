@@ -38,9 +38,9 @@
       <HintPath>..\libs\MbUnit.Framework.dll</HintPath>
       <Aliases>MbUnit2</Aliases>
     </Reference>
-    <Reference Include="QuickGraph, Version=2.21.1.0, Culture=neutral, PublicKeyToken=975e84d0c8d6464d">
+    <Reference Include="QuickGraph, Version=2.4.2.2, Culture=neutral, PublicKeyToken=975e84d0c8d6464d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\libs\MbUnit2\bin\QuickGraph.dll</HintPath>
+      <HintPath>..\libs\QuickGraph.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
