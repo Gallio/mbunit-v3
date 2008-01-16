@@ -9,7 +9,7 @@
   <xsl:variable name="cssDir"><xsl:if test="$resourceRoot != ''"><xsl:value-of select="$resourceRoot"/>/</xsl:if>css/</xsl:variable>
   <xsl:variable name="jsDir"><xsl:if test="$resourceRoot != ''"><xsl:value-of select="$resourceRoot"/>/</xsl:if>js/</xsl:variable>
   <xsl:variable name="imgDir"><xsl:if test="$resourceRoot != ''"><xsl:value-of select="$resourceRoot"/>/</xsl:if>img/</xsl:variable>
-  <xsl:variable name="attachmentLinkPrefix"></xsl:variable>
+  <xsl:variable name="attachmentBrokerUrl"></xsl:variable>
 
   <xsl:template match="/">
     <xsl:apply-templates select="/g:report" mode="html-document" />

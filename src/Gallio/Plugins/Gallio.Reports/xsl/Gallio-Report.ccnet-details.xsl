@@ -8,7 +8,7 @@
   <xsl:variable name="cssDir">/gallio/css/</xsl:variable>
   <xsl:variable name="jsDir">/gallio/js/</xsl:variable>
   <xsl:variable name="imgDir">/gallio/img/</xsl:variable>
-  <xsl:variable name="attachmentLinkPrefix">GallioAttachment.aspx?name=</xsl:variable>
+  <xsl:variable name="attachmentBrokerUrl">GallioAttachment.aspx?</xsl:variable>
 
   <xsl:template match="/">
     <xsl:apply-templates select="//g:report" mode="html-fragment" />

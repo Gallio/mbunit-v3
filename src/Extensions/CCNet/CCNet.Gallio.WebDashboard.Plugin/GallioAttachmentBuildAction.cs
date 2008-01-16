@@ -27,51 +27,76 @@ namespace CCNet.Gallio.WebDashboard.Plugin
 
         public IResponse Execute(ICruiseRequest cruiseRequest)
         {
-            string attachmentName = cruiseRequest.Request.GetText(@"name");
-            if (attachmentName == null)
+            string stepId = cruiseRequest.Request.GetText(@"testStepId");
+            if (stepId.Length == 0)
+                throw new InvalidOperationException("Missing test step id.");
+
+            string attachmentName = cruiseRequest.Request.GetText(@"attachmentName");
+            if (attachmentName.Length == 0)
                 throw new InvalidOperationException("Missing attachment name.");
 
             Build build = buildRetriever.GetBuild(cruiseRequest.BuildSpecifier);
 
             XPathDocument document = new XPathDocument(new StringReader(build.Log));
-            XPathNavigator navigator = document.CreateNavigator();
+            XPathNavigator rootNavigator = document.CreateNavigator();
 
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(navigator.NameTable);
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(rootNavigator.NameTable);
             nsmgr.AddNamespace(@"g", NamespaceUri);
 
-            foreach (XPathNavigator attachmentNavigator in navigator.Select(@"//g:report/g:packageRun/descendant::g:attachment", nsmgr))
-            {
-                if (attachmentNavigator.GetAttribute(@"name", NamespaceUri) == attachmentName)
-                {
-                    string contentDisposition = attachmentNavigator.GetAttribute(@"contentDisposition", NamespaceUri);
-                    if (contentDisposition != @"inline")
-                        throw new InvalidOperationException("The attachment is not available.");
-
-                    string contentType = attachmentNavigator.GetAttribute(@"contentType", NamespaceUri);
-                    string encoding = attachmentNavigator.GetAttribute(@"encoding", NamespaceUri);
-                    string encodedContent = attachmentNavigator.Value;
-
-                    byte[] content;
-                    if (encoding == @"base64")
-                    {
-                        content = Convert.FromBase64String(encodedContent);
-                    }
-                    else
-                    {
-                        content = Encoding.UTF8.GetBytes(encodedContent);
-                        contentType += @"; charset=utf-8";
-                    }
-
-                    return new TypedBinaryResponse(content, contentType);
-                }
-            }
-
-            throw new InvalidOperationException("Invalid attachment name.");
+            XPathNavigator testStepNavigator = FindTestStepNode(rootNavigator, nsmgr, stepId);
+            XPathNavigator attachmentNavigator = FindAttachmentNode(testStepNavigator, nsmgr, attachmentName);
+            return CreateResponseFromAttachment(attachmentNavigator);
         }
 
         public ConditionalGetFingerprint GetFingerprint(IRequest request)
         {
             return fingerprintFactory.BuildFromRequest(request);
+        }
+
+        private static XPathNavigator FindTestStepNode(XPathNavigator rootNavigator, IXmlNamespaceResolver resolver, string stepId)
+        {
+            foreach (XPathNavigator testStepNavigator in rootNavigator.Select(@"//g:report/g:packageRun/descendant::g:testStepRun/g:testStep", resolver))
+            {
+                if (testStepNavigator.GetAttribute(@"id", "") == stepId)
+                    return testStepNavigator;
+            }
+
+            throw new InvalidOperationException("The step id is not valid.");
+        }
+
+        private static XPathNavigator FindAttachmentNode(XPathNavigator testStepNavigator, IXmlNamespaceResolver resolver, string attachmentName)
+        {
+            foreach (XPathNavigator attachmentNavigator in testStepNavigator.Select(@"../g:executionLog/g:attachments/g:attachment", resolver))
+            {
+                if (attachmentNavigator.GetAttribute(@"name", "") == attachmentName)
+                    return attachmentNavigator;
+            }
+
+            throw new InvalidOperationException("The attachment name is not valid.");
+        }
+
+        private static IResponse CreateResponseFromAttachment(XPathNavigator attachmentNavigator)
+        {
+            string contentDisposition = attachmentNavigator.GetAttribute(@"contentDisposition", "");
+            if (contentDisposition != @"inline")
+                throw new InvalidOperationException("The attachment was not inlined into the XML report.");
+
+            string contentType = attachmentNavigator.GetAttribute(@"contentType", "");
+            string encoding = attachmentNavigator.GetAttribute(@"encoding", "");
+            string encodedContent = attachmentNavigator.Value;
+
+            byte[] content;
+            if (encoding == @"base64")
+            {
+                content = Convert.FromBase64String(encodedContent);
+            }
+            else
+            {
+                content = Encoding.UTF8.GetBytes(encodedContent);
+                contentType += @"; charset=utf-8";
+            }
+
+            return new TypedBinaryResponse(content, contentType);
         }
     }
 }

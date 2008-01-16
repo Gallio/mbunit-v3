@@ -239,7 +239,7 @@
     <xsl:variable name="testId" select="g:testInstance/@testId" />
     <xsl:variable name="test" select="ancestor::g:report/g:testModel/descendant::g:test[@id = $testId]" />
     
-    <xsl:variable name="metadataEntries" select="$test/g:metadata/g:entry|g:testInstance/g:metadata/g:entry|g:testStepRun/g:step/g:metadata/g:entry" />
+    <xsl:variable name="metadataEntries" select="$test/g:metadata/g:entry|g:testInstance/g:metadata/g:entry|g:testStepRun/g:testStep/g:metadata/g:entry" />
     <xsl:variable name="kind" select="$metadataEntries[@key='TestKind']/g:value" />
     
     <xsl:variable name="testCases" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
@@ -332,7 +332,7 @@
           <xsl:with-param name="entries" select="$metadataEntries" />
         </xsl:call-template>
 
-        <div id="testStepRun-{g:testStepRun/g:step/@id}" class="testStepRun">
+        <div id="testStepRun-{g:testStepRun/g:testStep/@id}" class="testStepRun">
           <xsl:apply-templates select="g:testStepRun" mode="details-content" />
         </div>
 
@@ -347,7 +347,7 @@
 
   <xsl:template match="g:testStepRun" mode="details-content">
     <xsl:apply-templates select="g:executionLog">
-      <xsl:with-param name="stepId" select="g:step/@id" />
+      <xsl:with-param name="stepId" select="g:testStep/@id" />
     </xsl:apply-templates>
 
     <xsl:if test="g:children/g:testStepRun">
@@ -361,13 +361,13 @@
     <xsl:variable name="allStepResults" select="descendant-or-self::g:result" />
     <xsl:variable name="assertions" select="sum($allStepResults/@assertCount)" />
 
-    <li id="testStepRun-{g:step/@id}" class="testStepRun">
+    <li id="testStepRun-{g:testStep/@id}" class="testStepRun">
       <div class="testStepRunHeading">
         <xsl:call-template name="toggle">
-          <xsl:with-param name="href">testStepRunPanel-<xsl:value-of select="g:step/@id"/></xsl:with-param>
+          <xsl:with-param name="href">testStepRunPanel-<xsl:value-of select="g:testStep/@id"/></xsl:with-param>
         </xsl:call-template>
 
-        <xsl:value-of select="g:step/@fullName" />
+        <xsl:value-of select="g:testStep/@fullName" />
         
         <xsl:call-template name="outcomeBar">
           <xsl:with-param name="outcome" select="g:result/@outcome" />
@@ -376,8 +376,8 @@
         (Duration: <xsl:value-of select="format-number(g:result/@duration, '0.00')" />s, Assertions: <xsl:value-of select="$assertions"/>)
       </div>
 
-      <div id="testStepRunPanel-{g:step/@id}" class="testStepRunPanel">
-        <xsl:apply-templates select="g:step/g:metadata" />
+      <div id="testStepRunPanel-{g:testStep/@id}" class="testStepRunPanel">
+        <xsl:apply-templates select="g:testStep/g:metadata" />
         
         <xsl:apply-templates select="." mode="details-content" />
       </div>
@@ -499,14 +499,25 @@
   <xsl:template match="g:attachment" mode="embed">
     <xsl:variable name="isImage" select="starts-with(@contentType, 'image/')" />
     <xsl:choose>
+      <xsl:when test="$attachmentBrokerUrl != ''">
+        <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
+        <xsl:choose>
+          <xsl:when test="$isImage">
+            <img src="{$attachmentBrokerQuery}" alt="Attachment: {@name}" />
+          </xsl:when>
+          <xsl:otherwise>
+            Attachment: <a href="{$attachmentBrokerQuery}"><xsl:value-of select="@name" /></a>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
       <xsl:when test="@contentDisposition = 'link'">
         <xsl:variable name="attachmentUri" select="translate(@contentPath, '\', '/')" />
         <xsl:choose>
           <xsl:when test="$isImage">
-            <img src="{$attachmentLinkPrefix}{$attachmentUri}" alt="Attachment: {@name}" />
+            <img src="{$attachmentUri}" alt="Attachment: {@name}" />
           </xsl:when>
           <xsl:otherwise>
-            Attachment: <a href="{$attachmentLinkPrefix}{$attachmentUri}"><xsl:value-of select="@name" /></a>
+            Attachment: <a href="{$attachmentUri}"><xsl:value-of select="@name" /></a>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -521,9 +532,13 @@
   
   <xsl:template match="g:attachment" mode="link">
     <xsl:choose>
+      <xsl:when test="$attachmentBrokerUrl != ''">
+        <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
+        <a href="{$attachmentBrokerQuery}"><xsl:value-of select="@name" /></a>
+      </xsl:when>
       <xsl:when test="@contentDisposition = 'link'">
         <xsl:variable name="attachmentUri" select="translate(@contentPath, '\', '/')" />        
-        <a href="{$attachmentLinkPrefix}{$attachmentUri}"><xsl:value-of select="@name" /></a>
+        <a href="{$attachmentUri}"><xsl:value-of select="@name" /></a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="@name" /> (n/a)

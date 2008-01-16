@@ -45,7 +45,7 @@ namespace Gallio.Reports.Tests
             Log.EmbedHtml("Html", "<p>Some <b>HTML</b> markup.<br>With a line break.</p>");
 
             Log.Write("Embedded binary data:");
-            Log.Embed(new BinaryAttachment("Binary", "application/octet-stream", new byte[] { 67, 65, 66, 66, 65, 70, 69 }));
+            Log.Embed(new BinaryAttachment("Binary", "application/octet-stream", new byte[] { 67, 65, 66, 66, 65, 71, 69 }));
 
             Log.Write("The same embedded image as above:");
             Log.EmbedExisting("Image");
