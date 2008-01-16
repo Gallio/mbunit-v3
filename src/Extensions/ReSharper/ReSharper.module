@@ -1,15 +1,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
   <ItemGroup>
-    <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner\Gallio.ReSharperRunner.csproj" />
-    <CSharpProject Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner.Tests.csproj" />
+    <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner.csproj" />
+    <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll" />
-    <Binary Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll.config" />
+    <Binary Include="Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll" />
+    <Binary Include="Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll.config" />
   </ItemGroup>
 
   <ItemGroup>
-    <TestAssembly Include="$(SourceDir)\Gallio\Runners\Gallio.ReSharperRunner.Tests\bin\Gallio.ReSharperRunner.Tests.dll" />
+    <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\Gallio.ReSharperRunner.Tests.dll" />
   </ItemGroup>
 </Project>

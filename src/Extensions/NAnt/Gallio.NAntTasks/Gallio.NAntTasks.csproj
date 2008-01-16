@@ -40,11 +40,11 @@
     </Reference>
     <Reference Include="log4net, Version=1.2.1.40796, Culture=neutral, PublicKeyToken=aaa0f432407c68df">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\libs\NAnt\log4net.dll</HintPath>
+      <HintPath>..\libs\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NAnt.Core, Version=0.85.1932.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\libs\NAnt\NAnt.Core.dll</HintPath>
+      <HintPath>..\libs\NAnt.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

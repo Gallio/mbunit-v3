@@ -1,7 +1,8 @@
 <Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Version>$(CCNetLabel)</Version>
-    <NonInteractive>true</NonInteractive>
+    <ShowReports>false</ShowReports>
+    <ReportTypes>XML-Inline</ReportTypes>
   </PropertyGroup>
 
   <Import Project="Build.msbuild" />

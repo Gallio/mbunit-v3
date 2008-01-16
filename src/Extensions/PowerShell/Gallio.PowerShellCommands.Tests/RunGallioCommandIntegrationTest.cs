@@ -73,7 +73,8 @@ namespace Gallio.PowerShellCommands.Tests
             workingDirectory = Path.GetDirectoryName((Loader.GetAssemblyLocalPath(GetType().Assembly)));
 
             ProcessTask task = new ProcessTask(executablePath,
-               "\"& Add-PSSnapIn Gallio; Run-Gallio '..\\..\\..\\..\\TestResources\\Gallio.TestResources.MbUnit\\bin\\Gallio.TestResources.MbUnit.dll' -verbose -filter Type:SimpleTest \"");
+               "\"& Add-PSSnapIn Gallio; Run-Gallio 'MbUnit.TestResources.dll' -pd '" +
+               Loader.InstallationPath + "' -verbose -filter Type:SimpleTest \"");
             task.WorkingDirectory = workingDirectory;
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

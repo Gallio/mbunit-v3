@@ -1,4 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.TDNetRunner\Gallio.TDNetRunner.csproj" />
     <CSharpProject Include="Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests.csproj" />

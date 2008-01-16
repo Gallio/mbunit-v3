@@ -5,13 +5,18 @@
     <BuildBinDir>$(BuildDir)\bin</BuildBinDir>
     <BuildReportsDir>$(BuildDir)\reports</BuildReportsDir>
     <BuildDocsDir>$(BuildDir)\docs</BuildDocsDir>
+    <BuildExtrasDir>$(BuildDir)\extras</BuildExtrasDir>
     <BuildReleaseDir>$(BuildDir)\release</BuildReleaseDir>
+    <BuildTempDir>$(BuildDir)\temp</BuildTempDir>
     <LibsDir>$(RootDir)\libs</LibsDir>
     <SourceDir>$(RootDir)\src</SourceDir>
 
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
-    <NonInteractive Condition="'$(NonInteractive)'==''">false</NonInteractive>
+
     <Coverage Condition="'$(Coverage)'==''">true</Coverage>
+    
+    <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
+    <ReportTypes Condition="'$(ReportTypes)'==''">Html</ReportTypes>
 
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
     <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
@@ -25,28 +30,15 @@
     </CSharpProperties>
   </PropertyGroup>
 
+  <ItemGroup>
+    <NestedModule Include="$(SourceDir)\All.module" />
+  </ItemGroup>
+
   <!-- Note: The tasks assembly gets loaded lazily. -->
   <UsingTask AssemblyFile="$(BuildBinDir)\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
-
-  <!-- Load up configuration information for all of the modules to build.
-       They may contain the following items:
-
-       - CSharpProject: Path of a C# project file.
-       - TestAssembly: Path of a compiled test assembly to run.
-
-       - InstallerInclude: Path of an include file to add to the NSIS installer. (TODO)
-       - DocumentedAssembly: Path of an assembly with XML documentation to include.  (TODO)
-
-       - Binary: Path of a file to copy into the build\bin dir.
-       - Document: Path of a file to copy into the build\docs dir.
-       - File: Path of a file to copy into the build dir.
-
-       (Binary, Document and File may have optional Folder metadata
-        to specify a relative destination path within the respective dir.)
-
-  <Import Project="$(SourceDir)\All.module" />
+  <Import Project="$(RootDir)\Module.targets" />
 
   <!-- The NDoc projects to compile. -->
   <ItemGroup>
@@ -57,6 +49,10 @@
     <File Include="$(RootDir)\MbUnit License.txt" />
     <File Include="$(RootDir)\Release Notes.txt" />
     <File Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
+
+    <Extra Include="$(LibsDir)\H2Reg\H2Reg.*">
+      <Folder>H2Reg</Folder>
+    </Extra>
   </ItemGroup>
 
   <Target Name="Build"
@@ -72,20 +68,11 @@
   </Target>
 
   <Target Name="Test">
-    <Gallio Condition="! $(NonInteractive)"
-            Assemblies="@(TestAssembly)"
+    <Gallio Assemblies="@(TestAssembly)"
             ReportDirectory="$(BuildReportsDir)"
-            ReportTypes="Html"
+            ReportTypes="$(ReportTypes)"
             IgnoreFailures="true"
-            ShowReports="true">
-      <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
-    </Gallio>
-
-    <Gallio Condition="$(NonInteractive)"
-            Assemblies="@(TestAssembly)"
-            ReportDirectory="$(BuildReportsDir)"
-            ReportTypes="Xml"
-            IgnoreFailures="true">
+            ShowReports="$(ShowReports)">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
     </Gallio>
 
@@ -116,10 +103,14 @@
 
   <Target Name="CopyFiles"
           DependsOnTargets="CreateBuildDir">
+    <Message Text="Copying files to build folder..." Importance="High" />
+
     <Copy SourceFiles="@(Binary)"
           DestinationFolder="$(BuildBinDir)\%(Binary.Folder)\%(RecursiveDir)" />
     <Copy SourceFiles="@(Document)"
           DestinationFolder="$(BuildDocsDir)\%(Document.Folder)\%(RecursiveDir)" />
+    <Copy SourceFiles="@(Extra)"
+          DestinationFolder="$(BuildExtrasDir)\%(Extra.Folder)\%(RecursiveDir)" />
     <Copy SourceFiles="@(File)"
           DestinationFolder="$(BuildDir)\%(File.Folder)\%(RecursiveDir)" />
   </Target>
@@ -127,9 +118,22 @@
   <Target Name="BuildDocs"
           DependsOnTargets="BuildXMLDocs;BuildCHMDocs;BuildHxSDocs" />
 
+  <PropertyGroup>
+    <CopyrightText>Copyright 2008 MbUnit Project - http://www.mbunit.com/</CopyrightText>
+    <CopyrightHref>http://www.mbunit.com/</CopyrightHref>
+
+    <NDocCommonOptions>@(DocumentedAssembly->'"%(FullPath)"', ' ')</NDocCommonOptions>
+
+    <NDocXMLOptions>$(NDocCommonOptions) -documenter=Intellisense "-OutputDirectory=$(BuildBinDir)" -UseAssemblyShadowCache=False</NDocXMLOptions>
+
+    <NDocCHMOptions>$(NDocCommonOptions) -documenter=MSDN-CHM "-OutputDirectory=$(BuildDocsDir)" -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocCHMOptions>
+
+    <NDocHxSOptions>$(NDocCommonOptions) -documenter=MSDN-Help2 "-OutputDirectory=$(BuildDocsDir)\vs2005" -GenerateCollectionFiles=True -PlugInNamespace=ms.vsipcc -AllLinksWithinVSHelpCollection=True -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHxSOptions>
+  </PropertyGroup>
+
   <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
   <Target Name="BuildXMLDocs">
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=Intellisense -project=&quot;%(NDocProject.Identity)&quot;" />
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocXMLOptions)" />
     <Delete Files="$(BuildBinDir)\ndoc_qa.log;$(BuildBinDir)\ndoc_build.log" />
   </Target>
 
@@ -137,7 +141,7 @@
     <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in libs\Setup Files for the Microsoft HTML Help Workshop installer."
              Condition="! Exists('$(HTMLHelpCompilerPath)')" />
 
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-CHM -project=&quot;%(NDocProject.Identity)&quot;"
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocCHMOptions)"
           Condition="Exists('$(HTMLHelpCompilerPath)')" />
   </Target>
 
@@ -145,7 +149,7 @@
     <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (Hxs) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the Visual Studio 2005 SDK installer."
            Condition="! Exists('$(VS2005SDKHelpPath)')" />
 
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; -documenter=MSDN-Help2 -project=&quot;%(NDocProject.Identity)&quot;"
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
           Condition="Exists('$(VS2005SDKHelpPath)')" />
   </Target>
 
@@ -154,13 +158,13 @@
     <Warning Text="The NSIS tools must be installed to generate the installer.  Look in libs\Setup Files for the NSIS installer."
              Condition="! Exists('$(NSISPath)')" />
 
-    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;"
+    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;"
           Condition="Exists('$(NSISPath)')" />
   </Target>
 
   <Target Name="BuildZip"
           DependsOnTargets="CreateBuildDir">
-    <CreateItem Include="$(BuildBinDir)\**\*.*;$(BuildDocsDir)\**\*.*"
+    <CreateItem Include="$(BuildBinDir)\**\*.*;$(BuildDocsDir)\**\*.*;$(BuildExtrasDir)\**\*.*"
                 Exclude="$(BuildDocsDir)\ndoc_msdn_temp\**\*.*">
       <Output TaskParameter="Include" ItemName="ZipFiles" />
     </CreateItem>
@@ -172,6 +176,6 @@
   </Target>
 
   <Target Name="CreateBuildDir">
-    <MakeDir Directories="$(BuildDir);$(BuildBinDir);$(BuildReportsDir);$(BuildDocsDir);$(BuildReleaseDir)" />
+    <MakeDir Directories="$(BuildDir);$(BuildBinDir);$(BuildReportsDir);$(BuildDocsDir);$(BuildExtrasDir);$(BuildReleaseDir);$(BuildTempDir)" />
   </Target>
 </Project>

@@ -1,7 +1,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks.csproj" />
     <CSharpProject Include="Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DocumentedAssembly Include="Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" />
   </ItemGroup>
 
   <ItemGroup>

@@ -122,7 +122,7 @@
     <Compile Include="Collections\TreeUtilsTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MbUnit\Gallio.TestResources.MbUnit\MbUnit.TestResources.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
       <Name>MbUnit.TestResources</Name>
     </ProjectReference>

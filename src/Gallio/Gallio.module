@@ -1,14 +1,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-  </PropertyGroup>
+  <Import Project="$(RootDir)\Module.targets" />
 
   <ItemGroup>
     <CSharpProject Include="Gallio\Gallio.csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host.csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests.csproj" />
 
-    <CSharpProject Include="Plugins\Gallio.Plugin.Reports\Gallio.Plugin.Reports.csproj" />
-    <CSharpProject Include="Plugins\Gallio.Plugin.Reports.Tests\Gallio.Plugin.Reports.Tests.csproj" />
+    <CSharpProject Include="Plugins\Gallio.Reports\Gallio.Reports.csproj" />
+    <CSharpProject Include="Plugins\Gallio.Reports.Tests\Gallio.Reports.Tests.csproj" />
 
     <CSharpProject Include="Runners\Gallio.Echo\Gallio.Echo.csproj" />
     <CSharpProject Include="Runners\Gallio.Echo.Tests\Gallio.Echo.Tests.csproj" />
@@ -18,15 +17,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Binary Include="$(LibsDir)\Castle\bin\Castle.Core.dll" />
-    <Binary Include="$(LibsDir)\Castle\bin\Castle.MicroKernel.dll" />
-    <Binary Include="$(LibsDir)\Castle\bin\Castle.Windsor.dll" />
-    <Binary Include="$(LibsDir)\Castle\bin\Castle.DynamicProxy2.dll" />
+    <DocumentedAssembly Include="Gallio\bin\Gallio.dll" />
+  </ItemGroup>
 
-    <Binary Include="$(LibsDir)\Components\ZedGraph.dll" />
-    <Binary Include="$(LibsDir)\Components\ICSharpCode.TextEditor.dll" />
-    <Binary Include="$(LibsDir)\ReferenceAssemblies\System.Core.dll" />
-    <Binary Include="$(LibsDir)\ReferenceAssemblies\System.Management.Automation.dll" />
+  <ItemGroup>
+    <Binary Include="$(RootDir)\libs\Castle\bin\Castle.Core.dll" />
+    <Binary Include="$(RootDir)\libs\Castle\bin\Castle.MicroKernel.dll" />
+    <Binary Include="$(RootDir)\libs\Castle\bin\Castle.Windsor.dll" />
+    <Binary Include="$(RootDir)\libs\Castle\bin\Castle.DynamicProxy2.dll" />
+
+    <Binary Include="$(RootDir)\libs\Components\ZedGraph.dll" />
+    <Binary Include="$(RootDir)\libs\Components\ICSharpCode.TextEditor.dll" />
+    <Binary Include="$(RootDir)\libs\ReferenceAssemblies\System.Core.dll" />
+    <Binary Include="$(RootDir)\libs\ReferenceAssemblies\System.Management.Automation.dll" />
 
     <Binary Include="Gallio\bin\Gallio.dll" />
     <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
@@ -34,25 +37,25 @@
 
     <Binary Include="Gallio.Host\bin\Gallio.Host.exe" />
 
-    <Binary Include="Plugins\Gallio.Plugin.Reports\bin\Gallio.Plugin.Reports.dll">
+    <Binary Include="Plugins\Gallio.Reports\bin\Gallio.Reports.dll">
         <Folder>Reports</Folder>
     </Binary>
-    <Binary Include="Plugins\Gallio.Plugin.Reports\Gallio.Plugin.Reports.plugin">
+    <Binary Include="Plugins\Gallio.Reports\Gallio.Reports.plugin">
         <Folder>Reports</Folder>
     </Binary>
-    <Binary Include="Plugins\Gallio.Plugin.Reports\Readme.txt">
+    <Binary Include="Plugins\Gallio.Reports\Readme.txt">
         <Folder>Reports</Folder>
     </Binary>
-    <Binary Include="Plugins\Gallio.Plugin.Reports\css\*">
+    <Binary Include="Plugins\Gallio.Reports\css\*">
         <Folder>Reports\css</Folder>
     </Binary>
-    <Binary Include="Plugins\Gallio.Plugin.Reports\js\*">
+    <Binary Include="Plugins\Gallio.Reports\js\*">
         <Folder>Reports\js</Folder>
     </Binary>
-    <Binary Include="Plugins\Gallio.Plugin.Reports\img\*">
+    <Binary Include="Plugins\Gallio.Reports\img\*">
         <Folder>Reports\img</Folder>
     </Binary>
-    <Binary Include="Plugins\Gallio.Plugin.Reports\xsl\*">
+    <Binary Include="Plugins\Gallio.Reports\xsl\*">
         <Folder>Reports\xsl</Folder>
     </Binary>
 
@@ -70,7 +73,7 @@
   <ItemGroup>
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />
 
-    <TestAssembly Include="Plugins\Gallio.Plugin.Reports.Tests\bin\Gallio.Plugin.Reports.Tests.dll" />
+    <TestAssembly Include="Plugins\Gallio.Reports.Tests\bin\Gallio.Reports.Tests.dll" />
 
     <TestAssembly Include="Runners\Gallio.Echo.Tests\bin\Gallio.Echo.Tests.dll" />
     <TestAssembly Include="Runners\Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />

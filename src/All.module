@@ -1,5 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="Gallio\Gallio.proj" />
-  <Import Project="Gallio\MbUnit.proj" />
-  <Import Project="Gallio\Extensions.proj" />
+  <Import Project="$(RootDir)\Module.targets" />
+
+  <ItemGroup>
+    <NestedModule Include="Gallio\Gallio.module" />
+    <NestedModule Include="MbUnit\MbUnit.module" />
+    <NestedModule Include="Extensions\Extensions.module" />
+  </ItemGroup>
 </Project>

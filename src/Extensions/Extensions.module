@@ -1,7 +1,15 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <ExtensionModule Include="*\*.module" />
-  </ItemGroup>
+  <Import Project="$(RootDir)\Module.targets" />
 
-  <Import Project="@(ExtensionModule)" />
+  <ItemGroup>
+    <NestedModule Include="CCNet\CCNet.module" />
+    <NestedModule Include="MbUnit2\MbUnit2.module" />
+    <NestedModule Include="MSBuild\MSBuild.module" />
+    <NestedModule Include="NAnt\NAnt.module" />
+    <NestedModule Include="NUnit\NUnit.module" />
+    <NestedModule Include="PowerShell\PowerShell.module" />
+    <NestedModule Include="ReSharper\ReSharper.module" />
+    <NestedModule Include="TDNet\TDNet.module" />
+    <NestedModule Include="Xunit\Xunit.module" />
+  </ItemGroup>
 </Project>

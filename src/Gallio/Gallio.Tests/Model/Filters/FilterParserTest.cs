@@ -133,7 +133,7 @@ namespace Gallio.Tests.Model.Filters
 
         [RowTest]
         [Row("SimpleTest")]
-        [Row("Gallio.TestResources.MbUnit.SimpleTest")]
+        [Row("MbUnit.TestResources.SimpleTest")]
         public void FilterWithOneValue(string type)
         {
             string filter = "Type:" + type;
@@ -147,9 +147,9 @@ namespace Gallio.Tests.Model.Filters
 
         [RowTest]
         [Row("'SimpleTest'")]
-        [Row("'Gallio.TestResources.MbUnit.SimpleTest'")]
+        [Row("'MbUnit.TestResources.SimpleTest'")]
         [Row("\"SimpleTest\"")]
-        [Row("\"Gallio.TestResources.MbUnit.SimpleTest\"")]
+        [Row("\"MbUnit.TestResources.SimpleTest\"")]
         public void FilterWithQuotedValue(string type)
         {
             string filter = "Type:" + type;
@@ -165,9 +165,9 @@ namespace Gallio.Tests.Model.Filters
 
         [RowTest]
         [Row("/SimpleTest/", false)]
-        [Row("/Gallio.TestResources.MbUnit.SimpleTest/", false)]
+        [Row("/MbUnit.TestResources.SimpleTest/", false)]
         [Row("/simpletest/", true)]
-        [Row("/GALLIO.TESTRESOURCES.MBUNIT.SIMPLETEST/", true)]
+        [Row("/MBUNIT.TESTRESOURCES.SIMPLETEST/", true)]
         public void FilterWithRegexValue(string type, bool caseInsensitive)
         {
             string filter = "Type:" + type + (caseInsensitive ? "i" : "");
@@ -185,7 +185,7 @@ namespace Gallio.Tests.Model.Filters
 
         [RowTest]
         [Row("SimpleTest", "ParameterizedTest")]
-        [Row("Gallio.TestResources.MbUnit.SimpleTest", "ParameterizedTest")]
+        [Row("MbUnit.TestResources.SimpleTest", "ParameterizedTest")]
         public void FilterWithTwoValues(string type1, string type2)
         {
             string filter = "Type:" + type1 + "," + type2;
@@ -199,7 +199,7 @@ namespace Gallio.Tests.Model.Filters
 
         [RowTest]
         [Row("SimpleTest", "ParameterizedTest")]
-        [Row("Gallio.TestResources.MbUnit.SimpleTest", "ParameterizedTest")]
+        [Row("MbUnit.TestResources.SimpleTest", "ParameterizedTest")]
         public void OrFilter(string type1, string type2)
         {
             string filter = "Type:" + type1 + " or Type:" + type2;
@@ -213,7 +213,7 @@ namespace Gallio.Tests.Model.Filters
 
         [RowTest]
         [Row("SimpleTest", "ParameterizedTest")]
-        [Row("Gallio.TestResources.MbUnit.SimpleTest", "ParameterizedTest")]
+        [Row("MbUnit.TestResources.SimpleTest", "ParameterizedTest")]
         public void AndFilter(string type1, string type2)
         {
             string filter = "Type:" + type1 + " and Type:" + type2;
@@ -227,7 +227,7 @@ namespace Gallio.Tests.Model.Filters
 
         [RowTest]
         [Row("SimpleTest", "ParameterizedTest")]
-        [Row("Gallio.TestResources.MbUnit.SimpleTest", "ParameterizedTest")]
+        [Row("MbUnit.TestResources.SimpleTest", "ParameterizedTest")]
         public void NotFilter(string type1, string type2)
         {
             string filter = "Type:" + type1 + " and not Type:" + type2;

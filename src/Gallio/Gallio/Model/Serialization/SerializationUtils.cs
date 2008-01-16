@@ -26,7 +26,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// The XML namespace for all Gallio XML types.
         /// </summary>
-        public const string XmlNamespace = "http://www.mbunit.com/gallio";
+        public const string XmlNamespace = "http://www.gallio.org/";
 
         /// <summary>
         /// Saves an object graph to a pretty-printed Xml file using <see cref="XmlSerializer" />.

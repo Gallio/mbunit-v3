@@ -1,8 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.csproj" />
     
-    <CSharpProject Include="Gallio.MbUnitAdapter.TestResources\Gallio.MbUnit2Adapter.TestResources.csproj" />
+    <CSharpProject Include="Gallio.MbUnit2Adapter.TestResources\Gallio.MbUnit2Adapter.TestResources.csproj" />
     <CSharpProject Include="Gallio.MbUnit2Adapter.Tests\Gallio.MbUnit2Adapter.Tests.csproj" />    
   </ItemGroup>
 

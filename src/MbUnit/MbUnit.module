@@ -1,11 +1,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+
   <ItemGroup>
     <CSharpProject Include="MbUnit\MbUnit.csproj" />
     
-    <CSharpProject Include="MbUnit.TestResources\MbUnit.TestResourcescsproj" />
+    <CSharpProject Include="MbUnit.TestResources\MbUnit.TestResources.csproj" />
     <CSharpProject Include="MbUnit.Tests\MbUnit.Tests.csproj" />
 
     <CSharpProject Include="Samples\MbUnit.Samples\MbUnit.Samples.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DocumentedAssembly Include="MbUnit\bin\MbUnit.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,13 +36,13 @@
     <Binary Include="Samples\MbUnit.Samples\bin\MbUnit.Samples.dll">
         <Folder>Samples\bin</Folder>
     </Binary>
-    <Binary Include="$(LibsDir)\WatiN\bin\Interop.SHDocVw.dll">
+    <Binary Include="$(RootDir)\libs\WatiN\bin\Interop.SHDocVw.dll">
         <Folder>Samples\bin</Folder>
     </Binary>
-    <Binary Include="$(LibsDir)\WatiN\bin\Microsoft.mshtml.dll">
+    <Binary Include="$(RootDir)\libs\WatiN\bin\Microsoft.mshtml.dll">
         <Folder>Samples\bin</Folder>
     </Binary>
-    <Binary Include="$(LibsDir)\WatiN\bin\WatiN.Core.dll">
+    <Binary Include="$(RootDir)\libs\WatiN\bin\WatiN.Core.dll">
         <Folder>Samples\bin</Folder>
     </Binary>
   </ItemGroup>

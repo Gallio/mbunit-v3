@@ -1,7 +1,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.csproj" />
     <CSharpProject Include="Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DocumentedAssembly Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
   </ItemGroup>
 
   <ItemGroup>

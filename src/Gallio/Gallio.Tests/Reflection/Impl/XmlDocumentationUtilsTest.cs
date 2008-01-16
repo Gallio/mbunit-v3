@@ -38,7 +38,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_Type()
         {
             Type type = typeof(DocumentedClass);
-            Assert.AreEqual("T:Gallio.TestResources.MbUnit.DocumentedClass",
+            Assert.AreEqual("T:MbUnit.TestResources.DocumentedClass",
                 XmlDocumentationUtils.FormatId(type));
         }
 
@@ -46,7 +46,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_GenericNestedType()
         {
             Type type = typeof(DocumentedClass.GenericNestedClass<int>);
-            Assert.AreEqual("T:Gallio.TestResources.MbUnit.DocumentedClass.GenericNestedClass`1",
+            Assert.AreEqual("T:MbUnit.TestResources.DocumentedClass.GenericNestedClass`1",
                 XmlDocumentationUtils.FormatId(type));
         }
 
@@ -54,7 +54,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_GenericNestedTypeDefinition()
         {
             Type type = typeof(DocumentedClass.GenericNestedClass<>);
-            Assert.AreEqual("T:Gallio.TestResources.MbUnit.DocumentedClass.GenericNestedClass`1",
+            Assert.AreEqual("T:MbUnit.TestResources.DocumentedClass.GenericNestedClass`1",
                 XmlDocumentationUtils.FormatId(type));
         }
 
@@ -62,7 +62,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_Field()
         {
             FieldInfo field = typeof(DocumentedClass).GetField("DocumentedField");
-            Assert.AreEqual("F:Gallio.TestResources.MbUnit.DocumentedClass.DocumentedField",
+            Assert.AreEqual("F:MbUnit.TestResources.DocumentedClass.DocumentedField",
                 XmlDocumentationUtils.FormatId(field));
         }
 
@@ -70,7 +70,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_Property()
         {
             PropertyInfo property = typeof(DocumentedClass).GetProperty("DocumentedProperty");
-            Assert.AreEqual("P:Gallio.TestResources.MbUnit.DocumentedClass.DocumentedProperty",
+            Assert.AreEqual("P:MbUnit.TestResources.DocumentedClass.DocumentedProperty",
                 XmlDocumentationUtils.FormatId(property));
         }
 
@@ -78,7 +78,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_Event()
         {
             EventInfo @event = typeof(DocumentedClass).GetEvent("DocumentedEvent");
-            Assert.AreEqual("E:Gallio.TestResources.MbUnit.DocumentedClass.DocumentedEvent",
+            Assert.AreEqual("E:MbUnit.TestResources.DocumentedClass.DocumentedEvent",
                 XmlDocumentationUtils.FormatId(@event));
         }
 
@@ -86,7 +86,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_Indexer()
         {
             PropertyInfo property = typeof(DocumentedClass).GetProperty("Item");
-            Assert.AreEqual("P:Gallio.TestResources.MbUnit.DocumentedClass.Item(System.Int32)",
+            Assert.AreEqual("P:MbUnit.TestResources.DocumentedClass.Item(System.Int32)",
                 XmlDocumentationUtils.FormatId(property));
         }
 
@@ -94,7 +94,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_Method()
         {
             MethodInfo method = typeof(DocumentedClass).GetMethod("DocumentedMethod", new Type[] { });
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.DocumentedMethod",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.DocumentedMethod",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -103,7 +103,7 @@ namespace Gallio.Tests.Reflection.Impl
         {
             MethodInfo method = typeof(DocumentedClass).GetMethod("DocumentedMethod",
                 new Type[] { typeof(int), typeof(DocumentedClass), typeof(DocumentedClass.GenericNestedClass<int>) });
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.DocumentedMethod(System.Int32,Gallio.TestResources.MbUnit.DocumentedClass,Gallio.TestResources.MbUnit.DocumentedClass.GenericNestedClass{System.Int32})",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.DocumentedMethod(System.Int32,MbUnit.TestResources.DocumentedClass,MbUnit.TestResources.DocumentedClass.GenericNestedClass{System.Int32})",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -112,7 +112,7 @@ namespace Gallio.Tests.Reflection.Impl
         {
             MethodInfo method = typeof(DocumentedClass.GenericNestedClass<int>).
                 GetMethod("DocumentedGenericMethodWithParameters");
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.GenericNestedClass`1.DocumentedGenericMethodWithParameters``1(``0,`0,System.Int32)",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.GenericNestedClass`1.DocumentedGenericMethodWithParameters``1(``0,`0,System.Int32)",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -121,7 +121,7 @@ namespace Gallio.Tests.Reflection.Impl
         {
             MethodInfo method = typeof(DocumentedClass.GenericNestedClass<int>).
                 GetMethod("DocumentedGenericMethodWithParameters").GetGenericMethodDefinition();
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.GenericNestedClass`1.DocumentedGenericMethodWithParameters``1(``0,`0,System.Int32)",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.GenericNestedClass`1.DocumentedGenericMethodWithParameters``1(``0,`0,System.Int32)",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -129,7 +129,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_GenericIndexer()
         {
             PropertyInfo method = typeof(DocumentedClass.GenericNestedClass<int>).GetProperty("Item");
-            Assert.AreEqual("P:Gallio.TestResources.MbUnit.DocumentedClass.GenericNestedClass`1.Item(`0)",
+            Assert.AreEqual("P:MbUnit.TestResources.DocumentedClass.GenericNestedClass`1.Item(`0)",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -137,7 +137,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_OperatorMethod()
         {
             MethodInfo method = typeof(DocumentedClass).GetMethod("op_Addition");
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.op_Addition(Gallio.TestResources.MbUnit.DocumentedClass,Gallio.TestResources.MbUnit.DocumentedClass)",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.op_Addition(MbUnit.TestResources.DocumentedClass,MbUnit.TestResources.DocumentedClass)",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -145,7 +145,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_ImplicitConversionOperatorMethod()
         {
             MethodInfo method = typeof(DocumentedClass).GetMethod("op_Implicit");
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.op_Implicit(Gallio.TestResources.MbUnit.DocumentedClass)~System.Int32",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.op_Implicit(MbUnit.TestResources.DocumentedClass)~System.Int32",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -153,7 +153,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_ExplicitConversionOperatorMethod()
         {
             MethodInfo method = typeof(DocumentedClass).GetMethod("op_Explicit");
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.op_Explicit(Gallio.TestResources.MbUnit.DocumentedClass)~System.Double",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.op_Explicit(MbUnit.TestResources.DocumentedClass)~System.Double",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -161,7 +161,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_ConstructorMethod()
         {
             ConstructorInfo method = typeof(DocumentedClass).GetConstructor(new Type[] { });
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.#ctor",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.#ctor",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -169,7 +169,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_ConstructorMethodWithParameters()
         {
             ConstructorInfo method = typeof(DocumentedClass).GetConstructor(new Type[] { typeof(int) });
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.#ctor(System.Int32)",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.#ctor(System.Int32)",
                 XmlDocumentationUtils.FormatId(method));
         }
 
@@ -177,7 +177,7 @@ namespace Gallio.Tests.Reflection.Impl
         public void FormatId_Finalizer()
         {
             MethodInfo method = typeof(DocumentedClass).GetMethod("Finalize", BindingFlags.Instance | BindingFlags.NonPublic);
-            Assert.AreEqual("M:Gallio.TestResources.MbUnit.DocumentedClass.Finalize",
+            Assert.AreEqual("M:MbUnit.TestResources.DocumentedClass.Finalize",
                 XmlDocumentationUtils.FormatId(method));
         }
 

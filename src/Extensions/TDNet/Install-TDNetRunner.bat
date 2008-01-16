@@ -7,7 +7,7 @@ set SRCDIR=%LOCALDIR%..\..\
 set ROOTDIR=%SRCDIR%..\
 set LIBSDIR=%ROOTDIR%libs\
 
-set REG=%ROOTDIR%Tools\reg.exe
+set REG=%LIBSDIR%Tools\reg.exe
 set ICARUS_EXE=%SRCDIR%\Gallio\Runners\Gallio.Icarus\bin\Gallio.Icarus.exe
 
 set TDNETRUNNER_DLL=%LOCALDIR%\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll

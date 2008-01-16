@@ -2,7 +2,7 @@
   <UsingTask AssemblyFile="..\bin\Gallio.MSBuildTasks.dll" TaskName="Gallio" />
 
   <PropertyGroup>
-    <TestAssembly>..\bin\Gallio.TestResources.MbUnit.dll</TestAssembly>
+    <TestAssembly>..\bin\MbUnit.TestResources.dll</TestAssembly>
   </PropertyGroup>
   
   <Target Name="PassingTests">

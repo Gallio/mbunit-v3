@@ -49,10 +49,10 @@ namespace Gallio.Tests.Model
 
         [RowTest]
         [Row(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<metadata xmlns=""http://www.mbunit.com/gallio"" />",
+<metadata xmlns=""http://www.gallio.org/"" />",
             new string[] { })]
         [Row(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<metadata xmlns=""http://www.mbunit.com/gallio"">
+<metadata xmlns=""http://www.gallio.org/"">
   <entry key=""a"">
     <value>1</value>
   </entry>
@@ -76,10 +76,10 @@ namespace Gallio.Tests.Model
 
         [RowTest]
         [Row(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<metadata xmlns=""http://www.mbunit.com/gallio"" />",
+<metadata xmlns=""http://www.gallio.org/"" />",
             new string[] { })]
         [Row(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<metadata xmlns=""http://www.mbunit.com/gallio"">
+<metadata xmlns=""http://www.gallio.org/"">
   <entry key=""a"">
     <value>1</value>
   </entry>
@@ -90,7 +90,7 @@ namespace Gallio.Tests.Model
 </metadata>",
             new string[] { "a", "1", "b", "2", "b", "22" })]
         [Row(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<metadata xmlns=""http://www.mbunit.com/gallio"">
+<metadata xmlns=""http://www.gallio.org/"">
   <entry key=""a"" />
   <entry key=""b"">
     <value />

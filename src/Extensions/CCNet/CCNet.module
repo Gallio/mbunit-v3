@@ -1,9 +1,32 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
   <ItemGroup>
-    <CSharpProject Include="Gallio.CCNetDashboardPlugin\Gallio.CCNetDashboardPlugin.csproj" />
+    <CSharpProject Include="CCNet.Gallio.WebDashboard.Plugin\CCNet.Gallio.WebDashboard.Plugin.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Binary Include="Gallio.CCNetDashboardPlugin\bin\Gallio.CCNetDashboardPlugin.dll" />
+    <Extra Include="docs\How to use Gallio with CruiseControl.Net.txt">
+      <Folder>CCNet</Folder>
+    </Extra>
+    
+    <Extra Include="CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll">
+      <Folder>CCNet\webdashboard\bin</Folder>
+    </Extra>
+    <Extra Include="$(RootDir)\src\Gallio\Plugins\Gallio.Reports\css\*">
+      <Folder>CCNet\webdashboard\gallio\css</Folder>
+    </Extra>
+    <Extra Include="$(RootDir)\src\Gallio\Plugins\Gallio.Reports\js\*">
+      <Folder>CCNet\webdashboard\gallio\js</Folder>
+    </Extra>
+    <Extra Include="$(RootDir)\src\Gallio\Plugins\Gallio.Reports\img\*">
+      <Folder>CCNet\webdashboard\gallio\img</Folder>
+    </Extra>
+    <Extra Include="$(RootDir)\src\Gallio\Plugins\Gallio.Reports\xsl\Gallio-Report.ccnet-details.xsl">
+      <Folder>CCNet\webdashboard\gallio\xsl</Folder>
+    </Extra>
+    <Extra Include="$(RootDir)\src\Gallio\Plugins\Gallio.Reports\xsl\Gallio-Report.html+xhtml.xsl">
+      <Folder>CCNet\webdashboard\gallio\xsl</Folder>
+    </Extra>
   </ItemGroup>
 </Project>

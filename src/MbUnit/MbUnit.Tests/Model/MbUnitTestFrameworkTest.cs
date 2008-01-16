@@ -152,7 +152,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
             Assert.AreEqual("A sample test assembly for MbUnit.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
             Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual("Gallio.TestResources.MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("MbUnit.TestResources", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
             Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
 
             Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));

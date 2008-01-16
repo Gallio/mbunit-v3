@@ -41,9 +41,11 @@ namespace Gallio.NAntTasks.Tests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            workingDirectory = Path.Combine(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(GetType().Assembly)), @"..\TestBuildFiles");
+            string binPath = Path.GetDirectoryName(Loader.GetAssemblyLocalPath(GetType().Assembly));
 
-            executablePath = Path.Combine(workingDirectory, @"..\..\..\..\..\libs\NAnt\NAnt.exe");
+            workingDirectory = Path.Combine(binPath, @"..\TestBuildFiles");
+            executablePath = Path.Combine(binPath, @"..\..\libs\NAnt.exe");
+
             Assert.IsTrue(File.Exists(executablePath), "Cannot find the NAnt executable!");
         }
 

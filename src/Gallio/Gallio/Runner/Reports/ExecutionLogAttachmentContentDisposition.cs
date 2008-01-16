@@ -13,9 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace Gallio.Runner.Reports
 {
@@ -27,17 +25,20 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// The attachment content is not present.
         /// </summary>
+        [XmlEnum("absent")]
         Absent = 0,
 
         /// <summary>
         /// The attachment content is saved to a linked file indicated by <see cref="ExecutionLogAttachment.ContentPath" />.
         /// </summary>
+        [XmlEnum("link")]
         Link,
 
         /// <summary>
         /// The attachment content is included inline as <see cref="ExecutionLogAttachment.InnerText" />
         /// with a given <see cref="ExecutionLogAttachment.Encoding" />.
         /// </summary>
+        [XmlEnum("inline")]
         Inline
     }
 }

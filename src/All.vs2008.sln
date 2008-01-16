@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio", "Gallio\Gallio\Gal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Tests", "Gallio\Gallio.Tests\Gallio.Tests.csproj", "{111FD89D-58A1-4445-B4A4-8A50D65DB714}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.Reports", "Gallio\Plugins\Gallio.Plugin.Reports\Gallio.Plugin.Reports.csproj", "{399C33BF-A9F7-4390-8F9C-8EECF7814123}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports", "Gallio\Plugins\Gallio.Reports\Gallio.Reports.csproj", "{399C33BF-A9F7-4390-8F9C-8EECF7814123}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit", "MbUnit\MbUnit\MbUnit.csproj", "{A9B54755-56B7-48C1-8941-BB69FCEFFF32}"
 EndProject
@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "MbUnit\Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility", "MbUnit\MbUnit.Compatibility\MbUnit.Compatibility.csproj", "{F588B51F-786A-48E2-950E-636062F9C302}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Plugin.Reports.Tests", "Gallio\Plugins\Gallio.Plugin.Reports.Tests\Gallio.Plugin.Reports.Tests.csproj", "{94830E9B-3191-4AE5-A921-D27060A3BE65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports.Tests", "Gallio\Plugins\Gallio.Reports.Tests\Gallio.Reports.Tests.csproj", "{94830E9B-3191-4AE5-A921-D27060A3BE65}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Host", "Gallio\Gallio.Host\Gallio.Host.csproj", "{35FFAF24-1019-4BE2-901D-02E627C757DC}"
 EndProject
@@ -53,9 +53,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CCNet", "CCNet", "{1D245366-4B41-498E-A42A-4B722428437E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.CCNetDashboardPlugin", "Extensions\CCNet\Gallio.CCNetDashboardPlugin\Gallio.CCNetDashboardPlugin.csproj", "{6E257D26-EAEA-4680-BC7A-34210A74E928}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources", "MbUnit\Gallio.TestResources.MbUnit\MbUnit.TestResources.csproj", "{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources", "MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj", "{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xunit", "Xunit", "{5DBFFBA7-DAFC-42E9-BBB5-4752E84C8290}"
 EndProject
@@ -110,6 +108,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands", "Extensions\PowerShell\Gallio.PowerShellCommands\Gallio.PowerShellCommands.csproj", "{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands.Tests", "Extensions\PowerShell\Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests.csproj", "{52E0A229-CE15-4B72-8ACF-F17DCB929A64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{520F7B99-3CD9-495A-B410-656864ADD813}"
+	ProjectSection(SolutionItems) = preProject
+		Extensions\CCNet\docs\How to use Gallio with CruiseControl.Net.txt = Extensions\CCNet\docs\How to use Gallio with CruiseControl.Net.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCNet.Gallio.WebDashboard.Plugin", "Extensions\CCNet\CCNet.Gallio.WebDashboard.Plugin\CCNet.Gallio.WebDashboard.Plugin.csproj", "{6E257D26-EAEA-4680-BC7A-34210A74E928}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,10 +174,6 @@ Global
 		{35FFAF24-1019-4BE2-901D-02E627C757DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35FFAF24-1019-4BE2-901D-02E627C757DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35FFAF24-1019-4BE2-901D-02E627C757DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E257D26-EAEA-4680-BC7A-34210A74E928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E257D26-EAEA-4680-BC7A-34210A74E928}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E257D26-EAEA-4680-BC7A-34210A74E928}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E257D26-EAEA-4680-BC7A-34210A74E928}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -253,6 +254,10 @@ Global
 		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52E0A229-CE15-4B72-8ACF-F17DCB929A64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E257D26-EAEA-4680-BC7A-34210A74E928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E257D26-EAEA-4680-BC7A-34210A74E928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E257D26-EAEA-4680-BC7A-34210A74E928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E257D26-EAEA-4680-BC7A-34210A74E928}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -284,6 +289,7 @@ Global
 		{C8B72F29-32A8-4179-80C8-818C10E584B5} = {5228D234-E4B0-467B-B6C8-FF06B0A98FAF}
 		{B6FD8CA3-96CF-48B1-9B5A-6F59A01BA6A7} = {5228D234-E4B0-467B-B6C8-FF06B0A98FAF}
 		{C1A81AAA-E6F1-4F02-A1C6-A580A746AA38} = {5228D234-E4B0-467B-B6C8-FF06B0A98FAF}
+		{520F7B99-3CD9-495A-B410-656864ADD813} = {1D245366-4B41-498E-A42A-4B722428437E}
 		{6E257D26-EAEA-4680-BC7A-34210A74E928} = {1D245366-4B41-498E-A42A-4B722428437E}
 		{F2619506-4CA0-4B5B-AAA8-733784C49476} = {5DBFFBA7-DAFC-42E9-BBB5-4752E84C8290}
 		{606ED147-23B2-461B-A5DD-9A6CD998F6AE} = {5DBFFBA7-DAFC-42E9-BBB5-4752E84C8290}

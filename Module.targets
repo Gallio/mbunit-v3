@@ -1,0 +1,76 @@
+<Project InitialTargets="GetModuleItems" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- A module is a special MSBuild project file that describes
+       a group of related resources that are to be build.
+
+       It may contain the following items:
+
+       - NestedModule: A child module.
+
+       - CSharpProject: Path of a C# project file.
+       - TestAssembly: Path of a compiled test assembly to run.
+
+       - InstallerInclude: Path of an include file to add to the NSIS installer. (TODO)
+       - DocumentedAssembly: Path of an assembly with XML documentation to include.
+
+       - Binary: Path of a file to copy into the build\bin dir.
+       - Document: Path of a file to copy into the build\docs dir.
+       - Extra: Path of a file to copy into the build\extras dir.
+       - File: Path of a file to copy into the build dir.
+
+       (Binary, Document and File may have optional Folder metadata
+        to specify a relative destination path within the respective dir.)
+  -->
+
+  <Target Name="GetModuleItems"
+          Outputs="@(ModuleItem)">
+    <Error Text="RootDir property must be defined."
+           Condition="'$(RootDir)'==''" />
+
+    <MSBuild Projects="@(NestedModule)"
+             Targets="GetModuleItems"
+	     Properties="RootDir=$(RootDir)"
+	     Condition="'@(NestedModule)'!=''">
+      <Output TaskParameter="TargetOutputs" ItemName="NestedModuleItem" />
+    </MSBuild>
+
+    <CreateItem Include="@(NestedModuleItem)"
+                Condition="'@(NestedModuleItem)'!=''">
+      <Output TaskParameter="Include" ItemName="%(NestedModuleItem.ItemName)" />
+    </CreateItem>
+
+    <CreateItem Include="@(CSharpProject->'%(FullPath)')"
+                AdditionalMetadata="ItemName=CSharpProject">
+      <Output TaskParameter="Include" ItemName="ModuleItem" />
+    </CreateItem>
+
+    <CreateItem Include="@(TestAssembly->'%(FullPath)')"
+                AdditionalMetadata="ItemName=TestAssembly">
+      <Output TaskParameter="Include" ItemName="ModuleItem" />
+    </CreateItem>
+
+    <CreateItem Include="@(DocumentedAssembly->'%(FullPath)')"
+                AdditionalMetadata="ItemName=DocumentedAssembly">
+      <Output TaskParameter="Include" ItemName="ModuleItem" />
+    </CreateItem>
+
+    <CreateItem Include="@(Binary->'%(FullPath)')"
+                AdditionalMetadata="ItemName=Binary">
+      <Output TaskParameter="Include" ItemName="ModuleItem" />
+    </CreateItem>
+
+    <CreateItem Include="@(Document->'%(FullPath)')"
+                AdditionalMetadata="ItemName=Document">
+      <Output TaskParameter="Include" ItemName="ModuleItem" />
+    </CreateItem>
+
+    <CreateItem Include="@(Extra->'%(FullPath)')"
+                AdditionalMetadata="ItemName=Extra">
+      <Output TaskParameter="Include" ItemName="ModuleItem" />
+    </CreateItem>
+
+    <CreateItem Include="@(File->'%(FullPath)')"
+                AdditionalMetadata="ItemName=File">
+      <Output TaskParameter="Include" ItemName="ModuleItem" />
+    </CreateItem>
+  </Target>
+</Project>

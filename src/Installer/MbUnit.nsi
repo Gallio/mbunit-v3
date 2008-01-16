@@ -2,12 +2,15 @@
 !ifndef VERSION
 	!error "The /DVersion=x.y.z.w argument must be specified."
 !endif
+!ifndef ROOTDIR
+	!error "The /DRootDir=... argument must be specified."
+!endif
 
 ; Define your application name
 !define APPNAME "MbUnit v3"
 !define APPNAMEANDVERSION "MbUnit v${VERSION}"
-!define LIBSDIR "..\libs"
-!define BUILDDIR "..\build"
+!define LIBSDIR "${ROOTDIR}libs"
+!define BUILDDIR "${ROOTDIR}\build"
 !define RELEASEDIR "${BUILDDIR}\release"
 
 !include "StrRep.nsh"
@@ -61,14 +64,14 @@ Var UserContext
 
 ; Detect whether any components are missing
 !tempfile DETECT_TEMP
-!system 'if not exist "${BUILDDIR}\docs\MbUnit.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
-!system 'if not exist "${BUILDDIR}\docs\vs2005\MbUnit.HxS" echo !define MISSING_VS2005_HELP >> "${DETECT_TEMP}"'
+!system 'if not exist "${BUILDDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
+!system 'if not exist "${BUILDDIR}\docs\vs2005\Gallio.HxS" echo !define MISSING_VS2005_HELP >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
 !delfile "${DETECT_TEMP}"
 
 ; Emit warnings if any components are missing
 !ifdef MISSING_CHM_HELP
-	!warning "Missing MbUnit.chm file."
+	!warning "Missing CHM file."
 !endif
 
 !ifdef MISSING_VS2005_HELP
@@ -87,7 +90,7 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	File "${BUILDDIR}\MbUnit License.txt"
 	File "${BUILDDIR}\Release Notes.txt"
 	File "MbUnit Website.url"
-	File "MbUnit Online Documentation.url"
+	File "Online Documentation.url"
 
 	SetOutPath "$INSTDIR\bin"
 	File "${BUILDDIR}\bin\Castle.Core.dll"
@@ -106,16 +109,13 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	SetOutPath "$INSTDIR\bin\Reports"
 	File /r "${BUILDDIR}\bin\Reports\*"
 
-	SetOutPath "$INSTDIR\docs"
-	File "${BUILDDIR}\docs\*.txt"
-
 	; Create Shortcuts
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 	File "MbUnit Website.url"
-	File "MbUnit Online Documentation.url"
+	File "Online Documentation.url"
 SectionEnd
 
 SectionGroup "Plugins"
@@ -358,11 +358,11 @@ Section "Standalone Help Docs" CHMHelpSection
 	SetOutPath "$INSTDIR"
 
 	SetOutPath "$INSTDIR\docs"
-	File "${BUILDDIR}\docs\MbUnit.chm"
+	File "${BUILDDIR}\docs\Gallio.chm"
 
 	; Create Shortcuts
-	CreateShortCut "$INSTDIR\MbUnit Offline Documentation.lnk" "$INSTDIR\docs\MbUnit.chm"
-	CreateShortCut "$SMPROGRAMS\${APPNAME}\MbUnit Offline Documentation.lnk" "$INSTDIR\docs\MbUnit.chm"
+	CreateShortCut "$INSTDIR\Offline Documentation.lnk" "$INSTDIR\docs\Gallio.chm"
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\Offline Documentation.lnk" "$INSTDIR\docs\Gallio.chm"
 SectionEnd
 !endif
 
@@ -373,19 +373,32 @@ Section "Visual Studio 2005 Help Docs" VS2005HelpSection
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\docs\vs2005"
-	File "${BUILDDIR}\docs\vs2005\MbUnit.Hx?"
-	File "${BUILDDIR}\docs\vs2005\MbUnitCollection.*"
+	File "${BUILDDIR}\docs\vs2005\Gallio.Hx?"
+	File "${BUILDDIR}\docs\vs2005\GallioCollection.*"
 
-	SetOutPath "$INSTDIR\utils"
-	File "${LIBSDIR}\H2Reg\H2Reg.exe"
-	File "${LIBSDIR}\H2Reg\H2Reg.ini"
+	SetOutPath "$INSTDIR\bin"
+	File "${BUILDDIR}\extras\H2Reg\H2Reg.exe"
+	File "${BUILDDIR}\extras\H2Reg\H2Reg.ini"
 
 	; Merge the collection
-	ExecWait '"$INSTDIR\utils\H2Reg.exe" -r CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
+	ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -r CmdFile="$INSTDIR\docs\vs2005\GallioCollection.h2reg.ini"'
 SectionEnd
 !endif
 SectionGroupEnd
 !endif
+
+SectionGroup "Extras"
+
+Section "CruiseControl.Net extensions" CCNetSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\extras"
+	File /r "${BUILDDIR}\extras\CCNet"
+SectionEnd
+
+SectionGroupEnd
 
 Section -FinishSection
 	WriteRegStr SHCTX "Software\${APPNAME}" "" "$INSTDIR"
@@ -417,8 +430,8 @@ Section Uninstall
 	DeleteRegKey SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio"
 
 	; Uninstall the help collection
-	IfFileExists "$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini" 0 +2
-		ExecWait '"$INSTDIR\utils\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\MbUnitCollection.h2reg.ini"'
+	IfFileExists "$INSTDIR\docs\vs2005\GallioCollection.h2reg.ini" 0 +2
+		ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\GallioCollection.h2reg.ini"'
 
 	; Delete Shortcuts
 	RMDir /r "$SMPROGRAMS\${APPNAME}"
@@ -450,6 +463,7 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3 plug-in."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in for MbUnit v3."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInOtherFrameworksSection} "Enables the TestDriven.Net add-in to run tests for other supported frameworks."
+	!insertmacro MUI_DESCRIPTION_TEXT ${CCNetSection} "Installs additional resources to assist with CruiseControl.Net integration."
 
 	!ifndef MISSING_CHM_HELP
 		!insertmacro MUI_DESCRIPTION_TEXT ${CHMHelpSection} "Installs the MbUnit standalone help documentation CHM file."
@@ -479,6 +493,7 @@ Function .onInit
 	SectionSetInstTypes ${ReSharperRunnerSection} 3
 	SectionSetInstTypes ${TDNetAddInSection} 3
 	SectionSetInstTypes ${TDNetAddInOtherFrameworksSection} 1
+	SectionSetInstTypes ${CCNetSection} 3
 	!ifndef MISSING_CHM_HELP
 		SectionSetInstTypes ${CHMHelpSection} 3
 	!endif

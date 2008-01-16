@@ -1,4 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.XunitAdapter\Gallio.XunitAdapter.csproj" />
 
@@ -16,16 +18,16 @@
     <Binary Include="Gallio.XunitAdapter\Readme.txt">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="libs\Xunit\EULA.txt">
+    <Binary Include="libs\EULA.txt">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="libs\Xunit\xunit.dll">
+    <Binary Include="libs\xunit.dll">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="libs\Xunit\xunit.xml">
+    <Binary Include="libs\xunit.xml">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="libs\Xunit\xunitext.dll">
+    <Binary Include="libs\xunitext.dll">
         <Folder>Xunit</Folder>
     </Binary>
   </ItemGroup>
