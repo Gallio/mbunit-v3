@@ -36,6 +36,7 @@ namespace Gallio.Icarus.Core.Interfaces
         void GetReportTypes(object sender, EventArgs e);
         void SaveReportAs(object sender, SaveReportAsEventArgs e);
         void GetAvailableLogStreams(object sender, SingleStringEventArgs e);
+        void GetLogStream(object sender, GetLogStreamEventArgs e);
         void Update(TestData testData, TestStepRun testStepRun);
     }
 }

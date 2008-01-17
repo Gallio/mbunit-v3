@@ -82,7 +82,7 @@ namespace Gallio.Icarus
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(88, 23);
             this.buttonClose.TabIndex = 2;
-            this.buttonClose.Text = "&Ok";
+            this.buttonClose.Text = "&OK";
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
             // 

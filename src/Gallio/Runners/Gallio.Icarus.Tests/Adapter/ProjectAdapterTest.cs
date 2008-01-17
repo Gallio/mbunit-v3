@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Adapter;
@@ -214,6 +215,19 @@ namespace Gallio.Icarus.Tests
         }
 
         [Test]
+        public void GetLogStreamEventHandler_Test()
+        {
+            GetLogStreamEventArgs e = new GetLogStreamEventArgs("test", "test");
+            mockPresenter = mocks.CreateMock<IProjectPresenter>();
+            mockPresenter.GetLogStream(projectAdapter, e);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.GetLogStream += new EventHandler<GetLogStreamEventArgs>(mockPresenter.GetLogStream);
+            getLogStreamEvent.Raise(mockView, e);
+        }
+
+        [Test]
         public void SaveReportAsEventHandler_Test()
         {
             string fileName = @"C:\test.html";
@@ -243,16 +257,32 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void OpenProjectEventHandler_Test()
         {
+            string mode = "Namespace";
+            mockPresenter = mocks.CreateMock<IProjectPresenter>();
+            GetTestTreeEventArgs e = new GetTestTreeEventArgs(mode, true, false, projectAdapter.Project.TestPackageConfig);
+            mockPresenter.GetTestTree(projectAdapter, e);
+            LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.GetTestTree += new EventHandler<GetTestTreeEventArgs>(mockPresenter.GetTestTree);
             Project project = new Project();
             project.TestPackageConfig.AssemblyFiles.Add("test.dll");
+            //project.TestFilters.Add(new FilterInfo("Latest", new NoneFilter<ITest>().ToFilterExpr()));
             string fileName = Path.GetTempFileName();
             SerializationUtils.SaveToXml(project, fileName);
             Assert.AreEqual(0, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
-            openProjectEvent.Raise(mockView, new OpenProjectEventArgs(fileName, "Namespace"));
+            openProjectEvent.Raise(mockView, new OpenProjectEventArgs(fileName, mode));
             Assert.AreEqual(1, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
         }
+
+        //[Test, ExpectedException(typeof(InvalidOperationException))]
+        //public void OpenProjectEventHandlerProjectDoesNotExist_Test()
+        //{
+        //    mocks.ReplayAll();
+        //    projectAdapter = new ProjectAdapter(mockView, mockModel);
+        //    string fileName = Path.GetTempFileName();
+        //    openProjectEvent.Raise(mockView, new OpenProjectEventArgs(fileName, "Namespace"));
+        //}
 
         [Test]
         public void NewProjectEventHandler_Test()
@@ -308,10 +338,21 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void LogBody_Test()
         {
-            mockView.LogBody = "blah blah";
+            string logBody = "blah blah";
+            mockView.LogBody = logBody;
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.LogBody = "blah blah";
+            projectAdapter.LogBody = logBody;
+        }
+
+        [Test]
+        public void ReportPath_Test()
+        {
+            string reportPath = @"C:\somepath.html";
+            mockView.ReportPath = reportPath;
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.ReportPath = reportPath;
         }
 
         [Test]
@@ -333,6 +374,36 @@ namespace Gallio.Icarus.Tests
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.Project.TestPackageConfig = testPackageConfig;
             Assert.AreEqual(testPackageConfig, projectAdapter.Project.TestPackageConfig);
+        }
+
+        [Test]
+        public void AvailableLogStreams_Test()
+        {
+            List<string> availableLogStreams = new List<string>();
+            mockView.AvailableLogStreams = availableLogStreams;
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.AvailableLogStreams = availableLogStreams;
+        }
+
+        [Test]
+        public void ReportTypes_Test()
+        {
+            List<string> reportTypes = new List<string>();
+            mockView.ReportTypes = reportTypes;
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.ReportTypes = reportTypes;
+        }
+
+        [Test]
+        public void Exception_Test()
+        {
+            Exception exception = new Exception("message");
+            mockView.Exception = exception;
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.Exception = exception;
         }
 
         [Test]

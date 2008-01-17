@@ -24,7 +24,7 @@ namespace Gallio.Icarus.Controls
     public class TestTreeNode : TreeNode
     {
         private CheckBoxStates checkState = CheckBoxStates.Unchecked;
-        private TestState testState = TestState.Undefined;
+        private TestStates testState = TestStates.Undefined;
         private string codeBase = "";
 
         public TestTreeNode(string text, string id, int imgIndex, bool initialCheckState)
@@ -60,7 +60,7 @@ namespace Gallio.Icarus.Controls
             }
         }
 
-        public TestState TestState
+        public TestStates TestState
         {
             get { return testState; }
             set
@@ -105,14 +105,14 @@ namespace Gallio.Icarus.Controls
             }
         }
 
-        private TestState SiblingTestState
+        private TestStates SiblingTestState
         {
             get
             {
                 if ((Parent == null) || (Parent.Nodes.Count == 1))
                     return TestState;
 
-                TestState testStates = TestState.Undefined;
+                TestStates testStates = TestStates.Undefined;
                 foreach (TreeNode node in Parent.Nodes)
                 {
                     TestTreeNode child = node as TestTreeNode;
@@ -120,11 +120,11 @@ namespace Gallio.Icarus.Controls
                         testStates = child.TestState;
 
                     // Failed is the worst state we can get to, dont bother checking the rest.
-                    if (testStates == TestState.Failed)
+                    if (testStates == TestStates.Failed)
                         break;
                 }
 
-                return testState;
+                return testStates;
             }
         }
 
@@ -184,7 +184,7 @@ namespace Gallio.Icarus.Controls
 
                 UpdateParentNodeState(true);
 
-                UpdateDuplicateNodes();
+                //UpdateDuplicateNodes();
 
                 tv.EndUpdate();
             }
@@ -278,40 +278,16 @@ namespace Gallio.Icarus.Controls
 
         private void UpdateParentTestState()
         {
-            TestTreeView tv = TreeView as TestTreeView;
-            if (tv != null)
+            if (TreeView != null)
             {
-                tv.BeginUpdate();
+                TreeView.BeginUpdate();
 
                 TestTreeNode parent = Parent as TestTreeNode;
                 if (parent != null)
-                {
-                    TestState state = SiblingTestState;
-                    parent.TestState = state;
-                }
+                    parent.TestState = SiblingTestState;
 
-                tv.EndUpdate();
+                TreeView.EndUpdate();
             }
         }
-    }
-}
-
-namespace Gallio.Icarus.Controls.Enums
-{
-    [FlagsAttribute]
-    public enum CheckBoxStates
-    {
-        Unchecked = 1,
-        Checked = 2,
-        Indeterminate = Unchecked | Checked
-    }
-
-    public enum TestState
-    {
-        Undefined = 0,
-        Success = 1,
-        Ignored = 2,
-        Skipped = 3,
-        Failed = 4
     }
 }

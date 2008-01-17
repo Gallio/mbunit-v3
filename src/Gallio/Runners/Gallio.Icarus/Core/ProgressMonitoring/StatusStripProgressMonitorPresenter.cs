@@ -61,13 +61,12 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
         private void HandleTaskFinished(object sender, EventArgs e)
         {
-            presenter.StatusText = "Ready...";
             presenter.CompletedWorkUnits = 0;
         }
 
         private void HandleCanceled(object sender, EventArgs e)
         {
-            presenter.StatusText = "Cancelled";
+            presenter.StatusText = "Tests cancelled";
         }
     }
 }

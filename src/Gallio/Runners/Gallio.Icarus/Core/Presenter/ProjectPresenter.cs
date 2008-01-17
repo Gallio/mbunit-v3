@@ -99,7 +99,7 @@ namespace Gallio.Icarus.Core.Presenter
             testRunner.TestExecutionOptions.Filter = e.Filter;
         }
 
-        private void GetLogStream(object sender, GetLogStreamEventArgs e)
+        public void GetLogStream(object sender, GetLogStreamEventArgs e)
         {
             projectAdapter.LogBody = testRunnerModel.GetLogStream(e.LogStream, e.TestId);
         }

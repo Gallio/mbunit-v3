@@ -228,31 +228,34 @@ namespace Gallio.Icarus
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            StartTests();
+        }
+
+        private void StartTests()
+        {
             // reset progress monitors
             testProgressStatusBar.Clear();
             testTree.BeginUpdate();
             testTree.Reset(testTree.Nodes);
             testTree.EndUpdate();
             testResultsList.Clear();
-            
+
             statusText = "Running tests...";
-            startButton.Enabled = false;
-            stopButton.Enabled = true;
+            startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
+            stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
 
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
                 // run tests
                 if (RunTests != null)
-                {
                     RunTests(this, new EventArgs());
-                }
 
                 // enable/disable buttons
                 Invoke((MethodInvoker)delegate()
                 {
-                    stopButton.Enabled = false;
-                    startButton.Enabled = true;
+                    stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
+                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 });
             });
             workerThread.Start();
@@ -339,8 +342,15 @@ namespace Gallio.Icarus
                 workerThread = new Thread(delegate()
                 {
                     StatusText = "Opening project";
-                    if (OpenProject != null)
-                        OpenProject(this, new OpenProjectEventArgs(openFile.FileName, GetTreeFilter()));
+                    try
+                    {
+                        if (OpenProject != null)
+                            OpenProject(this, new OpenProjectEventArgs(openFile.FileName, GetTreeFilter()));
+                    }
+                    catch (Exception ex)
+                    {
+                        Exception = ex;
+                    }
                 });
                 workerThread.Start();
             }
@@ -370,9 +380,14 @@ namespace Gallio.Icarus
             workerThread = new Thread(delegate()
             {
                 StatusText = "Saving project";
-                if (SaveProject != null)
+                try
                 {
-                    SaveProject(this, new SingleStringEventArgs(projectFileName));
+                    if (SaveProject != null)
+                        SaveProject(this, new SingleStringEventArgs(projectFileName));
+                }
+                catch (Exception ex)
+                {
+                    Exception = ex;
                 }
             });
             workerThread.Start();
@@ -431,7 +446,7 @@ namespace Gallio.Icarus
 
         private void helpToolbarButton_Click(object sender, EventArgs e)
         {
-            ((TestTreeNode) testTree.SelectedNode).TestState = TestState.Failed;
+            ((TestTreeNode) testTree.SelectedNode).TestState = TestStates.Failed;
         }
 
         private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -460,12 +475,12 @@ namespace Gallio.Icarus
             testTree.BeginUpdate();
 
             testTree.CollapseAll();
-            TestNodes(testTree.Nodes[0], TestState.Failed);
+            TestNodes(testTree.Nodes[0], TestStates.Failed);
 
             testTree.EndUpdate();
         }
 
-        private void TestNodes(TreeNode node, TestState state)
+        private void TestNodes(TreeNode node, TestStates state)
         {
             if (node is TestTreeNode)
             {
@@ -515,7 +530,7 @@ namespace Gallio.Icarus
             {
                 TestTreeNode testNode = node as TestTreeNode;
                 if (testNode != null)
-                    testNode.TestState = TestState.Undefined;
+                    testNode.TestState = TestStates.Undefined;
             }
         }
 
@@ -542,6 +557,8 @@ namespace Gallio.Icarus
 
                 // clear test results
                 testResultsList.Items.Clear();
+
+                startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
             }
         }
 
@@ -629,17 +646,17 @@ namespace Gallio.Icarus
                 {
                     case TestOutcome.Passed:
                         testProgressStatusBar.Passed++;
-                        testTree.UpdateTestState(testData.Id, TestState.Success);
+                        testTree.UpdateTestState(testData.Id, TestStates.Success);
                         foreColor = Color.Green;
                         break;
                     case TestOutcome.Failed:
                         testProgressStatusBar.Failed++;
-                        testTree.UpdateTestState(testData.Id, TestState.Failed);
+                        testTree.UpdateTestState(testData.Id, TestStates.Failed);
                         foreColor = Color.Red;
                         break;
                     case TestOutcome.Inconclusive:
                         testProgressStatusBar.Ignored++;
-                        testTree.UpdateTestState(testData.Id, TestState.Ignored);
+                        testTree.UpdateTestState(testData.Id, TestStates.Inconclusive);
                         foreColor = Color.Yellow;
                         break;
                 }
@@ -674,18 +691,22 @@ namespace Gallio.Icarus
 
         private void stopButton_Click(object sender, EventArgs e)
         {
+            CancelTests();
+        }
+
+        private void CancelTests()
+        {
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
                 if (StopTests != null)
-                {
                     StopTests(this, new EventArgs());
-                }
+
                 // enable/disable buttons
                 toolStripContainer.Invoke((MethodInvoker)delegate()
                 {
-                    stopButton.Enabled = false;
-                    startButton.Enabled = true;
+                    stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
+                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 });
             });
             workerThread.Start();
@@ -757,16 +778,8 @@ namespace Gallio.Icarus
 
         private void testTree_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (e.Action != TreeViewAction.Unknown)
-            {
-                if (SetFilter != null)
-                {
-                    SetFilter(this, new SetFilterEventArgs("Latest", testTree.Nodes));
-                }
-                testTree.Reset(testTree.Nodes);
-                testProgressStatusBar.Clear();
-                testProgressStatusBar.Total = testTree.CountTests(testTree.Nodes, new List<string>());
-            }
+            if (e.Action != TreeViewAction.Unknown && SetFilter != null)
+                SetFilter(this, new SetFilterEventArgs("Latest", testTree.Nodes));
         }
 
         private void treeFilterCombo_SelectedIndexChanged(object sender, EventArgs e)
@@ -788,7 +801,7 @@ namespace Gallio.Icarus
         private void UpdateLogBody()
         {
             TestTreeNode node = testTree.SelectedNode as TestTreeNode;
-            if (node != null && node.SelectedImageIndex == 4 && node.TestState != TestState.Undefined &&
+            if (node != null && node.SelectedImageIndex == 4 && node.TestState != TestStates.Undefined &&
                 GetLogStream != null && logStream.SelectedItem != null)
                 // display log stream (if available)
                 GetLogStream(this, new GetLogStreamEventArgs(logStream.SelectedItem.ToString(), node.Name));
@@ -889,11 +902,6 @@ namespace Gallio.Icarus
             }
         }
 
-        private void logStreamsTabPage_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void graphsFilterBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             testResultsGraph.Mode = (string)graphsFilterBox1.SelectedItem;
@@ -916,6 +924,36 @@ namespace Gallio.Icarus
                     testResultsList.Filter = "Inconclusive";
                     break;
             }
+        }
+
+        private void filterPassedTestsToolStripButton_Click(object sender, EventArgs e)
+        {
+            testTree.FilterPassed = filterPassedTestsToolStripButton.Checked;
+        }
+
+        private void filterInconclusiveTestsToolStripButton_Click(object sender, EventArgs e)
+        {
+            testTree.FilterInconclusive = filterInconclusiveTestsToolStripButton.Checked;
+        }
+
+        private void filterFailedTestsToolStripButton_Click(object sender, EventArgs e)
+        {
+            testTree.FilterFailed = filterFailedTestsToolStripButton.Checked;
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CancelTests();
+        }
+
+        private void startTestsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartTests();
+        }
+
+        private void showOnlineHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://docs.mbunit.com");
         }
     }	
 }

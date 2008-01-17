@@ -205,36 +205,22 @@ namespace Gallio.Icarus.Adapter
 
         private void SaveProjectEventHandler(object sender, SingleStringEventArgs e)
         {
-            try
-            {
-                SerializationUtils.SaveToXml(project, e.String);
-            }
-            catch (Exception ex)
-            {
-                projectAdapterView.Exception = ex;
-            }
+            SerializationUtils.SaveToXml(project, e.String);
         }
 
         private void OpenProjectEventHandler(object sender, OpenProjectEventArgs e)
         {
-            try
+            project = SerializationUtils.LoadFromXml<Project>(e.FileName);
+            if (GetTestTree != null)
+                GetTestTree(this, new GetTestTreeEventArgs(e.Mode, true, false, project.TestPackageConfig));
+            foreach (FilterInfo filterInfo in project.TestFilters)
             {
-                project = SerializationUtils.LoadFromXml<Project>(e.FileName);
-                if (GetTestTree != null)
-                    GetTestTree(this, new GetTestTreeEventArgs(e.Mode, true, false, project.TestPackageConfig));
-                foreach (FilterInfo filterInfo in project.TestFilters)
+                if (filterInfo.FilterName == "Latest")
                 {
-                    if (filterInfo.FilterName == "Latest")
-                    {
-                        filter = FilterUtils.ParseTestFilter(filterInfo.Filter);
-                        projectAdapterView.ApplyFilter(filter);
-                        SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, filter));
-                    }
+                    filter = FilterUtils.ParseTestFilter(filterInfo.Filter);
+                    projectAdapterView.ApplyFilter(filter);
+                    SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, filter));
                 }
-            }
-            catch (Exception ex)
-            {
-                projectAdapterView.Exception = ex;
             }
         }
 

@@ -64,10 +64,13 @@ namespace Gallio.Icarus
             this.addAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.showOnlineHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -140,6 +143,10 @@ namespace Gallio.Icarus
             this.panelResults = new System.Windows.Forms.Panel();
             this.testProgressStatusBar = new Gallio.Icarus.Controls.TestStatusBar();
             this.label2 = new System.Windows.Forms.Label();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.filterPassedTestsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.filterInconclusiveTestsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.filterFailedTestsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -168,6 +175,7 @@ namespace Gallio.Icarus
             this.reportTabPage.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panelResults.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -176,6 +184,7 @@ namespace Gallio.Icarus
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.assembliesToolStripMenuItem,
+            this.testsToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -282,9 +291,37 @@ namespace Gallio.Icarus
             // 
             this.reloadToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolStripMenuItem.Image")));
             this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
-            this.reloadToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
             this.reloadToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.reloadToolStripMenuItem.Text = "R&eload";
+            // 
+            // testsToolStripMenuItem
+            // 
+            this.testsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startTestsToolStripMenuItem,
+            this.stopTestsToolStripMenuItem});
+            this.testsToolStripMenuItem.Name = "testsToolStripMenuItem";
+            this.testsToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
+            this.testsToolStripMenuItem.Text = "Tests";
+            // 
+            // startTestsToolStripMenuItem
+            // 
+            this.startTestsToolStripMenuItem.Enabled = false;
+            this.startTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.start;
+            this.startTestsToolStripMenuItem.Name = "startTestsToolStripMenuItem";
+            this.startTestsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.startTestsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.startTestsToolStripMenuItem.Text = "Start Tests";
+            this.startTestsToolStripMenuItem.Click += new System.EventHandler(this.startTestsToolStripMenuItem_Click);
+            // 
+            // stopTestsToolStripMenuItem
+            // 
+            this.stopTestsToolStripMenuItem.Enabled = false;
+            this.stopTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.stop;
+            this.stopTestsToolStripMenuItem.Name = "stopTestsToolStripMenuItem";
+            this.stopTestsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
+            this.stopTestsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.stopTestsToolStripMenuItem.Text = "Stop Tests";
+            this.stopTestsToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -304,29 +341,30 @@ namespace Gallio.Icarus
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpToolStripMenuItem1,
+            this.showOnlineHelpToolStripMenuItem,
             this.toolStripSeparator5,
             this.aboutMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.helpToolStripMenuItem.Text = "&Help";
             // 
-            // helpToolStripMenuItem1
+            // showOnlineHelpToolStripMenuItem
             // 
-            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
-            this.helpToolStripMenuItem1.Text = "&Help";
+            this.showOnlineHelpToolStripMenuItem.Name = "showOnlineHelpToolStripMenuItem";
+            this.showOnlineHelpToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.showOnlineHelpToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.showOnlineHelpToolStripMenuItem.Text = "Online &Help";
+            this.showOnlineHelpToolStripMenuItem.Click += new System.EventHandler(this.showOnlineHelpToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(123, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(155, 6);
             // 
             // aboutMenuItem
             // 
             this.aboutMenuItem.Name = "aboutMenuItem";
-            this.aboutMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.aboutMenuItem.Size = new System.Drawing.Size(158, 22);
             this.aboutMenuItem.Text = "&About...";
             this.aboutMenuItem.Click += new System.EventHandler(this.aboutMenuItem_Click);
             // 
@@ -348,7 +386,6 @@ namespace Gallio.Icarus
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Size = new System.Drawing.Size(886, 17);
             this.toolStripStatusLabel.Spring = true;
-            this.toolStripStatusLabel.Text = "Ready...";
             this.toolStripStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // toolStripProgressBar
@@ -418,6 +455,7 @@ namespace Gallio.Icarus
             // 
             // startButton
             // 
+            this.startButton.Enabled = false;
             this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
             this.startButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.startButton.Name = "startButton";
@@ -462,6 +500,9 @@ namespace Gallio.Icarus
             this.treeImages.Images.SetKeyName(2, "VSObject_Namespace.bmp");
             this.treeImages.Images.SetKeyName(3, "VSObject_Class.bmp");
             this.treeImages.Images.SetKeyName(4, "VSObject_Method.bmp");
+            this.treeImages.Images.SetKeyName(5, "FilterPassed.ico");
+            this.treeImages.Images.SetKeyName(6, "FilterInconclusive.ico");
+            this.treeImages.Images.SetKeyName(7, "FilterFailed.ico");
             // 
             // stateImages
             // 
@@ -469,8 +510,8 @@ namespace Gallio.Icarus
             this.stateImages.TransparentColor = System.Drawing.Color.Transparent;
             this.stateImages.Images.SetKeyName(0, "tick.png");
             this.stateImages.Images.SetKeyName(1, "help-browser.png");
-            this.stateImages.Images.SetKeyName(2, "error.png");
-            this.stateImages.Images.SetKeyName(3, "cross.png");
+            this.stateImages.Images.SetKeyName(2, "cross.png");
+            this.stateImages.Images.SetKeyName(3, "error.png");
             // 
             // toolStripContainer
             // 
@@ -487,6 +528,7 @@ namespace Gallio.Icarus
             // 
             // toolStripContainer.TopToolStripPanel
             // 
+            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStrip1);
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.mainToolStrip);
             // 
             // splitContainer
@@ -621,7 +663,7 @@ namespace Gallio.Icarus
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(308, 571);
+            this.tabPage5.Size = new System.Drawing.Size(308, 546);
             this.tabPage5.TabIndex = 1;
             this.tabPage5.Text = "Assemblies";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -638,7 +680,7 @@ namespace Gallio.Icarus
             this.assemblyList.Location = new System.Drawing.Point(3, 3);
             this.assemblyList.MultiSelect = false;
             this.assemblyList.Name = "assemblyList";
-            this.assemblyList.Size = new System.Drawing.Size(302, 565);
+            this.assemblyList.Size = new System.Drawing.Size(302, 540);
             this.assemblyList.TabIndex = 0;
             this.assemblyList.UseCompatibleStateImageBehavior = false;
             this.assemblyList.View = System.Windows.Forms.View.Details;
@@ -820,18 +862,17 @@ namespace Gallio.Icarus
             this.logStreamsTabPage.Controls.Add(this.panel3);
             this.logStreamsTabPage.Location = new System.Drawing.Point(4, 22);
             this.logStreamsTabPage.Name = "logStreamsTabPage";
-            this.logStreamsTabPage.Size = new System.Drawing.Size(665, 546);
+            this.logStreamsTabPage.Size = new System.Drawing.Size(665, 521);
             this.logStreamsTabPage.TabIndex = 3;
             this.logStreamsTabPage.Text = "Log Streams";
             this.logStreamsTabPage.UseVisualStyleBackColor = true;
-            this.logStreamsTabPage.Click += new System.EventHandler(this.logStreamsTabPage_Click);
             // 
             // logBody
             // 
             this.logBody.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logBody.Location = new System.Drawing.Point(0, 39);
             this.logBody.Name = "logBody";
-            this.logBody.Size = new System.Drawing.Size(665, 507);
+            this.logBody.Size = new System.Drawing.Size(665, 482);
             this.logBody.TabIndex = 0;
             this.logBody.Text = "";
             // 
@@ -871,7 +912,7 @@ namespace Gallio.Icarus
             this.performanceMonitorTabPage.Location = new System.Drawing.Point(4, 22);
             this.performanceMonitorTabPage.Name = "performanceMonitorTabPage";
             this.performanceMonitorTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.performanceMonitorTabPage.Size = new System.Drawing.Size(665, 546);
+            this.performanceMonitorTabPage.Size = new System.Drawing.Size(665, 521);
             this.performanceMonitorTabPage.TabIndex = 1;
             this.performanceMonitorTabPage.Text = "Performance Monitor";
             this.performanceMonitorTabPage.UseVisualStyleBackColor = true;
@@ -887,7 +928,7 @@ namespace Gallio.Icarus
             this.testResultsGraph.ScrollMinX = 0;
             this.testResultsGraph.ScrollMinY = 0;
             this.testResultsGraph.ScrollMinY2 = 0;
-            this.testResultsGraph.Size = new System.Drawing.Size(659, 498);
+            this.testResultsGraph.Size = new System.Drawing.Size(659, 473);
             this.testResultsGraph.TabIndex = 0;
             // 
             // panel2
@@ -929,7 +970,7 @@ namespace Gallio.Icarus
             this.reportTabPage.Controls.Add(this.panel4);
             this.reportTabPage.Location = new System.Drawing.Point(4, 22);
             this.reportTabPage.Name = "reportTabPage";
-            this.reportTabPage.Size = new System.Drawing.Size(665, 546);
+            this.reportTabPage.Size = new System.Drawing.Size(665, 521);
             this.reportTabPage.TabIndex = 4;
             this.reportTabPage.Text = "Report";
             this.reportTabPage.UseVisualStyleBackColor = true;
@@ -940,7 +981,7 @@ namespace Gallio.Icarus
             this.reportViewer.Location = new System.Drawing.Point(0, 42);
             this.reportViewer.MinimumSize = new System.Drawing.Size(20, 20);
             this.reportViewer.Name = "reportViewer";
-            this.reportViewer.Size = new System.Drawing.Size(665, 504);
+            this.reportViewer.Size = new System.Drawing.Size(665, 479);
             this.reportViewer.TabIndex = 3;
             // 
             // panel4
@@ -1026,6 +1067,48 @@ namespace Gallio.Icarus
             this.label2.TabIndex = 0;
             this.label2.Text = "Test Status";
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.filterPassedTestsToolStripButton,
+            this.filterInconclusiveTestsToolStripButton,
+            this.filterFailedTestsToolStripButton});
+            this.toolStrip1.Location = new System.Drawing.Point(259, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(79, 25);
+            this.toolStrip1.TabIndex = 4;
+            // 
+            // filterPassedTestsToolStripButton
+            // 
+            this.filterPassedTestsToolStripButton.CheckOnClick = true;
+            this.filterPassedTestsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.filterPassedTestsToolStripButton.Image = global::Gallio.Icarus.Properties.Resources.FilterPassed;
+            this.filterPassedTestsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.filterPassedTestsToolStripButton.Name = "filterPassedTestsToolStripButton";
+            this.filterPassedTestsToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.filterPassedTestsToolStripButton.Click += new System.EventHandler(this.filterPassedTestsToolStripButton_Click);
+            // 
+            // filterInconclusiveTestsToolStripButton
+            // 
+            this.filterInconclusiveTestsToolStripButton.CheckOnClick = true;
+            this.filterInconclusiveTestsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.filterInconclusiveTestsToolStripButton.Image = global::Gallio.Icarus.Properties.Resources.FilterInconclusive;
+            this.filterInconclusiveTestsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.filterInconclusiveTestsToolStripButton.Name = "filterInconclusiveTestsToolStripButton";
+            this.filterInconclusiveTestsToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.filterInconclusiveTestsToolStripButton.Click += new System.EventHandler(this.filterInconclusiveTestsToolStripButton_Click);
+            // 
+            // filterFailedTestsToolStripButton
+            // 
+            this.filterFailedTestsToolStripButton.CheckOnClick = true;
+            this.filterFailedTestsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.filterFailedTestsToolStripButton.Image = global::Gallio.Icarus.Properties.Resources.FilterFailed;
+            this.filterFailedTestsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.filterFailedTestsToolStripButton.Name = "filterFailedTestsToolStripButton";
+            this.filterFailedTestsToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.filterFailedTestsToolStripButton.Click += new System.EventHandler(this.filterFailedTestsToolStripButton_Click);
+            // 
             // trayIcon
             // 
             this.trayIcon.BalloonTipText = "All tests are good";
@@ -1061,8 +1144,8 @@ namespace Gallio.Icarus
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Main";
             this.Text = "Gallio Icarus {0}.{1}";
-            this.Load += new System.EventHandler(this.Form_Load);
             this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
+            this.Load += new System.EventHandler(this.Form_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -1099,6 +1182,8 @@ namespace Gallio.Icarus
             this.panel4.PerformLayout();
             this.panelResults.ResumeLayout(false);
             this.panelResults.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.trayMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1133,7 +1218,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem addAssemblyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem showOnlineHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ComboBox treeFilterCombo;
@@ -1199,6 +1284,13 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ColumnHeader TypeCol;
         private System.Windows.Forms.ColumnHeader NamespaceCol;
         private System.Windows.Forms.ColumnHeader AssemblyCol;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton filterPassedTestsToolStripButton;
+        private System.Windows.Forms.ToolStripButton filterInconclusiveTestsToolStripButton;
+        private System.Windows.Forms.ToolStripButton filterFailedTestsToolStripButton;
+        private System.Windows.Forms.ToolStripMenuItem testsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem startTestsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopTestsToolStripMenuItem;
     }
 }
 
