@@ -116,7 +116,7 @@ namespace Gallio.Data
                 }
 
                 DataBinding binding = bindings[bindingIndex];
-                value = binder.Convert(row.GetRawValue(binding), binding.ValueType);
+                value = binder.Convert(row.GetValue(binding), binding.ValueType);
 
                 values[bindingIndex] = value;
                 return value;

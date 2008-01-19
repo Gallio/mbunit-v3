@@ -49,7 +49,7 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public override object GetRawValue(DataBinding binding)
+        public override object GetValue(DataBinding binding)
         {
             int? index = binding.Index;
             if (index.HasValue && index.Value >= 0 && index.Value < values.Count)

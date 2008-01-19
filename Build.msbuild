@@ -1,16 +1,20 @@
 <Project DefaultTargets="Clean;Build;Test" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <RootDir>$(MSBuildProjectDirectory)</RootDir>
-    <BuildDir>$(RootDir)\build</BuildDir>
-    <BuildBinDir>$(BuildDir)\bin</BuildBinDir>
-    <BuildReportsDir>$(BuildDir)\reports</BuildReportsDir>
-    <BuildDocsDir>$(BuildDir)\docs</BuildDocsDir>
-    <BuildExtrasDir>$(BuildDir)\extras</BuildExtrasDir>
-    <BuildReleaseDir>$(BuildDir)\release</BuildReleaseDir>
-    <BuildTempDir>$(BuildDir)\temp</BuildTempDir>
+
     <LibsDir>$(RootDir)\libs</LibsDir>
     <SourceDir>$(RootDir)\src</SourceDir>
 
+    <BuildDir>$(RootDir)\build</BuildDir>
+    <BuildReportsDir>$(BuildDir)\reports</BuildReportsDir>
+    <BuildReleaseDir>$(BuildDir)\release</BuildReleaseDir>
+    <BuildTempDir>$(BuildDir)\temp</BuildTempDir>
+
+    <TargetDir>$(BuildDir)\target</TargetDir>
+    <TargetBinDir>$(TargetDir)\bin</TargetBinDir>
+    <TargetDocsDir>$(TargetDir)\docs</TargetDocsDir>
+    <TargetExtrasDir>$(TargetDir)\extras</TargetExtrasDir>
+    
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
 
     <Coverage Condition="'$(Coverage)'==''">true</Coverage>
@@ -35,7 +39,7 @@
   </ItemGroup>
 
   <!-- Note: The tasks assembly gets loaded lazily. -->
-  <UsingTask AssemblyFile="$(BuildBinDir)\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
+  <UsingTask AssemblyFile="$(TargetBinDir)\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
   <Import Project="$(RootDir)\Module.targets" />
@@ -103,16 +107,16 @@
 
   <Target Name="CopyFiles"
           DependsOnTargets="CreateBuildDir">
-    <Message Text="Copying files to build folder..." Importance="High" />
+    <Message Text="Copying files to target folder..." Importance="High" />
 
     <Copy SourceFiles="@(Binary)"
-          DestinationFolder="$(BuildBinDir)\%(Binary.Folder)\%(RecursiveDir)" />
+          DestinationFolder="$(TargetBinDir)\%(Binary.Folder)\%(RecursiveDir)" />
     <Copy SourceFiles="@(Document)"
-          DestinationFolder="$(BuildDocsDir)\%(Document.Folder)\%(RecursiveDir)" />
+          DestinationFolder="$(TargetDocsDir)\%(Document.Folder)\%(RecursiveDir)" />
     <Copy SourceFiles="@(Extra)"
-          DestinationFolder="$(BuildExtrasDir)\%(Extra.Folder)\%(RecursiveDir)" />
+          DestinationFolder="$(TargetExtrasDir)\%(Extra.Folder)\%(RecursiveDir)" />
     <Copy SourceFiles="@(File)"
-          DestinationFolder="$(BuildDir)\%(File.Folder)\%(RecursiveDir)" />
+          DestinationFolder="$(TargetDir)\%(File.Folder)\%(RecursiveDir)" />
   </Target>
 
   <Target Name="BuildDocs"
@@ -124,17 +128,17 @@
 
     <NDocCommonOptions>@(DocumentedAssembly->'"%(FullPath)"', ' ')</NDocCommonOptions>
 
-    <NDocXMLOptions>$(NDocCommonOptions) -documenter=Intellisense "-OutputDirectory=$(BuildBinDir)" -UseAssemblyShadowCache=False</NDocXMLOptions>
+    <NDocXMLOptions>$(NDocCommonOptions) -documenter=Intellisense "-OutputDirectory=$(TargetBinDir)" -UseAssemblyShadowCache=False</NDocXMLOptions>
 
-    <NDocCHMOptions>$(NDocCommonOptions) -documenter=MSDN-CHM "-OutputDirectory=$(BuildDocsDir)" -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocCHMOptions>
+    <NDocCHMOptions>$(NDocCommonOptions) -documenter=MSDN-CHM "-OutputDirectory=$(TargetDocsDir)" -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocCHMOptions>
 
-    <NDocHxSOptions>$(NDocCommonOptions) -documenter=MSDN-Help2 "-OutputDirectory=$(BuildDocsDir)\vs2005" -GenerateCollectionFiles=True -PlugInNamespace=ms.vsipcc -AllLinksWithinVSHelpCollection=True -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHxSOptions>
+    <NDocHxSOptions>$(NDocCommonOptions) -documenter=MSDN-Help2 "-OutputDirectory=$(TargetDocsDir)\vs2005" -GenerateCollectionFiles=True -PlugInNamespace=ms.vsipcc -AllLinksWithinVSHelpCollection=True -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHxSOptions>
   </PropertyGroup>
 
   <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
   <Target Name="BuildXMLDocs">
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocXMLOptions)" />
-    <Delete Files="$(BuildBinDir)\ndoc_qa.log;$(BuildBinDir)\ndoc_build.log" />
+    <Delete Files="$(TargetBinDir)\ndoc_qa.log;$(TargetBinDir)\ndoc_build.log" />
   </Target>
 
   <Target Name="BuildCHMDocs">
@@ -143,6 +147,7 @@
 
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocCHMOptions)"
           Condition="Exists('$(HTMLHelpCompilerPath)')" />
+    <RemoveDir Directories="$(TargetDocsDir)\ndoc_msdn_temp" />
   </Target>
 
   <Target Name="BuildHxSDocs">
@@ -151,6 +156,7 @@
 
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
           Condition="Exists('$(VS2005SDKHelpPath)')" />
+    <RemoveDir Directories="$(TargetDocsDir)\vs2005\ndoc_htmlhelp2_temp" />
   </Target>
 
   <Target Name="BuildInstaller"
@@ -164,18 +170,17 @@
 
   <Target Name="BuildZip"
           DependsOnTargets="CreateBuildDir">
-    <CreateItem Include="$(BuildBinDir)\**\*.*;$(BuildDocsDir)\**\*.*;$(BuildExtrasDir)\**\*.*"
-                Exclude="$(BuildDocsDir)\ndoc_msdn_temp\**\*.*">
+    <CreateItem Include="$(TargetDir)\**\*.*">
       <Output TaskParameter="Include" ItemName="ZipFiles" />
     </CreateItem>
 
     <Zip Files="@(ZipFiles)"
-         WorkingDirectory="$(BuildDir)"
+         WorkingDirectory="$(TargetDir)"
          ZipFileName="$(BuildReleaseDir)\MbUnit-$(Version).zip"
          ZipLevel="9" />
   </Target>
 
   <Target Name="CreateBuildDir">
-    <MakeDir Directories="$(BuildDir);$(BuildBinDir);$(BuildReportsDir);$(BuildDocsDir);$(BuildExtrasDir);$(BuildReleaseDir);$(BuildTempDir)" />
+    <MakeDir Directories="$(BuildDir);$(TargetDir);$(TargetBinDir);$(TargetDocsDir);$(TargetExtrasDir);$(BuildReportsDir);$(BuildReleaseDir);$(BuildTempDir)" />
   </Target>
 </Project>

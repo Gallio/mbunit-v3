@@ -46,7 +46,7 @@ namespace Gallio.Data
         IEnumerable<KeyValuePair<string, string>> GetMetadata();
 
         /// <summary>
-        /// Gets the raw value of the specified binding.
+        /// Gets the value of the specified binding.
         /// </summary>
         /// <remarks>
         /// The implementation may use the <see cref="DataBinding.ValueType" /> property
@@ -55,9 +55,9 @@ namespace Gallio.Data
         /// any necessary conversions.
         /// </remarks>
         /// <param name="binding">The data binding, never null</param>
-        /// <returns>The raw value</returns>
+        /// <returns>The value</returns>
         /// <exception cref="DataBindingException">Thrown if the <paramref name="binding"/>
-        /// cannot be resolved or if its raw value cannot be obtained</exception>
-        object GetRawValue(DataBinding binding);
+        /// cannot be resolved or if its value cannot be obtained</exception>
+        object GetValue(DataBinding binding);
     }
 }

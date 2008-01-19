@@ -11,6 +11,7 @@
 !define APPNAMEANDVERSION "MbUnit v${VERSION}"
 !define LIBSDIR "${ROOTDIR}libs"
 !define BUILDDIR "${ROOTDIR}\build"
+!define TARGETDIR "${BUILDDIR}\target"
 !define RELEASEDIR "${BUILDDIR}\release"
 
 !include "StrRep.nsh"
@@ -37,7 +38,7 @@ InstType "Typical"
 ; Installer pages
 !insertmacro MUI_PAGE_WELCOME
 Page custom AddRemovePageEnter AddRemovePageLeave
-!insertmacro MUI_PAGE_LICENSE "${BUILDDIR}\MbUnit License.txt"
+!insertmacro MUI_PAGE_LICENSE "${TARGETDIR}\MbUnit License.txt"
 Page custom UserSelectionPageEnter UserSelectionPageLeave
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
@@ -64,8 +65,8 @@ Var UserContext
 
 ; Detect whether any components are missing
 !tempfile DETECT_TEMP
-!system 'if not exist "${BUILDDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
-!system 'if not exist "${BUILDDIR}\docs\vs2005\Gallio.HxS" echo !define MISSING_VS2005_HELP >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\docs\vs2005\Gallio.HxS" echo !define MISSING_VS2005_HELP >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
 !delfile "${DETECT_TEMP}"
 
@@ -86,28 +87,28 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR"
-	File "${BUILDDIR}\ASL - Apache Software Foundation License.txt"
-	File "${BUILDDIR}\MbUnit License.txt"
-	File "${BUILDDIR}\Release Notes.txt"
+	File "${TARGETDIR}\ASL - Apache Software Foundation License.txt"
+	File "${TARGETDIR}\MbUnit License.txt"
+	File "${TARGETDIR}\Release Notes.txt"
 	File "MbUnit Website.url"
 	File "Online Documentation.url"
 
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\Castle.Core.dll"
-	File "${BUILDDIR}\bin\Castle.DynamicProxy2.dll"
-	File "${BUILDDIR}\bin\Castle.MicroKernel.dll"
-	File "${BUILDDIR}\bin\Castle.Windsor.dll"
-	File "${BUILDDIR}\bin\Gallio.dll"
-	File "${BUILDDIR}\bin\Gallio.XmlSerializers.dll"
-	File "${BUILDDIR}\bin\Gallio.plugin"
-	File "${BUILDDIR}\bin\Gallio.xml"
-	File "${BUILDDIR}\bin\Gallio.Host.exe"
-	File "${BUILDDIR}\bin\MbUnit.dll"
-	File "${BUILDDIR}\bin\MbUnit.plugin"
-	File "${BUILDDIR}\bin\MbUnit.xml"
+	File "${TARGETDIR}\bin\Castle.Core.dll"
+	File "${TARGETDIR}\bin\Castle.DynamicProxy2.dll"
+	File "${TARGETDIR}\bin\Castle.MicroKernel.dll"
+	File "${TARGETDIR}\bin\Castle.Windsor.dll"
+	File "${TARGETDIR}\bin\Gallio.dll"
+	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
+	File "${TARGETDIR}\bin\Gallio.plugin"
+	File "${TARGETDIR}\bin\Gallio.xml"
+	File "${TARGETDIR}\bin\Gallio.Host.exe"
+	File "${TARGETDIR}\bin\MbUnit.dll"
+	File "${TARGETDIR}\bin\MbUnit.plugin"
+	File "${TARGETDIR}\bin\MbUnit.xml"
 
 	SetOutPath "$INSTDIR\bin\Reports"
-	File /r "${BUILDDIR}\bin\Reports\*"
+	File /r "${TARGETDIR}\bin\Reports\*"
 
 	; Create Shortcuts
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
@@ -125,7 +126,7 @@ Section "MbUnit v2 Plugin" MbUnit2PluginSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin\MbUnit2"
-	File /r "${BUILDDIR}\bin\MbUnit2\*"
+	File /r "${TARGETDIR}\bin\MbUnit2\*"
 SectionEnd
 
 Section "NUnit Plugin" NUnitPluginSection
@@ -134,7 +135,7 @@ Section "NUnit Plugin" NUnitPluginSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin\NUnit"
-	File /r "${BUILDDIR}\bin\NUnit\*"
+	File /r "${TARGETDIR}\bin\NUnit\*"
 SectionEnd
 
 Section "xUnit.Net Plugin" XunitPluginSection
@@ -143,7 +144,7 @@ Section "xUnit.Net Plugin" XunitPluginSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin\Xunit"
-	File /r "${BUILDDIR}\bin\Xunit\*"
+	File /r "${TARGETDIR}\bin\Xunit\*"
 SectionEnd
 SectionGroupEnd
 
@@ -154,8 +155,8 @@ Section "Echo (Console Test Runner)" EchoSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\Gallio.Echo.exe"
-	File "${BUILDDIR}\bin\Gallio.Echo.exe.config"
+	File "${TARGETDIR}\bin\Gallio.Echo.exe"
+	File "${TARGETDIR}\bin\Gallio.Echo.exe.config"
 SectionEnd
 
 Section "Icarus (GUI Test Runner)" IcarusSection
@@ -164,10 +165,10 @@ Section "Icarus (GUI Test Runner)" IcarusSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\ICSharpCode.TextEditor.dll"
-	File "${BUILDDIR}\bin\Gallio.Icarus.exe"
-	File "${BUILDDIR}\bin\Gallio.Icarus.exe.config"
-	File "${BUILDDIR}\bin\ZedGraph.dll"
+	File "${TARGETDIR}\bin\ICSharpCode.TextEditor.dll"
+	File "${TARGETDIR}\bin\Gallio.Icarus.exe"
+	File "${TARGETDIR}\bin\Gallio.Icarus.exe.config"
+	File "${TARGETDIR}\bin\ZedGraph.dll"
 
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\Icarus GUI Test Runner.lnk" "$INSTDIR\bin\Gallio.Icarus.exe"
@@ -179,8 +180,8 @@ Section "MSBuild Tasks" MSBuildTasksSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\Gallio.MSBuildTasks.dll"
-	File "${BUILDDIR}\bin\Gallio.MSBuildTasks.xml"
+	File "${TARGETDIR}\bin\Gallio.MSBuildTasks.dll"
+	File "${TARGETDIR}\bin\Gallio.MSBuildTasks.xml"
 SectionEnd
 
 Section "NAnt Tasks" NAntTasksSection
@@ -189,8 +190,8 @@ Section "NAnt Tasks" NAntTasksSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\Gallio.NAntTasks.dll"
-	File "${BUILDDIR}\bin\Gallio.NAntTasks.xml"
+	File "${TARGETDIR}\bin\Gallio.NAntTasks.dll"
+	File "${TARGETDIR}\bin\Gallio.NAntTasks.xml"
 SectionEnd
 
 Section "PowerShell Commands" PowerShellCommandsSection
@@ -199,8 +200,8 @@ Section "PowerShell Commands" PowerShellCommandsSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\Gallio.PowerShellCommands.dll"
-	File "${BUILDDIR}\bin\Gallio.PowerShellCommands.xml"
+	File "${TARGETDIR}\bin\Gallio.PowerShellCommands.dll"
+	File "${TARGETDIR}\bin\Gallio.PowerShellCommands.xml"
 
 	; Registry keys for the snap-in
 	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "ApplicationBase" "$INSTDIR\bin"
@@ -293,8 +294,8 @@ Section "ReSharper v3 Plug-in" ReSharperRunnerSection
 	SetOverwrite on
 	
 	; Set Section Files and Shortcuts
-	!insertmacro InstallReSharperRunner "v3.0" "vs8.0" "${BUILDDIR}\bin"
-	!insertmacro InstallReSharperRunner "v3.0" "vs9.0" "${BUILDDIR}\bin"
+	!insertmacro InstallReSharperRunner "v3.1" "vs8.0" "${TARGETDIR}\bin"
+	!insertmacro InstallReSharperRunner "v3.1" "vs9.0" "${TARGETDIR}\bin"
 SectionEnd
 
 !macro InstallTDNetRunner Key Framework Priority
@@ -318,7 +319,7 @@ Section "TestDriven.Net Runner for MbUnit v3" TDNetAddInSection
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\bin\Gallio.TDNetRunner.dll"
+	File "${TARGETDIR}\bin\Gallio.TDNetRunner.dll"
 SectionEnd
 
 Section "TestDriven.Net Runner for Other Supported Frameworks" TDNetAddInOtherFrameworksSection
@@ -358,7 +359,7 @@ Section "Standalone Help Docs" CHMHelpSection
 	SetOutPath "$INSTDIR"
 
 	SetOutPath "$INSTDIR\docs"
-	File "${BUILDDIR}\docs\Gallio.chm"
+	File "${TARGETDIR}\docs\Gallio.chm"
 
 	; Create Shortcuts
 	CreateShortCut "$INSTDIR\Offline Documentation.lnk" "$INSTDIR\docs\Gallio.chm"
@@ -373,12 +374,11 @@ Section "Visual Studio 2005 Help Docs" VS2005HelpSection
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\docs\vs2005"
-	File "${BUILDDIR}\docs\vs2005\Gallio.Hx?"
-	File "${BUILDDIR}\docs\vs2005\GallioCollection.*"
+	File "${TARGETDIR}\docs\vs2005\Gallio.Hx?"
+	File "${TARGETDIR}\docs\vs2005\GallioCollection.*"
 
-	SetOutPath "$INSTDIR\bin"
-	File "${BUILDDIR}\extras\H2Reg\H2Reg.exe"
-	File "${BUILDDIR}\extras\H2Reg\H2Reg.ini"
+	SetOutPath "$INSTDIR\extras\H2Reg"
+	File "${TARGETDIR}\extras\H2Reg\*"
 
 	; Merge the collection
 	ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -r CmdFile="$INSTDIR\docs\vs2005\GallioCollection.h2reg.ini"'
@@ -395,7 +395,7 @@ Section "CruiseControl.Net extensions" CCNetSection
 	
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\extras"
-	File /r "${BUILDDIR}\extras\CCNet"
+	File /r "${TARGETDIR}\extras\CCNet"
 SectionEnd
 
 SectionGroupEnd

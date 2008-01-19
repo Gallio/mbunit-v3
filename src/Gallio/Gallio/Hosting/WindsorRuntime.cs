@@ -64,11 +64,13 @@ namespace Gallio.Hosting
                 throw new ArgumentNullException(@"runtimeSetup");
 
             this.assemblyResolverManager = assemblyResolverManager;
-            this.runtimeSetup = runtimeSetup;
+            this.runtimeSetup = runtimeSetup.Copy();
 
             container = new WindsorContainer();
             pluginDirectories = new List<string>();
             pluginPaths = new Dictionary<string, string>();
+
+            SetInstallationPath();
 
             SetDefaultPluginDirectories();
 
@@ -199,11 +201,17 @@ namespace Gallio.Hosting
                 throw new ObjectDisposedException("The runtime has been disposed.");
         }
 
+        private void SetInstallationPath()
+        {
+            if (runtimeSetup.InstallationPath == null)
+                runtimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(IRuntime).Assembly));
+            else
+                runtimeSetup.InstallationPath = Path.GetFullPath(runtimeSetup.InstallationPath);
+        }
+
         private void SetDefaultPluginDirectories()
         {
-            string coreLocation = Loader.GetAssemblyLocalPath(typeof(WindsorRuntime).Assembly);
-            if (coreLocation != null)
-                AddPluginDirectory(Path.GetDirectoryName(Path.GetFullPath(coreLocation)));
+            AddPluginDirectory(runtimeSetup.InstallationPath);
         }
 
         private void ConfigurePluginDirectoriesFromSetup()

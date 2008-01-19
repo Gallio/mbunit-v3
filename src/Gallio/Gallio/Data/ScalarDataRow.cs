@@ -45,7 +45,7 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public override object GetRawValue(DataBinding binding)
+        public override object GetValue(DataBinding binding)
         {
             if (binding.Index.GetValueOrDefault(-1) == 0)
                 return value;

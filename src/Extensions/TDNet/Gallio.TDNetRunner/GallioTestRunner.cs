@@ -138,6 +138,11 @@ namespace Gallio.TDNetRunner
                 launcher.Filter = filter;
                 launcher.RuntimeSetup = new RuntimeSetup();
 
+                // Set the installation path explicitly to ensure that we do not encounter problems
+                // when the test assembly contains a local copy of the primary runtime assemblies
+                // which will confuse the runtime into searching in the wrong place for plugins.
+                launcher.RuntimeSetup.InstallationPath = Loader.GetFriendlyAssemblyLocation(typeof(GallioTestRunner).Assembly);
+
                 // This monitor will inform the user in real-time what's going on
                 launcher.CustomMonitors.Add(new TDNetLogMonitor(testListener, launcher.ReportMonitor));
 

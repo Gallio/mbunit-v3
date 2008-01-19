@@ -12,10 +12,10 @@
        - InstallerInclude: Path of an include file to add to the NSIS installer. (TODO)
        - DocumentedAssembly: Path of an assembly with XML documentation to include.
 
-       - Binary: Path of a file to copy into the build\bin dir.
-       - Document: Path of a file to copy into the build\docs dir.
-       - Extra: Path of a file to copy into the build\extras dir.
-       - File: Path of a file to copy into the build dir.
+       - Binary: Path of a file to copy into the build\target\bin dir.
+       - Document: Path of a file to copy into the build\target\docs dir.
+       - Extra: Path of a file to copy into the build\target\extras dir.
+       - File: Path of a file to copy into the build\target dir.
 
        (Binary, Document and File may have optional Folder metadata
         to specify a relative destination path within the respective dir.)

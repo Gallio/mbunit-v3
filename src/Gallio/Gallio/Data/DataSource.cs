@@ -165,9 +165,9 @@ namespace Gallio.Data
                 return row.GetMetadata();
             }
 
-            public object GetRawValue(DataBinding binding)
+            public object GetValue(DataBinding binding)
             {
-                return row.GetRawValue(source.TranslateBinding(binding));
+                return row.GetValue(source.TranslateBinding(binding));
             }
 
             /// <inheritdoc />

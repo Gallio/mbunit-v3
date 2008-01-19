@@ -41,7 +41,7 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public abstract object GetRawValue(DataBinding binding);
+        public abstract object GetValue(DataBinding binding);
 
         /// <inheritdoc />
         public abstract void Dispose();

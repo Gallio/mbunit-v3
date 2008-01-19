@@ -30,6 +30,7 @@ namespace Gallio.Hosting
     {
         private readonly List<string> pluginDirectories;
         private string runtimeFactoryType;
+        private string installationPath;
         private string configurationFilePath;
 
         /// <summary>
@@ -66,6 +67,21 @@ namespace Gallio.Hosting
         }
 
         /// <summary>
+        /// Gets or sets the installation path, or null to determine it automatically
+        /// based on the location of the primary runtime assemblies.  The installation
+        /// path specifies where the standard runtime plugins are located.
+        /// </summary>
+        /// <value>
+        /// The installation path.  Default is <c>null</c>.
+        /// </value>
+        [XmlAttribute("installationPath")]
+        public string InstallationPath
+        {
+            get { return installationPath; }
+            set { installationPath = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the path of the primary configuration file to be
         /// loaded by the runtime (if it exists).  This is useful
         /// when Gallio is launched by a library instead of as a standalone
@@ -75,6 +91,7 @@ namespace Gallio.Hosting
         /// The primary configuration file path.  Default is null to load the
         /// configuration from the <see cref="AppDomain" />.
         /// </value>
+        [XmlAttribute("configurationFilePath")]
         public string ConfigurationFilePath
         {
             get { return configurationFilePath; }
@@ -90,6 +107,7 @@ namespace Gallio.Hosting
             RuntimeSetup copy = new RuntimeSetup();
             copy.pluginDirectories.AddRange(pluginDirectories);
             copy.runtimeFactoryType = runtimeFactoryType;
+            copy.installationPath = installationPath;
             copy.configurationFilePath = configurationFilePath;
             return copy;
         }

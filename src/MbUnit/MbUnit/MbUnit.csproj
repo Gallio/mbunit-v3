@@ -63,6 +63,7 @@
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
     <Compile Include="Framework\Concurrency\TaskManager.cs" />
+    <Compile Include="Model\MbUnitTestInstance.cs" />
     <Compile Include="Model\Patterns\DependencyPatternAttribute.cs" />
     <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
     <Compile Include="Framework\DependsOnAttribute.cs" />

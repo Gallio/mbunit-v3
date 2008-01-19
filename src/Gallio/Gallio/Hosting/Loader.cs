@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using Gallio.Hosting;
-using Gallio.Reflection;
 
 namespace Gallio.Hosting
 {
@@ -119,7 +118,7 @@ namespace Gallio.Hosting
         {
             get
             {
-                return Path.GetDirectoryName(GetFriendlyAssemblyLocation(typeof(Loader).Assembly));
+                return Runtime.Instance.GetRuntimeSetup().InstallationPath;
             }
         }
     }
