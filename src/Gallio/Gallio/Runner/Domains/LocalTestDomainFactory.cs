@@ -16,6 +16,7 @@
 using System;
 using Gallio.Hosting;
 using Gallio.Runner.Harness;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Domains
 {
@@ -27,7 +28,7 @@ namespace Gallio.Runner.Domains
     /// because the tests will run within the current <see cref="AppDomain" /> and
     /// <see cref="Runtime"/>.
     /// </remarks>
-    public class LocalTestDomainFactory : MarshalByRefObject, ITestDomainFactory
+    public class LocalTestDomainFactory : LongLivingMarshalByRefObject, ITestDomainFactory
     {
         private readonly ITestHarnessFactory harnessFactory;
 
