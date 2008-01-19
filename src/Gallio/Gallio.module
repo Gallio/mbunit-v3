@@ -32,6 +32,7 @@
     <Binary Include="$(RootDir)\libs\ReferenceAssemblies\System.Management.Automation.dll" />
 
     <Binary Include="Gallio\bin\Gallio.dll" />
+    <Binary Include="Gallio\bin\Gallio.pdb" />
     <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
     <Binary Include="Gallio\Gallio.plugin" />
 

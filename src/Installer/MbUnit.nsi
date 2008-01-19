@@ -99,11 +99,13 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	File "${TARGETDIR}\bin\Castle.MicroKernel.dll"
 	File "${TARGETDIR}\bin\Castle.Windsor.dll"
 	File "${TARGETDIR}\bin\Gallio.dll"
+	File "${TARGETDIR}\bin\Gallio.pdb"
 	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
 	File "${TARGETDIR}\bin\Gallio.plugin"
 	File "${TARGETDIR}\bin\Gallio.xml"
 	File "${TARGETDIR}\bin\Gallio.Host.exe"
 	File "${TARGETDIR}\bin\MbUnit.dll"
+	File "${TARGETDIR}\bin\MbUnit.pdb"
 	File "${TARGETDIR}\bin\MbUnit.plugin"
 	File "${TARGETDIR}\bin\MbUnit.xml"
 

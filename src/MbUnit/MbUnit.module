@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Binary Include="MbUnit\bin\MbUnit.dll" />
+    <Binary Include="MbUnit\bin\MbUnit.pdb" />
     <Binary Include="MbUnit\MbUnit.plugin" />
 
     <Binary Include="Samples\*.sln">
@@ -34,6 +35,9 @@
         <Folder>Samples</Folder>
     </Binary>
     <Binary Include="Samples\MbUnit.Samples\bin\MbUnit.Samples.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="Samples\MbUnit.Samples\bin\MbUnit.Samples.pdb">
         <Folder>Samples\bin</Folder>
     </Binary>
     <Binary Include="$(RootDir)\libs\WatiN\bin\Interop.SHDocVw.dll">

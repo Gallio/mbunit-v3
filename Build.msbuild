@@ -25,6 +25,7 @@
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
     <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
     <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
+    <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <MSBuildCommunityTasksPath>$(LibsDir)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
 
     <CSharpProperties>
@@ -85,7 +86,7 @@
   </Target>
 
   <Target Name="Release"
-          DependsOnTargets="Clean;Build;Test;BuildDocs;BuildInstaller;BuildZip" />
+          DependsOnTargets="Clean;Build;Test;BuildSourceServerIndex;BuildDocs;BuildInstaller;BuildZip" />
 
   <Target Name="BuildCSharpProjects">
     <MSBuild Projects="@(CSharpProject)"
@@ -178,6 +179,15 @@
          WorkingDirectory="$(TargetDir)"
          ZipFileName="$(BuildReleaseDir)\MbUnit-$(Version).zip"
          ZipLevel="9" />
+  </Target>
+
+  <Target Name="BuildSourceServerIndex"
+          DependsOnTargets="CreateBuildDir">
+    <Warning Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs."
+             Condition="! Exists('$(SourceServerIndexerPath)')" />
+
+    <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\srcsrv.ini&quot; -Source=&quot;$(SourceDir)&quot; -Symbols=&quot;$(TargetBinDir)&quot;"
+          Condition="Exists('$(SourceServerIndexerPath)')" />
   </Target>
 
   <Target Name="CreateBuildDir">
