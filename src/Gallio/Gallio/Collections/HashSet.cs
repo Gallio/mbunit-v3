@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -27,7 +28,24 @@ namespace Gallio.Collections
     /// </remarks>
     public class HashSet<T> : ICollection<T>
     {
-        private readonly Dictionary<T, bool> objects = new Dictionary<T, bool>();
+        private readonly Dictionary<T, bool> objects;
+
+        /// <summary>
+        /// Creates an empty set.
+        /// </summary>
+        public HashSet()
+            : this(null)
+        {
+        }
+
+        /// <summary>
+        /// Creates an empty set using the specified comparer.
+        /// </summary>
+        /// <param name="comparer">The comparer, or null to use the default comparer</param>
+        public HashSet(IEqualityComparer<T> comparer)
+        {
+            objects = new Dictionary<T, bool>(comparer);
+        }
 
         /// <inheritdoc />
         public int Count

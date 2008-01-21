@@ -22,7 +22,7 @@ namespace Gallio.Data
     /// <summary>
     /// A data set constructed from an enumerated sequence of column values.
     /// </summary>
-    public class ColumnSequenceDataSet : IDataSet
+    public sealed class ColumnSequenceDataSet : IDataSet
     {
         private readonly IEnumerable values;
         private readonly IEnumerable<KeyValuePair<string, string>> metadata;

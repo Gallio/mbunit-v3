@@ -72,7 +72,7 @@
     <Compile Include="Core\ConsoleSupport\CommandLineArgumentParserTests.cs" />
     <Compile Include="Core\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Contexts\ContextTest.cs" />
-    <Compile Include="Data\DataBindingTest.cs" />
+    <Compile Include="Data\SimpleDataBindingTest.cs" />
     <Compile Include="Data\GeneratorsTest.cs" />
     <Compile Include="Hosting\LoaderTest.cs" />
     <Compile Include="Integration\StubContextTest.cs" />

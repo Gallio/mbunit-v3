@@ -22,13 +22,13 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Data
 {
     [TestFixture]
-    [TestsOn(typeof(DataBinding))]
-    public class DataBindingTest
+    [TestsOn(typeof(SimpleDataBinding))]
+    public class SimpleDataBindingTest
     {
         [Test]
         public void ConstructorWithValueTypeOnly()
         {
-            DataBinding binding = new DataBinding(typeof(int));
+            SimpleDataBinding binding = new SimpleDataBinding(typeof(int));
 
             Assert.AreEqual(typeof(int), binding.ValueType);
             Assert.IsNull(binding.Path);
@@ -39,13 +39,13 @@ namespace Gallio.Tests.Data
         [ExpectedArgumentNullException]
         public void ConstructorWithValueTypeOnly_ThrowsIfValueTypeIsNull()
         {
-            new DataBinding(null);
+            new SimpleDataBinding(null);
         }
 
         [Test]
         public void ConstructorWithPathAndIndex()
         {
-            DataBinding binding = new DataBinding(typeof(int), "path", 42);
+            SimpleDataBinding binding = new SimpleDataBinding(typeof(int), "path", 42);
 
             Assert.AreEqual(typeof(int), binding.ValueType);
             Assert.AreEqual("path", binding.Path);
@@ -56,16 +56,16 @@ namespace Gallio.Tests.Data
         [ExpectedArgumentNullException]
         public void ConstructorWithPathAndIndex_ThrowsIfValueTypeIsNull()
         {
-            new DataBinding(null, "path", 42);
+            new SimpleDataBinding(null, "path", 42);
         }
 
         [Test]
         new public void ToString()
         {
             Assert.AreEqual("Binding ValueType: System.Int32, Path: <null>, Index: <null>",
-                new DataBinding(typeof(int)).ToString());
+                new SimpleDataBinding(typeof(int)).ToString());
             Assert.AreEqual("Binding ValueType: System.Int32, Path: 'foo', Index: 42",
-                new DataBinding(typeof(int), "foo", 42).ToString());
+                new SimpleDataBinding(typeof(int), "foo", 42).ToString());
         }
     }
 }

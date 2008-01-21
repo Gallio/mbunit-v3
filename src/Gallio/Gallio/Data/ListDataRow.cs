@@ -29,7 +29,7 @@ namespace Gallio.Data
     /// </para>
     /// </summary>
     /// <typeparam name="T">The value type</typeparam>
-    public class ListDataRow<T> : BaseDataRow
+    public sealed class ListDataRow<T> : BaseDataRow
     {
         private readonly IList<T> values;
 

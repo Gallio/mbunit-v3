@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Gallio.Data
@@ -22,7 +21,7 @@ namespace Gallio.Data
     /// <summary>
     /// A data set constructed from a sequence of rows.
     /// </summary>
-    public class RowSequenceDataSet : IDataSet
+    public sealed class RowSequenceDataSet : IDataSet
     {
         private readonly IEnumerable<IDataRow> rows;
         private readonly int columnCount;

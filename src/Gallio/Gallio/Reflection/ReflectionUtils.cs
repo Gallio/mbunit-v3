@@ -241,5 +241,68 @@ namespace Gallio.Reflection
 
             return false;
         }
+
+        /// <summary>
+        /// Gets the default value for a type.
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <returns>The default value for the type, such as <c>0</c> if
+        /// the type represents an integer, or <c>null</c> if the type
+        /// is a reference type or if <paramref name="type"/> was null</returns>
+        public static object GetDefaultValue(Type type)
+        {
+            return GetDefaultValue(Type.GetTypeCode(type));
+        }
+
+        /// <summary>
+        /// Gets the default value of a type with a given type code.
+        /// </summary>
+        /// <param name="typeCode">The type code</param>
+        /// <returns>The default value of the type associated with the
+        /// specified type code</returns>
+        public static object GetDefaultValue(TypeCode typeCode)
+        {
+            switch (typeCode)
+            {
+                case TypeCode.Boolean:
+                    return default(Boolean);
+                case TypeCode.Byte:
+                    return default(Byte);
+                case TypeCode.Char:
+                    return default(Char);
+                case TypeCode.DateTime:
+                    return default(DateTime);
+                case TypeCode.DBNull:
+                    return default(DBNull);
+                case TypeCode.Decimal:
+                    return default(Decimal);
+                case TypeCode.Double:
+                    return default(Double);
+                case TypeCode.Empty:
+                    return null;
+                case TypeCode.Int16:
+                    return default(Int16);
+                case TypeCode.Int32:
+                    return default(Int32);
+                case TypeCode.Int64:
+                    return default(Int64);
+                case TypeCode.Object:
+                    return default(Object);
+                case TypeCode.SByte:
+                    return default(SByte);
+                case TypeCode.Single:
+                    return default(Single);
+                case TypeCode.String:
+                    return default(String);
+                case TypeCode.UInt16:
+                    return default(UInt16);
+                case TypeCode.UInt32:
+                    return default(UInt32);
+                case TypeCode.UInt64:
+                    return default(UInt64);
+                default:
+                    throw new NotSupportedException("TypeCode not supported.");
+            }
+        }
     }
 }

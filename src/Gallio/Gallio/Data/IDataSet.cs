@@ -14,14 +14,13 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 
 namespace Gallio.Data
 {
     /// <summary>
     /// A data set provides data rows for data binding.
     /// </summary>
-    public interface IDataSet
+    public interface IDataSet : IDataProvider
     {
         /// <summary>
         /// <para>
@@ -49,13 +48,5 @@ namespace Gallio.Data
         /// <returns>True if the data set can provide a value for the binding</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="binding"/> is null</exception>
         bool CanBind(DataBinding binding);
-
-        /// <summary>
-        /// Gets an enumeration of data rows in the data set.
-        /// </summary>
-        /// <param name="bindings">The bindings that will be accessed</param>
-        /// <returns>The enumeration of data rows</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="bindings"/> is null</exception>
-        IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings);
     }
 }

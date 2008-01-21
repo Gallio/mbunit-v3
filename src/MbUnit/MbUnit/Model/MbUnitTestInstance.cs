@@ -35,5 +35,20 @@ namespace MbUnit.Model
             : base(test, parent, name)
         {
         }
+
+        /// <inheritdoc />
+        public override bool IsDynamic
+        {
+            get
+            {
+                return base.IsDynamic;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override object InternalGetParameterValue(ITestParameter parameter)
+        {
+            return base.InternalGetParameterValue(parameter);
+        }
     }
 }

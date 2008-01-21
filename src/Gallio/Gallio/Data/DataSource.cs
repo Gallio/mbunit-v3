@@ -25,12 +25,10 @@ namespace Gallio.Data
     /// binding paths to binding indexes which is useful for providing named
     /// aliases for columns in indexed data sets.
     /// </summary>
-    public class DataSource : IDataSet
+    public class DataSource : MergedDataSet
     {
         private readonly string name;
-        private List<IDataSet> dataSets;
         private Dictionary<string, int> indexAliases;
-        private int columnCount;
 
         /// <summary>
         /// Creates a data source with a given name.
@@ -53,52 +51,6 @@ namespace Gallio.Data
             get { return name; }
         }
 
-        /// <inheritdoc />
-        public bool IsDynamic
-        {
-            get
-            {
-                return dataSets.Exists(delegate(IDataSet dataSet)
-                {
-                    return dataSet.IsDynamic;
-                });
-            }
-        }
-
-        /// <inheritdoc />
-        public int ColumnCount
-        {
-            get { return columnCount; }
-        }
-
-        /// <inheritdoc />
-        public bool CanBind(DataBinding binding)
-        {
-            binding = TranslateBinding(binding);
-
-            return dataSets.TrueForAll(delegate(IDataSet dataSet)
-            {
-                return dataSet.CanBind(binding);
-            });
-        }
-
-        /// <summary>
-        /// Adds a data set to the data source.
-        /// </summary>
-        /// <param name="dataSet">The data set to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/> is null</exception>
-        public void AddDataSet(IDataSet dataSet)
-        {
-            if (dataSet == null)
-                throw new ArgumentNullException("dataSet");
-
-            if (dataSets == null)
-                dataSets = new List<IDataSet>();
-
-            dataSets.Add(dataSet);
-            columnCount = Math.Max(columnCount, dataSet.ColumnCount);
-        }
-
         /// <summary>
         /// Adds an alias for a binding path to map it to the specified index.
         /// </summary>
@@ -116,26 +68,35 @@ namespace Gallio.Data
             indexAliases.Add(path, index);
         }
 
+        /// <inheritdoc />
+        protected override bool CanBindInternal(DataBinding binding)
+        {
+            if (indexAliases != null)
+                binding = TranslateBinding(binding);
+
+            return base.CanBindInternal(binding);
+        }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
         {
-            if (bindings == null)
-                throw new ArgumentNullException("bindings");
+            if (indexAliases != null)
+                return GetRowsInternalTranslated(bindings);
+            else
+                return GetRowsInternalBase(bindings);
+        }
 
-            if (dataSets != null)
-            {
-                if (indexAliases != null)
-                    bindings = GenericUtils.ConvertAllToArray<DataBinding, DataBinding>(bindings, TranslateBinding);
+        private IEnumerable<IDataRow> GetRowsInternalBase(ICollection<DataBinding> bindings)
+        {
+            return base.GetRowsInternal(bindings);
+        }
 
-                foreach (IDataSet dataSet in dataSets)
-                {
-                    foreach (IDataRow row in dataSet.GetRows(bindings))
-                    {
-                        yield return indexAliases == null ? row : new TranslatedDataRow(this, row);
-                    }
-                }
-            }
+        private IEnumerable<IDataRow> GetRowsInternalTranslated(ICollection<DataBinding> bindings)
+        {
+            DataBinding[] translatedBindings = GenericUtils.ConvertAllToArray<DataBinding, DataBinding>(bindings, TranslateBinding);
+
+            foreach (IDataRow row in GetRowsInternalBase(translatedBindings))
+                yield return new TranslatedDataRow(this, row);
         }
 
         private DataBinding TranslateBinding(DataBinding binding)

@@ -27,46 +27,13 @@ namespace Gallio.Data
     /// data sets.
     /// </para>
     /// </summary>
-    public class DataBinding
+    /// <seealso cref="SimpleDataBinding"/>
+    public abstract class DataBinding
     {
-        private readonly Type valueType;
-        private readonly string path;
-        private readonly int? index;
-
-        /// <summary>
-        /// Creates a new data binding.
-        /// </summary>
-        /// <param name="valueType">The type of value to bind</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="valueType"/> is null</exception>
-        public DataBinding(Type valueType)
-        {
-            if (valueType == null)
-                throw new ArgumentNullException("valueType");
-
-            this.valueType = valueType;
-        }
-
-        /// <summary>
-        /// Creates a new data binding with an optional path and index.
-        /// </summary>
-        /// <param name="valueType">The type of value to bind</param>
-        /// <param name="path">The binding path or null if none.  <seealso cref="Path"/></param>
-        /// <param name="index">The binding index or null if none.  <seealso cref="Index"/></param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="valueType"/> is null</exception>
-        public DataBinding(Type valueType, string path, int? index)
-            : this(valueType)
-        {
-            this.path = path;
-            this.index = index;
-        }
-
         /// <summary>
         /// Gets the type of value to bind.
         /// </summary>
-        public Type ValueType
-        {
-            get { return valueType; }
-        }
+        public abstract Type ValueType { get; }
 
         /// <summary>
         /// Gets an optional binding path that describes how to locate the bound value
@@ -77,10 +44,7 @@ namespace Gallio.Data
         /// A data set can take advantage of this convention by treating the binding path as a
         /// case-insensitive name where appropriate.
         /// </remarks>
-        public string Path
-        {
-            get { return path; }
-        }
+        public abstract string Path { get; }
 
         /// <summary>
         /// Gets an optional binding index that describes how to locate the bound value
@@ -92,20 +56,14 @@ namespace Gallio.Data
         /// in the parameter array.  A data set can take advantage of this convention by
         /// treating the binding index 
         /// </remarks>
-        public int? Index
-        {
-            get { return index; }
-        }
+        public abstract int? Index { get; }
 
         /// <summary>
         /// Creates a clone of the data binding with a different index.
         /// </summary>
         /// <param name="index">The new index</param>
         /// <returns>The cloned binding</returns>
-        public virtual DataBinding ReplaceIndex(int? index)
-        {
-            return new DataBinding(valueType, path, index);
-        }
+        public abstract DataBinding ReplaceIndex(int? index);
 
         /// <summary>
         /// Returns a debug representation of the binding as a string.
@@ -114,9 +72,9 @@ namespace Gallio.Data
         public override string ToString()
         {
             return String.Format("Binding ValueType: {0}, Path: {1}, Index: {2}",
-                valueType.FullName,
-                path != null ? "'" + path + "'" : "<null>",
-                index.HasValue ? index.Value.ToString() : "<null>");
+                ValueType.FullName,
+                Path != null ? "'" + Path + "'" : "<null>",
+                Index.HasValue ? Index.Value.ToString() : "<null>");
         }
     }
 }

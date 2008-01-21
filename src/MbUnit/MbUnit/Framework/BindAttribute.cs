@@ -91,7 +91,7 @@ namespace MbUnit.Framework
         protected override void DecorateTestParameter(ITestParameterBuilder builder, ISlotInfo slot)
         {
             builder.TestParameter.Binding = new DataBindingWithSourceName(source ?? @"",
-                new DataBinding(slot.ValueType.Resolve(false), path, index));
+                new SimpleDataBinding(slot.ValueType.Resolve(false), path, index));
         }
     }
 }
