@@ -69,7 +69,7 @@ namespace Gallio.Data
         /// <summary>
         /// An item contains 
         /// </summary>
-        public sealed class Item : IDisposable
+        public sealed class Item
         {
             private static readonly object nullPlaceholder = new object();
 
@@ -120,21 +120,6 @@ namespace Gallio.Data
 
                 values[bindingIndex] = value;
                 return value;
-            }
-
-            /// <summary>
-            /// Disposes of the item and any resources it may hold.
-            /// </summary>
-            public void Dispose()
-            {
-                foreach (object obj in values)
-                {
-                    IDisposable disposable = obj as IDisposable;
-                    if (disposable != null)
-                        disposable.Dispose();
-                }
-
-                row.Dispose();
             }
         }
     }

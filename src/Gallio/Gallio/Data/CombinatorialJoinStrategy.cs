@@ -47,10 +47,10 @@ namespace Gallio.Data
             IEnumerator<IDataRow>[] enumerators = new IEnumerator<IDataRow>[providerCount];
             enumerators[0] = sequences[0].GetEnumerator();
 
-            int enumeratorCount = 0;
+            int enumeratorCount = 1;
             for (; ; )
             {
-                IEnumerator<IDataRow> top = sequences[enumeratorCount - 1].GetEnumerator();
+                IEnumerator<IDataRow> top = enumerators[enumeratorCount - 1];
 
                 if (top.MoveNext())
                 {

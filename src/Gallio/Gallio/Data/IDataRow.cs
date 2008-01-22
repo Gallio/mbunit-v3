@@ -24,12 +24,8 @@ namespace Gallio.Data
     /// associated with data bindings.  Each row may include metadata to describe
     /// the purpose of the row.
     /// </para>
-    /// <para>
-    /// A data row instance must be disposed when no longer required to ensure that
-    /// resources associated with active bindings are released in a timely manner.
-    /// </para>
     /// </summary>
-    public interface IDataRow : IDisposable
+    public interface IDataRow
     {
         /// <summary>
         /// <para>

@@ -82,14 +82,12 @@ namespace Gallio.Data
                         tally[values] = count;
                     }
                 }
-
-                row.Dispose();
             }
 
             return tally;
         }
 
-        private IEnumerable<IDataRow> GetRowsAccordingToTally(Dictionary<object[], int> tally, IDataProvider provider, ICollection<DataBinding> bindings)
+        private static IEnumerable<IDataRow> GetRowsAccordingToTally(Dictionary<object[], int> tally, IDataProvider provider, ICollection<DataBinding> bindings)
         {
             foreach (IDataRow row in provider.GetRows(bindings))
             {
@@ -106,14 +104,10 @@ namespace Gallio.Data
                     else
                         tally[values] = count;
                 }
-                else
-                {
-                    row.Dispose();
-                }
             }
         }
 
-        private object[] GetValues(IDataRow row, ICollection<DataBinding> bindings)
+        private static object[] GetValues(IDataRow row, ICollection<DataBinding> bindings)
         {
             try
             {

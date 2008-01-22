@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Reflection;
@@ -44,12 +45,10 @@ namespace Gallio.Data
         /// <inheritdoc />
         public object GetValue(DataBinding binding)
         {
-            return ReflectionUtils.GetDefaultValue(binding.ValueType);
-        }
+            if (binding == null)
+                throw new ArgumentNullException("binding");
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
+            return ReflectionUtils.GetDefaultValue(binding.ValueType);
         }
     }
 }

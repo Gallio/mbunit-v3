@@ -28,7 +28,7 @@ namespace Gallio.Data
     public class DataSource : MergedDataSet
     {
         private readonly string name;
-        private Dictionary<string, int> indexAliases;
+        private Dictionary<string, int?> indexAliases;
 
         /// <summary>
         /// Creates a data source with a given name.
@@ -57,13 +57,13 @@ namespace Gallio.Data
         /// <param name="path">The binding path to match in a case-insensitive manner</param>
         /// <param name="index">The associated index to use instead</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
-        public void AddIndexAlias(string path, int index)
+        public void AddIndexAlias(string path, int? index)
         {
             if (path == null)
                 throw new ArgumentNullException("path");
 
             if (indexAliases == null)
-                indexAliases = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
+                indexAliases = new Dictionary<string, int?>(StringComparer.InvariantCultureIgnoreCase);
 
             indexAliases.Add(path, index);
         }
@@ -103,7 +103,7 @@ namespace Gallio.Data
         {
             string path = binding.Path;
 
-            int index;
+            int? index;
             if (path != null && indexAliases.TryGetValue(path, out index))
                 return binding.ReplaceIndex(index);
 
@@ -128,13 +128,10 @@ namespace Gallio.Data
 
             public object GetValue(DataBinding binding)
             {
-                return row.GetValue(source.TranslateBinding(binding));
-            }
+                if (binding == null)
+                    throw new ArgumentNullException("binding");
 
-            /// <inheritdoc />
-            public void Dispose()
-            {
-                row.Dispose();
+                return row.GetValue(source.TranslateBinding(binding));
             }
         }
     }

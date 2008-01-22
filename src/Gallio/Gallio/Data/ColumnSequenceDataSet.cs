@@ -60,11 +60,22 @@ namespace Gallio.Data
         /// <inheritdoc />
         public bool CanBind(DataBinding binding)
         {
+            if (binding == null)
+                throw new ArgumentNullException("binding");
+
             return binding.Index.GetValueOrDefault(-1) == 0;
         }
 
         /// <inheritdoc />
         public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings)
+        {
+            if (bindings == null)
+                throw new ArgumentNullException("bindings");
+
+            return GetRowsInternal(bindings);
+        }
+
+        private IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
         {
             foreach (object value in values)
                 yield return new ScalarDataRow<object>(value, metadata);

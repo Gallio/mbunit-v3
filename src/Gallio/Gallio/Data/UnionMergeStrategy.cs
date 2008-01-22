@@ -56,10 +56,7 @@ namespace Gallio.Data
                         });
 
                         if (previousValues.Contains(values))
-                        {
-                            row.Dispose();
                             continue;
-                        }
 
                         previousValues.Add(values);
                     }

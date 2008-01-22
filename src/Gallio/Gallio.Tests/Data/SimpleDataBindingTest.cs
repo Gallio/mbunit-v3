@@ -60,6 +60,19 @@ namespace Gallio.Tests.Data
         }
 
         [Test]
+        public void ReplaceIndexCreatesANewInstanceWithTheNewIndex()
+        {
+            SimpleDataBinding oldBinding = new SimpleDataBinding(typeof(int), "path", 42);
+            DataBinding newBinding = oldBinding.ReplaceIndex(23);
+
+            Assert.AreNotSame(oldBinding, newBinding);
+
+            Assert.AreEqual(typeof(int), newBinding.ValueType);
+            Assert.AreEqual("path", newBinding.Path);
+            Assert.AreEqual(23, newBinding.Index);
+        }
+
+        [Test]
         new public void ToString()
         {
             Assert.AreEqual("Binding ValueType: System.Int32, Path: <null>, Index: <null>",

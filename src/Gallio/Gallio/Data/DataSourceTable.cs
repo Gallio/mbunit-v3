@@ -51,6 +51,9 @@ namespace Gallio.Data
         /// <inheritdoc />
         public DataSource ResolveDataSource(string name)
         {
+            if (name == null)
+                throw new ArgumentNullException("name");
+
             DataSource source;
             if (sources != null && sources.TryGetValue(name, out source))
                 return source;

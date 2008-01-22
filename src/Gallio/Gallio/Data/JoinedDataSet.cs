@@ -228,12 +228,6 @@ namespace Gallio.Data
 
                 return rowList[resolvedBinding.DataSetInfo.DataSetIndex].GetValue(resolvedBinding.Inner);
             }
-
-            public void Dispose()
-            {
-                foreach (IDataRow row in rowList)
-                    row.Dispose();
-            }
         }
 
         private sealed class DataSetInfo

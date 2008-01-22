@@ -62,12 +62,19 @@ namespace Gallio.Data
         /// <inheritdoc />
         public bool CanBind(DataBinding binding)
         {
-            return binding.Index.GetValueOrDefault(int.MaxValue) < columnCount;
+            if (binding == null)
+                throw new ArgumentNullException("binding");
+
+            int bindingIndex = binding.Index.GetValueOrDefault(int.MaxValue);
+            return bindingIndex >= 0 && bindingIndex < columnCount;
         }
 
         /// <inheritdoc />
         public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings)
         {
+            if (bindings == null)
+                throw new ArgumentNullException("bindings");
+
             return rows;
         }
     }

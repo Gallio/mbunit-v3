@@ -18,7 +18,8 @@ using System;
 namespace Gallio.Data
 {
     /// <summary>
-    /// A data set provides data rows for data binding.
+    /// A data set provides data rows for data binding and describes whether
+    /// is supports particular bindings.
     /// </summary>
     public interface IDataSet : IDataProvider
     {

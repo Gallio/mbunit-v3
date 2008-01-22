@@ -24,9 +24,6 @@ namespace Gallio.Data
     /// optional metadata for the row.  Data binding occurs whenever the binding
     /// index is 0.
     /// </para>
-    /// <para>
-    /// The original data value is disposed when the data row is disposed.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">The value type</typeparam>
     public sealed class ScalarDataRow<T> : BaseDataRow
@@ -47,18 +44,13 @@ namespace Gallio.Data
         /// <inheritdoc />
         public override object GetValue(DataBinding binding)
         {
+            if (binding == null)
+                throw new ArgumentNullException("binding");
+
             if (binding.Index.GetValueOrDefault(-1) == 0)
                 return value;
 
             throw new DataBindingException("Binding index not available or out of range.");
-        }
-
-        /// <inheritdoc />
-        public override void Dispose()
-        {
-            IDisposable disposable = value as IDisposable;
-            if (disposable != null)
-                disposable.Dispose();
         }
     }
 }
