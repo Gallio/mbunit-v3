@@ -48,7 +48,7 @@ namespace Gallio.Data
         /// <summary>
         /// Gets the singleton instance of the strategy.
         /// </summary>
-        public static readonly PairwiseJoinStrategy PairwiseInstance = new PairwiseJoinStrategy();
+        public static readonly PairwiseJoinStrategy Instance = new PairwiseJoinStrategy();
 
         private PairwiseJoinStrategy()
         {

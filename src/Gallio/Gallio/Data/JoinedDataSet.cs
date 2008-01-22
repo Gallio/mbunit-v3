@@ -122,7 +122,8 @@ namespace Gallio.Data
         /// <inheritdoc />
         protected override bool CanBindInternal(DataBinding binding)
         {
-            return ResolveBinding(binding) != null;
+            ResolvedBinding resolvedBinding = ResolveBinding(binding);
+            return resolvedBinding != null && DataSets[resolvedBinding.DataSetInfo.DataSetIndex].CanBind(resolvedBinding.Inner);
         }
 
         /// <inheritdoc />

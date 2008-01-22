@@ -78,7 +78,9 @@
     <Compile Include="Data\DataSourceTableTest.cs" />
     <Compile Include="Data\DataSourceTest.cs" />
     <Compile Include="Data\IntersectionMergeStrategyTest.cs" />
+    <Compile Include="Data\JoinedDataSetTest.cs" />
     <Compile Include="Data\ListDataRowTest.cs" />
+    <Compile Include="Data\MergedDataSetTest.cs" />
     <Compile Include="Data\NullDataRowTest.cs" />
     <Compile Include="Data\PairwiseJoinStrategyTest.cs" />
     <Compile Include="Data\RowSequenceDataSetTest.cs" />

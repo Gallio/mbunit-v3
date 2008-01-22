@@ -26,6 +26,7 @@ namespace Gallio.Data
     public abstract class AggregateDataSet : IDataSet
     {
         private List<IDataSet> dataSets;
+        private bool isDynamic;
 
         /// <summary>
         /// Gets the immutable list of combined data sets.
@@ -41,15 +42,9 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public virtual bool IsDynamic
+        public bool IsDynamic
         {
-            get
-            {
-                return dataSets.Exists(delegate(IDataSet dataSet)
-                {
-                    return dataSet.IsDynamic;
-                });
-            }
+            get { return isDynamic; }
         }
 
         /// <inheritdoc />
@@ -81,6 +76,9 @@ namespace Gallio.Data
                 throw new ArgumentException("The data set is already a member of the aggregate.", "dataSet");
 
             dataSets.Add(dataSet);
+
+            if (dataSet.IsDynamic)
+                isDynamic = true;
         }
 
         /// <inheritdoc />
