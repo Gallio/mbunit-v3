@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.csproj" />
+
+    <CSharpProject Include="Gallio.TypeMockIntegration.Tests\Gallio.TypeMockIntegration.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="libs\TypeMock.Integration.dll">
+        <Folder>TypeMock</Folder>
+    </Binary>
+    <Binary Include="Gallio.TypeMockIntegration\bin\Gallio.TypeMockIntegration.dll">
+        <Folder>TypeMock</Folder>
+    </Binary>
+    <Binary Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.plugin">
+        <Folder>TypeMock</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.TypeMockIntegration.Tests\bin\Gallio.TypeMockIntegration.Tests.dll" />
+  </ItemGroup>
+</Project>

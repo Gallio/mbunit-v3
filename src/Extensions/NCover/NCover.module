@@ -1,0 +1,49 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.csproj" />
+
+    <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="libs\Coverage.xsl">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="libs\CoverLib.dll">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="libs\Microsoft.VC80.CRT.manifest">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="libs\MSVCP80.dll">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="libs\MSVCR80.dll">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="libs\NCover.Console.exe">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="libs\NCover.Console.exe.config">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="libs\NCover.Framework.dll">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="libs\NCoverFAQ.html">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
+        <Folder>NCover</Folder>
+    </Binary>
+    <Binary Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.plugin">
+        <Folder>NCover</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.NCoverIntegration.Tests\bin\Gallio.NCoverIntegration.Tests.dll" />
+  </ItemGroup>
+</Project>

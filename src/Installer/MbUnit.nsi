@@ -350,6 +350,28 @@ SectionEnd
 
 SectionGroupEnd
 
+SectionGroup "Tools Integration"
+
+Section "NCover Integration" NCoverSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\bin\NCover"
+	File /r "${TARGETDIR}\bin\NCover\*"
+SectionEnd
+
+Section "TypeMock.Net Integration" TypeMockSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\bin\TypeMock"
+	File /r "${TARGETDIR}\bin\TypeMock\*"
+SectionEnd
+
+SectionGroupEnd
+
 !ifndef MISSING_CHM_HELP | MISSING_VS2005_HELP
 SectionGroup "Documentation"
 !ifndef MISSING_CHM_HELP
@@ -465,6 +487,10 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3 plug-in."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in for MbUnit v3."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInOtherFrameworksSection} "Enables the TestDriven.Net add-in to run tests for other supported frameworks."
+
+	!insertmacro MUI_DESCRIPTION_TEXT ${NCoverSection} "Provides integration with the NCover code coverage tool."
+	!insertmacro MUI_DESCRIPTION_TEXT ${TypeMockSection} "Provides integration with the TypeMock.Net mock object framework."
+
 	!insertmacro MUI_DESCRIPTION_TEXT ${CCNetSection} "Installs additional resources to assist with CruiseControl.Net integration."
 
 	!ifndef MISSING_CHM_HELP
@@ -484,9 +510,11 @@ Function .onInit
 
 	; Set installation types.
 	SectionSetInstTypes ${GallioSection} 3
+
 	SectionSetInstTypes ${MbUnit2PluginSection} 1
 	SectionSetInstTypes ${NUnitPluginSection} 1
 	SectionSetInstTypes ${XunitPluginSection} 1
+
 	SectionSetInstTypes ${EchoSection} 3
 	SectionSetInstTypes ${IcarusSection} 3
 	SectionSetInstTypes ${MSBuildTasksSection} 3
@@ -495,6 +523,10 @@ Function .onInit
 	SectionSetInstTypes ${ReSharperRunnerSection} 3
 	SectionSetInstTypes ${TDNetAddInSection} 3
 	SectionSetInstTypes ${TDNetAddInOtherFrameworksSection} 1
+
+	SectionSetInstTypes ${NCoverSection} 3
+	SectionSetInstTypes ${TypeMockSection} 3
+
 	SectionSetInstTypes ${CCNetSection} 3
 	!ifndef MISSING_CHM_HELP
 		SectionSetInstTypes ${CHMHelpSection} 3
