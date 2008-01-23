@@ -65,6 +65,25 @@ namespace Gallio.Data
         /// <returns>The cloned binding</returns>
         public abstract DataBinding ReplaceIndex(int? index);
 
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            DataBinding other = obj as DataBinding;
+            return other != null
+                && GetType() == other.GetType()
+                && Index == other.Index
+                && Path == other.Path
+                && ValueType == other.ValueType;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return ValueType.GetHashCode()
+                ^ (Path != null ? Path.GetHashCode() : 0)
+                ^ (Index.HasValue ? Index.Value : -1);
+        }
+
         /// <summary>
         /// Returns a debug representation of the binding as a string.
         /// </summary>
