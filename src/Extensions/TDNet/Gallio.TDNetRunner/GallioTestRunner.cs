@@ -138,6 +138,13 @@ namespace Gallio.TDNetRunner
                 launcher.Filter = filter;
                 launcher.RuntimeSetup = new RuntimeSetup();
 
+                // FIXME: For now, we use a local test runner instead of the isolated test runner.
+                // TestDriven.Net will crash during debugging otherwise.  Moreover, there can
+                // be interesting side-effects because of the assembly binding redirection
+                // that occurs such as the wrong version of Gallio being used which makes
+                // testing more difficult.  Needs more thought.  -- Jeff.
+                launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
+
                 // Set the installation path explicitly to ensure that we do not encounter problems
                 // when the test assembly contains a local copy of the primary runtime assemblies
                 // which will confuse the runtime into searching in the wrong place for plugins.

@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using Gallio.Data;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Tests.Data
@@ -57,6 +56,7 @@ namespace Gallio.Tests.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSet.ColumnCount).Return(2);
+                SetupResult.For(dataSet.IsDynamic).Return(false);
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
@@ -84,6 +84,7 @@ namespace Gallio.Tests.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSet.ColumnCount).Return(2);
+                SetupResult.For(dataSet.IsDynamic).Return(false);
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
@@ -122,6 +123,7 @@ namespace Gallio.Tests.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSet.ColumnCount).Return(2);
+                SetupResult.For(dataSet.IsDynamic).Return(false);
 
                 Expect.Call(dataSet.GetRows(null)).IgnoreArguments().Do((GetRowsDelegate)delegate(ICollection<DataBinding> bindings)
                 {
@@ -164,6 +166,7 @@ namespace Gallio.Tests.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSet.ColumnCount).Return(3);
+                SetupResult.For(dataSet.IsDynamic).Return(false);
 
                 Expect.Call(dataSet.GetRows(null)).IgnoreArguments().Do((GetRowsDelegate)delegate(ICollection<DataBinding> bindings)
                 {
@@ -199,6 +202,8 @@ namespace Gallio.Tests.Data
                 Assert.AreEqual(1, rows.Count);
 
                 Assert.AreSame(metadata, rows[0].GetMetadata());
+
+                InterimAssert.Throws<ArgumentNullException>(delegate { rows[0].GetValue(null); });
                 Assert.AreEqual("ghi", rows[0].GetValue(bindings[0]));
                 Assert.AreEqual("def", rows[0].GetValue(bindings[1]));
 

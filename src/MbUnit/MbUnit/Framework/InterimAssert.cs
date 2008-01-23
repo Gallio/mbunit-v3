@@ -219,5 +219,30 @@ namespace MbUnit.Framework
                     assertion(expectedValue, actualValue);
                 });
         }
+
+        /// <summary>
+        /// Asserts that all of the values in the objects array are distinct by
+        /// equality and hashcode.
+        /// </summary>
+        /// <typeparam name="T">The type of object</typeparam>
+        /// <param name="items">The objects</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="items"/> is null</exception>
+        public static void AreDistinct<T>(params T[] items)
+        {
+            if (items == null)
+                throw new ArgumentNullException("items");
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                for (int j = i + 1; j < items.Length; j++)
+                {
+                    Assert.AreNotEqual(items[i], items[j], "Item {0} should not equal item {1}.", i, j);
+                    Assert.AreNotEqual(items[j], items[i], "Item {0} should not equal item {1}.", j, i);
+
+                    if (items[i] != null && items[j] != null)
+                        Assert.AreNotEqual(items[i].GetHashCode(), items[j].GetHashCode(), "Objects {0} and {1} should not have the same hashcode.", i, j);
+                }
+            }
+        }
     }
 }

@@ -80,5 +80,32 @@ namespace Gallio.Tests.Data
             Assert.AreEqual("Binding ValueType: System.Int32, Path: 'foo', Index: 42",
                 new SimpleDataBinding(typeof(int), "foo", 42).ToString());
         }
+
+        [Test]
+        public void EqualsAndHashCodeAreEqualForEqualBindings()
+        {
+            Assert.AreEqual(
+                new SimpleDataBinding(typeof(int), "path", 1),
+                new SimpleDataBinding(typeof(int), "path", 1));
+            Assert.AreEqual(
+                new SimpleDataBinding(typeof(int), "path", 1).GetHashCode(),
+                new SimpleDataBinding(typeof(int), "path", 1).GetHashCode());
+        }
+
+        [Test]
+        public void EqualsAndHashCodeAreDistinctForDifferentBindings()
+        {
+            InterimAssert.AreDistinct(
+                new SimpleDataBinding(typeof(string), null, null),
+                new SimpleDataBinding(typeof(int), null, null),
+                new SimpleDataBinding(typeof(string), null, 0),
+                new SimpleDataBinding(typeof(string), null, 1),
+                new SimpleDataBinding(typeof(string), "path", null),
+                new SimpleDataBinding(typeof(string), "path2", null),
+                new SimpleDataBinding(typeof(string), "path", 0),
+                new SimpleDataBinding(typeof(string), "path2", 1),
+                null
+            );
+        }
     }
 }
