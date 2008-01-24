@@ -144,7 +144,4 @@
   <data name="MainClass_AvailableOptionsHeader" xml:space="preserve">
     <value>Available options:</value>
   </data>
-  <data name="MainClass_SupportedReportTypesMessage" xml:space="preserve">
-    <value>Supported report types: {0}.</value>
-  </data>
 </root>

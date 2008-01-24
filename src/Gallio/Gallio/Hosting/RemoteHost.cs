@@ -55,19 +55,10 @@ namespace Gallio.Hosting
             StartPingTimer();
         }
 
-        /// <summary>
-        /// Disposes of the host.
-        /// </summary>
-        ~RemoteHost()
-        {
-            Dispose(false);
-        }
-
         /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <inheritdoc />

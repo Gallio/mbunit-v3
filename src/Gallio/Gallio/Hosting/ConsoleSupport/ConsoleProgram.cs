@@ -28,6 +28,7 @@ namespace Gallio.Hosting.ConsoleSupport
         private IRichConsole console;
         private TArguments arguments;
         private CommandLineArgumentParser argumentParser;
+        private CommandLineOutput commandLineOutput;
 
         /// <inheritdoc />
         public virtual void Dispose()
@@ -78,6 +79,17 @@ namespace Gallio.Hosting.ConsoleSupport
         }
 
         /// <summary>
+        /// Gets the command-line output formatter, or null if the program is not running.
+        /// </summary>
+        protected CommandLineOutput CommandLineOutput
+        {
+            get
+            {
+                return commandLineOutput;
+            }
+        }
+
+        /// <summary>
         /// Runs the program.
         /// </summary>
         /// <param name="console">The console</param>
@@ -95,6 +107,7 @@ namespace Gallio.Hosting.ConsoleSupport
                 throw new InvalidOperationException("The program has already started running.");
 
             this.console = console;
+            commandLineOutput = new CommandLineOutput(console);
 
             try
             {
@@ -167,7 +180,7 @@ namespace Gallio.Hosting.ConsoleSupport
             console.ResetColor();
             console.WriteLine();
 
-            ArgumentParser.ShowUsage(new CommandLineOutput(console));
+            ArgumentParser.ShowUsage(CommandLineOutput);
         }
     }
 }

@@ -20,6 +20,7 @@ using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
+using Gallio.Runner.Domains;
 using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
 using JetBrains.ReSharper.TaskRunnerFramework;
@@ -91,7 +92,7 @@ namespace Gallio.ReSharperRunner.Tasks
 
         private void RunTests()
         {
-            using (ITestRunner runner = TestRunnerFactory.CreateLocalTestRunner())
+            using (ITestRunner runner = new DomainTestRunner(new LocalTestDomainFactory()))
             {
                 // Set parameters.
                 TestPackageConfig packageConfig = new TestPackageConfig();

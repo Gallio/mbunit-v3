@@ -77,7 +77,7 @@ namespace Gallio.Tests.Integration
                 launcher.TestPackageConfig = packageConfig;
                 launcher.Logger = new DebugLogger(logStreamWriter);
                 launcher.Filter = new OrFilter<ITest>(filters.ToArray());
-                launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
+                launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
 
                 string reportDirectory = Path.GetTempPath();
                 launcher.ReportDirectory = reportDirectory;

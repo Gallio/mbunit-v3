@@ -69,6 +69,8 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="$(TargetPath)"
           DestinationFolder="$(GallioProjectOutputPath)"
-          Condition="Exists('$(TargetPath)')" />
+          Condition="Exists('$(TargetPath)')">
+      <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
+    </Copy>
   </Target>
 </Project>

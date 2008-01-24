@@ -28,6 +28,7 @@ namespace Gallio.Reports
     public abstract class BaseReportFormatter : IReportFormatter
     {
         private readonly string name;
+        private readonly string description;
         private ExecutionLogAttachmentContentDisposition defaultAttachmentContentDisposition;
 
         /// <summary>
@@ -39,13 +40,18 @@ namespace Gallio.Reports
         /// Creates a report formatter.
         /// </summary>
         /// <param name="name">The formatter name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        protected BaseReportFormatter(string name)
+        /// <param name="description">The formatter description</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
+        /// or <paramref name="description"/> is null</exception>
+        protected BaseReportFormatter(string name, string description)
         {
             if (name == null)
                 throw new ArgumentNullException(@"name");
+            if (description == null)
+                throw new ArgumentNullException("description");
 
             this.name = name;
+            this.description = description;
         }
 
         /// <summary>
@@ -85,6 +91,12 @@ namespace Gallio.Reports
         public string Name
         {
             get { return name; }
+        }
+
+        /// <inheritdoc />
+        public string Description
+        {
+            get { return description; }
         }
 
         /// <inheritdoc />

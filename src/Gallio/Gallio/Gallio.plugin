@@ -12,6 +12,14 @@
     </facilities>
 
     <components>
+      <component id="Core.RegisteredComponentResolver"
+                 service="Gallio.Hosting.IRegisteredComponentResolver`1, Gallio"
+                 type="Gallio.Hosting.RuntimeRegisteredComponentResolver`1, Gallio" />
+
+      <component id="Core.TestRunnerManager"
+                 service="Gallio.Runner.ITestRunnerManager, Gallio"
+                 type="Gallio.Runner.DefaultTestRunnerManager, Gallio" />
+
       <component id="Core.TestHarnessFactory"
                  service="Gallio.Runner.Harness.ITestHarnessFactory, Gallio"
                  type="Gallio.Runner.Harness.DefaultTestHarnessFactory, Gallio" />
@@ -39,6 +47,64 @@
       <component id="Core.ContextManager"
                  service="Gallio.Contexts.IContextManager, Gallio"
                  type="Gallio.Contexts.DefaultContextManager, Gallio" />
+      
+      <component id="Core.IsolatedAppDomainHostFactory"
+                 service="Gallio.Hosting.IHostFactory, Gallio"
+                 type="Gallio.Hosting.IsolatedAppDomainHostFactory, Gallio" />
+      
+      <component id="Core.IsolatedProcessHostFactory"
+                 service="Gallio.Hosting.IHostFactory, Gallio"
+                 type="Gallio.Hosting.IsolatedProcessHostFactory, Gallio" />
+      
+      <component id="Core.LocalTestDomainFactory"
+                 service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
+                 type="Gallio.Runner.Domains.LocalTestDomainFactory, Gallio" />
+
+      <component id="Core.IsolatedAppDomainTestDomainFactory"
+                 service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
+                 type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
+        <parameters>
+          <hostFactory>${Core.IsolatedAppDomainHostFactory}</hostFactory>
+        </parameters>
+      </component>
+
+      <component id="Core.IsolatedProcessTestDomainFactory"
+                 service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
+                 type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
+        <parameters>
+          <hostFactory>${Core.IsolatedProcessHostFactory}</hostFactory>
+        </parameters>
+      </component>
+      
+      <component id="Core.LocalAppDomainTestRunnerFactory"
+                 service="Gallio.Runner.ITestRunnerFactory, Gallio"
+                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+        <parameters>
+          <domainFactory>${Core.LocalTestDomainFactory}</domainFactory>
+          <name>LocalAppDomain</name>
+          <description>Runs tests within the same AppDomain as the test runner application itself.  This mode provides the least test isolation and is unable to control certain global AppDomain policies.  Only use this mode if the test runner process is expected to be terminated soon after the test run.</description>
+        </parameters>
+      </component>
+      
+      <component id="Core.IsolatedAppDomainTestRunnerFactory"
+                 service="Gallio.Runner.ITestRunnerFactory, Gallio"
+                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+        <parameters>
+          <domainFactory>${Core.IsolatedAppDomainTestDomainFactory}</domainFactory>
+          <name>IsolatedAppDomain</name>
+          <description>Runs tests within an isolated AppDomain of the test runner process.  This mode is most often used when running tests because it provides adequate isolation for most purposes, has a low overhead, and is easy to debug or profile.</description>
+        </parameters>
+      </component>
+      
+      <component id="Core.IsolatedProcessTestRunnerFactory"
+                 service="Gallio.Runner.ITestRunnerFactory, Gallio"
+                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+        <parameters>
+          <domainFactory>${Core.IsolatedProcessTestDomainFactory}</domainFactory>
+          <name>IsolatedProcess</name>
+          <description>Runs tests within an isolated process external to the test runner.  This mode is used to force tests to run in a different process which can be monitored separately and may have different priviledges or process-level configuration.</description>
+        </parameters>
+      </component>      
     </components>
   </castle>
 </configuration>

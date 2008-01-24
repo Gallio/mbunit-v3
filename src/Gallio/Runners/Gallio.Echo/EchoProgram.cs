@@ -95,6 +95,8 @@ namespace Gallio.Echo
 
                 GenericUtils.AddAll(Arguments.ReportTypes, launcher.ReportFormats);
 
+                launcher.TestRunnerFactoryName = Arguments.RunnerType;
+
                 launcher.DoNotRun = Arguments.DoNotRun;
 
                 if (!String.IsNullOrEmpty(Arguments.Filter))
@@ -197,17 +199,37 @@ namespace Gallio.Echo
             try
             {
                 IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
+                ShowRegisteredComponents("Supported report types:", reportManager.FormatterResolver);
 
-                string[] formatterNames = GenericUtils.ToArray(reportManager.GetFormatterNames());
-                Array.Sort(formatterNames);
-
-                Console.WriteLine();
-                Console.WriteLine(String.Format(Resources.MainClass_SupportedReportTypesMessage,
-                    string.Join(@", ", formatterNames)));
+                ITestRunnerManager runnerManager = Runtime.Instance.Resolve<ITestRunnerManager>();
+                ShowRegisteredComponents("Supported runner types:", runnerManager.FactoryResolver);
             }
             finally
             {
                 Runtime.Shutdown();
+            }
+        }
+
+        private void ShowRegisteredComponents<T>(string heading, IRegisteredComponentResolver<T> resolver)
+            where T : class, IRegisteredComponent
+        {
+            Console.WriteLine();
+            Console.WriteLine(heading);
+            Console.WriteLine();
+
+            string[] names = GenericUtils.ToArray(resolver.GetNames());
+            if (names.Length == 0)
+            {
+                CommandLineOutput.PrintArgumentHelp("", "<none>", null, null, null, null);
+            }
+            else
+            {
+                Array.Sort(names);
+                foreach (string name in names)
+                {
+                    T component = resolver.Resolve(name);
+                    CommandLineOutput.PrintArgumentHelp("", name, null, component.Description, null, null);
+                }
             }
         }
 

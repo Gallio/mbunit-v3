@@ -140,14 +140,5 @@ namespace Gallio.Echo.Properties {
                 return ResourceManager.GetString("MainClass_OpeningReports", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Supported report types: {0}..
-        /// </summary>
-        internal static string MainClass_SupportedReportTypesMessage {
-            get {
-                return ResourceManager.GetString("MainClass_SupportedReportTypesMessage", resourceCulture);
-            }
-        }
     }
 }

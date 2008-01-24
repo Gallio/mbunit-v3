@@ -90,6 +90,7 @@
     <Compile Include="Data\GeneratorsTest.cs" />
     <Compile Include="Data\UnionMergeStrategyTest.cs" />
     <Compile Include="Hosting\LoaderTest.cs" />
+    <Compile Include="Hosting\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextTest.cs" />
     <Compile Include="Logging\LogTest.cs" />
     <Compile Include="Logging\TextLogWriterTest.cs" />

@@ -58,7 +58,7 @@ namespace Gallio.NAntTasks.Tests
         protected override TestLauncherResult RunLauncher(TestLauncher launcher)
         {
             launcher.RuntimeSetup = null;
-            launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
+            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
 
             using (Context.EnterContext(null))
                 return base.RunLauncher(launcher);

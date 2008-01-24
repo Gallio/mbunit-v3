@@ -51,6 +51,7 @@ namespace Gallio.PowerShellCommands
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
+        private string runnerType = StandardTestRunnerFactoryNames.IsolatedAppDomain;
         private string filter = "*";
         private SwitchParameter showReports;
         private SwitchParameter doNotRun;
@@ -237,6 +238,23 @@ namespace Gallio.PowerShellCommands
         }
 
         /// <summary>
+        /// Sets the type of test runner to use.
+        /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>The types supported "out of the box" are: LocalAppDomain, IsolatedAppDomain (default)
+        /// and IsolatedProcess, but more types could be available as plugins.</item>
+        /// <item>The runner types are not case sensitive.</item>
+        /// </list>
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("runner-type")]
+        public string RunnerType
+        {
+            set { runnerType = value; }
+        }
+
+        /// <summary>
         /// Sets whether to load the tests but not run them.  This option may be used to produce a
         /// report that contains test metadata for consumption by other tools.
         /// </summary>
@@ -328,6 +346,7 @@ namespace Gallio.PowerShellCommands
                 launcher.Filter = GetFilter();
                 launcher.RuntimeSetup = new RuntimeSetup();
                 launcher.ShowReports = showReports.IsPresent;
+                launcher.TestRunnerFactoryName = runnerType;
                 launcher.DoNotRun = doNotRun.IsPresent;
                 launcher.EchoResults = !noEchoResults.IsPresent;
 

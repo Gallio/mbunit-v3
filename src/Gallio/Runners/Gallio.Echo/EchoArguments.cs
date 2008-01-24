@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using Gallio.Hosting.ConsoleSupport;
+using Gallio.Runner;
 
 namespace Gallio.Echo
 {
@@ -123,6 +124,18 @@ namespace Gallio.Echo
 
         #endregion
 
+        #region Runner options
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             LongName = "runner",
+             ValueLabel = "type",
+             Description = "Specifies the type of test runner to use.  See below for all supported types.  The default is '" + StandardTestRunnerFactoryNames.IsolatedAppDomain + "'"
+             )]
+        public string RunnerType = StandardTestRunnerFactoryNames.IsolatedAppDomain;
+
+        #endregion
+
         #region Misc arguments
 
         [CommandLineArgument(
@@ -189,12 +202,14 @@ namespace Gallio.Echo
                 sw.WriteLine("\t{0}", pluginDirectory);
             }
 
-            sw.WriteLine("Report folder: {0}", ReportDirectory);
+            sw.WriteLine("Report Folder: {0}", ReportDirectory);
             sw.WriteLine("Report Name Format: {0}", ReportNameFormat);
-            sw.WriteLine("Report types: {0}", String.Join(", ", ReportTypes));
-            sw.WriteLine("Show reports: {0}", ShowReports);
+            sw.WriteLine("Report Types: {0}", String.Join(", ", ReportTypes));
+            sw.WriteLine("Show Reports: {0}", ShowReports);
 
             sw.WriteLine("Filter: {0}", Filter);
+
+            sw.WriteLine("Runner Type: {0}", RunnerType);
 
             sw.WriteLine("Verbosity: {0}", Verbosity);
             sw.WriteLine("No Echo Results: {0}", NoEchoResults);

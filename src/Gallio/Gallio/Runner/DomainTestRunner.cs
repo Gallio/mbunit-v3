@@ -24,9 +24,10 @@ using Gallio.Utilities;
 namespace Gallio.Runner
 {
     /// <summary>
-    /// Default implementation of <see cref="ITestRunner" />.
+    /// An implementation of <see cref="ITestRunner" /> that uses a <see cref="ITestDomainFactory" />
+    /// to create a test domain and manage test execution.
     /// </summary>
-    public class DefaultTestRunner : ITestRunner
+    public class DomainTestRunner : ITestRunner
     {
         private readonly ITestDomainFactory domainFactory;
 
@@ -43,7 +44,7 @@ namespace Gallio.Runner
         /// </summary>
         /// <param name="domainFactory">The test domain factory</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="domainFactory"/> is null</exception>
-        public DefaultTestRunner(ITestDomainFactory domainFactory)
+        public DomainTestRunner(ITestDomainFactory domainFactory)
         {
             if (domainFactory == null)
                 throw new ArgumentNullException(@"domainFactory");

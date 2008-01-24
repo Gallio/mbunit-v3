@@ -61,15 +61,16 @@ namespace Gallio.Reports
         /// Creates an XSLT report formatter.
         /// </summary>
         /// <param name="runtime">The runtime</param>
-        /// <param name="name">The name of the formatter</param>
+        /// <param name="name">The formatter name</param>
+        /// <param name="description">The formatter description</param>
         /// <param name="extension">The preferred extension without a '.'</param>
         /// <param name="contentUri">The Uri of the content directory</param>
         /// <param name="xsltPath">The path of the XSLT relative to the content directory</param>
         /// <param name="resourcePaths">The paths of the resources (such as images or CSS) to copy
         /// to the report directory relative to the content directory</param>
         /// <exception cref="ArgumentNullException">Thrown if any arguments are null</exception>
-        public XsltReportFormatter(IRuntime runtime, string name, string extension, string contentUri, string xsltPath, string[] resourcePaths)
-            : base(name)
+        public XsltReportFormatter(IRuntime runtime, string name, string description, string extension, string contentUri, string xsltPath, string[] resourcePaths)
+            : base(name, description)
         {
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");

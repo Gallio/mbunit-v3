@@ -70,12 +70,11 @@ namespace Gallio.Hosting
             pluginDirectories = new List<string>();
             pluginPaths = new Dictionary<string, string>();
 
+            ConfigureForDebugging();
+
             SetInstallationPath();
-
             SetDefaultPluginDirectories();
-
             ConfigurePluginDirectoriesFromSetup();
-            ConfigurePluginDirectoriesForDebugging();
         }
 
         /// <inheritdoc />
@@ -294,24 +293,29 @@ namespace Gallio.Hosting
         }
 
         /// <summary>
-        /// The Visual Studio debug helper is used to configure the runtime for
-        /// debugging purposes.  It adds the root directory of the source tree to
+        /// Configure the runtime for debugging purposes within Visual Studio.
+        /// This code makes assumptions about the layout of the projects on disk that
+        /// help to make debugging work "magically".  Unless a specific installation
+        /// path has been set, it is overridden with the location of the Gallio project
+        /// "bin" folder and the root directory of the source tree is added
         /// the list of plugin directories to ensure that plugins can be resolved.
         /// </summary>
         [Conditional("DEBUG")]
-        private void ConfigurePluginDirectoriesForDebugging()
+        private void ConfigureForDebugging()
         {
             // Find the root "src" dir.
             string gallioBinDir = Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(WindsorRuntime).Assembly));
 
             string srcDir = gallioBinDir;
-            while (srcDir != null && Path.GetFileName(srcDir) != "src")
+            while (srcDir != null && Path.GetFileName(srcDir) != @"src")
                 srcDir = Path.GetDirectoryName(srcDir);
 
             if (srcDir == null)
                 return; // not found!
 
-            // Add the source dir as a plugin directory.
+            if (runtimeSetup.InstallationPath == null)
+                runtimeSetup.InstallationPath = Path.Combine(srcDir, @"Gallio\Gallio\bin");
+
             AddPluginDirectory(srcDir);
         }
     }

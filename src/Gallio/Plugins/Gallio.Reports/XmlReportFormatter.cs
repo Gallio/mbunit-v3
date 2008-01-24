@@ -48,9 +48,11 @@ namespace Gallio.Reports
         /// Creates an Xml report formatter.
         /// </summary>
         /// <param name="name">The formatter name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        public XmlReportFormatter(string name)
-            : base(name)
+        /// <param name="description">The formatter description</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
+        /// or <paramref name="description"/> is null</exception>
+        public XmlReportFormatter(string name, string description)
+            : base(name, description)
         {
         }
 

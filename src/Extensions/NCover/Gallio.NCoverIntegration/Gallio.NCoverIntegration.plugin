@@ -2,6 +2,27 @@
 <configuration>
   <castle>
     <components>
+      <component id="NCoverIntegration.NCoverHostFactory"
+                 service="Gallio.Hosting.IHostFactory, Gallio"
+                 type="Gallio.NCoverIntegration.NCoverHostFactory, Gallio.NCoverIntegration" />      
+      
+      <component id="NCoverIntegration.NCoverTestDomainFactory"
+                 service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
+                 type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
+        <parameters>
+          <hostFactory>${NCoverIntegration.NCoverHostFactory}</hostFactory>
+        </parameters>
+      </component>
+
+      <component id="NCoverIntegration.NCoverTestRunnerFactory"
+                 service="Gallio.Runner.ITestRunnerFactory, Gallio"
+                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+        <parameters>
+          <domainFactory>${NCoverIntegration.NCoverTestDomainFactory}</domainFactory>
+          <name>NCover</name>
+          <description>Runs tests in an external process with NCover.  The NCover report is written to the current directory as a file named 'Coverage.xml'.  NCover does not need to be installed separately.</description>
+        </parameters>
+      </component>
     </components>
   </castle>
 </configuration>

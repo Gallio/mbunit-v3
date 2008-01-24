@@ -22,9 +22,7 @@ using Gallio.Hosting;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.ProgressMonitoring;
 using Gallio.Model;
-using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Runner;
 using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
 
@@ -153,7 +151,7 @@ namespace Gallio.Icarus.Core.Model
 
         public IList<string> GetReportTypes()
         {
-            return reportManager.GetFormatterNames();
+            return reportManager.FormatterResolver.GetNames();
         }
 
         public void SaveReportAs(string fileName, string format)

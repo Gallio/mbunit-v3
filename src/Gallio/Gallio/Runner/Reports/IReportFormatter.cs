@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Specialized;
+using Gallio.Hosting;
 using Gallio.Hosting.ProgressMonitoring;
 
 namespace Gallio.Runner.Reports
@@ -22,14 +23,8 @@ namespace Gallio.Runner.Reports
     /// <summary>
     /// A report formatter provides a strategy for formatting reports for human consumption.
     /// </summary>
-    public interface IReportFormatter
+    public interface IReportFormatter : IRegisteredComponent
     {
-        /// <summary>
-        /// Gets the unique name of the formatter.  The name is used by the user to select
-        /// a formatter case-insensitively.  eg. "XML", "HTML", "MHTML".
-        /// </summary>
-        string Name { get; }
-
         /// <summary>
         /// Formats the report indicated by the report writer.
         /// </summary>

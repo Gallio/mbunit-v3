@@ -83,6 +83,7 @@ namespace Gallio.MSBuildTasks
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
+        private string runnerType = StandardTestRunnerFactoryNames.IsolatedAppDomain;
         private bool ignoreFailures;
         private bool showReports;
         private bool doNotRun;
@@ -174,7 +175,7 @@ namespace Gallio.MSBuildTasks
         /// <list type="bullet">
         /// <item>The types supported "out of the box" are: Html, Html-Inline, Text, XHtml,
         /// XHtml-Inline, Xml, and Xml-Inline, but more types could be available as plugins.</item>
-        /// <item>The report types are not case sensitives.</item>
+        /// <item>The report types are not case sensitive.</item>
         /// </list>
         /// </remarks>
         /// <example>
@@ -213,6 +214,21 @@ namespace Gallio.MSBuildTasks
         public string ReportDirectory
         {
             set { reportDirectory = value; }
+        }
+
+        /// <summary>
+        /// Sets the type of test runner to use.
+        /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>The types supported "out of the box" are: LocalAppDomain, IsolatedAppDomain (default)
+        /// and IsolatedProcess, but more types could be available as plugins.</item>
+        /// <item>The runner types are not case sensitive.</item>
+        /// </list>
+        /// </remarks>
+        public string RunnerType
+        {
+            set { runnerType = value; }
         }
 
         /// <summary>
@@ -571,6 +587,8 @@ namespace Gallio.MSBuildTasks
                     launcher.ReportNameFormat = reportNameFormat;
                 if (reportTypes != null)
                     GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
+
+                launcher.TestRunnerFactoryName = runnerType;
 
                 TestLauncherResult result = RunLauncher(launcher);
                 exitCode = result.ResultCode;

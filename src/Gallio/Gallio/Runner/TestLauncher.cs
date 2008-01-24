@@ -49,7 +49,7 @@ namespace Gallio.Runner
     /// test execution begins and is disposed just afterwards.  If you already have a
     /// <see cref="Runtime" /> environment, set the <see cref="RuntimeSetup" /> to <c>null</c>.
     /// You can also override the default <see cref="ITestRunner" /> that is created
-    /// by setting the <see cref="TestRunnerFactory" /> property.
+    /// by setting the <see cref="TestRunnerFactoryName" /> property.
     /// </para>
     /// </summary>
     /// <todo>
@@ -70,7 +70,9 @@ namespace Gallio.Runner
 
         private Filter<ITest> filter;
 
-        private Factory<ITestRunner> testRunnerFactory;
+        private string testRunnerFactoryName;
+        private NameValueCollection testRunnerOptions;
+
         private bool echoResults;
         private bool doNotRun;
 
@@ -90,7 +92,9 @@ namespace Gallio.Runner
         public TestLauncher()
         {
             testPackageConfig = new TestPackageConfig();
-            testRunnerFactory = Runner.TestRunnerFactory.CreateIsolatedAppDomainTestRunner;
+
+            testRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
+            testRunnerOptions = new NameValueCollection();
 
             reportDirectory = @"";
             reportNameFormat = @"test-report-{0}-{1}";
@@ -251,20 +255,20 @@ namespace Gallio.Runner
 
         /// <summary>
         /// <para>
-        /// Specifies a factory to use when constructing the <see cref="ITestRunner" /> at
-        /// test execution time.
+        /// Specifies the name of a <see cref="ITestRunnerFactory" /> to use for constructing
+        /// the <see cref="ITestRunner" /> at test execution time.
         /// </para>
         /// <para>
-        /// The default value is <see cref="Runner.TestRunnerFactory.CreateIsolatedAppDomainTestRunner"/>.
+        /// The default value is <see cref="StandardTestRunnerFactoryNames.IsolatedAppDomain"/>.
         /// </para>
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        public Factory<ITestRunner> TestRunnerFactory
+        public string TestRunnerFactoryName
         {
             get
             {
                 ThrowIfDisposed();
-                return testRunnerFactory;
+                return testRunnerFactoryName;
             }
             set
             {
@@ -272,7 +276,19 @@ namespace Gallio.Runner
                     throw new ArgumentNullException(@"value");
 
                 ThrowIfDisposed();
-                testRunnerFactory = value;
+                testRunnerFactoryName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the mutable collection of options for the test runner.
+        /// </summary>
+        public NameValueCollection TestRunnerOptions
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return testRunnerOptions;
             }
         }
 
@@ -487,8 +503,11 @@ namespace Gallio.Runner
 
             try
             {
-                using (ITestRunner runner = CreateRunner())
+                using (ITestRunner runner = CreateRunner(result))
                 {
+                    if (runner == null)
+                        return result;
+
                     IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
                     if (!InitializeRunner(result, runner, reportManager))
                         return result;
@@ -628,9 +647,19 @@ namespace Gallio.Runner
             return true;
         }
 
-        private ITestRunner CreateRunner()
+        private ITestRunner CreateRunner(TestLauncherResult result)
         {
-            return testRunnerFactory();
+            ITestRunnerManager manager = Runtime.Instance.Resolve<ITestRunnerManager>();
+            ITestRunnerFactory factory = manager.FactoryResolver.Resolve(testRunnerFactoryName);
+
+            if (factory == null)
+            {
+                result.SetResultCode(ResultCode.InvalidArguments);
+                logger.ErrorFormat("Unrecognized test runner factory name: '{0}'.", testRunnerFactoryName);
+                return null;
+            }
+
+            return factory.CreateTestRunner(testRunnerOptions);
         }
 
         private bool InitializeRunner(TestLauncherResult result, ITestRunner runner, IReportManager reportManager)
@@ -652,7 +681,7 @@ namespace Gallio.Runner
         {
             foreach (string reportFormat in reportFormats)
             {
-                IReportFormatter formatter = reportManager.GetFormatter(reportFormat);
+                IReportFormatter formatter = reportManager.FormatterResolver.Resolve(reportFormat);
                 if (formatter == null)
                 {
                     logger.ErrorFormat("Unrecognized report format: '{0}'.", reportFormat);

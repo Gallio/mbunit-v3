@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Gallio.Hosting;
 using Gallio.Logging;
 
@@ -35,11 +36,13 @@ namespace Gallio.Concurrency
         private bool captureConsoleError = true;
         private string workingDirectory;
 
+        private bool logStreamWriterInitialized;
         private LogStreamWriter logStreamWriter;
         private StringWriter consoleOutputCaptureWriter;
         private StringWriter consoleErrorCaptureWriter;
 
         private Process process;
+        private int exited;
 
         /// <summary>
         /// Creates a process task.
@@ -60,7 +63,6 @@ namespace Gallio.Concurrency
             this.arguments = arguments;
 
             workingDirectory = Path.GetDirectoryName(this.executablePath);
-            logStreamWriter = Log.Default;
         }
 
         /// <summary>
@@ -101,8 +103,17 @@ namespace Gallio.Concurrency
         /// </summary>
         public LogStreamWriter LogStreamWriter
         {
-            get { return logStreamWriter; }
-            set { logStreamWriter = value; }
+            get
+            {
+                if (!logStreamWriterInitialized)
+                    logStreamWriter = Log.Default;
+                return logStreamWriter;
+            }
+            set
+            {
+                logStreamWriterInitialized = true;
+                logStreamWriter = value;
+            }
         }
 
         /// <summary>
@@ -211,31 +222,47 @@ namespace Gallio.Concurrency
             if (captureConsoleError)
                 consoleErrorCaptureWriter = new StringWriter();
 
-            // Prepare process start parameters.
             ProcessStartInfo startInfo = new ProcessStartInfo(executablePath, arguments);
 
             startInfo.WorkingDirectory = workingDirectory;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
+            startInfo.RedirectStandardOutput = LogStreamWriter != null || captureConsoleOutput;
+            startInfo.RedirectStandardError = LogStreamWriter != null || captureConsoleError;
 
-            process = new Process();
-            process.StartInfo = startInfo;
+            process = StartProcess(startInfo);
             process.EnableRaisingEvents = true;
-            process.Exited += ProcessExited;
-
-            ConfigureLogging();
-
-            // Start the process.
-            process.Start();
 
             StartLogging();
+
+            // Handle process exit including the case where the process might already
+            // have exited just prior to adding the event handler.
+            process.Exited += delegate { HandleProcessExit(); };
+            if (process.HasExited)
+                HandleProcessExit();
         }
 
-        private void ProcessExited(object sender, EventArgs e)
+        /// <summary>
+        /// Starts a <see cref="Process" />.
+        /// </summary>
+        /// <remarks>
+        /// This method may be override to change how the process is created and
+        /// started.
+        /// </remarks>
+        /// <param name="startInfo">The <see cref="ProcessStartInfo" /> that has been started</param>
+        /// <returns>The process</returns>
+        protected virtual Process StartProcess(ProcessStartInfo startInfo)
         {
-            StopLogging();
+            return Process.Start(startInfo);
+        }
 
-            NotifyTerminated(TaskResult.CreateFromValue(process.ExitCode));
+        private void HandleProcessExit()
+        {
+            if (Interlocked.Exchange(ref exited, 1) == 0)
+            {
+                StopLogging();
+                NotifyTerminated(TaskResult.CreateFromValue(process.ExitCode));
+            }
         }
 
         /// <inheritdoc />
@@ -255,39 +282,32 @@ namespace Gallio.Concurrency
             return process.WaitForExit((int) timeout.TotalMilliseconds);
         }
 
-        private void ConfigureLogging()
-        {
-            if (logStreamWriter != null)
-            {
-                process.StartInfo.RedirectStandardOutput = true;
-                process.OutputDataReceived += WriteDataReceivedToLog;
-
-                process.StartInfo.RedirectStandardError = true;
-                process.ErrorDataReceived += WriteDataReceivedToLog;
-            }
-
-            if (consoleOutputCaptureWriter != null)
-            {
-                process.StartInfo.RedirectStandardOutput = true;
-                process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e) { consoleOutputCaptureWriter.WriteLine(e.Data); };
-            }
-
-            if (consoleErrorCaptureWriter != null)
-            {
-                process.StartInfo.RedirectStandardError = true;
-                process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) { consoleErrorCaptureWriter.WriteLine(e.Data); };
-            }
-        }
-
         private void StartLogging()
         {
-            if (logStreamWriter != null)
+            if (LogStreamWriter != null)
                 BeginLogSection();
 
             if (process.StartInfo.RedirectStandardOutput)
+            {
+                if (LogStreamWriter != null)
+                    process.OutputDataReceived += WriteDataReceivedToLog;
+
+                if (consoleOutputCaptureWriter != null)
+                    process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e) { consoleOutputCaptureWriter.WriteLine(e.Data); };
+
                 process.BeginOutputReadLine();
+            }
+
             if (process.StartInfo.RedirectStandardError)
+            {
+                if (LogStreamWriter != null)
+                    process.ErrorDataReceived += WriteDataReceivedToLog;
+
+                if (consoleErrorCaptureWriter != null)
+                    process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) { consoleErrorCaptureWriter.WriteLine(e.Data); };
+
                 process.BeginErrorReadLine();
+            }
         }
 
         private void StopLogging()
@@ -297,20 +317,20 @@ namespace Gallio.Concurrency
             if (process.StartInfo.RedirectStandardError)
                 process.CancelErrorRead();
 
-            if (logStreamWriter != null)
+            if (LogStreamWriter != null)
                 EndLogSection();
         }
 
         private void BeginLogSection()
         {
-            logStreamWriter.BeginSection(String.Concat("Run Process: " + executablePath, @" ", arguments));
+            LogStreamWriter.BeginSection(String.Concat("Run Process: " + executablePath, @" ", arguments));
         }
 
         private void WriteDataReceivedToLog(object sender, DataReceivedEventArgs e)
         {
             try
             {
-                logStreamWriter.WriteLine(e.Data);
+                LogStreamWriter.WriteLine(e.Data);
             }
             catch (Exception ex)
             {
@@ -323,9 +343,9 @@ namespace Gallio.Concurrency
             try
             {
                 if (process != null)
-                    logStreamWriter.WriteLine("Exit Code: {0}", process.ExitCode);
+                    LogStreamWriter.WriteLine("Exit Code: {0}", process.ExitCode);
 
-                logStreamWriter.EndSection();
+                LogStreamWriter.EndSection();
             }
             catch (Exception ex)
             {
@@ -337,9 +357,9 @@ namespace Gallio.Concurrency
         {
             try
             {
-                if (logStreamWriter != null)
+                if (LogStreamWriter != null)
                 {
-                    logStreamWriter.BeginSection("Abort requested.  Killing the process!").Dispose();
+                    LogStreamWriter.BeginSection("Abort requested.  Killing the process!").Dispose();
                 }
             }
             catch (Exception ex)

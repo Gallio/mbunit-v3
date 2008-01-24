@@ -19,6 +19,7 @@ using Gallio.Icarus.Core.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
+using Gallio.Runner.Domains;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Core.Presenter
@@ -60,7 +61,7 @@ namespace Gallio.Icarus.Core.Presenter
             testRunnerModel = testrunnermodel;
             testRunnerModel.ProjectPresenter = this;
 
-            testRunner = TestRunnerFactory.CreateIsolatedAppDomainTestRunner();
+            testRunner = new DomainTestRunner(new LocalTestDomainFactory());
             
             // wire up events
             projectAdapter.GetTestTree += GetTestTree;

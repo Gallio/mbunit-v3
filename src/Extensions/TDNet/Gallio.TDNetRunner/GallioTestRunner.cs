@@ -143,7 +143,7 @@ namespace Gallio.TDNetRunner
                 // be interesting side-effects because of the assembly binding redirection
                 // that occurs such as the wrong version of Gallio being used which makes
                 // testing more difficult.  Needs more thought.  -- Jeff.
-                launcher.TestRunnerFactory = TestRunnerFactory.CreateLocalTestRunner;
+                launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
 
                 // Set the installation path explicitly to ensure that we do not encounter problems
                 // when the test assembly contains a local copy of the primary runtime assemblies

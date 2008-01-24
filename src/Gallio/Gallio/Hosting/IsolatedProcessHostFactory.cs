@@ -38,25 +38,6 @@ namespace Gallio.Hosting
     /// </summary>
     public class IsolatedProcessHostFactory : BaseHostFactory
     {
-        /* TODO:
-        private string wrapperCommandFormat;
-
-        /// <summary>
-        /// Gets or sets a format string that specifies a command that
-        /// wraps the invocation of the host progress.  It may contain
-        /// a format parameter '{0}' which is replaced with the command-line
-        /// to run.
-        /// </summary>
-        /// <value>
-        /// The default value is <c>null</c> which indicates that there is no wrapper command.
-        /// </value>
-        public string WrapperCommandFormat
-        {
-            get { return wrapperCommandFormat; }
-            set { wrapperCommandFormat = value; }
-        }
-         */
-
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup)
         {
@@ -82,6 +63,20 @@ namespace Gallio.Hosting
             }
         }
 
+        /// <summary>
+        /// Creates the process task to start the process.
+        /// </summary>
+        /// <remarks>
+        /// This method can be overridden to change how the process is started.
+        /// </remarks>
+        /// <param name="executablePath">The executable path</param>
+        /// <param name="arguments">The command-line arguments</param>
+        /// <returns>The process task</returns>
+        protected virtual ProcessTask CreateProcessTask(string executablePath, string arguments)
+        {
+            return new ProcessTask(executablePath, arguments);
+        }
+
         private ProcessTask StartProcess(HostSetup hostSetup, string portName)
         {
             HostApplicationProfile profile = new HostApplicationProfile(portName);
@@ -93,7 +88,10 @@ namespace Gallio.Hosting
                 {
                     string arguments = "/ipc:" + portName;
 
-                    ProcessTask processTask = new ProcessTask(profile.HostProcessPath, arguments);
+                    ProcessTask processTask = CreateProcessTask(profile.HostProcessPath, arguments);
+                    processTask.LogStreamWriter = null;
+                    processTask.CaptureConsoleError = false;
+                    processTask.CaptureConsoleOutput = false;
                     processTask.Terminated += delegate { profile.Dispose(); };
 
                     processTask.Start();
@@ -111,7 +109,7 @@ namespace Gallio.Hosting
             }
         }
 
-        private IClientChannel CreateClientChannel(string portName)
+        private static IClientChannel CreateClientChannel(string portName)
         {
             return new BinaryIpcClientChannel(portName);
         }

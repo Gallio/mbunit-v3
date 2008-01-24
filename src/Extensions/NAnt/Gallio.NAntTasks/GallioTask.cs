@@ -96,6 +96,7 @@ namespace Gallio.NAntTasks
         private string resultProperty;
         private string resultPropertiesPrefix;
         private bool showReports;
+        private string runnerType = StandardTestRunnerFactoryNames.IsolatedAppDomain;
         private bool doNotRun;
         private bool echoResults = true;
 
@@ -230,6 +231,22 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
+        /// Sets the type of test runner to use.
+        /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>The types supported "out of the box" are: LocalAppDomain, IsolatedAppDomain (default)
+        /// and IsolatedProcess, but more types could be available as plugins.</item>
+        /// <item>The runner types are not case sensitive.</item>
+        /// </list>
+        /// </remarks>
+        [TaskAttribute("runner-type", Required = false)]
+        public string RunnerType
+        {
+            set { runnerType = value; }
+        }
+
+        /// <summary>
         /// Sets whether to load the tests but not run them.  This option may be used to produce a
         /// report that contains test metadata for consumption by other tools.
         /// </summary>
@@ -358,6 +375,7 @@ namespace Gallio.NAntTasks
                 launcher.ShowReports = showReports;
                 launcher.DoNotRun = doNotRun;
                 launcher.EchoResults = echoResults;
+                launcher.TestRunnerFactoryName = runnerType;
                 launcher.RuntimeSetup = new RuntimeSetup();
 
                 AddAssemblies(launcher);

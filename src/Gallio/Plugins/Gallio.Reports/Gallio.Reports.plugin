@@ -7,6 +7,7 @@
                  type="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
         <parameters>
           <name>Xml</name>
+          <description>Generates XML reports with linked attachment files.</description>
           <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
         </parameters>
       </component>
@@ -16,6 +17,7 @@
                  type="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
         <parameters>
           <name>Xml-Inline</name>
+          <description>Generates XML reports with inline encoded attachments.</description>
           <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
         </parameters>
       </component>
@@ -25,6 +27,7 @@
                  type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
         <parameters>
           <name>Text</name>
+          <description>Generates plain text reports.</description>
           <extension>txt</extension>
           <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
@@ -41,6 +44,7 @@
                  type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
         <parameters>
           <name>Html</name>
+          <description>Generates HTML reports with linked attachment files.</description>
           <extension>html</extension>
           <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
@@ -60,6 +64,7 @@
                  type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
         <parameters>
           <name>Html-Inline</name>
+          <description>Generates HTML reports with inline encoded attachments (images only).</description>
           <extension>html</extension>
           <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
@@ -79,6 +84,7 @@
                  type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
         <parameters>
           <name>XHtml</name>
+          <description>Generates XHTML reports with linked attachment files.</description>
           <extension>xhtml</extension>
           <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
@@ -98,6 +104,7 @@
                  type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
         <parameters>
           <name>XHtml-Inline</name>
+          <description>Generates XHTML reports with inline encoded attachments (images only).</description>
           <extension>xhtml</extension>
           <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
