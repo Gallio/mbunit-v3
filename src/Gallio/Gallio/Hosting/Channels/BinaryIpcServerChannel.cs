@@ -52,8 +52,10 @@ namespace Gallio.Hosting.Channels
             channelProperties[@"name"] = @"ipc-server:" + portName;
             channelProperties[@"portName"] = portName;
             channelProperties[@"secure"] = true;
+            channelProperties[@"exclusiveAddressUse"] = true;
 
-            return new IpcServerChannel(channelProperties, sinkProvider);
+            IpcServerChannel channel = new IpcServerChannel(channelProperties, sinkProvider);
+            return channel;
         }
     }
 }

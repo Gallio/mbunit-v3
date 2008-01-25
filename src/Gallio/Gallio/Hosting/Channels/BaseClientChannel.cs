@@ -44,7 +44,7 @@ namespace Gallio.Hosting.Channels
             if (serviceName == null)
                 throw new ArgumentNullException("serviceName");
 
-            return RemotingServices.Connect(serviceType, new Uri(ChannelUri, serviceName).ToString());
+            return RemotingServices.Connect(serviceType, GetServiceUri(serviceName));
         }
     }
 }

@@ -63,14 +63,19 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Contexts\DefaultContextManagerTest.cs" />
     <Compile Include="Contexts\StepTest.cs" />
-    <Compile Include="Core\ConsoleSupport\CommandLineArgumentParserTests.cs" />
-    <Compile Include="Core\ConsoleSupport\CommandLineOutputTests.cs" />
+    <Compile Include="Hosting\Channels\BaseChannelTest.cs" />
+    <Compile Include="Hosting\Channels\BaseClientChannelTest.cs" />
+    <Compile Include="Hosting\Channels\BaseServerChannelTest.cs" />
+    <Compile Include="Hosting\Channels\BinaryIpcChannelTest.cs" />
+    <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentParserTests.cs" />
+    <Compile Include="Hosting\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Contexts\ContextTest.cs" />
     <Compile Include="Data\ColumnSequenceDataSetTest.cs" />
     <Compile Include="Data\CombinatorialJoinStrategyTest.cs" />

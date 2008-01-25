@@ -53,7 +53,8 @@ namespace Gallio.Hosting.Channels
             channelProperties[@"name"] = @"ipc-client:" + portName;
             channelProperties[@"secure"] = true;
 
-            return new IpcClientChannel(channelProperties, sinkProvider);
+            IpcClientChannel channel = new IpcClientChannel(channelProperties, sinkProvider);
+            return channel;
         }
     }
 }

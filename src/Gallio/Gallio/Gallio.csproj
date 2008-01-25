@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Collections\CollectionEqualityComparer.cs" />
     <Compile Include="Collections\HashSet.cs" />
+    <Compile Include="Hosting\ManagedAppDomain.cs" />
     <Compile Include="Concurrency\ProcessTask.cs" />
     <Compile Include="Concurrency\Task.cs" />
     <Compile Include="Concurrency\TaskContainer.cs" />

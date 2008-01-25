@@ -45,14 +45,6 @@ namespace Gallio.Hosting.Channels
             ChannelServices.RegisterChannel(channel, false);
         }
 
-        /// <summary>
-        /// Disposes of the channel.
-        /// </summary>
-        ~BaseChannel()
-        {
-            Dispose(false);
-        }
-
         /// <inheritdoc />
         public void Dispose()
         {
@@ -61,9 +53,9 @@ namespace Gallio.Hosting.Channels
         }
 
         /// <summary>
-        /// Gets the .Net remoting channel.
+        /// Gets the associated .Net remoting channel.
         /// </summary>
-        protected IChannel Channel
+        public IChannel Channel
         {
             get { return channel; }
         }
@@ -71,7 +63,7 @@ namespace Gallio.Hosting.Channels
         /// <summary>
         /// Gets the root Uri associated with the channel.
         /// </summary>
-        protected Uri ChannelUri
+        public Uri ChannelUri
         {
             get { return channelUri; }
         }
@@ -89,6 +81,20 @@ namespace Gallio.Hosting.Channels
                 channel = null;
                 channelUri = null;
             }
+        }
+
+        /// <summary>
+        /// Gets the Uri of a service with the given name that can be accessed using this channel.
+        /// </summary>
+        /// <param name="serviceName">The service name</param>
+        /// <returns>The service uri</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceName"/> is null</exception>
+        public string GetServiceUri(string serviceName)
+        {
+            if (serviceName == null)
+                throw new ArgumentNullException("serviceName");
+
+            return new Uri(ChannelUri, serviceName).ToString();
         }
     }
 }

@@ -59,6 +59,7 @@ namespace Gallio.Hosting
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <inheritdoc />

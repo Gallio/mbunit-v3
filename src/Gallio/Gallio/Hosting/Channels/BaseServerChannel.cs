@@ -44,7 +44,7 @@ namespace Gallio.Hosting.Channels
             if (component == null)
                 throw new ArgumentNullException("component");
 
-            RemotingServices.Marshal(component, new Uri(ChannelUri, serviceName).ToString());
+            RemotingServices.Marshal(component, GetServiceUri(serviceName));
         }
     }
 }

@@ -19,7 +19,7 @@ using System.IO;
 using Gallio.Hosting.ConsoleSupport;
 using MbUnit2::MbUnit.Framework;
 
-namespace Gallio.Tests.Core.ConsoleSupport
+namespace Gallio.Tests.Hosting.ConsoleSupport
 {
     [TestFixture]
     public class CommandLineArgumentParserTests
