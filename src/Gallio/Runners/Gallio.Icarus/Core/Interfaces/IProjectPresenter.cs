@@ -31,12 +31,12 @@ namespace Gallio.Icarus.Core.Interfaces
         ITestRunner TestRunner { get; }
         void GetTestTree(object sender, GetTestTreeEventArgs e);
         void RunTests(object sender, EventArgs e);
+        void OnGenerateReport(object sender, EventArgs e);
         void StopTests(object sender, EventArgs e);
         void SetFilter(object sender, SetFilterEventArgs e);
         void GetReportTypes(object sender, EventArgs e);
         void SaveReportAs(object sender, SaveReportAsEventArgs e);
-        void GetAvailableLogStreams(object sender, SingleStringEventArgs e);
-        void GetLogStream(object sender, GetLogStreamEventArgs e);
         void Update(TestData testData, TestStepRun testStepRun);
+        void WriteToLog(string logName, string logBody);
     }
 }

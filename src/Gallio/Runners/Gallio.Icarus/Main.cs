@@ -21,74 +21,165 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Timers;
+using Timer = System.Timers.Timer;
 using System.Windows.Forms;
+
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Controls.Enums;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
 using Gallio.Icarus.Properties;
+using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using ZedGraph;
-using Timer=System.Timers.Timer;
+
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
 {
     public partial class Main : Form, IProjectAdapterView
     {
-        private TreeNode[] testTreeCollection;
-        private ListViewItem[] assemblies;
         private Thread workerThread = null;
-        // status bar
-        private string statusText = string.Empty;
-        private int totalWorkUnits, completedWorkUnits;
-        private Timer statusBarTimer;
+        
         private string projectFileName = String.Empty;
+        
+        // dock panel windows
+        //private DeserializeDockContent deserializeDockContent;
+        private TestExplorer testExplorer;
+        private AssemblyList assemblyList;
+        private TestResults testResults;
+        private ReportWindow reportWindow;
+        private LogWindow logWindow;
+        private LogWindow consoleInputWindow;
+        private LogWindow consoleOutputWindow;
+        private LogWindow consoleErrorWindow;
+        private LogWindow debugTraceWindow;
+        private LogWindow warningsWindow;
+        private LogWindow failuresWindow;
+        private PerformanceMonitor performanceMonitor;
         
         public TreeNode[] TestTreeCollection
         {
-            set { testTreeCollection = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                        {
+                            TestTreeCollection = value;
+                        }));
+                }
+                else
+                {
+                    testExplorer.DataBind(value);
+                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                }
+            }
         }
 
         public ListViewItem[] Assemblies
         {
-            set { assemblies = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        Assemblies = value;
+                    }));
+                }
+                else
+                {
+                    assemblyList.DataBind(value);
+                }
+            }
         }
 
         public string StatusText
         {
-            set { statusText = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate()
+                    {
+                        StatusText = value;
+                    });
+                }
+                else
+                    toolStripStatusLabel.Text = value;
+            }
         }
 
         public int TotalWorkUnits
         {
-            set { totalWorkUnits = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate()
+                    {
+                        TotalWorkUnits = value;
+                    });
+                }
+                else
+                    toolStripProgressBar.Maximum = value;
+            }
         }
 
         public int CompletedWorkUnits
         {
-            set { completedWorkUnits = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate()
+                    {
+                        CompletedWorkUnits = value;
+                    });
+                }
+                else
+                    toolStripProgressBar.Value = value;
+            }
         }
 
-        public string LogBody
+        public int TotalTests
         {
-            set { logBody.Text = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate()
+                    {
+                        TotalTests = value;
+                    });
+                }
+                else
+                    testResults.Total = value;
+            }
         }
 
         public string ReportPath
         {
             set
             {
-                Invoke(new MethodInvoker(delegate()
+                if (value != "")
                 {
-                    if (value != "")
+                    if (InvokeRequired)
                     {
-                        reportViewer.Url = new Uri(value);
+                        Invoke(new MethodInvoker(delegate()
+                        {
+                            ReportPath = value;
+                        }));
                     }
-                }));
+                    else
+                    {
+                        reportWindow.ReportPath = value;
+                    }
+                }
             }
         }
 
@@ -105,38 +196,7 @@ namespace Gallio.Icarus
                 }
                 else
                 {
-                    foreach (string reportType in value)
-                    {
-                        reportTypes.Items.Add(reportType);
-                    }
-                    if (value.Count > 0)
-                        reportTypes.SelectedIndex = 0;
-                }
-            }
-        }
-
-        public IList<string> AvailableLogStreams
-        {
-            set
-            {
-                if (InvokeRequired)
-                {
-                    Invoke((MethodInvoker)delegate()
-                    {
-                        AvailableLogStreams = value;
-                    });
-                }
-                else
-                {
-                    logStream.Items.Clear();
-                    foreach (string log in value)
-                    {
-                        logStream.Items.Add(log);
-                    }
-                    if (logStream.Items.Count > 0)
-                        logStream.SelectedIndex = 0;
-                    
-                    UpdateLogBody();
+                    reportWindow.ReportTypes = value;
                 }
             }
         }
@@ -165,29 +225,31 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> RemoveAssemblies;
         public event EventHandler<SingleStringEventArgs> RemoveAssembly;
         public event EventHandler<EventArgs> RunTests;
+        public event EventHandler<EventArgs> GenerateReport;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
-        public event EventHandler<GetLogStreamEventArgs> GetLogStream;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         public event EventHandler<SingleStringEventArgs> SaveProject;
         public event EventHandler<OpenProjectEventArgs> OpenProject;
         public event EventHandler<EventArgs> NewProject;
-        public event EventHandler<SingleStringEventArgs> GetAvailableLogStreams;
 
         public Main()
         {
             InitializeComponent();
 
-            // status bar
-            statusBarTimer = new Timer(50);
-            statusBarTimer.AutoReset = true;
-            statusBarTimer.Enabled = true;
-            statusBarTimer.Elapsed += new ElapsedEventHandler(statusBarTimer_Elapsed);
-            statusBarTimer.Start();
-
-            // refresh graph
-            testResultsGraph.DisplayGraph();
+            testExplorer = new TestExplorer(this);
+            assemblyList = new AssemblyList(this);
+            testResults = new TestResults();
+            reportWindow = new ReportWindow(this);
+            logWindow = new LogWindow();
+            consoleInputWindow = new LogWindow("Console input");
+            consoleOutputWindow = new LogWindow("Console output");
+            consoleErrorWindow = new LogWindow("Console error");
+            debugTraceWindow = new LogWindow("Debug trace");
+            warningsWindow = new LogWindow("Warnings");
+            failuresWindow = new LogWindow("Failures");
+            performanceMonitor = new PerformanceMonitor();
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -196,18 +258,25 @@ namespace Gallio.Icarus
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
-            treeFilterCombo.SelectedIndex = 0;
-            filterTestResultsCombo.SelectedIndex = 0;
-            graphsFilterBox1.SelectedIndex = 0;
+            performanceMonitor.Show(dockPanel);
+            testResults.Show(dockPanel);
 
-            testTree.TestStateImageList = stateImages;
+            consoleInputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+            consoleOutputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+            consoleErrorWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+            debugTraceWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+            warningsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+            failuresWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+            logWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+
+            testExplorer.Show(dockPanel, DockState.DockLeft);
 
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
                 if (GetReportTypes != null)
                     GetReportTypes(this, EventArgs.Empty);
-                ThreadedReloadTree();
+                ThreadedReloadTree(true);
             });
             workerThread.Start();
         }
@@ -233,52 +302,45 @@ namespace Gallio.Icarus
 
         private void StartTests()
         {
-            // reset progress monitors
-            testProgressStatusBar.Clear();
-            testTree.BeginUpdate();
-            testTree.Reset(testTree.Nodes);
-            testTree.EndUpdate();
-            testResultsList.Clear();
-
-            statusText = "Running tests...";
-            startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
-            stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
-
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+            try
             {
-                // run tests
-                if (RunTests != null)
-                    RunTests(this, new EventArgs());
+                // reset progress monitors
+                Reset();
 
                 // enable/disable buttons
-                Invoke((MethodInvoker)delegate()
+                startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
+                stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
+
+                AbortWorkerThread();
+                workerThread = new Thread(delegate()
                 {
-                    stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
-                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                    // run tests
+                    StatusText = "Running tests";
+                    if (RunTests != null)
+                        RunTests(this, new EventArgs());
+
+                    if (!reportWindow.IsHidden)
+                        ThreadedCreateReport();
+
+                    // enable/disable buttons
+                    Invoke((MethodInvoker)delegate()
+                    {
+                        stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
+                        startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                    });
                 });
-            });
-            workerThread.Start();
+                workerThread.Start();
+            }
+            catch (Exception ex)
+            {
+                Exception = ex;
+            }
         }
 
         private void Main_SizeChanged(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
                 Hide();
-        }
-
-        private void trayIcon_DoubleClick(object sender, EventArgs e)
-        {
-            if (WindowState == FormWindowState.Minimized)
-            {
-                Show();
-                WindowState = FormWindowState.Normal;
-            }
-            else
-            {
-                WindowState = FormWindowState.Minimized;
-                Hide();
-            }
         }
 
         //private void ShowTaskDialog()
@@ -322,7 +384,7 @@ namespace Gallio.Icarus
             workerThread = new Thread(delegate()
             {
                 StatusText = "Reloading...";
-                ThreadedReloadTree();
+                ThreadedReloadTree(true);
             });
             workerThread.Start();
         }
@@ -345,7 +407,7 @@ namespace Gallio.Icarus
                     try
                     {
                         if (OpenProject != null)
-                            OpenProject(this, new OpenProjectEventArgs(openFile.FileName, GetTreeFilter()));
+                            OpenProject(this, new OpenProjectEventArgs(openFile.FileName, testExplorer.TreeFilter));
                     }
                     catch (Exception ex)
                     {
@@ -403,36 +465,37 @@ namespace Gallio.Icarus
                 AbortWorkerThread();
                 workerThread = new Thread(delegate()
                 {
-                    StatusText = "Adding assemblies...";
-                    if (AddAssemblies != null)
-                        AddAssemblies(this, new AddAssembliesEventArgs(openFile.FileNames));
-                    ThreadedReloadTree();
+                    StatusText = "Adding assemblies";
+                    try
+                    {
+                        if (AddAssemblies != null)
+                            AddAssemblies(this, new AddAssembliesEventArgs(openFile.FileNames));
+                        ThreadedReloadTree(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Exception = ex;
+                    }
                 });
                 workerThread.Start();
             }
         }
 
-        private void ThreadedReloadTree()
+        public void ReloadTree()
         {
-            if (GetTestTree != null)
-                GetTestTree(this, new GetTestTreeEventArgs(GetTreeFilter(), true));
+            AbortWorkerThread();
+            workerThread = new Thread(delegate()
+            {
+                ThreadedReloadTree(false);
+            });
+            workerThread.Start();
         }
 
-        private string GetTreeFilter()
+        private void ThreadedReloadTree(bool reloadTestModelData)
         {
-            if (treeFilterCombo.InvokeRequired)
-            {
-                string treeFilter = "";
-                treeFilterCombo.Invoke((MethodInvoker)delegate()
-                {
-                    treeFilter = (string)treeFilterCombo.SelectedItem;
-                });
-                return treeFilter;
-            }
-            else
-            {
-                return (string)treeFilterCombo.SelectedItem;
-            }
+            StatusText = "Reloading tree";
+            if (GetTestTree != null)
+                GetTestTree(this, new GetTestTreeEventArgs(testExplorer.TreeFilter, reloadTestModelData));
         }
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
@@ -444,122 +507,15 @@ namespace Gallio.Icarus
                 options.Dispose();
         }
 
-        private void helpToolbarButton_Click(object sender, EventArgs e)
-        {
-            ((TestTreeNode) testTree.SelectedNode).TestState = TestStates.Failed;
-        }
-
         private void ExitMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        #region Test Tree Context Menu
-
-        private void expandAllMenuItem_Click(object sender, EventArgs e)
+        public void Reset()
         {
-            testTree.BeginUpdate();
-            testTree.ExpandAll();
-            testTree.EndUpdate();
-        }
-
-        private void collapseAllMenuItem_Click(object sender, EventArgs e)
-        {
-            testTree.BeginUpdate();
-            testTree.CollapseAll();
-            testTree.EndUpdate();
-        }
-
-        private void expandFailedMenuItem_Click(object sender, EventArgs e)
-        {
-            testTree.BeginUpdate();
-
-            testTree.CollapseAll();
-            TestNodes(testTree.Nodes[0], TestStates.Failed);
-
-            testTree.EndUpdate();
-        }
-
-        private void TestNodes(TreeNode node, TestStates state)
-        {
-            if (node is TestTreeNode)
-            {
-                if (((TestTreeNode) node).TestState == state)
-                    ExpandNode(node);
-            }
-
-            // Loop though all the child nodes and expand them if they
-            // meet the test state.
-            foreach (TreeNode tNode in node.Nodes)
-                TestNodes(tNode, state);
-        }
-
-        private void ExpandNode(TreeNode node)
-        {
-            // Loop through all parent nodes that are not already
-            // expanded and expand them.
-            if (node.Parent != null && !node.Parent.IsExpanded)
-                ExpandNode(node.Parent);
-
-            node.Expand();
-        }
-
-        private void resetTestsMenuItem_Click(object sender, EventArgs e)
-        {
-            if (testTree.Nodes.Count > 0)
-            {
-                testTree.BeginUpdate();
-                ClearResults(testTree.Nodes[0]);
-                testTree.EndUpdate();
-
-                testProgressStatusBar.Clear();
-                testProgressStatusBar.Total = 50;
-
-                testResultsList.Items.Clear();
-            }
-        }
-
-        private void ClearResults(TreeNode node)
-        {
-            if (node.Nodes.Count > 0)
-            {
-                foreach (TreeNode child in node.Nodes)
-                    ClearResults(child);
-            }
-            else
-            {
-                TestTreeNode testNode = node as TestTreeNode;
-                if (testNode != null)
-                    testNode.TestState = TestStates.Undefined;
-            }
-        }
-
-        #endregion
-
-        public void DataBind()
-        {
-            if (InvokeRequired)
-            {
-                Invoke((MethodInvoker)delegate()
-                {
-                    DataBind();
-                });
-            }
-            else
-            {
-                // populate tree
-                testTree.Nodes.Clear();
-                testTree.Nodes.AddRange(testTreeCollection);
-
-                // populate assembly list
-                assemblyList.Items.Clear();
-                assemblyList.Items.AddRange(assemblies);
-
-                // clear test results
-                testResultsList.Items.Clear();
-
-                startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
-            }
+            testExplorer.Reset();
+            testResults.Reset();
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -568,10 +524,10 @@ namespace Gallio.Icarus
             workerThread = new Thread(delegate()
             {
                 // remove assemblies
-                StatusText = "Removing assemblies...";
+                StatusText = "Removing assemblies";
                 if (RemoveAssemblies != null)
                     RemoveAssemblies(this, new EventArgs());
-                ThreadedReloadTree();
+                ThreadedReloadTree(true);
             });
             workerThread.Start();
         }
@@ -579,9 +535,7 @@ namespace Gallio.Icarus
         protected override void OnClosing(CancelEventArgs e)
         {
             if (workerThread != null)
-            {
                 workerThread.Abort();
-            }
             base.OnClosing(e);
         }
 
@@ -605,30 +559,6 @@ namespace Gallio.Icarus
             }
         }
 
-        private void statusBarTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            try
-            {
-                if (statusStrip.InvokeRequired)
-                {
-                    statusStrip.Invoke(new MethodInvoker(UpdateStatusBar));
-                }
-                else
-                {
-                    UpdateStatusBar();
-                }
-            }
-            catch { }
-        }
-
-        private void UpdateStatusBar()
-        {
-            // status bar
-            toolStripStatusLabel.Text = statusText;
-            toolStripProgressBar.Maximum = totalWorkUnits;
-            toolStripProgressBar.Value = completedWorkUnits;
-        }
-
         public void Update(TestData testData, TestStepRun testStepRun)
         {
             if (InvokeRequired)
@@ -641,22 +571,22 @@ namespace Gallio.Icarus
             else
             {
                 // update test tree
-                Color foreColor = testResultsList.ForeColor;
+                Color foreColor = Color.SlateGray;
                 switch (testStepRun.Result.Outcome)
                 {
                     case TestOutcome.Passed:
-                        testProgressStatusBar.Passed++;
-                        testTree.UpdateTestState(testData.Id, TestStates.Success);
+                        testResults.Passed++;
+                        testExplorer.UpdateTestState(testData.Id, TestStates.Success);
                         foreColor = Color.Green;
                         break;
                     case TestOutcome.Failed:
-                        testProgressStatusBar.Failed++;
-                        testTree.UpdateTestState(testData.Id, TestStates.Failed);
+                        testResults.Failed++;
+                        testExplorer.UpdateTestState(testData.Id, TestStates.Failed);
                         foreColor = Color.Red;
                         break;
                     case TestOutcome.Inconclusive:
-                        testProgressStatusBar.Ignored++;
-                        testTree.UpdateTestState(testData.Id, TestStates.Inconclusive);
+                        testResults.Inconclusive++;
+                        testExplorer.UpdateTestState(testData.Id, TestStates.Inconclusive);
                         foreColor = Color.Yellow;
                         break;
                 }
@@ -664,28 +594,13 @@ namespace Gallio.Icarus
                 CodeReference codeReference = testData.CodeReference ?? CodeReference.Unknown;
                 
                 // update test results list
-                testResultsList.UpdateTestResults(testData.Name, testStepRun.Result.Outcome.ToString(), foreColor, 
+                testResults.UpdateTestResults(testData.Name, testStepRun.Result.Outcome.ToString(), foreColor, 
                     (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds.ToString(), codeReference.TypeName, 
                     codeReference.NamespaceName, codeReference.AssemblyName);
 
                 // update test results graph
-                testResultsGraph.UpdateTestResults(testStepRun.Result.Outcome.ToString(), codeReference.TypeName,
+                performanceMonitor.UpdateTestResults(testStepRun.Result.Outcome.ToString(), codeReference.TypeName,
                     codeReference.NamespaceName, codeReference.AssemblyName);
-            }
-        }
-
-        public void TotalTests(int totalTests)
-        {
-            if (testProgressStatusBar.InvokeRequired)
-            {
-                testTree.Invoke((MethodInvoker)delegate()
-                {
-                    TotalTests(totalTests);
-                });
-            }
-            else
-            {
-                testProgressStatusBar.Total = totalTests;
             }
         }
 
@@ -712,141 +627,23 @@ namespace Gallio.Icarus
             workerThread.Start();
         }
 
-        private void assemblyList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (assemblyList.SelectedItems.Count > 0)
-            {
-                removeAssemblyToolStripMenuItem1.Enabled = true;
-            }
-            else
-            {
-                removeAssemblyToolStripMenuItem1.Enabled = false;
-            }
-        }
-
-        private void removeAssemblyToolStripMenuItem1_Click(object sender, EventArgs e)
+        public void ThreadedRemoveAssembly(string assembly)
         {
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
-                ThreadedRemoveAssembly(assemblyList.SelectedItems[0].SubItems[2].Text);
+                StatusText = "Removing assembly...";
+                if (RemoveAssembly != null)
+                    RemoveAssembly(this, new SingleStringEventArgs(assembly));
+                ThreadedReloadTree(true);
             });
             workerThread.Start();
         }
 
-        private void removeAssemblyToolStripMenuItem2_Click(object sender, EventArgs e)
+        public void CreateFilter(TreeNodeCollection nodes)
         {
-            TestTreeNode node = (TestTreeNode)testTree.SelectedNode;
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
-            {
-                ThreadedRemoveAssembly(node.CodeBase);
-            });
-            workerThread.Start();
-        }
-
-        private void ThreadedRemoveAssembly(string assembly)
-        {
-            // remove assemblies
-            StatusText = "Removing assembly...";
-            if (RemoveAssembly != null)
-                RemoveAssembly(this, new SingleStringEventArgs(assembly));
-            ThreadedReloadTree();
-        }
-
-        private void testTree_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            TestTreeNode node = testTree.SelectedNode as TestTreeNode;
-            if (node != null)
-            {
-                // if "Assembly" node
-                if (node.SelectedImageIndex == 2)
-                {
-                    // enable "Remove assembly" context item
-                    removeAssemblyToolStripMenuItem2.Enabled = true;
-                }
-                else
-                {
-                    // disable it
-                    removeAssemblyToolStripMenuItem2.Enabled = false;
-                }
-
-                if (GetAvailableLogStreams != null)
-                    GetAvailableLogStreams(this, new SingleStringEventArgs(node.Name));
-            }
-        }
-
-        private void testTree_AfterCheck(object sender, TreeViewEventArgs e)
-        {
-            if (e.Action != TreeViewAction.Unknown && SetFilter != null)
-                SetFilter(this, new SetFilterEventArgs("Latest", testTree.Nodes));
-        }
-
-        private void treeFilterCombo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
-            {
-                if (GetTestTree != null)
-                    GetTestTree(this, new GetTestTreeEventArgs(GetTreeFilter(), false));
-            });
-            workerThread.Start();
-        }
-
-        private void logStream_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateLogBody();
-        }
-
-        private void UpdateLogBody()
-        {
-            TestTreeNode node = testTree.SelectedNode as TestTreeNode;
-            if (node != null && node.SelectedImageIndex == 4 && node.TestState != TestStates.Undefined &&
-                GetLogStream != null && logStream.SelectedItem != null)
-                // display log stream (if available)
-                GetLogStream(this, new GetLogStreamEventArgs(logStream.SelectedItem.ToString(), node.Name));
-            else
-                logBody.Clear();
-        }
-
-        private void btnSaveReportAs_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog saveFile = new SaveFileDialog();
-            saveFile.OverwritePrompt = true;
-            saveFile.AddExtension = true;
-            string ext = "All files (*.*)|*.*";
-            switch ((string)reportTypes.SelectedItem)
-            {
-                case "Xml":
-                case "Xml-Inline":
-                    ext = "XML files (*.xml)|*.xml";
-                    break;
-                case "Html":
-                case "Html-Inline":
-                    ext = "HTML files (*.html)|*.html";
-                    break;
-                case "Xhtml":
-                case "Xhtml-Inline":
-                    ext = "XHTML files (*.xhtml)|*.xhtml";
-                    break;
-                case "Text":
-                    ext = "Text files (*.txt)|*.txt";
-                    break;
-            }
-            saveFile.DefaultExt = ext;
-            saveFile.Filter = ext;
-            if (saveFile.ShowDialog() == DialogResult.OK)
-            {
-                if (SaveReportAs != null)
-                {
-                    SaveReportAs(this, new SaveReportAsEventArgs(saveFile.FileName, (string)reportTypes.SelectedItem));
-                }
-            }
-        }
-
-        private void reportTypes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnSaveReportAs.Enabled = ((string)reportTypes.SelectedItem != "");
+            if (SetFilter != null)
+                SetFilter(this, new SetFilterEventArgs("Latest", nodes));
         }
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -871,7 +668,7 @@ namespace Gallio.Icarus
             {
                 if (NewProject != null)
                     NewProject(this, EventArgs.Empty);
-                ThreadedReloadTree();
+                ThreadedReloadTree(true);
             });
             workerThread.Start();
         }
@@ -889,56 +686,14 @@ namespace Gallio.Icarus
             {
                 OrFilter<ITest> orFilter = (OrFilter<ITest>)filter;
                 foreach (Filter<ITest> childFilter in orFilter.Filters)
-                {
                     ApplyFilter(childFilter);
-                }
             }
             else if (filter is IdFilter<ITest>)
             {
                 IdFilter<ITest> idFilter = (IdFilter<ITest>)filter;
-                TreeNode[] nodes = testTree.Nodes.Find(idFilter.ToString().Substring(13, 16), true);
-                foreach (TestTreeNode n in nodes)
+                foreach (TestTreeNode n in testExplorer.FindNodes(idFilter.ToString().Substring(13, 16)))
                     n.Toggle();
             }
-        }
-
-        private void graphsFilterBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            testResultsGraph.Mode = (string)graphsFilterBox1.SelectedItem;
-        }
-
-        private void filterTestResultsCombo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch ((string)filterTestResultsCombo.SelectedItem)
-            {
-                case "All tests":
-                    testResultsList.Filter = string.Empty;
-                    break;
-                case "Passed tests":
-                    testResultsList.Filter = "Passed";
-                    break;
-                case "Failed tests":
-                    testResultsList.Filter = "Failed";
-                    break;
-                case "Inconclusive tests":
-                    testResultsList.Filter = "Inconclusive";
-                    break;
-            }
-        }
-
-        private void filterPassedTestsToolStripButton_Click(object sender, EventArgs e)
-        {
-            testTree.FilterPassed = filterPassedTestsToolStripButton.Checked;
-        }
-
-        private void filterInconclusiveTestsToolStripButton_Click(object sender, EventArgs e)
-        {
-            testTree.FilterInconclusive = filterInconclusiveTestsToolStripButton.Checked;
-        }
-
-        private void filterFailedTestsToolStripButton_Click(object sender, EventArgs e)
-        {
-            testTree.FilterFailed = filterFailedTestsToolStripButton.Checked;
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -953,7 +708,106 @@ namespace Gallio.Icarus
 
         private void showOnlineHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            ShowOnlineHelp();
+        }
+
+        private void ShowOnlineHelp()
+        {
             System.Diagnostics.Process.Start("http://docs.mbunit.com");
         }
-    }	
+
+        private void helpToolbarButton_Click(object sender, EventArgs e)
+        {
+            ShowOnlineHelp();
+        }
+
+        public void SaveReport(string fileName, string reportType)
+        {
+            if (SaveReportAs != null)
+                SaveReportAs(this, new SaveReportAsEventArgs(fileName, reportType));
+        }
+
+        public void WriteToLog(string logName, string logBody)
+        {
+            if (InvokeRequired)
+            {
+                Invoke((MethodInvoker)delegate()
+                {
+                    WriteToLog(logName, logBody);
+                });
+            }
+            else
+            {
+                switch (logName)
+                {
+                    case LogStreamNames.ConsoleError:
+                        consoleErrorWindow.LogBody += logBody;
+                        break;
+                    case LogStreamNames.ConsoleInput:
+                        consoleInputWindow.LogBody += logBody;
+                        break;
+                    case LogStreamNames.ConsoleOutput:
+                        consoleOutputWindow.LogBody += logBody;
+                        break;
+                    case LogStreamNames.DebugTrace:
+                        debugTraceWindow.LogBody += logBody;
+                        break;
+                    case LogStreamNames.Default:
+                        logWindow.LogBody += logBody;
+                        break;
+                    case LogStreamNames.Failures:
+                        failuresWindow.LogBody += logBody;
+                        break;
+                    case LogStreamNames.Warnings:
+                        warningsWindow.LogBody += logBody;
+                        break;
+                }
+            }
+        }
+
+        private void testExplorerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            testExplorer.Show(dockPanel);
+        }
+
+        public void CreateReport()
+        {
+            AbortWorkerThread();
+            workerThread = new Thread(delegate()
+                {
+                    try
+                    {
+                        ThreadedCreateReport();
+                    }
+                    catch (Exception ex)
+                    {
+                        Exception = ex;
+                    }
+                });
+            workerThread.Start();
+        }
+
+        private void ThreadedCreateReport()
+        {
+            StatusText = "Generating report";
+            if (GenerateReport != null)
+                GenerateReport(this, EventArgs.Empty);
+        }
+
+        private void assemblyListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            assemblyList.Show(dockPanel);
+        }
+
+        private void reportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateReport();
+            reportWindow.Show(dockPanel);
+        }
+
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Reset();
+        }
+    }
 }

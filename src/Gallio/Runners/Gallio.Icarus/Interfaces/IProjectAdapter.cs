@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model;
 using Gallio.Model.Serialization;
@@ -28,23 +29,21 @@ namespace Gallio.Icarus.Core.Interfaces
     {
         event EventHandler<GetTestTreeEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
+        event EventHandler<EventArgs> GenerateReport;
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
-        event EventHandler<GetLogStreamEventArgs> GetLogStream;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
-        event EventHandler<SingleStringEventArgs> GetAvailableLogStreams;
         TestModelData TestModelData { set; }
         Project Project { get; set; }
         string StatusText { set; }
-        string LogBody { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
-        IList<string> AvailableLogStreams { set; }
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         void DataBind(string mode, bool initialCheckState);
         void Update(TestData testData, TestStepRun testStepRun);
+        void WriteToLog(string logName, string logBody);
     }
 }

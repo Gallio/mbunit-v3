@@ -20,7 +20,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Gallio.Icarus.Properties;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Controls
 {
     public abstract class TaskDialog
     {

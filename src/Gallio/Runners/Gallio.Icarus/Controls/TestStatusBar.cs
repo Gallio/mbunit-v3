@@ -24,15 +24,16 @@ namespace Gallio.Icarus.Controls
     internal class TestStatusBar : Control
     {
         private double elapsedTime;
+
         private Color failedColor = Color.Red;
         private int failedTests = 0;
-        private Color ignoredColor = Color.Gold;
-        private int ignoredTests = 0;
+        
+        private Color inconclusiveColor = Color.Gold;
+        private int inconclusiveTests = 0;
 
         private Color passedColor = Color.Green;
         private int passedTests = 0;
-        private Color skippedColor = Color.SteelBlue;
-        private int skippedTests = 0;
+        
         private int totalTests = 0;
 
         public TestStatusBar()
@@ -80,17 +81,11 @@ namespace Gallio.Icarus.Controls
                 float right = r.Left + width;
                 DrawProgressRegion(e.Graphics, r, left, width, passedColor);
 
-                // Draw ignored region.
-                width = r.Width*(ignoredTests/(float) totalTests);
+                // Draw inconclusive region.
+                width = r.Width*(inconclusiveTests/(float) totalTests);
                 left = right;
                 right = left + width;
-                DrawProgressRegion(e.Graphics, r, left, width, ignoredColor);
-
-                // Draw skipped region.
-                width = r.Width*(skippedTests/(float) totalTests);
-                left = right;
-                right = left + width;
-                DrawProgressRegion(e.Graphics, r, left, width, skippedColor);
+                DrawProgressRegion(e.Graphics, r, left, width, inconclusiveColor);
 
                 // Draw failed region.
                 width = r.Width*(failedTests/(float) totalTests);
@@ -102,8 +97,8 @@ namespace Gallio.Icarus.Controls
             e.Graphics.DrawRectangle(Pens.Black, r);
 
             // Build up the display text.
-            string text = string.Format(CultureInfo.CurrentCulture, Text, totalTests, passedTests, ignoredTests, skippedTests, 
-                failedTests, elapsedTime);
+            string text = string.Format(CultureInfo.CurrentCulture, Text, totalTests, 
+                passedTests, inconclusiveTests, failedTests, elapsedTime);
 
             // Draw the text to the center of the control.
             StringFormat format = new StringFormat(StringFormatFlags.NoClip);
@@ -120,8 +115,6 @@ namespace Gallio.Icarus.Controls
             e.Graphics.SmoothingMode = m;
         }
 
-        #region Public Functions
-
         /// <summary>
         /// Resets the state of the status bar.
         /// </summary>
@@ -129,17 +122,12 @@ namespace Gallio.Icarus.Controls
         {
             passedTests = 0;
             failedTests = 0;
-            ignoredTests = 0;
-            skippedTests = 0;
+            inconclusiveTests = 0;
 
             elapsedTime = 0;
 
             Invalidate();
         }
-
-        #endregion
-
-        #region Private Functions
 
         private static Color FromColor(Color c, int alpha)
         {
@@ -161,10 +149,6 @@ namespace Gallio.Icarus.Controls
 
             g.FillRectangle(brush, re);
         }
-
-        #endregion
-
-        #region Properties
 
         [Browsable(false)]
         public double ElapsedTime
@@ -215,24 +199,12 @@ namespace Gallio.Icarus.Controls
 
         [Browsable(true)]
         [Category("Test Status")]
-        public int Ignored
+        public int Inconclusive
         {
-            get { return ignoredTests; }
+            get { return inconclusiveTests; }
             set
             {
-                ignoredTests = value;
-                Invalidate();
-            }
-        }
-
-        [Browsable(true)]
-        [Category("Test Status")]
-        public int Skipped
-        {
-            get { return skippedTests; }
-            set
-            {
-                skippedTests = value;
+                inconclusiveTests = value;
                 Invalidate();
             }
         }
@@ -263,37 +235,21 @@ namespace Gallio.Icarus.Controls
 
         [Browsable(true)]
         [Category("Appearance")]
-        public Color IngoredColor
+        public Color InconclusiveColor
         {
-            get { return ignoredColor; }
+            get { return inconclusiveColor; }
             set
             {
-                ignoredColor = value;
+                inconclusiveColor = value;
                 Invalidate();
             }
         }
-
-        [Browsable(true)]
-        [Category("Appearance")]
-        public Color SkippedColor
-        {
-            get { return skippedColor; }
-            set
-            {
-                skippedColor = value;
-                Invalidate();
-            }
-        }
-
-        #endregion
-
-        #region Hidden Properties
 
         [Browsable(false)]
         public override string Text
         {
             // Force the control to display this text always.
-            get { return "{0} tests - {1} successes - {2} ignored - {3} skipped - {4} failures - {5:0.0}s"; }
+            get { return "{0} tests - {1} successes - {2} inconclusive - {3} failures - {4:0.0}s"; }
         }
 
         [Browsable(false)]
@@ -309,7 +265,5 @@ namespace Gallio.Icarus.Controls
             get { return base.BackgroundImageLayout; }
             set { base.BackgroundImageLayout = value; }
         }
-
-        #endregion
     }
 }

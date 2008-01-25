@@ -64,11 +64,6 @@ namespace Gallio.Icarus.Adapter
             set { projectAdapterView.TotalWorkUnits = value; }
         }
 
-        public string LogBody
-        {
-            set { projectAdapterView.LogBody = value; }
-        }
-
         public string ReportPath
         {
             set { projectAdapterView.ReportPath = value; }
@@ -79,11 +74,6 @@ namespace Gallio.Icarus.Adapter
             set { projectAdapterView.ReportTypes = value; }
         }
 
-        public IList<string> AvailableLogStreams
-        {
-            set { projectAdapterView.AvailableLogStreams = value; }
-        }
-
         public Exception Exception
         {
             set { projectAdapterView.Exception = value; }
@@ -91,12 +81,11 @@ namespace Gallio.Icarus.Adapter
 
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<EventArgs> RunTests;
+        public event EventHandler<EventArgs> GenerateReport;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
-        public event EventHandler<GetLogStreamEventArgs> GetLogStream;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
-        public event EventHandler<SingleStringEventArgs> GetAvailableLogStreams;
 
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
@@ -112,15 +101,14 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.RemoveAssembly += RemoveAssemblyEventHandler;
             projectAdapterView.GetTestTree += GetTestTreeEventHandler;
             projectAdapterView.RunTests += RunTestsEventHandler;
+            projectAdapterView.GenerateReport += OnGenerateReport;
             projectAdapterView.StopTests += StopTestsEventHandler;
             projectAdapterView.SetFilter += SetFilterEventHandler;
-            projectAdapterView.GetLogStream += GetLogStreamEventHandler;
             projectAdapterView.GetReportTypes += GetReportTypesEventHandler;
             projectAdapterView.SaveReportAs += SaveReportAsEventHandler;
             projectAdapterView.SaveProject += SaveProjectEventHandler;
             projectAdapterView.OpenProject += OpenProjectEventHandler;
             projectAdapterView.NewProject += NewProjectEventHandler;
-            projectAdapterView.GetAvailableLogStreams += GetAvailableLogStreamsEventHandler;
         }
 
         private void AddAssembliesEventHandler(object sender, AddAssembliesEventArgs e)
@@ -144,12 +132,6 @@ namespace Gallio.Icarus.Adapter
                 GetTestTree(this, new GetTestTreeEventArgs(e.Mode, e.ReloadTestModelData, true, project.TestPackageConfig));
         }
 
-        private void GetLogStreamEventHandler(object sender, GetLogStreamEventArgs e)
-        {
-            if (GetLogStream != null)
-                GetLogStream(this, e);
-        }
-
         private void RunTestsEventHandler(object sender, EventArgs e)
         {
             // add/update "last run" filter in project
@@ -158,6 +140,12 @@ namespace Gallio.Icarus.Adapter
             // run tests
             if (RunTests != null)
                 RunTests(this, e);
+        }
+
+        private void OnGenerateReport(object sender, EventArgs e)
+        {
+            if (GenerateReport != null)
+                GenerateReport(this, e);
         }
 
         private void StopTestsEventHandler(object sender, EventArgs e)
@@ -229,23 +217,21 @@ namespace Gallio.Icarus.Adapter
             project = new Project();
         }
 
-        private void GetAvailableLogStreamsEventHandler(object sender, SingleStringEventArgs e)
-        {
-            if (GetAvailableLogStreams != null)
-                GetAvailableLogStreams(this, e);
-        }
-
         public void DataBind(string mode, bool initialCheckState)
         {
             projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
             projectAdapterView.TestTreeCollection = projectAdapterModel.BuildTestTree(testModelData, mode, initialCheckState);
-            projectAdapterView.TotalTests(projectAdapterModel.CountTests(testModelData));
-            projectAdapterView.DataBind();
+            projectAdapterView.TotalTests = projectAdapterModel.CountTests(testModelData);
         }
 
         public void Update(TestData testData, TestStepRun testStepRun)
         {
             projectAdapterView.Update(testData, testStepRun);
+        }
+
+        public void WriteToLog(string logName, string logBody)
+        {
+            projectAdapterView.WriteToLog(logName, logBody);
         }
     }
 }

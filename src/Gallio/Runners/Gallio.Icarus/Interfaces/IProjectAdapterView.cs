@@ -31,28 +31,31 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<SingleStringEventArgs> RemoveAssembly;
         event EventHandler<GetTestTreeEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
+        event EventHandler<EventArgs> GenerateReport;
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
-        event EventHandler<GetLogStreamEventArgs> GetLogStream;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         event EventHandler<SingleStringEventArgs> SaveProject;
         event EventHandler<OpenProjectEventArgs> OpenProject;
         event EventHandler<EventArgs> NewProject;
-        event EventHandler<SingleStringEventArgs> GetAvailableLogStreams;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
-        string LogBody { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
-        IList<string> AvailableLogStreams { set; }
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
-        void DataBind();
+        int TotalTests { set; }
         void Update(TestData testData, TestStepRun testStepRun);
-        void TotalTests(int totalTests);
         void ApplyFilter(Filter<ITest> filter);
+        void ThreadedRemoveAssembly(string assembly);
+        void CreateFilter(TreeNodeCollection nodes);
+        void ReloadTree();
+        void SaveReport(string fileName, string reportType);
+        void WriteToLog(string logName, string logBody);
+        void Reset();
+        void CreateReport();
     }
 }

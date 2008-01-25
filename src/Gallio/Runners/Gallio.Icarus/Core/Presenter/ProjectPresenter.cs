@@ -66,12 +66,11 @@ namespace Gallio.Icarus.Core.Presenter
             // wire up events
             projectAdapter.GetTestTree += GetTestTree;
             projectAdapter.RunTests += RunTests;
+            projectAdapter.GenerateReport += OnGenerateReport;
             projectAdapter.StopTests += StopTests;
             projectAdapter.SetFilter += SetFilter;
-            projectAdapter.GetLogStream += GetLogStream;
             projectAdapter.GetReportTypes += GetReportTypes;
             projectAdapter.SaveReportAs += SaveReportAs;
-            projectAdapter.GetAvailableLogStreams += GetAvailableLogStreams;
         }
 
         public void GetTestTree(object sender, GetTestTreeEventArgs e)
@@ -87,6 +86,10 @@ namespace Gallio.Icarus.Core.Presenter
         public void RunTests(object sender, EventArgs e)
         {
             testRunnerModel.RunTests();
+        }
+
+        public void OnGenerateReport(object sender, EventArgs e)
+        {
             testRunnerModel.GenerateReport();
         }
 
@@ -100,11 +103,6 @@ namespace Gallio.Icarus.Core.Presenter
             testRunner.TestExecutionOptions.Filter = e.Filter;
         }
 
-        public void GetLogStream(object sender, GetLogStreamEventArgs e)
-        {
-            projectAdapter.LogBody = testRunnerModel.GetLogStream(e.LogStream, e.TestId);
-        }
-
         public void GetReportTypes(object sender, EventArgs e)
         {
             projectAdapter.ReportTypes = testRunnerModel.GetReportTypes();
@@ -115,14 +113,14 @@ namespace Gallio.Icarus.Core.Presenter
             testRunnerModel.SaveReportAs(e.FileName, e.Format);
         }
 
-        public void GetAvailableLogStreams(object sender, SingleStringEventArgs e)
-        {
-            projectAdapter.AvailableLogStreams = testRunnerModel.GetAvailableLogStreams(e.String);
-        }
-
         public void Update(TestData testData, TestStepRun testStepRun)
         {
             projectAdapter.Update(testData, testStepRun);
+        }
+
+        public void WriteToLog(string logName, string logBody)
+        {
+            projectAdapter.WriteToLog(logName, logBody);
         }
     }
 }

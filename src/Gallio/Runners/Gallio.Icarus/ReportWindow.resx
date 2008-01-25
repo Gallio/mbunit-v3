@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,44 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="start" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\start.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="reloadReport.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAYlJREFUOE+tkm0r
+        Q2EYx/cJ5K13PoHP4EN4S5FEqUlYoiFqkWiFQoktM5MZShqSh9XywsNozZrJNtnUOu2RebG/rmvd69w7
+        2wvl1K9zTqfrd/2v6z463X9cC+dpmLZDNZl1vvK3fuM+qvYzH3+iWCxK5PN5EKlUGrFkDvfBBAt2LyJa
+        STWBEOZ/gEwB8L3lWNCylYTDHZIl84fvmgQkoGJCyXzjNpxlgUAahWZUj6D39EG3rGPWA3t8f4gDl17A
+        5YJ2FzP257JAXSwkQkASbwwwjO3II5g2fCygpdWt1XPXeBbl7kLgiQJE75BdFkyt3iCdK7CECgWVCWoK
+        JhaveFFqhOQ6qoCg6GfhEt16i5zAOHeKuPLFqLvSMxW6wwoOAoDTD75rBKPTR/yzEEJAu7D671jQYGnk
+        QiHp7FmREwxPuvCSyDKVCei9ydHMxZu+UgqNgI4l+JFhxNnTcVJh68k4bE8KF5KA6OhakhMMjtjwGEkz
+        dNY0M21cLE1EF4K2drMsGDBY8RfUgl8A6VHwWV/BgQAAAABJRU5ErkJggg==
+</value>
   </data>
-  <data name="FailMb" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FailMb.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="FilterFailed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FilterFailed.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MbUnitLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\LinkToMBU.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="help_browser" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\help-browser.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\stop.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tick" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tick.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MbUnit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MbUnit.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="FilterInconclusive" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FilterInconclusive.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="FilterPassed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FilterPassed.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AssemblyIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Assembly.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="cross" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\cross.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Report" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Report.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAB
+        AAAAAAAAandoAG5/bgB8c3MAhXt7AIt9fQAamxcAL5wsADqWNwA1oDUAToxMAEOQQQBAmEAASZtJAFiG
+        VgBdi10AV5RXAEepRwBNqE0AWq5aAGOCYQBjjGMAbIBrAHWHdQB2iHYAc493AHaMeAB4ingAb5R1AGeZ
+        dQBsmXUAbJ12AG+beABtnngAcZRxAHGRdQB2kXkAdpp8AHWcfABXuG8AY6BjAG+xbwBloHAAZ6RyAGip
+        dABprXYAZ6N6AG6ieABornkAcKR6AHGlfABxqn0AY7RzAGWxdwBktHUAaLR4AGS5eQBlvXkAloaGAJ2F
+        hQCXi4sAmomJAJ+TkwCjjIwAro6OAKSUlACrlZUAqJycALSVlQC8lJQAtZqaALycnACVppUAuaqqAKa5
+        pgDAlZUAw5ycAMStrQDPsrIA1LS0ANu3twDcvr4A5Ly8AJ7IngCT2JMAmdaZAJ7WngCc2JwAo8qjAKDN
+        oAClyKUAqMKoAKvNqwCg0qAApNSkALTBsAC03LQAu9q7AK7oqADQwcEA3cTEANbLywDbzMwAwtHCAMHZ
+        wQDB3cEAyN7GAMvWywDL2ssAzNvMAM/czwDX09MA29TUANHa0QDU3NMA1t7VANjd1wDe2NgA2d3ZAODC
+        wgDlzs4A7MvLAPPFxQDzy8sA5dTUAOrU1ADk2toA69nZAMXmwgDG5sQAxOvBAMfvxADK4coAyufJAM7h
+        zgDO5c4A0u7PAMv0yADS4dIA1OHSANXh1QDU5dQA0+/TANTv0QDV6dUA2uDZANnm2ADc5NoA3+PfAN7m
+        3QDZ69kA2uzaAN/q3gDf7d8A3vHcAODg4ADn4uIA4ufiAOHp4ADk6+EA4u/gAOfv5wDn8OcA////AAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHSAgIBwjGRoaFxsWAAAAACGfmJiSc5GRkZGRGQAAAAAhhQwP
+        SJujo6OjkRcAAAAAIKCgoZ+Qim1rkXMZAAAAADKBCQ0QFQJnc6NzGgAAAAAzmpiYkJiQhXGbcyQAAAAA
+        MIERKCNKhW1tkZElAAAAADCQYGFpjpGjo6ORJQAAAAA1iGBhaZCFioqRiiUAAAAAOIIREylTkaOjo5gh
+        AAAAADiDVV5caZCQioqQIAAAAAA4iVRXVV5TWFhbai8AAAAAOGIGBwgLCg4UAl8yAAAAACc1NTU1Nzct
+        LR0qLgAAAAAAAAAAAAAAAAAAAAAAAP//AADAAwAAwAMAAMADAADAAwAAwAMAAMADAADAAwAAwAMAAMAD
+        AADAAwAAwAMAAMADAADAAwAAwAMAAP//AAA=
+</value>
   </data>
 </root>

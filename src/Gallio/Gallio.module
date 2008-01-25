@@ -26,8 +26,6 @@
     <Binary Include="$(RootDir)\libs\Castle\bin\Castle.Windsor.dll" />
     <Binary Include="$(RootDir)\libs\Castle\bin\Castle.DynamicProxy2.dll" />
 
-    <Binary Include="$(RootDir)\libs\Components\ZedGraph.dll" />
-    <Binary Include="$(RootDir)\libs\Components\ICSharpCode.TextEditor.dll" />
     <Binary Include="$(RootDir)\libs\ReferenceAssemblies\System.Core.dll" />
     <Binary Include="$(RootDir)\libs\ReferenceAssemblies\System.Management.Automation.dll" />
 
@@ -63,6 +61,8 @@
     <Binary Include="Runners\Gallio.Echo\bin\Gallio.Echo.exe" />
     <Binary Include="Runners\Gallio.Echo\bin\Gallio.Echo.exe.config" />
 
+    <Binary Include="Runners\libs\WeifenLuo.WinFormsUI.Docking.dll" />
+    <Binary Include="Runners\libs\ZedGraph.dll" />
     <Binary Include="Runners\Gallio.Icarus\bin\Gallio.Icarus.exe" />
     <Binary Include="Runners\Gallio.Icarus\bin\Gallio.Icarus.exe.config" />    
   </ItemGroup>

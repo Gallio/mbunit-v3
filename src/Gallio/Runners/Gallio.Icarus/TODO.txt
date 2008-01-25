@@ -1,0 +1,1 @@
+1) AssemblyWatcher (see \v2\src\mbunit\MbUnit.Framework\Core\Remoting\AssemblyWatcher.cs). Wire up when adding assemblies and reload if modified.

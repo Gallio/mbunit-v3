@@ -28,7 +28,6 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
     {
         private readonly ReportMonitor reportMonitor;
         private readonly IProjectPresenter presenter;
-        private Dictionary<string, Dictionary<string, string>> logStreams;
 
         public TestRunnerMonitor(IProjectPresenter presenter, ReportMonitor reportMonitor)
         {
@@ -39,7 +38,6 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
             this.presenter = presenter;
             this.reportMonitor = reportMonitor;
-            logStreams = new Dictionary<string, Dictionary<string, string>>();
         }
 
         /// <inheritdoc />
@@ -66,38 +64,7 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
             // store log streams
             foreach (ExecutionLogStream els in e.TestStepRun.ExecutionLog.Streams)
-            {
-                string key = els.Name + e.TestData.Id;
-                if (logStreams.ContainsKey(e.TestData.Id))
-                {
-                    if (logStreams[e.TestData.Id].ContainsKey(els.Name))
-                        logStreams[e.TestData.Id][els.Name] += els.ToString();
-                    else
-                        logStreams[e.TestData.Id].Add(els.Name, els.ToString());
-                }
-                else
-                {
-                    Dictionary<string, string> logs = new Dictionary<string, string>();
-                    logs.Add(els.Name, els.ToString());
-                    logStreams.Add(e.TestData.Id, logs);
-                }
-            }
-        }
-
-        public IList<string> GetAvailableLogStreams(string testId)
-        {
-            List<string> logs = new List<string>();
-            if (logStreams.ContainsKey(testId))
-                logs.AddRange(logStreams[testId].Keys);
-            return logs;
-        }
-
-        public string GetLogStream(string logStream, string testId)
-        {
-            if (logStreams.ContainsKey(testId))
-                if (logStreams[testId].ContainsKey(logStream))
-                    return logStreams[testId][logStream];
-            return string.Empty;
+                presenter.WriteToLog(els.Name, els.ToString());
         }
     }
 }

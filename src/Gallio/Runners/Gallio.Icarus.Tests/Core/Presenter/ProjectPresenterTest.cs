@@ -39,12 +39,11 @@ namespace Gallio.Icarus.Core.Presenter.Tests
 
         private IEventRaiser getTestTreeEvent;
         private IEventRaiser runTestsEvent;
+        private IEventRaiser generateReportEvent;
         private IEventRaiser stopTestsEvent;
         private IEventRaiser setFilterEvent;
-        private IEventRaiser getLogStreamEvent;
         private IEventRaiser getReportTypesEvent;
         private IEventRaiser saveReportAsEvent;
-        private IEventRaiser getAvailableLogStreamsEvent;
 
         [SetUp]
         public void SetUp()
@@ -65,6 +64,10 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             LastCall.IgnoreArguments();
             runTestsEvent = LastCall.GetEventRaiser();
 
+            mockAdapter.GenerateReport += null;
+            LastCall.IgnoreArguments();
+            generateReportEvent = LastCall.GetEventRaiser();
+
             mockAdapter.StopTests += null;
             LastCall.IgnoreArguments();
             stopTestsEvent = LastCall.GetEventRaiser();
@@ -73,10 +76,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             LastCall.IgnoreArguments();
             setFilterEvent = LastCall.GetEventRaiser();
 
-            mockAdapter.GetLogStream += null;
-            LastCall.IgnoreArguments();
-            getLogStreamEvent = LastCall.GetEventRaiser();
-
             mockAdapter.GetReportTypes += null;
             LastCall.IgnoreArguments();
             getReportTypesEvent = LastCall.GetEventRaiser();
@@ -84,10 +83,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mockAdapter.SaveReportAs += null;
             LastCall.IgnoreArguments();
             saveReportAsEvent = LastCall.GetEventRaiser();
-
-            mockAdapter.GetAvailableLogStreams += null;
-            LastCall.IgnoreArguments();
-            getAvailableLogStreamsEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -135,10 +130,18 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         public void RunTests_Test()
         {
             mockModel.RunTests();
-            mockModel.GenerateReport();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             runTestsEvent.Raise(mockAdapter, EventArgs.Empty);
+        }
+
+        [Test]
+        public void GenerateReport_Test()
+        {
+            mockModel.GenerateReport();
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            generateReportEvent.Raise(mockAdapter, EventArgs.Empty);
         }
 
         [Test]
@@ -162,16 +165,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         }
 
         [Test]
-        public void GetLogStream_Test()
-        {
-            Expect.Call(mockModel.GetLogStream("test", "test1")).Return("blah blah");
-            mockAdapter.LogBody = "blah blah";
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            getLogStreamEvent.Raise(mockAdapter, new GetLogStreamEventArgs("test", "test1"));
-        }
-
-        [Test]
         public void GetReportTypes_Test()
         {
             IList<string> reportTypes = new List<string>();
@@ -191,18 +184,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             saveReportAsEvent.Raise(mockAdapter, new SaveReportAsEventArgs(fileName, format));
-        }
-
-        [Test]
-        public void GetAvailableLogStreamsEventHandler_Test()
-        {
-            string testId = "test";
-            List<string> streams = new List<string>();
-            Expect.Call(mockModel.GetAvailableLogStreams(testId)).Return(streams);
-            mockAdapter.AvailableLogStreams = streams;
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            getAvailableLogStreamsEvent.Raise(mockAdapter, new SingleStringEventArgs(testId));
         }
 
         [Test]

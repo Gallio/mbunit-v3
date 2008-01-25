@@ -18,10 +18,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Controls
 {
-    public class TaskButton :
-        Control, IButtonControl
+    public class TaskButton : Control, IButtonControl
     {
         private const int MIN_HEIGHT = 40;
         private string description = string.Empty;

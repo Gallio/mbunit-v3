@@ -28,10 +28,8 @@ namespace Gallio.Icarus.Core.Interfaces
         TestModelData BuildTests();
         void RunTests();
         void StopTests();
-        string GetLogStream(string logStream, string testId);
         void GenerateReport();
         void SaveReportAs(string fileName, string format);
         IList<string> GetReportTypes();
-        IList<string> GetAvailableLogStreams(string testId);
     }
 }

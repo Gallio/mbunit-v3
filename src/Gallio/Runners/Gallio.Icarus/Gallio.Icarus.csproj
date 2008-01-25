@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -39,6 +39,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.TextEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\ICSharpCode.TextEditor.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -46,9 +50,13 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.2.2939.18829, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
     <Reference Include="ZedGraph, Version=5.0.2.16769, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\libs\Components\ZedGraph.dll</HintPath>
+      <HintPath>..\libs\ZedGraph.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -60,7 +68,17 @@
     </Compile>
     <Compile Include="AdapterModel\ProjectAdapterModel.cs" />
     <Compile Include="Adapter\ProjectAdapter.cs" />
+    <Compile Include="AssemblyList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssemblyList.Designer.cs">
+      <DependentUpon>AssemblyList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CheckBoxStates.cs" />
+    <Compile Include="Controls\TaskButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TaskDialog.cs" />
     <Compile Include="Controls\TestResultsGraph.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -82,20 +100,22 @@
     <Compile Include="Core\CustomEventArgs\SaveReportAsEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SingleStringEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SetFilterEventArgs.cs" />
-    <Compile Include="Core\Interfaces\ILogHistoryModel.cs" />
-    <Compile Include="Core\Interfaces\IPreferencesModel.cs" />
-    <Compile Include="Core\Interfaces\IProjectAdapter.cs" />
     <Compile Include="Core\Interfaces\IProjectPresenter.cs" />
-    <Compile Include="Core\Interfaces\IReportHistoryModel.cs" />
     <Compile Include="Core\Interfaces\ITestRunnerModel.cs" />
-    <Compile Include="Core\Interfaces\ITestTreeModel.cs" />
     <Compile Include="Core\Model\TestRunnerModel.cs" />
     <Compile Include="Core\Presenter\ProjectPresenter.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProvider.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenter.cs" />
     <Compile Include="Core\ProgressMonitoring\TestRunnerMonitor.cs" />
+    <Compile Include="Interfaces\IProjectAdapter.cs" />
     <Compile Include="Interfaces\IProjectAdapterModel.cs" />
     <Compile Include="Interfaces\IProjectAdapterView.cs" />
+    <Compile Include="LogWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogWindow.Designer.cs">
+      <DependentUpon>LogWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,24 +129,54 @@
     <Compile Include="Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
+    <Compile Include="PerformanceMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PerformanceMonitor.Designer.cs">
+      <DependentUpon>PerformanceMonitor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="About.resx">
       <SubType>Designer</SubType>
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AssemblyList.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AssemblyList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LogWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Options.resx">
-      <SubType>Designer</SubType>
       <DependentUpon>Options.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PerformanceMonitor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PerformanceMonitor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReportWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ReportWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestExplorer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestExplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestResults.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestResults.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -145,14 +195,62 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="TaskButton.cs">
-      <SubType>Component</SubType>
+    <Compile Include="ReportWindow.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TaskDialog.cs">
+    <Compile Include="ReportWindow.Designer.cs">
+      <DependentUpon>ReportWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestExplorer.Designer.cs">
+      <DependentUpon>TestExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestResults.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestResults.Designer.cs">
+      <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
+    <Content Include="Resources\arrow_refresh.png" />
+    <Content Include="Resources\Assembly.ico" />
+    <Content Include="Resources\ClearAll.ico" />
+    <Content Include="Resources\cross.png" />
+    <Content Include="Resources\document-save-as.png" />
+    <Content Include="Resources\document-save.png" />
+    <Content Include="Resources\error.png" />
+    <Content Include="Resources\FailMb.ico" />
+    <Content Include="Resources\FilterFailed.ico" />
+    <Content Include="Resources\FilterInconclusive.ico" />
+    <Content Include="Resources\FilterPassed.ico" />
+    <Content Include="Resources\folder_open.png" />
+    <Content Include="Resources\Graph.png" />
+    <Content Include="Resources\help-browser.png" />
+    <Content Include="Resources\LinkToMBU.png" />
+    <Content Include="Resources\list-add.png" />
+    <Content Include="Resources\list-remove.png" />
+    <Content Include="Resources\LogStream.ico" />
+    <Content Include="Resources\MbUnitLogo.png" />
+    <Content Include="Resources\MbUnitLogoText.png" />
+    <Content Include="Resources\new.png" />
+    <Content Include="Resources\OpenInVS.ico" />
+    <Content Include="Resources\Options.ico" />
+    <Content Include="Resources\PassMb.ico" />
+    <Content Include="Resources\Reload.ico" />
+    <Content Include="Resources\Report.ico" />
+    <Content Include="Resources\Sort.png" />
+    <Content Include="Resources\SortUp.png" />
+    <Content Include="Resources\start.png" />
+    <Content Include="Resources\Statistics.ico" />
+    <Content Include="Resources\stop.png" />
+    <Content Include="Resources\text-x-python.png" />
+    <Content Include="Resources\tick.png" />
+    <Content Include="Resources\WarningMb.ico" />
+    <None Include="Resources\MbUnit.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Gallio\Gallio.csproj">
