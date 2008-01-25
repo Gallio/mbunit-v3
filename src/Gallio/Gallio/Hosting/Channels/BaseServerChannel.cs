@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 
@@ -25,6 +26,8 @@ namespace Gallio.Hosting.Channels
     /// </summary>
     public abstract class BaseServerChannel : BaseChannel, IServerChannel
     {
+        private readonly List<MarshalByRefObject> remoteComponents;
+
         /// <summary>
         /// Creates a channel.
         /// </summary>
@@ -34,6 +37,7 @@ namespace Gallio.Hosting.Channels
         protected BaseServerChannel(IChannel channel, Uri channelUri)
             : base(channel, channelUri)
         {
+            remoteComponents = new List<MarshalByRefObject>();
         }
 
         /// <inheritdoc />
@@ -44,7 +48,26 @@ namespace Gallio.Hosting.Channels
             if (component == null)
                 throw new ArgumentNullException("component");
 
-            RemotingServices.Marshal(component, GetServiceUri(serviceName));
+            RemotingServices.Marshal(component, serviceName);
+
+            lock (remoteComponents)
+                remoteComponents.Add(component);
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                lock (remoteComponents)
+                {
+                    foreach (MarshalByRefObject component in remoteComponents)
+                        RemotingServices.Disconnect(component);
+                    remoteComponents.Clear();
+                }
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

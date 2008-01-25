@@ -17,6 +17,7 @@ using System;
 using System.Runtime.Remoting;
 using System.Threading;
 using Castle.Core.Logging;
+using Gallio.Properties;
 
 namespace Gallio.Hosting
 {
@@ -63,23 +64,86 @@ namespace Gallio.Hosting
         }
 
         /// <inheritdoc />
-        public object Activate(string assemblyName, string typeName)
+        public void Ping()
         {
             ThrowIfDisposed();
 
             try
             {
-                return remoteHostService.Activate(assemblyName, typeName).Unwrap();
+                remoteHostService.Ping();
             }
             catch (Exception ex)
             {
-                throw new RemotingException("The remote host service threw an exception or could not be reached.", ex);
+                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
+            }
+        }
+
+        /// <inheritdoc />
+        public void DoCallback(CrossAppDomainDelegate callback)
+        {
+            if (callback == null)
+                throw new ArgumentNullException("callback");
+
+            ThrowIfDisposed();
+
+            try
+            {
+                remoteHostService.DoCallback(callback);
+            }
+            catch (Exception ex)
+            {
+                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
+            }
+        }
+
+        /// <inheritdoc />
+        public ObjectHandle CreateInstance(string assemblyName, string typeName)
+        {
+            if (assemblyName == null)
+                throw new ArgumentNullException("assemblyName");
+            if (typeName == null)
+                throw new ArgumentNullException("typeName");
+
+            ThrowIfDisposed();
+
+            try
+            {
+                return remoteHostService.CreateInstance(assemblyName, typeName);
+            }
+            catch (Exception ex)
+            {
+                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
+            }
+        }
+
+        /// <inheritdoc />
+        public ObjectHandle CreateInstanceFrom(string assemblyPath, string typeName)
+        {
+            if (assemblyPath == null)
+                throw new ArgumentNullException("assemblyPath");
+            if (typeName == null)
+                throw new ArgumentNullException("typeName");
+
+            ThrowIfDisposed();
+
+            try
+            {
+                return remoteHostService.CreateInstanceFrom(assemblyPath, typeName);
+            }
+            catch (Exception ex)
+            {
+                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
             }
         }
 
         /// <inheritdoc />
         public void InitializeRuntime(RuntimeSetup runtimeSetup, ILogger logger)
         {
+            if (runtimeSetup == null)
+                throw new ArgumentNullException("runtimeSetup");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
             ThrowIfDisposed();
 
             try
@@ -88,7 +152,7 @@ namespace Gallio.Hosting
             }
             catch (Exception ex)
             {
-                throw new RemotingException("The remote host service threw an exception or could not be reached.", ex);
+                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
             }
         }
 
@@ -103,7 +167,7 @@ namespace Gallio.Hosting
             }
             catch (Exception ex)
             {
-                throw new RemotingException("The remote host service threw an exception or could not be reached.", ex);
+                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
             }
         }
 
@@ -122,6 +186,11 @@ namespace Gallio.Hosting
                     if (remoteHostService != null)
                         remoteHostService.Dispose();
                 }
+            }
+            catch (RemotingException)
+            {
+                // Ignore remoting exceptions that are probably just signalling that
+                // the remote link has already been severed.
             }
             catch (Exception ex)
             {

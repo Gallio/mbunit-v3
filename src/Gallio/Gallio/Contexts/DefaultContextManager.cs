@@ -33,6 +33,7 @@ namespace Gallio.Contexts
         private const int CleanupInterval = 60000;
 
         private readonly string contextKey;
+        private readonly string illogicalContextKey;
         private readonly Dictionary<Thread, Context> threadOverrides;
 
         private Context globalContext;
@@ -44,6 +45,7 @@ namespace Gallio.Contexts
         public DefaultContextManager()
         {
             contextKey = @"DefaultContextManager." + Guid.NewGuid();
+            illogicalContextKey = contextKey + @".Illogical";
             threadOverrides = new Dictionary<Thread, Context>();
         }
 
@@ -146,17 +148,27 @@ namespace Gallio.Contexts
         /// Gets or sets the top context link for the current thread.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The trick here is to wrap the context link up in an <see cref="ObjectHandle" />.
         /// This enables the context link to reside in the logical call context (so it flows
         /// across threads) while preventing it from actually getting serialized during
         /// remote calls (which won't work).  On the other hand, during callbacks from
         /// remote calls we will be able to unwrap the context link and keep going.
+        /// </para>
+        /// <para>
+        /// We also use an illogical call context slot as a backup in case the logical
+        /// call context slot gets wiped.  This seems to happen during certain remote calls
+        /// which do not appear to correctly preserve the logical call context during
+        /// the round trip.  This backup value will not be transmitted across threads, however.
+        /// FIXME.  -- Jeff.
+        /// </para>
         /// </remarks>
         private InternalContextLink TopContextLinkForCurrentThread
         {
             get
             {
-                ObjectHandle handle = (ObjectHandle) CallContext.LogicalGetData(contextKey);
+                ObjectHandle handle = (ObjectHandle)
+                    (CallContext.LogicalGetData(contextKey) ?? CallContext.GetData(illogicalContextKey));
                 if (handle == null)
                     return null;
 
@@ -165,9 +177,16 @@ namespace Gallio.Contexts
             set
             {
                 if (value == null)
+                {
                     CallContext.FreeNamedDataSlot(contextKey);
+                    CallContext.FreeNamedDataSlot(illogicalContextKey);
+                }
                 else
-                    CallContext.LogicalSetData(contextKey, new ObjectHandle(value));
+                {
+                    ObjectHandle handle = new ObjectHandle(value);
+                    CallContext.LogicalSetData(contextKey, handle);
+                    CallContext.SetData(illogicalContextKey, handle);
+                }
             }
         }
 

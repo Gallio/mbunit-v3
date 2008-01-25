@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Hosting.Channels;
 
 namespace Gallio.Hosting
 {

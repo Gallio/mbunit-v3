@@ -49,6 +49,8 @@ namespace Gallio.Hosting
             assemblyQualifications = new List<AssemblyQualification>();
             assemblyDependencies = new List<AssemblyDependency>();
             supportedRuntimeVersions = new List<string>();
+
+            SetBuiltInAssemblyBindings();
         }
 
         /// <summary>
@@ -186,6 +188,15 @@ namespace Gallio.Hosting
             ConfigureSupportedRuntimes(rootElement);
 
             return document.InnerXml;
+        }
+
+        private void SetBuiltInAssemblyBindings()
+        {
+            AddAssemblyBinding(typeof(Castle.Core.Logging.ILogger).Assembly, false);
+            AddAssemblyBinding(typeof(Castle.MicroKernel.IKernel).Assembly, false);
+            AddAssemblyBinding(typeof(Castle.Windsor.WindsorContainer).Assembly, false);
+            AddAssemblyBinding(typeof(Castle.DynamicProxy.ProxyGenerator).Assembly, false);
+            AddAssemblyBinding(typeof(HostConfiguration).Assembly, false);
         }
 
         private void ConfigureLegacyUnhandledExceptionPolicy(XmlElement rootElement)

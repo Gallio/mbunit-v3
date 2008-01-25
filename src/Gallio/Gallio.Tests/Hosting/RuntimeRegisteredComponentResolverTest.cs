@@ -54,7 +54,7 @@ namespace Gallio.Tests.Hosting
 
             using (Mocks.Record())
             {
-                Expect.Call(runtime.ResolveAll<DummyRegisteredComponent>()).Return(components);
+                SetupResult.For(runtime.ResolveAll<DummyRegisteredComponent>()).Return(components);
             }
 
             using (Mocks.Playback())

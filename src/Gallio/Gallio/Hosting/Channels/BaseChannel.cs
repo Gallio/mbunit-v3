@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 
 namespace Gallio.Hosting.Channels
@@ -25,6 +26,11 @@ namespace Gallio.Hosting.Channels
     {
         private IChannel channel;
         private Uri channelUri;
+
+        static BaseChannel()
+        {
+            RemotingConfiguration.Configure(null, false);
+        }
 
         /// <summary>
         /// Creates a channel.

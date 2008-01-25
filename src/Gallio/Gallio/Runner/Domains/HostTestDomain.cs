@@ -116,7 +116,6 @@ namespace Gallio.Runner.Domains
         {
             HostSetup hostSetup = new HostSetup();
 
-            SetBuiltInAssemblyBindings(hostSetup.Configuration);
             SetTestPackageConfigOptions(hostSetup, packageConfig);
 
             foreach (IHostTestDomainContributor contributor in contributors)
@@ -146,7 +145,7 @@ namespace Gallio.Runner.Domains
 
                 Type factoryType = typeof(LocalTestDomainFactory);
                 ITestDomainFactory factory = (ITestDomainFactory)
-                    host.Activate(factoryType.Assembly.FullName, factoryType.FullName);
+                    host.CreateInstance(factoryType.Assembly.FullName, factoryType.FullName).Unwrap();
                 return factory.CreateDomain();
             }
             catch (Exception ex)
@@ -159,15 +158,6 @@ namespace Gallio.Runner.Domains
         {
             if (host != null)
                 host.ShutdownRuntime();
-        }
-
-        private static void SetBuiltInAssemblyBindings(HostConfiguration hostConfiguration)
-        {
-            hostConfiguration.AddAssemblyBinding(typeof(Castle.Core.Logging.ILogger).Assembly, false);
-            hostConfiguration.AddAssemblyBinding(typeof(Castle.MicroKernel.IKernel).Assembly, false);
-            hostConfiguration.AddAssemblyBinding(typeof(Castle.Windsor.WindsorContainer).Assembly, false);
-            hostConfiguration.AddAssemblyBinding(typeof(Castle.DynamicProxy.ProxyGenerator).Assembly, false);
-            hostConfiguration.AddAssemblyBinding(typeof(HostTestDomain).Assembly, false);
         }
 
         private static void SetTestPackageConfigOptions(HostSetup hostSetup, TestPackageConfig packageConfig)

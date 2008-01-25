@@ -13,12 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Remoting;
-using System.Text;
-using Castle.Core.Logging;
-
 namespace Gallio.Hosting
 {
     /// <summary>
@@ -32,32 +26,7 @@ namespace Gallio.Hosting
     /// when it has not received a ping within a set period of time.
     /// </para>
     /// </summary>
-    public interface IRemoteHostService : IDisposable
+    public interface IRemoteHostService : IHost
     {
-        /// <summary>
-        /// Pings the remote host service to verify and maintain connectivity.
-        /// </summary>
-        void Ping();
-
-        /// <summary>
-        /// Creates an instance of a remote object of the specified type
-        /// using the type's default constructor.
-        /// </summary>
-        /// <param name="assemblyName">The name of assembly that contains the type</param>
-        /// <param name="typeName">The full name of the type</param>
-        /// <returns>The object handle that must be unwrapped to obtain the instance</returns>
-        ObjectHandle Activate(string assemblyName, string typeName);
-
-        /// <summary>
-        /// Initializes the runtime.
-        /// </summary>
-        /// <param name="runtimeSetup">The runtime setup</param>
-        /// <param name="logger">The logger</param>
-        void InitializeRuntime(RuntimeSetup runtimeSetup, ILogger logger);
-
-        /// <summary>
-        /// Shuts down the runtime.
-        /// </summary>
-        void ShutdownRuntime();
     }
 }

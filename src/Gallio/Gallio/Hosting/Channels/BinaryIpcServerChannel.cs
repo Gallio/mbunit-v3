@@ -42,20 +42,24 @@ namespace Gallio.Hosting.Channels
             if (portName == null)
                 throw new ArgumentNullException("portName");
 
-            IDictionary formatterProperties = new Hashtable();
-            formatterProperties[@"includeVersions"] = false;
-
-            BinaryServerFormatterSinkProvider sinkProvider = new BinaryServerFormatterSinkProvider(formatterProperties, null);
-            sinkProvider.TypeFilterLevel = TypeFilterLevel.Full;
-
             IDictionary channelProperties = new Hashtable();
             channelProperties[@"name"] = @"ipc-server:" + portName;
             channelProperties[@"portName"] = portName;
             channelProperties[@"secure"] = true;
             channelProperties[@"exclusiveAddressUse"] = true;
+            //channelProperties[@"authorizedGroup"] = "Everyone";
 
-            IpcServerChannel channel = new IpcServerChannel(channelProperties, sinkProvider);
-            return channel;
+            return new IpcServerChannel(channelProperties, CreateServerChannelSinkProvider());
+        }
+
+        private static IServerChannelSinkProvider CreateServerChannelSinkProvider()
+        {
+            IDictionary formatterProperties = new Hashtable();
+            formatterProperties[@"includeVersions"] = false;
+
+            BinaryServerFormatterSinkProvider serverFormatterSinkProvider = new BinaryServerFormatterSinkProvider(formatterProperties, null);
+            serverFormatterSinkProvider.TypeFilterLevel = TypeFilterLevel.Full;
+            return serverFormatterSinkProvider;
         }
     }
 }

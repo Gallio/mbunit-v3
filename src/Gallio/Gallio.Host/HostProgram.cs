@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Runtime.Remoting;
 using Gallio.Hosting.ConsoleSupport;
 using Gallio.Hosting;
 using Gallio.Hosting.Channels;
@@ -36,16 +37,30 @@ namespace Gallio.Host
                 return -1;
             }
 
-            using (BinaryIpcServerChannel serverChannel = new BinaryIpcServerChannel(Arguments.IpcPortName))
-            {
-                using (HostService hostService = new HostService(WatchdogTimeout))
-                {
-                    HostServiceChannelInterop.RegisterWithChannel(hostService, serverChannel);
+            Console.WriteLine(String.Format("* Started at {0}.", DateTime.Now));
 
-                    hostService.WaitUntilDisposed();
+            try
+            {
+                using (BinaryIpcServerChannel serverChannel = new BinaryIpcServerChannel(Arguments.IpcPortName))
+                {
+                    using (new BinaryIpcClientChannel(Arguments.IpcPortName + @".Callback"))
+                    {
+                        using (HostService hostService = new HostService(WatchdogTimeout))
+                        {
+                            HostServiceChannelInterop.RegisterWithChannel(hostService, serverChannel);
+
+                            Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
+                            hostService.WaitUntilDisposed();
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(String.Format("* A fatal exception occurred: {0}", ex));
+            }
 
+            Console.WriteLine(String.Format("* Stopped at {0}.", DateTime.Now));
             return 0;
         }
 

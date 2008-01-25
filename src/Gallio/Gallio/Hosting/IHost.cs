@@ -14,8 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Remoting;
 using Castle.Core.Logging;
 
 namespace Gallio.Hosting
@@ -34,19 +33,51 @@ namespace Gallio.Hosting
     public interface IHost : IDisposable
     {
         /// <summary>
-        /// Creates an instance of a remote object of the specified type
-        /// using the type's default constructor.
+        /// Pings the remote host service to verify and maintain connectivity.
+        /// </summary>
+        /// <exception cref="HostException">Thrown if the remote host is unreachable</exception>
+        void Ping();
+
+        /// <summary>
+        /// <para>
+        /// Asks the host to invoke the specified callback.
+        /// </para>
+        /// <para>
+        /// The callback must be a serializable delegate so that it can be sent
+        /// to the host and executed.
+        /// </para>
+        /// </summary>
+        /// <param name="callback">The callback</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is null</exception>
+        void DoCallback(CrossAppDomainDelegate callback);
+
+        /// <summary>
+        /// Creates an instance of a remote object given an assembly name and type name.
         /// </summary>
         /// <param name="assemblyName">The name of assembly that contains the type</param>
         /// <param name="typeName">The full name of the type</param>
-        /// <returns>The instance</returns>
-        object Activate(string assemblyName, string typeName);
+        /// <returns>The object handle of the instance</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> or
+        /// <paramref name="typeName"/> is null</exception>
+        ObjectHandle CreateInstance(string assemblyName, string typeName);
+
+        /// <summary>
+        /// Creates an instance of a remote object given an assembly path and type name.
+        /// </summary>
+        /// <param name="assemblyPath">The path of assembly that contains the type</param>
+        /// <param name="typeName">The full name of the type</param>
+        /// <returns>The object handle of the instance</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyPath"/> or
+        /// <paramref name="typeName"/> is null</exception>
+        ObjectHandle CreateInstanceFrom(string assemblyPath, string typeName);
 
         /// <summary>
         /// Initializes the runtime.
         /// </summary>
         /// <param name="runtimeSetup">The runtime setup</param>
         /// <param name="logger">The logger</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimeSetup"/> or
+        /// <paramref name="logger"/> is null</exception>
         void InitializeRuntime(RuntimeSetup runtimeSetup, ILogger logger);
 
         /// <summary>

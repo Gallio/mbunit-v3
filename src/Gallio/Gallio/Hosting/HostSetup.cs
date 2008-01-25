@@ -28,7 +28,7 @@ namespace Gallio.Hosting
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class HostSetup
     {
-        private string applicationBase;
+        private string applicationBase = @"";
         private bool enableShadowCopy;
         private HostConfiguration configuration;
 

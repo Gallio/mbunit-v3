@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Hosting.Channels;
 using Gallio.Utilities;
@@ -38,28 +40,55 @@ namespace Gallio.Hosting
     /// </summary>
     public class IsolatedProcessHostFactory : BaseHostFactory
     {
+        private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(15);
+        private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
+
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup)
         {
             IClientChannel clientChannel = null;
+            IServerChannel callbackChannel = null;
             ProcessTask processTask = null;
+            IsolatedProcessHost host = null;
             try
             {
-                string portName = @"IsolatedProcessHost-" + Hash64.CreateUniqueHash();
+                string portName = @"IsolatedProcessHost." + Hash64.CreateUniqueHash();
 
                 processTask = StartProcess(hostSetup, portName);
-                clientChannel = CreateClientChannel(portName);
+                clientChannel = new BinaryIpcClientChannel(portName);
+                callbackChannel = new BinaryIpcServerChannel(portName + ".Callback");
 
                 IRemoteHostService remoteHostService = HostServiceChannelInterop.GetRemoteHostService(clientChannel);
-                return new IsolatedProcessHost(remoteHostService, processTask);
+                WaitUntilReady(remoteHostService);
+
+                host = new IsolatedProcessHost(remoteHostService, processTask, callbackChannel);
+                return host;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                if (clientChannel != null)
-                    clientChannel.Dispose();
+                string diagnostics = "";
                 if (processTask != null)
+                    diagnostics = String.Format("\n\nConsole Output:\n{0}\n\nConsole Error:\n{1}\n\nExit Code: {2}",
+                        processTask.ConsoleOutput, processTask.ConsoleError,
+                        processTask.IsRunning ? -1 : processTask.ExitCode);
+
+                if (host != null)
+                {
+                    host.Dispose();
+                }
+                else if (processTask != null)
+                {
                     processTask.Abort();
-                throw;
+                }
+                else if (clientChannel != null)
+                {
+                    clientChannel.Dispose();
+                }
+
+                if (callbackChannel != null)
+                    callbackChannel.Dispose();
+
+                throw new HostException("Error attaching to the host process." + diagnostics, ex);
             }
         }
 
@@ -90,8 +119,8 @@ namespace Gallio.Hosting
 
                     ProcessTask processTask = CreateProcessTask(profile.HostProcessPath, arguments);
                     processTask.LogStreamWriter = null;
-                    processTask.CaptureConsoleError = false;
-                    processTask.CaptureConsoleOutput = false;
+                    processTask.CaptureConsoleError = true;
+                    processTask.CaptureConsoleOutput = true;
                     processTask.Terminated += delegate { profile.Dispose(); };
 
                     processTask.Start();
@@ -109,11 +138,26 @@ namespace Gallio.Hosting
             }
         }
 
-        private static IClientChannel CreateClientChannel(string portName)
+        private static void WaitUntilReady(IRemoteHostService host)
         {
-            return new BinaryIpcClientChannel(portName);
-        }
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
+            for (; ; )
+            {
+                try
+                {
+                    host.Ping();
+                    return;
+                }
+                catch (Exception)
+                {
+                    if (stopwatch.Elapsed >= ReadyTimeout)
+                        throw;
+                }
+
+                Thread.Sleep(ReadyPollInterval);
+            }
+        }
 
         private sealed class HostApplicationProfile : IDisposable
         {
@@ -186,25 +230,41 @@ namespace Gallio.Hosting
         private class IsolatedProcessHost : RemoteHost
         {
             private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(5);
-            private static readonly TimeSpan JoinTimeout = TimeSpan.FromSeconds(30); // TODO: make this configurable
+            private static readonly TimeSpan JoinBeforeKillTimeout = TimeSpan.FromSeconds(10); // TODO: make this configurable
+            private static readonly TimeSpan JoinAfterKillTimeout = TimeSpan.FromSeconds(5); // TODO: make this configurable
 
             private ProcessTask processTask;
+            private IServerChannel callbackChannel;
 
-            public IsolatedProcessHost(IRemoteHostService remoteHostService, ProcessTask processTask)
+            public IsolatedProcessHost(IRemoteHostService remoteHostService, ProcessTask processTask, IServerChannel callbackChannel)
                 : base(remoteHostService, PingTimeout)
             {
                 this.processTask = processTask;
+                this.callbackChannel = callbackChannel;
             }
 
             protected override void Dispose(bool disposing)
             {
  	            base.Dispose(disposing);
 
-                if (disposing && processTask != null)
+                if (disposing)
                 {
-                    if (!processTask.Join(JoinTimeout))
-                        processTask.Abort();
-                    processTask = null;
+                    if (processTask != null)
+                    {
+                        if (!processTask.Join(JoinBeforeKillTimeout))
+                        {
+                            processTask.Abort();
+                            processTask.Join(JoinAfterKillTimeout);
+                        }
+
+                        processTask = null;
+                    }
+
+                    if (callbackChannel != null)
+                    {
+                        callbackChannel.Dispose();
+                        callbackChannel = null;
+                    }
                 }
             }
         }

@@ -590,6 +590,15 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The remote host service threw an exception or could not be reached..
+        /// </summary>
+        internal static string RemoteHost_RemoteException {
+            get {
+                return ResourceManager.GetString("RemoteHost_RemoteException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Root.
         /// </summary>
         internal static string RootTest_RootTestName {

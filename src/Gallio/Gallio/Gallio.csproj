@@ -70,7 +70,6 @@
   <ItemGroup>
     <Compile Include="Collections\CollectionEqualityComparer.cs" />
     <Compile Include="Collections\HashSet.cs" />
-    <Compile Include="Hosting\ManagedAppDomain.cs" />
     <Compile Include="Concurrency\ProcessTask.cs" />
     <Compile Include="Concurrency\Task.cs" />
     <Compile Include="Concurrency\TaskContainer.cs" />
@@ -132,6 +131,7 @@
     <Compile Include="Hosting\ConsoleSupport\NativeConsole.cs" />
     <Compile Include="Hosting\ConsoleSupport\ResponseFileReader.cs" />
     <Compile Include="Hosting\ConsoleSupport\RichConsoleLogger.cs" />
+    <Compile Include="Hosting\HostAssemblyResolverHook.cs" />
     <Compile Include="Hosting\RuntimeRegisteredComponentResolver.cs" />
     <Compile Include="Hosting\HostConfiguration.cs" />
     <Compile Include="Hosting\HostException.cs" />

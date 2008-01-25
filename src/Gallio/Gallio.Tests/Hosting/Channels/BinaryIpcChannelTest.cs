@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Reflection;
 using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Ipc;
-using System.Runtime.Serialization.Formatters;
-using System.Text;
 using System.Threading;
 using Gallio.Hosting;
 using Gallio.Hosting.Channels;
-using Gallio.Utilities;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting.Channels
@@ -21,34 +14,35 @@ namespace Gallio.Tests.Hosting.Channels
     [DependsOn(typeof(BaseServerChannelTest))]
     public class BinaryIpcChannelTest
     {
-        private static readonly string PortName = typeof(BinaryIpcChannelTest).Name.ToLower();
+        private static readonly string PortName = typeof(BinaryIpcChannelTest).Name;
         private const string ServiceName = "Test";
 
         [Test]
         public void RegisteredServiceCanBeAccessedWithGetService()
         {
-            using (ManagedAppDomain domain = ManagedAppDomain.Create(GetType().Name))
+            using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup()))
             {
-                domain.AppDomain.DoCallBack(RemoteCallback);
+                HostAssemblyResolverHook.Install(host);
+
+                host.DoCallback(RemoteCallback);
 
                 using (BinaryIpcClientChannel clientChannel = new BinaryIpcClientChannel(PortName))
                 {
-                    TestService serviceProxy = (TestService)clientChannel.GetService(typeof(TestService), ServiceName);
+                    TestService serviceProxy =
+                        (TestService)clientChannel.GetService(typeof(TestService), ServiceName);
                     Assert.AreEqual(42, serviceProxy.Add(23, 19));
                 }
             }
         }
 
-        private static void RemoteCallback()
+        public static void RemoteCallback()
         {
-            using (BinaryIpcServerChannel serverChannel = new BinaryIpcServerChannel(PortName))
-            {
-                TestService serviceProvider = new TestService();
-                serverChannel.RegisterService(ServiceName, serviceProvider);
-            }
+            BinaryIpcServerChannel serverChannel = new BinaryIpcServerChannel(PortName);
+            TestService serviceProvider = new TestService();
+            serverChannel.RegisterService(ServiceName, serviceProvider);
         }
 
-        private class TestService : MarshalByRefObject
+        public class TestService : MarshalByRefObject
         {
             public int Add(int x, int y)
             {

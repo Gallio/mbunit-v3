@@ -34,7 +34,7 @@ namespace Gallio.Hosting.Channels
         /// <param name="portName">The ipc port name to connect to</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="portName"/> is null</exception>
         public BinaryIpcClientChannel(string portName)
-            : base(CreateChannel(portName), new Uri("ipc://" + portName))
+            : base(CreateChannel(portName), new Uri(@"ipc://" + portName))
         {
         }
 
@@ -43,18 +43,20 @@ namespace Gallio.Hosting.Channels
             if (portName == null)
                 throw new ArgumentNullException("portName");
 
-            IDictionary formatterProperties = new Hashtable();
-            formatterProperties[@"includeVersions"] = false;
-
-            BinaryClientFormatterSinkProvider sinkProvider = new BinaryClientFormatterSinkProvider(formatterProperties, null);
-
             IDictionary channelProperties = new Hashtable();
             channelProperties[@"connectionTimeout"] = ConnectionTimeoutMillis;
             channelProperties[@"name"] = @"ipc-client:" + portName;
             channelProperties[@"secure"] = true;
 
-            IpcClientChannel channel = new IpcClientChannel(channelProperties, sinkProvider);
-            return channel;
+            return new IpcClientChannel(channelProperties, CreateClientChannelSinkProvider());
+        }
+
+        private static IClientChannelSinkProvider CreateClientChannelSinkProvider()
+        {
+            IDictionary formatterProperties = new Hashtable();
+            formatterProperties[@"includeVersions"] = false;
+
+            return new BinaryClientFormatterSinkProvider(formatterProperties, null);
         }
     }
 }

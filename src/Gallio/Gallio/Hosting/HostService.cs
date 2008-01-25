@@ -65,25 +65,37 @@ namespace Gallio.Hosting
         }
 
         /// <inheritdoc />
-        void IRemoteHostService.Ping()
+        void IHost.Ping()
         {
             ResetWatchdogTimer();
         }
 
         /// <inheritdoc />
-        ObjectHandle IRemoteHostService.Activate(string assemblyName, string typeName)
+        void IHost.DoCallback(CrossAppDomainDelegate callback)
+        {
+            callback();
+        }
+
+        /// <inheritdoc />
+        ObjectHandle IHost.CreateInstance(string assemblyName, string typeName)
         {
             return Activator.CreateInstance(assemblyName, typeName);
         }
 
         /// <inheritdoc />
-        void IRemoteHostService.InitializeRuntime(RuntimeSetup runtimeSetup, ILogger logger)
+        ObjectHandle IHost.CreateInstanceFrom(string assemblyPath, string typeName)
+        {
+            return Activator.CreateInstanceFrom(assemblyPath, typeName);
+        }
+
+        /// <inheritdoc />
+        void IHost.InitializeRuntime(RuntimeSetup runtimeSetup, ILogger logger)
         {
             Runtime.Initialize(runtimeSetup, logger);
         }
 
         /// <inheritdoc />
-        void IRemoteHostService.ShutdownRuntime()
+        void IHost.ShutdownRuntime()
         {
             Runtime.Shutdown();
         }
