@@ -29,7 +29,7 @@
     <MSBuildCommunityTasksPath>$(LibsDir)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
     <NCoverExplorerPath>$(LibsDir)\NCoverExplorer</NCoverExplorerPath>
 
-    <SatisfactoryCoverage>0</SatisfactoryCoverage>
+    <SatisfactoryCoverage>70</SatisfactoryCoverage>
     
     <CSharpProperties>
       Configuration=Release;
@@ -93,7 +93,7 @@
     </Gallio>
 
     <NCoverExplorer Condition="$(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')"
-                    Exclusions="Assembly=*.Tests"
+                    Exclusions="Assembly=*.Tests;Assembly=*.TestResources"
                     XmlReportName="CoverageSummary.xml"
 		    ReportType="ModuleNamespaceSummary"
 		    ToolPath="$(NCoverExplorerPath)"
