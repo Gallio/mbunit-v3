@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Hosting;
 using NCover.Framework;
@@ -16,6 +17,8 @@ namespace Gallio.NCoverIntegration
     /// </todo>
     public class NCoverProcessTask : ProcessTask
     {
+        private readonly TimeSpan WaitForExitTimeout = TimeSpan.FromSeconds(15);
+
         private ProfilerDriver driver;
         private ThreadTask waitForExitTask;
         
@@ -101,7 +104,9 @@ namespace Gallio.NCoverIntegration
             }
             finally
             {
-                if (waitForExitTask != null)
+                // Allow some time for the final processing to take place such as writing out the 
+                // XML reports.  If it really takes too long then abort it.
+                if (waitForExitTask != null && ! waitForExitTask.Join(WaitForExitTimeout))
                     waitForExitTask.Abort();
 
                 driver = null;
