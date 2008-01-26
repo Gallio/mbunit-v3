@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using Gallio.Concurrency;
+using Gallio.Hosting;
 using NCover.Framework;
 
 namespace Gallio.NCoverIntegration
@@ -14,6 +16,9 @@ namespace Gallio.NCoverIntegration
     /// </todo>
     public class NCoverProcessTask : ProcessTask
     {
+        private ProfilerDriver driver;
+        private ThreadTask waitForExitTask;
+        
         /// <summary>
         /// Creates a process task.
         /// </summary>
@@ -29,36 +34,96 @@ namespace Gallio.NCoverIntegration
         /// <inheritdoc />
         protected override Process StartProcess(ProcessStartInfo startInfo)
         {
+            string outputDirectory = startInfo.WorkingDirectory;
+
             ProfilerSettings settings = new ProfilerSettings();
             settings.CommandLineExe = startInfo.FileName;
             settings.CommandLineArgs = startInfo.Arguments;
             settings.WorkingDirectory = startInfo.WorkingDirectory;
             settings.NoLog = true;
-            settings.CoverageXml = "Coverage.xml";
+            //settings.LogFile = Path.Combine(outputDirectory, "Coverage.log");
+            settings.CoverageXml = Path.Combine(outputDirectory, "Coverage.xml");
+            //settings.CoverageHtmlPath = Path.Combine(outputDirectory, "Coverage.html");
+            settings.RegisterForUser = true;
 
-            return StartProfiler(settings, startInfo.RedirectStandardOutput | startInfo.RedirectStandardError);
+            return RegisterAndStartProfiler(settings, startInfo.RedirectStandardOutput | startInfo.RedirectStandardError);
         }
 
-        private Process StartProfiler(ProfilerSettings settings, bool redirectOutput)
+        private Process RegisterAndStartProfiler(ProfilerSettings settings, bool redirectOutput)
         {
-            ProfilerDriver driver = new ProfilerDriver(settings);
-            driver.ConfigureProfiler();
+            driver = new ProfilerDriver(settings);
 
-            Terminated += delegate
-            {
-                driver.WaitForExit();
-                driver.UnregisterProfilerForUser();
-            };
-
-            driver.RegisterProfilerForUser();
+            if (settings.RegisterForUser)
+                driver.RegisterProfilerForUser();
 
             driver.Start(redirectOutput);
+            if (!driver.MessageCenter.WaitForProfilerReadyEvent())
+                throw new HostException("Timed out waiting for the NCover profiler to become ready.");
+
+            driver.ConfigureProfiler();
             driver.MessageCenter.SetDriverReadyEvent();
 
             if (!settings.NoLog)
                 driver.StartLogging();
 
+            waitForExitTask = new ThreadTask("NCover Profiler Wait for Exit", (Block) WaitForExit);
+            waitForExitTask.Start();
+
             return driver.Process;
+        }
+
+        protected override void OnTerminated()
+        {
+            try
+            {
+                if (driver != null)
+                {
+                    if (driver.Process != null)
+                    {
+                        try
+                        {
+                            driver.Stop();
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // An invalid operation exception may occur when attempting to kill a process
+                            // that has already stopped so we ignore it.
+                        }
+                    }
+
+                    if (driver.Settings.RegisterForUser)
+                        driver.UnregisterProfilerForUser();
+                }
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("An exception occurred while shutting down the NCover profiler.", ex);
+            }
+            finally
+            {
+                if (waitForExitTask != null)
+                    waitForExitTask.Abort();
+
+                driver = null;
+                waitForExitTask = null;
+                base.OnTerminated();
+            }
+        }
+
+        private void WaitForExit()
+        {
+            try
+            {
+                ProfilerDriver cachedDriver = driver;
+                if (cachedDriver == null)
+                    return;
+
+                cachedDriver.WaitForExit();
+            }
+            catch (Exception ex)
+            {
+                Panic.UnhandledException("An exception occurred while waiting for the NCover profiler to exit.", ex);
+            }
         }
     }
 }

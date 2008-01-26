@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.Icarus\Gallio.Icarus.csproj" />
+    <CSharpProject Include="Gallio.Icarus.Tests\Gallio.Icarus.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.Icarus\bin\Gallio.Icarus.exe" />
+    <Binary Include="Gallio.Icarus\bin\Gallio.Icarus.exe.config" />    
+
+    <Binary Include="libs\WeifenLuo.WinFormsUI.Docking.dll" />
+    <Binary Include="libs\ICSharpCode.TextEditor.dll" />
+    <Binary Include="libs\ZedGraph.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />
+  </ItemGroup>
+</Project>

@@ -48,6 +48,11 @@ namespace Gallio.PowerShellCommands
         private string[] assemblies;
         private string[] pluginDirectories;
         private string[] hintDirectories;
+
+        private string applicationBaseDirectory = "";
+        private string workingDirectory = "";
+        private SwitchParameter shadowCopy;
+
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
@@ -139,6 +144,63 @@ namespace Gallio.PowerShellCommands
         public string[] PluginDirectories
         {
             set { pluginDirectories = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// The relative or absolute path of the application base directory.
+        /// </para>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// The default is "".
+        /// </para>
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("abd")]
+        public string ApplicationBaseDirectory
+        {
+            set { applicationBaseDirectory = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// The relative or absolute path of the working directory.
+        /// </para>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// The default is "".
+        /// </para>
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("wd")]
+        public string WorkingDirectory
+        {
+            set { workingDirectory = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Enables shadow copying when set to true.
+        /// </para>
+        /// <para>
+        /// Shadow copying allows the original assemblies to be modified while the tests are running.
+        /// However, shadow copying may occasionally some tests to fail if they depend on their original location.
+        /// </para>
+        /// <para>
+        /// The default is false.
+        /// </para>
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("sc")]
+        public SwitchParameter ShadowCopy
+        {
+            set { shadowCopy = value; }
         }
 
         /// <summary>
@@ -349,6 +411,10 @@ namespace Gallio.PowerShellCommands
                 launcher.TestRunnerFactoryName = runnerType;
                 launcher.DoNotRun = doNotRun.IsPresent;
                 launcher.EchoResults = !noEchoResults.IsPresent;
+
+                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
+                launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
+                launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy.IsPresent;
 
                 AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
                 AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);

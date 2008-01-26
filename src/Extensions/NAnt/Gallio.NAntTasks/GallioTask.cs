@@ -89,6 +89,11 @@ namespace Gallio.NAntTasks
         private FileSet[] assemblies;
         private DirSet[] pluginDirectories;
         private DirSet[] hintDirectories;
+
+        private string applicationBaseDirectory = "";
+        private string workingDirectory = "";
+        private bool shadowCopy;
+
         private string filter = "*";
         private string reportTypes = @"";
         private string reportNameFormat = Resources.DefaultReportNameFormat;
@@ -167,6 +172,60 @@ namespace Gallio.NAntTasks
         public DirSet[] PluginDirectories
         {
             set { pluginDirectories = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// The relative or absolute path of the application base directory.
+        /// </para>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// The default is "".
+        /// </para>
+        /// </summary>
+        [TaskAttribute("application-base-directory")]
+        public string ApplicationBaseDirectory
+        {
+            set { applicationBaseDirectory = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// The relative or absolute path of the working directory.
+        /// </para>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// The default is "".
+        /// </para>
+        /// </summary>
+        [TaskAttribute("working-directory")]
+        public string WorkingDirectory
+        {
+            set { workingDirectory = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Enables shadow copying when set to true.
+        /// </para>
+        /// <para>
+        /// Shadow copying allows the original assemblies to be modified while the tests are running.
+        /// However, shadow copying may occasionally some tests to fail if they depend on their original location.
+        /// </para>
+        /// <para>
+        /// The default is false.
+        /// </para>
+        /// </summary>
+        [TaskAttribute("shadow-copy")]
+        public bool ShadowCopy
+        {
+            set { shadowCopy = value; }
         }
 
         /// <summary>
@@ -377,6 +436,10 @@ namespace Gallio.NAntTasks
                 launcher.EchoResults = echoResults;
                 launcher.TestRunnerFactoryName = runnerType;
                 launcher.RuntimeSetup = new RuntimeSetup();
+
+                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
+                launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
+                launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
 
                 AddAssemblies(launcher);
                 AddHintDirectories(launcher);

@@ -27,7 +27,10 @@
     <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <MSBuildCommunityTasksPath>$(LibsDir)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+    <NCoverExplorerPath>$(LibsDir)\NCoverExplorer</NCoverExplorerPath>
 
+    <SatisfactoryCoverage>0</SatisfactoryCoverage>
+    
     <CSharpProperties>
       Configuration=Release;
       Version=$(Version);
@@ -41,6 +44,8 @@
 
   <!-- Note: The tasks assembly gets loaded lazily. -->
   <UsingTask AssemblyFile="$(TargetBinDir)\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
+
+  <UsingTask AssemblyFile="$(NCoverExplorerPath)\NCoverExplorer.MSBuildTasks.dll" TaskName="NCoverExplorer.MSBuildTasks.NCoverExplorer" />
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
   <Import Project="$(RootDir)\Module.targets" />
@@ -72,14 +77,32 @@
                Condition="Exists('$(BuildDir)')" />
   </Target>
 
+  <PropertyGroup>
+    <RunnerType Condition="$(Coverage)">NCover</RunnerType>
+    <RunnerType Condition="! $(Coverage)">IsolatedAppDomain</RunnerType>
+  </PropertyGroup>
   <Target Name="Test">
     <Gallio Assemblies="@(TestAssembly)"
+            WorkingDirectory="$(BuildTempDir)"
             ReportDirectory="$(BuildReportsDir)"
             ReportTypes="$(ReportTypes)"
+	    RunnerType="$(RunnerType)"
             IgnoreFailures="true"
             ShowReports="$(ShowReports)">
       <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
     </Gallio>
+
+    <NCoverExplorer Condition="$(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')"
+                    Exclusions="Assembly=*.Tests"
+                    XmlReportName="CoverageSummary.xml"
+		    ReportType="ModuleNamespaceSummary"
+		    ToolPath="$(NCoverExplorerPath)"
+                    OutputDir="$(BuildReportsDir)"
+		    CoverageFiles="$(BuildTempDir)\Coverage.xml"
+		    SatisfactoryCoverage="$(SatisfactoryCoverage)" />
+
+    <Exec Command="start /B cmd /S /C &quot;&quot;$(NCoverExplorerPath)\NCoverExplorer.exe&quot; &quot;$(BuildTempDir)\Coverage.xml&quot;&quot;"
+          Condition="$(ShowReports) and $(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')" />
 
     <Warning Text="Some MbUnit tests failed!"
              Condition="'$(MbUnitExitCode)'!='0'" />

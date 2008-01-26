@@ -114,9 +114,7 @@ namespace Gallio.Runner.Domains
 
         private HostSetup CreateHostSetup(TestPackageConfig packageConfig)
         {
-            HostSetup hostSetup = new HostSetup();
-
-            SetTestPackageConfigOptions(hostSetup, packageConfig);
+            HostSetup hostSetup = packageConfig.HostSetup.Copy();
 
             foreach (IHostTestDomainContributor contributor in contributors)
                 contributor.ConfigureHost(hostSetup, packageConfig);
@@ -158,12 +156,6 @@ namespace Gallio.Runner.Domains
         {
             if (host != null)
                 host.ShutdownRuntime();
-        }
-
-        private static void SetTestPackageConfigOptions(HostSetup hostSetup, TestPackageConfig packageConfig)
-        {
-            hostSetup.ApplicationBase = packageConfig.ApplicationBase;
-            hostSetup.EnableShadowCopy = packageConfig.EnableShadowCopy;
         }
     }
 }

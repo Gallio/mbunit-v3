@@ -26,7 +26,7 @@ namespace Gallio.Hosting.Channels
     /// </summary>
     public class BinaryIpcClientChannel : BaseClientChannel
     {
-        private const int ConnectionTimeoutMillis = 30000;
+        private const int ConnectionTimeoutMillis = 1000;
 
         /// <summary>
         /// Creates a channel.

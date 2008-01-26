@@ -107,7 +107,10 @@ namespace Gallio.Runner.Domains
 
                 UnloadPackage(progressMonitor.CreateSubProgressMonitor(0.05));
 
-                packageData = InternalLoadTestPackage(packageConfig, progressMonitor);
+                TestPackageConfig canonicalPackageConfig = packageConfig.Copy();
+                canonicalPackageConfig.Canonicalize(null);
+
+                packageData = InternalLoadTestPackage(canonicalPackageConfig, progressMonitor);
             }
         }
 

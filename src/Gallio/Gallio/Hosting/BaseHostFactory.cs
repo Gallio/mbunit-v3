@@ -28,7 +28,10 @@ namespace Gallio.Hosting
             if (hostSetup == null)
                 throw new ArgumentNullException("hostSetup");
 
-            return CreateHostImpl(hostSetup);
+            HostSetup canonicalHostSetup = hostSetup.Copy();
+            canonicalHostSetup.Canonicalize(null);
+
+            return CreateHostImpl(canonicalHostSetup);
         }
 
         /// <summary>

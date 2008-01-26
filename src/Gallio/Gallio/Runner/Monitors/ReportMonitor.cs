@@ -134,7 +134,7 @@ namespace Gallio.Runner.Monitors
         {
             base.OnAttach();
 
-            Runner.LoadTestPackageComplete += HandleLoadTestPackageComplete;
+            Runner.TestPackageChanged += HandleTestPackageChanged;
             Runner.BuildTestModelComplete += HandleBuildTestModelComplete;
             Runner.RunTestsStarting += HandleRunTestsStarting;
             Runner.RunTestsComplete += HandleRunTestsComplete;
@@ -147,7 +147,7 @@ namespace Gallio.Runner.Monitors
         {
             base.OnDetach();
 
-            Runner.LoadTestPackageComplete -= HandleLoadTestPackageComplete;
+            Runner.TestPackageChanged -= HandleTestPackageChanged;
             Runner.BuildTestModelComplete -= HandleBuildTestModelComplete;
             Runner.RunTestsStarting -= HandleRunTestsStarting;
             Runner.RunTestsComplete -= HandleRunTestsComplete;
@@ -155,7 +155,7 @@ namespace Gallio.Runner.Monitors
             Runner.EventDispatcher.ExecutionLog -= HandleExecutionLogEvent;
         }
 
-        private void HandleLoadTestPackageComplete(object sender, EventArgs e)
+        private void HandleTestPackageChanged(object sender, EventArgs e)
         {
             lock (report)
             {

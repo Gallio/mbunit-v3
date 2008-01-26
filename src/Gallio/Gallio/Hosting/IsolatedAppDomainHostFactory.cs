@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.IO;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
@@ -37,17 +36,23 @@ namespace Gallio.Hosting
         protected override IHost CreateHostImpl(HostSetup hostSetup)
         {
             AppDomain appDomain = null;
+            string oldWorkingDirectory = null;
             try
             {
+                oldWorkingDirectory = Environment.CurrentDirectory;
+                Environment.CurrentDirectory = hostSetup.WorkingDirectory;
+
                 appDomain = CreateAppDomain(hostSetup);
 
                 IRemoteHostService remoteHostService = CreateRemoteInstance<HostService>(appDomain, (TimeSpan?)null);
-                return new IsolatedAppDomainHost(remoteHostService, appDomain);
+                return new IsolatedAppDomainHost(remoteHostService, appDomain, oldWorkingDirectory);
             }
             catch (Exception)
             {
                 if (appDomain != null)
                     AppDomain.Unload(appDomain);
+                if (oldWorkingDirectory != null)
+                    Environment.CurrentDirectory = oldWorkingDirectory;
                 throw;
             }
         }
@@ -58,18 +63,13 @@ namespace Gallio.Hosting
             {
                 AppDomainSetup appDomainSetup = new AppDomainSetup();
 
-                if (hostSetup.ApplicationBase.Length == 0
-                    || !Path.IsPathRooted(hostSetup.ApplicationBase))
-                    appDomainSetup.ApplicationBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, hostSetup.ApplicationBase);
-                else
-                    appDomainSetup.ApplicationBase = hostSetup.ApplicationBase;
-
+                appDomainSetup.ApplicationBase = hostSetup.ApplicationBaseDirectory;
                 appDomainSetup.ApplicationName = @"IsolatedAppDomainHost";
 
-                if (hostSetup.EnableShadowCopy)
+                if (hostSetup.ShadowCopy)
                 {
                     appDomainSetup.ShadowCopyFiles = @"true";
-                    appDomainSetup.ShadowCopyDirectories = hostSetup.ApplicationBase;
+                    appDomainSetup.ShadowCopyDirectories = appDomainSetup.ApplicationBase;
                     // FIXME: should we also shadow-copy all assembly reference paths?
                 }
 
@@ -109,21 +109,35 @@ namespace Gallio.Hosting
         private sealed class IsolatedAppDomainHost : RemoteHost
         {
             private AppDomain appDomain;
+            private string oldWorkingDirectory;
 
-            public IsolatedAppDomainHost(IRemoteHostService remoteHostService, AppDomain appDomain)
+            public IsolatedAppDomainHost(IRemoteHostService remoteHostService, AppDomain appDomain, string oldWorkingDirectory)
                 : base(remoteHostService, null)
             {
                 this.appDomain = appDomain;
+                this.oldWorkingDirectory = oldWorkingDirectory;
             }
 
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
 
-                if (disposing && appDomain != null)
+                if (disposing)
                 {
-                    AppDomain.Unload(appDomain);
-                    appDomain = null;
+                    try
+                    {
+                        if (appDomain != null)
+                            AppDomain.Unload(appDomain);
+
+                        appDomain = null;
+                    }
+                    finally
+                    {
+                        if (oldWorkingDirectory != null)
+                            Environment.CurrentDirectory = oldWorkingDirectory;
+
+                        oldWorkingDirectory = null;
+                    }
                 }
             }
         }

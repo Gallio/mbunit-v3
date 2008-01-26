@@ -85,8 +85,10 @@ namespace Gallio.Echo
                 launcher.RuntimeSetup = new RuntimeSetup();
                 launcher.RuntimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
-                launcher.TestPackageConfig.EnableShadowCopy = Arguments.ShadowCopyFiles;
-                launcher.TestPackageConfig.ApplicationBase = Arguments.AppBaseDirectory;
+                launcher.TestPackageConfig.HostSetup.ShadowCopy = Arguments.ShadowCopy;
+                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = Arguments.ApplicationBaseDirectory;
+                launcher.TestPackageConfig.HostSetup.WorkingDirectory = Arguments.WorkingDirectory;
+
                 launcher.TestPackageConfig.AssemblyFiles.AddRange(Arguments.Assemblies);
                 launcher.TestPackageConfig.HintDirectories.AddRange(Arguments.HintDirectories);
 

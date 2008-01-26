@@ -35,6 +35,8 @@ namespace Gallio.Runner.Domains
         private ITestHarnessFactory harnessFactory;
         private ITestHarness harness;
 
+        private string oldWorkingDirectory;
+
         /// <summary>
         /// Creates a local test domain using the specified resolver manager.
         /// </summary>
@@ -58,6 +60,9 @@ namespace Gallio.Runner.Domains
         protected override TestPackageData InternalLoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             progressMonitor.SetStatus("Creating test harness.");
+
+            oldWorkingDirectory = Environment.CurrentDirectory;
+            Environment.CurrentDirectory = packageConfig.HostSetup.ApplicationBaseDirectory;
 
             harness = harnessFactory.CreateHarness();
 
@@ -98,6 +103,12 @@ namespace Gallio.Runner.Domains
             finally
             {
                 harness = null;
+
+                if (oldWorkingDirectory != null)
+                {
+                    Environment.CurrentDirectory = oldWorkingDirectory;
+                    oldWorkingDirectory = null;
+                }
             }
         }
     }

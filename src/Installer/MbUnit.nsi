@@ -168,9 +168,10 @@ Section "Icarus (GUI Test Runner)" IcarusSection
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
 	File "${TARGETDIR}\bin\WeifenLuo.WinFormsUI.Docking.dll"
+	File "${TARGETDIR}\bin\ZedGraph.dll"
+	File "${TARGETDIR}\bin\ICSharpCode.TextEditor.dll"
 	File "${TARGETDIR}\bin\Gallio.Icarus.exe"
 	File "${TARGETDIR}\bin\Gallio.Icarus.exe.config"
-	File "${TARGETDIR}\bin\ZedGraph.dll"
 
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\Icarus GUI Test Runner.lnk" "$INSTDIR\bin\Gallio.Icarus.exe"

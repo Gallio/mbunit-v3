@@ -190,6 +190,28 @@ namespace Gallio.Hosting
             return document.InnerXml;
         }
 
+        /// <summary>
+        /// Creates a copy of the host configuration information.
+        /// </summary>
+        /// <returns>The copy</returns>
+        public HostConfiguration Copy()
+        {
+            HostConfiguration copy = new HostConfiguration();
+
+            copy.assertUiEnabled = assertUiEnabled;
+            copy.configurationXml = configurationXml;
+            copy.legacyUnhandledExceptionPolicyEnabled = legacyUnhandledExceptionPolicyEnabled;
+            copy.remotingCustomErrorsEnabled = remotingCustomErrorsEnabled;
+            copy.supportedRuntimeVersions.AddRange(supportedRuntimeVersions);
+
+            foreach (AssemblyDependency dependency in assemblyDependencies)
+                copy.assemblyDependencies.Add(dependency.Copy());
+            foreach (AssemblyQualification qualification in assemblyQualifications)
+                copy.assemblyQualifications.Add(qualification.Copy());
+
+            return copy;
+        }
+
         private void SetBuiltInAssemblyBindings()
         {
             AddAssemblyBinding(typeof(Castle.Core.Logging.ILogger).Assembly, false);
@@ -345,6 +367,15 @@ namespace Gallio.Hosting
                 }
             }
 
+            /// <summary>
+            /// Creates a copy of the assembly qualification information.
+            /// </summary>
+            /// <returns>The copy</returns>
+            public AssemblyQualification Copy()
+            {
+                return new AssemblyQualification(partialName, fullName);
+            }
+
             internal void AddConfigurationElement(XmlElement parent)
             {
                 XmlElement qualifyAssemblyElement = CreateChildElement(parent, "qualifyAssembly", null);
@@ -470,6 +501,28 @@ namespace Gallio.Hosting
                 get { return codeBases; }
             }
 
+            /// <summary>
+            /// Creates a copy of the assembly dependency information.
+            /// </summary>
+            /// <returns>The copy</returns>
+            public AssemblyDependency Copy()
+            {
+                AssemblyDependency copy = new AssemblyDependency();
+
+                copy.applyPublisherPolicy = applyPublisherPolicy;
+                copy.assemblyCulture = assemblyCulture;
+                copy.assemblyName = assemblyName;
+                copy.assemblyProcessorArchitecture = assemblyProcessorArchitecture;
+                copy.assemblyPublicKeyToken = assemblyPublicKeyToken;
+
+                foreach (AssemblyBindingRedirect bindingRedirect in bindingRedirects)
+                    copy.bindingRedirects.Add(bindingRedirect.Copy());
+                foreach (AssemblyCodeBase codeBase in codeBases)
+                    copy.codeBases.Add(codeBase.Copy());
+
+                return copy;
+            }
+
             internal void AddConfigurationElement(XmlElement parent)
             {
                 XmlElement dependentAssemblyElement = CreateChildElement(parent, "dependentAssembly", null);
@@ -572,6 +625,15 @@ namespace Gallio.Hosting
                 }
             }
 
+            /// <summary>
+            /// Creates a copy of the assembly binding redirect information.
+            /// </summary>
+            /// <returns>The copy</returns>
+            public AssemblyBindingRedirect Copy()
+            {
+                return new AssemblyBindingRedirect(oldVersionRange, newVersion);
+            }
+
             internal void AddConfigurationElement(XmlElement parent)
             {
                 XmlElement bindingRedirectElement = CreateChildElement(parent, "bindingRedirect", null);
@@ -647,6 +709,15 @@ namespace Gallio.Hosting
                         throw new ArgumentNullException("value");
                     uri = value;
                 }
+            }
+
+            /// <summary>
+            /// Creates a copy of the assembly binding redirect information.
+            /// </summary>
+            /// <returns>The copy</returns>
+            public AssemblyCodeBase Copy()
+            {
+                return new AssemblyCodeBase(version, uri);
             }
 
             internal void AddConfigurationElement(XmlElement parent)

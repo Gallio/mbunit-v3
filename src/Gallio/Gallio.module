@@ -5,15 +5,6 @@
     <CSharpProject Include="Gallio\Gallio.csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host.csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests.csproj" />
-
-    <CSharpProject Include="Plugins\Gallio.Reports\Gallio.Reports.csproj" />
-    <CSharpProject Include="Plugins\Gallio.Reports.Tests\Gallio.Reports.Tests.csproj" />
-
-    <CSharpProject Include="Runners\Gallio.Echo\Gallio.Echo.csproj" />
-    <CSharpProject Include="Runners\Gallio.Echo.Tests\Gallio.Echo.Tests.csproj" />
-
-    <CSharpProject Include="Runners\Gallio.Icarus\Gallio.Icarus.csproj" />
-    <CSharpProject Include="Runners\Gallio.Icarus.Tests\Gallio.Icarus.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +18,6 @@
     <Binary Include="$(RootDir)\libs\Castle\bin\Castle.DynamicProxy2.dll" />
 
     <Binary Include="$(RootDir)\libs\ReferenceAssemblies\System.Core.dll" />
-    <Binary Include="$(RootDir)\libs\ReferenceAssemblies\System.Management.Automation.dll" />
 
     <Binary Include="Gallio\bin\Gallio.dll" />
     <Binary Include="Gallio\bin\Gallio.pdb" />
@@ -35,36 +25,6 @@
     <Binary Include="Gallio\Gallio.plugin" />
 
     <Binary Include="Gallio.Host\bin\Gallio.Host.exe" />
-
-    <Binary Include="Plugins\Gallio.Reports\bin\Gallio.Reports.dll">
-        <Folder>Reports</Folder>
-    </Binary>
-    <Binary Include="Plugins\Gallio.Reports\Gallio.Reports.plugin">
-        <Folder>Reports</Folder>
-    </Binary>
-    <Binary Include="Plugins\Gallio.Reports\Readme.txt">
-        <Folder>Reports</Folder>
-    </Binary>
-    <Binary Include="Plugins\Gallio.Reports\css\*">
-        <Folder>Reports\css</Folder>
-    </Binary>
-    <Binary Include="Plugins\Gallio.Reports\js\*">
-        <Folder>Reports\js</Folder>
-    </Binary>
-    <Binary Include="Plugins\Gallio.Reports\img\*">
-        <Folder>Reports\img</Folder>
-    </Binary>
-    <Binary Include="Plugins\Gallio.Reports\xsl\*">
-        <Folder>Reports\xsl</Folder>
-    </Binary>
-
-    <Binary Include="Runners\Gallio.Echo\bin\Gallio.Echo.exe" />
-    <Binary Include="Runners\Gallio.Echo\bin\Gallio.Echo.exe.config" />
-
-    <Binary Include="Runners\libs\WeifenLuo.WinFormsUI.Docking.dll" />
-    <Binary Include="Runners\libs\ZedGraph.dll" />
-    <Binary Include="Runners\Gallio.Icarus\bin\Gallio.Icarus.exe" />
-    <Binary Include="Runners\Gallio.Icarus\bin\Gallio.Icarus.exe.config" />    
   </ItemGroup>
 
   <ItemGroup>
@@ -73,10 +33,5 @@
 
   <ItemGroup>
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />
-
-    <TestAssembly Include="Plugins\Gallio.Reports.Tests\bin\Gallio.Reports.Tests.dll" />
-
-    <TestAssembly Include="Runners\Gallio.Echo.Tests\bin\Gallio.Echo.Tests.dll" />
-    <TestAssembly Include="Runners\Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />
   </ItemGroup>
 </Project>

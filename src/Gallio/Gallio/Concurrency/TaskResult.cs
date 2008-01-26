@@ -72,5 +72,11 @@ namespace Gallio.Concurrency
         {
             get { return exception; }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return (exception ?? value ?? "").ToString();
+        }
     }
 }

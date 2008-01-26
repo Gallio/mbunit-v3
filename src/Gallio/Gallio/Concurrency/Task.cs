@@ -80,6 +80,14 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
+        /// Returns true if the task ran and was terminated.
+        /// </summary>
+        public bool IsTerminated
+        {
+            get { return result != null; }
+        }
+
+        /// <summary>
         /// Returns true if the task has been aborted.
         /// </summary>
         public bool IsAborted
@@ -151,7 +159,7 @@ namespace Gallio.Concurrency
                 }
                 finally
                 {
-                    Notify(ref started);
+                    OnStarted();
                 }
             }
             catch (Exception ex)
@@ -197,7 +205,7 @@ namespace Gallio.Concurrency
             }
             finally
             {
-                Notify(ref aborted);
+                OnAborted();
             }
         }
 
@@ -281,6 +289,42 @@ namespace Gallio.Concurrency
                 this.result = result;
             }
 
+            OnTerminated();
+        }
+
+        /// <summary>
+        /// Notifies the <see cref="Started" /> event handlers.
+        /// </summary>
+        /// <remarks>
+        /// This method may be overridden by a subclass to perform any necessary actions
+        /// just prior to calling the event handlers.
+        /// </remarks>
+        protected virtual void OnStarted()
+        {
+            Notify(ref started);
+        }
+
+        /// <summary>
+        /// Notifies the <see cref="Aborted" /> event handlers.
+        /// </summary>
+        /// <remarks>
+        /// This method may be overridden by a subclass to perform any necessary actions
+        /// just prior to calling the event handlers.
+        /// </remarks>
+        protected virtual void OnAborted()
+        {
+            Notify(ref aborted);
+        }
+
+        /// <summary>
+        /// Notifies the <see cref="Terminated" /> event handlers.
+        /// </summary>
+        /// <remarks>
+        /// This method may be overridden by a subclass to perform any necessary actions
+        /// just prior to calling the event handlers.
+        /// </remarks>
+        protected virtual void OnTerminated()
+        {
             Notify(ref terminated);
         }
 

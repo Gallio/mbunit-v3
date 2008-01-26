@@ -56,7 +56,24 @@ namespace Gallio.Echo
             Description = "The application base directory to set during test execution.",
             ValueLabel = "dir"
             )]
-        public string AppBaseDirectory = "";
+        public string ApplicationBaseDirectory = "";
+
+        [CommandLineArgument(
+            CommandLineArgumentFlags.AtMostOnce,
+            ShortName = "wd",
+            LongName = "working-directory",
+            Description = "The working directory to set during test execution.",
+            ValueLabel = "dir"
+            )]
+        public string WorkingDirectory = "";
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "sc",
+             LongName = "shadow-copy",
+             Description = "Enable shadow copying of the assemblies.  Shadow copying allows the original assemblies to be modified while the tests are running.  However, shadow copying may occasionally some tests to fail if they depend on their original location."
+             )]
+        public bool ShadowCopy;
 
         #endregion
 
@@ -172,14 +189,6 @@ namespace Gallio.Echo
              )]
         public bool DoNotRun;
 
-        [CommandLineArgument(
-             CommandLineArgumentFlags.AtMostOnce,
-             ShortName = "sc",
-             LongName = "shadow-copy-files",
-             Description = "Enable shadow copying of the assemblies.  Shadow copying allows the original assemblies to be modified while the tests are running.  However, shadow copying may occasionally some tests to fail if they depend on their original location."
-             )]
-        public bool ShadowCopyFiles;
-
         #endregion
 
         public override string ToString()
@@ -202,6 +211,10 @@ namespace Gallio.Echo
                 sw.WriteLine("\t{0}", pluginDirectory);
             }
 
+            sw.WriteLine("Application Base Directory: {0}", ApplicationBaseDirectory);
+            sw.WriteLine("Working Directory: {0}", WorkingDirectory);
+            sw.WriteLine("Shadow Copy: {0}", ShadowCopy);
+
             sw.WriteLine("Report Folder: {0}", ReportDirectory);
             sw.WriteLine("Report Name Format: {0}", ReportNameFormat);
             sw.WriteLine("Report Types: {0}", String.Join(", ", ReportTypes));
@@ -214,7 +227,6 @@ namespace Gallio.Echo
             sw.WriteLine("Verbosity: {0}", Verbosity);
             sw.WriteLine("No Echo Results: {0}", NoEchoResults);
             sw.WriteLine("Save Test Model: {0}", DoNotRun);
-            sw.WriteLine("Shadow Copy Files: {0}", ShadowCopyFiles);
             return sw.ToString();
         }
     }

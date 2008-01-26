@@ -4,11 +4,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{399C33BF-A9F7-4390-8F9C-8EECF7814123}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{22AE34D9-185F-41A7-A48D-205BE68B1F7D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gallio.Reports</RootNamespace>
-    <AssemblyName>Gallio.Reports</AssemblyName>
+    <RootNamespace>Gallio.Echo</RootNamespace>
+    <AssemblyName>Gallio.Echo</AssemblyName>
+    <StartupObject>Gallio.Echo.EchoProgram</StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
+    <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,8 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.Reports.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,8 +32,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.Reports.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
@@ -41,52 +45,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseReportFormatter.cs" />
+    <Compile Include="EchoArguments.cs" />
+    <Compile Include="EchoProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="XmlReportFormatter.cs" />
-    <Compile Include="XsltReportFormatter.cs" />
+    <Compile Include="Verbosity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\Gallio.csproj">
-      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
-    </ProjectReference>
+    <Content Include="App.ico" />
+    <None Include="Gallio.Echo.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="img\Container.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="img\Fixture.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="img\FullStop.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="img\header-background.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="img\Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="css\Gallio-Report.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="xsl\Gallio-Report.html.xsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="xsl\Gallio-Report.xhtml.xsl" />
-    <Content Include="img\Test.png" />
-    <Content Include="img\Plus.gif" />
-    <Content Include="img\Minus.gif" />
-    <Content Include="img\MbUnitLogo.png" />
-    <Content Include="xsl\Gallio-Report.txt.xsl" />
-    <Content Include="js\Gallio-Report.js" />
-    <Content Include="xsl\Gallio-Report.html+xhtml.xsl" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -94,11 +69,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Gallio.Reports.plugin" />
-    <Content Include="xsl\Gallio-Report.ccnet-details.xsl" />
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

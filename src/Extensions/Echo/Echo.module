@@ -1,0 +1,18 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.Echo\Gallio.Echo.csproj" />
+    
+    <CSharpProject Include="Gallio.Echo.Tests\Gallio.Echo.Tests.csproj" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.Echo\bin\Gallio.Echo.exe" />
+    <Binary Include="Gallio.Echo\bin\Gallio.Echo.exe.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.Echo.Tests\bin\Gallio.Echo.Tests.dll" />
+  </ItemGroup>
+</Project>

@@ -86,7 +86,7 @@ namespace Gallio.Runner
                     domain = null;
                 }
 
-                LoadTestPackageComplete = null;
+                TestPackageChanged = null;
                 BuildTestModelComplete = null;
                 RunTestsStarting = null;
                 RunTestsComplete = null;
@@ -99,7 +99,7 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public event EventHandler LoadTestPackageComplete;
+        public event EventHandler TestPackageChanged;
 
         /// <inheritdoc />
         public event EventHandler BuildTestModelComplete;
@@ -183,7 +183,7 @@ namespace Gallio.Runner
             }
             finally
             {
-                EventHandlerUtils.SafeInvoke(LoadTestPackageComplete, this, EventArgs.Empty);
+                EventHandlerUtils.SafeInvoke(TestPackageChanged, this, EventArgs.Empty);
             }
         }
 
@@ -220,6 +220,23 @@ namespace Gallio.Runner
             finally
             {
                 EventHandlerUtils.SafeInvoke(RunTestsComplete, this, EventArgs.Empty);
+            }
+        }
+
+        /// <inheritdoc />
+        public virtual void UnloadTestPackage(IProgressMonitor progressMonitor)
+        {
+            if (progressMonitor == null)
+                throw new ArgumentNullException(@"progressMonitor");
+            ThrowIfDisposed();
+
+            try
+            {
+                Domain.UnloadPackage(progressMonitor);
+            }
+            finally
+            {
+                EventHandlerUtils.SafeInvoke(TestPackageChanged, this, EventArgs.Empty);
             }
         }
 

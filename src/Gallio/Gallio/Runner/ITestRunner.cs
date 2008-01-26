@@ -36,13 +36,15 @@ namespace Gallio.Runner
     public interface ITestRunner : IDisposable
     {
         /// <summary>
-        /// Event fired once <see cref="LoadTestPackage" /> completes.
+        /// Event fired when the value of <see cref="TestPackageData" /> 
+        /// has changed, such as when <see cref="LoadTestPackage" /> or
+        /// <see cref="UnloadTestPackage" />.
         /// </summary>
         /// <remarks>
-        /// This event will be fired even if the operation failed in which case
-        /// <see cref="TestPackageData" /> will be null.
+        /// This event will be fired even if <see cref="LoadTestPackage" /> fails
+        /// in which case <see cref="TestPackageData" /> will be null.
         /// </remarks>
-        event EventHandler LoadTestPackageComplete;
+        event EventHandler TestPackageChanged;
 
         /// <summary>
         /// Event fired once <see cref="BuildTestModel" /> completes.
@@ -112,5 +114,12 @@ namespace Gallio.Runner
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
         void RunTests(IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Unloads the test package.
+        /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        void UnloadTestPackage(IProgressMonitor progressMonitor);
     }
 }

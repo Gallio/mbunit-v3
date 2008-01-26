@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Hosting
 {
@@ -110,6 +111,18 @@ namespace Gallio.Hosting
             copy.installationPath = installationPath;
             copy.configurationFilePath = configurationFilePath;
             return copy;
+        }
+
+        /// <summary>
+        /// Makes all paths in this instance absolute.
+        /// </summary>
+        /// <param name="baseDirectory">The base directory for resolving relative paths,
+        /// or null to use the current directory</param>
+        public void Canonicalize(string baseDirectory)
+        {
+            FileUtils.CanonicalizePaths(baseDirectory, pluginDirectories);
+            installationPath = FileUtils.CanonicalizePath(baseDirectory, installationPath);
+            configurationFilePath = FileUtils.CanonicalizePath(baseDirectory, configurationFilePath);
         }
     }
 }

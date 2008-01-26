@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Gallio.Utilities
 {
@@ -103,6 +102,36 @@ namespace Gallio.Utilities
                 Directory.Delete(path, true);
             else if (File.Exists(path))
                 File.Delete(path);
+        }
+
+        /// <summary>
+        /// Makes all paths in the list absolute.
+        /// </summary>
+        /// <param name="baseDirectory">The base directory for resolving relative paths,
+        /// or null to use the current directory</param>
+        /// <param name="paths">The list of paths to canonicalize in place</param>
+        public static void CanonicalizePaths(string baseDirectory, IList<string> paths)
+        {
+            for (int i = 0; i < paths.Count; i++)
+                paths[i] = CanonicalizePath(baseDirectory, paths[i]);
+        }
+
+        /// <summary>
+        /// Makes an absolute path.
+        /// </summary>
+        /// <param name="baseDirectory">The base directory for resolving relative paths,
+        /// or null to use the current directory</param>
+        /// <param name="path">The path to canonicalize, or null if none</param>
+        /// <returns>The absolute path, or null if none</returns>
+        public static string CanonicalizePath(string baseDirectory, string path)
+        {
+            if (path == null)
+                return null;
+            if (Path.IsPathRooted(path))
+                return path;
+            if (baseDirectory == null)
+                return path.Length == 0 ? Environment.CurrentDirectory : Path.GetFullPath(path);
+            return Path.Combine(Path.GetFullPath(baseDirectory), path);
         }
 
         private static bool CanCopy(FileSystemInfo entry)

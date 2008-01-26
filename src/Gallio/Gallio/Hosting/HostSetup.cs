@@ -17,6 +17,7 @@ using System;
 using System.Threading;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Hosting
 {
@@ -28,8 +29,9 @@ namespace Gallio.Hosting
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public sealed class HostSetup
     {
-        private string applicationBase = @"";
-        private bool enableShadowCopy;
+        private string applicationBaseDirectory = @"";
+        private string workingDirectory = @"";
+        private bool shadowCopy;
         private HostConfiguration configuration;
 
         /// <summary>
@@ -40,25 +42,57 @@ namespace Gallio.Hosting
         }
 
         /// <summary>
+        /// <para>
         /// Gets or sets the relative or absolute path of the application base directory.
-        /// If relative, the path is based on the application base of the test runner,
-        /// so a value of "" causes the test runner's application base to be used.
+        /// </para>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
         /// </summary>
-        [XmlAttribute("applicationBase")]
-        public string ApplicationBase
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlAttribute("applicationBaseDirectory")]
+        public string ApplicationBaseDirectory
         {
-            get { return applicationBase; }
-            set { applicationBase = value; }
+            get { return applicationBaseDirectory; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                applicationBaseDirectory = value;
+            }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets the relative or absolute path of the working directory.
+        /// </para>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlAttribute("workingDirectory")]
+        public string WorkingDirectory
+        {
+            get { return workingDirectory; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                workingDirectory = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets whether assembly shadow copying is enabled.
         /// </summary>
         [XmlAttribute("enableShadowCopy")]
-        public bool EnableShadowCopy
+        public bool ShadowCopy
         {
-            get { return enableShadowCopy; }
-            set { enableShadowCopy = value; }
+            get { return shadowCopy; }
+            set { shadowCopy = value; }
         }
 
         /// <summary>
@@ -80,6 +114,34 @@ namespace Gallio.Hosting
                     throw new ArgumentNullException("value");
                 configuration = value;
             }
+        }
+
+        /// <summary>
+        /// Creates a copy of the host setup information.
+        /// </summary>
+        /// <returns>The copy</returns>
+        public HostSetup Copy()
+        {
+            HostSetup copy = new HostSetup();
+            copy.applicationBaseDirectory = applicationBaseDirectory;
+            copy.workingDirectory = workingDirectory;
+            copy.shadowCopy = shadowCopy;
+
+            if (configuration != null)
+                copy.configuration = configuration.Copy();
+
+            return copy;
+        }
+
+        /// <summary>
+        /// Makes all paths in this instance absolute.
+        /// </summary>
+        /// <param name="baseDirectory">The base directory for resolving relative paths,
+        /// or null to use the current directory</param>
+        public void Canonicalize(string baseDirectory)
+        {
+            applicationBaseDirectory = FileUtils.CanonicalizePath(baseDirectory, applicationBaseDirectory);
+            workingDirectory = FileUtils.CanonicalizePath(baseDirectory, workingDirectory);
         }
     }
 }

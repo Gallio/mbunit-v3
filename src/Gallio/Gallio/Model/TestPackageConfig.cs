@@ -15,8 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Xml.Serialization;
+using Gallio.Hosting;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -39,39 +42,15 @@ namespace Gallio.Model
         private readonly List<string> hintDirectories;
         private readonly List<string> assemblyFiles;
 
-        private string applicationBase;
-        private bool enableShadowCopy;
+        private HostSetup hostSetup;
 
         /// <summary>
         /// Creates an empty package.
         /// </summary>
         public TestPackageConfig()
         {
-            applicationBase = "";
             hintDirectories = new List<string>();
             assemblyFiles = new List<string>();
-        }
-
-        /// <summary>
-        /// Gets or sets the relative or absolute path of the application base directory.
-        /// If relative, the path is based on the application base of the test runner,
-        /// so a value of "" causes the test runner's application base to be used.
-        /// </summary>
-        [XmlAttribute("applicationBase")]
-        public string ApplicationBase
-        {
-            get { return applicationBase; }
-            set { applicationBase = value; }
-        }
-
-        /// <summary>
-        /// Gets the list of hint directories used to resolve test assemblies and other files.
-        /// </summary>
-        [XmlArray("hintDirectories", IsNullable=false)]
-        [XmlArrayItem("hintDirectory", typeof(string), IsNullable=false)]
-        public List<string> HintDirectories
-        {
-            get { return hintDirectories; }
         }
 
         /// <summary>
@@ -85,27 +64,64 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets or sets whether assembly shadow copying is enabled.
+        /// Gets the list of hint directories used to resolve test assemblies and other files.
         /// </summary>
-        [XmlAttribute("enableShadowCopy")]
-        public bool EnableShadowCopy
+        [XmlArray("hintDirectories", IsNullable=false)]
+        [XmlArrayItem("hintDirectory", typeof(string), IsNullable=false)]
+        public List<string> HintDirectories
         {
-            get { return enableShadowCopy; }
-            set { enableShadowCopy = value; }
+            get { return hintDirectories; }
+        }
+
+        /// <summary>
+        /// Gets or sets the host setup parameters.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlElement("hostSetup", IsNullable = false)]
+        public HostSetup HostSetup
+        {
+            get
+            {
+                if (hostSetup == null)
+                    Interlocked.CompareExchange(ref hostSetup, new HostSetup(), null);
+                return hostSetup;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                hostSetup = value;
+            }
         }
 
         /// <summary>
         /// Creates a copy of the test package.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The copy</returns>
         public TestPackageConfig Copy()
         {
             TestPackageConfig copy = new TestPackageConfig();
-            copy.applicationBase = applicationBase;
+
             copy.assemblyFiles.AddRange(assemblyFiles);
-            copy.enableShadowCopy = enableShadowCopy;
             copy.hintDirectories.AddRange(hintDirectories);
+
+            if (hostSetup != null)
+                copy.hostSetup = hostSetup.Copy();
+
             return copy;
+        }
+
+        /// <summary>
+        /// Makes all paths in this instance absolute.
+        /// </summary>
+        /// <param name="baseDirectory">The base directory for resolving relative paths,
+        /// or null to use the current directory</param>
+        public void Canonicalize(string baseDirectory)
+        {
+            FileUtils.CanonicalizePaths(baseDirectory, assemblyFiles);
+            FileUtils.CanonicalizePaths(baseDirectory, hintDirectories);
+
+            HostSetup.Canonicalize(baseDirectory);
         }
     }
 }

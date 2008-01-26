@@ -79,6 +79,11 @@ namespace Gallio.MSBuildTasks
         private ITaskItem[] assemblies;
         private ITaskItem[] pluginDirectories;
         private ITaskItem[] hintDirectories;
+
+        private string applicationBaseDirectory = "";
+        private string workingDirectory = "";
+        private bool shadowCopy;
+
         private string filter = "*";
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
@@ -166,6 +171,57 @@ namespace Gallio.MSBuildTasks
         public ITaskItem[] PluginDirectories
         {
             set { pluginDirectories = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// The relative or absolute path of the application base directory.
+        /// </para>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// The default is "".
+        /// </para>
+        /// </summary>
+        public string ApplicationBaseDirectory
+        {
+            set { applicationBaseDirectory = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// The relative or absolute path of the working directory.
+        /// </para>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// The default is "".
+        /// </para>
+        /// </summary>
+        public string WorkingDirectory
+        {
+            set { workingDirectory = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Enables shadow copying when set to true.
+        /// </para>
+        /// <para>
+        /// Shadow copying allows the original assemblies to be modified while the tests are running.
+        /// However, shadow copying may occasionally some tests to fail if they depend on their original location.
+        /// </para>
+        /// <para>
+        /// The default is false.
+        /// </para>
+        /// </summary>
+        public bool ShadowCopy
+        {
+            set { shadowCopy = value; }
         }
 
         /// <summary>
@@ -576,6 +632,10 @@ namespace Gallio.MSBuildTasks
 
                 if (echoResults)
                     launcher.CustomMonitors.Add(new TaskTestRunnerMonitor(Log, launcher.ReportMonitor));
+
+                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
+                launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
+                launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
 
                 AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
                 AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);

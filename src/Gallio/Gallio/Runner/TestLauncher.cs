@@ -515,26 +515,36 @@ namespace Gallio.Runner
                     Stopwatch stopWatch = Stopwatch.StartNew();
                     logger.InfoFormat("Start time: {0}", DateTime.Now.ToShortTimeString());
 
-                    // Run initial phases.
-                    if (!RunInitialPhases(result, runner))
-                        return result;
-
-                    // Run tests.
-                    if (!doNotRun)
+                    try
                     {
-                        try
-                        {
-                            RunTests(runner);
+                        // Run initial phases.
+                        if (!RunInitialPhases(result, runner))
+                            return result;
 
-                            if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
-                                result.SetResultCode(ResultCode.Failure);
-                            else if (reportMonitor.Report.PackageRun.Statistics.TestCount == 0)
-                                result.SetResultCode(ResultCode.NoTests);
-                        }
-                        catch (OperationCanceledException)
+                        // Run tests.
+                        if (!doNotRun)
                         {
-                            result.SetResultCode(ResultCode.Canceled);
+                            try
+                            {
+                                RunTests(runner);
+
+                                if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
+                                    result.SetResultCode(ResultCode.Failure);
+                                else if (reportMonitor.Report.PackageRun.Statistics.TestCount == 0)
+                                    result.SetResultCode(ResultCode.NoTests);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                result.SetResultCode(ResultCode.Canceled);
+                            }
                         }
+                    }
+                    finally
+                    {
+                        // Unload the package now since we're done with it.
+                        // This also provides more meaningful progress information to the user
+                        // than if we're simply waited until the runner was disposed.
+                        UnloadTestPackage(runner);
                     }
 
                     // Generate reports even if the test run is canceled, unless this step
@@ -633,7 +643,7 @@ namespace Gallio.Runner
 
         private bool PrepareToRun(TestLauncherResult result)
         {
-            Canonicalize();
+            Canonicalize(null);
             DisplayConfiguration();
 
             VerifyAssemblies();
@@ -786,28 +796,12 @@ namespace Gallio.Runner
             }
         }
 
-        private void Canonicalize()
+        private void Canonicalize(string baseDirectory)
         {
-            testPackageConfig.ApplicationBase = CanonicalizePath(testPackageConfig.ApplicationBase);
-            CanonicalizePaths(testPackageConfig.AssemblyFiles);
-            CanonicalizePaths(testPackageConfig.HintDirectories);
+            testPackageConfig.HostSetup.Canonicalize(baseDirectory);
 
             if (runtimeSetup != null)
-                CanonicalizePaths(runtimeSetup.PluginDirectories);
-        }
-
-        private static string CanonicalizePath(string path)
-        {
-            if (path == null)
-                return null;
-
-            return path.Length == 0 ? Environment.CurrentDirectory : Path.GetFullPath(path);
-        }
-
-        private static void CanonicalizePaths(IList<string> paths)
-        {
-            for (int i = 0; i < paths.Count; i++)
-                paths[i] = CanonicalizePath(paths[i]);
+                runtimeSetup.Canonicalize(baseDirectory);
         }
 
         private bool HasTestAssemblies()
@@ -847,6 +841,14 @@ namespace Gallio.Runner
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 runner.RunTests(progressMonitor);
+            });
+        }
+
+        private void UnloadTestPackage(ITestRunner runner)
+        {
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                runner.UnloadTestPackage(progressMonitor);
             });
         }
 

@@ -49,10 +49,10 @@ namespace Gallio.Tests.Runner.Reports
                 return;
             }
 
-            Assert.AreEqual(expected.ApplicationBase, actual.ApplicationBase);
             CollectionAssert.AreElementsEqual(expected.AssemblyFiles, actual.AssemblyFiles);
-            Assert.AreEqual(expected.EnableShadowCopy, actual.EnableShadowCopy);
             CollectionAssert.AreElementsEqual(expected.HintDirectories, actual.HintDirectories);
+
+            // TODO: Compare HostSetup objects.
         }
 
         public static void AreEqual(PackageRun expected, PackageRun actual)

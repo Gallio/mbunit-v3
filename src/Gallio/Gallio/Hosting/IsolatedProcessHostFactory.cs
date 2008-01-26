@@ -40,8 +40,11 @@ namespace Gallio.Hosting
     /// </summary>
     public class IsolatedProcessHostFactory : BaseHostFactory
     {
-        private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(15);
+        private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
+        private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan JoinBeforeAbortTimeout = TimeSpan.FromSeconds(60);
+        private static readonly TimeSpan JoinAfterAbortTimeout = TimeSpan.FromSeconds(5);
 
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup)
@@ -55,11 +58,13 @@ namespace Gallio.Hosting
                 string portName = @"IsolatedProcessHost." + Hash64.CreateUniqueHash();
 
                 processTask = StartProcess(hostSetup, portName);
+                EnsureProcessIsRunning(processTask);
+
                 clientChannel = new BinaryIpcClientChannel(portName);
                 callbackChannel = new BinaryIpcServerChannel(portName + ".Callback");
 
                 IRemoteHostService remoteHostService = HostServiceChannelInterop.GetRemoteHostService(clientChannel);
-                WaitUntilReady(remoteHostService);
+                WaitUntilReady(processTask, remoteHostService);
 
                 host = new IsolatedProcessHost(remoteHostService, processTask, callbackChannel);
                 return host;
@@ -68,9 +73,8 @@ namespace Gallio.Hosting
             {
                 string diagnostics = "";
                 if (processTask != null)
-                    diagnostics = String.Format("\n\nConsole Output:\n{0}\n\nConsole Error:\n{1}\n\nExit Code: {2}",
-                        processTask.ConsoleOutput, processTask.ConsoleError,
-                        processTask.IsRunning ? -1 : processTask.ExitCode);
+                    diagnostics = String.Format("\n\nConsole Output:\n{0}\n\nConsole Error:\n{1}\n\nResult: {2}",
+                        processTask.ConsoleOutput, processTask.ConsoleError, processTask.Result);
 
                 if (host != null)
                 {
@@ -113,23 +117,17 @@ namespace Gallio.Hosting
             {
                 profile.Configure(hostSetup);
 
-                try
-                {
-                    string arguments = "/ipc:" + portName;
+                string arguments = "/ipc:" + portName;
 
-                    ProcessTask processTask = CreateProcessTask(profile.HostProcessPath, arguments);
-                    processTask.LogStreamWriter = null;
-                    processTask.CaptureConsoleError = true;
-                    processTask.CaptureConsoleOutput = true;
-                    processTask.Terminated += delegate { profile.Dispose(); };
+                ProcessTask processTask = CreateProcessTask(profile.HostProcessPath, arguments);
+                processTask.LogStreamWriter = null;
+                processTask.CaptureConsoleError = true;
+                processTask.CaptureConsoleOutput = true;
+                processTask.Terminated += delegate { profile.Dispose(); };
+                processTask.WorkingDirectory = hostSetup.WorkingDirectory;
 
-                    processTask.Start();
-                    return processTask;
-                }
-                catch (Exception ex)
-                {
-                    throw new HostException("Could not launch the host application as a new process.", ex);
-                }
+                processTask.Start();
+                return processTask;
             }
             catch (Exception)
             {
@@ -138,12 +136,14 @@ namespace Gallio.Hosting
             }
         }
 
-        private static void WaitUntilReady(IRemoteHostService host)
+        private static void WaitUntilReady(ProcessTask processTask, IRemoteHostService host)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            for (; ; )
+            for (;;)
             {
+                EnsureProcessIsRunning(processTask);
+
                 try
                 {
                     host.Ping();
@@ -155,8 +155,15 @@ namespace Gallio.Hosting
                         throw;
                 }
 
+                EnsureProcessIsRunning(processTask);
                 Thread.Sleep(ReadyPollInterval);
             }
+        }
+
+        private static void EnsureProcessIsRunning(ProcessTask task)
+        {
+            if (! task.IsRunning)
+                throw new HostException("The host process terminated abruptly.");
         }
 
         private sealed class HostApplicationProfile : IDisposable
@@ -229,10 +236,6 @@ namespace Gallio.Hosting
 
         private class IsolatedProcessHost : RemoteHost
         {
-            private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(5);
-            private static readonly TimeSpan JoinBeforeKillTimeout = TimeSpan.FromSeconds(10); // TODO: make this configurable
-            private static readonly TimeSpan JoinAfterKillTimeout = TimeSpan.FromSeconds(5); // TODO: make this configurable
-
             private ProcessTask processTask;
             private IServerChannel callbackChannel;
 
@@ -251,10 +254,10 @@ namespace Gallio.Hosting
                 {
                     if (processTask != null)
                     {
-                        if (!processTask.Join(JoinBeforeKillTimeout))
+                        if (!processTask.Join(JoinBeforeAbortTimeout))
                         {
                             processTask.Abort();
-                            processTask.Join(JoinAfterKillTimeout);
+                            processTask.Join(JoinAfterAbortTimeout);
                         }
 
                         processTask = null;
