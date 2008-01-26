@@ -101,7 +101,7 @@
 		    CoverageFiles="$(BuildTempDir)\Coverage.xml"
 		    SatisfactoryCoverage="$(SatisfactoryCoverage)" />
 
-    <Exec Command="start /B cmd /S /C &quot;&quot;$(NCoverExplorerPath)\NCoverExplorer.exe&quot; &quot;$(BuildTempDir)\Coverage.xml&quot;&quot;"
+    <Exec Command="cscript $(RootDir)\Run.vbs //nologo &quot;&quot;$(NCoverExplorerPath)\NCoverExplorer.exe&quot; &quot;$(BuildTempDir)\Coverage.xml&quot;&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')" />
 
     <Warning Text="Some MbUnit tests failed!"
