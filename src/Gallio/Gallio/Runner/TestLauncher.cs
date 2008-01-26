@@ -491,6 +491,7 @@ namespace Gallio.Runner
             ThrowIfDisposed();
 
             reportMonitor.ResetReport();
+
             TestLauncherResult result = new TestLauncherResult(reportMonitor.Report);
 
             if (!PrepareToRun(result))
@@ -528,9 +529,9 @@ namespace Gallio.Runner
                             {
                                 RunTests(runner);
 
-                                if (reportMonitor.Report.PackageRun.Statistics.FailureCount > 0)
+                                if (result.Report.PackageRun.Statistics.FailureCount > 0)
                                     result.SetResultCode(ResultCode.Failure);
-                                else if (reportMonitor.Report.PackageRun.Statistics.TestCount == 0)
+                                else if (result.Report.PackageRun.Statistics.TestCount == 0)
                                     result.SetResultCode(ResultCode.NoTests);
                             }
                             catch (OperationCanceledException)
@@ -541,10 +542,20 @@ namespace Gallio.Runner
                     }
                     finally
                     {
+                        // Create a new report object before unloading to ensure we retain the previous report.
+                        reportMonitor.ResetReport();
+
                         // Unload the package now since we're done with it.
                         // This also provides more meaningful progress information to the user
                         // than if we're simply waited until the runner was disposed.
-                        UnloadTestPackage(runner);
+                        try
+                        {
+                            UnloadTestPackage(runner);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            result.SetResultCode(ResultCode.Canceled);
+                        }
                     }
 
                     // Generate reports even if the test run is canceled, unless this step
