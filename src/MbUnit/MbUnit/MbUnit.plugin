@@ -2,9 +2,9 @@
 <configuration>
   <castle>
     <components>
-      <component id="Core.MbUnitTestFramework"
-                 service="Gallio.Model.ITestFramework, Gallio"
-                 type="MbUnit.Model.MbUnitTestFramework, MbUnit" />
+      <component id="MbUnit.MbUnitTestFrameworkExtension"
+                 service="Gallio.Framework.Explorer.IPatternTestFrameworkExtension, Gallio"
+                 type="MbUnit.Core.MbUnitTestFrameworkExtension, MbUnit" />
     </components>
   </castle>
 </configuration>

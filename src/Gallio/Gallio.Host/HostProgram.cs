@@ -45,7 +45,7 @@ namespace Gallio.Host
                 {
                     using (new BinaryIpcClientChannel(Arguments.IpcPortName + @".Callback"))
                     {
-                        using (HostService hostService = new HostService(WatchdogTimeout))
+                        using (RemoteHostService hostService = new RemoteHostService(WatchdogTimeout))
                         {
                             HostServiceChannelInterop.RegisterWithChannel(hostService, serverChannel);
 

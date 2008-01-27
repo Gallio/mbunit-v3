@@ -155,13 +155,6 @@ namespace Gallio.Runner.Harness
                 progressMonitor.Worked(1);
 
                 LoadAssemblies(progressMonitor.CreateSubProgressMonitor(8), packageConfig.AssemblyFiles);
-
-                progressMonitor.SetStatus("Performing post-processing.");
-
-                foreach (ITestFramework framework in frameworks)
-                    framework.PrepareTestPackage(package);
-
-                progressMonitor.Worked(1);
             }
         }
 

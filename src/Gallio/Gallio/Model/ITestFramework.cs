@@ -37,14 +37,5 @@ namespace Gallio.Model
         /// tests are discovered</param>
         /// <returns>The test explorer</returns>
         ITestExplorer CreateTestExplorer(TestModel testModel);
-
-        /// <summary>
-        /// Prepares a test package in advance of test exploration.
-        /// A test framework can take advantage of this opportunity to configure the
-        /// assembly resolve to ensure that all assembly dependencies can be resolved
-        /// as needed.
-        /// </summary>
-        /// <param name="package">The test package</param>
-        void PrepareTestPackage(TestPackage package);
     }
 }

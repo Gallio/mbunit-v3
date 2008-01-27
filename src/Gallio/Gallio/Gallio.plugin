@@ -48,6 +48,10 @@
                  service="Gallio.Contexts.IContextManager, Gallio"
                  type="Gallio.Contexts.DefaultContextManager, Gallio" />
       
+      <component id="Core.PatternTestFramework"
+                 service="Gallio.Model.ITestFramework, Gallio"
+                 type="Gallio.Framework.Explorer.PatternTestFramework, Gallio" />
+      
       <component id="Core.IsolatedAppDomainHostFactory"
                  service="Gallio.Hosting.IHostFactory, Gallio"
                  type="Gallio.Hosting.IsolatedAppDomainHostFactory, Gallio" />

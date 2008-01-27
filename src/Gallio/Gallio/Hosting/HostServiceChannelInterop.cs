@@ -19,13 +19,13 @@ using Gallio.Hosting.Channels;
 namespace Gallio.Hosting
 {
     /// <summary>
-    /// Provides utilities to interact with a <see cref="HostService" /> over a <see cref="IClientChannel" />
+    /// Provides utilities to interact with a <see cref="RemoteHostService" /> over a <see cref="IClientChannel" />
     /// or <see cref="IServerChannel" />.
     /// </summary>
     public static class HostServiceChannelInterop
     {
         /// <summary>
-        /// Gets the name used to register the <see cref="HostService" />.
+        /// Gets the name used to register the <see cref="RemoteHostService" />.
         /// </summary>
         public const string ServiceName = "HostService";
 
@@ -34,22 +34,22 @@ namespace Gallio.Hosting
         /// </summary>
         /// <param name="channel">The channel</param>
         /// <returns>The remote host service</returns>
-        public static IRemoteHostService GetRemoteHostService(IClientChannel channel)
+        public static IHostService GetRemoteHostService(IClientChannel channel)
         {
             if (channel == null)
                 throw new ArgumentNullException("channel");
 
-            return (IRemoteHostService)channel.GetService(typeof(IRemoteHostService), ServiceName);
+            return (IHostService)channel.GetService(typeof(IHostService), ServiceName);
         }
 
         /// <summary>
         /// Registers the host service with a channel.
         /// </summary>
-        /// <param name="hostService">The host service</param>
+        /// <param name="hostService">The remote host service</param>
         /// <param name="channel">The channel</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostService"/> or 
         /// <paramref name="channel"/> is null</exception>
-        public static void RegisterWithChannel(HostService hostService, IServerChannel channel)
+        public static void RegisterWithChannel(RemoteHostService hostService, IServerChannel channel)
         {
             if (hostService == null)
                 throw new ArgumentNullException("hostService");

@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Model;
-using MbUnit.Model.Patterns;
+using Gallio.Framework.Patterns;
 
 namespace MbUnit.Framework
 {

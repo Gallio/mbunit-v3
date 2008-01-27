@@ -16,8 +16,8 @@
 using System;
 using Gallio.Model;
 using Gallio.Reflection;
-using MbUnit.Model.Builder;
-using MbUnit.Model.Patterns;
+using Gallio.Framework.Explorer;
+using Gallio.Framework.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -67,7 +67,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(ITestBuilder builder, ICodeElementInfo codeElement)
+        protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
         {
             builder.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
         }

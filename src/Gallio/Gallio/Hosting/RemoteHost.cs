@@ -27,33 +27,31 @@ namespace Gallio.Hosting
     /// via .Net remoting from some other application context.
     /// </para>
     /// <para>
-    /// This implementation wraps a <see cref="IRemoteHostService" /> with additional
+    /// This implementation wraps a <see cref="IHostService" /> with additional
     /// exception handling code and sends periodic heartbeat ping message.
     /// </para>
     /// </summary>
-    public class RemoteHost : IHost
+    public abstract class RemoteHost : IHost
     {
-        private IRemoteHostService remoteHostService;
-        private readonly TimeSpan? pingInterval;
+        private readonly HostSetup hostSetup;
+        private bool isDisposed;
+        private IHostService hostService;
+        private TimeSpan? pingInterval;
 
         private readonly object pingLock = new object();
         private Timer pingTimer;
 
         /// <summary>
-        /// Creates a remote host as a wrapper of the specified 
+        /// Creates an uninitialized host.
         /// </summary>
-        /// <param name="remoteHostService">The remote host service</param>
-        /// <param name="pingInterval">The automatic ping interval, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="remoteHostService"/> is null</exception>
-        public RemoteHost(IRemoteHostService remoteHostService, TimeSpan? pingInterval)
+        /// <param name="hostSetup">The host setup</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> is null</exception>
+        protected RemoteHost(HostSetup hostSetup)
         {
-            if (remoteHostService == null)
-                throw new ArgumentNullException("remoteHostService");
+            if (hostSetup == null)
+                throw new ArgumentNullException("hostSetup");
 
-            this.remoteHostService = remoteHostService;
-            this.pingInterval = pingInterval;
-
-            StartPingTimer();
+            this.hostSetup = hostSetup;
         }
 
         /// <inheritdoc />
@@ -63,14 +61,38 @@ namespace Gallio.Hosting
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Initializes the remote host and makes it ready for use.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the host has already been initialized.</exception>
+        public void Initialize()
+        {
+            ThrowIfDisposed();
+
+            if (hostService != null)
+                throw new InvalidOperationException("The host has already been initialized.");
+
+            InitializeImpl();
+
+            if (hostService == null)
+                throw new HostException("The subclass did not configure the host service.");
+        }
+
+        /// <inheritdoc />
+        public HostSetup GetHostSetup()
+        {
+            return hostSetup.Copy();
+        }
+
         /// <inheritdoc />
         public void Ping()
         {
             ThrowIfDisposed();
+            ThrowIfNotInitialized();
 
             try
             {
-                remoteHostService.Ping();
+                hostService.Ping();
             }
             catch (Exception ex)
             {
@@ -85,10 +107,11 @@ namespace Gallio.Hosting
                 throw new ArgumentNullException("callback");
 
             ThrowIfDisposed();
+            ThrowIfNotInitialized();
 
             try
             {
-                remoteHostService.DoCallback(callback);
+                hostService.DoCallback(callback);
             }
             catch (Exception ex)
             {
@@ -105,10 +128,11 @@ namespace Gallio.Hosting
                 throw new ArgumentNullException("typeName");
 
             ThrowIfDisposed();
+            ThrowIfNotInitialized();
 
             try
             {
-                return remoteHostService.CreateInstance(assemblyName, typeName);
+                return hostService.CreateInstance(assemblyName, typeName);
             }
             catch (Exception ex)
             {
@@ -125,10 +149,11 @@ namespace Gallio.Hosting
                 throw new ArgumentNullException("typeName");
 
             ThrowIfDisposed();
+            ThrowIfNotInitialized();
 
             try
             {
-                return remoteHostService.CreateInstanceFrom(assemblyPath, typeName);
+                return hostService.CreateInstanceFrom(assemblyPath, typeName);
             }
             catch (Exception ex)
             {
@@ -145,10 +170,11 @@ namespace Gallio.Hosting
                 throw new ArgumentNullException("logger");
 
             ThrowIfDisposed();
+            ThrowIfNotInitialized();
 
             try
             {
-                remoteHostService.InitializeRuntime(runtimeSetup, RemoteLogger.Wrap(logger));
+                hostService.InitializeRuntime(runtimeSetup, RemoteLogger.Wrap(logger));
             }
             catch (Exception ex)
             {
@@ -160,10 +186,11 @@ namespace Gallio.Hosting
         public void ShutdownRuntime()
         {
             ThrowIfDisposed();
+            ThrowIfNotInitialized();
 
             try
             {
-                remoteHostService.ShutdownRuntime();
+                hostService.ShutdownRuntime();
             }
             catch (Exception ex)
             {
@@ -183,8 +210,8 @@ namespace Gallio.Hosting
             {
                 if (disposing)
                 {
-                    if (remoteHostService != null)
-                        remoteHostService.Dispose();
+                    if (hostService != null)
+                        hostService.Dispose();
                 }
             }
             catch (RemotingException)
@@ -198,14 +225,52 @@ namespace Gallio.Hosting
             }
             finally
             {
-                remoteHostService = null;
+                hostService = null;
+                isDisposed = true;
             }
         }
 
         private void ThrowIfDisposed()
         {
-            if (remoteHostService == null)
+            if (isDisposed)
                 throw new ObjectDisposedException(GetType().Name);
+        }
+
+        private void ThrowIfNotInitialized()
+        {
+            if (hostService == null)
+                throw new InvalidOperationException("The host has not been initialized.");
+        }
+
+        /// <summary>
+        /// Gets the internal host setup information without copying it.
+        /// </summary>
+        protected HostSetup HostSetup
+        {
+            get { return hostSetup; }
+        }
+
+        /// <summary>
+        /// Initializes the host.
+        /// Must call <see cref="ConfigureHostService"/> to configure the host service.
+        /// </summary>
+        protected abstract void InitializeImpl();
+
+        /// <summary>
+        /// Configures the host service parameters.
+        /// </summary>
+        /// <param name="hostService">The remote host service</param>
+        /// <param name="pingInterval">The automatic ping interval, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostService"/> is null</exception>
+        protected void ConfigureHostService(IHostService hostService, TimeSpan? pingInterval)
+        {
+            if (hostService == null)
+                throw new ArgumentNullException("hostService");
+
+            this.hostService = hostService;
+            this.pingInterval = pingInterval;
+
+            StartPingTimer();
         }
 
         private void StartPingTimer()
@@ -235,8 +300,8 @@ namespace Gallio.Hosting
         {
             try
             {
-                if (remoteHostService != null)
-                    remoteHostService.Ping();
+                if (hostService != null)
+                    hostService.Ping();
             }
             catch (Exception ex)
             {

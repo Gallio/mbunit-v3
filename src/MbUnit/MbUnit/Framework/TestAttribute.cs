@@ -15,9 +15,8 @@
 
 using System;
 using Gallio.Reflection;
-using MbUnit.Model;
-using MbUnit.Model.Builder;
-using MbUnit.Model.Patterns;
+using Gallio.Framework.Explorer;
+using Gallio.Framework.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -45,11 +44,11 @@ namespace MbUnit.Framework
     public class TestAttribute : TestMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override void InitializeMethodTest(ITestBuilder methodTestBuilder, IMethodInfo method)
+        protected override void InitializeTest(IPatternTestBuilder methodTestBuilder, IMethodInfo method)
         {
-            methodTestBuilder.Test.ExecuteChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
+            methodTestBuilder.Test.ExecuteChain.After(PatternTestUtils.CreateFixtureMethodInvoker(method));
 
-            base.InitializeMethodTest(methodTestBuilder, method);
+            base.InitializeTest(methodTestBuilder, method);
         }
     }
 }

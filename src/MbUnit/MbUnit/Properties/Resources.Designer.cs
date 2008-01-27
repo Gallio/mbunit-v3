@@ -77,14 +77,5 @@ namespace MbUnit.Properties {
                 return ResourceManager.GetString("MbUnitTestFramework_FrameworkName", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Expected to invoke an instance method of a fixture but the fixture instance is not available..
-        /// </summary>
-        internal static string MbUnitTestUtils_ExpectedToInvokeAnInstanceMethod {
-            get {
-                return ResourceManager.GetString("MbUnitTestUtils_ExpectedToInvokeAnInstanceMethod", resourceCulture);
-            }
-        }
     }
 }

@@ -58,18 +58,14 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-
   <PropertyGroup>
     <GallioProjectOutputPath>..\Gallio\bin</GallioProjectOutputPath>
   </PropertyGroup>
   <Target Name="BeforeBuild">
-    <Delete Files="$(GallioProjectOutputPath)\$(TargetFileName)"
-            Condition="Exists('$(GallioProjectOutputPath)\$(TargetFileName)')" />
+    <Delete Files="$(GallioProjectOutputPath)\$(TargetFileName)" Condition="Exists('$(GallioProjectOutputPath)\$(TargetFileName)')" />
   </Target>
   <Target Name="AfterBuild">
-    <Copy SourceFiles="$(TargetPath)"
-          DestinationFolder="$(GallioProjectOutputPath)"
-          Condition="Exists('$(TargetPath)')">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GallioProjectOutputPath)" Condition="Exists('$(TargetPath)')">
       <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
     </Copy>
   </Target>

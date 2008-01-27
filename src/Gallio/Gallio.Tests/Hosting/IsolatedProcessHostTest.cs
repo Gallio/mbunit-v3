@@ -1,44 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+// Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 using Gallio.Hosting;
+using Gallio.Tests.Hosting.Channels;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting
 {
     [TestFixture]
+    [TestsOn(typeof(IsolatedProcessHost))]
     [TestsOn(typeof(IsolatedProcessHostFactory))]
-    public class IsolatedProcessHostTest
+    [DependsOn(typeof(BaseHostFactoryTest))]
+    [DependsOn(typeof(BinaryIpcChannelTest))]
+    public class IsolatedProcessHostTest : AbstractHostFactoryTest
     {
-        [Test, ExpectedArgumentNullException]
-        public void CreateHostThrowsIfHostSetupIsNull()
+        public override IHostFactory Factory
         {
-            IsolatedProcessHostFactory factory = new IsolatedProcessHostFactory();
-            factory.CreateHost(null);
-        }
-
-        [Test]
-        public void CreateInstanceFromCreatesAValidObjectHandle()
-        {
-            IsolatedProcessHostFactory factory = new IsolatedProcessHostFactory();
-
-            HostSetup hostSetup = new HostSetup();
-            using (IHost host = factory.CreateHost(hostSetup))
-            {
-                Type serviceType = typeof (TestService);
-                TestService serviceProxy = (TestService) host.CreateInstanceFrom(
-                    Loader.GetAssemblyLocalPath(serviceType.Assembly), serviceType.FullName).Unwrap();
-
-                Assert.AreEqual(42, serviceProxy.Add(23, 19));
-            }
-        }
-
-        public class TestService : MarshalByRefObject
-        {
-            public int Add(int x, int y)
-            {
-                return x + y;
-            }
+            get { return new IsolatedProcessHostFactory(); }
         }
     }
 }

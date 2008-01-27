@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
 namespace Gallio.Model
 {
     /// <summary>
@@ -22,14 +20,13 @@ namespace Gallio.Model
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The test kind is not very significant to the MbUnit test runner.
-    /// It provides a loose classification that may be used to provide appropriate
-    /// decorations when presenting the template in a user interface.
+    /// The test kind is ignored by the test runner but it allows tests to be classified
+    /// so that a user interface can provide appropriate decorations and other affordances
+    /// for any test kinds that it recognizes.
     /// </para>
     /// <para>
     /// If none of the built-in kinds are appropriate, you may use the
-    /// <see cref="Custom" /> kind or invent one of your own to present
-    /// in the user interface (albeit perhaps without special affordances.)
+    /// <see cref="Custom" /> kind or invent your own kind as you wish.
     /// </para>
     /// </remarks>
     /// <seealso cref="MetadataKeys.TestKind"/>

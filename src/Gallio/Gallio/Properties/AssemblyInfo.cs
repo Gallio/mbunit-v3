@@ -30,7 +30,7 @@ using System.Security;
 // but setting this attribute on the assembly lets the compiler help us.
 [assembly: CLSCompliant(true)]
 
-// Allow partially trusted callers to use the MbUnit framework.
+// Allow partially trusted callers to use the framework.
 // This isn't enough to ensure that we properly support partially trusted
 // contexts but it's a beginning.  We also need to carefully review security
 // demands throughout the framework and especially calls back into core services.

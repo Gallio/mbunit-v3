@@ -14,7 +14,11 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Explorer;
+using Gallio.Framework.Patterns;
 using Gallio.Hosting;
+using Gallio.Model;
+using Gallio.Reflection;
 
 namespace MbUnit.Framework
 {
@@ -22,7 +26,7 @@ namespace MbUnit.Framework
     /// Registers a custom assembly resolver.
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple=true)]
-    public sealed class AssemblyResolverAttribute : Attribute
+    public sealed class AssemblyResolverAttribute : AssemblyInitializationAttribute
     {
         private readonly Type assemblyResolverType;
 
@@ -47,6 +51,20 @@ namespace MbUnit.Framework
         public Type AssemblyResolverType
         {
             get { return assemblyResolverType; }
+        }
+
+        /// <inheritdoc />
+        public override void Initialize(IPatternTestBuilder topLevelTestBuilder, IAssemblyInfo assembly)
+        {
+            try
+            {
+                IAssemblyResolver resolver = (IAssemblyResolver)Activator.CreateInstance(assemblyResolverType);
+                Loader.AssemblyResolverManager.AddAssemblyResolver(resolver);
+            }
+            catch (Exception ex)
+            {
+                throw new ModelException(String.Format("Failed to create custom assembly resolver type '{0}'.", assemblyResolverType), ex);
+            }
         }
     }
 }

@@ -16,8 +16,8 @@
 using System;
 using Gallio.Data;
 using Gallio.Reflection;
-using MbUnit.Model.Builder;
-using MbUnit.Model.Patterns;
+using Gallio.Framework.Explorer;
+using Gallio.Framework.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -88,7 +88,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTestParameter(ITestParameterBuilder builder, ISlotInfo slot)
+        protected override void DecorateTestParameter(IPatternTestParameterBuilder builder, ISlotInfo slot)
         {
             builder.TestParameter.Binding = new DataBindingWithSourceName(source ?? @"",
                 new SimpleDataBinding(slot.ValueType.Resolve(false), path, index));

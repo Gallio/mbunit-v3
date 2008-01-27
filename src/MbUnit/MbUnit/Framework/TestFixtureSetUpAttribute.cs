@@ -15,9 +15,8 @@
 
 using System;
 using Gallio.Reflection;
-using MbUnit.Model;
-using MbUnit.Model.Builder;
-using MbUnit.Model.Patterns;
+using Gallio.Framework.Explorer;
+using Gallio.Framework.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -45,12 +44,12 @@ namespace MbUnit.Framework
     public sealed class TestFixtureSetUpAttribute : ContributionPatternAttribute
     {
         /// <inheritdoc />
-        protected override void DecorateContainingTest(ITestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        protected override void DecorateContainingTest(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
         {
             IMethodInfo method = (IMethodInfo) codeElement;
             ReflectionUtils.CheckMethodSignature(method);
 
-            containingTestBuilder.Test.SetUpChain.After(MbUnitTestUtils.CreateFixtureMethodInvoker(method));
+            containingTestBuilder.Test.SetUpChain.After(PatternTestUtils.CreateFixtureMethodInvoker(method));
         }
     }
 }

@@ -15,19 +15,20 @@
 
 using System;
 using System.Reflection;
+using Gallio.Framework.Explorer;
 using Gallio.Reflection;
+using MbUnit.Core;
 using MbUnit.Framework;
-using MbUnit.Model;
 using Gallio.Model;
 using MbUnit.TestResources;
 using Gallio.Tests.Model;
 
-namespace MbUnit.Tests.Framework.Kernel.Model
+namespace MbUnit.Tests.Model
 {
     [TestFixture]
-    [TestsOn(typeof(MbUnitTestFramework))]
+    [TestsOn(typeof(MbUnitTestFrameworkExtension))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class MbUnitTestFrameworkTest : BaseTestFrameworkTest
+    public class PatternTestFrameworkTest : BaseTestFrameworkTest
     {
         protected override Assembly GetSampleAssembly()
         {
@@ -36,22 +37,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
 
         protected override ITestFramework CreateFramework()
         {
-            return new MbUnitTestFramework();
-        }
-
-        [Test]
-        public void NameIsMbUnitGallio()
-        {
-            Assert.AreEqual("MbUnit v3", framework.Name);
-        }
-
-        [Test]
-        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
-        {
-            sampleAssembly = typeof(Int32).Assembly;
-            PopulateTestTree();
-
-            Assert.AreEqual(0, testModel.RootTest.Children.Count);
+            return new PatternTestFramework();
         }
 
         /// <summary>
@@ -60,9 +46,9 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         /// attributes are handled belong elsewhere.
         /// </summary>
         [Test]
-        public void PopulateTestTree_WhenAssemblyReferencesMbUnitGallio_ContainsSimpleTest()
+        public void PopulateTestTree_WhenAssemblyReferencesMbUnit_ContainsSimpleTest()
         {
-            Version expectedVersion = typeof(MbUnitTestFramework).Assembly.GetName().Version;
+            Version expectedVersion = typeof(Assert).Assembly.GetName().Version;
             PopulateTestTree();
 
             RootTest rootTest = testModel.RootTest;
@@ -71,22 +57,21 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.IsNull(rootTest.CodeElement);
             Assert.AreEqual(1, rootTest.Children.Count);
 
-            MbUnitFrameworkTest frameworkTest = (MbUnitFrameworkTest)rootTest.Children[0];
+            PatternTest frameworkTest = (PatternTest)rootTest.Children[0];
             Assert.AreSame(rootTest, frameworkTest.Parent);
             Assert.AreEqual(TestKinds.Framework, frameworkTest.Kind);
             Assert.IsNull(frameworkTest.CodeElement);
-            Assert.AreEqual(expectedVersion, frameworkTest.Version);
             Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
             Assert.AreEqual(1, frameworkTest.Children.Count);
 
-            MbUnitTest assemblyTest = (MbUnitTest) frameworkTest.Children[0];
+            PatternTest assemblyTest = (PatternTest) frameworkTest.Children[0];
             Assert.AreSame(frameworkTest, assemblyTest.Parent);
             Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeElement.CodeReference);
             Assert.AreEqual(sampleAssembly, ((IAssemblyInfo) assemblyTest.CodeElement).Resolve());
             Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
 
-            MbUnitTest typeTest = (MbUnitTest)GetDescendantByName(assemblyTest, "SimpleTest");
+            PatternTest typeTest = (PatternTest)GetDescendantByName(assemblyTest, "SimpleTest");
             Assert.IsNotNull(typeTest, "Could not find the SimpleTest fixture.");
             Assert.AreSame(assemblyTest, typeTest.Parent);
             Assert.AreEqual(TestKinds.Fixture, typeTest.Kind);
@@ -95,7 +80,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.AreEqual("SimpleTest", typeTest.Name);
             Assert.AreEqual(2, typeTest.Children.Count);
 
-            MbUnitTest passTest = (MbUnitTest)GetDescendantByName(typeTest, "Pass");
+            PatternTest passTest = (PatternTest)GetDescendantByName(typeTest, "Pass");
             Assert.IsNotNull(passTest, "Could not find the Pass test.");
             Assert.AreSame(typeTest, passTest.Parent);
             Assert.AreEqual(TestKinds.Test, passTest.Kind);
@@ -103,7 +88,7 @@ namespace MbUnit.Tests.Framework.Kernel.Model
             Assert.AreEqual(typeof(SimpleTest).GetMethod("Pass"), ((IMethodInfo) passTest.CodeElement).Resolve(true));
             Assert.AreEqual("Pass", passTest.Name);
 
-            MbUnitTest failTest = (MbUnitTest)GetDescendantByName(typeTest, "Fail");
+            PatternTest failTest = (PatternTest)GetDescendantByName(typeTest, "Fail");
             Assert.IsNotNull(failTest, "Could not find the Fail test.");
             Assert.AreSame(typeTest, failTest.Parent);
             Assert.AreEqual(TestKinds.Test, failTest.Kind);
@@ -117,9 +102,9 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         {
             PopulateTestTree();
 
-            MbUnitTest test = (MbUnitTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
-            MbUnitTest passTest = (MbUnitTest)GetDescendantByName(test, "Pass");
-            MbUnitTest failTest = (MbUnitTest)GetDescendantByName(test, "Fail");
+            PatternTest test = (PatternTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
+            PatternTest passTest = (PatternTest)GetDescendantByName(test, "Pass");
+            PatternTest failTest = (PatternTest)GetDescendantByName(test, "Fail");
 
             Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
             Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
@@ -131,9 +116,9 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         {
             PopulateTestTree();
 
-            MbUnitTest test = (MbUnitTest)GetDescendantByName(testModel.RootTest, typeof(ParameterizedTest).Name);
-            MbUnitTestParameter fieldParameter = (MbUnitTestParameter) GetParameterByName(test, "FieldParameter");
-            MbUnitTestParameter propertyParameter = (MbUnitTestParameter) GetParameterByName(test, "PropertyParameter");
+            PatternTest test = (PatternTest)GetDescendantByName(testModel.RootTest, typeof(ParameterizedTest).Name);
+            PatternTestParameter fieldParameter = (PatternTestParameter) GetParameterByName(test, "FieldParameter");
+            PatternTestParameter propertyParameter = (PatternTestParameter) GetParameterByName(test, "PropertyParameter");
 
             Assert.AreEqual("<summary>\nA field parameter.\n</summary>", fieldParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
             Assert.AreEqual("<summary>\nA property parameter.\n</summary>", propertyParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
@@ -144,8 +129,8 @@ namespace MbUnit.Tests.Framework.Kernel.Model
         {
             PopulateTestTree();
 
-            MbUnitFrameworkTest frameworkTest = (MbUnitFrameworkTest)testModel.RootTest.Children[0];
-            MbUnitTest assemblyTest = (MbUnitTest) frameworkTest.Children[0];
+            PatternTest frameworkTest = (PatternTest)testModel.RootTest.Children[0];
+            PatternTest assemblyTest = (PatternTest) frameworkTest.Children[0];
 
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));

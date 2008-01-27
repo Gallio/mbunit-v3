@@ -120,6 +120,46 @@
     <Compile Include="Data\ScalarDataRow.cs" />
     <Compile Include="Data\UnionMergeStrategy.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Framework\Explorer\BasePatternTestFrameworkExtension.cs" />
+    <Compile Include="Framework\Explorer\DefaultPatternTestBuilder.cs" />
+    <Compile Include="Framework\Explorer\DefaultPatternTestModelBuilder.cs" />
+    <Compile Include="Framework\Explorer\DefaultPatternTestParameterBuilder.cs" />
+    <Compile Include="Framework\Explorer\IPatternTestFrameworkExtension.cs" />
+    <Compile Include="Framework\Explorer\IPatternTestBuilder.cs" />
+    <Compile Include="Framework\Explorer\IPatternTestModelBuilder.cs" />
+    <Compile Include="Framework\Explorer\IPatternTestParameterBuilder.cs" />
+    <Compile Include="Framework\Explorer\PatternTest.cs" />
+    <Compile Include="Framework\Explorer\PatternTestController.cs" />
+    <Compile Include="Framework\Explorer\PatternTestExplorer.cs" />
+    <Compile Include="Framework\Explorer\PatternTestFramework.cs" />
+    <Compile Include="Framework\Explorer\PatternTestInstance.cs" />
+    <Compile Include="Framework\Explorer\PatternTestParameter.cs" />
+    <Compile Include="Framework\Explorer\PatternTestPopulator.cs" />
+    <Compile Include="Framework\Explorer\PatternTestState.cs" />
+    <Compile Include="Framework\Explorer\PatternTestUtils.cs" />
+    <Compile Include="Framework\Explorer\ToolInfo.cs" />
+    <Compile Include="Framework\Patterns\AssemblyInitializationAttribute.cs" />
+    <Compile Include="Framework\Patterns\AssemblyDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\AssemblyPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\BasePattern.cs" />
+    <Compile Include="Framework\Patterns\BootstrapAssemblyPattern.cs" />
+    <Compile Include="Framework\Patterns\ContributionPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\DataPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\DeclarativePatternResolver.cs" />
+    <Compile Include="Framework\Patterns\DecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\DependencyPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\IPattern.cs" />
+    <Compile Include="Framework\Patterns\IPatternResolver.cs" />
+    <Compile Include="Framework\Patterns\MetadataPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\PatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\PatternUtils.cs" />
+    <Compile Include="Framework\Patterns\TestDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\TestMethodDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\TestMethodPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\TestParameterDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\TestParameterPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\TestTypeDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Patterns\TestTypePatternAttribute.cs" />
     <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentAttribute.cs" />
     <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentFlags.cs" />
     <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentParser.cs" />
@@ -132,6 +172,8 @@
     <Compile Include="Hosting\ConsoleSupport\ResponseFileReader.cs" />
     <Compile Include="Hosting\ConsoleSupport\RichConsoleLogger.cs" />
     <Compile Include="Hosting\HostAssemblyResolverHook.cs" />
+    <Compile Include="Hosting\IsolatedAppDomainHost.cs" />
+    <Compile Include="Hosting\IsolatedProcessHost.cs" />
     <Compile Include="Hosting\RuntimeRegisteredComponentResolver.cs" />
     <Compile Include="Hosting\HostConfiguration.cs" />
     <Compile Include="Hosting\HostException.cs" />
@@ -139,7 +181,7 @@
     <Compile Include="Hosting\HostSetup.cs" />
     <Compile Include="Hosting\IRegisteredComponent.cs" />
     <Compile Include="Hosting\IRegisteredComponentResolver.cs" />
-    <Compile Include="Hosting\IRemoteHostService.cs" />
+    <Compile Include="Hosting\IHostService.cs" />
     <Compile Include="Hosting\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
     <Compile Include="Hosting\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
     <Compile Include="Hosting\ProgressMonitoring\CancelableProgressMonitor.cs" />
@@ -162,7 +204,7 @@
     <Compile Include="Hosting\IHostFactory.cs" />
     <Compile Include="Hosting\IsolatedAppDomainHostFactory.cs" />
     <Compile Include="Hosting\IsolatedProcessHostFactory.cs" />
-    <Compile Include="Hosting\HostService.cs" />
+    <Compile Include="Hosting\RemoteHostService.cs" />
     <Compile Include="Hosting\BaseHostFactory.cs" />
     <Compile Include="Hosting\Channels\BaseChannel.cs" />
     <Compile Include="Hosting\Channels\BaseClientChannel.cs" />
@@ -464,6 +506,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.plugin" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Framework\Constraints\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

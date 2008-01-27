@@ -17,8 +17,8 @@ using System;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Reflection;
-using MbUnit.Model.Builder;
-using MbUnit.Model.Patterns;
+using Gallio.Framework.Explorer;
+using Gallio.Framework.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -57,7 +57,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override ICodeElementInfo GetDependency(ITestBuilder testBuilder, ICodeElementInfo codeElement)
+        protected override ICodeElementInfo GetDependency(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
         {
             try
             {

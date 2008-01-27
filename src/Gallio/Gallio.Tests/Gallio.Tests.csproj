@@ -62,6 +62,7 @@
       <HintPath>..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml" />
@@ -70,10 +71,13 @@
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Contexts\DefaultContextManagerTest.cs" />
     <Compile Include="Contexts\StepTest.cs" />
+    <Compile Include="Framework\Explorer\PatternTestFrameworkTest.cs" />
+    <Compile Include="Framework\Explorer\ToolInfoTest.cs" />
     <Compile Include="Hosting\Channels\BaseChannelTest.cs" />
     <Compile Include="Hosting\Channels\BaseClientChannelTest.cs" />
     <Compile Include="Hosting\Channels\BaseServerChannelTest.cs" />
     <Compile Include="Hosting\Channels\BinaryIpcChannelTest.cs" />
+    <Compile Include="Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentParserTests.cs" />
     <Compile Include="Hosting\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Contexts\ContextTest.cs" />
@@ -94,6 +98,8 @@
     <Compile Include="Data\SimpleDataBindingTest.cs" />
     <Compile Include="Data\GeneratorsTest.cs" />
     <Compile Include="Data\UnionMergeStrategyTest.cs" />
+    <Compile Include="Hosting\IsolatedAppDomainHostTest.cs" />
+    <Compile Include="Hosting\BaseHostFactoryTest.cs" />
     <Compile Include="Hosting\IsolatedProcessHostTest.cs">
       <SubType>Code</SubType>
     </Compile>

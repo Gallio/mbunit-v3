@@ -15,8 +15,8 @@
 
 using System;
 using Gallio.Reflection;
-using MbUnit.Model.Builder;
-using MbUnit.Model.Patterns;
+using Gallio.Framework.Explorer;
+using Gallio.Framework.Patterns;
 
 namespace MbUnit.Framework
 {
@@ -83,7 +83,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void InitializeTestParameter(ITestParameterBuilder testParameterBuilder, ISlotInfo slot)
+        protected override void InitializeTestParameter(IPatternTestParameterBuilder testParameterBuilder, ISlotInfo slot)
         {
             if (name != null)
                 testParameterBuilder.TestParameter.Name = name;
