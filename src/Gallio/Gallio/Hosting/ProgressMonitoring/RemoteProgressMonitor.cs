@@ -17,7 +17,6 @@ using System;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using Gallio.Hosting;
-using Gallio.Utilities;
 
 namespace Gallio.Hosting.ProgressMonitoring
 {
@@ -105,7 +104,7 @@ namespace Gallio.Hosting.ProgressMonitoring
         /// <summary>
         /// The forwarding event listener forwards messages to the host's progress monitor.
         /// </summary>
-        private sealed class Forwarder : LongLivingMarshalByRefObject
+        private sealed class Forwarder : LongLivedMarshalByRefObject
         {
             private readonly IProgressMonitor progressMonitor;
 
@@ -163,7 +162,7 @@ namespace Gallio.Hosting.ProgressMonitoring
         /// <summary>
         /// Dispatches events to the remote progress monitor.
         /// </summary>
-        private sealed class Dispatcher : LongLivingMarshalByRefObject
+        private sealed class Dispatcher : LongLivedMarshalByRefObject
         {
             private readonly RemoteProgressMonitor remoteProgressMonitor;
 

@@ -15,8 +15,6 @@
 
 using System;
 using Gallio.Framework.Patterns;
-using Gallio.Reflection;
-using Gallio.Hosting;
 using Gallio.Model;
 
 namespace Gallio.Framework.Explorer

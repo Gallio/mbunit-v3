@@ -15,7 +15,6 @@
 
 using System;
 using Gallio.Hosting;
-using Gallio.Utilities;
 
 namespace Gallio.Model.Execution
 {
@@ -71,7 +70,7 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// The forwarding event listener forwards events to the host's event listener.
         /// </summary>
-        private sealed class Forwarder : LongLivingMarshalByRefObject
+        private sealed class Forwarder : LongLivedMarshalByRefObject
         {
             private readonly ITestListener listener;
 

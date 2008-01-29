@@ -16,7 +16,6 @@
 using System;
 using System.Reflection;
 using System.Threading;
-using Gallio.Utilities;
 
 namespace Gallio.Hosting
 {
@@ -57,7 +56,7 @@ namespace Gallio.Hosting
         /// <summary>
         /// This class is intended for internal use only.
         /// </summary>
-        public sealed class Resolver : LongLivingMarshalByRefObject
+        public sealed class Resolver : LongLivedMarshalByRefObject
         {
             private Resolver masterResolver;
 

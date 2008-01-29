@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using Castle.Core.Logging;
 using Gallio.Hosting;
 using Gallio.Runner.Domains;
-using Gallio.Utilities;
 
 namespace Gallio.Runner.Domains
 {
@@ -26,7 +25,7 @@ namespace Gallio.Runner.Domains
     /// A factory for <see cref="HostTestDomain" /> that automatically applies
     /// all registered <see cref="IHostTestDomainContributor" />s.
     /// </summary>
-    public class HostTestDomainFactory : LongLivingMarshalByRefObject, ITestDomainFactory
+    public class HostTestDomainFactory : LongLivedMarshalByRefObject, ITestDomainFactory
     {
         private IHostFactory hostFactory;
         private RuntimeSetup runtimeSetup;

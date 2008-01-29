@@ -17,7 +17,6 @@ using System;
 using System.Runtime.Remoting;
 using System.Threading;
 using Castle.Core.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Hosting
 {
@@ -26,7 +25,7 @@ namespace Gallio.Hosting
     /// <see cref="IHostService" /> suitable for access across a remoting channel.
     /// </summary>
     /// <see cref="HostServiceChannelInterop"/>
-    public class RemoteHostService : LongLivingMarshalByRefObject, IHostService
+    public class RemoteHostService : LongLivedMarshalByRefObject, IHostService
     {
         private readonly object watchdogLock = new object();
         private readonly TimeSpan? watchdogTimeout;

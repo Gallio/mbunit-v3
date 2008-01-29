@@ -14,10 +14,10 @@
 // limitations under the License.
 
 using System;
+using Gallio.Hosting;
 using Gallio.Model.Execution;
 using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Model;
-using Gallio.Utilities;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Runner.Domains
@@ -29,7 +29,7 @@ namespace Gallio.Runner.Domains
     /// The base implementation inherits from <see cref="MarshalByRefObject" />
     /// so that test domain's services can be accessed remotely if needed.
     /// </remarks>
-    public abstract class BaseTestDomain : LongLivingMarshalByRefObject, ITestDomain
+    public abstract class BaseTestDomain : LongLivedMarshalByRefObject, ITestDomain
     {
         private bool disposed;
         private ITestListener listener;

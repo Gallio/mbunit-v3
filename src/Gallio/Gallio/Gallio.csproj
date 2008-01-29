@@ -424,7 +424,7 @@
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Collections\TreeUtils.cs" />
     <Compile Include="Utilities\Hash64.cs" />
-    <Compile Include="Utilities\LongLivingMarshalByRefObject.cs" />
+    <Compile Include="Hosting\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Logging\ClientException.cs" />
     <Compile Include="Contexts\Context.cs" />
