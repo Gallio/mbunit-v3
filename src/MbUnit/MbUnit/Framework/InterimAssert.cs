@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Gallio;
+using Gallio.Framework;
 using Gallio.Logging;
 
 namespace MbUnit.Framework
@@ -243,6 +244,11 @@ namespace MbUnit.Framework
                         Assert.AreNotEqual(items[i].GetHashCode(), items[j].GetHashCode(), "Objects {0} and {1} should not have the same hashcode.", i, j);
                 }
             }
+        }
+
+        public static void Inconclusive(string messageFormat, params object[] messageArgs)
+        {
+            throw new TestInconclusiveException(String.Format(messageFormat, messageArgs));
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Gallio.Framework.Explorer
             }
         }
 
-        private bool RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor, PatternTestState parentState)
+        private TestOutcome RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor, PatternTestState parentState)
         {
             progressMonitor.SetStatus(String.Format("Run test: {0}.", testMonitor.Test.Name));
 
@@ -62,35 +62,37 @@ namespace Gallio.Framework.Explorer
                 {
                     stepMonitor.LogWriter[LogStreamNames.Warnings].WriteLine("Ignored: {0}", ignoreReason);
                     stepMonitor.FinishStep(TestStatus.Ignored, TestOutcome.Inconclusive, null);
-                    return true;
+                    return TestOutcome.Inconclusive;
                 }
                 else
                 {
                     PatternTestState state = new PatternTestState(test);
-                    bool passed;
 
-                    passed = InitializeTest(stepMonitor, state, parentState);
+                    TestOutcome outcome = InitializeTest(stepMonitor, state, parentState);
 
-                    if (passed)
+                    if (outcome == TestOutcome.Passed)
                     {
-                        passed &= RunSetup(stepMonitor, state, parentState);
+                        CombineOutcome(ref outcome, RunSetup(stepMonitor, state, parentState));
 
-                        if (passed)
+                        if (outcome == TestOutcome.Passed)
                         {
-                            passed &= RunExecute(stepMonitor, state);
+                            CombineOutcome(ref outcome, RunExecute(stepMonitor, state));
 
-                            if (passed)
+                            if (outcome == TestOutcome.Passed)
                             {
                                 foreach (ITestMonitor child in testMonitor.Children)
-                                    passed &= RunTest(progressMonitor, child, state);
+                                {
+                                    if (RunTest(progressMonitor, child, state) == TestOutcome.Failed)
+                                        outcome = TestOutcome.Failed;
+                                }
                             }
                         }
 
-                        passed &= RunTearDown(stepMonitor, state, parentState);
+                        CombineOutcome(ref outcome, RunTearDown(stepMonitor, state, parentState));
                     }
 
-                    stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
-                    return passed;
+                    stepMonitor.FinishStep(TestStatus.Executed, outcome, null);
+                    return outcome;
                 }
             }
             catch (Exception ex)
@@ -98,7 +100,7 @@ namespace Gallio.Framework.Explorer
                 stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex, "A fatal test runner exception occurred.");
 
                 stepMonitor.FinishStep(TestStatus.Error, TestOutcome.Failed, null);
-                return false;
+                return TestOutcome.Failed;
             }
             finally
             {
@@ -106,7 +108,7 @@ namespace Gallio.Framework.Explorer
             }
         }
 
-        private bool InitializeTest(ITestStepMonitor stepMonitor, PatternTestState state, PatternTestState parentState)
+        private TestOutcome InitializeTest(ITestStepMonitor stepMonitor, PatternTestState state, PatternTestState parentState)
         {
             return ExecuteSafely(stepMonitor, LifecyclePhases.Initialize, delegate
             {
@@ -123,7 +125,7 @@ namespace Gallio.Framework.Explorer
             }, "An exception occurred during initialization.");
         }
 
-        private bool RunSetup(ITestStepMonitor stepMonitor, PatternTestState state, PatternTestState parentState)
+        private TestOutcome RunSetup(ITestStepMonitor stepMonitor, PatternTestState state, PatternTestState parentState)
         {
             return ExecuteSafely(stepMonitor, LifecyclePhases.SetUp, delegate
             {
@@ -134,7 +136,7 @@ namespace Gallio.Framework.Explorer
             }, "An exception occurred during set up.");
         }
 
-        private bool RunExecute(ITestStepMonitor stepMonitor, PatternTestState state)
+        private TestOutcome RunExecute(ITestStepMonitor stepMonitor, PatternTestState state)
         {
             return ExecuteSafely(stepMonitor, LifecyclePhases.Execute, delegate
             {
@@ -142,7 +144,7 @@ namespace Gallio.Framework.Explorer
             }, "An exception occurred during execution.");
         }
 
-        private bool RunTearDown(ITestStepMonitor stepMonitor, PatternTestState state, PatternTestState parentState)
+        private TestOutcome RunTearDown(ITestStepMonitor stepMonitor, PatternTestState state, PatternTestState parentState)
         {
             return ExecuteSafely(stepMonitor, LifecyclePhases.TearDown, delegate
             {
@@ -153,21 +155,58 @@ namespace Gallio.Framework.Explorer
             }, "An exception occurred during tear down.");
         }
 
-        private bool ExecuteSafely(ITestStepMonitor stepMonitor, string lifecyclePhase, Block block, string failureHeading)
+        private TestOutcome ExecuteSafely(ITestStepMonitor stepMonitor, string lifecyclePhase, Block block, string failureHeading)
         {
             stepMonitor.LifecyclePhase = lifecyclePhase;
 
             try
             {
                 block();
-                return true;
+                return TestOutcome.Passed;
             }
             catch (Exception ex)
             {
-                stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex, failureHeading);
-                stepMonitor.SetInterimOutcome(TestOutcome.Failed);
-                return false;
+                TestOutcome outcome = TestOutcome.Failed;
+
+                if (ex is ClientException)
+                    ex = ex.InnerException;
+                if (ex is TestException)
+                    outcome = ((TestException)ex).Outcome;
+
+                LogException(stepMonitor, ex, outcome, failureHeading);
+                return outcome;
             }
+        }
+
+        private static void LogException(ITestStepMonitor stepMonitor, Exception ex, TestOutcome outcome, string failureHeading)
+        {
+            string streamName;
+            switch (outcome)
+            {
+                default:
+                case TestOutcome.Passed:
+                    streamName = LogStreamNames.Default;
+                    break;
+                case TestOutcome.Inconclusive:
+                    streamName = LogStreamNames.Warnings;
+                    break;
+                case TestOutcome.Failed:
+                    streamName = LogStreamNames.Failures;
+                    break;
+            }
+
+            stepMonitor.LogWriter[streamName].WriteException(ex, failureHeading);
+
+            CombineOutcome(ref outcome, stepMonitor.Outcome);
+            stepMonitor.SetInterimOutcome(outcome);
+        }
+
+        private static void CombineOutcome(ref TestOutcome result, TestOutcome other)
+        {
+            if (other == TestOutcome.Failed)
+                result = TestOutcome.Failed;
+            else if (result != TestOutcome.Failed && other == TestOutcome.Inconclusive)
+                result = TestOutcome.Inconclusive;
         }
     }
 }

@@ -80,4 +80,17 @@
     
     <fail if="${ExitCode != '1'}" >Expected failure result code, was ${ExitCode}!</fail>
   </target>  
+  
+  <target name="UnhandledException">
+    <gallio result-property="ExitCode" filter="Type: UnhandledExceptionTest">
+      <assemblies>
+        <include name="${TestAssembly}" />
+      </assemblies>
+      <plugin-directories>
+        <include name="${GallioPath}" />
+      </plugin-directories>
+    </gallio>
+    
+    <fail if="${ExitCode != '0'}" >Expected failure result code, was ${ExitCode}!</fail>
+  </target>  
 </project>

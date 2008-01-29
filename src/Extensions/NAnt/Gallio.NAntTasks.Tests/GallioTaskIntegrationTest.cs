@@ -72,6 +72,9 @@ namespace Gallio.NAntTasks.Tests
         [Row("NoFilter", true, Description = @"
             This target runs tests without a filter.  We are ignoring failures
             so NAnt should return true.")]
+        [Row("UnhandledException", true, Description = @"
+            This target runs tests with unhandled exceptions that nevertheless pass.
+            NAnt should not terminate abruptly when this occurs so it should return a successful result code.")]
         public void RunNAnt(string target, bool expectedResult)
         {
             ProcessTask task = new ProcessTask(executablePath,

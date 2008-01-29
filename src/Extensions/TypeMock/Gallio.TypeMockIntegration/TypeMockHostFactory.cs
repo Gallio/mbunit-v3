@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using Gallio.Hosting;
+using TypeMock.Integration;
 
 namespace Gallio.TypeMockIntegration
 {
@@ -27,6 +28,9 @@ namespace Gallio.TypeMockIntegration
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup)
         {
+            if (! Service.IsInstalled)
+                throw new IntegrationNotInstalledException("TypeMock does not appear to be installed.");
+
             TypeMockHost host = new TypeMockHost(hostSetup);
             host.Initialize();
             return host;

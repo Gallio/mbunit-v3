@@ -61,4 +61,14 @@
     <Error Text="Expected failure result code, was '$(ExitCode)'."
            Condition="'$(ExitCode)' != '1'" />
   </Target>
+  
+  <Target Name="UnhandledException">
+    <Gallio Filter="Type: UnhandledExceptionTest" Assemblies="$(TestAssembly)"
+            PluginDirectories="$(GallioPath)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Gallio>
+    
+    <Error Text="Expected successful result code, was '$(ExitCode)'."
+           Condition="'$(ExitCode)' != '0'" />
+  </Target>  
 </Project>

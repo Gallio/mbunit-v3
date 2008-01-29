@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using Gallio.Contexts;
 using Gallio.Hosting;
 using Gallio.Logging;
@@ -43,13 +44,19 @@ namespace Gallio.Runner.Harness
                 AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
             }
 
-            void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+            private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
             {
                 try
                 {
+                    string threadName = Thread.CurrentThread.Name;
+                    if (string.IsNullOrEmpty(threadName))
+                        threadName = "<unnamed>";
+
                     Exception ex = e.ExceptionObject as Exception;
                     if (ex != null)
-                        Context.CurrentContext.LogWriter[LogStreamNames.Warnings].WriteException(ex, "An unhandled exception occurred.");
+                        Context.CurrentContext.LogWriter[LogStreamNames.Warnings].WriteException(ex, "An unhandled exception occurred in thread '{0}'.", threadName);
+                    else
+                        Context.CurrentContext.LogWriter[LogStreamNames.Warnings].WriteLine("An unhandled exception occurred in thread '{0}' but the exception object was not available.", threadName);
                 }
                 catch (Exception ex)
                 {

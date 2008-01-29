@@ -16,9 +16,12 @@
 using System;
 using System.Collections;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Remoting;
+using System.Threading;
 using Castle.Core.Logging;
+using Gallio.Collections;
 using Gallio.Hosting;
 using MbUnit.Framework;
 
@@ -202,6 +205,41 @@ namespace Gallio.Tests.Hosting
         private static void HostRunsWithSpecifiedConfigurationXmlCallback()
         {
             Assert.AreEqual("TestValue", ConfigurationManager.AppSettings.Get("TestSetting"));
+        }
+
+        [Test]
+        public void HostRunsWithSpecifiedAssertUiFlag()
+        {
+            HostSetup hostSetup = new HostSetup();
+            hostSetup.Configuration.AssertUiEnabled = true;
+
+            using (IHost host = Factory.CreateHost(hostSetup))
+            {
+                HostAssemblyResolverHook.Install(host);
+                host.DoCallback(HostRunsWithAssertUiEnabledCallback);
+            }
+
+            hostSetup.Configuration.AssertUiEnabled = false;
+
+            using (IHost host = Factory.CreateHost(hostSetup))
+            {
+                HostAssemblyResolverHook.Install(host);
+                host.DoCallback(HostRunsWithAssertUiDisabledCallback);
+            }
+        }
+        private static void HostRunsWithAssertUiEnabledCallback()
+        {
+            Assert.IsTrue(GetDefaultTraceListener().AssertUiEnabled);
+        }
+        private static void HostRunsWithAssertUiDisabledCallback()
+        {
+            Assert.IsFalse(GetDefaultTraceListener().AssertUiEnabled);
+        }
+
+        private static DefaultTraceListener GetDefaultTraceListener()
+        {
+            return (DefaultTraceListener) CollectionUtils.Find<TraceListener>(Debug.Listeners,
+                delegate(TraceListener listener) { return listener is DefaultTraceListener; });
         }
 
         private static void AssertArePathsEqualIgnoringFinalBackslash(string expected, string actual)

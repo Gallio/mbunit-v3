@@ -56,7 +56,7 @@ namespace Gallio.PowerShellCommands
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
-        private string runnerType = StandardTestRunnerFactoryNames.IsolatedAppDomain;
+        private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
         private string filter = "*";
         private SwitchParameter showReports;
         private SwitchParameter doNotRun;
@@ -304,8 +304,8 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>The types supported "out of the box" are: LocalAppDomain, IsolatedAppDomain (default)
-        /// and IsolatedProcess, but more types could be available as plugins.</item>
+        /// <item>The types supported "out of the box" are: LocalAppDomain, IsolatedAppDomain
+        /// and IsolatedProcess (default), but more types could be available as plugins.</item>
         /// <item>The runner types are not case sensitive.</item>
         /// </list>
         /// </remarks>

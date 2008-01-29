@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Threading;
 using Gallio.Hosting;
 using Gallio.Tests.Hosting.Channels;
 using MbUnit.Framework;
@@ -29,6 +31,37 @@ namespace Gallio.Tests.Hosting
         public override IHostFactory Factory
         {
             get { return new IsolatedProcessHostFactory(); }
+        }
+
+        [Test]
+        public void HostDoesNotTerminateAbruptlyIfUnhandledExceptionThrowsWithTheLegacyUnhandledExceptionPolicyEnabled()
+        {
+            HostSetup hostSetup = new HostSetup();
+            hostSetup.Configuration.LegacyUnhandledExceptionPolicyEnabled = true;
+
+            using (IHost host = Factory.CreateHost(hostSetup))
+            {
+                HostAssemblyResolverHook.Install(host);
+                host.DoCallback(ThrowUnhandledExceptionCallback);
+
+                // Ping the host a few times to ensure that the process does not terminate abruptly.
+                // In practice it may continue to service requests for a little while after the
+                // unhandled exception occurs.
+                for (int i = 0; i < 3; i++)
+                {
+                    Thread.Sleep(1000);
+                    host.Ping();
+                }
+            }
+        }
+        private static void ThrowUnhandledExceptionCallback()
+        {
+            Thread t = new Thread((ThreadStart)delegate
+            {
+                throw new Exception("Unhandled!");
+            });
+
+            t.Start();
         }
     }
 }

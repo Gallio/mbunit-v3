@@ -120,6 +120,7 @@ namespace Gallio.Echo
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "f",
              LongName = "filter",
+             ValueLabel = "expr",
              Description =
                    "A filter expression consists of one or more filter rules\n"
                  + "that may be combined using 'and', 'or', and 'not' and\n"

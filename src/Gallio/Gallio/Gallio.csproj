@@ -160,6 +160,9 @@
     <Compile Include="Framework\Patterns\TestParameterPatternAttribute.cs" />
     <Compile Include="Framework\Patterns\TestTypeDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Patterns\TestTypePatternAttribute.cs" />
+    <Compile Include="Framework\TestException.cs" />
+    <Compile Include="Framework\TestFailedException.cs" />
+    <Compile Include="Framework\TestInconclusiveException.cs" />
     <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentAttribute.cs" />
     <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentFlags.cs" />
     <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentParser.cs" />

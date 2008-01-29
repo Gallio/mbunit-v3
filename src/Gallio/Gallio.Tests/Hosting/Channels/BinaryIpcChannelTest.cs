@@ -32,6 +32,18 @@ namespace Gallio.Tests.Hosting.Channels
         private static readonly string PortName = typeof(BinaryIpcChannelTest).Name;
         private const string ServiceName = "Test";
 
+        [Test, ExpectedArgumentNullException]
+        public void BinaryIpcClientChannelConstructorThrowsIfPortNameIsNull()
+        {
+            new BinaryIpcClientChannel(null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void BinaryIpcServerChannelConstructorThrowsIfPortNameIsNull()
+        {
+            new BinaryIpcServerChannel(null);
+        }
+
         [Test]
         public void RegisteredServiceCanBeAccessedWithGetService()
         {

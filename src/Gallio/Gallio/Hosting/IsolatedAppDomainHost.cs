@@ -22,12 +22,22 @@ using System.Security.Policy;
 
 namespace Gallio.Hosting
 {
+    /// <summary>
     /// <para>
     /// An isolated app domain host is a <see cref="IHost"/> the runs code within an
     /// isolated <see cref="AppDomain" /> of this process.  Communication with the
     /// <see cref="AppDomain" /> occurs over an inter-<see cref="AppDomain" /> .Net
     /// remoting channel.
     /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The <see cref="IsolatedAppDomainHost" /> does not support the
+    /// <see cref="HostConfiguration.LegacyUnhandledExceptionPolicyEnabled" />
+    /// option because it seems to be ignored by the .Net runtime except when set on
+    /// the default AppDomain of the process.
+    /// </para>
+    /// </remarks>
     public class IsolatedAppDomainHost : RemoteHost
     {
         private AppDomain appDomain;
