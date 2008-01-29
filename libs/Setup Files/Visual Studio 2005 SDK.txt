@@ -2,3 +2,26 @@ The SDK is required for generating HxS help files for integration into Visual St
 
 Version 4.0:
 http://www.microsoft.com/downloads/details.aspx?familyid=51a5c65b-c020-4e08-8ac0-3eb9c06996f4&displaylang=en
+
+It is possible to install the SDK without Visual Studio.  Here's one way:
+
+1. Install a product that includes the MS Help 2.0 components such as Visual Studio Express,
+   SQL Server Express or the MSDN.
+
+2. Install the Windows SDK tools.
+
+3. Download the Visual Studio 2005 SDK.  These instructions were tested with VsSDKFebruary2007.exe.
+
+4. Extract the SDK executable to a temporary folder using a tool such as WinRAR.
+
+5. Run the MSIDb.exe program in %PROGRAMFILES%\Microsoft SDKs\Windows\v6.0\Bin.
+
+   * Open the 'vssdk.msi' file that was extracted in step 4.
+   * Export the LaunchConditions to the temporary folder.
+   * Edit the LaunchCondition.idt file that was created using a text editor to delete
+     the following line:
+       (DEVENV_DIR <> "") OR Installed	Visual Studio 2005 SDK can only be installed on machines with Visual Studio 2005 installed.
+   * Import the modified LaunchConditions back into the MSI.
+   * Quit the MSIDb program.
+
+6. Run the altered 'vssdki.msi' installer.
