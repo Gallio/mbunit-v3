@@ -71,8 +71,7 @@ namespace Gallio.NCoverIntegration
         {
             driver = new ProfilerDriver(settings);
 
-            if (settings.RegisterForUser)
-                driver.RegisterProfilerForUser();
+            RegisterProfilerIfNeeded();
 
             driver.Start(redirectOutput);
             if (!driver.MessageCenter.WaitForProfilerReadyEvent())
@@ -109,8 +108,7 @@ namespace Gallio.NCoverIntegration
                         }
                     }
 
-                    if (driver.Settings.RegisterForUser)
-                        driver.UnregisterProfilerForUser();
+                    UnregisterProfilerIfNeeded();
                 }
             }
             catch (Exception ex)
@@ -143,6 +141,32 @@ namespace Gallio.NCoverIntegration
             catch (Exception ex)
             {
                 Panic.UnhandledException("An exception occurred while waiting for the NCover profiler to exit.", ex);
+            }
+        }
+
+        private void RegisterProfilerIfNeeded()
+        {
+            if (driver.Settings.RegisterForUser)
+                driver.RegisterProfilerForUser();
+        }
+
+        private void UnregisterProfilerIfNeeded()
+        {
+            try
+            {
+                if (driver.Settings.RegisterForUser)
+                    driver.UnregisterProfilerForUser();
+            }
+            catch (ArgumentException)
+            {
+                // The exception we are ignoring here looks like this:
+                //     "System.ArgumentException: Cannot delete a subkey tree because the subkey does not exist."
+                //
+                // NCover does not check whether the driver has already been unregistered
+                // by other means.  This can happen if the user runs other instances NCover
+                // concurrently and one of those processes unregisters the profiler before
+                // we reach this code.  Fortunately the registration is only needed on application
+                // startup.
             }
         }
     }

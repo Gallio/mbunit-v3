@@ -3,25 +3,34 @@ The SDK is required for generating HxS help files for integration into Visual St
 Version 4.0:
 http://www.microsoft.com/downloads/details.aspx?familyid=51a5c65b-c020-4e08-8ac0-3eb9c06996f4&displaylang=en
 
-It is possible to install the SDK without Visual Studio.  Here's one way:
+===
 
-1. Install a product that includes the MS Help 2.0 components such as Visual Studio Express,
-   SQL Server Express or the MSDN.
+It is possible to install the SDK without Visual Studio.  Here is one way.
 
-2. Install the Windows SDK tools.
+These instructions were derived from: http://www.helpware.net/mshelp2/h2faq.htm
 
-3. Download the Visual Studio 2005 SDK.  These instructions were tested with VsSDKFebruary2007.exe.
+1. Download and install the Win32 developer tools component of the Windows SDK.
 
-4. Extract the SDK executable to a temporary folder using a tool such as WinRAR.
+2. Download and install a program that includes the MS HTML 2 shared components such as
+   SQL Server Express Edition or Visual Studio Express Edition.
 
-5. Run the MSIDb.exe program in %PROGRAMFILES%\Microsoft SDKs\Windows\v6.0\Bin.
+   Note: You can skip this step and still install the SDK.  However I have not tested
+         whether there are any adverse side effects on the MS HTML 2 Help Compiler
+         as a result.  If you try it out, let me know.  -- Jeff.
 
-   * Open the 'vssdk.msi' file that was extracted in step 4.
-   * Export the LaunchConditions to the temporary folder.
-   * Edit the LaunchCondition.idt file that was created using a text editor to delete
-     the following line:
-       (DEVENV_DIR <> "") OR Installed	Visual Studio 2005 SDK can only be installed on machines with Visual Studio 2005 installed.
-   * Import the modified LaunchConditions back into the MSI.
-   * Quit the MSIDb program.
+3. Download VsSDKFeburary2007.exe.   http://msdn2.microsoft.com/en-us/vstudio/aa700819.aspx
 
-6. Run the altered 'vssdki.msi' installer.
+4. Extract the SDK to a temporary folder using a tool such as WinRAR.
+
+5. Run %PROGRAMFILES%\Microsoft SDKs\Windows\v6.0\Bin\MsiDb.EXE.
+
+   * Open VSSDK.msi file that was extracted in step 4.
+   * Export the LaunchCondition element to the temporary directory.
+   * Edit the LaunchCondition.idt file in the temporary directory and delete the following two lines:
+       (DEVENV_DIR <> "") OR Installed Visual Studio 2005 SDK can only be installed on machines with Visual Studio 2005 installed.
+       DEXPLORE_DIR [ProductName] requires MSHelp 2.0 to be installed. You can get it from Visual Studio and MSDN Library.
+   * Import the modified LaunchCondition.idt file back into the MSI.
+   * Quit MsiDb.
+
+6. Run the altered VSSDK.msi installer.  It has now been altered to skip the Visual Studio check.
+

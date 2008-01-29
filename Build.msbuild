@@ -79,7 +79,7 @@
 
   <PropertyGroup>
     <RunnerType Condition="$(Coverage)">NCover</RunnerType>
-    <RunnerType Condition="! $(Coverage)">IsolatedAppDomain</RunnerType>
+    <RunnerType Condition="! $(Coverage)">IsolatedProcess</RunnerType>
   </PropertyGroup>
   <Target Name="Test">
     <Gallio Assemblies="@(TestAssembly)"
@@ -90,7 +90,7 @@
 	    RunnerType="$(RunnerType)"
             IgnoreFailures="true"
             ShowReports="$(ShowReports)">
-      <Output TaskParameter="ExitCode" PropertyName="MbUnitExitCode" />
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
 
     <NCoverExplorer Condition="$(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')"
@@ -105,8 +105,8 @@
     <Exec Command="cscript $(RootDir)\Run.vbs //nologo &quot;&quot;$(NCoverExplorerPath)\NCoverExplorer.exe&quot; &quot;$(BuildTempDir)\Coverage.xml&quot;&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')" />
 
-    <Warning Text="Some MbUnit tests failed!"
-             Condition="'$(MbUnitExitCode)'!='0'" />
+    <Warning Text="Some tests failed!"
+             Condition="'$(ExitCode)'!='0'" />
   </Target>
 
   <Target Name="Release"
