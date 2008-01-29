@@ -84,6 +84,7 @@
   <Target Name="Test">
     <Gallio Assemblies="@(TestAssembly)"
             WorkingDirectory="$(BuildTempDir)"
+            ApplicationBaseDirectory="$(BuildDir)"
             ReportDirectory="$(BuildReportsDir)"
             ReportTypes="$(ReportTypes)"
 	    RunnerType="$(RunnerType)"
