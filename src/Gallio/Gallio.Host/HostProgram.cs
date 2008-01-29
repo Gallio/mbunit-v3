@@ -65,7 +65,7 @@ namespace Gallio.Host
         }
 
         [STAThread]
-        [LoaderOptimization(LoaderOptimization.MultiDomain)]
+        //[LoaderOptimization(LoaderOptimization.MultiDomain)] // Disabled due to bug: http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=95157
         internal static int Main(string[] args)
         {
             return new HostProgram().Run(NativeConsole.Instance, args);

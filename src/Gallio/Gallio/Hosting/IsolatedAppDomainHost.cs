@@ -144,7 +144,9 @@ namespace Gallio.Hosting
         private static void ConfigureAppDomainSetupForCLR(AppDomainSetup appDomainSetup)
         {
             // NOTE: Loader optimization option not supported by Mono.
-            appDomainSetup.LoaderOptimization = LoaderOptimization.MultiDomain;
+
+            // Disabled due to bug: http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=95157
+            // appDomainSetup.LoaderOptimization = LoaderOptimization.MultiDomain;
         }
 
         private void InitializeHostService()

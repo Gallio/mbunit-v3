@@ -32,7 +32,8 @@ namespace Gallio.Icarus
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread, LoaderOptimization(LoaderOptimization.MultiDomain)]
+        [STAThread]
+        //[LoaderOptimization(LoaderOptimization.MultiDomain)] // Disabled due to bug: http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=95157
         public static void Main(string[] args)
         {
             Application.EnableVisualStyles();
