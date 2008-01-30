@@ -268,18 +268,22 @@ namespace Gallio.Concurrency
         /// <inheritdoc />
         protected override void AbortImpl()
         {
-            if (process != null && !process.HasExited)
+            Process cachedProcess = process;
+
+            if (cachedProcess != null && !cachedProcess.HasExited)
             {
                 LogAbort();
 
-                process.Kill();
+                cachedProcess.Kill();
             }
         }
 
         /// <inheritdoc />
         protected override bool JoinImpl(TimeSpan timeout)
         {
-            return process.WaitForExit((int) timeout.TotalMilliseconds);
+            Process cachedProcess = process;
+
+            return cachedProcess == null || cachedProcess.WaitForExit((int)timeout.TotalMilliseconds);
         }
 
         private void StartLogging()

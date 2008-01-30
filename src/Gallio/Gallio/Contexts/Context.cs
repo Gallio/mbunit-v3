@@ -189,7 +189,7 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Enters the null context with the current thread.
+        /// Enters the specified context with the current thread.
         /// </summary>
         /// <remarks>
         /// Conceptually this method pushes the specified context onto the context
@@ -206,7 +206,7 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Runs a block of code with a null context.
+        /// Runs a block of code with the specified context.
         /// </summary>
         /// <remarks>
         /// Conceptually this method pushes the specified context onto the context stack

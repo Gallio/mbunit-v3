@@ -86,12 +86,7 @@ namespace Gallio.Tests.Integration
                 launcher.ReportFormats.Add(@"Text");
 
                 using (logStreamWriter.BeginSection("Debug Output"))
-                {
-                    Context.RunWithContext(null, delegate
-                    {
-                        result = launcher.Run();
-                    });
-                }
+                    result = launcher.Run();
 
                 using (logStreamWriter.BeginSection("Text Report"))
                 {

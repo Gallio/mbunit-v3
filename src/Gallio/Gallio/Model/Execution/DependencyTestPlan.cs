@@ -132,14 +132,7 @@ namespace Gallio.Model.Execution
                     // to begin from a different thread even while the RunTests method
                     // is in progress to invalidate all monitors and help during a non-deterministic
                     // shutdown due to a timeout or cancelation.
-                    Factory<ITestController> rootTestControllerFactory = cachedRootTestMonitor.Test.TestControllerFactory;
-                    cachedRootTestMonitor = rootTestMonitor;
-
-                    if (rootTestControllerFactory != null)
-                    {
-                        using (ITestController controller = rootTestControllerFactory())
-                            controller.RunTests(progressMonitor, cachedRootTestMonitor);
-                    }
+                    RecursivelyRunAllTestsWithinANullContext(progressMonitor, cachedRootTestMonitor);
                 }
                 finally
                 {
@@ -218,6 +211,21 @@ namespace Gallio.Model.Execution
             lookupTable.Add(test, testMonitor);
             return testMonitor;
         }
+
+        private static void RecursivelyRunAllTestsWithinANullContext(IProgressMonitor progressMonitor, ITestMonitor cachedRootTestMonitor)
+        {
+            using (Context.EnterContext(null))
+            {
+                Factory<ITestController> rootTestControllerFactory = cachedRootTestMonitor.Test.TestControllerFactory;
+
+                if (rootTestControllerFactory != null)
+                {
+                    using (ITestController controller = rootTestControllerFactory())
+                        controller.RunTests(progressMonitor, cachedRootTestMonitor);
+                }
+            }
+        }
+
 
         private sealed class InternalContextHandler : IContextHandler, IDisposable
         {
