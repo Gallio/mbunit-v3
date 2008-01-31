@@ -27,7 +27,8 @@ namespace Gallio.Model.Execution
     public class RecursiveTestController : BaseTestController
     {
         /// <inheritdoc />
-        public override void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor)
+        public override void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor,
+            ITestInstance parentTestInstance)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
@@ -38,11 +39,12 @@ namespace Gallio.Model.Execution
             {
                 progressMonitor.BeginTask("Running tests.", rootTestMonitor.TestCount);
 
-                RunNonMasterTest(progressMonitor, rootTestMonitor);
+                RunNonMasterTest(progressMonitor, rootTestMonitor, parentTestInstance);
             }
         }
 
-        private static void RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor)
+        private static void RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor,
+            ITestInstance parentTestInstance)
         {
             Factory<ITestController> factory = testMonitor.Test.TestControllerFactory;
 
@@ -51,25 +53,27 @@ namespace Gallio.Model.Execution
                 // Delegate to the associated controller, if present.
                 using (ITestController controller = factory())
                 {
-                    controller.RunTests(progressMonitor.CreateSubProgressMonitor(testMonitor.TestCount), testMonitor);
+                    controller.RunTests(progressMonitor.CreateSubProgressMonitor(testMonitor.TestCount),
+                        testMonitor, parentTestInstance);
                 }
             }
             else
             {
-                RunNonMasterTest(progressMonitor, testMonitor);
+                RunNonMasterTest(progressMonitor, testMonitor, parentTestInstance);
             }
         }
 
-        private static void RunNonMasterTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor)
+        private static void RunNonMasterTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor,
+            ITestInstance parentTestInstance)
         {
             // Enter the scope of the test and recurse until we find a controller.
             progressMonitor.SetStatus(String.Format("Run test: {0}.", testMonitor.Test.Name));
 
-            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
+            ITestStepMonitor stepMonitor = testMonitor.StartRootStep(parentTestInstance);
             try
             {
                 foreach (ITestMonitor monitor in testMonitor.Children)
-                    RunTest(progressMonitor, monitor);
+                    RunTest(progressMonitor, monitor, stepMonitor.Step.TestInstance);
             }
             finally
             {

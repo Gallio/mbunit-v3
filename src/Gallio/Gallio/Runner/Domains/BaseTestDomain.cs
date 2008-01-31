@@ -32,7 +32,6 @@ namespace Gallio.Runner.Domains
     public abstract class BaseTestDomain : LongLivedMarshalByRefObject, ITestDomain
     {
         private bool disposed;
-        private ITestListener listener;
         private TestPackageData packageData;
         private TestModelData modelData;
 
@@ -50,7 +49,6 @@ namespace Gallio.Runner.Domains
             {
                 InternalDispose();
 
-                listener = null;
                 packageData = null;
                 modelData = null;
                 disposed = true;
@@ -75,20 +73,6 @@ namespace Gallio.Runner.Domains
                 ThrowIfDisposed();
                 return modelData;
             }
-        }
-
-        /// <summary>
-        /// Gets the event listener, or null if none was set.
-        /// </summary>
-        protected ITestListener Listener
-        {
-            get { return listener; }
-        }
-
-        /// <inheritdoc />
-        public void SetTestListener(ITestListener listener)
-        {
-            this.listener = listener;
         }
 
         /// <inheritdoc />
@@ -157,12 +141,14 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options)
+        public void RunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
-            if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
             if (options == null)
                 throw new ArgumentNullException("options");
+            if (listener == null)
+                throw new ArgumentNullException("listener");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
 
             ThrowIfDisposed();
 
@@ -173,7 +159,7 @@ namespace Gallio.Runner.Domains
                 if (modelData == null)
                     throw new InvalidOperationException("The test model has not been built.");
 
-                InternalRunTests(options, progressMonitor);
+                InternalRunTests(options, listener, progressMonitor);
             }
         }
 
@@ -202,8 +188,9 @@ namespace Gallio.Runner.Domains
         /// Internal implementation of <see cref="RunTests" />.
         /// </summary>
         /// <param name="options">The test execution options</param>
+        /// <param name="listener">The test listener for monitoring test execution</param>
         /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
-        protected abstract void InternalRunTests(TestExecutionOptions options, IProgressMonitor progressMonitor);
+        protected abstract void InternalRunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Internal implementation of <see cref="UnloadPackage" />.

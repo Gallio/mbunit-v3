@@ -38,21 +38,23 @@ namespace Gallio.Framework.Explorer
         }
 
         /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor)
+        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor,
+            ITestInstance parentTestInstance)
         {
             using (progressMonitor)
             {
                 progressMonitor.BeginTask("Running tests.", rootTestMonitor.TestCount);
 
-                RunTest(progressMonitor, rootTestMonitor, null);
+                RunTest(progressMonitor, rootTestMonitor, parentTestInstance, null);
             }
         }
 
-        private TestOutcome RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor, PatternTestState parentState)
+        private TestOutcome RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor, ITestInstance parentTestInstance,
+            PatternTestState parentState)
         {
             progressMonitor.SetStatus(String.Format("Run test: {0}.", testMonitor.Test.Name));
 
-            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
+            ITestStepMonitor stepMonitor = testMonitor.StartRootStep(parentTestInstance);
             try
             {
                 PatternTest test = (PatternTest)testMonitor.Test;
@@ -82,7 +84,7 @@ namespace Gallio.Framework.Explorer
                             {
                                 foreach (ITestMonitor child in testMonitor.Children)
                                 {
-                                    if (RunTest(progressMonitor, child, state) == TestOutcome.Failed)
+                                    if (RunTest(progressMonitor, child, stepMonitor.Step.TestInstance, state) == TestOutcome.Failed)
                                         outcome = TestOutcome.Failed;
                                 }
                             }

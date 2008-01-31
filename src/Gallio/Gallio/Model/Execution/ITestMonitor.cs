@@ -86,15 +86,21 @@ namespace Gallio.Model.Execution
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootStep"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="rootStep"/> is not the root
         /// step of an instance of this test</exception>
-        ITestStepMonitor StartTestInstance(ITestStep rootStep);
+        ITestStepMonitor StartRootStep(ITestStep rootStep);
 
         /// <summary>
-        /// Starts the root step of a new test instance as a child of the currently
-        /// executing test instance and returns its step monitor
-        /// using a default implementation of <see cref="ITestStep" />.
+        /// <para>
+        /// Starts the root step of a new test instance as a child of the specified
+        /// test instance and returns its step monitor.
+        /// </para>
+        /// <para>
+        /// This method is equivalent to calling <see cref="StartRootStep(ITestStep)" />
+        /// using a default implementation of <see cref="ITestStep" /> that is
+        /// initialized using <param name="parentTestInstance" />.
+        /// </para>
         /// </summary>
         /// <returns>The monitor for the root step of the test instance</returns>
-        /// <seealso cref="StartTestInstance(ITestStep)"/>
-        ITestStepMonitor StartTestInstance();
+        /// <seealso cref="StartRootStep(ITestStep)"/>
+        ITestStepMonitor StartRootStep(ITestInstance parentTestInstance);
     }
 }

@@ -102,7 +102,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestStepMonitor StartTestInstance(ITestStep rootStep)
+        public ITestStepMonitor StartRootStep(ITestStep rootStep)
         {
             if (rootStep == null)
                 throw new ArgumentNullException("rootStep");
@@ -115,11 +115,9 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestStepMonitor StartTestInstance()
+        public ITestStepMonitor StartRootStep(ITestInstance parentTestInstance)
         {
-            Context context = Context.CurrentContext;
-            return StartTestInstance(new BaseTestStep(new BaseTestInstance(test,
-                context != null ? context.TestInstance : null)));
+            return StartRootStep(new BaseTestStep(new BaseTestInstance(test, parentTestInstance)));
         }
 
         /// <summary>

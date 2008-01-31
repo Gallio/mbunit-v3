@@ -60,8 +60,7 @@ namespace Gallio.NAntTasks.Tests
             launcher.RuntimeSetup = null;
             launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
 
-            using (Context.EnterContext(null))
-                return base.RunLauncher(launcher);
+            return base.RunLauncher(launcher);
         }
 
         public override void Log(Level messageLevel, string message)

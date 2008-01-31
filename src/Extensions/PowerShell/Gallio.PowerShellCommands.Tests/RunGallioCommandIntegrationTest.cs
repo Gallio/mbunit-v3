@@ -25,16 +25,7 @@ namespace Gallio.PowerShellCommands.Tests
     /// <summary>
     /// Simple integration tests that ensures that the Cmdlet can be used from PowerShell.
     /// </summary>
-    /// <remarks>
-    /// This test will fail unless PowerShell is configured to allow executing scripts.
-    /// The easiest way to do it is by changing the execution policy to remote signed,
-    /// so local scripts can be run:
-    /// 
-    ///     Set-ExecutionPolicy RemoteSigned
-    /// 
-    /// </remarks>
     [TestFixture]
-    [Author("Julian Hidalgo")]
     [TestsOn(typeof(RunGallioCommand))]
     [Category("IntegrationTests")]
     public class RunGallioCommandIntegrationTest

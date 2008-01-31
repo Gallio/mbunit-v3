@@ -87,11 +87,13 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests(TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override void InternalRunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
             try
             {
-                proxy.RunTests(new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(1)), options);
+                proxy.RunTests(options,
+                    new RemoteTestListener(listener),
+                    new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(1)));
             }
             catch (Exception ex)
             {
@@ -139,9 +141,6 @@ namespace Gallio.Runner.Domains
                 {
                     progressMonitor.BeginTask("Connecting to the remote test domain.", 1);
                     proxy = InternalConnect(packageConfig, progressMonitor);
-
-                    if (Listener != null)
-                        proxy.SetTestListener(new RemoteTestListener(Listener));
                 }
             }
             catch (Exception ex)

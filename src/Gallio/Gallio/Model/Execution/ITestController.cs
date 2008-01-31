@@ -31,6 +31,9 @@ namespace Gallio.Model.Execution
         /// </remarks>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="rootTestMonitor">The root test monitor</param>
-        void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor);
+        /// <param name="parentTestInstance">The parent test instance or null when
+        /// running the tests should produce a root test</param>
+        void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor,
+            ITestInstance parentTestInstance);
     }
 }

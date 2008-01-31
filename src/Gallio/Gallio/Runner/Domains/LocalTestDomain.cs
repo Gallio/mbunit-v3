@@ -68,9 +68,6 @@ namespace Gallio.Runner.Domains
 
             progressMonitor.Worked(0.1);
 
-            if (Listener != null)
-                harness.EventDispatcher.Listeners.Add(Listener);
-
             harness.LoadTestPackage(packageConfig, progressMonitor.CreateSubProgressMonitor(0.9));
             return new TestPackageData(harness.TestPackage);
         }
@@ -83,9 +80,9 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests(TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override void InternalRunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
-            harness.RunTests(options, progressMonitor.CreateSubProgressMonitor(1));
+            harness.RunTests(options, listener, progressMonitor.CreateSubProgressMonitor(1));
         }
 
         /// <inheritdoc />

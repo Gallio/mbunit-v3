@@ -50,7 +50,8 @@ namespace Gallio.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor)
+        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor,
+            ITestInstance parentTestInstance)
         {
             ThrowIfDisposed();
 
@@ -60,7 +61,7 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.BeginTask(Resources.NUnitTestController_RunningNUnitTests, testMonitors.Count);
 
-                using (RunMonitor monitor = new RunMonitor(runner, testMonitors, progressMonitor))
+                using (RunMonitor monitor = new RunMonitor(runner, testMonitors, parentTestInstance, progressMonitor))
                 {
                     monitor.Run();
                 }
@@ -78,16 +79,18 @@ namespace Gallio.NUnitAdapter.Model
             private readonly IProgressMonitor progressMonitor;
             private readonly TestRunner runner;
             private readonly IList<ITestMonitor> testMonitors;
+            private readonly ITestInstance topTestInstance;
 
             private Dictionary<TestName, ITestMonitor> testMonitorsByTestName;
             private Stack<ITestStepMonitor> stepMonitorStack;
 
-            public RunMonitor(TestRunner runner, IList<ITestMonitor> testMonitors,
+            public RunMonitor(TestRunner runner, IList<ITestMonitor> testMonitors, ITestInstance topTestInstance,
                 IProgressMonitor progressMonitor)
             {
                 this.progressMonitor = progressMonitor;
                 this.runner = runner;
                 this.testMonitors = testMonitors;
+                this.topTestInstance = topTestInstance;
 
                 Initialize();
             }
@@ -216,7 +219,8 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.SetStatus(String.Format(Resources.NUnitTestController_StatusMessages_RunningTest, testMonitor.Test.Name));
 
-                ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
+                ITestInstance parentTestInstance = stepMonitorStack.Count != 0 ? stepMonitorStack.Peek().Step.TestInstance : topTestInstance;
+                ITestStepMonitor stepMonitor = testMonitor.StartRootStep(parentTestInstance);
                 stepMonitorStack.Push(stepMonitor);
             }
 

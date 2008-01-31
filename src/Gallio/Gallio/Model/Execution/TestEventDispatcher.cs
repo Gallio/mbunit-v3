@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using Gallio.Hosting;
 using Gallio.Utilities;
 
 namespace Gallio.Model.Execution
@@ -26,8 +24,6 @@ namespace Gallio.Model.Execution
     /// </summary>
     public class TestEventDispatcher : ITestListener
     {
-        private List<ITestListener> listeners;
-
         /// <summary>
         /// The event fired when notified of a test lifecycle event.
         /// </summary>
@@ -38,60 +34,16 @@ namespace Gallio.Model.Execution
         /// </summary>
         public EventHandler<LogEventArgs> ExecutionLog;
 
-        /// <summary>
-        /// Gets a list of listeners to which events are forwarded in addition
-        /// to the event handlers.
-        /// </summary>
-        public IList<ITestListener> Listeners
-        {
-            get
-            {
-                if (listeners == null)
-                    listeners = new List<ITestListener>();
-                return listeners;
-            }
-        }
-
         /// <inheritdoc />
         public void NotifyLogEvent(LogEventArgs e)
         {
             EventHandlerUtils.SafeInvoke(ExecutionLog, this, e);
-
-            if (listeners != null)
-            {
-                foreach (ITestListener listener in listeners)
-                {
-                    try
-                    {
-                        listener.NotifyLogEvent(e);
-                    }
-                    catch (Exception ex)
-                    {
-                        Panic.UnhandledException("A log event listener threw an exception.", ex);
-                    }
-                }
-            }
         }
 
         /// <inheritdoc />
         public void NotifyLifecycleEvent(LifecycleEventArgs e)
         {
             EventHandlerUtils.SafeInvoke(Lifecycle, this, e);
-
-            if (listeners != null)
-            {
-                foreach (ITestListener listener in listeners)
-                {
-                    try
-                    {
-                        listener.NotifyLifecycleEvent(e);
-                    }
-                    catch (Exception ex)
-                    {
-                        Panic.UnhandledException("A lifecycle event listener threw an exception.", ex);
-                    }
-                }
-            }
         }
     }
 }

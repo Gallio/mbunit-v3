@@ -69,12 +69,6 @@ namespace Gallio.Runner.Domains
         TestModelData TestModelData { get; }
 
         /// <summary>
-        /// Sets the test listener for the domain.
-        /// </summary>
-        /// <param name="listener">The listener</param>
-        void SetTestListener(ITestListener listener);
-
-        /// <summary>
         /// Loads a test package into the test domain.
         /// </summary>
         /// <param name="packageConfig">The test package configuration to load</param>
@@ -98,11 +92,13 @@ namespace Gallio.Runner.Domains
         /// <summary>
         /// Runs the tests.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="options">The test execution options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
+        /// <param name="listener">The test listener for monitoring test execution</param>
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/>,
+        /// <paramref name="listener"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTestModel" /> has not been called.</exception>
-        void RunTests(IProgressMonitor progressMonitor, TestExecutionOptions options);
+        void RunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Unloads the current test package so that the test domain can

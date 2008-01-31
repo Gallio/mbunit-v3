@@ -30,11 +30,6 @@ namespace Gallio.Runner.Harness
     public interface ITestHarness : IDisposable
     {
         /// <summary>
-        /// Gets the event dispatcher.
-        /// </summary>
-        TestEventDispatcher EventDispatcher { get; }
-
-        /// <summary>
         /// Gets the test package loaded in the test harness, or null if none.
         /// </summary>
         TestPackage TestPackage { get; }
@@ -82,9 +77,11 @@ namespace Gallio.Runner.Harness
         /// Runs the tests.
         /// </summary>
         /// <param name="options">The test execution options</param>
+        /// <param name="listener">The test listener for monitoring test execution</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/>,
+        /// <paramref name="listener"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTestModel" /> has not been called yet</exception>
-        void RunTests(TestExecutionOptions options, IProgressMonitor progressMonitor);
+        void RunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
     }
 }

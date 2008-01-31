@@ -214,14 +214,19 @@ namespace Gallio.Runner.Monitors
                     case LifecycleEventType.NewInstance:
                     {
                         TestInstanceData testInstanceData = e.TestInstanceData;
+                        if (testInstanceData.ParentId != null)
+                            EnsureTestInstanceIdIsValid(testInstanceData.ParentId);
+                        EnsureTestIdIsValid(testInstanceData.TestId);
+
                         testInstances.Add(testInstanceData.Id, testInstanceData);
                         break;
                     }
 
                     case LifecycleEventType.Start:
                     {
-                        TestInstanceData testInstanceData = testInstances[e.TestStepData.TestInstanceId];
-                        TestData testData = Runner.TestModelData.Tests[testInstanceData.TestId];
+                        TestInstanceData testInstanceData = GetTestInstanceData(e.TestStepData.TestInstanceId);
+                        TestData testData = GetTestData(testInstanceData.TestId);
+
                         TestStepRun testStepRun = new TestStepRun(e.TestStepData);
 
                         TestStepState state;
@@ -244,7 +249,7 @@ namespace Gallio.Runner.Monitors
                         }
                         else
                         {
-                            TestStepState parentState = GetStepData(e.TestStepData.ParentId);
+                            TestStepState parentState = GetTestStepState(e.TestStepData.ParentId);
                             parentState.TestStepRun.Children.Add(testStepRun);
 
                             state = new TestStepState(testData, parentState.TestInstanceRun, testStepRun);
@@ -258,21 +263,21 @@ namespace Gallio.Runner.Monitors
 
                     case LifecycleEventType.SetPhase:
                     {
-                        TestStepState state = GetStepData(e.StepId);
+                        TestStepState state = GetTestStepState(e.StepId);
                         NotifyStepLifecyclePhaseChanged(state, e.PhaseName);
                         break;
                     }
 
                     case LifecycleEventType.AddMetadata:
                     {
-                        TestStepState state = GetStepData(e.StepId);
+                        TestStepState state = GetTestStepState(e.StepId);
                         state.TestStepRun.Step.Metadata.Add(e.MetadataKey, e.MetadataValue);
                         break;
                     }
 
                     case LifecycleEventType.Finish:
                     {
-                        TestStepState state = GetStepData(e.StepId);
+                        TestStepState state = GetTestStepState(e.StepId);
                         state.TestStepRun.EndTime = DateTime.Now;
                         state.TestStepRun.Result = e.Result;
                         report.PackageRun.Statistics.MergeStepStatistics(state.TestStepRun,
@@ -291,15 +296,44 @@ namespace Gallio.Runner.Monitors
         {
             lock (report)
             {
-                TestStepState state = GetStepData(e.StepId);
+                TestStepState state = GetTestStepState(e.StepId);
 
                 e.ApplyToLogWriter(state.ExecutionLogWriter);
             }
         }
 
-        private TestStepState GetStepData(string stepId)
+        private void EnsureTestIdIsValid(string testId)
         {
-            return states[stepId];
+            GetTestData(testId);
+        }
+
+        private void EnsureTestInstanceIdIsValid(string testInstanceId)
+        {
+            GetTestInstanceData(testInstanceId);
+        }
+
+        private TestData GetTestData(string testId)
+        {
+            TestData testData;
+            if (!Runner.TestModelData.Tests.TryGetValue(testId, out testData))
+                throw new InvalidOperationException("The test id was not recognized.  It may belong to an earlier test run that has since completed.");
+            return testData;
+        }
+
+        private TestInstanceData GetTestInstanceData(string testInstanceId)
+        {
+            TestInstanceData testInstanceData;
+            if (!testInstances.TryGetValue(testInstanceId, out testInstanceData))
+                throw new InvalidOperationException("The test instance id was not recognized.  It may belong to an earlier test run that has since completed.");
+            return testInstanceData;
+        }
+
+        private TestStepState GetTestStepState(string testStepId)
+        {
+            TestStepState testStepData;
+            if (!states.TryGetValue(testStepId, out testStepData))
+                throw new InvalidOperationException("The test step id was not recognized.  It may belong to an earlier test run that has since completed.");
+            return testStepData;
         }
 
         private void NotifyStepStarting(TestStepState state)

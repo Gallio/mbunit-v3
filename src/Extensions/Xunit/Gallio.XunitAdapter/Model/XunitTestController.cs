@@ -43,17 +43,19 @@ namespace Gallio.XunitAdapter.Model
         }
 
         /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor)
+        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor,
+            ITestInstance parentTestInstance)
         {
             using (progressMonitor)
             {
                 progressMonitor.BeginTask(Resources.XunitTestController_RunningXunitTests, rootTestMonitor.TestCount);
 
-                RunTest(progressMonitor, rootTestMonitor);
+                RunTest(progressMonitor, rootTestMonitor, parentTestInstance);
             }
         }
 
-        private static bool RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor)
+        private static bool RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor,
+            ITestInstance parentTestInstance)
         {
             ITest test = testMonitor.Test;
             progressMonitor.SetStatus(String.Format(Resources.XunitTestController_StatusMessages_RunningTest, test.Name));
@@ -62,32 +64,34 @@ namespace Gallio.XunitAdapter.Model
             XunitTest xunitTest = test as XunitTest;
             if (xunitTest == null)
             {
-                passed = RunChildTests(progressMonitor, testMonitor);
+                passed = RunChildTests(progressMonitor, testMonitor, parentTestInstance);
             }
             else
             {
-                passed = RunTestFixture(testMonitor, xunitTest.TypeInfo);
+                passed = RunTestFixture(testMonitor, xunitTest.TypeInfo, parentTestInstance);
             }
 
             progressMonitor.Worked(1);
             return passed;
         }
 
-        private static bool RunChildTests(IProgressMonitor progressMonitor, ITestMonitor testMonitor)
+        private static bool RunChildTests(IProgressMonitor progressMonitor, ITestMonitor testMonitor,
+            ITestInstance parentTestInstance)
         {
-            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
+            ITestStepMonitor stepMonitor = testMonitor.StartRootStep(parentTestInstance);
 
             bool passed = true;
             foreach (ITestMonitor child in testMonitor.Children)
-                passed &= RunTest(progressMonitor, child);
+                passed &= RunTest(progressMonitor, child, stepMonitor.Step.TestInstance);
 
             stepMonitor.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
             return passed;
         }
 
-        private static bool RunTestFixture(ITestMonitor testMonitor, XunitTypeInfoAdapter typeInfo)
+        private static bool RunTestFixture(ITestMonitor testMonitor, XunitTypeInfoAdapter typeInfo,
+            ITestInstance parentTestInstance)
         {
-            ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
+            ITestStepMonitor stepMonitor = testMonitor.StartRootStep(parentTestInstance);
 
             ITestClassCommand testClassCommand;
             try
@@ -141,7 +145,8 @@ namespace Gallio.XunitAdapter.Model
                         testMethods.RemoveAt(nextTestIndex);
                         testMonitors.RemoveAt(nextTestIndex);
 
-                        passed &= RunTestMethod(nextTestMonitor, nextTestMethodInfo, testClassCommand);
+                        passed &= RunTestMethod(nextTestMonitor, nextTestMethodInfo, testClassCommand,
+                            stepMonitor.Step.TestInstance);
                     }
                 }
 
@@ -168,9 +173,9 @@ namespace Gallio.XunitAdapter.Model
             }
         }
 
-        private static bool RunTestMethod(ITestMonitor testMonitor, MethodInfo methodInfo, ITestClassCommand testClassCommand)
+        private static bool RunTestMethod(ITestMonitor testMonitor, MethodInfo methodInfo, ITestClassCommand testClassCommand,
+            ITestInstance parentTestInstance)
         {
-
             List<ITestCommand> testCommands;
             try
             {
@@ -179,7 +184,7 @@ namespace Gallio.XunitAdapter.Model
             catch (Exception ex)
             {
                 // Xunit can throw exceptions when making commands if the test is malformed.
-                ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
+                ITestStepMonitor stepMonitor = testMonitor.StartRootStep(parentTestInstance);
                 stepMonitor.LogWriter[LogStreamNames.Failures].WriteException(ex);
                 stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
                 return false;
@@ -188,7 +193,7 @@ namespace Gallio.XunitAdapter.Model
             bool passed = true;
             foreach (ITestCommand testCommand in testCommands)
             {
-                ITestStepMonitor stepMonitor = testMonitor.StartTestInstance();
+                ITestStepMonitor stepMonitor = testMonitor.StartRootStep(parentTestInstance);
                 passed &= RunTestCommandAndFinishStep(stepMonitor, testClassCommand, testCommand);
             }
 

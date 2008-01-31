@@ -221,7 +221,7 @@ namespace Gallio.Model.Execution
                 if (rootTestControllerFactory != null)
                 {
                     using (ITestController controller = rootTestControllerFactory())
-                        controller.RunTests(progressMonitor, cachedRootTestMonitor);
+                        controller.RunTests(progressMonitor, cachedRootTestMonitor, null);
                 }
             }
         }

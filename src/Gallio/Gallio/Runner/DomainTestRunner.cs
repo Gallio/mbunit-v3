@@ -66,10 +66,7 @@ namespace Gallio.Runner
                 ThrowIfDisposed();
 
                 if (domain == null)
-                {
                     domain = domainFactory.CreateDomain();
-                    domain.SetTestListener(eventDispatcher);
-                }
 
                 return domain;
             }
@@ -215,7 +212,8 @@ namespace Gallio.Runner
             {
                 EventHandlerUtils.SafeInvoke(RunTestsStarting, this, EventArgs.Empty);
 
-                Domain.RunTests(progressMonitor, testExecutionOptions);
+                using (ProxyTestListener proxyTestListener = new ProxyTestListener(eventDispatcher))
+                    Domain.RunTests(testExecutionOptions, proxyTestListener, progressMonitor);
             }
             finally
             {

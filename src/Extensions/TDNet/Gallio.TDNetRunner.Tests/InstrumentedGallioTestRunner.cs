@@ -34,9 +34,7 @@ namespace Gallio.TDNetRunner.Tests
         protected override TestLauncherResult RunLauncher(TestLauncher launcher)
         {
             launcher.RuntimeSetup = null;
-
-            using (Context.EnterContext(null))
-                return base.RunLauncher(launcher);
+            return base.RunLauncher(launcher);
         }
 
         public new TDF.TestRunState Run(TDF.ITestListener testListener, Assembly assembly, Filter<ITest> filter)

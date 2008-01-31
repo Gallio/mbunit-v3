@@ -76,9 +76,14 @@ namespace Gallio.Model.Execution
         ITestStepMonitor StartChildStep(ITestStep childStep);
 
         /// <summary>
-        /// 
-        /// Starts a child step of a test and returns its step monitor
-        /// using a default implementation of <see cref="ITestStep" />.
+        /// <para>
+        /// Starts a child step of a test and returns its step monitor.
+        /// </para>
+        /// <para>
+        /// This method is equivalent to calling <see cref="StartChildStep(ITestStep)" />
+        /// using a default implementation of <see cref="ITestStep" />
+        /// that is initialized with <paramref name="name"/> and <paramref name="codeElement"/>.
+        /// </para>
         /// </summary>
         /// <param name="name">The name of the step</param>
         /// <param name="codeElement">The code element, or null if none</param>

@@ -165,13 +165,11 @@ namespace Gallio.PowerShellCommands
                     {
                         WriteError(new ErrorRecord(ex, "An exception occurred in the message pump.", ErrorCategory.NotSpecified, "Gallio"));
                     }
-                    catch (PipelineStoppedException)
+                    catch (Exception)
                     {
-                        // May be thrown if the pipeline has already quit.
-                    }
-                    catch (NotImplementedException)
-                    {
-                        // May be thrown if the host does not implement WriteError.
+                        // Ignore the error since there's nothing we can do about it.
+                        // We probably can't even log the error because the logger will just end
+                        // up back in here.
                     }
                 }
             }

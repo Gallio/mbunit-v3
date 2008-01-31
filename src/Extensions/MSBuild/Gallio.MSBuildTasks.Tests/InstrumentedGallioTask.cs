@@ -33,8 +33,7 @@ namespace Gallio.MSBuildTasks.Tests
             launcher.RuntimeSetup = null;
             launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
 
-            using (Context.EnterContext(null))
-                return base.RunLauncher(launcher);
+            return base.RunLauncher(launcher);
         }
     }
 }

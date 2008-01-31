@@ -39,7 +39,6 @@ namespace Gallio.Runner.Harness
         private ITestPlanFactory testPlanFactory;
 
         private bool isDisposed;
-        private TestEventDispatcher eventDispatcher;
 
         private List<ITestFramework> frameworks;
         private List<ITestEnvironment> environments;
@@ -59,7 +58,6 @@ namespace Gallio.Runner.Harness
 
             this.testPlanFactory = testPlanFactory;
 
-            eventDispatcher = new TestEventDispatcher();
             frameworks = new List<ITestFramework>();
             environments = new List<ITestEnvironment>();
         }
@@ -74,16 +72,9 @@ namespace Gallio.Runner.Harness
                 package = null;
                 model = null;
                 testPlanFactory = null;
-                eventDispatcher = null;
                 frameworks = null;
                 environments = null;
             }
-        }
-
-        /// <inheritdoc />
-        public TestEventDispatcher EventDispatcher
-        {
-            get { return eventDispatcher; }
         }
 
         /// <inheritdoc />
@@ -224,12 +215,14 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public void RunTests(TestExecutionOptions options, IProgressMonitor progressMonitor)
+        public void RunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
-            if (progressMonitor == null)
-                throw new ArgumentNullException(@"progressMonitor");
             if (options == null)
                 throw new ArgumentNullException(@"options");
+            if (listener == null)
+                throw new ArgumentNullException("listener");
+            if (progressMonitor == null)
+                throw new ArgumentNullException(@"progressMonitor");
 
             ThrowIfDisposed();
 
@@ -249,7 +242,7 @@ namespace Gallio.Runner.Harness
                     progressMonitor.Worked(5);
                     progressMonitor.SetStatus(@"");
 
-                    ITestPlan plan = testPlanFactory.CreateTestPlan(eventDispatcher);
+                    ITestPlan plan = testPlanFactory.CreateTestPlan(listener);
                     try
                     {
                         plan.ScheduleTests(progressMonitor.CreateSubProgressMonitor(5), model, options);

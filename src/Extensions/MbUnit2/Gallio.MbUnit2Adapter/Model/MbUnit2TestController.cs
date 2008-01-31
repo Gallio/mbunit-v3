@@ -53,7 +53,8 @@ namespace Gallio.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor)
+        public void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor,
+            ITestInstance parentTestInstance)
         {
             ThrowIfDisposed();
 
@@ -67,7 +68,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 IList<ITestMonitor> testMonitors = rootTestMonitor.GetAllMonitors();
 
                 using (InstrumentedFixtureRunner fixtureRunner = new InstrumentedFixtureRunner(fixtureExplorer,
-                    testMonitors, progressMonitor))
+                    testMonitors, progressMonitor, parentTestInstance))
                 {
                     fixtureRunner.Run();
                 }
@@ -85,6 +86,7 @@ namespace Gallio.MbUnit2Adapter.Model
             private readonly FixtureExplorer fixtureExplorer;
             private readonly IList<ITestMonitor> testMonitors;
             private readonly IProgressMonitor progressMonitor;
+            private readonly ITestInstance topTestInstance;
 
             private HashSet<Type> includedFixtureTypes;
 
@@ -97,11 +99,12 @@ namespace Gallio.MbUnit2Adapter.Model
             private double workUnit;
 
             public InstrumentedFixtureRunner(FixtureExplorer fixtureExplorer,
-                IList<ITestMonitor> testMonitors, IProgressMonitor progressMonitor)
+                IList<ITestMonitor> testMonitors, IProgressMonitor progressMonitor, ITestInstance topTestInstance)
             {
                 this.fixtureExplorer = fixtureExplorer;
                 this.progressMonitor = progressMonitor;
                 this.testMonitors = testMonitors;
+                this.topTestInstance = topTestInstance;
 
                 Initialize();
             }
@@ -342,7 +345,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 if (assemblyTestMonitor == null)
                     return;
 
-                ITestStepMonitor assemblyStepMonitor = assemblyTestMonitor.StartTestInstance();
+                ITestStepMonitor assemblyStepMonitor = assemblyTestMonitor.StartRootStep(topTestInstance);
                 activeStepMonitors.Add(assemblyTestMonitor, assemblyStepMonitor);
             }
 
@@ -362,8 +365,11 @@ namespace Gallio.MbUnit2Adapter.Model
                 ITestMonitor fixtureTestMonitor;
                 if (!fixtureTestMonitors.TryGetValue(fixture, out fixtureTestMonitor))
                     return;
+                ITestStepMonitor assemblyStepMonitor;
+                if (!activeStepMonitors.TryGetValue(assemblyTestMonitor, out assemblyStepMonitor))
+                    return;
 
-                ITestStepMonitor fixtureStepMonitor = fixtureTestMonitor.StartTestInstance();
+                ITestStepMonitor fixtureStepMonitor = fixtureTestMonitor.StartRootStep(assemblyStepMonitor.Step.TestInstance);
                 activeStepMonitors.Add(fixtureTestMonitor, fixtureStepMonitor);
             }
 
@@ -386,8 +392,14 @@ namespace Gallio.MbUnit2Adapter.Model
                 ITestMonitor runPipeTestMonitor;
                 if (!runPipeTestMonitors.TryGetValue(runPipe, out runPipeTestMonitor))
                     return;
+                ITestMonitor fixtureTestMonitor;
+                if (!fixtureTestMonitors.TryGetValue(runPipe.Fixture, out fixtureTestMonitor))
+                    return;
+                ITestStepMonitor fixtureStepMonitor;
+                if (!activeStepMonitors.TryGetValue(fixtureTestMonitor, out fixtureStepMonitor))
+                    return;
 
-                ITestStepMonitor runPipeStepMonitor = runPipeTestMonitor.StartTestInstance();
+                ITestStepMonitor runPipeStepMonitor = runPipeTestMonitor.StartRootStep(fixtureStepMonitor.Step.TestInstance);
                 activeStepMonitors.Add(runPipeTestMonitor, runPipeStepMonitor);
             }
 
