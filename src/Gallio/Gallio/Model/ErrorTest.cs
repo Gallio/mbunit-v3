@@ -16,6 +16,7 @@
 using System;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -44,6 +45,19 @@ namespace Gallio.Model
 
             if (longDescription != null)
                 Metadata.SetValue(MetadataKeys.Description, longDescription);
+        }
+
+        /// <summary>
+        /// Creates an error test from the specified exception.
+        /// </summary>
+        /// <param name="codeElement">The code element that was being processed
+        /// when the error was encountered, or null if unknown</param>
+        /// <param name="shortDescription">The short description of the error to use as part of the test name</param>
+        /// <param name="exception">The exception, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="shortDescription"/> is null</exception>
+        public ErrorTest(ICodeElementInfo codeElement, string shortDescription, Exception exception)
+            : this(codeElement, shortDescription, exception != null ? ExceptionUtils.SafeToString(exception) : null)
+        {
         }
 
         /// <inheritdoc />

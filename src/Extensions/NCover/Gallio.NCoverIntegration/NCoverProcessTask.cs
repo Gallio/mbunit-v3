@@ -19,6 +19,7 @@ using System.IO;
 using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Hosting;
+using Gallio.Utilities;
 using NCover.Framework;
 
 namespace Gallio.NCoverIntegration
@@ -113,7 +114,7 @@ namespace Gallio.NCoverIntegration
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("An exception occurred while shutting down the NCover profiler.", ex);
+                UnhandledExceptionPolicy.Report("An exception occurred while shutting down the NCover profiler.", ex);
             }
             finally
             {
@@ -140,7 +141,7 @@ namespace Gallio.NCoverIntegration
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("An exception occurred while waiting for the NCover profiler to exit.", ex);
+                UnhandledExceptionPolicy.Report("An exception occurred while waiting for the NCover profiler to exit.", ex);
             }
         }
 

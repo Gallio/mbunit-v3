@@ -13,27 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.PowerShellCommands;
 using Gallio.Runner;
+using Microsoft.Build.Framework;
+using Rhino.Mocks;
+using MbUnit.Framework;
 
-namespace Gallio.PowerShellCommands.Tests
+namespace Gallio.MSBuildTasks.Tests
 {
     /// <summary>
-    /// Makes it possible to unit test the <see cref="RunGallioCommand" /> cmdlet.
-    /// In particular we need to disable the initialization of a new runtime
-    /// because it will conflict with the test execution environment.
+    /// Makes it possible to unit test the <see cref="Gallio" /> task by exposing
+    /// the <see cref="RunLauncher" /> method so that it can be mocked.
     /// </summary>
-    internal class InstrumentedRunGallioCommand : RunGallioCommand
+    internal class StubbedGallioTask : Gallio
     {
-        public new TestLauncherResult ExecuteWithMessagePump()
+        public delegate TestLauncherResult RunLauncherDelegate(TestLauncher launcher);
+
+        private RunLauncherDelegate action;
+
+        public StubbedGallioTask()
         {
-            return base.ExecuteWithMessagePump();
+            BuildEngine = MockRepository.GenerateStub<IBuildEngine>();
+        }
+
+        public void SetRunLauncherAction(RunLauncherDelegate action)
+        {
+            this.action = action;
         }
 
         protected override TestLauncherResult RunLauncher(TestLauncher launcher)
         {
-            launcher.RuntimeSetup = null;
-            return base.RunLauncher(launcher);
+            Assert.IsNotNull(action, "The run launcher method should not have been called because no action was set.");
+            return action(launcher);
         }
     }
 }

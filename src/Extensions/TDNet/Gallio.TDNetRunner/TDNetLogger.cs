@@ -15,6 +15,7 @@
 
 using System;
 using Castle.Core.Logging;
+using Gallio.Utilities;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
 
@@ -75,7 +76,7 @@ namespace Gallio.TDNetRunner
             }
 
             if (exception != null)
-                tdNetLogger.WriteLine(exception.ToString(), Category.Error);
+                tdNetLogger.WriteLine(ExceptionUtils.SafeToString(exception), Category.Error);
         }
 
         /// <inheritdoc />

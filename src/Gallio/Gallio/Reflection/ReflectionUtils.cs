@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using Gallio.Collections;
-using Gallio.Model;
 using Gallio.Properties;
 
 namespace Gallio.Reflection
@@ -122,11 +121,11 @@ namespace Gallio.Reflection
         }
 
         /// <summary>
-        /// Checks that the method has the specified signature otherwise throws a <see cref="ModelException" />.
+        /// Checks that the method has the specified signature otherwise throws a <see cref="InvalidOperationException" />.
         /// </summary>
         /// <param name="method">The method</param>
         /// <param name="signature">The list of parameter types (all input parameters)</param>
-        /// <exception cref="ModelException">Thrown if the method has a different signature</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the method has a different signature</exception>
         public static void CheckMethodSignature(IMethodInfo method, params ITypeInfo[] signature)
         {
             IList<IParameterInfo> parameters = method.Parameters;
@@ -159,7 +158,7 @@ namespace Gallio.Reflection
                 return parameter.ValueType.FullName;
             });
 
-            throw new ModelException(String.Format(CultureInfo.CurrentCulture,
+            throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
                 Resources.ModelUtils_InvalidSignature,
                 string.Join(@", ", expectedTypeNames),
                 string.Join(@", ", actualTypeNames)));

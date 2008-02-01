@@ -48,11 +48,15 @@
   <ItemGroup>
     <Compile Include="RunGallioCommandIntegrationTest.cs" />
     <Compile Include="RunGallioCommandUnitTest.cs" />
-    <Compile Include="InstrumentedRunGallioCommand.cs" />
+    <Compile Include="StubbedRunGallioCommand.cs" />
     <Compile Include="CommandLoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.Host\Gallio.Host.csproj">
+      <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
+      <Name>Gallio.Host</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
       <Name>MbUnit.TestResources</Name>

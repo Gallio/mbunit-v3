@@ -17,6 +17,7 @@ using System;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using Gallio.Hosting;
+using Gallio.Utilities;
 
 namespace Gallio.Hosting.ProgressMonitoring
 {
@@ -61,7 +62,7 @@ namespace Gallio.Hosting.ProgressMonitoring
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not remotely register the progress monitor callback dispatcher.", ex);
+                UnhandledExceptionPolicy.Report("Could not remotely register the progress monitor callback dispatcher.", ex);
             }
         }
 
@@ -153,7 +154,7 @@ namespace Gallio.Hosting.ProgressMonitoring
                     }
                     catch (Exception ex)
                     {
-                        Panic.UnhandledException("Could not remotely dispatch cancelation event.", ex);
+                        UnhandledExceptionPolicy.Report("Could not remotely dispatch cancelation event.", ex);
                     }
                 };
             }
@@ -180,7 +181,7 @@ namespace Gallio.Hosting.ProgressMonitoring
                 }
                 catch (Exception ex)
                 {
-                    Panic.UnhandledException("Could not locally dispatch cancelation event.", ex);
+                    UnhandledExceptionPolicy.Report("Could not locally dispatch cancelation event.", ex);
                 }
             }
         }

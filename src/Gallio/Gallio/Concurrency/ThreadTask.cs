@@ -16,7 +16,7 @@
 using System;
 using System.Threading;
 using Gallio;
-using Gallio.Hosting;
+using Gallio.Utilities;
 
 namespace Gallio.Concurrency
 {
@@ -141,7 +141,7 @@ namespace Gallio.Concurrency
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("An unhandled exception occurred in a thread task.", ex);
+                UnhandledExceptionPolicy.Report("An unhandled exception occurred in a thread task.", ex);
             }
         }
 

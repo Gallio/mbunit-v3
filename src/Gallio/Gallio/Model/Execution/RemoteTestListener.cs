@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Hosting;
+using Gallio.Utilities;
 
 namespace Gallio.Model.Execution
 {
@@ -50,7 +51,7 @@ namespace Gallio.Model.Execution
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not remotely dispatch lifecycle event.", ex);
+                UnhandledExceptionPolicy.Report("Could not remotely dispatch lifecycle event.", ex);
             }
         }
 
@@ -63,7 +64,7 @@ namespace Gallio.Model.Execution
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not remotely dispatch log event.", ex);
+                UnhandledExceptionPolicy.Report("Could not remotely dispatch log event.", ex);
             }
         }
 
@@ -87,7 +88,7 @@ namespace Gallio.Model.Execution
                 }
                 catch (Exception ex)
                 {
-                    Panic.UnhandledException("Could not locally dispatch lifecycle event.", ex);
+                    UnhandledExceptionPolicy.Report("Could not locally dispatch lifecycle event.", ex);
                 }
             }
 
@@ -99,7 +100,7 @@ namespace Gallio.Model.Execution
                 }
                 catch (Exception ex)
                 {
-                    Panic.UnhandledException("Could not locally dispatch log event.", ex);
+                    UnhandledExceptionPolicy.Report("Could not locally dispatch log event.", ex);
                 }
             }
         }

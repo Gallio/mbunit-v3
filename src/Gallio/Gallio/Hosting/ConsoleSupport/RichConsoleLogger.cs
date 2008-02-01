@@ -15,6 +15,7 @@
 
 using System;
 using Castle.Core.Logging;
+using Gallio.Utilities;
 
 namespace Gallio.Hosting.ConsoleSupport
 {
@@ -81,7 +82,7 @@ namespace Gallio.Hosting.ConsoleSupport
                     console.WriteLine(message);
 
                     if (exception != null)
-                        console.WriteLine(Indent(exception.ToString()));
+                        console.WriteLine(Indent(ExceptionUtils.SafeToString(exception)));
 
                     if (!console.IsRedirected)
                     {

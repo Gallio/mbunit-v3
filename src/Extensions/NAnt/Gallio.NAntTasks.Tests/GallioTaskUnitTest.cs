@@ -14,13 +14,17 @@
 // limitations under the License.
 
 using System;
+using System.IO;
+using Gallio.Hosting;
+using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Runner;
-using MbUnit.TestResources;
+using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Gallio.NAntTasks;
 using NAnt.Core;
 using NAnt.Core.Types;
-using Rhino.Mocks;
 
 namespace Gallio.NAntTasks.Tests
 {
@@ -33,233 +37,190 @@ namespace Gallio.NAntTasks.Tests
     /// should exhibit a similar behavior and features set.
     /// </remarks>
     [TestFixture]
-    [Author("Julian Hidalgo")]
     [TestsOn(typeof(GallioTask))]
     [Category("UnitTests")]
     public class GallioTaskUnitTest
     {
-        #region Private Members
-
-        private FileSet[] assemblies;
-        private readonly string resultProperty = "ExitCode";
-        private readonly string resultPropertiesPrefix = "Gallio.";
-
-        #endregion
-
-        #region SetUp and TearDown
-
-        [TestFixtureSetUp]
-        public void FixtureSetUp()
-        {
-            FileSet fs = new FileSet();
-            string testAssemblyPath = new Uri(typeof(SimpleTest).Assembly.CodeBase).LocalPath;
-            fs.FileNames.Add(testAssemblyPath);
-            assemblies = new FileSet[] { fs };
-        }
-
-        #endregion
-
-        #region Tests
-
         [Test]
-        public void RunWithNoArguments()
+        public void TaskPassesDefaultArgumentsToLauncher()
         {
-            InstrumentedGallioTask task = CreateTask();
-            task.Execute();
-            AssertResult(task, ResultCode.NoTests);
-            // If nothing ran then all the statistics properties should be set to zero
-            AssertResultProperty(task, "TestCount", 0);
-            AssertResultProperty(task, "PassCount", 0);
-            AssertResultProperty(task, "FailureCount", 0);
-            AssertResultProperty(task, "IgnoreCount", 0);
-            AssertResultProperty(task, "InconclusiveCount", 0);
-            AssertResultProperty(task, "RunCount", 0);
-            AssertResultProperty(task, "SkipCount", 0);
-            AssertResultProperty(task, "AssertCount", 0);
-            AssertResultProperty(task, "Duration", 0);
-        }
+            StubbedGallioTask task = new StubbedGallioTask();
 
-        [Test]
-        public void NullReportTypes()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.ReportTypes = null;
-            // Just make sure it doesn't crash
-            task.Execute();
-        }
-
-        [Test]
-        public void EmptyReportTypes()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.ReportTypes = String.Empty;
-            // Just make sure it doesn't crash
-            task.Execute();
-        }
-
-        [Test]
-        public void NullReportDirectory()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.ReportDirectory = null;
-            // Just make sure it doesn't crash
-            task.Execute();
-        }
-
-        [Test]
-        public void NullReportNameFormat()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.ReportNameFormat = null;
-            // Just make sure it doesn't crash
-            task.Execute();
-        }
-
-        [Test]
-        [ExpectedException(typeof(BuildException))]
-        public void RunAssembly()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.Assemblies = assemblies;
-            task.FailOnError = true;
-            try
+            task.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                task.Execute();
-            }
-            catch (BuildException)
+                Assert.IsFalse(launcher.DoNotRun);
+                Assert.IsTrue(launcher.EchoResults);
+                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.Filter);
+                Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
+                Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
+                Assert.AreEqual("", launcher.ReportDirectory);
+                Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
+                Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
+                Assert.IsFalse(launcher.ShowReports);
+                Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
+
+                Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
+                Assert.AreEqual(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
+                Assert.IsNull(launcher.RuntimeSetup.RuntimeFactoryType);
+
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
+
+                Assert.AreEqual("", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+                Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+                Assert.AreEqual("", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+
+                TestLauncherResult result = new TestLauncherResult(new Report());
+                result.SetResultCode(ResultCode.Success);
+                return result;
+            });
+
+            InterimAssert.DoesNotThrow(delegate { task.InternalExecute(); });
+        }
+
+        [Test]
+        public void TaskPassesSpecifiedArgumentsToLauncher()
+        {
+            StubbedGallioTask task = new StubbedGallioTask();
+            task.DoNotRun = true;
+            task.EchoResults = false;
+            task.Filter = "Type: SimpleTest";
+            task.ReportDirectory = "dir";
+            task.ReportTypes = "XML;Html";
+            task.ReportNameFormat = "report";
+            task.ShowReports = true;
+            task.RunnerType = StandardTestRunnerFactoryNames.LocalAppDomain;
+
+            task.PluginDirectories = new DirSet[] { CreateDirSet("plugin") };
+            task.Assemblies = new FileSet[] { CreateFileSet("assembly1"), CreateFileSet("assembly2") };
+            task.HintDirectories = new DirSet[] { CreateDirSet("hint1"), CreateDirSet("hint2") };
+
+            task.ApplicationBaseDirectory = "baseDir";
+            task.ShadowCopy = true;
+            task.WorkingDirectory = "workingDir";
+
+            task.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                AssertResult(task, ResultCode.Failure);
-                throw;
-            }
+                Assert.IsTrue(launcher.DoNotRun);
+                Assert.IsFalse(launcher.EchoResults);
+                Assert.AreEqual("Type: SimpleTest", launcher.Filter.ToFilterExpr());
+                Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
+                Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
+                Assert.AreEqual("dir", launcher.ReportDirectory);
+                Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
+                CollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
+                Assert.AreEqual("report", launcher.ReportNameFormat);
+                Assert.IsTrue(launcher.ShowReports);
+                Assert.AreEqual(StandardTestRunnerFactoryNames.LocalAppDomain, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
+
+                Assert.AreEqual(0, launcher.CustomMonitors.Count);
+
+                Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
+                Assert.AreEqual(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
+                CollectionAssert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
+                Assert.IsNull(launcher.RuntimeSetup.RuntimeFactoryType);
+
+                CollectionAssert.AreElementsEqual(new string[] { "assembly1", "assembly2" }, launcher.TestPackageConfig.AssemblyFiles);
+                CollectionAssert.AreElementsEqual(new string[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
+
+                Assert.AreEqual("baseDir", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+                Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+                Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+
+                TestLauncherResult result = new TestLauncherResult(new Report());
+                result.SetResultCode(ResultCode.NoTests);
+                return result;
+            });
+
+            InterimAssert.DoesNotThrow(delegate { task.InternalExecute(); });
         }
 
         [Test]
-        public void RunAssemblyAndIgnoreFailures()
+        public void TaskExposesResultsReturnedByLauncher()
         {
-            InstrumentedGallioTask task = CreateTask();
-            task.Assemblies = assemblies;
-            task.Execute();
-            AssertResult(task, ResultCode.Failure);
+            StubbedGallioTask task = new StubbedGallioTask();
+            task.ResultProperty = "ExitCode";
+            task.StatisticsPropertiesPrefix = "Stats.";
+
+            task.SetRunLauncherAction(delegate
+            {
+                Report report = new Report();
+                report.PackageRun = new PackageRun();
+                report.PackageRun.Statistics.AssertCount = 42;
+                report.PackageRun.Statistics.Duration = 1.5;
+                report.PackageRun.Statistics.FailureCount = 5;
+                report.PackageRun.Statistics.IgnoreCount = 2;
+                report.PackageRun.Statistics.InconclusiveCount = 11;
+                report.PackageRun.Statistics.PassCount = 21;
+                report.PackageRun.Statistics.SkipCount = 1;
+                report.PackageRun.Statistics.StepCount = 30;
+                report.PackageRun.Statistics.TestCount = 28;
+
+                TestLauncherResult result = new TestLauncherResult(report);
+                result.SetResultCode(ResultCode.Failure);
+                return result;
+            });
+
+            InterimAssert.Throws<BuildException>(delegate { task.InternalExecute(); });
+
+            Assert.AreEqual(ResultCode.Failure.ToString(), task.Properties["ExitCode"]);
+            Assert.AreEqual("42", task.Properties["Stats.AssertCount"]);
+            Assert.AreEqual("1.5", task.Properties["Stats.Duration"]);
+            Assert.AreEqual("5", task.Properties["Stats.FailureCount"]);
+            Assert.AreEqual("2", task.Properties["Stats.IgnoreCount"]);
+            Assert.AreEqual("11", task.Properties["Stats.InconclusiveCount"]);
+            Assert.AreEqual("21", task.Properties["Stats.PassCount"]);
+            Assert.AreEqual("1", task.Properties["Stats.SkipCount"]);
+            Assert.AreEqual("30", task.Properties["Stats.StepCount"]);
+            Assert.AreEqual("28", task.Properties["Stats.TestCount"]);
         }
 
         [Test]
-        public void RunType()
+        public void FailOnErrorWhenSetToFalseCausesABuildExceptionToNotBeThrownOnFailures()
         {
-            InstrumentedGallioTask task = CreateTask();
-            task.Assemblies = assemblies;
-            task.Filter = "Type: MbUnit.TestResources.PassingTests";
-            task.Execute();
-            AssertResult(task, ResultCode.Success);
-            AssertResultProperty(task, "TestCount", 2);
-            AssertResultProperty(task, "PassCount", 2);
-            AssertResultProperty(task, "FailureCount", 0);
-            AssertDurationIsGreaterThanZero(task);
-            // The assert count is not reliable but we should be fine with simple asserts
-            AssertResultProperty(task, "AssertCount", 3);
-        }
-
-        [Test]
-        public void RunFailingFixture()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.Assemblies = assemblies;
-            task.Filter = "Type: MbUnit.TestResources.FailingTests";
-            task.Execute();
-            AssertResult(task, ResultCode.Failure);
-            AssertResultProperty(task, "TestCount", 2);
-            AssertResultProperty(task, "PassCount", 0);
-            AssertResultProperty(task, "FailureCount", 2);
-            AssertDurationIsGreaterThanZero(task);
-            // The assert count is not reliable but we should be fine with simple asserts
-            AssertResultProperty(task, "AssertCount", 0);
-        }
-
-        [Test]
-        public void RunSingleTest()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.Assemblies = assemblies;
-            task.Filter = "Type: MbUnit.TestResources.PassingTests and Member: Pass";
-            task.Execute();
-            AssertResult(task, ResultCode.Success);
-            AssertResultProperty(task, "TestCount", 1);
-            AssertResultProperty(task, "PassCount", 1);
-            AssertResultProperty(task, "FailureCount", 0);
-            AssertDurationIsGreaterThanZero(task);
-            // The assert count is not reliable but we should be fine with simple asserts
-            AssertResultProperty(task, "AssertCount", 3);
-        }
-
-        [Test]
-        public void RunSingleFailingTest()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.Assemblies = assemblies;
-            task.Filter = "Type: MbUnit.TestResources.FailingTests and Member: Fail";
-            task.Execute();
-            AssertResult(task, ResultCode.Failure);
-            AssertResultProperty(task, "TestCount", 1);
-            AssertResultProperty(task, "PassCount", 0);
-            AssertResultProperty(task, "FailureCount", 1);
-            AssertDurationIsGreaterThanZero(task);
-            // The assert count is not reliable but we should be fine with simple asserts
-            AssertResultProperty(task, "AssertCount", 0);
-        }
-
-        [Test]
-        public void RunIgnoredTests()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            task.Assemblies = assemblies;
-            task.Filter = "Type: MbUnit.TestResources.IgnoredTests";
-            task.Execute();
-            AssertResult(task, ResultCode.Success);
-            AssertResultProperty(task, "TestCount", 1);
-            AssertResultProperty(task, "IgnoreCount", 1);
-            AssertDurationIsGreaterThanZero(task);
-        }
-
-        [Test]
-        public void AddHintAndPluginDirectories()
-        {
-            InstrumentedGallioTask task = CreateTask();
-            DirSet ds = new DirSet();
-            ds.FileNames.Add(@"C:\Windows");
-            task.HintDirectories = new DirSet[] { ds };
-            task.PluginDirectories = new DirSet[] { ds };
-            task.Execute();
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private InstrumentedGallioTask CreateTask()
-        {
-            InstrumentedGallioTask task = new InstrumentedGallioTask();
-            task.InitializeTaskConfiguration();
+            StubbedGallioTask task = new StubbedGallioTask();
             task.FailOnError = false;
-            task.ResultProperty = resultProperty;
-            task.ResultPropertiesPrefix = resultPropertiesPrefix;
 
-            return task;
+            task.SetRunLauncherAction(delegate
+            {
+                TestLauncherResult result = new TestLauncherResult(new Report());
+                result.SetResultCode(ResultCode.Failure);
+                return result;
+            });
+
+            InterimAssert.DoesNotThrow(delegate { task.InternalExecute(); });
         }
 
-        private void AssertResult(Element task, int expectedValue)
+        [Test]
+        public void ExceptionsCauseTheTaskToFailRegardlessOfFailOnError()
         {
-            Assert.AreEqual(task.Properties[resultProperty], expectedValue.ToString());
+            StubbedGallioTask task = new StubbedGallioTask();
+            task.FailOnError = false;
+
+            task.SetRunLauncherAction(delegate
+            {
+                throw new Exception("Simulated error.");
+            });
+
+            InterimAssert.Throws<Exception>(delegate { task.InternalExecute(); });
         }
 
-        private void AssertResultProperty(Element task, string name, int expectedValue)
+        private static DirSet CreateDirSet(string dirName)
         {
-            Assert.AreEqual(task.Properties[resultPropertiesPrefix + name], expectedValue.ToString());
+            DirSet dirSet = new DirSet();
+            dirSet.DirectoryNames.Add(dirName);
+            return dirSet;
         }
 
-        private void AssertDurationIsGreaterThanZero(Element task)
+        private static FileSet CreateFileSet(string fileName)
         {
-            Assert.GreaterThan(task.Properties[resultPropertiesPrefix + "Duration"], 0.ToString());
+            FileSet fileSet = new FileSet();
+            fileSet.FileNames.Add(fileName);
+            return fileSet;
         }
-
-        #endregion
     }
 }

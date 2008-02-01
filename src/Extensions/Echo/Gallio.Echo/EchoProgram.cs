@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Reflection;
 using Castle.Core.Logging;
 using Gallio.Echo.Properties;
@@ -83,6 +84,12 @@ namespace Gallio.Echo
                 launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console);
 
                 launcher.RuntimeSetup = new RuntimeSetup();
+
+                // Set the installation path explicitly to ensure that we do not encounter problems
+                // when the test assembly contains a local copy of the primary runtime assemblies
+                // which will confuse the runtime into searching in the wrong place for plugins.
+                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
+
                 launcher.RuntimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
                 launcher.TestPackageConfig.HostSetup.ShadowCopy = Arguments.ShadowCopy;

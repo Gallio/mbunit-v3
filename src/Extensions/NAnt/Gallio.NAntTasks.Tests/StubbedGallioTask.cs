@@ -17,13 +17,13 @@ using Gallio.Contexts;
 using Gallio.Runner;
 using Gallio.NAntTasks;
 using NAnt.Core;
+using MbUnit.Framework;
+using Rhino.Mocks;
 
 namespace Gallio.NAntTasks.Tests
 {
     /// <summary>
     /// Makes possible to unit test the <see cref="GallioTask" /> class.
-    /// In particular we need to disable the initialization of a new runtime
-    /// because it will conflict with the test execution environment.
     /// </summary>
     /// <remarks>
     /// The NAnt.Core.Task class is hard to unit test for a number of reasons. The
@@ -37,17 +37,19 @@ namespace Gallio.NAntTasks.Tests
     /// so we need to avoid calling the instance Log methods directly and use a
     /// interface too.
     /// </remarks>
-    internal class InstrumentedGallioTask : GallioTask
+    internal class StubbedGallioTask : GallioTask
     {
+        public delegate TestLauncherResult RunLauncherDelegate(TestLauncher launcher);
+        private RunLauncherDelegate action;
+
         // We need to instantiate our own dictionary of properties
         // WARNING: This could break in the future if a check for null is added
         // in the PropertyDictionary constructor
         private readonly PropertyDictionary properties = new PropertyDictionary(null);
 
-        public new void Execute()
+        public StubbedGallioTask()
         {
-            // We call the ExecuteTask directly instead of the Execute method
-            base.ExecuteTask();
+            InitializeTaskConfiguration();
         }
 
         public override PropertyDictionary Properties
@@ -55,12 +57,15 @@ namespace Gallio.NAntTasks.Tests
             get { return properties; }
         }
 
+        public void SetRunLauncherAction(RunLauncherDelegate action)
+        {
+            this.action = action;
+        }
+
         protected override TestLauncherResult RunLauncher(TestLauncher launcher)
         {
-            launcher.RuntimeSetup = null;
-            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
-
-            return base.RunLauncher(launcher);
+            Assert.IsNotNull(action, "The run launcher method should not have been called because no action was set.");
+            return action(launcher);
         }
 
         public override void Log(Level messageLevel, string message)

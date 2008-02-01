@@ -22,7 +22,7 @@ using System.IO;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Reflection;
-
+using Gallio.Utilities;
 using AssemblyDependsOnAttribute2 = MbUnit2::MbUnit.Framework.AssemblyDependsOnAttribute;
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
 using TestFixtureAttribute2 = MbUnit2::MbUnit.Framework.TestFixtureAttribute;
@@ -79,7 +79,7 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 parent.AddChild(new ErrorTest(type,
                     String.Format("An exception occurred while building fixtures from type '{0}'.", type.CompoundName),
-                    ex.ToString()));
+                    ex));
             }
         }
 
@@ -139,7 +139,7 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 parent.AddChild(new ErrorTest(method,
                     String.Format("An exception occurred while building tests from method '{0}'.", method.CompoundName),
-                    ex.ToString()));
+                    ex));
             }
         }
 

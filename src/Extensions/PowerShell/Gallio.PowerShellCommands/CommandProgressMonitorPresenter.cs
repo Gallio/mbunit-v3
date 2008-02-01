@@ -50,6 +50,9 @@ namespace Gallio.PowerShellCommands
 
         private void HandleChanged(object sender, EventArgs e)
         {
+            if (ProgressMonitor.TaskName.Length == 0)
+                return;
+
             int percentComplete = -1;
             string status = ProgressMonitor.LeafSubTaskName;
 

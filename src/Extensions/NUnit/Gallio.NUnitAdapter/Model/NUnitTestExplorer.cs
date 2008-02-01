@@ -20,7 +20,6 @@ using System.Reflection;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.NUnitAdapter.Properties;
-
 using NUnitCoreExtensions = NUnit.Core.CoreExtensions;
 using NUnitTestRunner = NUnit.Core.TestRunner;
 using NUnitTestPackage = NUnit.Core.TestPackage;
@@ -115,7 +114,7 @@ namespace Gallio.NUnitAdapter.Model
             {
                 return new ErrorTest(assembly,
                     String.Format("Could not resolve location of assembly '{0}'.", assembly.Name),
-                    ex.ToString());
+                    ex);
             }
 
             try
@@ -134,7 +133,7 @@ namespace Gallio.NUnitAdapter.Model
             {
                 return new ErrorTest(null,
                     "An exception occurred while enumerating NUnit tests.",
-                    ex.ToString());
+                    ex);
             }
         }
 

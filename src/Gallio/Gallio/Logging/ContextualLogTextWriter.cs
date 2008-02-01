@@ -16,8 +16,8 @@
 using System;
 using System.IO;
 using System.Text;
-using Gallio.Hosting;
 using Gallio.Logging;
+using Gallio.Utilities;
 
 namespace Gallio.Logging
 {
@@ -65,7 +65,7 @@ namespace Gallio.Logging
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not write to the log stream.", ex);
+                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
             }
         }
 
@@ -78,7 +78,7 @@ namespace Gallio.Logging
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not write to the log stream.", ex);
+                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
             }
         }
 
@@ -91,7 +91,7 @@ namespace Gallio.Logging
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not write to the log stream.", ex);
+                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
             }
         }
 

@@ -135,8 +135,7 @@ namespace Gallio.Framework.Explorer
                 }
                 catch (Exception ex)
                 {
-                    TestModel.RootTest.AddChild(new ErrorTest(assembly, String.Format("Error initializing assembly '{0}'", assembly.Name),
-                        ex.ToString()));
+                    TestModel.RootTest.AddChild(new ErrorTest(assembly, String.Format("Error initializing assembly '{0}'", assembly.Name), ex));
                 }
             }
         }
@@ -153,7 +152,7 @@ namespace Gallio.Framework.Explorer
                 }
                 catch (Exception ex)
                 {
-                    Panic.UnhandledException("A pattern test framework extension threw an exception while enumerating referenced tools.", ex);
+                    UnhandledExceptionPolicy.Report("A pattern test framework extension threw an exception while enumerating referenced tools.", ex);
                 }
             }
 

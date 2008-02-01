@@ -14,10 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Threading;
 using Gallio.Contexts;
-using Gallio.Hosting;
-using Gallio.Logging;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Harness
 {
@@ -36,32 +34,19 @@ namespace Gallio.Runner.Harness
         {
             public State()
             {
-                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+                UnhandledExceptionPolicy.CorrelateUnhandledException += CorrelateUnhandledException;
             }
 
             public void Dispose()
             {
-                AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+                UnhandledExceptionPolicy.CorrelateUnhandledException -= CorrelateUnhandledException;
             }
 
-            private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+            private static void CorrelateUnhandledException(object sender, CorrelatedExceptionEventArgs e)
             {
-                try
-                {
-                    string threadName = Thread.CurrentThread.Name;
-                    if (string.IsNullOrEmpty(threadName))
-                        threadName = "<unnamed>";
-
-                    Exception ex = e.ExceptionObject as Exception;
-                    if (ex != null)
-                        Context.CurrentContext.LogWriter[LogStreamNames.Warnings].WriteException(ex, "An unhandled exception occurred in thread '{0}'.", threadName);
-                    else
-                        Context.CurrentContext.LogWriter[LogStreamNames.Warnings].WriteLine("An unhandled exception occurred in thread '{0}' but the exception object was not available.", threadName);
-                }
-                catch (Exception ex)
-                {
-                    Panic.UnhandledException("An exception occurred while attempting to log an unhandled exception in the AppDomain.", ex);
-                }
+                Context context = Context.CurrentContext;
+                if (context != null)
+                    e.AddCorrelationMessage(String.Format("The exception occurred while test instance or step '{0}' was running.", context.TestStep.FullName));
             }
         }
     }

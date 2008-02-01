@@ -263,7 +263,7 @@ namespace Gallio.Hosting
                 }
                 catch (Exception ex)
                 {
-                    Panic.UnhandledException(String.Format("Could not temporary file '{0}'.", path), ex);
+                    UnhandledExceptionPolicy.Report(String.Format("Could not temporary file '{0}'.", path), ex);
                 }
             }
 

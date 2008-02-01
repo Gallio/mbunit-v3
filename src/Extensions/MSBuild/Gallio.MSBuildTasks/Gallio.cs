@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Gallio.MSBuildTasks.Properties;
 using Gallio.Collections;
@@ -80,29 +81,32 @@ namespace Gallio.MSBuildTasks
         private ITaskItem[] pluginDirectories;
         private ITaskItem[] hintDirectories;
 
-        private string applicationBaseDirectory = "";
-        private string workingDirectory = "";
+        private ITaskItem applicationBaseDirectory;
+        private ITaskItem workingDirectory;
         private bool shadowCopy;
 
         private string filter = "*";
         private string[] reportTypes = new string[] { };
         private string reportNameFormat = Resources.DefaultReportNameFormat;
-        private string reportDirectory = String.Empty;
+        private ITaskItem reportDirectory = null;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
         private bool ignoreFailures;
         private bool showReports;
         private bool doNotRun;
         private bool echoResults = true;
+
         private int exitCode;
-        private int testCount;
-        private int passCount;
+
+        private int assertCount;
+        private double duration;
         private int failureCount;
         private int ignoreCount;
         private int inconclusiveCount;
+        private int passCount;
         private int runCount;
         private int skipCount;
-        private double duration;
-        private int assertCount;
+        private int stepCount;
+        private int testCount;
 
         #endregion
 
@@ -185,7 +189,7 @@ namespace Gallio.MSBuildTasks
         /// The default is "".
         /// </para>
         /// </summary>
-        public string ApplicationBaseDirectory
+        public ITaskItem ApplicationBaseDirectory
         {
             set { applicationBaseDirectory = value; }
         }
@@ -202,7 +206,7 @@ namespace Gallio.MSBuildTasks
         /// The default is "".
         /// </para>
         /// </summary>
-        public string WorkingDirectory
+        public ITaskItem WorkingDirectory
         {
             set { workingDirectory = value; }
         }
@@ -267,7 +271,7 @@ namespace Gallio.MSBuildTasks
         /// <remarks>
         /// The directory will be created if it doesn't exist. Existing files will be overwrited.
         /// </remarks>
-        public string ReportDirectory
+        public ITaskItem ReportDirectory
         {
             set { reportDirectory = value; }
         }
@@ -368,7 +372,7 @@ namespace Gallio.MSBuildTasks
         }
 
         /// <summary>
-        /// Gets the total number of test cases.
+        /// Gets the total number of test instances run.
         /// </summary>
         /// <example>
         /// To use this property, you need to include an Output tag within the
@@ -381,8 +385,8 @@ namespace Gallio.MSBuildTasks
         ///           after the tests have been run: -->
         ///     <Output TaskParameter="TestCount" PropertyName="TestCount" />
         /// </Gallio>
-        /// <!-- After execution the number of tests run can be retrieved like this: -->
-        /// <Message Text="$(TestCount) tests were run." />
+        /// <!-- After execution the number of test instances run can be retrieved like this: -->
+        /// <Message Text="$(TestCount) test instances were run." />
         /// ]]>
         /// </code>
         /// </example>
@@ -390,6 +394,31 @@ namespace Gallio.MSBuildTasks
         public int TestCount
         {
             get { return testCount; }
+        }
+
+        /// <summary>
+        /// Gets the total number of test steps run.
+        /// </summary>
+        /// <example>
+        /// To use this property, you need to include an Output tag within the
+        /// Gallio tag to specify a name to reference it:
+        /// <code>
+        /// <![CDATA[
+        /// <Gallio>
+        ///      <!-- This tells MSBuild that the task's StepCount output property will
+        ///           be made available as a property called StepCount in the project
+        ///           after the tests have been run: -->
+        ///     <Output TaskParameter="StepCount" PropertyName="StepCount" />
+        /// </Gallio>
+        /// <!-- After execution the number of test steps run can be retrieved like this: -->
+        /// <Message Text="$(StepCount) test steps were run." />
+        /// ]]>
+        /// </code>
+        /// </example>
+        [Output]
+        public int StepCount
+        {
+            get { return stepCount; }
         }
 
         /// <summary>
@@ -607,7 +636,7 @@ namespace Gallio.MSBuildTasks
             {
                 Log.LogError(Resources.UnexpectedErrorDuringExecution);
                 Log.LogErrorFromException(ex, true, true, null);
-                return ignoreFailures;
+                return false;
             }
         }
 
@@ -615,7 +644,7 @@ namespace Gallio.MSBuildTasks
 
         #region Private Methods
 
-        private bool InternalExecute()
+        internal bool InternalExecute()
         {
             DisplayVersion();
 
@@ -630,11 +659,18 @@ namespace Gallio.MSBuildTasks
                 launcher.DoNotRun = doNotRun;
                 launcher.RuntimeSetup = new RuntimeSetup();
 
+                // Set the installation path explicitly to ensure that we do not encounter problems
+                // when the test assembly contains a local copy of the primary runtime assemblies
+                // which will confuse the runtime into searching in the wrong place for plugins.
+                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
+
                 if (echoResults)
                     launcher.CustomMonitors.Add(new TaskTestRunnerMonitor(Log, launcher.ReportMonitor));
 
-                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
-                launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
+                if (applicationBaseDirectory != null)
+                    launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory.ItemSpec;
+                if (workingDirectory != null)
+                    launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory.ItemSpec;
                 launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
 
                 AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
@@ -642,7 +678,7 @@ namespace Gallio.MSBuildTasks
                 AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 
                 if (reportDirectory != null)
-                    launcher.ReportDirectory = reportDirectory;
+                    launcher.ReportDirectory = reportDirectory.ItemSpec;
                 if (!String.IsNullOrEmpty(reportNameFormat))
                     launcher.ReportNameFormat = reportNameFormat;
                 if (reportTypes != null)
@@ -656,8 +692,8 @@ namespace Gallio.MSBuildTasks
                 LogResultSummary(logger, result);
                 PopulateStatistics(result);
 
-                if (ExitCode == ResultCode.Success ||
-                    ExitCode == ResultCode.NoTests ||
+                if (exitCode == ResultCode.Success ||
+                    exitCode == ResultCode.NoTests ||
                     ignoreFailures)
                     return true;
             }
@@ -677,15 +713,16 @@ namespace Gallio.MSBuildTasks
         private void PopulateStatistics(TestLauncherResult result)
         {
             PackageRunStatistics stats = result.Statistics;
-            testCount = stats.TestCount;
-            passCount = stats.PassCount;
+            assertCount = stats.AssertCount;
+            duration = stats.Duration;
             failureCount = stats.FailureCount;
             ignoreCount = stats.IgnoreCount;
             inconclusiveCount = stats.InconclusiveCount;
+            passCount = stats.PassCount;
             runCount = stats.RunCount;
             skipCount = stats.SkipCount;
-            duration = stats.Duration;
-            assertCount = stats.AssertCount;
+            stepCount = stats.StepCount;
+            testCount = stats.TestCount;
         }
 
         private static void LogResultSummary(ILogger logger, TestLauncherResult result)

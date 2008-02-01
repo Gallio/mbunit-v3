@@ -1,49 +1,114 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<NDepend AppName="MbUnit">
-  <OutputDir KeepHistoric="True" KeepXmlFiles="True">..\build\reports</OutputDir>
+<NDepend AppName="All">
+  <OutputDir KeepHistoric="True" KeepXmlFiles="True">C:\Source\MbUnit\v3\src\NDependOut</OutputDir>
   <Dirs>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Echo\Gallio.Echo\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Icarus\Gallio.Icarus\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Echo\Gallio.Echo.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Icarus\Gallio.Icarus.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Gallio\Gallio\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Gallio\Gallio.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Reports\Gallio.Reports\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\MbUnit\MbUnit\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\MbUnit\MbUnit.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\MbUnit\Samples\MbUnit.Samples\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\MbUnit\MbUnit.Compatibility\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Reports\Gallio.Reports.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Gallio\Gallio.Host\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\MbUnit\MbUnit.TestResources\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Xunit\Gallio.XunitAdapter\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Xunit\Gallio.XunitAdapter.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\Xunit\Gallio.XunitAdapter.TestResources\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\NUnit\Gallio.NUnitAdapter\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\NUnit\Gallio.NUnitAdapter.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\NUnit\Gallio.NUnitAdapter.TestResources\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\MbUnit2\Gallio.MbUnit2Adapter\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\MbUnit2\Gallio.MbUnit2Adapter.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\MbUnit2\Gallio.MbUnit2Adapter.TestResources\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\ReSharper\Gallio.ReSharperRunner\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\ReSharper\Gallio.ReSharperRunner.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\TDNet\Gallio.TDNetRunner\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\TDNet\Gallio.TDNetRunner.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\MSBuild\Gallio.MSBuildTasks\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\MSBuild\Gallio.MSBuildTasks.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\NAnt\Gallio.NAntTasks\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\NAnt\Gallio.NAntTasks.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\PowerShell\Gallio.PowerShellCommands\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\PowerShell\Gallio.PowerShellCommands.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\CCNet\CCNet.Gallio.WebDashboard.Plugin\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\NCover\Gallio.NCoverIntegration\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\NCover\Gallio.NCoverIntegration.Tests\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\TypeMock\Gallio.TypeMockIntegration\bin</Dir>
+    <Dir>C:\Source\MbUnit\v3\src\Extensions\TypeMock\Gallio.TypeMockIntegration.Tests\bin</Dir>
     <Dir>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</Dir>
-    <Dir>..\build\bin</Dir>
-    <Dir>..\build\bin\MbUnit2</Dir>
-    <Dir>..\build\bin\NUnit</Dir>
-    <Dir>..\build\bin\Xunit</Dir>
-    <Dir>..\libs\NAnt</Dir>
-    <Dir>..\libs\TestDriven.Net</Dir>
   </Dirs>
   <Assemblies>
-    <Name Warn="True">MbUnit.Gallio</Name>
-    <Name Warn="True">MbUnit.Icarus</Name>
-    <Name Warn="True">MbUnit.Tasks.NAnt</Name>
-    <Name Warn="True">MbUnit.Tasks.MSBuild</Name>
-    <Name Warn="True">MbUnit.Icarus.Core</Name>
-    <Name Warn="True">MbUnit.Echo</Name>
-    <Name Warn="True">MbUnit.AddIn.TDNet</Name>
-    <Name Warn="True">MbUnit.Plugin.MbUnit2Adapter</Name>
-    <Name Warn="True">MbUnit.Plugin.NUnitAdapter</Name>
-    <Name Warn="True">MbUnit.Plugin.XunitAdapter</Name>
+    <Name Warn="True">Gallio.Echo</Name>
+    <Name Warn="True">Gallio.Icarus</Name>
+    <Name Warn="True">Gallio</Name>
+    <Name Warn="True">Gallio.Reports</Name>
+    <Name Warn="True">MbUnit</Name>
+    <Name Warn="True">MbUnit.Compatibility</Name>
+    <Name Warn="True">Gallio.Host</Name>
+    <Name Warn="True">Gallio.XunitAdapter</Name>
+    <Name Warn="True">Gallio.NUnitAdapter</Name>
+    <Name Warn="True">Gallio.MbUnit2Adapter</Name>
+    <Name Warn="True">Gallio.ReSharperRunner</Name>
+    <Name Warn="True">Gallio.TDNetRunner</Name>
+    <Name Warn="True">Gallio.MSBuildTasks</Name>
+    <Name Warn="True">Gallio.NAntTasks</Name>
+    <Name Warn="True">Gallio.PowerShellCommands</Name>
+    <Name Warn="True">CCNet.Gallio.WebDashboard.Plugin</Name>
+    <Name Warn="True">Gallio.NCoverIntegration</Name>
+    <Name Warn="True">Gallio.TypeMockIntegration</Name>
   </Assemblies>
   <FrameworkAssemblies>
+    <Name>mscorlib</Name>
+    <Name>Castle.Core</Name>
+    <Name>System</Name>
+    <Name>System.Windows.Forms</Name>
+    <Name>WeifenLuo.WinFormsUI.Docking</Name>
+    <Name>ZedGraph</Name>
+    <Name>System.Drawing</Name>
+    <Name>System.Configuration</Name>
+    <Name>Rhino.Mocks</Name>
     <Name>Castle.Windsor</Name>
+    <Name>System.Xml</Name>
     <Name>Castle.MicroKernel</Name>
     <Name>Castle.DynamicProxy2</Name>
-    <Name>Castle.Core</Name>
-    <Name>ZedGraph</Name>
-    <Name>ICSharpCode.TextEditor</Name>
-    <Name>TestFu</Name>
-    <Name>Refly</Name>
-    <Name>QuickGraph</Name>
-    <Name>QuickGraph.Algorithms</Name>
+    <Name>System.Runtime.Remoting</Name>
+    <Name>ISymWrapper</Name>
     <Name>MbUnit.Framework</Name>
-    <Name>MbUnit.Framework.2.0</Name>
-    <Name>nunit.framework.extensions</Name>
-    <Name>nunit.framework</Name>
-    <Name>nunit.core.interfaces</Name>
-    <Name>nunit.core.extensions</Name>
-    <Name>nunit.core</Name>
-    <Name>xunit.extensions</Name>
+    <Name>System.Data</Name>
+    <Name>WatiN.Core</Name>
     <Name>xunit</Name>
-    <Name>NAnt.Core</Name>
+    <Name>xunitext</Name>
+    <Name>nunit.core.interfaces</Name>
+    <Name>nunit.core</Name>
+    <Name>nunit.framework</Name>
+    <Name>JetBrains.ReSharper.UnitTestExplorer</Name>
+    <Name>JetBrains.ReSharper.TreeModelBrowser</Name>
+    <Name>JetBrains.Metadata</Name>
+    <Name>JetBrains.ReSharper.Psi</Name>
+    <Name>JetBrains.ReSharper.ProjectModel</Name>
+    <Name>JetBrains.ReSharper.TaskRunnerFramework</Name>
+    <Name>JetBrains.Shell</Name>
+    <Name>JetBrains.UI</Name>
+    <Name>JetBrains.Util</Name>
+    <Name>JetBrains.ReSharper.DocumentManager</Name>
+    <Name>JetBrains.ReSharper.DocumentModel</Name>
     <Name>TestDriven.Framework</Name>
+    <Name>Microsoft.Build.Utilities</Name>
+    <Name>Microsoft.Build.Framework</Name>
+    <Name>NAnt.Core</Name>
+    <Name>System.Management.Automation</Name>
+    <Name>System.Configuration.Install</Name>
+    <Name>ThoughtWorks.CruiseControl.WebDashboard</Name>
+    <Name>ThoughtWorks.CruiseControl.Core</Name>
+    <Name>System.Web</Name>
+    <Name>NetReflector</Name>
+    <Name>NCover.Framework</Name>
+    <Name>TypeMock.Integration</Name>
   </FrameworkAssemblies>
   <Report>
     <Section Enabled="True">Application Metrics</Section>
@@ -59,7 +124,7 @@
     <Section Enabled="False">Types Dependencies</Section>
   </Report>
   <BuildComparisonSetting ProjectMode="DontCompare" BuildMode="MostRecentBuildAvailable" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="0" />
-  <WarnFilter WarnNotUsedType="True" WarnNotUsedMember="True" WarnTypeVisibility="False" WarnPropertiesVisibility="False" WarnMethodsVisibility="False" WarnConstructorsVisibility="False" WarnFieldsVisibility="False" WarnEventsVisibility="False" WarnAssemblyVersioningIssues="True" WarnPDBIssues="False" /><CQLQueries>
+  <WarnFilter WarnNotUsedType="True" WarnNotUsedMember="True" WarnTypeVisibility="False" WarnPropertiesVisibility="False" WarnMethodsVisibility="False" WarnConstructorsVisibility="False" WarnFieldsVisibility="False" WarnEventsVisibility="False" WarnAssemblyVersioningIssues="True" WarnPDBIssues="True" /><CQLQueries>
    
     <CQLGroup Name="Source Code Quality constraints" Active="True">
       <CQLQuery Active="True" DisplayList="True" DisplayStat="True">// <Name>Methods too big (NbLinesOfCode)</Name>\r\nWARN IF Count &gt; 0 IN SELECT TOP 10 METHODS WHERE NbLinesOfCode &gt; 30 ORDER BY NbLinesOfCode DESC\r\n// METHODS WHERE NbLinesOfCode &gt; 30 are extremely complex and \r\n// should be split in smaller methods \r\n// (except if they are automatically generated by a tool).\r\n// See the definition of the NbLinesOfCode metric here http://www.ndepend.com/Metrics.aspx#NbLinesOfCode</CQLQuery>
@@ -116,4 +181,4 @@
       <CQLQuery Active="True" DisplayList="True" DisplayStat="True">// <Name>High-level to low-level types (TypeLevel)</Name>\r\nSELECT TYPES ORDER BY TypeLevel DESC\r\n// Classify types by their Level values.\r\n// See the definition of the TypeLevel metric here http://www.ndepend.com/Metrics.aspx#Level</CQLQuery>
       <CQLQuery Active="True" DisplayList="True" DisplayStat="True">// <Name>High-level to low-level methods (MethodLevel)</Name>\r\nSELECT METHODS ORDER BY MethodLevel DESC\r\n// Classify methods by their Level values.\r\n// See the definition of the MethodLevel metric here http://www.ndepend.com/Metrics.aspx#Level</CQLQuery>
     </CQLGroup>
-  </CQLQueries><FormSettings MainWindowState="2" LocationX="102" LocationY="-4" SizeWidth="1502" SizeHeight="1208" SplitterDistance1="326" SplitterDistance2="491" SplitterDistance3="377" /></NDepend>
+  </CQLQueries><FormSettings MainWindowState="2" LocationX="97" LocationY="-4" SizeWidth="1507" SizeHeight="1208" SplitterDistance1="326" SplitterDistance2="493" SplitterDistance3="377" /></NDepend>

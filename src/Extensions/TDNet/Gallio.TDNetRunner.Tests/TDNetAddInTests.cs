@@ -13,48 +13,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+extern alias MbUnit2;
 using System;
+using System.IO;
 using System.Reflection;
-using MbUnit.TestResources;
-using MbUnit.Framework;
+using Gallio.Hosting;
+using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Model;
+using Gallio.Model.Filters;
+using Gallio.Reflection;
+using Gallio.Runner;
+using Gallio.Runner.Reports;
+using MbUnit2::MbUnit.Framework;
 using Rhino.Mocks;
 using TestDriven.Framework;
-using TDF = TestDriven.Framework;
 
 namespace Gallio.TDNetRunner.Tests
 {
+    // TODO: Verify logged output
     [TestFixture]
-    [TestsOn(typeof(InstrumentedGallioTestRunner))]
-    [Author("Julian Hidalgo")]
+    [TestsOn(typeof(StubbedGallioTestRunner))]
     public class TDNetAddInTests
     {
-        #region Private Members
-
-        private ITestListener stubbedITestListener = null;
-        private Assembly testAssembly = null;
-
-        #endregion
-
-        #region SetUp and TearDown
+        private ITestListener stubbedTestListener;
 
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            stubbedITestListener = MockRepository.GenerateStub<ITestListener>();
-            testAssembly = typeof(SimpleTest).Assembly;
+            stubbedTestListener = MockRepository.GenerateStub<ITestListener>();
         }
-
-        #endregion
-
-        #region Tests
-
-        #region Instantiation
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void RunAssembly_NullITestListener()
+        public void RunAssembly_NullTestListener()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
             tr.RunAssembly(null, null);
         }
 
@@ -63,21 +56,15 @@ namespace Gallio.TDNetRunner.Tests
         public void RunAssembly_NullAssembly()
         {
 
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            tr.RunAssembly(stubbedITestListener, null);
-        }
-
-        [Test]
-        public void ExecutionTest_NullTestListener()
-        {
-            //ITestRunner
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            tr.RunAssembly(stubbedTestListener, null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void RunNamespace_NullITestListener()
+        public void RunNamespace_NullTestListener()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
             tr.RunNamespace(null, null, null);
         }
 
@@ -85,23 +72,23 @@ namespace Gallio.TDNetRunner.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunNamespace_NullAssembly()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            tr.RunNamespace(stubbedITestListener, null, null);
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            tr.RunNamespace(stubbedTestListener, null, null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunNamespace_NullNamespace()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            tr.RunNamespace(stubbedITestListener, Assembly.GetExecutingAssembly(), null);
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            tr.RunNamespace(stubbedTestListener, Assembly.GetExecutingAssembly(), null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void RunMember_NullITestListener()
+        public void RunMember_NullTestListener()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
             tr.RunMember(null, null, null);
         }
 
@@ -109,88 +96,153 @@ namespace Gallio.TDNetRunner.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunMember_NullAssembly()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            tr.RunMember(stubbedITestListener, null, null);
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            tr.RunMember(stubbedTestListener, null, null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunMember_NullMember()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            tr.RunMember(stubbedITestListener, Assembly.GetExecutingAssembly(), null);
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            tr.RunMember(stubbedTestListener, Assembly.GetExecutingAssembly(), null);
         }
 
         [Test]
-        public void RunAssembly_NoTests()
+        public void RunAssemblyPassesCorrectOptionsToTheLauncher()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            TestRunState result = tr.RunAssembly(stubbedITestListener, Assembly.GetAssembly(typeof(GallioTestRunner)));
-            Assert.AreEqual(result, TestRunState.NoTests);
-        }
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
 
-        #endregion
+            Assembly assembly = typeof(TDNetAddInTests).Assembly;
+            tr.SetRunLauncherAction(delegate(TestLauncher launcher)
+            {
+                AssertTestLauncherOptions(launcher, Loader.GetAssemblyLocalPath(assembly),
+                    new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
 
-        #region Run*
+                return new TestLauncherResult(new Report());
+            });
 
-        [Test]
-        public void RunAssembly()
-        {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            TestRunState result = tr.RunAssembly(stubbedITestListener, testAssembly);
-            Assert.AreEqual(result, TestRunState.Failure);
+            tr.RunAssembly(stubbedTestListener, assembly);
         }
 
         [Test]
-        public void RunMember_IgnoredTests()
+        public void RunMemberWithTypePassesCorrectOptionsToTheLauncher()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            Type t = typeof(IgnoredTests);
-            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, t);
-            Assert.AreEqual(result, TestRunState.Success);
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+
+            Type type = typeof(TDNetAddInTests);
+            Assembly assembly = type.Assembly;
+
+            tr.SetRunLauncherAction(delegate(TestLauncher launcher)
+            {
+                AssertTestLauncherOptions(launcher, Loader.GetAssemblyLocalPath(assembly),
+                    new AndFilter<ITest>(new Filter<ITest>[] {
+                        new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
+                        new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true)
+                    }));
+
+                return new TestLauncherResult(new Report());
+            });
+
+            tr.RunMember(stubbedTestListener, assembly, type);
         }
 
         [Test]
-        public void RunMember_PassingTests()
+        public void RunMemberWithMethodPassesCorrectOptionsToTheLauncher()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            Type t = typeof(PassingTests);
-            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, t);
-            Assert.AreEqual(result, TestRunState.Success);
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+
+            MethodBase method = Reflector.GetExecutingFunction().Resolve(true);
+            Assembly assembly = method.DeclaringType.Assembly;
+
+            tr.SetRunLauncherAction(delegate(TestLauncher launcher)
+            {
+                AssertTestLauncherOptions(launcher, Loader.GetAssemblyLocalPath(assembly),
+                    new AndFilter<ITest>(new Filter<ITest>[] {
+                        new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
+                        new TypeFilter<ITest>(new EqualityFilter<string>(method.DeclaringType.FullName), true),
+                        new MemberFilter<ITest>(new EqualityFilter<string>(method.Name))
+                    }));
+
+                return new TestLauncherResult(new Report());
+            });
+
+            tr.RunMember(stubbedTestListener, assembly, method);
         }
 
         [Test]
-        public void RunMember_InvalidMember()
+        public void RunNamespacePassesCorrectOptionsToTheLauncher()
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            Type t = typeof(PassingTests);
-            ConstructorInfo memberInfo = t.GetConstructors()[0];
-            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, memberInfo);
-            Assert.AreEqual(result, TestRunState.NoTests);
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+
+            Assembly assembly = typeof(TDNetAddInTests).Assembly;
+            string @namespace = "Foo";
+
+            tr.SetRunLauncherAction(delegate(TestLauncher launcher)
+            {
+                AssertTestLauncherOptions(launcher, Loader.GetAssemblyLocalPath(assembly),
+                    new AndFilter<ITest>(new Filter<ITest>[] {
+                        new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
+                        new NamespaceFilter<ITest>(new EqualityFilter<string>(@namespace))
+                    }));
+
+                return new TestLauncherResult(new Report());
+            });
+
+            tr.RunNamespace(stubbedTestListener, assembly, @namespace);
         }
 
-        [Test]
-        public void RunMember_RunPassingTest()
+        [RowTest]
+        [Row(ResultCode.Canceled, TestRunState.Error)]
+        [Row(ResultCode.Failure, TestRunState.Failure)]
+        [Row(ResultCode.FatalException, TestRunState.Error)]
+        [Row(ResultCode.InvalidArguments, TestRunState.Error)]
+        [Row(ResultCode.NoTests, TestRunState.NoTests)]
+        [Row(ResultCode.Success, TestRunState.Success)]
+        public void RunReturnsCorrectResultCode(int resultCode, TestRunState expectedRunState)
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            Type t = typeof(PassingTests);
-            MethodInfo memberInfo = t.GetMethod("Pass");
-            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, memberInfo);
-            Assert.AreEqual(result, TestRunState.Success);
+            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+
+            Assembly assembly = typeof(TDNetAddInTests).Assembly;
+            tr.SetRunLauncherAction(delegate
+            {
+                TestLauncherResult result = new TestLauncherResult(new Report());
+                result.SetResultCode(resultCode);
+                return result;
+            });
+
+            Assert.AreEqual(expectedRunState, tr.RunAssembly(stubbedTestListener, assembly));
         }
 
-        [Test]
-        public void RunMember_RunFailingTest()
+        private static void AssertTestLauncherOptions(TestLauncher launcher, string assemblyFile, Filter<ITest> filter)
         {
-            ITestRunner tr = new InstrumentedGallioTestRunner();
-            Type t = typeof(FailingTests);
-            MethodInfo memberInfo = t.GetMethod("Fail");
-            TestRunState result = tr.RunMember(stubbedITestListener, testAssembly, memberInfo);
-            Assert.AreEqual(result, TestRunState.Failure);
+            Assert.IsFalse(launcher.DoNotRun);
+            Assert.IsFalse(launcher.EchoResults);
+            Assert.AreEqual(filter.ToFilterExpr(), launcher.Filter.ToFilterExpr());
+            Assert.IsInstanceOfType(typeof(TDNetLogger), launcher.Logger);
+            Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
+            Assert.AreEqual(Path.Combine(Path.GetTempPath(), @"Gallio.TDNetRunner"), launcher.ReportDirectory);
+            Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
+            CollectionAssert.AreElementsEqual(new string[] { "html" }, launcher.ReportFormats);
+            Assert.AreEqual(Path.GetFileName(assemblyFile), launcher.ReportNameFormat);
+            Assert.IsFalse(launcher.ShowReports);
+            Assert.AreEqual(StandardTestRunnerFactoryNames.LocalAppDomain, launcher.TestRunnerFactoryName);
+            Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
+
+            Assert.AreEqual(1, launcher.CustomMonitors.Count);
+            Assert.IsInstanceOfType(typeof(TDNetLogMonitor), launcher.CustomMonitors[0]);
+
+            Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
+            Assert.AreEqual(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(GallioTestRunner).Assembly)), launcher.RuntimeSetup.InstallationPath);
+            CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
+            Assert.IsNull(launcher.RuntimeSetup.RuntimeFactoryType);
+
+            CollectionAssert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.AssemblyFiles);
+            CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
+
+            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+            Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.HostSetup.WorkingDirectory);
         }
-
-        #endregion
-
-        #endregion
     }
 }

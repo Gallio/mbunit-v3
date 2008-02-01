@@ -679,7 +679,7 @@ namespace Gallio.Contexts
                             }
                             catch (Exception)
                             {
-                                Panic.UnhandledException("An exception occurred while executing a Context Dispose handler.", ex);
+                                UnhandledExceptionPolicy.Report("An exception occurred while executing a Context Dispose handler.", ex);
                             }
                         }
                     }

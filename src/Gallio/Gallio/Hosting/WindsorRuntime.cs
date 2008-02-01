@@ -313,9 +313,12 @@ namespace Gallio.Hosting
             if (srcDir == null)
                 return; // not found!
 
-            if (runtimeSetup.InstallationPath == null)
-                runtimeSetup.InstallationPath = Path.Combine(srcDir, @"Gallio\Gallio\bin");
+            // Force the installation path to be set to where the primary Gallio assemblies and Gallio.Host.exe
+            // are located.
+            runtimeSetup.InstallationPath = Path.Combine(srcDir, @"Gallio\Gallio\bin");
 
+            // Add the solution folder to the list of plugin directories so that we can resolve
+            // all plugins that have been compiled within the solution. 
             AddPluginDirectory(srcDir);
         }
     }

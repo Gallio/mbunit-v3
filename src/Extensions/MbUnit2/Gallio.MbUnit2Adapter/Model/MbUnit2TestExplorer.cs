@@ -21,7 +21,7 @@ using System.Reflection;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.MbUnit2Adapter.Properties;
-
+using Gallio.Utilities;
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
 using TestPatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestPatternAttribute;
 using FixtureCategoryAttribute2 = MbUnit2::MbUnit.Framework.FixtureCategoryAttribute;
@@ -142,7 +142,7 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 assemblyTest = new ErrorTest(assembly,
                     String.Format("An exception occurred while enumerating MbUnit v2 tests in assembly '{0}'.", assembly.Name),
-                    ex.ToString());
+                    ex);
             }
 
             for (int i = 0; i < unresolvedDependencies.Count; i++)

@@ -44,7 +44,7 @@ namespace Gallio.TDNetRunner
         /// TD.NET calls this method when you run an entire assemby (by right-clicking
         /// in a project an selecting "Run Test(s)")
         /// </summary>
-        TestRunState ITestRunner.RunAssembly(ITestListener testListener, Assembly assembly)
+        public TestRunState RunAssembly(ITestListener testListener, Assembly assembly)
         {
             if (assembly == null)
                 throw new ArgumentNullException(@"assembly");
@@ -56,7 +56,7 @@ namespace Gallio.TDNetRunner
         /// TD.NET calls this method when you run either all the tests in a fixture or
         /// an individual test.
         /// </summary>
-        TestRunState ITestRunner.RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
+        public TestRunState RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
         {
             if (assembly == null)
                 throw new ArgumentNullException(@"assembly");
@@ -95,7 +95,7 @@ namespace Gallio.TDNetRunner
         /// <summary>
         /// It appears this method never gets called.
         /// </summary>
-        TestRunState ITestRunner.RunNamespace(ITestListener testListener, Assembly assembly, string ns)
+        public TestRunState RunNamespace(ITestListener testListener, Assembly assembly, string ns)
         {
             if (assembly == null)
                 throw new ArgumentNullException(@"assembly");
@@ -121,7 +121,7 @@ namespace Gallio.TDNetRunner
             return launcher.Run();
         }
 
-        protected TestRunState Run(ITestListener testListener, Assembly assembly, Filter<ITest> filter)
+        internal TestRunState Run(ITestListener testListener, Assembly assembly, Filter<ITest> filter)
         {
             if (testListener == null)
                 throw new ArgumentNullException(@"testListener");
@@ -148,9 +148,7 @@ namespace Gallio.TDNetRunner
                 // Set the installation path explicitly to ensure that we do not encounter problems
                 // when the test assembly contains a local copy of the primary runtime assemblies
                 // which will confuse the runtime into searching in the wrong place for plugins.
-#if !DEBUG
                 launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(GallioTestRunner).Assembly));
-#endif
 
                 // This monitor will inform the user in real-time what's going on
                 launcher.CustomMonitors.Add(new TDNetLogMonitor(testListener, launcher.ReportMonitor));
@@ -230,6 +228,7 @@ namespace Gallio.TDNetRunner
             {
                 case ResultCode.FatalException:
                 case ResultCode.InvalidArguments:
+                case ResultCode.Canceled:
                 default:
                     return TestRunState.Error;
 
@@ -240,7 +239,6 @@ namespace Gallio.TDNetRunner
                     return TestRunState.NoTests;
 
                 case ResultCode.Success:
-                case ResultCode.Canceled:
                     return TestRunState.Success;
             }
         }

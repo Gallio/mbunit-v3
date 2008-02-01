@@ -197,7 +197,7 @@ namespace Gallio.Logging
         }
 
         /// <summary>
-        /// Closes the log stream.
+        /// Closes the log writer.
         /// </summary>
         public void Close()
         {

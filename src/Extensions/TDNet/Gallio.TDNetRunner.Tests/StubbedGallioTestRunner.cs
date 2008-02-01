@@ -13,27 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Gallio.Contexts;
 using Gallio.Runner;
+using Gallio.TDNetRunner;
+using MbUnit.Framework;
 
-namespace Gallio.MSBuildTasks.Tests
+namespace Gallio.TDNetRunner.Tests
 {
     /// <summary>
-    /// Makes it possible to unit test the <see cref="Gallio" /> task.
-    /// In particular we need to disable the initialization of a new runtime
-    /// because it will conflict with the test execution environment.
+    /// Makes it possible to unit test the <see cref="GallioTestRunner" /> class.
     /// </summary>
-    public class InstrumentedGallioTask : Gallio
+    public class StubbedGallioTestRunner : GallioTestRunner
     {
+        public delegate TestLauncherResult RunLauncherDelegate(TestLauncher launcher);
+        private RunLauncherDelegate action;
+
+        public void SetRunLauncherAction(RunLauncherDelegate action)
+        {
+            this.action = action;
+        }
+
         protected override TestLauncherResult RunLauncher(TestLauncher launcher)
         {
-            launcher.RuntimeSetup = null;
-            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
-
-            return base.RunLauncher(launcher);
+            Assert.IsNotNull(action, "The run launcher method should not have been called because no action was set.");
+            return action(launcher);
         }
     }
 }

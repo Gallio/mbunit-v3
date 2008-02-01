@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Gallio.Collections;
 using Gallio.Hosting;
 using Gallio.Model;
@@ -360,8 +361,7 @@ namespace Gallio.PowerShellCommands
 
         #region Private Methods
 
-        /// <exclude />
-        protected TestLauncherResult ExecuteWithMessagePump()
+        internal TestLauncherResult ExecuteWithMessagePump()
         {
             TestLauncherResult result = null;
 
@@ -376,8 +376,7 @@ namespace Gallio.PowerShellCommands
             return result;
         }
 
-        /// <exclude />
-        protected TestLauncherResult ExecuteWithCurrentDirectory()
+        internal TestLauncherResult ExecuteWithCurrentDirectory()
         {
             string oldDirectory = Environment.CurrentDirectory;
             try
@@ -397,20 +396,24 @@ namespace Gallio.PowerShellCommands
                 Environment.CurrentDirectory = oldDirectory;
             }
         }
-
-        /// <exclude />
-        protected TestLauncherResult Execute()
+        
+        internal TestLauncherResult Execute()
         {
             using (TestLauncher launcher = new TestLauncher())
             {
                 launcher.Logger = Logger;
                 launcher.ProgressMonitorProvider = ProgressMonitorProvider;
                 launcher.Filter = GetFilter();
-                launcher.RuntimeSetup = new RuntimeSetup();
                 launcher.ShowReports = showReports.IsPresent;
                 launcher.TestRunnerFactoryName = runnerType;
                 launcher.DoNotRun = doNotRun.IsPresent;
                 launcher.EchoResults = !noEchoResults.IsPresent;
+                launcher.RuntimeSetup = new RuntimeSetup();
+
+                // Set the installation path explicitly to ensure that we do not encounter problems
+                // when the test assembly contains a local copy of the primary runtime assemblies
+                // which will confuse the runtime into searching in the wrong place for plugins.
+                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(RunGallioCommand).Assembly));
 
                 launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
                 launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;

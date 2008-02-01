@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Hosting;
 
 namespace Gallio.Utilities
 {
@@ -26,7 +25,7 @@ namespace Gallio.Utilities
     {
         /// <summary>
         /// Safely invokes each delegate in the invocation list of an event handler.
-        /// Sends any exceptions thrown by the handler to <see cref="Panic.UnhandledException"/>.
+        /// Sends any exceptions thrown by the handler to <see cref="UnhandledExceptionPolicy.Report"/>.
         /// </summary>
         /// <param name="handlerChain">The event handler chain</param>
         /// <param name="sender">The sender</param>
@@ -44,14 +43,14 @@ namespace Gallio.Utilities
                 }
                 catch (Exception ex)
                 {
-                    Panic.UnhandledException("An exception occurred in an event handler.", ex);
+                    ReportException(ex);
                 }
             }
         }
 
         /// <summary>
         /// Safely invokes each delegate in the invocation list of an event handler.
-        /// Sends any exceptions thrown by the handler to <see cref="Panic.UnhandledException"/>.
+        /// Sends any exceptions thrown by the handler to <see cref="UnhandledExceptionPolicy.Report"/>.
         /// </summary>
         /// <param name="handlerChain">The event handler chain</param>
         /// <param name="sender">The sender</param>
@@ -70,9 +69,14 @@ namespace Gallio.Utilities
                 }
                 catch (Exception ex)
                 {
-                    Panic.UnhandledException("An exception occurred in an event handler.", ex);
+                    ReportException(ex);
                 }
             }
+        }
+
+        private static void ReportException(Exception ex)
+        {
+            UnhandledExceptionPolicy.Report("An exception occurred in an event handler.", ex);
         }
     }
 }

@@ -18,6 +18,7 @@ using System.Runtime.Remoting;
 using System.Threading;
 using Castle.Core.Logging;
 using Gallio.Properties;
+using Gallio.Utilities;
 
 namespace Gallio.Hosting
 {
@@ -40,6 +41,7 @@ namespace Gallio.Hosting
 
         private readonly object pingLock = new object();
         private Timer pingTimer;
+        private bool lastPingFailed;
 
         /// <summary>
         /// Creates an uninitialized host.
@@ -221,7 +223,7 @@ namespace Gallio.Hosting
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not send Dispose message to remote host service.", ex);
+                UnhandledExceptionPolicy.Report("Could not send Dispose message to remote host service.", ex);
             }
             finally
             {
@@ -302,10 +304,13 @@ namespace Gallio.Hosting
             {
                 if (hostService != null)
                     hostService.Ping();
+                lastPingFailed = false;
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not send Ping message to the remote host service.", ex);
+                if (! lastPingFailed)
+                    UnhandledExceptionPolicy.Report("Could not send Ping message to the remote host service.", ex);
+                lastPingFailed = true;
             }
         }
     }

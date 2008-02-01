@@ -56,13 +56,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InstrumentedGallioTask.cs" />
+    <Compile Include="StubbedGallioTask.cs" />
     <Compile Include="TaskLoggerTest.cs" />
     <Compile Include="GallioTaskIntegrationTest.cs" />
     <Compile Include="GallioTaskUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.Host\Gallio.Host.csproj">
+      <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
+      <Name>Gallio.Host</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio.Tests\Gallio.Tests.csproj">
       <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
       <Name>Gallio.Tests</Name>

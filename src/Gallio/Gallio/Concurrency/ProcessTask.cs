@@ -17,8 +17,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using Gallio.Hosting;
 using Gallio.Logging;
+using Gallio.Utilities;
 
 namespace Gallio.Concurrency
 {
@@ -338,7 +338,7 @@ namespace Gallio.Concurrency
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Cannot write process task output to the log stream.", ex);
+                UnhandledExceptionPolicy.Report("Cannot write process task output to the log stream.", ex);
             }
         }
 
@@ -353,7 +353,7 @@ namespace Gallio.Concurrency
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Cannot write process task section end message to the log stream.", ex);
+                UnhandledExceptionPolicy.Report("Cannot write process task section end message to the log stream.", ex);
             }
         }
 
@@ -368,7 +368,7 @@ namespace Gallio.Concurrency
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Cannot write process task abort message to the log stream.", ex);
+                UnhandledExceptionPolicy.Report("Cannot write process task abort message to the log stream.", ex);
             }
         }
     }

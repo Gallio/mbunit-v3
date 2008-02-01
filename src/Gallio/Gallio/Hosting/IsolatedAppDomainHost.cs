@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Policy;
+using Gallio.Utilities;
 
 namespace Gallio.Hosting
 {
@@ -164,7 +165,7 @@ namespace Gallio.Hosting
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not unload AppDomain.", ex);
+                UnhandledExceptionPolicy.Report("Could not unload AppDomain.", ex);
             }
             finally
             {
@@ -181,7 +182,7 @@ namespace Gallio.Hosting
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not reset working directory.", ex);
+                UnhandledExceptionPolicy.Report("Could not reset working directory.", ex);
             }
             finally
             {
@@ -198,7 +199,7 @@ namespace Gallio.Hosting
             }
             catch (Exception ex)
             {
-                Panic.UnhandledException("Could not delete temporary configuration file.", ex);
+                UnhandledExceptionPolicy.Report("Could not delete temporary configuration file.", ex);
             }
             finally
             {

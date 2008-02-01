@@ -117,6 +117,8 @@ namespace Gallio.Hosting
             {
                 SetRuntime(runtime);
                 runtime.Initialize(logger);
+
+                UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;
             }
             catch (Exception)
             {
@@ -140,6 +142,8 @@ namespace Gallio.Hosting
             }
             finally
             {
+                UnhandledExceptionPolicy.ReportUnhandledException -= HandleUnhandledExceptionNotification;
+
                 SetRuntime(null);
             }
         }
@@ -167,6 +171,15 @@ namespace Gallio.Hosting
             instance = runtime;
 
             EventHandlerUtils.SafeInvoke(instanceChangedHandlers, null, EventArgs.Empty);
+        }
+
+        private static void HandleUnhandledExceptionNotification(object sender, CorrelatedExceptionEventArgs e)
+        {
+            if (e.IsRecursive)
+                return;
+
+            Logger.Fatal("Internal Error: {0}\n{1}\n\nReported By: {2}", e.Message,
+                ExceptionUtils.SafeToString(e.Exception), e.ReporterStackTrace ?? "<unknown>");
         }
     }
 }

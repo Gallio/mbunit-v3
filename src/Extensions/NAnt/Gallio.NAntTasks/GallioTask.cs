@@ -30,6 +30,7 @@
 
 using System;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using Gallio.NAntTasks.Properties;
 using Gallio.Collections;
@@ -99,7 +100,7 @@ namespace Gallio.NAntTasks
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
         private string resultProperty;
-        private string resultPropertiesPrefix;
+        private string statisticsPropertiesPrefix;
         private bool showReports;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
         private bool doNotRun;
@@ -367,13 +368,14 @@ namespace Gallio.NAntTasks
         /// <item><term>RunCount</term><description>Gets the total number of test cases that were run.</description></item>
         /// <item><term>SkipCount</term><description>Gets the total number of test cases that did not run because they were skipped.</description></item>
         /// <item><term>TestCount</term><description>Gets the total number of test cases.</description></item>
+        /// <item><term>StepCount</term><description>Gets the total number of test steps.</description></item>
         /// </list>
         /// </remarks>
         /// <example>The following example shows how to use the result-properties-prefix property :
         /// <code>
         /// <![CDATA[
         /// <target name="RunTests">
-        ///     <gallio result-properties-prefix="gallio.">
+        ///     <gallio statistics-properties-prefix="gallio.">
         ///         <assemblies>
         ///             <include name="SomeAssembly.dll" />
         ///         </assemblies>
@@ -386,15 +388,16 @@ namespace Gallio.NAntTasks
         ///     <echo message="RunCount = ${gallio.RunCount}" />
         ///     <echo message="SkipCount = ${gallio.SkipCount}" />
         ///     <echo message="TestCount = ${gallio.TestCount}" />
+        ///     <echo message="StepCount = ${gallio.StepCount}" />
         /// </target>
         /// ]]>
         /// </code>
         /// </example>
-        [TaskAttribute("result-properties-prefix")]
+        [TaskAttribute("statistics-properties-prefix")]
         [StringValidator(AllowEmpty = false)]
-        public string ResultPropertiesPrefix
+        public string StatisticsPropertiesPrefix
         {
-            set { resultPropertiesPrefix = value; }
+            set { statisticsPropertiesPrefix = value; }
         }
 
         /// <summary>
@@ -419,6 +422,11 @@ namespace Gallio.NAntTasks
         /// <inheritdoc />
         protected override void ExecuteTask()
         {
+            InternalExecute();
+        }
+
+        internal void InternalExecute()
+        {
             // We don't catch exceptions here because NAnt takes care of that job,
             // and decides whether to let them through based on the value of the
             // FailOnError
@@ -436,6 +444,11 @@ namespace Gallio.NAntTasks
                 launcher.EchoResults = echoResults;
                 launcher.TestRunnerFactoryName = runnerType;
                 launcher.RuntimeSetup = new RuntimeSetup();
+
+                // Set the installation path explicitly to ensure that we do not encounter problems
+                // when the test assembly contains a local copy of the primary runtime assemblies
+                // which will confuse the runtime into searching in the wrong place for plugins.
+                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
 
                 launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
                 launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
@@ -486,15 +499,16 @@ namespace Gallio.NAntTasks
         {
             PackageRunStatistics stats = result.Statistics;
 
-            Properties[resultPropertiesPrefix + @"TestCount"] = stats.TestCount.ToString();
-            Properties[resultPropertiesPrefix + @"PassCount"] = stats.PassCount.ToString();
-            Properties[resultPropertiesPrefix + @"FailureCount"] = stats.FailureCount.ToString();
-            Properties[resultPropertiesPrefix + @"IgnoreCount"] = stats.IgnoreCount.ToString();
-            Properties[resultPropertiesPrefix + @"InconclusiveCount"] = stats.InconclusiveCount.ToString();
-            Properties[resultPropertiesPrefix + @"RunCount"] = stats.RunCount.ToString();
-            Properties[resultPropertiesPrefix + @"SkipCount"] = stats.SkipCount.ToString();
-            Properties[resultPropertiesPrefix + @"Duration"] = stats.Duration.ToString();
-            Properties[resultPropertiesPrefix + @"AssertCount"] = stats.AssertCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"TestCount"] = stats.TestCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"StepCount"] = stats.StepCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"PassCount"] = stats.PassCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"FailureCount"] = stats.FailureCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"IgnoreCount"] = stats.IgnoreCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"InconclusiveCount"] = stats.InconclusiveCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"RunCount"] = stats.RunCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"SkipCount"] = stats.SkipCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"Duration"] = stats.Duration.ToString();
+            Properties[statisticsPropertiesPrefix + @"AssertCount"] = stats.AssertCount.ToString();
         }
 
         private Filter<ITest> GetFilter()

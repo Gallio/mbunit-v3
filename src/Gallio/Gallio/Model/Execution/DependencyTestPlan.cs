@@ -21,6 +21,7 @@ using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Logging;
 using Gallio.Reflection;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model.Execution
 {
@@ -351,6 +352,19 @@ namespace Gallio.Model.Execution
                 this.handler = handler;
             }
 
+            /// <inheritdoc />
+            protected override void Dispose(bool disposing)
+            {
+                try
+                {
+                    base.Dispose(disposing);
+                }
+                finally
+                {
+                    LogWriter.Close();
+                }
+            }
+
             public ITestListener Listener
             {
                 get { return handler.Listener; }
@@ -378,7 +392,14 @@ namespace Gallio.Model.Execution
 
             public void FinishStep(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration)
             {
-                Dispose();
+                try
+                {
+                    Dispose();
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report("An exception occurred while disposing the context.", ex);
+                }
 
                 lock (this)
                 {

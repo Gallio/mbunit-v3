@@ -14,198 +14,130 @@
 // limitations under the License.
 
 using System;
+using System.IO;
+using Gallio.Hosting;
+using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Runner;
-using MbUnit.TestResources;
+using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Gallio.PowerShellCommands;
 
 namespace Gallio.PowerShellCommands.Tests
 {
     [TestFixture]
-    [Author("Julian Hidalgo")]
     [TestsOn(typeof(RunGallioCommand))]
     [Category("UnitTests")]
     public class RunGallioCommandUnitTest
     {
-        #region Private Members
-
-        private string[] assemblies;
-
-        #endregion
-
-        #region SetUp and TearDown
-
-        [TestFixtureSetUp]
-        public void FixtureSetUp()
-        {
-            string testAssemblyPath = new Uri(typeof(SimpleTest).Assembly.CodeBase).LocalPath;
-            assemblies = new string[] { testAssemblyPath };
-        }
-
-        #endregion
-
-        #region Tests
-
         [Test]
-        public void RunWithNoArguments()
+        public void TaskPassesDefaultArgumentsToLauncher()
         {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            TestLauncherResult result = command.ExecuteWithMessagePump();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.ResultCode, ResultCode.NoTests);
-            // If nothing ran then all the statistics properties should be set to zero
-            Assert.AreEqual(result.Statistics.TestCount, 0);
-            Assert.AreEqual(result.Statistics.FailureCount, 0);
-            Assert.AreEqual(result.Statistics.IgnoreCount, 0);
-            Assert.AreEqual(result.Statistics.InconclusiveCount, 0);
-            Assert.AreEqual(result.Statistics.RunCount, 0);
-            Assert.AreEqual(result.Statistics.SkipCount, 0);
-            Assert.AreEqual(result.Statistics.AssertCount, 0);
-            Assert.AreEqual(result.Statistics.Duration, 0, 0.1);
-        }
+            StubbedRunGallioCommand task = new StubbedRunGallioCommand();
 
-        [Test]
-        public void NullReportTypes()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.ReportTypes = null;
-            // Just make sure it doesn't crash
-            Assert.IsNotNull(command.ExecuteWithMessagePump());
+            task.SetRunLauncherAction(delegate(TestLauncher launcher)
+            {
+                Assert.IsFalse(launcher.DoNotRun);
+                Assert.IsTrue(launcher.EchoResults);
+                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.Filter);
+                Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
+                Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
+                Assert.AreEqual("", launcher.ReportDirectory);
+                Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
+                Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
+                Assert.IsFalse(launcher.ShowReports);
+                Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
+
+                Assert.AreEqual(0, launcher.CustomMonitors.Count);
+
+                Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
+                Assert.AreEqual(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(RunGallioCommand).Assembly)), launcher.RuntimeSetup.InstallationPath);
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
+                Assert.IsNull(launcher.RuntimeSetup.RuntimeFactoryType);
+
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
+
+                Assert.AreEqual("", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+                Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+                Assert.AreEqual("", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+
+                return new TestLauncherResult(new Report());
+            });
+
+            task.ExecuteWithMessagePump();
         }
 
         [Test]
-        public void EmptyReportTypes()
+        public void TaskPassesSpecifiedArgumentsToLauncher()
         {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.ReportTypes = new string[] { String.Empty };
-            // Just make sure it doesn't crash
-            Assert.IsNotNull(command.ExecuteWithMessagePump());
+            StubbedRunGallioCommand task = new StubbedRunGallioCommand();
+            task.DoNotRun = true;
+            task.NoEchoResults = true;
+            task.Filter = "Type: SimpleTest";
+            task.ReportDirectory = "dir";
+            task.ReportTypes = new string[] { "XML", "Html" };
+            task.ReportNameFormat = "report";
+            task.ShowReports = true;
+            task.RunnerType = StandardTestRunnerFactoryNames.LocalAppDomain;
+
+            task.PluginDirectories = new string[] { "plugin" };
+            task.Assemblies = new string[] { "assembly1", "assembly2" };
+            task.HintDirectories = new string[] { "hint1", "hint2" };
+
+            task.ApplicationBaseDirectory = "baseDir";
+            task.ShadowCopy = true;
+            task.WorkingDirectory = "workingDir";
+
+            task.SetRunLauncherAction(delegate(TestLauncher launcher)
+            {
+                Assert.IsTrue(launcher.DoNotRun);
+                Assert.IsFalse(launcher.EchoResults);
+                Assert.AreEqual("Type: SimpleTest", launcher.Filter.ToFilterExpr());
+                Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
+                Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
+                Assert.AreEqual("dir", launcher.ReportDirectory);
+                Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
+                CollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
+                Assert.AreEqual("report", launcher.ReportNameFormat);
+                Assert.IsTrue(launcher.ShowReports);
+                Assert.AreEqual(StandardTestRunnerFactoryNames.LocalAppDomain, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
+
+                Assert.AreEqual(0, launcher.CustomMonitors.Count);
+
+                Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
+                Assert.AreEqual(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(RunGallioCommand).Assembly)), launcher.RuntimeSetup.InstallationPath);
+                CollectionAssert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
+                Assert.IsNull(launcher.RuntimeSetup.RuntimeFactoryType);
+
+                CollectionAssert.AreElementsEqual(new string[] { "assembly1", "assembly2" }, launcher.TestPackageConfig.AssemblyFiles);
+                CollectionAssert.AreElementsEqual(new string[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
+
+                Assert.AreEqual("baseDir", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+                Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+                Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+
+                return new TestLauncherResult(new Report());
+            });
+
+            task.ExecuteWithMessagePump();
         }
 
         [Test]
-        public void NullReportDirectory()
+        public void TaskExposesResultsReturnedByLauncher()
         {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.ReportDirectory = null;
-            // Just make sure it doesn't crash
-            Assert.IsNotNull(command.ExecuteWithMessagePump());
+            StubbedRunGallioCommand task = new StubbedRunGallioCommand();
+            TestLauncherResult expectedResult = new TestLauncherResult(new Report());
+
+            task.SetRunLauncherAction(delegate
+            {
+                return expectedResult;
+            });
+
+            Assert.AreSame(expectedResult, task.ExecuteWithMessagePump());
         }
-
-        [Test]
-        public void NullReportNameFormat()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.ReportNameFormat = null;
-            // Just make sure it doesn't crash
-            Assert.IsNotNull(command.ExecuteWithMessagePump());
-        }
-
-        [Test]
-        public void RunAssembly()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.Assemblies = assemblies;
-            TestLauncherResult result = command.ExecuteWithMessagePump();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.ResultCode, ResultCode.Failure);
-        }
-
-        [Test]
-        public void RunType()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.Assemblies = assemblies;
-            command.Filter = "Type: MbUnit.TestResources.PassingTests";
-            TestLauncherResult result = command.ExecuteWithMessagePump();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.ResultCode, ResultCode.Success);
-            Assert.AreEqual(result.Statistics.TestCount, 2);
-            Assert.AreEqual(result.Statistics.PassCount, 2);
-            Assert.AreEqual(result.Statistics.FailureCount, 0);
-            Assert.GreaterThan(result.Statistics.Duration, 0);
-            // The assert count is not reliable but we should be fine with simple
-            // asserts
-            Assert.AreEqual(result.Statistics.AssertCount, 3);
-        }
-
-        [Test]
-        public void RunFailingFixture()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.Assemblies = assemblies;
-            command.Filter = "Type: MbUnit.TestResources.FailingTests";
-            TestLauncherResult result = command.ExecuteWithMessagePump();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.ResultCode, ResultCode.Failure);
-            Assert.AreEqual(result.Statistics.TestCount, 2);
-            Assert.AreEqual(result.Statistics.PassCount, 0);
-            Assert.AreEqual(result.Statistics.FailureCount, 2);
-            Assert.GreaterThan(result.Statistics.Duration, 0);
-            // The assert count is not reliable but we should be fine with simple
-            // asserts
-            Assert.AreEqual(result.Statistics.AssertCount, 0);
-        }
-
-        [Test]
-        public void RunSingleTest()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.Assemblies = assemblies;
-            command.Filter = "Type: MbUnit.TestResources.PassingTests and Member: Pass";
-            TestLauncherResult result = command.ExecuteWithMessagePump();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.ResultCode, ResultCode.Success);
-            Assert.AreEqual(result.Statistics.TestCount, 1);
-            Assert.AreEqual(result.Statistics.PassCount, 1);
-            Assert.AreEqual(result.Statistics.FailureCount, 0);
-            Assert.GreaterThan(result.Statistics.Duration, 0);
-            // The assert count is not reliable but we should be fine with simple asserts
-            Assert.AreEqual(result.Statistics.AssertCount, 3);
-        }
-
-        [Test]
-        public void RunSingleFailingTest()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.Assemblies = assemblies;
-            command.Filter = "Type: MbUnit.TestResources.FailingTests and Member: Fail";
-            TestLauncherResult result = command.ExecuteWithMessagePump();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.ResultCode, ResultCode.Failure);
-            Assert.AreEqual(result.Statistics.TestCount, 1);
-            Assert.AreEqual(result.Statistics.PassCount, 0);
-            Assert.AreEqual(result.Statistics.FailureCount, 1);
-            Assert.GreaterThan(result.Statistics.Duration, 0);
-            // The assert count is not reliable but we should be fine with simple
-            // asserts
-            Assert.AreEqual(result.Statistics.AssertCount, 0);
-        }
-
-        [Test]
-        public void RunIgnoredTests()
-        {
-            InstrumentedRunGallioCommand command = CreateCmdlet();
-            command.Assemblies = assemblies;
-            command.Filter = "Type: MbUnit.TestResources.IgnoredTests";
-            TestLauncherResult result = command.ExecuteWithMessagePump();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.ResultCode, ResultCode.Success);
-            Assert.AreEqual(result.Statistics.TestCount, 1);
-            Assert.AreEqual(result.Statistics.IgnoreCount, 1);
-            Assert.GreaterThan(result.Statistics.Duration, 0);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private static InstrumentedRunGallioCommand CreateCmdlet()
-        {
-            InstrumentedRunGallioCommand command = new InstrumentedRunGallioCommand();
-
-            return command;
-        }
-
-        #endregion
     }
 }

@@ -235,7 +235,7 @@
     <Compile Include="Runner\ITestRunnerManager.cs" />
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
-    <Compile Include="Hosting\Panic.cs" />
+    <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />
     <Compile Include="Reflection\Impl\IDebugSymbolResolver.cs" />
@@ -422,6 +422,7 @@
     <Compile Include="Hosting\RuntimeSetup.cs" />
     <Compile Include="Hosting\WindsorRuntime.cs" />
     <Compile Include="Runner\TestRunnerUtils.cs" />
+    <Compile Include="Utilities\ExceptionUtils.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Collections\TreeUtils.cs" />
     <Compile Include="Utilities\Hash64.cs" />
@@ -482,6 +483,7 @@
     <Compile Include="Collections\GenericUtils.cs" />
     <Compile Include="Model\Serialization\SerializationUtils.cs" />
     <Compile Include="Utilities\NonInlinedAttribute.cs" />
+    <Compile Include="Utilities\CorrelatedExceptionEventArgs.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\Attachment.cs" />

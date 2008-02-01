@@ -150,6 +150,9 @@
     <Compile Include="Runner\TestLauncherTest.cs" />
     <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolverTest.cs" />
     <Compile Include="Collections\TreeUtilsTest.cs" />
+    <Compile Include="Utilities\ExceptionUtilsTest.cs" />
+    <Compile Include="Utilities\CorrelatedExceptionEventArgsTest.cs" />
+    <Compile Include="Utilities\UnhandledExceptionPolicyTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
@@ -164,9 +167,6 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 using Gallio.Logging;
+using Gallio.Utilities;
 
 namespace Gallio.Logging
 {
@@ -129,11 +130,11 @@ namespace Gallio.Logging
                 WriteLine(clientException.Message);
 
                 if (clientException.InnerException != null)
-                    WriteImpl(clientException.InnerException.ToString());
+                    WriteImpl(ExceptionUtils.SafeToString(clientException.InnerException));
             }
             else
             {
-                WriteImpl(exception.ToString());
+                WriteImpl(ExceptionUtils.SafeToString(exception));
             }
 
             EndSectionImpl();

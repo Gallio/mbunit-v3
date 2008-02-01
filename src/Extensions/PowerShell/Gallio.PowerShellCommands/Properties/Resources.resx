@@ -121,7 +121,7 @@
     <value>Gallio PowerShell Cmdlet - Version {0}.{1} build {2}</value>
   </data>
   <data name="DefaultReportNameFormat" xml:space="preserve">
-    <value>test-report-{0}{1}</value>
+    <value>test-report-{0}-{1}</value>
   </data>
   <data name="UnexpectedErrorDuringExecution" xml:space="preserve">
     <value>An unexpected error occurred during execution of the Gallio task.</value>

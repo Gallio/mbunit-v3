@@ -70,7 +70,7 @@ namespace Gallio.PowerShellCommands.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to test-report-{0}{1}.
+        ///   Looks up a localized string similar to test-report-{0}-{1}.
         /// </summary>
         internal static string DefaultReportNameFormat {
             get {

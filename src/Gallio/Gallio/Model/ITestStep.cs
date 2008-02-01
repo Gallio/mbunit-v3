@@ -44,10 +44,10 @@ namespace Gallio.Model
         /// <summary>
         /// <para>
         /// Gets the full name of the step.  The full name is derived from the name
-        /// of the test that contains the step and from all of the parent steps.
+        /// of the test instance that contains the step and from all of the parent steps.
         /// </para>
         /// <para>
-        /// The full name of the root step is simply the name of the test itself.
+        /// The full name of the root step is simply the name of the test instance itself.
         /// The name of a child step is the full name of the parent step followed by a
         /// colon if the parent step was the root or a slash otherwise and finally followed
         /// by the name of the step itself.
