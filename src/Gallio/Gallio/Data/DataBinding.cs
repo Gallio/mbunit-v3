@@ -33,7 +33,7 @@ namespace Gallio.Data
         /// <summary>
         /// Gets the type of value to bind.
         /// </summary>
-        public abstract Type ValueType { get; }
+        public abstract Type Type { get; }
 
         /// <summary>
         /// Gets an optional binding path that describes how to locate the bound value
@@ -73,13 +73,13 @@ namespace Gallio.Data
                 && GetType() == other.GetType()
                 && Index == other.Index
                 && Path == other.Path
-                && ValueType == other.ValueType;
+                && Type == other.Type;
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return ValueType.GetHashCode()
+            return Type.GetHashCode()
                 ^ (Path != null ? Path.GetHashCode() : 0)
                 ^ (Index.HasValue ? Index.Value : -1);
         }
@@ -91,7 +91,7 @@ namespace Gallio.Data
         public override string ToString()
         {
             return String.Format("Binding ValueType: {0}, Path: {1}, Index: {2}",
-                ValueType.FullName,
+                Type.FullName,
                 Path != null ? "'" + Path + "'" : "<null>",
                 Index.HasValue ? Index.Value.ToString() : "<null>");
         }

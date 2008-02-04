@@ -71,6 +71,12 @@
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Contexts\DefaultContextManagerTest.cs" />
     <Compile Include="Contexts\StepTest.cs" />
+    <Compile Include="Data\Conversions\BaseConverterTest.cs" />
+    <Compile Include="Data\Conversions\NullConverterTest.cs" />
+    <Compile Include="Data\Binders\BaseDataBinderTest.cs" />
+    <Compile Include="Data\Binders\ConvertedDataBindingAccessorTest.cs" />
+    <Compile Include="Data\Binders\DataBindingItemTest.cs" />
+    <Compile Include="Data\Binders\ScalarDataBinderTest.cs" />
     <Compile Include="Framework\Explorer\PatternTestFrameworkTest.cs" />
     <Compile Include="Framework\Explorer\ToolInfoTest.cs" />
     <Compile Include="Hosting\Channels\BaseChannelTest.cs" />

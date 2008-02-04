@@ -21,7 +21,7 @@ namespace Gallio.Data
     /// <summary>
     /// A data set constructed from a sequence of rows.
     /// </summary>
-    public sealed class RowSequenceDataSet : IDataSet
+    public sealed class RowSequenceDataSet : BaseDataSet
     {
         private readonly IEnumerable<IDataRow> rows;
         private readonly int columnCount;
@@ -48,33 +48,27 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public bool IsDynamic
+        public override bool IsDynamic
         {
             get { return isDynamic; }
         }
 
         /// <inheritdoc />
-        public int ColumnCount
+        public override int ColumnCount
         {
             get { return columnCount; }
         }
 
         /// <inheritdoc />
-        public bool CanBind(DataBinding binding)
+        protected override bool CanBindInternal(DataBinding binding)
         {
-            if (binding == null)
-                throw new ArgumentNullException("binding");
-
             int bindingIndex = binding.Index.GetValueOrDefault(int.MaxValue);
             return bindingIndex >= 0 && bindingIndex < columnCount;
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
         {
-            if (bindings == null)
-                throw new ArgumentNullException("bindings");
-
             return rows;
         }
     }

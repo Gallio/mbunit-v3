@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Data;
+using Gallio.Data.Binders;
 using Gallio.Reflection;
 using Gallio.Framework.Explorer;
 using Gallio.Framework.Patterns;
@@ -90,8 +91,8 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTestParameter(IPatternTestParameterBuilder builder, ISlotInfo slot)
         {
-            builder.TestParameter.Binding = new DataBindingWithSourceName(source ?? @"",
-                new SimpleDataBinding(slot.ValueType.Resolve(false), path, index));
+            DataBinding binding = new SimpleDataBinding(slot.ValueType.Resolve(false), path, index);
+            builder.TestParameter.Binder = new ScalarDataBinder(binding, source ?? @"");
         }
     }
 }

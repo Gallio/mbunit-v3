@@ -22,7 +22,7 @@ namespace Gallio.Data
     /// <summary>
     /// A data set constructed from an enumerated sequence of column values.
     /// </summary>
-    public sealed class ColumnSequenceDataSet : IDataSet
+    public sealed class ColumnSequenceDataSet : BaseDataSet
     {
         private readonly IEnumerable values;
         private readonly IEnumerable<KeyValuePair<string, string>> metadata;
@@ -46,36 +46,25 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public bool IsDynamic
+        public override bool IsDynamic
         {
             get { return isDynamic; }
         }
 
         /// <inheritdoc />
-        public int ColumnCount
+        public override int ColumnCount
         {
             get { return 1; }
         }
 
         /// <inheritdoc />
-        public bool CanBind(DataBinding binding)
+        protected override bool CanBindInternal(DataBinding binding)
         {
-            if (binding == null)
-                throw new ArgumentNullException("binding");
-
             return binding.Index.GetValueOrDefault(-1) == 0;
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings)
-        {
-            if (bindings == null)
-                throw new ArgumentNullException("bindings");
-
-            return GetRowsInternal(bindings);
-        }
-
-        private IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
         {
             foreach (object value in values)
                 yield return new ScalarDataRow<object>(value, metadata);

@@ -45,7 +45,7 @@ namespace Gallio.Data
         /// Gets the value of the specified binding.
         /// </summary>
         /// <remarks>
-        /// The implementation may use the <see cref="DataBinding.ValueType" /> property
+        /// The implementation may use the <see cref="DataBinding.Type" /> property
         /// as a hint when retrieving source data, but it is not required to produce an
         /// object of that type.  The data binding infrastructure will take care of
         /// any necessary conversions.

@@ -133,6 +133,10 @@ namespace Gallio.Reflection
             if (target == null)
                 return null;
 
+            UnresolvedType unresolvedTarget = target as UnresolvedType;
+            if (unresolvedTarget != null)
+                return unresolvedTarget.Adapter;
+
             return target.IsGenericParameter ? new NativeGenericParameterWrapper(target) : new NativeTypeWrapper(target);
         }
 
@@ -193,7 +197,14 @@ namespace Gallio.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public static IConstructorInfo Wrap(ConstructorInfo target)
         {
-            return target != null ? new NativeConstructorWrapper(target) : null;
+            if (target == null)
+                return null;
+
+            UnresolvedConstructorInfo unresolvedTarget = target as UnresolvedConstructorInfo;
+            if (unresolvedTarget != null)
+                return unresolvedTarget.Adapter;
+
+            return new NativeConstructorWrapper(target);
         }
 
         /// <summary>
@@ -203,7 +214,14 @@ namespace Gallio.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public static IMethodInfo Wrap(MethodInfo target)
         {
-            return target != null ? new NativeMethodWrapper(target) : null;
+            if (target == null)
+                return null;
+
+            UnresolvedMethodInfo unresolvedTarget = target as UnresolvedMethodInfo;
+            if (unresolvedTarget != null)
+                return unresolvedTarget.Adapter;
+
+            return new NativeMethodWrapper(target);
         }
 
         /// <summary>
@@ -213,7 +231,14 @@ namespace Gallio.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public static IPropertyInfo Wrap(PropertyInfo target)
         {
-            return target != null ? new NativePropertyWrapper(target) : null;
+            if (target == null)
+                return null;
+
+            UnresolvedPropertyInfo unresolvedTarget = target as UnresolvedPropertyInfo;
+            if (unresolvedTarget != null)
+                return unresolvedTarget.Adapter;
+
+            return new NativePropertyWrapper(target);
         }
 
         /// <summary>
@@ -223,7 +248,14 @@ namespace Gallio.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public static IFieldInfo Wrap(FieldInfo target)
         {
-            return target != null ? new NativeFieldWrapper(target) : null;
+            if (target == null)
+                return null;
+
+            UnresolvedFieldInfo unresolvedTarget = target as UnresolvedFieldInfo;
+            if (unresolvedTarget != null)
+                return unresolvedTarget.Adapter;
+
+            return new NativeFieldWrapper(target);
         }
 
         /// <summary>
@@ -233,7 +265,14 @@ namespace Gallio.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public static IEventInfo Wrap(EventInfo target)
         {
-            return target != null ? new NativeEventWrapper(target) : null;
+            if (target == null)
+                return null;
+
+            UnresolvedEventInfo unresolvedTarget = target as UnresolvedEventInfo;
+            if (unresolvedTarget != null)
+                return unresolvedTarget.Adapter;
+
+            return new NativeEventWrapper(target);
         }
 
         /// <summary>
@@ -243,7 +282,14 @@ namespace Gallio.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public static IParameterInfo Wrap(ParameterInfo target)
         {
-            return target != null ? new NativeParameterWrapper(target) : null;
+            if (target == null)
+                return null;
+
+            UnresolvedParameterInfo unresolvedTarget = target as UnresolvedParameterInfo;
+            if (unresolvedTarget != null)
+                return unresolvedTarget.Adapter;
+
+            return new NativeParameterWrapper(target);
         }
 
         /// <summary>

@@ -80,13 +80,32 @@
     <Compile Include="Contexts\StubContext.cs" />
     <Compile Include="Contexts\StubContextManager.cs" />
     <Compile Include="Data\AggregateDataSet.cs" />
+    <Compile Include="Data\BaseDataSet.cs" />
+    <Compile Include="Data\Binders\BaseDataBinder.cs" />
+    <Compile Include="Data\Binders\ConvertedDataBindingAccessor.cs" />
     <Compile Include="Data\CombinatorialJoinStrategy.cs" />
     <Compile Include="Data\ConcatenationMergeStrategy.cs" />
-    <Compile Include="Data\DataBinder.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Data\Conversions\ArrayElementTypeConversionRule.cs" />
+    <Compile Include="Data\Conversions\BaseConverter.cs" />
+    <Compile Include="Data\Conversions\ConversionCost.cs" />
+    <Compile Include="Data\Conversions\ConvertibleToConvertibleConversionRule.cs" />
+    <Compile Include="Data\Conversions\NullableToValueConversionRule.cs" />
+    <Compile Include="Data\Conversions\NullConverter.cs" />
+    <Compile Include="Data\Conversions\ObjectToStringConversionRule.cs" />
+    <Compile Include="Data\Conversions\RuleBasedConverter.cs" />
+    <Compile Include="Data\Conversions\RuntimeRuleBasedConverter.cs" />
+    <Compile Include="Data\Conversions\ValueToNullableConversionRule.cs" />
+    <Compile Include="Data\Conversions\XmlNodeToXPathNavigatorConversionRule.cs" />
+    <Compile Include="Data\Conversions\XPathNavigatorToStringConversionRule.cs" />
+    <Compile Include="Data\Conversions\XPathNavigatorToXmlSerializableTypeConversionRule.cs" />
     <Compile Include="Data\DataSourceTable.cs" />
     <Compile Include="Data\DataSource.cs" />
+    <Compile Include="Data\Conversions\IConversionRule.cs" />
+    <Compile Include="Data\Binders\IDataBindingAccessor.cs" />
+    <Compile Include="Data\Binders\IDataBinder.cs" />
+    <Compile Include="Data\Binders\DataBindingContext.cs" />
+    <Compile Include="Data\Conversions\IConverter.cs" />
+    <Compile Include="Data\Binders\DataBindingItem.cs" />
     <Compile Include="Data\IDataProvider.cs" />
     <Compile Include="Data\IDataSet.cs">
       <SubType>Code</SubType>
@@ -95,6 +114,8 @@
     <Compile Include="Data\IDataSourceScope.cs" />
     <Compile Include="Data\IJoinStrategy.cs" />
     <Compile Include="Data\IMergeStrategy.cs" />
+    <Compile Include="Data\Binders\ObjectDataBinder.cs" />
+    <Compile Include="Data\Binders\ScalarDataBinder.cs" />
     <Compile Include="Data\SequentialJoinStrategy.cs" />
     <Compile Include="Data\SimpleDataBinding.cs" />
     <Compile Include="Data\IntersectionMergeStrategy.cs" />
@@ -104,9 +125,6 @@
     <Compile Include="Data\PairwiseJoinStrategy.cs" />
     <Compile Include="Data\RowSequenceDataSet.cs" />
     <Compile Include="Data\ColumnSequenceDataSet.cs" />
-    <Compile Include="Data\DataBindingWithSourceName.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Data\BaseDataRow.cs" />
     <Compile Include="Data\DataBinding.cs">
       <SubType>Code</SubType>
@@ -119,6 +137,7 @@
     <Compile Include="Data\DataBindingException.cs" />
     <Compile Include="Data\ScalarDataRow.cs" />
     <Compile Include="Data\UnionMergeStrategy.cs" />
+    <Compile Include="Data\XmlDataSet.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Framework\Explorer\BasePatternTestFrameworkExtension.cs" />
     <Compile Include="Framework\Explorer\DefaultPatternTestBuilder.cs" />
@@ -227,6 +246,7 @@
     <Compile Include="Reflection\Impl\UnresolvedParameterInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedPropertyInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedType.cs" />
+    <Compile Include="Reflection\SlotBinder.cs" />
     <Compile Include="Runner\DomainTestRunnerFactory.cs" />
     <Compile Include="Runner\DefaultTestRunnerManager.cs" />
     <Compile Include="Runner\Domains\HostTestDomain.cs" />

@@ -42,6 +42,14 @@ namespace Gallio.Reflection.Impl
             this.adapter = adapter;
         }
 
+        /// <summary>
+        /// Gets the underlying reflection adapter.
+        /// </summary>
+        public IPropertyInfo Adapter
+        {
+            get { return adapter; }
+        }
+
         /// <inheritdoc />
         public override PropertyAttributes Attributes
         {

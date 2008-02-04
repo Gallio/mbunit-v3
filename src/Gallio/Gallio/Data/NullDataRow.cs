@@ -48,7 +48,7 @@ namespace Gallio.Data
             if (binding == null)
                 throw new ArgumentNullException("binding");
 
-            return ReflectionUtils.GetDefaultValue(binding.ValueType);
+            return ReflectionUtils.GetDefaultValue(binding.Type);
         }
     }
 }

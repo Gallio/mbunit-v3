@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Data;
+using Gallio.Data.Binders;
 using Gallio.Model;
 using Gallio.Reflection;
 
@@ -28,7 +29,7 @@ namespace Gallio.Framework.Explorer
     public class PatternTestParameter : BaseTestParameter, IDataSourceScope
     {
         private DataSourceTable dataSourceTable;
-        private DataBindingWithSourceName binding;
+        private IDataBinder binder;
 
         /// <summary>
         /// Creates a test pattern parameter.
@@ -71,19 +72,26 @@ namespace Gallio.Framework.Explorer
         }
 
         /// <summary>
-        /// Gets or sets the data binding for this test parameter.
+        /// Gets or sets the <see cref="IDataBinder" /> for this test parameter.
         /// </summary>
-        public DataBindingWithSourceName Binding
+        /// <remarks>
+        /// The default value is a <see cref="ScalarDataBinder" /> with a
+        /// <see cref="DataBinding"/> defined by the <see cref="ITestComponent.Name" />
+        /// and <see cref="ITestParameter.Index" /> and <see cref="ITestParameter.Type" />
+        /// of this parameter that is resolved using the anonymous data source.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public IDataBinder Binder
         {
             get
             {
-                if (binding.Binding == null)
-                    binding = new DataBindingWithSourceName("", new SimpleDataBinding(Type.Resolve(false), Name, Index));
-                return binding;
+                return binder ?? CreateDefaultBinder();
             }
             set
             {
-                binding = value;
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                binder = value;
             }
         }
 
@@ -114,6 +122,12 @@ namespace Gallio.Framework.Explorer
             }
 
             return Owner != null ? Owner.ResolveDataSource(name) : null;
+        }
+
+        private IDataBinder CreateDefaultBinder()
+        {
+            DataBinding binding = new SimpleDataBinding(Type.Resolve(false), Name, Index);
+            return new ScalarDataBinder(binding, "");
         }
     }
 }

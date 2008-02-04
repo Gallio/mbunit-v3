@@ -23,7 +23,7 @@ namespace Gallio.Data
     /// Abstract base class for an aggregate data set that combines a list of data
     /// sets according to some algorithm.
     /// </summary>
-    public abstract class AggregateDataSet : IDataSet
+    public abstract class AggregateDataSet : BaseDataSet
     {
         private List<IDataSet> dataSets;
         private bool isDynamic;
@@ -42,21 +42,9 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public bool IsDynamic
+        public override bool IsDynamic
         {
             get { return isDynamic; }
-        }
-
-        /// <inheritdoc />
-        public abstract int ColumnCount { get; }
-
-        /// <inheritdoc />
-        public bool CanBind(DataBinding binding)
-        {
-            if (binding == null)
-                throw new ArgumentNullException("binding");
-
-            return CanBindInternal(binding);
         }
 
         /// <summary>
@@ -80,28 +68,5 @@ namespace Gallio.Data
             if (dataSet.IsDynamic)
                 isDynamic = true;
         }
-
-        /// <inheritdoc />
-        public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings)
-        {
-            if (bindings == null)
-                throw new ArgumentNullException("bindings");
-
-            return GetRowsInternal(bindings);
-        }
-
-        /// <summary>
-        /// Determines whether a binding can be satisfied by the aggregate data set.
-        /// </summary>
-        /// <param name="binding">The data binding, not null</param>
-        /// <returns>True if the binding can be satisfied</returns>
-        protected abstract bool CanBindInternal(DataBinding binding);
-
-        /// <summary>
-        /// Enumerates the rows in the aggregate data set.
-        /// </summary>
-        /// <param name="bindings">The data bindings, not null</param>
-        /// <returns>The enumeration of rows in the combined data set</returns>
-        protected abstract IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings);
     }
 }

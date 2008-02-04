@@ -13,9 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Data;
 using MbUnit.Framework;
 
@@ -30,7 +27,7 @@ namespace Gallio.Tests.Data
         {
             SimpleDataBinding binding = new SimpleDataBinding(typeof(int));
 
-            Assert.AreEqual(typeof(int), binding.ValueType);
+            Assert.AreEqual(typeof(int), binding.Type);
             Assert.IsNull(binding.Path);
             Assert.IsNull(binding.Index);
         }
@@ -47,7 +44,7 @@ namespace Gallio.Tests.Data
         {
             SimpleDataBinding binding = new SimpleDataBinding(typeof(int), "path", 42);
 
-            Assert.AreEqual(typeof(int), binding.ValueType);
+            Assert.AreEqual(typeof(int), binding.Type);
             Assert.AreEqual("path", binding.Path);
             Assert.AreEqual(42, binding.Index);
         }
@@ -67,7 +64,7 @@ namespace Gallio.Tests.Data
 
             Assert.AreNotSame(oldBinding, newBinding);
 
-            Assert.AreEqual(typeof(int), newBinding.ValueType);
+            Assert.AreEqual(typeof(int), newBinding.Type);
             Assert.AreEqual("path", newBinding.Path);
             Assert.AreEqual(23, newBinding.Index);
         }

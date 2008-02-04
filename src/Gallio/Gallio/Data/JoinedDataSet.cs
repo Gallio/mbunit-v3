@@ -293,9 +293,9 @@ namespace Gallio.Data
                 get { return externalIndex; }
             }
 
-            public override Type ValueType
+            public override Type Type
             {
-                get { return inner.ValueType; }
+                get { return inner.Type; }
             }
 
             public override DataBinding ReplaceIndex(int? index)

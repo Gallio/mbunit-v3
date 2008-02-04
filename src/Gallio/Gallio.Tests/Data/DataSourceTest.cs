@@ -60,7 +60,7 @@ namespace Gallio.Tests.Data
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
-                    Assert.AreEqual(typeof(string), binding.ValueType);
+                    Assert.AreEqual(typeof(string), binding.Type);
                     Assert.AreEqual("untranslatedPath", binding.Path);
                     Assert.AreEqual(5, binding.Index);
                     return false;
@@ -88,7 +88,7 @@ namespace Gallio.Tests.Data
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
-                    Assert.AreEqual(typeof(int), binding.ValueType);
+                    Assert.AreEqual(typeof(int), binding.Type);
                     Assert.AreEqual("translatedPath", binding.Path);
                     Assert.AreEqual(2, binding.Index);
                     return true;
@@ -96,7 +96,7 @@ namespace Gallio.Tests.Data
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
-                    Assert.AreEqual(typeof(string), binding.ValueType);
+                    Assert.AreEqual(typeof(string), binding.Type);
                     Assert.AreEqual("untranslatedPath", binding.Path);
                     Assert.AreEqual(5, binding.Index);
                     return false;
@@ -132,7 +132,7 @@ namespace Gallio.Tests.Data
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
-                    Assert.AreEqual(typeof(string), bindingList[0].ValueType);
+                    Assert.AreEqual(typeof(string), bindingList[0].Type);
                     Assert.AreEqual("untranslatedPath", bindingList[0].Path);
                     Assert.AreEqual(1, bindingList[0].Index);
 
@@ -175,11 +175,11 @@ namespace Gallio.Tests.Data
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
-                    Assert.AreEqual(typeof(string), bindingList[0].ValueType);
+                    Assert.AreEqual(typeof(string), bindingList[0].Type);
                     Assert.AreEqual("translatedPath", bindingList[0].Path);
                     Assert.AreEqual(2, bindingList[0].Index);
 
-                    Assert.AreEqual(typeof(string), bindingList[1].ValueType);
+                    Assert.AreEqual(typeof(string), bindingList[1].Type);
                     Assert.AreEqual("untranslatedPath", bindingList[1].Path);
                     Assert.AreEqual(1, bindingList[1].Index);
 

@@ -328,7 +328,7 @@ namespace Gallio.Tests.Data
             DataBinding translatedBinding = joinedDataSet.TranslateBinding(innerDataSet, binding);
             Assert.AreEqual(expectedIndex, translatedBinding.Index, message);
             Assert.AreEqual(binding.Path, translatedBinding.Path, "Path should be preserved always.");
-            Assert.AreEqual(binding.ValueType, translatedBinding.ValueType, "Value type should be preserved always.");
+            Assert.AreEqual(binding.Type, translatedBinding.Type, "Value type should be preserved always.");
         }
 
         [Test, ExpectedArgumentNullException]
@@ -362,12 +362,12 @@ namespace Gallio.Tests.Data
             DataBinding dataBinding = dataSet.TranslateBinding(source, new SimpleDataBinding(typeof(string), "path", null));
             Assert.IsNull(dataBinding.Index);
             Assert.AreEqual("path", dataBinding.Path);
-            Assert.AreEqual(typeof(string), dataBinding.ValueType);
+            Assert.AreEqual(typeof(string), dataBinding.Type);
 
             DataBinding changedDataBinding = dataBinding.ReplaceIndex(5);
             Assert.AreEqual(5, changedDataBinding.Index);
             Assert.AreEqual("path", dataBinding.Path);
-            Assert.AreEqual(typeof(string), dataBinding.ValueType);
+            Assert.AreEqual(typeof(string), dataBinding.Type);
         }
     }
 }

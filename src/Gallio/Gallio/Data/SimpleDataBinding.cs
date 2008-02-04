@@ -24,7 +24,7 @@ namespace Gallio.Data
     /// </summary>
     public class SimpleDataBinding : DataBinding
     {
-        private readonly Type valueType;
+        private readonly Type type;
         private readonly string path;
         private readonly int? index;
 
@@ -38,7 +38,7 @@ namespace Gallio.Data
             if (valueType == null)
                 throw new ArgumentNullException("valueType");
 
-            this.valueType = valueType;
+            this.type = valueType;
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public override Type ValueType
+        public override Type Type
         {
-            get { return valueType; }
+            get { return type; }
         }
 
         /// <inheritdoc />
@@ -76,7 +76,7 @@ namespace Gallio.Data
         /// <inheritdoc />
         public override DataBinding ReplaceIndex(int? index)
         {
-            return new SimpleDataBinding(valueType, path, index);
+            return new SimpleDataBinding(type, path, index);
         }
     }
 }

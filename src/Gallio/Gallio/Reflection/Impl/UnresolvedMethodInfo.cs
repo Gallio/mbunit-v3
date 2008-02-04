@@ -39,6 +39,14 @@ namespace Gallio.Reflection.Impl
             this.adapter = adapter;
         }
 
+        /// <summary>
+        /// Gets the underlying reflection adapter.
+        /// </summary>
+        public IMethodInfo Adapter
+        {
+            get { return adapter; }
+        }
+
         /// <inheritdoc />
         public override MemberTypes MemberType
         {

@@ -46,6 +46,14 @@ namespace Gallio.Reflection.Impl
             this.adapter = adapter;
         }
 
+        /// <summary>
+        /// Gets the underlying reflection adapter.
+        /// </summary>
+        public ITypeInfo Adapter
+        {
+            get { return adapter; }
+        }
+
         /// <inheritdoc />
         public override Assembly Assembly
         {
