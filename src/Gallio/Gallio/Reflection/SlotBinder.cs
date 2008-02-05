@@ -43,7 +43,7 @@ namespace Gallio.Reflection
                 throw new ArgumentNullException("slotValues");
 
             Type resolvedType = type.Resolve(true);
-            if (! resolvedType.IsClass || resolvedType.IsAbstract)
+            if (resolvedType.IsInterface || resolvedType.IsAbstract || resolvedType.HasElementType || resolvedType.IsGenericParameter)
                 throw new ArgumentException("The type must be a concrete class.", "type");
 
             List<KeyValuePair<Type, object>> genericParameterBindings = new List<KeyValuePair<Type, object>>();
@@ -55,6 +55,9 @@ namespace Gallio.Reflection
             foreach (KeyValuePair<ISlotInfo, object> slotValue in slotValues)
             {
                 ISlotInfo slot = slotValue.Key;
+                if (slot == null)
+                    throw new ArgumentNullException("slotValues");
+
                 object value = slotValue.Value;
 
                 switch (slot.Kind)
@@ -118,9 +121,9 @@ namespace Gallio.Reflection
                     genericParameterCount, genericParameterBindings.Count), "slotValues");
 
             Type[] genericTypeArgs = GetGenericArgs(genericParameterBindings);
-            object instance = CreateInstance(constructor, constructorParameterBindings, genericTypeArgs);
-            SetFieldValues(instance, fieldBindings, genericTypeArgs);
-            SetPropertyValues(instance, propertyBindings, genericTypeArgs);
+            object instance = CreateInstance(constructor, genericTypeArgs, constructorParameterBindings);
+            SetFieldValues(instance, genericTypeArgs, fieldBindings);
+            SetPropertyValues(instance, genericTypeArgs, propertyBindings);
 
             return instance;
         }
@@ -178,7 +181,7 @@ namespace Gallio.Reflection
             }
 
             Type[] genericMethodArgs = GetGenericArgs(genericParameterBindings);
-            InvokeMethod(resolvedMethod, instance, methodParameterBindings, genericMethodArgs);
+            InvokeMethod(resolvedMethod, genericMethodArgs, instance, methodParameterBindings);
         }
 
         private static void EnsureSlotBelongsToClass(Type type, Type declaringTypeOfSlot, ISlotInfo slot)
@@ -193,40 +196,25 @@ namespace Gallio.Reflection
                 throw new ArgumentException(String.Format("Slot '{0}' was not declared by method '{1}'.", slot, method.Name), "slotValues");
         }
 
-        private static object CreateInstance(ConstructorInfo constructor, ICollection<KeyValuePair<ParameterInfo, object>> constructorParameterBindings, Type[] genericTypeArgs)
+        private static object CreateInstance(ConstructorInfo constructor, Type[] genericTypeArgs, ICollection<KeyValuePair<ParameterInfo, object>> constructorParameterBindings)
         {
-            if (genericTypeArgs.Length != 0)
-                constructor = (ConstructorInfo) constructor.Module.ResolveMethod(constructor.MetadataToken, genericTypeArgs, null);
-
             object[] constructorArgs = GetConstructorOrMethodArgs(constructorParameterBindings);
-            return constructor.Invoke(constructorArgs);
+            return ResolveMember(constructor, genericTypeArgs).Invoke(constructorArgs);
         }
 
-        private static void SetFieldValues(object instance, IEnumerable<KeyValuePair<FieldInfo, object>> fieldBindings, Type[] genericTypeArgs)
+        private static void SetFieldValues(object instance, Type[] genericTypeArgs, IEnumerable<KeyValuePair<FieldInfo, object>> fieldBindings)
         {
             foreach (KeyValuePair<FieldInfo, object> binding in fieldBindings)
-            {
-                FieldInfo field = binding.Key;
-                if (genericTypeArgs.Length != 0)
-                    field = field.Module.ResolveField(field.MetadataToken, genericTypeArgs, null);
-
-                field.SetValue(instance, binding.Value);
-            }
+                ResolveMember(binding.Key, genericTypeArgs).SetValue(instance, binding.Value);
         }
 
-        private static void SetPropertyValues(object instance, IEnumerable<KeyValuePair<PropertyInfo, object>> propertyBindings, Type[] genericTypeArgs)
+        private static void SetPropertyValues(object instance, Type[] genericTypeArgs, IEnumerable<KeyValuePair<PropertyInfo, object>> propertyBindings)
         {
             foreach (KeyValuePair<PropertyInfo, object> binding in propertyBindings)
-            {
-                PropertyInfo property = binding.Key;
-                if (genericTypeArgs.Length != 0)
-                    property = (PropertyInfo) property.Module.ResolveMember(property.MetadataToken, genericTypeArgs, null);
-
-                property.SetValue(instance, binding.Value, null);
-            }
+                ResolveMember(binding.Key, genericTypeArgs).SetValue(instance, binding.Value, null);
         }
 
-        private static void InvokeMethod(MethodInfo method, object instance, ICollection<KeyValuePair<ParameterInfo, object>> methodParameterBindings, Type[] genericMethodArgs)
+        private static void InvokeMethod(MethodInfo method, Type[] genericMethodArgs, object instance, ICollection<KeyValuePair<ParameterInfo, object>> methodParameterBindings)
         {
             if (genericMethodArgs.Length != 0)
                 method = method.MakeGenericMethod(genericMethodArgs);
@@ -243,7 +231,19 @@ namespace Gallio.Reflection
 
             Type[] genericArgs = new Type[genericParameterCount];
             foreach (KeyValuePair<Type, object> binding in genericParameterBindings)
+            {
+                object value = binding.Value;
+                if (value == null)
+                    throw new InvalidOperationException(String.Format("Expected a Type to bind to the generic parameter slot '{0}' but the provided value was null.",
+                        binding.Key.Name));
+
+                Type type = value as Type;
+                if (type == null)
+                    throw new InvalidOperationException(String.Format("Expected a Type to bind to the generic parameter slot '{0}' but the provided value was of type '{1}'.", 
+                        binding.Key.Name, value.GetType().FullName));
+
                 genericArgs[binding.Key.GenericParameterPosition] = (Type)binding.Value;
+            }
 
             return genericArgs;
         }
@@ -254,11 +254,29 @@ namespace Gallio.Reflection
             if (parameterCount == 0)
                 return EmptyArray<object>.Instance;
 
-            object[] constructorOrMethodArgs = new Type[parameterCount];
+            object[] constructorOrMethodArgs = new object[parameterCount];
             foreach (KeyValuePair<ParameterInfo, object> binding in parameterBindings)
                 constructorOrMethodArgs[binding.Key.Position] = binding.Value;
 
             return constructorOrMethodArgs;
+        }
+
+        private static T ResolveMember<T>(T member, Type[] genericTypeArgs)
+            where T : MemberInfo
+        {
+            if (genericTypeArgs.Length == 0)
+                return member;
+
+            Type genericType = member.DeclaringType.MakeGenericType(genericTypeArgs);
+            MemberInfo[] resolvedMembers = genericType.FindMembers(member.MemberType,
+                BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static,
+                delegate(MemberInfo candidate, object dummy) { return candidate.MetadataToken == member.MetadataToken; },
+                null);
+
+            if (resolvedMembers.Length != 1)
+                throw new InvalidOperationException(String.Format("Could not resolve member '{0}' on generic type instantiation '{1}'.", member.Name, genericType.FullName));
+
+            return (T) resolvedMembers[0];
         }
     }
 }

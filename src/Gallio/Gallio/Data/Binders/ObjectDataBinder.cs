@@ -26,7 +26,7 @@ namespace Gallio.Data.Binders
     /// </summary>
     public class ObjectDataBinder : BaseDataBinder
     {
-        private readonly Type type;
+        private readonly ITypeInfo type;
         private readonly Dictionary<ISlotInfo, IDataBinder> slotBinders;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Gallio.Data.Binders
         /// </summary>
         /// <param name="type">The type</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
-        public ObjectDataBinder(Type type)
+        public ObjectDataBinder(ITypeInfo type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -77,10 +77,10 @@ namespace Gallio.Data.Binders
 
         private sealed class Accessor : IDataBindingAccessor
         {
-            private readonly Type type;
+            private readonly ITypeInfo type;
             private readonly List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors;
 
-            public Accessor(Type type, List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors)
+            public Accessor(ITypeInfo type, List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors)
             {
                 this.type = type;
                 this.slotAccessors = slotAccessors;
@@ -99,7 +99,7 @@ namespace Gallio.Data.Binders
                         return new KeyValuePair<ISlotInfo, object>(slotAccessor.Key, value);
                     });
 
-                return SlotBinder.CreateInstance(Reflector.Wrap(type), slotValues);
+                return SlotBinder.CreateInstance(type, slotValues);
             }
         }
     }

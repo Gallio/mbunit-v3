@@ -26,6 +26,7 @@ namespace Gallio.Tests.Data.Binders
 {
     [TestFixture]
     [TestsOn(typeof(ScalarDataBinder))]
+    [DependsOn(typeof(BaseDataBinderTest))]
     public class ScalarDataBinderTest : BaseUnitTest
     {
         [Test, ExpectedArgumentNullException]
@@ -38,6 +39,25 @@ namespace Gallio.Tests.Data.Binders
         public void ConstructorThrowsIfSourceNameIsNull()
         {
             new ScalarDataBinder(new SimpleDataBinding(typeof(int)), null);
+        }
+
+        [Test]
+        public void RegisterThrowsIfTheDataSourceCannotBeResolvedByName()
+        {
+            ScalarDataBinder binder = new ScalarDataBinder( new SimpleDataBinding(typeof(object)), "name");
+
+            IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
+
+            using (Mocks.Record())
+            {
+                Expect.Call(resolver.ResolveDataSource("name")).Return(null);
+            }
+
+            using (Mocks.Playback())
+            {
+                DataBindingContext context = new DataBindingContext(new NullConverter());
+                InterimAssert.Throws<InvalidOperationException>(delegate { binder.Register(context, resolver); });
+            }
         }
 
         [Test]
