@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
 
 namespace Gallio.Data.Conversions
 {
@@ -47,6 +46,9 @@ namespace Gallio.Data.Conversions
         /// <inheritdoc />
         protected override ConversionCost GetConversionCostInternal(Type sourceType, Type targetType)
         {
+            sourceType = GetUnderlyingTypeOfNullableIfPresent(sourceType);
+            targetType = GetUnderlyingTypeOfNullableIfPresent(targetType);
+
             if (sourceType.Equals(targetType))
                 return ConversionCost.Zero;
 
@@ -59,6 +61,8 @@ namespace Gallio.Data.Conversions
         {
             if (sourceValue == null)
                 return ConvertNull(targetType);
+
+            targetType = GetUnderlyingTypeOfNullableIfPresent(targetType);
             if (targetType.IsInstanceOfType(sourceValue))
                 return sourceValue;
 
@@ -73,11 +77,8 @@ namespace Gallio.Data.Conversions
 
         private static object ConvertNull(Type targetType)
         {
-            if (targetType.IsPrimitive)
-                throw new InvalidOperationException(String.Format("Cannot convert a null value to the primitive type '{0}'.", targetType));
-
-            if (typeof(Nullable).IsAssignableFrom(targetType))
-                return targetType.GetConstructor(EmptyArray<Type>.Instance).Invoke(null);
+            if (targetType.IsValueType && Nullable.GetUnderlyingType(targetType) == null)
+                throw new InvalidOperationException(String.Format("Cannot convert a null value to the non-nullable value type '{0}'.", targetType));
 
             return null;
         }
@@ -115,6 +116,11 @@ namespace Gallio.Data.Conversions
             }
 
             return best;
+        }
+
+        private static Type GetUnderlyingTypeOfNullableIfPresent(Type type)
+        {
+            return Nullable.GetUnderlyingType(type) ?? type;
         }
 
         private struct ConversionKey

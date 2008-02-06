@@ -26,9 +26,8 @@ namespace Gallio.Data.Conversions
         /// <inheritdoc />
         public ConversionCost GetConversionCost(Type sourceType, Type targetType, IConverter elementConverter)
         {
-            if (typeof(XPathNavigator).IsAssignableFrom(sourceType)
-                && elementConverter.CanConvert(typeof(string), targetType))
-                return ConversionCost.Typical;
+            if (typeof(XPathNavigator).IsAssignableFrom(sourceType))
+                return elementConverter.GetConversionCost(typeof(string), targetType).Add(ConversionCost.Typical);
 
             return ConversionCost.Invalid;
         }
@@ -37,7 +36,7 @@ namespace Gallio.Data.Conversions
         public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
         {
             XPathNavigator node = (XPathNavigator)sourceValue;
-            return node.Value ?? node.OuterXml;
+            return node.Value;
         }
     }
 }

@@ -108,7 +108,35 @@
           <name>IsolatedProcess</name>
           <description>Runs tests within an isolated process external to the test runner.  This mode is used to force tests to run in a different process which can be monitored separately and may have different priviledges or process-level configuration.</description>
         </parameters>
-      </component>      
+      </component>
+      
+      <component id="Core.Converter"
+                 service="Gallio.Data.Conversions.IConverter, Gallio"
+                 type="Gallio.Data.Conversions.RuntimeRuleBasedConverter, Gallio" />
+      
+      <component id="Core.ArrayToArrayConversionRule"
+                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Data.Conversions.ArrayToArrayConversionRule, Gallio" />      
+      
+      <component id="Core.ConvertibleToConvertibleConversionRule"
+                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Data.Conversions.ConvertibleToConvertibleConversionRule, Gallio" />      
+
+      <component id="Core.ObjectToStringConversionRule"
+                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Data.Conversions.ObjectToStringConversionRule, Gallio" />      
+
+      <component id="Core.XPathNavigableToXPathNavigatorConversionRule"
+                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Data.Conversions.XPathNavigableToXPathNavigatorConversionRule, Gallio" />
+
+      <component id="Core.XPathNavigatorToStringConversionRule"
+                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Data.Conversions.XPathNavigatorToStringConversionRule, Gallio" />
+
+      <component id="Core.XPathNavigatorToXmlSerializableTypeConversionRule"
+                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Data.Conversions.XPathNavigatorToXmlSerializableTypeConversionRule, Gallio" />
     </components>
   </castle>
 </configuration>

@@ -31,7 +31,8 @@ namespace Gallio.Data.Conversions
         public ConversionCost GetConversionCost(Type sourceType, Type targetType, IConverter elementConverter)
         {
             if (typeof(XPathNavigator).IsAssignableFrom(sourceType)
-                && targetType.IsDefined(typeof(XmlTypeAttribute), true))
+                && targetType.IsDefined(typeof(XmlTypeAttribute), true)
+                && targetType.IsDefined(typeof(XmlRootAttribute), true))
                 return ConversionCost.Typical;
 
             return ConversionCost.Invalid;

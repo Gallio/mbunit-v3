@@ -20,16 +20,16 @@ using System.Xml.XPath;
 namespace Gallio.Data.Conversions
 {
     /// <summary>
-    /// Converts <see cref="XmlNode" /> objects to <see cref="XPathNavigator" /> objects.
+    /// Converts <see cref="IXPathNavigable" /> objects to <see cref="XPathNavigator" /> objects.
     /// </summary>
-    public sealed class XmlNodeToXPathNavigatorConversionRule : IConversionRule
+    public sealed class XPathNavigableToXPathNavigatorConversionRule : IConversionRule
     {
         /// <inheritdoc />
         public ConversionCost GetConversionCost(Type sourceType, Type targetType, IConverter elementConverter)
         {
-            if (typeof(XmlNode).IsAssignableFrom(sourceType)
-                && elementConverter.CanConvert(typeof(XPathNavigator), targetType))
-                return ConversionCost.Typical;
+            if (typeof(IXPathNavigable).IsAssignableFrom(sourceType)
+                && ! typeof(XPathNavigator).IsAssignableFrom(sourceType))
+                return elementConverter.GetConversionCost(typeof(XPathNavigator), targetType).Add(ConversionCost.Typical);
 
             return ConversionCost.Invalid;
         }
@@ -37,7 +37,7 @@ namespace Gallio.Data.Conversions
         /// <inheritdoc />
         public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
         {
-            XmlNode node = (XmlNode)sourceValue;
+            IXPathNavigable node = (IXPathNavigable)sourceValue;
             return elementConverter.Convert(node.CreateNavigator(), targetType);
         }
     }

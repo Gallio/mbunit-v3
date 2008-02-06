@@ -112,5 +112,11 @@ namespace Gallio.Data.Conversions
         {
             return IsInvalid || other.IsInvalid ? Invalid : new ConversionCost(Math.Min(value + other.value, MaximumValue));
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return "Conversion Cost: " + value.ToString();
+        }
     }
 }

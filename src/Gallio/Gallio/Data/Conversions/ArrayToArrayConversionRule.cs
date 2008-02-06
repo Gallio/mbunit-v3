@@ -20,7 +20,7 @@ namespace Gallio.Data.Conversions
     /// <summary>
     /// Converts arrays from one-dimensional arrays of one element type to another.
     /// </summary>
-    public sealed class ArrayElementTypeConversionRule : IConversionRule
+    public sealed class ArrayToArrayConversionRule : IConversionRule
     {
         /// <inheritdoc />
         public ConversionCost GetConversionCost(Type sourceType, Type targetType, IConverter elementConverter)

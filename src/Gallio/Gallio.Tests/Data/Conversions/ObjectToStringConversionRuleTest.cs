@@ -14,24 +14,22 @@
 // limitations under the License.
 
 using System;
+using Gallio.Data.Conversions;
+using MbUnit.Framework;
 
-namespace Gallio.Data.Conversions
+namespace Gallio.Tests.Data.Conversions
 {
-    /// <summary>
-    /// Converts an <see cref="Object" /> into a <see cref="String" /> using <see cref="Object.ToString" />.
-    /// </summary>
-    public sealed class ObjectToStringConversionRule : IConversionRule
+    [TestFixture]
+    [TestsOn(typeof(ObjectToStringConversionRule))]
+    public class ObjectToStringConversionRuleTest : BaseConversionRuleTest<ObjectToStringConversionRule>
     {
-        /// <inheritdoc />
-        public ConversionCost GetConversionCost(Type sourceType, Type targetType, IConverter elementConverter)
+        [Test]
+        public void DirectConversion()
         {
-            return elementConverter.GetConversionCost(typeof(string), targetType).Add(ConversionCost.Default);
-        }
+            object sourceValue = typeof(Type);
+            string targetValue = (string)Converter.Convert(sourceValue, typeof(string));
 
-        /// <inheritdoc />
-        public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
-        {
-            return elementConverter.Convert(sourceValue.ToString(), targetType);
+            Assert.AreEqual(typeof(Type).ToString(), targetValue);
         }
     }
 }
