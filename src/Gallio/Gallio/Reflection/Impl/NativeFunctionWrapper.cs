@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 
 namespace Gallio.Reflection.Impl
 {
@@ -65,6 +66,9 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
+                if (!Target.ContainsGenericParameters)
+                    return EmptyArray<IGenericParameterInfo>.Instance;
+
                 Type[] parameters = Target.GetGenericArguments();
                 return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, Reflector.WrapAsGenericParameter);
             }
