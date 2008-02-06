@@ -21,7 +21,7 @@ for /R "." %%V in (%PATTERN%) do (
     if errorlevel 1 (
       echo - %%V
       REM Use sed to strip out UTF8 byte order marks before adding the boilerplate.
-      type "%LICENSE_FILE%" "%%V" 2>nul | sed -e "s/\xEF\xBB\xBF//" > "%%V.new"
+      type "%LICENSE_FILE%" "%%V" 2>nul | ..\libs\sed\sed -e "s/\xEF\xBB\xBF//" > "%%V.new"
       if errorlevel 1 (
         echo     Error applying boilerplate!
       ) else (
