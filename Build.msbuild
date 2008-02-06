@@ -96,7 +96,7 @@
     <NCoverExplorer Condition="$(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')"
                     Exclusions="Assembly=*.Tests;Assembly=*.TestResources"
                     XmlReportName="CoverageSummary.xml"
-		    ReportType="ModuleNamespaceSummary"
+		    ReportType="ModuleClassFunctionSummary"
 		    ToolPath="$(NCoverExplorerPath)"
                     OutputDir="$(BuildReportsDir)"
 		    CoverageFiles="$(BuildTempDir)\Coverage.xml"
