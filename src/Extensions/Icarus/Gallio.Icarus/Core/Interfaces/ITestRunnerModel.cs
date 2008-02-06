@@ -31,5 +31,6 @@ namespace Gallio.Icarus.Core.Interfaces
         void GenerateReport();
         void SaveReportAs(string fileName, string format);
         IList<string> GetReportTypes();
+        IList<string> GetTestFrameworks();
     }
 }

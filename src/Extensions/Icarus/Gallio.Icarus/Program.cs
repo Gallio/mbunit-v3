@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Windows.Forms;
+
 using Gallio.Icarus.Adapter;
 using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Core.Model;
@@ -39,16 +41,27 @@ namespace Gallio.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // TODO: Should use some kind of GUI-based logger.
-            Runtime.Initialize(new RuntimeSetup(), new RichConsoleLogger(NativeConsole.Instance));
+            IcarusLogger icarusLogger = new IcarusLogger();
+            Runtime.Initialize(new RuntimeSetup(), icarusLogger);
             try
             {
                 // wire up model
                 Main main = new Main();
+                icarusLogger.ProjectAdapterView = main;
                 ProjectAdapter projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
-                projectAdapter.Project = ParseArguments(args);
+                if (args.Length > 0)
+                    projectAdapter.Project = ParseArguments(args);
+                else
+                {
+                    if (main.Settings.RestorePreviousSettings)
+                    {
+                        string defaultProject = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                            "Gallio/Icarus/Icarus.gallio");
+                        if (File.Exists(defaultProject))
+                            projectAdapter.Project = LoadProject(defaultProject);
+                    }
+                }
                 ProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, new TestRunnerModel());
-
                 Application.Run(main);
             }
             finally
@@ -67,22 +80,30 @@ namespace Gallio.Icarus
             {
                 foreach (string file in arguments.Assemblies)
                 {
-                    if (file.EndsWith(".gallio"))
+                    if (File.Exists(file))
                     {
-                        try
+                        if (file.EndsWith(".gallio"))
                         {
-                            project = SerializationUtils.LoadFromXml<Project>(file);
+                            project = LoadProject(file);
+                            break;
                         }
-                        catch (Exception)
-                        { }
-                        return project;
-                    }
-                    else
-                    {
-                        project.TestPackageConfig.AssemblyFiles.Add(file);
+                        else
+                            project.TestPackageConfig.AssemblyFiles.Add(file);
                     }
                 }
             }
+            return project;
+        }
+
+        private static Project LoadProject(string fileName)
+        {
+            Project project = new Project();
+            try
+            {
+                project = SerializationUtils.LoadFromXml<Project>(fileName);
+            }
+            catch
+            { }
             return project;
         }
     }

@@ -20,6 +20,7 @@ using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Reflection;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Interfaces
@@ -39,15 +40,20 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<SingleStringEventArgs> SaveProject;
         event EventHandler<OpenProjectEventArgs> OpenProject;
         event EventHandler<EventArgs> NewProject;
+        event EventHandler<EventArgs> GetTestFrameworks;
+        event EventHandler<SingleStringEventArgs> GetSourceLocation;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
+        IList<string> TestFrameworks { set; }
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         int TotalTests { set; }
+        CodeLocation SourceCodeLocation { set; }
+        Settings Settings { get; set; }
         void Update(TestData testData, TestStepRun testStepRun);
         void ApplyFilter(Filter<ITest> filter);
         void ThreadedRemoveAssembly(string assembly);
@@ -57,5 +63,9 @@ namespace Gallio.Icarus.Interfaces
         void WriteToLog(string logName, string logBody);
         void Reset();
         void CreateReport();
+        void AddAssembliesToTree();
+        void RemoveAssembliesFromTree();
+        void ViewSourceCode(string testId);
+        void AssemblyChanged(string filePath);
     }
 }

@@ -74,11 +74,19 @@
     <Compile Include="AssemblyList.Designer.cs">
       <DependentUpon>AssemblyList.cs</DependentUpon>
     </Compile>
+    <Compile Include="CodeWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CodeWindow.Designer.cs">
+      <DependentUpon>CodeWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CheckBoxStates.cs" />
     <Compile Include="Controls\TaskButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\TaskDialog.cs" />
+    <Compile Include="Controls\TaskDialog.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controls\TestResultsGraph.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -96,7 +104,6 @@
     <Compile Include="Core\CustomEventArgs\AddAssembliesEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\GetTestTreeEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\OpenProjectEventArgs.cs" />
-    <Compile Include="Core\CustomEventArgs\GetLogStreamEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SaveReportAsEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SingleStringEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SetFilterEventArgs.cs" />
@@ -107,6 +114,8 @@
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProvider.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenter.cs" />
     <Compile Include="Core\ProgressMonitoring\TestRunnerMonitor.cs" />
+    <Compile Include="Core\Remoting\AssemblyWatcher.cs" />
+    <Compile Include="IcarusLogger.cs" />
     <Compile Include="Interfaces\IProjectAdapter.cs" />
     <Compile Include="Interfaces\IProjectAdapterModel.cs" />
     <Compile Include="Interfaces\IProjectAdapterView.cs" />
@@ -144,6 +153,10 @@
     <EmbeddedResource Include="AssemblyList.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AssemblyList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeWindow.resx">
+      <DependentUpon>CodeWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="LogWindow.resx">
       <SubType>Designer</SubType>
@@ -201,6 +214,7 @@
     <Compile Include="ReportWindow.Designer.cs">
       <DependentUpon>ReportWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="TestExplorer.cs">
       <SubType>Form</SubType>
     </Compile>

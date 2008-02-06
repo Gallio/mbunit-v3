@@ -36,119 +36,7 @@ namespace Gallio.Icarus.Controls
         
         private int totalTests = 0;
 
-        public TestStatusBar()
-        {
-            //Font = new Font("Verdana", 8);
-            //BackColor = Color.White;
-
-            // Setup the control styles so that the control does not flicker
-            // when it is resized or redrawn.
-            SetStyle(ControlStyles.DoubleBuffer, true);
-            SetStyle(ControlStyles.UserPaint, true);
-            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-            SetStyle(ControlStyles.ResizeRedraw, true);
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            Font = new Font("Verdana", 8);
-            BackColor = Color.White;
-
-            base.OnPaint(e);
-
-            int alpha = 200;
-            SolidBrush backBrush = new SolidBrush(BackColor);
-            SolidBrush textBrush = new SolidBrush(FromColor(ForeColor, alpha));
-
-            // Define the drawing area.
-            Rectangle r = ClientRectangle;
-            r = new Rectangle(
-                r.Location,
-                new Size(r.Width - 1, r.Height - 1)
-                );
-
-            // Fill the background.
-            e.Graphics.FillRectangle(backBrush, r);
-
-            SmoothingMode m = e.Graphics.SmoothingMode;
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-            if (totalTests > 0)
-            {
-                // Draw passed region.
-                float width = r.Width*(passedTests/(float) totalTests);
-                float left = r.Left;
-                float right = r.Left + width;
-                DrawProgressRegion(e.Graphics, r, left, width, passedColor);
-
-                // Draw inconclusive region.
-                width = r.Width*(inconclusiveTests/(float) totalTests);
-                left = right;
-                right = left + width;
-                DrawProgressRegion(e.Graphics, r, left, width, inconclusiveColor);
-
-                // Draw failed region.
-                width = r.Width*(failedTests/(float) totalTests);
-                left = right;
-                DrawProgressRegion(e.Graphics, r, left, width, failedColor);
-            }
-
-            // Draw a border around the control.
-            e.Graphics.DrawRectangle(Pens.Black, r);
-
-            // Build up the display text.
-            string text = string.Format(CultureInfo.CurrentCulture, Text, totalTests, 
-                passedTests, inconclusiveTests, failedTests, elapsedTime);
-
-            // Draw the text to the center of the control.
-            StringFormat format = new StringFormat(StringFormatFlags.NoClip);
-            format.Alignment = StringAlignment.Center;
-            format.LineAlignment = StringAlignment.Center;
-            e.Graphics.DrawString(
-                text,
-                Font,
-                textBrush,
-                r.Left + r.Width/2,
-                (r.Top + r.Height/2) + 1,
-                format
-                );
-            e.Graphics.SmoothingMode = m;
-        }
-
-        /// <summary>
-        /// Resets the state of the status bar.
-        /// </summary>
-        public void Clear()
-        {
-            passedTests = 0;
-            failedTests = 0;
-            inconclusiveTests = 0;
-
-            elapsedTime = 0;
-
-            Invalidate();
-        }
-
-        private static Color FromColor(Color c, int alpha)
-        {
-            return Color.FromArgb(
-                alpha,
-                c.R,
-                c.G,
-                c.B
-                );
-        }
-
-        private static void DrawProgressRegion(Graphics g, Rectangle r, float left, float width, Color c)
-        {
-            if (width == 0)
-                return;
-
-            RectangleF re = new RectangleF(left, r.Y, width, r.Height);
-            LinearGradientBrush brush = new LinearGradientBrush(re, FromColor(c, 225), FromColor(c, 75), 45, true);
-
-            g.FillRectangle(brush, re);
-        }
+        private string mode = "MbUnit";
 
         [Browsable(false)]
         public double ElapsedTime
@@ -259,11 +147,141 @@ namespace Gallio.Icarus.Controls
             set { base.BackgroundImage = value; }
         }
 
+        public string Mode
+        {
+            get { return mode; }
+            set { mode = value; }
+        }
+
         [Browsable(false)]
         public override ImageLayout BackgroundImageLayout
         {
             get { return base.BackgroundImageLayout; }
             set { base.BackgroundImageLayout = value; }
+        }
+
+        public TestStatusBar()
+        {
+            //Font = new Font("Verdana", 8);
+            //BackColor = Color.White;
+
+            // Setup the control styles so that the control does not flicker
+            // when it is resized or redrawn.
+            SetStyle(ControlStyles.DoubleBuffer, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.ResizeRedraw, true);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Font = new Font("Verdana", 8);
+            BackColor = Color.White;
+
+            base.OnPaint(e);
+
+            int alpha = 200;
+            SolidBrush backBrush = new SolidBrush(BackColor);
+            SolidBrush textBrush = new SolidBrush(FromColor(ForeColor, alpha));
+
+            // Define the drawing area.
+            Rectangle r = ClientRectangle;
+            r = new Rectangle(
+                r.Location,
+                new Size(r.Width - 1, r.Height - 1)
+                );
+
+            // Fill the background.
+            e.Graphics.FillRectangle(backBrush, r);
+
+            SmoothingMode m = e.Graphics.SmoothingMode;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            if (totalTests > 0)
+            {
+                if (mode == "MbUnit" || failedTests == 0)
+                {
+                    // Draw passed region.
+                    float width = r.Width * (passedTests / (float)totalTests);
+                    float left = r.Left;
+                    float right = r.Left + width;
+                    DrawProgressRegion(e.Graphics, r, left, width, passedColor);
+
+                    // Draw inconclusive region.
+                    width = r.Width * (inconclusiveTests / (float)totalTests);
+                    left = right;
+                    right = left + width;
+                    DrawProgressRegion(e.Graphics, r, left, width, inconclusiveColor);
+
+                    // Draw failed region.
+                    width = r.Width * (failedTests / (float)totalTests);
+                    left = right;
+                    DrawProgressRegion(e.Graphics, r, left, width, failedColor);
+                }
+                else
+                {
+                    // in classic (/unit test) mode, if any tests have failed show whole bar as failed
+                    float width = r.Width * ((passedTests + failedTests + inconclusiveTests) / (float)totalTests);
+                    float left = r.Left;
+                    DrawProgressRegion(e.Graphics, r, left, width, failedColor);
+                }
+            }
+
+            // Draw a border around the control.
+            e.Graphics.DrawRectangle(Pens.Black, r);
+
+            // Build up the display text.
+            string text = string.Format(CultureInfo.CurrentCulture, Text, totalTests, 
+                passedTests, inconclusiveTests, failedTests, elapsedTime);
+
+            // Draw the text to the center of the control.
+            StringFormat format = new StringFormat(StringFormatFlags.NoClip);
+            format.Alignment = StringAlignment.Center;
+            format.LineAlignment = StringAlignment.Center;
+            e.Graphics.DrawString(
+                text,
+                Font,
+                textBrush,
+                r.Left + r.Width/2,
+                (r.Top + r.Height/2) + 1,
+                format
+                );
+            e.Graphics.SmoothingMode = m;
+        }
+
+        /// <summary>
+        /// Resets the state of the status bar.
+        /// </summary>
+        public void Clear()
+        {
+            passedTests = 0;
+            failedTests = 0;
+            inconclusiveTests = 0;
+
+            elapsedTime = 0;
+
+            Invalidate();
+        }
+
+        private static Color FromColor(Color c, int alpha)
+        {
+            return Color.FromArgb(
+                alpha,
+                c.R,
+                c.G,
+                c.B
+                );
+        }
+
+        private static void DrawProgressRegion(Graphics g, Rectangle r, float left, float width, Color c)
+        {
+            if (width == 0)
+                return;
+
+            RectangleF re = new RectangleF(left, r.Y, width, r.Height);
+            LinearGradientBrush brush = new LinearGradientBrush(re, FromColor(c, 225), FromColor(c, 75), 45, true);
+
+            g.FillRectangle(brush, re);
         }
     }
 }

@@ -13,3 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Icarus.Core.Interfaces;
+using Gallio.Icarus.Core.ProgressMonitoring;
+
+using MbUnit.Framework;
+
+namespace Gallio.Icarus.Tests.Core.ProgressMonitoring
+{
+    [TestFixture]
+    public class StatusStripProgressMonitorProviderTest
+    {
+        [Test, ExpectedArgumentNullException("presenter")]
+        public void NullPresenter_Test()
+        {
+            StatusStripProgressMonitorProvider provider = new StatusStripProgressMonitorProvider(null);
+        }
+    }
+}

@@ -62,17 +62,26 @@ namespace Gallio.Icarus
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.assemblyListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.performanceMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.assembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeAssembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.consoleInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.consoleOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.consoleErrorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugTraceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.warningsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.failuresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -187,8 +196,9 @@ namespace Gallio.Icarus
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.testExplorerToolStripMenuItem,
             this.assemblyListToolStripMenuItem,
-            this.toolStripSeparator7,
-            this.reportToolStripMenuItem});
+            this.reportToolStripMenuItem,
+            this.performanceMonitorToolStripMenuItem,
+            this.testResultsToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -197,36 +207,46 @@ namespace Gallio.Icarus
             // 
             this.testExplorerToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.MbUnit;
             this.testExplorerToolStripMenuItem.Name = "testExplorerToolStripMenuItem";
-            this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.testExplorerToolStripMenuItem.Text = "Test Explorer";
-            this.testExplorerToolStripMenuItem.Click += new System.EventHandler(this.testExplorerToolStripMenuItem_Click);
+            this.testExplorerToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // assemblyListToolStripMenuItem
             // 
             this.assemblyListToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.AssemblyIcon;
             this.assemblyListToolStripMenuItem.Name = "assemblyListToolStripMenuItem";
-            this.assemblyListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.assemblyListToolStripMenuItem.Text = "Assembly List";
-            this.assemblyListToolStripMenuItem.Click += new System.EventHandler(this.assemblyListToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
+            this.assemblyListToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.assemblyListToolStripMenuItem.Text = "Modules";
+            this.assemblyListToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // reportToolStripMenuItem
             // 
             this.reportToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.Report;
             this.reportToolStripMenuItem.Name = "reportToolStripMenuItem";
-            this.reportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.reportToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.reportToolStripMenuItem.Text = "Report";
-            this.reportToolStripMenuItem.Click += new System.EventHandler(this.reportToolStripMenuItem_Click);
+            this.reportToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // performanceMonitorToolStripMenuItem
+            // 
+            this.performanceMonitorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("performanceMonitorToolStripMenuItem.Image")));
+            this.performanceMonitorToolStripMenuItem.Name = "performanceMonitorToolStripMenuItem";
+            this.performanceMonitorToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.performanceMonitorToolStripMenuItem.Text = "Performance monitor";
+            this.performanceMonitorToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // testResultsToolStripMenuItem
+            // 
+            this.testResultsToolStripMenuItem.Name = "testResultsToolStripMenuItem";
+            this.testResultsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.testResultsToolStripMenuItem.Text = "Test results";
+            this.testResultsToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // assembliesToolStripMenuItem
             // 
             this.assembliesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addAssemblyToolStripMenuItem,
-            this.removeAssemblyToolStripMenuItem,
+            this.removeAssembliesToolStripMenuItem,
             this.reloadToolStripMenuItem});
             this.assembliesToolStripMenuItem.Name = "assembliesToolStripMenuItem";
             this.assembliesToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
@@ -241,14 +261,14 @@ namespace Gallio.Icarus
             this.addAssemblyToolStripMenuItem.Text = "&Add Assemblies...";
             this.addAssemblyToolStripMenuItem.Click += new System.EventHandler(this.addAssemblyToolStripMenuItem_Click);
             // 
-            // removeAssemblyToolStripMenuItem
+            // removeAssembliesToolStripMenuItem
             // 
-            this.removeAssemblyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeAssemblyToolStripMenuItem.Image")));
-            this.removeAssemblyToolStripMenuItem.Name = "removeAssemblyToolStripMenuItem";
-            this.removeAssemblyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.removeAssemblyToolStripMenuItem.Text = "&Remove Assemblies";
-            this.removeAssemblyToolStripMenuItem.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem_Click);
+            this.removeAssembliesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeAssembliesToolStripMenuItem.Image")));
+            this.removeAssembliesToolStripMenuItem.Name = "removeAssembliesToolStripMenuItem";
+            this.removeAssembliesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.removeAssembliesToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.removeAssembliesToolStripMenuItem.Text = "&Remove Assemblies";
+            this.removeAssembliesToolStripMenuItem.Click += new System.EventHandler(this.removeAssembliesToolStripMenuItem_Click);
             // 
             // reloadToolStripMenuItem
             // 
@@ -262,8 +282,9 @@ namespace Gallio.Icarus
             this.testsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startTestsToolStripMenuItem,
             this.stopTestsToolStripMenuItem,
-            this.toolStripSeparator8,
-            this.resetToolStripMenuItem});
+            this.resetToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.windowsToolStripMenuItem});
             this.testsToolStripMenuItem.Name = "testsToolStripMenuItem";
             this.testsToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
             this.testsToolStripMenuItem.Text = "Tests";
@@ -288,17 +309,87 @@ namespace Gallio.Icarus
             this.stopTestsToolStripMenuItem.Text = "Stop";
             this.stopTestsToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
-            // toolStripSeparator8
-            // 
-            this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(153, 6);
-            // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
             this.resetToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(153, 6);
+            // 
+            // windowsToolStripMenuItem
+            // 
+            this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.logToolStripMenuItem,
+            this.consoleInputToolStripMenuItem,
+            this.consoleOutputToolStripMenuItem,
+            this.consoleErrorToolStripMenuItem,
+            this.debugTraceToolStripMenuItem,
+            this.warningsToolStripMenuItem,
+            this.failuresToolStripMenuItem});
+            this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
+            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.windowsToolStripMenuItem.Text = "Windows";
+            // 
+            // logToolStripMenuItem
+            // 
+            this.logToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
+            this.logToolStripMenuItem.Name = "logToolStripMenuItem";
+            this.logToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.logToolStripMenuItem.Text = "Log";
+            this.logToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // consoleInputToolStripMenuItem
+            // 
+            this.consoleInputToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
+            this.consoleInputToolStripMenuItem.Name = "consoleInputToolStripMenuItem";
+            this.consoleInputToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.consoleInputToolStripMenuItem.Text = "Console input";
+            this.consoleInputToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // consoleOutputToolStripMenuItem
+            // 
+            this.consoleOutputToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
+            this.consoleOutputToolStripMenuItem.Name = "consoleOutputToolStripMenuItem";
+            this.consoleOutputToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.consoleOutputToolStripMenuItem.Text = "Console output";
+            this.consoleOutputToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // consoleErrorToolStripMenuItem
+            // 
+            this.consoleErrorToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
+            this.consoleErrorToolStripMenuItem.Name = "consoleErrorToolStripMenuItem";
+            this.consoleErrorToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.consoleErrorToolStripMenuItem.Text = "Console error";
+            this.consoleErrorToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // debugTraceToolStripMenuItem
+            // 
+            this.debugTraceToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
+            this.debugTraceToolStripMenuItem.Name = "debugTraceToolStripMenuItem";
+            this.debugTraceToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.debugTraceToolStripMenuItem.Text = "Debug trace";
+            this.debugTraceToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // warningsToolStripMenuItem
+            // 
+            this.warningsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
+            this.warningsToolStripMenuItem.Name = "warningsToolStripMenuItem";
+            this.warningsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.warningsToolStripMenuItem.Text = "Warnings";
+            this.warningsToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // failuresToolStripMenuItem
+            // 
+            this.failuresToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
+            this.failuresToolStripMenuItem.Name = "failuresToolStripMenuItem";
+            this.failuresToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.failuresToolStripMenuItem.Text = "Failures";
+            this.failuresToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -511,7 +602,7 @@ namespace Gallio.Icarus
             this.Name = "Main";
             this.Text = "Gallio Icarus {0}.{1}";
             this.Load += new System.EventHandler(this.Form_Load);
-            this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -552,7 +643,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem saveProjectAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem addAssemblyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeAssembliesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showOnlineHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
@@ -569,10 +660,19 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testExplorerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem assemblyListToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem reportToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem windowsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem consoleInputToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem consoleOutputToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem consoleErrorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugTraceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem warningsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem failuresToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem performanceMonitorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testResultsToolStripMenuItem;
     }
 }
 

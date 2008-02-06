@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
@@ -30,6 +31,16 @@ namespace Gallio.Icarus
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             versionLabel.Text = String.Format(CultureInfo.CurrentCulture, versionLabel.Text, 
                 appVersion.Major, appVersion.Minor, appVersion.Build);
+        }
+
+        public IList<string> TestFrameworks
+        {
+            set
+            {
+                componentList.Items.Clear();
+                foreach (string framework in value)
+                    componentList.Items.Add(framework);
+            }
         }
 
         private void buttonClose_Click(object sender, EventArgs e)

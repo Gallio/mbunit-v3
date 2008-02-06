@@ -44,6 +44,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         private IEventRaiser setFilterEvent;
         private IEventRaiser getReportTypesEvent;
         private IEventRaiser saveReportAsEvent;
+        private IEventRaiser getTestFrameworksEvent;
 
         [SetUp]
         public void SetUp()
@@ -83,6 +84,10 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mockAdapter.SaveReportAs += null;
             LastCall.IgnoreArguments();
             saveReportAsEvent = LastCall.GetEventRaiser();
+
+            mockAdapter.GetTestFrameworks += null;
+            LastCall.IgnoreArguments();
+            getTestFrameworksEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -92,6 +97,16 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.StatusText = "blah blah";
+        }
+
+        [Test]
+        public void ReportPath_Test()
+        {
+            string reportPath = "test";
+            mockAdapter.ReportPath = reportPath;
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            projectPresenter.ReportPath = reportPath;
         }
 
         [Test, Category("ProjectPresenter"), Category("AnotherCategory"), Author("Graham Hay")]
@@ -158,7 +173,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             string filterName = "test";
             Filter<ITest> filter = new NoneFilter<ITest>();
-            //mockModel.SetFilter(filterName, filter);
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             setFilterEvent.Raise(mockAdapter, new SetFilterEventArgs(filterName, filter));
@@ -187,6 +201,17 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         }
 
         [Test]
+        public void GetTestFrameworks_Test()
+        {
+            IList<string> frameworks = new List<string>();
+            Expect.Call(mockModel.GetTestFrameworks()).Return(frameworks);
+            mockAdapter.TestFrameworks = frameworks;
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            getTestFrameworksEvent.Raise(mockAdapter, EventArgs.Empty);
+        }
+
+        [Test]
         public void Update_Test()
         {
             TestData testData = new TestData("test1", "test1");
@@ -195,6 +220,15 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.Update(testData, testStepRun);
+        }
+
+        [Test]
+        public void WriteToLog_Test()
+        {
+            mockAdapter.WriteToLog("test", "test");
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            projectPresenter.WriteToLog("test", "test");
         }
     }
 }

@@ -16,21 +16,18 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
+
 using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Interfaces;
-using MbUnit.Framework;
 using Gallio.Model;
 using Gallio.Model.Serialization;
+
+using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests
 {
     [TestFixture]
-    public class OptionsTest
+    public class OptionsTest : MockTest
     {
-        [Test]
-        public void Options_Test()
-        {
-            Options options = new Options();
-        }
     }
 }
