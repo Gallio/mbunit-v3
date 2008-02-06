@@ -24,6 +24,7 @@ namespace Gallio.Tests.Data
 {
     [TestFixture]
     [TestsOn(typeof(ListDataRow<>))]
+    [DependsOn(typeof(BaseDataRowTest))]
     public class ListDataRowTest
     {
         [Test, ExpectedArgumentNullException]
@@ -47,13 +48,6 @@ namespace Gallio.Tests.Data
             ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, metadata);
 
             Assert.AreSame(metadata, row.GetMetadata());
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void GetValueThrowsIfBindingIsNull()
-        {
-            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, null);
-            row.GetValue(null);
         }
 
         [RowTest]

@@ -23,6 +23,7 @@ namespace Gallio.Tests.Data
 {
     [TestFixture]
     [TestsOn(typeof(ScalarDataRow<>))]
+    [DependsOn(typeof(BaseDataRowTest))]
     public class ScalarDataRowTest
     {
         [Test]
@@ -40,13 +41,6 @@ namespace Gallio.Tests.Data
             ScalarDataRow<object> row = new ScalarDataRow<object>("abc", metadata);
 
             Assert.AreSame(metadata, row.GetMetadata());
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void GetValueThrowsIfBindingIsNull()
-        {
-            ScalarDataRow<object> row = new ScalarDataRow<object>(null, null);
-            row.GetValue(null);
         }
 
         [RowTest]

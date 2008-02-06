@@ -46,11 +46,8 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public override object GetValue(DataBinding binding)
+        protected override object GetValueInternal(DataBinding binding)
         {
-            if (binding == null)
-                throw new ArgumentNullException("binding");
-
             int? index = binding.Index;
             if (index.HasValue && index.Value >= 0 && index.Value < values.Count)
                 return values[index.Value];

@@ -71,6 +71,9 @@
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Contexts\DefaultContextManagerTest.cs" />
     <Compile Include="Contexts\StepTest.cs" />
+    <Compile Include="Data\BaseDataRowTest.cs" />
+    <Compile Include="Data\BaseDataSetTest.cs" />
+    <Compile Include="Data\XmlDataSetTest.cs" />
     <Compile Include="Data\Binders\DataBindingContextTest.cs" />
     <Compile Include="Data\Binders\ObjectDataBinderTest.cs" />
     <Compile Include="Data\Conversions\ArrayToArrayConversionRuleTest.cs" />

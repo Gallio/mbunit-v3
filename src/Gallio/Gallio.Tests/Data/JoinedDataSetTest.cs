@@ -24,6 +24,7 @@ namespace Gallio.Tests.Data
 {
     [TestFixture]
     [TestsOn(typeof(JoinedDataSet))]
+    [DependsOn(typeof(BaseDataSetTest))]
     public class JoinedDataSetTest : BaseUnitTest
     {
         private delegate IEnumerable<IList<IDataRow>> JoinDelegate(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider);
@@ -166,13 +167,6 @@ namespace Gallio.Tests.Data
                 "Cannot bind because path is supported by one of the scoped data set.");
         }
 
-        [Test, ExpectedArgumentNullException]
-        public void CanBindThrowsIfArgumentIsNull()
-        {
-            JoinedDataSet dataSet = new JoinedDataSet();
-            dataSet.CanBind(null);
-        }
-
         [Test]
         public void GetRowsDelegatesToTheStrategy()
         {
@@ -277,13 +271,6 @@ namespace Gallio.Tests.Data
                     new KeyValuePair<string, string>("ghi", "789")
                 }, rows[1].GetMetadata());
             }
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void GetRowsThrowsIfArgumentIsNull()
-        {
-            JoinedDataSet dataSet = new JoinedDataSet();
-            dataSet.GetRows(null);
         }
 
         [Test]

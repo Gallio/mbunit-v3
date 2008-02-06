@@ -63,13 +63,6 @@ namespace Gallio.Tests.Data
             Assert.IsFalse(rows[0].GetMetadata().GetEnumerator().MoveNext());
         }
 
-        [Test, ExpectedArgumentNullException]
-        public void GetRowsThrowsIfBindingListIsNull()
-        {
-            ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(EmptyArray<object>.Instance, null, true);
-            dataSet.GetRows(null);
-        }
-
         [Test]
         public void RowsContainSameMetadataAsSpecifiedInConstructor()
         {
@@ -93,13 +86,6 @@ namespace Gallio.Tests.Data
 
             Assert.IsInstanceOfType(typeof(ScalarDataRow<object>), rows[0]);
             Assert.IsInstanceOfType(typeof(ScalarDataRow<object>), rows[1]);
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void CanBindThrowsIfBindingIsNull()
-        {
-            ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(EmptyArray<object>.Instance, null, true);
-            dataSet.CanBind(null);
         }
 
         [RowTest]

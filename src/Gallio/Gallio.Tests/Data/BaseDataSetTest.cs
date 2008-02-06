@@ -13,30 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using Gallio.Data;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Data
 {
     [TestFixture]
-    [TestsOn(typeof(NullDataRow))]
-    [DependsOn(typeof(BaseDataRowTest))]
-    public class NullDataRowTest
+    [TestsOn(typeof(BaseDataSet))]
+    public class BaseDataSetTest : BaseUnitTest
     {
-        [Test]
-        public void HasNoMetadata()
+        [Test, ExpectedArgumentNullException]
+        public void CanBindThrowsIfBindingIsNull()
         {
-            List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>(NullDataRow.Instance.GetMetadata());
-            Assert.AreEqual(0, metadata.Count);
+            BaseDataSet dataSet = Mocks.PartialMock<BaseDataSet>();
+            dataSet.CanBind(null);
         }
 
-        [Test]
-        public void GetValueReturnsDefaultValueForType()
+        [Test, ExpectedArgumentNullException]
+        public void GetRowsThrowsIfBindingListIsNull()
         {
-            Assert.AreEqual(0, NullDataRow.Instance.GetValue(new SimpleDataBinding(typeof(int))));
-            Assert.AreEqual(0.0, NullDataRow.Instance.GetValue(new SimpleDataBinding(typeof(double))));
-            Assert.AreEqual(null, NullDataRow.Instance.GetValue(new SimpleDataBinding(typeof(object))));
+            BaseDataSet dataSet = Mocks.PartialMock<BaseDataSet>();
+            dataSet.GetRows(null);
         }
     }
 }

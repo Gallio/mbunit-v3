@@ -25,6 +25,7 @@ namespace Gallio.Tests.Data
 {
     [TestFixture]
     [TestsOn(typeof(MergedDataSet))]
+    [DependsOn(typeof(BaseDataSetTest))]
     public class MergedDataSetTest : BaseUnitTest
     {
         private delegate IEnumerable<IDataRow> MergeDelegate(IList<IDataProvider> providers, ICollection<DataBinding> bindings);
@@ -139,13 +140,6 @@ namespace Gallio.Tests.Data
             }
         }
 
-        [Test, ExpectedArgumentNullException]
-        public void CanBindThrowsIfArgumentIsNull()
-        {
-            MergedDataSet dataSet = new MergedDataSet();
-            dataSet.CanBind(null);
-        }
-
         [Test]
         public void GetRowsDelegatesToTheStrategy()
         {
@@ -174,13 +168,6 @@ namespace Gallio.Tests.Data
             {
                 Assert.AreSame(results, dataSet.GetRows(bindings));
             }
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void GetRowsThrowsIfArgumentIsNull()
-        {
-            MergedDataSet dataSet = new MergedDataSet();
-            dataSet.GetRows(null);
         }
     }
 }

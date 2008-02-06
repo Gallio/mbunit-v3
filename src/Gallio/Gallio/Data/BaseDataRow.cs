@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 
@@ -41,6 +42,19 @@ namespace Gallio.Data
         }
 
         /// <inheritdoc />
-        public abstract object GetValue(DataBinding binding);
+        public object GetValue(DataBinding binding)
+        {
+            if (binding == null)
+                throw new ArgumentNullException("binding");
+
+            return GetValueInternal(binding);
+        }
+
+        /// <summary>
+        /// Implements <see cref="GetValue" />.
+        /// </summary>
+        /// <param name="binding">The binding, never null</param>
+        /// <returns>The associated value</returns>
+        protected abstract object GetValueInternal(DataBinding binding);
     }
 }

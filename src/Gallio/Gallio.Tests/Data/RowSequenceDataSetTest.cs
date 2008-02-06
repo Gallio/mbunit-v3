@@ -24,6 +24,7 @@ namespace Gallio.Tests.Data
 {
     [TestFixture]
     [TestsOn(typeof(RowSequenceDataSet))]
+    [DependsOn(typeof(BaseDataSetTest))]
     public class RowSequenceDataSetTest
     {
         [Test, ExpectedArgumentNullException]
@@ -61,20 +62,6 @@ namespace Gallio.Tests.Data
             List<IDataRow> rows = new List<IDataRow>();
             RowSequenceDataSet dataSet = new RowSequenceDataSet(rows, 5, true);
             Assert.AreSame(rows, dataSet.GetRows(EmptyArray<DataBinding>.Instance));
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void GetRowsThrowsIfBindingListIsNull()
-        {
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 5, true);
-            dataSet.GetRows(null);
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void CanBindThrowsIfBindingIsNull()
-        {
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 5, true);
-            dataSet.CanBind(null);
         }
 
         [RowTest]

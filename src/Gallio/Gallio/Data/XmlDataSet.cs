@@ -89,20 +89,47 @@ namespace Gallio.Data
                 return false;
 
             string fullPath = rowPath + "/" + bindingPath;
-            return document.CreateNavigator().Select(fullPath).MoveNext();
+            try
+            {
+                return document.CreateNavigator().Select(fullPath).MoveNext();
+            }
+            catch (XPathException)
+            {
+                // Return false if the combined path is not a valid XPath expression.
+                return false;
+            }
         }
 
         /// <inheritdoc />
         protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
         {
-            foreach (XPathNavigator node in document.CreateNavigator().Select(rowPath))
-            {
-                object[] values = new object[bindings.Count];
-                int i = 0;
-                foreach (DataBinding binding in bindings)
-                    values[i] = node.SelectSingleNode(binding.Path);
+            foreach (XPathNavigator row in document.CreateNavigator().Select(rowPath))
+                yield return new XmlDataRow(row);
+        }
 
-                yield return new ListDataRow<object>(values, null);
+        private sealed class XmlDataRow : BaseDataRow
+        {
+            private readonly XPathNavigator row;
+
+            public XmlDataRow(XPathNavigator row)
+                : base(null)
+            {
+                this.row = row;
+            }
+
+            protected override object GetValueInternal(DataBinding binding)
+            {
+                if (binding.Path == null)
+                    throw new DataBindingException("A valid XPath expression is required as the binding path.");
+
+                try
+                {
+                    return row.SelectSingleNode(binding.Path);
+                }
+                catch (XPathException ex)
+                {
+                    throw new DataBindingException("A valid XPath expression is required as the binding path.", ex);
+                }
             }
         }
     }

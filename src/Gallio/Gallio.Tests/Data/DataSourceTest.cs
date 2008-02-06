@@ -23,6 +23,7 @@ namespace Gallio.Tests.Data
 {
     [TestFixture]
     [TestsOn(typeof(DataSource))]
+    [DependsOn(typeof(MergedDataSetTest))]
     public class DataSourceTest : BaseUnitTest
     {
         private delegate bool CanBindDelegate(DataBinding binding);

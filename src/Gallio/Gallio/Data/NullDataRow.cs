@@ -25,7 +25,7 @@ namespace Gallio.Data
     /// any binding that is requested.  It has no metadata and it ignores
     /// disposal.
     /// </summary>
-    public sealed class NullDataRow : IDataRow
+    public sealed class NullDataRow : BaseDataRow
     {
         /// <summary>
         /// Gets the singleton null data row instance.
@@ -33,21 +33,13 @@ namespace Gallio.Data
         public static readonly NullDataRow Instance = new NullDataRow();
 
         private NullDataRow()
+            : base(null)
         {
         }
 
         /// <inheritdoc />
-        public IEnumerable<KeyValuePair<string, string>> GetMetadata()
+        protected override object GetValueInternal(DataBinding binding)
         {
-            return EmptyArray<KeyValuePair<string, string>>.Instance;
-        }
-
-        /// <inheritdoc />
-        public object GetValue(DataBinding binding)
-        {
-            if (binding == null)
-                throw new ArgumentNullException("binding");
-
             return ReflectionUtils.GetDefaultValue(binding.Type);
         }
     }
