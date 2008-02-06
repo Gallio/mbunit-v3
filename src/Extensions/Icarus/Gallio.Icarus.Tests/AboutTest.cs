@@ -28,10 +28,9 @@ namespace Gallio.Icarus.Tests
     public class AboutTest
     {
         [Test]
-        public void TestFrameworks_Test()
+        public void About_Test()
         {
             About about = new About();
-            about.TestFrameworks = new List<string>(new string[] { "one" });
         }
     }
 }

@@ -79,7 +79,6 @@ namespace Gallio.Icarus
             this.testProgressStatusBar.Inconclusive = 0;
             this.testProgressStatusBar.InconclusiveColor = System.Drawing.Color.Gold;
             this.testProgressStatusBar.Location = new System.Drawing.Point(0, 0);
-            this.testProgressStatusBar.Mode = "MbUnit";
             this.testProgressStatusBar.Name = "testProgressStatusBar";
             this.testProgressStatusBar.Passed = 0;
             this.testProgressStatusBar.PassedColor = System.Drawing.Color.Green;

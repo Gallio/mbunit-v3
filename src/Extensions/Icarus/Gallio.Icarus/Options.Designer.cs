@@ -44,20 +44,20 @@ namespace Gallio.Icarus
         private void InitializeComponent()
         {
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("General");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Gallio Options", new System.Windows.Forms.TreeNode[] {
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("MbUnit Options", new System.Windows.Forms.TreeNode[] {
             treeNode1});
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Status bar");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Appearance", new System.Windows.Forms.TreeNode[] {
-            treeNode3});
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Startup");
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Options));
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Something");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Another Option");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Appearance", new System.Windows.Forms.TreeNode[] {
+            treeNode3,
+            treeNode4});
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Startup");
             this.optionCategoryTree = new System.Windows.Forms.TreeView();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
-            this.optionsPanel = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.seperatorBar = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.optionsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // optionCategoryTree
@@ -71,16 +71,18 @@ namespace Gallio.Icarus
             treeNode1.Text = "General";
             treeNode2.Name = "Node4";
             treeNode2.Text = "Gallio Options";
-            treeNode3.Name = "statusBar";
-            treeNode3.Text = "Status bar";
-            treeNode4.Name = "appearance";
-            treeNode4.Text = "Appearance";
-            treeNode5.Name = "startup";
-            treeNode5.Text = "Startup";
+            treeNode3.Name = "Node1";
+            treeNode3.Text = "Something";
+            treeNode4.Name = "Node2";
+            treeNode4.Text = "Another Option";
+            treeNode5.Name = "Node0";
+            treeNode5.Text = "Appearance";
+            treeNode6.Name = "Node3";
+            treeNode6.Text = "Startup";
             this.optionCategoryTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode2,
-            treeNode4,
-            treeNode5});
+            treeNode5,
+            treeNode6});
             this.optionCategoryTree.Size = new System.Drawing.Size(176, 327);
             this.optionCategoryTree.TabIndex = 0;
             this.optionCategoryTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.optionCategoryTree_AfterSelect);
@@ -88,7 +90,6 @@ namespace Gallio.Icarus
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancelButton.Location = new System.Drawing.Point(558, 376);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
@@ -100,24 +101,23 @@ namespace Gallio.Icarus
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.okButton.Location = new System.Drawing.Point(477, 376);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 2;
-            this.okButton.Text = "&OK";
+            this.okButton.Text = "&Ok";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
-            // optionsPanel
+            // panel2
             // 
-            this.optionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.optionsPanel.Location = new System.Drawing.Point(195, 43);
-            this.optionsPanel.Name = "optionsPanel";
-            this.optionsPanel.Size = new System.Drawing.Size(438, 322);
-            this.optionsPanel.TabIndex = 4;
+            this.panel2.Location = new System.Drawing.Point(195, 43);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(438, 322);
+            this.panel2.TabIndex = 4;
             // 
             // seperatorBar
             // 
@@ -143,19 +143,16 @@ namespace Gallio.Icarus
             // 
             // Options
             // 
-            this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(645, 411);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.seperatorBar);
-            this.Controls.Add(this.optionsPanel);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.optionCategoryTree);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Options";
@@ -163,8 +160,6 @@ namespace Gallio.Icarus
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Options";
             this.Load += new System.EventHandler(this.Options_Load);
-            this.optionsPanel.ResumeLayout(false);
-            this.optionsPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -174,7 +169,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.TreeView optionCategoryTree;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button okButton;
-        private System.Windows.Forms.Panel optionsPanel;
+        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label seperatorBar;
         private System.Windows.Forms.Label label1;
     }

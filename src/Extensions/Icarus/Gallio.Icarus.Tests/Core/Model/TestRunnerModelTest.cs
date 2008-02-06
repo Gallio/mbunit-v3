@@ -14,18 +14,13 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-
 using Gallio.Icarus.Core.Model;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Presenter;
 using Gallio.Icarus.Tests;
 using Gallio.Model;
 using Gallio.Model.Filters;
-
 using MbUnit.Framework;
-
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Core.Model.Tests
@@ -44,7 +39,7 @@ namespace Gallio.Icarus.Core.Model.Tests
             testRunnerModel = new TestRunnerModel();
         }
 
-        [Test, ExpectedArgumentNullException("projectPresenter")]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void SetProjectPresenterNull_Test()
         {
             testRunnerModel.ProjectPresenter = null;
@@ -73,21 +68,6 @@ namespace Gallio.Icarus.Core.Model.Tests
             testRunnerModel.LoadPackage(new TestPackageConfig());
             testRunnerModel.BuildTests();
             testRunnerModel.RunTests();
-            testRunnerModel.GenerateReport();
-            testRunnerModel.SaveReportAs(Path.GetTempFileName(), "html");
-            testRunnerModel.StopTests();
-        }
-
-        [Test]
-        public void GetReportTypes_Test()
-        {
-            IList<string> reportTypes = testRunnerModel.GetReportTypes();
-        }
-
-        [Test]
-        public void GetTestFrameworks_Test()
-        {
-            IList<string> frameworks = testRunnerModel.GetTestFrameworks();
         }
     }
 }

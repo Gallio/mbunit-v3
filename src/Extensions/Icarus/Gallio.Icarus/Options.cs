@@ -16,19 +16,12 @@
 using System;
 using System.Windows.Forms;
 
-using Gallio.Icarus.Interfaces;
-
 namespace Gallio.Icarus
 {
     public partial class Options : Form
     {
-        private IProjectAdapterView projectAdapterView;
-        private Settings settings;
-
-        public Options(IProjectAdapterView projectAdapterView)
+        public Options()
         {
-            this.projectAdapterView = projectAdapterView;
-            settings = projectAdapterView.Settings.Clone();
             InitializeComponent();
         }
 
@@ -38,45 +31,22 @@ namespace Gallio.Icarus
             optionCategoryTree.ExpandAll();
         }
 
+
         private void cancelButton_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
             Close();
         }
 
         private void okButton_Click(object sender, EventArgs e)
         {
-            projectAdapterView.Settings = settings;
+            DialogResult = DialogResult.OK;
             Close();
         }
 
         private void optionCategoryTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            optionsPanel.Controls.Clear();
-            switch (e.Node.Name)
-            {
-                case "statusBar":
-                    break;
-                case "startup":
-                    CreateStartupControls();
-                    break;
-            }
-        }
-
-        private void CreateStartupControls()
-        {
-            // restorePreviousSession
-            CheckBox restorePreviousSession;
-            restorePreviousSession = new System.Windows.Forms.CheckBox();
-            restorePreviousSession.AutoSize = true;
-            restorePreviousSession.Location = new System.Drawing.Point(15, 13);
-            restorePreviousSession.Name = "restorePreviousSession";
-            restorePreviousSession.Size = new System.Drawing.Size(144, 17);
-            restorePreviousSession.TabIndex = 0;
-            restorePreviousSession.Text = "Restore previous session";
-            restorePreviousSession.UseVisualStyleBackColor = true;
-            restorePreviousSession.Checked = settings.RestorePreviousSettings;
-            restorePreviousSession.CheckedChanged += delegate { settings.RestorePreviousSettings = restorePreviousSession.Checked; };
-            optionsPanel.Controls.Add(restorePreviousSession);
+            panel2.Controls.Clear();
         }
     }
 }

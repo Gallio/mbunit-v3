@@ -76,10 +76,10 @@ namespace Gallio.Icarus.Tests
             Assert.AreEqual(2, fixtureNode.Nodes.Count);
 
             // check Test nodes
-            TestTreeNode testNode;
+            TreeNode testNode;
             for (int i = 0; i < 2; i++)
             {
-                testNode = (TestTreeNode)fixtureNode.Nodes[i];
+                testNode = fixtureNode.Nodes[i];
                 Assert.AreEqual("Test" + (i + 1), testNode.Name);
                 Assert.AreEqual(4, testNode.ImageIndex);
                 Assert.AreEqual(0, testNode.Nodes.Count);
@@ -92,13 +92,11 @@ namespace Gallio.Icarus.Tests
             Assert.AreEqual(2, fixtureNode.Nodes.Count);
 
             // check Test nodes
-            testNode = (TestTreeNode)fixtureNode.Nodes[0];
+            testNode = fixtureNode.Nodes[0];
             Assert.AreEqual("Test3", testNode.Name);
             Assert.AreEqual(4, testNode.ImageIndex);
             Assert.AreEqual(0, testNode.Nodes.Count);
-            Assert.IsTrue(testNode.SourceCodeAvailable);
-
-            testNode = (TestTreeNode)fixtureNode.Nodes[1];
+            testNode = fixtureNode.Nodes[1];
             Assert.AreEqual("Test4", testNode.Name);
             Assert.AreEqual(0, testNode.ImageIndex);
             Assert.AreEqual(0, testNode.Nodes.Count);
@@ -215,7 +213,6 @@ namespace Gallio.Icarus.Tests
             TestData test3 = new TestData("Test3", "Test3");
             test3.Metadata.SetValue(MetadataKeys.TestKind, "Test");
             test3.IsTestCase = true;
-            test3.CodeLocation = new CodeLocation("path", 1, 1);
             fixture2.Children.Add(test3);
             TestData test4 = new TestData("Test4", "Test4");
             test4.Metadata.SetValue(MetadataKeys.TestKind, "Other");

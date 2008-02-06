@@ -237,12 +237,7 @@ namespace Gallio.Icarus.Controls
             base.OnMouseDown(e);
         }
 
-        public void Reset()
-        {
-            Reset(Nodes);
-        }
-
-        private void Reset(TreeNodeCollection nodes)
+        public void Reset(TreeNodeCollection nodes)
         {
             foreach (TreeNode node in nodes)
             {
@@ -266,20 +261,24 @@ namespace Gallio.Icarus.Controls
             }
         }
 
-        public int CountTests()
-        {
-            return CountTests(Nodes);
-        }
-
-        private int CountTests(TreeNodeCollection nodes)
+        public int CountTests(TreeNodeCollection nodes, List<string> dupes)
         {
             int count = 0;
             foreach (TreeNode node in nodes)
             {
-                TestTreeNode ttnode = (TestTreeNode)node;
-                if (ttnode.IsTest && ttnode.Checked)
-                    count++;
-                count += CountTests(ttnode.Nodes);
+                TestTreeNode ttnode = node as TestTreeNode;
+                if (ttnode != null)
+                {
+                    if (ttnode.SelectedImageIndex == 4 && ttnode.Checked && !dupes.Contains(ttnode.Name))
+                    {
+                        if (Nodes.Find(ttnode.Name, true).Length > 1)
+                        {
+                            dupes.Add(ttnode.Name);
+                        }
+                        count++;
+                    }
+                    count += CountTests(ttnode.Nodes, dupes);
+                }
             }
             return count;
         }

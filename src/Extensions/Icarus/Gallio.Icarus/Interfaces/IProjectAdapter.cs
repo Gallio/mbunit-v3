@@ -33,14 +33,12 @@ namespace Gallio.Icarus.Core.Interfaces
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
         event EventHandler<EventArgs> GetReportTypes;
-        event EventHandler<EventArgs> GetTestFrameworks;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         TestModelData TestModelData { set; }
         Project Project { get; set; }
         string StatusText { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
-        IList<string> TestFrameworks { set; }
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }

@@ -47,10 +47,5 @@ namespace Gallio.Icarus
         {
             logBody.Clear();
         }
-
-        protected override string GetPersistString()
-        {
-            return GetType().ToString() + "," + Text;
-        }
     }
 }

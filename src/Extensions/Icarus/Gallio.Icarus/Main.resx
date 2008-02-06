@@ -121,19 +121,6 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="performanceMonitorToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAWJJREFUOE9jYKAG
-        kCo5858ULFd04j/cXoX4tf+Np78jiBt2f/sPwiC1V/L8/kvG7oQYoh6z7r9S4rr/IIMIYZg6jcRV/5Xc
-        +yAGKDg0/H/y5AlR+M6DJ/+v3YNgVZ9pEAPk7ev///v3Dz/Odvj/KdHi/00fvf/vvv/7//DDv//KHv0I
-        F2AasP//pUs3/i9Y8PP/gvmf//83Zvh/Vorh/ywGhv+FFfX/r75CMkDeAeKCBffq//feSPv//zrD/z8v
-        Gf+np50B47S0WSgGZJbiMIBhOcN/3k42sAGf9jPgNeDcCyxeABnA0MBAlAEnn+IIg9b+1v/r5/j/P79G
-        C6cLUovq/x96hCcQv3379v/k2XP/Z89f8b+1c83/3KLO/08cJMCB2Cur8D+psP7/jrv/UNMBeix8/fUP
-        HF33X3/7v+fUtf/r95/7X9U5Day5vGce2AB4OlAPWADmkIpB+qiRDyk3AwDckQpdlA+sLAAAAABJRU5E
-        rkJggg==
-</value>
-  </data>
   <data name="newProjectToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -223,7 +210,7 @@
         QmCC
 </value>
   </data>
-  <data name="removeAssembliesToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="removeAssemblyToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAN0gAA
@@ -250,7 +237,7 @@
 </value>
   </data>
   <metadata name="statusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>239, 17</value>
+    <value>228, 20</value>
   </metadata>
   <metadata name="mainToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>119, 17</value>
