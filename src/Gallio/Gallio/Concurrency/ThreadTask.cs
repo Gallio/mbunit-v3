@@ -27,7 +27,7 @@ namespace Gallio.Concurrency
     {
         private static readonly object abortToken = new object();
 
-        private readonly Factory<object> block;
+        private readonly Func<object> block;
         private volatile Thread thread;
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Gallio.Concurrency
         /// <param name="block">The block of code to run within the thread</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
         /// or <paramref name="block"/> is null</exception>
-        public ThreadTask(string name, Factory<object> block)
+        public ThreadTask(string name, Func<object> block)
             : base(name)
         {
             if (block == null)
@@ -53,18 +53,18 @@ namespace Gallio.Concurrency
         /// When the task terminates successfully, its result will contain the value <c>null</c>.
         /// </summary>
         /// <param name="name">The name of the task</param>
-        /// <param name="block">The block of code to run within the thread</param>
+        /// <param name="action">The action to perform within the thread</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
-        /// or <paramref name="block"/> is null</exception>
-        public ThreadTask(string name, Block block)
+        /// or <paramref name="action"/> is null</exception>
+        public ThreadTask(string name, Action action)
             : base(name)
         {
-            if (block == null)
-                throw new ArgumentNullException("block");
+            if (action == null)
+                throw new ArgumentNullException("action");
 
             this.block = delegate
             {
-                block();
+                action();
                 return null;
             };
         }

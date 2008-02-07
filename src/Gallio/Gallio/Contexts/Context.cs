@@ -206,26 +206,26 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Runs a block of code with the specified context.
+        /// Performs an action within the specified context.
         /// </summary>
         /// <remarks>
         /// Conceptually this method pushes the specified context onto the context stack
-        /// of the current thread so that it becomes the current context, runs the block,
+        /// of the current thread so that it becomes the current context, performs the action,
         /// then unwinds the context stack for the current thread until this test context
         /// is again popped off the top.
         /// </remarks>
-        /// <param name="context">The context within which to run the block, or null to run the
-        /// block without a context</param>
-        /// <param name="block">The block to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
-        /// <exception cref="Exception">Any exception thrown by the block</exception>
-        public static void RunWithContext(Context context, Block block)
+        /// <param name="context">The context within which to perform the action, or null to 
+        /// perform it without a context</param>
+        /// <param name="action">The action to perform</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
+        /// <exception cref="Exception">Any exception thrown by the action</exception>
+        public static void RunWithContext(Context context, Action action)
         {
-            if (block == null)
-                throw new ArgumentNullException(@"block");
+            if (action == null)
+                throw new ArgumentNullException("action");
 
             using (EnterContext(context))
-                block();
+                action();
         }
 
         /// <summary>
@@ -454,78 +454,78 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Runs a block of code with this context.
+        /// Performs an action within this context.
         /// </summary>
         /// <remarks>
         /// Conceptually this method pushes this test context onto the context stack
-        /// of the current thread so that it becomes the current context, runs the block,
+        /// of the current thread so that it becomes the current context, performs the action,
         /// then unwinds the context stack for the current thread until this test context
         /// is again popped off the top.
         /// </remarks>
-        /// <param name="block">The block to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
-        /// <exception cref="Exception">Any exception thrown by the block</exception>
-        public void Run(Block block)
+        /// <param name="action">The action to perform</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
+        /// <exception cref="Exception">Any exception thrown by the action</exception>
+        public void Run(Action action)
         {
-            RunWithContext(this, block);
+            RunWithContext(this, action);
         }
 
         /// <summary>
-        /// Runs a block of code with this context using <see cref="ThreadPool.QueueUserWorkItem(WaitCallback)" />.
+        /// Performs an action within this context using <see cref="ThreadPool.QueueUserWorkItem(WaitCallback)" />.
         /// </summary>
-        /// <param name="block">The block to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
-        public void RunBackground(Block block)
+        /// <param name="action">The action to perform</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
+        public void RunBackground(Action action)
         {
-            if (block == null)
-                throw new ArgumentNullException(@"block");
+            if (action == null)
+                throw new ArgumentNullException("action");
 
             ThreadPool.QueueUserWorkItem(delegate
             {
                 using (Enter())
-                    block();
+                    action();
             });
         }
 
         /// <summary>
-        /// Runs a block of code with this context asynchronously.
+        /// Performs an action asynchronously within this context.
         /// </summary>
-        /// <param name="block">The block to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
-        public IAsyncResult RunAsync(Block block)
+        /// <param name="action">The action to perform</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
+        public IAsyncResult RunAsync(Action action)
         {
-            return RunAsync(block, null, null);
+            return RunAsync(action, null, null);
         }
 
         /// <summary>
-        /// Runs a block of code with this context asynchronously.
+        /// Performs an action within this context asynchronously.
         /// </summary>
-        /// <param name="block">The block to run</param>
+        /// <param name="action">The action to perform</param>
         /// <param name="callback">The asynchronous callback, or null if none</param>
         /// <param name="state">The asynchronous state object, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block "/> is null</exception>
-        public IAsyncResult RunAsync(Block block, AsyncCallback callback, object state)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
+        public IAsyncResult RunAsync(Action action, AsyncCallback callback, object state)
         {
-            if (block == null)
-                throw new ArgumentNullException(@"block");
+            if (action == null)
+                throw new ArgumentNullException("action");
 
-            Block wrappedBlock = delegate
+            Action wrappedAction = delegate
             {
                 using (Enter())
-                    block();
+                    action();
             };
 
-            return wrappedBlock.BeginInvoke(callback, state);
+            return wrappedAction.BeginInvoke(callback, state);
         }
 
         /// <summary>
         /// <para>
-        /// Runs a block of code as a new step within the current context and associates
+        /// Performs an action as a new step within the current context and associates
         /// it with the calling function.
         /// </para>
         /// <para>
         /// This method creates a new child context with a new nested <see cref="ITestStep" />,
-        /// enters the child context, runs the block of code, then exits the child context.
+        /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// </summary>
         /// <remarks>
@@ -533,26 +533,26 @@ namespace Gallio.Contexts
         /// to create parallel steps.
         /// </remarks>
         /// <param name="name">The name of the step</param>
-        /// <param name="block">The block of code to run</param>
+        /// <param name="action">The action to perform</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="block"/> is null</exception>
+        /// <paramref name="action"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="Exception">Any exception thrown by the block</exception>
+        /// <exception cref="Exception">Any exception thrown by the action</exception>
         [NonInlined(SecurityAction.Demand)]
-        public Context RunStep(string name, Block block)
+        public Context RunStep(string name, Action action)
         {
-            return RunStep(name, Reflector.GetCallingFunction(), block);
+            return RunStep(name, Reflector.GetCallingFunction(), action);
         }
 
         /// <summary>
         /// <para>
-        /// Runs a block of code as a new step within the current context and associates it
+        /// Performs an action as a new step within the current context and associates it
         /// with the specified code reference.
         /// </para>
         /// <para>
         /// This method creates a new child context with a new nested <see cref="ITestStep" />,
-        /// enters the child context, runs the block of code, then exits the child context.
+        /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// </summary>
         /// <remarks>
@@ -561,20 +561,20 @@ namespace Gallio.Contexts
         /// </remarks>
         /// <param name="name">The name of the step</param>
         /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="block">The block of code to run</param>
+        /// <param name="action">The action to perform</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="block"/> is null</exception>
+        /// <paramref name="action"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="Exception">Any exception thrown by the block</exception>
-        public Context RunStep(string name, ICodeElementInfo codeElement, Block block)
+        /// <exception cref="Exception">Any exception thrown by the action</exception>
+        public Context RunStep(string name, ICodeElementInfo codeElement, Action action)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
-            if (block == null)
-                throw new ArgumentNullException("block");
+            if (action == null)
+                throw new ArgumentNullException("action");
 
-            return RunStepImpl(name, codeElement, block);
+            return RunStepImpl(name, codeElement, action);
         }
 
         /// <summary>
@@ -714,13 +714,13 @@ namespace Gallio.Contexts
         }
 
         /// <summary>
-        /// Implementation of <see cref="RunStep(string,ICodeElementInfo,Block)" />.
+        /// Implementation of <see cref="RunStep(string,ICodeElementInfo,Action)" />.
         /// </summary>
         /// <remarks>
         /// The arguments will already have been validated is called and will all be non-null except
         /// perhaps for <paramref name="codeElement"/>.
         /// </remarks>
-        protected abstract Context RunStepImpl(string name, ICodeElementInfo codeElement, Block block);
+        protected abstract Context RunStepImpl(string name, ICodeElementInfo codeElement, Action action);
 
         /// <summary>
         /// Adds metadata to the step that is running in the context.

@@ -139,6 +139,9 @@
     <Compile Include="Reflection\Impl\ComDebugSymbolResolverTest.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtilsTest.cs" />
     <Compile Include="Reflection\Impl\XmlDocumentationUtilsTest.cs" />
+    <Compile Include="Reflection\NativeReflectionPolicyTest.cs" />
+    <Compile Include="Reflection\BaseReflectionPolicyTest.cs" />
+    <Compile Include="Reflection\WrapperAssert.cs" />
     <Compile Include="Reflection\ReflectorTest.cs" />
     <Compile Include="Reflection\CodeLocationTest.cs" />
     <Compile Include="Reflection\SlotBinderPositiveTest.cs" />

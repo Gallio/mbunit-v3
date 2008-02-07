@@ -210,7 +210,7 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public virtual Factory<ITestController> TestControllerFactory
+        public virtual Func<ITestController> TestControllerFactory
         {
             get { return null; }
         }

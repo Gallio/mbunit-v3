@@ -68,7 +68,7 @@ namespace Gallio.Reflection
         IList<ITypeInfo> GetTypes();
 
         /// <summary>
-        /// Gets a public type by name, or null if not found.
+        /// Gets a public or private type by name, or null if not found.
         /// </summary>
         /// <param name="typeName">The type name</param>
         /// <returns>The type</returns>

@@ -86,16 +86,13 @@
     <Compile Include="Framework\IgnoreAttribute.cs" />
     <Compile Include="Framework\ImportanceAttribute.cs" />
     <Compile Include="Framework\InterimAssert.cs" />
-    <Compile Include="Framework\KeyedPairwiseAssertion.cs" />
     <Compile Include="Framework\MetadataAttribute.cs" />
-    <Compile Include="Framework\PairwiseAssertion.cs" />
     <Compile Include="Framework\ParameterAttribute.cs" />
     <Compile Include="Framework\ReflectionAssert.cs" />
     <Compile Include="Framework\Reflection\AccessModifier.cs" />
     <Compile Include="Framework\Reflection\MemberType.cs" />
     <Compile Include="Framework\Reflection\ReflectionException.cs" />
     <Compile Include="Framework\Reflection\Reflector.cs" />
-    <Compile Include="Framework\Relation.cs" />
     <Compile Include="Framework\SecurityAssert.cs" />
     <Compile Include="Framework\SetUpAttribute.cs" />
     <Compile Include="Framework\StringAssert.cs" />

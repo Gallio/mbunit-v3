@@ -44,7 +44,7 @@ namespace Gallio.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        public override Factory<ITestController> TestControllerFactory
+        public override Func<ITestController> TestControllerFactory
         {
             get { return CreateTestController; }
         }

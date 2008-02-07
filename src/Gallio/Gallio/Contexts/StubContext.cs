@@ -39,9 +39,9 @@ namespace Gallio.Contexts
         }
 
         /// <inheritdoc />
-        protected override Context RunStepImpl(string name, ICodeElementInfo codeElement, Block block)
+        protected override Context RunStepImpl(string name, ICodeElementInfo codeElement, Action action)
         {
-            block();
+            action();
             return this;
         }
 

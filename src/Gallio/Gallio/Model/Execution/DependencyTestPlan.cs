@@ -217,7 +217,7 @@ namespace Gallio.Model.Execution
         {
             using (Context.EnterContext(null))
             {
-                Factory<ITestController> rootTestControllerFactory = cachedRootTestMonitor.Test.TestControllerFactory;
+                Func<ITestController> rootTestControllerFactory = cachedRootTestMonitor.Test.TestControllerFactory;
 
                 if (rootTestControllerFactory != null)
                 {
@@ -464,7 +464,7 @@ namespace Gallio.Model.Execution
                 }
             }
 
-            protected override Context RunStepImpl(string name, ICodeElementInfo codeElement, Block block)
+            protected override Context RunStepImpl(string name, ICodeElementInfo codeElement, Action action)
             {
                 ContextualTestStepMonitor stepMonitor = new ContextualTestStepMonitor(handler,
                     new BaseTestStep(TestInstance, name, codeElement, TestStep));
@@ -474,7 +474,7 @@ namespace Gallio.Model.Execution
                 {
                     stepMonitor.LifecyclePhase = LifecyclePhases.Execute;
 
-                    block();
+                    action();
 
                     stepMonitor.FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
 

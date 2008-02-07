@@ -84,7 +84,7 @@ namespace Gallio.NCoverIntegration
             if (!settings.NoLog)
                 driver.StartLogging();
 
-            waitForExitTask = new ThreadTask("NCover Profiler Wait for Exit", (Block) WaitForExit);
+            waitForExitTask = new ThreadTask("NCover Profiler Wait for Exit", (Action) WaitForExit);
             waitForExitTask.Start();
 
             return driver.Process;

@@ -48,12 +48,12 @@ namespace Gallio.Reflection
         ITypeInfo BaseType { get; }
 
         /// <summary>
-        /// Gets the assembly-qualified name of the type.
+        /// Gets the assembly-qualified name of the type, or null if the type is a generic parameter.
         /// </summary>
         string AssemblyQualifiedName { get; }
 
         /// <summary>
-        /// Gets the full name of the type.
+        /// Gets the full name of the type, or null if the type is a generic parameter.
         /// </summary>
         string FullName { get; }
 

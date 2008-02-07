@@ -68,5 +68,13 @@ namespace Gallio.Tests.Reflection
         {
             XmlSerializationAssert.IsXmlSerializable(typeof(CodeLocation));
         }
+
+        [Test]
+        new public void ToString()
+        {
+            Assert.AreEqual("file", new CodeLocation("file", 0, 0).ToString());
+            Assert.AreEqual("file(11)", new CodeLocation("file", 11, 0).ToString());
+            Assert.AreEqual("file(11,33)", new CodeLocation("file", 11, 33).ToString());
+        }
     }
 }

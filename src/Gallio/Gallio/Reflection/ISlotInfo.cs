@@ -30,7 +30,8 @@ namespace Gallio.Reflection
         ITypeInfo ValueType { get; }
 
         /// <summary>
-        /// Gets the positional index of a parameter slot, or 0 in other cases.
+        /// Gets the positional index of a method parameter slot, -1 if the
+        /// slot is a method return parameter, or 0 if the slot is of some other kind.
         /// </summary>
         int Position { get; }
     }

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio;
 using Gallio.Model.Execution;
 
 namespace Gallio.Model
@@ -129,13 +130,13 @@ namespace Gallio.Model
         IList<ITest> Dependencies { get; }
 
         /// <summary>
-        /// Gets a <see cref="ITestController" /> <see cref="Factory{T}" /> to run this tes
+        /// Gets a <see cref="ITestController" /> <see cref="Func{T}" /> to run this tes
         /// and all of its children.  Returns null if this test is merely a container for
         /// other tests or if it otherwise does not require or provide its own controller.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The top-most test that returns a non-null <see cref="Factory{T}" /> is
+        /// The top-most test that returns a non-null <see cref="Func{T}" /> is
         /// referred to as the master test.  It may contain other tests that also have
         /// non-null factories but there is no built-in mechanism provided to delegate control
         /// from one controller to another in the middle of its execution.
@@ -158,7 +159,7 @@ namespace Gallio.Model
         /// </remarks>
         /// <returns>The test controller factory, or null if this test cannot produce
         /// a controller (and consequently is not a master test according to the definition above)</returns>
-        Factory<ITestController> TestControllerFactory { get; }
+        Func<ITestController> TestControllerFactory { get; }
 
         /// <summary>
         /// Adds a test parameter and sets its <see cref="ITestParameter.Owner" /> property.

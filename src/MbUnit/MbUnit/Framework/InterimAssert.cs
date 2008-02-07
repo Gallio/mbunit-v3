@@ -39,21 +39,21 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that the specified block of code does not throw an exception.
         /// </summary>
-        /// <param name="block">The block of code to run</param>
-        public static void DoesNotThrow(Block block)
+        /// <param name="action">The block of code to run</param>
+        public static void DoesNotThrow(Action action)
         {
-            DoesNotThrow(block, "");
+            DoesNotThrow(action, "");
         }
 
         /// <summary>
         /// Asserts that the specified block of code does not throw an exception.
         /// </summary>
-        /// <param name="block">The block of code to run</param>
-        public static void DoesNotThrow(Block block, string message)
+        /// <param name="action">The block of code to run</param>
+        public static void DoesNotThrow(Action action, string message)
         {
             try
             {
-                block();
+                action();
             }
             catch (Exception ex)
             {
@@ -64,23 +64,23 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that the specified block of code does not throw an exception.
         /// </summary>
-        /// <param name="block">The block of code to run</param>
-        public static void DoesNotThrow(Block block, string messageFormat, params object[] messageArgs)
+        /// <param name="action">The block of code to run</param>
+        public static void DoesNotThrow(Action action, string messageFormat, params object[] messageArgs)
         {
-            DoesNotThrow(block, String.Format(messageFormat, messageArgs));
+            DoesNotThrow(action, String.Format(messageFormat, messageArgs));
         }
 
-        public static void Throws<T>(Block block)
+        public static void Throws<T>(Action action)
             where T : Exception
         {
-            Throws(typeof(T), block);
+            Throws(typeof(T), action);
         }
 
-        public static void Throws(Type exceptionType, Block block)
+        public static void Throws(Type exceptionType, Action action)
         {
             try
             {
-                block();
+                action();
             }
             catch (Exception ex)
             {
@@ -97,7 +97,7 @@ namespace MbUnit.Framework
         }
 
         public static void AreElementsEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual,
-            Relation<T> equivalenceRelation)
+            Func<T, T, bool> equivalenceRelation)
         {
             WithPairs(expected, actual, delegate(T expectedValue, T actualValue)
             {
@@ -107,7 +107,7 @@ namespace MbUnit.Framework
         }
 
         public static void AreElementsEqual<TKey, TValue>(IDictionary<TKey, TValue> expected,
-            IDictionary<TKey, TValue> actual, Relation<TValue> equivalenceRelation)
+            IDictionary<TKey, TValue> actual, Func<TValue, TValue, bool> equivalenceRelation)
         {
             WithKeyedPairs(expected, actual, delegate(TKey key, TValue expectedValue, TValue actualValue)
             {
@@ -120,12 +120,13 @@ namespace MbUnit.Framework
         /// Evaluates an assertion with matched pairs drawn from each collection.
         /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
-        /// <typeparam name="T">The value type</typeparam>
+        /// <typeparam name="TExpected">The expected value type</typeparam>
+        /// <typeparam name="TActual">The actual value type</typeparam>
         /// <param name="expectedValues">The enumeration of expected values</param>
         /// <param name="actualValues">The enumeration of actual values</param>
         /// <param name="assertion">The assertion to evaluate over all pairs</param>
-        public static void WithPairs<T>(IEnumerable<T> expectedValues, IEnumerable<T> actualValues,
-            PairwiseAssertion<T> assertion)
+        public static void WithPairs<TExpected, TActual>(IEnumerable<TExpected> expectedValues, IEnumerable<TActual> actualValues,
+            Action<TExpected, TActual> assertion)
         {
             if (expectedValues == null)
             {
@@ -135,11 +136,11 @@ namespace MbUnit.Framework
             }
 
             int index = 0;
-            IEnumerator<T> expectedEnumerator = expectedValues.GetEnumerator();
-            IEnumerator<T> actualEnumerator = actualValues.GetEnumerator();
+            IEnumerator<TExpected> expectedEnumerator = expectedValues.GetEnumerator();
+            IEnumerator<TActual> actualEnumerator = actualValues.GetEnumerator();
             while (expectedEnumerator.MoveNext())
             {
-                if (! actualEnumerator.MoveNext())
+                if (!actualEnumerator.MoveNext())
                     throw new AssertionException("Actual collection has fewer elements than expected collection.");
 
                 try
@@ -164,12 +165,13 @@ namespace MbUnit.Framework
         /// or if one is null but not the other.
         /// </summary>
         /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TValue">The value type</typeparam>
+        /// <typeparam name="TExpectedValue">The expected value type</typeparam>
+        /// <typeparam name="TActualValue">The expected value type</typeparam>
         /// <param name="expectedValues">The enumeration of expected values</param>
         /// <param name="actualValues">The enumeration of actual values</param>
         /// <param name="assertion">The assertion to evaluate over all pairs</param>
-        public static void WithKeyedPairs<TKey, TValue>(IDictionary<TKey, TValue> expectedValues,
-            IDictionary<TKey, TValue> actualValues, KeyedPairwiseAssertion<TKey, TValue> assertion)
+        public static void WithKeyedPairs<TKey, TExpectedValue, TActualValue>(IDictionary<TKey, TExpectedValue> expectedValues,
+            IDictionary<TKey, TActualValue> actualValues, Action<TKey, TExpectedValue, TActualValue> assertion)
         {
             if (expectedValues == null)
             {
@@ -183,10 +185,10 @@ namespace MbUnit.Framework
                     "Expected collection has {0} values but actual collection has {1} values.",
                     expectedValues.Count, actualValues.Count));
 
-            foreach (KeyValuePair<TKey, TValue> expectedPair in expectedValues)
+            foreach (KeyValuePair<TKey, TExpectedValue> expectedPair in expectedValues)
             {
                 TKey key = expectedPair.Key;
-                TValue actualValue;
+                TActualValue actualValue;
                 if (!actualValues.TryGetValue(key, out actualValue))
                     throw new AssertionException("Actual collection missing value for key: " + key);
 
@@ -207,15 +209,16 @@ namespace MbUnit.Framework
         /// or if one is null but not the other.
         /// </summary>
         /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TValue">The value type</typeparam>
+        /// <typeparam name="TExpectedValue">The expected value type</typeparam>
+        /// <typeparam name="TActualValue">The actual value type</typeparam>
         /// <param name="expectedValues">The enumeration of expected values</param>
         /// <param name="actualValues">The enumeration of actual values</param>
         /// <param name="assertion">The assertion to evaluate over all pairs</param>
-        public static void WithKeyedPairs<TKey, TValue>(IDictionary<TKey, TValue> expectedValues,
-            IDictionary<TKey, TValue> actualValues, PairwiseAssertion<TValue> assertion)
+        public static void WithKeyedPairs<TKey, TExpectedValue, TActualValue>(IDictionary<TKey, TExpectedValue> expectedValues,
+            IDictionary<TKey, TActualValue> actualValues, Action<TExpectedValue, TActualValue> assertion)
         {
             WithKeyedPairs(expectedValues, actualValues,
-                delegate(TKey key, TValue expectedValue, TValue actualValue)
+                delegate(TKey key, TExpectedValue expectedValue, TActualValue actualValue)
                 {
                     assertion(expectedValue, actualValue);
                 });

@@ -141,7 +141,6 @@ namespace Gallio.Reflection.Impl
             return EnumerateInheritedAttributes(property, attributeProvider, ReflectorInheritanceUtils.EnumerateSuperProperties);
         }
 
-
         /// <summary>
         /// Enumerates all event attributes.
         /// </summary>

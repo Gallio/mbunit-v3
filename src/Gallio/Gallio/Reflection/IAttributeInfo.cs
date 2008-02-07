@@ -31,6 +31,7 @@ namespace Gallio.Reflection
         /// <summary>
         /// Gets the constructor used to create the attribute.
         /// </summary>
+        /// <exception cref="NotSupportedException">Thrown if not supported</exception>
         IConstructorInfo Constructor { get; }
 
         /// <summary>
@@ -54,6 +55,7 @@ namespace Gallio.Reflection
         /// <summary>
         /// Gets the initialized attribute constructor argument values.
         /// </summary>
+        /// <exception cref="NotSupportedException">Thrown if not supported</exception>
         object[] InitializedArgumentValues { get; }
 
         /// <summary>

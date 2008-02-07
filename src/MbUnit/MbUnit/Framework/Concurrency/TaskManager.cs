@@ -65,15 +65,15 @@ namespace MbUnit.Framework.Concurrency
         /// Starts a new task running in a local thread and begins watching it.
         /// </summary>
         /// <param name="name">The name of the task, or null to create a new name based
-        /// on the method associated with the block</param>
-        /// <param name="block">The block of code to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="block"/> is null</exception>
-        public static ThreadTask StartThreadTask(string name, Block block)
+        /// on the method associated with the action</param>
+        /// <param name="action">The action to perform</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        public static ThreadTask StartThreadTask(string name, Action action)
         {
-            if (block == null)
-                throw new ArgumentNullException("block");
+            if (action == null)
+                throw new ArgumentNullException("action");
 
-            ThreadTask task = new ThreadTask(GetTaskName(name, block), block);
+            ThreadTask task = new ThreadTask(GetTaskName(name, action), action);
             WatchTask(task);
             task.Start();
             return task;

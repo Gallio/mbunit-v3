@@ -33,7 +33,7 @@ namespace Gallio.PowerShellCommands
         private CommandLogger logger;
         private CommandProgressMonitorProvider progressMonitorProvider;
         private event EventHandler stopRequested;
-        private Queue<Block> pendingBlocks;
+        private Queue<Action> pendingBlocks;
 
         /// <summary>
         /// The event dispatches when the command is asynchronously being stopped
@@ -86,29 +86,29 @@ namespace Gallio.PowerShellCommands
         }
 
         /// <summary>
-        /// Posts a block to run in the message loop.
+        /// Posts an action to perform later within the message loop.
         /// </summary>
-        /// <param name="block">The block to run</param>
+        /// <param name="action">The action to perform</param>
         /// <seealso cref="RunWithMessagePump"/>
-        public void PostMessage(Block block)
+        public void PostMessage(Action action)
         {
             lock (this)
             {
                 if (pendingBlocks == null)
                     throw new InvalidOperationException("There is no message pump currently running.");
 
-                pendingBlocks.Enqueue(block);
+                pendingBlocks.Enqueue(action);
                 Monitor.PulseAll(this);
             }
         }
 
         /// <summary>
-        /// Starts a message pump running on the current thread and runs the specified
-        /// block in another thread.  The block can asynchronously communicate back to the
+        /// Starts a message pump running on the current thread and performs the
+        /// specified action in another thread.  The action can asynchronously communicate back to the
         /// cmdlet using <see cref="PostMessage" /> on the current thread.
         /// </summary>
-        /// <param name="block">The block to run</param>
-        public void RunWithMessagePump(Block block)
+        /// <param name="action">The action to perform</param>
+        public void RunWithMessagePump(Action action)
         {
             bool loopInitialized = false;
             try
@@ -118,13 +118,13 @@ namespace Gallio.PowerShellCommands
                     if (pendingBlocks != null)
                         throw new InvalidOperationException("Already have a message pump.");
 
-                    pendingBlocks = new Queue<Block>();
+                    pendingBlocks = new Queue<Action>();
                     loopInitialized = true;
                 }
 
-                IAsyncResult result = block.BeginInvoke(QuitMessagePump, block);
+                IAsyncResult result = action.BeginInvoke(QuitMessagePump, action);
                 RunMessagePumpUntilQuit();
-                block.EndInvoke(result);
+                action.EndInvoke(result);
             }
             finally
             {
@@ -140,7 +140,7 @@ namespace Gallio.PowerShellCommands
         {
             while (pendingBlocks != null)
             {
-                Block messageBlock;
+                Action messageAction;
                 lock (this)
                 {
                     if (pendingBlocks.Count == 0)
@@ -149,15 +149,15 @@ namespace Gallio.PowerShellCommands
                         continue;
                     }
 
-                    messageBlock = pendingBlocks.Dequeue();
+                    messageAction = pendingBlocks.Dequeue();
                 }
 
-                if (messageBlock == null)
+                if (messageAction == null)
                     break;
 
                 try
                 {
-                    messageBlock();
+                    messageAction();
                 }
                 catch (Exception ex)
                 {

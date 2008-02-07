@@ -157,13 +157,13 @@ namespace Gallio.Framework.Explorer
             }, "An exception occurred during tear down.");
         }
 
-        private TestOutcome ExecuteSafely(ITestStepMonitor stepMonitor, string lifecyclePhase, Block block, string failureHeading)
+        private TestOutcome ExecuteSafely(ITestStepMonitor stepMonitor, string lifecyclePhase, Action action, string failureHeading)
         {
             stepMonitor.LifecyclePhase = lifecyclePhase;
 
             try
             {
-                block();
+                action();
                 return TestOutcome.Passed;
             }
             catch (Exception ex)

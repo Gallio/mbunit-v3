@@ -115,12 +115,12 @@ namespace Gallio.Contexts
 
         /// <summary>
         /// <para>
-        /// Runs a block of code as a new step within the current context and associates
+        /// Performs an action as a new step within the current context and associates
         /// it with the calling function.
         /// </para>
         /// <para>
         /// This method creates a new child context with a new nested <see cref="ITestStep" />,
-        /// enters the child context, runs the block of code, then exits the child context.
+        /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// </summary>
         /// <remarks>
@@ -128,26 +128,26 @@ namespace Gallio.Contexts
         /// to create parallel steps.
         /// </remarks>
         /// <param name="name">The name of the step</param>
-        /// <param name="block">The block of code to run</param>
+        /// <param name="action">The action to perform</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="block"/> is null</exception>
+        /// <paramref name="action"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="Exception">Any exception thrown by the block</exception>
+        /// <exception cref="Exception">Any exception thrown by the action</exception>
         [NonInlined(SecurityAction.Demand)]
-        public static Context RunStep(string name, Block block)
+        public static Context RunStep(string name, Action action)
         {
-            return Context.CurrentContext.RunStep(name, Reflector.GetCallingFunction(), block);
+            return Context.CurrentContext.RunStep(name, Reflector.GetCallingFunction(), action);
         }
 
         /// <summary>
         /// <para>
-        /// Runs a block of code as a new step within the current context and associates it
+        /// Performs an action as a new step within the current context and associates it
         /// with the specified code reference.
         /// </para>
         /// <para>
         /// This method creates a new child context with a new nested <see cref="ITestStep" />,
-        /// enters the child context, runs the block of code, then exits the child context.
+        /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// </summary>
         /// <remarks>
@@ -156,20 +156,20 @@ namespace Gallio.Contexts
         /// </remarks>
         /// <param name="name">The name of the step</param>
         /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="block">The block of code to run</param>
+        /// <param name="action">The action to perform</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="block"/> is null</exception>
+        /// <paramref name="action"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="Exception">Any exception thrown by the block</exception>
-        public static Context RunStep(string name, ICodeElementInfo codeElement, Block block)
+        /// <exception cref="Exception">Any exception thrown by the action</exception>
+        public static Context RunStep(string name, ICodeElementInfo codeElement, Action action)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
-            if (block == null)
-                throw new ArgumentNullException("block");
+            if (action == null)
+                throw new ArgumentNullException("action");
 
-            return Context.CurrentContext.RunStep(name, codeElement, block);
+            return Context.CurrentContext.RunStep(name, codeElement, action);
         }
 
         /// <summary>

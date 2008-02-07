@@ -76,7 +76,8 @@ namespace Gallio.Reflection.Impl
 
         public ITypeInfo GetType(string typeName)
         {
-            return Reflector.Wrap(Target.GetType(typeName));
+            string assemblyQualifiedName = typeName + ", " + Target.FullName;
+            return Reflector.Wrap(Type.GetType(assemblyQualifiedName));
         }
 
         public Assembly Resolve()

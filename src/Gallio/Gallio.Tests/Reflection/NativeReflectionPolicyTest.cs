@@ -13,21 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+extern alias MbUnit2;
 
-namespace MbUnit.Framework
+using Gallio.Reflection;
+using Gallio.Reflection.Impl;
+using MbUnit2::MbUnit.Framework;
+
+namespace Gallio.Tests.Reflection
 {
-    /// <summary>
-    /// Determines whether two values satisfy a binary relation and
-    /// returns true if they do.  Examples of relations are equality,
-    /// inequality, less-than, greater-than, and any other well-defined
-    /// function that operates on two values yielding true or false.
-    /// </summary>
-    /// <typeparam name="T">The type of values to compare</typeparam>
-    /// <param name="x">The first value</param>
-    /// <param name="y">The second value</param>
-    /// <returns>True if the values satisfy the relation</returns>
-    public delegate bool Relation<T>(T x, T y);
+    [TestFixture]
+    [TestsOn(typeof(NativeReflectionPolicy))]
+    public class NativeReflectionPolicyTest : BaseReflectionPolicyTest
+    {
+        protected override IReflectionPolicy ReflectionPolicy
+        {
+            get { return Reflector.ReflectionPolicy; }
+        }
+    }
 }

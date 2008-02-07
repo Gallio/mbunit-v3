@@ -60,6 +60,7 @@
       <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="ISymWrapper" />
+    <Reference Include="MbUnit.Framework, Version=1.0.2531.41788, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -68,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action.cs" />
     <Compile Include="Collections\CollectionEqualityComparer.cs" />
     <Compile Include="Collections\HashSet.cs" />
     <Compile Include="Concurrency\ProcessTask.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Contexts\Step.cs" />
     <Compile Include="Contexts\StubContext.cs" />
     <Compile Include="Contexts\StubContextManager.cs" />
+    <Compile Include="Func.cs" />
     <Compile Include="Data\AggregateDataSet.cs" />
     <Compile Include="Data\BaseDataSet.cs" />
     <Compile Include="Data\Binders\BaseDataBinder.cs" />
@@ -136,7 +139,6 @@
     <Compile Include="Data\ScalarDataRow.cs" />
     <Compile Include="Data\UnionMergeStrategy.cs" />
     <Compile Include="Data\XmlDataSet.cs" />
-    <Compile Include="Factory.cs" />
     <Compile Include="Framework\Explorer\BasePatternTestFrameworkExtension.cs" />
     <Compile Include="Framework\Explorer\DefaultPatternTestBuilder.cs" />
     <Compile Include="Framework\Explorer\DefaultPatternTestModelBuilder.cs" />
@@ -445,7 +447,6 @@
     <Compile Include="Collections\TreeUtils.cs" />
     <Compile Include="Utilities\Hash64.cs" />
     <Compile Include="Hosting\LongLivedMarshalByRefObject.cs" />
-    <Compile Include="Block.cs" />
     <Compile Include="Logging\ClientException.cs" />
     <Compile Include="Contexts\Context.cs" />
     <Compile Include="Contexts\ContextCookie.cs" />

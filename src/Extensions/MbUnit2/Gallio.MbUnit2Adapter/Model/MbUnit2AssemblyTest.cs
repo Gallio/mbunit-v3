@@ -48,7 +48,7 @@ namespace Gallio.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        public override Factory<ITestController> TestControllerFactory
+        public override Func<ITestController> TestControllerFactory
         {
             get { return CreateTestController; }
         }

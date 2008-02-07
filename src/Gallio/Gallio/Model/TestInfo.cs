@@ -128,7 +128,7 @@ namespace Gallio.Model
             throw new NotSupportedException();
         }
 
-        Factory<ITestController> ITest.TestControllerFactory
+        Func<ITestController> ITest.TestControllerFactory
         {
             get { throw new NotSupportedException(); }
         }

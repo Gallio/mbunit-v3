@@ -56,8 +56,8 @@ namespace Gallio.Hosting.ConsoleSupport
         private int repeatCount;
 
         private bool footerVisible = true;
-        private Block showFooter;
-        private Block hideFooter;
+        private Action showFooter;
+        private Action hideFooter;
 
         private int redirectedFlag;
 
@@ -263,7 +263,7 @@ namespace Gallio.Hosting.ConsoleSupport
         }
 
         /// <inheritdoc />
-        public void SetFooter(Block showFooter, Block hideFooter)
+        public void SetFooter(Action showFooter, Action hideFooter)
         {
             lock (syncRoot)
             {

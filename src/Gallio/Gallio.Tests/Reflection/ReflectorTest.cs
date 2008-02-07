@@ -14,10 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Permissions;
-using System.Text;
 using Gallio.Reflection;
 using Gallio.Utilities;
 using MbUnit.Framework;
@@ -49,17 +47,9 @@ namespace Gallio.Tests.Reflection
             Assert.IsNull(Reflector.Wrap((FieldInfo)null));
             Assert.IsNull(Reflector.Wrap((EventInfo)null));
             Assert.IsNull(Reflector.Wrap((ParameterInfo)null));
+            Assert.IsNull(Reflector.Wrap((Attribute)null));
+            Assert.IsNull(Reflector.WrapAsGenericParameter(null));
         }
-
-        [Test]
-        public void WrapAssembly()
-        {
-            Assembly target = typeof(ReflectorTest).Assembly;
-            IAssemblyInfo info = Reflector.Wrap(target);
-
-            Assert.AreEqual(info.FullName, target.FullName);
-        }
-
 
         [Test, ExpectedArgumentOutOfRangeException]
         public void GetFunctionFromStackFrame_ShouldThrowIfLessThanZero()

@@ -191,7 +191,7 @@ namespace Gallio.Hosting.ConsoleSupport
         /// <param name="showFooter">A delegate to display the footer</param>
         /// <param name="hideFooter">A delegate to hide the footer, leaving the custor at
         /// the beginning of the line where the footer used to begin</param>
-        void SetFooter(Block showFooter, Block hideFooter);
+        void SetFooter(Action showFooter, Action hideFooter);
 
         /// <summary>
         /// Writes a character.

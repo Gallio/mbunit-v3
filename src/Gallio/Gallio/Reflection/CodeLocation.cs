@@ -127,5 +127,22 @@ namespace Gallio.Reflection
         {
             return path.GetHashCode() ^ (line << 5) ^ column;
         }
+
+        /// <summary>
+        /// Converts the location to a string of the form "path(line,column)",
+        /// "path(line)" or "path" depending on which components are available.
+        /// </summary>
+        /// <returns>The code location as a string</returns>
+        public override string ToString()
+        {
+            if (line != 0)
+            {
+                if (column != 0)
+                    return String.Format("{0}({1},{2})", path, line, column);
+                return String.Format("{0}({1})", path, line);
+            }
+
+            return path;
+        }
     }
 }

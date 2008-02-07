@@ -216,7 +216,7 @@ namespace Gallio.Framework.Explorer
         }
 
         /// <inheritdoc />
-        public override Factory<ITestController> TestControllerFactory
+        public override Func<ITestController> TestControllerFactory
         {
             get { return CreateTestController; }
         }

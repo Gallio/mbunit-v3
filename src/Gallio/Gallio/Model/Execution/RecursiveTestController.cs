@@ -46,7 +46,7 @@ namespace Gallio.Model.Execution
         private static void RunTest(IProgressMonitor progressMonitor, ITestMonitor testMonitor,
             ITestInstance parentTestInstance)
         {
-            Factory<ITestController> factory = testMonitor.Test.TestControllerFactory;
+            Func<ITestController> factory = testMonitor.Test.TestControllerFactory;
 
             if (factory != null)
             {
