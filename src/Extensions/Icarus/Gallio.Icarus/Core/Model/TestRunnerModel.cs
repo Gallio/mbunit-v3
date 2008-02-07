@@ -47,7 +47,7 @@ namespace Gallio.Icarus.Core.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException(@"value");
+                    throw new ArgumentNullException(@"projectPresenter");
 
                 projectPresenter = value;
                 progressMonitorProvider = new StatusStripProgressMonitorProvider(projectPresenter);
@@ -94,9 +94,7 @@ namespace Gallio.Icarus.Core.Model
         public void StopTests()
         {
             if (runTestsProgressMonitor != null)
-            {
                 runTestsProgressMonitor.Cancel();
-            }
         }
 
         public void GenerateReport()
@@ -106,10 +104,9 @@ namespace Gallio.Icarus.Core.Model
             {
                 progressMonitor.BeginTask("Generating report.", 100);
 
-                string reportDirectory = GetReportDirectory();
-                Report report = reportMonitor.Report;
+                string reportDirectory = Path.GetTempPath();
                 IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, "MbUnit-Report");
-                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+                IReportWriter reportWriter = reportManager.CreateReportWriter(reportMonitor.Report, reportContainer);
 
                 // Delete the report if it exists already.
                 reportContainer.DeleteReport();
@@ -122,18 +119,6 @@ namespace Gallio.Icarus.Core.Model
                     reportName = Path.Combine(reportDirectory, reportWriter.ReportDocumentPaths[0]);
             });
             projectPresenter.ReportPath = reportName;
-        }
-
-        private static string GetReportDirectory()
-        {
-            string reportDirectory = System.Configuration.ConfigurationManager.AppSettings["reportDirectory"];
-
-            if (reportDirectory.Length == 0)
-            {
-                reportDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MbUnit\Reports");
-            }
-
-            return reportDirectory;
         }
 
         public IList<string> GetReportTypes()
@@ -160,6 +145,14 @@ namespace Gallio.Icarus.Core.Model
 
                 progressMonitor.SetStatus("Report saved.");
             });
+        }
+
+        public IList<string> GetTestFrameworks()
+        {
+            List<string> frameworks = new List<string>();
+            foreach (ITestFramework framework in Runtime.Instance.ResolveAll<ITestFramework>())
+                frameworks.Add(framework.Name);
+            return frameworks;
         }
     }
 }

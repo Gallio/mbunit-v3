@@ -45,9 +45,14 @@ namespace Gallio.Icarus
         private Thread workerThread = null;
         
         private string projectFileName = String.Empty;
+        private Settings settings;
+        private string settingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
+            "Gallio/Icarus/Icarus.settings");
         
         // dock panel windows
-        //private DeserializeDockContent deserializeDockContent;
+        private DeserializeDockContent deserializeDockContent;
+        private string dockConfigFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "Gallio/Icarus/DockPanel.config");
         private TestExplorer testExplorer;
         private AssemblyList assemblyList;
         private TestResults testResults;
@@ -60,6 +65,7 @@ namespace Gallio.Icarus
         private LogWindow warningsWindow;
         private LogWindow failuresWindow;
         private PerformanceMonitor performanceMonitor;
+        private About aboutDialog;
         
         public TreeNode[] TestTreeCollection
         {
@@ -201,6 +207,24 @@ namespace Gallio.Icarus
             }
         }
 
+        public IList<string> TestFrameworks
+        {
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        TestFrameworks = value;
+                    }));
+                }
+                else
+                {
+                    aboutDialog.TestFrameworks = value;
+                }
+            }
+        }
+
         public Exception Exception
         {
             set
@@ -220,6 +244,41 @@ namespace Gallio.Icarus
             }
         }
 
+        public CodeLocation SourceCodeLocation
+        {
+            set
+            {
+                CodeWindow codeWindow = new CodeWindow(value);
+                codeWindow.Show(dockPanel, DockState.Document);
+            }
+        }
+
+        public Settings Settings
+        {
+            get
+            {
+                if (settings == null)
+                {
+                    try
+                    {
+                        if (File.Exists(settingsFile))
+                            settings = SerializationUtils.LoadFromXml<Settings>(settingsFile);
+                    }
+                    catch
+                    {
+                        settings = new Settings();
+                    }
+                }
+                return settings;
+            }
+            set
+            {
+                if (settings == null)
+                    throw new ArgumentNullException("settings");
+                settings = value;
+            }
+        }
+
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
@@ -229,10 +288,12 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
         public event EventHandler<EventArgs> GetReportTypes;
+        public event EventHandler<EventArgs> GetTestFrameworks;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         public event EventHandler<SingleStringEventArgs> SaveProject;
         public event EventHandler<OpenProjectEventArgs> OpenProject;
         public event EventHandler<EventArgs> NewProject;
+        public event EventHandler<SingleStringEventArgs> GetSourceLocation;
 
         public Main()
         {
@@ -250,6 +311,50 @@ namespace Gallio.Icarus
             warningsWindow = new LogWindow("Warnings");
             failuresWindow = new LogWindow("Failures");
             performanceMonitor = new PerformanceMonitor();
+            aboutDialog = new About();
+
+            deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
+        }
+
+        private IDockContent GetContentFromPersistString(string persistString)
+        {
+            if (persistString == typeof(TestExplorer).ToString())
+                return testExplorer;
+            else if (persistString == typeof(AssemblyList).ToString())
+                return assemblyList;
+            else if (persistString == typeof(TestResults).ToString())
+                return testResults;
+            else if (persistString == typeof(ReportWindow).ToString())
+                return reportWindow;
+            else if (persistString == typeof(PerformanceMonitor).ToString())
+                return performanceMonitor;
+            else
+            {
+                string[] parsedStrings = persistString.Split(new char[] { ',' });
+                if (parsedStrings.Length != 2)
+                    return null;
+                if (parsedStrings[0] != typeof(LogWindow).ToString())
+                    return null;
+                switch (parsedStrings[1])
+                {
+                    case "Log":
+                        return logWindow;
+                    case "Console input":
+                        return consoleInputWindow;
+                    case "Console output":
+                        return consoleOutputWindow;
+                    case "Console error":
+                        return consoleErrorWindow;
+                    case "Debug trace":
+                        return debugTraceWindow;
+                    case "Warnings":
+                        return warningsWindow;
+                    case "Failures":
+                        return failuresWindow;
+                    default:
+                        return null;
+                }
+            }
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -258,25 +363,39 @@ namespace Gallio.Icarus
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
-            performanceMonitor.Show(dockPanel);
-            testResults.Show(dockPanel);
-
-            consoleInputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-            consoleOutputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-            consoleErrorWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-            debugTraceWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-            warningsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-            failuresWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-            logWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-
-            testExplorer.Show(dockPanel, DockState.DockLeft);
+            if (File.Exists(dockConfigFile))
+            {
+                try
+                {
+                    dockPanel.LoadFromXml(dockConfigFile, deserializeDockContent);
+                }
+                catch
+                { }
+            }
+            else
+            {
+                assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
+                performanceMonitor.Show(dockPanel);
+                testResults.Show(dockPanel);
+                consoleInputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                consoleOutputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                consoleErrorWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                debugTraceWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                warningsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                failuresWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                logWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                testExplorer.Show(dockPanel, DockState.DockLeft);
+            }
 
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
                 if (GetReportTypes != null)
                     GetReportTypes(this, EventArgs.Empty);
+                if (GetTestFrameworks != null)
+                    GetTestFrameworks(this, EventArgs.Empty);
                 ThreadedReloadTree(true);
+                StatusText = string.Empty;
             });
             workerThread.Start();
         }
@@ -288,11 +407,7 @@ namespace Gallio.Icarus
 
         private void aboutMenuItem_Click(object sender, EventArgs e)
         {
-            About aboutForm = new About();
-            aboutForm.ShowDialog();
-
-            //if (aboutForm != null)
-            aboutForm.Dispose();
+            aboutDialog.ShowDialog();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -328,6 +443,7 @@ namespace Gallio.Icarus
                         stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                         startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                     });
+                    StatusText = string.Empty;
                 });
                 workerThread.Start();
             }
@@ -335,12 +451,6 @@ namespace Gallio.Icarus
             {
                 Exception = ex;
             }
-        }
-
-        private void Main_SizeChanged(object sender, EventArgs e)
-        {
-            if (WindowState == FormWindowState.Minimized)
-                Hide();
         }
 
         //private void ShowTaskDialog()
@@ -385,6 +495,7 @@ namespace Gallio.Icarus
             {
                 StatusText = "Reloading...";
                 ThreadedReloadTree(true);
+                StatusText = string.Empty;
             });
             workerThread.Start();
         }
@@ -413,6 +524,7 @@ namespace Gallio.Icarus
                     {
                         Exception = ex;
                     }
+                    StatusText = string.Empty;
                 });
                 workerThread.Start();
             }
@@ -451,11 +563,17 @@ namespace Gallio.Icarus
                 {
                     Exception = ex;
                 }
+                StatusText = string.Empty;
             });
             workerThread.Start();
         }
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddAssembliesToTree();
+        }
+
+        public void AddAssembliesToTree()
         {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.Filter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
@@ -476,6 +594,7 @@ namespace Gallio.Icarus
                     {
                         Exception = ex;
                     }
+                    StatusText = string.Empty;
                 });
                 workerThread.Start();
             }
@@ -500,9 +619,18 @@ namespace Gallio.Icarus
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
-            Options options = new Options();
-            options.ShowDialog();
-
+            Options options = new Options(this);
+            if (options.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    SerializationUtils.SaveToXml<Settings>(settings, settingsFile);
+                }
+                catch (Exception ex)
+                {
+                    Exception = ex;
+                }
+            }
             if (!options.IsDisposed)
                 options.Dispose();
         }
@@ -518,7 +646,12 @@ namespace Gallio.Icarus
             testResults.Reset();
         }
 
-        private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RemoveAssembliesFromTree();
+        }
+
+        public void RemoveAssembliesFromTree()
         {
             AbortWorkerThread();
             workerThread = new Thread(delegate()
@@ -528,6 +661,7 @@ namespace Gallio.Icarus
                 if (RemoveAssemblies != null)
                     RemoveAssemblies(this, new EventArgs());
                 ThreadedReloadTree(true);
+                StatusText = string.Empty;
             });
             workerThread.Start();
         }
@@ -614,6 +748,7 @@ namespace Gallio.Icarus
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
+                StatusText = "Stopping tests";
                 if (StopTests != null)
                     StopTests(this, new EventArgs());
 
@@ -623,6 +758,7 @@ namespace Gallio.Icarus
                     stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                     startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 });
+                StatusText = string.Empty;
             });
             workerThread.Start();
         }
@@ -632,10 +768,11 @@ namespace Gallio.Icarus
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
-                StatusText = "Removing assembly...";
+                StatusText = "Removing assembly";
                 if (RemoveAssembly != null)
                     RemoveAssembly(this, new SingleStringEventArgs(assembly));
                 ThreadedReloadTree(true);
+                StatusText = string.Empty;
             });
             workerThread.Start();
         }
@@ -666,9 +803,11 @@ namespace Gallio.Icarus
             AbortWorkerThread();
             workerThread = new Thread(delegate()
             {
+                StatusText = "Creating new project";
                 if (NewProject != null)
                     NewProject(this, EventArgs.Empty);
                 ThreadedReloadTree(true);
+                StatusText = string.Empty;
             });
             workerThread.Start();
         }
@@ -765,11 +904,6 @@ namespace Gallio.Icarus
             }
         }
 
-        private void testExplorerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            testExplorer.Show(dockPanel);
-        }
-
         public void CreateReport()
         {
             AbortWorkerThread();
@@ -778,6 +912,7 @@ namespace Gallio.Icarus
                     try
                     {
                         ThreadedCreateReport();
+                        StatusText = string.Empty;
                     }
                     catch (Exception ex)
                     {
@@ -794,20 +929,79 @@ namespace Gallio.Icarus
                 GenerateReport(this, EventArgs.Empty);
         }
 
-        private void assemblyListToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            assemblyList.Show(dockPanel);
-        }
-
-        private void reportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CreateReport();
-            reportWindow.Show(dockPanel);
-        }
-
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Reset();
+        }
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                string gallioDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Gallio/Icarus");
+                if (!Directory.Exists(gallioDir))
+                    Directory.CreateDirectory(gallioDir);
+                if (SaveProject != null)
+                    SaveProject(this, new SingleStringEventArgs(Path.Combine(gallioDir, "Icarus.gallio")));
+                dockPanel.SaveAsXml(dockConfigFile);
+            }
+            catch
+            { }
+        }
+
+        public void ViewSourceCode(string testId)
+        {
+            if (GetSourceLocation != null)
+                GetSourceLocation(this, new SingleStringEventArgs(testId));
+        }
+
+        private void showWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = (ToolStripMenuItem)sender;
+            switch (item.Name)
+            {
+                case "logToolStripMenuItem":
+                    logWindow.Show(dockPanel);
+                    break;
+                case "consoleInputToolStripMenuItem":
+                    consoleInputWindow.Show(dockPanel);
+                    break;
+                case "consoleOutputToolStripMenuItem":
+                    consoleOutputWindow.Show(dockPanel);
+                    break;
+                case "consoleErrorToolStripMenuItem":
+                    consoleErrorWindow.Show(dockPanel);
+                    break;
+                case "debugTraceToolStripMenuItem":
+                    debugTraceWindow.Show(dockPanel);
+                    break;
+                case "warningsToolStripMenuItem":
+                    warningsWindow.Show(dockPanel);
+                    break;
+                case "failuresToolStripMenuItem":
+                    failuresWindow.Show(dockPanel);
+                    break;
+                case "performanceMonitorToolStripMenuItem":
+                    performanceMonitor.Show(dockPanel);
+                    break;
+                case "testResultsToolStripMenuItem":
+                    testResults.Show(dockPanel);
+                    break;
+                case "assemblyListToolStripMenuItem":
+                    assemblyList.Show(dockPanel);
+                    break;
+                case "testExplorerToolStripMenuItem":
+                    testExplorer.Show(dockPanel);
+                    break;
+                case "reportToolStripMenuItem":
+                    CreateReport();
+                    reportWindow.Show(dockPanel);
+                    break;
+            }
+        }
+
+        public void AssemblyChanged(string filePath)
+        {
         }
     }
 }

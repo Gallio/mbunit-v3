@@ -74,6 +74,13 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap error {
+            get {
+                object obj = ResourceManager.GetObject("error", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon FailMb {
             get {
                 object obj = ResourceManager.GetObject("FailMb", resourceCulture);
@@ -105,6 +112,13 @@ namespace Gallio.Icarus.Properties {
         internal static System.Drawing.Bitmap help_browser {
             get {
                 object obj = ResourceManager.GetObject("help_browser", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap LogStream {
+            get {
+                object obj = ResourceManager.GetObject("LogStream", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

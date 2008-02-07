@@ -80,11 +80,6 @@ namespace Gallio.Icarus.AdapterModel
                     {
                         // create an appropriate node
                         ttnode = new TestTreeNode(td.Name, td.Id, imgIndex, initialCheckState);
-                        string codeBase = td.Metadata.GetValue(MetadataKeys.CodeBase);
-                        if (codeBase != null)
-                        {
-                            ttnode.CodeBase = codeBase;
-                        }
                         parent.Nodes.Add(ttnode);
                     }
                     else
@@ -95,9 +90,7 @@ namespace Gallio.Icarus.AdapterModel
                         // find the namespace node (or add if it doesn't exist)
                         TestTreeNode nsNode;
                         if (parent.Nodes.ContainsKey(@namespace))
-                        {
                             nsNode = parent.Nodes.Find(@namespace, false)[0] as TestTreeNode;
-                        }
                         else
                         {
                             nsNode = new TestTreeNode(@namespace, @namespace, 2, initialCheckState);
@@ -108,6 +101,9 @@ namespace Gallio.Icarus.AdapterModel
                         ttnode = new TestTreeNode(td.Name, td.Id, 3, initialCheckState);
                         nsNode.Nodes.Add(ttnode);
                     }
+                    ttnode.SourceCodeAvailable = (td.CodeLocation != null);
+                    ttnode.IsTest = td.IsTestCase;
+                    
                     // process child nodes
                     PopulateNamespaceTree(td.Children, ttnode, initialCheckState);
                 }
@@ -138,9 +134,7 @@ namespace Gallio.Icarus.AdapterModel
                                 // find metadata node (or add if it doesn't exist)
                                 TestTreeNode metadataNode;
                                 if (root.Nodes.ContainsKey(m))
-                                {
                                     metadataNode = root.Nodes.Find(m, false)[0] as TestTreeNode;
-                                }
                                 else
                                 {
                                     metadataNode = new TestTreeNode(m, m, 0, initialCheckState);
@@ -156,22 +150,18 @@ namespace Gallio.Icarus.AdapterModel
                                 else
                                 {
                                     TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex, initialCheckState);
+                                    ttnode.SourceCodeAvailable = (td.CodeLocation != null);
+                                    ttnode.IsTest = td.IsTestCase;
                                     if (m != "None")
-                                    {
                                         metadataNode.Nodes.Add(ttnode);
-                                    }
                                     else
-                                    {
                                         parent.Nodes.Add(ttnode);
-                                    }
                                 }
                             }
                             break;
                     }
                     if (componentKind != TestKinds.Fixture)
-                    {
                         PopulateMetadataTree(key, td.Children, root, parent, initialCheckState);
-                    }
                 }
             }
         }

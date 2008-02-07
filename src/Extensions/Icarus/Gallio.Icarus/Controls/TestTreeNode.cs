@@ -25,7 +25,7 @@ namespace Gallio.Icarus.Controls
     {
         private CheckBoxStates checkState = CheckBoxStates.Unchecked;
         private TestStates testState = TestStates.Undefined;
-        private string codeBase = "";
+        private bool sourceCodeAvailable, isTest;
 
         public TestTreeNode(string text, string id, int imgIndex, bool initialCheckState)
             : base(text, imgIndex, imgIndex)
@@ -68,6 +68,18 @@ namespace Gallio.Icarus.Controls
                 testState = value;
                 UpdateParentTestState();
             }
+        }
+
+        public bool SourceCodeAvailable
+        {
+            get { return sourceCodeAvailable; }
+            set { sourceCodeAvailable = value; }
+        }
+
+        public bool IsTest
+        {
+            get { return isTest; }
+            set { isTest = value; }
         }
 
         /// <summary>
@@ -128,12 +140,6 @@ namespace Gallio.Icarus.Controls
             }
         }
 
-        public string CodeBase
-        {
-            get { return codeBase; }
-            set { codeBase = value; }
-        }
-
         /// <summary>
         /// Manages state changes from one state to the next.
         /// </summary>
@@ -184,40 +190,7 @@ namespace Gallio.Icarus.Controls
 
                 UpdateParentNodeState(true);
 
-                //UpdateDuplicateNodes();
-
                 tv.EndUpdate();
-            }
-        }
-
-        private void UpdateDuplicateNodes()
-        {
-            UpdateDuplicateNode(this);
-            foreach (TreeNode node in Nodes)
-            {
-                TestTreeNode tn = node as TestTreeNode;
-                if (tn != null)
-                {
-                    UpdateDuplicateNode(tn);
-                }
-            }
-            TestTreeNode parent = Parent as TestTreeNode;
-            while (parent != null)
-            {
-                UpdateDuplicateNode(parent);
-                parent = parent.Parent as TestTreeNode;
-            }
-        }
-
-        private void UpdateDuplicateNode(TestTreeNode node)
-        {
-            foreach (TreeNode n in TreeView.Nodes.Find(node.Name, true))
-            {
-                TestTreeNode tn = n as TestTreeNode;
-                if (tn != null && !tn.Equals(node) && tn.CheckState != node.CheckState)
-                {
-                    tn.Toggle();
-                }
             }
         }
 

@@ -71,6 +71,7 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.SetFilter += SetFilter;
             projectAdapter.GetReportTypes += GetReportTypes;
             projectAdapter.SaveReportAs += SaveReportAs;
+            projectAdapter.GetTestFrameworks += OnGetTestFrameworks;
         }
 
         public void GetTestTree(object sender, GetTestTreeEventArgs e)
@@ -121,6 +122,11 @@ namespace Gallio.Icarus.Core.Presenter
         public void WriteToLog(string logName, string logBody)
         {
             projectAdapter.WriteToLog(logName, logBody);
+        }
+
+        public void OnGetTestFrameworks(object sender, EventArgs e)
+        {
+            projectAdapter.TestFrameworks = testRunnerModel.GetTestFrameworks();
         }
     }
 }

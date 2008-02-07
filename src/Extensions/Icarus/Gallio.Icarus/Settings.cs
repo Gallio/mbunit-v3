@@ -14,43 +14,30 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
 {
-    public partial class LogWindow : DockContent
+    public class Settings : ICloneable
     {
-        public LogWindow()
+        private bool restorePreviousSettings = true;
+
+        public bool RestorePreviousSettings
         {
-            InitializeComponent();
+            get { return restorePreviousSettings; }
+            set { restorePreviousSettings = value; }
         }
 
-        public LogWindow(string text) : this()
+        public Settings()
+        { }
+
+        object ICloneable.Clone()
         {
-            Text = text;
+            return Clone();
         }
 
-        public string LogBody
+        public Settings Clone()
         {
-            get { return logBody.Text; }
-            set { logBody.Text = value; }
-        }
-
-        private void clearAllToolStripButton_Click(object sender, EventArgs e)
-        {
-            logBody.Clear();
-        }
-
-        protected override string GetPersistString()
-        {
-            return GetType().ToString() + "," + Text;
+            return (Settings)MemberwiseClone();
         }
     }
 }

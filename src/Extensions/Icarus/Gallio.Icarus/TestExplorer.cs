@@ -61,30 +61,14 @@ namespace Gallio.Icarus
 
         public void Reset()
         {
-            testTree.BeginUpdate();
-            testTree.Reset(testTree.Nodes);
-            testTree.EndUpdate();
+            testTree.Reset();
         }
 
-        public void ExpandAll()
-        {
-            testTree.BeginUpdate();
-            testTree.ExpandAll();
-            testTree.EndUpdate();
-        }
-
-        public void CollapseAll()
+        public void ExpandTree(TestStates state)
         {
             testTree.BeginUpdate();
             testTree.CollapseAll();
-            testTree.EndUpdate();
-        }
-
-        public void ExpandFailed()
-        {
-            testTree.BeginUpdate();
-            testTree.CollapseAll();
-            TestNodes(testTree.Nodes[0], TestStates.Failed);
+            TestNodes(testTree.Nodes[0], state);
             testTree.EndUpdate();
         }
 
@@ -126,12 +110,13 @@ namespace Gallio.Icarus
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TestTreeNode node = (TestTreeNode)testTree.SelectedNode;
-            projectAdapterView.ThreadedRemoveAssembly(node.CodeBase);
+            projectAdapterView.ThreadedRemoveAssembly(node.Name);
         }
 
         private void testTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             removeAssemblyToolStripMenuItem.Enabled = (e.Node.SelectedImageIndex == 2);
+            viewSourceCodeToolStripMenuItem.Enabled = (((TestTreeNode)e.Node).SourceCodeAvailable);
         }
 
         private void testTree_AfterCheck(object sender, TreeViewEventArgs e)
@@ -153,17 +138,17 @@ namespace Gallio.Icarus
 
         private void filterPassedTestsToolStripButton_Click(object sender, EventArgs e)
         {
-            testTree.FilterPassed = filterPassedTestsToolStripButton.Checked;
-        }
-
-        private void filterInconclusiveTestsToolStripButton_Click(object sender, EventArgs e)
-        {
-            testTree.FilterInconclusive = filterInconclusiveTestsToolStripButton.Checked;
+            testTree.FilterPassed = filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked;
         }
 
         private void filterFailedTestsToolStripButton_Click(object sender, EventArgs e)
         {
-            testTree.FilterFailed = filterFailedTestsToolStripButton.Checked;
+            testTree.FilterFailed = filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked;
+        }
+
+        private void filterInconclusiveTestsToolStripButton_Click(object sender, EventArgs e)
+        {
+            testTree.FilterInconclusive = filterInconclusiveTestsToolStripMenuItem.Checked = filterInconclusiveTestsToolStripButton.Checked;
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
@@ -173,22 +158,52 @@ namespace Gallio.Icarus
 
         private void expandAllMenuItem_Click(object sender, EventArgs e)
         {
-            ExpandAll();
+            testTree.ExpandAll();
         }
 
         private void collapseAllMenuItem_Click(object sender, EventArgs e)
         {
-            CollapseAll();
-        }
-
-        private void expandFailedMenuItem_Click(object sender, EventArgs e)
-        {
-            ExpandFailed();
+            testTree.CollapseAll();
         }
 
         private void sortTree_Click(object sender, EventArgs e)
         {
             testTree.Sorted = sortTree.Checked;
+        }
+
+        private void viewSourceCodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            projectAdapterView.ViewSourceCode(testTree.SelectedNode.Name);
+        }
+
+        private void expandPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExpandTree(TestStates.Success);
+        }
+
+        private void expandFailedTestsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExpandTree(TestStates.Failed);
+        }
+
+        private void expandInconclusiveTestsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExpandTree(TestStates.Inconclusive);
+        }
+
+        private void filterPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.FilterPassed = filterPassedTestsToolStripButton.Checked = filterPassedTestsToolStripMenuItem.Checked;
+        }
+
+        private void filterFailedTestsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.FilterFailed = filterFailedTestsToolStripButton.Checked = filterFailedTestsToolStripMenuItem.Checked;
+        }
+
+        private void filterInconclusiveTestsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.FilterInconclusive = filterInconclusiveTestsToolStripButton.Checked = filterInconclusiveTestsToolStripMenuItem.Checked;
         }
     }
 }

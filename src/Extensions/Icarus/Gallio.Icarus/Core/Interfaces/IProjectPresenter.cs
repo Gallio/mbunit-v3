@@ -38,5 +38,6 @@ namespace Gallio.Icarus.Core.Interfaces
         void SaveReportAs(object sender, SaveReportAsEventArgs e);
         void Update(TestData testData, TestStepRun testStepRun);
         void WriteToLog(string logName, string logBody);
+        void OnGetTestFrameworks(object sender, EventArgs e);
     }
 }

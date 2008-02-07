@@ -14,43 +14,36 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
-using WeifenLuo.WinFormsUI.Docking;
+using Castle.Core.Logging;
+
+using Gallio.Icarus.Interfaces;
 
 namespace Gallio.Icarus
 {
-    public partial class LogWindow : DockContent
+    internal class IcarusLogger : LevelFilteredLogger
     {
-        public LogWindow()
+        private IProjectAdapterView projectAdapterView;
+
+        public IProjectAdapterView ProjectAdapterView
         {
-            InitializeComponent();
+            set { projectAdapterView = value; }
         }
 
-        public LogWindow(string text) : this()
+        public IcarusLogger()
+        { }
+
+        /// <inheritdoc />
+        public override ILogger CreateChildLogger(string name)
         {
-            Text = text;
+            IcarusLogger childLogger = new IcarusLogger();
+            childLogger.ProjectAdapterView = projectAdapterView;
+            return childLogger;
         }
 
-        public string LogBody
+        /// <inheritdoc />
+        protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
-            get { return logBody.Text; }
-            set { logBody.Text = value; }
-        }
-
-        private void clearAllToolStripButton_Click(object sender, EventArgs e)
-        {
-            logBody.Clear();
-        }
-
-        protected override string GetPersistString()
-        {
-            return GetType().ToString() + "," + Text;
         }
     }
 }

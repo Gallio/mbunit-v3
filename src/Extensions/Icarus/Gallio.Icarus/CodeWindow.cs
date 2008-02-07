@@ -1,4 +1,4 @@
-// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+﻿// Copyright 2008 MbUnit Project - http://www.mbunit.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,21 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.Reflection;
-using System.Windows.Forms;
+using System.IO;
 
-using Gallio.Icarus.AdapterModel;
-using Gallio.Icarus.Interfaces;
-using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Reflection;
 
-using MbUnit.Framework;
+using WeifenLuo.WinFormsUI.Docking;
 
-namespace Gallio.Icarus.Tests
+namespace Gallio.Icarus
 {
-    [TestFixture]
-    public class OptionsTest : MockTest
+    public partial class CodeWindow : DockContent
     {
+        public CodeWindow(CodeLocation codeLocation)
+        {
+            InitializeComponent();
+
+            Text = Path.GetFileName(codeLocation.Path);
+            textEditorControl.LoadFile(codeLocation.Path);
+            textEditorControl.ActiveTextAreaControl.JumpTo(codeLocation.Line, codeLocation.Column);
+        }
     }
 }
