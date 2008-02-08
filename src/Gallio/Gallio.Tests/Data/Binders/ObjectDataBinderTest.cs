@@ -81,7 +81,7 @@ namespace Gallio.Tests.Data.Binders
                 ITypeInfo type = Reflector.Wrap(typeof(Holder<>));
                 IConstructorInfo constructor = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public)[0];
                 ISlotInfo valueSlot = constructor.Parameters[0];
-                ISlotInfo typeSlot = type.GenericParameters[0];
+                ISlotInfo typeSlot = (IGenericParameterInfo) type.GenericArguments[0];
 
                 DataBindingContext context = new DataBindingContext(new NullConverter());
 

@@ -97,8 +97,11 @@ namespace Gallio.Framework.Patterns
             foreach (IPattern pattern in methodTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(method))
                 pattern.ProcessTest(methodTestBuilder, method);
 
-            foreach (IGenericParameterInfo parameter in method.GenericParameters)
-                ProcessSlot(methodTestBuilder, parameter);
+            if (method.IsGenericMethodDefinition)
+            {
+                foreach (IGenericParameterInfo parameter in method.GenericArguments)
+                    ProcessSlot(methodTestBuilder, parameter);
+            }
 
             foreach (IParameterInfo parameter in method.Parameters)
                 ProcessSlot(methodTestBuilder, parameter);

@@ -83,7 +83,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return null;
         }
 
-        public CodeLocation GetCodeLocation()
+        public virtual CodeLocation GetCodeLocation()
         {
             return null;
         }

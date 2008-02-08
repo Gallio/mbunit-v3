@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
@@ -29,9 +30,38 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
         }
 
+        public bool IsGenericMethod
+        {
+            get { return Target.GetSignature(null).GetTypeParameters().Length != 0; }
+        }
+
+        public bool IsGenericMethodDefinition
+        {
+            get { return IsGenericMethod; }
+        }
+
+        public bool ContainsGenericParameters
+        {
+            get { return IsGenericMethod; }
+        }
+
+        public IList<ITypeInfo> GenericArguments
+        {
+            get
+            {
+                ITypeParameter[] parameter = Target.GetSignature(null).GetTypeParameters();
+                return Array.ConvertAll<ITypeParameter, IGenericParameterInfo>(parameter, Reflector.Wrap);
+            }
+        }
+
+        public IMethodInfo GenericMethodDefinition
+        {
+            get { return IsGenericMethod ? this : null; }
+        }
+
         public ITypeInfo ReturnType
         {
-            get { return Reflector.Wrap(Target.ReturnType, true); }
+            get { return Reflector.Wrap(Target.ReturnType); }
         }
 
         public IParameterInfo ReturnParameter

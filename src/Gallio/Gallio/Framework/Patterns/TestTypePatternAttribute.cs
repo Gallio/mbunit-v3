@@ -102,8 +102,11 @@ namespace Gallio.Framework.Patterns
             foreach (IPattern pattern in typeTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(type))
                 pattern.ProcessTest(typeTestBuilder, type);
 
-            foreach (IGenericParameterInfo parameter in type.GenericParameters)
-                ProcessSlot(typeTestBuilder, parameter);
+            if (type.IsGenericTypeDefinition)
+            {
+                foreach (IGenericParameterInfo parameter in type.GenericArguments)
+                    ProcessSlot(typeTestBuilder, parameter);
+            }
 
             foreach (IFieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
                 ProcessSlot(typeTestBuilder, field);

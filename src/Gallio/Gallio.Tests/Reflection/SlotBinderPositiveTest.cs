@@ -44,7 +44,7 @@ namespace Gallio.Tests.Reflection
         {
             ITypeInfo type = Reflector.Wrap(typeof(Class<>));
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
-            slotValues.Add(type.GenericParameters[0], typeof(int));
+            slotValues.Add((IGenericParameterInfo)type.GenericArguments[0], typeof(int));
             slotValues.Add(type.GetConstructors(PublicInstance)[1].Parameters[0], 1);
             slotValues.Add(type.GetFields(PublicInstance)[0], 2);
             slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
@@ -60,7 +60,7 @@ namespace Gallio.Tests.Reflection
         {
             ITypeInfo type = Reflector.Wrap(typeof(Class<>));
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
-            slotValues.Add(type.GenericParameters[0], typeof(int));
+            slotValues.Add((IGenericParameterInfo)type.GenericArguments[0], typeof(int));
             slotValues.Add(type.GetFields(PublicInstance)[0], 2);
             slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
 
@@ -104,7 +104,7 @@ namespace Gallio.Tests.Reflection
         {
             ITypeInfo type = Reflector.Wrap(typeof(Struct<>));
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
-            slotValues.Add(type.GenericParameters[0], typeof(int));
+            slotValues.Add((IGenericParameterInfo)type.GenericArguments[0], typeof(int));
             slotValues.Add(type.GetConstructors(PublicInstance)[0].Parameters[0], 1);
             slotValues.Add(type.GetFields(PublicInstance)[0], 2);
             slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
@@ -120,7 +120,7 @@ namespace Gallio.Tests.Reflection
         {
             ITypeInfo type = Reflector.Wrap(typeof(Struct<>));
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
-            slotValues.Add(type.GenericParameters[0], typeof(int));
+            slotValues.Add((IGenericParameterInfo)type.GenericArguments[0], typeof(int));
             slotValues.Add(type.GetFields(PublicInstance)[0], 2);
             slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
 
@@ -165,7 +165,7 @@ namespace Gallio.Tests.Reflection
             ITypeInfo type = Reflector.Wrap(typeof(Class<int>));
             IMethodInfo method = ChooseByName(type.GetMethods(PublicInstance), "InstanceMethod");
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
-            slotValues.Add(method.GenericParameters[0], typeof(int));
+            slotValues.Add((IGenericParameterInfo) method.GenericArguments[0], typeof(int));
             slotValues.Add(method.Parameters[0], 1);
 
             Class<int> instance = new Class<int>();
@@ -194,7 +194,7 @@ namespace Gallio.Tests.Reflection
             ITypeInfo type = Reflector.Wrap(typeof(Class<>));
             IMethodInfo method = ChooseByName(type.GetMethods(PublicInstance), "InstanceMethod");
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
-            slotValues.Add(method.GenericParameters[0], typeof(int));
+            slotValues.Add((IGenericParameterInfo)method.GenericArguments[0], typeof(int));
             slotValues.Add(method.Parameters[0], 1);
 
             Class<int> instance = new Class<int>();
@@ -209,7 +209,7 @@ namespace Gallio.Tests.Reflection
             ITypeInfo type = Reflector.Wrap(typeof(Class<int>));
             IMethodInfo method = ChooseByName(type.GetMethods(PublicStatic), "StaticMethod");
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
-            slotValues.Add(method.GenericParameters[0], typeof(int));
+            slotValues.Add((IGenericParameterInfo)method.GenericArguments[0], typeof(int));
             slotValues.Add(method.Parameters[0], 1);
 
             SlotBinder.InvokeStaticMethod(method, typeof(Class<int>), slotValues);
@@ -236,7 +236,7 @@ namespace Gallio.Tests.Reflection
             ITypeInfo type = Reflector.Wrap(typeof(Class<>));
             IMethodInfo method = ChooseByName(type.GetMethods(PublicStatic), "StaticMethod");
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
-            slotValues.Add(method.GenericParameters[0], typeof(int));
+            slotValues.Add((IGenericParameterInfo)method.GenericArguments[0], typeof(int));
             slotValues.Add(method.Parameters[0], 1);
 
             SlotBinder.InvokeStaticMethod(method, typeof(Class<int>), slotValues);

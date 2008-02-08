@@ -29,7 +29,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public ITypeInfo ValueType
         {
-            get { return Reflector.Wrap(Target.Type, true); }
+            get { return Reflector.Wrap(Target.Type); }
         }
 
         public int Position

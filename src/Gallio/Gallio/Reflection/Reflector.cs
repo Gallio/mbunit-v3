@@ -302,11 +302,6 @@ namespace Gallio.Reflection
             return target != null ? new NativeAttributeWrapper(target) : null;
         }
 
-        internal static IGenericParameterInfo WrapAsGenericParameter(Type target)
-        {
-            return (IGenericParameterInfo)Wrap(target);
-        }
-
         /// <summary>
         /// Creates a code element from the executing function.
         /// </summary>

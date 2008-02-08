@@ -171,18 +171,13 @@ namespace Gallio.Reflection.Impl
                 isPublic = method.IsPublic;
                 isStatic = method.IsStatic;
 
+                // Note: The method name will include the number of generic parameters in the case of a generic method.
                 StringBuilder signatureBuilder = new StringBuilder(method.Name);
-                
-                foreach (IGenericParameterInfo genericParameter in method.GenericParameters)
-                {
-                    signatureBuilder.Append(':');
-                    signatureBuilder.Append(genericParameter.Name);
-                }
 
                 foreach (IParameterInfo parameter in method.Parameters)
                 {
                     signatureBuilder.Append(':');
-                    signatureBuilder.Append(parameter.Name);
+                    signatureBuilder.Append(parameter.ValueType.AssemblyQualifiedName);
                 }
 
                 signature = signatureBuilder.ToString();

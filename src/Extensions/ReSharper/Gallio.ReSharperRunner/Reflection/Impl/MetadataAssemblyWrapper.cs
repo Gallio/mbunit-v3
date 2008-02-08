@@ -55,6 +55,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return CodeElementKind.Assembly; }
         }
 
+        public override CodeLocation GetCodeLocation()
+        {
+            return new CodeLocation(Path, 0, 0);
+        }
+
         public AssemblyName GetName()
         {
             return Target.AssemblyName;
@@ -109,6 +114,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public bool Equals(IAssemblyInfo other)
         {
             return Equals((object)other);
+        }
+
+        public override string ToString()
+        {
+            return FullName;
         }
     }
 }

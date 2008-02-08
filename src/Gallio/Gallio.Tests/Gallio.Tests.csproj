@@ -138,6 +138,7 @@
     <Compile Include="Reflection\CodeReferenceTest.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolverTest.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtilsTest.cs" />
+    <Compile Include="Reflection\Impl\ReflectorTypeUtilsTest.cs" />
     <Compile Include="Reflection\Impl\XmlDocumentationUtilsTest.cs" />
     <Compile Include="Reflection\NativeReflectionPolicyTest.cs" />
     <Compile Include="Reflection\BaseReflectionPolicyTest.cs" />

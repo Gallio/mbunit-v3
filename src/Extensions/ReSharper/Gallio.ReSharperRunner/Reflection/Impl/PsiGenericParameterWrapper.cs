@@ -38,6 +38,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return true; }
         }
 
+        public override bool ContainsGenericParameters
+        {
+            get { return true; }
+        }
+
         public GenericParameterAttributes GenericParameterAttributes
         {
             get
@@ -56,6 +61,20 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
+        public override ITypeInfo DeclaringType
+        {
+            get { return Reflector.Wrap(TypeParameter.OwnerType); }
+        }
+
+        public IMethodInfo DeclaringMethod
+        {
+            get { return Reflector.Wrap(TypeParameter.OwnerMethod); }
+        }
+
+        public ITypeInfo[] Constraints
+        {
+            get { return Array.ConvertAll<IType, ITypeInfo>(TypeParameter.TypeConstraints, Reflector.Wrap); }
+        }
 
         public ITypeInfo ValueType
         {

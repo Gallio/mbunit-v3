@@ -45,11 +45,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.WrapOpenType(Target.DeclaringType); }
         }
 
-        public bool IsGenericMethodDefinition
-        {
-            get { return Target.GenericArguments.Length != 0; }
-        }
-
         public MethodAttributes MethodAttributes
         {
             get
@@ -93,15 +88,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             {
                 IMetadataParameter[] parameters = Target.Parameters;
                 return Array.ConvertAll<IMetadataParameter, IParameterInfo>(parameters, Reflector.Wrap);
-            }
-        }
-
-        public IList<IGenericParameterInfo> GenericParameters
-        {
-            get
-            {
-                IMetadataGenericArgument[] parameters = Target.GenericArguments;
-                return Array.ConvertAll<IMetadataGenericArgument, IGenericParameterInfo>(parameters, Reflector.Wrap);
             }
         }
 

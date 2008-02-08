@@ -211,7 +211,7 @@ namespace Gallio.ReSharperRunner.Reflection
         }
 
         /// <summary>
-        /// Obtains a reflection wrapper for a generic parameter.
+        /// Obtains a reflection wrapper for a generic argument.
         /// </summary>
         /// <param name="target">The generic parameter, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
@@ -233,7 +233,7 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <inheritdoc />
         public override IAssemblyInfo LoadAssembly(AssemblyName assemblyName)
         {
-            return Wrap(LoadMetadataAssembly(assemblyName));
+            return Wrap(LoadMetadataAssembly(assemblyName, true));
         }
 
         internal static bool IsConstructor(IMetadataMethod method)
@@ -376,13 +376,19 @@ namespace Gallio.ReSharperRunner.Reflection
             return null;
         }
 
-        internal IMetadataAssembly LoadMetadataAssembly(AssemblyName assemblyName)
+        internal IMetadataAssembly LoadMetadataAssembly(AssemblyName assemblyName, bool throwOnError)
         {
-            if (metadataLoader == null)
-                throw new InvalidOperationException(String.Format("Cannot load assembly '{0}' because no metadata loader is available.",
-                    assemblyName));
+            if (metadataLoader != null)
+            {
+                IMetadataAssembly assembly = metadataLoader.Load(assemblyName, delegate { return true; });
+                if (assembly != null)
+                    return assembly;
+            }
 
-            return metadataLoader.Load(assemblyName, delegate { return true; });
+            if (throwOnError)
+                throw new InvalidOperationException(String.Format("The metadata loader could not load assembly '{0}'.", assemblyName));
+
+            return null;
         }
 
         internal static IMetadataAssembly GetMetadataAssemblyHack(IMetadataTypeInfo typeInfo)
@@ -405,6 +411,7 @@ namespace Gallio.ReSharperRunner.Reflection
         private sealed class OpenClassType : IMetadataClassType
         {
             private readonly IMetadataTypeInfo type;
+            private IMetadataType[] arguments;
 
             public OpenClassType(IMetadataTypeInfo type)
             {
@@ -418,7 +425,26 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public IMetadataType[] Arguments
             {
-                get { return EmptyArray<IMetadataType>.Instance; }
+                get
+                {
+                    if (arguments == null)
+                    {
+                        IMetadataGenericArgument[] genericParameters = type.GenericParameters;
+                        if (genericParameters.Length == 0)
+                        {
+                            arguments = EmptyArray<IMetadataType>.Instance;
+                        }
+                        else
+                        {
+                            arguments = Array.ConvertAll<IMetadataGenericArgument, IMetadataType>(genericParameters, delegate(IMetadataGenericArgument genericParameter)
+                            {
+                                return new MetadataGenericArgumentReferenceType(genericParameter);
+                            });
+                        }
+                    }
+
+                    return arguments;
+                }
             }
 
             public string PresentableName

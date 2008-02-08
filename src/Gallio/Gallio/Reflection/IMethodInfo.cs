@@ -34,6 +34,37 @@ namespace Gallio.Reflection
     public interface IMethodInfo : IFunctionInfo
     {
         /// <summary>
+        /// Returns true if the method is a generic method.
+        /// If so, the <see cref="GenericArguments" /> list will be non-empty.
+        /// </summary>
+        bool IsGenericMethod { get; }
+
+        /// <summary>
+        /// Returns true if the method is a generic method definition.
+        /// </summary>
+        bool IsGenericMethodDefinition { get; }
+
+        /// <summary>
+        /// Returns true if the method contains unbound generic parameters.
+        /// If so, the <see cref="GenericArguments" /> list will contain one
+        /// or more <see cref="IGenericParameterInfo" /> objects.
+        /// </summary>
+        bool ContainsGenericParameters { get; }
+
+        /// <summary>
+        /// Gets the generic arguments of the method.
+        /// The list may contain <see cref="IGenericParameterInfo"/> objects when
+        /// no type has yet been bound to a certain generic parameter slots.
+        /// </summary>
+        /// <returns>The generic arguments</returns>
+        IList<ITypeInfo> GenericArguments { get; }
+
+        /// <summary>
+        /// Gets the generic method definition of this method, or null if the method is not generic.
+        /// </summary>
+        IMethodInfo GenericMethodDefinition { get; }
+
+        /// <summary>
         /// Gets the method return type.
         /// </summary>
         ITypeInfo ReturnType { get; }

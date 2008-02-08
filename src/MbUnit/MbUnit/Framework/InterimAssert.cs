@@ -116,6 +116,53 @@ namespace MbUnit.Framework
             });
         }
 
+        public static void AreElementsEqualIgnoringOrder<TValue>(IEnumerable<TValue> expected, IEnumerable<TValue> actual,
+            Func<TValue, TValue, bool> equivalenceRelation)
+        {
+            LinkedList<TValue> expectedElements = new LinkedList<TValue>(expected);
+            LinkedList<TValue> actualElements = new LinkedList<TValue>(actual);
+
+            for (LinkedListNode<TValue> expectedNode = expectedElements.First; expectedNode != null; )
+            {
+                LinkedListNode<TValue> nextExpectedNode = expectedNode.Next;
+
+                for (LinkedListNode<TValue> actualNode = actualElements.First; actualNode != null; actualNode = actualNode.Next)
+                {
+                    if (equivalenceRelation(expectedNode.Value, actualNode.Value))
+                    {
+                        expectedElements.Remove(expectedNode);
+                        actualElements.Remove(actualNode);
+                        break;
+                    }
+                }
+
+                expectedNode = nextExpectedNode;
+            }
+
+            StringBuilder builder = new StringBuilder();
+            if (expectedElements.Count != 0)
+            {
+                builder.AppendFormat("The following {0} expected element(s) we not found:\n", expectedElements.Count);
+
+                foreach (TValue value in expectedElements)
+                    builder.Append("[[").Append(value).AppendLine("]]");
+            }
+
+            if (actualElements.Count != 0)
+            {
+                if (builder.Length != 0)
+                    builder.AppendLine();
+
+                builder.AppendFormat("The following {0} actual element(s) were not expected:\n", actualElements.Count);
+
+                foreach (TValue value in actualElements)
+                    builder.Append("[[").Append(value).AppendLine("]]");
+            }
+
+            if (builder.Length != 0)
+                Assert.Fail(builder.ToString());
+        }
+
         /// <summary>
         /// Evaluates an assertion with matched pairs drawn from each collection.
         /// Fails if the collections have different sizes or if one is null but not the other.

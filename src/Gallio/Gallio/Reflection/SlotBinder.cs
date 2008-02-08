@@ -237,7 +237,7 @@ namespace Gallio.Reflection
                 throw new ArgumentException(String.Format("The method has {0} parameters but the bindings only provide values for {1} of them.",
                     methodParameterBindings, methodParameterBindings.Count), "slotValues");
 
-            int genericParameterCount = method.ContainsGenericParameters ? method.GetGenericArguments().Length : 0;
+            int genericParameterCount = method.IsGenericMethodDefinition ? method.GetGenericArguments().Length : 0;
             if (genericParameterCount != genericParameterBindings.Count)
                 throw new ArgumentException(String.Format("The method has {0} generic parameters but the bindings only provide values for {1} of them.",
                     genericParameterCount, genericParameterBindings.Count), "slotValues");

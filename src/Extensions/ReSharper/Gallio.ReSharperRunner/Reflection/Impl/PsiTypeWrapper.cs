@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using Gallio.ReSharperRunner.Reflection.Impl;
@@ -43,8 +44,10 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public string AssemblyQualifiedName
         {
-            get { return FullName + ", " + Assembly.FullName; }
+            get { return ReflectorTypeUtils.GetTypeAssemblyQualifierName(this); }
         }
+
+        public abstract string FullName { get; }
 
         public override CodeReference CodeReference
         {
@@ -92,9 +95,29 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return false; }
         }
 
+        public virtual bool IsGenericType
+        {
+            get { return false; }
+        }
+
         public virtual bool IsGenericTypeDefinition
         {
             get { return false; }
+        }
+
+        public virtual bool ContainsGenericParameters
+        {
+            get { return false; }
+        }
+
+        public virtual IList<ITypeInfo> GenericArguments
+        {
+            get { return EmptyArray<ITypeInfo>.Instance; }
+        }
+
+        public virtual ITypeInfo GenericTypeDefinition
+        {
+            get { return null; }
         }
 
         public abstract string CompoundName { get; }
@@ -102,7 +125,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public abstract IAssemblyInfo Assembly { get; }
         public abstract INamespaceInfo Namespace { get; }
         public abstract ITypeInfo BaseType { get; }
-        public abstract string FullName { get; }
         public abstract TypeAttributes TypeAttributes { get; }
         public abstract IList<ITypeInfo> Interfaces { get; }
         public abstract IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
@@ -111,7 +133,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public abstract IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
         public abstract IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
         public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
-        public abstract IList<IGenericParameterInfo> GenericParameters { get; }
 
         public Type Resolve(bool throwOnError)
         {
@@ -131,6 +152,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public bool Equals(ITypeInfo other)
         {
             return Equals((object)other);
+        }
+
+        public override string ToString()
+        {
+            return FullName;
         }
     }
 }

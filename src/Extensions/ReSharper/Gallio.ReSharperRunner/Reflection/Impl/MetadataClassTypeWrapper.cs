@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using JetBrains.Metadata.Reader.API;
@@ -37,7 +38,12 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public override string Name
         {
-            get { return new CLRTypeName(TypeInfo.FullyQualifiedName).ShortName; }
+            get { return ReflectorTypeUtils.GetTypeName(this, ShortName); }
+        }
+
+        public override string FullName
+        {
+            get { return ReflectorTypeUtils.GetTypeFullName(this, ShortName); }
         }
 
         public override string CompoundName
@@ -64,7 +70,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
                 AssemblyName assemblyName = TypeInfo.DeclaringAssemblyName;
                 if (assemblyName != null)
-                    return Reflector.Wrap(Reflector.LoadMetadataAssembly(assemblyName));
+                {
+                    assembly = Reflector.LoadMetadataAssembly(assemblyName, false);
+                    if (assembly != null)
+                        return Reflector.Wrap(assembly);
+                }
 
                 // Note: ReSharper can sometimes return null for built-in such as System.String.
                 //       I don't know whether it will do this for other types though.
@@ -87,11 +97,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public override ITypeInfo BaseType
         {
             get { return Reflector.Wrap(TypeInfo.Base); }
-        }
-
-        public override string FullName
-        {
-            get { return Target.Type.FullyQualifiedName; }
         }
 
         public override TypeAttributes TypeAttributes
@@ -232,11 +237,48 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             throw new NotImplementedException();
         }
 
+        public override bool IsGenericType
+        {
+            get { return Target.Type.GenericParameters.Length != 0; }
+        }
+
         public override bool IsGenericTypeDefinition
         {
             get
             {
-                return Target.Arguments.Length != Target.Type.GenericParameters.Length;
+                if (Target.Arguments.Length == 0)
+                    return false;
+
+                return ! Array.Exists(Target.Arguments, delegate(IMetadataType argument)
+                {
+                    IMetadataGenericArgumentReferenceType argumentRef = argument as IMetadataGenericArgumentReferenceType;
+                    return argumentRef == null || argumentRef.Argument.TypeOwner.Token != TypeInfo.Token;
+                });
+            }
+        }
+
+        public override bool ContainsGenericParameters
+        {
+            get
+            {
+                return GenericUtils.Find(GenericArguments,
+                    delegate(ITypeInfo genericArgument) { return genericArgument.ContainsGenericParameters; }) != null;
+            }
+        }
+
+        public override IList<ITypeInfo> GenericArguments
+        {
+            get { return Array.ConvertAll<IMetadataType, ITypeInfo>(Target.Arguments, Reflector.Wrap); }
+        }
+
+        public override ITypeInfo GenericTypeDefinition
+        {
+            get
+            {
+                if (! IsGenericType)
+                    return null;
+
+                return Reflector.WrapOpenType(TypeInfo);
             }
         }
 
@@ -248,18 +290,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             });
         }
 
-        public override IList<IGenericParameterInfo> GenericParameters
-        {
-            get
-            {
-                IMetadataGenericArgument[] parameters = TypeInfo.GenericParameters;
-                return Array.ConvertAll<IMetadataGenericArgument, IGenericParameterInfo>(parameters, Reflector.Wrap);
-            }
-        }
-
         private string NamespaceName
         {
             get { return new CLRTypeName(TypeInfo.FullyQualifiedName).NamespaceName; }
+        }
+
+        private string ShortName
+        {
+            get { return new CLRTypeName(TypeInfo.FullyQualifiedName).ShortName; }
         }
 
         private IMetadataTypeInfo TypeInfo

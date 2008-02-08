@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Reflection.Impl;
 
@@ -23,6 +25,31 @@ namespace Gallio.Reflection.Impl
         public NativeMethodWrapper(MethodInfo target)
             : base(target)
         {
+        }
+
+        public bool IsGenericMethod
+        {
+            get { return Target.IsGenericMethod; }
+        }
+
+        public bool IsGenericMethodDefinition
+        {
+            get { return Target.IsGenericMethodDefinition; }
+        }
+
+        public bool ContainsGenericParameters
+        {
+            get { return Target.ContainsGenericParameters; }
+        }
+
+        public IList<ITypeInfo> GenericArguments
+        {
+            get { return Array.ConvertAll<Type, ITypeInfo>(Target.GetGenericArguments(), Reflector.Wrap); }
+        }
+
+        public IMethodInfo GenericMethodDefinition
+        {
+            get { return IsGenericMethod ? Reflector.Wrap(Target.GetGenericMethodDefinition()) : null; }
         }
 
         public ITypeInfo ReturnType

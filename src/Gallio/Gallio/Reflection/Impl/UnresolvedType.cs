@@ -73,6 +73,12 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public override bool ContainsGenericParameters
+        {
+            get { return adapter.ContainsGenericParameters; }
+        }
+
+        /// <inheritdoc />
         public override MethodBase DeclaringMethod
         {
             get { throw new NotImplementedException(); }
@@ -123,7 +129,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override bool IsGenericType
         {
-            get { return adapter.GenericParameters.Count != 0; }
+            get { return adapter.IsGenericType; }
         }
 
         /// <inheritdoc />
@@ -234,8 +240,8 @@ namespace Gallio.Reflection.Impl
         public override Type[] GetGenericArguments()
         {
             return
-                GenericUtils.ConvertAllToArray<IGenericParameterInfo, Type>(adapter.GenericParameters,
-                    delegate(IGenericParameterInfo parameter) { return parameter.Resolve(false); });
+                GenericUtils.ConvertAllToArray<ITypeInfo, Type>(adapter.GenericArguments,
+                    delegate(ITypeInfo parameter) { return parameter.Resolve(false); });
         }
 
         /// <inheritdoc />

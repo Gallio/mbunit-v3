@@ -32,6 +32,35 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 throw new ArgumentException("target");
         }
 
+        public bool IsGenericMethod
+        {
+            get { return Target.GenericArguments.Length != 0; }
+        }
+
+        public bool IsGenericMethodDefinition
+        {
+            get { return IsGenericMethod; }
+        }
+
+        public bool ContainsGenericParameters
+        {
+            get { return IsGenericMethod; }
+        }
+
+        public IList<ITypeInfo> GenericArguments
+        {
+            get
+            {
+                IMetadataGenericArgument[] parameters = Target.GenericArguments;
+                return Array.ConvertAll<IMetadataGenericArgument, ITypeInfo>(parameters, Reflector.Wrap);
+            }
+        }
+
+        public IMethodInfo GenericMethodDefinition
+        {
+            get { return IsGenericMethod ? this : null; }
+        }
+
         public ITypeInfo ReturnType
         {
             get { return Reflector.Wrap(Target.ReturnValue.Type); }

@@ -38,9 +38,11 @@ namespace Gallio.Reflection
         string CompoundName { get; }
 
         /// <summary>
-        /// Gets the declaring type of the member, or null if this code
-        /// element is a type that is not nested inside any other type.
+        /// Gets the declaring type of the member.  If the member not a type or is a nested type,
+        /// returns its containing type.  If it is a generic type parameter,
+        /// returns its associated generic type definition.  Otherwise returns null.
         /// </summary>
+        /// <seealso cref="IGenericParameterInfo.DeclaringMethod"/>
         ITypeInfo DeclaringType { get; }
 
         /// <summary>

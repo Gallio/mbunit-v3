@@ -69,11 +69,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
-        public bool IsGenericMethodDefinition
-        {
-            get { return Target.GetSignature(null).GetTypeParameters().Length != 0; }
-        }
-
         public bool IsAbstract
         {
             get { return Target.IsAbstract; }
@@ -95,15 +90,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             {
                 IList<IParameter> parameters = Target.Parameters;
                 return GenericUtils.ConvertAllToArray<IParameter, IParameterInfo>(parameters, Reflector.Wrap);
-            }
-        }
-
-        public IList<IGenericParameterInfo> GenericParameters
-        {
-            get
-            {
-                ITypeParameter[] parameter = Target.GetSignature(null).GetTypeParameters();
-                return Array.ConvertAll<ITypeParameter, IGenericParameterInfo>(parameter, Reflector.Wrap);
             }
         }
 

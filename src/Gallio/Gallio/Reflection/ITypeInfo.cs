@@ -85,12 +85,39 @@ namespace Gallio.Reflection
         /// <summary>
         /// Returns true if the type represents a generic type parameter.
         /// </summary>
+        /// <seealso cref="IGenericParameterInfo"/>
         bool IsGenericParameter { get; }
+
+        /// <summary>
+        /// Returns true if the type is a generic type.
+        /// If so, the <see cref="GenericArguments" /> list will be non-empty.
+        /// </summary>
+        bool IsGenericType { get; }
 
         /// <summary>
         /// Returns true if the type is a generic type definition.
         /// </summary>
         bool IsGenericTypeDefinition { get; }
+
+        /// <summary>
+        /// Returns true if the type contains unbound generic parameters.
+        /// If so, the <see cref="GenericArguments" /> list will contain one
+        /// or more <see cref="IGenericParameterInfo" /> objects.
+        /// </summary>
+        bool ContainsGenericParameters { get; }
+
+        /// <summary>
+        /// Gets the generic arguments of the type.
+        /// The list may contain <see cref="IGenericParameterInfo"/> objects when
+        /// no type has yet been bound to a certain generic parameter slots.
+        /// </summary>
+        /// <returns>The generic arguments</returns>
+        IList<ITypeInfo> GenericArguments { get; }
+
+        /// <summary>
+        /// Gets the generic type definition of this type, or null if the type is not generic.
+        /// </summary>
+        ITypeInfo GenericTypeDefinition { get; }
 
         /// <summary>
         /// Gets the rank of the array type.
@@ -108,12 +135,6 @@ namespace Gallio.Reflection
         /// </summary>
         /// <returns>The type's interfaces</returns>
         IList<ITypeInfo> Interfaces { get; }
-
-        /// <summary>
-        /// Gets the generic parameters of the type.
-        /// </summary>
-        /// <returns>The generic parameters</returns>
-        IList<IGenericParameterInfo> GenericParameters { get; }
 
         /// <summary>
         /// Gets all constructors of the type that satisfy the binding flags.

@@ -16,10 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Resolve;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
 {
@@ -46,7 +48,12 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public override string Name
         {
-            get { return TypeElement.ShortName; }
+            get { return ReflectorTypeUtils.GetTypeName(this, TypeElement.ShortName); }
+        }
+
+        public override string FullName
+        {
+            get { return ReflectorTypeUtils.GetTypeFullName(this, TypeElement.ShortName); }
         }
 
         public override string CompoundName
@@ -83,19 +90,62 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
-        public override string FullName
-        {
-            get { return Target.GetCLRName(); }
-        }
-
         public override bool IsGenericParameter
         {
             get { return false; }
         }
 
+        public override bool IsGenericType
+        {
+            get { return TypeElement.TypeParameters.Length != 0; }
+        }
+
         public override bool IsGenericTypeDefinition
         {
-            get { return Target.IsOpenType; }
+            get
+            {
+                ITypeParameter[] typeParameters = TypeElement.TypeParameters;
+                if (typeParameters.Length == 0)
+                    return false;
+
+                ISubstitution substitution = Target.GetSubstitution();
+                foreach (ITypeParameter typeParameter in typeParameters)
+                    if (substitution.HasInDomain(typeParameter))
+                        return false;
+
+                return true;
+            }
+        }
+
+        public override bool ContainsGenericParameters
+        {
+            get
+            {
+                return GenericUtils.Find(GenericArguments,
+                    delegate(ITypeInfo genericArgument) { return genericArgument.ContainsGenericParameters; }) != null;
+            }
+        }
+
+        public override IList<ITypeInfo> GenericArguments
+        {
+            get
+            {
+                ISubstitution substitution = Target.GetSubstitution();
+                ITypeParameter[] parameters = TypeElement.TypeParameters;
+                return Array.ConvertAll<ITypeParameter, ITypeInfo>(parameters,
+                    delegate(ITypeParameter parameter) { return Reflector.Wrap(substitution.Apply(parameter)); });
+            }
+        }
+
+        public override ITypeInfo GenericTypeDefinition
+        {
+            get
+            {
+                if (!IsGenericType)
+                    return null;
+
+                return Reflector.Wrap(TypeElement);
+            }
         }
 
         public override TypeAttributes TypeAttributes
@@ -266,15 +316,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
             foreach (IEvent @event in typeElement.Events)
                 yield return Reflector.Wrap(@event);
-        }
-
-        public override IList<IGenericParameterInfo> GenericParameters
-        {
-            get
-            {
-                ITypeParameter[] parameter = TypeElement.TypeParameters;
-                return Array.ConvertAll<ITypeParameter, IGenericParameterInfo>(parameter, Reflector.Wrap);
-            }
         }
 
         public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)

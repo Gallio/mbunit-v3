@@ -1,4 +1,4 @@
-﻿// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+// Copyright 2008 MbUnit Project - http://www.mbunit.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ namespace Gallio.Tests.Reflection
 
         public static readonly ITypeInfo GenericClassDefInfo = Reflector.Wrap(typeof(GenericClass<>));
         public static readonly ITypeInfo GenericClassInstInfo = Reflector.Wrap(typeof(GenericClass<int>));
-        public static readonly IGenericParameterInfo GenericClassParamInfo = GenericClassDefInfo.GenericParameters[0];
+        public static readonly IGenericParameterInfo GenericClassParamInfo = (IGenericParameterInfo)GenericClassDefInfo.GenericArguments[0];
 
         public static readonly ITypeInfo NonGenericClassInfo = Reflector.Wrap(typeof(NonGenericClass));
         public static readonly IConstructorInfo NonGenericClassOneParamConstructorInfo = ChooseByParameterCount(NonGenericClassInfo.GetConstructors(BindingFlags.Public | BindingFlags.Instance), 1);

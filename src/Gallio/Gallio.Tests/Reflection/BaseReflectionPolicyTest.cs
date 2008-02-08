@@ -89,12 +89,12 @@ namespace Gallio.Tests.Reflection
 
         protected IGenericParameterInfo GetGenericTypeParameter(Type parameter)
         {
-            return GetType(parameter.DeclaringType).GenericParameters[parameter.GenericParameterPosition];
+            return (IGenericParameterInfo)GetType(parameter.DeclaringType).GenericArguments[parameter.GenericParameterPosition];
         }
 
         protected IGenericParameterInfo GetGenericMethodParameter(Type parameter)
         {
-            return GetMethod((MethodInfo)parameter.DeclaringMethod).GenericParameters[parameter.GenericParameterPosition];
+            return (IGenericParameterInfo)GetMethod((MethodInfo)parameter.DeclaringMethod).GenericArguments[parameter.GenericParameterPosition];
         }
 
         private static T FindByName<T>(IEnumerable<T> elements, string name)

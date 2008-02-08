@@ -27,11 +27,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
         }
 
-        public override string Name
-        {
-            get { return ElementType.Name + "&"; }
-        }
-
         public override ITypeInfo ElementType
         {
             get { return Reflector.Wrap(Target.Type); }

@@ -43,11 +43,6 @@ namespace Gallio.Reflection
         bool IsAbstract { get; }
 
         /// <summary>
-        /// Returns true if this is a generic method definition.
-        /// </summary>
-        bool IsGenericMethodDefinition { get; }
-
-        /// <summary>
         /// Returns true if the method is public.
         /// </summary>
         bool IsPublic { get; }
@@ -62,12 +57,6 @@ namespace Gallio.Reflection
         /// </summary>
         /// <returns>The parameters</returns>
         IList<IParameterInfo> Parameters { get; }
-
-        /// <summary>
-        /// Gets the generic parameters of the function.
-        /// </summary>
-        /// <returns>The generic parameters</returns>
-        IList<IGenericParameterInfo> GenericParameters { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

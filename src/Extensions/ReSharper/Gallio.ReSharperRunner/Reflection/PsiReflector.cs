@@ -102,10 +102,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// Obtains a reflection wrapper for a type.
         /// </summary>
         /// <param name="target">The type, or null if none</param>
-        /// <param name="throwIfUnsupported">If true, throws <exception="NotSupportedException" /> if
-        /// the target is not of a recognized type, otherwise just returns null</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public ITypeInfo Wrap(IType target, bool throwIfUnsupported)
+        public ITypeInfo Wrap(IType target)
         {
             if (target == null)
                 return null;
@@ -126,9 +124,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (pointerType != null)
                 return new PsiPointerTypeWrapper(this, pointerType);
 
-            if (throwIfUnsupported)
-                throw new NotSupportedException("Unsupported type.");
-            return null;
+            throw new NotSupportedException("Unsupported type.");
         }
 
         /// <summary>
@@ -145,11 +141,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// Obtains a reflection wrapper for a declared element.
         /// </summary>
         /// <param name="target">The element, or null if none</param>
-        /// be mapped, otherwise just returns null</param>
-        /// <param name="throwIfUnsupported">If true, throws <exception="NotSupportedException" /> if
-        /// the target is not of a recognized type, otherwise just returns null</param>
         /// <returns>The reflection wrapper, or null if none</returns>
-        public ICodeElementInfo Wrap(IDeclaredElement target, bool throwIfUnsupported)
+        public ICodeElementInfo Wrap(IDeclaredElement target)
         {
             if (target == null)
                 return null;
@@ -182,9 +175,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (@namespace != null)
                 return WrapNamespace(@namespace.QualifiedName);
 
-            if (throwIfUnsupported)
-                throw new NotSupportedException("Unsupported declared element type.");
-            return null;
+            throw new NotSupportedException("Unsupported declared element type.");
         }
 
         /// <summary>
@@ -194,7 +185,7 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public ITypeInfo Wrap(ITypeElement target)
         {
-            return target != null ? Wrap(TypeFactory.CreateType(target), true) : null;
+            return target != null ? Wrap(TypeFactory.CreateType(target)) : null;
         }
 
         /// <summary>

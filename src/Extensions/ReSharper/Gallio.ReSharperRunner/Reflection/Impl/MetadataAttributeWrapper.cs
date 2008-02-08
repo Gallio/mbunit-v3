@@ -42,7 +42,10 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public object[] InitializedArgumentValues
         {
-            get { return Target.ConstructorArguments; }
+            get
+            {
+                return Array.ConvertAll<object, object>(Target.ConstructorArguments, ResolveObject);
+            }
         }
 
         public object GetFieldValue(string name)

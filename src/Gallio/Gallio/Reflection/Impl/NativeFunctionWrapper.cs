@@ -38,11 +38,6 @@ namespace Gallio.Reflection.Impl
             get { return Target.IsAbstract; }
         }
 
-        public bool IsGenericMethodDefinition
-        {
-            get { return Target.IsGenericMethodDefinition; }
-        }
-
         public bool IsPublic
         {
             get { return Target.IsPublic; }
@@ -59,18 +54,6 @@ namespace Gallio.Reflection.Impl
             {
                 ParameterInfo[] parameters = Target.GetParameters();
                 return Array.ConvertAll<ParameterInfo, IParameterInfo>(parameters, Reflector.Wrap);
-            }
-        }
-
-        public IList<IGenericParameterInfo> GenericParameters
-        {
-            get
-            {
-                if (!Target.ContainsGenericParameters)
-                    return EmptyArray<IGenericParameterInfo>.Instance;
-
-                Type[] parameters = Target.GetGenericArguments();
-                return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, Reflector.WrapAsGenericParameter);
             }
         }
 

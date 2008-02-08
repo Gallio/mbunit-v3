@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Collections;
 using Gallio.Reflection.Impl;
 
 namespace Gallio.Reflection.Impl
@@ -73,9 +72,24 @@ namespace Gallio.Reflection.Impl
             get { return Target.IsGenericParameter; }
         }
 
+        public bool IsGenericType
+        {
+            get { return Target.IsGenericType; }
+        }
+
         public bool IsGenericTypeDefinition
         {
             get { return Target.IsGenericTypeDefinition; }
+        }
+
+        public bool ContainsGenericParameters
+        {
+            get { return Target.ContainsGenericParameters; }
+        }
+
+        public ITypeInfo GenericTypeDefinition
+        {
+            get { return IsGenericType ? Reflector.Wrap(Target.GetGenericTypeDefinition()) : null; }
         }
 
         public int ArrayRank
@@ -157,16 +171,9 @@ namespace Gallio.Reflection.Impl
             return Array.ConvertAll<EventInfo, IEventInfo>(events, Reflector.Wrap);
         }
 
-        public IList<IGenericParameterInfo> GenericParameters
+        public IList<ITypeInfo> GenericArguments
         {
-            get
-            {
-                if (!Target.ContainsGenericParameters)
-                    return EmptyArray<IGenericParameterInfo>.Instance;
-
-                Type[] parameters = Target.GetGenericArguments();
-                return Array.ConvertAll<Type, IGenericParameterInfo>(parameters, Reflector.WrapAsGenericParameter);
-            }
+            get { return Array.ConvertAll<Type, ITypeInfo>(Target.GetGenericArguments(), Reflector.Wrap); }
         }
 
         public bool IsAssignableFrom(ITypeInfo type)

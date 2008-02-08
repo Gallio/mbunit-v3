@@ -35,6 +35,16 @@ namespace Gallio.Reflection.Impl
             get { return Target.GenericParameterAttributes; }
         }
 
+        public IMethodInfo DeclaringMethod
+        {
+            get { return Reflector.Wrap((MethodInfo)Target.DeclaringMethod); }
+        }
+
+        public ITypeInfo[] Constraints
+        {
+            get { return Array.ConvertAll<Type, ITypeInfo>(Target.GetGenericParameterConstraints(), Reflector.Wrap); }
+        }
+
         public ITypeInfo ValueType
         {
             get { return Reflector.Wrap(typeof(Type)); }

@@ -48,7 +48,6 @@ namespace Gallio.Tests.Reflection
             Assert.IsNull(Reflector.Wrap((EventInfo)null));
             Assert.IsNull(Reflector.Wrap((ParameterInfo)null));
             Assert.IsNull(Reflector.Wrap((Attribute)null));
-            Assert.IsNull(Reflector.WrapAsGenericParameter(null));
         }
 
         [Test, ExpectedArgumentOutOfRangeException]

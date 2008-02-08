@@ -49,9 +49,9 @@ namespace Gallio.Framework.Explorer
             IParameterInfo parameter = slot as IParameterInfo;
             if (parameter != null)
             {
-                IFunctionInfo function = parameter.Member as IFunctionInfo;
-                if (function != null)
-                    Index += function.GenericParameters.Count;
+                IMethodInfo method = parameter.Member as IMethodInfo;
+                if (method != null && method.IsGenericMethodDefinition)
+                    Index += method.GenericArguments.Count;
             }
         }
 

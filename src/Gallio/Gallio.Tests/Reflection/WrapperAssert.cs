@@ -50,18 +50,29 @@ namespace Gallio.Tests.Reflection
         {
             Assert.AreEqual(CodeElementKind.Assembly, info.Kind);
 
+            Assert.AreEqual(target.FullName, info.ToString());
+
             Assert.AreEqual(CodeReference.CreateFromAssembly(target), info.CodeReference);
             Assert.AreEqual(target.FullName, info.FullName);
             Assert.AreEqual(target.GetName().Name, info.Name);
-            Assert.AreEqual(Loader.GetAssemblyLocalPath(target), info.Path);
+            StringAssert.AreEqualIgnoreCase(Loader.GetAssemblyLocalPath(target), info.Path);
 
-            Assert.AreEqual(new CodeLocation(Loader.GetAssemblyLocalPath(target), 0, 0), info.GetCodeLocation());
+            CodeLocation infoLocation = info.GetCodeLocation();
+            StringAssert.AreEqualIgnoreCase(Loader.GetAssemblyLocalPath(target), infoLocation.Path);
+            Assert.AreEqual(0, infoLocation.Line);
+            Assert.AreEqual(0, infoLocation.Column);
+
             Assert.IsNull(info.GetXmlDocumentation());
 
             Assert.AreEqual(target.GetName().FullName, info.GetName().FullName);
-            Assert.AreEqual(target.GetReferencedAssemblies().Length, info.GetReferencedAssemblies().Count);
-            Type testType = target.GetTypes()[0];
-            AreEqualWhenResolved(testType, info.GetType(testType.FullName));
+            InterimAssert.AreElementsEqualIgnoringOrder(
+                target.GetReferencedAssemblies(),
+                info.GetReferencedAssemblies(),
+                delegate(AssemblyName expected, AssemblyName actual) { return expected.FullName == actual.FullName; });
+
+            foreach (Type type in target.GetTypes())
+                AreEqualWhenResolved(type, info.GetType(type.FullName));
+
             AreElementsEqualWhenResolved(target.GetTypes(), info.GetTypes());
             AreElementsEqualWhenResolved(target.GetExportedTypes(), info.GetExportedTypes());
 
@@ -97,6 +108,12 @@ namespace Gallio.Tests.Reflection
 
             AreFunctionsEquivalent(target, info);
             AreEqual(target, info.Resolve(true));
+
+            Assert.AreEqual(target.ContainsGenericParameters, info.ContainsGenericParameters);
+            Assert.AreEqual(target.IsGenericMethod, info.IsGenericMethod);
+            Assert.AreEqual(target.IsGenericMethodDefinition, info.IsGenericMethodDefinition);
+            AreElementsEqualWhenResolved(target.GetGenericArguments(), info.GenericArguments);
+            AreEqualWhenResolved(target.IsGenericMethod ? target.GetGenericMethodDefinition() : null, info.GenericMethodDefinition);
 
             AreEqualWhenResolved(target.ReturnType, info.ReturnType);
             AreEqualWhenResolved(target.ReturnParameter, info.ReturnParameter);
@@ -163,6 +180,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(target, info.Resolve(true));
 
             AreEqualWhenResolved(typeof(Type), info.ValueType);
+            Assert.IsTrue(info.ContainsGenericParameters);
             Assert.AreEqual(target.GenericParameterPosition, info.Position);
             Assert.AreEqual(target.GenericParameterAttributes, info.GenericParameterAttributes);
 
@@ -194,13 +212,7 @@ namespace Gallio.Tests.Reflection
             AreMembersEquivalent(target, info);
             AreEqual(target, info.Resolve(true));
 
-            if (target.IsGenericMethodDefinition)
-                AreElementsEqualWhenResolved(target.GetGenericArguments(), info.GenericParameters);
-            else
-                Assert.AreEqual(0, info.GenericParameters.Count);
-
             Assert.AreEqual(target.IsAbstract, info.IsAbstract);
-            Assert.AreEqual(target.IsGenericMethodDefinition, info.IsGenericMethodDefinition);
             Assert.AreEqual(target.IsPublic, info.IsPublic);
             Assert.AreEqual(target.IsStatic, info.IsStatic);
             Assert.AreEqual(target.Attributes, info.MethodAttributes);
@@ -212,13 +224,15 @@ namespace Gallio.Tests.Reflection
                 ?? DebugSymbolUtils.GetSourceLocation(target.DeclaringType);
 
             if (targetLocation != null)
-                Assert.AreEqual(targetLocation.Path, info.GetCodeLocation().Path);
+                StringAssert.AreEqualIgnoreCase(targetLocation.Path, info.GetCodeLocation().Path);
         }
 
         private static void AreTypesEquivalent(Type target, ITypeInfo info)
         {
             AreMembersEquivalent(target, info);
             AreEqual(target, info.Resolve(true));
+
+            Assert.AreEqual(target.FullName, info.ToString());
 
             Assert.AreEqual(target.Assembly, info.Assembly.Resolve());
             Assert.AreEqual(target.Namespace, info.Namespace.Name);
@@ -231,18 +245,18 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(target.IsPointer, info.IsPointer);
             Assert.AreEqual(target.IsByRef, info.IsByRef);
             Assert.AreEqual(target.IsGenericParameter, info.IsGenericParameter);
-            Assert.AreEqual(target.IsGenericTypeDefinition, info.IsGenericTypeDefinition);
             Assert.AreEqual(Type.GetTypeCode(target), info.TypeCode);
+
+            Assert.AreEqual(target.ContainsGenericParameters, info.ContainsGenericParameters);
+            Assert.AreEqual(target.IsGenericType, info.IsGenericType);
+            Assert.AreEqual(target.IsGenericTypeDefinition, info.IsGenericTypeDefinition);
+            AreElementsEqualWhenResolved(target.GetGenericArguments(), info.GenericArguments);
+            AreEqualWhenResolved(target.IsGenericType ? target.GetGenericTypeDefinition() : null, info.GenericTypeDefinition);
 
             if (target.IsArray)
                 Assert.AreEqual(target.GetArrayRank(), info.ArrayRank);
             else
                 InterimAssert.Throws<InvalidOperationException>(delegate { GC.KeepAlive(info.ArrayRank); });
-
-            if (target.IsGenericTypeDefinition)
-                AreElementsEqualWhenResolved(target.GetGenericArguments(), info.GenericParameters);
-            else
-                Assert.AreEqual(0, info.GenericParameters.Count);
 
             AreElementsEqualWhenResolved(target.GetInterfaces(), info.Interfaces);
             AreElementsEqualWhenResolved(target.GetConstructors(All), info.GetConstructors(All));

@@ -37,5 +37,17 @@ namespace Gallio.Reflection
         /// Gets the generic parameter attributes.
         /// </summary>
         GenericParameterAttributes GenericParameterAttributes { get; }
+
+        /// <summary>
+        /// Gets the declaring generic method of a generic method parameter,
+        /// or null for a generic type parameter.
+        /// </summary>
+        /// <seealso cref="IMemberInfo.DeclaringType"/>
+        IMethodInfo DeclaringMethod { get; }
+
+        /// <summary>
+        /// Gets the constraints of the generic parameter.
+        /// </summary>
+        ITypeInfo[] Constraints { get; }
     }
 }

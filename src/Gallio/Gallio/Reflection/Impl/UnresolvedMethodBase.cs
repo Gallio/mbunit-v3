@@ -27,28 +27,10 @@ namespace Gallio.Reflection.Impl
 {
     internal static class UnresolvedMethodBase
     {
-        public static bool ContainsGenericParameters(IFunctionInfo adapter)
-        {
-            return adapter.GenericParameters.Count != 0;
-        }
-
-        public static Type[] GetGenericArguments(IFunctionInfo adapter)
-        {
-            return
-                GenericUtils.ConvertAllToArray<IGenericParameterInfo, Type>(adapter.GenericParameters,
-                    delegate(IGenericParameterInfo parameter) { return parameter.Resolve(false); });
-        }
-
         public static ParameterInfo[] GetParameters(IFunctionInfo adapter)
         {
-            return
-                GenericUtils.ConvertAllToArray<IParameterInfo, ParameterInfo>(adapter.Parameters,
-                    delegate(IParameterInfo parameter) { return parameter.Resolve(false); });
-        }
-
-        public static bool IsGenericMethod(IFunctionInfo adapter)
-        {
-            return ContainsGenericParameters(adapter) || adapter.DeclaringType.GenericParameters.Count != 0;
+            return GenericUtils.ConvertAllToArray<IParameterInfo, ParameterInfo>(adapter.Parameters,
+                delegate(IParameterInfo parameter) { return parameter.Resolve(false); });
         }
     }
 
@@ -69,19 +51,19 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override bool ContainsGenericParameters
         {
-            get { return UnresolvedMethodBase.ContainsGenericParameters(adapter); }
+            get { return false; }
         }
 
         /// <inheritdoc />
         public override bool IsGenericMethod
         {
-            get { return UnresolvedMethodBase.IsGenericMethod(adapter); }
+            get { return false; }
         }
 
         /// <inheritdoc />
         public override bool IsGenericMethodDefinition
         {
-            get { return adapter.IsGenericMethodDefinition; }
+            get { return false; }
         }
 
         /// <inheritdoc />
@@ -93,7 +75,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override Type[] GetGenericArguments()
         {
-            return UnresolvedMethodBase.GetGenericArguments(adapter);
+            return Type.EmptyTypes;
         }
 
         /// <inheritdoc />
@@ -139,13 +121,13 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override bool ContainsGenericParameters
         {
-            get { return UnresolvedMethodBase.ContainsGenericParameters(adapter); }
+            get { return adapter.ContainsGenericParameters; }
         }
 
         /// <inheritdoc />
         public override bool IsGenericMethod
         {
-            get { return UnresolvedMethodBase.IsGenericMethod(adapter); }
+            get { return adapter.IsGenericMethod; }
         }
 
         /// <inheritdoc />
@@ -163,7 +145,8 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override Type[] GetGenericArguments()
         {
-            return UnresolvedMethodBase.GetGenericArguments(adapter);
+            return GenericUtils.ConvertAllToArray<ITypeInfo, Type>(adapter.GenericArguments,
+                delegate(ITypeInfo parameter) { return parameter.Resolve(false); });
         }
 
         /// <inheritdoc />

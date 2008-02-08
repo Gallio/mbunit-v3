@@ -106,7 +106,7 @@ namespace Gallio.ReSharperRunner
         public bool IsUnitTestElement(IDeclaredElement element)
         {
             PsiReflector reflector = new PsiReflector(BuiltInAssemblyResolver.Instance, element.GetManager());
-            ICodeElementInfo elementInfo = reflector.Wrap(element, false);
+            ICodeElementInfo elementInfo = reflector.Wrap(element);
             if (elementInfo == null)
                 return false;
 

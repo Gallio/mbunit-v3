@@ -38,11 +38,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return CodeElementKind.GenericParameter; }
         }
 
-        public override bool IsGenericParameter
-        {
-            get { return true; }
-        }
-
         public override ITypeInfo EffectiveClassType
         {
             get
@@ -53,13 +48,38 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
+        public override bool IsGenericParameter
+        {
+            get { return true; }
+        }
+
+        public override bool ContainsGenericParameters
+        {
+            get { return true; }
+        }
+
         public GenericParameterAttributes GenericParameterAttributes
         {
             get
             {
-                // Note: The values are exactly the same, it's just the type that's different.
+                // Note: The values are defined in exactly the same way, it's just the type that's different.
                 return (GenericParameterAttributes)Target.Argument.Attributes;
             }
+        }
+
+        public override ITypeInfo DeclaringType
+        {
+            get { return Reflector.WrapOpenType(Target.Argument.TypeOwner); }
+        }
+
+        public IMethodInfo DeclaringMethod
+        {
+            get { return Reflector.WrapMethod(Target.Argument.MethodOwner); }
+        }
+
+        public ITypeInfo[] Constraints
+        {
+            get { return Array.ConvertAll<IMetadataType, ITypeInfo>(Target.Argument.TypeConstraints, Reflector.Wrap); }
         }
 
         public ITypeInfo ValueType

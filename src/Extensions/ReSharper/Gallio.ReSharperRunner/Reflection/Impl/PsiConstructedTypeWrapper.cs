@@ -15,8 +15,8 @@
 
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Collections;
 using Gallio.Reflection;
+using Gallio.Reflection.Impl;
 using JetBrains.ReSharper.Psi;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
@@ -30,6 +30,16 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         }
 
         public abstract ITypeInfo EffectiveClassType { get; }
+
+        public override string Name
+        {
+            get { return ReflectorTypeUtils.GetTypeName(this, null); }
+        }
+
+        public override string FullName
+        {
+            get { return ReflectorTypeUtils.GetTypeFullName(this, null); }
+        }
 
         public override string CompoundName
         {
@@ -56,11 +66,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return null; }
         }
 
-        public override string FullName
-        {
-            get { return Name; }
-        }
-
         public override TypeAttributes TypeAttributes
         {
             get { return EffectiveClassType.TypeAttributes; }
@@ -69,6 +74,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public override IList<ITypeInfo> Interfaces
         {
             get { return EffectiveClassType.Interfaces; }
+        }
+
+        public override bool ContainsGenericParameters
+        {
+            get { return ElementType.ContainsGenericParameters; }
         }
 
         public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
@@ -99,11 +109,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
         {
             return EffectiveClassType.GetEvents(bindingFlags);
-        }
-
-        public override IList<IGenericParameterInfo> GenericParameters
-        {
-            get { return EmptyArray<IGenericParameterInfo>.Instance; }
         }
 
         public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
