@@ -259,24 +259,32 @@ namespace Gallio.Icarus
             {
                 if (settings == null)
                 {
-                    try
-                    {
-                        if (File.Exists(settingsFile))
-                            settings = SerializationUtils.LoadFromXml<Settings>(settingsFile);
-                    }
-                    catch
-                    {
+                    settings = LoadSettings();
+                    if (settings == null)
                         settings = new Settings();
-                    }
                 }
                 return settings;
             }
             set
             {
                 if (settings == null)
-                    throw new ArgumentNullException("settings");
+                    throw new ArgumentNullException("value");
                 settings = value;
             }
+        }
+
+        private Settings LoadSettings()
+        {
+            try
+            {
+                if (File.Exists(settingsFile))
+                    return SerializationUtils.LoadFromXml<Settings>(settingsFile);
+            }
+            catch
+            {
+            }
+
+            return null;
         }
 
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
