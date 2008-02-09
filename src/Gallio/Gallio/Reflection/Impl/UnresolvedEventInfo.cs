@@ -51,7 +51,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override EventAttributes Attributes
         {
-            get { return EventAttributes.None; }
+            get { return adapter.EventAttributes; }
         }
 
         /// <inheritdoc />

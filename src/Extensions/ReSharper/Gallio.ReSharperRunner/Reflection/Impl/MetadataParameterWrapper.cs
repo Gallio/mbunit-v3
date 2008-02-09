@@ -101,12 +101,17 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object)other);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumerateParameterAttributes(this, inherit, delegate(IParameterInfo member)
+            return ReflectorAttributeUtils.EnumerateParameterAttributes(this, attributeType, inherit, delegate(IParameterInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataParameterWrapper)member).Target);
             });
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetParameterSignature(this);
         }
     }
 }

@@ -90,10 +90,10 @@ namespace MbUnit.Framework
                 if (exceptionType.IsInstanceOfType(ex))
                     return;
 
-                Assert.Fail("Expected the block to throw an exception of type '{0}' but it actually threw:\n{1}", exceptionType.FullName, ex);
+                Assert.Fail("Expected the block to throw an exception of type '{0}' but it actually threw:\n{1}", exceptionType, ex);
             }
 
-            Assert.Fail("Expected the block to throw an exception of type '{0}'.", exceptionType.FullName);
+            Assert.Fail("Expected the block to throw an exception of type '{0}'.", exceptionType);
         }
 
         public static void AreElementsEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual,

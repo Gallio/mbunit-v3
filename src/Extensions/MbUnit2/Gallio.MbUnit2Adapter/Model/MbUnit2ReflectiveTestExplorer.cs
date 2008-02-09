@@ -78,14 +78,14 @@ namespace Gallio.MbUnit2Adapter.Model
             catch (Exception ex)
             {
                 parent.AddChild(new ErrorTest(type,
-                    String.Format("An exception occurred while building fixtures from type '{0}'.", type.CompoundName),
+                    String.Format("An exception occurred while building fixtures from type '{0}'.", type),
                     ex));
             }
         }
 
         private static void BuildTestFixtureFromPatternAttribute(ITest parent, ITypeInfo type, TestFixturePatternAttribute2 attrib)
         {
-            BaseTest fixtureTest = new BaseTest(type.CompoundName, type);
+            BaseTest fixtureTest = new BaseTest(type.Name, type);
             fixtureTest.Kind = TestKinds.Fixture;
 
             MbUnit2MetadataUtils.PopulateFixtureMetadata(fixtureTest, type);
@@ -138,7 +138,7 @@ namespace Gallio.MbUnit2Adapter.Model
             catch (Exception ex)
             {
                 parent.AddChild(new ErrorTest(method,
-                    String.Format("An exception occurred while building tests from method '{0}'.", method.CompoundName),
+                    String.Format("An exception occurred while building tests from method '{0}' in type '{1}'.", method, method.DeclaringType),
                     ex));
             }
         }
@@ -191,7 +191,7 @@ namespace Gallio.MbUnit2Adapter.Model
         {
             foreach (IMethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public))
             {
-                if (method.HasAttribute(typeof(T), true))
+                if (AttributeUtils.HasAttribute<T>(method, true))
                     return method;
             }
 

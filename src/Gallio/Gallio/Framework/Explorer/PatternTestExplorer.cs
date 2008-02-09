@@ -53,7 +53,7 @@ namespace Gallio.Framework.Explorer
         {
             // FIXME: This check is not entirely accurate because it
             //        ignores any custom rules that might be defined elsewhere.
-            return element.HasAttribute(typeof(PatternAttribute), true);
+            return AttributeUtils.HasAttribute<PatternAttribute>(element, true);
         }
 
         /// <inheritdoc />
@@ -127,7 +127,7 @@ namespace Gallio.Framework.Explorer
 
         private void InitializeAssembly(IPatternTestBuilder topLevelTestBuilder, IAssemblyInfo assembly)
         {
-            foreach (AssemblyInitializationAttribute attrib in assembly.GetAttributes(typeof(AssemblyInitializationAttribute), false))
+            foreach (AssemblyInitializationAttribute attrib in AttributeUtils.GetAttributes<AssemblyInitializationAttribute>(assembly, false))
             {
                 try
                 {

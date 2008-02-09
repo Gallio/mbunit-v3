@@ -14,14 +14,16 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.ReSharper.Psi;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
 {
-    internal sealed class PsiGenericParameterWrapper : PsiDeclaredTypeWrapper, IGenericParameterInfo
+    internal sealed class PsiGenericParameterWrapper : PsiConstructedTypeWrapper<IDeclaredType>, IGenericParameterInfo
     {
         public PsiGenericParameterWrapper(PsiReflector reflector, IDeclaredType target)
             : base(reflector, target)
@@ -31,6 +33,16 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public override CodeElementKind Kind
         {
             get { return CodeElementKind.GenericParameter; }
+        }
+
+        public override ITypeInfo BaseType
+        {
+            get { return Gallio.Reflection.Reflector.Wrap(typeof(Object)); }
+        }
+
+        public override ITypeInfo EffectiveClassType
+        {
+            get { return Gallio.Reflection.Reflector.Wrap(typeof(Object)); }
         }
 
         public override bool IsGenericParameter
@@ -59,6 +71,16 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
                 return flags;
             }
+        }
+
+        public override IAssemblyInfo Assembly
+        {
+            get { return GetUltimateDeclaringType().Assembly; }
+        }
+
+        public override INamespaceInfo Namespace
+        {
+            get { return GetUltimateDeclaringType().Namespace; }
         }
 
         public override ITypeInfo DeclaringType
@@ -91,9 +113,29 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object) other);
         }
 
+        public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
+        {
+            return EmptyArray<IConstructorInfo>.Instance;
+        }
+
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
+        {
+            return EnumerateAttributesForElement(TypeParameter, attributeType, inherit);
+        }
+
+        protected override string SimpleName
+        {
+            get { return TypeParameter.ShortName; }
+        }
+
         private ITypeParameter TypeParameter
         {
-            get { return (ITypeParameter) TypeElement; }
+            get { return (ITypeParameter) Target.GetTypeElement(); }
+        }
+
+        private ITypeInfo GetUltimateDeclaringType()
+        {
+            return DeclaringType ?? DeclaringMethod.DeclaringType;
         }
     }
 }

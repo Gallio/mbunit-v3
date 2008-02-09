@@ -54,6 +54,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Resolve(throwOnError);
         }
 
+        public EventAttributes EventAttributes
+        {
+            get { return EventAttributes.None; }
+        }
+
         public IMethodInfo AddMethod
         {
             get { return Reflector.WrapMethod(Target.Adder); }
@@ -69,6 +74,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.WrapMethod(Target.Remover); }
         }
 
+        public ITypeInfo EventHandlerType
+        {
+            get { return Reflector.Wrap(Target.Type); }
+        }
+
         public EventInfo Resolve(bool throwOnError)
         {
             return ReflectorResolveUtils.ResolveEvent(this, throwOnError);
@@ -79,12 +89,17 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object)other);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumerateEventAttributes(this, inherit, delegate(IEventInfo member)
+            return ReflectorAttributeUtils.EnumerateEventAttributes(this, attributeType, inherit, delegate(IEventInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataEventWrapper)member).Target);
             });
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetEventSignature(this);
         }
     }
 }

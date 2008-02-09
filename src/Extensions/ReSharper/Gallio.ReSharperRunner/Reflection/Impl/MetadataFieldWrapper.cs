@@ -118,12 +118,17 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object)other);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumerateFieldAttributes(this, inherit, delegate(IFieldInfo member)
+            return ReflectorAttributeUtils.EnumerateFieldAttributes(this, attributeType, inherit, delegate(IFieldInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataFieldWrapper)member).Target);
             });
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetFieldSignature(this);
         }
     }
 }

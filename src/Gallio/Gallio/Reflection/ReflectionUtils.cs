@@ -145,17 +145,17 @@ namespace Gallio.Reflection
         Fail:
             string[] expectedTypeNames = Array.ConvertAll<ITypeInfo, string>(signature, delegate(ITypeInfo parameterType)
             {
-                return parameterType.FullName;
+                return parameterType.ToString();
             });
             string[] actualTypeNames = GenericUtils.ConvertAllToArray<IParameterInfo, string>(parameters, delegate(IParameterInfo parameter)
             {
                 if ((parameter.ParameterAttributes & ParameterAttributes.Out) != 0)
                 {
                     string prefix = (parameter.ParameterAttributes & ParameterAttributes.In) != 0 ? @"ref " : @"out ";
-                    return prefix + parameter.ValueType.FullName;
+                    return prefix + parameter.ValueType;
                 }
 
-                return parameter.ValueType.FullName;
+                return parameter.ValueType.ToString();
             });
 
             throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,

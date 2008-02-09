@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Gallio.Reflection
 {
@@ -34,6 +32,11 @@ namespace Gallio.Reflection
     public interface IEventInfo : IMemberInfo, IEquatable<IEventInfo>
     {
         /// <summary>
+        /// Gets the event attributes.
+        /// </summary>
+        EventAttributes EventAttributes { get; }
+
+        /// <summary>
         /// Gets the add method of the event, or null if none.
         /// </summary>
         /// <returns>The add method, or null if none</returns>
@@ -50,6 +53,11 @@ namespace Gallio.Reflection
         /// </summary>
         /// <returns>The remove method, or null if none</returns>
         IMethodInfo RemoveMethod { get; }
+
+        /// <summary>
+        /// Gets the event handler type.
+        /// </summary>
+        ITypeInfo EventHandlerType { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

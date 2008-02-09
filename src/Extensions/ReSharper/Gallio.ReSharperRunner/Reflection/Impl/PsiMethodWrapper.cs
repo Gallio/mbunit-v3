@@ -83,5 +83,10 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
             return ReflectorResolveUtils.ResolveMethod(this, throwOnError);
         }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetMethodSignature(this);
+        }
     }
 }

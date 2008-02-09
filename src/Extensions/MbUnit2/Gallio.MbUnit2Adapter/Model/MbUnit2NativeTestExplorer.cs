@@ -88,7 +88,7 @@ namespace Gallio.MbUnit2Adapter.Model
         private static MbUnit2Test CreateFixtureTest(Fixture fixture)
         {
             ITypeInfo fixtureType = Reflector.Wrap(fixture.Type);
-            MbUnit2Test test = new MbUnit2Test(fixtureType.CompoundName, fixtureType, fixture, null);
+            MbUnit2Test test = new MbUnit2Test(fixtureType.Name, fixtureType, fixture, null);
             test.Kind = TestKinds.Fixture;
 
             MbUnit2MetadataUtils.PopulateFixtureMetadata(test, fixtureType);

@@ -15,8 +15,8 @@
 
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
-using Gallio.Reflection.Impl;
 using JetBrains.ReSharper.Psi;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
@@ -30,21 +30,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         }
 
         public abstract ITypeInfo EffectiveClassType { get; }
-
-        public override string Name
-        {
-            get { return ReflectorTypeUtils.GetTypeName(this, null); }
-        }
-
-        public override string FullName
-        {
-            get { return ReflectorTypeUtils.GetTypeFullName(this, null); }
-        }
-
-        public override string CompoundName
-        {
-            get { return Name; }
-        }
 
         public override ITypeInfo DeclaringType
         {
@@ -111,9 +96,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return EffectiveClassType.GetEvents(bindingFlags);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            yield break;
+            return EmptyArray<IAttributeInfo>.Instance;
         }
     }
 }

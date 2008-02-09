@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Gallio.Reflection
@@ -47,6 +48,12 @@ namespace Gallio.Reflection
         /// </summary>
         /// <returns>The set method, or null if none</returns>
         IMethodInfo SetMethod { get; }
+
+        /// <summary>
+        /// Gets the list of index parameters for an indexer property, or
+        /// an empty array if none.
+        /// </summary>
+        IList<IParameterInfo> IndexParameters { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

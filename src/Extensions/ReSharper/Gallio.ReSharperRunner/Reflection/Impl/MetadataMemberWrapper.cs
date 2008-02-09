@@ -15,7 +15,6 @@
 
 using System.Reflection;
 using Gallio.Reflection;
-using Gallio.Reflection.Impl;
 using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.Metadata.Reader.API;
 
@@ -27,15 +26,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public MetadataMemberWrapper(MetadataReflector reflector, TTarget target)
             : base(reflector, target)
         {
-        }
-
-        public virtual string CompoundName
-        {
-            get
-            {
-                ITypeInfo declaringType = DeclaringType;
-                return declaringType != null ? declaringType.CompoundName + @"." + Name : Name;
-            }
         }
 
         public override CodeReference CodeReference
@@ -60,11 +50,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public bool Equals(IMemberInfo other)
         {
             return Equals((object)other);
-        }
-
-        public override string ToString()
-        {
-            return CompoundName;
         }
     }
 }

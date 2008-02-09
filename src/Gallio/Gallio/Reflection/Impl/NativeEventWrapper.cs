@@ -29,19 +29,30 @@ namespace Gallio.Reflection.Impl
             get { return CodeElementKind.Event; }
         }
 
+
+        public EventAttributes EventAttributes
+        {
+            get { return Target.Attributes; }
+        }
+
         public IMethodInfo AddMethod
         {
-            get { return Reflector.Wrap(Target.GetAddMethod()); }
+            get { return Reflector.Wrap(Target.GetAddMethod(true)); }
         }
 
         public IMethodInfo RaiseMethod
         {
-            get { return Reflector.Wrap(Target.GetRaiseMethod()); }
+            get { return Reflector.Wrap(Target.GetRaiseMethod(true)); }
         }
 
         public IMethodInfo RemoveMethod
         {
-            get { return Reflector.Wrap(Target.GetRemoveMethod()); }
+            get { return Reflector.Wrap(Target.GetRemoveMethod(true)); }
+        }
+
+        public ITypeInfo EventHandlerType
+        {
+            get { return Reflector.Wrap(Target.EventHandlerType); }
         }
 
         new public EventInfo Resolve(bool throwOnError)

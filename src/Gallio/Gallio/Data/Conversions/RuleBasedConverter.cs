@@ -70,7 +70,7 @@ namespace Gallio.Data.Conversions
             ConversionInfo conversion = GetConversion(sourceType, targetType);
             if (conversion.Cost.IsInvalid)
                 throw new InvalidOperationException(String.Format("There is no registered conversion rule to convert a value of type '{0}' to type '{1}'.",
-                    sourceType.FullName, targetType.FullName));
+                    sourceType, targetType));
 
             return conversion.Rule.Convert(sourceValue, targetType, this);
         }

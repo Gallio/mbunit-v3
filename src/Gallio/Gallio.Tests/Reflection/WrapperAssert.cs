@@ -32,6 +32,33 @@ namespace Gallio.Tests.Reflection
             | BindingFlags.Instance | BindingFlags.Static
             | BindingFlags.FlattenHierarchy;
 
+        private const TypeAttributes TypeAttributesMask =
+            TypeAttributes.ClassSemanticsMask | TypeAttributes.VisibilityMask
+            | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.SpecialName;
+
+        private const GenericParameterAttributes GenericParameterAttributesMask =
+            GenericParameterAttributes.SpecialConstraintMask | GenericParameterAttributes.VarianceMask;
+
+        private const MethodAttributes MethodAttributesMask =
+            MethodAttributes.MemberAccessMask | MethodAttributes.VtableLayoutMask
+            | MethodAttributes.Abstract | MethodAttributes.Final | MethodAttributes.HideBySig
+            | MethodAttributes.PrivateScope | MethodAttributes.SpecialName
+            | MethodAttributes.Static | MethodAttributes.Virtual;
+
+        private const ParameterAttributes ParameterAttributesMask =
+            ParameterAttributes.HasDefault | ParameterAttributes.Optional
+            | ParameterAttributes.In | ParameterAttributes.Out | ParameterAttributes.Retval;
+
+        private const FieldAttributes FieldAttributesMask =
+            FieldAttributes.FieldAccessMask | FieldAttributes.HasDefault | FieldAttributes.InitOnly
+            | FieldAttributes.Literal | FieldAttributes.SpecialName | FieldAttributes.Static;
+
+        private const PropertyAttributes PropertyAttributesMask =
+            PropertyAttributes.HasDefault | PropertyAttributes.SpecialName;
+
+        private const EventAttributes EventAttributesMask =
+            EventAttributes.SpecialName;
+
         public static void AreEquivalent(string namespaceName, INamespaceInfo info)
         {
             Assert.AreEqual(CodeElementKind.Namespace, info.Kind);
@@ -39,11 +66,12 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(CodeReference.CreateFromNamespace(namespaceName), info.CodeReference);
             Assert.AreEqual(namespaceName, info.Name);
 
-            Assert.IsFalse(info.GetAttributeInfos(false).GetEnumerator().MoveNext());
-            Assert.IsFalse(info.GetAttributes(false).GetEnumerator().MoveNext());
+            Assert.IsFalse(info.GetAttributeInfos(null, false).GetEnumerator().MoveNext());
+            Assert.IsFalse(info.GetAttributes(null, false).GetEnumerator().MoveNext());
+            Assert.IsFalse(info.HasAttribute(null, false));
+
             Assert.IsNull(info.GetCodeLocation());
             Assert.IsNull(info.GetXmlDocumentation());
-            Assert.IsFalse(info.HasAttribute(typeof(Attribute), false));
         }
 
         public static void AreEquivalent(Assembly target, IAssemblyInfo info)
@@ -126,9 +154,11 @@ namespace Gallio.Tests.Reflection
             AreMembersEquivalent(target, info);
             AreEqual(target, info.Resolve(true));
 
-            AreEqualWhenResolved(target.GetAddMethod(), info.AddMethod);
-            AreEqualWhenResolved(target.GetRemoveMethod(), info.RemoveMethod);
-            AreEqualWhenResolved(target.GetRaiseMethod(), info.RaiseMethod);
+            Assert.AreEqual(target.Attributes & EventAttributesMask, info.EventAttributes & EventAttributesMask);
+            AreEqualWhenResolved(target.GetAddMethod(true), info.AddMethod);
+            AreEqualWhenResolved(target.GetRemoveMethod(true), info.RemoveMethod);
+            AreEqualWhenResolved(target.GetRaiseMethod(true), info.RaiseMethod);
+            AreEqualWhenResolved(target.EventHandlerType, info.EventHandlerType);
         }
 
         public static void AreEquivalent(FieldInfo target, IFieldInfo info)
@@ -141,7 +171,7 @@ namespace Gallio.Tests.Reflection
             AreEqualWhenResolved(target.FieldType, info.ValueType);
             Assert.AreEqual(0, info.Position);
 
-            Assert.AreEqual(target.Attributes, info.FieldAttributes);
+            Assert.AreEqual(target.Attributes & FieldAttributesMask, info.FieldAttributes & FieldAttributesMask);
             Assert.AreEqual(target.IsLiteral, info.IsLiteral);
             Assert.AreEqual(target.IsPublic, info.IsPublic);
             Assert.AreEqual(target.IsInitOnly, info.IsInitOnly);
@@ -158,10 +188,11 @@ namespace Gallio.Tests.Reflection
             AreEqualWhenResolved(target.PropertyType, info.ValueType);
             Assert.AreEqual(0, info.Position);
 
-            Assert.AreEqual(target.Attributes, info.PropertyAttributes);
+            Assert.AreEqual(target.Attributes & PropertyAttributesMask, info.PropertyAttributes & PropertyAttributesMask);
 
-            AreEqualWhenResolved(target.GetGetMethod(), info.GetMethod);
-            AreEqualWhenResolved(target.GetSetMethod(), info.SetMethod);
+            AreEqualWhenResolved(target.GetGetMethod(true), info.GetMethod);
+            AreEqualWhenResolved(target.GetSetMethod(true), info.SetMethod);
+            AreElementsEqualWhenResolved(target.GetIndexParameters(), info.IndexParameters);
         }
 
         public static void AreEquivalent(Type target, ITypeInfo info)
@@ -182,7 +213,7 @@ namespace Gallio.Tests.Reflection
             AreEqualWhenResolved(typeof(Type), info.ValueType);
             Assert.IsTrue(info.ContainsGenericParameters);
             Assert.AreEqual(target.GenericParameterPosition, info.Position);
-            Assert.AreEqual(target.GenericParameterAttributes, info.GenericParameterAttributes);
+            Assert.AreEqual(target.GenericParameterAttributes & GenericParameterAttributesMask, info.GenericParameterAttributes & GenericParameterAttributesMask);
 
             Assert.IsNull(info.FullName);
             Assert.IsNull(info.AssemblyQualifiedName);
@@ -201,7 +232,7 @@ namespace Gallio.Tests.Reflection
             AreEqualWhenResolved(target.ParameterType, info.ValueType);
             Assert.AreEqual(target.Position, info.Position);
 
-            Assert.AreEqual(target.Attributes, info.ParameterAttributes);
+            Assert.AreEqual(target.Attributes & ParameterAttributesMask, info.ParameterAttributes & ParameterAttributesMask);
             AreEqualWhenResolved(target.Member, info.Member);
 
             AreAttributeProvidersEquivalent(target, info);
@@ -215,16 +246,17 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(target.IsAbstract, info.IsAbstract);
             Assert.AreEqual(target.IsPublic, info.IsPublic);
             Assert.AreEqual(target.IsStatic, info.IsStatic);
-            Assert.AreEqual(target.Attributes, info.MethodAttributes);
+            Assert.AreEqual(target.Attributes & MethodAttributesMask, info.MethodAttributes & MethodAttributesMask);
             AreElementsEqualWhenResolved(target.GetParameters(), info.Parameters);
 
             // The source location may not be exactly the same with some wrappers.
-            // What's important is that it is in the same file at least.
+            // What's important is that it is in the same file at least when it is available at all.
             CodeLocation targetLocation = DebugSymbolUtils.GetSourceLocation(target)
                 ?? DebugSymbolUtils.GetSourceLocation(target.DeclaringType);
+            CodeLocation infoLocation = info.GetCodeLocation();
 
-            if (targetLocation != null)
-                StringAssert.AreEqualIgnoreCase(targetLocation.Path, info.GetCodeLocation().Path);
+            if (targetLocation != null && infoLocation != null)
+                StringAssert.AreEqualIgnoreCase(targetLocation.Path, infoLocation.Path);
         }
 
         private static void AreTypesEquivalent(Type target, ITypeInfo info)
@@ -232,14 +264,12 @@ namespace Gallio.Tests.Reflection
             AreMembersEquivalent(target, info);
             AreEqual(target, info.Resolve(true));
 
-            Assert.AreEqual(target.FullName, info.ToString());
-
+            Assert.AreEqual(target.Attributes & TypeAttributesMask, info.TypeAttributes & TypeAttributesMask);
             Assert.AreEqual(target.Assembly, info.Assembly.Resolve());
             Assert.AreEqual(target.Namespace, info.Namespace.Name);
             AreEqualWhenResolved(target.BaseType, info.BaseType);
             Assert.AreEqual(target.AssemblyQualifiedName, info.AssemblyQualifiedName);
             Assert.AreEqual(target.FullName, info.FullName);
-            Assert.AreEqual(target.Attributes, info.TypeAttributes);
             AreEqualWhenResolved(target.HasElementType ? target.GetElementType() : null, info.ElementType);
             Assert.AreEqual(target.IsArray, info.IsArray);
             Assert.AreEqual(target.IsPointer, info.IsPointer);
@@ -283,18 +313,14 @@ namespace Gallio.Tests.Reflection
         {
             AreEqual(target, info.Resolve(true));
 
+            Assert.AreEqual(target.ToString(), info.ToString());
+
             Assert.AreEqual(target.Name, info.Name);
             Assert.AreEqual(CodeReference.CreateFromMember(target), info.CodeReference);
-            Assert.AreEqual(GetCompoundName(target), info.CompoundName);
             AreEqualWhenResolved(target.DeclaringType, info.DeclaringType);
             Assert.AreEqual(XmlDocumentationUtils.GetXmlDocumentation(target), info.GetXmlDocumentation());
 
             AreAttributeProvidersEquivalent(target, info);
-        }
-
-        private static string GetCompoundName(MemberInfo member)
-        {
-            return member.DeclaringType != null ? GetCompoundName(member.DeclaringType) + "." + member.Name : member.Name;
         }
 
         private static void AreEqual(Type expected, Type actual)
@@ -359,22 +385,17 @@ namespace Gallio.Tests.Reflection
             Dictionary<string, TMember> keyedExpectedMembers = new Dictionary<string, TMember>();
             foreach (TMember expectedMember in expectedMembers)
             {
-                string key = expectedMember.Name;
-                MethodBase method = expectedMember as MethodBase;
-                if (method != null)
-                    key += method.GetParameters().Length; // note: imprecise overload disambiguation, but ok for now
-
+                string key = expectedMember.ToString();
                 keyedExpectedMembers.Add(key, expectedMember);
             }
 
             Dictionary<string, TWrapper> keyedActualMembers = new Dictionary<string, TWrapper>();
             foreach (TWrapper actualMember in actualMembers)
             {
-                string key = actualMember.Name;
-                IFunctionInfo method = actualMember as IFunctionInfo;
-                if (method != null)
-                    key += method.Parameters.Count; // note: imprecise overload disambiguation, but ok for now
+                string key = actualMember.ToString();
 
+                if (keyedActualMembers.ContainsKey(key))
+                    Assert.Fail("Found duplicate member: {0}", key);
                 keyedActualMembers.Add(key, actualMember);
             }
 
@@ -393,32 +414,32 @@ namespace Gallio.Tests.Reflection
             object[] nonInheritedAttribs = expectedTarget.GetCustomAttributes(false);
             object[] inheritedAttribs = expectedTarget.GetCustomAttributes(true);
 
-            Assert.AreEqual(nonInheritedAttribs.Length, new List<object>(actualWrapper.GetAttributes(false)).Count,
+            Assert.AreEqual(nonInheritedAttribs.Length, new List<object>(actualWrapper.GetAttributes(null, false)).Count,
                 "Number of non-inherited attributes should be equal.");
-            Assert.AreEqual(inheritedAttribs.Length, new List<object>(actualWrapper.GetAttributes(true)).Count,
+            Assert.AreEqual(inheritedAttribs.Length, new List<object>(actualWrapper.GetAttributes(null, true)).Count,
                 "Number of inherited attributes should be equal.");
-            Assert.AreEqual(nonInheritedAttribs.Length, new List<object>(actualWrapper.GetAttributes(typeof(Attribute), false)).Count,
+            Assert.AreEqual(nonInheritedAttribs.Length, new List<Attribute>(AttributeUtils.GetAttributes<Attribute>(actualWrapper, false)).Count,
                 "Number of non-inherited attributes should be equal.");
-            Assert.AreEqual(inheritedAttribs.Length, new List<object>(actualWrapper.GetAttributes(typeof(Attribute), true)).Count,
+            Assert.AreEqual(inheritedAttribs.Length, new List<Attribute>(AttributeUtils.GetAttributes<Attribute>(actualWrapper, true)).Count,
                 "Number of inherited attributes should be equal.");
-            Assert.AreEqual(nonInheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(false)).Count,
+            Assert.AreEqual(nonInheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(null, false)).Count,
                 "Number of wrapped non-inherited attributes should be equal.");
-            Assert.AreEqual(inheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(true)).Count,
+            Assert.AreEqual(inheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(null, true)).Count,
                 "Number of wrapped inherited attributes should be equal.");
-            Assert.AreEqual(nonInheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(typeof(Attribute), false)).Count,
+            Assert.AreEqual(nonInheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(Reflector.Wrap(typeof(Attribute)), false)).Count,
                 "Number of wrapped non-inherited attributes should be equal.");
-            Assert.AreEqual(inheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(typeof(Attribute), true)).Count,
+            Assert.AreEqual(inheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(Reflector.Wrap(typeof(Attribute)), true)).Count,
                 "Number of wrapped inherited attributes should be equal.");
 
             foreach (object nonInheritedAttrib in inheritedAttribs)
             {
-                Assert.IsTrue(actualWrapper.HasAttribute(nonInheritedAttrib.GetType(), false),
+                Assert.IsTrue(AttributeUtils.HasAttribute(actualWrapper, nonInheritedAttrib.GetType(), false),
                     "Should contain non-inherited attributes of same type.");
             }
 
             foreach (object inheritedAttrib in inheritedAttribs)
             {
-                Assert.IsTrue(actualWrapper.HasAttribute(inheritedAttrib.GetType(), true),
+                Assert.IsTrue(AttributeUtils.HasAttribute(actualWrapper, inheritedAttrib.GetType(), true),
                     "Should contain inherited attributes of same type.");
             }
         }

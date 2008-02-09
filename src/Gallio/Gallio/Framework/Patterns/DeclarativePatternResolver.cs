@@ -40,7 +40,7 @@ namespace Gallio.Framework.Patterns
             if (codeElement == null)
                 throw new ArgumentNullException("codeElement");
 
-            foreach (PatternAttribute attribute in codeElement.GetAttributes(typeof(PatternAttribute), true))
+            foreach (PatternAttribute attribute in AttributeUtils.GetAttributes<PatternAttribute>(codeElement, true))
                 yield return attribute;
         }
     }

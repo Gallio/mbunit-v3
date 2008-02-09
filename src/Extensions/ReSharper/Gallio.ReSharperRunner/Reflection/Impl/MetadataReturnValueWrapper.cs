@@ -37,7 +37,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public override string Name
         {
-            get { return "<return>"; }
+            get { return null; }
         }
 
         public override CodeReference CodeReference
@@ -57,7 +57,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public int Position
         {
-            get { return 0; }
+            get { return -1; }
         }
 
         public IMemberInfo Member
@@ -67,7 +67,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public ParameterAttributes ParameterAttributes
         {
-            get { return ParameterAttributes.Retval; }
+            get { return ParameterAttributes.None; }
         }
 
         public override CodeElementKind Kind
@@ -90,9 +90,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object)other);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumerateParameterAttributes(this, inherit, delegate(IParameterInfo member)
+            return ReflectorAttributeUtils.EnumerateParameterAttributes(this, attributeType, inherit, delegate(IParameterInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataReturnValueWrapper)member).Target);
             });

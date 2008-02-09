@@ -56,26 +56,16 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public abstract CodeReference CodeReference { get; }
 
-        public abstract IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit);
+        public abstract IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit);
 
-        public IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit)
+        public bool HasAttribute(ITypeInfo attributeType, bool inherit)
         {
-            return AttributeUtils.FilterAttributesOfType(GetAttributeInfos(inherit), attributeType);
+            return GetAttributeInfos(attributeType, inherit).GetEnumerator().MoveNext();
         }
 
-        public bool HasAttribute(Type attributeType, bool inherit)
+        public IEnumerable<object> GetAttributes(ITypeInfo attributeType, bool inherit)
         {
-            return AttributeUtils.ContainsAttributeOfType(GetAttributeInfos(inherit), attributeType);
-        }
-
-        public IEnumerable<object> GetAttributes(bool inherit)
-        {
-            return AttributeUtils.ResolveAttributes(GetAttributeInfos(inherit));
-        }
-
-        public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
-        {
-            return AttributeUtils.ResolveAttributesOfType(GetAttributeInfos(inherit), attributeType);
+            return AttributeUtils.ResolveAttributes(GetAttributeInfos(attributeType, inherit));
         }
 
         public string GetXmlDocumentation()

@@ -45,13 +45,13 @@ namespace Gallio.XunitAdapter.Model
 
         public IEnumerable<XunitAttributeInfo> GetCustomAttributes(Type attributeType)
         {
-            foreach (IAttributeInfo attribute in target.GetAttributeInfos(attributeType, true))
+            foreach (IAttributeInfo attribute in target.GetAttributeInfos(Reflector.Wrap(attributeType), true))
                 yield return new XunitAttributeInfoAdapter(attribute);
         }
 
         public bool HasAttribute(Type attributeType)
         {
-            return target.HasAttribute(attributeType, true);
+            return AttributeUtils.HasAttribute(target, attributeType, true);
         }
 
         public string DeclaringTypeName

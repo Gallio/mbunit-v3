@@ -316,7 +316,7 @@ namespace Gallio.Tests.Reflection
         public void AttributeWrapper(Type type, int index)
         {
             SampleAttribute target = (SampleAttribute) type.GetCustomAttributes(typeof(SampleAttribute), true)[index];
-            IAttributeInfo info = GenericUtils.ToArray(GetType(type).GetAttributeInfos(true))[index];
+            IAttributeInfo info = GenericUtils.ToArray(GetType(type).GetAttributeInfos(Reflector.Wrap(typeof(SampleAttribute)), true))[index];
 
             WrapperAssert.AreEquivalent(target, info);
 
@@ -403,6 +403,8 @@ namespace Gallio.Tests.Reflection
             static Class1() { }
 
             public void Method1<T>(T param) { Event1 += null; }
+
+            [return: Sample(typeof(int))]
             protected abstract int Method2();
 
             public int Field1;
@@ -412,6 +414,7 @@ namespace Gallio.Tests.Reflection
             public int Property2 { get { return 0; } set { } }
             protected abstract string Property3 { set; }
 
+            [Sample(typeof(int))]
             public event EventHandler Event1;
             protected abstract event EventHandler Event2;
         }
@@ -429,11 +432,11 @@ namespace Gallio.Tests.Reflection
         {
         }
 
-        private struct Struct1<S, T> : Interface1
+        private struct Struct1<[Sample(typeof(int))] S, T> : Interface1
         {
-            public Struct1(S s, T t) { }
+            public Struct1(S s, [Sample(typeof(string[]))] T t) { }
 
-            string Interface1.Method1(string s, int x) { return ""; }
+            string Interface1.Method1([Sample(typeof(int), Field=5)] string s, int x) { return ""; }
         }
 
         [Sample(typeof(string[]), Field=2, Property="foo")]
@@ -447,7 +450,7 @@ namespace Gallio.Tests.Reflection
         {
         }
 
-        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, AllowMultiple=true, Inherited=true)]
+        [AttributeUsage(AttributeTargets.All, AllowMultiple=true, Inherited=true)]
         public class SampleAttribute : Attribute
         {
             internal Type param;

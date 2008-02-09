@@ -282,7 +282,7 @@ namespace Gallio.Reflection
                 null);
 
             if (resolvedMembers.Length != 1)
-                throw new InvalidOperationException(String.Format("Could not resolve member '{0}' on type instantiation '{1}'.", member.Name, typeInstantiation.FullName));
+                throw new InvalidOperationException(String.Format("Could not resolve member '{0}' on type instantiation '{1}'.", member, typeInstantiation));
 
             return (T)resolvedMembers[0];
         }
@@ -290,7 +290,7 @@ namespace Gallio.Reflection
         private static void EnsureSlotBelongsToClass(Type type, Type declaringTypeOfSlot, ISlotInfo slot)
         {
             if (declaringTypeOfSlot == null || !declaringTypeOfSlot.IsAssignableFrom(type))
-                throw new ArgumentException(String.Format("Slot '{0}' was not declared by type '{1}'.", slot, type.FullName), "slotValues");
+                throw new ArgumentException(String.Format("Slot '{0}' was not declared by type '{1}'.", slot, type), "slotValues");
         }
 
         private static void EnsureSlotBelongsToMethod(MethodBase method, MethodBase declaringMethodOfSlot, ISlotInfo slot)

@@ -79,6 +79,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.WrapMethod(Target.Setter); }
         }
 
+        public IList<IParameterInfo> IndexParameters
+        {
+            get { return ReflectorPropertyUtils.GetIndexParameters(this); }
+        }
+
         public override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
             return Resolve(throwOnError);
@@ -99,12 +104,17 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object)other);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumeratePropertyAttributes(this, inherit, delegate(IPropertyInfo member)
+            return ReflectorAttributeUtils.EnumeratePropertyAttributes(this, attributeType, inherit, delegate(IPropertyInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataPropertyWrapper)member).Target);
             });
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetPropertySignature(this);
         }
     }
 }

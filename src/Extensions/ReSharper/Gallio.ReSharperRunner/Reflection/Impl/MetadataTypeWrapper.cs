@@ -24,7 +24,7 @@ using JetBrains.Metadata.Reader.API;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
 {
-    internal abstract class MetadataTypeWrapper<TTarget> : MetadataCodeElementWrapper<TTarget>, ITypeInfo
+    internal abstract class MetadataTypeWrapper<TTarget> : MetadataCodeElementWrapper<TTarget>, IResolvableTypeInfo
         where TTarget : class, IMetadataType
     {
         public MetadataTypeWrapper(MetadataReflector reflector, TTarget target)
@@ -32,12 +32,25 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
         }
 
-        public string AssemblyQualifiedName
+        public override string Name
         {
-            get { return ReflectorTypeUtils.GetTypeAssemblyQualifierName(this); }
+            get { return ReflectorNameUtils.GetTypeName(this, SimpleName); }
         }
 
-        public abstract string FullName { get; }
+        public string FullName
+        {
+            get { return ReflectorNameUtils.GetTypeFullName(this, SimpleName); }
+        }
+
+        public string AssemblyQualifiedName
+        {
+            get { return ReflectorNameUtils.GetTypeAssemblyQualifiedName(this); }
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetTypeSignature(this, SimpleName);
+        }
 
         public override CodeElementKind Kind
         {
@@ -46,7 +59,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public override CodeReference CodeReference
         {
-            get { return new CodeReference(Assembly.FullName, Namespace.Name, FullName, null, null); }
+            get { return new CodeReference(Assembly.FullName, Namespace.Name, FullName ?? Name, null, null); }
         }
 
         public virtual ITypeInfo ElementType
@@ -109,7 +122,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return null; }
         }
 
-        public abstract string CompoundName { get; }
         public abstract ITypeInfo DeclaringType { get; }
         public abstract IAssemblyInfo Assembly { get; }
         public abstract INamespaceInfo Namespace { get; }
@@ -126,7 +138,12 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public Type Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveType(this, throwOnError);
+            return Resolve(null, throwOnError);
+        }
+
+        public Type Resolve(MethodInfo methodContext, bool throwOnError)
+        {
+            return ReflectorResolveUtils.ResolveType(this, methodContext, throwOnError);
         }
 
         MemberInfo IMemberInfo.Resolve(bool throwOnError)
@@ -157,9 +174,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object)other);
         }
 
-        public override string ToString()
+        protected virtual string SimpleName
         {
-            return FullName;
+            get { return null; }
         }
     }
 }

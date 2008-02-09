@@ -43,31 +43,20 @@ namespace Gallio.Reflection.Impl
 
         public abstract CodeReference CodeReference { get; }
 
-        public IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            foreach (Attribute attrib in Target.GetCustomAttributes(inherit))
+            foreach (Attribute attrib in GetAttributes(attributeType, inherit))
                 yield return Reflector.Wrap(attrib);
         }
 
-        public IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit)
+        public bool HasAttribute(ITypeInfo attributeType, bool inherit)
         {
-            foreach (Attribute attrib in Target.GetCustomAttributes(attributeType, inherit))
-                yield return Reflector.Wrap(attrib);
+            return Target.IsDefined(attributeType != null ? attributeType.Resolve(true) : typeof(object), inherit);
         }
 
-        public bool HasAttribute(Type attributeType, bool inherit)
+        public IEnumerable<object> GetAttributes(ITypeInfo attributeType, bool inherit)
         {
-            return Target.IsDefined(attributeType, inherit);
-        }
-
-        public IEnumerable<object> GetAttributes(bool inherit)
-        {
-            return Target.GetCustomAttributes(inherit);
-        }
-
-        public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
-        {
-            return Target.GetCustomAttributes(attributeType, inherit);
+            return Target.GetCustomAttributes(attributeType != null ? attributeType.Resolve(true) : typeof(object), inherit);
         }
 
         public abstract string GetXmlDocumentation();

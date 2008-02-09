@@ -25,7 +25,7 @@ namespace Gallio.Reflection.Impl
 {
     /// <summary>
     /// <para>
-    /// Provides helpers for enumerating type memebers and filtering them
+    /// Provides helpers for enumerating type members and filtering them
     /// based on binding flags.  Takes into account shadowing by member signature.
     /// </para>
     /// <para>
@@ -177,7 +177,7 @@ namespace Gallio.Reflection.Impl
                 foreach (IParameterInfo parameter in method.Parameters)
                 {
                     signatureBuilder.Append(':');
-                    signatureBuilder.Append(parameter.ValueType.AssemblyQualifiedName);
+                    signatureBuilder.Append(parameter.ValueType.AssemblyQualifiedName ?? parameter.ValueType.Name);
                 }
 
                 signature = signatureBuilder.ToString();

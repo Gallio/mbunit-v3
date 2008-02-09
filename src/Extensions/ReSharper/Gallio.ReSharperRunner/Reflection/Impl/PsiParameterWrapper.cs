@@ -85,9 +85,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return CodeElementKind.Parameter; }
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return EnumerateAttributesForElement(Target, inherit);
+            return EnumerateAttributesForElement(Target, attributeType, inherit);
         }
 
         public ParameterInfo Resolve(bool throwOnError)
@@ -103,6 +103,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public bool Equals(IParameterInfo other)
         {
             return Equals((object)other);
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetParameterSignature(this);
         }
     }
 }

@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
+using JetBrains.Metadata.Access;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ReSharper.Psi;
 
@@ -34,25 +35,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         protected override IDeclaredElement GetDeclaredElementWithLock()
         {
             return Reflector.GetDeclaredElementWithLock(Target.Type);
-        }
-
-        public override string Name
-        {
-            get { return ReflectorTypeUtils.GetTypeName(this, ShortName); }
-        }
-
-        public override string FullName
-        {
-            get { return ReflectorTypeUtils.GetTypeFullName(this, ShortName); }
-        }
-
-        public override string CompoundName
-        {
-            get
-            {
-                ITypeInfo declaringType = DeclaringType;
-                return declaringType != null ? declaringType.CompoundName + @"." + Name : Name;
-            }
         }
 
         public override ITypeInfo DeclaringType
@@ -146,9 +128,12 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
             IMetadataTypeInfo typeInfo = ((MetadataClassTypeWrapper)type).TypeInfo;
 
+            MetadataToken token = TypeInfo.Token;
             foreach (IMetadataMethod method in typeInfo.GetMethods())
             {
-                if (MetadataReflector.IsConstructor(method))
+                // TODO: need to make a generic method type on the fly...
+                if (method.DeclaringType.Token == token
+                    && MetadataReflector.IsConstructor(method))
                     yield return Reflector.WrapConstructor(method);
             }
         }
@@ -282,9 +267,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumerateTypeAttributes(this, inherit, delegate(ITypeInfo member)
+            return ReflectorAttributeUtils.EnumerateTypeAttributes(this, attributeType, inherit, delegate(ITypeInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataClassTypeWrapper)member).TypeInfo);
             });
@@ -295,7 +280,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return new CLRTypeName(TypeInfo.FullyQualifiedName).NamespaceName; }
         }
 
-        private string ShortName
+        protected override string SimpleName
         {
             get { return new CLRTypeName(TypeInfo.FullyQualifiedName).ShortName; }
         }

@@ -23,7 +23,7 @@ namespace Gallio.Reflection.Impl
     /// Represents a <see cref="ParameterInfo" /> whose native definition could not be resolved
     /// so we fall back on the <see cref="IParameterInfo"/> wrapper.
     /// </summary>
-    public class UnresolvedParameterInfo : ParameterInfo
+    public partial class UnresolvedParameterInfo : ParameterInfo
     {
         private readonly IParameterInfo adapter;
 
@@ -98,18 +98,6 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override object[] GetCustomAttributes(bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(inherit));
-        }
-
-        /// <inheritdoc />
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(attributeType, inherit));
-        }
-
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
@@ -125,12 +113,6 @@ namespace Gallio.Reflection.Impl
         public override Type[] GetRequiredCustomModifiers()
         {
             return EmptyArray<Type>.Instance;
-        }
-
-        /// <inheritdoc />
-        public override bool IsDefined(Type attributeType, bool inherit)
-        {
-            return adapter.HasAttribute(attributeType, inherit);
         }
 
         /// <inheritdoc />

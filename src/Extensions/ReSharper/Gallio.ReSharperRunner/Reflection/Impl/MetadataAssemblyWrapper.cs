@@ -98,9 +98,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Reflector.Wrap(Target.GetTypeFromQualifiedName(typeName, false));
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumerateAssemblyAttributes(this, inherit, delegate(IAssemblyInfo member)
+            return ReflectorAttributeUtils.EnumerateAssemblyAttributes(this, attributeType, inherit, delegate(IAssemblyInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataAssemblyWrapper)member).Target);
             });

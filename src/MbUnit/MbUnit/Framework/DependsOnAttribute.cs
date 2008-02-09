@@ -121,7 +121,7 @@ namespace MbUnit.Framework
             if (resolvedMethod == null)
                 throw new TestDeclarationErrorException(
                     String.Format("Could not resolve dependency on test method '{0}' of test fixture type '{1}' because the method was not found.",
-                    testMethodName, resolvedFixtureType.CompoundName));
+                    testMethodName, resolvedFixtureType));
             return resolvedMethod;
         }
     }

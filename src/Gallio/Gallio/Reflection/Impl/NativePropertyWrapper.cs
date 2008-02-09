@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Reflection.Impl;
 
@@ -47,12 +49,17 @@ namespace Gallio.Reflection.Impl
 
         public IMethodInfo GetMethod
         {
-            get { return Reflector.Wrap(Target.GetGetMethod()); }
+            get { return Reflector.Wrap(Target.GetGetMethod(true)); }
         }
 
         public IMethodInfo SetMethod
         {
-            get { return Reflector.Wrap(Target.GetSetMethod()); }
+            get { return Reflector.Wrap(Target.GetSetMethod(true)); }
+        }
+
+        public IList<IParameterInfo> IndexParameters
+        {
+            get { return Array.ConvertAll<ParameterInfo, IParameterInfo>(Target.GetIndexParameters(), Reflector.Wrap); }
         }
 
         new public PropertyInfo Resolve(bool throwOnError)

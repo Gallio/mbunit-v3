@@ -31,15 +31,6 @@ namespace Gallio.Reflection.Impl
             get { return Target.Name; }
         }
 
-        public virtual string CompoundName
-        {
-            get
-            {
-                ITypeInfo declaringType = DeclaringType;
-                return declaringType != null ? declaringType.CompoundName + @"." + Name : Name;
-            }
-        }
-
         public MemberTypes MemberType
         {
             get { return Target.MemberType; }

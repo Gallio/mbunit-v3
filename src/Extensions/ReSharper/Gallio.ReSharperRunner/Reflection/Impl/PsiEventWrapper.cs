@@ -37,6 +37,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Resolve(throwOnError);
         }
 
+        public EventAttributes EventAttributes
+        {
+            get { return EventAttributes.None; }
+        }
+
         public IMethodInfo AddMethod
         {
             get { return Reflector.Wrap(Target.Adder); }
@@ -52,6 +57,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.Wrap(Target.Remover); }
         }
 
+        public ITypeInfo EventHandlerType
+        {
+            get { return Reflector.Wrap(Target.Type); }
+        }
+
         public EventInfo Resolve(bool throwOnError)
         {
             return ReflectorResolveUtils.ResolveEvent(this, throwOnError);
@@ -60,6 +70,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public bool Equals(IEventInfo other)
         {
             return Equals((object)other);
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetEventSignature(this);
         }
     }
 }

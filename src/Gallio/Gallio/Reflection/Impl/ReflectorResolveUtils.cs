@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
 using Gallio.Reflection;
@@ -38,6 +39,9 @@ namespace Gallio.Reflection.Impl
         /// Resolves a reflected type to its native <see cref="Type" /> object.
         /// </summary>
         /// <param name="type">The reflected type</param>
+        /// <param name="methodContext">The method that is currently in scope, or null if none.
+        /// This parameter is used when resolving types that are part of the signature
+        /// of a generic method so that generic method arguments can be handled correctly.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
         /// otherwise returns an <see cref="UnresolvedType" /></param>
         /// <returns>The resolved <see cref="Type" />.</returns>
@@ -45,7 +49,7 @@ namespace Gallio.Reflection.Impl
         /// is null</exception>
         /// <exception cref="CodeElementResolveException">Thrown if <paramref name="type"/>
         /// could not be resolved</exception>
-        public static Type ResolveType(ITypeInfo type, bool throwOnError)
+        public static Type ResolveType(IResolvableTypeInfo type, MethodInfo methodContext, bool throwOnError)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -55,7 +59,7 @@ namespace Gallio.Reflection.Impl
                 ITypeInfo elementType = type.ElementType;
                 if (elementType != null)
                 {
-                    Type resolvedElementType = type.ElementType.Resolve(true);
+                    Type resolvedElementType = ResolveTypeWithMethodContext(elementType, methodContext);
 
                     if (type.IsArray)
                     {
@@ -74,15 +78,31 @@ namespace Gallio.Reflection.Impl
                         return resolvedElementType.MakePointerType();
                     }
                 }
-                else if (type.IsGenericParameter)
-                {
-                    throw new NotImplementedException("Resolving generic parameters not implemented yet.");
-                }
 
-                Assembly resolvedAssembly = type.Assembly.Resolve();
-                Type resolvedType = resolvedAssembly.GetType(type.FullName);
-                if (resolvedType != null)
-                    return resolvedType;
+                if (type.IsGenericParameter)
+                {
+                    Type resolvedType = ResolveGenericParameter((IGenericParameterInfo)type, methodContext);
+                    if (resolvedType != null)
+                        return resolvedType;
+                }
+                else
+                {
+                    ITypeInfo simpleType = type.GenericTypeDefinition ?? type;
+
+                    Assembly resolvedAssembly = simpleType.Assembly.Resolve();
+                    Type resolvedType = resolvedAssembly.GetType(simpleType.FullName);
+
+                    if (resolvedType != null)
+                    {
+                        if (type.IsGenericType && !type.IsGenericTypeDefinition)
+                        {
+                            Type[] resolvedTypeArguments = ResolveTypesWithMethodContext(type.GenericArguments, methodContext);
+                            resolvedType = resolvedType.MakeGenericType(resolvedTypeArguments);
+                        }
+
+                        return resolvedType;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -94,6 +114,18 @@ namespace Gallio.Reflection.Impl
                 throw new CodeElementResolveException(type);
 
             return new UnresolvedType(type);
+        }
+
+        private static Type ResolveGenericParameter(IGenericParameterInfo genericParameter, MethodInfo methodContext)
+        {
+            ITypeInfo declaringType = genericParameter.DeclaringType;
+            if (declaringType != null)
+                return declaringType.Resolve(true).GetGenericArguments()[genericParameter.Position];
+
+            if (methodContext == null)
+                methodContext = genericParameter.DeclaringMethod.Resolve(true);
+
+            return methodContext.GetGenericArguments()[genericParameter.Position];
         }
 
         /// <summary>
@@ -228,11 +260,14 @@ namespace Gallio.Reflection.Impl
             try
             {
                 Type resolvedType = constructor.DeclaringType.Resolve(true);
-                Type[] resolvedParameterTypes = ResolveParameterTypes(constructor);
+
+                BindingFlags bindingFlags =
+                    (constructor.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic)
+                    | (constructor.IsStatic ? BindingFlags.Static : BindingFlags.Instance);
+
+                Type[] resolvedParameterTypes = ResolveParameterTypes(constructor.Parameters);
                 ConstructorInfo resolvedConstructor = resolvedType.GetConstructor(
-                    BindingFlags.Public | BindingFlags.NonPublic
-                    | (constructor.IsStatic ? BindingFlags.Static : BindingFlags.Instance),
-                    null, resolvedParameterTypes, null);
+                    bindingFlags, null, resolvedParameterTypes, null);
 
                 if (resolvedConstructor != null)
                     return resolvedConstructor;
@@ -268,19 +303,19 @@ namespace Gallio.Reflection.Impl
             try
             {
                 Type resolvedType = method.DeclaringType.Resolve(true);
-                Type[] resolvedParameterTypes = ResolveParameterTypes(method);
-                MethodInfo resolvedMethod = resolvedType.GetMethod(method.Name,
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static,
-                    null, resolvedParameterTypes, null);
+
+                BindingFlags bindingFlags = BindingFlags.DeclaredOnly
+                    | (method.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic)
+                    | (method.IsStatic ? BindingFlags.Static : BindingFlags.Instance);
+
+                string methodName = method.Name;
+
+                MethodInfo resolvedMethod = method.IsGenericMethod
+                    ? ResolveGenericMethod(resolvedType, methodName, bindingFlags, method.Parameters, method.GenericArguments)
+                    : ResolveNonGenericMethod(resolvedType, methodName, bindingFlags, method.Parameters);
 
                 if (resolvedMethod != null)
-                {
-                    if (resolvedMethod.IsGenericMethodDefinition)
-                        throw new NotImplementedException();
-                    //    resolvedMethod = resolvedMethod.MakeGenericMethod(ResolveGenericParameterTypes(method));
-
                     return resolvedMethod;
-                }
             }
             catch (Exception ex)
             {
@@ -292,6 +327,57 @@ namespace Gallio.Reflection.Impl
                 throw new CodeElementResolveException(method);
 
             return new UnresolvedMethodInfo(method);
+        }
+
+        private static MethodInfo ResolveNonGenericMethod(Type resolvedType, string methodName, BindingFlags bindingFlags,
+            ICollection<IParameterInfo> parameters)
+        {
+            Type[] resolvedParameterTypes = ResolveParameterTypes(parameters);
+            return resolvedType.GetMethod(methodName, bindingFlags, null, resolvedParameterTypes, null);
+        }
+
+        private static MethodInfo ResolveGenericMethod(Type resolvedType, string methodName, BindingFlags bindingFlags,
+            IList<IParameterInfo> parameters, ICollection<ITypeInfo> genericArguments)
+        {
+            foreach (MethodInfo method in resolvedType.GetMethods(bindingFlags))
+            {
+                if (method.Name != methodName
+                    || ! method.IsGenericMethod
+                    || method.GetGenericArguments().Length != genericArguments.Count)
+                    continue;
+
+                if (HasSameParameters(method, parameters))
+                {
+                    Type[] resolvedTypeArguments = ResolveTypesWithMethodContext(genericArguments, method);
+                    return method.MakeGenericMethod(resolvedTypeArguments);
+                }
+            }
+
+            return null;
+        }
+
+        private static bool HasSameParameters(MethodInfo method, IList<IParameterInfo> parameters)
+        {
+            ParameterInfo[] methodParameters = method.GetParameters();
+            if (methodParameters.Length != parameters.Count)
+                return false;
+
+            for (int i = 0; i < methodParameters.Length; i++)
+            {
+                ITypeInfo valueType = parameters[i].ValueType;
+                try
+                {
+                    Type resolvedValueType = ResolveTypeWithMethodContext(valueType, method);
+                    if (! resolvedValueType.Equals(methodParameters[i].ParameterType))
+                        return false;
+                }
+                catch (CodeElementResolveException)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -316,6 +402,10 @@ namespace Gallio.Reflection.Impl
                 ParameterInfo[] resolvedParameters = resolvedMethod.GetParameters();
 
                 int parameterIndex = parameter.Position;
+
+                if (parameterIndex == -1)
+                    return ((MethodInfo)resolvedMethod).ReturnParameter;
+
                 if (parameterIndex < resolvedParameters.Length)
                     return resolvedParameters[parameterIndex];
             }
@@ -331,12 +421,26 @@ namespace Gallio.Reflection.Impl
             return new UnresolvedParameterInfo(parameter);
         }
 
-        private static Type[] ResolveParameterTypes(IFunctionInfo function)
+        private static Type[] ResolveParameterTypes(ICollection<IParameterInfo> parameters)
         {
-            return GenericUtils.ConvertAllToArray<IParameterInfo, Type>(function.Parameters, delegate(IParameterInfo parameter)
+            return GenericUtils.ConvertAllToArray<IParameterInfo, Type>(parameters, delegate(IParameterInfo parameter)
             {
                 return parameter.ValueType.Resolve(true);
             });
+        }
+
+        private static Type[] ResolveTypesWithMethodContext(ICollection<ITypeInfo> types, MethodInfo methodContext)
+        {
+            return GenericUtils.ConvertAllToArray<ITypeInfo, Type>(types, delegate(ITypeInfo argument)
+            {
+                return ResolveTypeWithMethodContext(argument, methodContext);
+            });
+        }
+
+        private static Type ResolveTypeWithMethodContext(ITypeInfo type, MethodInfo methodContext)
+        {
+            IResolvableTypeInfo resolvableType = type as IResolvableTypeInfo;
+            return resolvableType != null ? resolvableType.Resolve(methodContext, true) : type.Resolve(true);
         }
     }
 }

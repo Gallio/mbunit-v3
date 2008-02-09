@@ -86,12 +86,17 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return ReflectorResolveUtils.ResolveMethod(this, throwOnError);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumerateMethodAttributes(this, inherit, delegate(IMethodInfo member)
+            return ReflectorAttributeUtils.EnumerateMethodAttributes(this, attributeType, inherit, delegate(IMethodInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataMethodWrapper)member).Target);
             });
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetMethodSignature(this);
         }
     }
 }

@@ -46,5 +46,10 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
             return Equals((object)other);
         }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetConstructorSignature(this);
+        }
     }
 }

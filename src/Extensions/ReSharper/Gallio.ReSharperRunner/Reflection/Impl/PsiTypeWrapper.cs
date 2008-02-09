@@ -24,7 +24,7 @@ using JetBrains.ReSharper.Psi;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
 {
-    internal abstract class PsiTypeWrapper<TTarget> : PsiCodeElementWrapper<TTarget>, ITypeInfo, IPsiTypeWrapper
+    internal abstract class PsiTypeWrapper<TTarget> : PsiCodeElementWrapper<TTarget>, IResolvableTypeInfo, IPsiTypeWrapper
         where TTarget : class, IType
     {
         public PsiTypeWrapper(PsiReflector reflector, TTarget target)
@@ -42,16 +42,29 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Target; }
         }
 
-        public string AssemblyQualifiedName
+        public override string Name
         {
-            get { return ReflectorTypeUtils.GetTypeAssemblyQualifierName(this); }
+            get { return ReflectorNameUtils.GetTypeName(this, SimpleName); }
         }
 
-        public abstract string FullName { get; }
+        public string FullName
+        {
+            get { return ReflectorNameUtils.GetTypeFullName(this, SimpleName); }
+        }
+
+        public string AssemblyQualifiedName
+        {
+            get { return ReflectorNameUtils.GetTypeAssemblyQualifiedName(this); }
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetTypeSignature(this, SimpleName);
+        }
 
         public override CodeReference CodeReference
         {
-            get { return new CodeReference(Assembly.FullName, Namespace.Name, FullName, null, null); }
+            get { return new CodeReference(Assembly.FullName, Namespace.Name, FullName ?? Name, null, null); }
         }
 
         public bool IsAssignableFrom(ITypeInfo type)
@@ -120,7 +133,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return null; }
         }
 
-        public abstract string CompoundName { get; }
         public abstract ITypeInfo DeclaringType { get; }
         public abstract IAssemblyInfo Assembly { get; }
         public abstract INamespaceInfo Namespace { get; }
@@ -136,7 +148,12 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public Type Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveType(this, throwOnError);
+            return Resolve(null, throwOnError);
+        }
+
+        public Type Resolve(MethodInfo methodContext, bool throwOnError)
+        {
+            return ReflectorResolveUtils.ResolveType(this, methodContext, throwOnError);
         }
 
         MemberInfo IMemberInfo.Resolve(bool throwOnError)
@@ -154,9 +171,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object)other);
         }
 
-        public override string ToString()
+        protected virtual string SimpleName
         {
-            return FullName;
+            get { return null; }
         }
     }
 }

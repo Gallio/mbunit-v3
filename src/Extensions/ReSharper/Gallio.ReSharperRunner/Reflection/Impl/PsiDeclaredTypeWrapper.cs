@@ -46,25 +46,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             }
         }
 
-        public override string Name
-        {
-            get { return ReflectorTypeUtils.GetTypeName(this, TypeElement.ShortName); }
-        }
-
-        public override string FullName
-        {
-            get { return ReflectorTypeUtils.GetTypeFullName(this, TypeElement.ShortName); }
-        }
-
-        public override string CompoundName
-        {
-            get
-            {
-                ITypeInfo declaringType = DeclaringType;
-                return declaringType != null ? declaringType.CompoundName + @"." + Name : Name;
-            }
-        }
-
         public override ITypeInfo DeclaringType
         {
             get { return Reflector.Wrap(TypeElement.GetContainingType()); }
@@ -318,9 +299,14 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 yield return Reflector.Wrap(@event);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return EnumerateAttributesForElement(TypeElement, inherit);
+            return EnumerateAttributesForElement(TypeElement, attributeType, inherit);
+        }
+
+        protected override string SimpleName
+        {
+            get { return TypeElement.ShortName; }
         }
 
         private string NamespaceName

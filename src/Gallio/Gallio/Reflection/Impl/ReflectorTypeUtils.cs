@@ -14,9 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using Gallio.Reflection;
 
 namespace Gallio.Reflection.Impl
@@ -100,117 +97,35 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Creates a valid .Net type name as returned by <see cref="MemberInfo.Name" />.
+        /// Determines whether a type is primitive.
         /// </summary>
-        /// <param name="type">The type for which to generate a name</param>
-        /// <param name="simpleName">The simple name of the type without any type annotations, namespaces
-        /// or assembly information.  Should be null for a constructed type such as an array.</param>
-        /// <returns>The type's name</returns>
-        public static string GetTypeName(ITypeInfo type, string simpleName)
+        /// <param name="type">The reflected type</param>
+        /// <returns>True if the type is primitive</returns>
+        public static bool IsPrimitive(ITypeInfo type)
         {
-            return BuildTypeName(type, simpleName, false);
-        }
+            while (type.ElementType != null)
+                type = type.ElementType;
 
-        /// <summary>
-        /// Creates a valid .Net full type name as returned by <see cref="Type.FullName" />.
-        /// </summary>
-        /// <param name="type">The type for which to generate a full name</param>
-        /// <param name="simpleName">The simple name of the type without any type annotations, namespaces
-        /// or assembly information.  Should be null for a constructed type such as an array.</param>
-        /// <returns>The type's full name</returns>
-        public static string GetTypeFullName(ITypeInfo type, string simpleName)
-        {
-            return BuildTypeName(type, simpleName, true);
-        }
-
-        private static string BuildTypeName(ITypeInfo type, string simpleName, bool isFullName)
-        {
-            if (type.IsGenericParameter)
-                return simpleName;
-
-            ITypeInfo elementType = type.ElementType;
-            if (elementType != null)
+            switch (type.FullName)
             {
-                string elementTypeName = isFullName ? elementType.FullName : elementType.Name;
+                case "System.Boolean":
+                case "System.Byte":
+                case "System.Char":
+                case "System.Double":
+                case "System.Int16":
+                case "System.Int32":
+                case "System.Int64":
+                case "System.SByte":
+                case "System.Single":
+                case "System.UInt16":
+                case "System.UInt32":
+                case "System.UInt64":
+                case "System.Void":
+                    return true;
 
-                if (type.IsPointer)
-                    return elementTypeName + "*";
-
-                if (type.IsByRef)
-                    return elementTypeName + "&";
-
-                StringBuilder arrayTypeName = new StringBuilder(elementTypeName, elementTypeName.Length + 8);
-                arrayTypeName.Append('[');
-                arrayTypeName.Append(',', type.ArrayRank - 1);
-                arrayTypeName.Append(']');
-                return arrayTypeName.ToString();
+                default:
+                    return false;
             }
-
-            StringBuilder typeName = new StringBuilder();
-
-            if (isFullName)
-            {
-                ITypeInfo declaringType = type.DeclaringType;
-                if (declaringType != null)
-                {
-                    typeName.Append(declaringType.FullName);
-                    typeName.Append('+');
-                }
-                else
-                {
-                    string @namespace = type.Namespace.Name;
-                    if (@namespace.Length != 0)
-                    {
-                        typeName.Append(@namespace);
-                        typeName.Append('.');
-                    }
-                }
-            }
-
-            typeName.Append(simpleName);
-
-            int genericParameterCount = type.GenericArguments.Count;
-            if (genericParameterCount != 0)
-                typeName.Append('`').Append(genericParameterCount);
-
-            if (isFullName && ! type.IsGenericTypeDefinition)
-            {
-                IList<ITypeInfo> genericArguments = type.GenericArguments;
-                if (genericArguments.Count != 0)
-                {
-                    typeName.Append('[');
-
-                    for (int i = 0; i < genericArguments.Count; i++ )
-                    {
-                        if (i != 0)
-                            typeName.Append(',');
-
-                        typeName.Append('[');
-                        typeName.Append(genericArguments[i].AssemblyQualifiedName);
-                        typeName.Append(']');
-                    }
-
-                    typeName.Append(']');
-                }
-            }
-
-            return typeName.ToString();
-        }
-
-        /// <summary>
-        /// Creates a valid .Net assembly qualified type name as returned by <see cref="Type.AssemblyQualifiedName" />.
-        /// </summary>
-        /// <param name="type">The type for which to generate an assembly qualified name</param>
-        /// <returns>The type's assembly qualified name</returns>
-        public static string GetTypeAssemblyQualifierName(ITypeInfo type)
-        {
-            if (type.IsGenericParameter)
-                return type.Name;
-
-            if (type.Assembly == null)
-                GC.KeepAlive(null);
-
-            return type.FullName + ", " + type.Assembly.FullName;
         }
     }
 }

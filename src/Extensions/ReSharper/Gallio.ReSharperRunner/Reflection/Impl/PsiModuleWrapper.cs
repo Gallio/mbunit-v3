@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Reflection;
+using Gallio.Reflection.Impl;
 using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
@@ -81,9 +82,12 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return GetTypes(true);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return EnumerateAttributesForModule(PsiManager.GetModuleAttributes(Target));
+            return ReflectorAttributeUtils.EnumerateAssemblyAttributes(this, attributeType, inherit, delegate(IAssemblyInfo member)
+            {
+                return EnumerateAttributesForModule(PsiManager.GetModuleAttributes(Target));
+            });
         }
 
         private IList<ITypeInfo> GetTypes(bool includeNonPublicTypes)

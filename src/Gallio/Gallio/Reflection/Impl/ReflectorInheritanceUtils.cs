@@ -85,8 +85,8 @@ namespace Gallio.Reflection.Impl
         /// <returns>The enumeration of supertypes</returns>
         public static IEnumerable<ITypeInfo> EnumerateSuperTypes(ITypeInfo type)
         {
-            // TODO
-            yield break;
+            for (ITypeInfo baseType = type.BaseType; baseType != null; baseType = baseType.BaseType)
+                yield return baseType;
         }
 
         /// <summary>

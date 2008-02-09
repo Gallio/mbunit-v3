@@ -63,7 +63,7 @@ namespace Gallio.Model.Serialization
         public TestParameterData(ITestParameter source)
             : base(source)
         {
-            typeName = source.Type.FullName;
+            typeName = source.Type.ToString();
             index = source.Index;
         }
 

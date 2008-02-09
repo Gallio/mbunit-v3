@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using Gallio.ReSharperRunner.Reflection.Impl;
@@ -62,6 +64,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.Wrap(Target.Setter(false)); }
         }
 
+        public IList<IParameterInfo> IndexParameters
+        {
+            get { return ReflectorPropertyUtils.GetIndexParameters(this); }
+        }
+
         public override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
             return Resolve(throwOnError);
@@ -80,6 +87,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public bool Equals(IPropertyInfo other)
         {
             return Equals((object)other);
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetPropertySignature(this);
         }
     }
 }

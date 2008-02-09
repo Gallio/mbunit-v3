@@ -150,7 +150,7 @@ namespace Gallio.XunitAdapter.Model
                 catch (Exception ex)
                 {
                     typeTest = new ErrorTest(type,
-                        String.Format("An exception occurred while generating an xUnit.Net test from '{0}'.", type.FullName),
+                        String.Format("An exception occurred while generating an xUnit.Net test from '{0}'.", type),
                         ex);
                 }
 

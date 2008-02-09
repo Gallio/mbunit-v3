@@ -14,8 +14,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
+using Gallio.Reflection.Impl;
 using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.Metadata.Reader.API;
 
@@ -28,24 +31,19 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
         }
 
-        public override string Name
-        {
-            get { return Target.Argument.Name; }
-        }
-
         public override CodeElementKind Kind
         {
             get { return CodeElementKind.GenericParameter; }
         }
 
+        public override ITypeInfo BaseType
+        {
+            get { return Gallio.Reflection.Reflector.Wrap(typeof(Object)); }
+        }
+
         public override ITypeInfo EffectiveClassType
         {
-            get
-            {
-                // TODO: In actuality we can treat this case as producing a type whose members
-                //       are the union of the classes or interfaces in the generic type parameter constraint.
-                throw new NotImplementedException("Cannot perform this operation on a generic type parameter.");
-            }
+            get { return Gallio.Reflection.Reflector.Wrap(typeof(Object)); }
         }
 
         public override bool IsGenericParameter
@@ -65,6 +63,16 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 // Note: The values are defined in exactly the same way, it's just the type that's different.
                 return (GenericParameterAttributes)Target.Argument.Attributes;
             }
+        }
+
+        public override IAssemblyInfo Assembly
+        {
+            get { return GetUltimateDeclaringType().Assembly; }
+        }
+
+        public override INamespaceInfo Namespace
+        {
+            get { return GetUltimateDeclaringType().Namespace; }
         }
 
         public override ITypeInfo DeclaringType
@@ -95,6 +103,29 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public bool Equals(ISlotInfo other)
         {
             return Equals((object)other);
+        }
+
+        public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
+        {
+            return EmptyArray<IConstructorInfo>.Instance;
+        }
+
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
+        {
+            return ReflectorAttributeUtils.EnumerateGenericParameterAttributes(this, attributeType, inherit, delegate(IGenericParameterInfo genericParameter)
+            {
+                return EnumerateAttributesForEntity(((MetadataGenericParameterWrapper)genericParameter).Target.Argument);
+            });
+        }
+
+        private ITypeInfo GetUltimateDeclaringType()
+        {
+            return DeclaringType ?? DeclaringMethod.DeclaringType;
+        }
+
+        protected override string SimpleName
+        {
+            get { return Target.Argument.Name; }
         }
     }
 }

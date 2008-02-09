@@ -46,27 +46,17 @@ namespace Gallio.Reflection.Impl
             get { return CodeReference.CreateFromNamespace(name); }
         }
 
-        public IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
             return EmptyArray<IAttributeInfo>.Instance;
         }
 
-        public IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit)
-        {
-            return EmptyArray<IAttributeInfo>.Instance;
-        }
-
-        public bool HasAttribute(Type attributeType, bool inherit)
+        public bool HasAttribute(ITypeInfo attributeType, bool inherit)
         {
             return false;
         }
 
-        public IEnumerable<object> GetAttributes(bool inherit)
-        {
-            return EmptyArray<object>.Instance;
-        }
-
-        public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
+        public IEnumerable<object> GetAttributes(ITypeInfo attributeType, bool inherit)
         {
             return EmptyArray<object>.Instance;
         }

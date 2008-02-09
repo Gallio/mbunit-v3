@@ -51,12 +51,17 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             return Equals((object)other);
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return ReflectorAttributeUtils.EnumerateConstructorAttributes(this, inherit, delegate(IConstructorInfo member)
+            return ReflectorAttributeUtils.EnumerateConstructorAttributes(this, attributeType, inherit, delegate(IConstructorInfo member)
             {
                 return EnumerateAttributesForEntity(((MetadataConstructorWrapper)member).Target);
             });
+        }
+
+        public override string ToString()
+        {
+            return ReflectorNameUtils.GetConstructorSignature(this);
         }
     }
 }

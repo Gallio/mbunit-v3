@@ -32,12 +32,6 @@ namespace Gallio.Reflection
     public interface IMemberInfo : ICodeElementInfo, IEquatable<IMemberInfo>
     {
         /// <summary>
-        /// Gets the compound name of the member consisting of the compound name of its
-        /// declaring type followed by a period and the name of this member.
-        /// </summary>
-        string CompoundName { get; }
-
-        /// <summary>
         /// Gets the declaring type of the member.  If the member not a type or is a nested type,
         /// returns its containing type.  If it is a generic type parameter,
         /// returns its associated generic type definition.  Otherwise returns null.

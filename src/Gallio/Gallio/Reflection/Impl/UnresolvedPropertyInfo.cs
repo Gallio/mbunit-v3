@@ -110,7 +110,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override ParameterInfo[] GetIndexParameters()
         {
-            throw new NotImplementedException();
+            return UnresolvedMethodBase.ResolveParameters(adapter.IndexParameters);
         }
 
         /// <inheritdoc />

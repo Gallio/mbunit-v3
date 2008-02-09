@@ -23,8 +23,9 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         [SetUp]
         public void SetUp()
         {
+            loader = new MetadataLoader(BuiltInMetadataAssemblyResolver.Instance);
+
             Assembly assembly = GetType().Assembly;
-            loader = new MetadataLoader(new string[] { Path.GetDirectoryName(Loader.GetAssemblyLocalPath(assembly)) });
             IMetadataAssembly metadataAssembly = loader.Load(assembly.GetName(), delegate { return true; });
 
             reflector = new MetadataReflector(BuiltInAssemblyResolver.Instance, metadataAssembly, null);

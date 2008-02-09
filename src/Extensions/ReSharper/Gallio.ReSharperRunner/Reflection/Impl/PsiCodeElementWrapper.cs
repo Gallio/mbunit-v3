@@ -49,26 +49,16 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public abstract CodeReference CodeReference { get; }
 
-        public abstract IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit);
+        public abstract IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit);
 
-        public IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit)
+        public bool HasAttribute(ITypeInfo attributeType, bool inherit)
         {
-            return AttributeUtils.FilterAttributesOfType(GetAttributeInfos(inherit), attributeType);
+            return GetAttributeInfos(attributeType, inherit).GetEnumerator().MoveNext();
         }
 
-        public bool HasAttribute(Type attributeType, bool inherit)
+        public IEnumerable<object> GetAttributes(ITypeInfo attributeType, bool inherit)
         {
-            return AttributeUtils.ContainsAttributeOfType(GetAttributeInfos(inherit), attributeType);
-        }
-
-        public IEnumerable<object> GetAttributes(bool inherit)
-        {
-            return AttributeUtils.ResolveAttributes(GetAttributeInfos(inherit));
-        }
-
-        public IEnumerable<object> GetAttributes(Type attributeType, bool inherit)
-        {
-            return AttributeUtils.ResolveAttributesOfType(GetAttributeInfos(inherit), attributeType);
+            return AttributeUtils.ResolveAttributes(GetAttributeInfos(attributeType, inherit));
         }
 
         public string GetXmlDocumentation()
@@ -97,9 +87,13 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 yield return Reflector.Wrap(attrib);
         }
 
-        protected IEnumerable<IAttributeInfo> EnumerateAttributesForElement(IAttributesOwner element, bool inherit)
+        protected IEnumerable<IAttributeInfo> EnumerateAttributesForElement(IAttributesOwner element, ITypeInfo attributeType, bool inherit)
         {
-            foreach (IAttributeInstance attrib in element.GetAttributeInstances(inherit))
+            IList<IAttributeInstance> attribs = attributeType != null
+                ? element.GetAttributeInstances(new CLRTypeName(attributeType.FullName), inherit)
+                : element.GetAttributeInstances(inherit);
+
+            foreach (IAttributeInstance attrib in attribs)
                 yield return Reflector.Wrap(attrib);
         }
     }

@@ -237,6 +237,10 @@
     <Compile Include="Hosting\Channels\BinaryIpcServerChannel.cs" />
     <Compile Include="Hosting\RemoteLogger.cs" />
     <Compile Include="Model\Execution\ProxyTestListener.cs" />
+    <Compile Include="Reflection\Impl\IResolvableTypeInfo.cs" />
+    <Compile Include="Reflection\Impl\ReflectorNameUtils.cs" />
+    <Compile Include="Reflection\Impl\ReflectorPropertyUtils.cs" />
+    <Compile Include="Reflection\Impl\UnresolvedCustomAttributeProvider.cs" />
     <Compile Include="Reflection\Impl\UnresolvedMethodInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedConstructorInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedEventInfo.cs" />

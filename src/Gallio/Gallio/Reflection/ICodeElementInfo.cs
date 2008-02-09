@@ -50,38 +50,22 @@ namespace Gallio.Reflection
         CodeReference CodeReference { get; }
 
         /// <summary>
-        /// Gets information about all the code element's attributes.
-        /// </summary>
-        /// <param name="inherit">If true, includes inherited attributes
-        /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
-        /// <returns>The code element's attributes</returns>
-        IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit);
-
-        /// <summary>
         /// Gets information about the code element's attributes of the specified type.
         /// </summary>
-        /// <param name="attributeType">The attribute type</param>
+        /// <param name="attributeType">The attribute type, or null to return attributes of all types</param>
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
         /// <returns>The code element's attributes</returns>
-        IEnumerable<IAttributeInfo> GetAttributeInfos(Type attributeType, bool inherit);
+        IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit);
 
         /// <summary>
         /// Returns true if the code element has an attribute of the specified type.
         /// </summary>
-        /// <param name="attributeType">The attribute type</param>
+        /// <param name="attributeType">The attribute type, or null to search for attributes of all types</param>
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
         /// <returns>True if the code element has at least one attribute of the specified type</returns>
-        bool HasAttribute(Type attributeType, bool inherit);
-
-        /// <summary>
-        /// Gets all of the code element's attributes.
-        /// </summary>
-        /// <param name="inherit">If true, includes inherited attributes
-        /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
-        /// <returns>The attributes</returns>
-        IEnumerable<object> GetAttributes(bool inherit);
+        bool HasAttribute(ITypeInfo attributeType, bool inherit);
 
         /// <summary>
         /// Gets the code element's attributes of the specified type.
@@ -90,7 +74,7 @@ namespace Gallio.Reflection
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
         /// <returns>The attributes</returns>
-        IEnumerable<object> GetAttributes(Type attributeType, bool inherit);
+        IEnumerable<object> GetAttributes(ITypeInfo attributeType, bool inherit);
 
         /// <summary>
         /// Gets the XML documentation associated with the code element.

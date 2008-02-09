@@ -82,27 +82,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override object[] GetCustomAttributes(bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(inherit));
-        }
-
-        /// <inheritdoc />
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(attributeType, inherit));
-        }
-
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
-        }
-
-        /// <inheritdoc />
-        public override bool IsDefined(Type attributeType, bool inherit)
-        {
-            return adapter.HasAttribute(attributeType, inherit);
         }
 
         /// <inheritdoc />
@@ -152,27 +134,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override object[] GetCustomAttributes(bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(inherit));
-        }
-
-        /// <inheritdoc />
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(attributeType, inherit));
-        }
-
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
-        }
-
-        /// <inheritdoc />
-        public override bool IsDefined(Type attributeType, bool inherit)
-        {
-            return adapter.HasAttribute(attributeType, inherit);
         }
 
         /// <inheritdoc />
@@ -222,27 +186,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override object[] GetCustomAttributes(bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(inherit));
-        }
-
-        /// <inheritdoc />
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(attributeType, inherit));
-        }
-
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
-        }
-
-        /// <inheritdoc />
-        public override bool IsDefined(Type attributeType, bool inherit)
-        {
-            return adapter.HasAttribute(attributeType, inherit);
         }
 
         /// <inheritdoc />
@@ -292,27 +238,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override object[] GetCustomAttributes(bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(inherit));
-        }
-
-        /// <inheritdoc />
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(attributeType, inherit));
-        }
-
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
-        }
-
-        /// <inheritdoc />
-        public override bool IsDefined(Type attributeType, bool inherit)
-        {
-            return adapter.HasAttribute(attributeType, inherit);
         }
 
         /// <inheritdoc />
@@ -362,27 +290,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override object[] GetCustomAttributes(bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(inherit));
-        }
-
-        /// <inheritdoc />
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(attributeType, inherit));
-        }
-
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
-        }
-
-        /// <inheritdoc />
-        public override bool IsDefined(Type attributeType, bool inherit)
-        {
-            return adapter.HasAttribute(attributeType, inherit);
         }
 
         /// <inheritdoc />
@@ -432,27 +342,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override object[] GetCustomAttributes(bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(inherit));
-        }
-
-        /// <inheritdoc />
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit)
-        {
-            return GenericUtils.ToArray(adapter.GetAttributes(attributeType, inherit));
-        }
-
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
-        }
-
-        /// <inheritdoc />
-        public override bool IsDefined(Type attributeType, bool inherit)
-        {
-            return adapter.HasAttribute(attributeType, inherit);
         }
 
         /// <inheritdoc />

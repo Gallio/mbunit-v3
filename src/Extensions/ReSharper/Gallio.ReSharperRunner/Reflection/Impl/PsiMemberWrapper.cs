@@ -59,15 +59,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Target.ShortName; }
         }
 
-        public virtual string CompoundName
-        {
-            get
-            {
-                ITypeInfo declaringType = DeclaringType;
-                return declaringType != null ? declaringType.CompoundName + @"." + Name : Name;
-            }
-        }
-
         public override CodeReference CodeReference
         {
             get
@@ -83,9 +74,9 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return Reflector.Wrap(Target.GetContainingType()); }
         }
 
-        public override IEnumerable<IAttributeInfo> GetAttributeInfos(bool inherit)
+        public override IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
-            return EnumerateAttributesForElement(Target, inherit);
+            return EnumerateAttributesForElement(Target, attributeType, inherit);
         }
 
         MemberInfo IMemberInfo.Resolve(bool throwOnError)
@@ -98,11 +89,6 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         public bool Equals(IMemberInfo other)
         {
             return Equals((object)other);
-        }
-
-        public override string ToString()
-        {
-            return CompoundName;
         }
     }
 }

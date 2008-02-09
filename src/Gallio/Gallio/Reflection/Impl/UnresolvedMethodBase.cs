@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using Gallio.Collections;
@@ -27,9 +28,9 @@ namespace Gallio.Reflection.Impl
 {
     internal static class UnresolvedMethodBase
     {
-        public static ParameterInfo[] GetParameters(IFunctionInfo adapter)
+        public static ParameterInfo[] ResolveParameters(IList<IParameterInfo> parameters)
         {
-            return GenericUtils.ConvertAllToArray<IParameterInfo, ParameterInfo>(adapter.Parameters,
+            return GenericUtils.ConvertAllToArray<IParameterInfo, ParameterInfo>(parameters,
                 delegate(IParameterInfo parameter) { return parameter.Resolve(false); });
         }
     }
@@ -93,7 +94,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override ParameterInfo[] GetParameters()
         {
-            return UnresolvedMethodBase.GetParameters(adapter);
+            return UnresolvedMethodBase.ResolveParameters(adapter.Parameters);
         }
 
         /// <inheritdoc />
@@ -164,7 +165,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override ParameterInfo[] GetParameters()
         {
-            return UnresolvedMethodBase.GetParameters(adapter);
+            return UnresolvedMethodBase.ResolveParameters(adapter.Parameters);
         }
 
         /// <inheritdoc />

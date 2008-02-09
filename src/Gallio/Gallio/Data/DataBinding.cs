@@ -91,7 +91,7 @@ namespace Gallio.Data
         public override string ToString()
         {
             return String.Format("Binding ValueType: {0}, Path: {1}, Index: {2}",
-                Type.FullName,
+                Type,
                 Path != null ? "'" + Path + "'" : "<null>",
                 Index.HasValue ? Index.Value.ToString() : "<null>");
         }
