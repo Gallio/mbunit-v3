@@ -286,18 +286,18 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <inheritdoc />
         public override IAssemblyInfo LoadAssembly(AssemblyName assemblyName)
         {
-            foreach (IAssembly assembly in manager.Solution.GetAllAssemblies())
-            {
-                if (IsMatchingAssemblyName(assemblyName, assembly.AssemblyName))
-                    return Wrap(assembly);
-            }
-
             foreach (IProject project in manager.Solution.GetAllProjects())
             {
                 IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
 
-                if (IsMatchingAssemblyName(assemblyName, assemblyFile.AssemblyName))
+                if (assemblyFile != null && IsMatchingAssemblyName(assemblyName, assemblyFile.AssemblyName))
                     return Wrap(project);
+            }
+
+            foreach (IAssembly assembly in manager.Solution.GetAllAssemblies())
+            {
+                if (IsMatchingAssemblyName(assemblyName, assembly.AssemblyName))
+                    return Wrap(assembly);
             }
 
             throw new ArgumentException(String.Format("Could not find assembly '{0}' in the ReSharper code cache.",

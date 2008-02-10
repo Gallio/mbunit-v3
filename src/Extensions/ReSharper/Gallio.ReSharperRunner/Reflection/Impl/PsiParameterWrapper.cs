@@ -68,8 +68,8 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             {
                 ParameterAttributes flags = 0;
                 ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.HasDefault, ! Target.GetDefaultValue().IsBadValue());
-                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.Kind != ParameterKind.OUTPUT);
-                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.Kind != ParameterKind.VALUE);
+                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.In, Target.Kind == ParameterKind.REFERENCE);
+                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Out, Target.Kind == ParameterKind.OUTPUT || Target.Kind == ParameterKind.REFERENCE);
                 ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.Optional, Target.IsOptional);
                 return flags;
             }

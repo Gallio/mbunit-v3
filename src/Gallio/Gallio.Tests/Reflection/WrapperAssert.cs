@@ -42,7 +42,7 @@ namespace Gallio.Tests.Reflection
 
         private const MethodAttributes MethodAttributesMask =
             MethodAttributes.MemberAccessMask | MethodAttributes.VtableLayoutMask
-            | MethodAttributes.Abstract | MethodAttributes.Final | MethodAttributes.HideBySig
+            | MethodAttributes.Abstract | MethodAttributes.Final
             | MethodAttributes.PrivateScope | MethodAttributes.SpecialName
             | MethodAttributes.Static | MethodAttributes.Virtual;
 
@@ -356,7 +356,7 @@ namespace Gallio.Tests.Reflection
         private static void AreEqualWhenResolved(Type expected, ITypeInfo wrapper)
         {
             if (expected != null)
-                AreEqual(expected, wrapper.Resolve(true));
+                AreEqual(expected, wrapper != null ? wrapper.Resolve(true) : null);
             else
                 Assert.IsNull(wrapper);
         }
@@ -366,7 +366,7 @@ namespace Gallio.Tests.Reflection
             where TWrapper : IMemberInfo
         {
             if (expected != null)
-                AreEqual(expected, wrapper.Resolve(true));
+                AreEqual(expected, wrapper != null ? wrapper.Resolve(true) : null);
             else
                 Assert.IsNull(wrapper);
         }
@@ -374,7 +374,7 @@ namespace Gallio.Tests.Reflection
         private static void AreEqualWhenResolved(ParameterInfo expected, IParameterInfo wrapper)
         {
             if (expected != null)
-                AreEqual(expected, wrapper.Resolve(true));
+                AreEqual(expected, wrapper != null ? wrapper.Resolve(true) : null);
             else
                 Assert.IsNull(wrapper);
         }

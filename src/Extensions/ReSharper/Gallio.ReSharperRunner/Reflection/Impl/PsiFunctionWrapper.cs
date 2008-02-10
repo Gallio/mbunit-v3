@@ -43,10 +43,10 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                     case AccessRights.PUBLIC:
                         flags |= MethodAttributes.Public;
                         break;
+                    case AccessRights.NONE:
                     case AccessRights.PRIVATE:
                         flags |= MethodAttributes.Private;
                         break;
-                    case AccessRights.NONE:
                     case AccessRights.INTERNAL:
                         flags |= MethodAttributes.Assembly;
                         break;
@@ -65,6 +65,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
                 ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Final, modifiers.IsSealed);
                 ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Static, modifiers.IsStatic);
                 ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, modifiers.IsVirtual);
+                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.SpecialName, Name.StartsWith("."));
                 return flags;
             }
         }

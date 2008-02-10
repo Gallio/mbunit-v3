@@ -91,7 +91,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
                 ISubstitution substitution = Target.GetSubstitution();
                 foreach (ITypeParameter typeParameter in typeParameters)
-                    if (substitution.HasInDomain(typeParameter))
+                    if (!substitution.Apply(typeParameter).IsOpenType)
                         return false;
 
                 return true;

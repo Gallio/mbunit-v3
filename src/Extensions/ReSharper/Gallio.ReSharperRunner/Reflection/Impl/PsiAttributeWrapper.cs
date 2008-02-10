@@ -164,7 +164,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             {
                 IType type = value as IType;
                 if (type != null)
-                    return Reflector.Wrap(type);
+                    return Reflector.Wrap(type).Resolve(false);
 
                 // TODO: It's not clear to me that the PSI internal implementation is complete!
                 //       I found a special case for mapping types but nothing for arrays.

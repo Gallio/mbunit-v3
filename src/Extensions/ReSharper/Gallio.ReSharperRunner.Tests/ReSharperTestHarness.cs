@@ -1,4 +1,4 @@
-// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+﻿// Copyright 2008 MbUnit Project - http://www.mbunit.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Hosting;
 using Gallio.ReSharperRunner.Tests;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Psi.Impl.Caches2;
 using JetBrains.Shell;
 using JetBrains.Shell.Progress;
 using JetBrains.Shell.Test;

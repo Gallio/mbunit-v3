@@ -20,6 +20,7 @@ using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Impl.Special;
 
 namespace Gallio.ReSharperRunner.Reflection.Impl
 {
@@ -32,7 +33,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public bool IsGenericMethod
         {
-            get { return Target.GetSignature(null).GetTypeParameters().Length != 0; }
+            get { return Target.GetSignature(Target.IdSubstitution).GetTypeParameters().Length != 0; }
         }
 
         public bool IsGenericMethodDefinition
@@ -49,7 +50,7 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
         {
             get
             {
-                ITypeParameter[] parameter = Target.GetSignature(null).GetTypeParameters();
+                ITypeParameter[] parameter = Target.GetSignature(Target.IdSubstitution).GetTypeParameters();
                 return Array.ConvertAll<ITypeParameter, IGenericParameterInfo>(parameter, Reflector.Wrap);
             }
         }
@@ -66,7 +67,13 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
 
         public IParameterInfo ReturnParameter
         {
-            get { throw new NotImplementedException("Not sure how to get the return parameter from the ReSharper code model."); }
+            get
+            {
+                // TODO: This won't provide access to any parameter attributes.
+                //       How should we retrieve them?
+                IType type = Target.ReturnType;
+                return type != null ? Reflector.Wrap(new Parameter(Target, type, null)) : null;
+            }
         }
 
         public override CodeElementKind Kind
