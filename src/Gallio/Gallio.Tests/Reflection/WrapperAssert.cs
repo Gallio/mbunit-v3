@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Gallio.Hosting;
 using Gallio.Reflection;
@@ -78,21 +79,35 @@ namespace Gallio.Tests.Reflection
         {
             Assert.AreEqual(CodeElementKind.Assembly, info.Kind);
 
-            Assert.AreEqual(target.FullName, info.ToString());
+            string targetDisplayName = target.GetName().Name;
+            Assert.AreEqual(targetDisplayName, info.Name);
 
-            Assert.AreEqual(CodeReference.CreateFromAssembly(target), info.CodeReference);
-            Assert.AreEqual(target.FullName, info.FullName);
-            Assert.AreEqual(target.GetName().Name, info.Name);
-            StringAssert.AreEqualIgnoreCase(Loader.GetAssemblyLocalPath(target), info.Path);
+            if (info.Name != info.FullName)
+            {
+                Assert.AreEqual(target.FullName, info.ToString());
+                Assert.AreEqual(target.FullName, info.FullName);
+                Assert.AreEqual(target.GetName().FullName, info.GetName().FullName);
+            }
+            else
+            {
+                // We might not always be able to get the full name in the reflection wrapper.
+                // A partial name will suffice.
+
+                Assert.AreEqual(targetDisplayName, info.ToString());
+                Assert.AreEqual(targetDisplayName, info.FullName);
+                Assert.AreEqual(targetDisplayName, info.GetName().Name);
+            }
+
+            AreEqualUpToAssemblyDisplayName(CodeReference.CreateFromAssembly(target), info.CodeReference);
+            StringAssert.AreEqualIgnoreCase(Path.GetFileName(Loader.GetAssemblyLocalPath(target)), Path.GetFileName(info.Path));
 
             CodeLocation infoLocation = info.GetCodeLocation();
-            StringAssert.AreEqualIgnoreCase(Loader.GetAssemblyLocalPath(target), infoLocation.Path);
+            StringAssert.AreEqualIgnoreCase(Path.GetFileName(Loader.GetAssemblyLocalPath(target)), Path.GetFileName(infoLocation.Path));
             Assert.AreEqual(0, infoLocation.Line);
             Assert.AreEqual(0, infoLocation.Column);
 
             Assert.IsNull(info.GetXmlDocumentation());
 
-            Assert.AreEqual(target.GetName().FullName, info.GetName().FullName);
             InterimAssert.AreElementsEqualIgnoringOrder(
                 target.GetReferencedAssemblies(),
                 info.GetReferencedAssemblies(),
@@ -225,7 +240,7 @@ namespace Gallio.Tests.Reflection
 
             AreEqual(target, info.Resolve(true));
 
-            Assert.AreEqual(CodeReference.CreateFromParameter(target), info.CodeReference);
+            AreEqualUpToAssemblyDisplayName(CodeReference.CreateFromParameter(target), info.CodeReference);
             Assert.AreEqual(target.Name, info.Name);
             Assert.IsNull(info.GetXmlDocumentation());
 
@@ -316,7 +331,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(target.ToString(), info.ToString());
 
             Assert.AreEqual(target.Name, info.Name);
-            Assert.AreEqual(CodeReference.CreateFromMember(target), info.CodeReference);
+            AreEqualUpToAssemblyDisplayName(CodeReference.CreateFromMember(target), info.CodeReference);
             AreEqualWhenResolved(target.DeclaringType, info.DeclaringType);
             Assert.AreEqual(XmlDocumentationUtils.GetXmlDocumentation(target), info.GetXmlDocumentation());
 
@@ -442,6 +457,15 @@ namespace Gallio.Tests.Reflection
                 Assert.IsTrue(AttributeUtils.HasAttribute(actualWrapper, inheritedAttrib.GetType(), true),
                     "Should contain inherited attributes of same type.");
             }
+        }
+
+        private static void AreEqualUpToAssemblyDisplayName(CodeReference expected, CodeReference actual)
+        {
+            Assert.AreEqual(
+                new CodeReference(new AssemblyName(expected.AssemblyName).Name,
+                    expected.NamespaceName, expected.TypeName, expected.MemberName, expected.ParameterName),
+                new CodeReference(new AssemblyName(actual.AssemblyName).Name,
+                    actual.NamespaceName, actual.TypeName, actual.MemberName, actual.ParameterName));
         }
     }
 }

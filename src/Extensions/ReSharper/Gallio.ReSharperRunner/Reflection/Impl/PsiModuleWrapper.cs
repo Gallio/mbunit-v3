@@ -62,6 +62,11 @@ namespace Gallio.ReSharperRunner.Reflection.Impl
             get { return GetAssemblyFile().Location.FullPath; }
         }
 
+        public override CodeLocation GetCodeLocation()
+        {
+            return new CodeLocation(Path, 0, 0);
+        }
+
         public virtual AssemblyName GetName()
         {
             return GetAssemblyFile().AssemblyName;

@@ -19,7 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
+using Gallio.Model;
 using Gallio.Reflection;
+using MbUnit.TestResources;
+using MbUnit.TestResources.Reflection;
 using MbUnit2::MbUnit.Framework;
 
 namespace Gallio.Tests.Reflection
@@ -46,55 +49,77 @@ namespace Gallio.Tests.Reflection
 
         protected IAssemblyInfo GetAssembly(Assembly assembly)
         {
-            return ReflectionPolicy.LoadAssembly(assembly.GetName());
+            IAssemblyInfo wrapper = ReflectionPolicy.LoadAssembly(assembly.GetName());
+            Assert.IsNotNull(wrapper, "Could not find assembly '{0}'.", assembly);
+            return wrapper;
         }
 
         protected ITypeInfo GetType(Type type)
         {
-            return GetAssembly(type.Assembly).GetType(type.FullName);
+            ITypeInfo wrapper = GetAssembly(type.Assembly).GetType(type.FullName);
+            Assert.IsNotNull(wrapper, "Could not find type '{0}'.", type);
+            return wrapper;
         }
 
         protected IConstructorInfo GetConstructor(ConstructorInfo member)
         {
-            return GetType(member.DeclaringType).GetConstructors(All)[0];
+            IConstructorInfo wrapper = GetType(member.DeclaringType).GetConstructors(All)[0];
+            Assert.IsNotNull(wrapper, "Could not find constructor '{0}'.", member);
+            return wrapper;
         }
 
         protected IMethodInfo GetMethod(MethodInfo member)
         {
-            return FindByName(GetType(member.DeclaringType).GetMethods(All), member.Name);
+            IMethodInfo wrapper =  FindByName(GetType(member.DeclaringType).GetMethods(All), member.Name);
+            Assert.IsNotNull(wrapper, "Could not find method '{0}'.", member);
+            return wrapper;
         }
 
         protected IEventInfo GetEvent(EventInfo member)
         {
-            return FindByName(GetType(member.DeclaringType).GetEvents(All), member.Name);
+            IEventInfo wrapper = FindByName(GetType(member.DeclaringType).GetEvents(All), member.Name);
+            Assert.IsNotNull(wrapper, "Could not find event '{0}'.", member);
+            return wrapper;
         }
 
         protected IFieldInfo GetField(FieldInfo member)
         {
-            return FindByName(GetType(member.DeclaringType).GetFields(All), member.Name);
+            IFieldInfo wrapper = FindByName(GetType(member.DeclaringType).GetFields(All), member.Name);
+            Assert.IsNotNull(wrapper, "Could not find field '{0}'.", member);
+            return wrapper;
         }
 
         protected IPropertyInfo GetProperty(PropertyInfo member)
         {
-            return FindByName(GetType(member.DeclaringType).GetProperties(All), member.Name);
+            IPropertyInfo wrapper = FindByName(GetType(member.DeclaringType).GetProperties(All), member.Name);
+            Assert.IsNotNull(wrapper, "Could not find property '{0}'.", member);
+            return wrapper;
         }
 
         protected IParameterInfo GetMethodParameter(ParameterInfo parameter)
         {
+            IParameterInfo wrapper;
             if (parameter.Position == -1)
-                return GetMethod((MethodInfo)parameter.Member).ReturnParameter;
+                wrapper = GetMethod((MethodInfo)parameter.Member).ReturnParameter;
             else
-                return GetMethod((MethodInfo)parameter.Member).Parameters[parameter.Position];
+                wrapper = GetMethod((MethodInfo)parameter.Member).Parameters[parameter.Position];
+
+            Assert.IsNotNull(wrapper, "Could not find parameter '{0}'.", parameter);
+            return wrapper;
         }
 
         protected IGenericParameterInfo GetGenericTypeParameter(Type parameter)
         {
-            return (IGenericParameterInfo)GetType(parameter.DeclaringType).GenericArguments[parameter.GenericParameterPosition];
+            IGenericParameterInfo wrapper = (IGenericParameterInfo)GetType(parameter.DeclaringType).GenericArguments[parameter.GenericParameterPosition];
+            Assert.IsNotNull(wrapper, "Could not find generic type parameter '{0}'.", parameter);
+            return wrapper;
         }
 
         protected IGenericParameterInfo GetGenericMethodParameter(Type parameter)
         {
-            return (IGenericParameterInfo)GetMethod((MethodInfo)parameter.DeclaringMethod).GenericArguments[parameter.GenericParameterPosition];
+            IGenericParameterInfo wrapper = (IGenericParameterInfo)GetMethod((MethodInfo)parameter.DeclaringMethod).GenericArguments[parameter.GenericParameterPosition];
+            Assert.IsNotNull(wrapper, "Could not find generic method parameter '{0}'.", parameter);
+            return wrapper;
         }
 
         private static T FindByName<T>(IEnumerable<T> elements, string name)
@@ -109,7 +134,7 @@ namespace Gallio.Tests.Reflection
         [Test]
         public void AssemblyWrapper()
         {
-            Assembly target = typeof(BaseReflectionPolicyTest).Assembly;
+            Assembly target = typeof(ReflectionPolicySample).Assembly;
             IAssemblyInfo info = GetAssembly(target);
 
             WrapperAssert.AreEquivalent(target, info);
@@ -119,16 +144,16 @@ namespace Gallio.Tests.Reflection
         public void AssemblyWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<Assembly, IAssemblyInfo>(
-                typeof(BaseReflectionPolicyTest).Assembly,
-                typeof(Reflector).Assembly,
+                typeof(ReflectionPolicySample).Assembly,
+                typeof(ITest).Assembly,
                 GetAssembly);
         }
 
         [Test]
         public void NamespaceWrapper()
         {
-            string target = typeof(Class1).Namespace;
-            INamespaceInfo info = GetType(typeof(Class1)).Namespace;
+            string target = typeof(ReflectionPolicySample.Class1).Namespace;
+            INamespaceInfo info = GetType(typeof(ReflectionPolicySample.Class1)).Namespace;
 
             WrapperAssert.AreEquivalent(target, info);
         }
@@ -137,16 +162,16 @@ namespace Gallio.Tests.Reflection
         public void NamespaceWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<Type, INamespaceInfo>(
-                typeof(BaseReflectionPolicyTest),
-                typeof(Reflector),
+                typeof(ReflectionPolicySample),
+                typeof(SimpleTest),
                 delegate(Type type) { return GetType(type).Namespace; });
         }
 
         [RowTest]
-        [Row(typeof(Class1))]
-        [Row(typeof(Class3))]
-        [Row(typeof(Struct1<int, string>))]
-        [Row(typeof(Interface1))]
+        [Row(typeof(ReflectionPolicySample.Class1))]
+        [Row(typeof(ReflectionPolicySample.Class3))]
+        [Row(typeof(ReflectionPolicySample.Struct1<int, string>))]
+        [Row(typeof(ReflectionPolicySample.Interface1))]
         public void TypeWrapper(Type target)
         {
             ITypeInfo info = GetType(target);
@@ -158,14 +183,14 @@ namespace Gallio.Tests.Reflection
         public void TypeWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<Type, ITypeInfo>(
-                typeof(Class1),
-                typeof(Struct1<int, string>),
+                typeof(ReflectionPolicySample.Class1),
+                typeof(ReflectionPolicySample.Struct1<int, string>),
                 GetType);
         }
 
         [RowTest]
-        [Row(typeof(Class1), "Method1")]
-        [Row(typeof(Class1), "Method2")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Method1")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Method2")]
         public void MethodWrapper(Type type, string methodName)
         {
             MethodInfo target = type.GetMethod(methodName, All);
@@ -178,14 +203,14 @@ namespace Gallio.Tests.Reflection
         public void MethodWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<MethodInfo, IMethodInfo>(
-                typeof(Class1).GetMethod("Method1", All),
-                typeof(Class1).GetMethod("Method2", All),
+                typeof(ReflectionPolicySample.Class1).GetMethod("Method1", All),
+                typeof(ReflectionPolicySample.Class1).GetMethod("Method2", All),
                 GetMethod);
         }
 
         [RowTest]
-        [Row(typeof(Class1), "Field1")]
-        [Row(typeof(Class1), "Field2")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Field1")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Field2")]
         public void FieldWrapper(Type type, string fieldName)
         {
             FieldInfo target = type.GetField(fieldName, All);
@@ -198,15 +223,15 @@ namespace Gallio.Tests.Reflection
         public void FieldWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<FieldInfo, IFieldInfo>(
-                typeof(Class1).GetField("Field1", All),
-                typeof(Class1).GetField("Field2", All),
+                typeof(ReflectionPolicySample.Class1).GetField("Field1", All),
+                typeof(ReflectionPolicySample.Class1).GetField("Field2", All),
                 GetField);
         }
 
         [RowTest]
-        [Row(typeof(Class1), "Property1")]
-        [Row(typeof(Class1), "Property2")]
-        [Row(typeof(Class1), "Property3")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Property1")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Property2")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Property3")]
         public void PropertyWrapper(Type type, string propertyName)
         {
             PropertyInfo target = type.GetProperty(propertyName, All);
@@ -219,14 +244,14 @@ namespace Gallio.Tests.Reflection
         public void PropertyWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<PropertyInfo, IPropertyInfo>(
-                typeof(Class1).GetProperty("Property1", All),
-                typeof(Class1).GetProperty("Property2", All),
+                typeof(ReflectionPolicySample.Class1).GetProperty("Property1", All),
+                typeof(ReflectionPolicySample.Class1).GetProperty("Property2", All),
                 GetProperty);
         }
 
         [RowTest]
-        [Row(typeof(Class1), "Event1")]
-        [Row(typeof(Class1), "Event2")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Event1")]
+        [Row(typeof(ReflectionPolicySample.Class1), "Event2")]
         public void EventWrapper(Type type, string eventName)
         {
             EventInfo target = type.GetEvent(eventName, All);
@@ -239,14 +264,14 @@ namespace Gallio.Tests.Reflection
         public void EventWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<EventInfo, IEventInfo>(
-                typeof(Class1).GetEvent("Event1", All),
-                typeof(Class1).GetEvent("Event2", All),
+                typeof(ReflectionPolicySample.Class1).GetEvent("Event1", All),
+                typeof(ReflectionPolicySample.Class1).GetEvent("Event2", All),
                 GetEvent);
         }
 
         [RowTest]
-        [Row(typeof(Class1))]
-        [Row(typeof(Struct1<,>))]
+        [Row(typeof(ReflectionPolicySample.Class1))]
+        [Row(typeof(ReflectionPolicySample.Struct1<,>))]
         public void ConstructorWrapper(Type type)
         {
             ConstructorInfo target = type.GetConstructors(All)[0];
@@ -259,8 +284,8 @@ namespace Gallio.Tests.Reflection
         public void ConstructorWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<ConstructorInfo, IConstructorInfo>(
-                typeof(Class1).GetConstructors(All)[0],
-                typeof(Struct1<,>).GetConstructors(All)[0],
+                typeof(ReflectionPolicySample.Class1).GetConstructors(All)[0],
+                typeof(ReflectionPolicySample.Struct1<,>).GetConstructors(All)[0],
                 GetConstructor);
         }
 
@@ -270,7 +295,7 @@ namespace Gallio.Tests.Reflection
         [Row(-1)]
         public void ParameterWrapper(int position)
         {
-            MethodInfo method = typeof(Interface1).GetMethod("Method1");
+            MethodInfo method = typeof(ReflectionPolicySample.Interface1).GetMethod("Method1");
             ParameterInfo target = position == -1 ? method.ReturnParameter : method.GetParameters()[position];
             IParameterInfo info = GetMethodParameter(target);
 
@@ -280,7 +305,7 @@ namespace Gallio.Tests.Reflection
         [Test]
         public void ParameterWrapper_EqualityAndHashcode()
         {
-            MethodInfo method = typeof(Interface1).GetMethod("Method1");
+            MethodInfo method = typeof(ReflectionPolicySample.Interface1).GetMethod("Method1");
 
             VerifyEqualityAndHashcodeContracts<ParameterInfo, IParameterInfo>(
                 method.GetParameters()[0],
@@ -293,7 +318,7 @@ namespace Gallio.Tests.Reflection
         [Row(1)]
         public void GenericParameterWrapper(int position)
         {
-            Type target = typeof(Struct1<,>).GetGenericArguments()[position];
+            Type target = typeof(ReflectionPolicySample.Struct1<,>).GetGenericArguments()[position];
             IGenericParameterInfo info = GetGenericTypeParameter(target);
 
             WrapperAssert.AreEquivalent(target, info);
@@ -303,24 +328,24 @@ namespace Gallio.Tests.Reflection
         public void GenericParameterWrapper_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<Type, IGenericParameterInfo>(
-                typeof(Struct1<,>).GetGenericArguments()[0],
-                typeof(Struct1<,>).GetGenericArguments()[1],
+                typeof(ReflectionPolicySample.Struct1<,>).GetGenericArguments()[0],
+                typeof(ReflectionPolicySample.Struct1<,>).GetGenericArguments()[1],
                 GetGenericTypeParameter);
         }
 
         [RowTest]
-        [Row(typeof(Class3), 0)]
-        [Row(typeof(Class3), 1)]
-        [Row(typeof(Interface1), 0)]
-        [Row(typeof(Interface2), 0)]
+        [Row(typeof(ReflectionPolicySample.Class3), 0)]
+        [Row(typeof(ReflectionPolicySample.Class3), 1)]
+        [Row(typeof(ReflectionPolicySample.Interface1), 0)]
+        [Row(typeof(ReflectionPolicySample.Interface2), 0)]
         public void AttributeWrapper(Type type, int index)
         {
-            SampleAttribute target = (SampleAttribute) type.GetCustomAttributes(typeof(SampleAttribute), true)[index];
+            SampleAttribute target = (SampleAttribute)type.GetCustomAttributes(typeof(SampleAttribute), true)[index];
             IAttributeInfo info = GenericUtils.ToArray(GetType(type).GetAttributeInfos(Reflector.Wrap(typeof(SampleAttribute)), true))[index];
 
             WrapperAssert.AreEquivalent(target, info);
 
-            SampleAttribute resolvedAttrib = (SampleAttribute) info.Resolve();
+            SampleAttribute resolvedAttrib = (SampleAttribute)info.Resolve();
             Assert.AreEqual(target.param, resolvedAttrib.param);
             Assert.AreEqual(target.Field, resolvedAttrib.Field);
             Assert.AreEqual(target.Property, resolvedAttrib.Property);
@@ -374,7 +399,7 @@ namespace Gallio.Tests.Reflection
             }
         }
 
-        private static void VerifyEqualityAndHashcodeContracts<TTarget, TWrapper>(
+        protected static void VerifyEqualityAndHashcodeContracts<TTarget, TWrapper>(
             TTarget target1, TTarget target2, Func<TTarget, TWrapper> wrapperFactory)
         {
             Assert.AreNotEqual(target1, target2, "Precondition for this method is that targets are different.");
@@ -396,73 +421,6 @@ namespace Gallio.Tests.Reflection
                     Assert.IsFalse((bool)equals.Invoke(wrapperFactory(target1), new object[] { null }));
                 }
             }
-        }
-
-        public abstract class Class1
-        {
-            static Class1() { }
-
-            public void Method1<T>(T param) { Event1 += null; }
-
-            [return: Sample(typeof(int))]
-            protected abstract int Method2();
-
-            public int Field1;
-            internal object Field2 = null;
-
-            public int Property1 { get { return 0; } }
-            public int Property2 { get { return 0; } set { } }
-            protected abstract string Property3 { set; }
-
-            [Sample(typeof(int))]
-            public event EventHandler Event1;
-            protected abstract event EventHandler Event2;
-        }
-
-        [Sample(typeof(int))]
-        private class Class2 : Class1
-        {
-            protected override event EventHandler Event2 { add { } remove { } }
-            protected override string Property3 { set { } }
-            protected override int Method2() { return 0; }
-        }
-
-        [Sample(typeof(string[]), Field = 2, Property = "foo")]
-        private class Class3 : Class2
-        {
-        }
-
-        private struct Struct1<[Sample(typeof(int))] S, T> : Interface1
-        {
-            public Struct1(S s, [Sample(typeof(string[]))] T t) { }
-
-            string Interface1.Method1([Sample(typeof(int), Field=5)] string s, int x) { return ""; }
-        }
-
-        [Sample(typeof(string[]), Field=2, Property="foo")]
-        public interface Interface1
-        {
-            string Method1(string s, int x);
-        }
-
-        [Sample(typeof(int))]
-        public interface Interface2
-        {
-        }
-
-        [AttributeUsage(AttributeTargets.All, AllowMultiple=true, Inherited=true)]
-        public class SampleAttribute : Attribute
-        {
-            internal Type param;
-            private string property;
-
-            public SampleAttribute(Type param)
-            {
-                this.param = param;
-            }
-
-            public int Field;
-            public string Property { get { return property; } set { property = value; } }
         }
     }
 }

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?>
+<AllAssemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Product="JetBrains.ReSharper" xmlns="urn:shemas-jetbrains-com:all-assemblies-xml">
+	<KnownConfigurations>
+	</KnownConfigurations>
+	<KnownEditions>
+	</KnownEditions>
+	<Assemblies>
+		<Assembly Name="JetBrains.Shell" Configurations="" MsiComponentGuid="{87A693AD-BAF2-4BF6-8D26-32760D94E325}" HasXmlSerializers="true"/>
+		<Assembly Name="JetBrains.UI" Configurations="" MsiComponentGuid="{4CBF3447-D3B4-4C2E-B3BA-15A1C2308694}" />
+		<Assembly Name="JetBrains.Util" Configurations="" MsiComponentGuid="{F06514D7-46B8-481C-8E85-C2D6AD14D83B}" />
+		<Assembly Name="JetBrains.Metadata" Configurations="" MsiComponentGuid="{A8860875-89A9-4634-B1F6-8A49424B13E8}" />
+		<Assembly Name="JetBrains.ReSharper.DocumentManager" Configurations="" MsiComponentGuid="{63466E2D-D48A-4D1D-900C-F5057B5FDCDE}" />
+		<Assembly Name="JetBrains.ReSharper.DocumentModel" Configurations="" MsiComponentGuid="{AB6EF649-C24B-4C28-9FC3-E1BF12D9B943}" />
+		<Assembly Name="JetBrains.ReSharper.ProjectModel" Configurations="" MsiComponentGuid="{3D26C989-B69A-4B8B-934F-6841644567D8}" />
+		<Assembly Name="JetBrains.ReSharper.Psi" Configurations="" MsiComponentGuid="{BACCDAC4-B43A-4D5D-8937-12840E9699C6}" />
+		<Assembly Name="JetBrains.ReSharper.Psi.CSharp" Configurations="" MsiComponentGuid="{D33C58C7-C349-4EEA-82CF-A1D49D8AC33E}" />
+		<Assembly Name="JetBrains.ReSharper.SolutionBuilder" Configurations="" MsiComponentGuid="{E9ACE02C-A6BF-4ACC-9A1C-1A17A32003B3}" />
+		<Assembly Name="JetBrains.ReSharper.UnitTestExplorer" Configurations="" MsiComponentGuid="{6934FD6C-580F-438C-AFD0-466377AFDC48}" />
+		<Assembly Name="JetBrains.ReSharper.TaskRunnerFramework" Configurations="" MsiComponentGuid="{32005CDB-EF63-4A92-A115-61AAF0943D0D}" />
+	</Assemblies>
+</AllAssemblies>

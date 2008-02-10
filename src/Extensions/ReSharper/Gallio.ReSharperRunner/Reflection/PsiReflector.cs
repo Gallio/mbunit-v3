@@ -18,6 +18,7 @@ using System.Reflection;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection.Impl;
 using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Build;
 using JetBrains.ReSharper.Psi;
 
 namespace Gallio.ReSharperRunner.Reflection
@@ -285,19 +286,33 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <inheritdoc />
         public override IAssemblyInfo LoadAssembly(AssemblyName assemblyName)
         {
-            bool partialName = assemblyName.Name == assemblyName.FullName;
-
-            foreach (IAssembly candidateAssembly in manager.Solution.GetAllAssemblies())
+            foreach (IAssembly assembly in manager.Solution.GetAllAssemblies())
             {
-                AssemblyName candidateAssemblyName = candidateAssembly.AssemblyName;
+                if (IsMatchingAssemblyName(assemblyName, assembly.AssemblyName))
+                    return Wrap(assembly);
+            }
 
-                if (partialName && assemblyName.Name == candidateAssemblyName.Name
-                    || ! partialName && assemblyName.FullName == candidateAssemblyName.FullName)
-                    return Wrap(candidateAssembly);
+            foreach (IProject project in manager.Solution.GetAllProjects())
+            {
+                IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
+
+                if (IsMatchingAssemblyName(assemblyName, assemblyFile.AssemblyName))
+                    return Wrap(project);
             }
 
             throw new ArgumentException(String.Format("Could not find assembly '{0}' in the ReSharper code cache.",
                 assemblyName.FullName));
+        }
+
+        private static bool IsMatchingAssemblyName(AssemblyName desiredAssemblyName, AssemblyName candidateAssemblyName)
+        {
+            bool haveDesiredFullName = desiredAssemblyName.Name != desiredAssemblyName.FullName;
+            bool haveCandidateFullName = candidateAssemblyName.Name != candidateAssemblyName.FullName;
+
+            if (haveDesiredFullName && haveCandidateFullName)
+                return desiredAssemblyName.FullName == candidateAssemblyName.FullName;
+
+            return desiredAssemblyName.Name == candidateAssemblyName.Name;
         }
     }
 }
