@@ -76,7 +76,7 @@ namespace Gallio.NCoverIntegration
 
             driver.Start(redirectOutput);
             if (!driver.MessageCenter.WaitForProfilerReadyEvent())
-                throw new HostException("Timed out waiting for the NCover profiler to become ready.");
+                throw new HostException("Timed out waiting for the NCover profiler to become ready.  The launch may have failed because this version of NCover does not support running programs in 64bit mode.");
 
             driver.ConfigureProfiler();
             driver.MessageCenter.SetDriverReadyEvent();
