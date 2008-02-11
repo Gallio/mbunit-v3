@@ -1,4 +1,4 @@
-// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+﻿// Copyright 2008 MbUnit Project - http://www.mbunit.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Gallio.Collections;
@@ -276,6 +277,18 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public override string Name
+        {
+            get
+            {
+                string name = base.Name;
+                if (IsGenericType)
+                    name = string.Concat(name, "`", GenericParameters.Count.ToString(CultureInfo.InvariantCulture));
+                return name;
+            }
+        }
+
+        /// <inheritdoc />
         public override string FullName
         {
             get
@@ -298,19 +311,22 @@ namespace Gallio.Reflection.Impl
 
                     fullName.Append(Name);
 
-                    IList<ITypeInfo> genericArguments = GenericArguments;
-                    if (genericArguments.Count != 0)
+                    if (!IsGenericTypeDefinition)
                     {
-                        fullName.Append('[');
-
-                        for (int i = 0; i < genericArguments.Count; i++)
+                        IList<ITypeInfo> genericArguments = GenericArguments;
+                        if (genericArguments.Count != 0)
                         {
-                            if (i != 0)
-                                fullName.Append(',');
-                            fullName.Append('[').Append(genericArguments[i].AssemblyQualifiedName).Append(']');
-                        }
+                            fullName.Append('[');
 
-                        fullName.Append(']');
+                            for (int i = 0; i < genericArguments.Count; i++)
+                            {
+                                if (i != 0)
+                                    fullName.Append(',');
+                                fullName.Append('[').Append(genericArguments[i].AssemblyQualifiedName).Append(']');
+                            }
+
+                            fullName.Append(']');
+                        }
                     }
 
                     return fullName.ToString();

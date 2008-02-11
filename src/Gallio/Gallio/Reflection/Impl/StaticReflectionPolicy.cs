@@ -172,10 +172,12 @@ namespace Gallio.Reflection.Impl
         protected internal abstract IEnumerable<StaticAttributeWrapper> GetMemberCustomAttributes(StaticMemberWrapper member);
 
         /// <summary>
-        /// Gets the name of a member.
+        /// Gets the short name of a member.
+        /// In the case of a generic type, should exclude the generic parameter count
+        /// part of the name.  eg. "`1"
         /// </summary>
         /// <param name="member">The member, not null</param>
-        /// <returns>The member name</returns>
+        /// <returns>The member's name</returns>
         protected internal abstract string GetMemberName(StaticMemberWrapper member);
 
         /// <summary>

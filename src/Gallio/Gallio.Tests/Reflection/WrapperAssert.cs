@@ -114,7 +114,8 @@ namespace Gallio.Tests.Reflection
                 delegate(AssemblyName expected, AssemblyName actual) { return expected.FullName == actual.FullName; });
 
             foreach (Type type in target.GetTypes())
-                AreEqualWhenResolved(type, info.GetType(type.FullName));
+                if (type.IsPublic)
+                    AreEqualWhenResolved(type, info.GetType(type.FullName));
 
             AreElementsEqualWhenResolved(target.GetTypes(), info.GetTypes());
             AreElementsEqualWhenResolved(target.GetExportedTypes(), info.GetExportedTypes());
