@@ -1,3 +1,18 @@
+// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+// Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -75,7 +90,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (@namespace != null)
                 return Reflector.WrapNamespace(@namespace.QualifiedName);
 
-            throw new NotSupportedException("Unsupported declared element type.");
+            throw new NotSupportedException("Unsupported declared element type: " + target);
         }
 
         /// <summary>
@@ -434,19 +449,19 @@ namespace Gallio.ReSharperRunner.Reflection
         #region Members
         protected override IEnumerable<StaticAttributeWrapper> GetMemberCustomAttributes(StaticMemberWrapper member)
         {
-            ITypeMember memberHandle = (ITypeMember)member.Handle;
+            IAttributesOwner memberHandle = (IAttributesOwner)member.Handle;
             return GetAttributesForAttributeOwner(memberHandle);
         }
 
         protected override string GetMemberName(StaticMemberWrapper member)
         {
-            ITypeMember memberHandle = (ITypeMember)member.Handle;
+            IDeclaredElement memberHandle = (IDeclaredElement)member.Handle;
             return memberHandle.ShortName;
         }
 
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
-            ITypeMember memberHandle = (ITypeMember)member.Handle;
+            IDeclaredElement memberHandle = (IDeclaredElement)member.Handle;
             IDeclaration[] decl = memberHandle.GetDeclarations();
             if (decl.Length == 0)
                 return null;
@@ -475,19 +490,19 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticMethodWrapper GetEventAddMethod(StaticEventWrapper @event)
         {
             IEvent eventHandle = (IEvent)@event.Handle;
-            return new StaticMethodWrapper(this, eventHandle.Adder, @event.DeclaringType, @event.Substitution);
+            return WrapAccessor(eventHandle.Adder, @event);
         }
 
         protected override StaticMethodWrapper GetEventRaiseMethod(StaticEventWrapper @event)
         {
             IEvent eventHandle = (IEvent)@event.Handle;
-            return new StaticMethodWrapper(this, eventHandle.Raiser, @event.DeclaringType, @event.Substitution);
+            return WrapAccessor(eventHandle.Raiser, @event);
         }
 
         protected override StaticMethodWrapper GetEventRemoveMethod(StaticEventWrapper @event)
         {
             IEvent eventHandle = (IEvent)@event.Handle;
-            return new StaticMethodWrapper(this, eventHandle.Remover, @event.DeclaringType, @event.Substitution);
+            return WrapAccessor(eventHandle.Remover, @event);
         }
 
         protected override StaticTypeWrapper GetEventHandlerType(StaticEventWrapper @event)
@@ -553,13 +568,13 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticMethodWrapper GetPropertyGetMethod(StaticPropertyWrapper property)
         {
             IProperty propertyHandle = (IProperty)property.Handle;
-            return new StaticMethodWrapper(this, propertyHandle.Getter(false), property.DeclaringType, property.Substitution);
+            return WrapAccessor(propertyHandle.Getter(false), property);
         }
 
         protected override StaticMethodWrapper GetPropertySetMethod(StaticPropertyWrapper property)
         {
             IProperty propertyHandle = (IProperty)property.Handle;
-            return new StaticMethodWrapper(this, propertyHandle.Setter(false), property.DeclaringType, property.Substitution);
+            return WrapAccessor(propertyHandle.Setter(false), property);
         }
         #endregion
 
@@ -945,6 +960,11 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             foreach (IAttributeInstance attribute in owner.GetAttributeInstances(false))
                 yield return new StaticAttributeWrapper(this, attribute);
+        }
+
+        private StaticMethodWrapper WrapAccessor(IAccessor accessorHandle, StaticMemberWrapper member)
+        {
+            return accessorHandle != null ? new StaticMethodWrapper(this, accessorHandle, member.DeclaringType, member.Substitution) : null;
         }
         #endregion
     }

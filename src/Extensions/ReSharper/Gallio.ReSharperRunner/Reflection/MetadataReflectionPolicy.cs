@@ -1,4 +1,19 @@
-﻿using System;
+// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+// Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
@@ -271,7 +286,11 @@ namespace Gallio.ReSharperRunner.Reflection
             if (methodHandle != null)
                 return methodHandle.Name;
 
-            throw new NotSupportedException("Unsupported member type: " + member);
+            IMetadataGenericArgument genericArgumentHandle = entityHandle as IMetadataGenericArgument;
+            if (genericArgumentHandle != null)
+                return genericArgumentHandle.Name;
+
+            throw new NotSupportedException("Unsupported member type: " + entityHandle);
         }
 
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
@@ -289,19 +308,19 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticMethodWrapper GetEventAddMethod(StaticEventWrapper @event)
         {
             IMetadataEvent eventHandle = (IMetadataEvent) @event.Handle;
-            return eventHandle.Adder != null ? new StaticMethodWrapper(this, eventHandle.Adder, @event.DeclaringType, @event.Substitution) : null;
+            return WrapAccessor(eventHandle.Adder, @event);
         }
 
         protected override StaticMethodWrapper GetEventRaiseMethod(StaticEventWrapper @event)
         {
             IMetadataEvent eventHandle = (IMetadataEvent)@event.Handle;
-            return eventHandle.Raiser != null ? new StaticMethodWrapper(this, eventHandle.Raiser, @event.DeclaringType, @event.Substitution) : null;
+            return WrapAccessor(eventHandle.Raiser, @event);
         }
 
         protected override StaticMethodWrapper GetEventRemoveMethod(StaticEventWrapper @event)
         {
             IMetadataEvent eventHandle = (IMetadataEvent)@event.Handle;
-            return eventHandle.Remover != null ? new StaticMethodWrapper(this, eventHandle.Remover, @event.DeclaringType, @event.Substitution) : null;
+            return WrapAccessor(eventHandle.Remover, @event);
         }
 
         protected override StaticTypeWrapper GetEventHandlerType(StaticEventWrapper @event)
@@ -353,13 +372,13 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticMethodWrapper GetPropertyGetMethod(StaticPropertyWrapper property)
         {
             IMetadataProperty propertyHandle = (IMetadataProperty)property.Handle;
-            return propertyHandle.Getter != null ? new StaticMethodWrapper(this, propertyHandle.Getter, property.DeclaringType, property.Substitution) : null;
+            return WrapAccessor(propertyHandle.Getter, property);
         }
 
         protected override StaticMethodWrapper GetPropertySetMethod(StaticPropertyWrapper property)
         {
             IMetadataProperty propertyHandle = (IMetadataProperty)property.Handle;
-            return propertyHandle.Setter != null ? new StaticMethodWrapper(this, propertyHandle.Setter, property.DeclaringType, property.Substitution) : null;
+            return WrapAccessor(propertyHandle.Setter, property);
         }
         #endregion
 
@@ -532,7 +551,8 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticDeclaredTypeWrapper GetTypeBaseType(StaticDeclaredTypeWrapper type)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
-            return MakeDeclaredType(typeHandle.Base);
+            IMetadataClassType baseClassTypeHandle = typeHandle.Base;
+            return baseClassTypeHandle != null ? MakeDeclaredType(typeHandle.Base) : null;
         }
 
         protected override IList<StaticDeclaredTypeWrapper> GetTypeInterfaces(StaticDeclaredTypeWrapper type)
@@ -917,6 +937,13 @@ namespace Gallio.ReSharperRunner.Reflection
             //       does not expose it in a useful manner.
             PropertyInfo loaderProperty = assembly.GetType().GetProperty(@"Loader", BindingFlags.Instance | BindingFlags.NonPublic);
             return loaderProperty != null ? (MetadataLoader)loaderProperty.GetValue(assembly, null) : null;
+        }
+        #endregion
+
+        #region Misc
+        private StaticMethodWrapper WrapAccessor(IMetadataMethod accessorHandle, StaticMemberWrapper member)
+        {
+            return accessorHandle != null ? new StaticMethodWrapper(this, accessorHandle, member.DeclaringType, member.Substitution) : null;
         }
         #endregion
     }

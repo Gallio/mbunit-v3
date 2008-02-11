@@ -25,7 +25,7 @@ using JetBrains.Shell.Test;
 using JetBrains.Util;
 using MbUnit2::MbUnit.Framework;
 
-//[assembly: AssemblyCleanup(typeof(ReSharperTestHarness))]
+[assembly: AssemblyCleanup(typeof(ReSharperTestHarness))]
 
 namespace Gallio.ReSharperRunner.Tests
 {
