@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace Gallio.Reflection
 {
     /// <summary>
-    /// Provides information about the contents of an attribute.
+    /// Provides information about the contents of a custom attribute.
     /// </summary>
     public interface IAttributeInfo
     {

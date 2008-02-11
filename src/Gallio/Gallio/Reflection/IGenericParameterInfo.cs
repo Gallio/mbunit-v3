@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Gallio.Reflection
@@ -31,7 +32,7 @@ namespace Gallio.Reflection
     /// code model representation.
     /// </para>
     /// </summary>
-    public interface IGenericParameterInfo : ITypeInfo, ISlotInfo
+    public interface IGenericParameterInfo : ITypeInfo, ISlotInfo, IEquatable<IGenericParameterInfo>
     {
         /// <summary>
         /// Gets the generic parameter attributes.
@@ -48,6 +49,6 @@ namespace Gallio.Reflection
         /// <summary>
         /// Gets the constraints of the generic parameter.
         /// </summary>
-        ITypeInfo[] Constraints { get; }
+        IList<ITypeInfo> Constraints { get; }
     }
 }

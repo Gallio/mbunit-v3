@@ -113,56 +113,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Hosting\ReSharperLogger.cs" />
-    <Compile Include="Reflection\Impl\IPsiTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataReturnValueWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiArrayTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiAssemblyWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiAttributeWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiCodeElementWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiConstructedTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiConstructorWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiDeclaredTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiEventWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiFieldWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiFunctionWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiGenericParameterWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiMemberWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiMethodWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiModuleWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiParameterWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiPointerTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiProjectWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiPropertyWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\PsiWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataArrayTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataAssemblyWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataAttributeWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataClassTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataCodeElementWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataConstructedTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataConstructorWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataEventWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataFieldWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataFunctionWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataGenericParameterWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataMemberWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataMethodWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataParameterWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataPointerTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataPropertyWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataReferenceTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\MetadataWrapper.cs" />
-    <Compile Include="Reflection\ReSharperReflector.cs" />
-    <Compile Include="Reflection\BuiltInAssemblyResolver.cs" />
-    <Compile Include="Reflection\IAssemblyResolver.cs" />
+    <Compile Include="Reflection\MetadataReflectionPolicy.cs" />
+    <Compile Include="Reflection\PsiReflectionPolicy.cs" />
+    <Compile Include="Reflection\ReSharperReflectionPolicy.cs" />
     <Compile Include="Tasks\GallioRemoteAction.cs" />
     <Compile Include="Tasks\GallioRemoteTaskRunner.cs" />
     <Compile Include="Tasks\GallioRemoteTask.cs" />
     <Compile Include="Hosting\RuntimeProxyException.cs" />
     <Compile Include="Hosting\RuntimeProxy.cs" />
-    <Compile Include="Reflection\IReSharperCodeElementInfo.cs" />
     <Compile Include="Tasks\GallioTestAssemblyTask.cs" />
     <Compile Include="Tasks\GallioTestExplicitTask.cs" />
     <Compile Include="Tasks\GallioTestRunTask.cs" />
@@ -171,14 +129,12 @@
     <Compile Include="GallioTestProvider.cs" />
     <Compile Include="IUnitTestProviderDelegate.cs" />
     <Compile Include="NullTestProviderDelegate.cs" />
-    <Compile Include="Reflection\MetadataReflector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Reflection\PsiReflector.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

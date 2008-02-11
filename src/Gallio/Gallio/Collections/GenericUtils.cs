@@ -132,5 +132,47 @@ namespace Gallio.Collections
             foreach (T value in input)
                 output.Add(value);
         }
+
+        /// <summary>
+        /// Returns true if the elements of both lists are equal.
+        /// </summary>
+        /// <param name="a">The first collection</param>
+        /// <param name="b">The second collection</param>
+        /// <returns>True if the elements are equal</returns>
+        public static bool ElementsEqual<T>(IList<T> a, IList<T> b)
+        {
+            int count = a.Count;
+            if (count != b.Count)
+                return false;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (!Equals(a[i], b[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Returns true if both dictionaries have equal key/value pairs.
+        /// </summary>
+        /// <param name="a">The first collection</param>
+        /// <param name="b">The second collection</param>
+        /// <returns>True if the elements are equal</returns>
+        public static bool KeyValuePairsEqual<TKey, TValue>(IDictionary<TKey, TValue> a, IDictionary<TKey, TValue> b)
+        {
+            if (a.Count != b.Count)
+                return false;
+
+            foreach (KeyValuePair<TKey, TValue> entry in a)
+            {
+                TValue value;
+                if (!b.TryGetValue(entry.Key, out value) || !Equals(entry.Value, value))
+                    return false;
+            }
+
+            return true;
+        }
     }
 }

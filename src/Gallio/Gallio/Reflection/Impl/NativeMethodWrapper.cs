@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection.Impl;
 
 namespace Gallio.Reflection.Impl
@@ -60,6 +61,13 @@ namespace Gallio.Reflection.Impl
         public IParameterInfo ReturnParameter
         {
             get { return Reflector.Wrap(Target.ReturnParameter); }
+        }
+
+        public IMethodInfo MakeGenericMethod(IList<ITypeInfo> genericArguments)
+        {
+            Type[] resolvedGenericArguments = GenericUtils.ConvertAllToArray<ITypeInfo, Type>(genericArguments,
+                delegate(ITypeInfo genericArgument) { return genericArgument.Resolve(true); });
+            return Reflector.Wrap(Target.MakeGenericMethod(resolvedGenericArguments));
         }
 
         public override CodeElementKind Kind

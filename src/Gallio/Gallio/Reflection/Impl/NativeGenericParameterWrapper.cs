@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Gallio.Reflection.Impl
@@ -40,7 +41,7 @@ namespace Gallio.Reflection.Impl
             get { return Reflector.Wrap((MethodInfo)Target.DeclaringMethod); }
         }
 
-        public ITypeInfo[] Constraints
+        public IList<ITypeInfo> Constraints
         {
             get { return Array.ConvertAll<Type, ITypeInfo>(Target.GetGenericParameterConstraints(), Reflector.Wrap); }
         }
@@ -56,6 +57,11 @@ namespace Gallio.Reflection.Impl
         }
 
         public bool Equals(ISlotInfo other)
+        {
+            return Equals((object)other);
+        }
+
+        public bool Equals(IGenericParameterInfo other)
         {
             return Equals((object)other);
         }

@@ -139,7 +139,7 @@ namespace Gallio.Reflection
         /// <summary>
         /// Gets all constructors of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The method binding flags</param>
+        /// <param name="bindingFlags">The binding flags</param>
         /// <returns>The constructors</returns>
         IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
 
@@ -147,35 +147,59 @@ namespace Gallio.Reflection
         /// Gets a method by name, or null if not found.
         /// </summary>
         /// <param name="methodName">The method name</param>
-        /// <param name="bindingFlags">The method binding flags</param>
+        /// <param name="bindingFlags">The binding flags</param>
         /// <returns>The method</returns>
         IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all methods of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The method binding flags</param>
+        /// <param name="bindingFlags">The binding flags</param>
         /// <returns>The methods</returns>
         IList<IMethodInfo> GetMethods(BindingFlags bindingFlags);
 
         /// <summary>
+        /// Gets a property by name, or null if not found.
+        /// </summary>
+        /// <param name="propertyName">The property name</param>
+        /// <param name="bindingFlags">The binding flags</param>
+        /// <returns>The property</returns>
+        IPropertyInfo GetProperty(string propertyName, BindingFlags bindingFlags);
+
+        /// <summary>
         /// Gets all properties of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The method binding flags</param>
+        /// <param name="bindingFlags">The binding flags</param>
         /// <returns>The properties</returns>
         IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
 
         /// <summary>
+        /// Gets a field by name, or null if not found.
+        /// </summary>
+        /// <param name="fieldName">The field name</param>
+        /// <param name="bindingFlags">The binding flags</param>
+        /// <returns>The property</returns>
+        IFieldInfo GetField(string fieldName, BindingFlags bindingFlags);
+
+        /// <summary>
         /// Gets all fields of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The method binding flags</param>
+        /// <param name="bindingFlags">The binding flags</param>
         /// <returns>The fields</returns>
         IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
 
         /// <summary>
+        /// Gets a event by name, or null if not found.
+        /// </summary>
+        /// <param name="eventName">The event name</param>
+        /// <param name="bindingFlags">The binding flags</param>
+        /// <returns>The event</returns>
+        IEventInfo GetEvent(string eventName, BindingFlags bindingFlags);
+
+        /// <summary>
         /// Gets all events of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The method binding flags</param>
+        /// <param name="bindingFlags">The binding flags</param>
         /// <returns>The events</returns>
         IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
 
@@ -185,6 +209,32 @@ namespace Gallio.Reflection
         /// <param name="type">The other type</param>
         /// <returns>True if this type is assignable from the other type</returns>
         bool IsAssignableFrom(ITypeInfo type);
+
+        /// <summary>
+        /// Makes an array type of the specified rank.
+        /// </summary>
+        /// <param name="arrayRank">The array rank</param>
+        /// <returns>The array type</returns>
+        ITypeInfo MakeArrayType(int arrayRank);
+
+        /// <summary>
+        /// Makes a pointer type.
+        /// </summary>
+        /// <returns>The pointer type</returns>
+        ITypeInfo MakePointerType();
+
+        /// <summary>
+        /// Makes a reference type.
+        /// </summary>
+        /// <returns>The reference type</returns>
+        ITypeInfo MakeByRefType();
+
+        /// <summary>
+        /// Makes a generic type instantiation.
+        /// </summary>
+        /// <param name="genericArguments">The generic arguments</param>
+        /// <returns>The generic type instantiation</returns>
+        ITypeInfo MakeGenericType(IList<ITypeInfo> genericArguments);
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

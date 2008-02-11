@@ -59,13 +59,13 @@ namespace Gallio.ReSharperRunner
 
         public void ExploreAssembly(IMetadataAssembly assembly, IProject project, UnitTestElementConsumer consumer)
         {
-            MetadataReflector reflector = new MetadataReflector(BuiltInAssemblyResolver.Instance, assembly, project);
-            IAssemblyInfo assemblyInfo = reflector.Wrap(assembly);
+            MetadataReflectionPolicy reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
+            IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
 
             if (assemblyInfo != null)
             {
                 ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-                ITestExplorer explorer = CreateTestExplorer(reflector);
+                ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
 
               explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
             }
@@ -73,15 +73,15 @@ namespace Gallio.ReSharperRunner
 
         public void ExploreFile(IFile psiFile, UnitTestElementLocationConsumer consumer, CheckForInterrupt interrupted)
         {
-            PsiReflector reflector = new PsiReflector(BuiltInAssemblyResolver.Instance, psiFile.GetManager());
+            PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
             ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-            ITestExplorer explorer = CreateTestExplorer(reflector);
+            ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
 
             psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
             {
                 ITypeDeclaration declaration = element as ITypeDeclaration;
                 if (declaration != null)
-                    ExploreTypeDeclaration(reflector, explorer, declaration, consumerAdapter.Consume);
+                    ExploreTypeDeclaration(reflectionPolicy, explorer, declaration, consumerAdapter.Consume);
             }, delegate(IElement element)
             {
                 if (interrupted())
@@ -92,25 +92,25 @@ namespace Gallio.ReSharperRunner
             }));
         }
 
-        private void ExploreTypeDeclaration(PsiReflector reflector, ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
+        private void ExploreTypeDeclaration(PsiReflectionPolicy reflectionPolicy, ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
         {
-            ITypeInfo typeInfo = reflector.Wrap(declaration.DeclaredElement);
+            ITypeInfo typeInfo = reflectionPolicy.Wrap(declaration.DeclaredElement);
 
             if (typeInfo != null)
                 explorer.ExploreType(typeInfo, consumer);
 
             foreach (ITypeDeclaration nestedDeclaration in declaration.NestedTypeDeclarations)
-                ExploreTypeDeclaration(reflector, explorer, nestedDeclaration, consumer);
+                ExploreTypeDeclaration(reflectionPolicy, explorer, nestedDeclaration, consumer);
         }
 
         public bool IsUnitTestElement(IDeclaredElement element)
         {
-            PsiReflector reflector = new PsiReflector(BuiltInAssemblyResolver.Instance, element.GetManager());
-            ICodeElementInfo elementInfo = reflector.Wrap(element);
+            PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
+            ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
             if (elementInfo == null)
                 return false;
 
-            ITestExplorer explorer = CreateTestExplorer(reflector);
+            ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
             return explorer.IsTest(elementInfo);
         }
 

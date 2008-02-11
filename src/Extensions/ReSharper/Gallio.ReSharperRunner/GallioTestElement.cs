@@ -80,8 +80,7 @@ namespace Gallio.ReSharperRunner
 
         public override IProject GetProject()
         {
-            IReSharperCodeElementInfo accessor = test.CodeElement as IReSharperCodeElementInfo;
-            return accessor != null ? accessor.Project : null;
+            return ReSharperReflectionPolicy.GetProject(test.CodeElement);
         }
 
         public override IList<IProjectItem> GetProjectItems()
@@ -118,8 +117,7 @@ namespace Gallio.ReSharperRunner
 
         public override IDeclaredElement GetDeclaredElement()
         {
-            IReSharperCodeElementInfo accessor = test.CodeElement as IReSharperCodeElementInfo;
-            return accessor != null ? accessor.DeclaredElement : null;
+            return ReSharperReflectionPolicy.GetDeclaredElement(test.CodeElement);
         }
 
         public override bool Matches(string filter)

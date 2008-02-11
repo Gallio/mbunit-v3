@@ -76,6 +76,13 @@ namespace Gallio.Reflection
         IParameterInfo ReturnParameter { get; }
 
         /// <summary>
+        /// Makes a generic method instantiation.
+        /// </summary>
+        /// <param name="genericArguments">The generic arguments</param>
+        /// <returns>The generic method instantiation</returns>
+        IMethodInfo MakeGenericMethod(IList<ITypeInfo> genericArguments);
+        
+        /// <summary>
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could

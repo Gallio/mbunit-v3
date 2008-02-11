@@ -1,0 +1,78 @@
+﻿using System;
+
+namespace Gallio.Reflection.Impl
+{
+    /// <summary>
+    /// A <see cref="StaticReflectionPolicy"/> array type wrapper.
+    /// </summary>
+    public class StaticArrayTypeWrapper : StaticConstructedTypeWrapper
+    {
+        private readonly int arrayRank;
+
+        /// <summary>
+        /// Creates a wrapper.
+        /// </summary>
+        /// <param name="policy">The reflection policy</param>
+        /// <param name="elementType">The element type</param>
+        /// <param name="arrayRank">The array rank</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="elementType" /> is null</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="arrayRank"/> is less than 1</exception>
+        public StaticArrayTypeWrapper(StaticReflectionPolicy policy, StaticTypeWrapper elementType, int arrayRank)
+            : base(policy, elementType)
+        {
+            if (arrayRank <= 0)
+                throw new ArgumentOutOfRangeException("arrayRank", "The array rank must be at least 1.");
+
+            this.arrayRank = arrayRank;
+        }
+
+        /// <inheritdoc />
+        public override bool IsArray
+        {
+            get { return true; }
+        }
+
+        /// <inheritdoc />
+        public override int ArrayRank
+        {
+            get { return arrayRank; }
+        }
+
+        /// <inheritdoc />
+        public override ITypeInfo BaseType
+        {
+            get { return EffectiveType; }
+        }
+
+        /// <inheritdoc />
+        protected internal override ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
+        {
+            return ElementType.ApplySubstitution(substitution).MakeArrayType(arrayRank);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            StaticArrayTypeWrapper other = obj as StaticArrayTypeWrapper;
+            return other != null && ElementType.Equals(other.ElementType) && arrayRank == other.arrayRank;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return ElementType.GetHashCode() ^ GetType().GetHashCode() ^ arrayRank;
+        }
+
+        /// <inheritdoc />
+        protected override ITypeInfo EffectiveType
+        {
+            get { return Reflector.Wrap(typeof(Array)); }
+        }
+
+        /// <inheritdoc />
+        protected override string NameSuffix
+        {
+            get { return arrayRank == 1 ? @"[]" : (@"[" + new String(',', arrayRank - 1) + @"]"); }
+        }
+    }
+}

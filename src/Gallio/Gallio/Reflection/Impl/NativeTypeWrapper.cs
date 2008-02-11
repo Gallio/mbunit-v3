@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection.Impl;
 
 namespace Gallio.Reflection.Impl
@@ -153,16 +154,31 @@ namespace Gallio.Reflection.Impl
             return Array.ConvertAll<MethodInfo, IMethodInfo>(methods, Reflector.Wrap);
         }
 
+        public IPropertyInfo GetProperty(string propertyName, BindingFlags bindingFlags)
+        {
+            return Reflector.Wrap(Target.GetProperty(propertyName, bindingFlags));
+        }
+
         public IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
         {
             PropertyInfo[] properties = Target.GetProperties(bindingFlags);
             return Array.ConvertAll<PropertyInfo, IPropertyInfo>(properties, Reflector.Wrap);
         }
 
+        public IFieldInfo GetField(string fieldName, BindingFlags bindingFlags)
+        {
+            return Reflector.Wrap(Target.GetField(fieldName, bindingFlags));
+        }
+
         public IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
         {
             FieldInfo[] fields = Target.GetFields(bindingFlags);
             return Array.ConvertAll<FieldInfo, IFieldInfo>(fields, Reflector.Wrap);
+        }
+
+        public IEventInfo GetEvent(string eventName, BindingFlags bindingFlags)
+        {
+            return Reflector.Wrap(Target.GetEvent(eventName, bindingFlags));
         }
 
         public IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
@@ -179,6 +195,30 @@ namespace Gallio.Reflection.Impl
         public bool IsAssignableFrom(ITypeInfo type)
         {
             return Target.IsAssignableFrom(type.Resolve(true));
+        }
+
+        public ITypeInfo MakeArrayType(int arrayRank)
+        {
+            if (arrayRank == 1)
+                return Reflector.Wrap(Target.MakeArrayType());
+            return Reflector.Wrap(Target.MakeArrayType(arrayRank));
+        }
+
+        public ITypeInfo MakePointerType()
+        {
+            return Reflector.Wrap(Target.MakePointerType());
+        }
+
+        public ITypeInfo MakeByRefType()
+        {
+            return Reflector.Wrap(Target.MakeByRefType());
+        }
+
+        public ITypeInfo MakeGenericType(IList<ITypeInfo> genericArguments)
+        {
+            Type[] resolvedGenericArguments = GenericUtils.ConvertAllToArray<ITypeInfo, Type>(genericArguments,
+                delegate(ITypeInfo genericArgument) { return genericArgument.Resolve(true); });
+            return Reflector.Wrap(Target.MakeGenericType(resolvedGenericArguments));
         }
 
         new public Type Resolve(bool throwOnError)

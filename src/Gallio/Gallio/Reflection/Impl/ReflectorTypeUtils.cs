@@ -95,37 +95,5 @@ namespace Gallio.Reflection.Impl
 
             return ReflectionUtils.GetDefaultValue(type.TypeCode);
         }
-
-        /// <summary>
-        /// Determines whether a type is primitive.
-        /// </summary>
-        /// <param name="type">The reflected type</param>
-        /// <returns>True if the type is primitive</returns>
-        public static bool IsPrimitive(ITypeInfo type)
-        {
-            while (type.ElementType != null)
-                type = type.ElementType;
-
-            switch (type.FullName)
-            {
-                case "System.Boolean":
-                case "System.Byte":
-                case "System.Char":
-                case "System.Double":
-                case "System.Int16":
-                case "System.Int32":
-                case "System.Int64":
-                case "System.SByte":
-                case "System.Single":
-                case "System.UInt16":
-                case "System.UInt32":
-                case "System.UInt64":
-                case "System.Void":
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
     }
 }

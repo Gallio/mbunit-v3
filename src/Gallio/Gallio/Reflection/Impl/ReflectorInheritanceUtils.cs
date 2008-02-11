@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using System.Reflection;
-using Gallio.Collections;
 using Gallio.Reflection;
 
 namespace Gallio.Reflection.Impl
@@ -38,7 +36,7 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         /// <param name="property">The property</param>
         /// <returns>The enumeration of inherited property declarations</returns>
-        public static IEnumerable<IPropertyInfo> EnumerateSuperProperties(IPropertyInfo property)
+        public static IEnumerable<ICodeElementInfo> EnumerateSuperProperties(IPropertyInfo property)
         {
             // TODO
             yield break;
@@ -49,7 +47,7 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         /// <param name="event">The event</param>
         /// <returns>The enumeration of inherited event declarations</returns>
-        public static IEnumerable<IEventInfo> EnumerateSuperEvents(IEventInfo @event)
+        public static IEnumerable<ICodeElementInfo> EnumerateSuperEvents(IEventInfo @event)
         {
             // TODO
             yield break;
@@ -60,7 +58,7 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         /// <param name="method">The method</param>
         /// <returns>The enumeration of inherited method declarations</returns>
-        public static IEnumerable<IMethodInfo> EnumerateSuperMethods(IMethodInfo method)
+        public static IEnumerable<ICodeElementInfo> EnumerateSuperMethods(IMethodInfo method)
         {
             // TODO
             yield break;
@@ -72,7 +70,7 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         /// <param name="parameter">The method parameter</param>
         /// <returns>The enumeration of inherited parameter declarations</returns>
-        public static IEnumerable<IParameterInfo> EnumerateSuperParameters(IParameterInfo parameter)
+        public static IEnumerable<ICodeElementInfo> EnumerateSuperParameters(IParameterInfo parameter)
         {
             // TODO
             yield break;
@@ -83,56 +81,10 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         /// <param name="type">The type</param>
         /// <returns>The enumeration of supertypes</returns>
-        public static IEnumerable<ITypeInfo> EnumerateSuperTypes(ITypeInfo type)
+        public static IEnumerable<ICodeElementInfo> EnumerateSuperTypes(ITypeInfo type)
         {
             for (ITypeInfo baseType = type.BaseType; baseType != null; baseType = baseType.BaseType)
                 yield return baseType;
-        }
-
-        /// <summary>
-        /// Enumerates all types that could declare members that satisfy the binding flags
-        /// proceeding from subtypes up to supertypes.  In particular, looks at the
-        /// <see cref="BindingFlags.DeclaredOnly" /> flag to determine whether supertypes
-        /// should be included in the enumeration.
-        /// </summary>
-        /// <param name="type">The type</param>
-        /// <param name="bindingFlags">The binding flags</param>
-        /// <returns>The enumeration of declaring types</returns>
-        public static IEnumerable<ITypeInfo> EnumerateDeclaringTypes(ITypeInfo type, BindingFlags bindingFlags)
-        {
-            yield return type;
-
-            if ((bindingFlags & BindingFlags.DeclaredOnly) == 0)
-            {
-                if ((type.TypeAttributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class)
-                {
-                    for (ITypeInfo baseType = type.BaseType; baseType != null; baseType = baseType.BaseType)
-                        yield return baseType;
-                }
-                else
-                {
-                    HashSet<ITypeInfo> interfaces = new HashSet<ITypeInfo>();
-                    PopulateSuperInterfaces(type, interfaces);
-
-                    foreach (ITypeInfo @interface in interfaces)
-                        yield return @interface;
-                }
-            }
-        }
-
-        private static void PopulateSuperInterfaces(ITypeInfo type, HashSet<ITypeInfo> interfaces)
-        {
-            foreach (ITypeInfo @interface in type.Interfaces)
-            {
-                interfaces.Add(type);
-                PopulateSuperInterfaces(@interface, interfaces);
-            }
-
-            for (ITypeInfo baseType = type.BaseType; baseType != null; baseType = baseType.BaseType)
-            {
-                interfaces.Add(baseType);
-                PopulateSuperInterfaces(baseType, interfaces);
-            }
         }
     }
 }

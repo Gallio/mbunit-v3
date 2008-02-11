@@ -322,6 +322,45 @@ namespace Gallio.Tests.Reflection
                     InterimAssert.Throws<AmbiguousMatchException>(delegate { info.GetMethod(method.Name, All); });
                 }
             }
+
+            foreach (PropertyInfo property in target.GetProperties(All))
+            {
+                try
+                {
+                    target.GetProperty(property.Name, All);
+                    InterimAssert.DoesNotThrow(delegate { AreEqualWhenResolved(property, info.GetProperty(property.Name, All)); });
+                }
+                catch (AmbiguousMatchException)
+                {
+                    InterimAssert.Throws<AmbiguousMatchException>(delegate { info.GetProperty(property.Name, All); });
+                }
+            }
+
+            foreach (FieldInfo field in target.GetFields(All))
+            {
+                try
+                {
+                    target.GetField(field.Name, All);
+                    InterimAssert.DoesNotThrow(delegate { AreEqualWhenResolved(field, info.GetField(field.Name, All)); });
+                }
+                catch (AmbiguousMatchException)
+                {
+                    InterimAssert.Throws<AmbiguousMatchException>(delegate { info.GetField(field.Name, All); });
+                }
+            }
+
+            foreach (EventInfo @event in target.GetEvents(All))
+            {
+                try
+                {
+                    target.GetEvent(@event.Name, All);
+                    InterimAssert.DoesNotThrow(delegate { AreEqualWhenResolved(@event, info.GetEvent(@event.Name, All)); });
+                }
+                catch (AmbiguousMatchException)
+                {
+                    InterimAssert.Throws<AmbiguousMatchException>(delegate { info.GetEvent(@event.Name, All); });
+                }
+            }
         }
 
         private static void AreMembersEquivalent(MemberInfo target, IMemberInfo info)

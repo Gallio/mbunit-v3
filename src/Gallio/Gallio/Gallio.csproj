@@ -238,8 +238,36 @@
     <Compile Include="Hosting\RemoteLogger.cs" />
     <Compile Include="Model\Execution\ProxyTestListener.cs" />
     <Compile Include="Reflection\Impl\IResolvableTypeInfo.cs" />
-    <Compile Include="Reflection\Impl\ReflectorNameUtils.cs" />
-    <Compile Include="Reflection\Impl\ReflectorPropertyUtils.cs" />
+    <Compile Include="Reflection\Impl\StaticArrayTypeWrapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\Impl\StaticAssemblyWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticConstructedTypeWrapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\Impl\StaticAttributeWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticCodeElementWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticConstructorWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticDeclaredTypeWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticDelegatingTypeWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticEventWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticFieldWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticFunctionWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticGenericParameterWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticMemberWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticMethodWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticParameterWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticPointerTypeWrapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\Impl\StaticPropertyWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticByRefTypeWrapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\Impl\StaticReflectionPolicy.cs" />
+    <Compile Include="Reflection\Impl\StaticTypeSubstitution.cs" />
+    <Compile Include="Reflection\Impl\StaticTypeWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticWrapper.cs" />
     <Compile Include="Reflection\Impl\UnresolvedCustomAttributeProvider.cs" />
     <Compile Include="Reflection\Impl\UnresolvedMethodInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedConstructorInfo.cs" />
@@ -259,6 +287,7 @@
     <Compile Include="Runner\ITestRunnerManager.cs" />
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
+    <Compile Include="Utilities\Memoizer.cs" />
     <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />
@@ -286,7 +315,6 @@
     <Compile Include="Reflection\Impl\ReflectorAttributeUtils.cs" />
     <Compile Include="Reflection\Impl\ReflectorFlagsUtils.cs" />
     <Compile Include="Reflection\Impl\ReflectorInheritanceUtils.cs" />
-    <Compile Include="Reflection\Impl\ReflectorMemberUtils.cs" />
     <Compile Include="Reflection\Impl\ReflectorResolveUtils.cs" />
     <Compile Include="Reflection\Impl\ReflectorTypeUtils.cs" />
     <Compile Include="Reflection\IReflectionPolicy.cs" />

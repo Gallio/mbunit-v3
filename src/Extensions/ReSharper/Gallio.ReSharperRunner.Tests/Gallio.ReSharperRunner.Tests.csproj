@@ -111,8 +111,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\BuiltInMetadataAssemblyResolver.cs" />
-    <Compile Include="Reflection\MetadataReflectorTest.cs" />
-    <Compile Include="Reflection\PsiReflectorTest.cs" />
+    <Compile Include="Reflection\MetadataReflectionPolicyTest.cs" />
+    <Compile Include="Reflection\PsiReflectionPolicyTest.cs" />
     <Compile Include="ReSharperTestHarness.cs" />
   </ItemGroup>
   <ItemGroup>
