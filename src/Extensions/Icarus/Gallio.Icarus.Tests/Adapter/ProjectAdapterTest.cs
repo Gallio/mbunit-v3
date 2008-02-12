@@ -19,10 +19,8 @@ using System.IO;
 using System.Windows.Forms;
 
 using Gallio.Icarus.Adapter;
-using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
-using Gallio.Icarus.Core.Presenter;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -61,6 +59,10 @@ namespace Gallio.Icarus.Tests
         private IEventRaiser newProjectEvent;
         private IEventRaiser getTestFrameworksEvent;
         private IEventRaiser getSourceLocationEvent;
+        private IEventRaiser updateHintDirectoriesEvent;
+        private IEventRaiser updateApplicationBaseDirectoryEvent;
+        private IEventRaiser updateWorkingDirectoryEvent;
+        private IEventRaiser updateShadowCopyEvent;
 
         [SetUp]
         public void SetUp()
@@ -127,6 +129,22 @@ namespace Gallio.Icarus.Tests
             mockView.GetSourceLocation += null;
             LastCall.IgnoreArguments();
             getSourceLocationEvent = LastCall.GetEventRaiser();
+
+            mockView.UpdateHintDirectoriesEvent += null;
+            LastCall.IgnoreArguments();
+            updateHintDirectoriesEvent = LastCall.GetEventRaiser();
+
+            mockView.UpdateApplicationBaseDirectoryEvent += null;
+            LastCall.IgnoreArguments();
+            updateApplicationBaseDirectoryEvent = LastCall.GetEventRaiser();
+
+            mockView.UpdateWorkingDirectoryEvent += null;
+            LastCall.IgnoreArguments();
+            updateWorkingDirectoryEvent = LastCall.GetEventRaiser();
+
+            mockView.UpdateShadowCopyEvent += null;
+            LastCall.IgnoreArguments();
+            updateShadowCopyEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -270,7 +288,14 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void OpenProjectEventHandler_Test()
         {
+            Project project = new Project();
+            project.TestPackageConfig.AssemblyFiles.Add("test.dll");
             IdFilter<ITest> idFilter = new IdFilter<ITest>(new EqualityFilter<string>("test"));
+            project.TestFilters.Add(new FilterInfo("Latest", idFilter.ToFilterExpr()));
+            mockView.HintDirectories = project.TestPackageConfig.HintDirectories;
+            mockView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
+            mockView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
+            mockView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
             string mode = "Namespace";
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
             GetTestTreeEventArgs e = new GetTestTreeEventArgs(mode, true, false, new TestPackageConfig());
@@ -281,9 +306,6 @@ namespace Gallio.Icarus.Tests
             mockPresenter.SetFilter(projectAdapter, new SetFilterEventArgs("Latest", idFilter));
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
-            Project project = new Project();
-            project.TestPackageConfig.AssemblyFiles.Add("test.dll");
-            project.TestFilters.Add(new FilterInfo("Latest", idFilter.ToFilterExpr()));
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.GetTestTree += new EventHandler<GetTestTreeEventArgs>(mockPresenter.GetTestTree);
             projectAdapter.SetFilter += new EventHandler<SetFilterEventArgs>(mockPresenter.SetFilter);
@@ -292,6 +314,51 @@ namespace Gallio.Icarus.Tests
             Assert.AreEqual(0, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
             openProjectEvent.Raise(mockView, new OpenProjectEventArgs(fileName, mode));
             Assert.AreEqual(1, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
+        }
+
+        [Test]
+        public void UpdateHintDirectoriesEventHandler_Test()
+        {
+            List<string> list = new List<string>();
+            list.Add("test");
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            Assert.AreEqual(0, projectAdapter.Project.TestPackageConfig.HintDirectories.Count);
+            updateHintDirectoriesEvent.Raise(mockView, new StringListEventArgs(list));
+            Assert.AreEqual(1, projectAdapter.Project.TestPackageConfig.HintDirectories.Count);
+            Assert.AreEqual("test", projectAdapter.Project.TestPackageConfig.HintDirectories[0]);
+        }
+
+        [Test]
+        public void UpdateApplicationBaseDirectoryEventHandler_Test()
+        {
+            string applicationBaseDirectory = "test";
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            Assert.AreEqual(string.Empty, projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+            updateApplicationBaseDirectoryEvent.Raise(mockView, new SingleStringEventArgs(applicationBaseDirectory));
+            Assert.AreEqual(applicationBaseDirectory, projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+        }
+
+        [Test]
+        public void UpdateWorkingDirectoryEventHandler_Test()
+        {
+            string workingDirectory = "test";
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            Assert.AreEqual(string.Empty, projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory);
+            updateWorkingDirectoryEvent.Raise(mockView, new SingleStringEventArgs(workingDirectory));
+            Assert.AreEqual(workingDirectory, projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory);
+        }
+
+        [Test]
+        public void UpdateShadowCopyEventHandler_Test()
+        {
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            Assert.IsFalse(projectAdapter.Project.TestPackageConfig.HostSetup.ShadowCopy);
+            updateShadowCopyEvent.Raise(mockView, new SingleEventArgs<bool>(true));
+            Assert.IsTrue(projectAdapter.Project.TestPackageConfig.HostSetup.ShadowCopy);
         }
 
         //[Test, ExpectedException(typeof(InvalidOperationException))]

@@ -15,34 +15,20 @@
 
 using System;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Core.CustomEventArgs 
 {
-    public partial class LogWindow : DockWindow
+    public class SingleEventArgs<T> : EventArgs
     {
-        public LogWindow()
+        private readonly T arg;
+
+        public SingleEventArgs(T arg)
         {
-            InitializeComponent();
+            this.arg = arg;
         }
 
-        public LogWindow(string text) : this()
+        public T Arg
         {
-            Text = text;
-        }
-
-        public string LogBody
-        {
-            get { return logBody.Text; }
-            set { logBody.Text = value; }
-        }
-
-        private void clearAllToolStripButton_Click(object sender, EventArgs e)
-        {
-            logBody.Clear();
-        }
-
-        protected override string GetPersistString()
-        {
-            return GetType().ToString() + "," + Text;
+            get { return arg; }
         }
     }
 }

@@ -20,15 +20,11 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using System.Timers;
-using Timer = System.Timers.Timer;
 using System.Windows.Forms;
 
 using Gallio.Icarus.Controls;
-using Gallio.Icarus.Controls.Enums;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
-using Gallio.Icarus.Properties;
 using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -66,6 +62,7 @@ namespace Gallio.Icarus
         private LogWindow failuresWindow;
         private PerformanceMonitor performanceMonitor;
         private About aboutDialog;
+        private PropertiesWindow propertiesWindow;
         
         public TreeNode[] TestTreeCollection
         {
@@ -281,10 +278,28 @@ namespace Gallio.Icarus
                     return SerializationUtils.LoadFromXml<Settings>(settingsFile);
             }
             catch
-            {
-            }
-
+            { }
             return null;
+        }
+
+        public IList<string> HintDirectories
+        {
+            set { propertiesWindow.HintDirectories = value; }
+        }
+
+        public string ApplicationBaseDirectory
+        {
+            set { propertiesWindow.ApplicationBaseDirectory = value; }
+        }
+
+        public string WorkingDirectory
+        {
+            set { propertiesWindow.WorkingDirectory = value; }
+        }
+
+        public bool ShadowCopy
+        {
+            set { propertiesWindow.ShadowCopy = value; }
         }
 
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
@@ -302,6 +317,10 @@ namespace Gallio.Icarus
         public event EventHandler<OpenProjectEventArgs> OpenProject;
         public event EventHandler<EventArgs> NewProject;
         public event EventHandler<SingleStringEventArgs> GetSourceLocation;
+        public event EventHandler<StringListEventArgs> UpdateHintDirectoriesEvent;
+        public event EventHandler<SingleStringEventArgs> UpdateApplicationBaseDirectoryEvent;
+        public event EventHandler<SingleStringEventArgs> UpdateWorkingDirectoryEvent;
+        public event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
 
         public Main()
         {
@@ -320,6 +339,7 @@ namespace Gallio.Icarus
             failuresWindow = new LogWindow("Failures");
             performanceMonitor = new PerformanceMonitor();
             aboutDialog = new About();
+            propertiesWindow = new PropertiesWindow(this);
 
             deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
         }
@@ -336,6 +356,8 @@ namespace Gallio.Icarus
                 return reportWindow;
             else if (persistString == typeof(PerformanceMonitor).ToString())
                 return performanceMonitor;
+            else if (persistString == typeof(PropertiesWindow).ToString())
+                return propertiesWindow;
             else
             {
                 string[] parsedStrings = persistString.Split(new char[] { ',' });
@@ -1010,6 +1032,35 @@ namespace Gallio.Icarus
 
         public void AssemblyChanged(string filePath)
         {
+        }
+
+        public void UpdateHintDirectories(IList<string> hintDirectories)
+        {
+            if (UpdateHintDirectoriesEvent != null)
+                UpdateHintDirectoriesEvent(this, new StringListEventArgs(hintDirectories));
+        }
+
+        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            propertiesWindow.Show(dockPanel, DockState.Document);
+        }
+
+        public void UpdateApplicationBaseDirectory(string applicationBaseDirectory)
+        {
+            if (UpdateApplicationBaseDirectoryEvent != null)
+                UpdateApplicationBaseDirectoryEvent(this, new SingleStringEventArgs(applicationBaseDirectory));
+        }
+
+        public void UpdateWorkingDirectory(string workingDirectory)
+        {
+            if (UpdateWorkingDirectoryEvent != null)
+                UpdateWorkingDirectoryEvent(this, new SingleStringEventArgs(workingDirectory));
+        }
+
+        public void UpdateShadowCopy(bool shadowCopy)
+        {
+            if (UpdateShadowCopyEvent != null)
+                UpdateShadowCopyEvent(this, new SingleEventArgs<bool>(shadowCopy));
         }
     }
 }

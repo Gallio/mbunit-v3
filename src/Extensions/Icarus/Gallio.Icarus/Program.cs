@@ -61,6 +61,10 @@ namespace Gallio.Icarus
                             projectAdapter.Project = LoadProject(defaultProject);
                     }
                 }
+                main.HintDirectories = projectAdapter.Project.TestPackageConfig.HintDirectories;
+                main.ApplicationBaseDirectory = projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
+                main.ShadowCopy = projectAdapter.Project.TestPackageConfig.HostSetup.ShadowCopy;
+                main.WorkingDirectory = projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory;
                 ProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, new TestRunnerModel());
                 Application.Run(main);
             }

@@ -126,9 +126,34 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.NewProject += NewProjectEventHandler;
             projectAdapterView.GetTestFrameworks += OnGetTestFrameworks;
             projectAdapterView.GetSourceLocation += OnGetSourceLocation;
+            projectAdapterView.UpdateHintDirectoriesEvent += OnUpdateHintDirectoriesEvent;
+            projectAdapterView.UpdateApplicationBaseDirectoryEvent += OnUpdateApplicationBaseDirectoryEvent;
+            projectAdapterView.UpdateWorkingDirectoryEvent += UpdateWorkingDirectoryEventHandler;
+            projectAdapterView.UpdateShadowCopyEvent += UpdateShadowCopyEventHandler;
 
             // assembly watcher
             assemblyWatcher.AssemblyChangedEvent += new AssemblyWatcher.AssemblyChangedHandler(assemblyWatcher_AssemblyChangedEvent);
+        }
+
+        private void OnUpdateHintDirectoriesEvent(object sender, StringListEventArgs e)
+        {
+            project.TestPackageConfig.HintDirectories.Clear();
+            project.TestPackageConfig.HintDirectories.AddRange(e.List);
+        }
+
+        private void OnUpdateApplicationBaseDirectoryEvent(object sender, SingleStringEventArgs e)
+        {
+            project.TestPackageConfig.HostSetup.ApplicationBaseDirectory = e.String;
+        }
+
+        private void UpdateWorkingDirectoryEventHandler(object sender, SingleStringEventArgs e)
+        {
+            project.TestPackageConfig.HostSetup.WorkingDirectory = e.String;
+        }
+
+        private void UpdateShadowCopyEventHandler(object sender, SingleEventArgs<bool> e)
+        {
+            project.TestPackageConfig.HostSetup.ShadowCopy = e.Arg;
         }
 
         private void assemblyWatcher_AssemblyChangedEvent(string fullPath)
@@ -240,9 +265,18 @@ namespace Gallio.Icarus.Adapter
 
         private void OpenProjectEventHandler(object sender, OpenProjectEventArgs e)
         {
+            // deserialize project
             project = SerializationUtils.LoadFromXml<Project>(e.FileName);
+            projectAdapterView.HintDirectories = project.TestPackageConfig.HintDirectories;
+            projectAdapterView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
+            projectAdapterView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
+            projectAdapterView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
+
+            // load test model data
             if (GetTestTree != null)
                 GetTestTree(this, new GetTestTreeEventArgs(e.Mode, true, false, project.TestPackageConfig));
+
+            // set filter (when available)
             foreach (FilterInfo filterInfo in project.TestFilters)
             {
                 if (filterInfo.FilterName == "Latest")
@@ -251,6 +285,7 @@ namespace Gallio.Icarus.Adapter
                     projectAdapterView.ApplyFilter(filter);
                     if (SetFilter != null)
                         SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, filter));
+                    break;
                 }
             }
         }

@@ -65,6 +65,7 @@ namespace Gallio.Icarus
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.performanceMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.assembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeAssembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -198,7 +199,8 @@ namespace Gallio.Icarus
             this.assemblyListToolStripMenuItem,
             this.reportToolStripMenuItem,
             this.performanceMonitorToolStripMenuItem,
-            this.testResultsToolStripMenuItem});
+            this.testResultsToolStripMenuItem,
+            this.propertiesToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -241,6 +243,14 @@ namespace Gallio.Icarus
             this.testResultsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.testResultsToolStripMenuItem.Text = "Test results";
             this.testResultsToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // propertiesToolStripMenuItem
+            // 
+            this.propertiesToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.PropertyWindow;
+            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.propertiesToolStripMenuItem.Text = "Properties";
+            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // assembliesToolStripMenuItem
             // 
@@ -673,6 +683,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem failuresToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem performanceMonitorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testResultsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
     }
 }
 

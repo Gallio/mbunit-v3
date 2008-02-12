@@ -14,21 +14,14 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Interfaces;
 
-using WeifenLuo.WinFormsUI.Docking;
-
 namespace Gallio.Icarus
 {
-    public partial class TestExplorer : DockContent
+    public partial class TestExplorer : DockWindow
     {
         private IProjectAdapterView projectAdapterView;
 

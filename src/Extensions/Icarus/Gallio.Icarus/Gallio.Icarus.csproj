@@ -12,6 +12,21 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
     <ApplicationIcon>App.ico</ApplicationIcon>
+    <PublishUrl>http://localhost/Gallio.Icarus/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,6 +117,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Core\CustomEventArgs\AddAssembliesEventArgs.cs" />
+    <Compile Include="Core\CustomEventArgs\SingleEventArgs.cs" />
+    <Compile Include="Core\CustomEventArgs\StringListEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\GetTestTreeEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\OpenProjectEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SaveReportAsEventArgs.cs" />
@@ -115,6 +132,12 @@
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenter.cs" />
     <Compile Include="Core\ProgressMonitoring\TestRunnerMonitor.cs" />
     <Compile Include="Core\Remoting\AssemblyWatcher.cs" />
+    <Compile Include="DockWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockWindow.Designer.cs">
+      <DependentUpon>DockWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="IcarusLogger.cs" />
     <Compile Include="Interfaces\IProjectAdapter.cs" />
     <Compile Include="Interfaces\IProjectAdapterModel.cs" />
@@ -145,6 +168,12 @@
       <DependentUpon>PerformanceMonitor.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="PropertiesWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertiesWindow.Designer.cs">
+      <DependentUpon>PropertiesWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="About.resx">
       <SubType>Designer</SubType>
@@ -156,6 +185,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CodeWindow.resx">
       <DependentUpon>CodeWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockWindow.resx">
+      <DependentUpon>DockWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="LogWindow.resx">
@@ -173,6 +206,10 @@
     <EmbeddedResource Include="PerformanceMonitor.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PerformanceMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertiesWindow.resx">
+      <DependentUpon>PropertiesWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -254,6 +291,7 @@
     <Content Include="Resources\OpenInVS.ico" />
     <Content Include="Resources\Options.ico" />
     <Content Include="Resources\PassMb.ico" />
+    <None Include="Resources\PropertyWindow.ico" />
     <Content Include="Resources\Reload.ico" />
     <Content Include="Resources\Report.ico" />
     <Content Include="Resources\Sort.png" />
@@ -271,6 +309,23 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

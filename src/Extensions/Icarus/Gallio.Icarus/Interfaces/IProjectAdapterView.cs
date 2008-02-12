@@ -42,12 +42,20 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> NewProject;
         event EventHandler<EventArgs> GetTestFrameworks;
         event EventHandler<SingleStringEventArgs> GetSourceLocation;
+        event EventHandler<StringListEventArgs> UpdateHintDirectoriesEvent;
+        event EventHandler<SingleStringEventArgs> UpdateApplicationBaseDirectoryEvent;
+        event EventHandler<SingleStringEventArgs> UpdateWorkingDirectoryEvent;
+        event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
         IList<string> TestFrameworks { set; }
+        IList<string> HintDirectories { set; }
+        string ApplicationBaseDirectory { set; }
+        string WorkingDirectory { set; }
+        bool ShadowCopy { set; }
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
@@ -67,5 +75,9 @@ namespace Gallio.Icarus.Interfaces
         void RemoveAssembliesFromTree();
         void ViewSourceCode(string testId);
         void AssemblyChanged(string filePath);
+        void UpdateHintDirectories(IList<string> hintDirectories);
+        void UpdateApplicationBaseDirectory(string applicationBaseDirectory);
+        void UpdateWorkingDirectory(string workingDirectory);
+        void UpdateShadowCopy(bool shadowCopy);
     }
 }

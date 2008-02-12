@@ -14,35 +14,22 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Core.CustomEventArgs 
 {
-    public partial class LogWindow : DockWindow
+    public class StringListEventArgs : EventArgs
     {
-        public LogWindow()
+        private readonly IList<string> list;
+
+        public StringListEventArgs(IList<string> list)
         {
-            InitializeComponent();
+            this.list = list;
         }
 
-        public LogWindow(string text) : this()
+        public IList<string> List
         {
-            Text = text;
-        }
-
-        public string LogBody
-        {
-            get { return logBody.Text; }
-            set { logBody.Text = value; }
-        }
-
-        private void clearAllToolStripButton_Click(object sender, EventArgs e)
-        {
-            logBody.Clear();
-        }
-
-        protected override string GetPersistString()
-        {
-            return GetType().ToString() + "," + Text;
+            get { return list; }
         }
     }
 }

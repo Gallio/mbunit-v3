@@ -17,11 +17,9 @@ using System.IO;
 
 using Gallio.Reflection;
 
-using WeifenLuo.WinFormsUI.Docking;
-
 namespace Gallio.Icarus
 {
-    public partial class CodeWindow : DockContent
+    public partial class CodeWindow : DockWindow
     {
         public CodeWindow(CodeLocation codeLocation)
         {

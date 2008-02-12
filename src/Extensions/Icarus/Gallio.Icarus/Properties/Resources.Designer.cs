@@ -67,6 +67,13 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ClearAll {
+            get {
+                object obj = ResourceManager.GetObject("ClearAll", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap cross {
             get {
                 object obj = ResourceManager.GetObject("cross", resourceCulture);
@@ -133,6 +140,13 @@ namespace Gallio.Icarus.Properties {
         internal static System.Drawing.Bitmap MbUnitLogo {
             get {
                 object obj = ResourceManager.GetObject("MbUnitLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PropertyWindow {
+            get {
+                object obj = ResourceManager.GetObject("PropertyWindow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

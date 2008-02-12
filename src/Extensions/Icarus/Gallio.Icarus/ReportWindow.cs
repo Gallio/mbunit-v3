@@ -15,19 +15,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 using Gallio.Icarus.Interfaces;
 
-using WeifenLuo.WinFormsUI.Docking;
-
 namespace Gallio.Icarus
 {
-    public partial class ReportWindow : DockContent
+    public partial class ReportWindow : DockWindow
     {
         private IProjectAdapterView projectAdapterView;
 

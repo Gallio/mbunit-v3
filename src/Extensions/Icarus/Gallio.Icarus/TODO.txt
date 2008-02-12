@@ -1,1 +1,2 @@
-1) AssemblyWatcher (see \v2\src\mbunit\MbUnit.Framework\Core\Remoting\AssemblyWatcher.cs). Wire up when adding assemblies and reload if modified.
+Plugin directories -> Options (Program.cs, add to RuntimeSetup (see Echo)).
+IcarusLogger -> Route log to new tab (Runtime?) Colour coding (see Echo)?

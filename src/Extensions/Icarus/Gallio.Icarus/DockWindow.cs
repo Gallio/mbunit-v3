@@ -1,4 +1,4 @@
-// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+﻿// Copyright 2008 MbUnit Project - http://www.mbunit.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,36 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
 {
-    public partial class PerformanceMonitor : DockWindow
+    public partial class DockWindow : DockContent
     {
-        public PerformanceMonitor()
+        public DockWindow()
         {
             InitializeComponent();
-            graphFilter.SelectedIndex = 0;
-            // refresh graph
-            testResultsGraph.DisplayGraph();
         }
 
-        public void UpdateTestResults(string testOutcome, string typeName, string namespaceName, string assemblyName)
+        private void DockWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            testResultsGraph.UpdateTestResults(testOutcome, typeName, namespaceName, assemblyName);
-        }
-
-        private void graphFilter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            testResultsGraph.Mode = (string)graphFilter.SelectedItem;
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
         }
     }
 }
