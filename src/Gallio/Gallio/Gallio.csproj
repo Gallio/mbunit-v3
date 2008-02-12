@@ -314,7 +314,6 @@
     <Compile Include="Reflection\CodeElementKind.cs" />
     <Compile Include="Reflection\Impl\ReflectorAttributeUtils.cs" />
     <Compile Include="Reflection\Impl\ReflectorFlagsUtils.cs" />
-    <Compile Include="Reflection\Impl\ReflectorInheritanceUtils.cs" />
     <Compile Include="Reflection\Impl\ReflectorResolveUtils.cs" />
     <Compile Include="Reflection\Impl\ReflectorTypeUtils.cs" />
     <Compile Include="Reflection\IReflectionPolicy.cs" />

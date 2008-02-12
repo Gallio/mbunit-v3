@@ -83,7 +83,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             Assembly target = typeof(ILogger).Assembly;
             IAssemblyInfo info = GetAssembly(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test("Other tests exercise Psi project modules, this one checks Psi assembly modules.")]

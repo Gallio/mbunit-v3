@@ -54,7 +54,7 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override ITypeInfo BaseType
+        protected override ITypeInfo BaseTypeInternal
         {
             get { return EffectiveType; }
         }

@@ -42,11 +42,6 @@ namespace Gallio.Reflection
         bool IsLiteral { get; }
 
         /// <summary>
-        /// Returns true if the field is public.
-        /// </summary>
-        bool IsPublic { get; }
-
-        /// <summary>
         /// Returns true if the field is read-only and can only be set from the constructor.
         /// </summary>
         bool IsInitOnly { get; }
@@ -55,6 +50,36 @@ namespace Gallio.Reflection
         /// Returns true if the field is static.
         /// </summary>
         bool IsStatic { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this field has Assembly level visibility.
+        /// </summary>
+        bool IsAssembly { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this field has Family level visibility.
+        /// </summary>
+        bool IsFamily { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this field has FamilyAndAssembly level visibility.
+        /// </summary>
+        bool IsFamilyAndAssembly { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this field has FamilyOrAssembly level visibility.
+        /// </summary>
+        bool IsFamilyOrAssembly { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the field is private.
+        /// </summary>
+        bool IsPrivate { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the field is public.
+        /// </summary>
+        bool IsPublic { get; }
 
         /// <summary>
         /// Resolves the wrapper to its native reflection target.

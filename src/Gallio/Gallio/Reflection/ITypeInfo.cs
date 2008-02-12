@@ -63,9 +63,74 @@ namespace Gallio.Reflection
         TypeAttributes TypeAttributes { get; }
 
         /// <summary>
-        /// Gets the element type of a constructed type such as an array or pointer, or null if none.
+        /// Returns true if the type is abstract and must be overridden.
         /// </summary>
-        ITypeInfo ElementType { get; }
+        bool IsAbstract { get; }
+
+        /// <summary>
+        /// Returns true if the type is a class.
+        /// </summary>
+        bool IsClass { get; }
+
+        /// <summary>
+        /// Returns true if the type is an interface.
+        /// </summary>
+        bool IsInterface { get; }
+
+        /// <summary>
+        /// Returns true if the type represents an enumeration.
+        /// </summary>
+        bool IsEnum { get; }
+
+        /// <summary>
+        /// Returns true if the type is a value type.
+        /// </summary>
+        bool IsValueType { get; }
+
+        /// <summary>
+        /// Returns true if the type is nested.
+        /// </summary>
+        bool IsNested { get; }
+
+        /// <summary>
+        /// Returns true if the type is nested and is visible only within its own assembly.
+        /// </summary>
+        bool IsNestedAssembly { get; }
+
+        /// <summary>
+        /// Returns true if the type is nested and visible only to classes that belong to both its own family and its own assembly.
+        /// </summary>
+        bool IsNestedFamilyAndAssembly { get; }
+
+        /// <summary>
+        /// Returns true if the type is nested and visible only within its own family.
+        /// </summary>
+        bool IsNestedFamily { get; }
+
+        /// <summary>
+        /// Returns true if the type is nested and visible only to classes that belong to either its own family or to its own assembly.
+        /// </summary>
+        bool IsNestedFamilyOrAssembly { get; }
+
+        /// <summary>
+        /// Returns true if the type is nested and declared private.
+        /// </summary>
+        bool IsNestedPrivate { get; }
+
+        /// <summary>
+        /// Returns true if the type is nested and declared public.
+        /// </summary>
+        bool IsNestedPublic { get; }
+
+        /// <summary>
+        /// Returns true if the type is declared public.
+        /// </summary>
+        bool IsPublic { get; }
+
+        /// <summary>
+        /// Returns true if the type is not declared public.
+        /// </summary>
+        bool IsNotPublic { get; }
 
         /// <summary>
         /// Returns true if the type represents an array.
@@ -135,6 +200,11 @@ namespace Gallio.Reflection
         /// </summary>
         /// <returns>The type's interfaces</returns>
         IList<ITypeInfo> Interfaces { get; }
+
+        /// <summary>
+        /// Gets the element type of an array, pointer or byref type, or null if none.
+        /// </summary>
+        ITypeInfo ElementType { get; }
 
         /// <summary>
         /// Gets all constructors of the type that satisfy the binding flags.
@@ -209,6 +279,13 @@ namespace Gallio.Reflection
         /// <param name="type">The other type</param>
         /// <returns>True if this type is assignable from the other type</returns>
         bool IsAssignableFrom(ITypeInfo type);
+
+        /// <summary>
+        /// Returns true if this type is a subclass of the specified type.
+        /// </summary>
+        /// <param name="type">The other type</param>
+        /// <returns>True if this type is a subclass of the other type, and is not the same as the other type</returns>
+        bool IsSubclassOf(ITypeInfo type);
 
         /// <summary>
         /// Makes an array type of the specified rank.

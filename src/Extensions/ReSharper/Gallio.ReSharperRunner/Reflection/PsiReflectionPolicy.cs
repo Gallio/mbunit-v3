@@ -612,6 +612,7 @@ namespace Gallio.ReSharperRunner.Reflection
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Static, functionHandle.IsStatic);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, functionHandle.IsVirtual);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.SpecialName, functionHandle.ShortName.StartsWith(@"."));
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, !functionHandle.IsOverride);
             return flags;
         }
 
@@ -798,6 +799,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             foreach (IMethod methodHandle in typeHandle.Methods)
                 yield return new StaticMethodWrapper(this, methodHandle, type, type.Substitution);
+
             foreach (IOperator operatorHandle in typeHandle.Operators)
                 yield return new StaticMethodWrapper(this, operatorHandle, type, type.Substitution);
 

@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Collections;
 
 namespace Gallio.Reflection.Impl
 {
@@ -38,14 +37,54 @@ namespace Gallio.Reflection.Impl
             get { return Target.IsAbstract; }
         }
 
-        public bool IsPublic
+        public bool IsFinal
         {
-            get { return Target.IsPublic; }
+            get { return Target.IsFinal; }
         }
 
         public bool IsStatic
         {
             get { return Target.IsStatic; }
+        }
+
+        public bool IsVirtual
+        {
+            get { return Target.IsVirtual; }
+        }
+
+        public bool IsAssembly
+        {
+            get { return Target.IsAssembly; }
+        }
+
+        public bool IsFamily
+        {
+            get { return Target.IsFamily; }
+        }
+
+        public bool IsFamilyAndAssembly
+        {
+            get { return Target.IsFamilyAndAssembly; }
+        }
+
+        public bool IsFamilyOrAssembly
+        {
+            get { return Target.IsFamilyOrAssembly; }
+        }
+
+        public bool IsPrivate
+        {
+            get { return Target.IsPrivate; }
+        }
+
+        public bool IsPublic
+        {
+            get { return Target.IsPublic; }
+        }
+
+        public bool IsHideBySig
+        {
+            get { return Target.IsHideBySig; }
         }
 
         public IList<IParameterInfo> Parameters

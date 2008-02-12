@@ -94,6 +94,24 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public bool IsIn
+        {
+            get { return (ParameterAttributes & ParameterAttributes.In) != 0; }
+        }
+
+        /// <inheritdoc />
+        public bool IsOptional
+        {
+            get { return (ParameterAttributes & ParameterAttributes.Optional) != 0; }
+        }
+
+        /// <inheritdoc />
+        public bool IsOut
+        {
+            get { return (ParameterAttributes & ParameterAttributes.Out) != 0; }
+        }
+
+        /// <inheritdoc />
         public ParameterInfo Resolve(bool throwOnError)
         {
             return ReflectorResolveUtils.ResolveParameter(this, throwOnError);
@@ -157,7 +175,14 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
-            return ReflectorInheritanceUtils.EnumerateSuperParameters(this);
+            StaticMethodWrapper method = Member as StaticMethodWrapper;
+            if (method != null)
+            {
+                int position = Position;
+
+                foreach (StaticMethodWrapper superMethod in method.GetOverrides())
+                    yield return superMethod.Parameters[position];
+            }
         }
     }
 }

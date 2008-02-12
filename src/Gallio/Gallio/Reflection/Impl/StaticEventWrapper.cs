@@ -97,6 +97,47 @@ namespace Gallio.Reflection.Impl
             get { return Substitution.Apply(Policy.GetEventHandlerType(this)); }
         }
 
+        /// <summary>
+        /// Gets the events that this one overrides.
+        /// Only includes overrides that appear on class types, not interfaces.
+        /// </summary>
+        public IEnumerable<StaticEventWrapper> GetOverrides()
+        {
+            StaticMethodWrapper discriminator = GetDiscriminatorMethod(this);
+            if (!discriminator.IsOverride)
+                yield break;
+
+            foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
+            {
+                foreach (StaticEventWrapper other in Policy.GetTypeEvents(baseType))
+                {
+                    StaticMethodWrapper otherDiscriminator = GetDiscriminatorMethod(other);
+                    if (otherDiscriminator == null)
+                        yield break;
+
+                    if (discriminator.OverridesMethod(otherDiscriminator))
+                    {
+                        yield return other;
+
+                        if (!otherDiscriminator.IsOverride)
+                            yield break;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private StaticMethodWrapper GetDiscriminatorMethod(StaticEventWrapper @event)
+        {
+            if (AddMethod != null)
+                return @event.AddMethod;
+            if (RemoveMethod != null)
+                return @event.RemoveMethod;
+            if (RaiseMethod != null)
+                return @event.RaiseMethod;
+            return null;
+        }
+
         /// <inheritdoc />
         public EventInfo Resolve(bool throwOnError)
         {
@@ -130,7 +171,8 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
-            return ReflectorInheritanceUtils.EnumerateSuperEvents(this);
+            foreach (StaticEventWrapper element in GetOverrides())
+                yield return element;
         }
     }
 }

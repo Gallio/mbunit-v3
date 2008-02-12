@@ -137,7 +137,7 @@ namespace Gallio.Tests.Reflection
             Assembly target = typeof(ReflectionPolicySample).Assembly;
             IAssemblyInfo info = GetAssembly(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace Gallio.Tests.Reflection
         {
             ITypeInfo info = GetType(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace Gallio.Tests.Reflection
             MethodInfo target = type.GetMethod(methodName, All);
             IMethodInfo info = GetMethod(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -216,7 +216,7 @@ namespace Gallio.Tests.Reflection
             FieldInfo target = type.GetField(fieldName, All);
             IFieldInfo info = GetField(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -237,7 +237,7 @@ namespace Gallio.Tests.Reflection
             PropertyInfo target = type.GetProperty(propertyName, All);
             IPropertyInfo info = GetProperty(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -252,12 +252,13 @@ namespace Gallio.Tests.Reflection
         [RowTest]
         [Row(typeof(ReflectionPolicySample.Class1), "Event1")]
         [Row(typeof(ReflectionPolicySample.Class1), "Event2")]
+        [Row(typeof(ReflectionPolicySample.Class2), "Event2")]
         public void EventWrapper(Type type, string eventName)
         {
             EventInfo target = type.GetEvent(eventName, All);
             IEventInfo info = GetEvent(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -277,7 +278,7 @@ namespace Gallio.Tests.Reflection
             ConstructorInfo target = type.GetConstructors(All)[0];
             IConstructorInfo info = GetConstructor(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -299,7 +300,7 @@ namespace Gallio.Tests.Reflection
             ParameterInfo target = position == -1 ? method.ReturnParameter : method.GetParameters()[position];
             IParameterInfo info = GetMethodParameter(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -321,7 +322,7 @@ namespace Gallio.Tests.Reflection
             Type target = typeof(ReflectionPolicySample.Struct1<,>).GetGenericArguments()[position];
             IGenericParameterInfo info = GetGenericTypeParameter(target);
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
         }
 
         [Test]
@@ -343,7 +344,7 @@ namespace Gallio.Tests.Reflection
             SampleAttribute target = (SampleAttribute)type.GetCustomAttributes(typeof(SampleAttribute), true)[index];
             IAttributeInfo info = GenericUtils.ToArray(GetType(type).GetAttributeInfos(Reflector.Wrap(typeof(SampleAttribute)), true))[index];
 
-            WrapperAssert.AreEquivalent(target, info);
+            WrapperAssert.AreEquivalent(target, info, false);
 
             SampleAttribute resolvedAttrib = (SampleAttribute)info.Resolve();
             Assert.AreEqual(target.param, resolvedAttrib.param);
@@ -352,7 +353,7 @@ namespace Gallio.Tests.Reflection
 
             try
             {
-                WrapperAssert.AreEquivalent(typeof(SampleAttribute).GetConstructors()[0], info.Constructor);
+                WrapperAssert.AreEquivalent(typeof(SampleAttribute).GetConstructors()[0], info.Constructor, false);
             }
             catch (NotSupportedException)
             {
@@ -370,13 +371,19 @@ namespace Gallio.Tests.Reflection
                     // This is also acceptable behavior.
                 }
 
-                CollectionAssert.AreElementsEqual(new KeyValuePair<IFieldInfo, object>[] {
-                    new KeyValuePair<IFieldInfo, object>(GetField(typeof(SampleAttribute).GetField("Field")), 0)
-                }, info.InitializedFieldValues);
+                IDictionary<IFieldInfo, object> fieldValues = info.InitializedFieldValues;
+                if (fieldValues.Count != 0)
+                {
+                    Assert.AreEqual(1, fieldValues.Count, "The implementation may return values for uninitialized fields, but there is only one such field.");
+                    Assert.AreEqual(0, fieldValues[GetField(typeof(SampleAttribute).GetField("Field"))]);
+                }
 
-                CollectionAssert.AreElementsEqual(new KeyValuePair<IPropertyInfo, object>[] {
-                    new KeyValuePair<IPropertyInfo, object>(GetProperty(typeof(SampleAttribute).GetProperty("Property")), null)
-                }, info.InitializedPropertyValues);
+                IDictionary<IPropertyInfo, object> propertyValues = info.InitializedPropertyValues;
+                if (propertyValues.Count != 0)
+                {
+                    Assert.AreEqual(1, propertyValues.Count, "The implementation may return values uninitialized properties, but there is only one such field.");
+                    Assert.AreEqual(null, propertyValues[GetProperty(typeof(SampleAttribute).GetProperty("Property"))]);
+                }
             }
             else
             {
@@ -397,6 +404,15 @@ namespace Gallio.Tests.Reflection
                     new KeyValuePair<IPropertyInfo, object>(GetProperty(typeof(SampleAttribute).GetProperty("Property")), "foo")
                 }, info.InitializedPropertyValues);
             }
+        }
+
+        [Test]
+        public void ExhausiveComparison()
+        {
+            Assembly assembly = typeof(ReflectionPolicySample).Assembly;
+            IAssemblyInfo info = GetAssembly(assembly);
+
+            WrapperAssert.AreEquivalent(assembly, info, true);
         }
 
         protected static void VerifyEqualityAndHashcodeContracts<TTarget, TWrapper>(

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
@@ -132,6 +133,99 @@ namespace Gallio.Reflection.Impl
             }
         }
 
+        /// <summary>
+        /// Returns true if this method overrides another.
+        /// </summary>
+        public bool IsOverride
+        {
+            get { return (MethodAttributes & (MethodAttributes.Virtual | MethodAttributes.NewSlot)) == MethodAttributes.Virtual; }
+        }
+
+        /// <summary>
+        /// Gets the methods that this one overrides.
+        /// Only includes overrides that appear on class types, not interfaces.
+        /// </summary>
+        public IEnumerable<StaticMethodWrapper> GetOverrides()
+        {
+            if (!IsOverride)
+                yield break;
+
+            foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
+            {
+                foreach (StaticMethodWrapper other in Policy.GetTypeMethods(baseType))
+                {
+                    if (OverridesMethod(other))
+                    {
+                        yield return other;
+
+                        if (!other.IsOverride)
+                            yield break;
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this method overrides the specified method.
+        /// </summary>
+        /// <remarks>
+        /// This method assumes that <paramref name="other"/> is defined by
+        /// a base type of this method's declaring type.
+        /// </remarks>
+        /// <param name="other">The other method</param>
+        /// <returns>True if this method overrides the other method</returns>
+        public bool OverridesMethod(StaticMethodWrapper other)
+        {
+            if (Name != other.Name)
+                return false;
+
+            if (! IsHideBySig)
+                return true;
+
+            if (GenericArguments.Count != other.GenericArguments.Count)
+                return false;
+
+            if (IsGenericMethod)
+            {
+                IList<StaticGenericParameterWrapper> genericParameters = GenericParameters;
+                IList<StaticGenericParameterWrapper> otherGenericParameters = other.GenericParameters;
+
+                if (genericParameters.Count != otherGenericParameters.Count)
+                    return false;
+
+                // Note: We perform a substitution on the method parameters to ensure that the
+                //       same generic parameter references are used for both.  Any generic method
+                //       parameter references that appear in the signature should thus be directly comparable.
+                return CompareSignatures(GenericMethodDefinition,
+                    other.GenericMethodDefinition.MakeGenericMethod(
+                    new CovariantList<StaticGenericParameterWrapper, ITypeInfo>(genericParameters)));
+            }
+
+            if (other.IsGenericMethod)
+                return false;
+
+            return CompareSignatures(this, other);
+        }
+
+        private static bool CompareSignatures(IMethodInfo a, IMethodInfo b)
+        {
+            IList<IParameterInfo> aParameters = a.Parameters;
+            IList<IParameterInfo> bParameters = b.Parameters;
+
+            int parameterCount = aParameters.Count;
+            if (parameterCount != bParameters.Count)
+                return false;
+
+            for (int i = 0; i < parameterCount; i++)
+            {
+                if (!aParameters[i].ValueType.Equals(bParameters[i].ValueType))
+                    return false;
+            }
+
+            return true;
+        }
+
         /// <inheritdoc />
         public StaticMethodWrapper MakeGenericMethod(IList<ITypeInfo> genericArguments)
         {
@@ -166,7 +260,8 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
-            return ReflectorInheritanceUtils.EnumerateSuperMethods(this);
+            foreach (StaticMethodWrapper element in GetOverrides())
+                yield return element;
         }
 
         private IList<StaticGenericParameterWrapper> GenericParameters

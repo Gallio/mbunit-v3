@@ -188,7 +188,7 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         internal static string GetTypeNameForSignature(ITypeInfo type)
         {
-            return IsPrimitiveForSignature(type) ? type.Name : type.ToString();
+            return (IsPrimitiveForSignature(type) ? type.Name : type.ToString()).Replace("&", " ByRef");
         }
 
         /// <summary>

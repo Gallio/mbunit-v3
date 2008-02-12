@@ -28,6 +28,11 @@ namespace Gallio.Reflection.Impl
         {
         }
 
+        public override CodeElementKind Kind
+        {
+            get { return CodeElementKind.Type; }
+        }
+
         public override CodeReference CodeReference
         {
             get { return CodeReference.CreateFromType(Target); }
@@ -123,9 +128,74 @@ namespace Gallio.Reflection.Impl
             get { return Target.Attributes; }
         }
 
-        public override CodeElementKind Kind
+        public bool IsAbstract
         {
-            get { return CodeElementKind.Type; }
+            get { return Target.IsAbstract; }
+        }
+
+        public bool IsClass
+        {
+            get { return Target.IsClass; }
+        }
+
+        public bool IsInterface
+        {
+            get { return Target.IsInterface; }
+        }
+
+        public bool IsEnum
+        {
+            get { return Target.IsEnum; }
+        }
+
+        public bool IsValueType
+        {
+            get { return Target.IsValueType; }
+        }
+
+        public bool IsNested
+        {
+            get { return Target.IsNested; }
+        }
+
+        public bool IsNestedAssembly
+        {
+            get { return Target.IsNestedAssembly; }
+        }
+
+        public bool IsNestedFamilyAndAssembly
+        {
+            get { return Target.IsNestedFamANDAssem; }
+        }
+
+        public bool IsNestedFamily
+        {
+            get { return Target.IsNestedFamily; }
+        }
+
+        public bool IsNestedFamilyOrAssembly
+        {
+            get { return Target.IsNestedFamORAssem; }
+        }
+
+        public bool IsNestedPrivate
+        {
+            get { return Target.IsNestedPrivate; }
+        }
+
+        public bool IsNestedPublic
+        {
+            get { return Target.IsNestedPublic; }
+        }
+
+        public bool IsPublic
+        {
+            get { return Target.IsPublic; }
+        }
+
+        public bool IsNotPublic
+        {
+            get { return Target.IsNotPublic; }
         }
 
         public IList<ITypeInfo> Interfaces
@@ -194,7 +264,12 @@ namespace Gallio.Reflection.Impl
 
         public bool IsAssignableFrom(ITypeInfo type)
         {
-            return Target.IsAssignableFrom(type.Resolve(true));
+            return Target.IsAssignableFrom(type.Resolve(false));
+        }
+
+        public bool IsSubclassOf(ITypeInfo type)
+        {
+            return Target.IsSubclassOf(type.Resolve(false));
         }
 
         public ITypeInfo MakeArrayType(int arrayRank)

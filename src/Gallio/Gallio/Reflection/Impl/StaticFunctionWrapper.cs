@@ -64,15 +64,63 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public bool IsPublic
+        public bool IsFinal
         {
-            get { return (MethodAttributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Public; }
+            get { return (MethodAttributes & MethodAttributes.Final) != 0; }
         }
 
         /// <inheritdoc />
         public bool IsStatic
         {
             get { return (MethodAttributes & MethodAttributes.Static) != 0; }
+        }
+
+        /// <inheritdoc />
+        public bool IsVirtual
+        {
+            get { return (MethodAttributes & MethodAttributes.Virtual) != 0; }
+        }
+
+        /// <inheritdoc />
+        public bool IsAssembly
+        {
+            get { return (MethodAttributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Assembly; }
+        }
+
+        /// <inheritdoc />
+        public bool IsFamily
+        {
+            get { return (MethodAttributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Family; }
+        }
+
+        /// <inheritdoc />
+        public bool IsFamilyAndAssembly
+        {
+            get { return (MethodAttributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamANDAssem; }
+        }
+
+        /// <inheritdoc />
+        public bool IsFamilyOrAssembly
+        {
+            get { return (MethodAttributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamORAssem; }
+        }
+
+        /// <inheritdoc />
+        public bool IsPrivate
+        {
+            get { return (MethodAttributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Private; }
+        }
+
+        /// <inheritdoc />
+        public bool IsPublic
+        {
+            get { return (MethodAttributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Public; }
+        }
+
+        /// <inheritdoc />
+        public bool IsHideBySig
+        {
+            get { return (MethodAttributes & MethodAttributes.HideBySig) != 0; }
         }
 
         /// <inheritdoc />

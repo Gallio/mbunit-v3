@@ -43,14 +43,54 @@ namespace Gallio.Reflection
         bool IsAbstract { get; }
 
         /// <summary>
-        /// Returns true if the method is public.
+        /// Returns true if the method is final.
         /// </summary>
-        bool IsPublic { get; }
+        bool IsFinal { get; }
 
         /// <summary>
         /// Returns true if the method is static.
         /// </summary>
         bool IsStatic { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the method is virtual.
+        /// </summary>
+        bool IsVirtual { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this method can be called by other classes in the same assembly.
+        /// </summary>
+        bool IsAssembly { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether access to this method is restricted to members of the class and members of its derived classes.
+        /// </summary>
+        bool IsFamily { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this method can be called by derived classes if they are in the same assembly.
+        /// </summary>
+        bool IsFamilyAndAssembly { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this method can be called by derived classes, wherever they are, and by all classes in the same assembly.
+        /// </summary>
+        bool IsFamilyOrAssembly { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this member is private.
+        /// </summary>
+        bool IsPrivate { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this is a public method.
+        /// </summary>
+        bool IsPublic { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether only a member of the same kind with exactly the same signature is hidden in the derived class.
+        /// </summary>
+        bool IsHideBySig { get; }
 
         /// <summary>
         /// Gets the parameters of the function.

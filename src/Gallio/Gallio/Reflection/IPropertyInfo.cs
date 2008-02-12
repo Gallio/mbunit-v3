@@ -38,6 +38,16 @@ namespace Gallio.Reflection
         PropertyAttributes PropertyAttributes { get; }
 
         /// <summary>
+        /// Returns true if the property can be read.
+        /// </summary>
+        bool CanRead { get; }
+
+        /// <summary>
+        /// Returns true if the property can be written.
+        /// </summary>
+        bool CanWrite { get; }
+
+        /// <summary>
         /// Gets the get method of the property, or null if none.
         /// </summary>
         /// <returns>The get method, or null if none</returns>

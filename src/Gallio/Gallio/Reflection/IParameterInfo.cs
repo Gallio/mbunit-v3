@@ -42,6 +42,21 @@ namespace Gallio.Reflection
         ParameterAttributes ParameterAttributes { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this is an input parameter.
+        /// </summary>
+        bool IsIn { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this parameter is optional.
+        /// </summary>
+        bool IsOptional { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this is an output parameter.
+        /// </summary>
+        bool IsOut { get; }
+
+        /// <summary>
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could

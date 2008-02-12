@@ -82,14 +82,22 @@ namespace Gallio.Reflection.Impl
             get { return Reflector.WrapNamespace(Policy.GetTypeNamespace(this)); }
         }
 
-        /// <inheritdoc />
-        public override ITypeInfo BaseType
+        /// <summary>
+        /// Gets the base type, or null if none.
+        /// </summary>
+        new public StaticDeclaredTypeWrapper BaseType
         {
             get
             {
-                StaticTypeWrapper baseType = Policy.GetTypeBaseType(this);
-                return baseType != null ? Substitution.Apply(baseType) : null;
+                StaticDeclaredTypeWrapper baseType = Policy.GetTypeBaseType(this);
+                return baseType != null ? baseType.ComposeSubstitution(Substitution) : null;
             }
+        }
+
+        /// <inheritdoc />
+        protected override ITypeInfo BaseTypeInternal
+        {
+            get { return BaseType; }
         }
 
         /// <inheritdoc />
@@ -177,28 +185,69 @@ namespace Gallio.Reflection.Impl
         public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
         {
             List<IMethodInfo> result = new List<IMethodInfo>();
-
-            foreach (StaticMethodWrapper method in Policy.GetTypeMethods(this))
-            {
-                if (MatchesBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
-                    result.Add(method);
-            }
+            AddAll(result, EnumerateDeclaredMethods(bindingFlags));
 
             BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
             if (inheritanceBindingFlags != BindingFlags.Default)
             {
-                foreach (ITypeInfo baseType in GetAllBaseTypes())
-                    result.AddRange(baseType.GetMethods(inheritanceBindingFlags));
+                HashSet<StaticMethodWrapper> overrides = new HashSet<StaticMethodWrapper>();
+                foreach (StaticMethodWrapper method in result)
+                    AddAll(overrides, method.GetOverrides());
+
+                foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
+                {
+                    foreach (StaticMethodWrapper inheritedMethod in baseType.EnumerateDeclaredMethods(inheritanceBindingFlags))
+                    {
+                        if (!overrides.Contains(inheritedMethod) && !IsSpecialNonInheritedMethod(inheritedMethod))
+                        {
+                            result.Add(inheritedMethod);
+                            AddAll(overrides, inheritedMethod.GetOverrides());
+                        }
+                    }
+                }
             }
 
             return result;
+        }
+        private IEnumerable<StaticMethodWrapper> EnumerateDeclaredMethods(BindingFlags bindingFlags)
+        {
+            foreach (StaticMethodWrapper method in Policy.GetTypeMethods(this))
+            {
+                if (MatchesBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
+                    yield return method;
+            }
         }
 
         /// <inheritdoc />
         public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
         {
             List<IPropertyInfo> result = new List<IPropertyInfo>();
+            AddAll(result, EnumerateProperties(bindingFlags));
 
+            BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
+            if (inheritanceBindingFlags != BindingFlags.Default)
+            {
+                HashSet<StaticPropertyWrapper> overrides = new HashSet<StaticPropertyWrapper>();
+                foreach (StaticPropertyWrapper property in result)
+                    AddAll(overrides, property.GetOverrides());
+
+                foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
+                {
+                    foreach (StaticPropertyWrapper inheritedProperty in baseType.EnumerateProperties(inheritanceBindingFlags))
+                    {
+                        if (!overrides.Contains(inheritedProperty))
+                        {
+                            result.Add(inheritedProperty);
+                            AddAll(overrides, inheritedProperty.GetOverrides());
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+        private IEnumerable<StaticPropertyWrapper> EnumerateProperties(BindingFlags bindingFlags)
+        {
             foreach (StaticPropertyWrapper property in Policy.GetTypeProperties(this))
             {
                 IMethodInfo getMethod = property.GetMethod;
@@ -210,45 +259,40 @@ namespace Gallio.Reflection.Impl
                     || setMethod != null && setMethod.IsStatic;
 
                 if (MatchesBindingFlags(bindingFlags, isPublic, isStatic))
-                    result.Add(property);
+                    yield return property;
             }
-
-            BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
-            if (inheritanceBindingFlags != BindingFlags.Default)
-            {
-                foreach (ITypeInfo baseType in GetAllBaseTypes())
-                    result.AddRange(baseType.GetProperties(inheritanceBindingFlags));
-            }
-
-            return result;
-        }
-
-        /// <inheritdoc />
-        public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
-        {
-            List<IFieldInfo> result = new List<IFieldInfo>();
-
-            foreach (StaticFieldWrapper field in Policy.GetTypeFields(this))
-            {
-                if (MatchesBindingFlags(bindingFlags, field.IsPublic, field.IsStatic))
-                    result.Add(field);
-            }
-
-            BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
-            if (inheritanceBindingFlags != BindingFlags.Default)
-            {
-                foreach (ITypeInfo baseType in GetAllBaseTypes())
-                    result.AddRange(baseType.GetFields(inheritanceBindingFlags));
-            }
-
-            return result;
         }
 
         /// <inheritdoc />
         public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
         {
             List<IEventInfo> result = new List<IEventInfo>();
+            AddAll(result, EnumerateEvents(bindingFlags));
 
+            BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
+            if (inheritanceBindingFlags != BindingFlags.Default)
+            {
+                HashSet<StaticEventWrapper> overrides = new HashSet<StaticEventWrapper>();
+                foreach (StaticEventWrapper @event in result)
+                    AddAll(overrides, @event.GetOverrides());
+
+                foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
+                {
+                    foreach (StaticEventWrapper inheritedEvent in baseType.EnumerateEvents(inheritanceBindingFlags))
+                    {
+                        if (!overrides.Contains(inheritedEvent))
+                        {
+                            result.Add(inheritedEvent);
+                            AddAll(overrides, inheritedEvent.GetOverrides());
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+        private IEnumerable<StaticEventWrapper> EnumerateEvents(BindingFlags bindingFlags)
+        {
             foreach (StaticEventWrapper @event in Policy.GetTypeEvents(this))
             {
                 IMethodInfo addMethod = @event.AddMethod;
@@ -263,17 +307,32 @@ namespace Gallio.Reflection.Impl
                     || raiseMethod != null && raiseMethod.IsStatic;
 
                 if (MatchesBindingFlags(bindingFlags, isPublic, isStatic))
-                    result.Add(@event);
+                    yield return @event;
             }
+        }
+
+        /// <inheritdoc />
+        public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
+        {
+            List<IFieldInfo> result = new List<IFieldInfo>();
+            AddAll(result, EnumerateFields(bindingFlags));
 
             BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
             if (inheritanceBindingFlags != BindingFlags.Default)
             {
-                foreach (ITypeInfo baseType in GetAllBaseTypes())
-                    result.AddRange(baseType.GetEvents(inheritanceBindingFlags));
+                foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
+                    AddAll(result, baseType.EnumerateFields(inheritanceBindingFlags));
             }
 
             return result;
+        }
+        private IEnumerable<StaticFieldWrapper> EnumerateFields(BindingFlags bindingFlags)
+        {
+            foreach (StaticFieldWrapper field in Policy.GetTypeFields(this))
+            {
+                if (MatchesBindingFlags(bindingFlags, field.IsPublic, field.IsStatic))
+                    yield return field;
+            }
         }
 
         /// <inheritdoc />
@@ -374,10 +433,30 @@ namespace Gallio.Reflection.Impl
             });
         }
 
+        /// <summary>
+        /// Gets an enumeration of all base types.
+        /// </summary>
+        /// <returns>The enumeration of base types</returns>
+        public IEnumerable<StaticDeclaredTypeWrapper> GetAllBaseTypes()
+        {
+            for (StaticDeclaredTypeWrapper baseType = BaseType; baseType != null; baseType = baseType.BaseType)
+                yield return baseType;
+        }
+
+        /// <summary>
+        /// Composes the substitution of the type with the specified substitution and returns a new wrapper.
+        /// </summary>
+        /// <param name="substitution">The substitution</param>
+        /// <returns>The new wrapper with the composed substitution</returns>
+        public StaticDeclaredTypeWrapper ComposeSubstitution(StaticTypeSubstitution substitution)
+        {
+            return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType, Substitution.Compose(substitution));
+        }
+
         /// <inheritdoc />
         protected internal override ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
         {
-            return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType, Substitution.Compose(substitution));
+            return ComposeSubstitution(substitution);
         }
 
         private IList<StaticGenericParameterWrapper> GenericParameters
@@ -389,12 +468,6 @@ namespace Gallio.Reflection.Impl
                     return Policy.GetTypeGenericParameters(this);
                 });
             }
-        }
-
-        private IEnumerable<ITypeInfo> GetAllBaseTypes()
-        {
-            for (ITypeInfo baseType = BaseType; baseType != null; baseType = baseType.BaseType)
-                yield return baseType;
         }
 
         private static bool MatchesBindingFlags(BindingFlags bindingFlags, bool isPublic, bool isStatic)
@@ -435,6 +508,40 @@ namespace Gallio.Reflection.Impl
                 newBindingFlags |= BindingFlags.Static;
 
             return newBindingFlags | BindingFlags.DeclaredOnly;
+        }
+
+        /// <summary>
+        /// The .Net framework handles several built-in types in a special way.  Basically,
+        /// to inheritors, certain 'extern' private methods appear to vanish.  We deal
+        /// with those cases uniformly here.  There may yet be others!
+        /// </summary>
+        private static bool IsSpecialNonInheritedMethod(IMethodInfo method)
+        {
+            if (!method.IsPrivate)
+                return false;
+
+            switch (method.DeclaringType.FullName + ":" + method.Name)
+            {
+                case "System.Object:FieldGetter":
+                case "System.Object:FieldSetter":
+                case "System.Object:GetFieldInfo":
+                case "System.ValueType:CanCompareBits":
+                case "System.ValueType:FastEqualsCheck":
+                case "System.Enum:InternalGetValue":
+                case "System.Enum:GetValue":
+                case "System.Array:InternalGetReference":
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        private static void AddAll<S, T>(ICollection<S> collection, IEnumerable<T> values)
+            where T : S
+        {
+            foreach (T value in values)
+                collection.Add(value);
         }
     }
 }

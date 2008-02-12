@@ -1,4 +1,4 @@
-// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+﻿// Copyright 2008 MbUnit Project - http://www.mbunit.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -107,6 +107,10 @@ namespace Gallio.Reflection.Impl
         /// <summary>
         /// Returns a new substitution with the specified generic parameters replaced by their respective generic arguments.
         /// </summary>
+        /// <remarks>
+        /// The extended type substitution is normalized so that generic parameters that
+        /// are idempotently replaced with themselves are excluded from the substitution altogether.
+        /// </remarks>
         /// <param name="genericParameters">The generic parameters</param>
         /// <param name="genericArguments">The generic arguments</param>
         /// <returns></returns>
@@ -139,7 +143,8 @@ namespace Gallio.Reflection.Impl
                 if (genericArgument == null)
                     throw new ArgumentNullException("genericArguments", "The generic arguments list should not contain null values.");
 
-                newReplacements[genericParameter] = genericArgument;
+                if (! genericParameter.Equals(genericArgument))
+                    newReplacements[genericParameter] = genericArgument;
             }
 
             return new StaticTypeSubstitution(newReplacements);

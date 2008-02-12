@@ -67,12 +67,6 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public bool IsPublic
-        {
-            get { return (FieldAttributes & FieldAttributes.FieldAccessMask) == FieldAttributes.Public; }
-        }
-
-        /// <inheritdoc />
         public bool IsInitOnly
         {
             get { return (FieldAttributes & FieldAttributes.InitOnly) != 0; }
@@ -82,6 +76,42 @@ namespace Gallio.Reflection.Impl
         public bool IsStatic
         {
             get { return (FieldAttributes & FieldAttributes.Static) != 0; }
+        }
+
+        /// <inheritdoc />
+        public bool IsAssembly
+        {
+            get { return (FieldAttributes & FieldAttributes.FieldAccessMask) == FieldAttributes.Assembly; }
+        }
+
+        /// <inheritdoc />
+        public bool IsFamily
+        {
+            get { return (FieldAttributes & FieldAttributes.FieldAccessMask) == FieldAttributes.Family; }
+        }
+
+        /// <inheritdoc />
+        public bool IsFamilyAndAssembly
+        {
+            get { return (FieldAttributes & FieldAttributes.FieldAccessMask) == FieldAttributes.FamANDAssem; }
+        }
+
+        /// <inheritdoc />
+        public bool IsFamilyOrAssembly
+        {
+            get { return (FieldAttributes & FieldAttributes.FieldAccessMask) == FieldAttributes.FamORAssem; }
+        }
+
+        /// <inheritdoc />
+        public bool IsPrivate
+        {
+            get { return (FieldAttributes & FieldAttributes.FieldAccessMask) == FieldAttributes.Private; }
+        }
+
+        /// <inheritdoc />
+        public bool IsPublic
+        {
+            get { return (FieldAttributes & FieldAttributes.FieldAccessMask) == FieldAttributes.Public; }
         }
 
         /// <inheritdoc />

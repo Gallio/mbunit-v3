@@ -42,6 +42,16 @@ namespace Gallio.Reflection.Impl
             get { return Target.Attributes; }
         }
 
+        public bool CanRead
+        {
+            get { return Target.CanRead; }
+        }
+
+        public bool CanWrite
+        {
+            get { return Target.CanWrite; }
+        }
+
         public override CodeElementKind Kind
         {
             get { return CodeElementKind.Property; }

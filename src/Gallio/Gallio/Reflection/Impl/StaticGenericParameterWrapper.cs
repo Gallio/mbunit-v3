@@ -71,7 +71,7 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override ITypeInfo BaseType
+        protected override ITypeInfo BaseTypeInternal
         {
             get { return Reflector.Wrap(typeof(Object)); }
         }
@@ -79,7 +79,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override ITypeInfo EffectiveType
         {
-            get { return Reflector.Wrap(typeof(Object)); }
+            get { return Reflector.Wrap(typeof(FakeTypeParameter)); }
         }
 
         /// <inheritdoc />
@@ -193,6 +193,14 @@ namespace Gallio.Reflection.Impl
         private ITypeInfo UltimateDeclaringType
         {
             get { return DeclaringType ?? DeclaringMethod.DeclaringType; }
+        }
+
+        /// <summary>
+        /// The only purpose of this class is to be an empty subtype of Object to function
+        /// as a stand-in for reflection purposes.
+        /// </summary>
+        private sealed class FakeTypeParameter
+        {
         }
     }
 }

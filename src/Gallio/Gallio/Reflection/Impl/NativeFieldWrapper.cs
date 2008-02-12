@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System.Reflection;
-using Gallio.Hosting;
 
 namespace Gallio.Reflection.Impl
 {
@@ -45,11 +44,6 @@ namespace Gallio.Reflection.Impl
             get { return Target.IsLiteral; }
         }
 
-        public bool IsPublic
-        {
-            get { return Target.IsPublic; }
-        }
-
         public bool IsInitOnly
         {
             get { return Target.IsInitOnly; }
@@ -58,6 +52,36 @@ namespace Gallio.Reflection.Impl
         public bool IsStatic
         {
             get { return Target.IsStatic; }
+        }
+
+        public bool IsAssembly
+        {
+            get { return Target.IsAssembly; }
+        }
+
+        public bool IsFamily
+        {
+            get { return Target.IsFamily; }
+        }
+
+        public bool IsFamilyAndAssembly
+        {
+            get { return Target.IsFamilyAndAssembly; }
+        }
+
+        public bool IsFamilyOrAssembly
+        {
+            get { return Target.IsFamilyOrAssembly; }
+        }
+
+        public bool IsPrivate
+        {
+            get { return Target.IsPrivate; }
+        }
+
+        public bool IsPublic
+        {
+            get { return Target.IsPublic; }
         }
 
         public override CodeElementKind Kind

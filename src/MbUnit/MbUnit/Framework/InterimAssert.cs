@@ -142,7 +142,7 @@ namespace MbUnit.Framework
             StringBuilder builder = new StringBuilder();
             if (expectedElements.Count != 0)
             {
-                builder.AppendFormat("The following {0} expected element(s) we not found:\n", expectedElements.Count);
+                builder.AppendFormat("The following {0} expected element(s) were not found:\n", expectedElements.Count);
 
                 foreach (TValue value in expectedElements)
                     builder.Append("[[").Append(value).AppendLine("]]");
@@ -227,10 +227,7 @@ namespace MbUnit.Framework
                 return;
             }
 
-            if (expectedValues.Count != actualValues.Count)
-                throw new AssertionException(String.Format(CultureInfo.CurrentCulture,
-                    "Expected collection has {0} values but actual collection has {1} values.",
-                    expectedValues.Count, actualValues.Count));
+            AreElementsEqualIgnoringOrder(expectedValues.Keys, actualValues.Keys, delegate(TKey a, TKey b) { return Equals(a, b); });
 
             foreach (KeyValuePair<TKey, TExpectedValue> expectedPair in expectedValues)
             {

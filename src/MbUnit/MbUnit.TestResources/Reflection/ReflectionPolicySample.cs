@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.CompilerServices;
 
 namespace MbUnit.TestResources.Reflection
 {
@@ -58,7 +57,7 @@ namespace MbUnit.TestResources.Reflection
         {
         }
 
-        internal struct Struct1<[Sample(typeof(int))] S, T> : Interface1
+        public struct Struct1<[Sample(typeof(int))] S, T> : Interface1
         {
             public Struct1(S s, [Sample(typeof(string[]))] T t) { }
 

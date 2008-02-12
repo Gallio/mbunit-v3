@@ -157,7 +157,15 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticDeclaredTypeWrapper GetAssemblyType(StaticAssemblyWrapper assembly, string typeName)
         {
             IMetadataAssembly assemblyHandle = (IMetadataAssembly)assembly.Handle;
-            return MakeDeclaredType((IMetadataClassType) assemblyHandle.GetTypeFromQualifiedName(typeName, false));
+            IMetadataClassType typeHandle = ((IMetadataClassType)assemblyHandle.GetTypeFromQualifiedName(typeName, false));
+
+            // Note: ReSharper returns an unresolved type when it can't find the type by name.
+            // The unresolved type can be distinguished by the fact that it does not have a declaring assembly name
+            // or by the fact that its metadata token is always 0.
+            if (typeHandle.Type.DeclaringAssemblyName == null)
+                return null;
+
+            return MakeDeclaredType(typeHandle);
         }
 
         private IMetadataAssembly LoadMetadataAssembly(AssemblyName assemblyName, bool throwOnError)
@@ -530,9 +538,8 @@ namespace Gallio.ReSharperRunner.Reflection
                     return Wrap(assembly);
             }
 
-            // Note: ReSharper can sometimes return null for built-in such as System.String.
-            //       I don't know whether it will do this for other types though.
-            //       So for now we assume System.
+            // Note: ReSharper can sometimes return unresolved types (which have a null declaring assembly name)
+            //       for built-in such as System.String.  So we try to guess the assembly if we can.
             string typeName = typeHandle.FullyQualifiedName;
             Assembly systemAssembly = typeof(String).Assembly;
             if (systemAssembly.GetType(typeName, false) != null)
@@ -565,10 +572,9 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
-            MetadataToken token = typeHandle.Token;
             foreach (IMetadataMethod methodHandle in typeHandle.GetMethods())
             {
-                if (methodHandle.DeclaringType.Token == token && IsConstructor(methodHandle))
+                if (IsConstructor(methodHandle))
                     yield return new StaticConstructorWrapper(this, methodHandle, type);
             }
         }
@@ -577,10 +583,9 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
-            MetadataToken token = typeHandle.Token;
             foreach (IMetadataMethod methodHandle in typeHandle.GetMethods())
             {
-                if (methodHandle.DeclaringType.Token == token && ! IsConstructor(methodHandle))
+                if (!IsConstructor(methodHandle))
                     yield return new StaticMethodWrapper(this, methodHandle, type, type.Substitution);
             }
         }
@@ -589,36 +594,24 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
-            MetadataToken token = typeHandle.Token;
             foreach (IMetadataProperty propertyHandle in typeHandle.GetProperties())
-            {
-                if (propertyHandle.DeclaringType.Token == token)
-                    yield return new StaticPropertyWrapper(this, propertyHandle, type);
-            }
+                yield return new StaticPropertyWrapper(this, propertyHandle, type);
         }
 
         protected override IEnumerable<StaticFieldWrapper> GetTypeFields(StaticDeclaredTypeWrapper type)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
-            MetadataToken token = typeHandle.Token;
             foreach (IMetadataField fieldHandle in typeHandle.GetFields())
-            {
-                if (fieldHandle.DeclaringType.Token == token)
-                    yield return new StaticFieldWrapper(this, fieldHandle, type);
-            }
+                yield return new StaticFieldWrapper(this, fieldHandle, type);
         }
 
         protected override IEnumerable<StaticEventWrapper> GetTypeEvents(StaticDeclaredTypeWrapper type)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
-            MetadataToken token = typeHandle.Token;
             foreach (IMetadataEvent eventHandle in typeHandle.GetEvents())
-            {
-                if (eventHandle.DeclaringType.Token == token)
-                    yield return new StaticEventWrapper(this, eventHandle, type);
-            }
+                yield return new StaticEventWrapper(this, eventHandle, type);
         }
 
         private StaticTypeWrapper MakeType(IMetadataType typeHandle)

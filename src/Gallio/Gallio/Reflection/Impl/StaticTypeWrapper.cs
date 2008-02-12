@@ -50,7 +50,7 @@ namespace Gallio.Reflection.Impl
             {
                 CodeReference reference = Assembly.CodeReference;
                 reference.NamespaceName = Namespace.Name;
-                reference.TypeName = FullName;
+                reference.TypeName = FullName ?? Name;
                 return reference;
             }
         }
@@ -62,7 +62,15 @@ namespace Gallio.Reflection.Impl
         public abstract INamespaceInfo Namespace { get; }
 
         /// <inheritdoc />
-        public abstract ITypeInfo BaseType { get; }
+        public ITypeInfo BaseType
+        {
+            get { return BaseTypeInternal; }
+        }
+
+        /// <summary>
+        /// Internal implementation of <see cref="BaseType"/>.
+        /// </summary>
+        protected abstract ITypeInfo BaseTypeInternal { get; }
 
         /// <inheritdoc />
         public virtual string AssemblyQualifiedName
@@ -75,6 +83,93 @@ namespace Gallio.Reflection.Impl
 
         /// <inheritdoc />
         public abstract TypeAttributes TypeAttributes { get; }
+
+        /// <inheritdoc />
+        public bool IsAbstract
+        {
+            get { return (TypeAttributes & TypeAttributes.Abstract) != 0; }
+        }
+
+        /// <inheritdoc />
+        public bool IsClass
+        {
+            get { return ! IsInterface && ! IsValueType; }
+        }
+
+        /// <inheritdoc />
+        public bool IsInterface
+        {
+            get { return (TypeAttributes & TypeAttributes.Interface) != 0; }
+        }
+
+        /// <inheritdoc />
+        public bool IsEnum
+        {
+            get { return ! IsAbstract && ! IsInterface && IsSubclassOf(Reflector.Wrap(typeof(Enum))); }
+        }
+
+        /// <inheritdoc />
+        public bool IsValueType
+        {
+            get
+            {
+                return ! IsAbstract && ! IsInterface && IsSubclassOf(Reflector.Wrap(typeof(ValueType)));
+            }
+        }
+
+        /// <inheritdoc />
+        public bool IsNested
+        {
+            get { return DeclaringType != null; }
+        }
+
+        /// <inheritdoc />
+        public bool IsNestedAssembly
+        {
+            get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedAssembly; }
+        }
+
+        /// <inheritdoc />
+        public bool IsNestedFamilyAndAssembly
+        {
+            get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamANDAssem; }
+        }
+
+        /// <inheritdoc />
+        public bool IsNestedFamily
+        {
+            get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamily; }
+        }
+
+        /// <inheritdoc />
+        public bool IsNestedFamilyOrAssembly
+        {
+            get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamORAssem; }
+        }
+
+        /// <inheritdoc />
+        public bool IsNestedPrivate
+        {
+            get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPrivate; }
+        }
+
+        /// <inheritdoc />
+        public bool IsNestedPublic
+        {
+            get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPublic; }
+        }
+
+        /// <inheritdoc />
+        public bool IsPublic
+        {
+            get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.Public; }
+        }
+
+        /// <inheritdoc />
+        public bool IsNotPublic
+        {
+            get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.NotPublic; }
+        }
 
         /// <summary>
         /// Gets the element type, or null if none.
@@ -146,7 +241,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public virtual ITypeInfo GenericTypeDefinition
         {
-            get { throw new InvalidOperationException("The type is not a generic type."); }
+            get { return null; }
         }
 
         /// <inheritdoc />
@@ -212,7 +307,28 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public bool IsAssignableFrom(ITypeInfo type)
         {
-            throw new NotImplementedException("IsAssignableFrom not implemented for static types yet.");
+            if (type != null)
+            {
+
+                throw new NotImplementedException("IsAssignableFrom not implemented for static types yet.");
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
+        public bool IsSubclassOf(ITypeInfo type)
+        {
+            if (type != null)
+            {
+                for (ITypeInfo baseType = BaseType; baseType != null; baseType = baseType.BaseType)
+                {
+                    if (baseType.Equals(type) || baseType.AssemblyQualifiedName == type.AssemblyQualifiedName)
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         /// <inheritdoc />
@@ -292,7 +408,8 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
-            return ReflectorInheritanceUtils.EnumerateSuperTypes(this);
+            for (ITypeInfo baseType = BaseType; baseType != null; baseType = baseType.BaseType)
+                yield return baseType;
         }
 
         private static T GetMemberByName<T>(IEnumerable<T> members, string memberName)

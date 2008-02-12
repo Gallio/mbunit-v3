@@ -64,6 +64,18 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public bool CanRead
+        {
+            get { return GetMethod != null; }
+        }
+
+        /// <inheritdoc />
+        public bool CanWrite
+        {
+            get { return SetMethod != null; }
+        }
+
+        /// <inheritdoc />
         public StaticMethodWrapper GetMethod
         {
             get { return Policy.GetPropertyGetMethod(this); }
@@ -118,6 +130,45 @@ namespace Gallio.Reflection.Impl
             get { return 0; }
         }
 
+        /// <summary>
+        /// Gets the methods that this one overrides.
+        /// Only includes overrides that appear on class types, not interfaces.
+        /// </summary>
+        public IEnumerable<StaticPropertyWrapper> GetOverrides()
+        {
+            StaticMethodWrapper discriminator = GetDiscriminatorMethod(this);
+            if (!discriminator.IsOverride)
+                yield break;
+
+            foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
+            {
+                foreach (StaticPropertyWrapper other in Policy.GetTypeProperties(baseType))
+                {
+                    StaticMethodWrapper otherDiscriminator = GetDiscriminatorMethod(other);
+                    if (otherDiscriminator == null)
+                        yield break;
+
+                    if (discriminator.OverridesMethod(otherDiscriminator))
+                    {
+                        yield return other;
+
+                        if (!otherDiscriminator.IsOverride)
+                            yield break;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private StaticMethodWrapper GetDiscriminatorMethod(StaticPropertyWrapper property)
+        {
+            if (GetMethod != null)
+                return property.GetMethod;
+            if (SetMethod != null)
+                return property.SetMethod;
+            return null;
+        }
+
         /// <inheritdoc />
         public bool Equals(ISlotInfo other)
         {
@@ -164,7 +215,8 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
-            return ReflectorInheritanceUtils.EnumerateSuperProperties(this);
+            foreach (StaticPropertyWrapper element in GetOverrides())
+                yield return element;
         }
     }
 }

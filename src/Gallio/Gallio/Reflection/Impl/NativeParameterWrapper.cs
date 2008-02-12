@@ -55,6 +55,21 @@ namespace Gallio.Reflection.Impl
             get { return Target.Attributes; }
         }
 
+        public bool IsIn
+        {
+            get { return Target.IsIn; }
+        }
+
+        public bool IsOptional
+        {
+            get { return Target.IsOptional; }
+        }
+
+        public bool IsOut
+        {
+            get { return Target.IsOut; }
+        }
+
         public override CodeElementKind Kind
         {
             get { return CodeElementKind.Parameter; }

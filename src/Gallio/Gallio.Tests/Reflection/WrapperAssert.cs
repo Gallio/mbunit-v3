@@ -75,7 +75,7 @@ namespace Gallio.Tests.Reflection
             Assert.IsNull(info.GetXmlDocumentation());
         }
 
-        public static void AreEquivalent(Assembly target, IAssemblyInfo info)
+        public static void AreEquivalent(Assembly target, IAssemblyInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.Assembly, info.Kind);
 
@@ -113,19 +113,47 @@ namespace Gallio.Tests.Reflection
                 info.GetReferencedAssemblies(),
                 delegate(AssemblyName expected, AssemblyName actual) { return expected.FullName == actual.FullName; });
 
-            foreach (Type type in target.GetTypes())
-                if (type.IsPublic)
-                    AreEqualWhenResolved(type, info.GetType(type.FullName));
+            IList<ITypeInfo> privateTypes = info.GetTypes();
+            IList<ITypeInfo> publicTypes = info.GetExportedTypes();
 
-            AreElementsEqualWhenResolved(target.GetTypes(), info.GetTypes());
-            AreElementsEqualWhenResolved(target.GetExportedTypes(), info.GetExportedTypes());
+            foreach (Type type in target.GetTypes())
+            {
+                if (type.IsPublic)
+                {
+                    ITypeInfo foundType = info.GetType(type.FullName);
+                    AreEqualWhenResolved(type, foundType);
+                    Assert.IsTrue(publicTypes.Contains(foundType), "Should appear in public types: {0}", type);
+                }
+            }
+
+            foreach (ITypeInfo type in privateTypes)
+            {
+                if (type.IsPublic || type.IsNestedPublic)
+                    Assert.IsTrue(publicTypes.Contains(type), "Should appear in public types: {0}", type);
+                else
+                    Assert.IsFalse(publicTypes.Contains(type), "Should not appear in public types: {0}", type);
+
+                AreEqualWhenResolved(Type.GetType(type.AssemblyQualifiedName), type);
+            }
+
+            foreach (ITypeInfo type in publicTypes)
+            {
+                Assert.IsTrue(type.IsPublic || type.IsNestedPublic);
+                Assert.IsTrue(privateTypes.Contains(type), "Should appear in private types: {0}", type);
+            }
 
             Assert.AreEqual(target, info.Resolve());
 
             AreAttributeProvidersEquivalent(target, info);
+
+            if (recursive)
+            {
+                foreach (Type type in target.GetExportedTypes())
+                    AreEquivalent(type, info.GetType(type.AssemblyQualifiedName), true);
+            }
         }
 
-        public static void AreEquivalent(Attribute target, IAttributeInfo info)
+        public static void AreEquivalent(Attribute target, IAttributeInfo info, bool recursive)
         {
             AreEqualWhenResolved(target.GetType(), info.Type);
             AreEqual(target.GetType(), info.Resolve().GetType());
@@ -136,21 +164,26 @@ namespace Gallio.Tests.Reflection
             foreach (PropertyInfo property in target.GetType().GetProperties())
                 if (property.CanRead && property.CanWrite)
                     Assert.AreEqual(property.GetValue(target, null), info.GetPropertyValue(property.Name));
+
+            if (recursive)
+            {
+                AreEquivalent(target.GetType(), info.Type, true);
+            }
         }
 
-        public static void AreEquivalent(ConstructorInfo target, IConstructorInfo info)
+        public static void AreEquivalent(ConstructorInfo target, IConstructorInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.Constructor, info.Kind);
 
-            AreFunctionsEquivalent(target, info);
+            AreFunctionsEquivalent(target, info, recursive);
             AreEqual(target, info.Resolve(true));
         }
 
-        public static void AreEquivalent(MethodInfo target, IMethodInfo info)
+        public static void AreEquivalent(MethodInfo target, IMethodInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.Method, info.Kind);
 
-            AreFunctionsEquivalent(target, info);
+            AreFunctionsEquivalent(target, info, recursive);
             AreEqual(target, info.Resolve(true));
 
             Assert.AreEqual(target.ContainsGenericParameters, info.ContainsGenericParameters);
@@ -161,13 +194,19 @@ namespace Gallio.Tests.Reflection
 
             AreEqualWhenResolved(target.ReturnType, info.ReturnType);
             AreEqualWhenResolved(target.ReturnParameter, info.ReturnParameter);
+
+            if (recursive)
+            {
+                AreEquivalent(target.GetGenericArguments(), info.GenericArguments, false);
+                AreEquivalent(target.ReturnType, info.ReturnType, false);
+            }
         }
 
-        public static void AreEquivalent(EventInfo target, IEventInfo info)
+        public static void AreEquivalent(EventInfo target, IEventInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.Event, info.Kind);
 
-            AreMembersEquivalent(target, info);
+            AreMembersEquivalent(target, info, recursive);
             AreEqual(target, info.Resolve(true));
 
             Assert.AreEqual(target.Attributes & EventAttributesMask, info.EventAttributes & EventAttributesMask);
@@ -175,30 +214,47 @@ namespace Gallio.Tests.Reflection
             AreEqualWhenResolved(target.GetRemoveMethod(true), info.RemoveMethod);
             AreEqualWhenResolved(target.GetRaiseMethod(true), info.RaiseMethod);
             AreEqualWhenResolved(target.EventHandlerType, info.EventHandlerType);
+
+            if (recursive)
+            {
+                AreEquivalent(target.EventHandlerType, info.EventHandlerType, false);
+            }
         }
 
-        public static void AreEquivalent(FieldInfo target, IFieldInfo info)
+        public static void AreEquivalent(FieldInfo target, IFieldInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.Field, info.Kind);
 
-            AreMembersEquivalent(target, info);
+            AreMembersEquivalent(target, info, recursive);
             AreEqual(target, info.Resolve(true));
 
             AreEqualWhenResolved(target.FieldType, info.ValueType);
             Assert.AreEqual(0, info.Position);
 
             Assert.AreEqual(target.Attributes & FieldAttributesMask, info.FieldAttributes & FieldAttributesMask);
+
             Assert.AreEqual(target.IsLiteral, info.IsLiteral);
-            Assert.AreEqual(target.IsPublic, info.IsPublic);
             Assert.AreEqual(target.IsInitOnly, info.IsInitOnly);
             Assert.AreEqual(target.IsStatic, info.IsStatic);
+
+            Assert.AreEqual(target.IsAssembly, info.IsAssembly);
+            Assert.AreEqual(target.IsFamily, info.IsFamily);
+            Assert.AreEqual(target.IsFamilyAndAssembly, info.IsFamilyAndAssembly);
+            Assert.AreEqual(target.IsFamilyOrAssembly, info.IsFamilyOrAssembly);
+            Assert.AreEqual(target.IsPrivate, info.IsPrivate);
+            Assert.AreEqual(target.IsPublic, info.IsPublic);
+
+            if (recursive)
+            {
+                AreEquivalent(target.FieldType, info.ValueType, false);
+            }
         }
 
-        public static void AreEquivalent(PropertyInfo target, IPropertyInfo info)
+        public static void AreEquivalent(PropertyInfo target, IPropertyInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.Property, info.Kind);
 
-            AreMembersEquivalent(target, info);
+            AreMembersEquivalent(target, info, recursive);
             AreEqual(target, info.Resolve(true));
 
             AreEqualWhenResolved(target.PropertyType, info.ValueType);
@@ -206,24 +262,39 @@ namespace Gallio.Tests.Reflection
 
             Assert.AreEqual(target.Attributes & PropertyAttributesMask, info.PropertyAttributes & PropertyAttributesMask);
 
+            Assert.AreEqual(target.CanRead, info.CanRead);
+            Assert.AreEqual(target.CanWrite, info.CanWrite);
+
             AreEqualWhenResolved(target.GetGetMethod(true), info.GetMethod);
             AreEqualWhenResolved(target.GetSetMethod(true), info.SetMethod);
             AreElementsEqualWhenResolved(target.GetIndexParameters(), info.IndexParameters);
+
+            if (recursive)
+            {
+                AreEquivalent(target.PropertyType, info.ValueType, false);
+                AreEquivalent(target.GetIndexParameters(), info.IndexParameters, true);
+            }
         }
 
-        public static void AreEquivalent(Type target, ITypeInfo info)
+        public static void AreEquivalent(Type target, ITypeInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.Type, info.Kind);
 
-            AreTypesEquivalent(target, info);
+            AreTypesEquivalent(target, info, recursive);
             Assert.AreEqual(target, info.Resolve(true));
+
+            if (recursive)
+            {
+                if (target.HasElementType)
+                    AreEquivalent(target.GetElementType(), info.ElementType, false);
+            }
         }
 
-        public static void AreEquivalent(Type target, IGenericParameterInfo info)
+        public static void AreEquivalent(Type target, IGenericParameterInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.GenericParameter, info.Kind);
 
-            AreTypesEquivalent(target, info);
+            AreTypesEquivalent(target, info, recursive);
             Assert.AreEqual(target, info.Resolve(true));
 
             AreEqualWhenResolved(typeof(Type), info.ValueType);
@@ -235,7 +306,7 @@ namespace Gallio.Tests.Reflection
             Assert.IsNull(info.AssemblyQualifiedName);
         }
 
-        public static void AreEquivalent(ParameterInfo target, IParameterInfo info)
+        public static void AreEquivalent(ParameterInfo target, IParameterInfo info, bool recursive)
         {
             Assert.AreEqual(CodeElementKind.Parameter, info.Kind);
 
@@ -252,16 +323,32 @@ namespace Gallio.Tests.Reflection
             AreEqualWhenResolved(target.Member, info.Member);
 
             AreAttributeProvidersEquivalent(target, info);
+
+            if (recursive)
+            {
+                AreEquivalent(target.ParameterType, info.ValueType, false);
+            }
         }
 
-        private static void AreFunctionsEquivalent(MethodBase target, IFunctionInfo info)
+        private static void AreFunctionsEquivalent(MethodBase target, IFunctionInfo info, bool recursive)
         {
-            AreMembersEquivalent(target, info);
+            AreMembersEquivalent(target, info, recursive);
             AreEqual(target, info.Resolve(true));
 
             Assert.AreEqual(target.IsAbstract, info.IsAbstract);
-            Assert.AreEqual(target.IsPublic, info.IsPublic);
+            Assert.AreEqual(target.IsFinal, info.IsFinal);
             Assert.AreEqual(target.IsStatic, info.IsStatic);
+            Assert.AreEqual(target.IsVirtual, info.IsVirtual);
+
+            Assert.AreEqual(target.IsAssembly, info.IsAssembly);
+            Assert.AreEqual(target.IsFamily, info.IsFamily);
+            Assert.AreEqual(target.IsFamilyAndAssembly, info.IsFamilyAndAssembly);
+            Assert.AreEqual(target.IsFamilyOrAssembly, info.IsFamilyOrAssembly);
+            Assert.AreEqual(target.IsPrivate, info.IsPrivate);
+            Assert.AreEqual(target.IsPublic, info.IsPublic);
+
+            Assert.AreEqual(target.IsHideBySig, info.IsHideBySig);
+
             Assert.AreEqual(target.Attributes & MethodAttributesMask, info.MethodAttributes & MethodAttributesMask);
             AreElementsEqualWhenResolved(target.GetParameters(), info.Parameters);
 
@@ -273,11 +360,16 @@ namespace Gallio.Tests.Reflection
 
             if (targetLocation != null && infoLocation != null)
                 StringAssert.AreEqualIgnoreCase(targetLocation.Path, infoLocation.Path);
+
+            if (recursive)
+            {
+                AreEquivalent(target.GetParameters(), info.Parameters, true);
+            }
         }
 
-        private static void AreTypesEquivalent(Type target, ITypeInfo info)
+        private static void AreTypesEquivalent(Type target, ITypeInfo info, bool recursive)
         {
-            AreMembersEquivalent(target, info);
+            AreMembersEquivalent(target, info, recursive);
             AreEqual(target, info.Resolve(true));
 
             Assert.AreEqual(target.Attributes & TypeAttributesMask, info.TypeAttributes & TypeAttributesMask);
@@ -287,6 +379,23 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(target.AssemblyQualifiedName, info.AssemblyQualifiedName);
             Assert.AreEqual(target.FullName, info.FullName);
             AreEqualWhenResolved(target.HasElementType ? target.GetElementType() : null, info.ElementType);
+
+            Assert.AreEqual(target.IsAbstract, info.IsAbstract);
+            Assert.AreEqual(target.IsClass, info.IsClass);
+            Assert.AreEqual(target.IsEnum, info.IsEnum);
+            Assert.AreEqual(target.IsInterface, info.IsInterface);
+            Assert.AreEqual(target.IsValueType, info.IsValueType);
+
+            Assert.AreEqual(target.IsNested, info.IsNested);
+            Assert.AreEqual(target.IsNestedAssembly, info.IsNestedAssembly);
+            Assert.AreEqual(target.IsNestedFamANDAssem, info.IsNestedFamilyAndAssembly);
+            Assert.AreEqual(target.IsNestedFamily, info.IsNestedFamily);
+            Assert.AreEqual(target.IsNestedFamORAssem, info.IsNestedFamilyOrAssembly);
+            Assert.AreEqual(target.IsNestedPrivate, info.IsNestedPrivate);
+            Assert.AreEqual(target.IsNestedPublic, info.IsNestedPublic);
+            Assert.AreEqual(target.IsPublic, info.IsPublic);
+            Assert.AreEqual(target.IsNotPublic, info.IsNotPublic);
+
             Assert.AreEqual(target.IsArray, info.IsArray);
             Assert.AreEqual(target.IsPointer, info.IsPointer);
             Assert.AreEqual(target.IsByRef, info.IsByRef);
@@ -362,9 +471,50 @@ namespace Gallio.Tests.Reflection
                     InterimAssert.Throws<AmbiguousMatchException>(delegate { info.GetEvent(@event.Name, All); });
                 }
             }
+
+            if (recursive)
+            {
+                if (target.IsGenericType)
+                {
+                    Type[] genericArguments = target.GetGenericArguments();
+                    IList<ITypeInfo> genericArgumentInfos = info.GenericArguments;
+                    for (int i = 0; i < genericArguments.Length; i++)
+                        AreEquivalent(genericArguments[i], genericArgumentInfos[i], true);
+                }
+
+                foreach (FieldInfo field in target.GetFields(All))
+                {
+                    IFieldInfo fieldInfo = info.GetField(field.Name, All);
+                    AreEquivalent(field, fieldInfo, true);
+                }
+
+                foreach (EventInfo @event in target.GetEvents(All))
+                {
+                    IEventInfo eventInfo = info.GetEvent(@event.Name, All);
+                    AreEquivalent(@event, eventInfo, true);
+                }
+
+                foreach (PropertyInfo property in target.GetProperties(All))
+                {
+                    IPropertyInfo propertyInfo = info.GetProperty(property.Name, All);
+                    AreEquivalent(property, propertyInfo, true);
+                }
+
+                foreach (ConstructorInfo constructor in target.GetConstructors(All))
+                {
+                    IConstructorInfo constructorInfo = GetMemberThatIsEqualWhenResolved(constructor, info.GetConstructors(All));
+                    AreEquivalent(constructor, constructorInfo, true);
+                }
+
+                foreach (MethodInfo method in target.GetMethods(All))
+                {
+                    IMethodInfo methodInfo = GetMemberThatIsEqualWhenResolved(method, info.GetMethods(All));
+                    AreEquivalent(method, methodInfo, true);
+                }
+            }
         }
 
-        private static void AreMembersEquivalent(MemberInfo target, IMemberInfo info)
+        private static void AreMembersEquivalent(MemberInfo target, IMemberInfo info, bool recursive)
         {
             AreEqual(target, info.Resolve(true));
 
@@ -373,9 +523,34 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(target.Name, info.Name);
             AreEqualUpToAssemblyDisplayName(CodeReference.CreateFromMember(target), info.CodeReference);
             AreEqualWhenResolved(target.DeclaringType, info.DeclaringType);
-            Assert.AreEqual(XmlDocumentationUtils.GetXmlDocumentation(target), info.GetXmlDocumentation());
+
+            string xmlDocumentation = info.GetXmlDocumentation();
+            if (xmlDocumentation != null)
+                Assert.AreEqual(XmlDocumentationUtils.GetXmlDocumentation(target), xmlDocumentation);
 
             AreAttributeProvidersEquivalent(target, info);
+        }
+
+        private static void AreEquivalent(ParameterInfo[] parameters, IList<IParameterInfo> parameterInfos, bool recursive)
+        {
+            for (int i = 0; i < parameters.Length; i++)
+                AreEquivalent(parameters[i], parameterInfos[i], recursive);
+        }
+
+        private static void AreEquivalent(Type[] types, IList<ITypeInfo> typeInfos, bool recursive)
+        {
+            for (int i = 0; i < types.Length; i++)
+                AreEquivalent(types[i], typeInfos[i], recursive);
+        }
+
+        private static T GetMemberThatIsEqualWhenResolved<T>(MemberInfo member, IEnumerable<T> memberInfos)
+            where T : IMemberInfo
+        {
+            foreach (T memberInfo in memberInfos)
+                if (member.MetadataToken == memberInfo.Resolve(true).MetadataToken)
+                    return memberInfo;
+
+            throw new AssertionException(String.Format("Did not find matching member: {0}", member));
         }
 
         private static void AreEqual(Type expected, Type actual)
