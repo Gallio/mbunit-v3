@@ -98,30 +98,42 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Gets the events that this one overrides.
+        /// Gets the events that this one overrides or hides.
         /// Only includes overrides that appear on class types, not interfaces.
         /// </summary>
-        public IEnumerable<StaticEventWrapper> GetOverrides()
+        /// <param name="overridesOnly">If true, only returns overrides</param>
+        public IEnumerable<StaticEventWrapper> GetOverridenOrHiddenEvents(bool overridesOnly)
         {
             StaticMethodWrapper discriminator = GetDiscriminatorMethod(this);
-            if (!discriminator.IsOverride)
+            if (overridesOnly && !discriminator.IsOverride)
                 yield break;
 
+            string eventName = Name;
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
                 foreach (StaticEventWrapper other in Policy.GetTypeEvents(baseType))
                 {
-                    StaticMethodWrapper otherDiscriminator = GetDiscriminatorMethod(other);
-                    if (otherDiscriminator == null)
-                        yield break;
-
-                    if (discriminator.OverridesMethod(otherDiscriminator))
+                    if (eventName == other.Name)
                     {
-                        yield return other;
+                        if (overridesOnly)
+                        {
+                            StaticMethodWrapper otherDiscriminator = GetDiscriminatorMethod(other);
+                            if (otherDiscriminator == null)
+                                yield break;
 
-                        if (!otherDiscriminator.IsOverride)
-                            yield break;
-                        break;
+                            if (discriminator.HidesMethod(otherDiscriminator))
+                            {
+                                yield return other;
+
+                                if (!otherDiscriminator.IsOverride)
+                                    yield break;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            yield return other;
+                        }
                     }
                 }
             }
@@ -171,7 +183,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
-            foreach (StaticEventWrapper element in GetOverrides())
+            foreach (StaticEventWrapper element in GetOverridenOrHiddenEvents(true))
                 yield return element;
         }
     }

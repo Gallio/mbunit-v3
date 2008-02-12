@@ -257,49 +257,25 @@ namespace Gallio.Reflection.Impl
         public abstract IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
 
         /// <inheritdoc />
-        public virtual IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags)
-        {
-            if (methodName == null)
-                throw new ArgumentNullException("methodName");
-
-            return GetMemberByName(GetMethods(bindingFlags), methodName);
-        }
+        public abstract IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags);
 
         /// <inheritdoc />
         public abstract IList<IMethodInfo> GetMethods(BindingFlags bindingFlags);
 
         /// <inheritdoc />
-        public virtual IPropertyInfo GetProperty(string propertyName, BindingFlags bindingFlags)
-        {
-            if (propertyName == null)
-                throw new ArgumentNullException("propertyName");
-
-            return GetMemberByName(GetProperties(bindingFlags), propertyName);
-        }
+        public abstract IPropertyInfo GetProperty(string propertyName, BindingFlags bindingFlags);
 
         /// <inheritdoc />
         public abstract IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
 
         /// <inheritdoc />
-        public virtual IFieldInfo GetField(string fieldName, BindingFlags bindingFlags)
-        {
-            if (fieldName == null)
-                throw new ArgumentNullException("fieldName");
-
-            return GetMemberByName(GetFields(bindingFlags), fieldName);
-        }
+        public abstract IFieldInfo GetField(string fieldName, BindingFlags bindingFlags);
 
         /// <inheritdoc />
         public abstract IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
 
         /// <inheritdoc />
-        public virtual IEventInfo GetEvent(string eventName, BindingFlags bindingFlags)
-        {
-            if (eventName == null)
-                throw new ArgumentNullException("eventName");
-
-            return GetMemberByName(GetEvents(bindingFlags), eventName);
-        }
+        public abstract IEventInfo GetEvent(string eventName, BindingFlags bindingFlags);
 
         /// <inheritdoc />
         public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
@@ -412,7 +388,15 @@ namespace Gallio.Reflection.Impl
                 yield return baseType;
         }
 
-        private static T GetMemberByName<T>(IEnumerable<T> members, string memberName)
+        /// <summary>
+        /// Gets all members with the specified name.
+        /// </summary>
+        /// <typeparam name="T">The member type</typeparam>
+        /// <param name="members">The members</param>
+        /// <param name="memberName">The member name</param>
+        /// <returns>The member with the specified name, or null if none</returns>
+        /// <exception cref="AmbiguousMatchException">Thrown if there are multiple matches</exception>
+        protected static T GetMemberByName<T>(IEnumerable<T> members, string memberName)
             where T : class, IMemberInfo
         {
             T match = null;

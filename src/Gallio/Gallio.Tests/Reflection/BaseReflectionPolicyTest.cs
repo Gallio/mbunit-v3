@@ -406,6 +406,16 @@ namespace Gallio.Tests.Reflection
             }
         }
 
+        [RowTest]
+        [Row(typeof(ReflectionPolicySample.TortureTest<string>))]
+        [Row(typeof(ReflectionPolicySample.TortureTest2<string>))]
+        public void TortureTest(Type target)
+        {
+            ITypeInfo info = GetType(target);
+
+            WrapperAssert.AreEquivalent(target, info, true);
+        }
+
         [Test]
         public void ExhausiveComparison()
         {

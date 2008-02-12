@@ -142,23 +142,24 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Gets the methods that this one overrides.
+        /// Gets the methods that this one overrides or hides.
         /// Only includes overrides that appear on class types, not interfaces.
         /// </summary>
-        public IEnumerable<StaticMethodWrapper> GetOverrides()
+        /// <param name="overridesOnly">If true, only returns overrides</param>
+        public IEnumerable<StaticMethodWrapper> GetOverridenOrHiddenMethods(bool overridesOnly)
         {
-            if (!IsOverride)
+            if (overridesOnly && !IsOverride)
                 yield break;
 
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
                 foreach (StaticMethodWrapper other in Policy.GetTypeMethods(baseType))
                 {
-                    if (OverridesMethod(other))
+                    if (HidesMethod(other))
                     {
                         yield return other;
 
-                        if (!other.IsOverride)
+                        if (overridesOnly && !other.IsOverride)
                             yield break;
                         break;
                     }
@@ -167,15 +168,17 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Returns true if this method overrides the specified method.
+        /// Returns true if this method hides the specified method.
         /// </summary>
         /// <remarks>
         /// This method assumes that <paramref name="other"/> is defined by
-        /// a base type of this method's declaring type.
+        /// a base type of this method's declaring type.  It determines whether
+        /// method hiding has taken place based on the method's name and its signature
+        /// (when IsHideBySig is true).
         /// </remarks>
         /// <param name="other">The other method</param>
-        /// <returns>True if this method overrides the other method</returns>
-        public bool OverridesMethod(StaticMethodWrapper other)
+        /// <returns>True if this method hides the other method</returns>
+        public bool HidesMethod(StaticMethodWrapper other)
         {
             if (Name != other.Name)
                 return false;
@@ -260,7 +263,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
-            foreach (StaticMethodWrapper element in GetOverrides())
+            foreach (StaticMethodWrapper element in GetOverridenOrHiddenMethods(true))
                 yield return element;
         }
 

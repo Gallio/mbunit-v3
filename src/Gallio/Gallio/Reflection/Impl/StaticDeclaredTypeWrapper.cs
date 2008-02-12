@@ -73,6 +73,10 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override IAssemblyInfo Assembly
         {
+            get { return AssemblyInternal; }
+        }
+        private StaticAssemblyWrapper AssemblyInternal
+        {
             get { return Policy.GetTypeAssembly(this); }
         }
 
@@ -182,7 +186,23 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public override IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags)
+        {
+            if (methodName == null)
+                throw new ArgumentNullException("methodName");
+
+            return GetMemberByName(GetMethods(bindingFlags, false), methodName);
+        }
+
+        /// <inheritdoc />
         public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
+        {
+            // Note: Believe it or not, the .Net GetMethods() function will include hidden
+            //       but not overridden methods in the result.
+            return GetMethods(bindingFlags, true);
+        }
+
+        private IList<IMethodInfo> GetMethods(BindingFlags bindingFlags, bool excludeOverridesOnly)
         {
             List<IMethodInfo> result = new List<IMethodInfo>();
             AddAll(result, EnumerateDeclaredMethods(bindingFlags));
@@ -192,7 +212,7 @@ namespace Gallio.Reflection.Impl
             {
                 HashSet<StaticMethodWrapper> overrides = new HashSet<StaticMethodWrapper>();
                 foreach (StaticMethodWrapper method in result)
-                    AddAll(overrides, method.GetOverrides());
+                    AddAll(overrides, method.GetOverridenOrHiddenMethods(excludeOverridesOnly));
 
                 foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
                 {
@@ -201,7 +221,7 @@ namespace Gallio.Reflection.Impl
                         if (!overrides.Contains(inheritedMethod) && !IsSpecialNonInheritedMethod(inheritedMethod))
                         {
                             result.Add(inheritedMethod);
-                            AddAll(overrides, inheritedMethod.GetOverrides());
+                            AddAll(overrides, inheritedMethod.GetOverridenOrHiddenMethods(excludeOverridesOnly));
                         }
                     }
                 }
@@ -219,6 +239,15 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public override IPropertyInfo GetProperty(string propertyName, BindingFlags bindingFlags)
+        {
+            if (propertyName == null)
+                throw new ArgumentNullException("propertyName");
+
+            return GetMemberByName(GetProperties(bindingFlags), propertyName);
+        }
+
+        /// <inheritdoc />
         public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
         {
             List<IPropertyInfo> result = new List<IPropertyInfo>();
@@ -229,7 +258,7 @@ namespace Gallio.Reflection.Impl
             {
                 HashSet<StaticPropertyWrapper> overrides = new HashSet<StaticPropertyWrapper>();
                 foreach (StaticPropertyWrapper property in result)
-                    AddAll(overrides, property.GetOverrides());
+                    AddAll(overrides, property.GetOverridenOrHiddenProperties(false));
 
                 foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
                 {
@@ -238,7 +267,7 @@ namespace Gallio.Reflection.Impl
                         if (!overrides.Contains(inheritedProperty))
                         {
                             result.Add(inheritedProperty);
-                            AddAll(overrides, inheritedProperty.GetOverrides());
+                            AddAll(overrides, inheritedProperty.GetOverridenOrHiddenProperties(false));
                         }
                     }
                 }
@@ -264,6 +293,15 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public override IEventInfo GetEvent(string eventName, BindingFlags bindingFlags)
+        {
+            if (eventName == null)
+                throw new ArgumentNullException("eventName");
+
+            return GetMemberByName(GetEvents(bindingFlags), eventName);
+        }
+
+        /// <inheritdoc />
         public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
         {
             List<IEventInfo> result = new List<IEventInfo>();
@@ -274,7 +312,7 @@ namespace Gallio.Reflection.Impl
             {
                 HashSet<StaticEventWrapper> overrides = new HashSet<StaticEventWrapper>();
                 foreach (StaticEventWrapper @event in result)
-                    AddAll(overrides, @event.GetOverrides());
+                    AddAll(overrides, @event.GetOverridenOrHiddenEvents(false));
 
                 foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
                 {
@@ -283,7 +321,7 @@ namespace Gallio.Reflection.Impl
                         if (!overrides.Contains(inheritedEvent))
                         {
                             result.Add(inheritedEvent);
-                            AddAll(overrides, inheritedEvent.GetOverrides());
+                            AddAll(overrides, inheritedEvent.GetOverridenOrHiddenEvents(false));
                         }
                     }
                 }
@@ -312,16 +350,36 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public override IFieldInfo GetField(string fieldName, BindingFlags bindingFlags)
+        {
+            if (fieldName == null)
+                throw new ArgumentNullException("fieldName");
+
+            return GetMemberByName(GetFields(bindingFlags), fieldName);
+        }
+
+        /// <inheritdoc />
         public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
         {
             List<IFieldInfo> result = new List<IFieldInfo>();
             AddAll(result, EnumerateFields(bindingFlags));
 
             BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
+
             if (inheritanceBindingFlags != BindingFlags.Default)
             {
                 foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
-                    AddAll(result, baseType.EnumerateFields(inheritanceBindingFlags));
+                {
+                    foreach (StaticFieldWrapper inheritedField in baseType.EnumerateFields(inheritanceBindingFlags))
+                    {
+                        // Note: Fields are inherited on the basis of visibility.
+                        if (inheritedField.IsPrivate
+                            || inheritedField.IsAssembly && ! inheritedField.DeclaringType.AssemblyInternal.IsAssemblyVisibleTo(AssemblyInternal))
+                            continue;
+
+                        result.Add(inheritedField);
+                    }
+                }
             }
 
             return result;

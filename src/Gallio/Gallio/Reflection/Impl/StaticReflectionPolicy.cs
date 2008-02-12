@@ -356,7 +356,7 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         /// <param name="type">The type, not null</param>
         /// <returns>The type's assembly</returns>
-        protected internal abstract IAssemblyInfo GetTypeAssembly(StaticDeclaredTypeWrapper type);
+        protected internal abstract StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type);
 
         /// <summary>
         /// Gets the namespace that contains a type.

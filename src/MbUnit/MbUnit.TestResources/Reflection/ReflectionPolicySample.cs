@@ -74,5 +74,172 @@ namespace MbUnit.TestResources.Reflection
         public interface Interface2
         {
         }
+
+        /// <summary>
+        /// This sample is a bit of a torture test for the exhaustive test case.
+        /// </summary>
+        [Sample(typeof(int))]
+        [Serializable]
+        public class TortureTest<[Sample(typeof(int))] T>
+        {
+            [Sample(typeof(int))]
+            public int Field;
+
+            public int Field2;
+
+            private int nonInheritedField = 0;
+
+            [return: Sample(typeof(int))]
+            [Sample(typeof(int))]
+            public virtual S InheritedMethod<[Sample(typeof(int))] S>([Sample(typeof(int))] S s, T t)
+            {
+                return default(S);
+            }
+
+            [return: Sample(typeof(string[]), Field = 2, Property = "foo")]
+            [Sample(typeof(string[]), Field = 2, Property = "foo")]
+            public virtual T InheritedMethod<[Sample(typeof(string[]), Field = 2, Property = "foo")] S>(T t, [Sample(typeof(string[]), Field = 2, Property = "foo")] S s)
+            {
+                return default(T);
+            }
+
+            [return: Sample(typeof(int))]
+            [Sample(typeof(int))]
+            public S NonInheritedMethod<[Sample(typeof(int))] S>([Sample(typeof(int))] S x)
+            {
+                return x;
+            }
+
+            [return: Sample(typeof(int))]
+            [Sample(typeof(int))]
+            public virtual S NonInheritedMethod2<[Sample(typeof(int))] S>([Sample(typeof(int))] S x)
+            {
+                return x;
+            }
+
+            [Sample(typeof(int))]
+            public virtual event EventHandler InheritedEvent
+            {
+                add { }
+                remove { }
+            }
+
+            [Sample(typeof(int))]
+            public event EventHandler NonInheritedEvent
+            {
+                add { }
+                remove { }
+            }
+
+            [Sample(typeof(int))]
+            public virtual event EventHandler NonInheritedEvent2
+            {
+                add { }
+                remove { }
+            }
+
+            [Sample(typeof(int))]
+            public virtual int InheritedProperty
+            {
+                get { return 0; }
+            }
+
+            public virtual int InheritedProperty2
+            {
+                set { }
+            }
+
+            public virtual int InheritedProperty3
+            {
+                get { return nonInheritedField; }
+                protected set { }
+            }
+
+            [Sample(typeof(int))]
+            public int NonInherited
+            {
+                get { return 0; }
+            }
+
+            public virtual int NonInherited2
+            {
+                get { return 0; }
+            }
+        }
+
+        public class TortureTest2<[Sample(typeof(string[]), Field = 2, Property = "foo")] T> : TortureTest<T[]>
+        {
+            new public string Field2;
+
+            [Sample(typeof(int))]
+            public override S InheritedMethod<S>(S s, [Sample(typeof(int))] T[] t)
+            {
+                return default(S);
+            }
+
+            [Sample(typeof(int))]
+            public override T[] InheritedMethod<S>([Sample(typeof(int))] T[] t, S s)
+            {
+                return null;
+            }
+
+            [return: Sample(typeof(int))]
+            [Sample(typeof(int))]
+            new public S NonInheritedMethod<[Sample(typeof(int))] S>([Sample(typeof(int))] S x)
+            {
+                return x;
+            }
+
+            [return: Sample(typeof(int))]
+            [Sample(typeof(int))]
+            new public virtual S NonInheritedMethod2<[Sample(typeof(int))] S>([Sample(typeof(int))] S x)
+            {
+                return x;
+            }
+
+            public override event EventHandler InheritedEvent
+            {
+                add { }
+                remove { }
+            }
+
+            new public event EventHandler NonInheritedEvent
+            {
+                add { }
+                remove { }
+            }
+
+            new public virtual event EventHandler NonInheritedEvent2
+            {
+                add { }
+                remove { }
+            }
+
+            public override int InheritedProperty
+            {
+                get { return 0; }
+            }
+
+            public override int InheritedProperty2
+            {
+                set { }
+            }
+
+            public override int InheritedProperty3
+            {
+                get { return 0; }
+                protected set { }
+            }
+
+            new public int NonInherited
+            {
+                get { return 0; }
+            }
+
+            new public virtual int NonInherited2
+            {
+                get { return 0; }
+            }
+        }
     }
 }

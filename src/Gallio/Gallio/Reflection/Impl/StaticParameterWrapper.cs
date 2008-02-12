@@ -180,7 +180,7 @@ namespace Gallio.Reflection.Impl
             {
                 int position = Position;
 
-                foreach (StaticMethodWrapper superMethod in method.GetOverrides())
+                foreach (StaticMethodWrapper superMethod in method.GetOverridenOrHiddenMethods(true))
                     yield return superMethod.Parameters[position];
             }
         }

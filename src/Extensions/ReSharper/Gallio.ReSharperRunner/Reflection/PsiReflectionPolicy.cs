@@ -735,7 +735,7 @@ namespace Gallio.ReSharperRunner.Reflection
             return flags;
         }
 
-        protected override IAssemblyInfo GetTypeAssembly(StaticDeclaredTypeWrapper type)
+        protected override StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
             return new StaticAssemblyWrapper(this, typeHandle.Module);

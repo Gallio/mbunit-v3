@@ -522,7 +522,7 @@ namespace Gallio.ReSharperRunner.Reflection
             });
         }
 
-        protected override IAssemblyInfo GetTypeAssembly(StaticDeclaredTypeWrapper type)
+        protected override StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
@@ -538,15 +538,10 @@ namespace Gallio.ReSharperRunner.Reflection
                     return Wrap(assembly);
             }
 
-            // Note: ReSharper can sometimes return unresolved types (which have a null declaring assembly name)
-            //       for built-in such as System.String.  So we try to guess the assembly if we can.
-            string typeName = typeHandle.FullyQualifiedName;
-            Assembly systemAssembly = typeof(String).Assembly;
-            if (systemAssembly.GetType(typeName, false) != null)
-                return Reflector.Wrap(systemAssembly);
-
-            throw new NotImplementedException(String.Format(
-                "Cannot determine the assembly to which type '{0}' belongs.", typeName));
+            // Note: ReSharper can sometimes return unresolved types (which have a null declaring assembly name).
+            //       We can't really do much with these except perhaps to guess the assebmly.
+            throw new NotSupportedException(String.Format(
+                "Cannot determine the assembly to which type '{0}' belongs because it is unresolved.", typeHandle.FullyQualifiedName));
         }
 
         protected override string GetTypeNamespace(StaticDeclaredTypeWrapper type)

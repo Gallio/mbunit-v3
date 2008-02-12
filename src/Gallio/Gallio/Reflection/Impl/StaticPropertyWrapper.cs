@@ -131,30 +131,42 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Gets the methods that this one overrides.
+        /// Gets the properties that this one overrides or hides.
         /// Only includes overrides that appear on class types, not interfaces.
         /// </summary>
-        public IEnumerable<StaticPropertyWrapper> GetOverrides()
+        /// <param name="overridesOnly">If true, only returns overrides</param>
+        public IEnumerable<StaticPropertyWrapper> GetOverridenOrHiddenProperties(bool overridesOnly)
         {
             StaticMethodWrapper discriminator = GetDiscriminatorMethod(this);
-            if (!discriminator.IsOverride)
+            if (overridesOnly && !discriminator.IsOverride)
                 yield break;
 
+            string propertyName = Name;
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
                 foreach (StaticPropertyWrapper other in Policy.GetTypeProperties(baseType))
                 {
-                    StaticMethodWrapper otherDiscriminator = GetDiscriminatorMethod(other);
-                    if (otherDiscriminator == null)
-                        yield break;
-
-                    if (discriminator.OverridesMethod(otherDiscriminator))
+                    if (propertyName == other.Name)
                     {
-                        yield return other;
+                        if (overridesOnly)
+                        {
+                            StaticMethodWrapper otherDiscriminator = GetDiscriminatorMethod(other);
+                            if (otherDiscriminator == null)
+                                yield break;
 
-                        if (!otherDiscriminator.IsOverride)
-                            yield break;
-                        break;
+                            if (discriminator.HidesMethod(otherDiscriminator))
+                            {
+                                yield return other;
+
+                                if (!otherDiscriminator.IsOverride)
+                                    yield break;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            yield return other;
+                        }
                     }
                 }
             }
@@ -215,7 +227,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
-            foreach (StaticPropertyWrapper element in GetOverrides())
+            foreach (StaticPropertyWrapper element in GetOverridenOrHiddenProperties(true))
                 yield return element;
         }
     }
