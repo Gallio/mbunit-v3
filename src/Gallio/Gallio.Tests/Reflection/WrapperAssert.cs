@@ -32,7 +32,8 @@ namespace Gallio.Tests.Reflection
     /// </summary>
     public static class WrapperAssert
     {
-        private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic
+        private const BindingFlags All = BindingFlags.NonPublic | AllPublic;
+        private const BindingFlags AllPublic = BindingFlags.Public
             | BindingFlags.Instance | BindingFlags.Static
             | BindingFlags.FlattenHierarchy;
 
@@ -152,7 +153,7 @@ namespace Gallio.Tests.Reflection
             if (recursive)
             {
                 foreach (Type type in target.GetExportedTypes())
-                    AreEquivalent(type, info.GetType(type.AssemblyQualifiedName), true);
+                    AreEquivalent(type, info.GetType(type.FullName), true);
             }
         }
 
@@ -673,6 +674,9 @@ namespace Gallio.Tests.Reflection
             Dictionary<string, TMember> keyedExpectedMembers = new Dictionary<string, TMember>();
             foreach (TMember expectedMember in expectedMembers)
             {
+                if (expectedMember.Name.Contains("Internal"))
+                    continue; // ignore some .Net internals
+
                 string key = expectedMember.DeclaringType + " -> " + expectedMember;
                 keyedExpectedMembers.Add(key, expectedMember);
             }
@@ -680,6 +684,9 @@ namespace Gallio.Tests.Reflection
             Dictionary<string, TWrapper> keyedActualMembers = new Dictionary<string, TWrapper>();
             foreach (TWrapper actualMember in actualMembers)
             {
+                if (actualMember.Name.Contains("Internal"))
+                    continue; // ignore some .Net internals
+
                 string key = actualMember.DeclaringType + " -> " + actualMember;
 
                 if (keyedActualMembers.ContainsKey(key))

@@ -56,7 +56,23 @@ namespace Gallio.Tests.Reflection
 
         protected ITypeInfo GetType(Type type)
         {
-            ITypeInfo wrapper = GetAssembly(type.Assembly).GetType(type.FullName);
+            IAssemblyInfo assembly = GetAssembly(type.Assembly);
+
+            ITypeInfo wrapper;
+            if (type.IsGenericType && ! type.IsGenericTypeDefinition)
+            {
+                wrapper = assembly.GetType(type.GetGenericTypeDefinition().FullName);
+                if (wrapper != null)
+                {
+                    ITypeInfo[] genericArguments = GenericUtils.ConvertAllToArray<Type, ITypeInfo>(type.GetGenericArguments(), Reflector.Wrap);
+                    wrapper = wrapper.MakeGenericType(genericArguments);
+                }
+            }
+            else
+            {
+                wrapper = assembly.GetType(type.FullName);
+            }
+
             Assert.IsNotNull(wrapper, "Could not find type '{0}'.", type);
             return wrapper;
         }

@@ -100,7 +100,7 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public StaticTypeWrapper Wrap(ITypeElement target)
         {
-            return target != null ? MakeDeclaredTypeWithoutSubstitution(target) : null;
+            return target != null ? MakeTypeWithoutSubstitution(target) : null;
         }
 
         /// <summary>
@@ -113,12 +113,36 @@ namespace Gallio.ReSharperRunner.Reflection
             if (target == null)
                 return null;
 
-            StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(target.GetContainingType());
-
             IConstructor constructor = target as IConstructor;
-            return constructor != null
-                ? (StaticFunctionWrapper)new StaticConstructorWrapper(this, constructor, declaringType)
-                : new StaticMethodWrapper(this, target, declaringType, declaringType.Substitution);
+            return constructor != null ? (StaticFunctionWrapper) Wrap(constructor) : Wrap((IMethod) target);
+        }
+
+        /// <summary>
+        /// Obtains a reflection wrapper for a constructor.
+        /// </summary>
+        /// <param name="target">The constructor, or null if none</param>
+        /// <returns>The reflection wrapper, or null if none</returns>
+        public StaticConstructorWrapper Wrap(IConstructor target)
+        {
+            if (target == null)
+                return null;
+
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(target.GetContainingType());
+            return new StaticConstructorWrapper(this, target, declaringType);
+        }
+
+        /// <summary>
+        /// Obtains a reflection wrapper for a method.
+        /// </summary>
+        /// <param name="target">The method, or null if none</param>
+        /// <returns>The reflection wrapper, or null if none</returns>
+        public StaticMethodWrapper Wrap(IMethod target)
+        {
+            if (target == null)
+                return null;
+
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(target.GetContainingType());
+            return new StaticMethodWrapper(this, target, declaringType, declaringType.Substitution);
         }
 
         /// <summary>
@@ -456,7 +480,13 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override string GetMemberName(StaticMemberWrapper member)
         {
             IDeclaredElement memberHandle = (IDeclaredElement)member.Handle;
-            return memberHandle.ShortName;
+            string shortName = memberHandle.ShortName;
+
+            IOverridableMember overridableMemberHandle = memberHandle as IOverridableMember;
+            if (overridableMemberHandle != null && overridableMemberHandle.IsExplicitImplementation)
+                return overridableMemberHandle.ExplicitImplementations[0].DeclaringType.GetCLRName().Replace('+', '.') + "." + shortName;
+
+            return shortName;
         }
 
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
@@ -610,9 +640,9 @@ namespace Gallio.ReSharperRunner.Reflection
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Abstract, functionHandle.IsAbstract);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Final, functionHandle.IsSealed);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Static, functionHandle.IsStatic);
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, functionHandle.IsVirtual);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, functionHandle.IsVirtual || functionHandle.IsAbstract || functionHandle.IsOverride);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.SpecialName, functionHandle.ShortName.StartsWith(@"."));
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, !functionHandle.IsOverride);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, (functionHandle.IsVirtual || functionHandle.IsAbstract) && !functionHandle.IsOverride);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.HideBySig, functionHandle.HidePolicy == MemberHidePolicy.HIDE_BY_SIGNATURE);
             return flags;
         }
@@ -703,18 +733,13 @@ namespace Gallio.ReSharperRunner.Reflection
             ITypeElement typeHandle = (ITypeElement) type.Handle;
 
             TypeAttributes flags = 0;
-            if (typeHandle is IClass)
-                flags |= TypeAttributes.Class;
-            else if (typeHandle is IInterface)
-                flags |= TypeAttributes.Interface;
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Interface, typeHandle is IInterface);
 
             IModifiersOwner modifiers = typeHandle as IModifiersOwner;
             if (modifiers != null)
             {
-                if (modifiers.IsAbstract)
-                    flags |= TypeAttributes.Abstract;
-                if (modifiers.IsSealed)
-                    flags |= TypeAttributes.Sealed;
+                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Abstract, modifiers.IsAbstract);
+                ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Sealed, modifiers.IsSealed);
 
                 bool isNested = typeHandle.GetContainingType() != null;
 
@@ -728,16 +753,16 @@ namespace Gallio.ReSharperRunner.Reflection
                         break;
                     case AccessRights.NONE:
                     case AccessRights.INTERNAL:
-                        flags |= TypeAttributes.NestedAssembly;
+                        flags |= isNested ? TypeAttributes.NestedAssembly : TypeAttributes.NotPublic;
                         break;
                     case AccessRights.PROTECTED:
-                        flags |= TypeAttributes.NestedFamily;
+                        flags |= isNested ? TypeAttributes.NestedFamily : TypeAttributes.NotPublic;
                         break;
                     case AccessRights.PROTECTED_AND_INTERNAL:
-                        flags |= TypeAttributes.NestedFamANDAssem;
+                        flags |= isNested ? TypeAttributes.NestedFamANDAssem : TypeAttributes.NotPublic;
                         break;
                     case AccessRights.PROTECTED_OR_INTERNAL:
-                        flags |= TypeAttributes.NestedFamORAssem;
+                        flags |= isNested ? TypeAttributes.NestedFamORAssem : TypeAttributes.NotPublic;
                         break;
                 }
             }
@@ -799,8 +824,25 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
 
+            bool foundDefault = false;
             foreach (IConstructor constructorHandle in typeHandle.Constructors)
+            {
+                if (constructorHandle.IsDefault)
+                {
+                    if (typeHandle is IStruct)
+                        continue; // Note: Default constructors for structs are not visible via reflection
+                    foundDefault = true;
+                }
+
                 yield return new StaticConstructorWrapper(this, constructorHandle, type);
+            }
+
+            if (!foundDefault)
+            {
+                IClass classHandle = typeHandle as IClass;
+                if (classHandle != null && !classHandle.IsAbstract && !classHandle.IsStatic)
+                    yield return new StaticConstructorWrapper(this, new DefaultConstructor(typeHandle), type);
+            }
         }
 
         protected override IEnumerable<StaticMethodWrapper> GetTypeMethods(StaticDeclaredTypeWrapper type)
@@ -866,7 +908,7 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IDeclaredType declaredTypeHandle = typeHandle as IDeclaredType;
             if (declaredTypeHandle != null)
-                return MakeDeclaredType(declaredTypeHandle);
+                return MakeType(declaredTypeHandle);
 
             IArrayType arrayTypeHandle = typeHandle as IArrayType;
             if (arrayTypeHandle != null)
@@ -879,18 +921,39 @@ namespace Gallio.ReSharperRunner.Reflection
             throw new NotSupportedException("Unsupported type: " + typeHandle);
         }
 
+        private StaticTypeWrapper MakeType(IDeclaredType typeHandle)
+        {
+            ITypeParameter typeParameterHandle = typeHandle.GetTypeElement() as ITypeParameter;
+            if (typeParameterHandle != null)
+                return MakeGenericParameterType(typeParameterHandle);
+
+            return MakeDeclaredType(typeHandle);
+        }
+
+        private StaticTypeWrapper MakeTypeWithoutSubstitution(ITypeElement typeElementHandle)
+        {
+            ITypeParameter typeParameterHandle = typeElementHandle as ITypeParameter;
+            if (typeParameterHandle != null)
+                return MakeGenericParameterType(typeParameterHandle);
+
+            return MakeDeclaredTypeWithoutSubstitution(typeElementHandle);
+        }
+
         private StaticDeclaredTypeWrapper MakeDeclaredTypeWithoutSubstitution(ITypeElement typeElementHandle)
         {
             return MakeDeclaredType(typeElementHandle, typeElementHandle.IdSubstitution);
         }
 
-        private StaticDeclaredTypeWrapper MakeDeclaredType(IDeclaredType declaredTypeHandle)
+        private StaticDeclaredTypeWrapper MakeDeclaredType(IDeclaredType typeHandle)
         {
-            return MakeDeclaredType(declaredTypeHandle.GetTypeElement(), declaredTypeHandle.GetSubstitution());
+            return MakeDeclaredType(typeHandle.GetTypeElement(), typeHandle.GetSubstitution());
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(ITypeElement typeElementHandle, ISubstitution substitutionHandle)
         {
+            if (typeElementHandle is ITypeParameter)
+                throw new ArgumentException("This method should never be called with a generic parameter as input.", "typeElementHandle");
+
             ITypeElement declaringTypeElementHandle = typeElementHandle.GetContainingType();
             StaticDeclaredTypeWrapper type;
             if (declaringTypeElementHandle != null)
@@ -922,6 +985,19 @@ namespace Gallio.ReSharperRunner.Reflection
         private StaticPointerTypeWrapper MakePointerType(IPointerType pointerTypeHandle)
         {
             return MakeType(pointerTypeHandle.ElementType).MakePointerType();
+        }
+
+        private StaticGenericParameterWrapper MakeGenericParameterType(ITypeParameter typeParameterHandle)
+        {
+            ITypeElement declaringTypeHandle = typeParameterHandle.OwnerType;
+            if (declaringTypeHandle != null)
+            {
+                return new StaticGenericParameterWrapper(this, typeParameterHandle, MakeDeclaredTypeWithoutSubstitution(declaringTypeHandle), null);
+            }
+            else
+            {
+                return new StaticGenericParameterWrapper(this, typeParameterHandle, null, Wrap(typeParameterHandle.OwnerMethod));
+            }
         }
         #endregion
 
