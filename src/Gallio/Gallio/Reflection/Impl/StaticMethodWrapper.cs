@@ -267,6 +267,13 @@ namespace Gallio.Reflection.Impl
                 yield return element;
         }
 
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            // TODO: Handle DllImport, PreserveSig and code access security.
+            return EmptyArray<Attribute>.Instance;
+        }
+
         private IList<StaticGenericParameterWrapper> GenericParameters
         {
             get

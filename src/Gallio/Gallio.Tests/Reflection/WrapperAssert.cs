@@ -15,12 +15,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Gallio.Hosting;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using MbUnit.Framework;
+using System.Runtime.CompilerServices;
 
 namespace Gallio.Tests.Reflection
 {
@@ -278,6 +281,12 @@ namespace Gallio.Tests.Reflection
 
         public static void AreEquivalent(Type target, ITypeInfo info, bool recursive)
         {
+            if (target.IsGenericParameter)
+            {
+                AreEquivalent(target, (IGenericParameterInfo)info, recursive);
+                return;
+            }
+
             Assert.AreEqual(CodeElementKind.Type, info.Kind);
 
             AreTypesEquivalent(target, info, recursive);
@@ -289,7 +298,9 @@ namespace Gallio.Tests.Reflection
                     AreEquivalent(target.GetElementType(), info.ElementType, false);
 
                 if (target.BaseType != null)
-                    AreEquivalent(target.BaseType, info.BaseType, true);
+                    AreEquivalent(target.BaseType, info.BaseType, false);
+
+                AreEquivalent(target.GetGenericArguments(), info.GenericArguments, false);
             }
         }
 
@@ -353,6 +364,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(target.IsHideBySig, info.IsHideBySig);
 
             Assert.AreEqual(target.Attributes & MethodAttributesMask, info.MethodAttributes & MethodAttributesMask);
+            Assert.AreEqual(target.CallingConvention, info.CallingConvention);
             AreElementsEqualWhenResolved(target.GetParameters(), info.Parameters);
 
             // The source location may not be exactly the same with some wrappers.
@@ -375,12 +387,12 @@ namespace Gallio.Tests.Reflection
             AreMembersEquivalent(target, info, recursive);
             AreEqual(target, info.Resolve(true));
 
-            Assert.AreEqual(target.Attributes & TypeAttributesMask, info.TypeAttributes & TypeAttributesMask);
-            Assert.AreEqual(target.Assembly, info.Assembly.Resolve());
-            Assert.AreEqual(target.Namespace, info.Namespace.Name);
+            Assert.AreEqual(target.Attributes & TypeAttributesMask, info.TypeAttributes & TypeAttributesMask, target.ToString());
+            Assert.AreEqual(target.Assembly, info.Assembly.Resolve(), target.ToString());
+            Assert.AreEqual(target.Namespace, info.Namespace.Name, target.ToString());
             AreEqualWhenResolved(target.BaseType, info.BaseType);
-            Assert.AreEqual(target.AssemblyQualifiedName, info.AssemblyQualifiedName);
-            Assert.AreEqual(target.FullName, info.FullName);
+            Assert.AreEqual(target.AssemblyQualifiedName, info.AssemblyQualifiedName, target.ToString());
+            Assert.AreEqual(target.FullName, info.FullName, target.ToString());
             AreEqualWhenResolved(target.HasElementType ? target.GetElementType() : null, info.ElementType);
 
             Assert.AreEqual(target.IsAbstract, info.IsAbstract);
@@ -416,18 +428,19 @@ namespace Gallio.Tests.Reflection
             else
                 InterimAssert.Throws<InvalidOperationException>(delegate { GC.KeepAlive(info.ArrayRank); });
 
+            BindingFlags memberBindingFlags = All;
             AreElementsEqualWhenResolved(target.GetInterfaces(), info.Interfaces);
-            AreElementsEqualWhenResolved(target.GetConstructors(All), info.GetConstructors(All));
-            AreElementsEqualWhenResolved(target.GetEvents(All), info.GetEvents(All));
-            AreElementsEqualWhenResolved(target.GetFields(All), info.GetFields(All));
-            AreElementsEqualWhenResolved(target.GetMethods(All), info.GetMethods(All));
-            AreElementsEqualWhenResolved(target.GetProperties(All), info.GetProperties(All));
+            AreElementsEqualWhenResolved(target.GetConstructors(memberBindingFlags), info.GetConstructors(memberBindingFlags));
+            AreElementsEqualWhenResolved(target.GetEvents(memberBindingFlags), info.GetEvents(memberBindingFlags));
+            AreElementsEqualWhenResolved(target.GetFields(memberBindingFlags), info.GetFields(memberBindingFlags));
+            AreElementsEqualWhenResolved(target.GetMethods(memberBindingFlags), info.GetMethods(memberBindingFlags));
+            AreElementsEqualWhenResolved(target.GetProperties(memberBindingFlags), info.GetProperties(memberBindingFlags));
 
-            foreach (MethodInfo method in target.GetMethods(All))
+            foreach (MethodInfo method in target.GetMethods(memberBindingFlags))
             {
                 try
                 {
-                    MethodInfo methodByName = target.GetMethod(method.Name, All);
+                    MethodInfo methodByName = target.GetMethod(method.Name, memberBindingFlags);
                     Assert.IsNotNull(methodByName);
 
                     // In the case of hidden methods, GetMethod might return a different method than we
@@ -436,77 +449,77 @@ namespace Gallio.Tests.Reflection
                     // than the one we were originally looking for.
                     InterimAssert.DoesNotThrow(delegate
                     {
-                        AreEqualWhenResolved(methodByName, info.GetMethod(methodByName.Name, All));
+                        AreEqualWhenResolved(methodByName, info.GetMethod(methodByName.Name, memberBindingFlags));
                     });
                 }
                 catch (AmbiguousMatchException)
                 {
                     InterimAssert.Throws<AmbiguousMatchException>(delegate
                     {
-                        Assert.IsNotNull(info.GetMethod(method.Name, All));
+                        Assert.IsNotNull(info.GetMethod(method.Name, memberBindingFlags));
                     });
                 }
             }
 
-            foreach (PropertyInfo property in target.GetProperties(All))
+            foreach (PropertyInfo property in target.GetProperties(memberBindingFlags))
             {
                 try
                 {
-                    PropertyInfo propertyByName = target.GetProperty(property.Name, All);
+                    PropertyInfo propertyByName = target.GetProperty(property.Name, memberBindingFlags);
                     Assert.IsNotNull(propertyByName);
 
                     InterimAssert.DoesNotThrow(delegate
                     {
-                        AreEqualWhenResolved(propertyByName, info.GetProperty(propertyByName.Name, All));
+                        AreEqualWhenResolved(propertyByName, info.GetProperty(propertyByName.Name, memberBindingFlags));
                     });
                 }
                 catch (AmbiguousMatchException)
                 {
                     InterimAssert.Throws<AmbiguousMatchException>(delegate
                     {
-                        Assert.IsNotNull(info.GetProperty(property.Name, All));
+                        Assert.IsNotNull(info.GetProperty(property.Name, memberBindingFlags));
                     });
                 }
             }
 
-            foreach (FieldInfo field in target.GetFields(All))
+            foreach (FieldInfo field in target.GetFields(memberBindingFlags))
             {
                 try
                 {
-                    FieldInfo fieldByName = target.GetField(field.Name, All);
+                    FieldInfo fieldByName = target.GetField(field.Name, memberBindingFlags);
                     Assert.IsNotNull(fieldByName);
 
                     InterimAssert.DoesNotThrow(delegate
                     {
-                        AreEqualWhenResolved(fieldByName, info.GetField(fieldByName.Name, All));
+                        AreEqualWhenResolved(fieldByName, info.GetField(fieldByName.Name, memberBindingFlags));
                     });
                 }
                 catch (AmbiguousMatchException)
                 {
                     InterimAssert.Throws<AmbiguousMatchException>(delegate
                     {
-                        Assert.IsNotNull(info.GetField(field.Name, All));
+                        Assert.IsNotNull(info.GetField(field.Name, memberBindingFlags));
                     });
                 }
             }
 
-            foreach (EventInfo @event in target.GetEvents(All))
+            foreach (EventInfo @event in target.GetEvents(memberBindingFlags))
             {
                 try
                 {
-                    EventInfo eventByName = target.GetEvent(@event.Name, All);
+                    EventInfo eventByName = target.GetEvent(@event.Name, memberBindingFlags);
                     Assert.IsNotNull(eventByName);
 
                     InterimAssert.DoesNotThrow(delegate
                     {
-                        AreEqualWhenResolved(eventByName, info.GetEvent(eventByName.Name, All));
+                        AreEqualWhenResolved(eventByName, info.GetEvent(eventByName.Name, memberBindingFlags));
                     });
                 }
                 catch (AmbiguousMatchException)
                 {
                     InterimAssert.Throws<AmbiguousMatchException>(delegate
                     {
-                        Assert.IsNotNull(info.GetEvent(@event.Name, All));
+                        Assert.IsNotNull(info.GetEvent(@event.Name, memberBindingFlags));
                     });
                 }
             }
@@ -518,36 +531,36 @@ namespace Gallio.Tests.Reflection
                     Type[] genericArguments = target.GetGenericArguments();
                     IList<ITypeInfo> genericArgumentInfos = info.GenericArguments;
                     for (int i = 0; i < genericArguments.Length; i++)
-                        AreEquivalent(genericArguments[i], genericArgumentInfos[i], true);
+                        AreEquivalent(genericArguments[i], genericArgumentInfos[i], false);
                 }
 
-                foreach (FieldInfo field in target.GetFields(All))
+                foreach (FieldInfo field in target.GetFields(memberBindingFlags))
                 {
-                    IFieldInfo fieldInfo = GetMemberThatIsEqualWhenResolved(field, info.GetFields(All));
+                    IFieldInfo fieldInfo = GetMemberThatIsEqualWhenResolved(field, info.GetFields(memberBindingFlags));
                     AreEquivalent(field, fieldInfo, true);
                 }
 
-                foreach (EventInfo @event in target.GetEvents(All))
+                foreach (EventInfo @event in target.GetEvents(memberBindingFlags))
                 {
-                    IEventInfo eventInfo = GetMemberThatIsEqualWhenResolved(@event, info.GetEvents(All));
+                    IEventInfo eventInfo = GetMemberThatIsEqualWhenResolved(@event, info.GetEvents(memberBindingFlags));
                     AreEquivalent(@event, eventInfo, true);
                 }
 
-                foreach (PropertyInfo property in target.GetProperties(All))
+                foreach (PropertyInfo property in target.GetProperties(memberBindingFlags))
                 {
-                    IPropertyInfo propertyInfo = GetMemberThatIsEqualWhenResolved(property, info.GetProperties(All));
+                    IPropertyInfo propertyInfo = GetMemberThatIsEqualWhenResolved(property, info.GetProperties(memberBindingFlags));
                     AreEquivalent(property, propertyInfo, true);
                 }
 
-                foreach (ConstructorInfo constructor in target.GetConstructors(All))
+                foreach (ConstructorInfo constructor in target.GetConstructors(memberBindingFlags))
                 {
-                    IConstructorInfo constructorInfo = GetMemberThatIsEqualWhenResolved(constructor, info.GetConstructors(All));
+                    IConstructorInfo constructorInfo = GetMemberThatIsEqualWhenResolved(constructor, info.GetConstructors(memberBindingFlags));
                     AreEquivalent(constructor, constructorInfo, true);
                 }
 
-                foreach (MethodInfo method in target.GetMethods(All))
+                foreach (MethodInfo method in target.GetMethods(memberBindingFlags))
                 {
-                    IMethodInfo methodInfo = GetMemberThatIsEqualWhenResolved(method, info.GetMethods(All));
+                    IMethodInfo methodInfo = GetMemberThatIsEqualWhenResolved(method, info.GetMethods(memberBindingFlags));
                     AreEquivalent(method, methodInfo, true);
                 }
             }
@@ -586,8 +599,12 @@ namespace Gallio.Tests.Reflection
             where T : IMemberInfo
         {
             foreach (T memberInfo in memberInfos)
-                if (member.MetadataToken == memberInfo.Resolve(true).MetadataToken)
+            {
+                MemberInfo resolvedMember = memberInfo.Resolve(true);
+                if (member.DeclaringType == resolvedMember.DeclaringType
+                    && member.MetadataToken == resolvedMember.MetadataToken)
                     return memberInfo;
+            }
 
             throw new AssertionException(String.Format("Did not find matching member: {0}", member));
         }
@@ -599,11 +616,13 @@ namespace Gallio.Tests.Reflection
 
         private static void AreEqual(MemberInfo expected, MemberInfo actual)
         {
+            Assert.AreEqual(expected.DeclaringType, actual.DeclaringType);
             Assert.AreEqual(expected.MetadataToken, actual.MetadataToken);
         }
 
         private static void AreEqual(ParameterInfo expected, ParameterInfo actual)
         {
+            Assert.AreEqual(expected.Member.DeclaringType, actual.Member.DeclaringType);
             Assert.AreEqual(expected.MetadataToken, actual.MetadataToken);
         }
 
@@ -654,14 +673,14 @@ namespace Gallio.Tests.Reflection
             Dictionary<string, TMember> keyedExpectedMembers = new Dictionary<string, TMember>();
             foreach (TMember expectedMember in expectedMembers)
             {
-                string key = expectedMember.DeclaringType.ToString() + " -> " + expectedMember.ToString();
+                string key = expectedMember.DeclaringType + " -> " + expectedMember;
                 keyedExpectedMembers.Add(key, expectedMember);
             }
 
             Dictionary<string, TWrapper> keyedActualMembers = new Dictionary<string, TWrapper>();
             foreach (TWrapper actualMember in actualMembers)
             {
-                string key = actualMember.DeclaringType.ToString() + " -> " + actualMember.ToString();
+                string key = actualMember.DeclaringType + " -> " + actualMember;
 
                 if (keyedActualMembers.ContainsKey(key))
                     Assert.Fail("Found duplicate member: {0}", key);
@@ -680,37 +699,96 @@ namespace Gallio.Tests.Reflection
             where TTarget : ICustomAttributeProvider
             where TWrapper : ICodeElementInfo
         {
-            object[] nonInheritedAttribs = expectedTarget.GetCustomAttributes(false);
-            object[] inheritedAttribs = expectedTarget.GetCustomAttributes(true);
+            // There are some weird cases with attributes of object.
+            // For example, the runtime reutrns ComVisibleAttributer and ClassInterfaceAttribute
+            // when the "inherit" flag is false, but not if the flag is true!
+            if (expectedTarget is Type && expectedTarget.Equals(typeof(object)))
+                return;
 
-            Assert.AreEqual(nonInheritedAttribs.Length, new List<object>(actualWrapper.GetAttributes(null, false)).Count,
-                "Number of non-inherited attributes should be equal.");
-            Assert.AreEqual(inheritedAttribs.Length, new List<object>(actualWrapper.GetAttributes(null, true)).Count,
-                "Number of inherited attributes should be equal.");
-            Assert.AreEqual(nonInheritedAttribs.Length, new List<Attribute>(AttributeUtils.GetAttributes<Attribute>(actualWrapper, false)).Count,
-                "Number of non-inherited attributes should be equal.");
-            Assert.AreEqual(inheritedAttribs.Length, new List<Attribute>(AttributeUtils.GetAttributes<Attribute>(actualWrapper, true)).Count,
-                "Number of inherited attributes should be equal.");
-            Assert.AreEqual(nonInheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(null, false)).Count,
-                "Number of wrapped non-inherited attributes should be equal.");
-            Assert.AreEqual(inheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(null, true)).Count,
-                "Number of wrapped inherited attributes should be equal.");
-            Assert.AreEqual(nonInheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(Reflector.Wrap(typeof(Attribute)), false)).Count,
-                "Number of wrapped non-inherited attributes should be equal.");
-            Assert.AreEqual(inheritedAttribs.Length, new List<IAttributeInfo>(actualWrapper.GetAttributeInfos(Reflector.Wrap(typeof(Attribute)), true)).Count,
-                "Number of wrapped inherited attributes should be equal.");
+            IList<object> nonInheritedAttribs = expectedTarget.GetCustomAttributes(false);
+            IList<object> inheritedAttribs = expectedTarget.GetCustomAttributes(true);
+            ITypeInfo attributeType = Reflector.Wrap(typeof(Attribute));
+
+            AreAttributesOfSameTypesExcludingSpecialAttributes(nonInheritedAttribs,
+                actualWrapper.GetAttributes(null, false));
+            AreAttributesOfSameTypesExcludingSpecialAttributes(inheritedAttribs,
+                actualWrapper.GetAttributes(null, true));
+            AreAttributesOfSameTypesExcludingSpecialAttributes(nonInheritedAttribs,
+                actualWrapper.GetAttributes(attributeType, false));
+            AreAttributesOfSameTypesExcludingSpecialAttributes(inheritedAttribs,
+                actualWrapper.GetAttributes(attributeType, true));
+
+            AreAttributesOfSameTypesExcludingSpecialAttributes(nonInheritedAttribs,
+                actualWrapper.GetAttributeInfos(null, false));
+            AreAttributesOfSameTypesExcludingSpecialAttributes(inheritedAttribs,
+                actualWrapper.GetAttributeInfos(null, true));
+            AreAttributesOfSameTypesExcludingSpecialAttributes(nonInheritedAttribs,
+                actualWrapper.GetAttributeInfos(attributeType, false));
+            AreAttributesOfSameTypesExcludingSpecialAttributes(inheritedAttribs,
+                actualWrapper.GetAttributeInfos(attributeType, true));
 
             foreach (object nonInheritedAttrib in nonInheritedAttribs)
             {
-                Assert.IsTrue(AttributeUtils.HasAttribute(actualWrapper, nonInheritedAttrib.GetType(), false),
-                    "Should contain non-inherited attributes of same type.");
+                if (!IsSpecialAttribute(nonInheritedAttrib))
+                    Assert.IsTrue(AttributeUtils.HasAttribute(actualWrapper, nonInheritedAttrib.GetType(), false),
+                        "Should contain non-inherited attributes of same type.");
             }
 
             foreach (object inheritedAttrib in inheritedAttribs)
             {
-                Assert.IsTrue(AttributeUtils.HasAttribute(actualWrapper, inheritedAttrib.GetType(), true),
-                    "Should contain inherited attributes of same type.");
+                if (!IsSpecialAttribute(inheritedAttrib))
+                    Assert.IsTrue(AttributeUtils.HasAttribute(actualWrapper, inheritedAttrib.GetType(), true),
+                        "Should contain inherited attributes of same type.");
             }
+        }
+
+        private static void AreAttributesOfSameTypesExcludingSpecialAttributes(IEnumerable<object> expected,
+            IEnumerable<object> actual)
+        {
+            Dictionary<Type, int> expectedCounts = new Dictionary<Type, int>();
+            Dictionary<Type, int> actualCounts = new Dictionary<Type, int>();
+
+            foreach (object expectedAttrib in expected)
+                if (!IsSpecialAttribute(expectedAttrib))
+                    IncrementCount(expectedCounts, expectedAttrib.GetType());
+            foreach (object actualAttrib in actual)
+                if (!IsSpecialAttribute(actualAttrib))
+                    IncrementCount(actualCounts, actualAttrib.GetType());
+
+            InterimAssert.WithKeyedPairs(expectedCounts, actualCounts, delegate(Type type, int expectedCount, int actualCount)
+            {
+                Assert.AreEqual(expectedCount, actualCount, "Number of {0} attributes should be equal.", type);
+            });
+        }
+
+        private static void AreAttributesOfSameTypesExcludingSpecialAttributes(IEnumerable<object> expected,
+            IEnumerable<IAttributeInfo> actual)
+        {
+            List<object> actualResolvedObjects = new List<object>();
+            foreach (IAttributeInfo attrib in actual)
+                actualResolvedObjects.Add(attrib.Resolve());
+
+            AreAttributesOfSameTypesExcludingSpecialAttributes(expected, actualResolvedObjects);
+        }
+
+        private static void IncrementCount(IDictionary<Type, int> counts, Type type)
+        {
+            int count;
+            counts.TryGetValue(type, out count);
+            counts[type] = count + 1;
+        }
+
+        private static bool IsSpecialAttribute(object attrib)
+        {
+            return attrib is ComVisibleAttribute
+                || attrib is ClassInterfaceAttribute
+                || attrib is DefaultMemberAttribute
+                || attrib is SerializableAttribute
+                || attrib is DebuggableAttribute
+                || attrib is CompilationRelaxationsAttribute
+                || attrib is RuntimeCompatibilityAttribute
+                || attrib is AssemblyCultureAttribute
+                || attrib is AssemblyVersionAttribute;
         }
 
         private static void AreEqualUpToAssemblyDisplayName(CodeReference expected, CodeReference actual)

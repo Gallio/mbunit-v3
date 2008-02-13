@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Gallio.Collections;
 
@@ -54,7 +55,7 @@ namespace Gallio.Reflection.Impl
             // Yield all attributes declared by the member itself.
             // Keep track of which types were seen so we can resolve inherited but non-multiple attributes later.
             string qualifiedTypeName = attributeType != null ? attributeType.FullName : null;
-            foreach (StaticAttributeWrapper attribute in GetCustomAttributes())
+            foreach (IAttributeInfo attribute in GetAllCustomAttributes())
             {
                 ITypeInfo type = attribute.Type;
                 if (qualifiedTypeName == null || ReflectionUtils.IsDerivedFrom(type, qualifiedTypeName))
@@ -141,6 +142,20 @@ namespace Gallio.Reflection.Impl
         protected abstract IEnumerable<StaticAttributeWrapper> GetCustomAttributes();
 
         /// <summary>
+        /// <para>
+        /// Gets all pseudo custom attributes associated with a member.
+        /// </para>
+        /// <para>
+        /// These attributes do not really exist as custom attributes in the metadata.  Rather, they are
+        /// realizations of other metadata features in attribute form.  For example,
+        /// <see cref="SerializableAttribute" /> is represented in the metadata as a <see cref="TypeAttributes" />
+        /// flag.  Pseudo custom attributes preserve the illusion of these attributes.
+        /// </para>
+        /// </summary>
+        /// <returns>The pseudo custom attributes</returns>
+        protected abstract IEnumerable<Attribute> GetPseudoCustomAttributes();
+
+        /// <summary>
         /// Gets an enumeration of elements from which this code element inherits.
         /// </summary>
         /// <returns>The inherited code elements</returns>
@@ -152,14 +167,18 @@ namespace Gallio.Reflection.Impl
         /// <summary>
         /// Appends a list of parameters to a signature.
         /// </summary>
-        internal static void AppendParameterListToSignature(StringBuilder sig, IList<IParameterInfo> parameters)
+        internal static void AppendParameterListToSignature(StringBuilder sig, IList<IParameterInfo> parameters, bool isVarArgs)
         {
             for (int i = 0; i < parameters.Count; i++)
             {
                 if (i != 0)
                     sig.Append(@", ");
+
                 sig.Append(GetTypeNameForSignature(parameters[i].ValueType));
             }
+
+            if (isVarArgs)
+                sig.Append(@", ...");
         }
 
         /// <summary>
@@ -215,12 +234,22 @@ namespace Gallio.Reflection.Impl
                 case "System.UInt16":
                 case "System.UInt32":
                 case "System.UInt64":
+                case "System.IntPtr":
+                case "System.UIntPtr":
                 case "System.Void":
                     return true;
 
                 default:
                     return false;
             }
+        }
+
+        private IEnumerable<IAttributeInfo> GetAllCustomAttributes()
+        {
+            foreach (StaticAttributeWrapper attrib in GetCustomAttributes())
+                yield return attrib;
+            foreach (Attribute attrib in GetPseudoCustomAttributes())
+                yield return Reflector.Wrap(attrib);
         }
 
         private static AttributeUsageAttribute GetAttributeUsage(ITypeInfo attributeType)

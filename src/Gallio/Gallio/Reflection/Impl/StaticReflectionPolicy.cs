@@ -280,6 +280,13 @@ namespace Gallio.Reflection.Impl
         protected internal abstract MethodAttributes GetFunctionAttributes(StaticFunctionWrapper function);
 
         /// <summary>
+        /// Gets the calling conventions of a function.
+        /// </summary>
+        /// <param name="function">The function, not null</param>
+        /// <returns>The function calling conventions</returns>
+        protected internal abstract CallingConventions GetFunctionCallingConvention(StaticFunctionWrapper function);
+
+        /// <summary>
         /// Gets the parameters of a function.
         /// </summary>
         /// <param name="function">The function, not null</param>
@@ -373,7 +380,7 @@ namespace Gallio.Reflection.Impl
         protected internal abstract StaticDeclaredTypeWrapper GetTypeBaseType(StaticDeclaredTypeWrapper type);
 
         /// <summary>
-        /// Gets the interfaces of a type.
+        /// Gets the interfaces directly implemented by a type.
         /// </summary>
         /// <param name="type">The type, not null</param>
         /// <returns>The type's interfaces</returns>

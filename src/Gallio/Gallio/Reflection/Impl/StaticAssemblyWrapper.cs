@@ -146,5 +146,12 @@ namespace Gallio.Reflection.Impl
         {
             return Policy.GetAssemblyCustomAttributes(this);
         }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            // TODO: Handle code access security.
+            return EmptyArray<Attribute>.Instance;
+        }
     }
 }

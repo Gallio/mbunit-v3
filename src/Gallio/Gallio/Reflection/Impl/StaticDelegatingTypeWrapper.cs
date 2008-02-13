@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 
 namespace Gallio.Reflection.Impl
 {
@@ -134,5 +135,11 @@ namespace Gallio.Reflection.Impl
         /// treats all array types as <see cref="Array" /> for most purposes.
         /// </summary>
         protected abstract ITypeInfo EffectiveType { get; }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            return EmptyArray<Attribute>.Instance;
+        }
     }
 }

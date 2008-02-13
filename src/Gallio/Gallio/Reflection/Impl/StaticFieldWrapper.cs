@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Gallio.Utilities;
@@ -160,6 +161,15 @@ namespace Gallio.Reflection.Impl
             sig.Append(Name);
 
             return sig.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            if ((FieldAttributes & FieldAttributes.NotSerialized) != 0)
+                yield return new NonSerializedAttribute();
+
+            // TODO: Handle MarshalAs and FieldOffset.
         }
     }
 }

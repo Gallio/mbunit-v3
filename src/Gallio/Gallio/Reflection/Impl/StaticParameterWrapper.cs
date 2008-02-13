@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using Gallio.Utilities;
 
@@ -158,6 +159,19 @@ namespace Gallio.Reflection.Impl
         protected override IEnumerable<StaticAttributeWrapper> GetCustomAttributes()
         {
             return Policy.GetParameterCustomAttributes(this);
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            if (IsIn)
+                yield return new InAttribute();
+            if (IsOut)
+                yield return new OutAttribute();
+            if (IsOptional)
+                yield return new OptionalAttribute();
+
+            // TODO: Handle MarshalAs.
         }
 
         /// <inheritdoc />

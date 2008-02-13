@@ -38,6 +38,11 @@ namespace Gallio.Reflection
         MethodAttributes MethodAttributes { get; }
 
         /// <summary>
+        /// Gets the calling conventions for this method.
+        /// </summary>
+        CallingConventions CallingConvention { get; }
+
+        /// <summary>
         /// Returns true if the method is abstract.
         /// </summary>
         bool IsAbstract { get; }

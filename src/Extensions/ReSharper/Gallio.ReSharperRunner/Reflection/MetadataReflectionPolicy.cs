@@ -412,6 +412,16 @@ namespace Gallio.ReSharperRunner.Reflection
             return flags;
         }
 
+        protected override CallingConventions GetFunctionCallingConvention(StaticFunctionWrapper function)
+        {
+            IMetadataMethod methodHandle = (IMetadataMethod)function.Handle;
+            
+            CallingConventions flags = CallingConventions.Standard;
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, CallingConventions.VarArgs, methodHandle.IsVarArg);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, CallingConventions.HasThis, ! methodHandle.IsStatic);
+            return flags;
+        }
+
         protected override IList<StaticParameterWrapper> GetFunctionParameters(StaticFunctionWrapper function)
         {
             IMetadataMethod methodHandle = (IMetadataMethod)function.Handle;
@@ -525,23 +535,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
-
-            IMetadataAssembly assembly = GetMetadataAssemblyHack(typeHandle);
-            if (assembly != null)
-                return Wrap(assembly);
-
-            AssemblyName assemblyName = typeHandle.DeclaringAssemblyName;
-            if (assemblyName != null)
-            {
-                assembly = LoadMetadataAssembly(assemblyName, false);
-                if (assembly != null)
-                    return Wrap(assembly);
-            }
-
-            // Note: ReSharper can sometimes return unresolved types (which have a null declaring assembly name).
-            //       We can't really do much with these except perhaps to guess the assebmly.
-            throw new NotSupportedException(String.Format(
-                "Cannot determine the assembly to which type '{0}' belongs because it is unresolved.", typeHandle.FullyQualifiedName));
+            return Wrap(GetTypeAssemblyHandle(typeHandle));
         }
 
         protected override string GetTypeNamespace(StaticDeclaredTypeWrapper type)
@@ -646,7 +640,9 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(IMetadataTypeInfo typeInfoHandle, IMetadataType[] argumentTypeHandles)
         {
-            IMetadataTypeInfo declaraingTypeInfoHandle = typeInfoHandle.DeclaringType;
+            typeInfoHandle = ResolveTypeHandle(typeInfoHandle);
+
+            IMetadataTypeInfo declaraingTypeInfoHandle = ResolveTypeHandle(typeInfoHandle.DeclaringType);
             StaticDeclaredTypeWrapper type;
             if (declaraingTypeInfoHandle != null)
             {
@@ -701,6 +697,34 @@ namespace Gallio.ReSharperRunner.Reflection
                 StaticMethodWrapper declaringMethod = new StaticMethodWrapper(this, parameterHandle.MethodOwner, declaringType, declaringType.Substitution);
                 return new StaticGenericParameterWrapper(this, parameterHandle, null, declaringMethod);
             }
+        }
+
+        private IMetadataAssembly GetTypeAssemblyHandle(IMetadataTypeInfo typeHandle)
+        {
+            IMetadataAssembly assembly = GetMetadataAssemblyHack(typeHandle);
+            if (assembly != null)
+                return assembly;
+
+            AssemblyName assemblyName = typeHandle.DeclaringAssemblyName;
+            if (assemblyName != null)
+            {
+                assembly = LoadMetadataAssembly(assemblyName, false);
+                if (assembly != null)
+                    return assembly;
+            }
+
+            // Note: ReSharper can sometimes return unresolved types (which have a null declaring assembly name).
+            //       We can't really do much with these except perhaps to guess the assebmly.
+            throw new NotSupportedException(String.Format(
+                "Cannot determine the assembly to which type '{0}' belongs because it is unresolved.", typeHandle.FullyQualifiedName));
+        }
+
+        private IMetadataTypeInfo ResolveTypeHandle(IMetadataTypeInfo typeHandle)
+        {
+            if (typeHandle != null && typeHandle.Token.Value == 0)
+                return GetTypeAssemblyHandle(typeHandle).GetTypeInfoFromQualifiedName(typeHandle.FullyQualifiedName, false);
+
+            return typeHandle;
         }
         #endregion
 

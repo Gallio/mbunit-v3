@@ -107,7 +107,29 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override IList<ITypeInfo> Interfaces
         {
-            get { return Substitution.ApplyAll(Policy.GetTypeInterfaces(this)); }
+            get
+            {
+                List<StaticDeclaredTypeWrapper> result = new List<StaticDeclaredTypeWrapper>();
+                Queue<StaticDeclaredTypeWrapper> queue = new Queue<StaticDeclaredTypeWrapper>();
+                queue.Enqueue(this);
+
+                foreach (StaticDeclaredTypeWrapper type in GetAllBaseTypes())
+                    queue.Enqueue(type);
+
+                while (queue.Count != 0)
+                {
+                    foreach (StaticDeclaredTypeWrapper @interface in Policy.GetTypeInterfaces(queue.Dequeue()))
+                    {
+                        if (!result.Contains(@interface))
+                        {
+                            queue.Enqueue(@interface);
+                            result.Add(@interface);
+                        }
+                    }
+                }
+
+                return Substitution.ApplyAll(result);
+            }
         }
 
         /// <inheritdoc />
@@ -517,6 +539,15 @@ namespace Gallio.Reflection.Impl
             return ComposeSubstitution(substitution);
         }
 
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            if ((TypeAttributes & TypeAttributes.Serializable) != 0)
+                yield return new SerializableAttribute();
+
+            // TODO: Handle ComImport and code access security.
+        }
+
         private IList<StaticGenericParameterWrapper> GenericParameters
         {
             get
@@ -588,6 +619,24 @@ namespace Gallio.Reflection.Impl
                 case "System.Enum:InternalGetValue":
                 case "System.Enum:GetValue":
                 case "System.Array:InternalGetReference":
+                case "System.Delegate:BindToMethodName":
+                case "System.Delegate:BindToMethodInfo":
+                case "System.Delegate:DelegateConstruct":
+                case "System.MulticastDelegate:InvocationListEquals":
+                case "System.MulticastDelegate:TrySetSlot":
+                case "System.MulticastDelegate:DeleteFromInvocationList":
+                case "System.MulticastDelegate:EqualInvocationLists":
+                case "System.MulticastDelegate:ThrowNullThisInDelegateToInstance":
+                case "System.MulticastDelegate:CtorClosed":
+                case "System.MulticastDelegate:CtorClosedStatic":
+                case "System.MulticastDelegate:CtorRTClosed":
+                case "System.MulticastDelegate:CtorOpened":
+                case "System.MulticastDelegate:CtorSecureClosed":
+                case "System.MulticastDelegate:CtorSecureClosedStatic":
+                case "System.MulticastDelegate:CtorSecureRTClosed":
+                case "System.MulticastDelegate:CtorSecureOpened":
+                case "System.MulticastDelegate:CtorVirtualDispatch":
+                case "System.MulticastDelegate:CtorSecureVirtualDispatch":
                     return true;
 
                 default:
@@ -600,6 +649,24 @@ namespace Gallio.Reflection.Impl
         {
             foreach (T value in values)
                 collection.Add(value);
+        }
+
+        private static T GetMemberByName<T>(IEnumerable<T> members, string memberName)
+            where T : class, IMemberInfo
+        {
+            T match = null;
+            foreach (T member in members)
+            {
+                if (member.Name == memberName)
+                {
+                    if (match != null)
+                        throw new AmbiguousMatchException(String.Format("Found two members named '{0}'.", memberName));
+
+                    match = member;
+                }
+            }
+
+            return match;
         }
     }
 }

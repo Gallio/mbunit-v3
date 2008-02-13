@@ -32,6 +32,11 @@ namespace Gallio.Reflection.Impl
             get { return Target.Attributes; }
         }
 
+        public CallingConventions CallingConvention
+        {
+            get { return Target.CallingConvention; }
+        }
+
         public bool IsAbstract
         {
             get { return Target.IsAbstract; }

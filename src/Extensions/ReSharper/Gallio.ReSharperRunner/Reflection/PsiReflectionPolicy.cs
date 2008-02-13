@@ -613,6 +613,16 @@ namespace Gallio.ReSharperRunner.Reflection
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, functionHandle.IsVirtual);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.SpecialName, functionHandle.ShortName.StartsWith(@"."));
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, !functionHandle.IsOverride);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.HideBySig, functionHandle.HidePolicy == MemberHidePolicy.HIDE_BY_SIGNATURE);
+            return flags;
+        }
+
+        protected override CallingConventions GetFunctionCallingConvention(StaticFunctionWrapper function)
+        {
+            IFunction functionHandle = (IFunction)function.Handle;
+
+            CallingConventions flags = CallingConventions.Standard;
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, CallingConventions.HasThis, !functionHandle.IsStatic);
             return flags;
         }
 

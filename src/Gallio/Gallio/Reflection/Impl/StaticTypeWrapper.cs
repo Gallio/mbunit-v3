@@ -387,31 +387,5 @@ namespace Gallio.Reflection.Impl
             for (ITypeInfo baseType = BaseType; baseType != null; baseType = baseType.BaseType)
                 yield return baseType;
         }
-
-        /// <summary>
-        /// Gets all members with the specified name.
-        /// </summary>
-        /// <typeparam name="T">The member type</typeparam>
-        /// <param name="members">The members</param>
-        /// <param name="memberName">The member name</param>
-        /// <returns>The member with the specified name, or null if none</returns>
-        /// <exception cref="AmbiguousMatchException">Thrown if there are multiple matches</exception>
-        protected static T GetMemberByName<T>(IEnumerable<T> members, string memberName)
-            where T : class, IMemberInfo
-        {
-            T match = null;
-            foreach (T member in members)
-            {
-                if (member.Name == memberName)
-                {
-                    if (match != null)
-                        throw new AmbiguousMatchException(String.Format("Found two members named '{0}'.", memberName));
-
-                    match = member;
-                }
-            }
-
-            return match;
-        }
     }
 }

@@ -106,5 +106,18 @@ namespace Gallio.Reflection.Impl
             if (condition)
                 flags |= flagToAdd;
         }
+
+        /// <summary>
+        /// Adds <paramref name="flagToAdd"/> to the <paramref name="flags"/> enumeration
+        /// if <paramref name="condition"/> is true.
+        /// </summary>
+        /// <param name="flags">The flags enumeration to update</param>
+        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true</param>
+        /// <param name="condition">The condition to check</param>
+        public static void AddFlagIfTrue(ref CallingConventions flags, CallingConventions flagToAdd, bool condition)
+        {
+            if (condition)
+                flags |= flagToAdd;
+        }
     }
 }

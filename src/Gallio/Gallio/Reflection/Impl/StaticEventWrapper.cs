@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Gallio.Collections;
 using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
@@ -185,6 +186,12 @@ namespace Gallio.Reflection.Impl
         {
             foreach (StaticEventWrapper element in GetOverridenOrHiddenEvents(true))
                 yield return element;
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            return EmptyArray<Attribute>.Instance;
         }
     }
 }

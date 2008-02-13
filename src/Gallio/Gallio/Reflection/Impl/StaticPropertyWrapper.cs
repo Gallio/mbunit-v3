@@ -218,7 +218,9 @@ namespace Gallio.Reflection.Impl
             if (indexParameters.Count != 0)
             {
                 sig.Append(' ');
-                AppendParameterListToSignature(sig, indexParameters);
+                sig.Append('[');
+                AppendParameterListToSignature(sig, indexParameters, false);
+                sig.Append(']');
             }
 
             return sig.ToString();
@@ -229,6 +231,12 @@ namespace Gallio.Reflection.Impl
         {
             foreach (StaticPropertyWrapper element in GetOverridenOrHiddenProperties(true))
                 yield return element;
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            return EmptyArray<Attribute>.Instance;
         }
     }
 }

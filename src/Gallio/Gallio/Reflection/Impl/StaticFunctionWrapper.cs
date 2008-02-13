@@ -58,6 +58,12 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public CallingConventions CallingConvention
+        {
+            get { return Policy.GetFunctionCallingConvention(this); }
+        }
+
+        /// <inheritdoc />
         public bool IsAbstract
         {
             get { return (MethodAttributes & MethodAttributes.Abstract) != 0; }
@@ -166,7 +172,7 @@ namespace Gallio.Reflection.Impl
             sig.Append(Name);
             AppendGenericArgumentListToSignature(sig, genericArguments);
             sig.Append('(');
-            AppendParameterListToSignature(sig, Parameters);
+            AppendParameterListToSignature(sig, Parameters, (CallingConvention & CallingConventions.VarArgs) != 0);
             sig.Append(')');
 
             return sig.ToString();

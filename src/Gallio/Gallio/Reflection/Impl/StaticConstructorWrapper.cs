@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
 
@@ -67,6 +68,13 @@ namespace Gallio.Reflection.Impl
         public override string ToString()
         {
             return ToString(Reflector.Wrap(typeof(void)), EmptyArray<ITypeInfo>.Instance);
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
+        {
+            // TODO: Handle code access security.
+            return EmptyArray<Attribute>.Instance;
         }
     }
 }

@@ -227,7 +227,7 @@ namespace Gallio.Reflection
                 throw new ArgumentNullException(@"parameter");
 
             MemberInfo member = parameter.Member;
-            Type type = member.ReflectedType;
+            Type type = member.DeclaringType;
             return new CodeReference(type.Assembly.FullName, type.Namespace, type.FullName ?? type.Name, member.Name, parameter.Name);
         }
 
@@ -246,7 +246,7 @@ namespace Gallio.Reflection
             if (type != null)
                 return CreateFromType(type);
 
-            type = member.ReflectedType;
+            type = member.DeclaringType;
             return new CodeReference(type.Assembly.FullName, type.Namespace, type.FullName ?? type.Name, member.Name, null);
         }
 
