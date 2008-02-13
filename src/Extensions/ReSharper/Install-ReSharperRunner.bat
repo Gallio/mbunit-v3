@@ -12,13 +12,13 @@ echo.
 
 :V30_VS80_RETRY_PROMPT
 set /P Answer=Support ReSharper v3.0 for VS 2005?  (Y/N)
-if /I "%Answer%"=="Y" call :INSTALL "v3.0" "vs8.0" & goto :V30_VS80_DONE_PROMPT
+if /I "%Answer%"=="Y" call :INSTALL "v3.1" "vs8.0" & goto :V30_VS80_DONE_PROMPT
 if /I not "%Answer%"=="N" goto :V30_VS80_RETRY_PROMPT
 :V30_VS80_DONE_PROMPT
 
 :V30_VS90_RETRY_PROMPT
 set /P Answer=Support ReSharper v3.0 for VS 2008?  (Y/N)
-if /I "%Answer%"=="Y" call :INSTALL "v3.0" "vs9.0" & goto :V30_VS90_DONE_PROMPT
+if /I "%Answer%"=="Y" call :INSTALL "v3.1" "vs9.0" & goto :V30_VS90_DONE_PROMPT
 if /I not "%Answer%"=="N" goto :V30_VS90_RETRY_PROMPT
 :V30_VS90_DONE_PROMPT
 
