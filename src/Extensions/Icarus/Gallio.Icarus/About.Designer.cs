@@ -43,42 +43,17 @@ namespace Gallio.Icarus
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(About));
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.buttonClose = new System.Windows.Forms.Button();
             this.versionLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.componentList = new System.Windows.Forms.ListBox();
             this.websiteLink = new System.Windows.Forms.LinkLabel();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(434, 65);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(433, 66);
-            this.panel1.TabIndex = 1;
             // 
             // buttonClose
             // 
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point(333, 268);
+            this.buttonClose.Location = new System.Drawing.Point(333, 308);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(88, 23);
             this.buttonClose.TabIndex = 2;
@@ -89,7 +64,8 @@ namespace Gallio.Icarus
             // versionLabel
             // 
             this.versionLabel.AutoSize = true;
-            this.versionLabel.Location = new System.Drawing.Point(12, 82);
+            this.versionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.versionLabel.Location = new System.Drawing.Point(12, 130);
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(160, 13);
             this.versionLabel.TabIndex = 3;
@@ -98,7 +74,8 @@ namespace Gallio.Icarus
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 112);
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Location = new System.Drawing.Point(12, 152);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(130, 13);
             this.label2.TabIndex = 4;
@@ -107,7 +84,7 @@ namespace Gallio.Icarus
             // componentList
             // 
             this.componentList.FormattingEnabled = true;
-            this.componentList.Location = new System.Drawing.Point(12, 128);
+            this.componentList.Location = new System.Drawing.Point(12, 168);
             this.componentList.Name = "componentList";
             this.componentList.Size = new System.Drawing.Size(409, 134);
             this.componentList.TabIndex = 5;
@@ -115,8 +92,9 @@ namespace Gallio.Icarus
             // websiteLink
             // 
             this.websiteLink.AutoSize = true;
+            this.websiteLink.BackColor = System.Drawing.Color.Transparent;
             this.websiteLink.LinkArea = new System.Windows.Forms.LinkArea(9, 38);
-            this.websiteLink.Location = new System.Drawing.Point(258, 82);
+            this.websiteLink.Location = new System.Drawing.Point(15, 308);
             this.websiteLink.Name = "websiteLink";
             this.websiteLink.Size = new System.Drawing.Size(169, 17);
             this.websiteLink.TabIndex = 6;
@@ -128,13 +106,13 @@ namespace Gallio.Icarus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(433, 303);
+            this.BackgroundImage = global::Gallio.Icarus.Properties.Resources.about;
+            this.ClientSize = new System.Drawing.Size(433, 343);
             this.Controls.Add(this.websiteLink);
             this.Controls.Add(this.componentList);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.buttonClose);
-            this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -142,9 +120,6 @@ namespace Gallio.Icarus
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About Gallio Icarus";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -152,8 +127,6 @@ namespace Gallio.Icarus
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.Label versionLabel;
         private System.Windows.Forms.Label label2;

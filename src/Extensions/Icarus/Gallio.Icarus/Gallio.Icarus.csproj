@@ -11,7 +11,7 @@
     <AssemblyName>Gallio.Icarus</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <ApplicationIcon>App.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\GallioIcarus.ico</ApplicationIcon>
     <PublishUrl>http://localhost/Gallio.Icarus/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -266,7 +266,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.ico" />
+    <None Include="Resources\about.png" />
     <Content Include="Resources\arrow_refresh.png" />
     <Content Include="Resources\Assembly.ico" />
     <Content Include="Resources\ClearAll.ico" />
@@ -279,6 +279,7 @@
     <Content Include="Resources\FilterInconclusive.ico" />
     <Content Include="Resources\FilterPassed.ico" />
     <Content Include="Resources\folder_open.png" />
+    <None Include="Resources\GallioIcarus.ico" />
     <Content Include="Resources\Graph.png" />
     <Content Include="Resources\help-browser.png" />
     <Content Include="Resources\LinkToMBU.png" />

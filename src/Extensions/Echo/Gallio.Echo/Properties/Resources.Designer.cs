@@ -60,6 +60,13 @@ namespace Gallio.Echo.Properties {
             }
         }
         
+        internal static System.Drawing.Icon GallioEcho {
+            get {
+                object obj = ResourceManager.GetObject("GallioEcho", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Gallio Echo - Version {0}.{1} build {2}.
         /// </summary>

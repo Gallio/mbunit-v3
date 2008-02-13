@@ -60,6 +60,13 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap about {
+            get {
+                object obj = ResourceManager.GetObject("about", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap AssemblyIcon {
             get {
                 object obj = ResourceManager.GetObject("AssemblyIcon", resourceCulture);
@@ -113,6 +120,13 @@ namespace Gallio.Icarus.Properties {
             get {
                 object obj = ResourceManager.GetObject("FilterPassed", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon GallioIcarus {
+            get {
+                object obj = ResourceManager.GetObject("GallioIcarus", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
