@@ -244,7 +244,7 @@ namespace Gallio.Model.Filters
 
         private static bool IsWord(FilterToken token)
         {
-            return token.Type == FilterTokenType.QuotedWord || token.Type == FilterTokenType.UnquotedWord;
+            return token.Type == FilterTokenType.Word || token.Type == FilterTokenType.RegexWord;
         }
 
         private static bool IsNotWord(FilterToken token)

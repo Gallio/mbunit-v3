@@ -28,9 +28,10 @@ namespace Gallio.Tests.Model.Filters
         [RowTest]
         [Row(null)]
         [Row("")]
+        [Row(" ")]
         [Row("\t")]
         [Row("\n \n")]
-        public void Empty(string filter)
+        public void EmptyExpressionsAreNotValid(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.IsNotNull(lexer);
@@ -38,6 +39,46 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsNull(lexer.GetNextToken());
             Assert.IsNull(lexer.LookAhead(1));
             Assert.IsNull(lexer.GetNextToken());
+        }
+
+        [Test]
+        public void GetNextTokenLookAheadWithOneToken()
+        {
+            FilterLexer lexer = new FilterLexer("a");
+            Assert.IsNotNull(lexer);
+            Assert.AreEqual(1, lexer.Tokens.Count);
+            Assert.IsNull(lexer.LookAhead(0));
+            Assert.IsNotNull(lexer.LookAhead(1));
+            Assert.IsNull(lexer.LookAhead(2));
+            Assert.IsNotNull(lexer.GetNextToken());
+            Assert.IsNotNull(lexer.LookAhead(0));
+            Assert.IsNull(lexer.LookAhead(1));
+            Assert.IsNull(lexer.GetNextToken());
+            Assert.IsNull(lexer.LookAhead(0));
+            Assert.IsNull(lexer.LookAhead(1));
+        }
+
+        [Test]
+        public void GetNextTokenAndLookAheadWithTwoTokens()
+        {
+            FilterLexer lexer = new FilterLexer("a:");
+            Assert.IsNotNull(lexer);
+            Assert.AreEqual(2, lexer.Tokens.Count);
+            Assert.IsNull(lexer.LookAhead(0));
+            Assert.IsNotNull(lexer.LookAhead(1));
+            Assert.IsNotNull(lexer.LookAhead(2));
+            Assert.IsNull(lexer.LookAhead(3));
+            Assert.IsNotNull(lexer.GetNextToken());
+            Assert.IsNotNull(lexer.LookAhead(0));
+            Assert.IsNotNull(lexer.LookAhead(1));
+            Assert.IsNull(lexer.LookAhead(2));
+            Assert.IsNotNull(lexer.GetNextToken());
+            Assert.IsNotNull(lexer.LookAhead(0));
+            Assert.IsNull(lexer.LookAhead(1));
+            Assert.IsNull(lexer.LookAhead(2));
+            Assert.IsNull(lexer.GetNextToken());
+            Assert.IsNull(lexer.LookAhead(0));
+            Assert.IsNull(lexer.LookAhead(1));
         }
 
         [RowTest]
@@ -48,11 +89,11 @@ namespace Gallio.Tests.Model.Filters
         [Row("and", "And")]
         [Row("And", "And")]
         [Row("aNd", "And")]
-        [Row("AND", "And")]        
+        [Row("AND", "And")]
         [Row("or", "Or")]
-        [Row("OR", "Or")]        
+        [Row("OR", "Or")]
         [Row("not", "Not")]
-        [Row("NOT", "Not")]        
+        [Row("NOT", "Not")]
         [Row(":", "Colon")]
         [Row(",", "Comma")]
         [Row("*", "Star")]
@@ -65,26 +106,6 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(filterToken.Position, 0);
             Assert.AreEqual(filterToken.Text, null);
         }
-                
-        //[RowTest]
-        //[Row("#", 0)]
-        //[Row("aaaaaaaa#bbbbbbb", 8)]
-        //[Row("aaaaaaaaa#bbbbbb", 9)]
-        //[Row("aaaaaaaaaa#bbbbb", 10)]
-        //[Row("aaaaaaaaaaa#bbbb", 11)]
-        //public void BadInput(string filter, int position)
-        //{
-        //    string exceptionMessage = null;
-        //    try
-        //    {
-        //        new FilterLexer(filter);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        exceptionMessage = e.Message;
-        //    }
-        //    Assert.AreEqual(exceptionMessage, "Unexpected character '#' found at position " + position);
-        //}
 
         [RowTest]
         [Row("anX")]
@@ -103,7 +124,7 @@ namespace Gallio.Tests.Model.Filters
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 1);
             FilterToken filterToken = lexer.Tokens[0];
-            Assert.AreEqual(filterToken.Type, FilterTokenType.UnquotedWord);
+            Assert.AreEqual(filterToken.Type, FilterTokenType.Word);
             Assert.AreEqual(filterToken.Position, 0);
             Assert.AreEqual(filterToken.Text, filter);
         }
@@ -111,6 +132,8 @@ namespace Gallio.Tests.Model.Filters
         [RowTest]
         [Row("()", "LeftBracket", "RightBracket")]
         [Row(")(", "RightBracket", "LeftBracket")]
+        [Row(",*", "Comma", "Star")]
+        [Row("::", "Colon", "Colon")]
         public void TwoElements(string filter, string type1, string type2)
         {
             FilterLexer lexer = new FilterLexer(filter);
@@ -134,28 +157,34 @@ namespace Gallio.Tests.Model.Filters
             string filter = key + colon + value;
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 3);
-
-            FilterToken firstFilterToken = lexer.Tokens[0];
-            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.UnquotedWord);
-            Assert.AreEqual(firstFilterToken.Position, 0);
-            Assert.AreEqual(firstFilterToken.Text, key);
-
-            FilterToken secondFilterToken = lexer.Tokens[1];
-            Assert.AreEqual(secondFilterToken.Type, FilterTokenType.Colon);
-            Assert.AreEqual(secondFilterToken.Position, key.Length);
-            Assert.AreEqual(secondFilterToken.Text, null);
-
-            FilterToken thirdFilterToken = lexer.Tokens[2];
-            Assert.AreEqual(thirdFilterToken.Type, FilterTokenType.UnquotedWord);
-            Assert.AreEqual(thirdFilterToken.Position, key.Length + 1);
-            Assert.AreEqual(thirdFilterToken.Text, value);
+            {
+                FilterToken firstFilterToken = lexer.Tokens[0];
+                Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(firstFilterToken.Position, 0);
+                Assert.AreEqual(firstFilterToken.Text, key);
+            }
+            {
+                FilterToken secondFilterToken = lexer.Tokens[1];
+                Assert.AreEqual(secondFilterToken.Type, FilterTokenType.Colon);
+                Assert.AreEqual(secondFilterToken.Position, key.Length);
+                Assert.AreEqual(secondFilterToken.Text, null);
+            }
+            {
+                FilterToken thirdFilterToken = lexer.Tokens[2];
+                Assert.AreEqual(thirdFilterToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(thirdFilterToken.Position, key.Length + 1);
+                Assert.AreEqual(thirdFilterToken.Text, value);
+            }
         }
 
         [RowTest]
-        [Row("\"abcdefghijklmnopqrstA)#)348038403[:LÑ\"", "QuotedWord")]
-        [Row("'abcdefghijklmnopqrstA)#)348038403[:LÑ'", "QuotedWord")]
+        [Row("\"\"", "Word")]
+        [Row("''", "Word")]
+        [Row("//", "RegexWord")]
+        [Row("\"abcdefghijklmnopqrstA)#)348038403[:LÑ\"", "Word")]
+        [Row("'abcdefghijklmnopqrstA)#)348038403[:LÑ'", "Word")]
         [Row("/abcdefghijklmnopqrstA)#)348038403[:LÑ/", "RegexWord")]
-        public void DelimiteddElement(string filter, string type)
+        public void DelimitedElement(string filter, string type)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 1);
@@ -169,19 +198,25 @@ namespace Gallio.Tests.Model.Filters
         [Row("\"abcdefghijklmnopqrst")]
         [Row("'abcdefghijklmnopqrst")]
         [Row("/abcdefghijklmnopqrst")]
+        [Row("\"abcd\\\"")]
+        [Row(@"'abcde\'")]
+        [Row(@"/abcde\/")]
         public void DelimitedElementWithMissingEndDelimiter(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 2);
             FilterToken token = lexer.Tokens[1];
             Assert.AreEqual(token.Type, FilterTokenType.Error);
-            Assert.AreEqual(token.Position, 20);
-            Assert.AreEqual(token.Text, null);
+            Assert.AreEqual(token.Position, filter.Length - 1);
+            Assert.IsTrue(token.Text.StartsWith("Missing end " + filter[0]));
         }
 
         [RowTest]
-        [Row("\"abcde\\\"fghijklmnopqrstA)#)348038403[:LÑ\"", "QuotedWord")]
-        [Row(@"'abcdefg\'hijklmnopqrstA)#)348038403[:LÑ'", "QuotedWord")]
+        [Row("\"\\\"\"", "Word")]
+        [Row(@"'\''", "Word")]
+        [Row(@"/\//", "RegexWord")]
+        [Row("\"abcde\\\"fghijklmnopqrstA)#)348038403[:LÑ\"", "Word")]
+        [Row(@"'abcdefg\'hijklmnopqrstA)#)348038403[:LÑ'", "Word")]
         [Row(@"/123 456 \/ 789/", "RegexWord")]
         public void DelimitedElementWithEscapedDelimiter(string filter, string tokenType)
         {
@@ -194,14 +229,14 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [RowTest]
-        [Row("\"Author\"", "Author", "QuotedWord")]
-        [Row("\"A\\\"uthor\"", "A\"uthor", "QuotedWord")]
-        [Row("\"Author\\\"\"", "Author\"", "QuotedWord")]
-        [Row("'Author'", "Author", "QuotedWord")]
-        [Row("'A\\'uthor'", "A'uthor", "QuotedWord")]
-        [Row("'Author\\''", "Author'", "QuotedWord")]
-        [Row("'A\\\"uthor'", "A\\\"uthor", "QuotedWord")]
-        [Row("\"Author\\'\"", "Author\\'", "QuotedWord")]
+        [Row("\"Author\"", "Author", "Word")]
+        [Row("\"A\\\"uthor\"", "A\"uthor", "Word")]
+        [Row("\"Author\\\"\"", "Author\"", "Word")]
+        [Row("'Author'", "Author", "Word")]
+        [Row("'A\\'uthor'", "A'uthor", "Word")]
+        [Row("'Author\\''", "Author'", "Word")]
+        [Row("'A\\\"uthor'", "A\"uthor", "Word")]
+        [Row("\"Author\\'\"", "Author'", "Word")]
         [Row("/Author/", "Author", "RegexWord")]
         [Row(@"/\/Author\//", "/Author/", "RegexWord")]
         public void DelimitersAreUnescaped(string filter, string expected, string tokenType)
@@ -237,16 +272,18 @@ namespace Gallio.Tests.Model.Filters
             string filter = key;
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 2);
-
-            FilterToken firstFilterToken = lexer.Tokens[0];
-            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.RegexWord);
-            Assert.AreEqual(firstFilterToken.Position, 0);
-            Assert.AreEqual(firstFilterToken.Text, text);
-
-            FilterToken secondToken = lexer.Tokens[1];
-            Assert.AreEqual(secondToken.Type, FilterTokenType.CaseInsensitiveModifier);
-            Assert.AreEqual(secondToken.Position, key.Length - 1);
-            Assert.AreEqual(secondToken.Text, null);
+            {
+                FilterToken firstFilterToken = lexer.Tokens[0];
+                Assert.AreEqual(firstFilterToken.Type, FilterTokenType.RegexWord);
+                Assert.AreEqual(firstFilterToken.Position, 0);
+                Assert.AreEqual(firstFilterToken.Text, text);
+            }
+            {
+                FilterToken secondToken = lexer.Tokens[1];
+                Assert.AreEqual(secondToken.Type, FilterTokenType.CaseInsensitiveModifier);
+                Assert.AreEqual(secondToken.Position, key.Length - 1);
+                Assert.AreEqual(secondToken.Text, null);
+            }
         }
 
         [RowTest]
@@ -266,7 +303,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(firstFilterToken.Text, text);
 
             FilterToken secondToken = lexer.Tokens[1];
-            Assert.AreEqual(secondToken.Type, FilterTokenType.UnquotedWord);
+            Assert.AreEqual(secondToken.Type, FilterTokenType.Word);
         }
 
         [RowTest]
@@ -278,55 +315,163 @@ namespace Gallio.Tests.Model.Filters
             string filter = key + colon + value;
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 3);
-
-            FilterToken firstFilterToken = lexer.Tokens[0];
-            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.QuotedWord);
-            Assert.AreEqual(firstFilterToken.Position, 0);
-            Assert.AreEqual(firstFilterToken.Text, GetUnquotedString(key));
-
-            FilterToken secondToken = lexer.Tokens[1];
-            Assert.AreEqual(secondToken.Type, FilterTokenType.Colon);
-            Assert.AreEqual(secondToken.Position, key.Length);
-            Assert.AreEqual(secondToken.Text, null);
-
-            FilterToken thirdToken = lexer.Tokens[2];
-            Assert.AreEqual(thirdToken.Type, FilterTokenType.QuotedWord);
-            Assert.AreEqual(thirdToken.Position, key.Length + 1);
-            Assert.AreEqual(thirdToken.Text, GetUnquotedString(value));
+            {
+                FilterToken firstFilterToken = lexer.Tokens[0];
+                Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(firstFilterToken.Position, 0);
+                Assert.AreEqual(firstFilterToken.Text, GetUnquotedString(key));
+            }
+            {
+                FilterToken secondToken = lexer.Tokens[1];
+                Assert.AreEqual(secondToken.Type, FilterTokenType.Colon);
+                Assert.AreEqual(secondToken.Position, key.Length);
+                Assert.AreEqual(secondToken.Text, null);
+            }
+            {
+                FilterToken thirdToken = lexer.Tokens[2];
+                Assert.AreEqual(thirdToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(thirdToken.Position, key.Length + 1);
+                Assert.AreEqual(thirdToken.Text, GetUnquotedString(value));
+            }
         }
 
         [RowTest]
-        [Row("\"Author\"", ":", "\"JulianHidalgo\"", "\"Jeff Brown\"")]
-        public void QuotedElementsAndMultipleValues(string key, string colon, string value1, string value2)
+        [Row(@"\\", @"\")]
+        [Row(@"\\a", @"\a")]
+        [Row(@"\\/", @"\/")]
+        [Row(@"\/", "/")]
+        [Row("\\\"", "\"")]
+        [Row(@"\,", ",")]
+        [Row(@"'\\'", @"\")]
+        [Row(@"'\/'", "/")]
+        [Row("'\\\"'", "\"")]
+        [Row(@"'\,'", ",")]
+        [Row("\"Fixtur\\\\e1\"", "Fixtur\\e1")]
+        [Row("a\"b", "a\"b")]
+        public void Esc(string key, string text)
         {
-            string filter = key + colon + value1 + "," + value2;
+            string filter = key;
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, 1);
+
+            FilterToken firstFilterToken = lexer.Tokens[0];
+            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
+            Assert.AreEqual(firstFilterToken.Position, 0);
+            Assert.AreEqual(firstFilterToken.Text, text);
+        }
+
+        [RowTest]
+        [Row("Type:\"Fixtur\\\\e1\"", "Fixtur\\e1")]
+        [Row("Type:\"Fixture1\"", "Fixture1")]
+        [Row("Type:'Fixture1'", "Fixture1")]
+        [Row("Type:~\"Fixture1\"", "~\"Fixture1\"")]
+        [Row("Type:~'Fixture1'", "~'Fixture1'")]
+        //[Row("\"Type\":Fixture1")]
+        //[Row("'Type':Fixture1", "Fixture1")]
+        public void Filter(string filter, string text)
+        {
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, 3);
+            {
+                FilterToken firstFilterToken = lexer.Tokens[0];
+                Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(firstFilterToken.Position, 0);
+                Assert.AreEqual(firstFilterToken.Text, "Type");
+            }
+            {
+                FilterToken secondToken = lexer.Tokens[1];
+                Assert.AreEqual(secondToken.Type, FilterTokenType.Colon);
+                Assert.AreEqual(secondToken.Position, 4);
+                Assert.AreEqual(secondToken.Text, null);
+            }
+            {
+                FilterToken thirdToken = lexer.Tokens[2];
+                Assert.AreEqual(thirdToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(thirdToken.Position, 5);
+                Assert.AreEqual(thirdToken.Text, text);
+            }
+        }
+
+        [RowTest]
+        [Row("Type:\"Fixture1\",Fixture2")]
+        [Row("Type:\"Fixture1\",\"Fixture2\"")]
+        [Row("Type:\"Fixture1\",'Fixture2'")]
+        [Row("Type:'Fixture1','Fixture2'")]
+        [Row("Type:Fixture1,Fixture2")]
+        [Row("Type: Fixture1 , Fixture2")]
+        public void FilterWithTwovalues(string filter)
+        {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 5);
 
-            FilterToken firstFilterToken = lexer.Tokens[0];
-            Assert.AreEqual(firstFilterToken.Type, FilterTokenType.QuotedWord);
-            Assert.AreEqual(firstFilterToken.Position, 0);
-            Assert.AreEqual(firstFilterToken.Text, GetUnquotedString(key));
+            {
+                FilterToken firstFilterToken = lexer.Tokens[0];
+                Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(firstFilterToken.Position, 0);
+                Assert.AreEqual(firstFilterToken.Text, "Type");
+            }
+            {
+                FilterToken secondToken = lexer.Tokens[1];
+                Assert.AreEqual(secondToken.Type, FilterTokenType.Colon);
+                Assert.AreEqual(secondToken.Position, 4);
+                Assert.AreEqual(secondToken.Text, null);
+            }
+            {
+                FilterToken thirdToken = lexer.Tokens[2];
+                Assert.AreEqual(thirdToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(thirdToken.Position, 5);
+                Assert.AreEqual(thirdToken.Text, "Fixture1");
+            }
+            {
+                FilterToken fourthToken = lexer.Tokens[3];
+                Assert.AreEqual(fourthToken.Type, FilterTokenType.Comma);
+                Assert.AreEqual(fourthToken.Text, null);
+            }
+            {
+                FilterToken fifthToken = lexer.Tokens[4];
+                Assert.AreEqual(fifthToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(fifthToken.Text, "Fixture2");
+            }
+        }
 
-            FilterToken secondToken = lexer.Tokens[1];
-            Assert.AreEqual(secondToken.Type, FilterTokenType.Colon);
-            Assert.AreEqual(secondToken.Position, key.Length);
-            Assert.AreEqual(secondToken.Text, null);
+        [RowTest]
+        [Row("\"Author\"", "\"JulianHidalgo\"", "\"Jeff Brown\"")]
+        public void QuotedElementsAndMultipleValues(string key, string value1, string value2)
+        {
+            string filter = key + ":" + value1 + "," + value2;
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, 5);
 
-            FilterToken thirdToken = lexer.Tokens[2];
-            Assert.AreEqual(thirdToken.Type, FilterTokenType.QuotedWord);
-            Assert.AreEqual(thirdToken.Position, key.Length + 1);
-            Assert.AreEqual(thirdToken.Text, GetUnquotedString(value1));
-
-            FilterToken fourthToken = lexer.Tokens[3];
-            Assert.AreEqual(fourthToken.Type, FilterTokenType.Comma);
-            Assert.AreEqual(fourthToken.Position, key.Length + value1.Length + 1);
-            Assert.AreEqual(fourthToken.Text, null);
-
-            FilterToken fifthToken = lexer.Tokens[4];
-            Assert.AreEqual(fifthToken.Type, FilterTokenType.QuotedWord);
-            Assert.AreEqual(fifthToken.Position, key.Length + value1.Length + 2);
-            Assert.AreEqual(fifthToken.Text, GetUnquotedString(value2));
+            {
+                FilterToken firstFilterToken = lexer.Tokens[0];
+                Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(firstFilterToken.Position, 0);
+                Assert.AreEqual(firstFilterToken.Text, GetUnquotedString(key));
+            }
+            {
+                FilterToken secondToken = lexer.Tokens[1];
+                Assert.AreEqual(secondToken.Type, FilterTokenType.Colon);
+                Assert.AreEqual(secondToken.Position, key.Length);
+                Assert.AreEqual(secondToken.Text, null);
+            }
+            {
+                FilterToken thirdToken = lexer.Tokens[2];
+                Assert.AreEqual(thirdToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(thirdToken.Position, key.Length + 1);
+                Assert.AreEqual(thirdToken.Text, GetUnquotedString(value1));
+            }
+            {
+                FilterToken fourthToken = lexer.Tokens[3];
+                Assert.AreEqual(fourthToken.Type, FilterTokenType.Comma);
+                Assert.AreEqual(fourthToken.Position, key.Length + value1.Length + 1);
+                Assert.AreEqual(fourthToken.Text, null);
+            }
+            {
+                FilterToken fifthToken = lexer.Tokens[4];
+                Assert.AreEqual(fifthToken.Type, FilterTokenType.Word);
+                Assert.AreEqual(fifthToken.Position, key.Length + value1.Length + 2);
+                Assert.AreEqual(fifthToken.Text, GetUnquotedString(value2));
+            }
         }
 
         private static string GetUnquotedString(string quotedString)

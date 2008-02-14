@@ -14,10 +14,8 @@
 // limitations under the License.
 
 extern alias MbUnit2;
-using System;
 using Gallio.Reflection;
 using MbUnit2::MbUnit.Framework;
-using System.Collections;
 using MbUnit.TestResources;
 using MbUnit.TestResources.Fixtures;
 using Gallio.Model;
@@ -241,7 +239,7 @@ namespace Gallio.Tests.Model.Filters
 
         [RowTest]
         [Row("Type:\"Fixture1\"")]
-        [Row("Type:\"Fixtur\\e1\"")]
+        [Row("Type:\"Fixtur\\\\e1\"")]
         [Row("Type:'Fixture1'")]
         [Row("'Type':Fixture1")]
         [Row("Type:\"Fixture1\",Fixture2")]
@@ -249,8 +247,8 @@ namespace Gallio.Tests.Model.Filters
         [Row("Type:\"Fixture1\",'Fixture2'")]
         [Row("Type:'Fixture1','Fixture2'")]
         [Row("\"Type\":Fixture1")]
-        [Row("Type:~\"Fixture1\"")]
-        [Row("Type:~'Fixture1'")]
+        [Row("Type:~\"Fixture1\"")] // TODO: Check this
+        [Row("Type:~'Fixture1'")] // TODO: Check this
         [Row("(Type:Fixture1 or Type:Fixture2)")]
         public void ValidFiltersTests(string filter)
         {
@@ -272,6 +270,34 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(parsedFilter.ToString(), parsedFilterString);
         }
 
+
+        [RowTest]
+        [Row("foo''", ExpectedException = typeof(FilterRecognitionException))]
+        [Row(@"foo\", ExpectedException = typeof(FilterRecognitionException))]
+        [Row(@"foo\\", ExpectedException = typeof(FilterRecognitionException))]
+        [Row("foo\'blah", ExpectedException = typeof(FilterRecognitionException))]
+        [Row(@"\", ExpectedException = typeof(FilterRecognitionException))]
+        [Row(@"'", ExpectedException = typeof(FilterRecognitionException))]
+        [Row("\"", ExpectedException = typeof(FilterRecognitionException))]
+        [Row("~'Fixture1'", ExpectedException = typeof(FilterRecognitionException))]
+        public void InvalidFilter(string filter)
+        {
+            FilterUtils.ParseTestFilter(filter);
+        }
+
+        //[RowTest]
+        //[Row("Type:foo''", ExpectedException = typeof(FilterRecognitionException))]
+        //[Row(@"Type:foo\", ExpectedException = typeof(FilterRecognitionException))]
+        //[Row(@"Type:foo\\", ExpectedException = typeof(FilterRecognitionException))]
+        //[Row("Type:foo\'blah", ExpectedException = typeof(FilterRecognitionException))]
+        //[Row(@"Type:\", ExpectedException = typeof(FilterRecognitionException))]
+        //[Row(@"Type:'", ExpectedException = typeof(FilterRecognitionException))]
+        //[Row("Type:\"", ExpectedException = typeof(FilterRecognitionException))]
+        //public void InvalidFilter2(string filter)
+        //{
+        //    FilterUtils.ParseTestFilter(filter);
+        //}
+        
         [Test]
         public void ComplexFilter1()
         {

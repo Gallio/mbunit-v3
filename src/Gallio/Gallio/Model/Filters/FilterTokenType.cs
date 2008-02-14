@@ -26,10 +26,9 @@ namespace Gallio.Model.Filters
         LeftBracket,
         Not,
         Or,
-        QuotedWord,
         RightBracket,
         RegexWord,
         Star,
-        UnquotedWord        
+        Word        
     }
 }

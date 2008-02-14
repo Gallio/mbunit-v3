@@ -1,13 +1,11 @@
 <doc>
   <summary>
     <para>
-    Sets the filter expression to apply. A filter expression consists of one or
-    more filter rules that may be combined using 'and', 'or', and 'not' (equivalently
-    '&amp;', '|', and '!') and grouped with parentheses. A filter rule consists of
-      a filter key followed by one or more comma-delimited matching values in the
-      form 'key: value, "quoted value", ~"regular expression"'. A filter key may be
-      'Id', 'Name', 'Assembly', 'Namespace', 'Type', 'Member' or any custom metadata
-      key such as 'Category' and 'AuthorName'.
+    Sets the filter expression to apply, which consists of one or more filter
+    rules that may be combined using 'and', 'or', and 'not' and grouped with
+    parentheses. A filter rule consists of a filter key followed by one or
+    more comma-delimited matching values in the form 'key: value, "quoted value",
+    /regular expression/'.
     </para>
   </summary>
   <remarks>
@@ -23,21 +21,23 @@
 
      <unquotedWord>   ::= [^:,*()/\"']+
     
-     <quotedWord>     ::= '"' ([^"] | \")* '"'   # String of any character but " enclosed by double quotation marks
-                      | "'" ([^'] | \')* "'"     # String of any character but ' enclosed by single quotation marks
-     
+     <quotedWord>     ::= '"' .* '"'             # String delimited by double quotation marks
+                      | "'" .* "'"               # String delimited by single quotation marks
+               
      <word>           ::= <unquotedWord>
                       | <quotedWord>
+                      
+     <regexWord>      ::= "/" .* "/"             # Regular expression
+                      | "/" .* "/i"              # Case-insensitive regular expression
                       
      <key>            ::= <word>
     
      <value>          ::= <word>                 # Value specified by exact string
-                      | "/" <word> "/"           # Value specified by regular expression
-                      | "/" <word> "/i"          # Value specified by case insensitive regular expression
+                      | <regexWord>              # Value specified by regular expression
     
      <matchSequence>  ::= <value> (',' <value>)* # One or more comma-separated values
     
-     <filter>         ::= "*"                    # Any
+     <filter>         ::= "*"                    # "Any"
                       | <key> ":" matchSeq>
                       | <filter> OR filter>      # Combine filters with OR
                       | <filter> AND filter>     # Combine filters with AND
@@ -46,23 +46,23 @@
      ]]></code>
     </para>
     <list type="bullet">
+      <item>By default this property takes the value "*", which means the "Any" filter will be applied.</item>
       <item>
-        The operator precedence is, from highest to lowest: NOT, AND, and OR. All these operators are left-associative.
+        The operator precedence is, from highest to lowest: NOT, AND, and OR. All these operators are
+        left-associative.
       </item>
       <item>
-        The commas used to separate the values are interpreted as OR operators, so "Type:Fixture1,Fixture2" is equivalent to "Type:Fixture1 or Type:Fixture2".
+        The commas used to separate the values are interpreted as OR operators, so "Type:Fixture1,Fixture2"
+        is equivalent to "Type:Fixture1 or Type:Fixture2".
       </item>
       <item>
-        White-space is ignored outside quoted strings, so "Type:Fixture1|Type:Fixture2" is equivalent to "Type : Fixture1 | Type : Fixture2".
+        White-space is ignored outside quoted strings, so "Type:Fixture1|Type:Fixture2" is equivalent
+        to "Type : Fixture1 | Type : Fixture2".
       </item>
       <item>
-        Within a single quotation mark delimited string, \' will be interpreted as '.
-      </item>
-      <item>
-        Within a double quotation mark delimited string, \" will be interpreted as ".
-      </item>
-      <item>
-        Within a regular expression string, \/ will be interpreted as /.
+        Commas, colons, slashes, backslashes and quotation marks can be escaped with a backslash. For
+        example, \' will be interpreted as '. Using a single backslash in front of any other character
+        is invalid.
       </item>
       <item>
         Currently the following filter keys are recognized:
@@ -76,8 +76,7 @@
             *: All other names are assumed to correspond to metadata keys. See <see cref="MetadataKeys" /> for standard metadata keys.<seealso cref="MetadataKeys" />
           </item>
         </list>
-      </item>
-      <item>If this property is left empty then the "Any" filter will be applied.</item>
+      </item>      
     </list>
   </remarks>
   <example>
@@ -148,12 +147,14 @@
 
       <item>
         <term>AuthorName:AlbertEinstein</term>
-        <description>All the tests within Fixture1 will be run (because its author attribute is set to "AlbertEinstein").</description>
+        <description>All the tests within Fixture1 will be run (because its author attribute is
+        set to "AlbertEinstein").</description>
       </item>
 
       <item>
         <term>Type: Fixture2 and not AuthorName: AlbertEinstein</term>
-        <description>All the tests within Fixture2 will be run (because they belong to Fixture2 and its author attribute is not set to "AlbertEinstein").</description>
+        <description>All the tests within Fixture2 will be run (because they belong to Fixture2
+        and its author attribute is not set to "AlbertEinstein").</description>
       </item>
 
       <item>

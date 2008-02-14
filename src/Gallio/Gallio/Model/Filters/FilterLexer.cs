@@ -23,15 +23,44 @@ namespace Gallio.Model.Filters
     internal sealed class FilterLexer
     {
         private readonly static Dictionary<char, FilterTokenType> singleCharacterTokens = new Dictionary<char, FilterTokenType>();
+        private readonly static List<char> escapableCharacters = new List<char>();
+        private readonly static List<char> wordDelimiters = new List<char>();
         private readonly List<FilterToken> tokens = new List<FilterToken>();
         private readonly StringReader input = null;
-        private readonly string filter;
+        private readonly char escapeCharacter = '\\';
         private int inputPosition = -1;
         private int tokenStreamPosition = -1;
-
+        
         static FilterLexer()
         {
             AddSingleCharacterTokens();
+            AddEscapableCharacters();
+            AddWordDelimiters();
+        }
+
+        private static void AddSingleCharacterTokens()
+        {
+            singleCharacterTokens.Add(':', FilterTokenType.Colon);
+            singleCharacterTokens.Add('(', FilterTokenType.LeftBracket);
+            singleCharacterTokens.Add(')', FilterTokenType.RightBracket);
+            singleCharacterTokens.Add(',', FilterTokenType.Comma);
+            singleCharacterTokens.Add('*', FilterTokenType.Star);
+        }
+
+        private static void AddEscapableCharacters()
+        {
+            escapableCharacters.Add('"');
+            escapableCharacters.Add('\'');
+            escapableCharacters.Add('/');
+            escapableCharacters.Add(',');
+            escapableCharacters.Add('\\');
+        }
+
+        private static void AddWordDelimiters()
+        {
+            wordDelimiters.Add('"');
+            wordDelimiters.Add('\'');
+            wordDelimiters.Add('/');
         }
 
         internal FilterLexer(string filter)
@@ -41,7 +70,6 @@ namespace Gallio.Model.Filters
                 filter = String.Empty;
             }
             input = new StringReader(filter);
-            this.filter = filter;
             Scan();
         }
 
@@ -50,23 +78,20 @@ namespace Gallio.Model.Filters
             get { return tokens; }
         }
 
-        public string OriginalFilterExpression
-        {
-            get { return filter; }
-        }
-
         internal FilterToken GetNextToken()
         {
             if (tokens.Count > tokenStreamPosition + 1)
             {
                 return tokens[++tokenStreamPosition];
             }
+            ++tokenStreamPosition;
             return null;
         }
 
         internal FilterToken LookAhead(int index)
         {
-            if (tokens.Count > tokenStreamPosition + index)
+            int position = tokenStreamPosition + index;
+            if (tokens.Count > position && position >= 0)
             {
                 return tokens[tokenStreamPosition + index];
             }
@@ -84,7 +109,7 @@ namespace Gallio.Model.Filters
                 if (char.IsWhiteSpace(c))
                 {
                     input.Read();
-                }                
+                }
                 else if (singleCharacterTokens.ContainsKey(c))
                 {
                     Match(c.ToString(), singleCharacterTokens[c]);
@@ -99,7 +124,7 @@ namespace Gallio.Model.Filters
                 }
                 else if (IsWordChar(c))
                 {
-                    MatchUnquotedWord();
+                    MatchUndelimitedWord();
                 }
                 else
                 {
@@ -108,26 +133,56 @@ namespace Gallio.Model.Filters
             }
         }
 
-        private void MatchUnquotedWord()
+        private void MatchUndelimitedWord()
         {
             StringBuilder chars = new StringBuilder();
             int startPosition = inputPosition + 1;
-            chars.Append(ConsumeNextChar());
-            int nextChar = input.Peek();
-            while (nextChar != -1 && IsWordChar((char)nextChar))
+            char previousChar = ConsumeNextChar();
+            if (previousChar != escapeCharacter)
             {
-                chars.Append(ConsumeNextChar());
-                nextChar = input.Peek();
+                chars.Append(previousChar);
             }
-            string token = chars.ToString();
-            FilterTokenType filterTokenType = GetReservedWord(token);
+            int nextCharCode = input.Peek();
+            while (nextCharCode != -1)
+            {
+                char nextChar = (char)nextCharCode;
+                if (previousChar == escapeCharacter)
+                {
+                    if (escapableCharacters.Contains(nextChar))
+                    {
+                        chars.Append(ConsumeNextChar());
+                        // Avoid the case when the last slash in an expression like //'
+                        // makes the following character to be escaped
+                        previousChar = (char) 0;
+                    }
+                    else
+                    {
+                        tokens.Add(new FilterToken(FilterTokenType.Error,
+                                "Cannot escape character " + nextChar, inputPosition));
+                        break;
+                    }
+                }
+                else if (IsWordChar(nextChar))
+                //else if (!escapableCharacters.Contains(nextChar))
+                {
+                    previousChar = ConsumeNextChar();
+                    chars.Append(previousChar);
+                }
+                else
+                {
+                    break;
+                }
+                nextCharCode = input.Peek();
+            }
+            string tokenText = chars.ToString();
+            FilterTokenType filterTokenType = GetReservedWord(tokenText);
             if (filterTokenType != FilterTokenType.None)
             {
                 tokens.Add(new FilterToken(filterTokenType, null, startPosition));
             }
             else
             {
-                tokens.Add(new FilterToken(FilterTokenType.UnquotedWord, token, startPosition));
+                tokens.Add(new FilterToken(FilterTokenType.Word, tokenText, startPosition));
             }
         }
 
@@ -144,7 +199,7 @@ namespace Gallio.Model.Filters
                 char nextChar = (char)input.Peek();
                 if (nextChar == delimiter)
                 {
-                    if (previousChar != '\\')
+                    if (previousChar != escapeCharacter)
                     {
                         ConsumeNextChar();
                         finalDelimiterFound = true;
@@ -152,19 +207,32 @@ namespace Gallio.Model.Filters
                     }
                     else
                     {
-                        // Add the delimiter
+                        // Add the unescaped delimiter
                         chars.Append(ConsumeNextChar());
                     }
                 }
                 else
                 {
-                    // previousChar was a \ but not followed by a delimiter
-                    if (previousChar == '\\')
+                    // previousChar was the escape character but not followed by a delimiter
+                    if (previousChar == escapeCharacter)
                     {
-                        chars.Append('\\');
+                        if (escapableCharacters.Contains(nextChar))
+                        {
+                            chars.Append(nextChar);
+                            // Avoid the case when the last slash in an expression like //'
+                            // makes the following character to be escaped
+                            nextChar = (char)0;
+                        }
+                        else
+                        {
+                            tokens.Add(new FilterToken(FilterTokenType.Error,
+                                "Cannot escape character " + nextChar, inputPosition));
+                            break;
+                        }
+                        //chars.Append(escapeCharacter);
                     }
-                    // If current char is a \ then hold it
-                    if (nextChar != '\\')
+                    // If current char is the escape character then hold it
+                    else if (nextChar != escapeCharacter)
                     {
                         chars.Append(nextChar);
                     }
@@ -175,7 +243,7 @@ namespace Gallio.Model.Filters
             tokens.Add(new FilterToken(GetTokenTypeForDelimiter(delimiter), chars.ToString(), startPosition));
             if (!finalDelimiterFound)
             {
-                tokens.Add(new FilterToken(FilterTokenType.Error, null, inputPosition));
+                tokens.Add(new FilterToken(FilterTokenType.Error, "Missing end " + delimiter, inputPosition));
             }
         }
 
@@ -187,7 +255,7 @@ namespace Gallio.Model.Filters
                 if (nextChar == 'i')
                 {
                     ConsumeNextChar();
-                    tokens.Add(new FilterToken(FilterTokenType.CaseInsensitiveModifier, null, inputPosition));                    
+                    tokens.Add(new FilterToken(FilterTokenType.CaseInsensitiveModifier, null, inputPosition));
                 }
             }
         }
@@ -196,7 +264,7 @@ namespace Gallio.Model.Filters
         {
             if (c == '/')
                 return FilterTokenType.RegexWord;
-            return FilterTokenType.QuotedWord;
+            return FilterTokenType.Word;
         }
 
         private char ConsumeNextChar()
@@ -228,7 +296,7 @@ namespace Gallio.Model.Filters
 
         private bool IsEndOfStream()
         {
-            return (input.Peek() == -1) ;
+            return (input.Peek() == -1);
         }
 
         private void Match(IEnumerable<char> token, FilterTokenType filterTokenType)
@@ -254,24 +322,14 @@ namespace Gallio.Model.Filters
             tokens.Add(new FilterToken(filterTokenType, null, startPosition));
         }
 
-        private static void AddSingleCharacterTokens()
-        {
-            singleCharacterTokens.Add(':', FilterTokenType.Colon);
-            singleCharacterTokens.Add('(', FilterTokenType.LeftBracket);
-            singleCharacterTokens.Add(')', FilterTokenType.RightBracket);
-            singleCharacterTokens.Add(',', FilterTokenType.Comma);
-            singleCharacterTokens.Add('*', FilterTokenType.Star);
-        }
-
         private static bool IsWordDelimiter(char c)
         {
-            return c == '"' || c == '\'' || c == '/';
+            return wordDelimiters.Contains(c);
         }
 
         internal static bool IsWordChar(char c)
         {
-            return (!singleCharacterTokens.ContainsKey(c)) 
-                && (c != '"') 
+            return (!singleCharacterTokens.ContainsKey(c))
                 && (!char.IsWhiteSpace(c));
         }
     }
