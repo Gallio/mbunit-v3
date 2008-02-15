@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern alias MbUnit2;
+using System;
 using Gallio.Reflection;
 using MbUnit2::MbUnit.Framework;
 using MbUnit.TestResources;
@@ -62,6 +63,13 @@ namespace Gallio.Tests.Model.Filters
             SetupResult.For(fixture4.CodeElement).Return(codeElement4);
 
             Mocks.ReplayAll();
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void InstantiateWithNullFactory()
+        {
+            new FilterParser<ITest>(null);
         }
 
         [RowTest]
@@ -247,12 +255,13 @@ namespace Gallio.Tests.Model.Filters
         [Row("Type:\"Fixture1\",'Fixture2'")]
         [Row("Type:'Fixture1','Fixture2'")]
         [Row("\"Type\":Fixture1")]
-        [Row("Type:~\"Fixture1\"")] // TODO: Check this
-        [Row("Type:~'Fixture1'")] // TODO: Check this
+        [Row("Type:~\"Fixture1\"")]
+        [Row("Type:~'Fixture1'")]
         [Row("(Type:Fixture1 or Type:Fixture2)")]
         [Row("Type:foo''")]
         [Row(@"Type:foo\\")]
         [Row("Type:foo\'blah")]
+        [Row("(not not Author: Julian)")]
         public void ValidFiltersTests(string filter)
         {
             // Just making sure they are parsed
@@ -290,11 +299,14 @@ namespace Gallio.Tests.Model.Filters
         [Row(@"Type:\", ExpectedException = typeof(FilterRecognitionException))]
         [Row(@"Type:'\", ExpectedException = typeof(FilterRecognitionException))]
         [Row("Type:\"\\", ExpectedException = typeof(FilterRecognitionException))]
+        [Row("(Author:me", ExpectedException = typeof(FilterRecognitionException))]
+        [Row("(Author:", ExpectedException = typeof(FilterRecognitionException))]
+        [Row("(Author::", ExpectedException = typeof(FilterRecognitionException))]
         public void InvalidFilter(string filter)
         {
             FilterUtils.ParseTestFilter(filter);
         }
-        
+
         [Test]
         public void ComplexFilter1()
         {

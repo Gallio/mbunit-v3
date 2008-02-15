@@ -141,7 +141,6 @@ namespace Gallio.Model.Filters
                 {
                     string key = MatchKey(lexer);
                     MatchColon(lexer);
-
                     Filter<string> valueFilter = MatchMatchSequence(lexer);
                     return factory.CreateFilter(key, valueFilter);
                 }                
@@ -159,6 +158,8 @@ namespace Gallio.Model.Filters
             FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken == null || IsNotWord(nextToken))
             {
+                // Should never happen because we call this method when we know a word
+                // token is next
                 throw new FilterRecognitionException(Resources.FilterParser_StringLiteralExpected);
             }
             GetNextToken(lexer);
@@ -237,6 +238,8 @@ namespace Gallio.Model.Filters
             FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken == null || nextToken.Type != FilterTokenType.Comma)
             {
+                // Should never happen because we call this method when we know a comma
+                // token is next
                 throw new FilterRecognitionException(Resources.FilterParser_CommaExpected);
             }
             GetNextToken(lexer);
@@ -254,11 +257,7 @@ namespace Gallio.Model.Filters
 
         private static void GetNextToken(FilterLexer lexer)
         {
-            FilterToken token = lexer.GetNextToken();
-            if (token != null && token.Type == FilterTokenType.Error)
-            {
-                throw new FilterRecognitionException(token.Text);
-            }
+            lexer.GetNextToken();
         }
 
         private static FilterToken LookAhead(FilterLexer lexer, int index)
