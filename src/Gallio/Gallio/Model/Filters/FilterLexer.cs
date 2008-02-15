@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Gallio.Properties;
 
 namespace Gallio.Model.Filters
 {
@@ -30,7 +31,7 @@ namespace Gallio.Model.Filters
         private readonly char escapeCharacter = '\\';
         private int inputPosition = -1;
         private int tokenStreamPosition = -1;
-        
+
         static FilterLexer()
         {
             AddSingleCharacterTokens();
@@ -128,7 +129,10 @@ namespace Gallio.Model.Filters
                 }
                 else
                 {
-                    tokens.Add(new FilterToken(FilterTokenType.Error, ConsumeNextChar().ToString(), inputPosition));
+                    ConsumeNextChar();
+                    tokens.Add(new FilterToken(FilterTokenType.Error,
+                        String.Format(Resources.FilterParser_UnexpectedCharacterFound, GetCharacterMessage(c)),
+                        inputPosition));
                 }
             }
         }
@@ -154,12 +158,13 @@ namespace Gallio.Model.Filters
                         chars.Append(ConsumeNextChar());
                         // Avoid the case when the last slash in an expression like //'
                         // makes the following character to be escaped
-                        previousChar = (char) 0;
+                        previousChar = (char)0;
                     }
                     else
                     {
                         tokens.Add(new FilterToken(FilterTokenType.Error,
-                                "Cannot escape character " + nextChar, inputPosition));
+                            String.Format(Resources.FilterParser_CannotEscapeCharacter, GetCharacterMessage(nextChar)),
+                            inputPosition));
                         ConsumeNextChar();
                         errorFound = true;
                         break;
@@ -181,7 +186,7 @@ namespace Gallio.Model.Filters
                 if (previousChar == escapeCharacter)
                 {
                     // The escape character was not followed by another character
-                    tokens.Add(new FilterToken(FilterTokenType.Error, "Missing escaped character", inputPosition));
+                    tokens.Add(new FilterToken(FilterTokenType.Error, Resources.FilterParser_MissingEscapedCharacter, inputPosition));
                 }
                 else
                 {
@@ -223,7 +228,8 @@ namespace Gallio.Model.Filters
                     else
                     {
                         tokens.Add(new FilterToken(FilterTokenType.Error,
-                            "Cannot escape character " + nextChar, inputPosition));
+                            String.Format(Resources.FilterParser_CannotEscapeCharacter, GetCharacterMessage(nextChar)),
+                            inputPosition));
                         errorFound = true;
                         ConsumeNextChar();
                         break;
@@ -248,11 +254,13 @@ namespace Gallio.Model.Filters
                 if (previousChar == escapeCharacter)
                 {
                     // The escape character was not followed by another character
-                    tokens.Add(new FilterToken(FilterTokenType.Error, "Missing escaped character", inputPosition));
+                    tokens.Add(new FilterToken(FilterTokenType.Error, Resources.FilterParser_MissingEscapedCharacter, inputPosition));
                 }
                 else if (!finalDelimiterFound)
                 {
-                    tokens.Add(new FilterToken(FilterTokenType.Error, "Missing end " + delimiter, inputPosition));
+                    tokens.Add(new FilterToken(FilterTokenType.Error,
+                        String.Format(Resources.FilterParser_MissingEndDelimiter, delimiter),
+                        inputPosition));
                 }
                 else
                 {
@@ -320,7 +328,7 @@ namespace Gallio.Model.Filters
             {
                 if (IsEndOfStream())
                 {
-                    tokens.Add(new FilterToken(FilterTokenType.Error, "Unexpected end of input", inputPosition));
+                    tokens.Add(new FilterToken(FilterTokenType.Error, Resources.FilterParser_UnexpectedEndOfInput, inputPosition));
                     break;
                 }
                 char inputChar = (char)input.Peek();
@@ -330,7 +338,7 @@ namespace Gallio.Model.Filters
                 }
                 else
                 {
-                    tokens.Add(new FilterToken(FilterTokenType.Error, inputChar.ToString(), inputPosition));
+                    tokens.Add(new FilterToken(FilterTokenType.Error, GetCharacterMessage(inputChar), inputPosition));
                 }
             }
             tokens.Add(new FilterToken(filterTokenType, null, startPosition));
@@ -345,6 +353,17 @@ namespace Gallio.Model.Filters
         {
             return (!singleCharacterTokens.ContainsKey(c))
                 && (!char.IsWhiteSpace(c));
+        }
+
+        private static string GetCharacterMessage(char c)
+        {
+            string message = String.Empty;
+            if (!char.IsControl(c))
+            {
+                message += c + " ";
+            }
+            message += String.Format(Resources.FilterParser_CharCode, (int)c);
+            return message;
         }
     }
 }

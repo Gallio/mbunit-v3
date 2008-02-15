@@ -277,10 +277,5 @@ namespace Gallio.Model.Filters
             : base(message)
         {
         }
-
-        internal FilterRecognitionException(FilterTokenType expected, FilterToken[] found)
-            : this("Expected character '" + expected + "', but '" + found + "' was found instead.")
-        {
-        }
     }
 }

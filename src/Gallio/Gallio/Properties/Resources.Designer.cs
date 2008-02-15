@@ -428,6 +428,24 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot escape character {0}.
+        /// </summary>
+        internal static string FilterParser_CannotEscapeCharacter {
+            get {
+                return ResourceManager.GetString("FilterParser_CannotEscapeCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (char code = {0}).
+        /// </summary>
+        internal static string FilterParser_CharCode {
+            get {
+                return ResourceManager.GetString("FilterParser_CharCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Colon expected.
         /// </summary>
         internal static string FilterParser_ColonExpected {
@@ -455,6 +473,24 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing end {0}.
+        /// </summary>
+        internal static string FilterParser_MissingEndDelimiter {
+            get {
+                return ResourceManager.GetString("FilterParser_MissingEndDelimiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing escaped character.
+        /// </summary>
+        internal static string FilterParser_MissingEscapedCharacter {
+            get {
+                return ResourceManager.GetString("FilterParser_MissingEscapedCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Right bracket expected.
         /// </summary>
         internal static string FilterParser_RightBracketExpected {
@@ -469,6 +505,24 @@ namespace Gallio.Properties {
         internal static string FilterParser_StringLiteralExpected {
             get {
                 return ResourceManager.GetString("FilterParser_StringLiteralExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected character found ({0}).
+        /// </summary>
+        internal static string FilterParser_UnexpectedCharacterFound {
+            get {
+                return ResourceManager.GetString("FilterParser_UnexpectedCharacterFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected end of input.
+        /// </summary>
+        internal static string FilterParser_UnexpectedEndOfInput {
+            get {
+                return ResourceManager.GetString("FilterParser_UnexpectedEndOfInput", resourceCulture);
             }
         }
         
