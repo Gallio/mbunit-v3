@@ -49,7 +49,7 @@
   
   <xsl:template match="g:report" mode="xhtml-body">
     <div id="header">
-      <h1>Gallio Test Report</h1>
+      <h1></h1>
     </div>
     <xsl:apply-templates select="g:package/g:assemblyFiles" />
     <xsl:apply-templates select="g:packageRun" mode="statistics" />
