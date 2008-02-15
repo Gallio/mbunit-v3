@@ -74,12 +74,12 @@ namespace Gallio.Model.Filters
             Filter<T> firstFilter = MatchAndFilter(lexer);
             filters.Add(firstFilter);
 
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             while (nextToken != null && nextToken.Type == FilterTokenType.Or)
             {
-                lexer.GetNextToken();
+                GetNextToken(lexer);
                 filters.Add(MatchAndFilter(lexer));
-                nextToken = lexer.LookAhead(1);
+                nextToken = LookAhead(lexer, 1);
             }
 
             if (filters.Count > 1)
@@ -94,12 +94,12 @@ namespace Gallio.Model.Filters
             Filter<T> firstFilter = MatchNegationFilter(lexer);
             filters.Add(firstFilter);
 
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             while (nextToken != null && nextToken.Type == FilterTokenType.And)
             {
-                lexer.GetNextToken();
+                GetNextToken(lexer);
                 filters.Add(MatchNegationFilter(lexer));
-                nextToken = lexer.LookAhead(1);
+                nextToken = LookAhead(lexer, 1);
             }
 
             if (filters.Count > 1)
@@ -110,10 +110,10 @@ namespace Gallio.Model.Filters
 
         private Filter<T> MatchNegationFilter(FilterLexer lexer)
         {
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken != null && nextToken.Type == FilterTokenType.Not)
             {
-                lexer.GetNextToken();
+                GetNextToken(lexer);
                 return new NotFilter<T>(MatchParenthesizedFilter(lexer));
             }
 
@@ -123,18 +123,18 @@ namespace Gallio.Model.Filters
         private Filter<T> MatchParenthesizedFilter(FilterLexer lexer)
         {
             Filter<T> filter = null;
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken != null)
             {
                 if (nextToken.Type == FilterTokenType.LeftBracket)
                 {
-                    lexer.GetNextToken();
+                    GetNextToken(lexer);
                     filter = MatchOrFilter(lexer);
                     MatchRightBracket(lexer);
                 }
                 else if (nextToken.Type == FilterTokenType.Star)
                 {
-                    lexer.GetNextToken();
+                    GetNextToken(lexer);
                     return new AnyFilter<T>();
                 }
                 else if (IsWord(nextToken))
@@ -156,24 +156,24 @@ namespace Gallio.Model.Filters
 
         private static string MatchKey(FilterLexer lexer)
         {
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken == null || IsNotWord(nextToken))
             {
                 throw new FilterRecognitionException(Resources.FilterParser_StringLiteralExpected);
             }
-            lexer.GetNextToken();
+            GetNextToken(lexer);
 
             return nextToken.Text;
         }
 
         private static void MatchColon(FilterLexer lexer)
         {
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken == null || nextToken.Type != FilterTokenType.Colon)
             {
                 throw new FilterRecognitionException(Resources.FilterParser_ColonExpected);
             }
-            lexer.GetNextToken();
+            GetNextToken(lexer);
         }
 
         private static Filter<string> MatchMatchSequence(FilterLexer lexer)
@@ -181,12 +181,12 @@ namespace Gallio.Model.Filters
             List<Filter<string>> values = new List<Filter<string>>();
             values.Add(MatchValue(lexer));
 
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             while (nextToken != null && nextToken.Type == FilterTokenType.Comma)
             {
                 MatchComma(lexer);
                 values.Add(MatchValue(lexer));
-                nextToken = lexer.LookAhead(1);
+                nextToken = LookAhead(lexer, 1);
             }
 
             if (values.Count == 1)
@@ -197,24 +197,24 @@ namespace Gallio.Model.Filters
 
         private static Filter<string> MatchValue(FilterLexer lexer)
         {
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken != null)
             {
                 if (nextToken.Type == FilterTokenType.RegexWord)
                 {
-                    lexer.GetNextToken();
+                    GetNextToken(lexer);
                     RegexOptions options = RegexOptions.Compiled;
-                    FilterToken caseInsensitiveToken = lexer.LookAhead(1);
+                    FilterToken caseInsensitiveToken = LookAhead(lexer, 1);
                     if (caseInsensitiveToken != null && caseInsensitiveToken.Type == FilterTokenType.CaseInsensitiveModifier)
                     {
                         options |= RegexOptions.IgnoreCase;
-                        lexer.GetNextToken();
+                        GetNextToken(lexer);
                     }
                     return new RegexFilter(new Regex(nextToken.Text, options));
                 }
                 else if (IsWord(nextToken))
                 {
-                    lexer.GetNextToken();
+                    GetNextToken(lexer);
                     return new EqualityFilter<string>(nextToken.Text);
                 }
             }
@@ -224,22 +224,22 @@ namespace Gallio.Model.Filters
 
         private static void MatchRightBracket(FilterLexer lexer)
         {
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken == null || nextToken.Type != FilterTokenType.RightBracket)
             {
                 throw new FilterRecognitionException(Resources.FilterParser_RightBracketExpected);
             }
-            lexer.GetNextToken();
+            GetNextToken(lexer);
         }
 
         private static void MatchComma(FilterLexer lexer)
         {
-            FilterToken nextToken = lexer.LookAhead(1);
+            FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken == null || nextToken.Type != FilterTokenType.Comma)
             {
                 throw new FilterRecognitionException(Resources.FilterParser_CommaExpected);
             }
-            lexer.GetNextToken();
+            GetNextToken(lexer);
         }
 
         private static bool IsWord(FilterToken token)
@@ -250,6 +250,25 @@ namespace Gallio.Model.Filters
         private static bool IsNotWord(FilterToken token)
         {
             return !IsWord(token);
+        }
+
+        private static void GetNextToken(FilterLexer lexer)
+        {
+            FilterToken token = lexer.GetNextToken();
+            if (token != null && token.Type == FilterTokenType.Error)
+            {
+                throw new FilterRecognitionException(token.Text);
+            }
+        }
+
+        private static FilterToken LookAhead(FilterLexer lexer, int index)
+        {
+            FilterToken token = lexer.LookAhead(index);
+            if (token != null && token.Type == FilterTokenType.Error)
+            {
+                throw new FilterRecognitionException(token.Text);
+            }
+            return token;
         }
     }
 

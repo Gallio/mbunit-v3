@@ -204,8 +204,8 @@ namespace Gallio.Tests.Model.Filters
         public void DelimitedElementWithMissingEndDelimiter(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 2);
-            FilterToken token = lexer.Tokens[1];
+            Assert.AreEqual(lexer.Tokens.Count, 1);
+            FilterToken token = lexer.Tokens[0];
             Assert.AreEqual(token.Type, FilterTokenType.Error);
             Assert.AreEqual(token.Position, filter.Length - 1);
             Assert.IsTrue(token.Text.StartsWith("Missing end " + filter[0]));
@@ -348,7 +348,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(@"'\,'", ",")]
         [Row("\"Fixtur\\\\e1\"", "Fixtur\\e1")]
         [Row("a\"b", "a\"b")]
-        public void Esc(string key, string text)
+        public void WordsWithEscapedCharacters(string key, string text)
         {
             string filter = key;
             FilterLexer lexer = new FilterLexer(filter);
@@ -366,9 +366,7 @@ namespace Gallio.Tests.Model.Filters
         [Row("Type:'Fixture1'", "Fixture1")]
         [Row("Type:~\"Fixture1\"", "~\"Fixture1\"")]
         [Row("Type:~'Fixture1'", "~'Fixture1'")]
-        //[Row("\"Type\":Fixture1")]
-        //[Row("'Type':Fixture1", "Fixture1")]
-        public void Filter(string filter, string text)
+        public void FilterWithOneValue(string filter, string text)
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.AreEqual(lexer.Tokens.Count, 3);
@@ -431,6 +429,42 @@ namespace Gallio.Tests.Model.Filters
                 FilterToken fifthToken = lexer.Tokens[4];
                 Assert.AreEqual(fifthToken.Type, FilterTokenType.Word);
                 Assert.AreEqual(fifthToken.Text, "Fixture2");
+            }
+        }
+
+        [RowTest]
+        [Row(@"\", 1)]
+        [Row(@"a\", 1)]
+        [Row(@"Type:\", 3)]
+        [Row(@"Type:a\", 3)]
+        [Row("Type:\"\\", 3)]
+        [Row(@"Type:'\", 3)]
+        public void BackslashesShouldBeFollowedByAnotherCharacter(string filter, int tokenCount)
+        {
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, tokenCount);
+            {
+                FilterToken errorToken = lexer.Tokens[tokenCount - 1];
+                Assert.AreEqual(errorToken.Type, FilterTokenType.Error);
+            }
+        }
+
+        [RowTest]
+        [Row(@"\a", 1)]
+        [Row(@"a\b", 1)]
+        [Row(@"Type:\a", 3)]
+        [Row(@"Type:a\b", 3)]
+        [Row(@"'\a", 1)]
+        [Row(@"'a\b", 1)]
+        [Row(@"Type:'\a", 3)]
+        [Row(@"Type:'a\b", 3)]
+        public void BackslashesShouldBeFollowedByAnEscapableCharacter(string filter, int tokenCount)
+        {
+            FilterLexer lexer = new FilterLexer(filter);
+            Assert.AreEqual(lexer.Tokens.Count, tokenCount);
+            {
+                FilterToken errorToken = lexer.Tokens[tokenCount - 1];
+                Assert.AreEqual(errorToken.Type, FilterTokenType.Error);
             }
         }
 

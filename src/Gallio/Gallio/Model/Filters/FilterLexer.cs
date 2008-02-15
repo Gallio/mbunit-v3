@@ -136,6 +136,7 @@ namespace Gallio.Model.Filters
         private void MatchUndelimitedWord()
         {
             StringBuilder chars = new StringBuilder();
+            bool errorFound = false;
             int startPosition = inputPosition + 1;
             char previousChar = ConsumeNextChar();
             if (previousChar != escapeCharacter)
@@ -159,11 +160,12 @@ namespace Gallio.Model.Filters
                     {
                         tokens.Add(new FilterToken(FilterTokenType.Error,
                                 "Cannot escape character " + nextChar, inputPosition));
+                        ConsumeNextChar();
+                        errorFound = true;
                         break;
                     }
                 }
                 else if (IsWordChar(nextChar))
-                //else if (!escapableCharacters.Contains(nextChar))
                 {
                     previousChar = ConsumeNextChar();
                     chars.Append(previousChar);
@@ -174,21 +176,33 @@ namespace Gallio.Model.Filters
                 }
                 nextCharCode = input.Peek();
             }
-            string tokenText = chars.ToString();
-            FilterTokenType filterTokenType = GetReservedWord(tokenText);
-            if (filterTokenType != FilterTokenType.None)
+            if (!errorFound)
             {
-                tokens.Add(new FilterToken(filterTokenType, null, startPosition));
-            }
-            else
-            {
-                tokens.Add(new FilterToken(FilterTokenType.Word, tokenText, startPosition));
+                if (previousChar == escapeCharacter)
+                {
+                    // The escape character was not followed by another character
+                    tokens.Add(new FilterToken(FilterTokenType.Error, "Missing escaped character", inputPosition));
+                }
+                else
+                {
+                    string tokenText = chars.ToString();
+                    FilterTokenType filterTokenType = GetReservedWord(tokenText);
+                    if (filterTokenType != FilterTokenType.None)
+                    {
+                        tokens.Add(new FilterToken(filterTokenType, null, startPosition));
+                    }
+                    else
+                    {
+                        tokens.Add(new FilterToken(FilterTokenType.Word, tokenText, startPosition));
+                    }
+                }
             }
         }
 
         private void MatchDelimitedWord(char delimiter)
         {
             StringBuilder chars = new StringBuilder();
+            bool errorFound = false;
             int startPosition = inputPosition + 1;
             char previousChar = (char)0;
             bool finalDelimiterFound = false;
@@ -197,53 +211,53 @@ namespace Gallio.Model.Filters
             while (input.Peek() != -1)
             {
                 char nextChar = (char)input.Peek();
-                if (nextChar == delimiter)
+                if (previousChar == escapeCharacter)
                 {
-                    if (previousChar != escapeCharacter)
+                    if (escapableCharacters.Contains(nextChar))
                     {
-                        ConsumeNextChar();
-                        finalDelimiterFound = true;
-                        break;
+                        chars.Append(nextChar);
+                        // Avoid the case when the last slash in an expression like //'
+                        // makes the following character to be escaped
+                        nextChar = (char)0;
                     }
                     else
                     {
-                        // Add the unescaped delimiter
-                        chars.Append(ConsumeNextChar());
+                        tokens.Add(new FilterToken(FilterTokenType.Error,
+                            "Cannot escape character " + nextChar, inputPosition));
+                        errorFound = true;
+                        ConsumeNextChar();
+                        break;
                     }
+                }
+                else if (nextChar == delimiter)
+                {
+                    ConsumeNextChar();
+                    finalDelimiterFound = true;
+                    break;
+                }
+                // If current char is the escape character then hold it
+                else if (nextChar != escapeCharacter)
+                {
+                    chars.Append(nextChar);
+                }
+                ConsumeNextChar();
+                previousChar = nextChar;
+            }
+            if (!errorFound)
+            {
+                if (previousChar == escapeCharacter)
+                {
+                    // The escape character was not followed by another character
+                    tokens.Add(new FilterToken(FilterTokenType.Error, "Missing escaped character", inputPosition));
+                }
+                else if (!finalDelimiterFound)
+                {
+                    tokens.Add(new FilterToken(FilterTokenType.Error, "Missing end " + delimiter, inputPosition));
                 }
                 else
                 {
-                    // previousChar was the escape character but not followed by a delimiter
-                    if (previousChar == escapeCharacter)
-                    {
-                        if (escapableCharacters.Contains(nextChar))
-                        {
-                            chars.Append(nextChar);
-                            // Avoid the case when the last slash in an expression like //'
-                            // makes the following character to be escaped
-                            nextChar = (char)0;
-                        }
-                        else
-                        {
-                            tokens.Add(new FilterToken(FilterTokenType.Error,
-                                "Cannot escape character " + nextChar, inputPosition));
-                            break;
-                        }
-                        //chars.Append(escapeCharacter);
-                    }
-                    // If current char is the escape character then hold it
-                    else if (nextChar != escapeCharacter)
-                    {
-                        chars.Append(nextChar);
-                    }
-                    ConsumeNextChar();
+                    tokens.Add(new FilterToken(GetTokenTypeForDelimiter(delimiter), chars.ToString(), startPosition));
                 }
-                previousChar = nextChar;
-            }
-            tokens.Add(new FilterToken(GetTokenTypeForDelimiter(delimiter), chars.ToString(), startPosition));
-            if (!finalDelimiterFound)
-            {
-                tokens.Add(new FilterToken(FilterTokenType.Error, "Missing end " + delimiter, inputPosition));
             }
         }
 
