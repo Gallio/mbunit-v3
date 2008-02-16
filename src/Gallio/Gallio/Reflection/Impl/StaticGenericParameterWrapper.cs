@@ -24,40 +24,75 @@ namespace Gallio.Reflection.Impl
     /// <summary>
     /// A <see cref="StaticReflectionPolicy"/> generic parameter wrapper.
     /// </summary>
-    public sealed class StaticGenericParameterWrapper : StaticDelegatingTypeWrapper, IGenericParameterInfo
+    public sealed class StaticGenericParameterWrapper : StaticSpecialTypeWrapper, IGenericParameterInfo
     {
         private readonly Memoizer<GenericParameterAttributes> genericParameterAttributesMemoizer = new Memoizer<GenericParameterAttributes>();
         private readonly Memoizer<IList<ITypeInfo>> constraintsMemoizer = new Memoizer<IList<ITypeInfo>>();
 
         private readonly StaticMethodWrapper declaringMethod;
 
-        /// <summary>
-        /// Creates a wrapper.
-        /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="declaringType">The declaring type, or null if none</param>
-        /// <param name="declaringMethod">The declaring method, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="declaringType"/> or <paramref name="declaringMethod"/>
-        /// are either both null or both non-null</exception>
-        public StaticGenericParameterWrapper(StaticReflectionPolicy policy, object handle,
+        private StaticGenericParameterWrapper(StaticReflectionPolicy policy, object handle,
             StaticDeclaredTypeWrapper declaringType, StaticMethodWrapper declaringMethod)
             : base(policy, handle, declaringType)
         {
-            if (declaringType == null && declaringMethod == null
-                || declaringType != null && declaringMethod != null)
-                throw new ArgumentException("Either declaringType or declaringMethod must be null but not both.");
-
             this.declaringMethod = declaringMethod;
         }
 
         /// <summary>
-        /// Gets the declaring method, or null if none.
+        /// Creates a wrapper for a generic type parameter.
+        /// </summary>
+        /// <param name="policy">The reflection policy</param>
+        /// <param name="handle">The underlying reflection object</param>
+        /// <param name="declaringType">The declaring type, which must be a generic type definition</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>
+        /// or <paramref name="declaringType"/> is null</exception>
+        public static StaticGenericParameterWrapper CreateGenericTypeParameter(StaticReflectionPolicy policy, object handle,
+            StaticDeclaredTypeWrapper declaringType)
+        {
+            if (declaringType == null)
+                throw new ArgumentNullException("declaringType");
+
+            return new StaticGenericParameterWrapper(policy, handle, declaringType, null);
+        }
+
+        /// <summary>
+        /// Creates a wrapper for a generic method parameter.
+        /// </summary>
+        /// <param name="policy">The reflection policy</param>
+        /// <param name="handle">The underlying reflection object</param>
+        /// <param name="declaringMethod">The declaring method, which must be a generic method definition</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>
+        /// or <paramref name="declaringMethod"/> is null</exception>
+        public static StaticGenericParameterWrapper CreateGenericMethodParameter(StaticReflectionPolicy policy, object handle,
+            StaticMethodWrapper declaringMethod)
+        {
+            if (declaringMethod == null)
+                throw new ArgumentNullException("declaringMethod");
+
+            return new StaticGenericParameterWrapper(policy, handle, declaringMethod.DeclaringType, declaringMethod);
+        }
+
+        /// <inheritdoc />
+        public override StaticDeclaredTypeWrapper DeclaringType
+        {
+            get
+            {
+                StaticDeclaredTypeWrapper declaringType = base.DeclaringType;
+                return declaringType.GenericTypeDefinition ?? declaringType;
+            }
+        }
+
+        /// <summary>
+        /// Gets the declaring method, or null if the generic parameter belongs to a type.
         /// </summary>
         public StaticMethodWrapper DeclaringMethod
         {
-            get { return declaringMethod; }
+            get
+            {
+                if (declaringMethod == null)
+                    return null;
+                return declaringMethod.GenericMethodDefinition;
+            }
         }
         IMethodInfo IGenericParameterInfo.DeclaringMethod
         {
@@ -74,12 +109,6 @@ namespace Gallio.Reflection.Impl
         protected override ITypeInfo BaseTypeInternal
         {
             get { return Reflector.Wrap(typeof(Object)); }
-        }
-
-        /// <inheritdoc />
-        protected override ITypeInfo EffectiveType
-        {
-            get { return Reflector.Wrap(typeof(FakeTypeParameter)); }
         }
 
         /// <inheritdoc />
@@ -109,19 +138,19 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override IAssemblyInfo Assembly
         {
-            get { return UltimateDeclaringType.Assembly; }
+            get { return DeclaringType.Assembly; }
         }
 
         /// <inheritdoc />
         public override INamespaceInfo Namespace
         {
-            get { return UltimateDeclaringType.Namespace; }
+            get { return DeclaringType.Namespace; }
         }
 
         /// <inheritdoc />
         public override TypeAttributes TypeAttributes
         {
-            get { return TypeAttributes.Public | TypeAttributes.Class; }
+            get { return TypeAttributes.Public; }
         }
 
         /// <inheritdoc />
@@ -188,19 +217,6 @@ namespace Gallio.Reflection.Impl
         public override string ToString()
         {
             return Name;
-        }
-
-        private ITypeInfo UltimateDeclaringType
-        {
-            get { return DeclaringType ?? DeclaringMethod.DeclaringType; }
-        }
-
-        /// <summary>
-        /// The only purpose of this class is to be an empty subtype of Object to function
-        /// as a stand-in for reflection purposes.
-        /// </summary>
-        private sealed class FakeTypeParameter
-        {
         }
     }
 }

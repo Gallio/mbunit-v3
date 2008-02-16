@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Gallio.Reflection.Impl
 {
@@ -56,7 +58,13 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         protected override ITypeInfo BaseTypeInternal
         {
-            get { return EffectiveType; }
+            get { return Reflector.Wrap(typeof(Array)); }
+        }
+
+        /// <inheritdoc />
+        public override TypeAttributes TypeAttributes
+        {
+            get { return TypeAttributes.Public | TypeAttributes.Sealed; }
         }
 
         /// <inheritdoc />
@@ -76,12 +84,6 @@ namespace Gallio.Reflection.Impl
         public override int GetHashCode()
         {
             return ElementType.GetHashCode() ^ GetType().GetHashCode() ^ arrayRank;
-        }
-
-        /// <inheritdoc />
-        protected override ITypeInfo EffectiveType
-        {
-            get { return Reflector.Wrap(typeof(Array)); }
         }
 
         /// <inheritdoc />

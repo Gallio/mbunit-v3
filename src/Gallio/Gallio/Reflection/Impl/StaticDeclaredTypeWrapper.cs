@@ -135,7 +135,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override bool IsGenericType
         {
-            get { return GenericArguments.Count != 0; }
+            get { return GenericParameters.Count != 0; }
         }
 
         /// <inheritdoc />
@@ -173,14 +173,18 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override ITypeInfo GenericTypeDefinition
+        public override StaticDeclaredTypeWrapper GenericTypeDefinition
         {
             get
             {
                 if (!IsGenericType)
                     return null;
 
-                return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType, Substitution.Remove(GenericParameters));
+                if (IsGenericTypeDefinition)
+                    return this;
+
+                return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType,
+                    DeclaringType != null ? DeclaringType.Substitution : StaticTypeSubstitution.Empty);
             }
         }
 
@@ -213,14 +217,18 @@ namespace Gallio.Reflection.Impl
             if (methodName == null)
                 throw new ArgumentNullException("methodName");
 
+            // Hidden methods are excluded from consideration.
+            // For example, "Type.get_Module()" hides "MemberInfo.getModule()" and
+            // both will be returned when calling GetMethods() on "Type", but
+            // we can still get "Type.get_Module()" by name without producing
+            // an AmbiguousMatchException.
             return GetMemberByName(GetMethods(bindingFlags, false), methodName);
         }
 
         /// <inheritdoc />
         public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
         {
-            // Note: Believe it or not, the .Net GetMethods() function will include hidden
-            //       but not overridden methods in the result.
+            // Hidden but not overloaded methods are included in the list.
             return GetMethods(bindingFlags, true);
         }
 
@@ -297,6 +305,7 @@ namespace Gallio.Reflection.Impl
 
             return result;
         }
+
         private IEnumerable<StaticPropertyWrapper> EnumerateProperties(BindingFlags bindingFlags)
         {
             foreach (StaticPropertyWrapper property in Policy.GetTypeProperties(this))
@@ -351,6 +360,7 @@ namespace Gallio.Reflection.Impl
 
             return result;
         }
+
         private IEnumerable<StaticEventWrapper> EnumerateEvents(BindingFlags bindingFlags)
         {
             foreach (StaticEventWrapper @event in Policy.GetTypeEvents(this))
@@ -377,7 +387,17 @@ namespace Gallio.Reflection.Impl
             if (fieldName == null)
                 throw new ArgumentNullException("fieldName");
 
-            return GetMemberByName(GetFields(bindingFlags), fieldName);
+            // Note: Ambiguity is only possible if we somehow get two fields with the same
+            // name on a type or if we consider fields on interfaces.  We don't support either case now.
+            // So we just return the first field we find.  It will be the most-derived field,
+            // so it should hide all other identically named fields that follow.
+            foreach (IFieldInfo field in GetFields(bindingFlags))
+            {
+                if (field.Name == fieldName)
+                    return field;
+            }
+
+            return null;
         }
 
         /// <inheritdoc />
@@ -406,6 +426,7 @@ namespace Gallio.Reflection.Impl
 
             return result;
         }
+
         private IEnumerable<StaticFieldWrapper> EnumerateFields(BindingFlags bindingFlags)
         {
             foreach (StaticFieldWrapper field in Policy.GetTypeFields(this))
@@ -434,6 +455,11 @@ namespace Gallio.Reflection.Impl
             {
                 return fullNameMemoizer.Memoize(delegate
                 {
+                    // Note: This funny little rule actually exists in the .Net framework.
+                    bool containsGenericParameters = ContainsGenericParameters;
+                    if (containsGenericParameters && !IsGenericTypeDefinition)
+                        return null;
+
                     StringBuilder fullName = new StringBuilder();
 
                     ITypeInfo declaringType = DeclaringType;
@@ -450,7 +476,7 @@ namespace Gallio.Reflection.Impl
 
                     fullName.Append(Name);
 
-                    if (!IsGenericTypeDefinition)
+                    if (! containsGenericParameters)
                     {
                         IList<ITypeInfo> genericArguments = GenericArguments;
                         if (genericArguments.Count != 0)

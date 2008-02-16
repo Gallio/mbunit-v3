@@ -444,7 +444,7 @@ namespace Gallio.ReSharperRunner.Reflection
             IMetadataMethod methodHandle = (IMetadataMethod)method.Handle;
             return Array.ConvertAll<IMetadataGenericArgument, StaticGenericParameterWrapper>(methodHandle.GenericArguments, delegate(IMetadataGenericArgument parameterHandle)
             {
-                return new StaticGenericParameterWrapper(this, parameterHandle, null, method);
+                return StaticGenericParameterWrapper.CreateGenericMethodParameter(this, parameterHandle, method);
             });
         }
         #endregion
@@ -528,7 +528,7 @@ namespace Gallio.ReSharperRunner.Reflection
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
             return Array.ConvertAll<IMetadataGenericArgument, StaticGenericParameterWrapper>(typeHandle.GenericParameters, delegate(IMetadataGenericArgument parameterHandle)
             {
-                return new StaticGenericParameterWrapper(this, parameterHandle, type, null);
+                return StaticGenericParameterWrapper.CreateGenericTypeParameter(this, parameterHandle, type);
             });
         }
 
@@ -642,11 +642,11 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             typeInfoHandle = ResolveTypeHandle(typeInfoHandle);
 
-            IMetadataTypeInfo declaraingTypeInfoHandle = ResolveTypeHandle(typeInfoHandle.DeclaringType);
+            IMetadataTypeInfo declaringTypeInfoHandle = ResolveTypeHandle(typeInfoHandle.DeclaringType);
             StaticDeclaredTypeWrapper type;
-            if (declaraingTypeInfoHandle != null)
+            if (declaringTypeInfoHandle != null)
             {
-                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaraingTypeInfoHandle, EmptyArray<IMetadataType>.Instance);
+                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaringTypeInfoHandle, EmptyArray<IMetadataType>.Instance);
                 type = new StaticDeclaredTypeWrapper(this, typeInfoHandle, declaringType, declaringType.Substitution);
             }
             else
@@ -689,13 +689,13 @@ namespace Gallio.ReSharperRunner.Reflection
             if (parameterHandle.TypeOwner != null)
             {
                 StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(parameterHandle.TypeOwner);
-                return new StaticGenericParameterWrapper(this, parameterHandle, declaringType, null);
+                return StaticGenericParameterWrapper.CreateGenericTypeParameter(this, parameterHandle, declaringType);
             }
             else
             {
                 StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(parameterHandle.MethodOwner.DeclaringType);
                 StaticMethodWrapper declaringMethod = new StaticMethodWrapper(this, parameterHandle.MethodOwner, declaringType, declaringType.Substitution);
-                return new StaticGenericParameterWrapper(this, parameterHandle, null, declaringMethod);
+                return StaticGenericParameterWrapper.CreateGenericMethodParameter(this, parameterHandle, declaringMethod);
             }
         }
 
@@ -859,11 +859,26 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private IField GetDeclaredElementWithLock(IMetadataField metadataField)
         {
-            IClass type = GetDeclaredElementWithLock(metadataField.DeclaringType) as IClass;
+            ITypeElement type = GetDeclaredElementWithLock(metadataField.DeclaringType);
 
-            if (type != null)
+            IClass classHandle = type as IClass;
+            if (classHandle != null)
             {
-                foreach (IField field in type.Fields)
+                foreach (IField field in classHandle.Fields)
+                    if (field.ShortName == metadataField.Name)
+                        return field;
+                foreach (IField field in classHandle.Constants)
+                    if (field.ShortName == metadataField.Name)
+                        return field;
+            }
+
+            IStruct structHandle = type as IStruct;
+            if (structHandle != null)
+            {
+                foreach (IField field in structHandle.Fields)
+                    if (field.ShortName == metadataField.Name)
+                        return field;
+                foreach (IField field in structHandle.Constants)
                     if (field.ShortName == metadataField.Name)
                         return field;
             }

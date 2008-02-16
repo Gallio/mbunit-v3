@@ -182,13 +182,6 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
-        {
-            foreach (StaticEventWrapper element in GetOverridenOrHiddenEvents(true))
-                yield return element;
-        }
-
-        /// <inheritdoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             return EmptyArray<Attribute>.Instance;

@@ -33,8 +33,8 @@ namespace Gallio.Reflection
     {
         /// <summary>
         /// Gets the declaring type of the member.  If the member not a type or is a nested type,
-        /// returns its containing type.  If it is a generic type parameter,
-        /// returns its associated generic type definition.  Otherwise returns null.
+        /// returns its containing type.  If it is a generic parameter, returns the type
+        /// to which it (or its declaring method) belongs.  Otherwise returns null.
         /// </summary>
         /// <seealso cref="IGenericParameterInfo.DeclaringMethod"/>
         ITypeInfo DeclaringType { get; }

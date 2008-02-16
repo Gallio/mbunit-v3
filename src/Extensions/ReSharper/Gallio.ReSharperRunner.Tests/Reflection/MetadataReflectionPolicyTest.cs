@@ -30,9 +30,11 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         private MetadataLoader loader;
         private MetadataReflectionPolicy reflectionPolicy;
 
-        [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
+            base.SetUp();
+            WrapperAssert.SupportsSpecialFeatures = false;
+
             loader = new MetadataLoader(BuiltInMetadataAssemblyResolver.Instance);
 
             Assembly assembly = GetType().Assembly;
@@ -41,14 +43,15 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             reflectionPolicy = new MetadataReflectionPolicy(metadataAssembly, null);
         }
 
-        [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
             if (loader != null)
             {
                 loader.Dispose();
                 loader = null;
             }
+
+            base.TearDown();
         }
 
         protected override Gallio.Reflection.IReflectionPolicy ReflectionPolicy

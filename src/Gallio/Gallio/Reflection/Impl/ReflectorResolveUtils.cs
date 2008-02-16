@@ -118,14 +118,16 @@ namespace Gallio.Reflection.Impl
 
         private static Type ResolveGenericParameter(IGenericParameterInfo genericParameter, MethodInfo methodContext)
         {
-            ITypeInfo declaringType = genericParameter.DeclaringType;
-            if (declaringType != null)
-                return declaringType.Resolve(true).GetGenericArguments()[genericParameter.Position];
+            IMethodInfo declaringMethod = genericParameter.DeclaringMethod;
+            if (declaringMethod != null)
+            {
+                if (methodContext == null)
+                    methodContext = declaringMethod.Resolve(true);
 
-            if (methodContext == null)
-                methodContext = genericParameter.DeclaringMethod.Resolve(true);
+                return methodContext.GetGenericArguments()[genericParameter.Position];
+            }
 
-            return methodContext.GetGenericArguments()[genericParameter.Position];
+            return genericParameter.DeclaringType.Resolve(true).GetGenericArguments()[genericParameter.Position];
         }
 
         /// <summary>
@@ -183,10 +185,13 @@ namespace Gallio.Reflection.Impl
 
             try
             {
+                Type returnType = property.ValueType.Resolve(true);
+                Type[] parameterTypes = ResolveParameterTypes(property.IndexParameters);
+
                 Type resolvedType = property.DeclaringType.Resolve(true);
                 PropertyInfo resolvedProperty =
                     resolvedType.GetProperty(property.Name, BindingFlags.Public | BindingFlags.NonPublic
-                        | BindingFlags.Instance | BindingFlags.Static);
+                        | BindingFlags.Instance | BindingFlags.Static, null, returnType, parameterTypes, null);
 
                 if (resolvedProperty != null)
                     return resolvedProperty;
@@ -311,7 +316,7 @@ namespace Gallio.Reflection.Impl
                 string methodName = method.Name;
 
                 MethodInfo resolvedMethod = method.IsGenericMethod
-                    ? ResolveGenericMethod(resolvedType, methodName, bindingFlags, method.Parameters, method.GenericArguments)
+                    ? ResolveGenericMethod(resolvedType, methodName, bindingFlags, method.GenericMethodDefinition.Parameters, method.GenericArguments)
                     : ResolveNonGenericMethod(resolvedType, methodName, bindingFlags, method.Parameters);
 
                 if (resolvedMethod != null)
@@ -398,13 +403,24 @@ namespace Gallio.Reflection.Impl
 
             try
             {
-                MethodBase resolvedMethod = (MethodBase)parameter.Member.Resolve(true);
-                ParameterInfo[] resolvedParameters = resolvedMethod.GetParameters();
+                MemberInfo resolvedMember = parameter.Member.Resolve(true);
 
                 int parameterIndex = parameter.Position;
+                ParameterInfo[] resolvedParameters;
 
-                if (parameterIndex == -1)
-                    return ((MethodInfo)resolvedMethod).ReturnParameter;
+                MethodBase resolvedMethod = resolvedMember as MethodBase;
+                if (resolvedMethod != null)
+                {
+                    if (parameterIndex == -1)
+                        return ((MethodInfo)resolvedMethod).ReturnParameter;
+
+                    resolvedParameters = resolvedMethod.GetParameters();
+                }
+                else
+                {
+                    PropertyInfo resolvedProperty = (PropertyInfo)resolvedMember;
+                    resolvedParameters = resolvedProperty.GetIndexParameters();
+                }
 
                 if (parameterIndex < resolvedParameters.Length)
                     return resolvedParameters[parameterIndex];

@@ -165,11 +165,27 @@ namespace MbUnit.TestResources.Reflection
             {
                 get { return 0; }
             }
+
+            public int this[string index]
+            {
+                get { return 0; }
+                set { }
+            }
+
+            public string this[int index1, int index2]
+            {
+                get { return ""; }
+                set { }
+            }
         }
 
         public class TortureTest2<[Sample(typeof(string[]), Field = 2, Property = "foo")] T> : TortureTest<T[]>
         {
             new public string Field2;
+
+            ~TortureTest2()
+            {
+            }
 
             [Sample(typeof(int))]
             public override S InheritedMethod<S>(S s, [Sample(typeof(int))] T[] t)

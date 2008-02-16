@@ -21,11 +21,12 @@ using Gallio.Collections;
 namespace Gallio.Reflection.Impl
 {
     /// <summary>
-    /// A <see cref="StaticReflectionPolicy"/> type wrapper that delegates most operations to another type.
+    /// A <see cref="StaticReflectionPolicy"/> type wrapper that represents a special type
+    /// that is either constructed from other types or derived from them as with a generic parameter.
     /// </summary>
     /// <seealso cref="StaticConstructedTypeWrapper"/>
     /// <seealso cref="StaticGenericParameterWrapper"/>
-    public abstract class StaticDelegatingTypeWrapper : StaticTypeWrapper
+    public abstract class StaticSpecialTypeWrapper : StaticTypeWrapper
     {
         /// <summary>
         /// Creates a wrapper.
@@ -34,7 +35,7 @@ namespace Gallio.Reflection.Impl
         /// <param name="handle">The underlying reflection object</param>
         /// <param name="declaringType">The declaring type, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
-        public StaticDelegatingTypeWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
+        public StaticSpecialTypeWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
             : base(policy, handle, declaringType)
         {
         }
@@ -46,95 +47,70 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override IAssemblyInfo Assembly
-        {
-            get { return EffectiveType.Assembly; }
-        }
-
-        /// <inheritdoc />
-        public override INamespaceInfo Namespace
-        {
-            get { return EffectiveType.Namespace; }
-        }
-
-        /// <inheritdoc />
         protected override ITypeInfo BaseTypeInternal
         {
             get { return null; }
         }
 
         /// <inheritdoc />
-        public override TypeAttributes TypeAttributes
-        {
-            get { return EffectiveType.TypeAttributes; }
-        }
-
-        /// <inheritdoc />
         public override IList<ITypeInfo> Interfaces
         {
-            get { return EffectiveType.Interfaces; }
+            get { return EmptyArray<ITypeInfo>.Instance; }
         }
 
         /// <inheritdoc />
         public override IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags)
         {
-            return EffectiveType.GetConstructors(bindingFlags);
+            return EmptyArray<IConstructorInfo>.Instance;
         }
 
         /// <inheritdoc />
         public override IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags)
         {
-            return EffectiveType.GetMethod(methodName, bindingFlags);
+            return null;
         }
 
         /// <inheritdoc />
         public override IList<IMethodInfo> GetMethods(BindingFlags bindingFlags)
         {
-            return EffectiveType.GetMethods(bindingFlags);
+            return EmptyArray<IMethodInfo>.Instance;
         }
 
         /// <inheritdoc />
         public override IPropertyInfo GetProperty(string propertyName, BindingFlags bindingFlags)
         {
-            return EffectiveType.GetProperty(propertyName, bindingFlags);
+            return null;
         }
 
         /// <inheritdoc />
         public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
         {
-            return EffectiveType.GetProperties(bindingFlags);
+            return EmptyArray<IPropertyInfo>.Instance;
         }
 
         /// <inheritdoc />
         public override IFieldInfo GetField(string fieldName, BindingFlags bindingFlags)
         {
-            return EffectiveType.GetField(fieldName, bindingFlags);
+            return null;
         }
 
         /// <inheritdoc />
         public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
         {
-            return EffectiveType.GetFields(bindingFlags);
+            return EmptyArray<IFieldInfo>.Instance;
         }
 
         /// <inheritdoc />
         public override IEventInfo GetEvent(string eventName, BindingFlags bindingFlags)
         {
-            return EffectiveType.GetEvent(eventName, bindingFlags);
+            return null;
         }
 
         /// <inheritdoc />
         public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
         {
-            return EffectiveType.GetEvents(bindingFlags);
+            return EmptyArray<IEventInfo>.Instance;
         }
-
-        /// <summary>
-        /// Gets the effective type that this type "looks like" when accessing members
-        /// and structural properties of the type.  For example, the .Net <see cref="Type" /> class
-        /// treats all array types as <see cref="Array" /> for most purposes.
-        /// </summary>
-        protected abstract ITypeInfo EffectiveType { get; }
 
         /// <inheritdoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()

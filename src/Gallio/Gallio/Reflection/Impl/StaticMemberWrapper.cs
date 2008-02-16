@@ -65,9 +65,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Gets the declaring type.
+        /// Gets the declaring type, or null if none.
         /// </summary>
-        public StaticDeclaredTypeWrapper DeclaringType
+        public virtual StaticDeclaredTypeWrapper DeclaringType
         {
             get { return declaringType; }
         }

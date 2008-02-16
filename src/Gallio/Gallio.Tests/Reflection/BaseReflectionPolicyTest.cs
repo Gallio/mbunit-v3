@@ -41,11 +41,29 @@ namespace Gallio.Tests.Reflection
         private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic
             | BindingFlags.Instance | BindingFlags.Static
             | BindingFlags.FlattenHierarchy;
+        private WrapperAssert wrapperAssert;
 
         /// <summary>
         /// Gets the reflection policy to use to obtain wrappers.
         /// </summary>
         protected abstract IReflectionPolicy ReflectionPolicy { get; }
+
+        protected WrapperAssert WrapperAssert
+        {
+            get { return wrapperAssert; }
+        }
+
+        [SetUp]
+        public virtual void SetUp()
+        {
+            wrapperAssert = new WrapperAssert();
+        }
+
+        [TearDown]
+        public virtual void TearDown()
+        {
+            wrapperAssert = null;
+        }
 
         protected IAssemblyInfo GetAssembly(Assembly assembly)
         {
@@ -420,6 +438,51 @@ namespace Gallio.Tests.Reflection
                     new KeyValuePair<IPropertyInfo, object>(GetProperty(typeof(SampleAttribute).GetProperty("Property")), "foo")
                 }, info.InitializedPropertyValues);
             }
+        }
+
+        [Test]
+        public void ArraysOfRank1()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample));
+            WrapperAssert.AreEquivalent(typeof(ReflectionPolicySample).MakeArrayType(), type.MakeArrayType(1), false);
+        }
+
+        [Test]
+        public void ArraysOfRank3()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample));
+            WrapperAssert.AreEquivalent(typeof(ReflectionPolicySample).MakeArrayType(3), type.MakeArrayType(3), false);
+        }
+
+        [Test]
+        public void ByRefTypes()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample));
+            WrapperAssert.AreEquivalent(typeof(ReflectionPolicySample).MakeByRefType(), type.MakeByRefType(), false);
+        }
+
+        [Test]
+        public void PointerTypes()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample));
+            WrapperAssert.AreEquivalent(typeof(ReflectionPolicySample).MakePointerType(), type.MakePointerType(), false);
+        }
+
+        [Test]
+        public void GenericTypeInstantiations()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Struct1<,>));
+            WrapperAssert.AreEquivalent(typeof(ReflectionPolicySample.Struct1<int,string>),
+                type.MakeGenericType(new ITypeInfo[] { GetType(typeof(int)), GetType(typeof(string)) }), false);
+        }
+
+        [Test]
+        public void GenericMethodInstantiations()
+        {
+            MethodInfo target = typeof(ReflectionPolicySample.Class1).GetMethod("Method1");
+            IMethodInfo method = GetMethod(target);
+            WrapperAssert.AreEquivalent(target.MakeGenericMethod(typeof(int)),
+                method.MakeGenericMethod(new ITypeInfo[] { GetType(typeof(int)) }), false);
         }
 
         [RowTest]

@@ -28,7 +28,7 @@ namespace Gallio.Reflection.Impl
     public sealed class StaticPropertyWrapper : StaticMemberWrapper, IPropertyInfo
     {
         private readonly Memoizer<PropertyAttributes> propertyAttributesMemoizer = new Memoizer<PropertyAttributes>();
-        private readonly Memoizer<IList<IParameterInfo>> indexParametersMemoizer = new Memoizer<IList<IParameterInfo>>();
+        private readonly Memoizer<IList<StaticParameterWrapper>> indexParametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
 
         /// <summary>
         /// Creates a wrapper.
@@ -96,32 +96,51 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public IList<IParameterInfo> IndexParameters
+        public IList<StaticParameterWrapper> IndexParameters
         {
             get
             {
                 return indexParametersMemoizer.Memoize(delegate
                 {
-                    IMethodInfo getMethod = GetMethod;
+                    IList<StaticParameterWrapper> parameters;
+                    int indexParameterCount;
+
+                    StaticMethodWrapper getMethod = GetMethod;
                     if (getMethod != null)
-                        return getMethod.Parameters;
+                    {
+                        parameters = getMethod.Parameters;
+                        indexParameterCount = parameters.Count;
+                    }
+                    else
+                    {
+                        parameters = SetMethod.Parameters;
+                        indexParameterCount = parameters.Count - 1;
+                    }
 
-                    IList<IParameterInfo> setterParameters = SetMethod.Parameters;
-                    if (setterParameters.Count == 1)
-                        return EmptyArray<IParameterInfo>.Instance;
+                    if (indexParameterCount == 0)
+                        return EmptyArray<StaticParameterWrapper>.Instance;
 
-                    IParameterInfo[] parameters = new IParameterInfo[setterParameters.Count - 1];
-                    for (int i = 0; i < parameters.Length; i++)
-                        parameters[i] = setterParameters[i];
-                    return parameters;
+                    StaticParameterWrapper[] indexParameters = new StaticParameterWrapper[indexParameterCount];
+                    for (int i = 0; i < indexParameterCount; i++)
+                    {
+                        StaticParameterWrapper parameter = parameters[i];
+                        indexParameters[i] = new StaticParameterWrapper(parameter.Policy, parameter.Handle, this);
+                    }
+
+                    return indexParameters;
                 });
             }
+        }
+
+        IList<IParameterInfo> IPropertyInfo.IndexParameters
+        {
+            get { return new CovariantList<StaticParameterWrapper, IParameterInfo>(IndexParameters); }
         }
 
         /// <inheritdoc />
         public ITypeInfo ValueType
         {
-            get { return Policy.GetPropertyType(this); }
+            get { return Substitution.Apply(Policy.GetPropertyType(this)); }
         }
 
         /// <inheritdoc />
@@ -214,7 +233,7 @@ namespace Gallio.Reflection.Impl
             sig.Append(' ');
             sig.Append(Name);
 
-            IList<IParameterInfo> indexParameters = IndexParameters;
+            IList<StaticParameterWrapper> indexParameters = IndexParameters;
             if (indexParameters.Count != 0)
             {
                 sig.Append(' ');
@@ -224,13 +243,6 @@ namespace Gallio.Reflection.Impl
             }
 
             return sig.ToString();
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
-        {
-            foreach (StaticPropertyWrapper element in GetOverridenOrHiddenProperties(true))
-                yield return element;
         }
 
         /// <inheritdoc />

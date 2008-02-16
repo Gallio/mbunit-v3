@@ -28,7 +28,7 @@ namespace Gallio.Reflection.Impl
     public abstract class StaticFunctionWrapper : StaticMemberWrapper, IFunctionInfo
     {
         private readonly Memoizer<MethodAttributes> methodAttributesMemoizer = new Memoizer<MethodAttributes>();
-        private readonly Memoizer<IList<IParameterInfo>> parametersMemoizer = new Memoizer<IList<IParameterInfo>>();
+        private readonly Memoizer<IList<StaticParameterWrapper>> parametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
 
         /// <summary>
         /// Creates a wrapper.
@@ -130,15 +130,20 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public IList<IParameterInfo> Parameters
+        public IList<StaticParameterWrapper> Parameters
         {
             get
             {
                 return parametersMemoizer.Memoize(delegate
                 {
-                    return new CovariantList<StaticParameterWrapper, IParameterInfo>(Policy.GetFunctionParameters(this)); 
+                    return Policy.GetFunctionParameters(this); 
                 });
             }
+        }
+
+        IList<IParameterInfo> IFunctionInfo.Parameters
+        {
+            get { return new CovariantList<StaticParameterWrapper, IParameterInfo>(Parameters); }
         }
 
         /// <inheritdoc />

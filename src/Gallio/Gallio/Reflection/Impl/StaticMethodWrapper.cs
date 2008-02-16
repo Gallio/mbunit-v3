@@ -66,7 +66,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public bool IsGenericMethod
         {
-            get { return GenericArguments.Count != 0; }
+            get { return GenericParameters.Count != 0; }
         }
 
         /// <inheritdoc />
@@ -87,7 +87,8 @@ namespace Gallio.Reflection.Impl
                 foreach (ITypeInfo type in GenericArguments)
                     if (type.ContainsGenericParameters)
                         return true;
-                return false;
+
+                return DeclaringType.ContainsGenericParameters;
             }
         }
 
@@ -104,15 +105,22 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public IMethodInfo GenericMethodDefinition
+        public StaticMethodWrapper GenericMethodDefinition
         {
             get
             {
                 if (!IsGenericMethod)
                     return null;
 
-                return new StaticMethodWrapper(Policy, Handle, DeclaringType, Substitution.Remove(GenericParameters));
+                if (IsGenericMethodDefinition)
+                    return this;
+
+                return new StaticMethodWrapper(Policy, Handle, DeclaringType, DeclaringType.Substitution);
             }
+        }
+        IMethodInfo IMethodInfo.GenericMethodDefinition
+        {
+            get { return GenericMethodDefinition; }
         }
 
         /// <inheritdoc />

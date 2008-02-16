@@ -167,7 +167,7 @@ namespace Gallio.Reflection.Impl
         /// <summary>
         /// Appends a list of parameters to a signature.
         /// </summary>
-        internal static void AppendParameterListToSignature(StringBuilder sig, IList<IParameterInfo> parameters, bool isVarArgs)
+        internal static void AppendParameterListToSignature(StringBuilder sig, IList<StaticParameterWrapper> parameters, bool isVarArgs)
         {
             for (int i = 0; i < parameters.Count; i++)
             {
@@ -207,18 +207,22 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         internal static string GetTypeNameForSignature(ITypeInfo type)
         {
-            return (IsPrimitiveForSignature(type) ? type.Name : type.ToString()).Replace("&", " ByRef");
+            return (ShouldUseShortNameForSignature(type) ? type.Name : type.ToString()).Replace("&", " ByRef");
         }
 
         /// <summary>
-        /// Determines whether a type is primitive for the purposes of creating a signature.
+        /// Determines whether a type should be represented by its short name
+        /// for the purposes of creating a signature.
         /// </summary>
         /// <param name="type">The reflected type</param>
         /// <returns>True if the type is primitive</returns>
-        private static bool IsPrimitiveForSignature(ITypeInfo type)
+        private static bool ShouldUseShortNameForSignature(ITypeInfo type)
         {
             while (type.ElementType != null)
                 type = type.ElementType;
+
+            if (type.IsNested)
+                return true;
 
             switch (type.FullName)
             {
@@ -238,10 +242,9 @@ namespace Gallio.Reflection.Impl
                 case "System.UIntPtr":
                 case "System.Void":
                     return true;
-
-                default:
-                    return false;
             }
+
+            return false;
         }
 
         private IEnumerable<IAttributeInfo> GetAllCustomAttributes()

@@ -41,22 +41,31 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             ReSharperTestHarness.LoadTestSolutionIfNeeded();
         }
 
-        [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
+            base.SetUp();
+            WrapperAssert.SupportsSpecialFeatures = false;
+            WrapperAssert.SupportsSpecialName = false;
+            WrapperAssert.SupportsCallingConventions = false;
+            WrapperAssert.SupportsReturnAttributes = false;
+            WrapperAssert.SupportsEventFields = false;
+            WrapperAssert.SupportsGenericParameterAttributes = false;
+            WrapperAssert.SupportsFinalizers = false;
+
             PsiManager manager = PsiManager.GetInstance(SolutionManager.Instance.CurrentSolution);
 
             reflectionPolicy = new PsiReflectionPolicy(manager);
         }
 
-        [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
             if (solution != null)
             {
                 solution.Dispose();
                 solution = null;
             }
+
+            base.TearDown();
         }
 
         protected override IReflectionPolicy ReflectionPolicy

@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using Gallio.Collections;
 
 namespace Gallio.Reflection.Impl
 {
@@ -23,7 +25,7 @@ namespace Gallio.Reflection.Impl
     /// <seealso cref="StaticArrayTypeWrapper"/>
     /// <seealso cref="StaticByRefTypeWrapper"/>
     /// <seealso cref="StaticPointerTypeWrapper"/>
-    public abstract class StaticConstructedTypeWrapper : StaticDelegatingTypeWrapper
+    public abstract class StaticConstructedTypeWrapper : StaticSpecialTypeWrapper
     {
         /// <summary>
         /// Creates a wrapper.
@@ -69,13 +71,32 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override string FullName
         {
-            get { return ElementType.FullName + NameSuffix; }
+            get
+            {
+                string fullName = ElementType.FullName;
+                if (fullName == null)
+                    return null;
+
+                return fullName + NameSuffix;
+            }
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
             return ElementType + NameSuffix;
+        }
+
+        /// <inheritdoc />
+        public override CodeLocation GetCodeLocation()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<StaticAttributeWrapper> GetCustomAttributes()
+        {
+            return EmptyArray<StaticAttributeWrapper>.Instance;
         }
 
         /// <summary>

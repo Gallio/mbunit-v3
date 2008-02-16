@@ -248,7 +248,7 @@
     <Compile Include="Reflection\Impl\StaticCodeElementWrapper.cs" />
     <Compile Include="Reflection\Impl\StaticConstructorWrapper.cs" />
     <Compile Include="Reflection\Impl\StaticDeclaredTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticDelegatingTypeWrapper.cs" />
+    <Compile Include="Reflection\Impl\StaticSpecialTypeWrapper.cs" />
     <Compile Include="Reflection\Impl\StaticEventWrapper.cs" />
     <Compile Include="Reflection\Impl\StaticFieldWrapper.cs" />
     <Compile Include="Reflection\Impl\StaticFunctionWrapper.cs" />

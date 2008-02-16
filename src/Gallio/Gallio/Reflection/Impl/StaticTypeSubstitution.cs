@@ -151,38 +151,6 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <summary>
-        /// Returns a new substitution with all replacements for the specified generic parameters removed.
-        /// </summary>
-        /// <param name="genericParameters">The generic parameters to remove</param>
-        /// <returns>The new substitution</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="genericParameters"/> is null</exception>
-        public StaticTypeSubstitution Remove(IList<StaticGenericParameterWrapper> genericParameters)
-        {
-            if (genericParameters == null)
-                throw new ArgumentNullException("genericParameters");
-
-            int remainingCount = replacements.Count;
-            foreach (StaticGenericParameterWrapper genericParameter in genericParameters)
-                if (replacements.ContainsKey(genericParameter))
-                    remainingCount -= 1;
-
-            if (remainingCount == 0)
-                return Empty;
-
-            if (remainingCount == replacements.Count)
-                return this;
-
-            Dictionary<StaticGenericParameterWrapper, ITypeInfo> newReplacements = new Dictionary<StaticGenericParameterWrapper, ITypeInfo>();
-            foreach (KeyValuePair<StaticGenericParameterWrapper, ITypeInfo> entry in newReplacements)
-            {
-                if (! genericParameters.Contains(entry.Key))
-                    newReplacements.Add(entry.Key, entry.Value);
-            }
-
-            return new StaticTypeSubstitution(newReplacements);
-        }
-
-        /// <summary>
         /// Returns a new substitution formed by composing this substitution with the specified one.
         /// That is to say, each replacement type in this substitution is replaced as described
         /// in the specified substitution.

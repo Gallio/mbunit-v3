@@ -185,18 +185,5 @@ namespace Gallio.Reflection.Impl
 
             return sig.ToString();
         }
-
-        /// <inheritdoc />
-        protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
-        {
-            StaticMethodWrapper method = Member as StaticMethodWrapper;
-            if (method != null)
-            {
-                int position = Position;
-
-                foreach (StaticMethodWrapper superMethod in method.GetOverridenOrHiddenMethods(true))
-                    yield return superMethod.Parameters[position];
-            }
-        }
     }
 }

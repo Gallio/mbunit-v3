@@ -75,7 +75,14 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public virtual string AssemblyQualifiedName
         {
-            get { return FullName + @", " + Assembly.FullName; }
+            get
+            {
+                string fullName = FullName;
+                if (fullName == null)
+                    return null;
+
+                return fullName + @", " + Assembly.FullName;
+            }
         }
 
         /// <inheritdoc />
@@ -239,9 +246,13 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public virtual ITypeInfo GenericTypeDefinition
+        public virtual StaticDeclaredTypeWrapper GenericTypeDefinition
         {
             get { return null; }
+        }
+        ITypeInfo ITypeInfo.GenericTypeDefinition
+        {
+            get { return GenericTypeDefinition; }
         }
 
         /// <inheritdoc />

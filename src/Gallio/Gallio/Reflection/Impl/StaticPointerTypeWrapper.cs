@@ -41,6 +41,12 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public override TypeAttributes TypeAttributes
+        {
+            get { return TypeAttributes.Class; }
+        }
+
+        /// <inheritdoc />
         protected internal override ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
         {
             return ElementType.ApplySubstitution(substitution).MakePointerType();
@@ -57,12 +63,6 @@ namespace Gallio.Reflection.Impl
         public override int GetHashCode()
         {
             return ElementType.GetHashCode() ^ GetType().GetHashCode();
-        }
-
-        /// <inheritdoc />
-        protected override ITypeInfo EffectiveType
-        {
-            get { return Reflector.Wrap(typeof(Pointer)); }
         }
 
         /// <inheritdoc />
