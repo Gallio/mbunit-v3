@@ -328,3 +328,7 @@
 {
 	width: 100%;
 }
+.gallio-report span.outcome-icons
+{
+	font-size: 11pt;
+}

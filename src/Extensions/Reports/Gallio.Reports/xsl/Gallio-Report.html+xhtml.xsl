@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:g="http://www.gallio.org/"
@@ -204,7 +204,14 @@
               <xsl:value-of select="$inconclusiveOutcomeCount" />
             </xsl:with-param>
           </xsl:call-template>
-          (<xsl:value-of select="$passedOutcomeCount" />/<xsl:value-of select="$failedOutcomeCount" />/<xsl:value-of select="$inconclusiveOutcomeCount" />)
+          <span class="outcome-icons">
+            <img src="{$imgDir}Passed.gif" />
+            <xsl:value-of select="$passedOutcomeCount" />
+            <img src="{$imgDir}Failed.gif" />
+            <xsl:value-of select="$failedOutcomeCount" />
+            <img src="{$imgDir}Ignored.gif" />
+            <xsl:value-of select="$inconclusiveOutcomeCount" />            
+          </span>
         </div>
 
         <xsl:if test="g:children/g:testInstanceRun">
@@ -283,7 +290,14 @@
               <xsl:value-of select="$inconclusiveOutcomeCount" />
             </xsl:with-param>
           </xsl:call-template>
-          (<xsl:value-of select="$passedOutcomeCount" />/<xsl:value-of select="$failedOutcomeCount" />/<xsl:value-of select="$inconclusiveOutcomeCount" />)
+            <span class="outcome-icons">
+              <img src="{$imgDir}Passed.gif" />
+              <xsl:value-of select="$passedOutcomeCount" />
+              <img src="{$imgDir}Failed.gif" />
+              <xsl:value-of select="$failedOutcomeCount" />
+              <img src="{$imgDir}Ignored.gif" />
+              <xsl:value-of select="$inconclusiveOutcomeCount" />
+            </span>
           </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="outcomeBar">

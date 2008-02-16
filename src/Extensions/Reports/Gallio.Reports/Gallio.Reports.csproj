@@ -100,7 +100,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.Reports.plugin" />
+    <Content Include="img\Failed.gif" />
     <Content Include="img\GallioTestReportHeader.png" />
+    <Content Include="img\Ignored.gif" />
+    <Content Include="img\Passed.gif" />
     <Content Include="xsl\Gallio-Report.ccnet-details.xsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
