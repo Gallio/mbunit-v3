@@ -303,8 +303,8 @@
     <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
     <Compile Include="Logging\TextLogWriter.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
-    <Compile Include="Logging\ContextualLogTextWriter.cs" />
-    <Compile Include="Logging\ContextualLogTraceListener.cs" />
+    <Compile Include="Runner\Harness\ContextualLogTextWriter.cs" />
+    <Compile Include="Runner\Harness\ContextualLogTraceListener.cs" />
     <Compile Include="Model\BaseTestExplorer.cs" />
     <Compile Include="Model\BaseTestInstance.cs" />
     <Compile Include="Model\BaseTestParameter.cs" />

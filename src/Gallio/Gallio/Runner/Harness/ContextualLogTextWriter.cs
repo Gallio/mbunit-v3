@@ -14,37 +14,54 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
+using System.IO;
+using System.Text;
 using Gallio.Logging;
 using Gallio.Utilities;
 
-namespace Gallio.Logging
+namespace Gallio.Runner.Harness
 {
     /// <summary>
-    /// A contextual log trace listener messages to a named log stream in the log associated
+    /// A contextual log text writer messages to a named log stream in the log associated
     /// with the test execution context that is active at the time each message is written.
     /// </summary>
-    public sealed class ContextualLogTraceListener : TraceListener
+    public sealed class ContextualLogTextWriter : TextWriter
     {
         private readonly string streamName;
 
         /// <summary>
-        /// Creates a trace listener that writes to the specified execution log stream.
+        /// Creates a text writer that writes to the specified execution log stream.
         /// </summary>
         /// <param name="streamName">The execution log stream name</param>
-        public ContextualLogTraceListener(string streamName)
+        public ContextualLogTextWriter(string streamName)
         {
             this.streamName = streamName;
+
+            base.NewLine = NewLine;
         }
 
         /// <inheritdoc />
-        public override void Write(string message)
+        public override string NewLine
         {
-            WriteIndentIfNeeded();
+            get { return "\n"; }
+            set
+            {
+                throw new NotSupportedException("Cannot configure the new-line property of this text writer.");
+            }
+        }
 
+        /// <inheritdoc />
+        public override Encoding Encoding
+        {
+            get { return Encoding.Unicode; }
+        }
+
+        /// <inheritdoc />
+        public override void Write(char value)
+        {
             try
             {
-                CurrentLogStreamWriter.Write(message);
+                CurrentLogStreamWriter.Write(value);
             }
             catch (Exception ex)
             {
@@ -53,13 +70,11 @@ namespace Gallio.Logging
         }
 
         /// <inheritdoc />
-        public override void WriteLine(string message)
+        public override void Write(string value)
         {
-            WriteIndentIfNeeded();
-
             try
             {
-                CurrentLogStreamWriter.WriteLine(message);
+                CurrentLogStreamWriter.Write(value);
             }
             catch (Exception ex)
             {
@@ -68,20 +83,21 @@ namespace Gallio.Logging
         }
 
         /// <inheritdoc />
-        public override bool IsThreadSafe
+        public override void Write(char[] buffer, int index, int count)
         {
-            get { return true; }
+            try
+            {
+                CurrentLogStreamWriter.Write(buffer, index, count);
+            }
+            catch (Exception ex)
+            {
+                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
+            }
         }
 
         private LogStreamWriter CurrentLogStreamWriter
         {
             get { return Log.Writer[streamName]; }
-        }
-
-        private void WriteIndentIfNeeded()
-        {
-            if (NeedIndent)
-                WriteIndent();
         }
     }
 }

@@ -17,8 +17,8 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
-using Gallio.Framework;
 using Gallio.Logging;
+using Gallio.Model.Execution;
 
 namespace Gallio.Logging
 {
@@ -53,7 +53,7 @@ namespace Gallio.Logging
         /// <returns>The execution log, never null</returns>
         public static LogWriter Writer
         {
-            get { return Context.CurrentContext.LogWriter; }
+            get { return TestContextTrackerAccessor.GetInstance().CurrentContext.LogWriter; }
         }
         #endregion
 
