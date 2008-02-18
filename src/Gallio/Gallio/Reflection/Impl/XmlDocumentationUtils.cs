@@ -131,10 +131,15 @@ namespace Gallio.Reflection.Impl
                 && !property.DeclaringType.IsGenericTypeDefinition)
             {
                 Type genericTypeDefn = property.DeclaringType.GetGenericTypeDefinition();
-                PropertyInfo unboundProperty = genericTypeDefn.GetProperty(property.Name,
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-
-                if (unboundProperty == null || unboundProperty.MetadataToken != property.MetadataToken)
+                int desiredMetadataToken = property.MetadataToken;
+                PropertyInfo unboundProperty = Array.Find(genericTypeDefn.GetProperties(BindingFlags.DeclaredOnly
+                    | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static),
+                    delegate(PropertyInfo candidate)
+                    {
+                        return candidate.MetadataToken == desiredMetadataToken;
+                    });
+                    
+                if (unboundProperty == null)
                     throw new NotSupportedException(String.Format("Could not resolve property '{0}' that was declared on a generic type.",
                         property));
 

@@ -111,32 +111,32 @@
       </component>
       
       <component id="Core.Converter"
-                 service="Gallio.Data.Conversions.IConverter, Gallio"
-                 type="Gallio.Data.Conversions.RuntimeRuleBasedConverter, Gallio" />
+                 service="Gallio.Framework.Data.Conversions.IConverter, Gallio"
+                 type="Gallio.Framework.Data.Conversions.RuntimeRuleBasedConverter, Gallio" />
       
       <component id="Core.ArrayToArrayConversionRule"
-                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
-                 type="Gallio.Data.Conversions.ArrayToArrayConversionRule, Gallio" />      
+                 service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Framework.Data.Conversions.ArrayToArrayConversionRule, Gallio" />      
       
       <component id="Core.ConvertibleToConvertibleConversionRule"
-                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
-                 type="Gallio.Data.Conversions.ConvertibleToConvertibleConversionRule, Gallio" />      
+                 service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Framework.Data.Conversions.ConvertibleToConvertibleConversionRule, Gallio" />      
 
       <component id="Core.ObjectToStringConversionRule"
-                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
-                 type="Gallio.Data.Conversions.ObjectToStringConversionRule, Gallio" />      
+                 service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Framework.Data.Conversions.ObjectToStringConversionRule, Gallio" />      
 
       <component id="Core.XPathNavigableToXPathNavigatorConversionRule"
-                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
-                 type="Gallio.Data.Conversions.XPathNavigableToXPathNavigatorConversionRule, Gallio" />
+                 service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Framework.Data.Conversions.XPathNavigableToXPathNavigatorConversionRule, Gallio" />
 
       <component id="Core.XPathNavigatorToStringConversionRule"
-                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
-                 type="Gallio.Data.Conversions.XPathNavigatorToStringConversionRule, Gallio" />
+                 service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Framework.Data.Conversions.XPathNavigatorToStringConversionRule, Gallio" />
 
       <component id="Core.XPathNavigatorToXmlSerializableTypeConversionRule"
-                 service="Gallio.Data.Conversions.IConversionRule, Gallio"
-                 type="Gallio.Data.Conversions.XPathNavigatorToXmlSerializableTypeConversionRule, Gallio" />
+                 service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Framework.Data.Conversions.XPathNavigatorToXmlSerializableTypeConversionRule, Gallio" />
     </components>
   </castle>
 </configuration>

@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Data;
-using Gallio.Data.Binders;
+using Gallio.Framework.Data;
+using Gallio.Framework.Data.Binders;
 using Gallio.Reflection;
 using Gallio.Framework.Explorer;
 using Gallio.Framework.Patterns;
