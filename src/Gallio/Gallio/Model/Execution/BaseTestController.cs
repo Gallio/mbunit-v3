@@ -29,7 +29,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public virtual void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor,
+        public virtual void RunTests(IProgressMonitor progressMonitor, ITestCommand rootTestCommand,
             ITestInstance parentTestInstance)
         {
         }

@@ -44,9 +44,9 @@
                  service="Gallio.Model.Execution.ITestPlanFactory, Gallio"
                  type="Gallio.Model.Execution.DependencyTestPlanFactory, Gallio" />
 
-      <component id="Core.ContextManager"
-                 service="Gallio.Contexts.IContextManager, Gallio"
-                 type="Gallio.Contexts.DefaultContextManager, Gallio" />
+      <component id="Core.TestContextTracker"
+                 service="Gallio.Model.Execution.ITestContextTracker, Gallio"
+                 type="Gallio.Model.Execution.DefaultTestContextTracker, Gallio" />
       
       <component id="Core.PatternTestFramework"
                  service="Gallio.Model.ITestFramework, Gallio"

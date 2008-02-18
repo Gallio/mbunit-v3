@@ -14,11 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
-namespace Gallio.Contexts
+namespace Gallio.Framework
 {
     /// <summary>
     /// <para>
@@ -26,8 +24,19 @@ namespace Gallio.Contexts
     /// to its previous state prior to a context having been entered.
     /// </para>
     /// </summary>
-    public abstract class ContextCookie : IDisposable
+    public struct ContextCookie : IDisposable
     {
+        private IDisposable inner;
+
+        /// <summary>
+        /// Creates a context cookie with a given dispose action.
+        /// </summary>
+        /// <param name="inner">The inner disposable object</param>
+        internal ContextCookie(IDisposable inner)
+        {
+            this.inner = inner;
+        }
+
         /// <summary>
         /// <para>
         /// Exits the context that was entered when the cookie was granted.
@@ -37,6 +46,14 @@ namespace Gallio.Contexts
         /// convenience for use with the C# using statement.
         /// </para>
         /// </summary>
+        /// <remarks>
+        /// This method will also exit nested contexts on the current thread that were
+        /// entered after the context for which this cookie was produced but have not
+        /// yet been exited.
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">Thrown if the cookie belongs to a different
+        /// <see cref="Thread" /> or if the context was already exited</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the context manager has been disposed</exception>
         public void Dispose()
         {
             ExitContext();
@@ -53,6 +70,13 @@ namespace Gallio.Contexts
         /// <exception cref="InvalidOperationException">Thrown if the cookie belongs to a different
         /// <see cref="Thread" /> or if the context was already exited</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the context manager has been disposed</exception>
-        public abstract void ExitContext();
+        public void ExitContext()
+        {
+            if (inner != null)
+            {
+                inner.Dispose();
+                inner = null;
+            }
+        }
     }
 }

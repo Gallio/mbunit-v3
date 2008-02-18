@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Contexts;
+using Gallio.Framework;
 using MbUnit.Framework;
 using Gallio.Logging;
 

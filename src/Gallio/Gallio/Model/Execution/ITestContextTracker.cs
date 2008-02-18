@@ -15,19 +15,18 @@
 
 using System;
 using System.Threading;
-using Gallio.Contexts;
 
-namespace Gallio.Contexts
+namespace Gallio.Model.Execution
 {
     /// <summary>
     /// <para>
-    /// The context manager tracks the <see cref="Context" /> associated with threads.
+    /// The context tracker tracks the <see cref="ITestContext" /> associated with threads.
     /// </para>
     /// </summary>
     /// <remarks>
-    /// All context manager operations are thread safe.
+    /// All context tracker operations are thread safe.
     /// </remarks>
-    public interface IContextManager
+    public interface ITestContextTracker
     {
         /// <summary>
         /// <para>
@@ -50,13 +49,13 @@ namespace Gallio.Contexts
         /// context stack distinct from that of any other.
         /// </para>
         /// </summary>
-        Context CurrentContext { get; }
+        ITestContext CurrentContext { get; }
 
         /// <summary>
         /// Gets or the global context of the environment, or null if there is no
         /// such context.
         /// </summary>
-        Context GlobalContext { get; set; }
+        ITestContext GlobalContext { get; set; }
 
         /// <summary>
         /// <para>
@@ -64,8 +63,8 @@ namespace Gallio.Contexts
         /// </para>
         /// </summary>
         /// <param name="context">The context to enter, or null to enter a scope without a context</param>
-        /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
-        ContextCookie EnterContext(Context context);
+        /// <returns>A cookie that can be used to restore the current thread's context to its previous value when disposed</returns>
+        IDisposable EnterContext(ITestContext context);
 
         /// <summary>
         /// <para>
@@ -88,7 +87,7 @@ namespace Gallio.Contexts
         /// <param name="context">The context to associate with the thread, or null to reset the
         /// thread's default context to inherit the <see cref="GlobalContext" /> once again</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
-        void SetThreadDefaultContext(Thread thread, Context context);
+        void SetThreadDefaultContext(Thread thread, ITestContext context);
 
         /// <summary>
         /// <para>
@@ -110,6 +109,6 @@ namespace Gallio.Contexts
         /// <param name="thread">The thread</param>
         /// <returns>The default context of the thread</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
-        Context GetThreadDefaultContext(Thread thread);
+        ITestContext GetThreadDefaultContext(Thread thread);
     }
 }

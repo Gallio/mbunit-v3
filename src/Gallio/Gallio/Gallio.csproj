@@ -77,9 +77,19 @@
     <Compile Include="Concurrency\TaskEventArgs.cs" />
     <Compile Include="Concurrency\TaskResult.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
-    <Compile Include="Contexts\Step.cs" />
-    <Compile Include="Contexts\StubContext.cs" />
-    <Compile Include="Contexts\StubContextManager.cs" />
+    <Compile Include="Framework\Step.cs" />
+    <Compile Include="Model\Execution\ManagedTestCommand.cs" />
+    <Compile Include="Model\Execution\ObservableTestContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Execution\ObservableTestContextManager.cs" />
+    <Compile Include="Model\Execution\ITestContext.cs" />
+    <Compile Include="Model\Execution\ITestCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Execution\ITestContextManager.cs" />
+    <Compile Include="Model\Execution\StubTestContext.cs" />
+    <Compile Include="Model\Execution\StubTestContextTracker.cs" />
     <Compile Include="Func.cs" />
     <Compile Include="Data\AggregateDataSet.cs" />
     <Compile Include="Data\BaseDataSet.cs" />
@@ -236,6 +246,8 @@
     <Compile Include="Hosting\Channels\BinaryIpcServerChannel.cs" />
     <Compile Include="Hosting\RemoteLogger.cs" />
     <Compile Include="Model\Execution\ProxyTestListener.cs" />
+    <Compile Include="Collections\UserDataCollection.cs" />
+    <Compile Include="Model\Execution\TestContextTrackerAccessor.cs" />
     <Compile Include="Reflection\Impl\IResolvableTypeInfo.cs" />
     <Compile Include="Reflection\Impl\StaticArrayTypeWrapper.cs">
       <SubType>Code</SubType>
@@ -304,10 +316,7 @@
     <Compile Include="Model\BaseTestParameter.cs" />
     <Compile Include="Model\ErrorTest.cs" />
     <Compile Include="Model\Execution\BaseTestController.cs" />
-    <Compile Include="Model\Execution\ContextualTestMonitor.cs" />
     <Compile Include="Model\Execution\ErrorTestController.cs" />
-    <Compile Include="Model\Execution\IContextHandler.cs" />
-    <Compile Include="Model\Execution\ContextualTestStepMonitor.cs" />
     <Compile Include="Model\Filters\FilterFormatter.cs" />
     <Compile Include="Model\Filters\IFilterVisitor.cs" />
     <Compile Include="Reflection\CodeElementKind.cs" />
@@ -410,10 +419,8 @@
     <Compile Include="Model\Execution\RemoteTestListener.cs" />
     <Compile Include="Model\Execution\StepEventArgs.cs" />
     <Compile Include="Model\Execution\TestEventDispatcher.cs" />
-    <Compile Include="Model\Execution\ITestStepMonitor.cs" />
     <Compile Include="Model\Execution\ITestController.cs" />
     <Compile Include="Model\ITestFramework.cs" />
-    <Compile Include="Model\Execution\ITestMonitor.cs" />
     <Compile Include="Model\Execution\ITestPlan.cs" />
     <Compile Include="Model\Execution\ITestPlanFactory.cs" />
     <Compile Include="Model\Serialization\TestComponentData.cs" />
@@ -466,7 +473,7 @@
     <Compile Include="Runner\ResultCode.cs" />
     <Compile Include="Runner\TestLauncher.cs" />
     <Compile Include="Hosting\DefaultAssemblyResolverManager.cs" />
-    <Compile Include="Contexts\DefaultContextManager.cs" />
+    <Compile Include="Model\Execution\DefaultTestContextTracker.cs" />
     <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolver.cs" />
     <Compile Include="Hosting\IAssemblyResolverManager.cs" />
     <Compile Include="Hosting\RuntimeSetup.cs" />
@@ -478,8 +485,8 @@
     <Compile Include="Utilities\Hash64.cs" />
     <Compile Include="Hosting\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Logging\ClientException.cs" />
-    <Compile Include="Contexts\Context.cs" />
-    <Compile Include="Contexts\ContextCookie.cs" />
+    <Compile Include="Framework\Context.cs" />
+    <Compile Include="Framework\ContextCookie.cs" />
     <Compile Include="Hosting\IAssemblyResolver.cs" />
     <Compile Include="Model\Actions\ActionChain.cs" />
     <Compile Include="Model\Actions\ActionDecorator.cs" />
@@ -525,7 +532,7 @@
     <Compile Include="Model\TestInfoList.cs" />
     <Compile Include="Model\TestOutcome.cs" />
     <Compile Include="Model\TestStatus.cs" />
-    <Compile Include="Contexts\IContextManager.cs" />
+    <Compile Include="Model\Execution\ITestContextTracker.cs" />
     <Compile Include="Hosting\IRuntime.cs" />
     <Compile Include="Reflection\Impl\IXmlDocumentationResolver.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />

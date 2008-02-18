@@ -16,12 +16,11 @@
 using System;
 using System.Security.Permissions;
 using Gallio;
-using Gallio.Contexts;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Utilities;
 
-namespace Gallio.Contexts
+namespace Gallio.Framework
 {
     /// <summary>
     /// <para>

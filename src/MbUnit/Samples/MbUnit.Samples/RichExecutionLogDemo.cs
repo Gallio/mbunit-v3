@@ -15,7 +15,7 @@
 
 using System;
 using System.Diagnostics;
-using Gallio.Contexts;
+using Gallio.Framework;
 using MbUnit.Framework;
 using Gallio.Logging;
 using Gallio.Model;

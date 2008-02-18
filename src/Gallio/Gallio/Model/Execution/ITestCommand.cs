@@ -20,27 +20,27 @@ using Gallio.Model;
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// A test monitor tracks the execution of a single <see cref="ITest" />.  It is the mechanism
+    /// A test command requests the execution of a tree of <see cref="ITest" />s.  It is the mechanism
     /// used by <see cref="ITestController" /> to interface with the <see cref="ITestPlan" />
     /// and ensure that tests are executed in the desired order with all dependencies taken care of.
     /// </summary>
     /// <remarks author="jeff">
-    /// At this time, use of a test monitor implies a serial order of test execution.
-    /// That need not be the case.  If a test monitor has a flag to indicate whether its
+    /// At this time, use of a test command implies a serial order of test execution.
+    /// That need not be the case.  If a test command had a flag to indicate whether its
     /// test could be executed in parallel with its siblings (and under what constraints)
     /// then a smart test controller could execute those tests in parallel.  If carried out
     /// recursively, a test controller could easily manage arbitrarily deeply nested
     /// parallel execution of non-interfering tests.
     /// </remarks>
-    public interface ITestMonitor
+    public interface ITestCommand
     {
         /// <summary>
-        /// Gets the test managed by this monitor.
+        /// Gets the test that is to be executed.
         /// </summary>
         ITest Test { get; }
 
         /// <summary>
-        /// Gets the total number of tests managed by the monitor, including itself.
+        /// Gets the total number of tests in the command subtree, including itself.
         /// </summary>
         int TestCount { get; }
 
@@ -55,26 +55,26 @@ namespace Gallio.Model.Execution
         bool IsExplicit { get; }
 
         /// <summary>
-        /// Gets monitors for the children of the test to run within the scope
+        /// Gets commands for the children of the test to run within the scope
         /// of this test in the order in which they should be executed.
         /// </summary>
-        IEnumerable<ITestMonitor> Children { get; }
+        IEnumerable<ITestCommand> Children { get; }
 
         /// <summary>
-        /// Enumerates this monitor and all of its descendants in pre-order tree
+        /// Enumerates this command and all of its descendants in pre-order tree
         /// traversal.
         /// </summary>
-        IEnumerable<ITestMonitor> PreOrderTraversal { get; }
+        IEnumerable<ITestCommand> PreOrderTraversal { get; }
 
         /// <summary>
-        /// Gets a list consisting of this monitor and all of its descendants as
+        /// Gets a list consisting of this command and all of its descendants as
         /// enumerated by pre-order tree traversal.
         /// </summary>
-        /// <returns>The list of all monitors</returns>
-        IList<ITestMonitor> GetAllMonitors();
+        /// <returns>The list of all command</returns>
+        IList<ITestCommand> GetAllCommands();
 
         /// <summary>
-        /// Starts the root step of a new test instance and returns its step monitor.
+        /// Starts the root step of a new test instance and returns its test context.
         /// </summary>
         /// <remarks>
         /// The current thread's test context is set to a new context for the
@@ -82,16 +82,16 @@ namespace Gallio.Model.Execution
         /// current thread's context.
         /// </remarks>
         /// <param name="rootStep">The test root step of the test instance</param>
-        /// <returns>The monitor for the root step of the test instance</returns>
+        /// <returns>The test context for the root step of the test instance</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootStep"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="rootStep"/> is not the root
         /// step of an instance of this test</exception>
-        ITestStepMonitor StartRootStep(ITestStep rootStep);
+        ITestContext StartRootStep(ITestStep rootStep);
 
         /// <summary>
         /// <para>
         /// Starts the root step of a new test instance as a child of the specified
-        /// test instance and returns its step monitor.
+        /// test instance and returns its test context.
         /// </para>
         /// <para>
         /// This method is equivalent to calling <see cref="StartRootStep(ITestStep)" />
@@ -99,8 +99,8 @@ namespace Gallio.Model.Execution
         /// initialized using <param name="parentTestInstance" />.
         /// </para>
         /// </summary>
-        /// <returns>The monitor for the root step of the test instance</returns>
+        /// <returns>The test context for the root step of the test instance</returns>
         /// <seealso cref="StartRootStep(ITestStep)"/>
-        ITestStepMonitor StartRootStep(ITestInstance parentTestInstance);
+        ITestContext StartRootStep(ITestInstance parentTestInstance);
     }
 }

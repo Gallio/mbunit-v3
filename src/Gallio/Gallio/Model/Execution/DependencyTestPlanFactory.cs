@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Contexts;
 using Gallio.Model.Execution;
 
 namespace Gallio.Model.Execution
@@ -24,19 +23,19 @@ namespace Gallio.Model.Execution
     /// </summary>
     public class DependencyTestPlanFactory : ITestPlanFactory
     {
-        private readonly IContextManager contextManager;
+        private readonly ITestContextTracker contextTracker;
 
         /// <summary>
         /// Initializes a test plan factory.
         /// </summary>
-        /// <param name="contextManager">The context manager</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextManager"/> is null</exception>
-        public DependencyTestPlanFactory(IContextManager contextManager)
+        /// <param name="contextTracker">The context manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/> is null</exception>
+        public DependencyTestPlanFactory(ITestContextTracker contextTracker)
         {
-            if (contextManager == null)
-                throw new ArgumentNullException(@"contextManager");
+            if (contextTracker == null)
+                throw new ArgumentNullException("contextTracker");
 
-            this.contextManager = contextManager;
+            this.contextTracker = contextTracker;
         }
 
         /// <inheritdoc />
@@ -45,7 +44,7 @@ namespace Gallio.Model.Execution
             if (listener == null)
                 throw new ArgumentNullException(@"listener");
 
-            return new DependencyTestPlan(contextManager, listener);
+            return new DependencyTestPlan(new ObservableTestContextManager(contextTracker, listener));
         }
     }
 }

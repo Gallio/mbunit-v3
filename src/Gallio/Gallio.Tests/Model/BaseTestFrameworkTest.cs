@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Reflection;
-using Gallio.Contexts;
+using Gallio.Framework;
 using Gallio.Reflection;
 using Gallio.Model;
 using MbUnit.Framework;
@@ -42,7 +42,7 @@ namespace Gallio.Tests.Model
         {
             sampleAssembly = GetSampleAssembly();
 
-            harness = new DefaultTestHarness(new DependencyTestPlanFactory(Context.ContextManager));
+            harness = new DefaultTestHarness(new DependencyTestPlanFactory(TestContextTrackerAccessor.GetInstance()));
 
             framework = CreateFramework();
             harness.AddTestFramework(framework);

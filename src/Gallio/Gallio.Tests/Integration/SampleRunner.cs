@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Castle.Core.Logging;
-using Gallio.Contexts;
 using Gallio.Model;
 using Gallio.Runner.Reports;
 using Gallio.Runner;

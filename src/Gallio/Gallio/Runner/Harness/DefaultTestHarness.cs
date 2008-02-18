@@ -243,15 +243,8 @@ namespace Gallio.Runner.Harness
                     progressMonitor.SetStatus(@"");
 
                     ITestPlan plan = testPlanFactory.CreateTestPlan(listener);
-                    try
-                    {
-                        plan.ScheduleTests(progressMonitor.CreateSubProgressMonitor(5), model, options);
-                        plan.RunTests(progressMonitor.CreateSubProgressMonitor(80));
-                    }
-                    finally
-                    {
-                        plan.CleanUpTests(progressMonitor.CreateSubProgressMonitor(5));
-                    }
+                    plan.ScheduleTests(progressMonitor.CreateSubProgressMonitor(5), model, options);
+                    plan.RunTests(progressMonitor.CreateSubProgressMonitor(85));
                 }
                 finally
                 {

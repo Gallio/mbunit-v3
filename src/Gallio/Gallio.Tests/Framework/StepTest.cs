@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Contexts;
+using Gallio.Framework;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Contexts
+namespace Gallio.Tests.Framework
 {
     [TestFixture]
     public class StepTest

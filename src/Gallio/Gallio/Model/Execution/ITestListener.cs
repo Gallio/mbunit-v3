@@ -16,7 +16,8 @@
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// An test listener observes the progress of test execution.
+    /// An test listener observes the progress of test execution as a
+    /// series of events.
     /// </summary>
     public interface ITestListener
     {

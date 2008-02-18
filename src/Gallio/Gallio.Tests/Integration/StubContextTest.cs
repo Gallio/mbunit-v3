@@ -15,22 +15,22 @@
 
 using System;
 using System.IO;
-using Gallio.Contexts;
 using Gallio.Hosting;
 using Gallio.Logging;
+using Gallio.Model.Execution;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Integration
 {
     /// <summary>
-    /// This integration test verifies that <see cref="StubContextManager" /> is
+    /// This integration test verifies that <see cref="StubTestContextTracker" /> is
     /// used when the runtime is not initialized.  The trick to doing this is
     /// in running the test code in an isolated AppDomain where the runtime does
     /// not exist.
     /// </summary>
     [TestFixture]
-    [TestsOn(typeof(StubContext))]
-    [TestsOn(typeof(StubContextManager))]
+    [TestsOn(typeof(StubTestContext))]
+    [TestsOn(typeof(StubTestContextTracker))]
     public class StubContextTest
     {
         [Test]

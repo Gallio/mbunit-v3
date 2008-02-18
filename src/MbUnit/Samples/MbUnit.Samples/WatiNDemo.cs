@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Text.RegularExpressions;
-using Gallio.Contexts;
+using Gallio.Framework;
 using MbUnit.Framework;
 using Gallio.Model;
 using Gallio.Logging;

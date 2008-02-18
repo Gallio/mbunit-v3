@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Contexts;
+using Gallio.Framework;
 using Gallio.Utilities;
 
 namespace Gallio.Runner.Harness

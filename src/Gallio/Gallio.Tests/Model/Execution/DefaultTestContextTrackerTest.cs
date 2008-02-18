@@ -17,22 +17,23 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using Gallio.Contexts;
+using Gallio.Framework;
+using Gallio.Model.Execution;
 using MbUnit.Framework;
 using MbUnit.Framework.Concurrency;
 
-namespace Gallio.Tests.Contexts
+namespace Gallio.Tests.Model.Execution
 {
     [TestFixture]
-    [TestsOn(typeof(DefaultContextManager))]
-    public class DefaultContextManagerTest
+    [TestsOn(typeof(DefaultTestContextTracker))]
+    public class DefaultTestContextTrackerTest
     {
-        private DefaultContextManager mgr;
+        private DefaultTestContextTracker mgr;
 
         [SetUp]
         public void SetUp()
         {
-            mgr = new DefaultContextManager();
+            mgr = new DefaultTestContextTracker();
         }
 
         [Test]
@@ -45,7 +46,7 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void TheCurrentThreadInheritsTheGlobalContext()
         {
-            StubContext context = new StubContext();
+            StubTestContext context = new StubTestContext();
             mgr.GlobalContext = context;
 
             Assert.AreSame(context, mgr.GlobalContext);
@@ -59,9 +60,9 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void TheCurrentThreadUsesTheThreadDefaultContextInsteadOfInheritingTheGlobalContext()
         {
-            mgr.GlobalContext = new StubContext();
+            mgr.GlobalContext = new StubTestContext();
 
-            StubContext context = new StubContext();
+            StubTestContext context = new StubTestContext();
             mgr.SetThreadDefaultContext(Thread.CurrentThread, context);
 
             Assert.AreSame(context, mgr.GetThreadDefaultContext(Thread.CurrentThread));
@@ -72,10 +73,10 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void TheCurrentThreadUsesTheEnteredContextInsteadOfItsDefaultContext()
         {
-            StubContext enteredContext = new StubContext();
+            StubTestContext enteredContext = new StubTestContext();
             mgr.EnterContext(enteredContext);
 
-            StubContext context = new StubContext();
+            StubTestContext context = new StubTestContext();
             mgr.SetThreadDefaultContext(Thread.CurrentThread, context);
 
             Assert.AreSame(context, mgr.GetThreadDefaultContext(Thread.CurrentThread));
@@ -86,7 +87,7 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void TheEnteredContextPropagatesAcrossThreadsWithIndependentStacks()
         {
-            StubContext rootContext = new StubContext();
+            StubTestContext rootContext = new StubTestContext();
             mgr.EnterContext(rootContext);
             Assert.AreSame(rootContext, mgr.CurrentContext);
 
@@ -94,7 +95,7 @@ namespace Gallio.Tests.Contexts
             {
                 Assert.AreSame(rootContext, mgr.CurrentContext);
 
-                StubContext leafContext = new StubContext();
+                StubTestContext leafContext = new StubTestContext();
                 mgr.EnterContext(leafContext);
                 Assert.AreSame(leafContext, mgr.CurrentContext);
 
@@ -102,7 +103,7 @@ namespace Gallio.Tests.Contexts
                 {
                     Assert.AreSame(leafContext, mgr.CurrentContext);
 
-                    StubContext leafContext2 = new StubContext();
+                    StubTestContext leafContext2 = new StubTestContext();
                     mgr.EnterContext(leafContext2);
                     Assert.AreSame(leafContext2, mgr.CurrentContext);
                 }).Join(new TimeSpan(0, 0, 1));
@@ -118,12 +119,12 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void TheEnteredContextIsExitedWhenTheCookieIsDisposed()
         {
-            StubContext context1 = new StubContext();
+            StubTestContext context1 = new StubTestContext();
             using (mgr.EnterContext(context1))
             {
                 Assert.AreSame(context1, mgr.CurrentContext);
 
-                StubContext context2 = new StubContext();
+                StubTestContext context2 = new StubTestContext();
                 using (mgr.EnterContext(context2))
                 {
                     Assert.AreSame(context2, mgr.CurrentContext);
@@ -138,14 +139,14 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void TheEnteredContextCanBeNullWhichWillOverrideEvenTheGlobalContext()
         {
-            StubContext rootContext = new StubContext();
+            StubTestContext rootContext = new StubTestContext();
             mgr.GlobalContext = rootContext;
 
             using (mgr.EnterContext(null))
             {
                 Assert.IsNull(mgr.CurrentContext);
 
-                StubContext context1 = new StubContext();
+                StubTestContext context1 = new StubTestContext();
                 using (mgr.EnterContext(context1))
                 {
                     Assert.AreSame(context1, mgr.CurrentContext);
@@ -154,7 +155,7 @@ namespace Gallio.Tests.Contexts
                     {
                         Assert.IsNull(mgr.CurrentContext);
 
-                        StubContext context2 = new StubContext();
+                        StubTestContext context2 = new StubTestContext();
                         using (mgr.EnterContext(context2))
                         {
                             Assert.AreSame(context2, mgr.CurrentContext);
@@ -175,7 +176,7 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void AContextCannotBeExitedTwice()
         {
-            ContextCookie cookie = mgr.EnterContext(new StubContext());
+            IDisposable cookie = mgr.EnterContext(new StubTestContext());
             cookie.Dispose();
 
             InterimAssert.Throws<InvalidOperationException>(delegate { cookie.Dispose(); });
@@ -184,7 +185,7 @@ namespace Gallio.Tests.Contexts
         [Test]
         public void AContextCannotBeExitedOnADifferentThreadFromTheOneThatEnteredIt()
         {
-            ContextCookie cookie = mgr.EnterContext(new StubContext());
+            IDisposable cookie = mgr.EnterContext(new StubTestContext());
 
             TaskManager.StartThreadTask("A different thread.", delegate
             {

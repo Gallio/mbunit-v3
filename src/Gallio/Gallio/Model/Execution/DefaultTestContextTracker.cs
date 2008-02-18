@@ -18,35 +18,34 @@ using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
-using Gallio.Contexts;
 
-namespace Gallio.Contexts
+namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// The default context manager tracks the current context by way
+    /// The default context tracker tracks the current context by way
     /// of the thread's <see cref="ExecutionContext" /> and <see cref="CallContext" />.
     /// The .Net framework ensures that this context information flows across threads
     /// during asynchronous callbacks, timer events and thread pool work item execution.
     /// </summary>
-    public class DefaultContextManager : IContextManager
+    public class DefaultTestContextTracker : ITestContextTracker
     {
         private const int CleanupInterval = 60000;
 
         private readonly string contextKey;
         private readonly string illogicalContextKey;
-        private readonly Dictionary<Thread, Context> threadOverrides;
+        private readonly Dictionary<Thread, ITestContext> threadOverrides;
 
-        private Context globalContext;
+        private ITestContext globalContext;
         private Timer threadCleanupTimer;
 
         /// <summary>
-        /// Initializes the context manager.
+        /// Initializes the context tracker.
         /// </summary>
-        public DefaultContextManager()
+        public DefaultTestContextTracker()
         {
-            contextKey = @"DefaultContextManager." + Guid.NewGuid();
+            contextKey = typeof(DefaultTestContextTracker).Name + @"." + Guid.NewGuid();
             illogicalContextKey = contextKey + @".Illogical";
-            threadOverrides = new Dictionary<Thread, Context>();
+            threadOverrides = new Dictionary<Thread, ITestContext>();
         }
 
         private object SyncRoot
@@ -55,20 +54,20 @@ namespace Gallio.Contexts
         }
 
         /// <inheritdoc />
-        public Context GlobalContext
+        public ITestContext GlobalContext
         {
             get { return globalContext; }
             set { globalContext = value; }
         }
 
         /// <inheritdoc />
-        public Context CurrentContext
+        public ITestContext CurrentContext
         {
             get { return GetCurrentContextImpl(); }
         }
 
         /// <inheritdoc />
-        public ContextCookie EnterContext(Context context)
+        public IDisposable EnterContext(ITestContext context)
         {
             InternalContextLink previousTopLink = TopContextLinkForCurrentThread;
             TopContextLinkForCurrentThread = new InternalContextLink(previousTopLink, context);
@@ -77,7 +76,7 @@ namespace Gallio.Contexts
         }
 
         /// <inheritdoc />
-        public void SetThreadDefaultContext(Thread thread, Context context)
+        public void SetThreadDefaultContext(Thread thread, ITestContext context)
         {
             if (thread == null)
                 throw new ArgumentNullException(@"thread");
@@ -94,7 +93,7 @@ namespace Gallio.Contexts
         }
 
         /// <inheritdoc />
-        public Context GetThreadDefaultContext(Thread thread)
+        public ITestContext GetThreadDefaultContext(Thread thread)
         {
             if (thread == null)
                 throw new ArgumentNullException(@"thread");
@@ -102,7 +101,7 @@ namespace Gallio.Contexts
             return GetThreadDefaultContextImpl(thread);
         }
 
-        private Context GetCurrentContextImpl()
+        private ITestContext GetCurrentContextImpl()
         {
             InternalContextLink contextLink = TopContextLinkForCurrentThread;
 
@@ -112,11 +111,11 @@ namespace Gallio.Contexts
             return GetThreadDefaultContextImpl(Thread.CurrentThread);
         }
 
-        private Context GetThreadDefaultContextImpl(Thread thread)
+        private ITestContext GetThreadDefaultContextImpl(Thread thread)
         {
             lock (SyncRoot)
             {
-                Context context;
+                ITestContext context;
                 if (threadOverrides.TryGetValue(thread, out context))
                     return context;
 
@@ -250,9 +249,9 @@ namespace Gallio.Contexts
         private sealed class InternalContextLink
         {
             private readonly InternalContextLink parentLink;
-            private readonly Context context;
+            private readonly ITestContext context;
 
-            public InternalContextLink(InternalContextLink parentLink, Context context)
+            public InternalContextLink(InternalContextLink parentLink, ITestContext context)
             {
                 this.parentLink = parentLink;
                 this.context = context;
@@ -263,29 +262,29 @@ namespace Gallio.Contexts
                 get { return parentLink; }
             }
 
-            public Context Context
+            public ITestContext Context
             {
                 get { return context; }
             }
         }
 
-        private sealed class InternalContextCookie : ContextCookie
+        private sealed class InternalContextCookie : IDisposable
         {
-            private readonly DefaultContextManager contextManager;
+            private readonly DefaultTestContextTracker contextTracker;
             private readonly InternalContextLink previousTopLink;
             private readonly int threadId;
 
-            public InternalContextCookie(DefaultContextManager contextManager, InternalContextLink previousTopLink)
+            public InternalContextCookie(DefaultTestContextTracker contextTracker, InternalContextLink previousTopLink)
             {
-                this.contextManager = contextManager;
+                this.contextTracker = contextTracker;
                 this.previousTopLink = previousTopLink;
 
                 threadId = Thread.CurrentThread.ManagedThreadId;
             }
 
-            public override void ExitContext()
+            public void Dispose()
             {
-                contextManager.ExitContext(previousTopLink, threadId);
+                contextTracker.ExitContext(previousTopLink, threadId);
             }
         }
     }

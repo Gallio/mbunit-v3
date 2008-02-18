@@ -18,13 +18,15 @@ using System.Collections.Generic;
 using System.Security.Permissions;
 using System.Threading;
 using Gallio;
+using Gallio.Collections;
+using Gallio.Framework;
 using Gallio.Logging;
 using Gallio.Model;
-using Gallio.Hosting;
+using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Utilities;
 
-namespace Gallio.Contexts
+namespace Gallio.Framework
 {
     /// <summary>
     /// <para>
@@ -38,85 +40,32 @@ namespace Gallio.Contexts
     /// its parent the context for its containing test fixture.
     /// </para>
     /// <para>
-    /// Arbitrary user data can be associated with a context.  Furthermore, an
-    /// event is dispatched when the context is disposed (because the test is exiting).
-    /// The <see cref="Disposed" /> event can be used to implement robust resource
-    /// reclamation rules that do not depend on direct framework support or the use
-    /// of tear-down methods.
-    /// </para>
-    /// <para>
-    /// The context also provides functions for manipulating "test steps".
-    /// <seealso cref="Step"/>
+    /// Arbitrary user data can be associated with a context.  Furthermore, client
+    /// code may attach <see cref="CleanUp" /> event handlers to perform resource
+    /// reclamation just prior to marking the test step as finished.
     /// </para>
     /// </summary>
-    public abstract class Context
+    /// <seealso cref="Step"/>
+    public sealed class Context
     {
-        private static IContextManager cachedContextManager;
-
-        private readonly Context parent;
-        private readonly TestStepInfo testStep;
-        private readonly LogWriter logWriter;
-
-        private string lifecyclePhase = @"";
-        private TestOutcome outcome = TestOutcome.Passed;
-
-        private Dictionary<string, object> data;
-
-        private bool isDisposed;
-        private event EventHandler disposedHandlers;
-        private int assertCount;
-
-        static Context()
-        {
-            Runtime.InstanceChanged += delegate { cachedContextManager = null; };
-        }
+        private readonly ITestContext inner;
 
         /// <summary>
-        /// Creates a context.
+        /// Creates a wrapper for a <see cref="ITestContext" />.
         /// </summary>
-        /// <param name="parent">The parent context, or null if this context has no parent</param>
-        /// <param name="testStep">The test step associated with the context</param>
-        /// <param name="logWriter">The log writer for the context</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/>
-        /// or <paramref name="logWriter"/> is null</exception>
-        protected Context(Context parent, TestStepInfo testStep, LogWriter logWriter)
+        /// <param name="inner">The context to wrap</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
+        private Context(ITestContext inner)
         {
-            if (testStep == null)
-                throw new ArgumentNullException("testStep");
-            if (logWriter == null)
-                throw new ArgumentNullException("logWriter");
+            if (inner == null)
+                throw new ArgumentNullException("inner");
 
-            this.parent = parent;
-            this.testStep = testStep;
-            this.logWriter = logWriter;
+            this.inner = inner;
         }
 
-        /// <summary>
-        /// Causes the resources of the context to be disposed.
-        /// </summary>
-        protected void Dispose()
+        private static ITestContextTracker ContextTracker
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Gets the context manager.
-        /// </summary>
-        public static IContextManager ContextManager
-        {
-            get
-            {
-                if (cachedContextManager == null)
-                {
-                    if (Runtime.IsInitialized)
-                        cachedContextManager = Runtime.Instance.Resolve<IContextManager>();
-                    else
-                        cachedContextManager = new StubContextManager();
-                }
-
-                return cachedContextManager;
-            }
+            get { return TestContextTrackerAccessor.GetInstance(); }
         }
 
         /// <summary>
@@ -125,7 +74,7 @@ namespace Gallio.Contexts
         /// </summary>
         public static Context CurrentContext
         {
-            get { return ContextManager.CurrentContext; }
+            get { return Wrap(ContextTracker.CurrentContext); }
         }
 
         /// <summary>
@@ -134,7 +83,7 @@ namespace Gallio.Contexts
         /// </summary>
         public static Context GlobalContext
         {
-            get { return ContextManager.GlobalContext; }
+            get { return Wrap(ContextTracker.GlobalContext); }
         }
 
         /// <summary>
@@ -160,7 +109,7 @@ namespace Gallio.Contexts
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
         public static void SetThreadDefaultContext(Thread thread, Context context)
         {
-            ContextManager.SetThreadDefaultContext(thread, context);
+            ContextTracker.SetThreadDefaultContext(thread, context.inner);
         }
 
         /// <summary>
@@ -185,7 +134,7 @@ namespace Gallio.Contexts
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
         public static Context GetThreadDefaultContext(Thread thread)
         {
-            return ContextManager.GetThreadDefaultContext(thread);
+            return Wrap(ContextTracker.GetThreadDefaultContext(thread));
         }
 
         /// <summary>
@@ -202,7 +151,7 @@ namespace Gallio.Contexts
         /// <seealso cref="ContextCookie"/>
         public static ContextCookie EnterContext(Context context)
         {
-            return ContextManager.EnterContext(context);
+            return new ContextCookie(ContextTracker.EnterContext(context.inner));
         }
 
         /// <summary>
@@ -233,7 +182,7 @@ namespace Gallio.Contexts
         /// </summary>
         public Context Parent
         {
-            get { return parent; }
+            get { return Wrap(inner.Parent); }
         }
 
         /// <summary>
@@ -249,7 +198,7 @@ namespace Gallio.Contexts
         /// </summary>
         public TestInstanceInfo TestInstance
         {
-            get { return testStep.TestInstance; }
+            get { return TestStep.TestInstance; }
         }
 
         /// <summary>
@@ -257,7 +206,7 @@ namespace Gallio.Contexts
         /// </summary>
         public TestStepInfo TestStep
         {
-            get { return testStep; }
+            get { return new TestStepInfo(inner.TestStep); }
         }
 
         /// <summary>
@@ -272,7 +221,7 @@ namespace Gallio.Contexts
         /// </summary>
         public LogWriter LogWriter
         {
-            get { return logWriter; }
+            get { return inner.LogWriter; }
         }
 
         /// <summary>
@@ -282,13 +231,8 @@ namespace Gallio.Contexts
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public string LifecyclePhase
         {
-            get { return lifecyclePhase; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                SetLifecyclePhaseImpl(value);
-            }
+            get { return inner.LifecyclePhase; }
+            set { inner.LifecyclePhase = value; }
         }
 
         /// <summary>
@@ -296,7 +240,7 @@ namespace Gallio.Contexts
         /// </summary>
         public int AssertCount
         {
-            get { return assertCount; }
+            get { return inner.AssertCount; }
         }
 
         /// <summary>
@@ -311,62 +255,81 @@ namespace Gallio.Contexts
         /// </remarks>
         public TestOutcome Outcome
         {
-            get { return outcome; }
+            get { return inner.Outcome; }
         }
 
         /// <summary>
-        /// Returns true if the context has been disposed.
+        /// Returns true if the step associated with the context has finished execution
+        /// and completed all <see cref="CleanUp" /> actions.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The context is disposed when the step that it represents finishes execution.
-        /// The properties and methods of a disposed context can still be accessed
-        /// as usual while cleanup activities are in progress.
-        /// </para>
-        /// </remarks>
-        public bool IsDisposed
+        public bool IsFinished
         {
-            get { return isDisposed; }
+            get { return inner.IsFinished; }
+        }
+
+        /// <summary>
+        /// Gets the user data collection associated with the context.  It may be used
+        /// to associate arbitrary key/value pairs with the context.
+        /// </summary>
+        public UserDataCollection Data
+        {
+            get { return inner.Data; }
         }
 
         /// <summary>
         /// <para>
-        /// The disposed event is raised when the context has been disposed.
-        /// The context is disposed when the step that it represents finishes execution.
-        /// </para>
-        /// <para>
-        /// The context is disposed when the step that it represents finishes execution.
-        /// The properties and methods of a disposed context can still be accessed
-        /// as usual while cleanup activities are in progress.
+        /// The <see cref="CleanUp" /> event is raised just before the test step
+        /// finishes execution to perform resource reclamation.
         /// </para>
         /// <para>
         /// Clients may attach handlers to this event to perform cleanup
         /// activities and other tasks as needed.  If a new event handler is
-        /// added and the context has already been disposed, the handler
-        /// is immediately invoked.
+        /// added and the step has already finished, the handler is immediately invoked.
         /// </para>
         /// </summary>
-        public event EventHandler Disposed
+        public event EventHandler CleanUp
         {
             add
             {
-                lock (this)
+                EventHandler wrapper;
+                lock (inner.Data)
                 {
-                    if (!isDisposed)
+                    IDictionary<EventHandler, EventHandler> wrappers = CleanUpWrappers;
+                    if (wrappers == null)
                     {
-                        disposedHandlers += value;
-                        return;
+                        wrappers = new Dictionary<EventHandler, EventHandler>();
+                        CleanUpWrappers = wrappers;
                     }
+                    else if (wrappers.ContainsKey(value))
+                        return;
+
+                    wrapper = delegate { value(this, EventArgs.Empty); };
+                    wrappers.Add(value, wrapper);
                 }
 
-                value(this, EventArgs.Empty);
+                inner.CleanUp += wrapper;
             }
             remove
             {
-                lock (this)
-                    disposedHandlers -= value;
+                EventHandler wrapper;
+                lock (inner.Data)
+                {
+                    IDictionary<EventHandler, EventHandler> wrappers = CleanUpWrappers;
+                    if (wrappers == null || ! wrappers.TryGetValue(value, out wrapper))
+                        return;
+
+                    wrappers.Remove(value);
+                }
+
+                inner.CleanUp -= wrapper;
             }
         }
+        private IDictionary<EventHandler, EventHandler> CleanUpWrappers
+        {
+            get { return inner.Data.GetValue<IDictionary<EventHandler, EventHandler>>(CleanUpWrappersKey); }
+            set { inner.Data.SetValue(CleanUpWrappersKey, value); }
+        }
+        private const string CleanUpWrappersKey = "Context.CleanUpHandlerWrappers";
 
         /// <summary>
         /// Gets the context that represents the initial (root) step of the
@@ -375,14 +338,14 @@ namespace Gallio.Contexts
         /// <returns>The initial context of the test associated with this context</returns>
         public Context GetInitialContext()
         {
-            Context context = this;
-            TestInfo test = Test;
+            ITestContext context = inner;
+            ITest test = inner.TestStep.TestInstance.Test;
             for (;;)
             {
-                Context parent = context.Parent;
+                ITestContext parent = context.Parent;
 
-                if (parent == null || parent.Test != test)
-                    return context;
+                if (parent == null || parent.TestStep.TestInstance.Test != test)
+                    return Wrap(context);
 
                 context = parent;
             }
@@ -398,59 +361,6 @@ namespace Gallio.Contexts
         {
             Context parent = GetInitialContext().Parent;
             return parent == null ? null : parent.GetInitialContext();
-        }
-
-        /// <summary>
-        /// Gets the value from the context with the specified key.
-        /// </summary>
-        /// <remarks>
-        /// This method can still be used after the context has been disposed.
-        /// </remarks>
-        /// <param name="key">The context data key</param>
-        /// <returns>The associated value, or null if none</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        public object GetData(string key)
-        {
-            lock (this)
-            {
-                if (data == null)
-                    return null;
-
-                object value;
-                data.TryGetValue(key, out value);
-                return value;
-            }
-        }
-
-        /// <summary>
-        /// Sets the value of the context data with the specified key.
-        /// </summary>
-        /// <remarks>
-        /// This method can still be used after the context has been disposed.
-        /// </remarks>
-        /// <param name="key">The context data key</param>
-        /// <param name="value">The value to store or null to remove it</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        public void SetData(string key, object value)
-        {
-            lock (this)
-            {
-                if (data == null)
-                {
-                    if (value != null)
-                    {
-                        data = new Dictionary<string, object>();
-                        data[key] = value;
-                    }
-                }
-                else
-                {
-                    if (value == null)
-                        data.Remove(key);
-                    else
-                        data[key] = value;
-                }
-            }
         }
 
         /// <summary>
@@ -569,12 +479,7 @@ namespace Gallio.Contexts
         /// <exception cref="Exception">Any exception thrown by the action</exception>
         public Context RunStep(string name, ICodeElementInfo codeElement, Action action)
         {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            return RunStepImpl(name, codeElement, action);
+            return Wrap(inner.RunStep(name, codeElement, action));
         }
 
         /// <summary>
@@ -586,12 +491,7 @@ namespace Gallio.Contexts
         /// or <paramref name="metadataValue"/> is null</exception>
         public void AddMetadata(string metadataKey, string metadataValue)
         {
-            if (metadataKey == null)
-                throw new ArgumentNullException(@"metadataKey");
-            if (metadataValue == null)
-                throw new ArgumentNullException(@"metadataValue");
-
-            AddMetadataImpl(metadataKey, metadataValue);
+            inner.AddMetadata(metadataKey, metadataValue);
         }
 
         /// <summary>
@@ -614,7 +514,7 @@ namespace Gallio.Contexts
         /// </summary>
         public void IncrementAssertCount()
         {
-            Interlocked.Increment(ref assertCount);
+            AddAssertCount(1);
         }
 
         /// <summary>
@@ -623,111 +523,12 @@ namespace Gallio.Contexts
         /// <param name="value">The amount to add to the assert count</param>
         public void AddAssertCount(int value)
         {
-            Interlocked.Add(ref assertCount, value);
+            inner.AddAssertCount(value);
         }
 
-        /// <summary>
-        /// Completes the initialization of the context after it has been instantiated.
-        /// </summary>
-        protected virtual void Initialize()
+        private static Context Wrap(ITestContext inner)
         {
-            if (parent != null)
-                parent.Disposed += OnParentDisposed;
+            return inner != null ? new Context(inner) : null;
         }
-
-        /// <summary>
-        /// Disposes of the context.
-        /// </summary>
-        /// <param name="disposing">True if disposing</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            LifecyclePhase = LifecyclePhases.Dispose;
-
-            if (parent != null)
-                parent.Disposed -= OnParentDisposed;
-
-            EventHandler oldDisposedHandlers;
-            lock (this)
-            {
-                if (isDisposed)
-                    return;
-
-                isDisposed = true;
-                oldDisposedHandlers = disposedHandlers;
-                disposedHandlers = null;
-            }
-
-            if (oldDisposedHandlers != null)
-            {
-                // Run all of the disposed handlers inside the context.
-                // Log any exceptions that occur.
-                using (Enter())
-                {
-
-                    foreach (EventHandler handler in oldDisposedHandlers.GetInvocationList())
-                    {
-                        try
-                        {
-                            handler(this, EventArgs.Empty);
-                        }
-                        catch (Exception ex)
-                        {
-                            try
-                            {
-                                LogWriter[LogStreamNames.Failures].WriteLine(
-                                    "An exception occurred while executing a Context Dispose handler:\n{0}", ex);
-                            }
-                            catch (Exception)
-                            {
-                                UnhandledExceptionPolicy.Report("An exception occurred while executing a Context Dispose handler.", ex);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void OnParentDisposed(object sender, EventArgs e)
-        {
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Sets the lifecycle phase.
-        /// </summary>
-        /// <remarks>
-        /// The argument will already have been validated is called and will be non-null.
-        /// </remarks>
-        /// <param name="lifecyclePhase">The new lifecycle phase</param>
-        protected virtual void SetLifecyclePhaseImpl(string lifecyclePhase)
-        {
-            this.lifecyclePhase = lifecyclePhase;
-        }
-
-        /// <summary>
-        /// Sets the interim outcome.
-        /// </summary>
-        /// <param name="outcome">The outcome</param>
-        protected virtual void SetOutcomeImpl(TestOutcome outcome)
-        {
-            this.outcome = outcome;
-        }
-
-        /// <summary>
-        /// Implementation of <see cref="RunStep(string,ICodeElementInfo,Action)" />.
-        /// </summary>
-        /// <remarks>
-        /// The arguments will already have been validated is called and will all be non-null except
-        /// perhaps for <paramref name="codeElement"/>.
-        /// </remarks>
-        protected abstract Context RunStepImpl(string name, ICodeElementInfo codeElement, Action action);
-
-        /// <summary>
-        /// Adds metadata to the step that is running in the context.
-        /// </summary>
-        /// <remarks>
-        /// The arguments will already have been validated is called and will all be non-null.
-        /// </remarks>
-        protected abstract void AddMetadataImpl(string metadataKey, string metadataValue);
     }
 }

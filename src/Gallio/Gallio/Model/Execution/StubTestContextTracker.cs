@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Contexts
+namespace Gallio.Model.Execution
 {
     /// <summary>
     /// <para>
-    /// The stub context manager is a dummy implementation of <see cref="IContextManager" />
+    /// The stub context tracker is a dummy implementation of <see cref="ITestContextTracker" />
     /// that is used in situations where the runtime environment has not been initialized.
     /// </para>
     /// <para>
@@ -26,14 +26,14 @@ namespace Gallio.Contexts
     /// test code is run by third party tools.
     /// </para>
     /// </summary>
-    public sealed class StubContextManager : DefaultContextManager
+    public sealed class StubTestContextTracker : DefaultTestContextTracker
     {
         /// <summary>
-        /// Creates a stub context manager.
+        /// Creates a stub context tracker.
         /// </summary>
-        public StubContextManager()
+        public StubTestContextTracker()
         {
-            GlobalContext = new StubContext();
+            GlobalContext = new StubTestContext();
         }
     }
 }

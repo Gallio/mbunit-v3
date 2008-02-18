@@ -47,23 +47,17 @@ namespace Gallio.Model.Execution
     /// <item>When a master test is found, the test plan uses the factory returned by
     /// <see cref="ITest.TestControllerFactory" /> to create a test controller.
     /// Then it invokes <see cref="ITestController.RunTests" /> and passes in
-    /// a <see cref="ITestMonitor" /> corresponding to the master test
+    /// a <see cref="ITestCommand" /> corresponding to the master test
     /// that was found.</item>
-    /// <item>When <see cref="RunTests" /> returns, the test harness then calls
-    /// <see cref="CleanUpTests" /> to clean up the state of any tests that
-    /// did not complete normally.  For example, an incorrectly written
-    /// <see cref="ITestController" /> might fail to call <see cref="ITestStepMonitor.FinishStep" />
-    /// for some steps when runtime errors occurs.</item>
-    /// <item>The test plan object can now be recycled.</item>
+    /// <item>The test plan object can now be discarded or recycled.</item>
     /// </list>
     /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
     /// All operations on a test plan assume that a single client is using
-    /// the test plan from a single thread at a time.  However, the <see cref="ITestMonitor" />
-    /// and <see cref="ITestStepMonitor" /> objects yielded by a test plan are safe
-    /// for multi-threaded access.
+    /// the test plan from a single thread at a time.  However, the <see cref="ITestCommand" />
+    /// objects yielded by a test plan are safe for multi-threaded access.
     /// </para>
     /// <para>
     /// It is not possible to schedule additional tests while tests are running.
@@ -102,13 +96,5 @@ namespace Gallio.Model.Execution
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
         void RunTests(IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Submits results for all tests that have not yet run, ends any abandoned
-        /// tests and clears the list of remaining tests to run.
-        /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        void CleanUpTests(IProgressMonitor progressMonitor);
     }
 }

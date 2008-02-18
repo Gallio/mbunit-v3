@@ -24,15 +24,15 @@ namespace Gallio.Model.Execution
     public class ErrorTestController : BaseTestController
     {
         /// <inheritdoc />
-        public override void RunTests(IProgressMonitor progressMonitor, ITestMonitor rootTestMonitor,
+        public override void RunTests(IProgressMonitor progressMonitor, ITestCommand rootTestCommand,
             ITestInstance parentTestInstance)
         {
-            ITestStepMonitor stepMonitor = rootTestMonitor.StartRootStep(parentTestInstance);
+            ITestContext testContext = rootTestCommand.StartRootStep(parentTestInstance);
 
-            stepMonitor.LogWriter[LogStreamNames.Failures].WriteLine("An error occurred during test enumeration.  Some tests may have been skipped.\n\nReason: {0}",
-                rootTestMonitor.Test.Metadata[MetadataKeys.Description]);
+            testContext.LogWriter[LogStreamNames.Failures].WriteLine("An error occurred during test enumeration.  Some tests may have been skipped.\n\nReason: {0}",
+                rootTestCommand.Test.Metadata[MetadataKeys.Description]);
 
-            stepMonitor.FinishStep(TestStatus.Error, TestOutcome.Failed, null);
+            testContext.FinishStep(TestStatus.Error, TestOutcome.Failed, null);
         }
     }
 }

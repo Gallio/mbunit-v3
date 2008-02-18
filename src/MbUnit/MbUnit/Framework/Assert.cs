@@ -17,7 +17,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
-using Gallio.Contexts;
+using Gallio.Framework;
 using Gallio.Logging;
 
 namespace MbUnit.Framework

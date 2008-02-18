@@ -16,7 +16,7 @@
 using System;
 using Gallio;
 using Gallio.Concurrency;
-using Gallio.Contexts;
+using Gallio.Framework;
 using Gallio.Logging;
 
 namespace MbUnit.Framework.Concurrency
@@ -107,16 +107,16 @@ namespace MbUnit.Framework.Concurrency
         private static TaskContainer GetTaskContainer()
         {
             Context context = Context.CurrentContext;
-            if (context == null || context.IsDisposed)
+            if (context == null || context.IsFinished)
                 throw new InvalidOperationException("The task manager cannot be used because there is no current context.");
 
             lock (context)
             {
-                TaskContainer container = (TaskContainer)context.GetData(ContainerKey);
+                TaskContainer container = context.Data.GetValue<TaskContainer>(ContainerKey);
                 if (container == null)
                 {
                     container = CreateContainer(context);
-                    context.SetData(ContainerKey, container);
+                    context.Data.SetValue(ContainerKey, container);
                 }
 
                 return container;
@@ -127,7 +127,7 @@ namespace MbUnit.Framework.Concurrency
         {
             TaskContainer container = new TaskContainer();
 
-            context.Disposed += delegate { ReapTasks(context, container); };
+            context.CleanUp += delegate { ReapTasks(context, container); };
             container.TaskTerminated += delegate(object sender, TaskEventArgs e) { RecordTaskResult(context, e.Task); };
 
             return container;
@@ -161,10 +161,10 @@ namespace MbUnit.Framework.Concurrency
         {
             get
             {
-                object value = Context.CurrentContext.GetData(FailureFlagKey);
+                object value = Context.CurrentContext.Data.GetValue<object>(FailureFlagKey);
                 return value != null ? (bool)value : false;
             }
-            set { Context.CurrentContext.SetData(FailureFlagKey, value); }
+            set { Context.CurrentContext.Data.SetValue(FailureFlagKey, value); }
         }
     }
 }
