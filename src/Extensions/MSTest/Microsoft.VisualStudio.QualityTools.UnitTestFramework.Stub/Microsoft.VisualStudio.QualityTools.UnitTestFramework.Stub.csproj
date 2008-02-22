@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,7 +8,7 @@
     <ProjectGuid>{595A9506-E4B6-4FCA-AB58-875AF54052F5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.VisualStudio.TestTools</RootNamespace>
+    <RootNamespace>Microsoft.VisualStudio.TestTools.UnitTesting</RootNamespace>
     <AssemblyName>Microsoft.VisualStudio.QualityTools.UnitTestFramework</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OriginalAssemblyName>Microsoft.VisualStudio.QualityTools.UnitTestFramework</OriginalAssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -94,4 +95,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterCompile">
+    <ResolveAssemblyReference Assemblies="$(OriginalAssemblyName)" AutoUnify="false" SearchPaths="{Registry:$(FrameworkRegistryBase),$(TargetFrameworkVersion),$(AssemblyFoldersSuffix)$(AssemblyFoldersExConditions)};{GAC}">
+      <Output TaskParameter="FilesWritten" ItemName="FileWrites" />
+      <Output TaskParameter="ResolvedFiles" ItemName="OriginalAssembly" />
+    </ResolveAssemblyReference>
+    <Copy SourceFiles="@(OriginalAssembly)" DestinationFiles="@(IntermediateAssembly)" Condition="'@(OriginalAssembly)'!=''" />
+    <Message Importance="High" Text="Using the real '$(OriginalAssemblyName)' assembly instead of the stub."
+             Condition="'@(OriginalAssembly)'!=''" />
+    <Warning Text="Using a stub assembly in place of '$(OriginalAssemblyName)' assembly which could not be resolved." Condition="'@(OriginalAssembly)'==''" />
+  </Target>
 </Project>

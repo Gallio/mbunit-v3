@@ -349,7 +349,7 @@ Section "TestDriven.Net Runner for Other Supported Frameworks" TDNetAddInOtherFr
 	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoMSTest
 		!insertmacro InstallTDNetRunner "Gallio_MSTest" "Microsoft.VisualStudio.QualityTools.UnitTestFramework" "5"
-	NoNUnit:
+	NoMSTest:
 
 	SectionGetFlags ${NUnitPluginSection} $0
 	IntOp $0 $0 & ${SF_SELECTED}
