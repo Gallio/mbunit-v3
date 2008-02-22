@@ -58,7 +58,17 @@ namespace Gallio.Icarus
                         string defaultProject = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                             "Gallio/Icarus/Icarus.gallio");
                         if (File.Exists(defaultProject))
-                            projectAdapter.Project = LoadProject(defaultProject);
+                        {
+                            try
+                            {
+                                projectAdapter.Project = LoadProject(defaultProject);
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Cannot load default project \"" + defaultProject + "\"");
+                                //TODO: Maybe delete the buggy project?
+                            }
+                        }
                     }
                 }
                 main.HintDirectories = projectAdapter.Project.TestPackageConfig.HintDirectories;

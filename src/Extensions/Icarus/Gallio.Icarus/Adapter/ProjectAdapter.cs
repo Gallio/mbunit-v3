@@ -54,8 +54,22 @@ namespace Gallio.Icarus.Adapter
             set
             {
                 project = value;
+                CheckProject();
                 assemblyWatcher.Add(value.TestPackageConfig.AssemblyFiles);
             }
+        }
+
+        private void CheckProject()
+        {
+            List<string> assemblyFiles = project.TestPackageConfig.AssemblyFiles;
+            List<string> existingAndNonDuplicatedAssemblies = new List<string>();
+            foreach (string file in assemblyFiles)
+            {
+                if (System.IO.File.Exists(file) && !existingAndNonDuplicatedAssemblies.Contains(file))
+                    existingAndNonDuplicatedAssemblies.Add(file);
+            }
+            assemblyFiles.Clear();
+            assemblyFiles.AddRange(existingAndNonDuplicatedAssemblies);
         }
 
         public string StatusText
