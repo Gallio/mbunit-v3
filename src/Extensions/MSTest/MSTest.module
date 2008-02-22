@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.csproj" />
+    <CSharpProject Include="Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources.csproj" />
+    <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests.csproj" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll">
+        <Folder>MSTest</Folder>
+    </Binary>
+    <Binary Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.plugin">
+        <Folder>MSTest</Folder>
+    </Binary>
+    <Binary Include="Gallio.MSTestAdapter\Readme.txt">
+        <Folder>MSTest</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.MSTestAdapter.Tests\bin\Gallio.MSTestAdapter.Tests.dll" />
+  </ItemGroup>
+</Project>
