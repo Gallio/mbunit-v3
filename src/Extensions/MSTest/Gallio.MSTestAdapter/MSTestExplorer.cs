@@ -26,6 +26,7 @@ namespace Gallio.MSTestAdapter
     /// </summary>
     internal class MSTestExplorer : BaseTestExplorer
     {
+        private const string MSTestAssemblyDisplayName = @"Microsoft.VisualStudio.QualityTools.UnitTestFramework";
         public readonly Dictionary<Version, ITest> frameworkTests;
         public readonly Dictionary<IAssemblyInfo, ITest> assemblyTests;
         public readonly Dictionary<ITypeInfo, ITest> typeTests;
@@ -69,7 +70,7 @@ namespace Gallio.MSTestAdapter
 
         private static Version GetFrameworkVersion(IAssemblyInfo assembly)
         {
-            AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, "Microsoft.VisualStudio.QualityTools.UnitTestFramework");
+            AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, MSTestAssemblyDisplayName);
             return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
         }
 
@@ -89,6 +90,7 @@ namespace Gallio.MSTestAdapter
 
         private static ITest CreateFrameworkTest(Version frameworkVersion)
         {
+            //TODO: Use resource strings
             BaseTest frameworkTest = new BaseTest(String.Format("MSTest v{0}", frameworkVersion), null);
             frameworkTest.BaselineLocalId = "MSTest";
             frameworkTest.Kind = TestKinds.Framework;
@@ -103,7 +105,6 @@ namespace Gallio.MSTestAdapter
             {
                 assemblyTest = CreateAssemblyTest(assembly);
                 frameworkTest.AddChild(assemblyTest);
-
                 assemblyTests.Add(assembly, assemblyTest);
             }
 
@@ -133,18 +134,14 @@ namespace Gallio.MSTestAdapter
             {
                 try
                 {
-                    IEnumerable<IAttributeInfo> attributes = type.GetAttributeInfos(null, true);
-                    foreach (IAttributeInfo attribute in attributes)
+                    if (IsFixture(type))
                     {
-                        if (attribute.Type.FullName.CompareTo(MSTestAttributes.TestClassAttribute) == 0)
-                        {
-                            typeTest = CreateTypeTest(type);
-                            break;
-                        }
+                        typeTest = CreateTypeTest(type);
                     }
                 }
                 catch (Exception ex)
                 {
+                    //TODO: Localize this string
                     typeTest = new ErrorTest(type,
                         String.Format("An exception occurred while generating an MSTest test from '{0}'.", type),
                         ex);
@@ -159,7 +156,7 @@ namespace Gallio.MSTestAdapter
 
             return typeTest;
         }
-
+        
         private static MSTest CreateTypeTest(ITypeInfo typeInfo)
         {
             MSTest typeTest = new MSTest(typeInfo.Name, typeInfo);
@@ -172,81 +169,81 @@ namespace Gallio.MSTestAdapter
                 {
                     if (methodAttribute.Type.FullName.CompareTo(MSTestAttributes.TestMethodAttribute) == 0)
                     {
-                        MSTest testMethod = new MSTest(method.Name, method);
-                        testMethod.Kind = TestKinds.Test;
-                        testMethod.IsTestCase = true;
+                        MSTest testMethod = CreateMethodTest(typeInfo, method);
                         typeTest.AddChild(testMethod);
                         break;
                     }
                 }
             }
 
-            //foreach (XunitMethodInfoAdapter methodInfo in testClassCommand.EnumerateTestMethods())
-            //    typeTest.AddChild(CreateMethodTest(typeInfo, methodInfo));
-
-            //// Add XML documentation.
-            //string xmlDocumentation = typeInfo.Target.GetXmlDocumentation();
-            //if (xmlDocumentation != null)
-            //    typeTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
+            // Add XML documentation.
+            string xmlDocumentation = typeInfo.GetXmlDocumentation();
+            if (xmlDocumentation != null)
+                typeTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
             return typeTest;
         }
 
-        //private static XunitTest CreateMethodTest(XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
-        //{
-        //    XunitTest methodTest = new XunitTest(methodInfo.Name, methodInfo.Target, typeInfo, methodInfo);
-        //    methodTest.Kind = TestKinds.Test;
-        //    methodTest.IsTestCase = true;
+        private static MSTest CreateMethodTest(ITypeInfo typeInfo, IMethodInfo methodInfo)
+        {
+            MSTest methodTest = new MSTest(methodInfo.Name, methodInfo);
+            methodTest.Kind = TestKinds.Test;
+            methodTest.IsTestCase = true;
 
-        //    // Add skip reason.
-        //    if (XunitMethodUtility.IsSkip(methodInfo))
-        //    {
-        //        string skipReason = XunitMethodUtility.GetSkipReason(methodInfo);
-        //        if (skipReason != null)
-        //            methodTest.Metadata.SetValue(MetadataKeys.IgnoreReason, skipReason);
-        //    }
+            // Add skip reason.
+            string skipReason = null;
+            if (IsIgnored(methodInfo, out skipReason))
+            {
+                if (skipReason != null)
+                    methodTest.Metadata.SetValue(MetadataKeys.IgnoreReason, skipReason);
+            }
 
-        //    // Add traits.
-        //    if (XunitMethodUtility.HasTraits(methodInfo))
-        //    {
-        //        foreach (KeyValuePair<string, string> entry in XunitMethodUtility.GetTraits(methodInfo))
-        //        {
-        //            methodTest.Metadata.Add(entry.Key ?? @"", entry.Value ?? @"");
-        //        }
-        //    }
+            // Add traits.
+            //if (XunitMethodUtility.HasTraits(methodInfo))
+            //{
+            //    foreach (KeyValuePair<string, string> entry in XunitMethodUtility.GetTraits(methodInfo))
+            //    {
+            //        methodTest.Metadata.Add(entry.Key ?? @"", entry.Value ?? @"");
+            //    }
+            //}
 
-        //    // Add XML documentation.
-        //    string xmlDocumentation = methodInfo.Target.GetXmlDocumentation();
-        //    if (xmlDocumentation != null)
-        //        methodTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
+            // Add XML documentation.
+            string xmlDocumentation = methodInfo.GetXmlDocumentation();
+            if (xmlDocumentation != null)
+                methodTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-        //    return methodTest;
-        //}
+            return methodTest;
+        }
+
+        private static bool IsFixture(ITypeInfo type)
+        {
+            IEnumerable<IAttributeInfo> attributes = type.GetAttributeInfos(null, true);
+            foreach (IAttributeInfo attribute in attributes)
+            {
+                if (attribute.Type.FullName.CompareTo(MSTestAttributes.TestClassAttribute) == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsIgnored(IMethodInfo methodInfo, out string skipReason)
+        {
+            IEnumerable<IAttributeInfo> attributes = methodInfo.GetAttributeInfos(null, true);
+            foreach (IAttributeInfo attribute in attributes)
+            {
+                if (attribute.Type.FullName.CompareTo(MSTestAttributes.IgnoreAttribute) == 0)
+                {
+                    //TODO: Get the real reason
+                    skipReason = "Ignored";
+                    return true;
+                }
+            }
+
+            skipReason = null;
+            return false;
+        }
     }
 }
-//IList<ITypeInfo> types = assembly.GetTypes();
-//foreach (ITypeInfo type in types)
-//{
-//    IEnumerable<IAttributeInfo> attributes = type.GetAttributeInfos(null, true);
-//    foreach (IAttributeInfo attribute in attributes)
-//    {
-//        if (attribute.Type.FullName.CompareTo(MSTestAttributes.TestClassAttribute) == 0)
-//        {
-//            foreach (IMethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
-//            {
-//                IEnumerable<IAttributeInfo> methodAttributes = method.GetAttributeInfos(null, true);
-//                foreach (IAttributeInfo methodAttribute in methodAttributes)
-//                {
-//                    if (methodAttribute.Type.FullName.CompareTo(MSTestAttributes.TestMethodAttribute) == 0)
-//                    {
-//                        MSTest test = new MSTest(method.Name, method);
-//                        test.IsTestCase = true;
-//                        consumer(test);
-//                        break;
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//    }
-//}
