@@ -23,9 +23,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Gallio.MSTestAdapter.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("mercatus")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Gallio.MSTestAdapter.Tests")]
-[assembly: AssemblyCopyright("Copyright © mercatus 2008")]
+[assembly: AssemblyCopyright("Copyright © 2008 MbUnit Project - http://www.mbunit.com/")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
