@@ -77,7 +77,7 @@ namespace Gallio.Model.Execution
             }
             finally
             {
-                testContext.FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
+                testContext.FinishStep(TestOutcome.Passed, null);
 
                 progressMonitor.Worked(1);
             }

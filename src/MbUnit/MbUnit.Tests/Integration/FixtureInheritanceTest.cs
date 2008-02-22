@@ -66,8 +66,7 @@ namespace MbUnit.Tests.Integration
             codeReference.MemberName = memberName;
 
             TestInstanceRun testInstanceRun = GetFirstTestInstanceRun(codeReference);
-            Assert.AreEqual(TestOutcome.Passed, testInstanceRun.RootTestStepRun.Result.Outcome);
-            Assert.AreEqual(TestStatus.Executed, testInstanceRun.RootTestStepRun.Result.Status);
+            Assert.AreEqual(TestStatus.Passed, testInstanceRun.RootTestStepRun.Result.Outcome.Status);
 
             string actualOutput = testInstanceRun.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.ConsoleOutput).ToString();
             Assert.AreEqual(expectedOutput, actualOutput);

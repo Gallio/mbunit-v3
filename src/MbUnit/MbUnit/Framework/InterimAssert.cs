@@ -15,11 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Reflection;
 using System.Text;
 using Gallio;
 using Gallio.Framework;
-using Gallio.Logging;
 
 namespace MbUnit.Framework
 {
@@ -84,10 +83,9 @@ namespace MbUnit.Framework
             }
             catch (Exception ex)
             {
-                if (ex is ClientException && ex.InnerException != null)
-                    ex = ex.InnerException;
-
-                if (exceptionType.IsInstanceOfType(ex))
+                if (exceptionType.IsInstanceOfType(ex)
+                    || (ex is TargetInvocationException && ex.InnerException != null
+                        && exceptionType.IsInstanceOfType(ex.InnerException)))
                     return;
 
                 Assert.Fail("Expected the block to throw an exception of type '{0}' but it actually threw:\n{1}", exceptionType, ex);

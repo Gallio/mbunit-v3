@@ -13,55 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace Gallio.Model
 {
     /// <summary>
-    /// Describes whether the test ran and how it terminated.
+    /// Describes whether a test was skipped, passed, failed or was inconclusive.
     /// </summary>
     public enum TestStatus
     {
         /// <summary>
-        /// The test did not run or has not yet run but it has not been
-        /// ignored, skipped or canceled.
-        /// </summary>
-        [XmlEnum("notRun")]
-        NotRun,
-
-        /// <summary>
-        /// The test did not run because it was ignored.
-        /// </summary>
-        [XmlEnum("ignored")]
-        Ignored,
-
-        /// <summary>
-        /// The test did not run because it was skipped.
+        /// The test did not run so nothing is known about its status.
         /// </summary>
         [XmlEnum("skipped")]
-        Skipped,
+        Skipped = 0,
 
         /// <summary>
-        /// The test ran.
+        /// The test passed.
         /// </summary>
-        [XmlEnum("executed")]
-        Executed,
+        [XmlEnum("passed")]
+        Passed = 1,
 
         /// <summary>
-        /// The test started execution but was canceled prematurely
-        /// by direct user intervention.
+        /// The test did not run or its result was inconclusive.
         /// </summary>
-        [XmlEnum("canceled")]
-        Canceled,
+        [XmlEnum("inconclusive")]
+        Inconclusive = 2,
 
         /// <summary>
-        /// A fatal error occurred that prevented the test runner from executing
-        /// the test to completion.
+        /// The test failed or encountered an error during execution.
         /// </summary>
-        [XmlEnum("error")]
-        Error
+        [XmlEnum("failed")]
+        Failed = 3,
     }
 }

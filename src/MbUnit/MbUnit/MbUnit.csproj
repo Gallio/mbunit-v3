@@ -67,6 +67,7 @@
     <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
     <Compile Include="Framework\DependsOnAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
+    <Compile Include="Framework\PendingAttribute.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
     <Compile Include="Framework\ArrayAssert.cs" />

@@ -529,7 +529,7 @@ namespace Gallio.Runner
                             {
                                 RunTests(runner);
 
-                                if (result.Report.PackageRun.Statistics.FailureCount > 0)
+                                if (result.Report.PackageRun.Statistics.FailedCount > 0)
                                     result.SetResultCode(ResultCode.Failure);
                                 else if (result.Report.PackageRun.Statistics.TestCount == 0)
                                     result.SetResultCode(ResultCode.NoTests);

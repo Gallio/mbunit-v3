@@ -188,18 +188,19 @@ namespace Gallio.MbUnit2Adapter.Model
 
                 HandleAssemblyStart();
 
+                ITestContext assemblyTestContext = activeTestContexts[assemblyTestCommand];
                 if (Explorer.HasAssemblySetUp)
-                {
-                    ITestContext assemblyTestContext = activeTestContexts[assemblyTestCommand];
                     assemblyTestContext.LifecyclePhase = LifecyclePhases.SetUp;
-                }
-
+ 
                 bool success = base.RunAssemblySetUp();
 
                 // Note: MbUnit won't call RunAssemblyTearDown itself if the assembly setup fails
                 //       so we need to make sure we finish things up ourselves.
                 if (!success)
+                {
+                    assemblyTestContext.LogWriter[LogStreamNames.Failures].Write("The test assembly setup failed.");
                     HandleAssemblyFinish(TestOutcome.Failed);
+                }
 
                 progressMonitor.Worked(workUnit);
                 return success;
@@ -209,14 +210,21 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningAssemblyTearDown, Explorer.AssemblyName));
 
+                ITestContext assemblyTestContext = activeTestContexts[assemblyTestCommand];
                 if (Explorer.HasAssemblyTearDown && assemblyTestCommand != null)
-                {
-                    ITestContext assemblyTestContext = activeTestContexts[assemblyTestCommand];
                     assemblyTestContext.LifecyclePhase = LifecyclePhases.TearDown;
-                }
 
                 bool success = base.RunAssemblyTearDown();
-                HandleAssemblyFinish(success ? TestOutcome.Passed : TestOutcome.Failed);
+
+                if (success)
+                {
+                    HandleAssemblyFinish(TestOutcome.Passed);
+                }
+                else
+                {
+                    assemblyTestContext.LogWriter[LogStreamNames.Failures].Write("The test assembly teardown failed.");
+                    HandleAssemblyFinish(TestOutcome.Failed);
+                }
 
                 progressMonitor.Worked(workUnit);
                 return success;
@@ -357,7 +365,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 ITestContext assemblyTestContext = activeTestContexts[assemblyTestCommand];
                 activeTestContexts.Remove(assemblyTestCommand);
 
-                assemblyTestContext.FinishStep(TestStatus.Executed, outcome, null);
+                assemblyTestContext.FinishStep(outcome, null);
             }
 
             private void HandleFixtureStart(Fixture fixture)
@@ -497,23 +505,20 @@ namespace Gallio.MbUnit2Adapter.Model
                 switch (reportRunResult)
                 {
                     case ReportRunResult.NotRun:
-                        testContext.FinishStep(TestStatus.NotRun, TestOutcome.Inconclusive, null);
-                        break;
-
                     case ReportRunResult.Skip:
-                        testContext.FinishStep(TestStatus.Skipped, TestOutcome.Inconclusive, null);
+                        testContext.FinishStep(TestOutcome.Skipped, null);
                         break;
 
                     case ReportRunResult.Ignore:
-                        testContext.FinishStep(TestStatus.Ignored, TestOutcome.Inconclusive, null);
+                        testContext.FinishStep(TestOutcome.Ignored, null);
                         break;
 
                     case ReportRunResult.Success:
-                        testContext.FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
+                        testContext.FinishStep(TestOutcome.Passed, null);
                         break;
 
                     case ReportRunResult.Failure:
-                        testContext.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
+                        testContext.FinishStep(TestOutcome.Failed, null);
                         break;
                 }
             }

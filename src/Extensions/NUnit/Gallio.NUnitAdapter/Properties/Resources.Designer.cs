@@ -70,20 +70,20 @@ namespace Gallio.NUnitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure Message.
+        ///   Looks up a localized string similar to Message.
         /// </summary>
-        internal static string NUnitTestController_FailureMessageSectionName {
+        internal static string NUnitTestController_ResultMessageSectionName {
             get {
-                return ResourceManager.GetString("NUnitTestController_FailureMessageSectionName", resourceCulture);
+                return ResourceManager.GetString("NUnitTestController_ResultMessageSectionName", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure Stack Trace.
+        ///   Looks up a localized string similar to Stack Trace.
         /// </summary>
-        internal static string NUnitTestController_FailureStackTraceSectionName {
+        internal static string NUnitTestController_ResultStackTraceSectionName {
             get {
-                return ResourceManager.GetString("NUnitTestController_FailureStackTraceSectionName", resourceCulture);
+                return ResourceManager.GetString("NUnitTestController_ResultStackTraceSectionName", resourceCulture);
             }
         }
         

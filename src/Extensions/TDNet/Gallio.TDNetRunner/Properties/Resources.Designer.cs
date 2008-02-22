@@ -106,7 +106,8 @@ namespace Gallio.TDNetRunner.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warnings:\n{0}.
+        ///   Looks up a localized string similar to Warnings:
+        ///    {0}.
         /// </summary>
         internal static string TDNetLogMonitor_Warnings {
             get {

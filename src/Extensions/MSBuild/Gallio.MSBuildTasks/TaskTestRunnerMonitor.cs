@@ -67,62 +67,23 @@ namespace Gallio.MSBuildTasks
             CodeLocation codeLocation = e.TestStepRun.Step.CodeLocation
                 ?? new CodeLocation(@"(unknown)", 0, 0);
 
-            string testKind = e.TestStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind)
-                ?? e.TestInstanceRun.TestInstance.Metadata.GetValue(MetadataKeys.TestKind)
-                ?? e.TestData.Metadata.GetValue(MetadataKeys.TestKind)
-                ?? TestKinds.Test;
+            TestOutcome outcome = e.TestStepRun.Result.Outcome;
+            string description = String.Format("{0} '{1}' {2}.", e.GetStepKind(), e.TestStepRun.Step.FullName, outcome.DisplayName);
 
-            LogOutcome(testKind, e.TestStepRun.Step.FullName, codeLocation, e.TestStepRun.Result.Outcome, e.TestStepRun.Result.Status);
-        }
-
-        private void LogOutcome(string testKind, string testName, CodeLocation codeLocation, TestOutcome outcome, TestStatus status)
-        {
-            // Note: We exclude column information since it is not very useful in the build output.
-            switch (outcome)
+            // Note: We exclude code location column information since it is not very useful in the build output.
+            switch (outcome.Status)
             {
-                case TestOutcome.Passed:
-                    taskLoggingHelper.LogMessage(MessageImportance.Normal, "{0} '{1}' passed.", testKind, testName);
+                case TestStatus.Passed:
+                    taskLoggingHelper.LogMessage(MessageImportance.Normal, description);
                     break;
 
-                case TestOutcome.Failed:
-                    taskLoggingHelper.LogError(null, null, null,
-                        codeLocation.Path, codeLocation.Line, 0, 0, 0,
-                        "{0} '{1}' failed.", testKind, testName);
+                case TestStatus.Failed:
+                    taskLoggingHelper.LogError(null, null, null, codeLocation.Path, codeLocation.Line, 0, 0, 0, description);
                     break;
 
-                case TestOutcome.Inconclusive:
-                    string message;
-                    switch (status)
-                    {
-                        case TestStatus.Canceled:
-                            message = "was canceled";
-                            break;
-
-                        case TestStatus.Error:
-                            message = "encountered an error";
-                            break;
-
-                        default:
-                        case TestStatus.Executed:
-                            message = "was inconclusive";
-                            break;
-
-                        case TestStatus.Ignored:
-                            message = "was ignored";
-                            break;
-
-                        case TestStatus.NotRun:
-                            message = "was not run";
-                            break;
-
-                        case TestStatus.Skipped:
-                            message = "was skipped";
-                            break;
-                    }
-
-                    taskLoggingHelper.LogWarning(null, null, null,
-                        codeLocation.Path, codeLocation.Line, 0, 0, 0,
-                        "{0} '{1}' {2}.", testKind, testName, message);
+                case TestStatus.Skipped:
+                case TestStatus.Inconclusive:
+                    taskLoggingHelper.LogWarning(null, null, null, codeLocation.Path, codeLocation.Line, 0, 0, 0, description);
                     break;
             }
         }

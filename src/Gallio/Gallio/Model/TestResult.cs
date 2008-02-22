@@ -24,31 +24,23 @@ namespace Gallio.Model
     /// </summary>
     [Serializable]
     [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class TestResult
+    public sealed class TestResult
     {
-        private TestOutcome outcome;
-        private TestStatus status;
+        private TestOutcome outcome = TestOutcome.Inconclusive;
         private int assertCount;
         private double duration;
 
         /// <summary>
         /// Gets or sets the test outcome.
         /// </summary>
-        [XmlAttribute("outcome")]
+        /// <value>
+        /// Defaults to <see cref="TestOutcome.Inconclusive" />.
+        /// </value>
+        [XmlElement("outcome")]
         public TestOutcome Outcome
         {
             get { return outcome; }
             set { outcome = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the test status.
-        /// </summary>
-        [XmlAttribute("status")]
-        public TestStatus Status
-        {
-            get { return status; }
-            set { status = value; }
         }
 
         /// <summary>

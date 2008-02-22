@@ -238,59 +238,52 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.Worked(1);
 
+                LogStreamWriter logWriter = testContext.LogWriter[
+                    nunitResult.ResultState == ResultState.Success ? LogStreamNames.Warnings : LogStreamNames.Failures];
+
                 if (nunitResult.Message != null)
                 {
-                    testContext.LogWriter[LogStreamNames.Failures].BeginSection(Resources.NUnitTestController_FailureMessageSectionName);
-                    testContext.LogWriter[LogStreamNames.Failures].Write(nunitResult.Message);
-                    testContext.LogWriter[LogStreamNames.Failures].EndSection();
+                    logWriter.BeginSection(Resources.NUnitTestController_ResultMessageSectionName);
+                    logWriter.Write(nunitResult.Message);
+                    logWriter.EndSection();
                 }
                 if (nunitResult.StackTrace != null)
                 {
-                    testContext.LogWriter[LogStreamNames.Failures].BeginSection(Resources.NUnitTestController_FailureStackTraceSectionName);
-                    testContext.LogWriter[LogStreamNames.Failures].Write(nunitResult.StackTrace);
-                    testContext.LogWriter[LogStreamNames.Failures].EndSection();
+                    logWriter.BeginSection(Resources.NUnitTestController_ResultStackTraceSectionName);
+                    logWriter.Write(nunitResult.StackTrace);
+                    logWriter.EndSection();
                 }
 
-                TestOutcome outcome;
-                switch (nunitResult.ResultState)
-                {
-                    case ResultState.Success:
-                        outcome = TestOutcome.Passed;
-                        break;
+                testContext.AddAssertCount(nunitResult.AssertCount);
+                testContext.FinishStep(CreateOutcomeFromResult(nunitResult), null);
+            }
 
-                    default:
-                    case ResultState.Failure:
-                    case ResultState.Error:
-                        outcome = TestOutcome.Failed;
-                        break;
-                }
-
-                TestStatus status;
+            private static TestOutcome CreateOutcomeFromResult(NUnitTestResult nunitResult)
+            {
                 switch (nunitResult.RunState)
                 {
                     case RunState.Executed:
-                        status = TestStatus.Executed;
-                        break;
-
-                    case RunState.Skipped:
-                    case RunState.Explicit:
-                        status = TestStatus.Skipped;
-                        outcome = TestOutcome.Inconclusive;
-                        break;
+                        switch (nunitResult.ResultState)
+                        {
+                            case ResultState.Success:
+                                return TestOutcome.Passed;
+                            case ResultState.Failure:
+                                return TestOutcome.Failed;
+                            default:
+                            case ResultState.Error:
+                                return TestOutcome.Error;
+                        }
 
                     case RunState.Ignored:
-                        status = TestStatus.Ignored;
-                        break;
+                        return TestOutcome.Ignored;
 
                     default:
                     case RunState.NotRunnable:
                     case RunState.Runnable:
-                        status = TestStatus.NotRun;
-                        break;
+                    case RunState.Skipped:
+                    case RunState.Explicit:
+                        return TestOutcome.Skipped;
                 }
-
-                testContext.AddAssertCount(nunitResult.AssertCount);
-                testContext.FinishStep(status, outcome, null);
             }
             #endregion
 

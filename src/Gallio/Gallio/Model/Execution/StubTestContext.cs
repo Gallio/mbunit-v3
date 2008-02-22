@@ -106,13 +106,6 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestContext RunStep(string name, ICodeElementInfo codeElement, Action action)
-        {
-            action();
-            return this;
-        }
-
-        /// <inheritdoc />
         public ITestContext StartChildStep(ITestStep childStep)
         {
             return this;
@@ -125,7 +118,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public void FinishStep(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration)
+        public void FinishStep(TestOutcome outcome, TimeSpan? actualDuration)
         {
         }
 

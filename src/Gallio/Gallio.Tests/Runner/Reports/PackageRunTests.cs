@@ -66,13 +66,10 @@ namespace Gallio.Tests.Runner.Reports
         [Test]
         public void RoundTripXmlSerialization()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(PackageRun));
-            StringWriter writer = new StringWriter();
             _packageRun.RootTestInstanceRun = new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
                 new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId")));
-            serializer.Serialize(writer, _packageRun);
 
-            PackageRun deserializedPackageRun = (PackageRun)serializer.Deserialize(new StringReader(writer.ToString()));
+            PackageRun deserializedPackageRun = XmlSerializationAssert.RoundTrip(_packageRun);
             ReportAssert.AreEqual(_packageRun, deserializedPackageRun);
         }
 

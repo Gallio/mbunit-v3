@@ -23,79 +23,118 @@ namespace Gallio.Tests.Runner.Reports
 {
     [TestFixture]
     [TestsOn(typeof(PackageRunStatistics))]
-    [Author("Vadim")]
     public class PackageRunStatisticsTests
     {
-        private PackageRunStatistics _prStat;
+        private PackageRunStatistics stats;
 
         [SetUp]
         public void TestStart()
         {
-            _prStat = new PackageRunStatistics();
+            stats = new PackageRunStatistics();
         }
 
         [Test]
         public void FormatTestCaseResultSummaryNothingSet()
         {
-            Assert.AreEqual("Run: 0, Passed: 0, Failed: 0, Inconclusive: 0, Ignored: 0, Skipped: 0.", _prStat.FormatTestCaseResultSummary());
+            Assert.AreEqual("0 run, 0 passed, 0 failed, 0 inconclusive, 0 skipped", stats.FormatTestCaseResultSummary());
         }
 
         [Test]
         public void FormatTestCaseResultSummaryAllValuesSet()
         {
-            SetPackageRunStaticsProperties();
-            Assert.AreEqual("Run: 2, Passed: 3, Failed: 4, Inconclusive: 5, Ignored: 6, Skipped: 7.", _prStat.FormatTestCaseResultSummary());
+            SetPackageRunStatisticsProperties();
+            Assert.AreEqual("3 run, 20 passed, 123 failed (41 error, 42 timeout), 61 inconclusive (31 canceled), 33 skipped (11 ignored, 12 pending)", stats.FormatTestCaseResultSummary());
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void MergeStepStatisticsWithNullStepRun()
         {
-            _prStat.MergeStepStatistics(null, true);
+            stats.MergeStepStatistics(null, true);
         }
 
         [RowTest]
-        [Row(TestStatus.NotRun, TestOutcome.Failed, false, 3, 8, 4, 6, 7, 2, 3, 4, 5)]
-        [Row(TestStatus.NotRun, TestOutcome.Passed, true, 3, 8, 5, 6, 7, 2, 3, 4, 5)]
-        [Row(TestStatus.Ignored, TestOutcome.Passed, true, 3, 8, 5, 7, 7, 2, 3, 4, 5)]
-        [Row(TestStatus.Skipped, TestOutcome.Passed, true, 3, 8, 5, 6, 8, 2, 3, 4, 5)]
-        [Row(TestStatus.Executed, TestOutcome.Passed, true, 3, 8, 5, 6, 7, 3, 4, 4, 5)]
-        [Row(TestStatus.Canceled, TestOutcome.Failed, true, 3, 8, 5, 6, 7, 3, 3, 5, 5)]
-        [Row(TestStatus.Canceled, TestOutcome.Inconclusive, true, 3, 8, 5, 6, 7, 3, 3, 4, 6)]
-        public void MergeStepStatisticsTest(TestStatus status, TestOutcome outcome, bool isTestCase, int stepRunAsrtCnt
-            , int asrtCnt, int tstCnt, int ignrCnt, int skipCnt, int runCnt, int passCnt, int failCnt, int inclsvCnt)
+        [Row(TestStatus.Skipped, true)]
+        [Row(TestStatus.Skipped, false)]
+        [Row(TestStatus.Passed, true)]
+        [Row(TestStatus.Passed, false)]
+        [Row(TestStatus.Inconclusive, true)]
+        [Row(TestStatus.Inconclusive, false)]
+        [Row(TestStatus.Failed, true)]
+        [Row(TestStatus.Failed, false)]
+        public void MergeStepStatistics(TestStatus status, bool isTestCase)
         {
-            SetPackageRunStaticsProperties();
             TestStepRun testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "fullName", "testId"));
-            testStepRun.Result.Status = status;
-            testStepRun.Result.Outcome = outcome;
-            testStepRun.Result.AssertCount = stepRunAsrtCnt;
-            _prStat.MergeStepStatistics(testStepRun, isTestCase);
-            AssertProperties(asrtCnt, tstCnt, ignrCnt, skipCnt, runCnt, passCnt, failCnt, inclsvCnt);
+            testStepRun.Result.Outcome = new TestOutcome(status);
+            testStepRun.Result.AssertCount = 3;
+
+            stats.MergeStepStatistics(testStepRun, isTestCase);
+            Assert.AreEqual(3, stats.AssertCount);
+            Assert.AreEqual(1, stats.StepCount);
+            Assert.AreEqual(isTestCase ? 1 : 0, stats.TestCount);
+            Assert.AreEqual(isTestCase && status != TestStatus.Skipped ? 1 : 0, stats.RunCount);
+
+            Assert.AreEqual(isTestCase && status == TestStatus.Skipped ? 1 : 0, stats.SkippedCount);
+            Assert.AreEqual(isTestCase && status == TestStatus.Passed ? 1 : 0, stats.PassedCount);
+            Assert.AreEqual(isTestCase && status == TestStatus.Inconclusive ? 1 : 0, stats.InconclusiveCount);
+            Assert.AreEqual(isTestCase && status == TestStatus.Failed ? 1 : 0, stats.FailedCount);
+
+            Assert.AreEqual(isTestCase ? 1 : 0, stats.GetOutcomeCount(new TestOutcome(status)));
         }
 
-        private void SetPackageRunStaticsProperties()
+        [Test]
+        public void SetAndGetProperties()
         {
-            _prStat.AssertCount = 5;
-            _prStat.RunCount = 2;
-            _prStat.PassCount = 3;
-            _prStat.FailureCount = 4;
-            _prStat.InconclusiveCount = 5;
-            _prStat.IgnoreCount = 6;
-            _prStat.SkipCount = 7;
-            _prStat.TestCount = 4;
+            SetPackageRunStatisticsProperties();
+
+            Assert.AreEqual(1, stats.AssertCount);
+            Assert.AreEqual(2, stats.TestCount);
+            Assert.AreEqual(3, stats.RunCount);
+            Assert.AreEqual(4, stats.StepCount);
+            Assert.AreEqual(1.3, stats.Duration);
+
+            Assert.AreEqual(33, stats.SkippedCount);
+            Assert.AreEqual(10, stats.GetOutcomeCount(TestOutcome.Skipped));
+            Assert.AreEqual(11, stats.GetOutcomeCount(TestOutcome.Ignored));
+            Assert.AreEqual(12, stats.GetOutcomeCount(TestOutcome.Pending));
+
+            Assert.AreEqual(20, stats.PassedCount);
+            Assert.AreEqual(20, stats.GetOutcomeCount(TestOutcome.Passed));
+
+            Assert.AreEqual(61, stats.InconclusiveCount);
+            Assert.AreEqual(30, stats.GetOutcomeCount(TestOutcome.Inconclusive));
+            Assert.AreEqual(31, stats.GetOutcomeCount(TestOutcome.Canceled));
+
+            Assert.AreEqual(123, stats.FailedCount);
+            Assert.AreEqual(40, stats.GetOutcomeCount(TestOutcome.Failed));
+            Assert.AreEqual(41, stats.GetOutcomeCount(TestOutcome.Error));
+            Assert.AreEqual(42, stats.GetOutcomeCount(TestOutcome.Timeout));
         }
 
-        private void AssertProperties(int asrtCnt, int tstCnt, int ignrCnt, int skipCnt, int runCnt, int passCnt, int failCnt, int inclsvCnt)
+        private void SetPackageRunStatisticsProperties()
         {
-            Assert.AreEqual(asrtCnt, _prStat.AssertCount);
-            Assert.AreEqual(tstCnt, _prStat.TestCount);
-            Assert.AreEqual(ignrCnt, _prStat.IgnoreCount);
-            Assert.AreEqual(skipCnt, _prStat.SkipCount);
-            Assert.AreEqual(runCnt, _prStat.RunCount);
-            Assert.AreEqual(passCnt, _prStat.PassCount);
-            Assert.AreEqual(failCnt, _prStat.FailureCount);
-            Assert.AreEqual(inclsvCnt, _prStat.InconclusiveCount);
+            stats.AssertCount = 1;
+            stats.TestCount = 2;
+            stats.RunCount = 3;
+            stats.StepCount = 4;
+            stats.Duration = 1.3;
+
+            stats.SkippedCount = 33;
+            stats.SetOutcomeCount(TestOutcome.Skipped, 10);
+            stats.SetOutcomeCount(TestOutcome.Ignored, 11);
+            stats.SetOutcomeCount(TestOutcome.Pending, 12);
+
+            stats.PassedCount = 20;
+            stats.SetOutcomeCount(TestOutcome.Passed, 20);
+
+            stats.InconclusiveCount = 61;
+            stats.SetOutcomeCount(TestOutcome.Inconclusive, 30);
+            stats.SetOutcomeCount(TestOutcome.Canceled, 31);
+
+            stats.FailedCount = 123;
+            stats.SetOutcomeCount(TestOutcome.Failed, 40);
+            stats.SetOutcomeCount(TestOutcome.Error, 41);
+            stats.SetOutcomeCount(TestOutcome.Timeout, 42);
         }
     }
 }

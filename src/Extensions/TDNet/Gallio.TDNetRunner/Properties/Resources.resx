@@ -133,6 +133,7 @@
     <value>TestCase '{0}' passed.</value>
   </data>
   <data name="TDNetLogMonitor_Warnings" xml:space="preserve">
-    <value>Warnings:\n{0}</value>
+    <value>Warnings:
+    {0}</value>
   </data>
 </root>

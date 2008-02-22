@@ -44,7 +44,7 @@ namespace Gallio.MSTestAdapter.Generator
             string fields = String.Empty;
             foreach (var t in e)
             {
-                fields += " internal static string " + t.Name + " = \"" + t.FullName + "\";\r\n        ";
+                fields += "internal const string " + t.Name + " = \"" + t.FullName + "\";\r\n        ";
             }
             fields = fields.Substring(0, fields.Length - 10);
             FileInfo classTemplateFile = new FileInfo("MSTestAttributes.template");

@@ -42,7 +42,7 @@ namespace Gallio.Tests.Model
         {
             sampleAssembly = GetSampleAssembly();
 
-            harness = new DefaultTestHarness(new DependencyTestPlanFactory(TestContextTrackerAccessor.GetInstance()));
+            harness = new DefaultTestHarness(TestContextTrackerAccessor.GetInstance());
 
             framework = CreateFramework();
             harness.AddTestFramework(framework);

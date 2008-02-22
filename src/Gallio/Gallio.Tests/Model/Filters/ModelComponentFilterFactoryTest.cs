@@ -28,9 +28,11 @@ namespace Gallio.Tests.Model.Filters
     {
         [RowTest]
         [Row("Id", typeof(IdFilter<ITest>))]
+        [Row("Name", typeof(NameFilter<ITest>))]
         [Row("Assembly", typeof(AssemblyFilter<ITest>))]
         [Row("Namespace", typeof(NamespaceFilter<ITest>))]
         [Row("Type", typeof(TypeFilter<ITest>))]
+        [Row("ExactType", typeof(TypeFilter<ITest>))]
         [Row("Member", typeof(MemberFilter<ITest>))]
         [Row("SomeOtherKey", typeof(MetadataFilter<ITest>))]
         public void CreateFilter(string key, Type filterType)

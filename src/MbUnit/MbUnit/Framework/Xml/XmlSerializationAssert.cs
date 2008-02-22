@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -42,6 +43,42 @@ namespace MbUnit.Framework.Xml
             {
                 new XmlSerializer(t);
             }, "The type is not Xml serializable.");
+        }
+
+        /// <summary>
+        /// Performs XML serialization then deserialization of the specified object.
+        /// </summary>
+        /// <typeparam name="T">The type of object to serialize</typeparam>
+        /// <param name="obj">The object</param>
+        /// <returns>The deserialized object after serialization</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        public static T RoundTrip<T>(T obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException("obj");
+
+            XmlSerializer serializer = new XmlSerializer(obj.GetType());
+            MemoryStream stream = new MemoryStream();
+            serializer.Serialize(stream, obj);
+
+            stream.Position = 0;
+            return (T) serializer.Deserialize(stream);
+        }
+
+        /// <summary>
+        /// Performs XML serialization then deserialization of the specified object
+        /// then compares the object to ensure that it equals the original.
+        /// </summary>
+        /// <typeparam name="T">The type of object to serialize</typeparam>
+        /// <param name="obj">The object</param>
+        /// <returns>The deserialized object after serialization</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        public static void AreEqualAfterRoundTrip<T>(T obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException("obj");
+
+            Assert.AreEqual(obj, RoundTrip(obj));
         }
     }
 }

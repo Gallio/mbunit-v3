@@ -736,19 +736,19 @@ namespace Gallio.Icarus
             {
                 // update test tree
                 Color foreColor = Color.SlateGray;
-                switch (testStepRun.Result.Outcome)
+                switch (testStepRun.Result.Outcome.Status)
                 {
-                    case TestOutcome.Passed:
+                    case TestStatus.Passed:
                         testResults.Passed++;
                         testExplorer.UpdateTestState(testData.Id, TestStates.Success);
                         foreColor = Color.Green;
                         break;
-                    case TestOutcome.Failed:
+                    case TestStatus.Failed:
                         testResults.Failed++;
                         testExplorer.UpdateTestState(testData.Id, TestStates.Failed);
                         foreColor = Color.Red;
                         break;
-                    case TestOutcome.Inconclusive:
+                    case TestStatus.Inconclusive:
                         testResults.Inconclusive++;
                         testExplorer.UpdateTestState(testData.Id, TestStates.Inconclusive);
                         foreColor = Color.Yellow;

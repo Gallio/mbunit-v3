@@ -8,6 +8,15 @@
     <TerminatingMethod MethodName="System.Diagnostics.Debug.Fail" />
     <TerminatingMethod MethodName="System.Environment.Exit" />
     <TerminatingMethod MethodName="NUnit.Framework.Assert.Fail" />
+    <StringFormatMethod MethodName="System.String.Format" FormatParameterName="format" />
+    <StringFormatMethod MethodName="System.Text.StringBuilder.AppendFormat" FormatParameterName="format" />
+    <StringFormatMethod MethodName="System.IO.TextWriter.WriteLine" FormatParameterName="format" />
+    <StringFormatMethod MethodName="System.IO.TextWriter.Write" FormatParameterName="format" />
+    <StringFormatMethod MethodName="System.Console.WriteLine" FormatParameterName="format" />
+    <StringFormatMethod MethodName="System.Console.Write" FormatParameterName="format" />
+    <StringFormatMethod MethodName="System.Console.Out.Write" FormatParameterName="format" />
+    <StringFormatMethod MethodName="System.Diagnostics.Debug.Print" FormatParameterName="format" />
+    <StringFormatMethod MethodName="System.Text.StringBuilder.AppendFormat" FormatParameterName="format" />
     <NotNullableValueAttribute>
     </NotNullableValueAttribute>
     <CanBeNullValueAttribute>
@@ -305,6 +314,14 @@
         <KeepNontrivialAlias>True</KeepNontrivialAlias>
       </ImportsSettings>
     </VB>
+    <Naming>
+      <DefaultExceptionName>e</DefaultExceptionName>
+      <PreferLongerNames>False</PreferLongerNames>
+      <Field prefix="" suffix="" />
+      <StaticField prefix="" suffix="" />
+      <Parameter prefix="" suffix="" />
+      <LocalVariable prefix="" suffix="" />
+    </Naming>
     <SkipRegions length="4">
       <_0>Windows Form Designer generated code</_0>
       <_1>Component Designer generated code</_1>

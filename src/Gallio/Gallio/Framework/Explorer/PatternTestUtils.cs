@@ -32,7 +32,7 @@ namespace Gallio.Framework.Explorer
         /// </summary>
         /// <remarks>
         /// If the method throws an exception when the action runs, it is wrapped up 
-        /// and rethrown within a <see cref="ClientException" />.
+        /// and rethrown as a <see cref="TargetInvocationException" />.
         /// </remarks>
         /// <param name="method">The method to invoke</param>
         /// <returns>The action</returns>
@@ -44,24 +44,17 @@ namespace Gallio.Framework.Explorer
             return delegate(PatternTestState state)
             {
                 MethodInfo resolvedMethod = method.Resolve(true);
-                try
+                if (resolvedMethod.IsStatic)
                 {
-                    if (resolvedMethod.IsStatic)
-                    {
-                        resolvedMethod.Invoke(null, null);
-                    }
-                    else
-                    {
-                        object instance = state.FixtureInstance;
-                        if (instance == null)
-                            throw new ModelException("Expected to invoke an instance method of a fixture but the fixture instance is not available.");
-
-                        resolvedMethod.Invoke(instance, null);
-                    }
+                    resolvedMethod.Invoke(null, null);
                 }
-                catch (TargetInvocationException ex)
+                else
                 {
-                    throw new ClientException("A fixture method threw an exception.", ex.InnerException);
+                    object instance = state.FixtureInstance;
+                    if (instance == null)
+                        throw new ModelException("Expected to invoke an instance method of a fixture but the fixture instance is not available.");
+
+                    resolvedMethod.Invoke(instance, null);
                 }
             };
         }

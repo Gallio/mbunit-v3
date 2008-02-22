@@ -89,7 +89,7 @@ namespace Gallio.Runner.Monitors
 
                 case LifecycleEventType.Finish:
                     logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_Finish_EventFormat,
-                        GetStepName(e.StepId), e.Result.Status, e.Result.Outcome, e.Result.AssertCount, e.Result.Duration);
+                        GetStepName(e.StepId), e.Result.Outcome, e.Result.AssertCount, e.Result.Duration);
                     break;
             }
         }

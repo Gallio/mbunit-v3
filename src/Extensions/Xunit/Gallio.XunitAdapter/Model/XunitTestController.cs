@@ -91,7 +91,7 @@ namespace Gallio.XunitAdapter.Model
             foreach (ITestCommand child in testCommand.Children)
                 passed &= RunTest(progressMonitor, child, testContext.TestStep.TestInstance);
 
-            testContext.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
+            testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
             return passed;
         }
 
@@ -109,7 +109,7 @@ namespace Gallio.XunitAdapter.Model
             {
                 // Xunit can throw exceptions when making commands if the test is malformed.
                 testContext.LogWriter[LogStreamNames.Failures].WriteException(ex);
-                testContext.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
+                testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
             }
 
@@ -167,7 +167,7 @@ namespace Gallio.XunitAdapter.Model
                     passed = false;
                 }
 
-                testContext.FinishStep(TestStatus.Executed, passed ? TestOutcome.Passed : TestOutcome.Failed, null);
+                testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
                 return passed;
             }
             catch (Exception ex)
@@ -175,7 +175,7 @@ namespace Gallio.XunitAdapter.Model
                 // Xunit probably shouldn't throw an exception in a test command.
                 // But just in case...
                 testContext.LogWriter[LogStreamNames.Failures].WriteException(ex);
-                testContext.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
+                testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
             }
         }
@@ -193,7 +193,7 @@ namespace Gallio.XunitAdapter.Model
                 // Xunit can throw exceptions when making commands if the test is malformed.
                 ITestContext testContext = testCommand.StartRootStep(parentTestInstance);
                 testContext.LogWriter[LogStreamNames.Failures].WriteException(ex);
-                testContext.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
+                testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
             }
 
@@ -219,7 +219,7 @@ namespace Gallio.XunitAdapter.Model
                 // Xunit probably shouldn't throw an exception in a test command.
                 // But just in case...
                 testContext.LogWriter[LogStreamNames.Failures].WriteException(ex);
-                testContext.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
+                testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
             }
         }
@@ -238,7 +238,7 @@ namespace Gallio.XunitAdapter.Model
 
             if (result is XunitPassedResult)
             {
-                testContext.FinishStep(TestStatus.Executed, TestOutcome.Passed, testTime);
+                testContext.FinishStep(TestOutcome.Passed, testTime);
                 return true;
             }
 
@@ -256,17 +256,16 @@ namespace Gallio.XunitAdapter.Model
                         failureStream.Write(failedResult.StackTrace);
                 }
 
-                testContext.FinishStep(TestStatus.Executed, TestOutcome.Failed, testTime);
+                testContext.FinishStep(TestOutcome.Failed, testTime);
                 return false;
             }
 
             XunitSkipResult skipResult = result as XunitSkipResult;
             if (skipResult != null)
             {
-                if (skipResult.Reason != null)
-                    testContext.LogWriter[LogStreamNames.Warnings].Write(skipResult.Reason);
-
-                testContext.FinishStep(TestStatus.Skipped, TestOutcome.Inconclusive, testTime);
+                testContext.LogWriter[LogStreamNames.Warnings].WriteLine("The test was skipped.  Reason: {0}",
+                    string.IsNullOrEmpty(skipResult.Reason) ? "<unspecified>" : skipResult.Reason);
+                testContext.FinishStep(TestOutcome.Skipped, testTime);
                 return true;
             }
 

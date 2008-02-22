@@ -55,59 +55,68 @@ namespace Gallio.Framework.Explorer
             progressMonitor.SetStatus(String.Format("Run test: {0}.", testCommand.Test.Name));
 
             ITestContext testContext = testCommand.StartRootStep(parentTestInstance);
+            TestOutcome outcome;
             try
             {
                 PatternTest test = (PatternTest)testCommand.Test;
 
                 string ignoreReason = test.Metadata.GetValue(MetadataKeys.IgnoreReason);
+                string pendingReason = test.Metadata.GetValue(MetadataKeys.PendingReason);
+
                 if (ignoreReason != null)
                 {
-                    testContext.LogWriter[LogStreamNames.Warnings].WriteLine("Ignored: {0}", ignoreReason);
-                    testContext.FinishStep(TestStatus.Ignored, TestOutcome.Inconclusive, null);
-                    return TestOutcome.Inconclusive;
+                    outcome = TestOutcome.Ignored;
+                    testContext.LogWriter[LogStreamNames.Warnings].WriteLine("The test was ignored.  Reason: {0}",
+                        ignoreReason.Length != 0 ? ignoreReason : "<unspecified>");
+                }
+                else if (pendingReason != null)
+                {
+                    outcome = TestOutcome.Pending;
+                    testContext.LogWriter[LogStreamNames.Warnings].WriteLine("The test has pending prerequisites.  Reason: {0}",
+                        pendingReason.Length != 0 ? pendingReason : "<unspecified>");
                 }
                 else
                 {
                     PatternTestState state = new PatternTestState(test);
 
-                    TestOutcome outcome = InitializeTest(testContext, state, parentState);
+                    outcome = InitializeTest(testContext, state, parentState);
 
-                    if (outcome == TestOutcome.Passed)
+                    if (outcome.Status == TestStatus.Passed)
                     {
-                        CombineOutcome(ref outcome, RunSetup(testContext, state, parentState));
+                        bool childTestFailed = false;
+                        outcome = outcome.CombineWith(RunSetup(testContext, state, parentState));
 
-                        if (outcome == TestOutcome.Passed)
+                        if (outcome.Status == TestStatus.Passed)
                         {
-                            CombineOutcome(ref outcome, RunExecute(testContext, state));
+                            outcome = outcome.CombineWith(RunExecute(testContext, state));
 
-                            if (outcome == TestOutcome.Passed)
+                            if (outcome.Status == TestStatus.Passed)
                             {
                                 foreach (ITestCommand child in testCommand.Children)
                                 {
-                                    if (RunTest(progressMonitor, child, testContext.TestStep.TestInstance, state) == TestOutcome.Failed)
-                                        outcome = TestOutcome.Failed;
+                                    if (RunTest(progressMonitor, child, testContext.TestStep.TestInstance, state).Status == TestStatus.Failed)
+                                        childTestFailed = true;
                                 }
                             }
                         }
 
-                        CombineOutcome(ref outcome, RunTearDown(testContext, state, parentState));
-                    }
+                        outcome = outcome.CombineWith(RunTearDown(testContext, state, parentState));
 
-                    testContext.FinishStep(TestStatus.Executed, outcome, null);
-                    return outcome;
+                        // Note: Child test failures take the least precedence in determining the overall outcome.
+                        if (childTestFailed)
+                            outcome.CombineWith(TestOutcome.Failed);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 testContext.LogWriter[LogStreamNames.Failures].WriteException(ex, "A fatal test runner exception occurred.");
+                outcome = TestOutcome.Error;
+            }
 
-                testContext.FinishStep(TestStatus.Error, TestOutcome.Failed, null);
-                return TestOutcome.Failed;
-            }
-            finally
-            {
-                progressMonitor.Worked(1);
-            }
+            testContext.FinishStep(outcome, null);
+            progressMonitor.Worked(1);
+            return outcome;
         }
 
         private TestOutcome InitializeTest(ITestContext testContext, PatternTestState state, PatternTestState parentState)
@@ -124,7 +133,7 @@ namespace Gallio.Framework.Explorer
                     state.FixtureInstance = Activator.CreateInstance(type.Resolve(true));
                 else if (parentState != null)
                     state.FixtureInstance = parentState.FixtureInstance;
-            }, "An exception occurred during initialization.");
+            });
         }
 
         private TestOutcome RunSetup(ITestContext testContext, PatternTestState state, PatternTestState parentState)
@@ -135,7 +144,7 @@ namespace Gallio.Framework.Explorer
                     parentState.Test.BeforeChildChain.Action(parentState);
 
                 state.Test.SetUpChain.Action(state);
-            }, "An exception occurred during set up.");
+            });
         }
 
         private TestOutcome RunExecute(ITestContext testContext, PatternTestState state)
@@ -143,7 +152,7 @@ namespace Gallio.Framework.Explorer
             return ExecuteSafely(testContext, LifecyclePhases.Execute, delegate
             {
                 state.Test.ExecuteChain.Action(state);
-            }, "An exception occurred during execution.");
+            });
         }
 
         private TestOutcome RunTearDown(ITestContext testContext, PatternTestState state, PatternTestState parentState)
@@ -154,61 +163,18 @@ namespace Gallio.Framework.Explorer
 
                 if (parentState != null)
                     parentState.Test.AfterChildChain.Action(parentState);
-            }, "An exception occurred during tear down.");
+            });
         }
 
-        private TestOutcome ExecuteSafely(ITestContext testContext, string lifecyclePhase, Action action, string failureHeading)
+        private TestOutcome ExecuteSafely(ITestContext testContext, string lifecyclePhase, Action action)
         {
             testContext.LifecyclePhase = lifecyclePhase;
 
-            try
-            {
-                action();
-                return TestOutcome.Passed;
-            }
-            catch (Exception ex)
-            {
-                TestOutcome outcome = TestOutcome.Failed;
+            TestOutcome outcome = TestInvoker.Run(action, lifecyclePhase);
+            if (testContext.Outcome.Status == TestStatus.Passed)
+                testContext.Outcome = outcome;
 
-                if (ex is ClientException)
-                    ex = ex.InnerException;
-                if (ex is TestException)
-                    outcome = ((TestException)ex).Outcome;
-
-                LogException(testContext, ex, outcome, failureHeading);
-                return outcome;
-            }
-        }
-
-        private static void LogException(ITestContext testContext, Exception ex, TestOutcome outcome, string failureHeading)
-        {
-            string streamName;
-            switch (outcome)
-            {
-                default:
-                case TestOutcome.Passed:
-                    streamName = LogStreamNames.Default;
-                    break;
-                case TestOutcome.Inconclusive:
-                    streamName = LogStreamNames.Warnings;
-                    break;
-                case TestOutcome.Failed:
-                    streamName = LogStreamNames.Failures;
-                    break;
-            }
-
-            testContext.LogWriter[streamName].WriteException(ex, failureHeading);
-
-            CombineOutcome(ref outcome, testContext.Outcome);
-            testContext.Outcome = outcome;
-        }
-
-        private static void CombineOutcome(ref TestOutcome result, TestOutcome other)
-        {
-            if (other == TestOutcome.Failed)
-                result = TestOutcome.Failed;
-            else if (result != TestOutcome.Failed && other == TestOutcome.Inconclusive)
-                result = TestOutcome.Inconclusive;
+            return outcome;
         }
     }
 }

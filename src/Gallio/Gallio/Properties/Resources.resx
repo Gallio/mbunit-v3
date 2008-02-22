@@ -135,39 +135,6 @@
   <data name="RootTest_RootTestName" xml:space="preserve">
     <value>Root</value>
   </data>
-  <data name="LogMonitor_HeaderFormat" xml:space="preserve">
-    <value>[{0}] {1}</value>
-  </data>
-  <data name="LogMonitor_Status_Starting" xml:space="preserve">
-    <value>starting</value>
-  </data>
-  <data name="LogMonitor_Status_Passed" xml:space="preserve">
-    <value>passed</value>
-  </data>
-  <data name="LogMonitor_Status_Failed" xml:space="preserve">
-    <value>failed</value>
-  </data>
-  <data name="LogMonitor_Status_Canceled" xml:space="preserve">
-    <value>canceled</value>
-  </data>
-  <data name="LogMonitor_Status_Error" xml:space="preserve">
-    <value>error</value>
-  </data>
-  <data name="LogMonitor_Status_Inconclusive" xml:space="preserve">
-    <value>inconclusive</value>
-  </data>
-  <data name="LogMonitor_Status_Ignored" xml:space="preserve">
-    <value>ignored</value>
-  </data>
-  <data name="LogMonitor_Status_NotRun" xml:space="preserve">
-    <value>not run</value>
-  </data>
-  <data name="LogMonitor_Status_Skipped" xml:space="preserve">
-    <value>skipped</value>
-  </data>
-  <data name="LogMonitor_Status_Unknown" xml:space="preserve">
-    <value>unknown</value>
-  </data>
   <data name="ConsoleProgressMonitor_CanceledBanner" xml:space="preserve">
     <value>--- CANCELED ---</value>
   </data>
@@ -186,10 +153,9 @@
   </data>
   <data name="DebugMonitor_LifecycleEvent_Finish_EventFormat" xml:space="preserve">
     <value>[Lifecycle: Finish ({0})]
-	State:    {1}
-	Outcome:  {2}
-	Asserts:  {3}
-	Duration: {4:0.000}s</value>
+	Outcome:  {1}
+	Asserts:  {2}
+	Duration: {3:0.000}s</value>
   </data>
   <data name="DebugMonitor_ExecutionLogEvent_Write_EventFormat" xml:space="preserve">
     <value>[Execution Log: Write ({0})]

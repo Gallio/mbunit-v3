@@ -6,42 +6,35 @@
   <xsl:param name="show-passed-tests">true</xsl:param>
   <xsl:param name="show-failed-tests">true</xsl:param>
   <xsl:param name="show-inconclusive-tests">true</xsl:param>
-  <xsl:param name="show-ignored-tests">true</xsl:param>
   <xsl:param name="show-skipped-tests">true</xsl:param>
 
   <xsl:output method="text" encoding="utf-8"/>
 
   <xsl:template match="/">
-    <xsl:apply-templates select="//g:packageRun" />
+    <xsl:apply-templates select="//g:report" />
   </xsl:template>
 
-  <xsl:template match="g:packageRun">
-		<xsl:apply-templates select="g:testInstanceRuns" />
-    <xsl:apply-templates select="g:statistics" />
+  <xsl:template match="g:report">
+		<xsl:apply-templates select="." mode="results"/>
+    <xsl:apply-templates select="g:packageRun/g:statistics" />
   </xsl:template>
   
 	<xsl:template match="g:statistics">
-    <xsl:text>Run: </xsl:text>
-		<xsl:value-of select="@runCount"/>
-    <xsl:text>, Passed: </xsl:text>
-    <xsl:value-of select="@passCount"/>
-    <xsl:text>, Failed: </xsl:text>
-		<xsl:value-of select="@failureCount"/>
-    <xsl:text>, Inconclusive: </xsl:text>
-    <xsl:value-of select="@inconclusiveCount"/>
-    <xsl:text>, Ignored: </xsl:text>
-    <xsl:value-of select="@ignoreCount"/>
-    <xsl:text>, Skipped: </xsl:text>
-		<xsl:value-of select="@skipCount"/>
-		<xsl:text>.&#xA;</xsl:text>
+    <xsl:text>* Results: </xsl:text>
+    <xsl:call-template name="format-statistics">
+      <xsl:with-param name="statistics" select="." />
+    </xsl:call-template>
+		<xsl:text>&#xA;</xsl:text>
 	</xsl:template>
   
-	<xsl:template match="g:testInstanceRuns">
-    <xsl:variable name="passed" select="descendant::g:testStepRun[g:result/@status='executed' and g:result/@outcome='passed']" />
-    <xsl:variable name="failed" select="descendant::g:testStepRun[g:result/@status='executed' and g:result/@outcome='failed']" />
-    <xsl:variable name="inconclusive" select="descendant::g:testStepRun[g:result/@status='executed' and g:result/@outcome='inconclusive']" />
-    <xsl:variable name="ignored" select="descendant::g:testStepRun[g:result/@status='ignored']" />
-    <xsl:variable name="skipped" select="descendant::g:testStepRun[g:result/@status='skipped']" />
+	<xsl:template match="g:report" mode="results">
+    <xsl:variable name="testCases" select="g:testModel/descendant::g:test[@isTestCase='true']" />
+    <xsl:variable name="testCaseInstanceRuns" select="g:packageRun/g:testInstanceRun/descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]" />
+    
+    <xsl:variable name="passed" select="$testCaseInstanceRuns[g:testStepRun/g:result/g:outcome/@status='passed']" />
+    <xsl:variable name="failed" select="$testCaseInstanceRuns[g:testStepRun/g:result/g:outcome/@status='failed']" />
+    <xsl:variable name="inconclusive" select="$testCaseInstanceRuns[g:testStepRun/g:result/g:outcome/@status='inconclusive']" />
+    <xsl:variable name="skipped" select="$testCaseInstanceRuns[g:testStepRun/g:result/g:outcome/@status='skipped']" />
 
     <xsl:if test="$show-passed-tests and $passed">
       <xsl:text>* Passed:&#xA;&#xA;</xsl:text>
@@ -60,16 +53,10 @@
       <xsl:apply-templates select="$inconclusive" />
       <xsl:text>&#xA;</xsl:text>
     </xsl:if>
-
+    
     <xsl:if test="$show-skipped-tests and $skipped">
       <xsl:text>* Skipped:&#xA;&#xA;</xsl:text>
       <xsl:apply-templates select="$skipped" />
-      <xsl:text>&#xA;</xsl:text>
-    </xsl:if>
-    
-		<xsl:if test="$show-ignored-tests and $ignored">
-			<xsl:text>* Ignored:&#xA;&#xA;</xsl:text>
-		  <xsl:apply-templates select="$ignored" />
       <xsl:text>&#xA;</xsl:text>
     </xsl:if>
 	</xsl:template>
@@ -166,40 +153,7 @@
 
   <xsl:template match="*">
   </xsl:template>
-
-  <xsl:template name="indent">
-    <xsl:param name="str" />
-    <xsl:param name="prefix" select="'  '" />
-
-    <xsl:if test="$str!=''">
-      <xsl:call-template name="indent-recursive">
-        <xsl:with-param name="str" select="translate($str, '&#9;&#xA;&#xD;', ' &#xA;')" />
-        <xsl:with-param name="prefix" select="$prefix" />
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="indent-recursive">
-    <xsl:param name="str" />
-    <xsl:param name="prefix" />
-
-    <xsl:variable name="line" select="substring-before($str, '&#xA;')" />
-    <xsl:choose>
-      <xsl:when test="$line!=''">
-        <xsl:value-of select="$prefix"/>
-        <xsl:value-of select="$line"/>
-        <xsl:text>&#xA;</xsl:text>
-        <xsl:call-template name="indent-recursive">
-          <xsl:with-param name="str" select="substring-after($str, '&#xA;')" />
-          <xsl:with-param name="prefix" select="$prefix" />
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$prefix"/>
-        <xsl:value-of select="$str"/>
-        <xsl:text>&#xA;</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
   
+  <!-- Include the common report template -->
+  <xsl:include href="Gallio-Report.common.xsl" />  
 </xsl:stylesheet>

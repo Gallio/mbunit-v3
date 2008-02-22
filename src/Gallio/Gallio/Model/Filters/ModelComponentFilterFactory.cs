@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Model;
 
 namespace Gallio.Model.Filters
@@ -27,9 +25,11 @@ namespace Gallio.Model.Filters
     /// Recognizes the following filter keys:
     /// <list type="bullet">
     /// <item>Id: Filter by id</item>
+    /// <item>Name: Filter by name</item>
     /// <item>Assembly: Filter by assembly name</item>
     /// <item>Namespace: Filter by namespace name</item>
-    /// <item>Type: Filter by type name</item>
+    /// <item>Type: Filter by type name, including inherited types</item>
+    /// <item>ExactType: Filter by exact type name, excluding inherited types</item>
     /// <item>Member: Filter by member name</item>
     /// <item>*: All other names are assumed to correspond to metadata keys</item>
     /// </list>
@@ -45,6 +45,8 @@ namespace Gallio.Model.Filters
             {
                 case "Id":
                     return new IdFilter<T>(valueFilter);
+                case "Name":
+                    return new NameFilter<T>(valueFilter);
                 case "Assembly":
                     return new AssemblyFilter<T>(valueFilter);
                 case "Namespace":

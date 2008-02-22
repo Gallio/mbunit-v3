@@ -479,7 +479,19 @@ namespace Gallio.Framework
         /// <exception cref="Exception">Any exception thrown by the action</exception>
         public Context RunStep(string name, ICodeElementInfo codeElement, Action action)
         {
-            return Wrap(inner.RunStep(name, codeElement, action));
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            ITestContext childContext = inner.StartChildStep(name, codeElement);
+
+            childContext.LifecyclePhase = LifecyclePhases.Execute;
+            TestOutcome outcome = TestInvoker.Run(action, null);
+
+            childContext.FinishStep(outcome, null);
+
+            return new Context(childContext);
         }
 
         /// <summary>

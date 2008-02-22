@@ -44,7 +44,7 @@ namespace MbUnit.Samples
         [TearDown]
         public void DisposeBrowser()
         {
-            if (Context.CurrentContext.Outcome == TestOutcome.Failed)
+            if (Context.CurrentContext.Outcome.Status == TestStatus.Failed)
                 Snapshot("Final screen when failure occurred.", LogStreamNames.Failures);
 
             if (ie != null)

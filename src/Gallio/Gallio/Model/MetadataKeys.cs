@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Gallio.Model
 {
@@ -143,6 +141,15 @@ namespace Gallio.Model
         /// May be derived from <see cref="AssemblyInformationalVersionAttribute" />.
         /// </remarks>
         public const string InformationalVersion = "InformationalVersion";
+
+        /// <summary>
+        /// The metadata key that describes the reason that a test is pending.
+        /// (Tests may of course be marked pending without a declared reason.)
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <c>PendingAttribute</c> in MbUnit or its equivalent.
+        /// </remarks>
+        public const string PendingReason = "PendingReason";
 
         /// <summary>
         /// The metadata key for a product associated with a test.

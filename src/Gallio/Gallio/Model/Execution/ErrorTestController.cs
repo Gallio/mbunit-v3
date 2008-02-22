@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Logging;
 
@@ -29,10 +30,10 @@ namespace Gallio.Model.Execution
         {
             ITestContext testContext = rootTestCommand.StartRootStep(parentTestInstance);
 
-            testContext.LogWriter[LogStreamNames.Failures].WriteLine("An error occurred during test enumeration.  Some tests may have been skipped.\n\nReason: {0}",
+            testContext.LogWriter[LogStreamNames.Failures].WriteLine("An error occurred during test enumeration.  {0}",
                 rootTestCommand.Test.Metadata[MetadataKeys.Description]);
 
-            testContext.FinishStep(TestStatus.Error, TestOutcome.Failed, null);
+            testContext.FinishStep(TestOutcome.Error, null);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Gallio.Runner.Monitors
     public class TestStepRunEventArgs : EventArgs
     {
         private readonly Report report;
-        private readonly TestData testData;
+        private readonly TestData test;
         private readonly TestInstanceRun testInstanceRun;
         private readonly TestStepRun testStepRun;
         private readonly string lifecyclePhase;
@@ -37,18 +37,18 @@ namespace Gallio.Runner.Monitors
         /// Creates event arguments about a step.
         /// </summary>
         /// <param name="report">The report</param>
-        /// <param name="testData">The test data</param>
+        /// <param name="test">The test data</param>
         /// <param name="testInstanceRun">The test instance run element that contains the test step</param>
         /// <param name="testStepRun">The test step run element</param>
         /// <param name="lifecyclePhase">The test step's lifecycle phase, or an empty string if starting or ending</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="testData"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="test"/>
         /// <paramref name="testInstanceRun"/> or <paramref name="testStepRun"/> is null</exception>
-        public TestStepRunEventArgs(Report report, TestData testData, TestInstanceRun testInstanceRun, TestStepRun testStepRun, string lifecyclePhase)
+        public TestStepRunEventArgs(Report report, TestData test, TestInstanceRun testInstanceRun, TestStepRun testStepRun, string lifecyclePhase)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
-            if (testData == null)
-                throw new ArgumentNullException("testData");
+            if (test == null)
+                throw new ArgumentNullException("test");
             if (testInstanceRun == null)
                 throw new ArgumentNullException("testInstanceRun");
             if (testStepRun == null)
@@ -57,7 +57,7 @@ namespace Gallio.Runner.Monitors
                 throw new ArgumentNullException("lifecyclePhase");
 
             this.report = report;
-            this.testData = testData;
+            this.test = test;
             this.testInstanceRun = testInstanceRun;
             this.testStepRun = testStepRun;
             this.lifecyclePhase = lifecyclePhase;
@@ -74,9 +74,9 @@ namespace Gallio.Runner.Monitors
         /// <summary>
         /// Gets the test data of the test that contains the test step.
         /// </summary>
-        public TestData TestData
+        public TestData Test
         {
-            get { return testData; }
+            get { return test; }
         }
 
         /// <summary>
@@ -102,6 +102,28 @@ namespace Gallio.Runner.Monitors
         public string LifecyclePhase
         {
             get { return lifecyclePhase; }
+        }
+
+        /// <summary>
+        /// Gets the kind of step described using the <see cref="MetadataKeys.TestKind" /> metadata key
+        /// for root steps or the value "Step" for nested steps.
+        /// </summary>
+        /// <returns>The step kind</returns>
+        public string GetStepKind()
+        {
+            string stepKind = TestStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind);
+
+            if (stepKind == null)
+            {
+                if (TestStepRun.Step.ParentId == null)
+                    stepKind = TestInstanceRun.TestInstance.Metadata.GetValue(MetadataKeys.TestKind)
+                        ?? Test.Metadata.GetValue(MetadataKeys.TestKind)
+                        ?? TestKinds.Test;
+                else
+                    stepKind = "Step";
+            }
+
+            return stepKind;
         }
     }
 }

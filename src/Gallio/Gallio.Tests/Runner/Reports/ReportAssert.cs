@@ -80,11 +80,11 @@ namespace Gallio.Tests.Runner.Reports
 
             Assert.AreEqual(expected.AssertCount, actual.AssertCount);
             Assert.AreEqual(expected.Duration, actual.Duration);
-            Assert.AreEqual(expected.FailureCount, actual.FailureCount);
-            Assert.AreEqual(expected.IgnoreCount, actual.IgnoreCount);
-            Assert.AreEqual(expected.PassCount, actual.PassCount);
+            Assert.AreEqual(expected.FailedCount, actual.FailedCount);
+            Assert.AreEqual(expected.InconclusiveCount, actual.InconclusiveCount);
+            Assert.AreEqual(expected.PassedCount, actual.PassedCount);
+            Assert.AreEqual(expected.SkippedCount, actual.SkippedCount);
             Assert.AreEqual(expected.RunCount, actual.RunCount);
-            Assert.AreEqual(expected.SkipCount, actual.SkipCount);
             Assert.AreEqual(expected.TestCount, actual.TestCount);
         }
 

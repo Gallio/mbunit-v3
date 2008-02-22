@@ -131,6 +131,15 @@ Section "MbUnit v2 Plugin" MbUnit2PluginSection
 	File /r "${TARGETDIR}\bin\MbUnit2\*"
 SectionEnd
 
+Section "MSTest Plugin" MSTestPluginSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\bin\MSTest"
+	File /r "${TARGETDIR}\bin\MSTest\*"
+SectionEnd
+
 Section "NUnit Plugin" NUnitPluginSection
 	; Set Section properties
 	SetOverwrite on
@@ -336,6 +345,12 @@ Section "TestDriven.Net Runner for Other Supported Frameworks" TDNetAddInOtherFr
 		!insertmacro InstallTDNetRunner "Gallio_MbUnit2" "MbUnit.Framework" "5"
 	NoMbUnit2:
 
+	SectionGetFlags ${MSTestPluginSection} $0
+	IntOp $0 $0 & ${SF_SELECTED}
+	IntCmp $0 0 NoMSTest
+		!insertmacro InstallTDNetRunner "Gallio_MSTest" "Microsoft.VisualStudio.QualityTools.UnitTestFramework" "5"
+	NoNUnit:
+
 	SectionGetFlags ${NUnitPluginSection} $0
 	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoNUnit
@@ -444,6 +459,7 @@ Section Uninstall
 	; Uninstall from TD.Net
 	!insertmacro UninstallTDNetRunner "Gallio_MbUnit"
 	!insertmacro UninstallTDNetRunner "Gallio_MbUnit2"
+	!insertmacro UninstallTDNetRunner "Gallio_MSTest"
 	!insertmacro UninstallTDNetRunner "Gallio_NUnit"
 	!insertmacro UninstallTDNetRunner "Gallio_Xunit"
 
@@ -477,6 +493,7 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${GallioSection} "Installs the MbUnit v3 framework components and the Gallio test automation platform."
 
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit2PluginSection} "Installs the MbUnit v2 plugin.  Enables Gallio to run MbUnit v2 tests."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MSTestPluginSection} "Installs the MSTest plugin.  Enables Gallio to run MSTest tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${NUnitPluginSection} "Installs the NUnit plugin.  Enables Gallio to run NUnit tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${XunitPluginSection} "Installs the Xunit plugin.  Enables Gallio to run xUnit.Net tests."
 
@@ -513,6 +530,7 @@ Function .onInit
 	SectionSetInstTypes ${GallioSection} 3
 
 	SectionSetInstTypes ${MbUnit2PluginSection} 1
+	SectionSetInstTypes ${MSTestPluginSection} 1
 	SectionSetInstTypes ${NUnitPluginSection} 1
 	SectionSetInstTypes ${XunitPluginSection} 1
 
@@ -582,6 +600,9 @@ Function .onSelChange
 	; when at least one of them is selected and the TDNet addin is
 	; being installed
 	SectionGetFlags ${MbUnit2PluginSection} $0
+
+	SectionGetFlags ${MSTestPluginSection} $1
+	IntOp $0 $0 | $1
 
 	SectionGetFlags ${NUnitPluginSection} $1
 	IntOp $0 $0 | $1

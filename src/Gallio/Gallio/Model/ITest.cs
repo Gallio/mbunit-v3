@@ -61,6 +61,13 @@ namespace Gallio.Model
     public interface ITest : ITestComponent
     {
         /// <summary>
+        /// Gets the full name of the test.  The full name is derived by concatenating the
+        /// <see cref="FullName" /> of the <see cref="Parent"/> followed by a period ('.')
+        /// followed by the <see cref="ITestComponent.Name" /> of this test.
+        /// </summary>
+        string FullName { get; }
+
+        /// <summary>
         /// <para>
         /// Gets a locally unique identifier for this test that satisfies the following conditions:
         /// </para>

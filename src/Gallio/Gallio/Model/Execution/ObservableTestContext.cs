@@ -200,34 +200,6 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestContext RunStep(string name, ICodeElementInfo codeElement, Action action)
-        {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            ITestContext childContext = StartChildStep(name, codeElement);
-            try
-            {
-                childContext.LifecyclePhase = LifecyclePhases.Execute;
-                action();
-            }
-            catch (Exception ex)
-            {
-                // TODO: Other exception types might signal ignored or inconclusive states.
-                childContext.LogWriter[LogStreamNames.Failures].Write(ex);
-                childContext.FinishStep(TestStatus.Executed, TestOutcome.Failed, null);
-
-                // Allow the exception to bubble up out of the block.
-                throw;
-            }
-
-            childContext.FinishStep(TestStatus.Executed, TestOutcome.Passed, null);
-            return childContext;
-        }
-
-        /// <inheritdoc />
         public ITestContext StartChildStep(ITestStep childStep)
         {
             if (childStep == null)
@@ -251,15 +223,15 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public void FinishStep(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration)
+        public void FinishStep(TestOutcome outcome, TimeSpan? actualDuration)
         {
-            FinishStep(status, outcome, actualDuration, false);
+            FinishStep(outcome, actualDuration, false);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            FinishStep(TestStatus.Error, TestOutcome.Failed, null, true);
+            FinishStep(TestOutcome.Error, null, true);
         }
 
         /// <summary>
@@ -291,7 +263,7 @@ namespace Gallio.Model.Execution
                 parent.CleanUp += HandleParentDisposed;
         }
 
-        private void FinishStep(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration, bool isDisposing)
+        private void FinishStep(TestOutcome outcome, TimeSpan? actualDuration, bool isDisposing)
         {
             EventHandler cachedCleanUpHandlers;
             lock (syncRoot)
@@ -325,7 +297,6 @@ namespace Gallio.Model.Execution
                 TestResult result = new TestResult();
                 result.AssertCount = assertCount;
                 result.Duration = actualDuration.GetValueOrDefault(stopwatch.Elapsed).TotalSeconds;
-                result.Status = status;
                 result.Outcome = outcome;
 
                 Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(testStep.Id, result));

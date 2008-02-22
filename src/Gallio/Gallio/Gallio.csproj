@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -129,6 +129,7 @@
     <Compile Include="Framework\Data\UnionMergeStrategy.cs" />
     <Compile Include="Framework\Data\XmlDataSet.cs" />
     <Compile Include="Framework\Step.cs" />
+    <Compile Include="Framework\TestInvoker.cs" />
     <Compile Include="Model\Execution\ManagedTestCommand.cs" />
     <Compile Include="Model\Execution\ObservableTestContext.cs">
       <SubType>Code</SubType>
@@ -242,6 +243,8 @@
     <Compile Include="Model\Execution\ProxyTestListener.cs" />
     <Compile Include="Collections\UserDataCollection.cs" />
     <Compile Include="Model\Execution\TestContextTrackerAccessor.cs" />
+    <Compile Include="Model\Execution\TestCommandFactory.cs" />
+    <Compile Include="Model\Filters\NameFilter.cs" />
     <Compile Include="Reflection\Impl\IResolvableTypeInfo.cs" />
     <Compile Include="Reflection\Impl\StaticArrayTypeWrapper.cs">
       <SubType>Code</SubType>
@@ -290,6 +293,7 @@
     <Compile Include="Runner\Domains\IHostTestDomainContributor.cs" />
     <Compile Include="Runner\ITestRunnerFactory.cs" />
     <Compile Include="Runner\ITestRunnerManager.cs" />
+    <Compile Include="Runner\Reports\TestOutcomeSummary.cs" />
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
     <Compile Include="Utilities\Memoizer.cs" />
@@ -403,8 +407,6 @@
     <Compile Include="Runner\TestLauncherResult.cs" />
     <Compile Include="Model\TestPackageConfig.cs" />
     <Compile Include="Hosting\Loader.cs" />
-    <Compile Include="Model\Execution\DependencyTestPlan.cs" />
-    <Compile Include="Model\Execution\DependencyTestPlanFactory.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
     <Compile Include="Model\Execution\LifecycleEventArgs.cs" />
     <Compile Include="Model\Execution\LifecycleEventType.cs" />
@@ -415,8 +417,6 @@
     <Compile Include="Model\Execution\TestEventDispatcher.cs" />
     <Compile Include="Model\Execution\ITestController.cs" />
     <Compile Include="Model\ITestFramework.cs" />
-    <Compile Include="Model\Execution\ITestPlan.cs" />
-    <Compile Include="Model\Execution\ITestPlanFactory.cs" />
     <Compile Include="Model\Serialization\TestComponentData.cs" />
     <Compile Include="Model\Execution\RecursiveTestController.cs" />
     <Compile Include="Model\Serialization\TestStepData.cs" />
@@ -478,7 +478,6 @@
     <Compile Include="Collections\TreeUtils.cs" />
     <Compile Include="Utilities\Hash64.cs" />
     <Compile Include="Hosting\LongLivedMarshalByRefObject.cs" />
-    <Compile Include="Logging\ClientException.cs" />
     <Compile Include="Framework\Context.cs" />
     <Compile Include="Framework\ContextCookie.cs" />
     <Compile Include="Hosting\IAssemblyResolver.cs" />
@@ -565,6 +564,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Framework\Constraints\" />
+    <Folder Include="Model\Junk\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

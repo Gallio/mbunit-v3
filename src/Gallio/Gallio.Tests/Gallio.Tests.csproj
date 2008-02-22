@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -129,12 +129,15 @@
     <Compile Include="Integration\StubContextTest.cs" />
     <Compile Include="Logging\LogTest.cs" />
     <Compile Include="Logging\TextLogWriterTest.cs" />
+    <Compile Include="Model\Execution\TestCommandFactoryTest.cs" />
+    <Compile Include="Model\Filters\NameFilterTest.cs" />
     <Compile Include="Model\Filters\EqualityFilterTest.cs" />
     <Compile Include="Model\Filters\FilterFormatterTest.cs" />
     <Compile Include="Model\Filters\FilterLexerTest.cs" />
     <Compile Include="Model\Filters\FilterParserTest.cs" />
     <Compile Include="Model\Filters\ModelComponentFilterFactoryTest.cs" />
     <Compile Include="Model\Filters\RegexFilterTest.cs" />
+    <Compile Include="Model\TestOutcomeTest.cs" />
     <Compile Include="Reflection\CodeReferenceTest.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolverTest.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtilsTest.cs" />

@@ -68,9 +68,11 @@
         Currently the following filter keys are recognized:
         <list type="bullet">
           <item>Id: Filter by id.</item>
+          <item>Name: Filter by name.</item>
           <item>Assembly: Filter by assembly name.</item>
           <item>Namespace: Filter by namespace name.</item>
-          <item>Type: Filter by type name.</item>
+          <item>Type: Filter by type name, including inherited types.</item>
+          <item>ExactType: Filter by type name, excluding inherited types.</item>
           <item>Member: Filter by member name.</item>
           <item>
             *: All other names are assumed to correspond to metadata keys. See <see cref="MetadataKeys" /> for standard metadata keys.<seealso cref="MetadataKeys" />

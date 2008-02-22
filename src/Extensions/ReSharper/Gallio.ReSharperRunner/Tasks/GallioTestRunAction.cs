@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Hosting.ProgressMonitoring;
@@ -121,7 +122,7 @@ namespace Gallio.ReSharperRunner.Tasks
         private void TestStepStarting(object sender, TestStepRunEventArgs e)
         {
             GallioTestItemTask testTask;
-            if (testTasks.TryGetValue(e.TestData.Id, out testTask))
+            if (testTasks.TryGetValue(e.Test.Id, out testTask))
             {
                 server.TaskStarting(testTask);
             }
@@ -130,7 +131,7 @@ namespace Gallio.ReSharperRunner.Tasks
         private void TestStepLifecyclePhaseChanged(object sender, TestStepRunEventArgs e)
         {
             GallioTestItemTask testTask;
-            if (testTasks.TryGetValue(e.TestData.Id, out testTask))
+            if (testTasks.TryGetValue(e.Test.Id, out testTask))
             {
                 server.TaskProgress(testTask, e.LifecyclePhase);
             }
@@ -139,7 +140,7 @@ namespace Gallio.ReSharperRunner.Tasks
         private void TestStepFinished(object sender, TestStepRunEventArgs e)
         {
             GallioTestItemTask testTask;
-            if (testTasks.TryGetValue(e.TestData.Id, out testTask))
+            if (testTasks.TryGetValue(e.Test.Id, out testTask))
             {
                 server.TaskProgress(testTask, "");
 
@@ -183,44 +184,24 @@ namespace Gallio.ReSharperRunner.Tasks
 
         private void SubmitTestResult(GallioTestItemTask testTask, TestResult result)
         {
-            switch (result.Status)
+            server.TaskFinished(testTask, result.Outcome.DisplayName, GetTaskResultForOutcome(result.Outcome));
+        }
+
+        private static TaskResult GetTaskResultForOutcome(TestOutcome outcome)
+        {
+            switch (outcome.Status)
             {
-                case TestStatus.Canceled:
-                    server.TaskFinished(testTask, "The test was canceled.", TaskResult.Skipped);
-                    break;
-
-                case TestStatus.Error:
-                    server.TaskFinished(testTask, "The test was aborted due to an error.", TaskResult.Error);
-                    break;
-
-                case TestStatus.Ignored:
-                    server.TaskFinished(testTask, "The test was ignored.", TaskResult.Skipped);
-                    break;
-
-                case TestStatus.NotRun:
-                    server.TaskFinished(testTask, "The test was not run.", TaskResult.Skipped);
-                    break;
-
+                case TestStatus.Passed:
+                    return TaskResult.Success;
+                case TestStatus.Failed:
+                case TestStatus.Inconclusive: // FIXME: not very accurate
+                    if (outcome.Category == "error")
+                        return TaskResult.Error;
+                    return TaskResult.Exception;
                 case TestStatus.Skipped:
-                    server.TaskFinished(testTask, "The test was skipped.", TaskResult.Skipped);
-                    break;
-
-                case TestStatus.Executed:
-                    switch (result.Outcome)
-                    {
-                        case TestOutcome.Passed:
-                            server.TaskFinished(testTask, "The test passed.", TaskResult.Success);
-                            break;
-
-                        case TestOutcome.Failed:
-                            server.TaskFinished(testTask, "The test failed.", TaskResult.Exception);
-                            break;
-
-                        case TestOutcome.Inconclusive:
-                            server.TaskFinished(testTask, "The test yielded an inconclusive result.", TaskResult.Skipped); // FIXME
-                            break;
-                    }
-                    break;
+                    return TaskResult.Skipped;
+                default:
+                    throw new ArgumentException("outcome");
             }
         }
 

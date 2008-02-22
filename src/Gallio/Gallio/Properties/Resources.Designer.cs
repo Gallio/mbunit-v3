@@ -379,10 +379,9 @@ namespace Gallio.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to [Lifecycle: Finish ({0})]
-        ///	State:    {1}
-        ///	Outcome:  {2}
-        ///	Asserts:  {3}
-        ///	Duration: {4:0.000}s.
+        ///	Outcome:  {1}
+        ///	Asserts:  {2}
+        ///	Duration: {3:0.000}s.
         /// </summary>
         internal static string DebugMonitor_LifecycleEvent_Finish_EventFormat {
             get {
@@ -532,105 +531,6 @@ namespace Gallio.Properties {
         internal static string FilterParser_ValueExpected {
             get {
                 return ResourceManager.GetString("FilterParser_ValueExpected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [{0}] {1}.
-        /// </summary>
-        internal static string LogMonitor_HeaderFormat {
-            get {
-                return ResourceManager.GetString("LogMonitor_HeaderFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to canceled.
-        /// </summary>
-        internal static string LogMonitor_Status_Canceled {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Canceled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to error.
-        /// </summary>
-        internal static string LogMonitor_Status_Error {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to failed.
-        /// </summary>
-        internal static string LogMonitor_Status_Failed {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ignored.
-        /// </summary>
-        internal static string LogMonitor_Status_Ignored {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Ignored", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to inconclusive.
-        /// </summary>
-        internal static string LogMonitor_Status_Inconclusive {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Inconclusive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to not run.
-        /// </summary>
-        internal static string LogMonitor_Status_NotRun {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_NotRun", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to passed.
-        /// </summary>
-        internal static string LogMonitor_Status_Passed {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Passed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to skipped.
-        /// </summary>
-        internal static string LogMonitor_Status_Skipped {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Skipped", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to starting.
-        /// </summary>
-        internal static string LogMonitor_Status_Starting {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Starting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to unknown.
-        /// </summary>
-        internal static string LogMonitor_Status_Unknown {
-            get {
-                return ResourceManager.GetString("LogMonitor_Status_Unknown", resourceCulture);
             }
         }
         

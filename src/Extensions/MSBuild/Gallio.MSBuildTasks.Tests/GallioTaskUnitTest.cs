@@ -152,11 +152,10 @@ namespace Gallio.MSBuildTasks.Tests
                 report.PackageRun = new PackageRun();
                 report.PackageRun.Statistics.AssertCount = 42;
                 report.PackageRun.Statistics.Duration = 1.5;
-                report.PackageRun.Statistics.FailureCount = 5;
-                report.PackageRun.Statistics.IgnoreCount = 2;
+                report.PackageRun.Statistics.FailedCount = 5;
                 report.PackageRun.Statistics.InconclusiveCount = 11;
-                report.PackageRun.Statistics.PassCount = 21;
-                report.PackageRun.Statistics.SkipCount = 1;
+                report.PackageRun.Statistics.PassedCount = 21;
+                report.PackageRun.Statistics.SkippedCount = 1;
                 report.PackageRun.Statistics.StepCount = 30;
                 report.PackageRun.Statistics.TestCount = 28;
 
@@ -170,11 +169,10 @@ namespace Gallio.MSBuildTasks.Tests
             Assert.AreEqual(ResultCode.Failure, task.ExitCode);
             Assert.AreEqual(42, task.AssertCount);
             Assert.AreEqual(1.5, task.Duration);
-            Assert.AreEqual(5, task.FailureCount);
-            Assert.AreEqual(2, task.IgnoreCount);
+            Assert.AreEqual(5, task.FailedCount);
             Assert.AreEqual(11, task.InconclusiveCount);
-            Assert.AreEqual(21, task.PassCount);
-            Assert.AreEqual(1, task.SkipCount);
+            Assert.AreEqual(21, task.PassedCount);
+            Assert.AreEqual(1, task.SkippedCount);
             Assert.AreEqual(30, task.StepCount);
             Assert.AreEqual(28, task.TestCount);
         }

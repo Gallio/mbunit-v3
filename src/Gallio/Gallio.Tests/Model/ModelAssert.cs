@@ -133,7 +133,6 @@ namespace Gallio.Tests.Model
             Assert.AreEqual(expected.AssertCount, actual.AssertCount);
             Assert.AreEqual(expected.Duration, actual.Duration);
             Assert.AreEqual(expected.Outcome, actual.Outcome);
-            Assert.AreEqual(expected.Status, actual.Status);
         }
     }
 }

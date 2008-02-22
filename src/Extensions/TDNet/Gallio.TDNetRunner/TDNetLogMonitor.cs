@@ -64,7 +64,7 @@ namespace Gallio.TDNetRunner
         {
             // Ignore tests that aren't test cases.
             // Also ignore nested test steps.
-            TestData testData = e.TestData;
+            TestData testData = e.Test;
             if (!testData.IsTestCase || e.TestStepRun.Step.ParentId != null)
                 return;
 
@@ -73,7 +73,7 @@ namespace Gallio.TDNetRunner
             // Since that can be harder to notice, and also is lost when the following
             // test finishes, we print a message in the output window so the user can 
             // progressively see if the tests are passing or failing.
-            if (e.TestStepRun.Result.Outcome == TestOutcome.Passed)
+            if (e.TestStepRun.Result.Outcome.Status == TestStatus.Passed)
             {
                 testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed, 
                     e.TestStepRun.Step.FullName), Category.Info);
@@ -104,14 +104,16 @@ namespace Gallio.TDNetRunner
 
         private static TestState GetTestState(TestOutcome outcome)
         {
-            switch (outcome)
+            switch (outcome.Status)
             {
-                case TestOutcome.Failed:
-                    return TestState.Failed;
-                case TestOutcome.Inconclusive:
-                    return TestState.Ignored;
-                default:
+                case TestStatus.Passed:
                     return TestState.Passed;
+
+                case TestStatus.Skipped:
+                    return TestState.Ignored;
+
+                default:
+                    return TestState.Failed;
             }
         }
     }

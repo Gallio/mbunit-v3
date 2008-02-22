@@ -32,8 +32,8 @@ namespace MbUnit.Tests.Integration
         {
             RunFixtures(typeof(ContextOutcomePassingTestSample));
 
-            AssertTestResult("Passed\nPassed\nPassed\n", TestOutcome.Passed, TestStatus.Executed, typeof(ContextOutcomePassingTestSample), "Test");
-            AssertFixtureResult("Passed\n", TestOutcome.Passed, TestStatus.Executed, typeof(ContextOutcomePassingTestSample));
+            AssertTestResult("Passed\nPassed\nPassed\n", TestStatus.Passed, typeof(ContextOutcomePassingTestSample), "Test");
+            AssertFixtureResult("Passed\n", TestStatus.Passed, typeof(ContextOutcomePassingTestSample));
         }
 
         [Test]
@@ -41,8 +41,8 @@ namespace MbUnit.Tests.Integration
         {
             RunFixtures(typeof(ContextOutcomeFailingSetUpSample));
 
-            AssertTestResult("Passed\nFailed\n", TestOutcome.Failed, TestStatus.Executed, typeof(ContextOutcomeFailingSetUpSample), "Test");
-            AssertFixtureResult("Failed\n", TestOutcome.Failed, TestStatus.Executed, typeof(ContextOutcomeFailingSetUpSample));
+            AssertTestResult("Passed\nFailed\n", TestStatus.Failed, typeof(ContextOutcomeFailingSetUpSample), "Test");
+            AssertFixtureResult("Failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingSetUpSample));
         }
 
         [Test]
@@ -50,8 +50,8 @@ namespace MbUnit.Tests.Integration
         {
             RunFixtures(typeof(ContextOutcomeFailingTestSample));
 
-            AssertTestResult("Passed\nPassed\nFailed\n", TestOutcome.Failed, TestStatus.Executed, typeof(ContextOutcomeFailingTestSample), "Test");
-            AssertFixtureResult("Failed\n", TestOutcome.Failed, TestStatus.Executed, typeof(ContextOutcomeFailingTestSample));
+            AssertTestResult("Passed\nPassed\nFailed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTestSample), "Test");
+            AssertFixtureResult("Failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTestSample));
         }
 
         [Test]
@@ -59,32 +59,28 @@ namespace MbUnit.Tests.Integration
         {
             RunFixtures(typeof(ContextOutcomeFailingTearDownSample));
 
-            AssertTestResult("Passed\nPassed\nPassed\n", TestOutcome.Failed, TestStatus.Executed, typeof(ContextOutcomeFailingTearDownSample), "Test");
-            AssertFixtureResult("Failed\n", TestOutcome.Failed, TestStatus.Executed, typeof(ContextOutcomeFailingTearDownSample));
+            AssertTestResult("Passed\nPassed\nPassed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample), "Test");
+            AssertFixtureResult("Failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample));
         }
 
-        private void AssertTestResult(string expectedOutput, TestOutcome expectedOutcome,
-            TestStatus expectedStatus, Type fixtureType, string memberName)
+        private void AssertTestResult(string expectedOutput, TestStatus expectedStatus, Type fixtureType, string memberName)
         {
             CodeReference codeReference = CodeReference.CreateFromType(fixtureType);
             codeReference.MemberName = memberName;
 
             TestInstanceRun run = GetFirstTestInstanceRun(codeReference);
-            Assert.AreEqual(expectedOutcome, run.RootTestStepRun.Result.Outcome);
-            Assert.AreEqual(expectedStatus, run.RootTestStepRun.Result.Status);
+            Assert.AreEqual(expectedStatus, run.RootTestStepRun.Result.Outcome.Status);
 
             string actualOutput = run.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.Default).ToString();
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
-        private void AssertFixtureResult(string expectedOutput, TestOutcome expectedOutcome,
-            TestStatus expectedStatus, Type fixtureType)
+        private void AssertFixtureResult(string expectedOutput, TestStatus expectedStatus, Type fixtureType)
         {
             CodeReference codeReference = CodeReference.CreateFromType(fixtureType);
 
             TestInstanceRun run = GetFirstTestInstanceRun(codeReference);
-            Assert.AreEqual(expectedOutcome, run.RootTestStepRun.Result.Outcome);
-            Assert.AreEqual(expectedStatus, run.RootTestStepRun.Result.Status);
+            Assert.AreEqual(expectedStatus, run.RootTestStepRun.Result.Outcome.Status);
 
             string actualOutput = run.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.Default).ToString();
             Assert.AreEqual(expectedOutput, actualOutput);

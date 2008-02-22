@@ -16,32 +16,32 @@
 namespace Gallio.MSTestAdapter
 {
     internal static class MSTestAttributes
-    {    
-         internal static string AspNetDevelopmentServerAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.Web.AspNetDevelopmentServerAttribute";
-         internal static string AspNetDevelopmentServerHostAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.Web.AspNetDevelopmentServerHostAttribute";
-         internal static string AssemblyCleanupAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.AssemblyCleanupAttribute";
-         internal static string AssemblyInitializeAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.AssemblyInitializeAttribute";
-         internal static string ClassCleanupAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.ClassCleanupAttribute";
-         internal static string ClassInitializeAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute";
-         internal static string CredentialAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.Web.CredentialAttribute";
-         internal static string CssIterationAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.CssIterationAttribute";
-         internal static string CssProjectStructureAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.CssProjectStructureAttribute";
-         internal static string DataSourceAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.DataSourceAttribute";
-         internal static string DeploymentItemAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.DeploymentItemAttribute";
-         internal static string DescriptionAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute";
-         internal static string ExpectedExceptionAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedExceptionAttribute";
-         internal static string HostTypeAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.HostTypeAttribute";
-         internal static string IgnoreAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute";
-         internal static string OwnerAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.OwnerAttribute";
-         internal static string PriorityAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.PriorityAttribute";
-         internal static string ShadowingAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.ShadowingAttribute";
-         internal static string TestClassAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute";
-         internal static string TestCleanupAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute";
-         internal static string TestInitializeAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute";
-         internal static string TestMethodAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute";
-         internal static string TestPropertyAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute";
-         internal static string TimeoutAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TimeoutAttribute";
-         internal static string UrlToTestAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.Web.UrlToTestAttribute";
-         internal static string WorkItemAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.WorkItemAttribute";
+    {
+        internal const string AspNetDevelopmentServerAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.Web.AspNetDevelopmentServerAttribute";
+        internal const string AspNetDevelopmentServerHostAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.Web.AspNetDevelopmentServerHostAttribute";
+        internal const string AssemblyCleanupAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.AssemblyCleanupAttribute";
+        internal const string AssemblyInitializeAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.AssemblyInitializeAttribute";
+        internal const string ClassCleanupAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.ClassCleanupAttribute";
+        internal const string ClassInitializeAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute";
+        internal const string CredentialAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.Web.CredentialAttribute";
+        internal const string CssIterationAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.CssIterationAttribute";
+        internal const string CssProjectStructureAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.CssProjectStructureAttribute";
+        internal const string DataSourceAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.DataSourceAttribute";
+        internal const string DeploymentItemAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.DeploymentItemAttribute";
+        internal const string DescriptionAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute";
+        internal const string ExpectedExceptionAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedExceptionAttribute";
+        internal const string HostTypeAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.HostTypeAttribute";
+        internal const string IgnoreAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute";
+        internal const string OwnerAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.OwnerAttribute";
+        internal const string PriorityAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.PriorityAttribute";
+        internal const string ShadowingAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.ShadowingAttribute";
+        internal const string TestClassAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute";
+        internal const string TestCleanupAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute";
+        internal const string TestInitializeAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute";
+        internal const string TestMethodAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute";
+        internal const string TestPropertyAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute";
+        internal const string TimeoutAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.TimeoutAttribute";
+        internal const string UrlToTestAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.Web.UrlToTestAttribute";
+        internal const string WorkItemAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.WorkItemAttribute";
     }
 }

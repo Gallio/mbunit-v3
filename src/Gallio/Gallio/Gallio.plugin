@@ -40,10 +40,6 @@
                  service="Gallio.Runner.Reports.IReportManager, Gallio"
                  type="Gallio.Runner.Reports.DefaultReportManager, Gallio" />
 
-      <component id="Core.TestPlanFactory"
-                 service="Gallio.Model.Execution.ITestPlanFactory, Gallio"
-                 type="Gallio.Model.Execution.DependencyTestPlanFactory, Gallio" />
-
       <component id="Core.TestContextTracker"
                  service="Gallio.Model.Execution.ITestContextTracker, Gallio"
                  type="Gallio.Model.Execution.DefaultTestContextTracker, Gallio" />

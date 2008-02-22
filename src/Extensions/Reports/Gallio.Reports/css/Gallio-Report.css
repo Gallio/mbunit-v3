@@ -97,7 +97,7 @@
 	background-color: #ff0000;
 }
 
-.gallio-report .progress-inconclusive
+.gallio-report .progress-inconclusive, .gallio-report .progress-skipped
 {
 	height:100%;
 	float:left;
@@ -133,7 +133,7 @@
 	background-color: #ff0000;
 }
 
-.gallio-report .outcome-inconclusive
+.gallio-report .outcome-inconclusive, .gallio-report .outcome-skipped
 {
 	background-color: #ffff00;
 }

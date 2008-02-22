@@ -152,11 +152,10 @@ namespace Gallio.NAntTasks.Tests
                 report.PackageRun = new PackageRun();
                 report.PackageRun.Statistics.AssertCount = 42;
                 report.PackageRun.Statistics.Duration = 1.5;
-                report.PackageRun.Statistics.FailureCount = 5;
-                report.PackageRun.Statistics.IgnoreCount = 2;
+                report.PackageRun.Statistics.FailedCount = 5;
                 report.PackageRun.Statistics.InconclusiveCount = 11;
-                report.PackageRun.Statistics.PassCount = 21;
-                report.PackageRun.Statistics.SkipCount = 1;
+                report.PackageRun.Statistics.PassedCount = 21;
+                report.PackageRun.Statistics.SkippedCount = 1;
                 report.PackageRun.Statistics.StepCount = 30;
                 report.PackageRun.Statistics.TestCount = 28;
 
@@ -170,11 +169,10 @@ namespace Gallio.NAntTasks.Tests
             Assert.AreEqual(ResultCode.Failure.ToString(), task.Properties["ExitCode"]);
             Assert.AreEqual("42", task.Properties["Stats.AssertCount"]);
             Assert.AreEqual("1.5", task.Properties["Stats.Duration"]);
-            Assert.AreEqual("5", task.Properties["Stats.FailureCount"]);
-            Assert.AreEqual("2", task.Properties["Stats.IgnoreCount"]);
+            Assert.AreEqual("5", task.Properties["Stats.FailedCount"]);
             Assert.AreEqual("11", task.Properties["Stats.InconclusiveCount"]);
-            Assert.AreEqual("21", task.Properties["Stats.PassCount"]);
-            Assert.AreEqual("1", task.Properties["Stats.SkipCount"]);
+            Assert.AreEqual("21", task.Properties["Stats.PassedCount"]);
+            Assert.AreEqual("1", task.Properties["Stats.SkippedCount"]);
             Assert.AreEqual("30", task.Properties["Stats.StepCount"]);
             Assert.AreEqual("28", task.Properties["Stats.TestCount"]);
         }

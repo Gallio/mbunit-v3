@@ -14,7 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 
@@ -30,14 +33,25 @@ namespace Gallio.Runner.Reports
     {
         private int assertCount;
         private double duration;
-        private int failureCount;
-        private int ignoreCount;
-        private int inconclusiveCount;
+
         private int runCount;
-        private int skipCount;
-        private int passCount;
         private int testCount;
         private int stepCount;
+
+        private int passedCount;
+        private int failedCount;
+        private int inconclusiveCount;
+        private int skippedCount;
+
+        private readonly Dictionary<TestOutcome, int> outcomeCounts;
+
+        /// <summary>
+        /// Creates an empty statistics record.
+        /// </summary>
+        public PackageRunStatistics()
+        {
+            outcomeCounts = new Dictionary<TestOutcome, int>();
+        }
 
         /// <summary>
         /// Gets or sets the number of assertions evaluated.
@@ -72,21 +86,21 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the number of test cases that ran and passed.
         /// </summary>
-        [XmlAttribute("passCount")]
-        public int PassCount
+        [XmlAttribute("passedCount")]
+        public int PassedCount
         {
-            get { return passCount; }
-            set { passCount = value; }
+            get { return passedCount; }
+            set { passedCount = value; }
         }
 
         /// <summary>
         /// Gets or sets the number of test cases that ran and failed.
         /// </summary>
-        [XmlAttribute("failureCount")]
-        public int FailureCount
+        [XmlAttribute("failedCount")]
+        public int FailedCount
         {
-            get { return failureCount; }
-            set { failureCount = value; }
+            get { return failedCount; }
+            set { failedCount = value; }
         }
 
         /// <summary>
@@ -100,23 +114,13 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Gets or sets the number of test cases that did not run because they were ignored.
+        /// Gets or sets the number of test cases that did not run.
         /// </summary>
-        [XmlAttribute("ignoreCount")]
-        public int IgnoreCount
+        [XmlAttribute("skippedCount")]
+        public int SkippedCount
         {
-            get { return ignoreCount; }
-            set { ignoreCount = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the number of test cases that did not run because they were skipped.
-        /// </summary>
-        [XmlAttribute("skipCount")]
-        public int SkipCount
-        {
-            get { return skipCount; }
-            set { skipCount = value; }
+            get { return skippedCount; }
+            set { skippedCount = value; }
         }
 
         /// <summary>
@@ -140,12 +144,114 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
+        /// Gets or sets the test outcome summaries.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlArray("outcomeSummaries", IsNullable=false)]
+        [XmlArrayItem("outcomeSummary", IsNullable=false)]
+        public TestOutcomeSummary[] OutcomeSummaries
+        {
+            get
+            {
+                return GenericUtils.ConvertAllToArray<KeyValuePair<TestOutcome, int>, TestOutcomeSummary>(outcomeCounts,
+                    delegate(KeyValuePair<TestOutcome, int> entry)
+                    {
+                        TestOutcomeSummary summary = new TestOutcomeSummary();
+                        summary.Outcome = entry.Key;
+                        summary.Count = entry.Value;
+                        return summary;
+                    });
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                outcomeCounts.Clear();
+
+                foreach (TestOutcomeSummary summary in value)
+                    SetOutcomeCount(summary.Outcome, summary.Count);
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of tests with the specified outcome.
+        /// </summary>
+        /// <param name="outcome">The outcome</param>
+        /// <returns>The number of tests with the specified outcome</returns>
+        public int GetOutcomeCount(TestOutcome outcome)
+        {
+            int count;
+            outcomeCounts.TryGetValue(outcome, out count);
+            return count;
+        }
+
+        /// <summary>
+        /// Ssets the number of tests with the specified outcomee.
+        /// </summary>
+        /// <param name="outcome">The outcome</param>
+        /// <param name="count">The count</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is less than 0</exception>
+        public void SetOutcomeCount(TestOutcome outcome, int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException("count", "Count must be non-negative.");
+
+            outcomeCounts[outcome] = count;
+        }
+
+        /// <summary>
         /// Formats a single line of text summarizing test case results.
         /// </summary>
         public string FormatTestCaseResultSummary()
         {
-            return String.Format("Run: {0}, Passed: {1}, Failed: {2}, Inconclusive: {3}, Ignored: {4}, Skipped: {5}.",
-                runCount, passCount, failureCount, inconclusiveCount, ignoreCount, skipCount);
+            StringBuilder str = new StringBuilder();
+
+            str.Append(runCount).Append(" run, ");
+
+            str.Append(passedCount).Append(" passed");
+            AppendCategorizedOutcomeCounts(str, TestStatus.Passed);
+            str.Append(", ");
+
+            str.Append(failedCount).Append(" failed");
+            AppendCategorizedOutcomeCounts(str, TestStatus.Failed);
+            str.Append(", ");
+
+            str.Append(inconclusiveCount).Append(" inconclusive");
+            AppendCategorizedOutcomeCounts(str, TestStatus.Inconclusive);
+            str.Append(", ");
+
+            str.Append(skippedCount).Append(" skipped");
+            AppendCategorizedOutcomeCounts(str, TestStatus.Skipped);
+
+            return str.ToString();
+        }
+
+        private void AppendCategorizedOutcomeCounts(StringBuilder str, TestStatus status)
+        {
+            SortedDictionary<string, int> categoryCounts = new SortedDictionary<string, int>();
+
+            foreach (KeyValuePair<TestOutcome, int> entry in outcomeCounts)
+                if (entry.Key.Status == status && entry.Key.Category != null)
+                    categoryCounts.Add(entry.Key.Category, entry.Value);
+
+            if (categoryCounts.Count != 0)
+            {
+                str.Append(" (");
+
+                bool first = true;
+                foreach (KeyValuePair<string, int> entry in categoryCounts)
+                {
+                    if (!first)
+                        str.Append(", ");
+                    else
+                        first = false;
+
+                    str.Append(entry.Value).Append(' ').Append(entry.Key);
+                }
+
+                str.Append(')');
+            }
         }
 
         /// <summary>
@@ -166,41 +272,30 @@ namespace Gallio.Runner.Reports
 
             testCount += 1;
 
-            // Tally the various test run states.
-            switch (testStepRun.Result.Status)
+            TestOutcome outcome = testStepRun.Result.Outcome;
+            switch (outcome.Status)
             {
-                case TestStatus.NotRun:
-                    return;
-
-                case TestStatus.Ignored:
-                    ignoreCount += 1;
-                    return;
-
                 case TestStatus.Skipped:
-                    skipCount += 1;
-                    return;
+                    skippedCount += 1;
+                    break;
 
-                case TestStatus.Executed:
-                case TestStatus.Canceled:
+                case TestStatus.Passed:
+                    passedCount += 1;
+                    runCount += 1;
+                    break;
+
+                case TestStatus.Inconclusive:
+                    inconclusiveCount += 1;
+                    runCount += 1;
+                    break;
+
+                case TestStatus.Failed:
+                    failedCount += 1;
                     runCount += 1;
                     break;
             }
 
-            // If the test ran, tally the various outcomes.
-            switch (testStepRun.Result.Outcome)
-            {
-                case TestOutcome.Passed:
-                    passCount += 1;
-                    break;
-
-                case TestOutcome.Failed:
-                    failureCount += 1;
-                    break;
-
-                case TestOutcome.Inconclusive:
-                    inconclusiveCount += 1;
-                    break;
-            }
+            SetOutcomeCount(outcome, GetOutcomeCount(outcome) + 1);
         }
     }
 }

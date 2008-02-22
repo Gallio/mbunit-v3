@@ -33,12 +33,12 @@ namespace Gallio.Runner.Harness
     [Singleton]
     public class DefaultTestHarnessFactory : ITestHarnessFactory
     {
-        private readonly ITestPlanFactory testPlanFactory;
+        private readonly ITestContextTracker contextTracker;
         private readonly IEnumerable<ITestFramework> frameworks;
         private readonly IEnumerable<ITestEnvironment> environments;
 
         /// <summary>
-        /// Creates a test harness using the default <see cref="ITestPlanFactory" />
+        /// Creates a test harness using the default <see cref="ITestContextTracker" />
         /// and all <see cref="ITestFramework" /> and <see cref="ITestEnvironment" />
         /// components registered with the <see cref="Runtime" />.
         /// </summary>
@@ -48,7 +48,7 @@ namespace Gallio.Runner.Harness
         }
 
         /// <summary>
-        /// Creates a test harness using the default <see cref="ITestPlanFactory" />
+        /// Creates a test harness using the default <see cref="ITestContextTracker" />
         /// and all <see cref="ITestFramework" /> and <see cref="ITestEnvironment" />
         /// components registered with the specified <see cref="IRuntime" />.
         /// </summary>
@@ -59,31 +59,31 @@ namespace Gallio.Runner.Harness
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");
 
-            testPlanFactory = runtime.Resolve<ITestPlanFactory>();
+            contextTracker = runtime.Resolve<ITestContextTracker>();
             frameworks = runtime.ResolveAll<ITestFramework>();
             environments = runtime.ResolveAll<ITestEnvironment>();
         }
 
         /// <summary>
-        /// Creates a default test harness factory with the specified <see cref="ITestPlanFactory" />,
+        /// Creates a default test harness factory with the specified <see cref="ITestContextTracker" />,
         /// <see cref="ITestFramework" /> and <see cref="ITestEnvironment" /> components.
         /// </summary>
-        /// <param name="testPlanFactory">The test plan factory</param>
+        /// <param name="contextTracker">The test context tracker</param>
         /// <param name="frameworks">The collection of test frameworks</param>
         /// <param name="environments">The collection of test environments</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPlanFactory"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>,
         /// <paramref name="frameworks" /> or <paramref name="environments"/> is null</exception>
-        public DefaultTestHarnessFactory(ITestPlanFactory testPlanFactory,
+        public DefaultTestHarnessFactory(ITestContextTracker contextTracker,
             IEnumerable<ITestFramework> frameworks, IEnumerable<ITestEnvironment> environments)
         {
-            if (testPlanFactory == null)
-                throw new ArgumentNullException(@"testPlanFactory");
+            if (contextTracker == null)
+                throw new ArgumentNullException("contextTracker");
             if (frameworks == null)
-                throw new ArgumentNullException(@"frameworks");
+                throw new ArgumentNullException("frameworks");
             if (environments == null)
-                throw new ArgumentNullException(@"environments");
+                throw new ArgumentNullException("environments");
 
-            this.testPlanFactory = testPlanFactory;
+            this.contextTracker = contextTracker;
             this.frameworks = frameworks;
             this.environments = environments;
         }
@@ -91,7 +91,7 @@ namespace Gallio.Runner.Harness
         /// <inheritdoc />
         public ITestHarness CreateHarness()
         {
-            DefaultTestHarness harness = new DefaultTestHarness(testPlanFactory);
+            DefaultTestHarness harness = new DefaultTestHarness(contextTracker);
 
             foreach (ITestFramework framework in frameworks)
                 harness.AddTestFramework(framework);

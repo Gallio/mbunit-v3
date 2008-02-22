@@ -36,7 +36,7 @@ namespace Gallio.Runner.Harness
     /// </remarks>
     public class DefaultTestHarness : ITestHarness
     {
-        private ITestPlanFactory testPlanFactory;
+        private ITestContextTracker contextTracker;
 
         private bool isDisposed;
 
@@ -49,14 +49,14 @@ namespace Gallio.Runner.Harness
         /// <summary>
         /// Creates a test harness.
         /// </summary>
-        /// <param name="testPlanFactory">The test plan factory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPlanFactory"/> is null</exception>
-        public DefaultTestHarness(ITestPlanFactory testPlanFactory)
+        /// <param name="contextTracker">The test context tracker</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/> is null</exception>
+        public DefaultTestHarness(ITestContextTracker contextTracker)
         {
-            if (testPlanFactory == null)
-                throw new ArgumentNullException(@"testPlanFactory");
+            if (contextTracker == null)
+                throw new ArgumentNullException("contextTracker");
 
-            this.testPlanFactory = testPlanFactory;
+            this.contextTracker = contextTracker;
 
             frameworks = new List<ITestFramework>();
             environments = new List<ITestEnvironment>();
@@ -71,7 +71,7 @@ namespace Gallio.Runner.Harness
 
                 package = null;
                 model = null;
-                testPlanFactory = null;
+                contextTracker = null;
                 frameworks = null;
                 environments = null;
             }
@@ -240,11 +240,14 @@ namespace Gallio.Runner.Harness
                     foreach (ITestEnvironment environment in environments)
                         environmentStates.Add(environment.SetUp());
                     progressMonitor.Worked(5);
+
+                    progressMonitor.SetStatus("Sorting tests.");
+                    ObservableTestContextManager contextManager = new ObservableTestContextManager(contextTracker, listener);
+                    ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model, options.Filter, contextManager);
+                    progressMonitor.Worked(5);
                     progressMonitor.SetStatus(@"");
 
-                    ITestPlan plan = testPlanFactory.CreateTestPlan(listener);
-                    plan.ScheduleTests(progressMonitor.CreateSubProgressMonitor(5), model, options);
-                    plan.RunTests(progressMonitor.CreateSubProgressMonitor(85));
+                    RunTestCommandsWithinANullContext(rootTestCommand, progressMonitor.CreateSubProgressMonitor(85));
                 }
                 finally
                 {
@@ -253,6 +256,26 @@ namespace Gallio.Runner.Harness
                         environmentState.Dispose();
                     progressMonitor.Worked(5);
                     progressMonitor.SetStatus(@"");
+                }
+            }
+        }
+
+        private void RunTestCommandsWithinANullContext(ITestCommand rootTestCommand, IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor)
+            {
+                if (rootTestCommand != null)
+                {
+                    using (contextTracker.EnterContext(null))
+                    {
+                        Func<ITestController> rootTestControllerFactory = rootTestCommand.Test.TestControllerFactory;
+
+                        if (rootTestControllerFactory != null)
+                        {
+                            using (ITestController controller = rootTestControllerFactory())
+                                controller.RunTests(progressMonitor, rootTestCommand, null);
+                        }
+                    }
                 }
             }
         }

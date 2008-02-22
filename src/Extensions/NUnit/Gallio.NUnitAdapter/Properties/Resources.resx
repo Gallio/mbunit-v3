@@ -135,11 +135,11 @@
   <data name="NUnitTestController_StatusMessages_RunningTest" xml:space="preserve">
     <value>Run test: {0}.</value>
   </data>
-  <data name="NUnitTestController_FailureMessageSectionName" xml:space="preserve">
-    <value>Failure Message</value>
+  <data name="NUnitTestController_ResultMessageSectionName" xml:space="preserve">
+    <value>Message</value>
   </data>
-  <data name="NUnitTestController_FailureStackTraceSectionName" xml:space="preserve">
-    <value>Failure Stack Trace</value>
+  <data name="NUnitTestController_ResultStackTraceSectionName" xml:space="preserve">
+    <value>Stack Trace</value>
   </data>
   <data name="NUnitTestFramework_NUnitFrameworkName" xml:space="preserve">
     <value>NUnit</value>

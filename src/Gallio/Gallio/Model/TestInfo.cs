@@ -47,6 +47,12 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
+        public string FullName
+        {
+            get { return Source.FullName; }
+        }
+
+        /// <inheritdoc />
         public bool IsTestCase
         {
             get { return Source.IsTestCase; }

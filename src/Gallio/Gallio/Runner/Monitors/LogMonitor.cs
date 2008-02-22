@@ -18,7 +18,6 @@ using System.Text;
 using Castle.Core.Logging;
 using Gallio.Logging;
 using Gallio.Model;
-using Gallio.Properties;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Monitors
@@ -72,19 +71,18 @@ namespace Gallio.Runner.Monitors
 
         private void HandleStepStarting(object sender, TestStepRunEventArgs e)
         {
-            logger.DebugFormat(Resources.LogMonitor_HeaderFormat,
-                Resources.LogMonitor_Status_Starting, e.TestStepRun.Step.FullName);
+            logger.DebugFormat("[starting] {0}", e.TestStepRun.Step.FullName);
         }
 
         private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
-            LoggerLevel level;
-            string status = GetFinishedMessageStatus(e.TestStepRun.Result.Outcome, e.TestStepRun.Result.Status, out level);
+            TestOutcome outcome = e.TestStepRun.Result.Outcome;
+            LoggerLevel level = GetLoggerLevelForOutcome(outcome);
             string warnings = FormatStream(e.TestStepRun, LogStreamNames.Warnings);
             string failures = FormatStream(e.TestStepRun, LogStreamNames.Failures);
 
             StringBuilder messageBuilder = new StringBuilder();
-            messageBuilder.AppendFormat(Resources.LogMonitor_HeaderFormat, status, e.TestStepRun.Step.FullName);
+            messageBuilder.AppendFormat("[{0}] {1}", outcome.DisplayName, e.GetStepKind());
 
             if (warnings.Length != 0)
             {
@@ -138,41 +136,23 @@ namespace Gallio.Runner.Monitors
             return stream != null ? stream.ToString() : @"";
         }
 
-        private static string GetFinishedMessageStatus(TestOutcome outcome, TestStatus status, out LoggerLevel level)
+        private static LoggerLevel GetLoggerLevelForOutcome(TestOutcome outcome)
         {
-            switch (outcome)
+            switch (outcome.Status)
             {
-                case TestOutcome.Passed:
-                    level = LoggerLevel.Info;
-                    return Resources.LogMonitor_Status_Passed;
+                case TestStatus.Passed:
+                    return LoggerLevel.Info;
 
-                case TestOutcome.Failed:
-                    level = LoggerLevel.Error;
-                    return Resources.LogMonitor_Status_Failed;
+                case TestStatus.Skipped:
+                case TestStatus.Inconclusive:
+                    return LoggerLevel.Warn;
 
-                case TestOutcome.Inconclusive:
-                    level = LoggerLevel.Info;
+                case TestStatus.Failed:
+                    return LoggerLevel.Error;
 
-                    switch (status)
-                    {
-                        case TestStatus.Canceled:
-                            return Resources.LogMonitor_Status_Canceled;
-                        case TestStatus.Error:
-                            return Resources.LogMonitor_Status_Error;
-                        case TestStatus.Executed:
-                            return Resources.LogMonitor_Status_Inconclusive;
-                        case TestStatus.Ignored:
-                            return Resources.LogMonitor_Status_Ignored;
-                        case TestStatus.NotRun:
-                            return Resources.LogMonitor_Status_NotRun;
-                        case TestStatus.Skipped:
-                            return Resources.LogMonitor_Status_Skipped;
-                    }
-                    break;
+                default:
+                    throw new ArgumentException("outcome");
             }
-
-            level = LoggerLevel.Error;
-            return Resources.LogMonitor_Status_Unknown;
         }
     }
 }

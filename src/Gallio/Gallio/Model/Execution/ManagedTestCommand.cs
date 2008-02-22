@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Gallio.Collections;
 
 namespace Gallio.Model.Execution
@@ -27,7 +28,10 @@ namespace Gallio.Model.Execution
         private readonly ITestContextManager contextManager;
         private readonly ITest test;
         private readonly bool isExplicit;
-        private readonly List<ITestCommand> children;
+
+        private List<ITestCommand> children;
+        private List<ITestCommand> dependencies;
+        private int rootStepFailureCount;
 
         /// <summary>
         /// Creates a test command.
@@ -45,8 +49,6 @@ namespace Gallio.Model.Execution
             this.contextManager = contextManager;
             this.test = test;
             this.isExplicit = isExplicit;
-
-            children = new List<ITestCommand>();
         }
 
         /// <inheritdoc />
@@ -62,6 +64,12 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
+        public int RootStepFailureCount
+        {
+            get { return rootStepFailureCount; }
+        }
+
+        /// <inheritdoc />
         public int TestCount
         {
             get
@@ -74,9 +82,15 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public IEnumerable<ITestCommand> Children
+        public IList<ITestCommand> Children
         {
-            get { return children; }
+            get { return children ?? (IList<ITestCommand>)EmptyArray<ITestCommand>.Instance; }
+        }
+
+        /// <inheritdoc />
+        public IList<ITestCommand> Dependencies
+        {
+            get { return dependencies ?? (IList<ITestCommand>)EmptyArray<ITestCommand>.Instance; }
         }
 
         /// <inheritdoc />
@@ -100,6 +114,21 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
+        public bool AreDependenciesSatisfied()
+        {
+            if (dependencies != null)
+            {
+                foreach (ITestCommand dependency in dependencies)
+                {
+                    if (dependency.RootStepFailureCount != 0)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc />
         public ITestContext StartRootStep(ITestStep rootStep)
         {
             if (rootStep == null)
@@ -107,7 +136,16 @@ namespace Gallio.Model.Execution
             if (rootStep.Parent != null || rootStep.TestInstance.Test != test)
                 throw new ArgumentException("Expected the root step of an instance of this test.", "rootStep");
 
-            return contextManager.StartStep(rootStep);
+            ITestContext context = contextManager.StartStep(rootStep);
+            context.CleanUp += UpdateFailureCount;
+            return context;
+        }
+
+        private void UpdateFailureCount(object sender, EventArgs e)
+        {
+            ITestContext context = (ITestContext)sender;
+            if (context.Outcome.Status == TestStatus.Failed)
+                Interlocked.Increment(ref rootStepFailureCount);
         }
 
         /// <inheritdoc />
@@ -125,7 +163,46 @@ namespace Gallio.Model.Execution
             if (child == null)
                 throw new ArgumentNullException("child");
 
+            if (children == null)
+                children = new List<ITestCommand>();
             children.Add(child);
+        }
+
+        /// <summary>
+        /// Adds a test command dependency.
+        /// </summary>
+        /// <param name="dependency">The dependency to add</param>
+        public void AddDependency(ManagedTestCommand dependency)
+        {
+            if (dependency == null)
+                throw new ArgumentNullException("dependency");
+
+            if (dependencies == null)
+                dependencies = new List<ITestCommand>();
+            dependencies.Add(dependency);
+        }
+
+        /// <summary>
+        /// Clears the children of the command.
+        /// </summary>
+        public void ClearChildren()
+        {
+            if (children != null)
+                children.Clear();
+        }
+
+        /// <summary>
+        /// Gets the list of children as an array.
+        /// </summary>
+        /// <returns>The array of children</returns>
+        public ManagedTestCommand[] ChildrenToArray()
+        {
+            if (children == null)
+                return EmptyArray<ManagedTestCommand>.Instance;
+
+            ManagedTestCommand[] array = new ManagedTestCommand[children.Count];
+            children.CopyTo(array);
+            return array;
         }
     }
 }

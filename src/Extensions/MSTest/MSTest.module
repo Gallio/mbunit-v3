@@ -2,9 +2,11 @@
   <Import Project="$(RootDir)\Module.targets" />
   
   <ItemGroup>
+    <CSharpProject Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework.Stub/Microsoft.VisualStudio.QualityTools.UnitTestFramework.Stub.csproj" />
+    
     <CSharpProject Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.csproj" />
     <CSharpProject Include="Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources.csproj" />
-    <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests.csproj" />    
+    <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

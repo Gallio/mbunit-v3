@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 xmlns:g="http://www.gallio.org/"
                 xmlns="http://www.w3.org/1999/xhtml">
   <xsl:template match="g:report" mode="xhtml-document">
@@ -117,10 +118,9 @@
         Results:
       </td>
       <td>
-        <xsl:value-of select="@runCount" /> run,
-        <xsl:value-of select="@passCount" /> passed,
-        <xsl:value-of select="@failureCount" /> failed,
-        <xsl:value-of select="@inconclusiveCount" /> inconclusive (<xsl:value-of select="@ignoreCount" /> ignored / <xsl:value-of select="@skipCount" /> skipped)
+        <xsl:call-template name="format-statistics">
+          <xsl:with-param name="statistics" select="." />
+        </xsl:call-template>
       </td>
     </tr>
     <tr>
@@ -165,12 +165,13 @@
     <xsl:variable name="test" select="ancestor::g:report/g:testModel/descendant::g:test[@id = $testId]" />
     
     <xsl:if test="$test/@isTestCase = 'false'">
-      <xsl:variable name="testCases" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
-      <xsl:variable name="testCaseResults" select="descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]/g:testStepRun/g:result" />
-
-      <xsl:variable name="passedOutcomeCount" select="count($testCaseResults[@outcome = 'passed'])" />
-      <xsl:variable name="failedOutcomeCount" select="count($testCaseResults[@outcome = 'failed'])" />
-      <xsl:variable name="inconclusiveOutcomeCount" select="count($testCaseResults[@outcome = 'inconclusive'])" />
+      <xsl:variable name="statisticsRaw">
+        <xsl:call-template name="aggregate-statistics">
+          <xsl:with-param name="test" select="$test" />
+          <xsl:with-param name="testInstanceRun" select="." />
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:variable name="statistics" select="msxsl:node-set($statisticsRaw)/g:statistics" />
 
       <li>
         <div>
@@ -193,25 +194,9 @@
 
           <a href="#testInstanceRun-{$id}"><xsl:value-of select="g:testInstance/@name" /></a>
 
-          <xsl:call-template name="progressBar">
-            <xsl:with-param name="passed">
-              <xsl:value-of select="$passedOutcomeCount" />
-            </xsl:with-param>
-            <xsl:with-param name="failed">
-              <xsl:value-of select="$failedOutcomeCount" />
-            </xsl:with-param>
-            <xsl:with-param name="inconclusive">
-              <xsl:value-of select="$inconclusiveOutcomeCount" />
-            </xsl:with-param>
+          <xsl:call-template name="visual-statistics">
+            <xsl:with-param name="statistics" select="$statistics" />
           </xsl:call-template>
-          <span class="outcome-icons">
-            <img src="{$imgDir}Passed.gif" />
-            <xsl:value-of select="$passedOutcomeCount" />
-            <img src="{$imgDir}Failed.gif" />
-            <xsl:value-of select="$failedOutcomeCount" />
-            <img src="{$imgDir}Ignored.gif" />
-            <xsl:value-of select="$inconclusiveOutcomeCount" />            
-          </span>
         </div>
 
         <xsl:if test="g:children/g:testInstanceRun">
@@ -249,20 +234,15 @@
     <xsl:variable name="metadataEntries" select="$test/g:metadata/g:entry|g:testInstance/g:metadata/g:entry|g:testStepRun/g:testStep/g:metadata/g:entry" />
     <xsl:variable name="kind" select="$metadataEntries[@key='TestKind']/g:value" />
     
-    <xsl:variable name="testCases" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
-    <xsl:variable name="testCaseResults" select="descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]/g:testStepRun/g:result" />
-
-    <xsl:variable name="passedOutcomeCount" select="count($testCaseResults[@outcome = 'passed'])" />
-    <xsl:variable name="failedOutcomeCount" select="count($testCaseResults[@outcome = 'failed'])" />
-    <xsl:variable name="inconclusiveOutcomeCount" select="count($testCaseResults[@outcome = 'inconclusive'])" />
-    
-    <xsl:variable name="executedStatusCount" select="count($testCaseResults[@status = 'executed'])" />
-    <xsl:variable name="ignoredStatusCount" select="count($testCaseResults[@status = 'ignored'])" />
-    <xsl:variable name="skippedStatusCount" select="count($testCaseResults[@status = 'skipped'])" />
-
-    <xsl:variable name="totalAssertCount" select="sum($testCaseResults/@assertCount)" />
-
     <xsl:variable name="nestingLevel" select="count(ancestor::g:testInstanceRun)" />
+    
+    <xsl:variable name="statisticsRaw">
+      <xsl:call-template name="aggregate-statistics">
+        <xsl:with-param name="test" select="$test" />
+        <xsl:with-param name="testInstanceRun" select="." />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:variable name="statistics" select="msxsl:node-set($statisticsRaw)/g:statistics" />
 
     <li id="testInstanceRun-{$id}">
       <div class="testInstanceRunHeading testInstanceRunHeading-Level{$nestingLevel}">
@@ -279,29 +259,13 @@
 
         <xsl:choose>
           <xsl:when test="g:children/g:testInstanceRun">
-          <xsl:call-template name="progressBar">
-            <xsl:with-param name="passed">
-              <xsl:value-of select="$passedOutcomeCount" />
-            </xsl:with-param>
-            <xsl:with-param name="failed">
-              <xsl:value-of select="$failedOutcomeCount" />
-            </xsl:with-param>
-            <xsl:with-param name="inconclusive">
-              <xsl:value-of select="$inconclusiveOutcomeCount" />
-            </xsl:with-param>
-          </xsl:call-template>
-            <span class="outcome-icons">
-              <img src="{$imgDir}Passed.gif" />
-              <xsl:value-of select="$passedOutcomeCount" />
-              <img src="{$imgDir}Failed.gif" />
-              <xsl:value-of select="$failedOutcomeCount" />
-              <img src="{$imgDir}Ignored.gif" />
-              <xsl:value-of select="$inconclusiveOutcomeCount" />
-            </span>
+            <xsl:call-template name="visual-statistics">
+              <xsl:with-param name="statistics" select="$statistics" />
+            </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="outcomeBar">
-              <xsl:with-param name="outcome" select="g:testStepRun/g:result/@outcome" />
+              <xsl:with-param name="status" select="g:testStepRun/g:result/g:outcome/@status" />
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
@@ -314,16 +278,15 @@
               <tr class="alternate-row">
                 <td>Results:</td>
                 <td>
-                  <xsl:value-of select="$executedStatusCount" /> run,
-                  <xsl:value-of select="$passedOutcomeCount" /> passed,
-                  <xsl:value-of select="$failedOutcomeCount" /> failed,
-                  <xsl:value-of select="$inconclusiveOutcomeCount" /> inconclusive (<xsl:value-of select="$ignoredStatusCount" /> ignored / <xsl:value-of select="$skippedStatusCount" /> skipped)
+                  <xsl:call-template name="format-statistics">
+                    <xsl:with-param name="statistics" select="$statistics" />
+                  </xsl:call-template>
                 </td>
               </tr>
               <tr>
                 <td>Duration:</td>
                 <td>
-                  <xsl:value-of select="format-number(g:testStepRun/g:result/@duration, '0.00')" />s
+                  <xsl:value-of select="format-number($statistics/@duration, '0.00')" />s
                 </td>
               </tr>
               <tr class="alternate-row">
@@ -331,14 +294,14 @@
                   Assertions:
                 </td>
                 <td>
-                  <xsl:value-of select="$totalAssertCount" />
+                  <xsl:value-of select="$statistics/@assertCount" />
                 </td>
               </tr>
             </table>
           </xsl:when>
           <xsl:otherwise>
-            Duration: <xsl:value-of select="format-number(g:testStepRun/g:result/@duration, '0.00')" />s,
-            Assertions: <xsl:value-of select="$totalAssertCount"/>.
+            Duration: <xsl:value-of select="format-number($statistics/@duration, '0.00')" />s,
+            Assertions: <xsl:value-of select="$statistics/@assertCount"/>.
           </xsl:otherwise>
         </xsl:choose>
 
@@ -384,7 +347,7 @@
         <xsl:value-of select="g:testStep/@fullName" />
         
         <xsl:call-template name="outcomeBar">
-          <xsl:with-param name="outcome" select="g:result/@outcome" />
+          <xsl:with-param name="status" select="g:result/g:outcome/@status" />
         </xsl:call-template>
         
         (Duration: <xsl:value-of select="format-number(g:result/@duration, '0.00')" />s, Assertions: <xsl:value-of select="$assertions"/>)
@@ -560,24 +523,6 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template name="print-text-with-line-breaks">
-    <xsl:param name="text" />
-    <xsl:variable name="tail" select="substring-after($text, '&#10;')" />
-
-    <xsl:choose>
-      <xsl:when test="$tail!=''">
-        <xsl:value-of select="substring-before($text, '&#10;')" />
-        <br/>
-        <xsl:call-template name="print-text-with-line-breaks">
-          <xsl:with-param name="text" select="$tail" />
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$text" />
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
   <!--
   <xsl:template name="icon">
     <xsl:param name="kind" />
@@ -603,12 +548,12 @@
 
   <!-- Outcome bar -->
   <xsl:template name="outcomeBar">
-    <xsl:param name="outcome" />
+    <xsl:param name="status" />
 
     <table class="outcomeBar">
       <tr>
         <td>
-          <div class="outcomeBar outcome-{$outcome}">
+          <div class="outcomeBar outcome-{$status}">
             <xsl:text> </xsl:text>
           </div>
         </td>
@@ -621,8 +566,9 @@
     <xsl:param name="passed" select="0"/>
     <xsl:param name="failed" select="0"/>
     <xsl:param name="inconclusive" select="0"/>
+    <xsl:param name="skipped" select="0"/>
 
-    <xsl:variable name="total" select="$passed + $failed + $inconclusive" />
+    <xsl:variable name="total" select="$passed + $failed + $inconclusive + $skipped" />
 
     <table class="progressBar">
       <tr>
@@ -637,18 +583,15 @@
             <xsl:if test="$inconclusive > 0">
               <div class="progress-inconclusive" style="width:{100.0 * $inconclusive div $total}%" />
             </xsl:if>
+            <xsl:if test="$skipped > 0">
+              <div class="progress-skipped" style="width:{100.0 * $skipped div $total}%" />
+            </xsl:if>
           </div>
         </td>
       </tr>
     </table>
   </xsl:template>
 
-  <!-- Pretty print date time values -->
-  <xsl:template name="format-datetime">
-    <xsl:param name="datetime" />
-    <xsl:value-of select="substring($datetime, 12, 8)" />, <xsl:value-of select="substring($datetime, 1, 10)" />
-  </xsl:template>
-  
   <!-- Toggle buttons -->
   <xsl:template name="toggle">
     <xsl:param name="href" />
@@ -660,27 +603,35 @@
     <img src="{$imgDir}FullStop.gif" alt="Toggle Placeholder" />
   </xsl:template>
   
-  <!-- Namespace stripping adapted from http://www.xml.com/pub/a/2004/05/05/tr.html -->
-  <xsl:template name="strip-namespace" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-    <xsl:param name="nodes" />
-    <xsl:apply-templates select="msxsl:node-set($nodes)" mode="strip-namespace" />
+  <!-- Displays visual statistics using a progress bar and outcome icons -->
+  <xsl:template name="visual-statistics">
+    <xsl:param name="statistics"/>
+    
+    <xsl:call-template name="progressBar">
+      <xsl:with-param name="passed">
+        <xsl:value-of select="$statistics/@passedCount" />
+      </xsl:with-param>
+      <xsl:with-param name="failed">
+        <xsl:value-of select="$statistics/@failedCount" />
+      </xsl:with-param>
+      <xsl:with-param name="inconclusive">
+        <xsl:value-of select="$statistics/@inconclusiveCount" />
+      </xsl:with-param>
+      <xsl:with-param name="skipped">
+        <xsl:value-of select="$statistics/@skippedCount" />
+      </xsl:with-param>
+    </xsl:call-template>
+    
+    <span class="outcome-icons">
+      <img src="{$imgDir}Passed.gif" />
+      <xsl:value-of select="$statistics/@passedCount" />
+      <img src="{$imgDir}Failed.gif" />
+      <xsl:value-of select="$statistics/@failedCount" />
+      <img src="{$imgDir}Ignored.gif" />
+      <xsl:value-of select="$statistics/@inconclusiveCount + $statistics/@skippedCount" />            
+    </span>
   </xsl:template>
   
-  <xsl:template match="*" mode="strip-namespace">
-    <xsl:element name="{local-name()}" namespace="">
-      <xsl:apply-templates select="@*|node()" mode="strip-namespace"/>
-    </xsl:element>
-  </xsl:template>
-
-  <xsl:template match="@*" mode="strip-namespace">
-    <xsl:attribute name="{local-name()}" namespace="">
-      <xsl:value-of select="."/>
-    </xsl:attribute>
-  </xsl:template>
-
-  <xsl:template match="processing-instruction()|comment()" mode="strip-namespace">
-    <xsl:copy>
-      <xsl:apply-templates select="node()" mode="strip-namespace"/>
-    </xsl:copy>
-  </xsl:template>  
+  <!-- Include the common report template -->
+  <xsl:include href="Gallio-Report.common.xsl" />  
 </xsl:stylesheet>

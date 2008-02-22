@@ -361,12 +361,11 @@ namespace Gallio.NAntTasks
         /// The following properties are available:
         /// <list type="bullet">
         /// <item><term>AssertCount</term><description>Gets the number of assertions evaluated.</description></item>
-        /// <item><term>FailureCount</term><description>Gets the total number of test cases that were run and failed.</description></item>
-        /// <item><term>IgnoreCount</term><description>Gets the total number of test cases that did not run because they were ignored.</description></item>
+        /// <item><term>FailedCount</term><description>Gets the total number of test cases that were run and failed.</description></item>
         /// <item><term>InconclusiveCount</term><description>Gets the total number of test cases that ran and were inconclusive.</description></item>
-        /// <item><term>PassCount</term><description>Gets the total number of test cases that were run and passed.</description></item>
+        /// <item><term>PassedCount</term><description>Gets the total number of test cases that were run and passed.</description></item>
+        /// <item><term>SkippedCount</term><description>Gets the total number of test cases that did not run because they were skipped.</description></item>
         /// <item><term>RunCount</term><description>Gets the total number of test cases that were run.</description></item>
-        /// <item><term>SkipCount</term><description>Gets the total number of test cases that did not run because they were skipped.</description></item>
         /// <item><term>TestCount</term><description>Gets the total number of test cases.</description></item>
         /// <item><term>StepCount</term><description>Gets the total number of test steps.</description></item>
         /// </list>
@@ -381,12 +380,11 @@ namespace Gallio.NAntTasks
         ///         </assemblies>
         ///     </gallio>
         ///     <echo message="AssertCount = ${gallio.AssertCount}" />
-        ///     <echo message="FailureCount = ${gallio.FailureCount}" />
-        ///     <echo message="IgnoreCount = ${gallio.IgnoreCount}" />
+        ///     <echo message="FailedCount = ${gallio.FailedCount}" />
         ///     <echo message="InconclusiveCount = ${gallio.InconclusiveCount}" />
-        ///     <echo message="PassCount = ${gallio.PassCount}" />
+        ///     <echo message="PassedCount = ${gallio.PassedCount}" />
+        ///     <echo message="SkippedCount = ${gallio.SkippedCount}" />
         ///     <echo message="RunCount = ${gallio.RunCount}" />
-        ///     <echo message="SkipCount = ${gallio.SkipCount}" />
         ///     <echo message="TestCount = ${gallio.TestCount}" />
         ///     <echo message="StepCount = ${gallio.StepCount}" />
         /// </target>
@@ -501,12 +499,11 @@ namespace Gallio.NAntTasks
 
             Properties[statisticsPropertiesPrefix + @"TestCount"] = stats.TestCount.ToString();
             Properties[statisticsPropertiesPrefix + @"StepCount"] = stats.StepCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"PassCount"] = stats.PassCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"FailureCount"] = stats.FailureCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"IgnoreCount"] = stats.IgnoreCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"PassedCount"] = stats.PassedCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"FailedCount"] = stats.FailedCount.ToString();
             Properties[statisticsPropertiesPrefix + @"InconclusiveCount"] = stats.InconclusiveCount.ToString();
             Properties[statisticsPropertiesPrefix + @"RunCount"] = stats.RunCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"SkipCount"] = stats.SkipCount.ToString();
+            Properties[statisticsPropertiesPrefix + @"SkippedCount"] = stats.SkippedCount.ToString();
             Properties[statisticsPropertiesPrefix + @"Duration"] = stats.Duration.ToString();
             Properties[statisticsPropertiesPrefix + @"AssertCount"] = stats.AssertCount.ToString();
         }

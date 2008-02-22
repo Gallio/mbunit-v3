@@ -56,8 +56,10 @@ namespace Gallio.NCoverIntegration.Tests
             TestLauncherResult result = launcher.Run();
 
             Assert.AreEqual(2, result.Statistics.RunCount);
-            Assert.AreEqual(1, result.Statistics.PassCount);
-            Assert.AreEqual(1, result.Statistics.FailureCount);
+            Assert.AreEqual(1, result.Statistics.PassedCount);
+            Assert.AreEqual(1, result.Statistics.FailedCount);
+            Assert.AreEqual(0, result.Statistics.InconclusiveCount);
+            Assert.AreEqual(0, result.Statistics.SkippedCount);
 
             Assert.IsTrue(File.Exists(coverageFilePath),
                 "The NCover runner should have written its coverage log to '{0}'.", coverageFilePath);

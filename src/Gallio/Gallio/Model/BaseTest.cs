@@ -112,6 +112,17 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
+        public string FullName
+        {
+            get
+            {
+                if (parent == null)
+                    return Name;
+                return String.Concat(parent.FullName, ".", Name);
+            }
+        }
+
+        /// <inheritdoc />
         public ITest Parent
         {
             get { return parent; }

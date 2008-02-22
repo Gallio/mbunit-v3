@@ -99,12 +99,11 @@ namespace Gallio.MSBuildTasks
 
         private int assertCount;
         private double duration;
-        private int failureCount;
-        private int ignoreCount;
+        private int failedCount;
         private int inconclusiveCount;
-        private int passCount;
+        private int passedCount;
         private int runCount;
-        private int skipCount;
+        private int skippedCount;
         private int stepCount;
         private int testCount;
 
@@ -430,20 +429,20 @@ namespace Gallio.MSBuildTasks
         /// <code>
         /// <![CDATA[
         /// <Gallio>
-        ///      <!-- This tells MSBuild that the task's PassCount output property will
-        ///           be made available as a property called PassCount in the project
+        ///      <!-- This tells MSBuild that the task's PassedCount output property will
+        ///           be made available as a property called PassedCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="TestCount" PropertyName="PassCount" />
+        ///     <Output TaskParameter="PassedCount" PropertyName="PassedCount" />
         /// </Gallio>
         /// <!-- After execution the number of passed tests can be retrieved like this: -->
-        /// <Message Text="$(PassCount) tests passed." />
+        /// <Message Text="$(PassedCount) tests passed." />
         /// ]]>
         /// </code>
         /// </example>
         [Output]
-        public int PassCount
+        public int PassedCount
         {
-            get { return passCount; }
+            get { return passedCount; }
         }
 
         /// <summary>
@@ -455,45 +454,20 @@ namespace Gallio.MSBuildTasks
         /// <code>
         /// <![CDATA[
         /// <Gallio>
-        ///      <!-- This tells MSBuild that the task's FailCount output property will
-        ///           be made available as a property called FailCount in the project
+        ///      <!-- This tells MSBuild that the task's FailedCount output property will
+        ///           be made available as a property called FailedCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="FailCount" PropertyName="FailCount" />
+        ///     <Output TaskParameter="FailedCount" PropertyName="FailedCount" />
         /// </Gallio>
         /// <!-- After execution the number of failed tests can be retrieved like this: -->
-        /// <Message Text="$(FailCount) tests passed." />
+        /// <Message Text="$(FailedCount) tests passed." />
         /// ]]>
         /// </code>
         /// </example>
         [Output]
-        public int FailureCount
+        public int FailedCount
         {
-            get { return failureCount; }
-        }
-
-        /// <summary>
-        /// Gets the total number of test cases that did not run because they were ignored.
-        /// </summary>
-        /// <example>
-        /// To use this property, you need to include an Output tag within the
-        /// Gallio tag to specify a name to reference it:
-        /// <code>
-        /// <![CDATA[
-        /// <Gallio>
-        ///      <!-- This tells MSBuild that the task's IgnoreCount output property will
-        ///           be made available as a property called IgnoreCount in the project
-        ///           after the tests have been run: -->
-        ///     <Output TaskParameter="IgnoreCount" PropertyName="IgnoreCount" />
-        /// </Gallio>
-        /// <!-- After execution the number of ignored tests can be retrieved like this: -->
-        /// <Message Text="$(IgnoreCount) tests were ignored." />
-        /// ]]>
-        /// </code>
-        /// </example>
-        [Output]
-        public int IgnoreCount
-        {
-            get { return ignoreCount; }
+            get { return failedCount; }
         }
 
         /// <summary>
@@ -555,20 +529,20 @@ namespace Gallio.MSBuildTasks
         /// <code>
         /// <![CDATA[
         /// <Gallio>
-        ///      <!-- This tells MSBuild that the task's SkipCount output property will
-        ///           be made available as a property called SkipCount in the project
+        ///      <!-- This tells MSBuild that the task's SkippedCount output property will
+        ///           be made available as a property called SkippedCount in the project
         ///           after the tests have been run: -->
-        ///     <Output TaskParameter="SkipCount" PropertyName="SkipCount" />
+        ///     <Output TaskParameter="SkippedCount" PropertyName="SkippedCount" />
         /// </Gallio>
         /// <!-- After execution the number of skipped tests can be retrieved like this: -->
-        /// <Message Text="$(SkipCount) tests were skipped." />
+        /// <Message Text="$(SkippedCount) tests were skipped." />
         /// ]]>
         /// </code>
         /// </example>
         [Output]
-        public int SkipCount
+        public int SkippedCount
         {
-            get { return skipCount; }
+            get { return skippedCount; }
         }
 
         /// <summary>
@@ -715,12 +689,11 @@ namespace Gallio.MSBuildTasks
             PackageRunStatistics stats = result.Statistics;
             assertCount = stats.AssertCount;
             duration = stats.Duration;
-            failureCount = stats.FailureCount;
-            ignoreCount = stats.IgnoreCount;
+            failedCount = stats.FailedCount;
             inconclusiveCount = stats.InconclusiveCount;
-            passCount = stats.PassCount;
+            passedCount = stats.PassedCount;
+            skippedCount = stats.SkippedCount;
             runCount = stats.RunCount;
-            skipCount = stats.SkipCount;
             stepCount = stats.StepCount;
             testCount = stats.TestCount;
         }

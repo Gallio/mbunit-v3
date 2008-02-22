@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio;
 using Gallio.Collections;
 using Gallio.Logging;
 using Gallio.Model;
@@ -41,8 +40,8 @@ namespace Gallio.Model.Execution
     /// <para>
     /// When the context is disposed, its associated test step is automatically
     /// marked as being finished unless <see cref="FinishStep" /> was previously called.
-    /// When this occurs the test step is finished with a status of
-    /// <see cref="TestStatus.Error" /> and an outcome of <see cref="TestOutcome.Failed" />.
+    /// When this occurs the test step is finished with an outcome of
+    /// <see cref="TestOutcome.Error" />.
     /// </para>
     /// </summary>
     public interface ITestContext : IDisposable
@@ -134,30 +133,6 @@ namespace Gallio.Model.Execution
         void AddMetadata(string metadataKey, string metadataValue);
 
         /// <summary>
-        /// <para>
-        /// Performs an action as a new step within the current context and associates it
-        /// with the specified code reference.
-        /// </para>
-        /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
-        /// enters the child context, performs the action, then exits the child context.
-        /// </para>
-        /// </summary>
-        /// <remarks>
-        /// This method may be called recursively to create nested steps or concurrently
-        /// to create parallel steps.
-        /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="action">The action to perform</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
-        /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="Exception">Any exception thrown by the action</exception>
-        ITestContext RunStep(string name, ICodeElementInfo codeElement, Action action);
-
-        /// <summary>
         /// Starts a child step of the test and returns its context.
         /// </summary>
         /// <remarks>
@@ -198,11 +173,10 @@ namespace Gallio.Model.Execution
         /// disposed.  Then <see cref="CleanUp"/> actions are executed.  Finally, the current
         /// thread's test context is exited.
         /// </remarks>
-        /// <param name="status">The final test status</param>
         /// <param name="outcome">The final test outcome</param>
         /// <param name="actualDuration">The actual duration of the step, if null the step monitor
         /// will record the duration as the total amount of time since the step monitor was started</param>
         /// <seealso cref="CleanUp"/>
-        void FinishStep(TestStatus status, TestOutcome outcome, TimeSpan? actualDuration);
+        void FinishStep(TestOutcome outcome, TimeSpan? actualDuration);
     }
 }
