@@ -72,9 +72,9 @@ namespace Gallio.Tests.Framework.Data.Binders
             DataSource source = new DataSource("name");
             source.AddDataSet(new RowSequenceDataSet(new IDataRow[]
             {
-                new ScalarDataRow<int>(42, null),
-                new ScalarDataRow<string>("42", null)
-            }, 1, false));
+                new ScalarDataRow<int>(42, null, false),
+                new ScalarDataRow<string>("42", null, false)
+            }, 1));
 
             using (Mocks.Record())
             {
@@ -86,7 +86,7 @@ namespace Gallio.Tests.Framework.Data.Binders
                 IDataBindingAccessor accessor = binder.Register(context, resolver);
                 Assert.IsTrue(context.DataSets.Contains(source), "The data sets list should contain the source that was resolved during binder registration.");
 
-                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems());
+                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(true));
                 Assert.AreEqual(2, items.Count);
 
                 Assert.AreEqual(42, accessor.GetValue(items[0]));

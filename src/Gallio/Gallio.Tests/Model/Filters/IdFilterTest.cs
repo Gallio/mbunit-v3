@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using Gallio.Tests;
-using MbUnit2::MbUnit.Framework;
 
 using Gallio.Model.Filters;
 using Gallio.Model;
+using MbUnit.Framework;
 using Rhino.Mocks;
 using ITestComponent=Gallio.Model.ITestComponent;
 
@@ -28,7 +27,7 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(IdFilter<ITestComponent>))]
     public class IdFilterTest : BaseUnitTest
     {
-        [RowTest]
+        [Test]
         [Row(true, "expectedValue")]
         [Row(false, "otherValue")]
         public void IsMatchCombinations(bool expectedMatch, string value)
@@ -41,7 +40,7 @@ namespace Gallio.Tests.Model.Filters
                 new IdFilter<ITestComponent>(new EqualityFilter<string>("expectedValue")).IsMatch(component));
         }
 
-        [RowTest]
+        [Test]
         [Row("")]
         [Row("id1212")]
         public void ToStringTest(string id)

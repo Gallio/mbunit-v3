@@ -36,6 +36,12 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
+        public string FullName
+        {
+            get { return Source.FullName; }
+        }
+
+        /// <inheritdoc />
         public bool IsDynamic
         {
             get { return Source.IsDynamic; }
@@ -65,11 +71,6 @@ namespace Gallio.Model
         ITestInstance ITestInstance.Parent
         {
             get { return Parent; }
-        }
-
-        object ITestInstance.GetParameterValue(ITestParameter parameter)
-        {
-            throw new NotSupportedException();
         }
 
         /// <inheritdoc />

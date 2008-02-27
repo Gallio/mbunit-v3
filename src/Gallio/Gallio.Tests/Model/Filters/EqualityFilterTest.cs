@@ -13,9 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using Gallio.Model;
 using Gallio.Model.Filters;
 
@@ -45,7 +44,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsTrue(CreateFilter().IsMatch("MbUnit"));
         }
 
-        [RowTest]
+        [Test]
         [Row(null)]
         [Row("")]
         [Row("MbUnit2")]

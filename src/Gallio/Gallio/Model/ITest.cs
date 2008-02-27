@@ -62,7 +62,7 @@ namespace Gallio.Model
     {
         /// <summary>
         /// Gets the full name of the test.  The full name is derived by concatenating the
-        /// <see cref="FullName" /> of the <see cref="Parent"/> followed by a period ('.')
+        /// <see cref="FullName" /> of the <see cref="Parent"/> followed by a slash ('/')
         /// followed by the <see cref="ITestComponent.Name" /> of this test.
         /// </summary>
         string FullName { get; }

@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 
 using Gallio.Model;
 using Gallio.Model.Filters;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Model.Filters
 {
@@ -25,7 +24,7 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(FilterFormatter))]
     public class FilterFormatterTest
     {
-        [RowTest]
+        [Test]
         [Row("*")]
         [Row("Key: /reg ex/")]
         [Row("Key: /reg ex/i")]

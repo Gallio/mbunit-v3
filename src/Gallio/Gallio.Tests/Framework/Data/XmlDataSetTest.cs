@@ -15,11 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using System.Xml.XPath;
+using Gallio.Collections;
 using Gallio.Framework.Data;
 using MbUnit.Framework;
+using InterimAssert = MbUnit.Framework.InterimAssert;
 
 namespace Gallio.Tests.Framework.Data
 {
@@ -41,13 +42,28 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
-        public void IsDynamicPropertyIsSameAsWasSpecifiedInTheConstructor()
+        [Row(true)]
+        [Row(false)]
+        public void IsDynamicPropertyIsSameAsWasSpecifiedInTheConstructor(bool isDynamic)
         {
-            XmlDataSet dataSet = new XmlDataSet(new XmlDocument(), "", true);
-            Assert.IsTrue(dataSet.IsDynamic);
+            XmlDocument document = new XmlDocument();
+            document.LoadXml("<root><rows><row a=\"42\"/></rows></root>");
 
-            dataSet = new XmlDataSet(new XmlDocument(), "", false);
-            Assert.IsFalse(dataSet.IsDynamic);
+            XmlDataSet dataSet = new XmlDataSet(document, "//row", isDynamic);
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
+            Assert.AreEqual(1, rows.Count);
+            Assert.AreEqual(isDynamic, rows[0].IsDynamic);
+        }
+
+        [Test]
+        public void GetRowsReturnsNothingIfIsDynamicAndNotIncludingDynamicRows()
+        {
+            XmlDocument document = new XmlDocument();
+            document.LoadXml("<root><rows><row a=\"42\"/></rows></root>");
+
+            XmlDataSet dataSet = new XmlDataSet(document, "//row", true);
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, false));
+            Assert.AreEqual(0, rows.Count);
         }
 
         [Test]
@@ -89,7 +105,7 @@ namespace Gallio.Tests.Framework.Data
                 new SimpleDataBinding(typeof(string), "@b", null)
             };
 
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(bindings));
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(bindings, true));
 
             Assert.AreEqual("42", ((XPathNavigator)rows[0].GetValue(bindings[0])).Value);
             Assert.AreEqual("x", ((XPathNavigator)rows[0].GetValue(bindings[1])).Value);

@@ -13,12 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
-using MbUnit2::MbUnit.Framework;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
+using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Tests
@@ -47,13 +42,11 @@ namespace Gallio.Tests
         }
 
         [SetUp]
-        [global::MbUnit.Framework.SetUp]
         public virtual void SetUp()
         {
         }
 
         [TearDown]
-        [global::MbUnit.Framework.TearDown]
         public virtual void TearDown()
         {
             if (mocks != null)

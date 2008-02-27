@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
 {
@@ -30,13 +29,22 @@ namespace Gallio.Tests.Framework.Data
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfListIsNull()
         {
-            new ListDataRow<object>(null, EmptyArray<KeyValuePair<string, string>>.Instance);
+            new ListDataRow<object>(null, EmptyArray<KeyValuePair<string, string>>.Instance, false);
+        }
+
+        [Test]
+        [Row(true)]
+        [Row(false)]
+        public void IsDynamicReturnsSameValueAsWasSpecifiedInTheConstructor(bool isDynamic)
+        {
+            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, null, isDynamic);
+            Assert.AreEqual(isDynamic, row.IsDynamic);
         }
 
         [Test]
         public void HasNoMetadataIfNullSpecifiedInConstructor()
         {
-            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, null);
+            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, null, false);
             List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>(row.GetMetadata());
             Assert.AreEqual(0, metadata.Count);
         }
@@ -45,12 +53,12 @@ namespace Gallio.Tests.Framework.Data
         public void ContainSameMetadataAsSpecifiedInConstructor()
         {
             List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
-            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, metadata);
+            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, metadata, false);
 
             Assert.AreSame(metadata, row.GetMetadata());
         }
 
-        [RowTest]
+        [Test]
         [Row(null, null, ExpectedException=typeof(DataBindingException))]
         [Row(null, 3, ExpectedException=typeof(DataBindingException))]
         [Row(null, -1, ExpectedException=typeof(DataBindingException))]
@@ -64,7 +72,7 @@ namespace Gallio.Tests.Framework.Data
         public void GetValueReturnsValueOnlyIfTheBindingIndexIsWithinTheListCount(string path, object index)
         {
             object[] values = new object[] { "abc", "def", 42 };
-            ListDataRow<object> row = new ListDataRow<object>(values, null);
+            ListDataRow<object> row = new ListDataRow<object>(values, null, false);
             object value = row.GetValue(new SimpleDataBinding(typeof(string), path, (int?)index));
 
             Assert.AreEqual(values[(int)index], value);

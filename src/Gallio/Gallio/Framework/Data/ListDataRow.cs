@@ -35,9 +35,10 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="values">The list of values</param>
         /// <param name="metadata">The metadata enumeration, or null if none</param>
+        /// <param name="isDynamic">True if the row contains dynamic data</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null</exception>
-        public ListDataRow(IList<T> values, IEnumerable<KeyValuePair<string, string>> metadata)
-            : base(metadata)
+        public ListDataRow(IList<T> values, IEnumerable<KeyValuePair<string, string>> metadata, bool isDynamic)
+            : base(metadata, isDynamic)
         {
             if (values == null)
                 throw new ArgumentNullException("values");

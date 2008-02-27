@@ -14,19 +14,27 @@
 // limitations under the License.
 
 using System;
-using Gallio.Reflection;
-using Gallio.Framework.Explorer;
-using Gallio.Framework.Patterns;
+using Gallio.Logging;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
     /// The test attribute is applied to a method that represents a single test
-    /// case within a fixture.  If the method throws an unexpected exception,
+    /// case within a fixture.  By default, if the method throws an unexpected exception,
     /// the test will be deemed to have failed.  Otherwise, the test will pass.
+    /// </para>
+    /// <para>
+    /// The default behavior may be modified by test decorator attributes that
+    /// may alter the execution environment of the test, catch and reinterpret
+    /// any exceptions it throws, or impose additional constraints upon its execution.
+    /// </para>
+    /// <para>
     /// Output from the test, such as text written to the console, is captured
-    /// by the framework and will be included in the test report.
+    /// by the framework and will be included in the test report.  Additional
+    /// information can also be logged during test execution using the <see cref="Log" />
+    /// class.
     /// </para>
     /// </summary>
     /// <remarks>
@@ -43,12 +51,5 @@ namespace MbUnit.Framework
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class TestAttribute : TestMethodPatternAttribute
     {
-        /// <inheritdoc />
-        protected override void InitializeTest(IPatternTestBuilder methodTestBuilder, IMethodInfo method)
-        {
-            methodTestBuilder.Test.ExecuteChain.After(PatternTestUtils.CreateFixtureMethodInvoker(method));
-
-            base.InitializeTest(methodTestBuilder, method);
-        }
     }
 }

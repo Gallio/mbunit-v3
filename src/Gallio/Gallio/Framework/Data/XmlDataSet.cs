@@ -70,12 +70,6 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public override bool IsDynamic
-        {
-            get { return isDynamic; }
-        }
-
-        /// <inheritdoc />
         public override int ColumnCount
         {
             get { return 0; }
@@ -101,18 +95,21 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
-            foreach (XPathNavigator row in document.CreateNavigator().Select(rowPath))
-                yield return new XmlDataRow(row);
+            if (!isDynamic || includeDynamicRows)
+            {
+                foreach (XPathNavigator row in document.CreateNavigator().Select(rowPath))
+                    yield return new XmlDataRow(row, isDynamic);
+            }
         }
 
         private sealed class XmlDataRow : BaseDataRow
         {
             private readonly XPathNavigator row;
 
-            public XmlDataRow(XPathNavigator row)
-                : base(null)
+            public XmlDataRow(XPathNavigator row, bool isDynamic)
+                : base(null, isDynamic)
             {
                 this.row = row;
             }

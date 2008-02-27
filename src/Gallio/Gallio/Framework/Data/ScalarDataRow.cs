@@ -35,8 +35,9 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="value">The value to hold</param>
         /// <param name="metadata">The metadata enumeration, or null if none</param>
-        public ScalarDataRow(T value, IEnumerable<KeyValuePair<string, string>> metadata)
-            : base(metadata)
+        /// <param name="isDynamic">True if the row contains dynamic data</param>
+        public ScalarDataRow(T value, IEnumerable<KeyValuePair<string, string>> metadata, bool isDynamic)
+            : base(metadata, isDynamic)
         {
             this.value = value;
         }

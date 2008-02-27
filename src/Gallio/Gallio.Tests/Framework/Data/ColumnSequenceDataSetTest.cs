@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 
 using System;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ using System.Text;
 using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Model;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using Rhino.Mocks.Constraints;
 
 namespace Gallio.Tests.Framework.Data
@@ -37,13 +36,14 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
-        public void IsDynamicIsSameAsSpecifiedInConstructor()
+        [Row(true)]
+        [Row(false)]
+        public void IsDynamicIsSameAsSpecifiedInConstructor(bool isDynamic)
         {
-            ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(EmptyArray<object>.Instance, null, true);
-            Assert.IsTrue(dataSet.IsDynamic);
+            ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(new object[] { "a" }, null, isDynamic);
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
 
-            dataSet = new ColumnSequenceDataSet(EmptyArray<object>.Instance, null, false);
-            Assert.IsFalse(dataSet.IsDynamic);
+            Assert.AreEqual(isDynamic, rows[0].IsDynamic);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Gallio.Tests.Framework.Data
         public void RowsContainEmptyMetadataWhenParameterWasNull()
         {
             ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(new object[] { "a" }, null, false);
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance));
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
 
             Assert.IsNotNull(rows[0].GetMetadata());
             Assert.IsFalse(rows[0].GetMetadata().GetEnumerator().MoveNext());
@@ -68,7 +68,7 @@ namespace Gallio.Tests.Framework.Data
         {
             List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
             ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(new object[] { "a" }, metadata, false);
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance));
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
 
             Assert.AreSame(metadata, rows[0].GetMetadata());
         }
@@ -77,7 +77,7 @@ namespace Gallio.Tests.Framework.Data
         public void RowsAreScalarDataRowsContainValuesAtBindingIndexZero()
         {
             ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(new object[] { "a", "b" }, null, false);
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance));
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
 
             Assert.AreEqual(2, rows.Count);
 
@@ -88,7 +88,16 @@ namespace Gallio.Tests.Framework.Data
             Assert.IsInstanceOfType(typeof(ScalarDataRow<object>), rows[1]);
         }
 
-        [RowTest]
+        [Test]
+        public void RowsEnumerationIsEmptyIfDynamicAndNotIncludingDynamicRows()
+        {
+            ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(new object[] { "a" }, null, true);
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, false));
+
+            Assert.AreEqual(0, rows.Count);
+        }
+
+        [Test]
         [Row(false, null, null)]
         [Row(false, null, 1)]
         [Row(false, null, -1)]

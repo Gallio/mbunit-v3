@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.IO;
 using System.Text;
 using Gallio.Hosting.ConsoleSupport;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting.ConsoleSupport
 {
@@ -52,7 +51,7 @@ namespace Gallio.Tests.Hosting.ConsoleSupport
             Assert.AreEqual(typeof(StringWriter), output.Output.GetType());
         }
 
-        [RowTest]
+        [Test]
         [Row("help", "h", "Display this help text.", ""
            , "  /help              Display this help text.  (Short form: /h)\r\n")]
         [Row("help", "h", "Display this help text.", "test"
@@ -67,7 +66,7 @@ namespace Gallio.Tests.Hosting.ConsoleSupport
             Assert.AreEqual(expectedOutput, _sbOutput.ToString());
         }
 
-        [RowTest]
+        [Test]
         [Row("long_description", "ld", "It is a kind of long description.", ""
    , "  /long_description  It is a kind of\r\n                     long description.\r\n                     (Short form: /ld)\r\n")]
         public void PrintArgumentHelpWidth40Chars(string longName, string shortName, string description, string valueType, string expectedOutput)

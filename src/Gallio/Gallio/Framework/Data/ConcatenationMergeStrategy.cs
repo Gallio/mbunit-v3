@@ -35,10 +35,11 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings)
+        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicRows)
         {
             foreach (IDataProvider provider in providers)
-                foreach (IDataRow row in provider.GetRows(bindings))
+                foreach (IDataRow row in provider.GetRows(bindings, includeDynamicRows))
                     yield return row;
         }
     }

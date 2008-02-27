@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using Gallio.Runner.Reports;
 using Gallio.Model;
 using Gallio.Model.Serialization;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Runner.Reports
 {
@@ -53,7 +52,7 @@ namespace Gallio.Tests.Runner.Reports
             stats.MergeStepStatistics(null, true);
         }
 
-        [RowTest]
+        [Test]
         [Row(TestStatus.Skipped, true)]
         [Row(TestStatus.Skipped, false)]
         [Row(TestStatus.Passed, true)]

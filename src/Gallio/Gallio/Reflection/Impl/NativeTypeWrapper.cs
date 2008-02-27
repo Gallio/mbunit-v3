@@ -133,6 +133,11 @@ namespace Gallio.Reflection.Impl
             get { return Target.IsAbstract; }
         }
 
+        public bool IsSealed
+        {
+            get { return Target.IsSealed; }
+        }
+
         public bool IsClass
         {
             get { return Target.IsClass; }

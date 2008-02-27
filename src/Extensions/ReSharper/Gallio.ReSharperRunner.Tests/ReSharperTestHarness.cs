@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System.IO;
 using System.Reflection;
 using Gallio.Hosting;
@@ -23,9 +22,7 @@ using JetBrains.Shell;
 using JetBrains.Shell.Progress;
 using JetBrains.Shell.Test;
 using JetBrains.Util;
-using MbUnit2::MbUnit.Framework;
-
-[assembly: AssemblyCleanup(typeof(ReSharperTestHarness))]
+using MbUnit.Framework;
 
 namespace Gallio.ReSharperRunner.Tests
 {
@@ -34,21 +31,22 @@ namespace Gallio.ReSharperRunner.Tests
     /// subset of ReSharper assemblies that we require for intergration
     /// testing purposes.
     /// </summary>
+    [AssemblyFixture]
     public static class ReSharperTestHarness
     {
-        private static readonly Assembly TestAssembly = typeof(ReSharperTestHarness).Assembly;
+        private static readonly Assembly testAssembly = typeof(ReSharperTestHarness).Assembly;
         private static bool isTestSolutionLoaded;
 
-        [SetUp]
+        [FixtureSetUp]
         public static void SetUp()
         {
             if (Shell.Instance == null)
             {
-                new TestShell(TestAssembly, TestAssembly.GetName().Name + ".TestAssemblies.xml");
+                new TestShell(testAssembly, testAssembly.GetName().Name + ".TestAssemblies.xml");
             }
         }
 
-        [TearDown]
+        [FixtureTearDown]
         public static void TearDown()
         {
             TestShell shell = Shell.Instance as TestShell;
@@ -65,7 +63,7 @@ namespace Gallio.ReSharperRunner.Tests
                 return;
 
             FileSystemPath testSolutionPath = new FileSystemPath(
-                Path.Combine(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(TestAssembly)), @"..\TestSolution.sln"));
+                Path.Combine(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(testAssembly)), @"..\TestSolution.sln"));
             SolutionManager.Instance.OpenSolution(testSolutionPath, new SimpleTaskExecutor());
 
             isTestSolutionLoaded = true;

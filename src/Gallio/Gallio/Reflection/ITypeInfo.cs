@@ -68,6 +68,11 @@ namespace Gallio.Reflection
         bool IsAbstract { get; }
 
         /// <summary>
+        /// Returns true if the type is sealed.
+        /// </summary>
+        bool IsSealed { get; }
+
+        /// <summary>
         /// Returns true if the type is a class.
         /// </summary>
         bool IsClass { get; }

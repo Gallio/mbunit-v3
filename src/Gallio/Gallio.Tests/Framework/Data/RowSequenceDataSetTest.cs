@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
 {
@@ -30,41 +29,45 @@ namespace Gallio.Tests.Framework.Data
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsWhenRowEnumerationIsNull()
         {
-            new RowSequenceDataSet(null, 0, false);
+            new RowSequenceDataSet(null, 0);
         }
 
         [Test, ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ConstructorThrowsWhenColumnCountIsNegative()
         {
-            new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, -1, false);
-        }
-
-        [Test]
-        public void IsDynamicIsSameAsSpecifiedInConstructor()
-        {
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 0, true);
-            Assert.IsTrue(dataSet.IsDynamic);
-
-            dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 0, false);
-            Assert.IsFalse(dataSet.IsDynamic);
+            new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, -1);
         }
 
         [Test]
         public void ColumnCountIsSameAsSpecifiedInConstructor()
         {
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 5, true);
+            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 5);
             Assert.AreEqual(5, dataSet.ColumnCount);
         }
 
         [Test]
-        public void RowEnumerationIsSameAsSpecifiedInConstructor()
+        public void RowEnumerationIsSameAsSpecifiedInConstructorWhenIncludingDynamicRows()
         {
             List<IDataRow> rows = new List<IDataRow>();
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(rows, 5, true);
-            Assert.AreSame(rows, dataSet.GetRows(EmptyArray<DataBinding>.Instance));
+            RowSequenceDataSet dataSet = new RowSequenceDataSet(rows, 5);
+            Assert.AreSame(rows, dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
         }
 
-        [RowTest]
+        [Test]
+        public void RowEnumerationIsFilteredWhenNotIncludingDynamicRows()
+        {
+            List<IDataRow> rows = new List<IDataRow>();
+            rows.Add(new ScalarDataRow<int>(42, null, true));
+            rows.Add(new ScalarDataRow<int>(53, null, false));
+
+            RowSequenceDataSet dataSet = new RowSequenceDataSet(rows, 5);
+
+            List<IDataRow> result = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, false));
+            Assert.AreEqual(1, result.Count);
+            Assert.AreSame(rows[1], result[0]);
+        }
+
+        [Test]
         [Row(false, null, null)]
         [Row(false, null, 3)]
         [Row(false, null, -1)]
@@ -77,7 +80,7 @@ namespace Gallio.Tests.Framework.Data
         [Row(true, "abc", 2)]
         public void CanBindReturnsTrueOnlyIfTheBindingIndexIsBetweenZeroAndColumnCount(bool expectedResult, string path, object index)
         {
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3, true);
+            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3);
             Assert.AreEqual(expectedResult, dataSet.CanBind(new SimpleDataBinding(typeof(string), path, (int?)index)));
         }
     }

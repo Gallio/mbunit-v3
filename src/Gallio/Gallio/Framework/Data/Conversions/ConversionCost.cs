@@ -116,7 +116,7 @@ namespace Gallio.Framework.Data.Conversions
         /// <inheritdoc />
         public override string ToString()
         {
-            return "Conversion Cost: " + value.ToString();
+            return "Conversion Cost: " + value;
         }
     }
 }

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 
 using Castle.Core.Logging;
 using Gallio.Model;
@@ -23,7 +22,7 @@ using Gallio.Tests.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Impl;
 using JetBrains.ReSharper.Psi;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using System.Reflection;
 
 namespace Gallio.ReSharperRunner.Tests.Reflection
@@ -35,7 +34,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         private SolutionImpl solution;
         private PsiReflectionPolicy reflectionPolicy;
 
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void TestFixtureSetUp()
         {
             ReSharperTestHarness.LoadTestSolutionIfNeeded();
@@ -88,7 +87,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             Assert.IsNull(reflectionPolicy.Wrap((ITypeParameter)null));
         }
 
-        [Test("Other tests exercise Psi project modules, this one checks Psi assembly modules.")]
+        [Test, Description("Other tests exercise Psi project modules, this one checks Psi assembly modules.")]
         public void AssemblyWrapperForPsiAssemblyModules()
         {
             Assembly target = typeof(ILogger).Assembly;
@@ -97,7 +96,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             WrapperAssert.AreEquivalent(target, info, false);
         }
 
-        [Test("Other tests exercise Psi project modules, this one checks Psi assembly modules.")]
+        [Test, Description("Other tests exercise Psi project modules, this one checks Psi assembly modules.")]
         public void AssemblyWrapperForPsiAssemblyModules_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<Assembly, IAssemblyInfo>(

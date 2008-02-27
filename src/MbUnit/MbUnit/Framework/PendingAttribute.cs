@@ -14,8 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Framework.Explorer;
-using Gallio.Framework.Patterns;
+using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Reflection;
 

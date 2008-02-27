@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
-using MbUnit2::MbUnit.Framework;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Model.Filters
 {
@@ -26,7 +25,7 @@ namespace Gallio.Tests.Model.Filters
     [Author("Julian Hidalgo")]
     public class ModelComponentFilterFactoryTest
     {
-        [RowTest]
+        [Test]
         [Row("Id", typeof(IdFilter<ITest>))]
         [Row("Name", typeof(NameFilter<ITest>))]
         [Row("Assembly", typeof(AssemblyFilter<ITest>))]

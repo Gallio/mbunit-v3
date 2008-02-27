@@ -13,9 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using Gallio.Tests;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 using Gallio.Model.Filters;
 
@@ -31,7 +30,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(new NoneFilter<object>().IsMatch(null));
         }
 
-        [RowTest]
+        [Test]
         [Row("")]
         [Row("id1212")]
         public void ToStringTest(string id)

@@ -46,7 +46,11 @@ namespace Gallio.Framework.Data
         /// <param name="bindingsPerProvider">The list of bindings per provider</param>
         /// <returns>An enumeration of row-lists consisting of exactly one row from
         /// each provider and indexed in the same order as the <paramref name="providers"/>
+        /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
+        /// generated in the result set.  Otherwise excludes such rows and only returns
+        /// those that are statically known a priori.</param>
         /// collection</returns>
-        IEnumerable<IList<IDataRow>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider);
+        IEnumerable<IList<IDataRow>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
+            bool includeDynamicRows);
     }
 }

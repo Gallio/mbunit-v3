@@ -20,6 +20,8 @@ using System.Text;
 using Gallio;
 using Gallio.Framework;
 
+#pragma warning disable 1591
+
 namespace MbUnit.Framework
 {
     /// <summary>
@@ -48,6 +50,7 @@ namespace MbUnit.Framework
         /// Asserts that the specified block of code does not throw an exception.
         /// </summary>
         /// <param name="action">The block of code to run</param>
+        /// <param name="message">The failure message</param>
         public static void DoesNotThrow(Action action, string message)
         {
             try
@@ -64,6 +67,8 @@ namespace MbUnit.Framework
         /// Asserts that the specified block of code does not throw an exception.
         /// </summary>
         /// <param name="action">The block of code to run</param>
+        /// <param name="messageFormat">The failure message format string</param>
+        /// <param name="messageArgs">The failure message arguments</param>
         public static void DoesNotThrow(Action action, string messageFormat, params object[] messageArgs)
         {
             DoesNotThrow(action, String.Format(messageFormat, messageArgs));

@@ -490,6 +490,7 @@ namespace Gallio.Tests.Reflection
                 AreEqualWhenResolved(target.HasElementType ? target.GetElementType() : null, info.ElementType);
 
                 Assert.AreEqual(target.IsAbstract, info.IsAbstract);
+                Assert.AreEqual(target.IsSealed, info.IsSealed);
                 Assert.AreEqual(target.IsClass, info.IsClass);
                 Assert.AreEqual(target.IsEnum, info.IsEnum);
                 Assert.AreEqual(target.IsInterface, info.IsInterface);

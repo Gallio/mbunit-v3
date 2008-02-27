@@ -16,8 +16,7 @@
 using System;
 using Gallio.Model;
 using Gallio.Reflection;
-using Gallio.Framework.Explorer;
-using Gallio.Framework.Patterns;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -80,15 +79,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateMethodTest(IPatternTestBuilder builder, IMethodInfo method)
         {
-            builder.Test.Metadata.Add(MetadataKeys.ExpectedException, exceptionType.ToString());
-
-            builder.Test.ExecuteChain.Around(delegate(PatternTestState state, Action<PatternTestState> innerAction)
-            {
-                InterimAssert.Throws(exceptionType, delegate
-                {
-                    innerAction(state);
-                });
-            });
+            builder.Test.Metadata.Add(MetadataKeys.ExpectedException, exceptionType.FullName);
         }
     }
 }

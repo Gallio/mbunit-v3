@@ -33,7 +33,7 @@ namespace Gallio.Tests.Framework.Data
         public void GetRowsThrowsIfBindingListIsNull()
         {
             BaseDataSet dataSet = Mocks.PartialMock<BaseDataSet>();
-            dataSet.GetRows(null);
+            dataSet.GetRows(null, false);
         }
     }
 }

@@ -13,9 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using Gallio.Collections;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Collections
 {
@@ -24,7 +23,7 @@ namespace Gallio.Tests.Collections
     [Author("Jeff", "jeff@ingenio.com")]
     public class GenericUtilsTest
     {
-        [RowTest]
+        [Test]
         [Row(new int[] { 1, 2, 3 }, 3, new string[] { "1", "2", "3" })]
         public void ConvertAndCopyAll(int[] input, int outputLength, string[] expectedOutput)
         {
@@ -38,7 +37,7 @@ namespace Gallio.Tests.Collections
             ArrayAssert.AreEqual(expectedOutput, output);
         }
 
-        [RowTest]
+        [Test]
         [Row(new int[] { 1, 2, 3 }, new string[] { "1", "2", "3" })]
         public void ConvertAllToArray(int[] input, string[] expectedOutput)
         {

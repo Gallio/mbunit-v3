@@ -16,6 +16,9 @@
 using System;
 using System.Text.RegularExpressions;
 
+#pragma warning disable 1591
+#pragma warning disable 3001
+
 namespace MbUnit.Framework
 {
 	/// <summary>

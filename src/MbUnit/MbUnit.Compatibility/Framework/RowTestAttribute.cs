@@ -20,8 +20,8 @@ namespace MbUnit.Framework
     /// <summary>
     /// Provides compatibility with MbUnit v2 row test feature.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     [Obsolete("Use the MbUnit v3 [Test] attribute instead.  The MbUnit v3 data-driven testing features have been consolidated so the [RowTest] attribute is no longer necessary.")]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class RowTestAttribute : TestAttribute
     {
     }

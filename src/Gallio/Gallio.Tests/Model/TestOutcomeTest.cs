@@ -13,14 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using MbUnit.Framework.Xml;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Model
 {
@@ -77,7 +76,7 @@ namespace Gallio.Tests.Model
             Assert.AreEqual(TestOutcome.Error, TestOutcome.Error.CombineWith(TestOutcome.Inconclusive));
         }
 
-        [RowTest]
+        [Test]
         [Row("Passed", TestStatus.Passed, null)]
         [Row("Failed", TestStatus.Failed, null)]
         [Row("Error", TestStatus.Failed, "error")]

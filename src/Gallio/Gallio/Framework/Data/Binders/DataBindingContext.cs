@@ -38,7 +38,7 @@ namespace Gallio.Framework.Data.Binders
     /// </para>
     /// </remarks>
     /// <seealso cref="IDataBinder"/>
-    public sealed class DataBindingContext
+    public sealed class DataBindingContext 
     {
         private readonly IConverter converter;
         private readonly JoinedDataSet joinedDataSet;
@@ -139,6 +139,7 @@ namespace Gallio.Framework.Data.Binders
         /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// A client typically registers its <see cref="IDataBinder"/>s with the
         /// <see cref="DataBindingContext"/> then enters a loop to enumerate the items.
         /// For each item, the client will call <see cref="IDataBindingAccessor.GetValue" />
@@ -146,12 +147,27 @@ namespace Gallio.Framework.Data.Binders
         /// disposes it and proceeds on to the next one or stops.  In this manner, a
         /// client may apply multiple <see cref="IDataBinder"/>s within the same
         /// <see cref="DataBindingContext"/>.
+        /// </para>
+        /// <para>
+        /// If no data sets have been registered, this method returns exactly one
+        /// data item with a single <see cref="NullDataRow" />.
+        /// </para>
         /// </remarks>
+        /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
+        /// generated in the result set.  Otherwise excludes such rows and only returns
+        /// those that are statically known a priori.</param>
         /// <returns>The enumeration of data binding items</returns>
-        public IEnumerable<DataBindingItem> GetItems()
+        public IEnumerable<DataBindingItem> GetItems(bool includeDynamicRows)
         {
-            foreach (IDataRow row in joinedDataSet.GetRows(translatedBindings))
-                yield return new DataBindingItem(row);
+            if (DataSets.Count == 0)
+            {
+                yield return new DataBindingItem(NullDataRow.Instance);
+            }
+            else
+            {
+                foreach (IDataRow row in joinedDataSet.GetRows(translatedBindings, includeDynamicRows))
+                    yield return new DataBindingItem(row);
+            }
         }
     }
 }

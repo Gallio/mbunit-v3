@@ -13,10 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using Gallio.Reflection;
 using Gallio.Tests;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 using System;
 using System.Reflection;
@@ -44,7 +43,7 @@ namespace Gallio.Tests.Model.Filters
             Mocks.ReplayAll();
         }
 
-        [RowTest]
+        [Test]
         [Row(true, typeof(TypeFilterTest), false)]
         [Row(true, typeof(TypeFilterTest), true)]
         [Row(false, typeof(BaseUnitTest), false)]
@@ -57,7 +56,7 @@ namespace Gallio.Tests.Model.Filters
                 new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.AssemblyQualifiedName), includeDerivedTypes).IsMatch(component));
         }
 
-        [RowTest]
+        [Test]
         [Row(true, typeof(TypeFilterTest), false)]
         [Row(true, typeof(TypeFilterTest), true)]
         [Row(false, typeof(BaseUnitTest), false)]
@@ -70,7 +69,7 @@ namespace Gallio.Tests.Model.Filters
                 new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.FullName), includeDerivedTypes).IsMatch(component));
         }
 
-        [RowTest]
+        [Test]
         [Row(true, typeof(TypeFilterTest), false)]
         [Row(true, typeof(TypeFilterTest), true)]
         [Row(false, typeof(BaseUnitTest), false)]

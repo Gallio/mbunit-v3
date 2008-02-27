@@ -13,14 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System.Text;
 using Gallio.Concurrency;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using Gallio.Hosting;
 using System;
 using System.IO;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Gallio.MSBuildTasks.Tests
@@ -33,13 +31,13 @@ namespace Gallio.MSBuildTasks.Tests
     [TestFixture]
     [Author("Julian Hidalgo")]
     [TestsOn(typeof(Gallio))]
-    [FixtureCategory("IntegrationTests")]
+    [Category("IntegrationTests")]
     public class GallioTaskIntegrationTest
     {
         private string executablePath;
         private string workingDirectory;
 
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void FixtureSetUp()
         {
             string frameworkPath = RuntimeEnvironment.GetRuntimeDirectory();
@@ -50,7 +48,7 @@ namespace Gallio.MSBuildTasks.Tests
             workingDirectory = Path.Combine(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(GetType().Assembly)), @"..\TestBuildFiles");
         }
 
-        [RowTest]
+        [Test]
         [Row("PassingTests", true, Description=@"
             This target only runs tests that pass,
             so the task should have set the ExitCode property to ResultCode.Success.")]

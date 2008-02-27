@@ -121,50 +121,6 @@ namespace Gallio.Reflection
         }
 
         /// <summary>
-        /// Checks that the method has the specified signature otherwise throws a <see cref="InvalidOperationException" />.
-        /// </summary>
-        /// <param name="method">The method</param>
-        /// <param name="signature">The list of parameter types (all input parameters)</param>
-        /// <exception cref="InvalidOperationException">Thrown if the method has a different signature</exception>
-        public static void CheckMethodSignature(IMethodInfo method, params ITypeInfo[] signature)
-        {
-            IList<IParameterInfo> parameters = method.Parameters;
-            if (parameters.Count == signature.Length)
-            {
-                for (int i = 0; i < parameters.Count; i++)
-                {
-                    IParameterInfo parameter = parameters[i];
-                    if (parameter.ValueType != signature[i]
-                        || (parameter.ParameterAttributes & (ParameterAttributes.In | ParameterAttributes.Out)) != ParameterAttributes.In)
-                        goto Fail;
-                }
-
-                return;
-            }
-
-        Fail:
-            string[] expectedTypeNames = Array.ConvertAll<ITypeInfo, string>(signature, delegate(ITypeInfo parameterType)
-            {
-                return parameterType.ToString();
-            });
-            string[] actualTypeNames = GenericUtils.ConvertAllToArray<IParameterInfo, string>(parameters, delegate(IParameterInfo parameter)
-            {
-                if ((parameter.ParameterAttributes & ParameterAttributes.Out) != 0)
-                {
-                    string prefix = (parameter.ParameterAttributes & ParameterAttributes.In) != 0 ? @"ref " : @"out ";
-                    return prefix + parameter.ValueType;
-                }
-
-                return parameter.ValueType.ToString();
-            });
-
-            throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                Resources.ModelUtils_InvalidSignature,
-                string.Join(@", ", expectedTypeNames),
-                string.Join(@", ", actualTypeNames)));
-        }
-
-        /// <summary>
         /// Finds the assembly name of the directly referenced assembly with the specified display name.
         /// </summary>
         /// <param name="assembly">The assembly to search</param>

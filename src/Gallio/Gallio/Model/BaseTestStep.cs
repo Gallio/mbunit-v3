@@ -110,7 +110,7 @@ namespace Gallio.Model
         private string GenerateFullName()
         {
             if (parent == null)
-                return testInstance.Name;
+                return testInstance.FullName;
             else if (parent.Parent == null)
                 return parent.FullName + @":" + Name;
             else

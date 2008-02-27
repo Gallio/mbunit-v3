@@ -25,14 +25,24 @@ namespace Gallio.Framework.Data
     public abstract class BaseDataRow : IDataRow
     {
         private readonly IEnumerable<KeyValuePair<string, string>> metadata;
+        private readonly bool isDynamic;
 
         /// <summary>
         /// Creates a data row with optional metadata.
         /// </summary>
         /// <param name="metadata">The metadata enumeration, or null if none</param>
-        public BaseDataRow(IEnumerable<KeyValuePair<string, string>> metadata)
+        /// <param name="isDynamic">True if the row contains dynamic data</param>
+        public BaseDataRow(IEnumerable<KeyValuePair<string, string>> metadata,
+            bool isDynamic)
         {
             this.metadata = metadata ?? EmptyArray<KeyValuePair<string, string>>.Instance;
+            this.isDynamic = isDynamic;
+        }
+
+        /// <inheritdoc />
+        public bool IsDynamic
+        {
+            get { return isDynamic; }
         }
 
         /// <inheritdoc />

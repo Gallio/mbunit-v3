@@ -30,13 +30,13 @@ namespace MbUnit.TestResources.Fixtures
     [TestFixture]
     public class FixtureInheritanceSample
     {
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void BaseTestFixtureSetUp()
         {
             Console.WriteLine("BaseTestFixtureSetUp");
         }
 
-        [TestFixtureTearDown]
+        [FixtureTearDown]
         public void BaseTestFixtureTearDown()
         {
             Console.WriteLine("BaseTestFixtureTearDown");
@@ -63,13 +63,13 @@ namespace MbUnit.TestResources.Fixtures
         [TestFixture]
         public class DerivedFixture : FixtureInheritanceSample
         {
-            [TestFixtureSetUp]
+            [FixtureSetUp]
             public void DerivedTestFixtureSetUp()
             {
                 Console.WriteLine("DerivedTestFixtureSetUp");
             }
 
-            [TestFixtureTearDown]
+            [FixtureTearDown]
             public void DerivedTestFixtureTearDown()
             {
                 Console.WriteLine("DerivedTestFixtureTearDown");

@@ -42,7 +42,8 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings)
+        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicRows)
         {
             int providerCount = providers.Count;
 
@@ -50,21 +51,22 @@ namespace Gallio.Framework.Data
                 return EmptyArray<IDataRow>.Instance;
 
             if (providerCount == 1)
-                return providers[0].GetRows(bindings);
+                return providers[0].GetRows(bindings, includeDynamicRows);
 
             Dictionary<object[], int> tally = null;
             for (int i = 0; i < providerCount - 1; i++)
-                tally = UpdateTally(tally, providers[i], bindings);
+                tally = UpdateTally(tally, providers[i], bindings, includeDynamicRows);
 
-            return GetRowsAccordingToTally(tally, providers[providerCount - 1], bindings);
+            return GetRowsAccordingToTally(tally, providers[providerCount - 1], bindings, includeDynamicRows);
         }
 
-        private Dictionary<object[], int> UpdateTally(Dictionary<object[], int> oldTally, IDataProvider provider, ICollection<DataBinding> bindings)
+        private static Dictionary<object[], int> UpdateTally(Dictionary<object[], int> oldTally, IDataProvider provider, ICollection<DataBinding> bindings,
+            bool includeDynamicRows)
         {
             Dictionary<object[], int> tally = new Dictionary<object[], int>(ArrayEqualityComparer<object>.Default);
             int maxCount = int.MaxValue;
 
-            foreach (IDataRow row in provider.GetRows(bindings))
+            foreach (IDataRow row in provider.GetRows(bindings, includeDynamicRows))
             {
                 object[] values = GetValues(row, bindings);
 
@@ -87,9 +89,10 @@ namespace Gallio.Framework.Data
             return tally;
         }
 
-        private static IEnumerable<IDataRow> GetRowsAccordingToTally(Dictionary<object[], int> tally, IDataProvider provider, ICollection<DataBinding> bindings)
+        private static IEnumerable<IDataRow> GetRowsAccordingToTally(Dictionary<object[], int> tally, IDataProvider provider, ICollection<DataBinding> bindings,
+            bool includeDynamicRows)
         {
-            foreach (IDataRow row in provider.GetRows(bindings))
+            foreach (IDataRow row in provider.GetRows(bindings, includeDynamicRows))
             {
                 object[] values = GetValues(row, bindings);
 

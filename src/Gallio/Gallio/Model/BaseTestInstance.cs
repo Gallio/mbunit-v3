@@ -81,42 +81,26 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
+        public string FullName
+        {
+            get
+            {
+                if (parent == null)
+                    return Name;
+                return String.Concat(parent.FullName, "/", Name);
+            }
+        }
+
+        /// <inheritdoc />
         public virtual bool IsDynamic
         {
             get { return false; }
         }
 
         /// <inheritdoc />
-        public object GetParameterValue(ITestParameter parameter)
-        {
-            if (parameter == null)
-                throw new ArgumentNullException("parameter");
-            if (parameter.Owner != test)
-                throw new ArgumentException("Parameter is not owned by this test.", "parameter");
-
-            return InternalGetParameterValue(parameter);
-        }
-
-        /// <inheritdoc />
         public override string ToString()
         {
             return String.Format("Instance of {0}", test);
-        }
-
-        /// <summary>
-        /// <para>
-        /// Internal implementation of <see cref="GetParameterValue" /> after
-        /// validation has been performed.
-        /// </para>
-        /// <para>
-        /// The default implementation throws <see cref="InvalidOperationException" />.
-        /// </para>
-        /// </summary>
-        /// <param name="parameter">The test parameter</param>
-        /// <returns>The parameter value</returns>
-        protected virtual object InternalGetParameterValue(ITestParameter parameter)
-        {
-            throw new InvalidOperationException("The test parameter value is not available at this time.");
         }
     }
 }

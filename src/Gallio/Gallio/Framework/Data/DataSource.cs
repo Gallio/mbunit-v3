@@ -78,24 +78,27 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings,
+            bool includeDynamicRows)
         {
             if (indexAliases != null)
-                return GetRowsInternalTranslated(bindings);
+                return GetRowsInternalTranslated(bindings, includeDynamicRows);
             else
-                return GetRowsInternalBase(bindings);
+                return GetRowsInternalBase(bindings, includeDynamicRows);
         }
 
-        private IEnumerable<IDataRow> GetRowsInternalBase(ICollection<DataBinding> bindings)
+        private IEnumerable<IDataRow> GetRowsInternalBase(ICollection<DataBinding> bindings,
+            bool includeDynamicRows)
         {
-            return base.GetRowsInternal(bindings);
+            return base.GetRowsInternal(bindings, includeDynamicRows);
         }
 
-        private IEnumerable<IDataRow> GetRowsInternalTranslated(ICollection<DataBinding> bindings)
+        private IEnumerable<IDataRow> GetRowsInternalTranslated(ICollection<DataBinding> bindings,
+            bool includeDynamicRows)
         {
             DataBinding[] translatedBindings = GenericUtils.ConvertAllToArray<DataBinding, DataBinding>(bindings, TranslateBinding);
 
-            foreach (IDataRow row in GetRowsInternalBase(translatedBindings))
+            foreach (IDataRow row in GetRowsInternalBase(translatedBindings, includeDynamicRows))
                 yield return new TranslatedDataRow(this, row);
         }
 
@@ -119,6 +122,11 @@ namespace Gallio.Framework.Data
             {
                 this.source = source;
                 this.row = row;
+            }
+
+            public bool IsDynamic
+            {
+                get { return row.IsDynamic; }
             }
 
             public IEnumerable<KeyValuePair<string, string>> GetMetadata()

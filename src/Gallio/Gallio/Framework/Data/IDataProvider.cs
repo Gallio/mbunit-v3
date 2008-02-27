@@ -28,8 +28,11 @@ namespace Gallio.Framework.Data
         /// Gets an enumeration of data rows that can supply values for a given collection of bindings.
         /// </summary>
         /// <param name="bindings">The bindings that are requested</param>
+        /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
+        /// generated in the result set.  Otherwise excludes such rows and only returns
+        /// those that are statically known a priori.</param>
         /// <returns>The enumeration of data rows</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="bindings"/> is null</exception>
-        IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings);
+        IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings, bool includeDynamicRows);
     }
 }

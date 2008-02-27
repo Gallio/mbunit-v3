@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.IO;
 using Gallio.Hosting.ConsoleSupport;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting.ConsoleSupport
 {
@@ -45,7 +44,7 @@ namespace Gallio.Tests.Hosting.ConsoleSupport
             new CommandLineArgumentParser(new MainArgumentsDuplicateLongNameStub().GetType());
         }
 
-        [RowTest]
+        [Test]
         [Row("/invalid")]
         [Row("-invalid")]
         public void ParseInvalidArgument(string arg)
@@ -71,7 +70,7 @@ namespace Gallio.Tests.Hosting.ConsoleSupport
             Assert.AreEqual("Invalid 'help' argument value 'bad'.", errorMsg);
         }
 
-        [RowTest]
+        [Test]
         [Row("/help", "/help")]
         [Row("/help+", "/help")]
         public void ParseDuplicatedArgument(string arg1, string arg2)

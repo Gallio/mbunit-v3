@@ -27,7 +27,7 @@ namespace Gallio.MbUnit2Adapter.Tests.Integration
     [TestFixture]
     public class RunSimpleTest : BaseSampleTest
     {
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void RunSample()
         {
             RunFixtures(typeof(SimpleTest));

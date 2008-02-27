@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.IO;
 using System.Reflection;
@@ -24,7 +23,7 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using Rhino.Mocks;
 using TestDriven.Framework;
 
@@ -37,7 +36,7 @@ namespace Gallio.TDNetRunner.Tests
     {
         private ITestListener stubbedTestListener;
 
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void FixtureSetUp()
         {
             stubbedTestListener = MockRepository.GenerateStub<ITestListener>();
@@ -192,7 +191,7 @@ namespace Gallio.TDNetRunner.Tests
             tr.RunNamespace(stubbedTestListener, assembly, @namespace);
         }
 
-        [RowTest]
+        [Test]
         [Row(ResultCode.Canceled, TestRunState.Error)]
         [Row(ResultCode.Failure, TestRunState.Failure)]
         [Row(ResultCode.FatalException, TestRunState.Error)]

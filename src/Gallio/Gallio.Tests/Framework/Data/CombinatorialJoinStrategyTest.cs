@@ -30,7 +30,7 @@ namespace Gallio.Tests.Framework.Data
             DataBinding[][] bindingsPerProvider = new DataBinding[0][];
             IDataProvider[] providers = new IDataProvider[0];
 
-            List<IList<IDataRow>> rows = new List<IList<IDataRow>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider));
+            List<IList<IDataRow>> rows = new List<IList<IDataRow>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
             Assert.AreEqual(0, rows.Count);
         }
 
@@ -51,30 +51,30 @@ namespace Gallio.Tests.Framework.Data
 
             IDataRow[][] rowsPerProvider = new IDataRow[][] {
                 new IDataRow[] {
-                    new ScalarDataRow<int>(1, null),
-                    new ScalarDataRow<int>(2, null)
+                    new ScalarDataRow<int>(1, null, false),
+                    new ScalarDataRow<int>(2, null, true)
                 },
                 new IDataRow[] {
-                    new ScalarDataRow<int>(1, null),
-                    new ScalarDataRow<int>(2, null),
-                    new ScalarDataRow<int>(3, null)
+                    new ScalarDataRow<int>(1, null, false),
+                    new ScalarDataRow<int>(2, null, false),
+                    new ScalarDataRow<int>(3, null, false)
                 },
                 new IDataRow[] {
-                    new ScalarDataRow<int>(1, null),
-                    new ScalarDataRow<int>(2, null)
+                    new ScalarDataRow<int>(1, null, false),
+                    new ScalarDataRow<int>(2, null, true)
                 }
             };
 
             using (Mocks.Record())
             {
-                Expect.Call(providers[0].GetRows(bindingsPerProvider[0])).Return(rowsPerProvider[0]);
-                Expect.Call(providers[1].GetRows(bindingsPerProvider[1])).Return(rowsPerProvider[1]);
-                Expect.Call(providers[2].GetRows(bindingsPerProvider[2])).Return(rowsPerProvider[2]);
+                Expect.Call(providers[0].GetRows(bindingsPerProvider[0], true)).Return(rowsPerProvider[0]);
+                Expect.Call(providers[1].GetRows(bindingsPerProvider[1], true)).Return(rowsPerProvider[1]);
+                Expect.Call(providers[2].GetRows(bindingsPerProvider[2], true)).Return(rowsPerProvider[2]);
             }
 
             using (Mocks.Playback())
             {
-                List<IList<IDataRow>> rows = new List<IList<IDataRow>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider));
+                List<IList<IDataRow>> rows = new List<IList<IDataRow>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
                 Assert.AreEqual(12, rows.Count);
 
                 int index = 0;

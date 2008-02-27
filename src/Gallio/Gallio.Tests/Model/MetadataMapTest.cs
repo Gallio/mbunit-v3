@@ -13,15 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Model.Serialization;
-using MbUnit2::MbUnit.Framework;
-using Assert = MbUnit2::MbUnit.Framework.Assert;
+using MbUnit.Framework;
+using Assert = MbUnit.Framework.Assert;
 
 
 namespace Gallio.Tests.Model
@@ -47,7 +46,7 @@ namespace Gallio.Tests.Model
             AssertAreEqual(original, copy);
         }
 
-        [RowTest]
+        [Test]
         [Row(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <metadata xmlns=""http://www.gallio.org/"" />",
             new string[] { })]
@@ -74,7 +73,7 @@ namespace Gallio.Tests.Model
             Assert.AreEqual(expectedXml, writer.ToString());
         }
 
-        [RowTest]
+        [Test]
         [Row(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <metadata xmlns=""http://www.gallio.org/"" />",
             new string[] { })]

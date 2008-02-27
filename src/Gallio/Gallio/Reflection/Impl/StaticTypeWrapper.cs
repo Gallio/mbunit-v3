@@ -98,6 +98,12 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
+        public bool IsSealed
+        {
+            get { return (TypeAttributes & TypeAttributes.Sealed) != 0; }
+        }
+
+        /// <inheritdoc />
         public bool IsClass
         {
             get { return ! IsInterface && ! IsValueType; }

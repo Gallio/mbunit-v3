@@ -3,7 +3,7 @@
   <castle>
     <components>
       <component id="MbUnit.MbUnitTestFrameworkExtension"
-                 service="Gallio.Framework.Explorer.IPatternTestFrameworkExtension, Gallio"
+                 service="Gallio.Framework.Pattern.IPatternTestFrameworkExtension, Gallio"
                  type="MbUnit.Core.MbUnitTestFrameworkExtension, MbUnit" />
     </components>
   </castle>

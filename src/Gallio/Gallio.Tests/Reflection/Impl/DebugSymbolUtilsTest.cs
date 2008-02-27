@@ -13,14 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 
 using System;
 using System.Reflection;
 using Castle.Core.Logging;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Reflection.Impl
 {
@@ -74,7 +73,7 @@ namespace Gallio.Tests.Reflection.Impl
             Assert.IsNull(DebugSymbolUtils.GetSourceLocation(typeof(EmptyType)));
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(TypeWithPublicInstanceConstructor))]
         [Row(typeof(TypeWithNonPublicInstanceConstructor))]
         [Row(typeof(TypeWithNonPublicStaticConstructor))]

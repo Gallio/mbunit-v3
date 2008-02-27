@@ -13,10 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using Gallio.Reflection;
 using Gallio.Tests;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 using System;
 using Gallio.Model.Filters;
@@ -37,7 +36,7 @@ namespace Gallio.Tests.Model.Filters
             new NamespaceFilter<ITestComponent>(null);
         }
 
-        [RowTest]
+        [Test]
         [Row(true, typeof(NamespaceFilterTest))]
         [Row(false, typeof(NamespaceFilter<ITestComponent>))]
         [Row(false, null)]
@@ -53,7 +52,7 @@ namespace Gallio.Tests.Model.Filters
                 new EqualityFilter<string>(typeof(NamespaceFilterTest).Namespace)).IsMatch(component));
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(NamespaceFilterTest))]
         [Row(typeof(NamespaceFilter<ITestComponent>))]
         //[Row(null)]

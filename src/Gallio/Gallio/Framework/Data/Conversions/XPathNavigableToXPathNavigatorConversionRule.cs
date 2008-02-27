@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Xml;
 using System.Xml.XPath;
 
 namespace Gallio.Framework.Data.Conversions

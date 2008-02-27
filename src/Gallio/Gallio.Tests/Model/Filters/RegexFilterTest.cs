@@ -13,8 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using System;
 using System.Text.RegularExpressions;
 using Gallio.Model.Filters;
@@ -41,7 +40,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(filter.ToString(), "Regex('" + someExpression + "', None)");
         }
 
-        [RowTest]
+        [Test]
         [Row("Acb", RegexOptions.None)]
         [Row("Acbb", RegexOptions.None)]
         [Row("Accb", RegexOptions.None)]
@@ -54,7 +53,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsTrue(filter.IsMatch(expressionToMatch));
         }
 
-        [RowTest]
+        [Test]
         [Row(null)]
         [Row("")]
         [Row("Acaede")]

@@ -25,17 +25,15 @@ namespace Gallio.Framework.Data
     {
         private readonly IEnumerable<IDataRow> rows;
         private readonly int columnCount;
-        private readonly bool isDynamic;
 
         /// <summary>
         /// Creates a row data set.
         /// </summary>
         /// <param name="rows">The sequence of rows</param>
         /// <param name="columnCount">The column count</param>
-        /// <param name="isDynamic">True if the sequence is dynamic</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rows"/> is null</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="columnCount"/> is negative</exception>
-        public RowSequenceDataSet(IEnumerable<IDataRow> rows, int columnCount, bool isDynamic)
+        public RowSequenceDataSet(IEnumerable<IDataRow> rows, int columnCount)
         {
             if (rows == null)
                 throw new ArgumentNullException("rows");
@@ -44,13 +42,6 @@ namespace Gallio.Framework.Data
 
             this.rows = rows;
             this.columnCount = columnCount;
-            this.isDynamic = isDynamic;
-        }
-
-        /// <inheritdoc />
-        public override bool IsDynamic
-        {
-            get { return isDynamic; }
         }
 
         /// <inheritdoc />
@@ -67,9 +58,19 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
-            return rows;
+            if (includeDynamicRows)
+                return rows;
+
+            return GetStaticRows();
+        }
+
+        private IEnumerable<IDataRow> GetStaticRows()
+        {
+            foreach (IDataRow row in rows)
+                if (!row.IsDynamic)
+                    yield return row;
         }
     }
 }

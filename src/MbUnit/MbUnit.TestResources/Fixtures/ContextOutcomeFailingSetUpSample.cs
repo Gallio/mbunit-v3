@@ -50,7 +50,7 @@ namespace MbUnit.TestResources.Fixtures
             Log.WriteLine(Context.CurrentContext.Outcome);
         }
 
-        [TestFixtureTearDown]
+        [FixtureTearDown]
         public void TestFixtureTearDown()
         {
             Log.WriteLine(previousContext.Outcome);

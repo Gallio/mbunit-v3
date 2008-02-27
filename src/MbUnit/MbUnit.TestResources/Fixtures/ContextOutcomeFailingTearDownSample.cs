@@ -47,7 +47,7 @@ namespace MbUnit.TestResources.Fixtures
             Assert.Fail("Boom");
         }
 
-        [TestFixtureTearDown]
+        [FixtureTearDown]
         public void TestFixtureTearDown()
         {
             Log.WriteLine(previousContext.Outcome);

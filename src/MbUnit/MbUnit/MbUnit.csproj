@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -25,6 +25,8 @@
     <DocumentationFile>bin\MbUnit.xml</DocumentationFile>
     <WarningsAsErrors>
     </WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,8 +35,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <DocumentationFile>bin\MbUnit.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
@@ -61,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\MbUnitTestFrameworkExtension.cs" />
+    <Compile Include="Framework\AssemblyFixtureAttribute.cs" />
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
     <Compile Include="Framework\Concurrency\TaskManager.cs" />
@@ -100,8 +106,8 @@
     <Compile Include="Framework\TearDownAttribute.cs" />
     <Compile Include="Framework\TestAttribute.cs" />
     <Compile Include="Framework\TestFixtureAttribute.cs" />
-    <Compile Include="Framework\TestFixtureSetUpAttribute.cs" />
-    <Compile Include="Framework\TestFixtureTearDownAttribute.cs" />
+    <Compile Include="Framework\FixtureSetUpAttribute.cs" />
+    <Compile Include="Framework\FixtureTearDownAttribute.cs" />
     <Compile Include="Framework\Importance.cs" />
     <Compile Include="Framework\TestsOnAttribute.cs" />
     <Compile Include="Framework\Xml\XmlSerializationAssert.cs" />

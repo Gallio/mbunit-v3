@@ -13,13 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Runner.Reports;
 using MbUnit.Framework.Xml;
 using Gallio.Model.Serialization;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Runner.Reports
 {

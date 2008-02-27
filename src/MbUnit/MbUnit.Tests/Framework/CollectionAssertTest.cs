@@ -28,7 +28,7 @@ namespace MbUnit.Tests.Framework
         ArrayList arr2;
         ArrayList arr2Synced;
 
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void CreateArrayList()
         {
             arr = new ArrayList();

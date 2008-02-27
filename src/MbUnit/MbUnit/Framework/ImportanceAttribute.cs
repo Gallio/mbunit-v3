@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using Gallio.Model;
-using Gallio.Framework.Patterns;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {

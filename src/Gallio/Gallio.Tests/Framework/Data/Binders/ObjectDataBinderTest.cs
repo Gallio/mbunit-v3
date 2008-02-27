@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Gallio.Framework.Data;
 using Gallio.Framework.Data.Binders;
 using Gallio.Framework.Data.Conversions;
@@ -30,7 +29,7 @@ namespace Gallio.Tests.Framework.Data.Binders
     [TestFixture]
     [TestsOn(typeof(ObjectDataBinder))]
     [DependsOn(typeof(BaseDataBinderTest))]
-    [DependsOn(typeof(SlotBinderTest))]
+    [DependsOn(typeof(SlotBinderPositiveTest))]
     public class ObjectDataBinderTest : BaseUnitTest
     {
         [Test, ExpectedArgumentNullException]
@@ -67,7 +66,7 @@ namespace Gallio.Tests.Framework.Data.Binders
         public void AccessorCreatesNewObjectsThroughSlotBinding()
         {
             DataSource source = new DataSource("data");
-            source.AddDataSet(new RowSequenceDataSet(new IDataRow[] { new ListDataRow<object>(new object[] { 42, typeof(int) }, null) }, 2, false));
+            source.AddDataSet(new RowSequenceDataSet(new IDataRow[] { new ListDataRow<object>(new object[] { 42, typeof(int) }, null, false) }, 2));
 
             IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
             
@@ -90,7 +89,7 @@ namespace Gallio.Tests.Framework.Data.Binders
                 binder.SetSlotBinder(typeSlot, new ScalarDataBinder(new SimpleDataBinding(typeof(Type), null, 1), "data"));
 
                 IDataBindingAccessor accessor = binder.Register(context, resolver);
-                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems());
+                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(true));
                 Assert.AreEqual(1, items.Count);
 
                 Holder<int> holder = (Holder<int>)accessor.GetValue(items[0]);

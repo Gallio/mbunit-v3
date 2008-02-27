@@ -43,27 +43,27 @@ namespace Gallio.Tests.Framework.Data
 
             IDataRow[][] rowsPerProvider = new IDataRow[][] {
                 new IDataRow[] {
-                    new ScalarDataRow<int>(1, null),
-                    new ScalarDataRow<int>(2, null)
+                    new ScalarDataRow<int>(1, null, true),
+                    new ScalarDataRow<int>(2, null, false)
                 },
                 new IDataRow[] { },
                 new IDataRow[] {
-                    new ScalarDataRow<int>(1, null),
-                    new ScalarDataRow<int>(2, null),
-                    new ScalarDataRow<int>(3, null)
+                    new ScalarDataRow<int>(1, null, false),
+                    new ScalarDataRow<int>(2, null, false),
+                    new ScalarDataRow<int>(3, null, false)
                 }
             };
 
             using (Mocks.Record())
             {
-                Expect.Call(providers[0].GetRows(bindingsPerProvider[0])).Return(rowsPerProvider[0]);
-                Expect.Call(providers[1].GetRows(bindingsPerProvider[1])).Return(rowsPerProvider[1]);
-                Expect.Call(providers[2].GetRows(bindingsPerProvider[2])).Return(rowsPerProvider[2]);
+                Expect.Call(providers[0].GetRows(bindingsPerProvider[0], true)).Return(rowsPerProvider[0]);
+                Expect.Call(providers[1].GetRows(bindingsPerProvider[1], true)).Return(rowsPerProvider[1]);
+                Expect.Call(providers[2].GetRows(bindingsPerProvider[2], true)).Return(rowsPerProvider[2]);
             }
 
             using (Mocks.Playback())
             {
-                List<IList<IDataRow>> rows = new List<IList<IDataRow>>(SequentialJoinStrategy.Instance.Join(providers, bindingsPerProvider));
+                List<IList<IDataRow>> rows = new List<IList<IDataRow>>(SequentialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
                 Assert.AreEqual(3, rows.Count);
 
                 Assert.AreSame(rowsPerProvider[0][0], rows[0][0]);

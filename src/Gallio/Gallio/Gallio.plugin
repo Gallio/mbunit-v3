@@ -46,7 +46,11 @@
       
       <component id="Core.PatternTestFramework"
                  service="Gallio.Model.ITestFramework, Gallio"
-                 type="Gallio.Framework.Explorer.PatternTestFramework, Gallio" />
+                 type="Gallio.Framework.Pattern.PatternTestFramework, Gallio" />
+
+      <component id="Core.PatternTestController"
+                 service="Gallio.Framework.Pattern.PatternTestController, Gallio"
+                 type="Gallio.Framework.Pattern.PatternTestController, Gallio" />
       
       <component id="Core.IsolatedAppDomainHostFactory"
                  service="Gallio.Hosting.IHostFactory, Gallio"
@@ -105,6 +109,10 @@
           <description>Runs tests within an isolated process external to the test runner.  This mode is used to force tests to run in a different process which can be monitored separately and may have different priviledges or process-level configuration.</description>
         </parameters>
       </component>
+
+      <component id="Core.Formatter"
+                 service="Gallio.Framework.Data.Formatters.IFormatter, Gallio"
+                 type="Gallio.Framework.Data.Formatters.ValueFormatter, Gallio" />
       
       <component id="Core.Converter"
                  service="Gallio.Framework.Data.Conversions.IConverter, Gallio"
@@ -122,6 +130,10 @@
                  service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
                  type="Gallio.Framework.Data.Conversions.ObjectToStringConversionRule, Gallio" />      
 
+      <component id="Core.StringToXmlDocumentConversionRule"
+                 service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
+                 type="Gallio.Framework.Data.Conversions.StringToXmlDocumentConversionRule, Gallio" />      
+      
       <component id="Core.XPathNavigableToXPathNavigatorConversionRule"
                  service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
                  type="Gallio.Framework.Data.Conversions.XPathNavigableToXPathNavigatorConversionRule, Gallio" />

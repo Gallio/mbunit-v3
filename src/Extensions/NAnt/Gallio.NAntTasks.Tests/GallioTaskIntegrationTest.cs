@@ -13,9 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using Gallio.Concurrency;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -32,13 +31,13 @@ namespace Gallio.NAntTasks.Tests
     [TestFixture]
     [Author("Julian Hidalgo")]
     [TestsOn(typeof(GallioTask))]
-    [FixtureCategory("IntegrationTests")]
+    [Category("IntegrationTests")]
     public class GallioTaskIntegrationTest
     {
         private string executablePath;
         private string workingDirectory;
 
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void FixtureSetUp()
         {
             string binPath = Path.GetDirectoryName(Loader.GetAssemblyLocalPath(GetType().Assembly));
@@ -49,7 +48,7 @@ namespace Gallio.NAntTasks.Tests
             Assert.IsTrue(File.Exists(executablePath), "Cannot find the NAnt executable!");
         }
 
-        [RowTest]
+        [Test]
         [Row("PassingTests", true, Description = @"
             This target only runs tests that pass,
             so the task should have set the ExitCode property to ResultCode.Success.")]

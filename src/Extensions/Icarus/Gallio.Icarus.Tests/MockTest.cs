@@ -24,7 +24,7 @@ namespace Gallio.Icarus.Tests
     {
         protected MockRepository mocks;
 
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void TestFixtureSetUp()
         {
             mocks = new MockRepository();

@@ -36,7 +36,7 @@ namespace Gallio.Framework.Data.Conversions
         public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
         {
             XPathNavigator node = (XPathNavigator)sourceValue;
-            return node.Value;
+            return elementConverter.Convert(node.Value, targetType);
         }
     }
 }

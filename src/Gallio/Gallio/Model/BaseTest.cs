@@ -118,7 +118,7 @@ namespace Gallio.Model
             {
                 if (parent == null)
                     return Name;
-                return String.Concat(parent.FullName, ".", Name);
+                return String.Concat(parent.FullName, "/", Name);
             }
         }
 
@@ -186,6 +186,7 @@ namespace Gallio.Model
             if (parameter.Owner != null)
                 throw new InvalidOperationException("The test parameter is already owned by another test.");
 
+            parameter.Owner = this;
             parameters.Add(parameter);
         }
 

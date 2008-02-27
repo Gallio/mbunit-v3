@@ -27,7 +27,8 @@ namespace Gallio.Tests.Framework.Data
     [DependsOn(typeof(BaseDataSetTest))]
     public class JoinedDataSetTest : BaseUnitTest
     {
-        private delegate IEnumerable<IList<IDataRow>> JoinDelegate(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider);
+        private delegate IEnumerable<IList<IDataRow>> JoinDelegate(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
+            bool includeDynamicRows);
 
         [Test]
         public void DefaultStrategyIsCombinatorial()
@@ -53,7 +54,7 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
-        public void AddingDataSetsUpdatesTheColumnCountAndIsDynamicAndDataSetsCollection()
+        public void AddingDataSetsUpdatesTheColumnCountAndDataSetsCollection()
         {
             JoinedDataSet dataSet = new JoinedDataSet();
 
@@ -63,29 +64,24 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSetWithTwoColumns.ColumnCount).Return(2);
-                SetupResult.For(dataSetWithTwoColumns.IsDynamic).Return(false);
 
                 SetupResult.For(dataSetWithThreeColumns.ColumnCount).Return(3);
-                SetupResult.For(dataSetWithThreeColumns.IsDynamic).Return(true);
             }
 
             using (Mocks.Playback())
             {
                 Assert.AreEqual(0, dataSet.ColumnCount);
                 CollectionAssert.AreElementsEqual(new IDataSet[] { }, dataSet.DataSets);
-                Assert.IsFalse(dataSet.IsDynamic);
 
                 dataSet.AddDataSet(dataSetWithTwoColumns);
 
                 Assert.AreEqual(2, dataSet.ColumnCount);
                 CollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns }, dataSet.DataSets);
-                Assert.IsFalse(dataSet.IsDynamic);
 
                 dataSet.AddDataSet(dataSetWithThreeColumns);
 
                 Assert.AreEqual(5, dataSet.ColumnCount);
                 CollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns, dataSetWithThreeColumns }, dataSet.DataSets);
-                Assert.IsTrue(dataSet.IsDynamic);
             }
         }
 
@@ -122,8 +118,8 @@ namespace Gallio.Tests.Framework.Data
 
             DataSource dataSet1 = new DataSource("");
             dataSet1.AddIndexAlias("path", 1);
-            dataSet1.AddDataSet(new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3, false));
-            IDataSet dataSet2 = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 2, false);
+            dataSet1.AddDataSet(new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3));
+            IDataSet dataSet2 = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 2);
 
             dataSet.AddDataSet(dataSet1);
             dataSet.AddDataSet(dataSet2);
@@ -147,8 +143,8 @@ namespace Gallio.Tests.Framework.Data
 
             DataSource dataSet1 = new DataSource("");
             dataSet1.AddIndexAlias("path", 1);
-            dataSet1.AddDataSet(new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3, false));
-            IDataSet dataSet2 = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 2, false);
+            dataSet1.AddDataSet(new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3));
+            IDataSet dataSet2 = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 2);
 
             dataSet.AddDataSet(dataSet1);
             dataSet.AddDataSet(dataSet2);
@@ -186,20 +182,20 @@ namespace Gallio.Tests.Framework.Data
             dataSet1.AddIndexAlias("path", 1);
             dataSet1.AddDataSet(new RowSequenceDataSet(new IDataRow[]
             {
-                new ListDataRow<int>(new int[] { 1, 2, 3 }, metadata1),
-                new ListDataRow<int>(new int[] { -1, -2, -3 }, metadata2)
-            }, 3, false));
+                new ListDataRow<int>(new int[] { 1, 2, 3 }, metadata1, false),
+                new ListDataRow<int>(new int[] { -1, -2, -3 }, metadata2, false)
+            }, 3));
             dataSet.AddDataSet(dataSet1);
 
             IDataSet dataSet2 = new RowSequenceDataSet(new IDataRow[]
             {
-                new ListDataRow<int>(new int[] { 4, 5 }, metadata2),
-                new ListDataRow<int>(new int[] { -4, -5 }, null)
-            }, 2, false);
+                new ListDataRow<int>(new int[] { 4, 5 }, metadata2, false),
+                new ListDataRow<int>(new int[] { -4, -5 }, null, true)
+            }, 2);
             dataSet.AddDataSet(dataSet2);
 
-            List<IDataRow> dataSet1Rows = new List<IDataRow>(dataSet1.GetRows(EmptyArray<DataBinding>.Instance));
-            List<IDataRow> dataSet2Rows = new List<IDataRow>(dataSet2.GetRows(EmptyArray<DataBinding>.Instance));
+            List<IDataRow> dataSet1Rows = new List<IDataRow>(dataSet1.GetRows(EmptyArray<DataBinding>.Instance, true));
+            List<IDataRow> dataSet2Rows = new List<IDataRow>(dataSet2.GetRows(EmptyArray<DataBinding>.Instance, true));
 
             List<IList<IDataRow>> results = new List<IList<IDataRow>>();
             results.Add(new IDataRow[] { dataSet1Rows[0], dataSet2Rows[0] });
@@ -225,8 +221,10 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Record())
             {
-                Expect.Call(strategy.Join(null, null)).IgnoreArguments().Do((JoinDelegate)delegate(IList<IDataProvider> joinProviders, IList<ICollection<DataBinding>> joinBindingsPerProvider)
+                Expect.Call(strategy.Join(null, null, true)).IgnoreArguments().Do((JoinDelegate)delegate(IList<IDataProvider> joinProviders, IList<ICollection<DataBinding>> joinBindingsPerProvider,
+                    bool includeDynamicRows)
                 {
+                    Assert.IsTrue(includeDynamicRows);
                     CollectionAssert.AreElementsEqual(new IDataProvider[] { dataSet1, dataSet2 }, joinProviders);
 
                     Assert.AreEqual(2, joinBindingsPerProvider.Count);
@@ -240,7 +238,7 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Playback())
             {
-                List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(bindings));
+                List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(bindings, true));
                 Assert.AreEqual(rows.Count, 2);
 
                 InterimAssert.Throws<ArgumentNullException>(delegate { rows[0].GetValue(null); });
@@ -259,6 +257,8 @@ namespace Gallio.Tests.Framework.Data
                     new KeyValuePair<string, string>("ghi", "789")
                 }, rows[0].GetMetadata());
 
+                Assert.IsFalse(rows[0].IsDynamic);
+
                 InterimAssert.Throws<DataBindingException>(delegate { rows[1].GetValue(bindings[0]); });
                 Assert.AreEqual(-2, rows[1].GetValue(bindings[1]));
                 Assert.AreEqual(-1, rows[1].GetValue(bindings[2]));
@@ -270,6 +270,8 @@ namespace Gallio.Tests.Framework.Data
                 {
                     new KeyValuePair<string, string>("ghi", "789")
                 }, rows[1].GetMetadata());
+
+                Assert.IsTrue(rows[1].IsDynamic);
             }
         }
 
@@ -284,10 +286,8 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSetWithTwoColumns.ColumnCount).Return(2);
-                SetupResult.For(dataSetWithTwoColumns.IsDynamic).Return(false);
 
                 SetupResult.For(dataSetWithThreeColumns.ColumnCount).Return(3);
-                SetupResult.For(dataSetWithThreeColumns.IsDynamic).Return(true);
             }
 
             using (Mocks.Playback())

@@ -72,10 +72,10 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
             IDataProvider[] providers = GenericUtils.ToArray(DataSets);
-            return strategy.Merge(providers, bindings);
+            return strategy.Merge(providers, bindings, includeDynamicRows);
         }
     }
 }

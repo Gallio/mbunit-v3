@@ -34,7 +34,8 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IList<IDataRow>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider)
+        public IEnumerable<IList<IDataRow>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
+            bool includeDynamicRows)
         {
             int providerCount = providers.Count;
             if (providerCount == 0)
@@ -42,7 +43,7 @@ namespace Gallio.Framework.Data
 
             IEnumerable<IDataRow>[] sequences = new IEnumerable<IDataRow>[providers.Count];
             for (int i = 0; i < providers.Count; i++)
-                sequences[i] = providers[i].GetRows(bindingsPerProvider[i]);
+                sequences[i] = providers[i].GetRows(bindingsPerProvider[i], includeDynamicRows);
 
             IEnumerator<IDataRow>[] enumerators = new IEnumerator<IDataRow>[providerCount];
             enumerators[0] = sequences[0].GetEnumerator();

@@ -127,7 +127,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
             IDataProvider[] providers = GenericUtils.ToArray(DataSets);
             int providerCount = providers.Length;
@@ -143,7 +143,7 @@ namespace Gallio.Framework.Data
                     bindingsPerProvider[resolvedBinding.DataSetInfo.DataSetIndex].Add(resolvedBinding.Inner);
             }
 
-            foreach (IList<IDataRow> rowList in strategy.Join(providers, bindingsPerProvider))
+            foreach (IList<IDataRow> rowList in strategy.Join(providers, bindingsPerProvider, includeDynamicRows))
                 yield return new JoinedDataRow(this, rowList);
         }
 
@@ -209,6 +209,11 @@ namespace Gallio.Framework.Data
             {
                 this.owner = owner;
                 this.rowList = rowList;
+            }
+
+            public bool IsDynamic
+            {
+                get { return GenericUtils.Find(rowList, delegate(IDataRow row) { return row.IsDynamic; }) != null; }
             }
 
             public IEnumerable<KeyValuePair<string, string>> GetMetadata()

@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Gallio.Framework.Data;
 using Gallio.Framework.Data.Binders;
 using Gallio.Framework.Data.Conversions;
@@ -92,15 +91,15 @@ namespace Gallio.Tests.Framework.Data.Binders
         [Test]
         public void RegisteredBindingsAreFetchedByItemsAccordingToStrategy()
         {
-            RowSequenceDataSet dataSet1 = new RowSequenceDataSet(new IDataRow[] { new ScalarDataRow<int>(1, null), new ScalarDataRow<int>(2, null) }, 1, false);
-            RowSequenceDataSet dataSet2 = new RowSequenceDataSet(new IDataRow[] { new ScalarDataRow<int>(10, null), new ScalarDataRow<int>(20, null) }, 1, false);
+            RowSequenceDataSet dataSet1 = new RowSequenceDataSet(new IDataRow[] { new ScalarDataRow<int>(1, null, false), new ScalarDataRow<int>(2, null, false) }, 1);
+            RowSequenceDataSet dataSet2 = new RowSequenceDataSet(new IDataRow[] { new ScalarDataRow<int>(10, null, false), new ScalarDataRow<int>(20, null, false) }, 1);
 
             DataBindingContext context = new DataBindingContext(new NullConverter());
 
             IDataBindingAccessor accessor1 = context.RegisterBinding(dataSet1, new SimpleDataBinding(typeof(int), null, 0));
             IDataBindingAccessor accessor2 = context.RegisterBinding(dataSet2, new SimpleDataBinding(typeof(int), null, 0));
 
-            List<DataBindingItem> combinatorialItems = new List<DataBindingItem>(context.GetItems());
+            List<DataBindingItem> combinatorialItems = new List<DataBindingItem>(context.GetItems(true));
             Assert.AreEqual(4, combinatorialItems.Count);
             Assert.AreEqual(1, accessor1.GetValue(combinatorialItems[0]));
             Assert.AreEqual(10, accessor2.GetValue(combinatorialItems[0]));
@@ -113,7 +112,7 @@ namespace Gallio.Tests.Framework.Data.Binders
 
             context.Strategy = SequentialJoinStrategy.Instance;
 
-            List<DataBindingItem> sequentialItems = new List<DataBindingItem>(context.GetItems());
+            List<DataBindingItem> sequentialItems = new List<DataBindingItem>(context.GetItems(true));
             Assert.AreEqual(2, sequentialItems.Count);
             Assert.AreEqual(1, accessor1.GetValue(sequentialItems[0]));
             Assert.AreEqual(10, accessor2.GetValue(sequentialItems[0]));
@@ -133,11 +132,11 @@ namespace Gallio.Tests.Framework.Data.Binders
 
             using (Mocks.Playback())
             {
-                RowSequenceDataSet dataSet = new RowSequenceDataSet(new IDataRow[] { new ScalarDataRow<int>(42, null) }, 1, false);
+                RowSequenceDataSet dataSet = new RowSequenceDataSet(new IDataRow[] { new ScalarDataRow<int>(42, null, false) }, 1);
                 DataBindingContext context = new DataBindingContext(converter);
 
                 IDataBindingAccessor accessor = context.RegisterBinding(dataSet, new SimpleDataBinding(typeof(string), null, 0));
-                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems());
+                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(true));
                 Assert.AreEqual(1, items.Count);
                 Assert.AreEqual("42", accessor.GetValue(items[0]));
             }
@@ -146,11 +145,21 @@ namespace Gallio.Tests.Framework.Data.Binders
         [Test]
         public void DataBindingAccessorThrowsIfItemIsNull()
         {
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(new IDataRow[] { }, 1, false);
+            RowSequenceDataSet dataSet = new RowSequenceDataSet(new IDataRow[] { }, 1);
             DataBindingContext context = new DataBindingContext(Mocks.Stub<IConverter>());
 
             IDataBindingAccessor accessor = context.RegisterBinding(dataSet, new SimpleDataBinding(typeof(string), null, 0));
             InterimAssert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
+        }
+
+        [Test]
+        public void GetItemsReturnsASingleNullDataRowIfThereAreNoDataSetsRegistered()
+        {
+            DataBindingContext context = new DataBindingContext(Mocks.Stub<IConverter>());
+
+            List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(false));
+            Assert.AreEqual(1, items.Count);
+            Assert.AreSame(NullDataRow.Instance, items[0].GetRow());
         }
     }
 }

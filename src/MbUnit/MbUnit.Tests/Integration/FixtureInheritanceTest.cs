@@ -27,7 +27,7 @@ namespace MbUnit.Tests.Integration
     [TestFixture]
     public class FixtureInheritanceTest : BaseSampleTest
     {
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void RunSample()
         {
             RunFixtures(typeof(FixtureInheritanceSample), typeof(FixtureInheritanceSample.DerivedFixture));

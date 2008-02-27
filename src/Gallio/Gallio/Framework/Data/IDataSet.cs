@@ -24,20 +24,6 @@ namespace Gallio.Framework.Data
     public interface IDataSet : IDataProvider
     {
         /// <summary>
-        /// <para>
-        /// Returns true if the data set is dynamic and cannot be enumerated with certainty
-        /// prior to its eventual use because its contents may be unavailable ahead
-        /// of time, may change over time or may be expensive to obtain.
-        /// </para>
-        /// <para>
-        /// For example, data obtained from a database should be considered dynamic.
-        /// On the other hand, data obtained from declarative metadata should be considered
-        /// static.
-        /// </para>
-        /// </summary>
-        bool IsDynamic { get; }
-
-        /// <summary>
         /// Gets the number of columns in an indexed data set.
         /// </summary>
         int ColumnCount { get; }

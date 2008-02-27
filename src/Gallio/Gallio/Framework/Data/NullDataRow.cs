@@ -13,9 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using Gallio.Collections;
 using Gallio.Reflection;
 
 namespace Gallio.Framework.Data
@@ -33,7 +30,7 @@ namespace Gallio.Framework.Data
         public static readonly NullDataRow Instance = new NullDataRow();
 
         private NullDataRow()
-            : base(null)
+            : base(null, false)
         {
         }
 

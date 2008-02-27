@@ -13,10 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using Gallio.Reflection;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 using MbUnit.TestResources;
 using MbUnit.TestResources.Fixtures;
 using Gallio.Model;
@@ -72,7 +71,7 @@ namespace Gallio.Tests.Model.Filters
             new FilterParser<ITest>(null);
         }
 
-        [RowTest]
+        [Test]
         [Row("Exact", false)]
         [Row("", true)]
         public void ExactType(string filterType, bool shouldMatch)
@@ -91,7 +90,7 @@ namespace Gallio.Tests.Model.Filters
             Mocks.VerifyAll();
         }
 
-        [RowTest]
+        [Test]
         [Row(null, ExpectedException = typeof(FilterRecognitionException))]
         [Row("", ExpectedException = typeof(FilterRecognitionException))]
         [Row(" ", ExpectedException = typeof(FilterRecognitionException))]
@@ -115,7 +114,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsTrue(parsedFilter.IsMatch(fixture3));
         }
 
-        [RowTest]
+        [Test]
         [Row("* and * or * and *", "(* and *) or (* and *)", true)]
         [Row("* or * and * or *", "* or (* and *) or *", true)]
         [Row("not * or not * and *", "(not *) or ((not *) and *)", false)]
@@ -137,7 +136,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(parsedFilter2.IsMatch(fixture3), matches);
         }
 
-        [RowTest]
+        [Test]
         [Row("SimpleTest")]
         [Row("MbUnit.TestResources.SimpleTest")]
         public void FilterWithOneValue(string type)
@@ -151,7 +150,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
 
-        [RowTest]
+        [Test]
         [Row("'SimpleTest'")]
         [Row("'MbUnit.TestResources.SimpleTest'")]
         [Row("\"SimpleTest\"")]
@@ -169,7 +168,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
 
-        [RowTest]
+        [Test]
         [Row("/SimpleTest/", false)]
         [Row("/MbUnit.TestResources.SimpleTest/", false)]
         [Row("/simpletest/", true)]
@@ -189,7 +188,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
 
-        [RowTest]
+        [Test]
         [Row("SimpleTest", "ParameterizedTest")]
         [Row("MbUnit.TestResources.SimpleTest", "ParameterizedTest")]
         public void FilterWithTwoValues(string type1, string type2)
@@ -203,7 +202,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
 
-        [RowTest]
+        [Test]
         [Row("SimpleTest", "ParameterizedTest")]
         [Row("MbUnit.TestResources.SimpleTest", "ParameterizedTest")]
         public void OrFilter(string type1, string type2)
@@ -217,7 +216,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
 
-        [RowTest]
+        [Test]
         [Row("SimpleTest", "ParameterizedTest")]
         [Row("MbUnit.TestResources.SimpleTest", "ParameterizedTest")]
         public void AndFilter(string type1, string type2)
@@ -231,7 +230,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
 
-        [RowTest]
+        [Test]
         [Row("SimpleTest", "ParameterizedTest")]
         [Row("MbUnit.TestResources.SimpleTest", "ParameterizedTest")]
         public void NotFilter(string type1, string type2)
@@ -245,7 +244,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
         }
 
-        [RowTest]
+        [Test]
         [Row("Type:\"Fixture1\"")]
         [Row("Type:\"Fixtur\\\\e1\"")]
         [Row("Type:'Fixture1'")]
@@ -268,7 +267,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsNotNull(FilterUtils.ParseTestFilter(filter));
         }
 
-        [RowTest]
+        [Test]
         [Row("Type:/RegExp/", "Type(Regex('RegExp', Compiled), True)")]
         [Row("Type:/RegExp/i", "Type(Regex('RegExp', IgnoreCase, Compiled), True)")]
         [Row("Type://", "Type(Regex('', Compiled), True)")]
@@ -282,7 +281,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(parsedFilter.ToString(), parsedFilterString);
         }
 
-        [RowTest]
+        [Test]
         [Row("foo''", ExpectedException = typeof(FilterRecognitionException))]
         [Row(@"foo\", ExpectedException = typeof(FilterRecognitionException))]
         [Row(@"foo\\", ExpectedException = typeof(FilterRecognitionException))]

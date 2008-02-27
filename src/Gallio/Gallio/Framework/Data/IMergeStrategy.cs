@@ -38,7 +38,11 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="providers">The list of providers</param>
         /// <param name="bindings">The bindings</param>
+        /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
+        /// generated in the result set.  Otherwise excludes such rows and only returns
+        /// those that are statically known a priori.</param>
         /// <returns>The merged sequence of rows</returns>
-        IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings);
+        IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicRows);
     }
 }

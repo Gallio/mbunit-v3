@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Xml;
 using MbUnit.Framework;
 
 namespace MbUnit.TestResources.DataBinding
@@ -33,8 +34,7 @@ namespace MbUnit.TestResources.DataBinding
             Assert.AreEqual(new DateTime(2002, 1, 1), c);
         }
 
-#if false
-        [RowTest]
+        [Test]
         [Header("c", "b", "a")]
         [Row("2002/01/01", "quux", 1)]
         public void AutoBindingByPropertyPath(int a, string b, DateTime c)
@@ -44,7 +44,7 @@ namespace MbUnit.TestResources.DataBinding
             Assert.AreEqual(new DateTime(2002, 1, 1), c);
         }
 
-        [RowTest]
+        [Test]
         [Row("2002/01/01", "quux", 1)]
         public void CustomBindingByPropertyIndex(
             [Bind(2)] int a, [Bind(1)] string b, [Bind(0)] DateTime c)
@@ -54,7 +54,7 @@ namespace MbUnit.TestResources.DataBinding
             Assert.AreEqual(new DateTime(2002, 1, 1), c);
         }
 
-        [RowTest]
+        [Test]
         [Header("c", "b", "a")]
         [Row(1, "quux", "2002/01/01")]
         public void CustomBindingByPropertyPath(
@@ -65,18 +65,19 @@ namespace MbUnit.TestResources.DataBinding
             Assert.AreEqual(new DateTime(2002, 1, 1), c);
         }
 
-        [RowTest]
+        /*
+        [Test]
         [Header("c", "b", "a")]
         [Row("2002/01/01", "quux", 1)]
         public void TypeBindingWithMatchingNames(
-            [BindType] Data s)
+            [BindObject] Data s)
         {
             Assert.AreEqual(1, a);
             Assert.AreEqual("quux", b);
             Assert.AreEqual(new DateTime(2002, 1, 1), c);
         }
 
-        [RowTest]
+        [Test]
         [Header("a", "b", "c")]
         [Row("2002/01/01", "quux", 1)]
         public void TypeBindingWithCustomNamesAndType(
@@ -88,7 +89,7 @@ namespace MbUnit.TestResources.DataBinding
             Assert.AreEqual(new DateTime(2002, 1, 1), data.C);
         }
 
-        [RowTest]
+        [Test]
         [Header("a", "b", "c")]
         [Row("2002/01/01", "quux", 1)]
         public void FactoryBinding(
@@ -98,18 +99,34 @@ namespace MbUnit.TestResources.DataBinding
             Assert.AreEqual("quux", s.B);
             Assert.AreEqual(new DateTime(2002, 1, 1), s.C);
         }
+         */
 
-        [RowTest]
-        [Header("c", "b", Source="First")]
-        [Row("2002/01/01", "quux", Source="First")]
-        [Header("a", Source="Second")]
-        [Row(1, Source="Second")]
+        [Test]
+        [Header("c", "b", SourceName="First")]
+        [Row("2002/01/01", "quux", SourceName = "First")]
+        [Header("a", SourceName = "Second")]
+        [Row(1, SourceName = "Second")]
         public void JoinsAcrossSources(
-            [Bind(Source = "Second")] int a, [Bind(Source = "First")] string b, [Bind(Source = "First")] DateTime c)
+            [Bind("a", Source = "Second")] int a, [Bind("b", Source = "First")] string b, [Bind(0, Source = "First")] DateTime c)
         {
             Assert.AreEqual(1, a);
             Assert.AreEqual("quux", b);
             Assert.AreEqual(new DateTime(2002, 1, 1), c);
+        }
+
+        [Test]
+        public void AutoConversionToXml(
+            [Column("<root>42</root>")] XmlDocument doc)
+        {
+            Assert.AreEqual("<root>42</root>", doc.OuterXml);
+        }
+
+        [Test]
+        [Row(typeof(int), 42)]
+        [Row(typeof(string), "str")]
+        public void GenericMethodParameters<T>(object value)
+        {
+            Assert.AreEqual(typeof(T), value.GetType());
         }
 
         public static Data DataFactory(int a, string b, DateTime c)
@@ -127,6 +144,5 @@ namespace MbUnit.TestResources.DataBinding
             public string B;
             public DateTime C;
         }
-#endif
     }
 }

@@ -36,23 +36,18 @@ namespace Gallio.Model
         ITestInstance Parent { get; }
 
         /// <summary>
+        /// Gets the full name of the test instance.  The full name is derived by concatenating the
+        /// <see cref="FullName" /> of the <see cref="Parent"/> followed by a slash ('/')
+        /// followed by the <see cref="ITestComponent.Name" /> of this test instance.
+        /// </summary>
+        string FullName { get; }
+
+        /// <summary>
         /// Returns true if the test instance is dynamic and cannot not be known with certainty
         /// prior to test execution because its parameters are bound to values that
         /// may be unavailable ahead of time, may change over time or that may be
         /// expensive to obtain.
         /// </summary>
         bool IsDynamic { get; }
-
-        /// <summary>
-        /// Gets the value associated with the specified test parameter, if available.
-        /// </summary>
-        /// <param name="parameter">The test parameter</param>
-        /// <returns>The value associated with the test parameter</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="parameter"/> does not
-        /// belong to this test</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the parameter value is not
-        /// available (perhaps because the test is not currently running)</exception>
-        object GetParameterValue(ITestParameter parameter);
     }
 }

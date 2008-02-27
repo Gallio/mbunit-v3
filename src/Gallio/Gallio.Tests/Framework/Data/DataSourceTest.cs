@@ -27,7 +27,7 @@ namespace Gallio.Tests.Framework.Data
     public class DataSourceTest : BaseUnitTest
     {
         private delegate bool CanBindDelegate(DataBinding binding);
-        private delegate IEnumerable<IDataRow> GetRowsDelegate(ICollection<DataBinding> bindings);
+        private delegate IEnumerable<IDataRow> GetRowsDelegate(ICollection<DataBinding> bindings, bool includeDynamicRows);
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfNameIsNull()
@@ -57,7 +57,6 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSet.ColumnCount).Return(2);
-                SetupResult.For(dataSet.IsDynamic).Return(false);
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
@@ -85,7 +84,6 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSet.ColumnCount).Return(2);
-                SetupResult.For(dataSet.IsDynamic).Return(false);
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
@@ -124,12 +122,13 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSet.ColumnCount).Return(2);
-                SetupResult.For(dataSet.IsDynamic).Return(false);
 
-                Expect.Call(dataSet.GetRows(null)).IgnoreArguments().Do((GetRowsDelegate)delegate(ICollection<DataBinding> bindings)
+                Expect.Call(dataSet.GetRows(null, true)).IgnoreArguments().Do((GetRowsDelegate)delegate(ICollection<DataBinding> bindings,
+                    bool includeDynamicRows)
                 {
+                    Assert.IsTrue(includeDynamicRows);
                     List<IDataRow> rows = new List<IDataRow>();
-                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadata));
+                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadata, false));
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
@@ -150,7 +149,7 @@ namespace Gallio.Tests.Framework.Data
                     new SimpleDataBinding(typeof(string), "untranslatedPath", 1)
                 };
 
-                List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings));
+                List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings, true));
                 Assert.AreEqual(1, rows.Count);
 
                 Assert.AreSame(metadata, rows[0].GetMetadata());
@@ -167,12 +166,14 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSet.ColumnCount).Return(3);
-                SetupResult.For(dataSet.IsDynamic).Return(false);
 
-                Expect.Call(dataSet.GetRows(null)).IgnoreArguments().Do((GetRowsDelegate)delegate(ICollection<DataBinding> bindings)
+                Expect.Call(dataSet.GetRows(null, true)).IgnoreArguments().Do((GetRowsDelegate)delegate(ICollection<DataBinding> bindings,
+                    bool includeDynamicRows)
                 {
+                    Assert.IsTrue(includeDynamicRows);
+
                     List<IDataRow> rows = new List<IDataRow>();
-                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadata));
+                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadata, true));
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
@@ -199,7 +200,7 @@ namespace Gallio.Tests.Framework.Data
                     new SimpleDataBinding(typeof(string), "untranslatedPath", 1)
                 };
 
-                List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings));
+                List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings, true));
                 Assert.AreEqual(1, rows.Count);
 
                 Assert.AreSame(metadata, rows[0].GetMetadata());

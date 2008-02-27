@@ -25,9 +25,6 @@ namespace Gallio.Framework.Data
     public abstract class BaseDataSet : IDataSet
     {
         /// <inheritdoc />
-        public abstract bool IsDynamic { get; }
-
-        /// <inheritdoc />
         public abstract int ColumnCount { get; }
 
         /// <inheritdoc />
@@ -40,12 +37,12 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings)
+        public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
             if (bindings == null)
                 throw new ArgumentNullException("bindings");
 
-            return GetRowsInternal(bindings);
+            return GetRowsInternal(bindings, includeDynamicRows);
         }
 
         /// <summary>
@@ -59,7 +56,8 @@ namespace Gallio.Framework.Data
         /// Enumerates the rows in the data set.
         /// </summary>
         /// <param name="bindings">The data bindings, not null</param>
+        /// <param name="includeDynamicRows">If true, includes dynamic rows</param>
         /// <returns>The enumeration of rows in the combined data set</returns>
-        protected abstract IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings);
+        protected abstract IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows);
     }
 }

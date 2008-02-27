@@ -13,15 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using Gallio.Reflection;
 using Gallio.Tests;
-using MbUnit2::MbUnit.Framework;
 
 using System;
 using System.Reflection;
 using Gallio.Model.Filters;
 using Gallio.Model;
+using MbUnit.Framework;
 using Rhino.Mocks;
 using ITestComponent=Gallio.Model.ITestComponent;
 
@@ -31,7 +30,7 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(MemberFilter<ITestComponent>))]
     public class MemberFilterTest : BaseUnitTest
     {
-        [RowTest]
+        [Test]
         [Row(true, "A")]
         [Row(false, "B")]
         [Row(false, null)]
@@ -49,7 +48,7 @@ namespace Gallio.Tests.Model.Filters
                 new MemberFilter<ITestComponent>(new EqualityFilter<string>("A")).IsMatch(component));
         }
 
-        [RowTest]
+        [Test]
         [Row("Member1")]
         [Row("Member2")]
         public void ToStringTest(string member)

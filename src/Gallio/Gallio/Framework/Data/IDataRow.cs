@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 
 namespace Gallio.Framework.Data
@@ -27,6 +26,20 @@ namespace Gallio.Framework.Data
     /// </summary>
     public interface IDataRow
     {
+        /// <summary>
+        /// <para>
+        /// Returns true if the data row contains dynamic data that cannot be accessed with
+        /// certainty prior to its eventual use because its contents may be unavailable ahead
+        /// of time, may change over time or may be expensive to obtain.
+        /// </para>
+        /// <para>
+        /// For example, data obtained from a database should be considered dynamic.
+        /// On the other hand, data obtained from declarative metadata defined as part
+        /// of the test should be considered static.
+        /// </para>
+        /// </summary>
+        bool IsDynamic { get; }
+
         /// <summary>
         /// <para>
         /// Gets the metadata key/value pairs associated with the data row, if any.

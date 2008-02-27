@@ -344,7 +344,14 @@
           <xsl:with-param name="href">testStepRunPanel-<xsl:value-of select="g:testStep/@id"/></xsl:with-param>
         </xsl:call-template>
 
-        <xsl:value-of select="g:testStep/@fullName" />
+        <xsl:choose>
+          <xsl:when test="parent::g:children">
+            <xsl:value-of select="g:testStep/@name" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="ancestor::g:testInstanceRun[position()=1]/g:testInstance/@name" />
+          </xsl:otherwise>
+        </xsl:choose> 
         
         <xsl:call-template name="outcomeBar">
           <xsl:with-param name="status" select="g:result/g:outcome/@status" />

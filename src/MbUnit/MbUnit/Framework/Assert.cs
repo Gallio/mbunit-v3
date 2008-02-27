@@ -20,12 +20,14 @@ using System.Reflection;
 using Gallio.Framework;
 using Gallio.Logging;
 
+#pragma warning disable 1591
+#pragma warning disable 3001
+
 namespace MbUnit.Framework
 {
     /// <summary>
     /// Assertion class
     /// </summary>
-    /// <include file="MbUnit.Framework.Doc.xml" path="doc/remarkss/remarks[@name='Assert']"/>
     public static class Assert
     {
         #region Private stuff

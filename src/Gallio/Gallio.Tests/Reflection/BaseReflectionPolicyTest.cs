@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 
 using System;
 using System.Collections.Generic;
@@ -23,7 +22,7 @@ using Gallio.Model;
 using Gallio.Reflection;
 using MbUnit.TestResources;
 using MbUnit.TestResources.Reflection;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Reflection
 {
@@ -201,7 +200,7 @@ namespace Gallio.Tests.Reflection
                 delegate(Type type) { return GetType(type).Namespace; });
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(ReflectionPolicySample.Class1))]
         [Row(typeof(ReflectionPolicySample.Class3))]
         [Row(typeof(ReflectionPolicySample.Struct1<int, string>))]
@@ -222,7 +221,7 @@ namespace Gallio.Tests.Reflection
                 GetType);
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(ReflectionPolicySample.Class1), "Method1")]
         [Row(typeof(ReflectionPolicySample.Class1), "Method2")]
         public void MethodWrapper(Type type, string methodName)
@@ -242,7 +241,7 @@ namespace Gallio.Tests.Reflection
                 GetMethod);
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(ReflectionPolicySample.Class1), "Field1")]
         [Row(typeof(ReflectionPolicySample.Class1), "Field2")]
         public void FieldWrapper(Type type, string fieldName)
@@ -262,7 +261,7 @@ namespace Gallio.Tests.Reflection
                 GetField);
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(ReflectionPolicySample.Class1), "Property1")]
         [Row(typeof(ReflectionPolicySample.Class1), "Property2")]
         [Row(typeof(ReflectionPolicySample.Class1), "Property3")]
@@ -283,7 +282,7 @@ namespace Gallio.Tests.Reflection
                 GetProperty);
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(ReflectionPolicySample.Class1), "Event1")]
         [Row(typeof(ReflectionPolicySample.Class1), "Event2")]
         [Row(typeof(ReflectionPolicySample.Class2), "Event2")]
@@ -304,7 +303,7 @@ namespace Gallio.Tests.Reflection
                 GetEvent);
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(ReflectionPolicySample.Class1))]
         [Row(typeof(ReflectionPolicySample.Struct1<,>))]
         public void ConstructorWrapper(Type type)
@@ -324,7 +323,7 @@ namespace Gallio.Tests.Reflection
                 GetConstructor);
         }
 
-        [RowTest]
+        [Test]
         [Row(0)]
         [Row(1)]
         [Row(-1)]
@@ -348,7 +347,7 @@ namespace Gallio.Tests.Reflection
                 GetMethodParameter);
         }
 
-        [RowTest]
+        [Test]
         [Row(0)]
         [Row(1)]
         public void GenericParameterWrapper(int position)
@@ -368,7 +367,7 @@ namespace Gallio.Tests.Reflection
                 GetGenericTypeParameter);
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(ReflectionPolicySample.Class3), 0)]
         [Row(typeof(ReflectionPolicySample.Class3), 1)]
         [Row(typeof(ReflectionPolicySample.Interface1), 0)]
@@ -485,7 +484,7 @@ namespace Gallio.Tests.Reflection
                 method.MakeGenericMethod(new ITypeInfo[] { GetType(typeof(int)) }), false);
         }
 
-        [RowTest]
+        [Test]
         [Row(typeof(ReflectionPolicySample.TortureTest<string>))]
         [Row(typeof(ReflectionPolicySample.TortureTest2<string>))]
         public void TortureTest(Type target)

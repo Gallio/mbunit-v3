@@ -16,6 +16,9 @@
 using System;
 using System.IO;
 
+#pragma warning disable 1591
+#pragma warning disable 3001
+
 namespace MbUnit.Framework
 {
     public static class FileAssert

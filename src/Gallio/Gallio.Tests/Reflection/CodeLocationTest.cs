@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 
 using System;
 using Gallio.Reflection;
 using MbUnit.Framework.Xml;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Reflection
 {
@@ -26,7 +25,7 @@ namespace Gallio.Tests.Reflection
     [TestsOn(typeof(CodeLocation))]
     public class CodeLocationTest
     {
-        [RowTest]
+        [Test]
         [Row("file", 1, 1)]
         [Row("file", 1, 0)]
         [Row("file", 0, 1)]
@@ -42,7 +41,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(column, location.Column);
         }
 
-        [RowTest]
+        [Test]
         [Row("file", 1, 1)]
         [Row("file", 1, 0)]
         [Row("file", 0, 1)]

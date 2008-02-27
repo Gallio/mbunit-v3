@@ -28,7 +28,8 @@ namespace Gallio.Tests.Framework.Data
     [DependsOn(typeof(BaseDataSetTest))]
     public class MergedDataSetTest : BaseUnitTest
     {
-        private delegate IEnumerable<IDataRow> MergeDelegate(IList<IDataProvider> providers, ICollection<DataBinding> bindings);
+        private delegate IEnumerable<IDataRow> MergeDelegate(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicRows);
 
         [Test]
         public void DefaultStrategyIsConcatenation()
@@ -54,7 +55,7 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
-        public void AddingDataSetsUpdatesTheColumnCountAndIsDynamicAndDataSetsCollection()
+        public void AddingDataSetsUpdatesTheColumnCountAndDataSetsCollection()
         {
             MergedDataSet dataSet = new MergedDataSet();
 
@@ -64,29 +65,24 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSetWithTwoColumns.ColumnCount).Return(2);
-                SetupResult.For(dataSetWithTwoColumns.IsDynamic).Return(false);
 
                 SetupResult.For(dataSetWithThreeColumns.ColumnCount).Return(3);
-                SetupResult.For(dataSetWithThreeColumns.IsDynamic).Return(true);
             }
 
             using (Mocks.Playback())
             {
                 Assert.AreEqual(0, dataSet.ColumnCount);
                 CollectionAssert.AreElementsEqual(new IDataSet[] { }, dataSet.DataSets);
-                Assert.IsFalse(dataSet.IsDynamic);
 
                 dataSet.AddDataSet(dataSetWithTwoColumns);
 
                 Assert.AreEqual(2, dataSet.ColumnCount);
                 CollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns }, dataSet.DataSets);
-                Assert.IsFalse(dataSet.IsDynamic);
 
                 dataSet.AddDataSet(dataSetWithThreeColumns);
 
                 Assert.AreEqual(3, dataSet.ColumnCount);
                 CollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns, dataSetWithThreeColumns }, dataSet.DataSets);
-                Assert.IsTrue(dataSet.IsDynamic);
             }
         }
 
@@ -120,11 +116,9 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 SetupResult.For(dataSetWithTwoColumns.ColumnCount).Return(2);
-                SetupResult.For(dataSetWithTwoColumns.IsDynamic).Return(false);
                 Expect.Call(dataSetWithTwoColumns.CanBind(binding)).Repeat.Twice().Return(true);
 
                 SetupResult.For(dataSetWithThreeColumns.ColumnCount).Return(3);
-                SetupResult.For(dataSetWithThreeColumns.IsDynamic).Return(true);
                 Expect.Call(dataSetWithThreeColumns.CanBind(binding)).Return(false);
             }
 
@@ -156,8 +150,11 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Record())
             {
-                Expect.Call(strategy.Merge(null, null)).IgnoreArguments().Do((MergeDelegate)delegate(IList<IDataProvider> mergeProviders, ICollection<DataBinding> mergeBindings)
+                Expect.Call(strategy.Merge(null, null, false)).IgnoreArguments().Do((MergeDelegate)delegate(IList<IDataProvider> mergeProviders, ICollection<DataBinding> mergeBindings,
+                    bool includeDynamicRows)
                 {
+                    Assert.IsTrue(includeDynamicRows);
+
                     CollectionAssert.AreElementsEqual(new IDataProvider[] { provider }, mergeProviders);
                     Assert.AreSame(bindings, mergeBindings);
                     return results;
@@ -166,7 +163,7 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Playback())
             {
-                Assert.AreSame(results, dataSet.GetRows(bindings));
+                Assert.AreSame(results, dataSet.GetRows(bindings, true));
             }
         }
     }

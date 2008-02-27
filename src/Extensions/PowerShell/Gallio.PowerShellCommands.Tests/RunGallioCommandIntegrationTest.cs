@@ -32,14 +32,14 @@ namespace Gallio.PowerShellCommands.Tests
     {
         private Hashtable state;
 
-        [TestFixtureSetUp]
+        [FixtureSetUp]
         public void InstallSnapIn()
         {
             Hashtable state = new Hashtable();
             new GallioSnapIn().Install(state);
         }
 
-        [TestFixtureTearDown]
+        [FixtureTearDown]
         public void UninstallSnapIn()
         {
             if (state != null)

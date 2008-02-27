@@ -26,9 +26,18 @@ namespace Gallio.Tests.Framework.Data
     public class BaseDataRowTest
     {
         [Test]
+        [Row(true)]
+        [Row(false)]
+        public void IsDynamicReturnsSameValueAsWasSpecifiedInTheConstructor(bool isDynamic)
+        {
+            BaseDataRow row = new StubDataRow(null, isDynamic);
+            Assert.AreEqual(isDynamic, row.IsDynamic);
+        }
+
+        [Test]
         public void GetMetadataReturnsAnEmptyArrayIfConstructorArgumentWasNull()
         {
-            BaseDataRow row = new StubDataRow(null);
+            BaseDataRow row = new StubDataRow(null, false);
             Assert.AreEqual(0, new List<KeyValuePair<string, string>>(row.GetMetadata()).Count);
         }
 
@@ -36,21 +45,21 @@ namespace Gallio.Tests.Framework.Data
         public void GetMetadataReturnsSameEnumerationAsWasSpecifiedInConstructor()
         {
             List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
-            BaseDataRow row = new StubDataRow(metadata);
+            BaseDataRow row = new StubDataRow(metadata, false);
             Assert.AreSame(metadata, row.GetMetadata());
         }
 
         [Test, ExpectedArgumentNullException]
         public void GetValueThrowsIfBindingIsNull()
         {
-            BaseDataRow row = new StubDataRow(EmptyArray<KeyValuePair<string, string>>.Instance);
+            BaseDataRow row = new StubDataRow(EmptyArray<KeyValuePair<string, string>>.Instance, false);
             row.GetValue(null);
         }
 
         private class StubDataRow : BaseDataRow
         {
-            public StubDataRow(IEnumerable<KeyValuePair<string, string>> metadata)
-                : base(metadata)
+            public StubDataRow(IEnumerable<KeyValuePair<string, string>> metadata, bool isDynamic)
+                : base(metadata, isDynamic)
             {
             }
 

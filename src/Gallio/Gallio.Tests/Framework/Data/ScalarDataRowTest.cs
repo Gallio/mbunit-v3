@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 
 using System.Collections.Generic;
 using Gallio.Framework.Data;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
 {
@@ -27,9 +26,18 @@ namespace Gallio.Tests.Framework.Data
     public class ScalarDataRowTest
     {
         [Test]
+        [Row(true)]
+        [Row(false)]
+        public void IsDynamicReturnsSameValueAsWasSpecifiedInTheConstructor(bool isDynamic)
+        {
+            ScalarDataRow<object> row = new ScalarDataRow<object>(null, null, isDynamic);
+            Assert.AreEqual(isDynamic, row.IsDynamic);
+        }
+
+        [Test]
         public void HasNoMetadataIfNullSpecifiedInConstructor()
         {
-            ScalarDataRow<object> row = new ScalarDataRow<object>(null, null);
+            ScalarDataRow<object> row = new ScalarDataRow<object>(null, null, false);
             List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>(row.GetMetadata());
             Assert.AreEqual(0, metadata.Count);
         }
@@ -38,12 +46,12 @@ namespace Gallio.Tests.Framework.Data
         public void ContainSameMetadataAsSpecifiedInConstructor()
         {
             List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
-            ScalarDataRow<object> row = new ScalarDataRow<object>("abc", metadata);
+            ScalarDataRow<object> row = new ScalarDataRow<object>("abc", metadata, false);
 
             Assert.AreSame(metadata, row.GetMetadata());
         }
 
-        [RowTest]
+        [Test]
         [Row(null, null, ExpectedException=typeof(DataBindingException))]
         [Row(null, 1, ExpectedException=typeof(DataBindingException))]
         [Row(null, -1, ExpectedException=typeof(DataBindingException))]
@@ -54,7 +62,7 @@ namespace Gallio.Tests.Framework.Data
         [Row("abc", 0)]
         public void GetValueReturnsValueOnlyIfTheBindingIndexIsZero(string path, object index)
         {
-            ScalarDataRow<object> row = new ScalarDataRow<object>(42, null);
+            ScalarDataRow<object> row = new ScalarDataRow<object>(42, null, false);
             object value = row.GetValue(new SimpleDataBinding(typeof(string), path, (int?)index));
 
             Assert.AreEqual(42, value);

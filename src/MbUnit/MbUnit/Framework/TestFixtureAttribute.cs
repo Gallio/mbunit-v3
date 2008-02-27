@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Framework.Patterns;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -35,7 +35,7 @@ namespace MbUnit.Framework
     /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public sealed class TestFixtureAttribute : TestTypePatternAttribute
+    public class TestFixtureAttribute : TestTypePatternAttribute
     {
     }
 }

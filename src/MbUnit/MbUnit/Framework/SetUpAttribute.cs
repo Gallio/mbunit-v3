@@ -14,9 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Reflection;
-using Gallio.Framework.Explorer;
-using Gallio.Framework.Patterns;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -47,9 +48,15 @@ namespace MbUnit.Framework
         protected override void DecorateContainingTest(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
         {
             IMethodInfo method = (IMethodInfo)codeElement;
-            ReflectionUtils.CheckMethodSignature(method);
 
-            containingTestBuilder.Test.BeforeChildChain.After(PatternTestUtils.CreateFixtureMethodInvoker(method));
+            containingTestBuilder.Test.Actions.DecorateChildTestChain.After(
+                delegate(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildActions)
+                {
+                    decoratedChildActions.SetUpTestInstanceChain.Before(delegate
+                    {
+                        testInstanceState.InvokeFixtureMethod(method, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance);
+                    });
+                });
         }
     }
 }

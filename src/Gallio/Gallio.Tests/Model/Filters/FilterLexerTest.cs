@@ -13,10 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
 using System;
 using Gallio.Model.Filters;
-using MbUnit2::MbUnit.Framework;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Model.Filters
 {
@@ -25,7 +24,7 @@ namespace Gallio.Tests.Model.Filters
     [Author("Julian Hidalgo")]
     public class FilterLexerTest
     {
-        [RowTest]
+        [Test]
         [Row(null)]
         [Row("")]
         [Row(" ")]
@@ -81,7 +80,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsNull(lexer.LookAhead(1));
         }
 
-        [RowTest]
+        [Test]
         // We can't use FilterTokenType directly because it's internal and this method is public
         [Row("(", "LeftBracket")]
         [Row(")", "RightBracket")]
@@ -107,7 +106,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(filterToken.Text, null);
         }
 
-        [RowTest]
+        [Test]
         [Row("anX")]
         [Row("oX")]
         [Row("noX")]
@@ -129,7 +128,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(filterToken.Text, filter);
         }
 
-        [RowTest]
+        [Test]
         [Row("()", "LeftBracket", "RightBracket")]
         [Row(")(", "RightBracket", "LeftBracket")]
         [Row(",*", "Comma", "Star")]
@@ -148,7 +147,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(filterToken.Type, Enum.Parse(typeof(FilterTokenType), type2));
         }
 
-        [RowTest]
+        [Test]
         [Row("Author", ":", "JulianHidalgo")]
         [Row("Andy", ":", "Ordy")]
         [Row("AndAnd", ":", "NotNot")]
@@ -177,7 +176,7 @@ namespace Gallio.Tests.Model.Filters
             }
         }
 
-        [RowTest]
+        [Test]
         [Row("\"\"", "Word")]
         [Row("''", "Word")]
         [Row("//", "RegexWord")]
@@ -194,7 +193,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(firstFilterToken.Text, GetUnquotedString(filter));
         }
 
-        [RowTest]
+        [Test]
         [Row("\"abcdefghijklmnopqrst")]
         [Row("'abcdefghijklmnopqrst")]
         [Row("/abcdefghijklmnopqrst")]
@@ -211,7 +210,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.IsTrue(token.Text.StartsWith("Missing end " + filter[0]));
         }
 
-        [RowTest]
+        [Test]
         [Row("\"\\\"\"", "Word")]
         [Row(@"'\''", "Word")]
         [Row(@"/\//", "RegexWord")]
@@ -228,7 +227,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(firstFilterToken.Text, GetUnquotedString(filter));
         }
 
-        [RowTest]
+        [Test]
         [Row("\"Author\"", "Author", "Word")]
         [Row("\"A\\\"uthor\"", "A\"uthor", "Word")]
         [Row("\"Author\\\"\"", "Author\"", "Word")]
@@ -249,7 +248,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(firstFilterToken.Text, expected);
         }
 
-        [RowTest]
+        [Test]
         [Row(@"/Regex/", "Regex")]
         [Row(@"//", "")]
         public void Regex(string key, string text)
@@ -264,7 +263,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(firstFilterToken.Text, text);
         }
 
-        [RowTest]
+        [Test]
         [Row(@"/Regex/i", "Regex")]
         [Row(@"//i", "")]
         public void CaseInsensitiveRegex(string key, string text)
@@ -286,7 +285,7 @@ namespace Gallio.Tests.Model.Filters
             }
         }
 
-        [RowTest]
+        [Test]
         [Row(@"/Regex/ i", "Regex")]
         [Row(@"//@i", "")]
         [Row("//\ti", "")]
@@ -306,7 +305,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(secondToken.Type, FilterTokenType.Word);
         }
 
-        [RowTest]
+        [Test]
         [Row("\"Author\"", ":", "\"JulianHidalgo\"")]
         [Row("\"Author\"", ":", "\"Julian.Hidalgo\"")]
         [Row("\"Author\"", ":", "\"Julian.Hidalgo@MbUnit.com\"")]
@@ -335,7 +334,7 @@ namespace Gallio.Tests.Model.Filters
             }
         }
 
-        [RowTest]
+        [Test]
         [Row(@"\\", @"\")]
         [Row(@"\\a", @"\a")]
         [Row(@"\\/", @"\/")]
@@ -360,7 +359,7 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(firstFilterToken.Text, text);
         }
 
-        [RowTest]
+        [Test]
         [Row("Type:\"Fixtur\\\\e1\"", "Fixtur\\e1")]
         [Row("Type:\"Fixture1\"", "Fixture1")]
         [Row("Type:'Fixture1'", "Fixture1")]
@@ -390,7 +389,7 @@ namespace Gallio.Tests.Model.Filters
             }
         }
 
-        [RowTest]
+        [Test]
         [Row("Type:\"Fixture1\",Fixture2")]
         [Row("Type:\"Fixture1\",\"Fixture2\"")]
         [Row("Type:\"Fixture1\",'Fixture2'")]
@@ -432,7 +431,7 @@ namespace Gallio.Tests.Model.Filters
             }
         }
 
-        [RowTest]
+        [Test]
         [Row(@"\", 1)]
         [Row(@"a\", 1)]
         [Row(@"Type:\", 3)]
@@ -449,7 +448,7 @@ namespace Gallio.Tests.Model.Filters
             }
         }
 
-        [RowTest]
+        [Test]
         [Row(@"\a", 1)]
         [Row(@"a\b", 1)]
         [Row(@"Type:\a", 3)]
@@ -468,7 +467,7 @@ namespace Gallio.Tests.Model.Filters
             }
         }
 
-        [RowTest]
+        [Test]
         [Row("\"Author\"", "\"JulianHidalgo\"", "\"Jeff Brown\"")]
         public void QuotedElementsAndMultipleValues(string key, string value1, string value2)
         {

@@ -46,12 +46,6 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public override bool IsDynamic
-        {
-            get { return isDynamic; }
-        }
-
-        /// <inheritdoc />
         public override int ColumnCount
         {
             get { return 1; }
@@ -64,10 +58,13 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings)
+        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
-            foreach (object value in values)
-                yield return new ScalarDataRow<object>(value, metadata);
+            if (!isDynamic || includeDynamicRows)
+            {
+                foreach (object value in values)
+                    yield return new ScalarDataRow<object>(value, metadata, isDynamic);
+            }
         }
     }
 }

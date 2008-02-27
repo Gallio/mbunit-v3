@@ -40,13 +40,14 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings)
+        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicRows)
         {
             HashSet<object[]> previousValues = new HashSet<object[]>(new ArrayEqualityComparer<object>());
 
             foreach (IDataProvider provider in providers)
             {
-                foreach (IDataRow row in provider.GetRows(bindings))
+                foreach (IDataRow row in provider.GetRows(bindings, includeDynamicRows))
                 {
                     try
                     {
