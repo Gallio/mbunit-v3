@@ -16,7 +16,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Hosting;
 using Gallio.Utilities;
@@ -33,7 +32,8 @@ namespace Gallio.NCoverIntegration
     /// </todo>
     public class NCoverProcessTask : ProcessTask
     {
-        private readonly TimeSpan WaitForExitTimeout = TimeSpan.FromSeconds(15);
+        // Note: NCover can take a long time to finish writing out its results.
+        private readonly TimeSpan WaitForExitTimeout = TimeSpan.FromSeconds(120);
 
         private ProfilerDriver driver;
         private ThreadTask waitForExitTask;
