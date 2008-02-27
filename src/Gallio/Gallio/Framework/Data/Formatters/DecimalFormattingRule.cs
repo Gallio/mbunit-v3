@@ -14,12 +14,33 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
 
 namespace Gallio.Framework.Data.Formatters
 {
-    public interface IFormattingRule
+    /// <summary>
+    /// <para>
+    /// A formatting rule for <see cref="decimal" />.
+    /// </para>
+    /// <para>
+    /// Formats values like: "5.6m".
+    /// </para>
+    /// </summary>
+    public sealed class DecimalFormattingRule : IFormattingRule
     {
+        /// <inheritdoc />
+        public int? GetPriority(Type type)
+        {
+            if (type == typeof(decimal))
+                return FormattingRulePriority.Best;
+            return null;
+        }
+
+        /// <inheritdoc />
+        public string Format(object obj, IFormatter formatter)
+        {
+            decimal value = (decimal)obj;
+            return value.ToString(CultureInfo.InvariantCulture) + @"m";
+        }
     }
 }

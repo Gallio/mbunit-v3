@@ -14,15 +14,33 @@
 // limitations under the License.
 
 using System;
+using Gallio.Utilities;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Data.Formatters
 {
     /// <summary>
-    /// Provides compatibility with MbUnit v2 test fixture set up.
+    /// <para>
+    /// A formatting rule for <see cref="char" />.
+    /// </para>
+    /// <para>
+    /// Formats values as literals like: "'x'" or "'\n'".
+    /// </para>
     /// </summary>
-    [Obsolete("Use the MbUnit v3 [FixtureSetUp] attribute instead.  This attribute has been renamed to be more general purpose.")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class TestFixtureSetUpAttribute : FixtureSetUpAttribute
+    public sealed class CharFormattingRule : IFormattingRule
     {
+        /// <inheritdoc />
+        public int? GetPriority(Type type)
+        {
+            if (type == typeof(char))
+                return FormattingRulePriority.Best;
+            return null;
+        }
+
+        /// <inheritdoc />
+        public string Format(object obj, IFormatter formatter)
+        {
+            char value = (char)obj;
+            return StringUtils.ToCharLiteral(value);
+        }
     }
 }

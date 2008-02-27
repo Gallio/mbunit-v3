@@ -15,14 +15,31 @@
 
 using System;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Data.Formatters
 {
     /// <summary>
-    /// Provides compatibility with MbUnit v2 test fixture set up.
+    /// <para>
+    /// A formatting rule for <see cref="bool" />.
+    /// </para>
+    /// <para>
+    /// Formats values as "true" or "false".
+    /// </para>
     /// </summary>
-    [Obsolete("Use the MbUnit v3 [FixtureSetUp] attribute instead.  This attribute has been renamed to be more general purpose.")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class TestFixtureSetUpAttribute : FixtureSetUpAttribute
+    public sealed class BooleanFormattingRule : IFormattingRule
     {
+        /// <inheritdoc />
+        public int? GetPriority(Type type)
+        {
+            if (type == typeof(bool))
+                return FormattingRulePriority.Best;
+            return null;
+        }
+
+        /// <inheritdoc />
+        public string Format(object obj, IFormatter formatter)
+        {
+            bool value = (bool)obj;
+            return value ? @"true" : @"false";
+        }
     }
 }

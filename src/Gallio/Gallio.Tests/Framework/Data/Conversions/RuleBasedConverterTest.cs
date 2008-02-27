@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Gallio.Collections;
 using Gallio.Framework.Data.Conversions;
 using MbUnit.Framework;

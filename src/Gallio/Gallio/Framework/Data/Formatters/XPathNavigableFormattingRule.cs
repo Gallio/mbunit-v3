@@ -13,23 +13,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Hosting;
+using System;
+using System.Xml.XPath;
 
-namespace Gallio.Framework.Data.Conversions
+namespace Gallio.Framework.Data.Formatters
 {
     /// <summary>
-    /// A <see cref="RuleBasedConverter" /> that uses all <see cref="IConversionRule"/>s
-    /// that are registered with the <see cref="IRuntime"/>.
+    /// <para>
+    /// A formatting rule for <see cref="IXPathNavigable" />.
+    /// </para>
+    /// <para>
+    /// Formats values as "&lt;root /&gt;".
+    /// </para>
     /// </summary>
-    public class RuntimeRuleBasedConverter : RuleBasedConverter
+    public sealed class XPathNavigableFormattingRule : IFormattingRule
     {
-        /// <summary>
-        /// Creates a runtime rule-based converter.
-        /// </summary>
-        /// <param name="runtime">The runtime</param>
-        public RuntimeRuleBasedConverter(IRuntime runtime)
-            : base(runtime.ResolveAll<IConversionRule>())
+        /// <inheritdoc />
+        public int? GetPriority(Type type)
         {
+            if (typeof(IXPathNavigable).IsAssignableFrom(type))
+                return FormattingRulePriority.Better;
+            return null;
+        }
+
+        /// <inheritdoc />
+        public string Format(object obj, IFormatter formatter)
+        {
+            IXPathNavigable value = (IXPathNavigable)obj;
+            return value.CreateNavigator().OuterXml;
         }
     }
 }

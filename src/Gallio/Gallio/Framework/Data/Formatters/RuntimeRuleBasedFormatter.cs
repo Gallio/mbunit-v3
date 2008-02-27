@@ -13,16 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Gallio.Hosting;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Data.Formatters
 {
     /// <summary>
-    /// Provides compatibility with MbUnit v2 test fixture set up.
+    /// A <see cref="RuleBasedFormatter" /> that uses all <see cref="IFormattingRule"/>s
+    /// that are registered with the <see cref="IRuntime"/>.
     /// </summary>
-    [Obsolete("Use the MbUnit v3 [FixtureSetUp] attribute instead.  This attribute has been renamed to be more general purpose.")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class TestFixtureSetUpAttribute : FixtureSetUpAttribute
+    public class RuntimeRuleBasedFormatter : RuleBasedFormatter
     {
+        /// <summary>
+        /// Creates a runtime rule-based formatter.
+        /// </summary>
+        /// <param name="runtime">The runtime</param>
+        public RuntimeRuleBasedFormatter(IRuntime runtime)
+            : base(runtime.ResolveAll<IFormattingRule>())
+        {
+        }
     }
 }

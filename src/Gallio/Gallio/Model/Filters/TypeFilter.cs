@@ -24,6 +24,10 @@ namespace Gallio.Model.Filters
     /// A filter that matches objects whose <see cref="ITestComponent.CodeElement" />
     /// matches the specified type name.
     /// </summary>
+    /// <remarks>
+    /// Generic types should be specified by the name of their generic type definition.
+    /// eg. Foo`1.
+    /// </remarks>
     [Serializable]
     public class TypeFilter<T> : PropertyFilter<T> where T : ITestComponent
     {
@@ -83,6 +87,8 @@ namespace Gallio.Model.Filters
 
         private bool IsMatchForType(ITypeInfo type)
         {
+            type = type.GenericTypeDefinition ?? type;
+
             return ValueFilter.IsMatch(type.AssemblyQualifiedName)
                 || ValueFilter.IsMatch(type.FullName)
                 || ValueFilter.IsMatch(type.Name);

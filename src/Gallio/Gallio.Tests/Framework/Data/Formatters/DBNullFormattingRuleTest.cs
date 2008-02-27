@@ -14,15 +14,27 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Data.Formatters;
+using MbUnit.Framework;
 
-namespace MbUnit.Framework
+namespace Gallio.Tests.Framework.Data.Formatters
 {
-    /// <summary>
-    /// Provides compatibility with MbUnit v2 test fixture set up.
-    /// </summary>
-    [Obsolete("Use the MbUnit v3 [FixtureSetUp] attribute instead.  This attribute has been renamed to be more general purpose.")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class TestFixtureSetUpAttribute : FixtureSetUpAttribute
+    [TestFixture]
+    [TestsOn(typeof(DBNullFormattingRule))]
+    public class DBNullFormattingRuleTest : BaseFormattingRuleTest<DBNullFormattingRule>
     {
+        [Test]
+        public void Format()
+        {
+            Assert.AreEqual("dbnull", Formatter.Format(DBNull.Value));
+        }
+
+        [Test]
+        [Row(typeof(DBNull), FormattingRulePriority.Best)]
+        [Row(typeof(string), null)]
+        public void GetPriority(Type type, int? expectedPriority)
+        {
+            Assert.AreEqual(expectedPriority, FormattingRule.GetPriority(type));
+        }
     }
 }

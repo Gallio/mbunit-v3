@@ -14,35 +14,33 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Gallio.Utilities;
 
 namespace Gallio.Framework.Data.Formatters
 {
     /// <summary>
-    /// A rule-based formatter uses a set of <see cref="IFormattingRule" />s to
-    /// format values appropriately.
+    /// <para>
+    /// A formatting rule for <see cref="string" />.
+    /// </para>
+    /// <para>
+    /// Formats values as literals like: ""abc\ndef"".
+    /// </para>
     /// </summary>
-    public class RuleBasedFormatter : IFormatter
+    public sealed class StringFormattingRule : IFormattingRule
     {
-        private readonly List<IFormattingRule> rules;
-
-        /// <summary>
-        /// Creates a rule-based formatter.
-        /// </summary>
-        /// <param name="rules">The rules to use</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null</exception>
-        public RuleBasedFormatter(IEnumerable<IFormattingRule> rules)
+        /// <inheritdoc />
+        public int? GetPriority(Type type)
         {
-            if (rules == null)
-                throw new ArgumentNullException("rules");
-
-            this.rules = new List<IFormattingRule>(rules);
+            if (type == typeof(string))
+                return FormattingRulePriority.Best;
+            return null;
         }
 
         /// <inheritdoc />
-        public string Format(object value)
+        public string Format(object obj, IFormatter formatter)
         {
+            string value = (string)obj;
+            return StringUtils.ToStringLiteral(value);
         }
     }
 }

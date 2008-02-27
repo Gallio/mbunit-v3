@@ -23,7 +23,7 @@ namespace Gallio.Framework.Data.Formatters
     public interface IFormatter
     {
         /// <summary>
-        /// Formats a value to a string for display.
+        /// Formats an object to a string for display.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -36,9 +36,22 @@ namespace Gallio.Framework.Data.Formatters
         /// <para>
         /// The resulting string should not be expected to be machine-readable.
         /// </para>
+        /// <para>
+        /// This method should never return an empty string or throw an exception.
+        /// If the value cannot be formatted property then a placeholder should
+        /// be used instead, such as the value's type.
+        /// </para>
+        /// <para>
+        /// Likewise this method should never throw an exception.  If the object cannot be formatted
+        /// cleanly, then an error message should be produced instead.
+        /// </para>
+        /// <para>
+        /// These constraints are intended to ensure that the formatter provides
+        /// a robust service to all clients.
+        /// </para>
         /// </remarks>
-        /// <param name="value">The value to format, may be null</param>
-        /// <returns>The formatted string</returns>
-        string Format(object value);
+        /// <param name="obj">The object to format, may be null</param>
+        /// <returns>The formatted string, never null and never an empty string</returns>
+        string Format(object obj);
     }
 }

@@ -110,10 +110,6 @@
         </parameters>
       </component>
 
-      <component id="Core.Formatter"
-                 service="Gallio.Framework.Data.Formatters.IFormatter, Gallio"
-                 type="Gallio.Framework.Data.Formatters.ValueFormatter, Gallio" />
-      
       <component id="Core.Converter"
                  service="Gallio.Framework.Data.Conversions.IConverter, Gallio"
                  type="Gallio.Framework.Data.Conversions.RuntimeRuleBasedConverter, Gallio" />
@@ -145,6 +141,70 @@
       <component id="Core.XPathNavigatorToXmlSerializableTypeConversionRule"
                  service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
                  type="Gallio.Framework.Data.Conversions.XPathNavigatorToXmlSerializableTypeConversionRule, Gallio" />
+      
+      <component id="Core.Formatter"
+                 service="Gallio.Framework.Data.Formatters.IFormatter, Gallio"
+                 type="Gallio.Framework.Data.Formatters.RuntimeRuleBasedFormatter, Gallio" />
+
+      <component id="Core.BooleanFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.BooleanFormattingRule, Gallio" />
+      
+      <component id="Core.ByteFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.ByteFormattingRule, Gallio" />
+      
+      <component id="Core.CharFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.CharFormattingRule, Gallio" />
+      
+      <component id="Core.ConvertToStringFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.ConvertToStringFormattingRule, Gallio" />
+      
+      <component id="Core.DateTimeFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.DateTimeFormattingRule, Gallio" />
+      
+      <component id="Core.DBNullFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.DBNullFormattingRule, Gallio" />
+      
+      <component id="Core.DecimalFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.DecimalFormattingRule, Gallio" />
+      
+      <component id="Core.DictionaryEntryFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.DictionaryEntryFormattingRule, Gallio" />
+      
+      <component id="Core.DoubleFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.DoubleFormattingRule, Gallio" />
+      
+      <component id="Core.EnumerableFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.EnumerableFormattingRule, Gallio" />
+      
+      <component id="Core.IntegerFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.IntegerFormattingRule, Gallio" />
+      
+      <component id="Core.KeyValuePairFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.KeyValuePairFormattingRule, Gallio" />
+      
+      <component id="Core.SingleFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.SingleFormattingRule, Gallio" />
+      
+      <component id="Core.StringFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.StringFormattingRule, Gallio" />
+      
+      <component id="Core.XPathNavigableFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.XPathNavigableFormattingRule, Gallio" />
     </components>
   </castle>
 </configuration>

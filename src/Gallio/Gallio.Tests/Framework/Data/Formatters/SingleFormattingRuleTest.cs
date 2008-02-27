@@ -13,30 +13,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Xml;
-using System.Xml.XPath;
-using Gallio.Framework.Data.Conversions;
+using System;
+using Gallio.Framework.Data.Formatters;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Framework.Data.Conversions
+namespace Gallio.Tests.Framework.Data.Formatters
 {
     [TestFixture]
-    [TestsOn(typeof(StringToXmlDocumentConversionRule))]
-    public class StringToXmlDocumentConversionRuleTest : BaseConversionRuleTest<StringToXmlDocumentConversionRule>
+    [TestsOn(typeof(SingleFormattingRule))]
+    public class SingleFormattingRuleTest : BaseFormattingRuleTest<SingleFormattingRule>
     {
         [Test]
-        public void DirectConversion()
+        [Row(5.5f, "5.5f")]
+        [Row(0f, "0f")]
+        [Row(-1.2f, "-1.2f")]
+        public void Format(float value, string expectedResult)
         {
-            string sourceValue = "<root />";
-
-            XmlDocument targetValue = (XmlDocument)Converter.Convert(sourceValue, typeof(XmlDocument));
-            Assert.AreEqual("<root />", targetValue.OuterXml);
+            Assert.AreEqual(expectedResult, Formatter.Format(value));
         }
 
         [Test]
-        public void UnsupportedConversion()
+        [Row(typeof(float), FormattingRulePriority.Best)]
+        [Row(typeof(string), null)]
+        public void GetPriority(Type type, int? expectedPriority)
         {
-            Assert.IsFalse(Converter.CanConvert(typeof(XmlDocument), typeof(string)));
+            Assert.AreEqual(expectedPriority, FormattingRule.GetPriority(type));
         }
     }
 }

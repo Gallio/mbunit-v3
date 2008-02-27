@@ -58,10 +58,10 @@ namespace MbUnit.TestResources.DataBinding
         [Header("c", "b", "a")]
         [Row(1, "quux", "2002/01/01")]
         public void CustomBindingByPropertyPath(
-            [Bind("c")] int a, [Bind("b")] string b, [Bind("a")] DateTime c)
+            [Bind("b")] string a, [Bind("c")] int b, [Bind("a")] DateTime c)
         {
-            Assert.AreEqual(1, a);
-            Assert.AreEqual("quux", b);
+            Assert.AreEqual(1, b);
+            Assert.AreEqual("quux", a);
             Assert.AreEqual(new DateTime(2002, 1, 1), c);
         }
 

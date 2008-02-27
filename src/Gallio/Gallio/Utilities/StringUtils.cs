@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Gallio.Utilities
@@ -43,7 +41,7 @@ namespace Gallio.Utilities
         /// <summary>
         /// If the string is longer than the specified maximum length, truncates
         /// it and appends an ellipsis mark ("...").  If the maximum length is
-        /// less than 3, omits the ellipsis mark on truncation.
+        /// less than or equal to 3, omits the ellipsis mark on truncation.
         /// </summary>
         /// <param name="str">The string to truncate</param>
         /// <param name="maxLength">The maximum length of the string to retain
@@ -53,13 +51,124 @@ namespace Gallio.Utilities
         {
             if (str.Length > maxLength)
             {
-                if (maxLength >= 3)
+                if (maxLength > 3)
                     return str.Substring(0, maxLength - 3) + @"...";
                 else
                     return str.Substring(0, maxLength);
             }
 
             return str;
+        }
+
+        /// <summary>
+        /// Gets a lowercase hexadecimal digit corresponding to the least significant nybble of
+        /// the specified value.
+        /// </summary>
+        /// <param name="value">The value, only the last 4 bits of which are used</param>
+        /// <returns>The hexadecimal digit</returns>
+        public static char ToHexDigit(int value)
+        {
+            value = value & 0xf;
+            return (char)(value < 10 ? 48 + value : 87 + value);
+        }
+
+        /// <summary>
+        /// Formats a character value as "'x'" or "'\n'" with support for escaped characters
+        /// as a valid literal value.
+        /// </summary>
+        /// <param name="value">The character value to format</param>
+        /// <returns>The formatted character</returns>
+        public static string ToCharLiteral(char value)
+        {
+            StringBuilder str = new StringBuilder(8);
+            str.Append('\'');
+            AppendEscapedChar(str, value);
+            str.Append('\'');
+            return str.ToString();
+        }
+
+        /// <summary>
+        /// Formats a string value as "abc\ndef" with support for escaped characters
+        /// as a valid literal value.
+        /// </summary>
+        /// <param name="value">The string value to format</param>
+        /// <returns>The formatted string</returns>
+        public static string ToStringLiteral(string value)
+        {
+            StringBuilder str = new StringBuilder(value.Length + 2);
+            str.Append('"');
+
+            foreach (char c in value)
+                AppendEscapedChar(str, c);
+
+            str.Append('"');
+            return str.ToString();
+        }
+
+        private static void AppendEscapedChar(StringBuilder str, char c)
+        {
+            switch (c)
+            {
+                case '\0':
+                    str.Append(@"\0");
+                    break;
+
+                case '\a':
+                    str.Append(@"\a");
+                    break;
+
+                case '\b':
+                    str.Append(@"\b");
+                    break;
+
+                case '\f':
+                    str.Append(@"\f");
+                    break;
+
+                case '\n':
+                    str.Append(@"\n");
+                    break;
+
+                case '\r':
+                    str.Append(@"\r");
+                    break;
+
+                case '\t':
+                    str.Append(@"\t");
+                    break;
+
+                case '\v':
+                    str.Append(@"\v");
+                    break;
+
+                case '\'':
+                    str.Append(@"\'");
+                    break;
+
+                case '\"':
+                    str.Append(@"\""");
+                    break;
+
+                case '\\':
+                    str.Append(@"\\");
+                    break;
+
+                default:
+                    if (char.IsLetterOrDigit(c) || char.IsPunctuation(c) || char.IsSymbol(c) || char.IsWhiteSpace(c))
+                    {
+                        str.Append(c);
+                    }
+                    else
+                    {
+                        str.Append('\\');
+                        str.Append('u');
+                        str.Append(ToHexDigit(c >> 12));
+                        str.Append(ToHexDigit(c >> 8));
+                        str.Append(ToHexDigit(c >> 4));
+                        str.Append(ToHexDigit(c));
+                    }
+                    break;
+            }
         }
     }
 }

@@ -15,14 +15,31 @@
 
 using System;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Data.Formatters
 {
     /// <summary>
-    /// Provides compatibility with MbUnit v2 test fixture set up.
+    /// <para>
+    /// A formatting rule for <see cref="DateTime" />.
+    /// </para>
+    /// <para>
+    /// Formats values in the invariant round-trip format like: "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffzz".
+    /// </para>
     /// </summary>
-    [Obsolete("Use the MbUnit v3 [FixtureSetUp] attribute instead.  This attribute has been renamed to be more general purpose.")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class TestFixtureSetUpAttribute : FixtureSetUpAttribute
+    public sealed class DateTimeFormattingRule : IFormattingRule
     {
+        /// <inheritdoc />
+        public int? GetPriority(Type type)
+        {
+            if (type == typeof(DateTime))
+                return FormattingRulePriority.Best;
+            return null;
+        }
+
+        /// <inheritdoc />
+        public string Format(object obj, IFormatter formatter)
+        {
+            DateTime sourceValue = (DateTime)obj;
+            return sourceValue.ToString(@"o");
+        }
     }
 }

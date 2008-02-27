@@ -14,15 +14,33 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Data.Formatters
 {
     /// <summary>
-    /// Provides compatibility with MbUnit v2 test fixture set up.
+    /// <para>
+    /// A formatting rule for <see cref="float" />.
+    /// </para>
+    /// <para>
+    /// Formats values like: "5.6f".
+    /// </para>
     /// </summary>
-    [Obsolete("Use the MbUnit v3 [FixtureSetUp] attribute instead.  This attribute has been renamed to be more general purpose.")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class TestFixtureSetUpAttribute : FixtureSetUpAttribute
+    public sealed class SingleFormattingRule : IFormattingRule
     {
+        /// <inheritdoc />
+        public int? GetPriority(Type type)
+        {
+            if (type == typeof(float))
+                return FormattingRulePriority.Best;
+            return null;
+        }
+
+        /// <inheritdoc />
+        public string Format(object obj, IFormatter formatter)
+        {
+            float value = (float)obj;
+            return value.ToString(CultureInfo.InvariantCulture) + @"f";
+        }
     }
 }
