@@ -217,7 +217,7 @@ namespace Gallio.NAntTasks
         /// </para>
         /// <para>
         /// Shadow copying allows the original assemblies to be modified while the tests are running.
-        /// However, shadow copying may occasionally some tests to fail if they depend on their original location.
+        /// However, shadow copying may occasionally cause some tests to fail if they depend on their original location.
         /// </para>
         /// <para>
         /// The default is false.
