@@ -13,6 +13,9 @@
   <ItemGroup>
     <Binary Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Binary Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.dll-Help.xml" />
+  </ItemGroup>
 
   <ItemGroup>
     <TestAssembly Include="Gallio.PowerShellCommands.Tests\bin\Gallio.PowerShellCommands.Tests.dll" />
