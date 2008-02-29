@@ -214,6 +214,7 @@ Section "PowerShell Commands" PowerShellCommandsSection
 	SetOutPath "$INSTDIR\bin"
 	File "${TARGETDIR}\bin\Gallio.PowerShellCommands.dll"
 	File "${TARGETDIR}\bin\Gallio.PowerShellCommands.xml"
+	File "${TARGETDIR}\bin\Gallio.PowerShellCommands.dll-Help.xml"
 
 	; Registry keys for the snap-in
 	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "ApplicationBase" "$INSTDIR\bin"
