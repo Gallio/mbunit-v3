@@ -194,6 +194,10 @@
                  service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
                  type="Gallio.Framework.Data.Formatters.KeyValuePairFormattingRule, Gallio" />
       
+      <component id="Core.SByteFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.SByteFormattingRule, Gallio" />
+      
       <component id="Core.SingleFormattingRule"
                  service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
                  type="Gallio.Framework.Data.Formatters.SingleFormattingRule, Gallio" />

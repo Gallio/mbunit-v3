@@ -124,7 +124,7 @@ namespace Gallio.Tests.Framework.Data
             dataSet.AddDataSet(dataSet1);
             dataSet.AddDataSet(dataSet2);
 
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(0, null)),
+            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, null)),
                 "Cannot bind because there is no path or index.");
             Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(5, null)),
                 "Cannot bind because index 5 is beyond the range of columns in the joined data set.");
@@ -149,7 +149,7 @@ namespace Gallio.Tests.Framework.Data
             dataSet.AddDataSet(dataSet1);
             dataSet.AddDataSet(dataSet2);
 
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(0, null))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(null, null))),
                 "Cannot bind because there is no path or index in the translated binding.");
             Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(3, null))),
                 "Cannot bind because index 3 is beyond the range of columns in the scoped data set.");
@@ -211,7 +211,7 @@ namespace Gallio.Tests.Framework.Data
 
             DataBinding[] bindings = new DataBinding[]
             {
-                new SimpleDataBinding(0, null), // unresolvable binding because no data sets can claim it
+                new SimpleDataBinding(null, null), // unresolvable binding because no data sets can claim it
                 pathBinding, // claimed by dataSet1
                 indexZeroBinding, // claimed by dataSet1
                 indexThreeBinding, // claimed by dataSet2
@@ -295,7 +295,7 @@ namespace Gallio.Tests.Framework.Data
                 dataSet.AddDataSet(dataSetWithTwoColumns);
                 dataSet.AddDataSet(dataSetWithThreeColumns);
 
-                DataBinding bindingWithNoIndex = new SimpleDataBinding(0, null);
+                DataBinding bindingWithNoIndex = new SimpleDataBinding(null, null);
                 DataBinding bindingWithIndex = new SimpleDataBinding(1, null);
 
                 AssertTranslateReplacedIndex(dataSet, dataSetWithTwoColumns, bindingWithNoIndex, null,

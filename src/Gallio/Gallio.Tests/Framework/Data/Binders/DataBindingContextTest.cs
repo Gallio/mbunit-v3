@@ -121,28 +121,6 @@ namespace Gallio.Tests.Framework.Data.Binders
         }
 
         [Test]
-        public void DataBindingAccessorPerformsConversion()
-        {
-            IConverter converter = Mocks.CreateMock<IConverter>();
-
-            using (Mocks.Record())
-            {
-                Expect.Call(converter.Convert(42, typeof(string))).Return("42");
-            }
-
-            using (Mocks.Playback())
-            {
-                RowSequenceDataSet dataSet = new RowSequenceDataSet(new IDataRow[] { new ScalarDataRow<int>(42, null, false) }, 1);
-                DataBindingContext context = new DataBindingContext(converter);
-
-                IDataBindingAccessor accessor = context.RegisterBinding(dataSet, new SimpleDataBinding(0, null));
-                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(true));
-                Assert.AreEqual(1, items.Count);
-                Assert.AreEqual("42", accessor.GetValue(items[0]));
-            }
-        }
-
-        [Test]
         public void DataBindingAccessorThrowsIfItemIsNull()
         {
             RowSequenceDataSet dataSet = new RowSequenceDataSet(new IDataRow[] { }, 1);

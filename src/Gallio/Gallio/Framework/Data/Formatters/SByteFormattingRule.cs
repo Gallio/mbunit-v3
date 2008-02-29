@@ -21,18 +21,18 @@ namespace Gallio.Framework.Data.Formatters
 {
     /// <summary>
     /// <para>
-    /// A formatting rule for <see cref="byte" />.
+    /// A formatting rule for <see cref="sbyte"/>.
     /// </para>
     /// <para>
-    /// Formats values as two digit hex values like "0xa5".
+    /// Formats values as two digit signed hex values like "0x55" and "-0x55".
     /// </para>
     /// </summary>
-    public sealed class ByteFormattingRule : IFormattingRule
+    public sealed class SByteFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
         public int? GetPriority(Type type)
         {
-            if (type == typeof(byte))
+            if (type == typeof(sbyte))
                 return FormattingRulePriority.Best;
             return null;
         }
@@ -40,9 +40,16 @@ namespace Gallio.Framework.Data.Formatters
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            byte value = (byte)obj;
+            sbyte value = (sbyte)obj;
 
-            StringBuilder str = new StringBuilder(4, 4);
+            StringBuilder str = new StringBuilder(5, 5);
+
+            if (value < 0)
+            {
+                str.Append('-');
+                value = (sbyte)-value;
+            }
+
             str.Append("0x");
             str.Append(StringUtils.ToHexDigit(value >> 4));
             str.Append(StringUtils.ToHexDigit(value));

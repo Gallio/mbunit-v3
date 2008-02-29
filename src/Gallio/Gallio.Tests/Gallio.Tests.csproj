@@ -106,6 +106,7 @@
     <Compile Include="Framework\Data\Formatters\KeyValuePairFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\RuleBasedFormatterTest.cs" />
     <Compile Include="Framework\Data\Formatters\RuntimeRuleBasedFormatterTest.cs" />
+    <Compile Include="Framework\Data\Formatters\SByteFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\SingleFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\StringFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\TypeFormattingRuleTest.cs" />

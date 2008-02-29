@@ -220,7 +220,7 @@ namespace Gallio.Framework.Pattern
                     decoratedTestActions.TestInstanceActions.BeforeTestInstanceChain.Before(delegate(PatternTestInstanceState childTestInstanceState)
                     {
                         IMethodInfo method = childTestInstanceState.Test.CodeElement as IMethodInfo;
-                        if (method != null && method.DeclaringType.Equals(type))
+                        if (method != null && (type.Equals(method.DeclaringType) || type.IsSubclassOf(method.DeclaringType)))
                         {
                             childTestInstanceState.FixtureType = testInstanceState.FixtureType;
                             childTestInstanceState.FixtureInstance = testInstanceState.FixtureInstance;

@@ -129,6 +129,7 @@
     <Compile Include="Framework\Data\Formatters\KeyValuePairFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\RuleBasedFormatter.cs" />
     <Compile Include="Framework\Data\Formatters\RuntimeRuleBasedFormatter.cs" />
+    <Compile Include="Framework\Data\Formatters\SByteFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\SingleFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\StringFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\IFormatter.cs" />

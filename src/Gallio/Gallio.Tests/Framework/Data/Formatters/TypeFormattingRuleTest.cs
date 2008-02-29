@@ -27,8 +27,8 @@ namespace Gallio.Tests.Framework.Data.Formatters
         [Test]
         [Row(typeof(string), "System.String")]
         [Row(typeof(int[]), "System.Int32[]")]
-        [Row(typeof(Dictionary<,>.Enumerator), "System.Collections.Generic.Dictionary`2+Enumerator")]
-        public void Format(string value, string expectedResult)
+        [Row(typeof(Dictionary<,>.Enumerator), "System.Collections.Generic.Dictionary`2+Enumerator[TKey,TValue]")]
+        public void Format(Type value, string expectedResult)
         {
             Assert.AreEqual(expectedResult, Formatter.Format(value));
         }

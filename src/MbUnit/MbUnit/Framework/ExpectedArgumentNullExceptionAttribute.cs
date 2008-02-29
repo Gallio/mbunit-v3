@@ -38,7 +38,7 @@ namespace MbUnit.Framework
         /// </summary>
         /// <param name="message">The expected exception message, or null if not specified</param>
         public ExpectedArgumentNullExceptionAttribute(string message)
-            : base(typeof(ArgumentException), message)
+            : base(typeof(ArgumentNullException), message)
         {
         }
     }

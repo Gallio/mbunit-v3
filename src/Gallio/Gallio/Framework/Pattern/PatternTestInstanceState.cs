@@ -260,6 +260,9 @@ namespace Gallio.Framework.Pattern
         /// <seealso cref="ObjectCreationSpec"/>
         public ObjectCreationSpec GetFixtureObjectCreationSpec(ITypeInfo type)
         {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
             return new ObjectCreationSpec(type, SlotValues, Converter);
         }
 
@@ -272,10 +275,16 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
         /// or <see cref="FixtureType" /> are not appropriate for invoking <paramref name="method"/></exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null</exception>
         /// <exception cref="TargetInvocationException">Thrown if the method itself throws an exception</exception>
         /// <seealso cref="MethodInvocationSpec"/>
         public MethodInvocationSpec GetTestMethodInvocationSpec(IMethodInfo method)
         {
+            if (method == null)
+                throw new ArgumentNullException("method");
+            if (fixtureType == null)
+                throw new InvalidOperationException("This method cannot be used when FixtureType is null.");
+
             return new MethodInvocationSpec(fixtureType, method, SlotValues, Converter);
         }
 
@@ -292,6 +301,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
         /// or <see cref="FixtureType" /> or <see cref="FixtureInstance" /> are not appropriate for
         /// invoking <paramref name="method"/></exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null</exception>
         /// <exception cref="TargetInvocationException">Thrown if the method itself throws an exception</exception>
         /// <seealso cref="MethodInvocationSpec"/>
         public object InvokeFixtureMethod(IMethodInfo method, IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues)
@@ -300,6 +310,8 @@ namespace Gallio.Framework.Pattern
                 throw new ArgumentNullException("method");
             if (slotValues == null)
                 throw new ArgumentNullException("slotValues");
+            if (fixtureType == null)
+                throw new InvalidOperationException("This method cannot be used when FixtureType is null.");
 
             MethodInvocationSpec spec = new MethodInvocationSpec(fixtureType, method, slotValues, Converter);
             return spec.Invoke(fixtureInstance);

@@ -26,7 +26,7 @@ namespace Gallio.Icarus.Tests.Core.ProgressMonitoring
         [Test, ExpectedArgumentNullException("presenter")]
         public void NullPresenter_Test()
         {
-            StatusStripProgressMonitorProvider provider = new StatusStripProgressMonitorProvider(null);
+            new StatusStripProgressMonitorProvider(null);
         }
     }
 }

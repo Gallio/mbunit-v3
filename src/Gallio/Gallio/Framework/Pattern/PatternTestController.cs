@@ -200,13 +200,13 @@ namespace Gallio.Framework.Pattern
         {
             try
             {
-                TestOutcome outcome = DoInitializeTestInstance(testInstanceState, context);
+                TestOutcome outcome = context.Outcome = DoInitializeTestInstance(testInstanceState, context);
                 if (outcome.Status == TestStatus.Passed)
                 {
-                    outcome = DoSetUpTestInstance(testInstanceState, context);
+                    outcome = context.Outcome = DoSetUpTestInstance(testInstanceState, context);
                     if (outcome.Status == TestStatus.Passed)
                     {
-                        outcome = DoExecuteTestInstance(testInstanceState, context);
+                        outcome = context.Outcome = DoExecuteTestInstance(testInstanceState, context);
 
                         if (outcome.Status == TestStatus.Passed)
                         {
@@ -221,15 +221,15 @@ namespace Gallio.Framework.Pattern
                                         return decoratedChildTestActions;
                                     });
 
-                                outcome = outcome.CombineWith(childSuccess ? TestOutcome.Passed : TestOutcome.Failed);
+                                outcome = context.Outcome = outcome.CombineWith(childSuccess ? TestOutcome.Passed : TestOutcome.Failed);
                             }
                         }
                     }
 
-                    outcome = outcome.CombineWith(DoTearDownTestInstance(testInstanceState, context));
+                    outcome = context.Outcome = outcome.CombineWith(DoTearDownTestInstance(testInstanceState, context));
                 }
 
-                outcome = outcome.CombineWith(DoDisposeTestInstance(testInstanceState, context));
+                outcome = context.Outcome = outcome.CombineWith(DoDisposeTestInstance(testInstanceState, context));
                 return outcome;
             }
             catch (Exception ex)

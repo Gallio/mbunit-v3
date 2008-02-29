@@ -68,7 +68,6 @@ namespace Gallio.Tests.Framework.Data
         {
             InterimAssert.AreDistinct(
                 new SimpleDataBinding(null, null),
-                new SimpleDataBinding(null, null),
                 new SimpleDataBinding(0, null),
                 new SimpleDataBinding(1, null),
                 new SimpleDataBinding(null, "path"),

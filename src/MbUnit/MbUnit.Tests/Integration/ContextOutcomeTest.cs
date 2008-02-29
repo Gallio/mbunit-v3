@@ -32,8 +32,8 @@ namespace MbUnit.Tests.Integration
         {
             RunFixtures(typeof(ContextOutcomePassingTestSample));
 
-            AssertTestResult("Passed\nPassed\nPassed\n", TestStatus.Passed, typeof(ContextOutcomePassingTestSample), "Test");
-            AssertFixtureResult("Passed\n", TestStatus.Passed, typeof(ContextOutcomePassingTestSample));
+            AssertTestResult("passed\npassed\npassed\n", TestStatus.Passed, typeof(ContextOutcomePassingTestSample), "Test");
+            AssertFixtureResult("passed\n", TestStatus.Passed, typeof(ContextOutcomePassingTestSample));
         }
 
         [Test]
@@ -41,8 +41,8 @@ namespace MbUnit.Tests.Integration
         {
             RunFixtures(typeof(ContextOutcomeFailingSetUpSample));
 
-            AssertTestResult("Passed\nFailed\n", TestStatus.Failed, typeof(ContextOutcomeFailingSetUpSample), "Test");
-            AssertFixtureResult("Failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingSetUpSample));
+            AssertTestResult("passed\nfailed\n", TestStatus.Failed, typeof(ContextOutcomeFailingSetUpSample), "Test");
+            AssertFixtureResult("failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingSetUpSample));
         }
 
         [Test]
@@ -50,8 +50,8 @@ namespace MbUnit.Tests.Integration
         {
             RunFixtures(typeof(ContextOutcomeFailingTestSample));
 
-            AssertTestResult("Passed\nPassed\nFailed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTestSample), "Test");
-            AssertFixtureResult("Failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTestSample));
+            AssertTestResult("passed\npassed\nfailed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTestSample), "Test");
+            AssertFixtureResult("failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTestSample));
         }
 
         [Test]
@@ -59,8 +59,8 @@ namespace MbUnit.Tests.Integration
         {
             RunFixtures(typeof(ContextOutcomeFailingTearDownSample));
 
-            AssertTestResult("Passed\nPassed\nPassed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample), "Test");
-            AssertFixtureResult("Failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample));
+            AssertTestResult("passed\npassed\npassed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample), "Test");
+            AssertFixtureResult("failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample));
         }
 
         private void AssertTestResult(string expectedOutput, TestStatus expectedStatus, Type fixtureType, string memberName)

@@ -20,20 +20,20 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data.Formatters
 {
     [TestFixture]
-    [TestsOn(typeof(ByteFormattingRule))]
-    public class ByteFormattingRuleTest : BaseFormattingRuleTest<ByteFormattingRule>
+    [TestsOn(typeof(SByteFormattingRule))]
+    public class SByteFormattingRuleTest : BaseFormattingRuleTest<SByteFormattingRule>
     {
         [Test]
         [Row(0x00, "0x00")]
         [Row(0x05, "0x05")]
-        [Row(0xa5, "0xa5")]
-        public void Format(byte value, string expectedResult)
+        [Row(-0x5a, "-0x5a")]
+        public void Format(sbyte value, string expectedResult)
         {
             Assert.AreEqual(expectedResult, Formatter.Format(value));
         }
 
         [Test]
-        [Row(typeof(byte), FormattingRulePriority.Best)]
+        [Row(typeof(sbyte), FormattingRulePriority.Best)]
         [Row(typeof(string), null)]
         public void GetPriority(Type type, int? expectedPriority)
         {
