@@ -32,7 +32,10 @@ namespace Gallio.Tests.Framework.Data
     {
         private const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
 
-        private static readonly ITypeInfo EmptyType = Reflector.Wrap(typeof(EmptyClass));
+        private static readonly ITypeInfo EmptyClassInfo = Reflector.Wrap(typeof(EmptyClass));
+
+        private static readonly ITypeInfo AbstractClassInfo = Reflector.Wrap(typeof(AbstractClass));
+        private static readonly IConstructorInfo AbstractClassOneParamConstructorInfo = ChooseByParameterCount(AbstractClassInfo.GetConstructors(PublicInstance), 1);
 
         private static readonly ITypeInfo GenericClassDefInfo = Reflector.Wrap(typeof(GenericClass<>));
         private static readonly ITypeInfo GenericClassInstInfo = Reflector.Wrap(typeof(GenericClass<int>));
@@ -55,20 +58,20 @@ namespace Gallio.Tests.Framework.Data
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfSlotValuesIsNull()
         {
-            new ObjectCreationSpec(EmptyType, null, Mocks.Stub<IConverter>());
+            new ObjectCreationSpec(EmptyClassInfo, null, Mocks.Stub<IConverter>());
 
         }
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfConverterIsNull()
         {
-            new ObjectCreationSpec(EmptyType, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, null);
+            new ObjectCreationSpec(EmptyClassInfo, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, null);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfSlotValuesContainsANullSlot()
         {
-            new ObjectCreationSpec(EmptyType,
+            new ObjectCreationSpec(EmptyClassInfo,
                 new KeyValuePair<ISlotInfo, object>[] { new KeyValuePair<ISlotInfo, object>(null, 42) },
                 Mocks.Stub<IConverter>());
         }
@@ -82,19 +85,19 @@ namespace Gallio.Tests.Framework.Data
         [Test, ExpectedArgumentException]
         public void ConstructorThrowsIfTypeIsAnArray()
         {
-            new ObjectCreationSpec(EmptyType.MakeArrayType(1), EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
+            new ObjectCreationSpec(EmptyClassInfo.MakeArrayType(1), EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
         }
 
         [Test, ExpectedArgumentException]
         public void ConstructorThrowsIfTypeIsAPointer()
         {
-            new ObjectCreationSpec(EmptyType.MakePointerType(), EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
+            new ObjectCreationSpec(EmptyClassInfo.MakePointerType(), EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
         }
 
         [Test, ExpectedArgumentException]
         public void ConstructorThrowsIfTypeIsAByRef()
         {
-            new ObjectCreationSpec(EmptyType.MakeByRefType(), EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
+            new ObjectCreationSpec(EmptyClassInfo.MakeByRefType(), EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
         }
 
         [Test, ExpectedArgumentException]
@@ -117,11 +120,20 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test, ExpectedArgumentException]
-        public void ConstructorThrowsWhenNoConstructorParametersAndThereIsNoDefaultConstructor()
+        public void ConstructorThrowsWhenConcreteClassHasNoConstructorParametersAndThereIsNoDefaultConstructor()
         {
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             new ObjectCreationSpec(NonGenericClassInfo, slotValues, NullConverter.Instance);
+        }
+
+        [Test, ExpectedArgumentException]
+        public void ConstructorThrowsWhenAbstractClassProvidedAndThereAreConstructorParameters()
+        {
+            Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
+            slotValues.Add(AbstractClassOneParamConstructorInfo.Parameters[0], 42);
+
+            new ObjectCreationSpec(AbstractClassInfo, slotValues, NullConverter.Instance);
         }
 
         [Test, ExpectedArgumentException]
@@ -193,6 +205,15 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(GenericClassParamInfo, 42);
 
             new ObjectCreationSpec(GenericClassDefInfo, slotValues, NullConverter.Instance);
+        }
+
+        [Test]
+        public void CreateInstanceWithNonInstantiableClassThrows()
+        {
+            Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
+
+            ObjectCreationSpec spec = new ObjectCreationSpec(AbstractClassInfo, slotValues, NullConverter.Instance);
+            InterimAssert.Throws<InvalidOperationException>(delegate { spec.CreateInstance(); });
         }
 
         [Test]
@@ -327,23 +348,51 @@ namespace Gallio.Tests.Framework.Data
         public void SpecPropertiesDescribeTheObject()
         {
             ITypeInfo type = Reflector.Wrap(typeof(GenericClass<>));
+            IConstructorInfo constructor = type.GetConstructors(PublicInstance)[1];
+            IParameterInfo constructorParameter = constructor.Parameters[0];
+            IFieldInfo field = type.GetFields(PublicInstance)[0];
+            IPropertyInfo property = type.GetProperties(PublicInstance)[0];
+
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
             slotValues.Add((IGenericParameterInfo)type.GenericArguments[0], typeof(int));
-            slotValues.Add(type.GetConstructors(PublicInstance)[1].Parameters[0], 1);
-            slotValues.Add(type.GetFields(PublicInstance)[0], 2);
-            slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
+            slotValues.Add(constructorParameter, 1);
+            slotValues.Add(field, 2);
+            slotValues.Add(property, 3);
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
             Assert.AreSame(type, spec.Type);
             Assert.AreSame(slotValues, spec.SlotValues);
             Assert.AreSame(NullConverter.Instance, spec.Converter);
             Assert.AreEqual(typeof(GenericClass<int>), spec.ResolvedType);
+
+            Assert.AreEqual(constructor, Reflector.Wrap(spec.ResolvedConstructor));
+            CollectionAssert.AreElementsEqual(new object[] { 1 }, spec.ResolvedConstructorArguments);
+
+            List<KeyValuePair<FieldInfo, object>> fieldValues = new List<KeyValuePair<FieldInfo,object>>(spec.ResolvedFieldValues);
+            Assert.AreEqual(1, fieldValues.Count);
+            Assert.AreEqual(field, Reflector.Wrap(fieldValues[0].Key));
+            Assert.AreEqual(2, fieldValues[0].Value);
+
+            List<KeyValuePair<PropertyInfo, object>> propertyValues = new List<KeyValuePair<PropertyInfo, object>>(spec.ResolvedPropertyValues);
+            Assert.AreEqual(1, propertyValues.Count);
+            Assert.AreEqual(property, Reflector.Wrap(propertyValues[0].Key));
+            Assert.AreEqual(3, propertyValues[0].Value);
+        }
+
+        [Test]
+        public void SpecContainsNullConstructorIfNonInstantiableTypeUsed()
+        {
+            Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
+
+            ObjectCreationSpec spec = new ObjectCreationSpec(AbstractClassInfo, slotValues, NullConverter.Instance);
+            Assert.IsNull(spec.ResolvedConstructor);
+            Assert.AreEqual(0, spec.ResolvedConstructorArguments.Length);
         }
 
         [Test]
         public void FormatThrowsIfFormatterIsNull()
         {
-            ObjectCreationSpec spec = new ObjectCreationSpec(EmptyType,
+            ObjectCreationSpec spec = new ObjectCreationSpec(EmptyClassInfo,
                 EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
 
             InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format(null); });
@@ -387,6 +436,17 @@ namespace Gallio.Tests.Framework.Data
 
         public class EmptyClass
         {
+        }
+
+        public abstract class AbstractClass
+        {
+            public AbstractClass()
+            {
+            }
+
+            public AbstractClass(int value)
+            {
+            }
         }
 
         public class NonGenericClass

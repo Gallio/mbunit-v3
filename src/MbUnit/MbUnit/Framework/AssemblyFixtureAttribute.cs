@@ -81,7 +81,7 @@ namespace MbUnit.Framework
         {
             base.SetTestSemantics(test, type);
 
-            test.TestActions.TestInstanceActions.BeforeTestInstanceChain.After(
+            test.TestActions.TestInstanceActions.BeforeTestInstanceChain.Before(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     if (testInstanceState.FixtureType != null)

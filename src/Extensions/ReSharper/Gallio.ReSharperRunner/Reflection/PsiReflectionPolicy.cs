@@ -396,7 +396,8 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             int lastParameterIndex = parameters.Count - 1;
-            if (!parameters[lastParameterIndex].IsParameterArray)
+            IParameter lastParameter = parameters[lastParameterIndex];
+            if (!lastParameter.IsParameterArray)
                 return values.ToArray();
 
             // Note: When presented with a constructor that accepts a variable number of
@@ -405,9 +406,12 @@ namespace Gallio.ReSharperRunner.Reflection
             object[] args = new object[parameters.Count];
             values.CopyTo(0, args, 0, lastParameterIndex);
 
+            Type lastParameterType = MakeType(lastParameter.Type).Resolve(true).GetElementType();
             int varArgsCount = values.Count - lastParameterIndex;
-            object[] varArgs = new object[varArgsCount];
-            values.CopyTo(lastParameterIndex, varArgs, 0, varArgsCount);
+            Array varArgs = Array.CreateInstance(lastParameterType, varArgsCount);
+
+            for (int i = 0; i < varArgsCount; i++)
+                varArgs.SetValue(values[lastParameterIndex + i], i);
 
             args[lastParameterIndex] = varArgs;
             return args;

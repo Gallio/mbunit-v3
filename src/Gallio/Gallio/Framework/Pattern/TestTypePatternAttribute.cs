@@ -135,7 +135,7 @@ namespace Gallio.Framework.Pattern
             // Note: We only consider instance members of concrete types because abstract types
             //       cannot be instantiated so the members cannot be accessed.  An abstract type
             //       might yet be a static test fixture so we still consider its static members.
-            if (!type.IsAbstract)
+            if (!type.IsAbstract && !type.IsInterface)
             {
                 foreach (IConstructorInfo constructor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
                 {
@@ -196,7 +196,7 @@ namespace Gallio.Framework.Pattern
             test.TestInstanceActions.InitializeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
-                    if (!type.IsAbstract)
+                    if (!type.IsAbstract && !type.IsInterface)
                     {
                         ObjectCreationSpec spec = testInstanceState.Data.GetValue<ObjectCreationSpec>(FixtureObjectCreationSpecKey);
 

@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Framework\Data\BaseDataRowTest.cs" />
     <Compile Include="Framework\Data\BaseDataSetTest.cs" />

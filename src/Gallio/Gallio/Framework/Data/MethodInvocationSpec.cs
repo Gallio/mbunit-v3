@@ -95,8 +95,12 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// Gets the resolved method arguments given any arguments that may have
-        /// been provided as slot values.
+        /// <para>
+        /// Gets the resolved method arguments.
+        /// </para>
+        /// <para>
+        /// The values have already been converted to appropriate types for invoking the method.
+        /// </para> 
         /// </summary>
         public object[] ResolvedArguments
         {

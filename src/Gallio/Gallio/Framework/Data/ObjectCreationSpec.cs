@@ -89,17 +89,71 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
+        /// Gets the resolved constructor, or null if the type was abstract or if it was
+        /// a struct and the default struct constructor is being use.
+        /// </summary>
+        public ConstructorInfo ResolvedConstructor
+        {
+            get { return resolvedConstructor; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the resolved constructor arguments.
+        /// </para>
+        /// <para>
+        /// The values have already been converted to appropriate types for invoking the constructor.
+        /// </para> 
+        /// </summary>
+        /// <remarks>
+        /// If <see cref="ResolvedConstructor"/> is null, then this value will be an empty array.
+        /// </remarks>
+        public object[] ResolvedConstructorArguments
+        {
+            get { return resolvedConstructorArguments; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the resolved fields and their values.
+        /// </para>
+        /// <para>
+        /// The values have already been converted to appropriate types for setting the fields.
+        /// </para> 
+        /// </summary>
+        public IEnumerable<KeyValuePair<FieldInfo, object>> ResolvedFieldValues
+        {
+            get { return resolvedFieldValues; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the resolved properties and their values.
+        /// </para>
+        /// <para>
+        /// The values have already been converted to appropriate types for setting the properties.
+        /// </para> 
+        /// </summary>
+        public IEnumerable<KeyValuePair<PropertyInfo, object>> ResolvedPropertyValues
+        {
+            get { return resolvedPropertyValues; }
+        }
+
+        /// <summary>
         /// Creates an instance of the resolved type and initializes it using
         /// constructor parameter, field and property slot values.
         /// </summary>
         /// <returns>The new instance, never null</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the type is not instantiable</exception>
         public object CreateInstance()
         {
             object instance;
             if (resolvedConstructor != null)
                 instance = resolvedConstructor.Invoke(resolvedConstructorArguments);
-            else
+            else if (resolvedType.IsValueType)
                 instance = Activator.CreateInstance(resolvedType);
+            else
+                throw new InvalidOperationException(String.Format("Type '{0}' cannot be instantiated.", resolvedType));
 
             foreach (KeyValuePair<FieldInfo, object> fieldValue in resolvedFieldValues)
                 fieldValue.Key.SetValue(instance, fieldValue.Value);
@@ -196,7 +250,7 @@ namespace Gallio.Framework.Data
             {
                 // Note: Value types don't have default constructors so we leave the constructor field null
                 //       to remember to instantiate the structure a different way.
-                if (!resolvedType.IsValueType)
+                if (resolvedType.IsClass && !resolvedType.IsAbstract)
                 {
                     resolvedConstructor = resolvedType.GetConstructor(EmptyArray<Type>.Instance);
                     if (resolvedConstructor == null)
@@ -204,6 +258,11 @@ namespace Gallio.Framework.Data
                 }
 
                 resolvedConstructorArguments = EmptyArray<object>.Instance;
+            }
+            else
+            {
+                if (resolvedType.IsAbstract)
+                    throw new ArgumentException("Parameters should not be specified for the constructor of an abstract type.");
             }
         }
 

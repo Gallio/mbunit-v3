@@ -15,31 +15,30 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio;
 using MbUnit.Framework;
 
 namespace Gallio.Tests
 {
     [TestFixture]
-    [TestsOn(typeof(ActionChain<>))]
-    public class ActionChainTest
+    [TestsOn(typeof(ActionChain<,>))]
+    public class ActionChainTestForTwoParameters
     {
-        private ActionChain<string> chain;
+        private ActionChain<string, int> chain;
         private List<string> trace;
 
         [SetUp]
         public void SetUp()
         {
-            chain = new ActionChain<string>();
+            chain = new ActionChain<string, int>();
             trace = new List<string>();
         }
 
         [Test]
         public void GetAndSetAction()
         {
-            Assert.AreEqual(ActionChain<string>.NoOp, chain.Action);
+            Assert.AreEqual(ActionChain<string, int>.NoOp, chain.Action);
 
-            Action<string> action = CreateAction("");
+            Action<string, int> action = CreateAction("", 0);
             chain.Action = action;
             Assert.AreEqual(action, chain.Action);
         }
@@ -54,12 +53,12 @@ namespace Gallio.Tests
         [Test]
         public void Before()
         {
-            chain.Before(CreateAction("abc"));
-            chain.Before(CreateAction("def"));
-            chain.Before(CreateAction("ghi"));
-            chain.Action("key");
+            chain.Before(CreateAction("abc", 0));
+            chain.Before(CreateAction("def", 1));
+            chain.Before(CreateAction("ghi", 2));
+            chain.Action("key", 42);
 
-            AssertTraceEquals("key: ghi", "key: def", "key: abc");
+            AssertTraceEquals("key,42: ghi,2", "key,42: def,1", "key,42: abc,0");
         }
 
         [Test]
@@ -72,12 +71,12 @@ namespace Gallio.Tests
         [Test]
         public void After()
         {
-            chain.After(CreateAction("abc"));
-            chain.After(CreateAction("def"));
-            chain.After(CreateAction("ghi"));
-            chain.Action("key");
+            chain.After(CreateAction("abc", 0));
+            chain.After(CreateAction("def", 1));
+            chain.After(CreateAction("ghi", 2));
+            chain.Action("key", 42);
 
-            AssertTraceEquals("key: abc", "key: def", "key: ghi");
+            AssertTraceEquals("key,42: abc,0", "key,42: def,1", "key,42: ghi,2");
         }
 
         [Test]
@@ -90,12 +89,12 @@ namespace Gallio.Tests
         [Test]
         public void Around()
         {
-            chain.Around(CreateActionDecorator("abc", "xyz"));
-            chain.Around(CreateActionDecorator("def", "uvw"));
-            chain.Around(CreateActionDecorator("ghi", "rst"));
-            chain.Action("key");
+            chain.Around(CreateActionDecorator("abc", "xyz", 0));
+            chain.Around(CreateActionDecorator("def", "uvw", 1));
+            chain.Around(CreateActionDecorator("ghi", "rst", 2));
+            chain.Action("key", 42);
 
-            AssertTraceEquals("key: ghi", "key: def", "key: abc", "key: xyz", "key: uvw", "key: rst");
+            AssertTraceEquals("key,42: ghi,2", "key,42: def,1", "key,42: abc,0", "key,42: xyz,0", "key,42: uvw,1", "key,42: rst,2");
         }
 
         [Test]
@@ -108,11 +107,11 @@ namespace Gallio.Tests
         [Test]
         public void ClearSetsTheActionBackToNoOp()
         {
-            chain.Before(CreateAction("abc"));
-            Assert.AreNotEqual(ActionChain<string>.NoOp, chain.Action);
+            chain.Before(CreateAction("abc", 0));
+            Assert.AreNotEqual(ActionChain<string, int>.NoOp, chain.Action);
 
             chain.Clear();
-            Assert.AreEqual(ActionChain<string>.NoOp, chain.Action);
+            Assert.AreEqual(ActionChain<string, int>.NoOp, chain.Action);
         }
 
         private void AssertTraceEquals(params string[] expectedTrace)
@@ -120,27 +119,26 @@ namespace Gallio.Tests
             CollectionAssert.AreElementsEqual(expectedTrace, trace);
         }
 
-        private void Trace(string obj, string token)
+        private void Trace(string arg1, int arg2, string token, int value)
         {
-            trace.Add(obj + ": " + token);
-
+            trace.Add(arg1 + "," + arg2 + ": " + token + "," + value);
         }
 
-        private Action<string> CreateAction(string token)
+        private Action<string, int> CreateAction(string token, int value)
         {
-            return delegate(string obj)
+            return delegate(string arg1, int arg2)
             {
-                Trace(obj, token);
+                Trace(arg1, arg2, token, value);
             };
         }
 
-        private ActionDecorator<string> CreateActionDecorator(string beforeToken, string afterToken)
+        private ActionDecorator<string, int> CreateActionDecorator(string beforeToken, string afterToken, int value)
         {
-            return delegate(string obj, Action<string> action)
+            return delegate(string arg1, int arg2, Action<string, int> action)
             {
-                Trace(obj, beforeToken);
-                action(obj);
-                Trace(obj, afterToken);
+                Trace(arg1, arg2, beforeToken, value);
+                action(arg1, arg2);
+                Trace(arg1, arg2, afterToken, value);
             };
         }
     }
