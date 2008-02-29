@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Framework.Data;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
@@ -34,6 +35,8 @@ namespace Gallio.Framework.Pattern
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class TestTypePatternAttribute : PatternAttribute
     {
+        private const string FixtureObjectCreationSpecKey = "FixtureObjectCreationSpec";
+
         /// <summary>
         /// Gets a default instance of the type pattern attribute to use
         /// when no other pattern consumes a type.
@@ -87,7 +90,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
+        /// <para>
         /// Initializes a test for a type after it has been added to the test model.
+        /// </para>
+        /// <para>
+        /// The members of base types are processed before those of subtypes.
+        /// </para>
         /// </summary>
         /// <param name="typeTestBuilder">The test builder for the type</param>
         /// <param name="type">The type</param>
@@ -97,7 +105,7 @@ namespace Gallio.Framework.Pattern
             if (xmlDocumentation != null)
                 typeTestBuilder.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in typeTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(type))
+            foreach (IPattern pattern in typeTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(type, true))
                 pattern.ProcessTest(typeTestBuilder, type);
 
             if (type.IsGenericTypeDefinition)
@@ -106,14 +114,29 @@ namespace Gallio.Framework.Pattern
                     ProcessSlot(typeTestBuilder, parameter);
             }
 
+            BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public;
+            if (! type.IsAbstract)
+                bindingFlags |= BindingFlags.Instance;
+
+            // TODO: We should probably process groups of members in sorted order working outwards
+            //       from the base type, like an onion.
+            foreach (IFieldInfo field in CodeElementSorter.SortMembersByDeclaringType(type.GetFields(bindingFlags)))
+                ProcessSlot(typeTestBuilder, field);
+
+            foreach (IPropertyInfo property in CodeElementSorter.SortMembersByDeclaringType(type.GetProperties(bindingFlags)))
+                ProcessSlot(typeTestBuilder, property);
+
+            foreach (IMethodInfo method in CodeElementSorter.SortMembersByDeclaringType(type.GetMethods(bindingFlags)))
+                ProcessMethod(typeTestBuilder, method);
+
+            foreach (IEventInfo @event in CodeElementSorter.SortMembersByDeclaringType(type.GetEvents(bindingFlags)))
+                ProcessEvent(typeTestBuilder, @event);
+
             // Note: We only consider instance members of concrete types because abstract types
             //       cannot be instantiated so the members cannot be accessed.  An abstract type
             //       might yet be a static test fixture so we still consider its static members.
-            BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public;
             if (!type.IsAbstract)
             {
-                bindingFlags |= BindingFlags.Instance;
-
                 foreach (IConstructorInfo constructor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
                 {
                     ProcessConstructor(typeTestBuilder, constructor);
@@ -124,23 +147,11 @@ namespace Gallio.Framework.Pattern
                     break;
                 }
             }
-
-            foreach (IFieldInfo field in type.GetFields(bindingFlags))
-                ProcessSlot(typeTestBuilder, field);
-
-            foreach (IPropertyInfo property in type.GetProperties(bindingFlags))
-                ProcessSlot(typeTestBuilder, property);
-
-            foreach (IMethodInfo method in type.GetMethods(bindingFlags))
-                ProcessMethod(typeTestBuilder, method);
-
-            foreach (IEventInfo @event in type.GetEvents(bindingFlags))
-                ProcessEvent(typeTestBuilder, @event);
         }
 
         /// <summary>
         /// <para>
-        /// Applies semantic actions to the <see cref="PatternTest.Actions" /> member of a 
+        /// Applies semantic actions to the <see cref="PatternTest.TestActions" /> member of a 
         /// test to set the test's runtime behavior.
         /// </para>
         /// <para>
@@ -152,13 +163,13 @@ namespace Gallio.Framework.Pattern
         /// The default behavior for a <see cref="TestTypePatternAttribute" />
         /// is to configure the test actions as follows:
         /// <list type="bullet">
-        /// <item><see cref="IPatternTestHandler.InitializeTestInstance" />: Create
+        /// <item><see cref="IPatternTestInstanceHandler.InitializeTestInstance" />: Create
         /// the fixture instance and set the <see cref="PatternTestInstanceState.FixtureInstance" />
         /// and <see cref="PatternTestInstanceState.FixtureType" /> properties accordingly.</item>
-        /// <item><see cref="IPatternTestHandler.DisposeTestInstance" />: If the fixture type
+        /// <item><see cref="IPatternTestInstanceHandler.DisposeTestInstance" />: If the fixture type
         /// implements <see cref="IDisposable" />, disposes the fixture instance.</item>
-        /// <item><see cref="IPatternTestHandler.DecorateChildTest" />: Decorates the child's
-        /// <see cref="IPatternTestHandler.BeforeTestInstance" /> to set its <see cref="PatternTestInstanceState.FixtureInstance" />
+        /// <item><see cref="IPatternTestInstanceHandler.DecorateChildTest" />: Decorates the child's
+        /// <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> to set its <see cref="PatternTestInstanceState.FixtureInstance" />
         /// and <see cref="PatternTestInstanceState.FixtureType" /> properties to those
         /// of the fixture.  The child test may override these values later on but this
         /// is a reasonable default setting for test methods within a fixture.</item>
@@ -172,16 +183,28 @@ namespace Gallio.Framework.Pattern
         /// <param name="type">The test type</param>
         protected virtual void SetTestSemantics(PatternTest test, ITypeInfo type)
         {
-            test.Actions.InitializeTestInstanceChain.After(
+            test.TestInstanceActions.BeforeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
-                    testInstanceState.FixtureType = testInstanceState.MakeFixtureType(type);
+                    ObjectCreationSpec spec = testInstanceState.GetFixtureObjectCreationSpec(type);
+                    testInstanceState.Data.SetValue(FixtureObjectCreationSpecKey, spec);
 
-                    if (! type.IsAbstract)
-                        testInstanceState.FixtureInstance = testInstanceState.CreateFixtureInstance(type);
+                    testInstanceState.TestInstance.Name += spec.Format(testInstanceState.Formatter);
+                    testInstanceState.FixtureType = spec.ResolvedType;
                 });
 
-            test.Actions.DisposeTestInstanceChain.After(
+            test.TestInstanceActions.InitializeTestInstanceChain.After(
+                delegate(PatternTestInstanceState testInstanceState)
+                {
+                    if (!type.IsAbstract)
+                    {
+                        ObjectCreationSpec spec = testInstanceState.Data.GetValue<ObjectCreationSpec>(FixtureObjectCreationSpecKey);
+
+                        testInstanceState.FixtureInstance = spec.CreateInstance();
+                    }
+                });
+
+            test.TestInstanceActions.DisposeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     IDisposable dispose = testInstanceState.FixtureInstance as IDisposable;
@@ -191,13 +214,17 @@ namespace Gallio.Framework.Pattern
                     }
                 });
 
-            test.Actions.DecorateChildTestChain.After(
+            test.TestInstanceActions.DecorateChildTestChain.After(
                 delegate(PatternTestInstanceState testInstanceState, PatternTestActions decoratedTestActions)
                 {
-                    decoratedTestActions.BeforeTestInstanceChain.Before(delegate(PatternTestInstanceState childTestInstanceState)
+                    decoratedTestActions.TestInstanceActions.BeforeTestInstanceChain.Before(delegate(PatternTestInstanceState childTestInstanceState)
                     {
-                        childTestInstanceState.FixtureType = testInstanceState.FixtureType;
-                        childTestInstanceState.FixtureInstance = testInstanceState.FixtureInstance;
+                        IMethodInfo method = childTestInstanceState.Test.CodeElement as IMethodInfo;
+                        if (method != null && method.DeclaringType.Equals(type))
+                        {
+                            childTestInstanceState.FixtureType = testInstanceState.FixtureType;
+                            childTestInstanceState.FixtureInstance = testInstanceState.FixtureInstance;
+                        }
                     });
                 });
         }

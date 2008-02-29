@@ -19,6 +19,8 @@ using System.Reflection;
 using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Framework.Data.Binders;
+using Gallio.Framework.Data.Conversions;
+using Gallio.Framework.Data.Formatters;
 using Gallio.Reflection;
 
 namespace Gallio.Framework.Pattern
@@ -35,10 +37,10 @@ namespace Gallio.Framework.Pattern
     /// <see cref="PatternTestInstance" /> to be executed.</item>
     /// <item>The controller populates the instance state with slot values for each slot with
     /// an associated <see cref="IDataBindingAccessor" /> in the <see cref="PatternTestState" />.</item>
-    /// <item>The controller calls <see cref="IPatternTestHandler.BeforeTestInstance" /> to give test extensions
+    /// <item>The controller calls <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> to give test extensions
     /// the opportunity to modify the instance state.</item>
     /// <item>The controller initializes, sets up, executes, tears down and disposes the test instance.</item>
-    /// <item>The controller calls <see cref="IPatternTestHandler.AfterTestInstance" /> to give test extensions
+    /// <item>The controller calls <see cref="IPatternTestInstanceHandler.AfterTestInstance" /> to give test extensions
     /// the opportunity to clean up the instance state.</item>
     /// </list>
     /// </para>
@@ -46,6 +48,7 @@ namespace Gallio.Framework.Pattern
     public class PatternTestInstanceState
     {
         private readonly PatternTestInstance testInstance;
+        private readonly IPatternTestInstanceHandler testInstanceHandler;
         private readonly PatternTestState testState;
         private readonly DataBindingItem bindingItem;
         private readonly Dictionary<ISlotInfo, object> slotValues;
@@ -53,21 +56,28 @@ namespace Gallio.Framework.Pattern
 
         private Type fixtureType;
         private object fixtureInstance;
+        private MethodInfo testMethod;
+        private object[] testArguments;
 
         /// <summary>
         /// Creates an initial test instance state object.
         /// </summary>
         /// <param name="testInstance">The test instance</param>
+        /// <param name="testInstanceHandler">The test instance handler</param>
         /// <param name="testState">The test state</param>
         /// <param name="bindingItem">The data binding item</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testInstance"/>,
-        /// <paramref name="testState"/> or <paramref name="bindingItem"/> is null</exception>
+        /// <paramref name="testInstanceHandler"/> or <paramref name="testState"/> or <paramref name="bindingItem"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="testState"/> belongs to a
         /// different test from the <paramref name="testInstance"/></exception>
-        public PatternTestInstanceState(PatternTestInstance testInstance, PatternTestState testState, DataBindingItem bindingItem)
+        public PatternTestInstanceState(PatternTestInstance testInstance, 
+            IPatternTestInstanceHandler testInstanceHandler,
+            PatternTestState testState, DataBindingItem bindingItem)
         {
             if (testInstance == null)
                 throw new ArgumentNullException("testInstance");
+            if (testInstanceHandler == null)
+                throw new ArgumentNullException("testInstanceHandler");
             if (testState == null)
                 throw new ArgumentNullException("testState");
             if (testInstance.Test != testState.Test)
@@ -76,11 +86,28 @@ namespace Gallio.Framework.Pattern
                 throw new ArgumentNullException("bindingItem");
 
             this.testInstance = testInstance;
+            this.testInstanceHandler = testInstanceHandler;
             this.testState = testState;
             this.bindingItem = bindingItem;
 
             slotValues = new Dictionary<ISlotInfo, object>();
             data = new UserDataCollection();
+        }
+
+        /// <summary>
+        /// Gets the converter for data binding.
+        /// </summary>
+        public IConverter Converter
+        {
+            get { return testState.Converter; }
+        }
+
+        /// <summary>
+        /// Gets the formatter for data binding.
+        /// </summary>
+        public IFormatter Formatter
+        {
+            get { return testState.Formatter; }
         }
 
         /// <summary>
@@ -92,19 +119,19 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
+        /// Gets the handler for the test instance.
+        /// </summary>
+        public IPatternTestInstanceHandler TestInstanceHandler
+        {
+            get { return testInstanceHandler; }
+        }
+
+        /// <summary>
         /// Gets the test associated with this test instance state.
         /// </summary>
         public PatternTest Test
         {
             get { return testState.Test; }
-        }
-
-        /// <summary>
-        /// Gets the handler for the test.
-        /// </summary>
-        public IPatternTestHandler TestHandler
-        {
-            get { return testState.TestHandler; }
         }
 
         /// <summary>
@@ -137,8 +164,7 @@ namespace Gallio.Framework.Pattern
         /// Gets or sets the test fixture type or null if none.
         /// </summary>
         /// <exception cref="ArgumentException">Thrown if <paramref name="value"/>
-        /// is a generic type definition, a generic parameter, has an element type,
-        /// or contains generic parameters</exception>
+        /// contains unbound generic parameters, is a generic parameter, has an element type</exception>
         public Type FixtureType
         {
             get { return fixtureType; }
@@ -146,8 +172,8 @@ namespace Gallio.Framework.Pattern
             {
                 if (value != null)
                 {
-                    if (value.HasElementType || value.ContainsGenericParameters || value.IsGenericParameter)
-                        throw new ArgumentException("The fixture type must not be an array, pointer, reference, generic parameter, or open generic type.", "value");
+                    if (value.ContainsGenericParameters || value.IsGenericParameter || value.HasElementType)
+                        throw new ArgumentException("The fixture type must not be an array, pointer, reference, generic parameter, or contain unbound generic parameters.", "value");
                 }
 
                 fixtureType = value;
@@ -161,6 +187,35 @@ namespace Gallio.Framework.Pattern
         {
             get { return fixtureInstance; }
             set { fixtureInstance = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the test method or null if none.
+        /// </summary>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="value"/>
+        /// is contains unbound generic parameters</exception>
+        public MethodInfo TestMethod
+        {
+            get { return testMethod; }
+            set
+            {
+                if (value != null)
+                {
+                    if (value.ContainsGenericParameters)
+                        throw new ArgumentException("The test method must not contain unbound generic parameters.", "value");
+                }
+
+                testMethod = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the test method arguments or null if none.
+        /// </summary>
+        public object[] TestArguments
+        {
+            get { return testArguments; }
+            set { testArguments = value; }
         }
 
         /// <summary>
@@ -192,133 +247,62 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
-        /// Formats the <see cref="SlotValues" /> to a string for presentation.
-        /// </para>
-        /// </summary>
-        /// <returns>The formatted slots</returns>
-        /// <seealso cref="SlotBinder.FormatSlotValues"/> for details about the algorithm.
-        public string FormatSlotValues()
-        {
-            return SlotBinder.FormatSlotValues(slotValues, testState.Formatter);
-        }
-
-        /// <summary>
-        /// Makes a fixture type using the state's bound <see cref="SlotValues"/> using
-        /// its <see cref="IGenericParameterInfo"/> slots, if any.
+        /// Gets a fixture object creation specification using the state's bound <see cref="SlotValues"/>.
         /// </summary>
         /// <param name="type">The fixture type or generic type definition</param>
-        /// <returns>The fixture type or generic type instantiation</returns>
+        /// <returns>The fixture instance</returns>
         /// <remarks>
         /// The values of <see cref="FixtureType" /> and <see cref="FixtureInstance" /> are not used.
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
-        /// are not appropriate for creating a generic type instantiation of <paramref name="type"/></exception>
-        /// <seealso cref="SlotBinder.MakeType"/>
-        public Type MakeFixtureType(ITypeInfo type)
+        /// are not appropriate for instantiating <paramref name="type"/></exception>
+        /// <seealso cref="ObjectCreationSpec"/>
+        public ObjectCreationSpec GetFixtureObjectCreationSpec(ITypeInfo type)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return SlotBinder.MakeType(type, slotValues);
+            return new ObjectCreationSpec(type, SlotValues, Converter);
         }
 
         /// <summary>
-        /// Creates a fixture instance using the state's bound <see cref="SlotValues"/>.
+        /// Gets a test method invocation specification using the state's bound <see cref="SlotValues"/>.
         /// </summary>
-        /// <param name="type">The fixture type or generic type definition</param>
-        /// <returns>The fixture instance</returns>
-        /// <remarks>
-        /// The values of <see cref="FixtureType" /> and <see cref="FixtureInstance" /> are not used.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if the slots or values are not appropriate for instantiating <paramref name="type"/></exception>
-        /// <seealso cref="SlotBinder.CreateInstance(ITypeInfo, IEnumerable{KeyValuePair{ISlotInfo, object}})"/>
-        public object CreateFixtureInstance(ITypeInfo type)
-        {
-            return CreateFixtureInstanceWithSlotValues(type, slotValues);
-        }
-
-        /// <summary>
-        /// Creates a fixture instance using the specified slot values.
-        /// </summary>
-        /// <param name="type">The fixture type or generic type definition</param>
-        /// <param name="slotValues">The slot values to use for instantiating the fixture</param>
-        /// <returns>The fixture instance</returns>
-        /// <remarks>
-        /// The values of <see cref="FixtureType" /> and <see cref="FixtureInstance" /> are not used.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if the slots or values are not appropriate for instantiating <paramref name="type"/></exception>
-        /// <seealso cref="SlotBinder.CreateInstance(ITypeInfo, IEnumerable{KeyValuePair{ISlotInfo, object}})"/>
-        public object CreateFixtureInstanceWithSlotValues(ITypeInfo type, IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues)
-        {
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return SlotBinder.CreateInstance(type, slotValues);
-        }
-
-        /// <summary>
-        /// <para>
-        /// Invokes a fixture method using the state's bound <see cref="SlotValues"/>.
-        /// </para>
-        /// <para>
-        /// If the method is static, uses the state's <see cref="FixtureType" /> to determine
-        /// the appropriate generic type instantiation on which to invoke a static method
-        /// declared by a generic type definition.
-        /// </para>
-        /// <para>
-        /// If the method is non-static, uses the state's <see cref="FixtureInstance" /> as
-        /// the instance on which to invoke the method.
-        /// </para>
-        /// </summary>
-        /// <param name="method">The fixture method or generic method definition,
+        /// <param name="method">The test method or generic method definition,
         /// possibly declared by a generic type or generic type defintion</param>
         /// <returns>The method return value</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
-        /// and <see cref="FixtureInstance" /> are not appropriate for invoking <paramref name="method"/></exception>
+        /// or <see cref="FixtureType" /> are not appropriate for invoking <paramref name="method"/></exception>
         /// <exception cref="TargetInvocationException">Thrown if the method itself throws an exception</exception>
-        /// <seealso cref="SlotBinder.InvokeInstanceMethod"/> and <seealso cref="SlotBinder.InvokeStaticMethod"/>
-        public object InvokeFixtureMethodWithSlotValues(IMethodInfo method)
+        /// <seealso cref="MethodInvocationSpec"/>
+        public MethodInvocationSpec GetTestMethodInvocationSpec(IMethodInfo method)
         {
-            return InvokeFixtureMethod(method, slotValues);
+            return new MethodInvocationSpec(fixtureType, method, SlotValues, Converter);
         }
 
         /// <summary>
         /// <para>
         /// Invokes a fixture method using the specified <paramref name="slotValues"/>.
         /// </para>
-        /// <para>
-        /// If the method is static, uses the state's <see cref="FixtureType" /> to determine
-        /// the appropriate generic type instantiation on which to invoke a static method
-        /// declared by a generic type definition.
-        /// </para>
-        /// <para>
-        /// If the method is non-static, uses the state's <see cref="FixtureInstance" /> as
-        /// the instance on which to invoke the method.
-        /// </para>
         /// </summary>
         /// <param name="method">The fixture method or generic method definition,
         /// possibly declared by a generic type or generic type defintion</param>
         /// <param name="slotValues">The slot values to use for invoking the method</param>
         /// <returns>The method return value</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> or <paramref name="slotValues"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
-        /// and <see cref="FixtureInstance" /> are not appropriate for invoking <paramref name="method"/></exception>
+        /// or <see cref="FixtureType" /> or <see cref="FixtureInstance" /> are not appropriate for
+        /// invoking <paramref name="method"/></exception>
         /// <exception cref="TargetInvocationException">Thrown if the method itself throws an exception</exception>
-        /// <seealso cref="SlotBinder.InvokeInstanceMethod"/> and <seealso cref="SlotBinder.InvokeStaticMethod"/>
+        /// <seealso cref="MethodInvocationSpec"/>
         public object InvokeFixtureMethod(IMethodInfo method, IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
+            if (slotValues == null)
+                throw new ArgumentNullException("slotValues");
 
-            if (method.IsStatic)
-                return SlotBinder.InvokeStaticMethod(method, fixtureType, slotValues);
-
-            return SlotBinder.InvokeInstanceMethod(method, fixtureInstance, slotValues);
+            MethodInvocationSpec spec = new MethodInvocationSpec(fixtureType, method, slotValues, Converter);
+            return spec.Invoke(fixtureInstance);
         }
     }
 }

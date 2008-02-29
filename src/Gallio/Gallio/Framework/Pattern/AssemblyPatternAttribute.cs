@@ -75,7 +75,7 @@ namespace Gallio.Framework.Pattern
         {
             ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTestBuilder.Test.Metadata);
 
-            foreach (IPattern pattern in assemblyTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(assembly))
+            foreach (IPattern pattern in assemblyTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(assembly, true))
                 pattern.ProcessTest(assemblyTestBuilder, assembly);
 
             foreach (ITypeInfo type in assembly.GetExportedTypes())

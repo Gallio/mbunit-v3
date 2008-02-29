@@ -81,13 +81,13 @@ namespace Gallio.Tests.Framework.Data
 
             XmlDataSet dataSet = new XmlDataSet(document, "//row", false);
 
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(typeof(string), null, null)),
+            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, null)),
                 "CanBind should return false if there is no binding path.");
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(typeof(string), "not valid xpath", null)),
+            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, "not valid xpath")),
                 "CanBind should return false if the binding path is an invalid XPath expression.");
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(typeof(string), "@b", null)),
+            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, "@b")),
                 "CanBind should return false if the binding path cannot be resolved in the rows.");
-            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(typeof(string), "@a", null)),
+            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(null, "@a")),
                 "CanBind should return true if the binding path can be resolved in the rows.");
         }
 
@@ -101,8 +101,8 @@ namespace Gallio.Tests.Framework.Data
 
             DataBinding[] bindings = new DataBinding[]
             {
-                new SimpleDataBinding(typeof(string), "@a", null),
-                new SimpleDataBinding(typeof(string), "@b", null)
+                new SimpleDataBinding(null, "@a"),
+                new SimpleDataBinding(null, "@b")
             };
 
             List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(bindings, true));
@@ -112,8 +112,8 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreEqual("53", ((XPathNavigator)rows[1].GetValue(bindings[0])).Value);
             Assert.AreEqual("y", ((XPathNavigator)rows[1].GetValue(bindings[1])).Value);
 
-            InterimAssert.Throws<DataBindingException>(delegate { rows[0].GetValue(new SimpleDataBinding(typeof(string))); });
-            InterimAssert.Throws<DataBindingException>(delegate { rows[0].GetValue(new SimpleDataBinding(typeof(string), "not valid xpath", null)); });
+            InterimAssert.Throws<DataBindingException>(delegate { rows[0].GetValue(new SimpleDataBinding(0, null)); });
+            InterimAssert.Throws<DataBindingException>(delegate { rows[0].GetValue(new SimpleDataBinding(null, "not valid xpath")); });
         }
     }
 }

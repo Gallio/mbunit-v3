@@ -77,7 +77,7 @@ namespace Gallio.Framework.Pattern
             if (xmlDocumentation != null)
                 testParameterBuilder.TestParameter.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in testParameterBuilder.TestModelBuilder.PatternResolver.GetPatterns(slot))
+            foreach (IPattern pattern in testParameterBuilder.TestModelBuilder.PatternResolver.GetPatterns(slot, true))
                 pattern.ProcessTestParameter(testParameterBuilder, slot);
         }
         

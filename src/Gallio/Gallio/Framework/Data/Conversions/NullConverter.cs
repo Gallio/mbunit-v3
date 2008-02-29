@@ -24,6 +24,11 @@ namespace Gallio.Framework.Data.Conversions
     /// </summary>
     public class NullConverter : BaseConverter
     {
+        /// <summary>
+        /// Gets a singleton instance of the null converter.
+        /// </summary>
+        public readonly static NullConverter Instance = new NullConverter();
+
         /// <inheritdoc />
         protected override ConversionCost GetConversionCostInternal(Type sourceType, Type targetType)
         {

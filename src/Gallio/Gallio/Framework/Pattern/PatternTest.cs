@@ -33,7 +33,7 @@ namespace Gallio.Framework.Pattern
         private DataSourceTable dataSourceTable;
         private event PatternTestPopulator populator;
 
-        private readonly PatternTestActions actions;
+        private readonly PatternTestActions testActions;
 
         private TimeSpan? timeout;
 
@@ -45,7 +45,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
         public PatternTest(string name, ICodeElementInfo codeElement) : base(name, codeElement)
         {
-            actions = new PatternTestActions();
+            testActions = new PatternTestActions();
         }
 
         /// <summary>
@@ -80,9 +80,17 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the set of actions that describe the behavior of the test.
         /// </summary>
-        public PatternTestActions Actions
+        public PatternTestActions TestActions
         {
-            get { return actions; }
+            get { return testActions; }
+        }
+
+        /// <summary>
+        /// Gets the set of actions that describe the behavior of the test's instances.
+        /// </summary>
+        public PatternTestInstanceActions TestInstanceActions
+        {
+            get { return testActions.TestInstanceActions; }
         }
 
         /// <summary>

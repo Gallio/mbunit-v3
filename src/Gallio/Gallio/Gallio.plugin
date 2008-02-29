@@ -202,6 +202,10 @@
                  service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
                  type="Gallio.Framework.Data.Formatters.StringFormattingRule, Gallio" />
       
+      <component id="Core.TypeFormattingRule"
+                 service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
+                 type="Gallio.Framework.Data.Formatters.TypeFormattingRule, Gallio" />
+      
       <component id="Core.XPathNavigableFormattingRule"
                  service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
                  type="Gallio.Framework.Data.Formatters.XPathNavigableFormattingRule, Gallio" />

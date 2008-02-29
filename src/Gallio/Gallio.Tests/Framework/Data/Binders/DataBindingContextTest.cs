@@ -62,7 +62,7 @@ namespace Gallio.Tests.Framework.Data.Binders
         {
             IConverter converter = Mocks.Stub<IConverter>();
             DataBindingContext context = new DataBindingContext(converter);
-            context.RegisterBinding(null, new SimpleDataBinding(typeof(int)));
+            context.RegisterBinding(null, new SimpleDataBinding(0, null));
         }
 
         [Test, ExpectedArgumentNullException]
@@ -81,9 +81,9 @@ namespace Gallio.Tests.Framework.Data.Binders
 
             IConverter converter = Mocks.Stub<IConverter>();
             DataBindingContext context = new DataBindingContext(converter);
-            context.RegisterBinding(dataSet1, new SimpleDataBinding(typeof(int)));
-            context.RegisterBinding(dataSet2, new SimpleDataBinding(typeof(int)));
-            context.RegisterBinding(dataSet1, new SimpleDataBinding(typeof(int)));
+            context.RegisterBinding(dataSet1, new SimpleDataBinding(0, null));
+            context.RegisterBinding(dataSet2, new SimpleDataBinding(0, null));
+            context.RegisterBinding(dataSet1, new SimpleDataBinding(0, null));
 
             CollectionAssert.AreElementsEqual(new IDataSet[] { dataSet1, dataSet2 }, context.DataSets);
         }
@@ -96,8 +96,8 @@ namespace Gallio.Tests.Framework.Data.Binders
 
             DataBindingContext context = new DataBindingContext(new NullConverter());
 
-            IDataBindingAccessor accessor1 = context.RegisterBinding(dataSet1, new SimpleDataBinding(typeof(int), null, 0));
-            IDataBindingAccessor accessor2 = context.RegisterBinding(dataSet2, new SimpleDataBinding(typeof(int), null, 0));
+            IDataBindingAccessor accessor1 = context.RegisterBinding(dataSet1, new SimpleDataBinding(0, null));
+            IDataBindingAccessor accessor2 = context.RegisterBinding(dataSet2, new SimpleDataBinding(0, null));
 
             List<DataBindingItem> combinatorialItems = new List<DataBindingItem>(context.GetItems(true));
             Assert.AreEqual(4, combinatorialItems.Count);
@@ -135,7 +135,7 @@ namespace Gallio.Tests.Framework.Data.Binders
                 RowSequenceDataSet dataSet = new RowSequenceDataSet(new IDataRow[] { new ScalarDataRow<int>(42, null, false) }, 1);
                 DataBindingContext context = new DataBindingContext(converter);
 
-                IDataBindingAccessor accessor = context.RegisterBinding(dataSet, new SimpleDataBinding(typeof(string), null, 0));
+                IDataBindingAccessor accessor = context.RegisterBinding(dataSet, new SimpleDataBinding(0, null));
                 List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(true));
                 Assert.AreEqual(1, items.Count);
                 Assert.AreEqual("42", accessor.GetValue(items[0]));
@@ -148,7 +148,7 @@ namespace Gallio.Tests.Framework.Data.Binders
             RowSequenceDataSet dataSet = new RowSequenceDataSet(new IDataRow[] { }, 1);
             DataBindingContext context = new DataBindingContext(Mocks.Stub<IConverter>());
 
-            IDataBindingAccessor accessor = context.RegisterBinding(dataSet, new SimpleDataBinding(typeof(string), null, 0));
+            IDataBindingAccessor accessor = context.RegisterBinding(dataSet, new SimpleDataBinding(0, null));
             InterimAssert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
         }
 

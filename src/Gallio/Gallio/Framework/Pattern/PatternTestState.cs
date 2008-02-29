@@ -48,9 +48,9 @@ namespace Gallio.Framework.Pattern
     public class PatternTestState
     {
         private readonly PatternTest test;
+        private readonly IPatternTestHandler testHandler;
         private readonly IConverter converter;
         private readonly IFormatter formatter;
-        private readonly IPatternTestHandler testHandler;
 
         private readonly DataBindingContext bindingContext;
         private readonly Dictionary<ISlotInfo, IDataBindingAccessor> slotBindingAccessors;

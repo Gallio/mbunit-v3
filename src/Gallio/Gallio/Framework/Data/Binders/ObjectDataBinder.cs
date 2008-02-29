@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
+using Gallio.Framework.Data.Conversions;
 using Gallio.Reflection;
 
 namespace Gallio.Framework.Data.Binders
@@ -72,25 +73,25 @@ namespace Gallio.Framework.Data.Binders
                 slotAccessors.Add(new KeyValuePair<ISlotInfo, IDataBindingAccessor>(slotBinder.Key, accessor));
             }
 
-            return new Accessor(type, slotAccessors);
+            return new Accessor(type, slotAccessors, context.Converter);
         }
 
-        private sealed class Accessor : IDataBindingAccessor
+        private sealed class Accessor : BaseDataBindingAccessor
         {
             private readonly ITypeInfo type;
             private readonly List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors;
+            private readonly IConverter converter;
 
-            public Accessor(ITypeInfo type, List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors)
+            public Accessor(ITypeInfo type, List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors,
+                IConverter converter)
             {
                 this.type = type;
                 this.slotAccessors = slotAccessors;
+                this.converter = converter;
             }
 
-            public object GetValue(DataBindingItem item)
+            protected override object GetValueInternal(DataBindingItem item)
             {
-                if (item == null)
-                    throw new ArgumentNullException("item");
-
                 KeyValuePair<ISlotInfo, object>[] slotValues = GenericUtils.ConvertAllToArray<
                     KeyValuePair<ISlotInfo, IDataBindingAccessor>, KeyValuePair<ISlotInfo, object>>(slotAccessors,
                     delegate(KeyValuePair<ISlotInfo, IDataBindingAccessor> slotAccessor)
@@ -99,7 +100,8 @@ namespace Gallio.Framework.Data.Binders
                         return new KeyValuePair<ISlotInfo, object>(slotAccessor.Key, value);
                     });
 
-                return SlotBinder.CreateInstance(type, slotValues);
+                ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, converter);
+                return spec.CreateInstance();
             }
         }
     }

@@ -57,12 +57,6 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Gets the value of the specified binding.
         /// </summary>
-        /// <remarks>
-        /// The implementation may use the <see cref="DataBinding.Type" /> property
-        /// as a hint when retrieving source data, but it is not required to produce an
-        /// object of that type.  The data binding infrastructure will take care of
-        /// any necessary conversions.
-        /// </remarks>
         /// <param name="binding">The data binding, never null</param>
         /// <returns>The value</returns>
         /// <exception cref="DataBindingException">Thrown if the <paramref name="binding"/>

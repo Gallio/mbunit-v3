@@ -63,6 +63,10 @@ namespace Gallio.Framework.Data.Binders
         /// <summary>
         /// Gets the converter service.
         /// </summary>
+        /// <remarks>
+        /// The data binding context does not use the converter itself, but it may be
+        /// used by data binders to perform any required internal conversions.
+        /// </remarks>
         public IConverter Converter
         {
             get { return converter; }
@@ -108,8 +112,6 @@ namespace Gallio.Framework.Data.Binders
         /// </remarks>
         /// <param name="dataSet">The data set</param>
         /// <param name="binding">The data binding</param>
-        /// <returns>An accessor that returns the values associated with the binding
-        /// during data binding operations converted to the requested type</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/> or <paramref name="binding"/> is null</exception>
         public IDataBindingAccessor RegisterBinding(IDataSet dataSet, DataBinding binding)
         {
@@ -124,7 +126,7 @@ namespace Gallio.Framework.Data.Binders
             DataBinding translatedBinding = joinedDataSet.TranslateBinding(dataSet, binding);
             translatedBindings.Add(translatedBinding);
 
-            return new ConvertedDataBindingAccessor(converter, translatedBinding);
+            return new RowDataBindingAccessor(translatedBinding);
         }
 
         /// <summary>

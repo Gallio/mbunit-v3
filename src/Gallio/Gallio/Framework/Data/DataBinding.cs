@@ -31,9 +31,16 @@ namespace Gallio.Framework.Data
     public abstract class DataBinding
     {
         /// <summary>
-        /// Gets the type of value to bind.
+        /// Gets an optional binding index that describes how to locate the bound value
+        /// in a data set that is structured as an ordered tuple, such as the ordinal index
+        /// of a cell in an array.  Null if none.
         /// </summary>
-        public abstract Type Type { get; }
+        /// <remarks>
+        /// The default binding index for a test parameter may be its ordinal index
+        /// in the parameter array.  A data set can take advantage of this convention by
+        /// treating the binding index 
+        /// </remarks>
+        public abstract int? Index { get; }
 
         /// <summary>
         /// Gets an optional binding path that describes how to locate the bound value
@@ -45,18 +52,6 @@ namespace Gallio.Framework.Data
         /// case-insensitive name where appropriate.
         /// </remarks>
         public abstract string Path { get; }
-
-        /// <summary>
-        /// Gets an optional binding index that describes how to locate the bound value
-        /// in a data set that is structured as an ordered tuple, such as the ordinal index
-        /// of a cell in an array.  Null if none.
-        /// </summary>
-        /// <remarks>
-        /// The default binding index for a test parameter may be its ordinal index
-        /// in the parameter array.  A data set can take advantage of this convention by
-        /// treating the binding index 
-        /// </remarks>
-        public abstract int? Index { get; }
 
         /// <summary>
         /// Creates a clone of the data binding with a different index.
@@ -72,15 +67,13 @@ namespace Gallio.Framework.Data
             return other != null
                 && GetType() == other.GetType()
                 && Index == other.Index
-                && Path == other.Path
-                && Type == other.Type;
+                && Path == other.Path;
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return Type.GetHashCode()
-                ^ (Path != null ? Path.GetHashCode() : 0)
+            return (Path != null ? Path.GetHashCode() : 0)
                 ^ (Index.HasValue ? Index.Value : -1);
         }
 
@@ -90,10 +83,9 @@ namespace Gallio.Framework.Data
         /// <returns>The string representation</returns>
         public override string ToString()
         {
-            return String.Format("Binding ValueType: {0}, Path: {1}, Index: {2}",
-                Type,
-                Path != null ? "'" + Path + "'" : "<null>",
-                Index.HasValue ? Index.Value.ToString() : "<null>");
+            return String.Format("Binding Index: {0}, Path: {1}",
+                Index.HasValue ? Index.Value.ToString() : "<null>",
+                Path != null ? "'" + Path + "'" : "<null>");
         }
     }
 }

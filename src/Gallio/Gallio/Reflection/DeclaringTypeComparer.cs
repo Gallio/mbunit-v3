@@ -23,7 +23,7 @@ namespace Gallio.Reflection
     /// declared by subtypes.
     /// </summary>
     /// <example>
-    /// If type A derives from types B and C then given methods
+    /// If type A derives from types B and if type C derives from B then given methods
     /// A.Foo, A.Bar, B.Foo, C.Quux one possible sorted order will be:
     /// B.Foo, C.Quux, A.Bar, A.Foo.  The members are not sorted by name or
     /// by any other criterion except by relative specificity of the
@@ -45,9 +45,9 @@ namespace Gallio.Reflection
         public int Compare(T x, T y)
         {
             ITypeInfo tx = x.DeclaringType, ty = y.DeclaringType;
-            if (tx.IsAssignableFrom(ty))
+            if (ty != null && (tx == null || ty.IsSubclassOf(tx)))
                 return -1;
-            if (ty.IsAssignableFrom(tx))
+            if (tx != null && (ty == null || tx.IsSubclassOf(ty)))
                 return 1;
 
             return 0;

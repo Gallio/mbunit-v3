@@ -19,40 +19,31 @@ using Gallio.Framework.Data.Conversions;
 namespace Gallio.Framework.Data.Binders
 {
     /// <summary>
-    /// A <see cref="IDataBindingAccessor" /> that converts a value before returning it.
+    /// A <see cref="IDataBindingAccessor" /> that simply requests bound values
+    /// from the item's data row.
     /// </summary>
-    public sealed class ConvertedDataBindingAccessor : IDataBindingAccessor
+    public sealed class RowDataBindingAccessor : BaseDataBindingAccessor
     {
-        private readonly IConverter converter;
         private readonly DataBinding binding;
 
         /// <summary>
-        /// Creates a converted data binding accessor.
+        /// Creates a data binding accessor.
         /// </summary>
-        /// <param name="converter">The converter for converting the raw value in the row
-        /// to the requested type when needed</param>
         /// <param name="binding">The binding to query</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="converter"/> or
-        /// <paramref name="binding"/> is null</exception>
-        public ConvertedDataBindingAccessor(IConverter converter, DataBinding binding)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="binding"/> is null</exception>
+        public RowDataBindingAccessor(DataBinding binding)
         {
-            if (converter == null)
-                throw new ArgumentNullException("converter");
             if (binding == null)
                 throw new ArgumentNullException("binding");
 
-            this.converter = converter;
             this.binding = binding;
         }
 
         /// <inheritdoc />
-        public object GetValue(DataBindingItem item)
+        protected override object GetValueInternal(DataBindingItem item)
         {
-            if (item == null)
-                throw new ArgumentNullException("item");
-
             object value = item.GetRow().GetValue(binding);
-            return converter.Convert(value, binding.Type);
+            return value;
         }
     }
 }

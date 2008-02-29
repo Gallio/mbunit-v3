@@ -32,11 +32,9 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
-        public void GetValueReturnsDefaultValueForType()
+        public void GetValueReturnsNull()
         {
-            Assert.AreEqual(0, NullDataRow.Instance.GetValue(new SimpleDataBinding(typeof(int))));
-            Assert.AreEqual(0.0, NullDataRow.Instance.GetValue(new SimpleDataBinding(typeof(double))));
-            Assert.AreEqual(null, NullDataRow.Instance.GetValue(new SimpleDataBinding(typeof(object))));
+            Assert.AreEqual(null, NullDataRow.Instance.GetValue(new SimpleDataBinding(0, null)));
         }
     }
 }

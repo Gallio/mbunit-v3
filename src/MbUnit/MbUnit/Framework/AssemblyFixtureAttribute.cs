@@ -81,14 +81,12 @@ namespace MbUnit.Framework
         {
             base.SetTestSemantics(test, type);
 
-            test.Actions.InitializeTestInstanceChain.Before(
+            test.TestActions.TestInstanceActions.BeforeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     if (testInstanceState.FixtureType != null)
                         throw new ModelException("There appear to be multiple [AssemblyFixture] attributes within the assembly, or some other attribute has already defined a fixture for the assembly.");
                 });
-
-            test.Actions.DecorateChildTestChain.Clear();
         }
     }
 }

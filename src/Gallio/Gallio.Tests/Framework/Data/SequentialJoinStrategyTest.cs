@@ -30,9 +30,9 @@ namespace Gallio.Tests.Framework.Data
         public void JoinsRowsSequentiallyAndPadsWithNullsUntilExhausted()
         {
             DataBinding[][] bindingsPerProvider = new DataBinding[][] {
-                new DataBinding[] { new SimpleDataBinding(typeof(int), null, 0) },
+                new DataBinding[] { new SimpleDataBinding(0, null) },
                 new DataBinding[] { },
-                new DataBinding[] { new SimpleDataBinding(typeof(int), null, 0) },
+                new DataBinding[] { new SimpleDataBinding(0, null) },
             };
 
             IDataProvider[] providers = new IDataProvider[] {

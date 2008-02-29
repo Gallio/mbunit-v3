@@ -23,48 +23,22 @@ namespace Gallio.Tests.Framework.Data
     public class SimpleDataBindingTest
     {
         [Test]
-        public void ConstructorWithValueTypeOnly()
-        {
-            SimpleDataBinding binding = new SimpleDataBinding(typeof(int));
-
-            Assert.AreEqual(typeof(int), binding.Type);
-            Assert.IsNull(binding.Path);
-            Assert.IsNull(binding.Index);
-        }
-
-        [Test]
-        [ExpectedArgumentNullException]
-        public void ConstructorWithValueTypeOnly_ThrowsIfValueTypeIsNull()
-        {
-            new SimpleDataBinding(null);
-        }
-
-        [Test]
         public void ConstructorWithPathAndIndex()
         {
-            SimpleDataBinding binding = new SimpleDataBinding(typeof(int), "path", 42);
+            SimpleDataBinding binding = new SimpleDataBinding(42, "path");
 
-            Assert.AreEqual(typeof(int), binding.Type);
             Assert.AreEqual("path", binding.Path);
             Assert.AreEqual(42, binding.Index);
         }
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void ConstructorWithPathAndIndex_ThrowsIfValueTypeIsNull()
-        {
-            new SimpleDataBinding(null, "path", 42);
-        }
-
-        [Test]
         public void ReplaceIndexCreatesANewInstanceWithTheNewIndex()
         {
-            SimpleDataBinding oldBinding = new SimpleDataBinding(typeof(int), "path", 42);
+            SimpleDataBinding oldBinding = new SimpleDataBinding(42, "path");
             DataBinding newBinding = oldBinding.ReplaceIndex(23);
 
             Assert.AreNotSame(oldBinding, newBinding);
 
-            Assert.AreEqual(typeof(int), newBinding.Type);
             Assert.AreEqual("path", newBinding.Path);
             Assert.AreEqual(23, newBinding.Index);
         }
@@ -72,35 +46,35 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         new public void ToString()
         {
-            Assert.AreEqual("Binding ValueType: System.Int32, Path: <null>, Index: <null>",
-                new SimpleDataBinding(typeof(int)).ToString());
-            Assert.AreEqual("Binding ValueType: System.Int32, Path: 'foo', Index: 42",
-                new SimpleDataBinding(typeof(int), "foo", 42).ToString());
+            Assert.AreEqual("Binding Index: <null>, Path: <null>",
+                new SimpleDataBinding(null, null).ToString());
+            Assert.AreEqual("Binding Index: 42, Path: 'foo'",
+                new SimpleDataBinding(42, "foo").ToString());
         }
 
         [Test]
         public void EqualsAndHashCodeAreEqualForEqualBindings()
         {
             Assert.AreEqual(
-                new SimpleDataBinding(typeof(int), "path", 1),
-                new SimpleDataBinding(typeof(int), "path", 1));
+                new SimpleDataBinding(1, "path"),
+                new SimpleDataBinding(1, "path"));
             Assert.AreEqual(
-                new SimpleDataBinding(typeof(int), "path", 1).GetHashCode(),
-                new SimpleDataBinding(typeof(int), "path", 1).GetHashCode());
+                new SimpleDataBinding(1, "path").GetHashCode(),
+                new SimpleDataBinding(1, "path").GetHashCode());
         }
 
         [Test]
         public void EqualsAndHashCodeAreDistinctForDifferentBindings()
         {
             InterimAssert.AreDistinct(
-                new SimpleDataBinding(typeof(string), null, null),
-                new SimpleDataBinding(typeof(int), null, null),
-                new SimpleDataBinding(typeof(string), null, 0),
-                new SimpleDataBinding(typeof(string), null, 1),
-                new SimpleDataBinding(typeof(string), "path", null),
-                new SimpleDataBinding(typeof(string), "path2", null),
-                new SimpleDataBinding(typeof(string), "path", 0),
-                new SimpleDataBinding(typeof(string), "path2", 1),
+                new SimpleDataBinding(null, null),
+                new SimpleDataBinding(null, null),
+                new SimpleDataBinding(0, null),
+                new SimpleDataBinding(1, null),
+                new SimpleDataBinding(null, "path"),
+                new SimpleDataBinding(null, "path2"),
+                new SimpleDataBinding(0, "path"),
+                new SimpleDataBinding(1, "path2"),
                 null
             );
         }

@@ -81,8 +81,8 @@ namespace Gallio.Tests.Framework.Data
 
             Assert.AreEqual(2, rows.Count);
 
-            Assert.AreEqual("a", rows[0].GetValue(new SimpleDataBinding(typeof(string), null, 0)));
-            Assert.AreEqual("b", rows[1].GetValue(new SimpleDataBinding(typeof(string), null, 0)));
+            Assert.AreEqual("a", rows[0].GetValue(new SimpleDataBinding(0, null)));
+            Assert.AreEqual("b", rows[1].GetValue(new SimpleDataBinding(0, null)));
 
             Assert.IsInstanceOfType(typeof(ScalarDataRow<object>), rows[0]);
             Assert.IsInstanceOfType(typeof(ScalarDataRow<object>), rows[1]);
@@ -109,7 +109,7 @@ namespace Gallio.Tests.Framework.Data
         public void CanBindReturnsTrueOnlyIfTheBindingIndexIsZero(bool expectedResult, string path, object index)
         {
             ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(EmptyArray<object>.Instance, null, true);
-            Assert.AreEqual(expectedResult, dataSet.CanBind(new SimpleDataBinding(typeof(string), path, (int?) index)));
+            Assert.AreEqual(expectedResult, dataSet.CanBind(new SimpleDataBinding((int?) index, path)));
         }
     }
 }

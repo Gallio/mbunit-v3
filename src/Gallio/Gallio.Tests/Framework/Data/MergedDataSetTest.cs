@@ -108,7 +108,7 @@ namespace Gallio.Tests.Framework.Data
         public void CanBindReturnsTrueOnlyIfAllDataSetsCanSatisfyTheBinding()
         {
             MergedDataSet dataSet = new MergedDataSet();
-            DataBinding binding = new SimpleDataBinding(typeof(int));
+            DataBinding binding = new SimpleDataBinding(0, null);
 
             IDataSet dataSetWithTwoColumns = Mocks.CreateMock<IDataSet>();
             IDataSet dataSetWithThreeColumns = Mocks.CreateMock<IDataSet>();

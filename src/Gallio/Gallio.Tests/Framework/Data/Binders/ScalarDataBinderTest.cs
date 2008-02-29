@@ -38,13 +38,13 @@ namespace Gallio.Tests.Framework.Data.Binders
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfSourceNameIsNull()
         {
-            new ScalarDataBinder(new SimpleDataBinding(typeof(int)), null);
+            new ScalarDataBinder(new SimpleDataBinding(0, null), null);
         }
 
         [Test]
         public void RegisterThrowsIfTheDataSourceCannotBeResolvedByName()
         {
-            ScalarDataBinder binder = new ScalarDataBinder( new SimpleDataBinding(typeof(object)), "name");
+            ScalarDataBinder binder = new ScalarDataBinder( new SimpleDataBinding(0, null), "name");
 
             IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
 
@@ -63,7 +63,7 @@ namespace Gallio.Tests.Framework.Data.Binders
         [Test]
         public void AccessorObtainsAValueFromTheRow()
         {
-            DataBinding binding = new SimpleDataBinding(typeof(object), null, 0);
+            DataBinding binding = new SimpleDataBinding(0, null);
             ScalarDataBinder binder = new ScalarDataBinder(binding, "name");
 
             IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();

@@ -74,7 +74,7 @@ namespace Gallio.Utilities
 
         /// <summary>
         /// Formats a character value as "'x'" or "'\n'" with support for escaped characters
-        /// as a valid literal value.
+        /// as a valid literal value.  Encloses the char in single quotes (').
         /// </summary>
         /// <param name="value">The character value to format</param>
         /// <returns>The formatted character</returns>
@@ -88,8 +88,21 @@ namespace Gallio.Utilities
         }
 
         /// <summary>
-        /// Formats a string value as "abc\ndef" with support for escaped characters
-        /// as a valid literal value.
+        /// Escapes a character value as "x" or "\n".  Unlike <see cref="ToCharLiteral"/>,
+        /// does not enclose the literal in single quotes (').
+        /// </summary>
+        /// <param name="value">The character value to format</param>
+        /// <returns>The unquoted char literal</returns>
+        public static string ToUnquotedCharLiteral(char value)
+        {
+            StringBuilder str = new StringBuilder(6);
+            AppendEscapedChar(str, value);
+            return str.ToString();
+        }
+
+        /// <summary>
+        /// Formats a string value as ""abc\ndef"" with support for escaped characters
+        /// as a valid literal value.  Encloses the string in quotes (").
         /// </summary>
         /// <param name="value">The string value to format</param>
         /// <returns>The formatted string</returns>
@@ -102,6 +115,22 @@ namespace Gallio.Utilities
                 AppendEscapedChar(str, c);
 
             str.Append('"');
+            return str.ToString();
+        }
+
+        /// <summary>
+        /// Escapes a string value such as "abc\ndef".  Unlike <see cref="ToStringLiteral"/>,
+        /// does not enclose the literal in quotes (").
+        /// </summary>
+        /// <param name="value">The string value to format</param>
+        /// <returns>The unquoted string literal</returns>
+        public static string ToUnquotedStringLiteral(string value)
+        {
+            StringBuilder str = new StringBuilder(value.Length);
+
+            foreach (char c in value)
+                AppendEscapedChar(str, c);
+
             return str.ToString();
         }
 

@@ -85,6 +85,20 @@ namespace Gallio.Reflection.Impl
             return null;
         }
 
+        public override bool Equals(object obj)
+        {
+            // Note: ParameterInfo objects can't be compared for equality directly.
+            NativeParameterWrapper other = obj as NativeParameterWrapper;
+            return other != null
+                && Target.MetadataToken == other.Target.MetadataToken
+                && Target.Member.Equals(other.Target.Member);
+        }
+
+        public override int GetHashCode()
+        {
+            return Target.MetadataToken;
+        }
+
         public bool Equals(ISlotInfo other)
         {
             return Equals((object)other);

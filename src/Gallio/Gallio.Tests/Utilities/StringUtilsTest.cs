@@ -85,12 +85,44 @@ namespace Gallio.Tests.Utilities
         }
 
         [Test]
+        [Row(' ', " ")]
+        [Row('.', ".")]
+        [Row('(', "(")]
+        [Row('5', "5")]
+        [Row('a', "a")]
+        [Row('\0', "\\0")]
+        [Row('\a', "\\a")]
+        [Row('\b', "\\b")]
+        [Row('\f', "\\f")]
+        [Row('\n', "\\n")]
+        [Row('\r', "\\r")]
+        [Row('\t', "\\t")]
+        [Row('\v', "\\v")]
+        [Row('\'', "\\\'")]
+        [Row('\"', "\\\"")]
+        [Row('\\', "\\\\")]
+        [Row('\ufeff', "\\ufeff")]
+        public void ToUnquotedCharLiteral(char value, string expectedResult)
+        {
+            Assert.AreEqual(expectedResult, StringUtils.ToUnquotedCharLiteral(value));
+        }
+
+        [Test]
         [Row("", "\"\"")]
         [Row("abcdef", "\"abcdef\"")]
         [Row("\0\a\b\f\n\r\t\v\'\"\\", "\"\\0\\a\\b\\f\\n\\r\\t\\v\\'\\\"\\\\\"")]
         public void ToStringLiteral(string value, string expectedResult)
         {
             Assert.AreEqual(expectedResult, StringUtils.ToStringLiteral(value));
+        }
+
+        [Test]
+        [Row("", "")]
+        [Row("abcdef", "abcdef")]
+        [Row("\0\a\b\f\n\r\t\v\'\"\\", "\\0\\a\\b\\f\\n\\r\\t\\v\\'\\\"\\\\")]
+        public void ToUnquotedStringLiteral(string value, string expectedResult)
+        {
+            Assert.AreEqual(expectedResult, StringUtils.ToUnquotedStringLiteral(value));
         }
     }
 }

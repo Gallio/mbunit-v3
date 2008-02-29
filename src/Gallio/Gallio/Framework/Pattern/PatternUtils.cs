@@ -14,6 +14,7 @@
 // limitations under the License.
 
 
+using System.Collections.Generic;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 
@@ -48,7 +49,7 @@ namespace Gallio.Framework.Pattern
             Consumer<T> fallback) where T : ICodeElementInfo
         {
             bool consumed = false;
-            foreach (IPattern pattern in containingTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(codeElement))
+            foreach (IPattern pattern in containingTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(codeElement, true))
                 consumed |= pattern.Consume(containingTestBuilder, codeElement);
 
             if (!consumed)

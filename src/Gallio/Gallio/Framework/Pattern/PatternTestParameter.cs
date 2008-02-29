@@ -126,7 +126,7 @@ namespace Gallio.Framework.Pattern
 
         private IDataBinder CreateDefaultBinder()
         {
-            DataBinding binding = new SimpleDataBinding(Type.Resolve(false), Name, Index);
+            DataBinding binding = new SimpleDataBinding(Index, Name);
             return new ScalarDataBinder(binding, "");
         }
     }

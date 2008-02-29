@@ -20,7 +20,6 @@ using Gallio.Framework.Data;
 using Gallio.Framework.Data.Binders;
 using Gallio.Framework.Data.Conversions;
 using Gallio.Reflection;
-using Gallio.Tests.Reflection;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -29,7 +28,7 @@ namespace Gallio.Tests.Framework.Data.Binders
     [TestFixture]
     [TestsOn(typeof(ObjectDataBinder))]
     [DependsOn(typeof(BaseDataBinderTest))]
-    [DependsOn(typeof(SlotBinderPositiveTest))]
+    [DependsOn(typeof(ObjectCreationSpecTest))]
     public class ObjectDataBinderTest : BaseUnitTest
     {
         [Test, ExpectedArgumentNullException]
@@ -85,8 +84,8 @@ namespace Gallio.Tests.Framework.Data.Binders
                 DataBindingContext context = new DataBindingContext(new NullConverter());
 
                 ObjectDataBinder binder = new ObjectDataBinder(type);
-                binder.SetSlotBinder(valueSlot, new ScalarDataBinder(new SimpleDataBinding(typeof(int), null, 0), "data"));
-                binder.SetSlotBinder(typeSlot, new ScalarDataBinder(new SimpleDataBinding(typeof(Type), null, 1), "data"));
+                binder.SetSlotBinder(valueSlot, new ScalarDataBinder(new SimpleDataBinding(0, null), "data"));
+                binder.SetSlotBinder(typeSlot, new ScalarDataBinder(new SimpleDataBinding(1, null), "data"));
 
                 IDataBindingAccessor accessor = binder.Register(context, resolver);
                 List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(true));

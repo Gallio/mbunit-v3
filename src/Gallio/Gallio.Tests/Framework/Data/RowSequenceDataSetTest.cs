@@ -81,7 +81,7 @@ namespace Gallio.Tests.Framework.Data
         public void CanBindReturnsTrueOnlyIfTheBindingIndexIsBetweenZeroAndColumnCount(bool expectedResult, string path, object index)
         {
             RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3);
-            Assert.AreEqual(expectedResult, dataSet.CanBind(new SimpleDataBinding(typeof(string), path, (int?)index)));
+            Assert.AreEqual(expectedResult, dataSet.CanBind(new SimpleDataBinding((int?)index, path)));
         }
     }
 }

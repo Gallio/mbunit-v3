@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
+using Gallio.Framework.Data;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 
@@ -37,10 +38,6 @@ namespace MbUnit.Framework
     /// fixture class and must not have any parameters.  The method may be static.
     /// </para>
     /// </remarks>
-    /// <todo author="jeff">
-    /// We should support explicit ordering of set up attributes based on
-    /// an Order property similar to decorators.
-    /// </todo>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public sealed class SetUpAttribute : ContributionPatternAttribute
     {
@@ -49,10 +46,10 @@ namespace MbUnit.Framework
         {
             IMethodInfo method = (IMethodInfo)codeElement;
 
-            containingTestBuilder.Test.Actions.DecorateChildTestChain.After(
+            containingTestBuilder.Test.TestInstanceActions.DecorateChildTestChain.After(
                 delegate(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildActions)
                 {
-                    decoratedChildActions.SetUpTestInstanceChain.Before(delegate
+                    decoratedChildActions.TestInstanceActions.SetUpTestInstanceChain.Before(delegate
                     {
                         testInstanceState.InvokeFixtureMethod(method, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance);
                     });

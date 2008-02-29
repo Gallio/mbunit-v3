@@ -298,11 +298,6 @@ namespace Gallio.Framework.Data
                 get { return externalIndex; }
             }
 
-            public override Type Type
-            {
-                get { return inner.Type; }
-            }
-
             public override DataBinding ReplaceIndex(int? index)
             {
                 return new ResolvedBinding(dataSetInfo, inner, index);

@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
 namespace Gallio.Framework.Data
 {
     /// <summary>
@@ -24,47 +22,18 @@ namespace Gallio.Framework.Data
     /// </summary>
     public class SimpleDataBinding : DataBinding
     {
-        private readonly Type type;
-        private readonly string path;
         private readonly int? index;
+        private readonly string path;
 
         /// <summary>
-        /// Creates a new data binding.
+        /// Creates a new data binding with an optional index and path.
         /// </summary>
-        /// <param name="valueType">The type of value to bind</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="valueType"/> is null</exception>
-        public SimpleDataBinding(Type valueType)
-        {
-            if (valueType == null)
-                throw new ArgumentNullException("valueType");
-
-            this.type = valueType;
-        }
-
-        /// <summary>
-        /// Creates a new data binding with an optional path and index.
-        /// </summary>
-        /// <param name="valueType">The type of value to bind</param>
-        /// <param name="path">The binding path or null if none.  <seealso cref="Path"/></param>
         /// <param name="index">The binding index or null if none.  <seealso cref="Index"/></param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="valueType"/> is null</exception>
-        public SimpleDataBinding(Type valueType, string path, int? index)
-            : this(valueType)
+        /// <param name="path">The binding path or null if none.  <seealso cref="Path"/></param>
+        public SimpleDataBinding(int? index, string path)
         {
             this.path = path;
             this.index = index;
-        }
-
-        /// <inheritdoc />
-        public override Type Type
-        {
-            get { return type; }
-        }
-
-        /// <inheritdoc />
-        public override string Path
-        {
-            get { return path; }
         }
 
         /// <inheritdoc />
@@ -74,9 +43,15 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
+        public override string Path
+        {
+            get { return path; }
+        }
+
+        /// <inheritdoc />
         public override DataBinding ReplaceIndex(int? index)
         {
-            return new SimpleDataBinding(type, path, index);
+            return new SimpleDataBinding(index, path);
         }
     }
 }

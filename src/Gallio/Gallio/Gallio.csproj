@@ -80,8 +80,12 @@
     <Compile Include="Framework\Data\AggregateDataSet.cs" />
     <Compile Include="Framework\Data\BaseDataRow.cs" />
     <Compile Include="Framework\Data\BaseDataSet.cs" />
-    <Compile Include="Framework\Data\Binders\BaseDataBinder.cs" />
-    <Compile Include="Framework\Data\Binders\ConvertedDataBindingAccessor.cs" />
+    <Compile Include="Framework\Data\Binders\BaseDataBinder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\Data\Binders\BaseDataBindingAccessor.cs" />
+    <Compile Include="Framework\Data\Binders\ConstantDataBindingAccessor.cs" />
+    <Compile Include="Framework\Data\Binders\RowDataBindingAccessor.cs" />
     <Compile Include="Framework\Data\Binders\DataBindingContext.cs" />
     <Compile Include="Framework\Data\Binders\DataBindingItem.cs" />
     <Compile Include="Framework\Data\Binders\IDataBinder.cs" />
@@ -128,8 +132,10 @@
     <Compile Include="Framework\Data\Formatters\SingleFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\StringFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\IFormatter.cs" />
+    <Compile Include="Framework\Data\Formatters\TypeFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\XPathNavigableFormattingRule.cs" />
     <Compile Include="Framework\Data\Generators.cs" />
+    <Compile Include="Framework\Data\DataBindingSpec.cs" />
     <Compile Include="Framework\Data\IDataProvider.cs" />
     <Compile Include="Framework\Data\IDataRow.cs" />
     <Compile Include="Framework\Data\IDataSet.cs" />
@@ -141,7 +147,9 @@
     <Compile Include="Framework\Data\JoinedDataSet.cs" />
     <Compile Include="Framework\Data\ListDataRow.cs" />
     <Compile Include="Framework\Data\MergedDataSet.cs" />
+    <Compile Include="Framework\Data\MethodInvocationSpec.cs" />
     <Compile Include="Framework\Data\NullDataRow.cs" />
+    <Compile Include="Framework\Data\ObjectCreationSpec.cs" />
     <Compile Include="Framework\Data\PairwiseJoinStrategy.cs" />
     <Compile Include="Framework\Data\RowSequenceDataSet.cs" />
     <Compile Include="Framework\Data\ScalarDataRow.cs" />
@@ -168,6 +176,7 @@
     <Compile Include="Framework\Pattern\IPatternTestBuilder.cs" />
     <Compile Include="Framework\Pattern\IPatternTestFrameworkExtension.cs" />
     <Compile Include="Framework\Pattern\IPatternTestHandler.cs" />
+    <Compile Include="Framework\Pattern\IPatternTestInstanceHandler.cs" />
     <Compile Include="Framework\Pattern\IPatternTestModelBuilder.cs" />
     <Compile Include="Framework\Pattern\IPatternTestParameterBuilder.cs" />
     <Compile Include="Framework\Pattern\MetadataPatternAttribute.cs" />
@@ -178,6 +187,7 @@
     <Compile Include="Framework\Pattern\PatternTestExplorer.cs" />
     <Compile Include="Framework\Pattern\PatternTestFramework.cs" />
     <Compile Include="Framework\Pattern\PatternTestInstance.cs" />
+    <Compile Include="Framework\Pattern\PatternTestInstanceActions.cs" />
     <Compile Include="Framework\Pattern\PatternTestInstanceState.cs" />
     <Compile Include="Framework\Pattern\PatternTestParameter.cs" />
     <Compile Include="Framework\Pattern\PatternTestPopulator.cs" />
@@ -268,6 +278,7 @@
     <Compile Include="Model\Execution\TestContextTrackerAccessor.cs" />
     <Compile Include="Model\Execution\TestCommandFactory.cs" />
     <Compile Include="Model\Filters\NameFilter.cs" />
+    <Compile Include="Reflection\CodeElementSorter.cs" />
     <Compile Include="Reflection\Impl\IResolvableTypeInfo.cs" />
     <Compile Include="Reflection\Impl\StaticArrayTypeWrapper.cs">
       <SubType>Code</SubType>
@@ -309,7 +320,6 @@
     <Compile Include="Reflection\Impl\UnresolvedParameterInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedPropertyInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedType.cs" />
-    <Compile Include="Framework\Data\SlotBinder.cs" />
     <Compile Include="Runner\DomainTestRunnerFactory.cs" />
     <Compile Include="Runner\DefaultTestRunnerManager.cs" />
     <Compile Include="Runner\Domains\HostTestDomain.cs" />

@@ -124,7 +124,7 @@ namespace MbUnit.TestResources.DataBinding
         [Test]
         [Row(typeof(int), 42)]
         [Row(typeof(string), "str")]
-        public void GenericMethodParameters<T>(object value)
+        public void GenericMethodParameters<T>(T value)
         {
             Assert.AreEqual(typeof(T), value.GetType());
         }

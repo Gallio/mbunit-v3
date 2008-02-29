@@ -115,9 +115,13 @@ namespace Gallio.Framework.Pattern
         {
             try
             {
-                IPatternTestHandler testHandler = test.Actions;
+                IPatternTestHandler testHandler = test.TestActions;
                 if (decorator != null)
+                {
                     testHandler = decorator(testHandler);
+                    if (testHandler == null)
+                        return false;
+                }
 
                 PatternTestState testState = new PatternTestState(test, testHandler, converter, formatter);
 
@@ -164,10 +168,16 @@ namespace Gallio.Framework.Pattern
             {
                 using (bindingItem)
                 {
+                    PatternTestInstanceActions decoratedTestInstanceActions =
+                        PatternTestInstanceActions.CreateDecorator(testState.TestHandler.TestInstanceHandler);
+
+                    if (!DoDecorateTestInstance(testState, decoratedTestInstanceActions))
+                        return false;
+
                     PatternTestInstance testInstance = new PatternTestInstance(testState.Test, parentTestInstance,
                         testState.Test.Name, bindingItem.GetRow().IsDynamic);
 
-                    PatternTestInstanceState testInstanceState = new PatternTestInstanceState(testInstance, testState, bindingItem);
+                    PatternTestInstanceState testInstanceState = new PatternTestInstanceState(testInstance, decoratedTestInstanceActions, testState, bindingItem);
 
                     bool success = DoBeforeTestInstance(testInstanceState);
                     if (success)
@@ -205,9 +215,10 @@ namespace Gallio.Framework.Pattern
                                 bool childSuccess = RunTest(progressMonitor, childTestCommand, testInstanceState.TestInstance,
                                     delegate(IPatternTestHandler childHandler)
                                     {
-                                        PatternTestActions decoratedChildActions = PatternTestActions.CreateDecorator(childHandler);
-                                        testInstanceState.TestHandler.DecorateChildTest(testInstanceState, decoratedChildActions);
-                                        return decoratedChildActions;
+                                        PatternTestActions decoratedChildTestActions = PatternTestActions.CreateDecorator(childHandler);
+                                        if (!DoDecorateChildTest(testInstanceState, decoratedChildTestActions))
+                                            return null;
+                                        return decoratedChildTestActions;
                                     });
 
                                 outcome = outcome.CombineWith(childSuccess ? TestOutcome.Passed : TestOutcome.Failed);
@@ -236,12 +247,26 @@ namespace Gallio.Framework.Pattern
                 testState.SlotBindingAccessors.Add(new KeyValuePair<ISlotInfo, IDataBindingAccessor>(parameter.Slot, bindingAccessor));
             }
 
-            return InvokeActionWithPassFail(testState.TestHandler.BeforeTest, testState, "Before Test", null);
+            return InvokeActionWithPassFail(delegate
+            {
+                testState.TestHandler.BeforeTest(testState);
+            }, "Before Test", null);
         }
 
         private static bool DoAfterTest(PatternTestState testState)
         {
-            return InvokeActionWithPassFail(testState.TestHandler.AfterTest, testState, "After Test", null);
+            return InvokeActionWithPassFail(delegate
+            {
+                testState.TestHandler.AfterTest(testState);
+            }, "After Test", null);
+        }
+
+        private static bool DoDecorateTestInstance(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
+        {
+            return InvokeActionWithPassFail(delegate
+            {
+                testState.TestHandler.DecorateTestInstance(testState, decoratedTestInstanceActions);
+            }, "Decorate Child Test", null);
         }
 
         private static bool DoBeforeTestInstance(PatternTestInstanceState testInstanceState)
@@ -253,25 +278,32 @@ namespace Gallio.Framework.Pattern
             {
                 foreach (KeyValuePair<ISlotInfo, IDataBindingAccessor> entry in testInstanceState.TestState.SlotBindingAccessors)
                     testInstanceState.SlotValues.Add(entry.Key, entry.Value.GetValue(testInstanceState.BindingItem));
-
-                testInstanceState.TestInstance.Name += testInstanceState.FormatSlotValues();
             }
 
-            return InvokeActionWithPassFail(testInstanceState.TestHandler.BeforeTestInstance, testInstanceState, "Before Test Instance", null);
+            return InvokeActionWithPassFail(delegate
+            {
+                testInstanceState.TestInstanceHandler.BeforeTestInstance(testInstanceState);
+            }, "Before Test Instance", null);
         }
 
         private static TestOutcome DoInitializeTestInstance(PatternTestInstanceState testInstanceState, ITestContext context)
         {
             context.LifecyclePhase = LifecyclePhases.Initialize;
 
-            return InvokeActionWithOutcome(testInstanceState.TestHandler.InitializeTestInstance, testInstanceState, "Initialize", null);
+            return InvokeActionWithOutcome(delegate
+            {
+                testInstanceState.TestInstanceHandler.InitializeTestInstance(testInstanceState);
+            }, "Initialize", null);
         }
 
         private static TestOutcome DoSetUpTestInstance(PatternTestInstanceState testInstanceState, ITestContext context)
         {
             context.LifecyclePhase = LifecyclePhases.SetUp;
 
-            return InvokeActionWithOutcome(testInstanceState.TestHandler.SetUpTestInstance, testInstanceState, "Set Up", null);
+            return InvokeActionWithOutcome(delegate
+            {
+                testInstanceState.TestInstanceHandler.SetUpTestInstance(testInstanceState);
+            }, "Set Up", null);
         }
 
         private static TestOutcome DoExecuteTestInstance(PatternTestInstanceState testInstanceState, ITestContext context)
@@ -280,38 +312,59 @@ namespace Gallio.Framework.Pattern
 
             string expectedExceptionType = testInstanceState.TestInstance.Metadata.GetValue(MetadataKeys.ExpectedException)
                 ?? testInstanceState.Test.Metadata.GetValue(MetadataKeys.ExpectedException);
-            return InvokeActionWithOutcome(testInstanceState.TestHandler.ExecuteTestInstance, testInstanceState, null, expectedExceptionType);
+
+            return InvokeActionWithOutcome(delegate
+            {
+                testInstanceState.TestInstanceHandler.ExecuteTestInstance(testInstanceState);
+            }, null, expectedExceptionType);
         }
 
         private static TestOutcome DoTearDownTestInstance(PatternTestInstanceState testInstanceState, ITestContext context)
         {
             context.LifecyclePhase = LifecyclePhases.TearDown;
 
-            return InvokeActionWithOutcome(testInstanceState.TestHandler.TearDownTestInstance, testInstanceState, "Tear Down", null);
+            return InvokeActionWithOutcome(delegate
+            {
+                testInstanceState.TestInstanceHandler.TearDownTestInstance(testInstanceState);
+            }, "Tear Down", null);
         }
 
         private static TestOutcome DoDisposeTestInstance(PatternTestInstanceState testInstanceState, ITestContext context)
         {
             context.LifecyclePhase = LifecyclePhases.Dispose;
 
-            return InvokeActionWithOutcome(testInstanceState.TestHandler.DisposeTestInstance, testInstanceState, "Dispose", null);
+            return InvokeActionWithOutcome(delegate
+            {
+                testInstanceState.TestInstanceHandler.DisposeTestInstance(testInstanceState);
+            }, "Dispose", null);
         }
 
         private static bool DoAfterTestInstance(PatternTestInstanceState testInstanceState)
         {
-            return InvokeActionWithPassFail(testInstanceState.TestHandler.AfterTestInstance, testInstanceState, "After Test Instance", null);
+            return InvokeActionWithPassFail(delegate
+            {
+                testInstanceState.TestInstanceHandler.AfterTestInstance(testInstanceState);
+            }, "After Test Instance", null);
         }
 
-        private static bool InvokeActionWithPassFail<T>(Action<T> action, T value, string description,
-            string expectedExceptionType)
+        private static bool DoDecorateChildTest(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
         {
-            return InvokeActionWithOutcome(action, value, description, expectedExceptionType).Status == TestStatus.Passed;
+            return InvokeActionWithPassFail(delegate
+            {
+                testInstanceState.TestInstanceHandler.DecorateChildTest(testInstanceState, decoratedChildTestActions);
+            }, "Decorate Child Test", null);
         }
 
-        private static TestOutcome InvokeActionWithOutcome<T>(Action<T> action, T value, string description,
+        private static bool InvokeActionWithPassFail(Action action, string description,
             string expectedExceptionType)
         {
-            return TestInvoker.Run(delegate { action(value); }, description, expectedExceptionType);
+            return InvokeActionWithOutcome(action, description, expectedExceptionType).Status == TestStatus.Passed;
+        }
+
+        private static TestOutcome InvokeActionWithOutcome(Action action, string description,
+            string expectedExceptionType)
+        {
+            return TestInvoker.Run(action, description, expectedExceptionType);
         }
     }
 }

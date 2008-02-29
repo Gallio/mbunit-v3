@@ -30,7 +30,7 @@ namespace Gallio.Tests.Framework.Data
         public void HandlesDegenerateCaseWithZeroProviders()
         {
             DataBinding[] bindings = new DataBinding[] {
-                new SimpleDataBinding(typeof(int), null, 0)
+                new SimpleDataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[0];
 
@@ -42,7 +42,7 @@ namespace Gallio.Tests.Framework.Data
         public void HandlesDegenerateCaseWithOneProvider()
         {
             DataBinding[] bindings = new DataBinding[] {
-                new SimpleDataBinding(typeof(int), null, 0)
+                new SimpleDataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
                 Mocks.CreateMock<IDataProvider>()
@@ -77,7 +77,7 @@ namespace Gallio.Tests.Framework.Data
         public void KeepsOnlyIntersectionIncludingRightNumberOfDuplicatesAndExcludesBadRows()
         {
             DataBinding[] bindings = new DataBinding[] {
-                new SimpleDataBinding(typeof(int), null, 0)
+                new SimpleDataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
                 Mocks.CreateMock<IDataProvider>(),

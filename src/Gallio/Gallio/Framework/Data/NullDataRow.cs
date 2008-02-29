@@ -18,9 +18,8 @@ using Gallio.Reflection;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// A null data row simply returns the default value for the type of
-    /// any binding that is requested.  It has no metadata and it ignores
-    /// disposal.
+    /// A null data row simply returns a null value on each request.
+    /// It has no metadata and it ignores disposal.
     /// </summary>
     public sealed class NullDataRow : BaseDataRow
     {
@@ -37,7 +36,7 @@ namespace Gallio.Framework.Data
         /// <inheritdoc />
         protected override object GetValueInternal(DataBinding binding)
         {
-            return ReflectionUtils.GetDefaultValue(binding.Type);
+            return null;
         }
     }
 }

@@ -90,7 +90,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTestParameter(IPatternTestParameterBuilder builder, ISlotInfo slot)
         {
-            DataBinding binding = new SimpleDataBinding(slot.ValueType.Resolve(false), path, index);
+            DataBinding binding = new SimpleDataBinding(index, path);
             builder.TestParameter.Binder = new ScalarDataBinder(binding, source ?? @"");
         }
     }

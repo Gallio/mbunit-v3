@@ -14,61 +14,48 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Framework.Data;
 using Gallio.Framework.Data.Binders;
-using Gallio.Framework.Data.Conversions;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Tests.Framework.Data.Binders
 {
     [TestFixture]
-    [TestsOn(typeof(ConvertedDataBindingAccessor))]
-    public class ConvertedDataBindingAccessorTest : BaseUnitTest
+    [TestsOn(typeof(RowDataBindingAccessor))]
+    public class RowDataBindingAccessorTest : BaseUnitTest
     {
-        [Test, ExpectedArgumentNullException]
-        public void ConstructorThrowsIfConverterIsNull()
-        {
-            new ConvertedDataBindingAccessor(null, new SimpleDataBinding(typeof(int)));
-        }
-
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfDataBindingIsNull()
         {
-            IConverter converter = Mocks.Stub<IConverter>();
-            new ConvertedDataBindingAccessor(converter, null);
+            new RowDataBindingAccessor(null);
         }
 
         [Test]
         public void GetValueThrowsIfItemIsNull()
         {
-            IConverter converter = Mocks.Stub<IConverter>();
-            ConvertedDataBindingAccessor accessor =
-                new ConvertedDataBindingAccessor(converter, new SimpleDataBinding(typeof(int)));
+            RowDataBindingAccessor accessor = new RowDataBindingAccessor(new SimpleDataBinding(0, null));
 
             InterimAssert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
         }
 
         [Test]
-        public void GetValueCallsConverter()
+        public void GetValueCallsRowsGetValueWithTheBinding()
         {
-            IConverter converter = Mocks.CreateMock<IConverter>();
             IDataRow row = Mocks.CreateMock<IDataRow>();
 
-            DataBinding binding = new SimpleDataBinding(typeof(int));
-            ConvertedDataBindingAccessor accessor = new ConvertedDataBindingAccessor(converter, binding);
+            DataBinding binding = new SimpleDataBinding(0, null);
+            DataBindingItem item = new DataBindingItem(row);
 
             using (Mocks.Record())
             {
-                Expect.Call(row.GetValue(binding)).Return("42");
-                Expect.Call(converter.Convert("42", typeof(int))).Return(42);
+                Expect.Call(row.GetValue(binding)).Return(42);
             }
 
             using (Mocks.Playback())
             {
-                Assert.AreEqual(42, accessor.GetValue(new DataBindingItem(row)));
+                RowDataBindingAccessor accessor = new RowDataBindingAccessor(binding);
+                Assert.AreEqual(42, accessor.GetValue(item));
             }
         }
     }

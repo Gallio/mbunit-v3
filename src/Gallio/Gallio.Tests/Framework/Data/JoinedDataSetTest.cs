@@ -107,7 +107,7 @@ namespace Gallio.Tests.Framework.Data
         public void CanBindReturnsFalseIfThereAreNoDataSets()
         {
             JoinedDataSet dataSet = new JoinedDataSet();
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(typeof(string))),
+            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(0, null)),
                 "Cannot bind because there are no data sets.");
         }
 
@@ -124,15 +124,15 @@ namespace Gallio.Tests.Framework.Data
             dataSet.AddDataSet(dataSet1);
             dataSet.AddDataSet(dataSet2);
 
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(typeof(string))),
+            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(0, null)),
                 "Cannot bind because there is no path or index.");
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(typeof(string), null, 5)),
+            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(5, null)),
                 "Cannot bind because index 5 is beyond the range of columns in the joined data set.");
-            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(typeof(string), null, 4)),
+            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(4, null)),
                 "Can bind because index 4 is within the range of columns in the joined data set.");
-            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(typeof(string), null, 0)),
+            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(0, null)),
                 "Can bind because index 0 is within the range of columns in the joined data set.");
-            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(typeof(string), "path", null)),
+            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(null, "path")),
                 "Can bind because path is supported by one of the data sets.");
         }
 
@@ -149,17 +149,17 @@ namespace Gallio.Tests.Framework.Data
             dataSet.AddDataSet(dataSet1);
             dataSet.AddDataSet(dataSet2);
 
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(typeof(string)))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(0, null))),
                 "Cannot bind because there is no path or index in the translated binding.");
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(typeof(string), null, 3))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(3, null))),
                 "Cannot bind because index 3 is beyond the range of columns in the scoped data set.");
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(typeof(string), null, 2))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(2, null))),
                 "Cannot bind because index 2 is beyond the range of columns in the scoped data set.");
-            Assert.IsTrue(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(typeof(string), null, 1))),
+            Assert.IsTrue(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(1, null))),
                 "Can bind because index 1 is within the range of columns in the scoped data set.");
-            Assert.IsTrue(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(typeof(string), "path", null))),
+            Assert.IsTrue(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(null, "path"))),
                 "Can bind because path is supported by one of the scoped data set.");
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(typeof(string), "path", null))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(null, "path"))),
                 "Cannot bind because path is supported by one of the scoped data set.");
         }
 
@@ -204,14 +204,14 @@ namespace Gallio.Tests.Framework.Data
             IJoinStrategy strategy = Mocks.CreateMock<IJoinStrategy>();
             dataSet.Strategy = strategy;
 
-            DataBinding pathBinding = new SimpleDataBinding(typeof(string), "path", null);
-            DataBinding indexZeroBinding = new SimpleDataBinding(typeof(string), null, 0);
-            DataBinding indexOneBinding = new SimpleDataBinding(typeof(string), null, 1);
-            DataBinding indexThreeBinding = new SimpleDataBinding(typeof(string), null, 3);
+            DataBinding pathBinding = new SimpleDataBinding(null, "path");
+            DataBinding indexZeroBinding = new SimpleDataBinding(0, null);
+            DataBinding indexOneBinding = new SimpleDataBinding(1, null);
+            DataBinding indexThreeBinding = new SimpleDataBinding(3, null);
 
             DataBinding[] bindings = new DataBinding[]
             {
-                new SimpleDataBinding(typeof(string)), // unresolvable binding because no data sets can claim it
+                new SimpleDataBinding(0, null), // unresolvable binding because no data sets can claim it
                 pathBinding, // claimed by dataSet1
                 indexZeroBinding, // claimed by dataSet1
                 indexThreeBinding, // claimed by dataSet2
@@ -295,8 +295,8 @@ namespace Gallio.Tests.Framework.Data
                 dataSet.AddDataSet(dataSetWithTwoColumns);
                 dataSet.AddDataSet(dataSetWithThreeColumns);
 
-                DataBinding bindingWithNoIndex = new SimpleDataBinding(typeof(string));
-                DataBinding bindingWithIndex = new SimpleDataBinding(typeof(string), null, 1);
+                DataBinding bindingWithNoIndex = new SimpleDataBinding(0, null);
+                DataBinding bindingWithIndex = new SimpleDataBinding(1, null);
 
                 AssertTranslateReplacedIndex(dataSet, dataSetWithTwoColumns, bindingWithNoIndex, null,
                     "No binding index in original so none should be present when translated.");
@@ -314,15 +314,14 @@ namespace Gallio.Tests.Framework.Data
         {
             DataBinding translatedBinding = joinedDataSet.TranslateBinding(innerDataSet, binding);
             Assert.AreEqual(expectedIndex, translatedBinding.Index, message);
-            Assert.AreEqual(binding.Path, translatedBinding.Path, "Path should be preserved always.");
-            Assert.AreEqual(binding.Type, translatedBinding.Type, "Value type should be preserved always.");
+            Assert.AreEqual(binding.Path, translatedBinding.Path, "Path should be preserved.");
         }
 
         [Test, ExpectedArgumentNullException]
         public void TranslateBindingThrowsIfDataSetIsNull()
         {
             JoinedDataSet dataSet = new JoinedDataSet();
-            dataSet.TranslateBinding(null, new SimpleDataBinding(typeof(string)));
+            dataSet.TranslateBinding(null, new SimpleDataBinding(0, null));
         }
 
         [Test, ExpectedArgumentNullException]
@@ -336,7 +335,7 @@ namespace Gallio.Tests.Framework.Data
         public void TranslateBindingThrowsIfDataSetNotAMember()
         {
             JoinedDataSet dataSet = new JoinedDataSet();
-            dataSet.TranslateBinding(Mocks.Stub<IDataSet>(), new SimpleDataBinding(typeof(string)));
+            dataSet.TranslateBinding(Mocks.Stub<IDataSet>(), new SimpleDataBinding(0, null));
         }
 
         [Test]
@@ -346,15 +345,13 @@ namespace Gallio.Tests.Framework.Data
             DataSource source = new DataSource("dummy");
             dataSet.AddDataSet(source);
 
-            DataBinding dataBinding = dataSet.TranslateBinding(source, new SimpleDataBinding(typeof(string), "path", null));
+            DataBinding dataBinding = dataSet.TranslateBinding(source, new SimpleDataBinding(null, "path"));
             Assert.IsNull(dataBinding.Index);
             Assert.AreEqual("path", dataBinding.Path);
-            Assert.AreEqual(typeof(string), dataBinding.Type);
 
             DataBinding changedDataBinding = dataBinding.ReplaceIndex(5);
             Assert.AreEqual(5, changedDataBinding.Index);
             Assert.AreEqual("path", dataBinding.Path);
-            Assert.AreEqual(typeof(string), dataBinding.Type);
         }
     }
 }

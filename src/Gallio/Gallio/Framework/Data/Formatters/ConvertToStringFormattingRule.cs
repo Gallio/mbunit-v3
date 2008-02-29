@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Framework.Data.Conversions;
+using Gallio.Utilities;
 
 namespace Gallio.Framework.Data.Formatters
 {
@@ -53,7 +54,7 @@ namespace Gallio.Framework.Data.Formatters
             if (string.IsNullOrEmpty(result))
                 return null;
 
-            return string.Concat("{", result, "}");
+            return string.Concat("{", StringUtils.ToUnquotedStringLiteral(result), "}");
         }
     }
 }

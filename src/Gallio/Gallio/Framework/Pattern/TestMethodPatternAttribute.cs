@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Data;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
@@ -94,7 +95,7 @@ namespace Gallio.Framework.Pattern
             if (xmlDocumentation != null)
                 methodTestBuilder.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in methodTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(method))
+            foreach (IPattern pattern in methodTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(method, true))
                 pattern.ProcessTest(methodTestBuilder, method);
 
             if (method.IsGenericMethodDefinition)
@@ -109,7 +110,7 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Applies semantic actions to the <see cref="PatternTest.Actions" /> member of a 
+        /// Applies semantic actions to the <see cref="PatternTest.TestActions" /> member of a 
         /// test to set the test's runtime behavior.
         /// </para>
         /// <para>
@@ -121,9 +122,9 @@ namespace Gallio.Framework.Pattern
         /// The default behavior for a <see cref="TestMethodPatternAttribute" />
         /// is to configure the test actions as follows:
         /// <list type="bullet">
-        /// <item><see cref="IPatternTestHandler.ExecuteTestInstance" />: Invoke the
+        /// <item><see cref="IPatternTestInstanceHandler.ExecuteTestInstance" />: Invoke the
         /// <paramref name="method"/> using the values that have been set for its parameter slots.
-        /// <seealso cref="PatternTestInstanceState.InvokeFixtureMethod"/></item>
+        /// <seealso cref="PatternTestInstanceState.GetTestMethodInvocationSpec"/></item>
         /// </list>
         /// </para>
         /// <para>
@@ -134,10 +135,21 @@ namespace Gallio.Framework.Pattern
         /// <param name="method">The test method</param>
         protected virtual void SetTestSemantics(PatternTest test, IMethodInfo method)
         {
-            test.Actions.ExecuteTestInstanceChain.After(
+            test.TestInstanceActions.BeforeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
-                    testInstanceState.InvokeFixtureMethodWithSlotValues(method);
+                    MethodInvocationSpec spec = testInstanceState.GetTestMethodInvocationSpec(method);
+
+                    testInstanceState.TestInstance.Name += spec.Format(testInstanceState.Formatter);
+                    testInstanceState.TestMethod = spec.ResolvedMethod;
+                    testInstanceState.TestArguments = spec.ResolvedArguments;
+                });
+
+            test.TestInstanceActions.ExecuteTestInstanceChain.After(
+                delegate(PatternTestInstanceState testInstanceState)
+                {
+                    if (testInstanceState.TestMethod != null && testInstanceState.TestArguments != null)
+                        testInstanceState.TestMethod.Invoke(testInstanceState.FixtureInstance, testInstanceState.TestArguments);
                 });
         }
 

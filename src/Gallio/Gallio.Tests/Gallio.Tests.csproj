@@ -67,7 +67,8 @@
     <Compile Include="Framework\Data\BaseDataRowTest.cs" />
     <Compile Include="Framework\Data\BaseDataSetTest.cs" />
     <Compile Include="Framework\Data\Binders\BaseDataBinderTest.cs" />
-    <Compile Include="Framework\Data\Binders\ConvertedDataBindingAccessorTest.cs" />
+    <Compile Include="Framework\Data\Binders\ConstantDataBindingAccessorTest.cs" />
+    <Compile Include="Framework\Data\Binders\RowDataBindingAccessorTest.cs" />
     <Compile Include="Framework\Data\Binders\DataBindingContextTest.cs" />
     <Compile Include="Framework\Data\Binders\DataBindingItemTest.cs" />
     <Compile Include="Framework\Data\Binders\ObjectDataBinderTest.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Framework\Data\Formatters\BooleanFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\ByteFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\CharFormattingRuleTest.cs" />
+    <Compile Include="Framework\Data\Formatters\ConvertToStringFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\DateTimeFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\DBNullFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\DecimalFormattingRuleTest.cs" />
@@ -106,13 +108,18 @@
     <Compile Include="Framework\Data\Formatters\RuntimeRuleBasedFormatterTest.cs" />
     <Compile Include="Framework\Data\Formatters\SingleFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\StringFormattingRuleTest.cs" />
+    <Compile Include="Framework\Data\Formatters\TypeFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\XPathNavigableFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\GeneratorsTest.cs" />
     <Compile Include="Framework\Data\IntersectionMergeStrategyTest.cs" />
     <Compile Include="Framework\Data\JoinedDataSetTest.cs" />
     <Compile Include="Framework\Data\ListDataRowTest.cs" />
     <Compile Include="Framework\Data\MergedDataSetTest.cs" />
+    <Compile Include="Framework\Data\MethodInvocationSpecTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Framework\Data\NullDataRowTest.cs" />
+    <Compile Include="Framework\Data\ObjectCreationSpecTest.cs" />
     <Compile Include="Framework\Data\PairwiseJoinStrategyTest.cs" />
     <Compile Include="Framework\Data\RowSequenceDataSetTest.cs" />
     <Compile Include="Framework\Data\ScalarDataRowTest.cs" />
@@ -151,7 +158,9 @@
     <Compile Include="Model\Filters\ModelComponentFilterFactoryTest.cs" />
     <Compile Include="Model\Filters\RegexFilterTest.cs" />
     <Compile Include="Model\TestOutcomeTest.cs" />
+    <Compile Include="Reflection\CodeElementSorterTest.cs" />
     <Compile Include="Reflection\CodeReferenceTest.cs" />
+    <Compile Include="Reflection\DeclaringTypeComparerTest.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolverTest.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtilsTest.cs" />
     <Compile Include="Reflection\Impl\ReflectorTypeUtilsTest.cs" />
@@ -161,8 +170,6 @@
     <Compile Include="Reflection\WrapperAssert.cs" />
     <Compile Include="Reflection\ReflectorTest.cs" />
     <Compile Include="Reflection\CodeLocationTest.cs" />
-    <Compile Include="Framework\Data\SlotBinderPositiveTest.cs" />
-    <Compile Include="Framework\Data\SlotBinderNegativeTest.cs" />
     <Compile Include="Runner\Reports\FileSystemReportContainerTest.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />

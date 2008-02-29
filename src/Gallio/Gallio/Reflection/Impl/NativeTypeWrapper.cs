@@ -312,6 +312,17 @@ namespace Gallio.Reflection.Impl
                 ?? Assembly.GetCodeLocation();
         }
 
+        public override bool Equals(object obj)
+        {
+            NativeTypeWrapper other = obj as NativeTypeWrapper;
+            return other != null && Target.Equals(other.Target);
+        }
+
+        public override int GetHashCode()
+        {
+            return Target.GetHashCode();
+        }
+
         public bool Equals(ITypeInfo other)
         {
             return Equals((object)other);

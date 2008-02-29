@@ -73,7 +73,7 @@ namespace Gallio.Tests.Framework.Data
         {
             object[] values = new object[] { "abc", "def", 42 };
             ListDataRow<object> row = new ListDataRow<object>(values, null, false);
-            object value = row.GetValue(new SimpleDataBinding(typeof(string), path, (int?)index));
+            object value = row.GetValue(new SimpleDataBinding((int?)index, path));
 
             Assert.AreEqual(values[(int)index], value);
         }

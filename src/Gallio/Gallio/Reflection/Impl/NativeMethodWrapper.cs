@@ -79,5 +79,17 @@ namespace Gallio.Reflection.Impl
         {
             return Target;
         }
+
+        public override bool Equals(object obj)
+        {
+            // Note: We must also compare generic arguments to determine exact method equality.
+            return base.Equals(obj)
+                && GenericUtils.ElementsEqual(GenericArguments, ((NativeMethodWrapper)obj).GenericArguments);
+        }
+
+        public override int GetHashCode()
+        {
+            return Target.MetadataToken;
+        }
     }
 }

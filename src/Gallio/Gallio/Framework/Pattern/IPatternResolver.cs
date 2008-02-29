@@ -30,8 +30,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the patterns associated with the specified code element.
         /// </summary>
         /// <param name="codeElement">The code element</param>
+        /// <param name="inherit">If true, includes inherited patterns</param>
         /// <returns>The enumeration of patterns</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null</exception>
-        IEnumerable<IPattern> GetPatterns(ICodeElementInfo codeElement);
+        IEnumerable<IPattern> GetPatterns(ICodeElementInfo codeElement, bool inherit);
     }
 }

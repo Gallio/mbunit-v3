@@ -38,16 +38,9 @@ namespace Gallio.Framework.Pattern
     {
         private readonly ActionChain<PatternTestState> beforeTestChain;
         private readonly ActionChain<PatternTestState> afterTestChain;
+        private readonly ActionChain<PatternTestState, PatternTestInstanceActions> decorateTestInstanceChain;
 
-        private readonly ActionChain<PatternTestInstanceState> beforeTestInstanceChain;
-        private readonly ActionChain<PatternTestInstanceState> initializeTestInstanceChain;
-        private readonly ActionChain<PatternTestInstanceState> setUpTestInstanceChain;
-        private readonly ActionChain<PatternTestInstanceState> executeTestInstanceChain;
-        private readonly ActionChain<PatternTestInstanceState> tearDownTestInstanceChain;
-        private readonly ActionChain<PatternTestInstanceState> disposeTestInstanceChain;
-        private readonly ActionChain<PatternTestInstanceState> afterTestInstanceChain;
-
-        private readonly ActionChain<PatternTestInstanceState, PatternTestActions> decorateChildTestChain;
+        private PatternTestInstanceActions testInstanceActions;
 
         /// <summary>
         /// Creates a test actions object initially configured with empty action chains
@@ -57,16 +50,7 @@ namespace Gallio.Framework.Pattern
         {
             beforeTestChain = new ActionChain<PatternTestState>();
             afterTestChain = new ActionChain<PatternTestState>();
-
-            beforeTestInstanceChain = new ActionChain<PatternTestInstanceState>();
-            initializeTestInstanceChain = new ActionChain<PatternTestInstanceState>();
-            setUpTestInstanceChain = new ActionChain<PatternTestInstanceState>();
-            executeTestInstanceChain = new ActionChain<PatternTestInstanceState>();
-            tearDownTestInstanceChain = new ActionChain<PatternTestInstanceState>();
-            disposeTestInstanceChain = new ActionChain<PatternTestInstanceState>();
-            afterTestInstanceChain = new ActionChain<PatternTestInstanceState>();
-
-            decorateChildTestChain = new ActionChain<PatternTestInstanceState, PatternTestActions>();
+            decorateTestInstanceChain = new ActionChain<PatternTestState, PatternTestInstanceActions>();
         }
 
         /// <summary>
@@ -83,7 +67,7 @@ namespace Gallio.Framework.Pattern
         /// </para>
         /// </summary>
         /// <param name="handler">The handler to decorate</param>
-        /// <returns></returns>
+        /// <returns>The decorated handler actions</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="handler"/> is null</exception>
         public static PatternTestActions CreateDecorator(IPatternTestHandler handler)
         {
@@ -91,19 +75,29 @@ namespace Gallio.Framework.Pattern
                 throw new ArgumentNullException("handler");
 
             PatternTestActions decorator = new PatternTestActions();
-            decorator.BeforeTestChain.Action = handler.BeforeTest;
-            decorator.AfterTestChain.Action = handler.AfterTest;
+            decorator.beforeTestChain.Action = handler.BeforeTest;
+            decorator.afterTestChain.Action = handler.AfterTest;
+            decorator.decorateTestInstanceChain.Action = handler.DecorateTestInstance;
 
-            decorator.BeforeTestInstanceChain.Action = handler.BeforeTestInstance;
-            decorator.InitializeTestInstanceChain.Action = handler.InitializeTestInstance;
-            decorator.SetUpTestInstanceChain.Action = handler.SetUpTestInstance;
-            decorator.ExecuteTestInstanceChain.Action = handler.ExecuteTestInstance;
-            decorator.TearDownTestInstanceChain.Action = handler.TearDownTestInstance;
-            decorator.DisposeTestInstanceChain.Action = handler.DisposeTestInstance;
-            decorator.AfterTestInstanceChain.Action = handler.AfterTestInstance;
-
-            decorator.DecorateChildTestChain.Action = handler.DecorateChildTest;
+            decorator.testInstanceActions = PatternTestInstanceActions.CreateDecorator(handler.TestInstanceHandler);
             return decorator;
+        }
+
+        /// <summary>
+        /// Gets the test instance actions that describes the lifecycle of a test instance.
+        /// </summary>
+        /// <remarks>
+        /// These actions may be further decorated on a per-instance basis using
+        /// <see cref="DecorateTestInstanceChain" />.
+        /// </remarks>
+        public PatternTestInstanceActions TestInstanceActions
+        {
+            get
+            {
+                if (testInstanceActions == null)
+                    testInstanceActions = new PatternTestInstanceActions();
+                return testInstanceActions;
+            }
         }
 
         /// <summary>
@@ -125,75 +119,18 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestHandler.BeforeTestInstance" /> actions.
+        /// Gets the chain of <see cref="IPatternTestHandler.DecorateTestInstance" /> actions.
         /// </summary>
-        /// <seealso cref="IPatternTestHandler.BeforeTestInstance"/> for details about the semantics of these actions.
-        public ActionChain<PatternTestInstanceState> BeforeTestInstanceChain
+        /// <seealso cref="IPatternTestHandler.DecorateTestInstance"/> for details about the semantics of these actions.
+        public ActionChain<PatternTestState, PatternTestInstanceActions> DecorateTestInstanceChain
         {
-            get { return beforeTestInstanceChain; }
+            get { return decorateTestInstanceChain; }
         }
 
-        /// <summary>
-        /// Gets the chain of <see cref="IPatternTestHandler.InitializeTestInstance" /> actions.
-        /// </summary>
-        /// <seealso cref="IPatternTestHandler.InitializeTestInstance"/> for details about the semantics of these actions.
-        public ActionChain<PatternTestInstanceState> InitializeTestInstanceChain
+        /// <inheritdoc />
+        public IPatternTestInstanceHandler TestInstanceHandler
         {
-            get { return initializeTestInstanceChain; }
-        }
-
-        /// <summary>
-        /// Gets the chain of <see cref="IPatternTestHandler.SetUpTestInstance" /> actions.
-        /// </summary>
-        /// <seealso cref="IPatternTestHandler.SetUpTestInstance"/> for details about the semantics of these actions.
-        public ActionChain<PatternTestInstanceState> SetUpTestInstanceChain
-        {
-            get { return setUpTestInstanceChain; }
-        }
-
-        /// <summary>
-        /// Gets the chain of <see cref="IPatternTestHandler.ExecuteTestInstance" /> actions.
-        /// </summary>
-        /// <seealso cref="IPatternTestHandler.ExecuteTestInstance"/> for details about the semantics of these actions.
-        public ActionChain<PatternTestInstanceState> ExecuteTestInstanceChain
-        {
-            get { return executeTestInstanceChain; }
-        }
-
-        /// <summary>
-        /// Gets the chain of <see cref="IPatternTestHandler.TearDownTestInstance" /> actions.
-        /// </summary>
-        /// <seealso cref="IPatternTestHandler.TearDownTestInstance"/> for details about the semantics of these actions.
-        public ActionChain<PatternTestInstanceState> TearDownTestInstanceChain
-        {
-            get { return tearDownTestInstanceChain; }
-        }
-
-        /// <summary>
-        /// Gets the chain of <see cref="IPatternTestHandler.DisposeTestInstance" /> actions.
-        /// </summary>
-        /// <seealso cref="IPatternTestHandler.DisposeTestInstance"/> for details about the semantics of these actions.
-        public ActionChain<PatternTestInstanceState> DisposeTestInstanceChain
-        {
-            get { return disposeTestInstanceChain; }
-        }
-
-        /// <summary>
-        /// Gets the chain of <see cref="IPatternTestHandler.AfterTestInstance" /> actions.
-        /// </summary>
-        /// <seealso cref="IPatternTestHandler.AfterTestInstance"/> for details about the semantics of these actions.
-        public ActionChain<PatternTestInstanceState> AfterTestInstanceChain
-        {
-            get { return afterTestInstanceChain; }
-        }
-
-        /// <summary>
-        /// Gets the chain of <see cref="IPatternTestHandler.DecorateChildTest" /> actions.
-        /// </summary>
-        /// <seealso cref="IPatternTestHandler.DecorateChildTest"/> for details about the semantics of these actions.
-        public ActionChain<PatternTestInstanceState, PatternTestActions> DecorateChildTestChain
-        {
-            get { return decorateChildTestChain; }
+            get { return TestInstanceActions; }
         }
 
         /// <inheritdoc />
@@ -209,51 +146,9 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public void BeforeTestInstance(PatternTestInstanceState testInstanceState)
+        public void DecorateTestInstance(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
         {
-            beforeTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        public void InitializeTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            initializeTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        public void SetUpTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            setUpTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        public void ExecuteTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            executeTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        public void TearDownTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            tearDownTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        public void DisposeTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            disposeTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        public void AfterTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            afterTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        public void DecorateChildTest(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildActions)
-        {
-            decorateChildTestChain.Action(testInstanceState, decoratedChildActions);
+            decorateTestInstanceChain.Action(testState, decoratedTestInstanceActions);
         }
     }
 }

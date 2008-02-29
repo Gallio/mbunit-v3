@@ -73,6 +73,7 @@
     <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
     <Compile Include="Framework\DependsOnAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
+    <Compile Include="Framework\FixtureInitializerAttribute.cs" />
     <Compile Include="Framework\PendingAttribute.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Framework\StringAssert.cs" />
     <Compile Include="Framework\TearDownAttribute.cs" />
     <Compile Include="Framework\TestAttribute.cs" />
+    <Compile Include="Framework\TestDecoratorAttribute.cs" />
     <Compile Include="Framework\TestFixtureAttribute.cs" />
     <Compile Include="Framework\FixtureSetUpAttribute.cs" />
     <Compile Include="Framework\FixtureTearDownAttribute.cs" />

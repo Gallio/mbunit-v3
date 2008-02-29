@@ -181,7 +181,7 @@ namespace Gallio.Reflection
         /// The list may contain <see cref="IGenericParameterInfo"/> objects when
         /// no type has yet been bound to a certain generic parameter slots.
         /// </summary>
-        /// <returns>The generic arguments</returns>
+        /// <returns>The generic arguments, or an empty list if there are none</returns>
         IList<ITypeInfo> GenericArguments { get; }
 
         /// <summary>

@@ -60,7 +60,6 @@ namespace Gallio.Tests.Framework.Data
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
-                    Assert.AreEqual(typeof(string), binding.Type);
                     Assert.AreEqual("untranslatedPath", binding.Path);
                     Assert.AreEqual(5, binding.Index);
                     return false;
@@ -72,7 +71,7 @@ namespace Gallio.Tests.Framework.Data
                 DataSource source = new DataSource("theName");
                 source.AddDataSet(dataSet);
 
-                Assert.IsFalse(source.CanBind(new SimpleDataBinding(typeof(string), "untranslatedPath", 5)));
+                Assert.IsFalse(source.CanBind(new SimpleDataBinding(5, "untranslatedPath")));
             }
         }
 
@@ -87,7 +86,6 @@ namespace Gallio.Tests.Framework.Data
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
-                    Assert.AreEqual(typeof(int), binding.Type);
                     Assert.AreEqual("translatedPath", binding.Path);
                     Assert.AreEqual(2, binding.Index);
                     return true;
@@ -95,7 +93,6 @@ namespace Gallio.Tests.Framework.Data
 
                 Expect.Call(dataSet.CanBind(null)).IgnoreArguments().Do((CanBindDelegate)delegate(DataBinding binding)
                 {
-                    Assert.AreEqual(typeof(string), binding.Type);
                     Assert.AreEqual("untranslatedPath", binding.Path);
                     Assert.AreEqual(5, binding.Index);
                     return false;
@@ -108,8 +105,8 @@ namespace Gallio.Tests.Framework.Data
                 source.AddIndexAlias("translatedPath", 2);
                 source.AddDataSet(dataSet);
 
-                Assert.IsTrue(source.CanBind(new SimpleDataBinding(typeof(int), "translatedPath", 5)));
-                Assert.IsFalse(source.CanBind(new SimpleDataBinding(typeof(string), "untranslatedPath", 5)));
+                Assert.IsTrue(source.CanBind(new SimpleDataBinding(5, "translatedPath")));
+                Assert.IsFalse(source.CanBind(new SimpleDataBinding(5, "untranslatedPath")));
             }
         }
 
@@ -132,7 +129,6 @@ namespace Gallio.Tests.Framework.Data
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
-                    Assert.AreEqual(typeof(string), bindingList[0].Type);
                     Assert.AreEqual("untranslatedPath", bindingList[0].Path);
                     Assert.AreEqual(1, bindingList[0].Index);
 
@@ -146,7 +142,7 @@ namespace Gallio.Tests.Framework.Data
                 source.AddDataSet(dataSet);
 
                 DataBinding[] bindings = new DataBinding[] {
-                    new SimpleDataBinding(typeof(string), "untranslatedPath", 1)
+                    new SimpleDataBinding(1, "untranslatedPath")
                 };
 
                 List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings, true));
@@ -177,11 +173,9 @@ namespace Gallio.Tests.Framework.Data
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
-                    Assert.AreEqual(typeof(string), bindingList[0].Type);
                     Assert.AreEqual("translatedPath", bindingList[0].Path);
                     Assert.AreEqual(2, bindingList[0].Index);
 
-                    Assert.AreEqual(typeof(string), bindingList[1].Type);
                     Assert.AreEqual("untranslatedPath", bindingList[1].Path);
                     Assert.AreEqual(1, bindingList[1].Index);
 
@@ -196,8 +190,8 @@ namespace Gallio.Tests.Framework.Data
                 source.AddDataSet(dataSet);
 
                 DataBinding[] bindings = new DataBinding[] {
-                    new SimpleDataBinding(typeof(string), "translatedPath", 5),
-                    new SimpleDataBinding(typeof(string), "untranslatedPath", 1)
+                    new SimpleDataBinding(5, "translatedPath"),
+                    new SimpleDataBinding(1, "untranslatedPath")
                 };
 
                 List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings, true));

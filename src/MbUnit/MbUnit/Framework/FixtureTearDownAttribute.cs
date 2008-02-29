@@ -37,10 +37,6 @@ namespace MbUnit.Framework
     /// fixture class and must not have any parameters.  The method may be static.
     /// </para>
     /// </remarks>
-    /// <todo author="jeff">
-    /// We should support explicit ordering of set up attributes based on
-    /// an Order property similar to decorators.
-    /// </todo>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class FixtureTearDownAttribute : ContributionPatternAttribute
     {
@@ -49,7 +45,7 @@ namespace MbUnit.Framework
         {
             IMethodInfo method = (IMethodInfo)codeElement;
 
-            containingTestBuilder.Test.Actions.TearDownTestInstanceChain.After(
+            containingTestBuilder.Test.TestInstanceActions.TearDownTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     testInstanceState.InvokeFixtureMethod(method, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance);

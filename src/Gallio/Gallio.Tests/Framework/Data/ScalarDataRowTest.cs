@@ -63,7 +63,7 @@ namespace Gallio.Tests.Framework.Data
         public void GetValueReturnsValueOnlyIfTheBindingIndexIsZero(string path, object index)
         {
             ScalarDataRow<object> row = new ScalarDataRow<object>(42, null, false);
-            object value = row.GetValue(new SimpleDataBinding(typeof(string), path, (int?)index));
+            object value = row.GetValue(new SimpleDataBinding((int?)index, path));
 
             Assert.AreEqual(42, value);
         }
