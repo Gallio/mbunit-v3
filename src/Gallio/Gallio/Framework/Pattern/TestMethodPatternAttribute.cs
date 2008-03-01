@@ -122,9 +122,11 @@ namespace Gallio.Framework.Pattern
         /// The default behavior for a <see cref="TestMethodPatternAttribute" />
         /// is to configure the test actions as follows:
         /// <list type="bullet">
-        /// <item><see cref="IPatternTestInstanceHandler.ExecuteTestInstance" />: Invoke the
-        /// <paramref name="method"/> using the values that have been set for its parameter slots.
-        /// <seealso cref="PatternTestInstanceState.GetTestMethodInvocationSpec"/></item>
+        /// <item><see cref="IPatternTestInstanceHandler.BeforeTestInstance" />: Set the
+        /// test instance name, <see cref="PatternTestInstanceState.TestMethod" /> and
+        /// <see cref="PatternTestInstanceState.TestArguments" /> based on any values bound
+        /// to the test method's generic parameter and method parameter slots.</item>
+        /// <item><see cref="IPatternTestInstanceHandler.ExecuteTestInstance" />: Invoke the method.</item>
         /// </list>
         /// </para>
         /// <para>

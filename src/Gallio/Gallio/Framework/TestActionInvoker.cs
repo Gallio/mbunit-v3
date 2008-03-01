@@ -22,10 +22,10 @@ using Gallio.Utilities;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// The <see cref="TestInvoker" /> provides methods for safely running
+    /// The <see cref="TestActionInvoker" /> provides methods for safely running
     /// actions as part of tests.
     /// </summary>
-    public static class TestInvoker
+    public static class TestActionInvoker
     {
         /// <summary>
         /// Runs a particular action.  If the action throws an exception, this method

@@ -364,7 +364,7 @@ namespace Gallio.Framework.Pattern
         private static TestOutcome InvokeActionWithOutcome(Action action, string description,
             string expectedExceptionType)
         {
-            return TestInvoker.Run(action, description, expectedExceptionType);
+            return TestActionInvoker.Run(action, description, expectedExceptionType);
         }
     }
 }

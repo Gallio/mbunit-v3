@@ -27,7 +27,7 @@ namespace Gallio.Framework.Pattern
     /// </para>
     /// <para>
     /// Subclasses of <see cref="IPattern" /> define simpler interfaces for implementing
-    /// the semantics of common types of MbUnit attributes such as test factories, decorators,
+    /// the semantics of common types of attributes such as test factories, decorators,
     /// and data providers.  Refer to the documentation of each subclass for details on its use.
     /// </para>
     /// </summary>

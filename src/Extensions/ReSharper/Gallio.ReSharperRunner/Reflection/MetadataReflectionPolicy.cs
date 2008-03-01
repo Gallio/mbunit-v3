@@ -25,6 +25,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.Shell;
+using System.IO;
 
 namespace Gallio.ReSharperRunner.Reflection
 {
@@ -172,7 +173,25 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             if (metadataLoader != null)
             {
-                IMetadataAssembly assembly = metadataLoader.Load(assemblyName, delegate { return true; });
+                IMetadataAssembly assembly = metadataLoader.Load(assemblyName, DummyLoadReferencePredicate);
+
+                if (assembly == null && contextProject != null)
+                {
+                    IAssemblyReference reference = GenericUtils.Find(contextProject.GetAssemblyReferences(),
+                        delegate(IAssemblyReference candidate)
+                        {
+                            return candidate.AssemblyIdentity != null
+                                && candidate.AssemblyIdentity.AssemblyName.FullName == assemblyName.FullName;
+                        });
+
+                    if (reference != null && reference.HintLocation != null)
+                    {
+                        string hintLocation = reference.HintLocation.FullPath;
+                        if (File.Exists(hintLocation))
+                            assembly = metadataLoader.LoadFrom(hintLocation, DummyLoadReferencePredicate);
+                    }
+                }
+
                 if (assembly != null)
                     return assembly;
             }
@@ -182,14 +201,21 @@ namespace Gallio.ReSharperRunner.Reflection
 
             return null;
         }
+
+        private static bool DummyLoadReferencePredicate(AssemblyName ignored)
+        {
+            return true;
+        }
         #endregion
 
         #region Attributes
         protected override StaticConstructorWrapper GetAttributeConstructor(StaticAttributeWrapper attribute)
         {
             IMetadataCustomAttribute attributeHandle = (IMetadataCustomAttribute)attribute.Handle;
-            return new StaticConstructorWrapper(this, attributeHandle.UsedConstructor,
-                MakeDeclaredTypeWithoutSubstitution(attributeHandle.UsedConstructor.DeclaringType));
+            IMetadataMethod usedConstructor = ResolveMetadataMethodHack(attributeHandle.UsedConstructor);
+
+            return new StaticConstructorWrapper(this, usedConstructor,
+                MakeDeclaredTypeWithoutSubstitution(usedConstructor.DeclaringType));
         }
 
         protected override object[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
@@ -535,7 +561,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
-            return Wrap(GetTypeAssemblyHandle(typeHandle));
+            return Wrap(GetMetadataAssemblyHack(typeHandle));
         }
 
         protected override string GetTypeNamespace(StaticDeclaredTypeWrapper type)
@@ -640,9 +666,9 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(IMetadataTypeInfo typeInfoHandle, IMetadataType[] argumentTypeHandles)
         {
-            typeInfoHandle = ResolveTypeHandle(typeInfoHandle);
+            typeInfoHandle = ResolveMetadataTypeInfoHack(typeInfoHandle);
 
-            IMetadataTypeInfo declaringTypeInfoHandle = ResolveTypeHandle(typeInfoHandle.DeclaringType);
+            IMetadataTypeInfo declaringTypeInfoHandle = ResolveMetadataTypeInfoHack(typeInfoHandle.DeclaringType);
             StaticDeclaredTypeWrapper type;
             if (declaringTypeInfoHandle != null)
             {
@@ -697,34 +723,6 @@ namespace Gallio.ReSharperRunner.Reflection
                 StaticMethodWrapper declaringMethod = new StaticMethodWrapper(this, parameterHandle.MethodOwner, declaringType, declaringType.Substitution);
                 return StaticGenericParameterWrapper.CreateGenericMethodParameter(this, parameterHandle, declaringMethod);
             }
-        }
-
-        private IMetadataAssembly GetTypeAssemblyHandle(IMetadataTypeInfo typeHandle)
-        {
-            IMetadataAssembly assembly = GetMetadataAssemblyHack(typeHandle);
-            if (assembly != null)
-                return assembly;
-
-            AssemblyName assemblyName = typeHandle.DeclaringAssemblyName;
-            if (assemblyName != null)
-            {
-                assembly = LoadMetadataAssembly(assemblyName, false);
-                if (assembly != null)
-                    return assembly;
-            }
-
-            // Note: ReSharper can sometimes return unresolved types (which have a null declaring assembly name).
-            //       We can't really do much with these except perhaps to guess the assebmly.
-            throw new NotSupportedException(String.Format(
-                "Cannot determine the assembly to which type '{0}' belongs because it is unresolved.", typeHandle.FullyQualifiedName));
-        }
-
-        private IMetadataTypeInfo ResolveTypeHandle(IMetadataTypeInfo typeHandle)
-        {
-            if (typeHandle != null && typeHandle.Token.Value == 0)
-                return GetTypeAssemblyHandle(typeHandle).GetTypeInfoFromQualifiedName(typeHandle.FullyQualifiedName, false);
-
-            return typeHandle;
         }
         #endregion
 
@@ -949,21 +947,92 @@ namespace Gallio.ReSharperRunner.Reflection
         #endregion
 
         #region HACKS
-        private static IMetadataAssembly GetMetadataAssemblyHack(IMetadataTypeInfo typeInfo)
+        private IMetadataAssembly GetMetadataAssemblyHack(IMetadataTypeInfo typeInfo)
         {
             // HACK: This type contains a reference to its assembly but it
             //       does not expose it in a useful manner.
             FieldInfo myAssemblyField = typeInfo.GetType().GetField(@"myAssembly", BindingFlags.Instance | BindingFlags.NonPublic);
-            return myAssemblyField != null ? (IMetadataAssembly)myAssemblyField.GetValue(typeInfo) : null;
+
+            IMetadataAssembly assembly = myAssemblyField != null ? (IMetadataAssembly)myAssemblyField.GetValue(typeInfo) : null;
+            if (assembly != null)
+                return assembly;
+
+            AssemblyName assemblyName = typeInfo.DeclaringAssemblyName;
+
+            // Note: ReSharper can sometimes return unresolved types (which have a null declaring assembly name).
+            //       We can't really do much with these except to guess the assembly if possible.
+            if (assemblyName == null)
+            {
+                Type type = Type.GetType(typeInfo.FullyQualifiedName);
+                if (type != null)
+                    assemblyName = type.Assembly.GetName();
+            }
+
+            if (assemblyName != null)
+            {
+                assembly = LoadMetadataAssembly(assemblyName, false);
+                if (assembly != null)
+                    return assembly;
+            }
+
+            throw new NotSupportedException(String.Format(
+                "Cannot determine the assembly to which type '{0}' belongs because it is unresolved (ReSharper did not supply the assembly name information).", typeInfo.FullyQualifiedName));
         }
 
-        private static MetadataLoader GetMetadataLoaderHack(IMetadataAssembly assembly)
+        private MetadataLoader GetMetadataLoaderHack(IMetadataAssembly assembly)
         {
             // HACK: The assembly contains a reference back to its loader
             //       which is useful for loading referenced assemblies but it
-            //       does not expose it in a useful manner.
+            //       does not expose it.
             PropertyInfo loaderProperty = assembly.GetType().GetProperty(@"Loader", BindingFlags.Instance | BindingFlags.NonPublic);
             return loaderProperty != null ? (MetadataLoader)loaderProperty.GetValue(assembly, null) : null;
+        }
+
+        private IMetadataTypeInfo ResolveMetadataTypeInfoHack(IMetadataTypeInfo typeInfo)
+        {
+            if (typeInfo == null || typeInfo.GetType().Name != "UnresolvedTypeInfo")
+                return typeInfo;
+
+            IMetadataTypeInfo resolvedTypeInfo = GetMetadataAssemblyHack(typeInfo).GetTypeInfoFromQualifiedName(typeInfo.FullyQualifiedName, false);
+            if (resolvedTypeInfo != null)
+                return resolvedTypeInfo;
+
+            throw new NotSupportedException(String.Format("Could not resolve type '{0}'.", typeInfo.FullyQualifiedName));
+        }
+
+        private IMetadataMethod ResolveMetadataMethodHack(IMetadataMethod method)
+        {
+            if (method == null || method.GetType().Name != "UnresolvedMethod")
+                return method;
+
+            IMetadataParameter[] methodParameters = method.Parameters;
+            ITypeInfo[] methodParameterTypes = MakeParameterTypes(methodParameters);
+            string methodName = method.Name;
+
+            IMetadataTypeInfo resolvedTypeInfo = ResolveMetadataTypeInfoHack(method.DeclaringType);
+            foreach (IMetadataMethod resolvedMethod in resolvedTypeInfo.GetMethods())
+            {
+                if (methodName != resolvedMethod.Name)
+                    continue;
+
+                IMetadataParameter[] resolvedMethodParameters = resolvedMethod.Parameters;
+                if (methodParameters.Length != resolvedMethodParameters.Length)
+                    continue;
+
+                ITypeInfo[] resolvedMethodParameterTypes = MakeParameterTypes(resolvedMethodParameters);
+                if (GenericUtils.ElementsEqual(methodParameterTypes, resolvedMethodParameterTypes))
+                    return resolvedMethod;
+            }
+
+            throw new NotSupportedException(String.Format("Could not resolve method '{0}'.", method.Name));
+        }
+
+        private ITypeInfo[] MakeParameterTypes(IMetadataParameter[] parameters)
+        {
+            return GenericUtils.ConvertAllToArray<IMetadataParameter, ITypeInfo>(parameters, delegate(IMetadataParameter parameter)
+            {
+                return MakeType(parameter.Type);
+            });
         }
         #endregion
 

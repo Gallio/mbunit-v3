@@ -487,7 +487,7 @@ namespace Gallio.Framework
             ITestContext childContext = inner.StartChildStep(name, codeElement);
 
             childContext.LifecyclePhase = LifecyclePhases.Execute;
-            TestOutcome outcome = TestInvoker.Run(action, null, null);
+            TestOutcome outcome = TestActionInvoker.Run(action, null, null);
 
             childContext.FinishStep(outcome, null);
 

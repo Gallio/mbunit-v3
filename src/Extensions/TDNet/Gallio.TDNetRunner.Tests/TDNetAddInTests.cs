@@ -54,7 +54,6 @@ namespace Gallio.TDNetRunner.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RunAssembly_NullAssembly()
         {
-
             StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
             tr.RunAssembly(stubbedTestListener, null);
         }

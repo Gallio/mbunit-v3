@@ -163,9 +163,11 @@ namespace Gallio.Framework.Pattern
         /// The default behavior for a <see cref="TestTypePatternAttribute" />
         /// is to configure the test actions as follows:
         /// <list type="bullet">
+        /// <item><see cref="IPatternTestInstanceHandler.BeforeTestInstance" />: Set the
+        /// fixture instance name and <see cref="PatternTestInstanceState.FixtureType" />.</item>
         /// <item><see cref="IPatternTestInstanceHandler.InitializeTestInstance" />: Create
         /// the fixture instance and set the <see cref="PatternTestInstanceState.FixtureInstance" />
-        /// and <see cref="PatternTestInstanceState.FixtureType" /> properties accordingly.</item>
+        /// property accordingly.</item>
         /// <item><see cref="IPatternTestInstanceHandler.DisposeTestInstance" />: If the fixture type
         /// implements <see cref="IDisposable" />, disposes the fixture instance.</item>
         /// <item><see cref="IPatternTestInstanceHandler.DecorateChildTest" />: Decorates the child's
@@ -210,7 +212,7 @@ namespace Gallio.Framework.Pattern
                     IDisposable dispose = testInstanceState.FixtureInstance as IDisposable;
                     if (dispose != null)
                     {
-                        TestInvoker.Run(delegate { dispose.Dispose(); }, "Dispose Fixture", null);
+                        TestActionInvoker.Run(delegate { dispose.Dispose(); }, "Dispose Fixture", null);
                     }
                 });
 

@@ -50,6 +50,7 @@
     <ProjectReference Include="..\Microsoft.VisualStudio.QualityTools.UnitTestFramework.Stub\Microsoft.VisualStudio.QualityTools.UnitTestFramework.Stub.csproj">
       <Project>{595A9506-E4B6-4FCA-AB58-875AF54052F5}</Project>
       <Name>Microsoft.VisualStudio.QualityTools.UnitTestFramework.Stub</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
