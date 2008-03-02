@@ -51,9 +51,16 @@ namespace Gallio.Logging
         /// Gets the current log writer.
         /// </summary>
         /// <returns>The execution log, never null</returns>
+        /// <exception cref="InvalidOperationException">Thrown if there is no current log writer</exception>
         public static LogWriter Writer
         {
-            get { return TestContextTrackerAccessor.GetInstance().CurrentContext.LogWriter; }
+            get
+            {
+                ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
+                if (context == null)
+                    throw new InvalidOperationException("There is no test context currently available.  Consequently there is no current log writer.");
+                return context.LogWriter;
+            }
         }
         #endregion
 
