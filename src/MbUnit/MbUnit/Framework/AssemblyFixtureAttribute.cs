@@ -79,14 +79,14 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void SetTestSemantics(PatternTest test, ITypeInfo type)
         {
-            base.SetTestSemantics(test, type);
-
-            test.TestActions.TestInstanceActions.BeforeTestInstanceChain.Before(
+            test.TestActions.TestInstanceActions.BeforeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     if (testInstanceState.FixtureType != null)
                         throw new ModelException("There appear to be multiple [AssemblyFixture] attributes within the assembly, or some other attribute has already defined a fixture for the assembly.");
                 });
+
+            base.SetTestSemantics(test, type);
         }
     }
 }

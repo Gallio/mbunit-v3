@@ -48,7 +48,7 @@ namespace Gallio.ReSharperRunner
         public string GetAssemblyLocation()
         {
             IAssemblyInfo assembly = ReflectionUtils.GetAssembly(test.CodeElement);
-            return  assembly != null ? assembly.Path : null;
+            return assembly != null ? assembly.Path : null;
         }
 
         public ITest Test

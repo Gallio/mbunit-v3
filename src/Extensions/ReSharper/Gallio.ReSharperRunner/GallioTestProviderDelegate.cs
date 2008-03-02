@@ -127,29 +127,52 @@ namespace Gallio.ReSharperRunner
         public IList<UnitTestTask> GetTaskSequence(UnitTestElement element, IList<UnitTestElement> explicitElements)
         {
             GallioTestElement topElement = (GallioTestElement)element;
-            if (!topElement.Test.IsTestCase)
-                return Collections.EmptyArray<UnitTestTask>.Instance;
-
             List<UnitTestTask> tasks = new List<UnitTestTask>();
 
             // Add the run task.  Must always be first.
             tasks.Add(new UnitTestTask(null, GallioTestRunTask.Instance));
 
+            // Add the test case branch.
+            AddTestTasksFromRootToLeaf(tasks, topElement);
+
+            // Now that we're done with the critical parts of the task tree, we can add other
+            // arbitrary elements.  We don't care about the structure of the task tree beyond this depth.
+
             // Add the assembly location.
             tasks.Add(new UnitTestTask(null, new GallioTestAssemblyTask(topElement.GetAssemblyLocation())));
 
-            // Add the test case.
-            tasks.Add(new UnitTestTask(topElement, new GallioTestItemTask(topElement.Test.Id)));
-
-            // Now add each explicit test id directly under the run task so they do not form chains
-            // under other tasks which can produce strange results in the task execution node tree.
+            // Add explicit element markers.
             foreach (GallioTestElement explicitElement in explicitElements)
-            {
-                tasks.Add(new UnitTestTask(null, GallioTestRunTask.Instance));
                 tasks.Add(new UnitTestTask(null, new GallioTestExplicitTask(explicitElement.Test.Id)));
-            }
 
             return tasks;
+        }
+
+        private static void AddTestTasksFromRootToLeaf(List<UnitTestTask> tasks, GallioTestElement element)
+        {
+            // This is disabled right now because R# does weird things with the test tree
+            // It introduces additional bogus top-level notes in the Unit Test Session.
+            //
+            // To reproduce:
+            //   Run a test by clicking on the Run Test action in the margin of a test editor.
+            //   Modify the test.
+            //   Switch to Projects and Namespaces view.
+            //   Then click Run All Tests from within the Unit Test Session.
+            //
+            // Notice:
+            //   The first time, all is well.
+            //   The second time, a new node for the test fixture's containing namespace is created at the top level.
+            //   so the fixture will appear twice, once under its project and once under the duplicate namespace.
+            /*
+            GallioTestElement parentElement = element.Parent as GallioTestElement;
+            if (parentElement != null)
+                AddTestTasksFromRootToLeaf(tasks, parentElement);
+             */
+
+            if (!element.Test.IsTestCase)
+                return; // workaround
+
+            tasks.Add(new UnitTestTask(element, new GallioTestItemTask(element.Test.Id)));
         }
 
         public int CompareUnitTestElements(UnitTestElement x, UnitTestElement y)

@@ -1083,7 +1083,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return project;
 
             IDeclaredElement declaredElement = GetDeclaredElement(element);
-            return declaredElement != null ? declaredElement.Module as IProject : null;
+            return declaredElement != null && declaredElement.IsValid() ? declaredElement.Module as IProject : null;
         }
         #endregion
 
