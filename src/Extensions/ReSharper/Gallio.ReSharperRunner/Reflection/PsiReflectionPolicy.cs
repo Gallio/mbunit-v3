@@ -254,7 +254,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 });
             }
 
-            // FIXME!
+            // FIXME! Don't know how to handle referenced assemblies for modules.
             return assembly.Resolve().GetReferencedAssemblies();
         }
 
@@ -668,6 +668,7 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IFunction functionHandle = (IFunction)function.Handle;
 
+            // FIXME: No way to determine VarArgs convention.
             CallingConventions flags = CallingConventions.Standard;
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, CallingConventions.HasThis, !functionHandle.IsStatic);
             return flags;

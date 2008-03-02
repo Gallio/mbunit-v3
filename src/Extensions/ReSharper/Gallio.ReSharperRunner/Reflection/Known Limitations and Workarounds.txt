@@ -1,0 +1,144 @@
+Metadata API:
+
+1. Need a way to get the MetadataLoader.
+
+Workaround:
+  Use reflection to grab the loader out of the assembly.
+
+Recommendation:
+  Provide the MetadataLoader to the UTE during ExploreAssembly.
+
+
+2. UnresolvedTypeInfo and UnresolvedMethodInfo objects are problematic.
+  It turns out that the reader API does not try to resolve MemberRefs across assemblies.
+  So in particular, if the UsedConstructor of an IMetadataAttribute is defined in another
+  assembly, I get an UnresolvedMethodInfo.
+
+Workaround:
+  Detect them using reflection tricks and resolve them manually by loading up
+  the right assembly and finding the appropriate object given the full type name, method
+  name and method signature.
+
+Recommendation:
+  Always resolve MemberRefs if possible.  Provide a mechanism for adding
+  fallback rules to a MetadataLoader or for detecting and resolving unresolved metadata
+  objects on demand.
+
+
+3. The MetadataLoader provided to the UTE during ExploreAssembly does not take into
+account non-copylocal assembly references.
+
+Workaround:
+  When we encounter an assembly reference we can't load, go looking at the
+  IAssemblyReferences of the IProject provided to the UTE during ExploreAssembly.
+  Use MetadataLoader.LoadFrom to get these additional references.
+
+Recommendation:
+  Add more paths to the MetadataLoader ahead of time so that anything that is referenced
+  by the test assembly project is accessible.  Include stuff in the GAC too, if possible.
+
+
+4. The UsedConstructor property of IMetadataAssembly can sometimes be null.  No clue why.
+
+Workaround:
+  Ignore such attributes.
+
+
+5. IMetadataAssembly.GetTypeFromQualifiedName returns an unresolved type instead of null
+  when it cannot find the type.
+
+Workaround:
+  Check for an unresolved type.
+  
+Recommendation:
+  Just return null, or find some better way to signal the fact that the type was not found.
+
+
+PSI API:
+
+1. There is no IDeclaredElement associated with a method return value.
+  Consequently the attributes for a return value are mixed in with those of the
+  method itself.
+  
+Workaround:
+  None.  Method return attributes may confuse the test runner as it builds
+  the test tree and find attributes applied to methods that really shouldn't be there
+  (but could have appeared on a return parameter).
+  
+Recommendation:
+  Should really add support for return values as distinct declared elements.
+  
+
+2. Generic parameter attributes are not supported.
+  I think they just disappear from the Psi model.
+
+Workaround:
+  None.  We will be unable to detect data binding to generic type and method parameters.
+  This could cause the test tree to be missing some information.  Probably harmless.
+  
+Recommendation:
+  Support attributes on generic parameters.
+
+
+3. Positional parameters of attributes with variable numbers of arguments do not
+  group the varargs values together into an array.
+
+Workaround:
+  Detect when the last parameter has IsParamArray then reshuffle the positional
+  parameters of the attribute such that all of the final parameter values become
+  members of an array.
+  
+Recommendation:
+  This might actually be reasonable behavior for R# but perhaps it can be improved a little.
+  
+
+4. There is no way to just enumerate all named parameter values for attributes.
+
+Workaround:
+  Enumerate all fields and properties of the attribute type and call
+  IAttributeInstance.NamedParameter for each one to get its value.
+  
+Recommendation:
+  Would be good to expose the collection of properties and fields for which
+  values have been provided.  The IAttributeInstance implementation already
+  knows this.
+
+
+5. Cannot obtain arrays of constants from an IAttributeInstance.
+  I really have no idea how they're represented as ConstantValue2 objects.
+
+Workaround:
+  None known.  Possibly I'm just missing something obvious.
+  
+  
+6. IFunction.HidePolicy sometimes returns the wrong value when it should be HIDE_BY_SIGNATURE.
+  Not sure what causes this.  This is important for determining how method hiding
+  works during reflection.  In C# it should always be true, so it shouldn't be too
+  problematic for us there.
+
+Workaround:
+  Ignoring it.  Assume it's always true.
+
+Recommendation:
+  Ensure this property is set correctly.  It should probably always be HIDE_BY_SIGNATURE
+  except when importing from metadata.
+
+
+7. IFunction has no way to specify VarArgs calling convention.  This is mostly significant
+  for rederiving the calling conventions of C++ code that has been linked in.
+  
+Workaround:
+  Not supporting it.  Make a guess about calling conventions.
+  
+Recommendation:
+  When the IFunction has just been read from metadata, we could grab the calling conventions
+  from there.  Of course VarArgs doesn't really mean anything to C# so this might not be all that
+  useful to R#.
+  
+
+8. Finalizers don't seem to show up.
+  Not quite sure what's up here.  Might only affect types imported from metadata.
+  Needs more investigation.
+  
+Workaround:
+  Not supporting it.

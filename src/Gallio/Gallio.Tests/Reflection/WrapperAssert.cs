@@ -109,36 +109,59 @@ namespace Gallio.Tests.Reflection
             equivalenceCache = new MultiMap<object, object>();
         }
 
+        /// <summary>
+        /// Specifies whether the reflection API supports all of the weird quirky runtime
+        /// tricks the CLR plays with reflection like creating new methods out of
+        /// thin air.
+        /// </summary>
         public bool SupportsSpecialFeatures
         {
             set { supportsSpecialFeatures = value; }
         }
 
+        /// <summary>
+        /// Specifies whether the reflection API supports the SpecialName property for members.
+        /// </summary>
         public bool SupportsSpecialName
         {
             set { supportsSpecialName = value; }
         }
 
+        /// <summary>
+        /// Specifies whether the reflection API supports the CallingConventions property for methods.
+        /// </summary>
         public bool SupportsCallingConventions
         {
             set { supportsCallingConventions = value; }
         }
 
+        /// <summary>
+        /// Specifies whether the reflection API supports attributes on method return values.
+        /// </summary>
         public bool SupportsReturnAttributes
         {
             set { supportsReturnAttributes = value; }
         }
 
+        /// <summary>
+        /// Specifies whether the reflection API supports attributes on generic parameters.
+        /// </summary>
         public bool SupportsGenericParameterAttributes
         {
             set { supportsGenericParameterAttributes = value; }
         }
 
+        /// <summary>
+        /// Specifies whether the reflection API supports representing events as fields.
+        /// </summary>
         public bool SupportsEventFields
         {
             set { supportsEventFields = value; }
         }
 
+        /// <summary>
+        /// Specifies whether the reflection API supports finalizer methods.
+        /// </summary>
         public bool SupportsFinalizers
         {
             set { supportsFinalizers = value; }
