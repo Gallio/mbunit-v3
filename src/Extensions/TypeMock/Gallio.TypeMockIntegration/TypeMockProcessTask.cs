@@ -42,13 +42,9 @@ namespace Gallio.TypeMockIntegration
         /// <inheritdoc />
         protected override Process StartProcess(ProcessStartInfo startInfo)
         {
-            Process process = new Process();
-            process.StartInfo = startInfo;
-            TypeMockProcess.PrepareTypeMockProcess(process).Start();
+            TypeMockProcess process = new TypeMockProcess(startInfo, false);
+            process.Start();
             return process;
-
-            // FIXME: Can't use this code because TypeMockProcess.Start() calls WaitForExit().
-            //return TypeMockProcess.Start(startInfo);
         }
     }
 }
