@@ -16,7 +16,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using Gallio;
 using Gallio.Utilities;
 
@@ -26,6 +25,11 @@ namespace Gallio.Hosting.ConsoleSupport
     /// <para>
     /// An implementation of <see cref="IRichConsole" /> that targets the
     /// native <see cref="Console" />.
+    /// </para>
+    /// <para>
+    /// This implementation offers protection against redirection of the <see cref="Console.Out" />
+    /// and <see cref="Console.Error" /> streams.  This object will continue to refer to the
+    /// standard output and error streams even if they are redirected after its initialization.
     /// </para>
     /// </summary>
     public sealed class NativeConsole : IRichConsole
@@ -46,7 +50,11 @@ namespace Gallio.Hosting.ConsoleSupport
 
         private static readonly NativeConsole instance = new NativeConsole();
 
+        private readonly TextWriter standardOutput;
+        private readonly TextWriter standardError;
+
         private readonly object syncRoot = new object();
+
         private bool isCancelationEnabled;
 
         private bool isCanceled;
@@ -63,6 +71,12 @@ namespace Gallio.Hosting.ConsoleSupport
 
         private NativeConsole()
         {
+            // FIXME: Assuming that the NativeConsole gets created before any output redirection occurs.
+            //        If redirection has occurred, then we would need to use Console.OpenStandardOutput
+            //        and Console.OpenStandardError to recover the original streams.  However, this is
+            //        not an issue at this time.
+            standardOutput = Console.Out;
+            standardError = Console.Error;
         }
 
         /// <summary>
@@ -182,13 +196,13 @@ namespace Gallio.Hosting.ConsoleSupport
         /// <inheritdoc />
         public TextWriter Error
         {
-            get { return Console.Error; }
+            get { return standardError; }
         }
 
         /// <inheritdoc />
         public TextWriter Out
         {
-            get { return Console.Out; }
+            get { return standardOutput; }
         }
 
         /// <inheritdoc />
@@ -281,25 +295,25 @@ namespace Gallio.Hosting.ConsoleSupport
         /// <inheritdoc />
         public void Write(char c)
         {
-            Console.Write(c);
+            standardOutput.Write(c);
         }
 
         /// <inheritdoc />
         public void Write(string str)
         {
-            Console.Write(str);
+            standardOutput.Write(str);
         }
 
         /// <inheritdoc />
         public void WriteLine()
         {
-            Console.WriteLine();
+            standardOutput.WriteLine();
         }
 
         /// <inheritdoc />
         public void WriteLine(string str)
         {
-            Console.WriteLine(str);
+            standardOutput.WriteLine(str);
         }
 
         private void HandleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
