@@ -20,7 +20,6 @@ using System.Threading;
 using Gallio.Framework;
 using Gallio.Model.Execution;
 using MbUnit.Framework;
-using MbUnit.Framework.Concurrency;
 
 namespace Gallio.Tests.Model.Execution
 {
@@ -91,7 +90,7 @@ namespace Gallio.Tests.Model.Execution
             mgr.EnterContext(rootContext);
             Assert.AreSame(rootContext, mgr.CurrentContext);
 
-            TaskManager.StartThreadTask("A", delegate
+            Tasks.StartThreadTask("A", delegate
             {
                 Assert.AreSame(rootContext, mgr.CurrentContext);
 
@@ -99,7 +98,7 @@ namespace Gallio.Tests.Model.Execution
                 mgr.EnterContext(leafContext);
                 Assert.AreSame(leafContext, mgr.CurrentContext);
 
-                TaskManager.StartThreadTask("B", delegate
+                Tasks.StartThreadTask("B", delegate
                 {
                     Assert.AreSame(leafContext, mgr.CurrentContext);
 
@@ -113,7 +112,7 @@ namespace Gallio.Tests.Model.Execution
 
             Assert.AreSame(rootContext, mgr.CurrentContext);
 
-            TaskManager.JoinAndVerify(new TimeSpan(0, 0, 5));
+            Tasks.JoinAndVerify(new TimeSpan(0, 0, 5));
         }
 
         [Test]
@@ -187,12 +186,12 @@ namespace Gallio.Tests.Model.Execution
         {
             IDisposable cookie = mgr.EnterContext(new StubTestContext());
 
-            TaskManager.StartThreadTask("A different thread.", delegate
+            Tasks.StartThreadTask("A different thread.", delegate
             {
                 InterimAssert.Throws<InvalidOperationException>(delegate { cookie.Dispose(); });
             });
 
-            TaskManager.JoinAndVerify(new TimeSpan(0, 0, 15));
+            Tasks.JoinAndVerify(new TimeSpan(0, 0, 15));
         }
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using Gallio.Model.Execution;
 using Gallio.Logging;
 
@@ -25,8 +26,9 @@ namespace Gallio.Model.Execution
     /// </summary>
     public sealed class TestListenerLogWriter : TrackingLogWriter
     {
+        private readonly ReaderWriterLock rwLock = new ReaderWriterLock();
         private readonly string stepId;
-        private readonly ITestListener listener;
+        private ITestListener listener;
 
         /// <summary>
         /// Creates a log writer.
@@ -47,17 +49,32 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                rwLock.AcquireWriterLock(Timeout.Infinite);
+
+                base.Dispose(disposing);
+                listener = null;
+            }
+            finally
+            {
+                if (rwLock.IsWriterLockHeld)
+                    rwLock.ReleaseWriterLock();
+            }
+        }
+
+        /// <inheritdoc />
         protected override void AttachImpl(Attachment attachment)
         {
-            lock (this)
+            DoWithListener(delegate(ITestListener listener)
             {
-                ThrowIfClosed();
-
                 if (!TrackAttachment(attachment))
                     return;
-            }
 
-            listener.NotifyLogEvent(LogEventArgs.CreateAttachEvent(stepId, attachment));
+                listener.NotifyLogEvent(LogEventArgs.CreateAttachEvent(stepId, attachment));
+            });
         }
 
         /// <inheritdoc />
@@ -65,6 +82,22 @@ namespace Gallio.Model.Execution
         {
             ThrowIfClosed();
             return new TestEventLogStreamWriter(this, streamName);
+        }
+
+        private void DoWithListener(Action<ITestListener> action)
+        {
+            try
+            {
+                rwLock.AcquireReaderLock(Timeout.Infinite);
+
+                ThrowIfClosed();
+                action(listener);
+            }
+            finally
+            {
+                if (rwLock.IsReaderLockHeld)
+                    rwLock.ReleaseReaderLock();
+            }
         }
 
         private sealed class TestEventLogStreamWriter : LogStreamWriter
@@ -79,44 +112,51 @@ namespace Gallio.Model.Execution
 
             protected override void WriteImpl(string text)
             {
-                logWriter.ThrowIfClosed();
-                logWriter.listener.NotifyLogEvent(LogEventArgs.CreateWriteEvent(logWriter.stepId, StreamName, text));
+                logWriter.DoWithListener(delegate(ITestListener listener)
+                {
+                    listener.NotifyLogEvent(LogEventArgs.CreateWriteEvent(logWriter.stepId, StreamName, text));
+                });
             }
 
             protected override void BeginSectionImpl(string sectionName)
             {
-                logWriter.ThrowIfClosed();
-                logWriter.listener.NotifyLogEvent(LogEventArgs.CreateBeginSectionEvent(logWriter.stepId, StreamName, sectionName));
+                logWriter.DoWithListener(delegate(ITestListener listener)
+                {
+                    listener.NotifyLogEvent(LogEventArgs.CreateBeginSectionEvent(logWriter.stepId, StreamName, sectionName));
+                });
             }
 
             protected override void EndSectionImpl()
             {
-                logWriter.ThrowIfClosed();
-                logWriter.listener.NotifyLogEvent(LogEventArgs.CreateEndSectionEvent(logWriter.stepId, StreamName));
+                logWriter.DoWithListener(delegate(ITestListener listener)
+                {
+                    listener.NotifyLogEvent(LogEventArgs.CreateEndSectionEvent(logWriter.stepId, StreamName));
+                });
             }
 
             protected override void EmbedImpl(Attachment attachment)
             {
-                logWriter.ThrowIfClosed();
+                // Note: This is outside the critical section to avoid reader lock re-entrance.
                 logWriter.Attach(attachment);
 
-                InternalEmbedExisting(attachment.Name);
+                logWriter.DoWithListener(delegate(ITestListener listener)
+                {
+                    InternalEmbedExisting(listener, attachment.Name);
+                });
             }
 
             protected override void EmbedExistingImpl(string attachmentName)
             {
-                lock (logWriter)
+                logWriter.DoWithListener(delegate(ITestListener listener)
                 {
-                    logWriter.ThrowIfClosed();
                     logWriter.VerifyAttachmentExists(attachmentName);
-                }
-
-                InternalEmbedExisting(attachmentName);
+                    InternalEmbedExisting(listener, attachmentName);
+                });
             }
 
-            private void InternalEmbedExisting(string attachmentName)
+            private void InternalEmbedExisting(ITestListener listener, string attachmentName)
             {
-                logWriter.listener.NotifyLogEvent(LogEventArgs.CreateEmbedExistingEvent(logWriter.stepId, StreamName, attachmentName));
+                listener.NotifyLogEvent(LogEventArgs.CreateEmbedExistingEvent(logWriter.stepId, StreamName, attachmentName));
             }
         }
     }

@@ -32,10 +32,11 @@ namespace Gallio.TypeMockIntegration
         /// </summary>
         /// <param name="executablePath">The path of the executable executable</param>
         /// <param name="arguments">The arguments for the executable</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>
-        /// or <paramref name="arguments"/> is null</exception>
-        public TypeMockProcessTask(string executablePath, string arguments)
-            : base(executablePath, arguments)
+        /// <param name="workingDirectory">The working directory</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
+        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null</exception>
+        public TypeMockProcessTask(string executablePath, string arguments, string workingDirectory)
+            : base(executablePath, arguments, workingDirectory)
         {
         }
         

@@ -111,10 +111,11 @@ namespace Gallio.Hosting
         /// </remarks>
         /// <param name="executablePath">The executable path</param>
         /// <param name="arguments">The command-line arguments</param>
+        /// <param name="workingDirectory">The working directory</param>
         /// <returns>The process task</returns>
-        protected virtual ProcessTask CreateProcessTask(string executablePath, string arguments)
+        protected virtual ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
-            return new ProcessTask(executablePath, arguments);
+            return new ProcessTask(executablePath, arguments, workingDirectory);
         }
 
         private void StartProcess(string portName)
@@ -126,12 +127,10 @@ namespace Gallio.Hosting
 
                 string arguments = "/ipc:" + portName;
 
-                processTask = CreateProcessTask(profile.HostProcessPath, arguments);
-                processTask.LogStreamWriter = null;
+                processTask = CreateProcessTask(profile.HostProcessPath, arguments, HostSetup.WorkingDirectory);
                 processTask.CaptureConsoleError = true;
                 processTask.CaptureConsoleOutput = true;
                 processTask.Terminated += delegate { profile.Dispose(); };
-                processTask.WorkingDirectory = HostSetup.WorkingDirectory;
 
                 processTask.Start();
             }

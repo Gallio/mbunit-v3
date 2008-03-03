@@ -39,7 +39,7 @@ namespace Gallio.Model.Execution
         private readonly ObservableTestContextManager manager;
         private readonly ITestContext parent;
         private readonly ITestStep testStep;
-        private readonly LogWriter logWriter;
+        private readonly TestListenerLogWriter logWriter;
         private UserDataCollection data;
 
         private string lifecyclePhase = @"";
@@ -292,7 +292,18 @@ namespace Gallio.Model.Execution
                 RunCleanUpHandlers(cachedCleanUpHandlers);
 
                 if (isDisposing)
-                    logWriter[LogStreamNames.Failures].WriteLine("The test step was orphaned by the test runner!");
+                {
+                    try
+                    {
+                        logWriter[LogStreamNames.Failures].WriteLine("The test step was orphaned by the test runner!");
+                    }
+                    catch
+                    {
+                        // Don't worry about it.  Something much worse must be happening.
+                    }
+                }
+
+                logWriter.Close();
 
                 TestResult result = new TestResult();
                 result.AssertCount = assertCount;

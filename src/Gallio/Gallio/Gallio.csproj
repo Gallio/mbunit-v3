@@ -203,6 +203,7 @@
     <Compile Include="Framework\Pattern\TestTypePatternAttribute.cs" />
     <Compile Include="Framework\Pattern\ToolInfo.cs" />
     <Compile Include="Framework\Step.cs" />
+    <Compile Include="Framework\Tasks.cs" />
     <Compile Include="Framework\TestActionInvoker.cs" />
     <Compile Include="Model\Execution\ManagedTestCommand.cs" />
     <Compile Include="Model\Execution\ObservableTestContext.cs">

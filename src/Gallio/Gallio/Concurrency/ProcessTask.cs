@@ -31,13 +31,11 @@ namespace Gallio.Concurrency
     {
         private readonly string executablePath;
         private readonly string arguments;
+        private readonly string workingDirectory;
 
         private bool captureConsoleOutput = true;
         private bool captureConsoleError = true;
-        private string workingDirectory;
 
-        private bool logStreamWriterInitialized;
-        private LogStreamWriter logStreamWriter;
         private StringWriter consoleOutputCaptureWriter;
         private StringWriter consoleErrorCaptureWriter;
 
@@ -49,20 +47,22 @@ namespace Gallio.Concurrency
         /// </summary>
         /// <param name="executablePath">The path of the executable executable</param>
         /// <param name="arguments">The arguments for the executable</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>
-        /// or <paramref name="arguments"/> is null</exception>
-        public ProcessTask(string executablePath, string arguments)
+        /// <param name="workingDirectory">The working directory</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
+        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null</exception>
+        public ProcessTask(string executablePath, string arguments, string workingDirectory)
             : base(executablePath + @" " + arguments)
         {
             if (executablePath == null)
                 throw new ArgumentNullException(@"executablePath");
             if (arguments == null)
                 throw new ArgumentNullException(@"arguments");
+            if (workingDirectory == null)
+                throw new ArgumentNullException("workingDirectory");
 
             this.executablePath = Path.GetFullPath(executablePath);
             this.arguments = arguments;
-
-            workingDirectory = Path.GetDirectoryName(this.executablePath);
+            this.workingDirectory = workingDirectory;
         }
 
         /// <summary>
@@ -82,38 +82,20 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
+        /// Gets the working directory path.
+        /// </summary>
+        public string WorkingDirectory
+        {
+            get { return workingDirectory; }
+        }
+
+        /// <summary>
         /// Gets the <see cref="Process" /> that was started or null if the
         /// process has not been started yet.
         /// </summary>
         public Process Process
         {
             get { return process; }
-        }
-
-        /// <summary>
-        /// <para>
-        /// Gets or sets the <see cref="LogStreamWriter" /> to which the console output
-        /// and error streams of the process should be logged along with the executable
-        /// path, the arguments and the final exit code.  If this property is set to <c>null</c>,
-        /// then logging will not occur.
-        /// </para>
-        /// <para>
-        /// The default value is <see cref="Log.Default" />.
-        /// </para>
-        /// </summary>
-        public LogStreamWriter LogStreamWriter
-        {
-            get
-            {
-                if (!logStreamWriterInitialized)
-                    logStreamWriter = Log.Default;
-                return logStreamWriter;
-            }
-            set
-            {
-                logStreamWriterInitialized = true;
-                logStreamWriter = value;
-            }
         }
 
         /// <summary>
@@ -177,39 +159,35 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
-        /// Gets the exit code of the process.
+        /// Gets the exit code of the process, or -1 if the process did not run or has not exited.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the process has not completed</exception>
         public int ExitCode
         {
             get
             {
-                if (process == null || ! process.HasExited)
-                    throw new InvalidOperationException("The process has not completed.");
+                if (process == null || !process.HasExited)
+                    return -1;
                 return process.ExitCode;
             }
         }
 
         /// <summary>
-        /// <para>
-        /// Gets or sets the working directory path.
-        /// </para>
-        /// <para>
-        /// By default, the working directory is the full path of the directory that
-        /// contains <see cref="ExecutablePath" />.
-        /// </para>
+        /// The event fired when new output is received on the console output stream.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        public string WorkingDirectory
-        {
-            get { return workingDirectory; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                workingDirectory = value;
-            }
-        }
+        /// <remarks>
+        /// This event should be wired up before starting the task to ensure that
+        /// no data is lost.
+        /// </remarks>
+        public event EventHandler<DataReceivedEventArgs> OutputDataReceived;
+
+        /// <summary>
+        /// The event fired when new output is received on the console error stream.
+        /// </summary>
+        /// <remarks>
+        /// This event should be wired up before starting the task to ensure that
+        /// no data is lost.
+        /// </remarks>
+        public event EventHandler<DataReceivedEventArgs> ErrorDataReceived;
 
         /// <inheritdoc />
         protected override void StartImpl()
@@ -227,8 +205,8 @@ namespace Gallio.Concurrency
             startInfo.WorkingDirectory = workingDirectory;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
-            startInfo.RedirectStandardOutput = LogStreamWriter != null || captureConsoleOutput;
-            startInfo.RedirectStandardError = LogStreamWriter != null || captureConsoleError;
+            startInfo.RedirectStandardOutput = captureConsoleOutput || OutputDataReceived != null;
+            startInfo.RedirectStandardError = captureConsoleError || ErrorDataReceived != null;
 
             process = StartProcess(startInfo);
             process.EnableRaisingEvents = true;
@@ -260,7 +238,6 @@ namespace Gallio.Concurrency
         {
             if (Interlocked.Exchange(ref exited, 1) == 0)
             {
-                StopLogging();
                 NotifyTerminated(TaskResult.CreateFromValue(process.ExitCode));
             }
         }
@@ -271,11 +248,7 @@ namespace Gallio.Concurrency
             Process cachedProcess = process;
 
             if (cachedProcess != null && !cachedProcess.HasExited)
-            {
-                LogAbort();
-
                 cachedProcess.Kill();
-            }
         }
 
         /// <inheritdoc />
@@ -288,88 +261,33 @@ namespace Gallio.Concurrency
 
         private void StartLogging()
         {
-            if (LogStreamWriter != null)
-                BeginLogSection();
-
             if (process.StartInfo.RedirectStandardOutput)
             {
-                if (LogStreamWriter != null)
-                    process.OutputDataReceived += WriteDataReceivedToLog;
-
-                if (consoleOutputCaptureWriter != null)
-                    process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e) { consoleOutputCaptureWriter.WriteLine(e.Data); };
-
+                process.OutputDataReceived += LogOutputData;
                 process.BeginOutputReadLine();
             }
 
             if (process.StartInfo.RedirectStandardError)
             {
-                if (LogStreamWriter != null)
-                    process.ErrorDataReceived += WriteDataReceivedToLog;
-
-                if (consoleErrorCaptureWriter != null)
-                    process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) { consoleErrorCaptureWriter.WriteLine(e.Data); };
-
+                process.ErrorDataReceived += LogErrorData;
                 process.BeginErrorReadLine();
             }
         }
 
-        private void StopLogging()
+        private void LogOutputData(object sender, DataReceivedEventArgs e)
         {
-            if (process.StartInfo.RedirectStandardOutput)
-                process.CancelOutputRead();
-            if (process.StartInfo.RedirectStandardError)
-                process.CancelErrorRead();
+            if (captureConsoleOutput)
+                consoleOutputCaptureWriter.WriteLine(e.Data);
 
-            if (LogStreamWriter != null)
-                EndLogSection();
+            EventHandlerUtils.SafeInvoke(OutputDataReceived, this, e);
         }
 
-        private void BeginLogSection()
+        private void LogErrorData(object sender, DataReceivedEventArgs e)
         {
-            LogStreamWriter.BeginSection(String.Concat("Run Process: " + executablePath, @" ", arguments));
-        }
+            if (captureConsoleError)
+                consoleErrorCaptureWriter.WriteLine(e.Data);
 
-        private void WriteDataReceivedToLog(object sender, DataReceivedEventArgs e)
-        {
-            try
-            {
-                LogStreamWriter.WriteLine(e.Data);
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("Cannot write process task output to the log stream.", ex);
-            }
-        }
-
-        private void EndLogSection()
-        {
-            try
-            {
-                if (process != null)
-                    LogStreamWriter.WriteLine("Exit Code: {0}", process.ExitCode);
-
-                LogStreamWriter.EndSection();
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("Cannot write process task section end message to the log stream.", ex);
-            }
-        }
-
-        private void LogAbort()
-        {
-            try
-            {
-                if (LogStreamWriter != null)
-                {
-                    LogStreamWriter.BeginSection("Abort requested.  Killing the process!").Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("Cannot write process task abort message to the log stream.", ex);
-            }
+            EventHandlerUtils.SafeInvoke(OutputDataReceived, this, e);
         }
     }
 }

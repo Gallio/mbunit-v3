@@ -47,30 +47,34 @@ namespace Gallio.Logging
         /// with the same name was previously added</exception>
         protected bool TrackAttachment(Attachment attachment)
         {
-            string attachmentName = attachment.Name;
-            int newAttachmentHashCode = attachment.GetHashCode();
-
-            if (attachmentHashCodes != null)
+            lock (this)
             {
-                int existingAttachmentHashCode;
-                if (attachmentHashCodes.TryGetValue(attachmentName, out existingAttachmentHashCode))
+                string attachmentName = attachment.Name;
+                int newAttachmentHashCode = attachment.GetHashCode();
+
+                if (attachmentHashCodes != null)
                 {
-                    // Use the attachment's hashcode to detect likely attempts to attach
-                    // different attachments using the same name without actually having to
-                    // maintain a reference to the attachment itself (which could be rather large).
-                    if (newAttachmentHashCode == existingAttachmentHashCode)
-                        return false;
+                    int existingAttachmentHashCode;
+                    if (attachmentHashCodes.TryGetValue(attachmentName, out existingAttachmentHashCode))
+                    {
+                        // Use the attachment's hashcode to detect likely attempts to attach
+                        // different attachments using the same name without actually having to
+                        // maintain a reference to the attachment itself (which could be rather large).
+                        if (newAttachmentHashCode == existingAttachmentHashCode)
+                            return false;
 
-                    throw new InvalidOperationException(String.Format("The log already contains a different attachment with name '{0}'.",
-                        attachmentName));
+                        throw new InvalidOperationException(String.Format("The log already contains a different attachment with name '{0}'.",
+                            attachmentName));
+                    }
                 }
-            }
-            else
-            {
-                attachmentHashCodes = new Dictionary<string, int>();
+                else
+                {
+                    attachmentHashCodes = new Dictionary<string, int>();
+                }
+
+                attachmentHashCodes.Add(attachmentName, newAttachmentHashCode);
             }
 
-            attachmentHashCodes.Add(attachmentName, newAttachmentHashCode);
             return true;
         }
 
@@ -81,8 +85,11 @@ namespace Gallio.Logging
         /// <exception cref="InvalidOperationException">Thrown if no such attachment exists</exception>
         protected void VerifyAttachmentExists(string attachmentName)
         {
-            if (attachmentHashCodes != null && attachmentHashCodes.ContainsKey(attachmentName))
-                return;
+            lock (this)
+            {
+                if (attachmentHashCodes != null && attachmentHashCodes.ContainsKey(attachmentName))
+                    return;
+            }
 
             throw new InvalidOperationException(String.Format("The log does not contain an existing attachment with name '{0}'.",
                 attachmentName));

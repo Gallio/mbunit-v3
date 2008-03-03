@@ -1,0 +1,19 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="MbUnit.Pex\MbUnit.Pex.csproj" />
+
+    <CSharpProject Include="MbUnit.Pex.Tests\MbUnit.Pex.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="MbUnit.Pex\bin\MbUnit.Pex.dll">
+        <Folder>NCover</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="MbUnit.Pex.Tests\bin\MbUnit.Pex.Tests.dll" />
+  </ItemGroup>
+</Project>

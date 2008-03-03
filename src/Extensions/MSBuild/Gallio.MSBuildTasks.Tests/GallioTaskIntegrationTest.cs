@@ -15,6 +15,7 @@
 
 using System.Text;
 using Gallio.Concurrency;
+using Gallio.Framework;
 using MbUnit.Framework;
 using Gallio.Hosting;
 using System;
@@ -76,10 +77,10 @@ namespace Gallio.MSBuildTasks.Tests
             MSBuild should not terminate abruptly when this occurs so it should return a successful result code.")]
         public void RunMSBuild(string target, bool expectedResult)
         {
-            ProcessTask task = new ProcessTask(executablePath,
+            ProcessTask task = Tasks.StartProcessTask(executablePath,
                 String.Concat("Integration.proj /t:", target,
-                " /p:GallioPath=\"", Loader.InstallationPath, "\""));
-            task.WorkingDirectory = workingDirectory;
+                " /p:GallioPath=\"", Loader.InstallationPath, "\""),
+                workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");
             Assert.AreEqual(expectedResult, task.ExitCode == 0, "Unexpected exit code.");

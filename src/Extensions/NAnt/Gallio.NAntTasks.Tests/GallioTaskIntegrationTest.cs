@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using Gallio.Concurrency;
+using Gallio.Framework;
 using MbUnit.Framework;
 using System;
 using System.Diagnostics;
@@ -76,10 +77,10 @@ namespace Gallio.NAntTasks.Tests
             NAnt should not terminate abruptly when this occurs so it should return a successful result code.")]
         public void RunNAnt(string target, bool expectedResult)
         {
-            ProcessTask task = new ProcessTask(executablePath,
+            ProcessTask task = Tasks.StartProcessTask(executablePath,
                 String.Concat("/f:Integration.build ", target,
-                " /D:GallioPath=\"", Loader.InstallationPath, "\""));
-            task.WorkingDirectory = workingDirectory;
+                " /D:GallioPath=\"", Loader.InstallationPath, "\""),
+                workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");
             Assert.AreEqual(expectedResult, task.ExitCode == 0, "Unexpected exit code.");
