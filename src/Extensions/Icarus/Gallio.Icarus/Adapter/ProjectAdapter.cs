@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
@@ -24,8 +24,6 @@ using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
-using Gallio.Runner;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
 
@@ -54,7 +52,16 @@ namespace Gallio.Icarus.Adapter
             set
             {
                 project = value;
+                
                 CheckProject();
+
+                // set project options
+                projectAdapterView.HintDirectories = project.TestPackageConfig.HintDirectories;
+                projectAdapterView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
+                projectAdapterView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
+                projectAdapterView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
+                
+                // attach assembly watcher
                 assemblyWatcher.Add(value.TestPackageConfig.AssemblyFiles);
             }
         }
@@ -65,7 +72,7 @@ namespace Gallio.Icarus.Adapter
             List<string> existingAndNonDuplicatedAssemblies = new List<string>();
             foreach (string file in assemblyFiles)
             {
-                if (System.IO.File.Exists(file) && !existingAndNonDuplicatedAssemblies.Contains(file))
+                if (File.Exists(file) && !existingAndNonDuplicatedAssemblies.Contains(file))
                     existingAndNonDuplicatedAssemblies.Add(file);
             }
             assemblyFiles.Clear();
@@ -149,20 +156,20 @@ namespace Gallio.Icarus.Adapter
             assemblyWatcher.AssemblyChangedEvent += new AssemblyWatcher.AssemblyChangedHandler(assemblyWatcher_AssemblyChangedEvent);
         }
 
-        private void OnUpdateHintDirectoriesEvent(object sender, StringListEventArgs e)
+        private void OnUpdateHintDirectoriesEvent(object sender, SingleEventArgs<IList<string>> e)
         {
             project.TestPackageConfig.HintDirectories.Clear();
-            project.TestPackageConfig.HintDirectories.AddRange(e.List);
+            project.TestPackageConfig.HintDirectories.AddRange(e.Arg);
         }
 
-        private void OnUpdateApplicationBaseDirectoryEvent(object sender, SingleStringEventArgs e)
+        private void OnUpdateApplicationBaseDirectoryEvent(object sender, SingleEventArgs<string> e)
         {
-            project.TestPackageConfig.HostSetup.ApplicationBaseDirectory = e.String;
+            project.TestPackageConfig.HostSetup.ApplicationBaseDirectory = e.Arg;
         }
 
-        private void UpdateWorkingDirectoryEventHandler(object sender, SingleStringEventArgs e)
+        private void UpdateWorkingDirectoryEventHandler(object sender, SingleEventArgs<string> e)
         {
-            project.TestPackageConfig.HostSetup.WorkingDirectory = e.String;
+            project.TestPackageConfig.HostSetup.WorkingDirectory = e.Arg;
         }
 
         private void UpdateShadowCopyEventHandler(object sender, SingleEventArgs<bool> e)
@@ -175,10 +182,10 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.AssemblyChanged(fullPath);
         }
 
-        private void AddAssembliesEventHandler(object sender, AddAssembliesEventArgs e)
+        private void AddAssembliesEventHandler(object sender, SingleEventArgs<IList<string>> e)
         {
-            project.TestPackageConfig.AssemblyFiles.AddRange(e.Assemblies);
-            foreach (string assembly in e.Assemblies)
+            project.TestPackageConfig.AssemblyFiles.AddRange(e.Arg);
+            foreach (string assembly in e.Arg)
                 assemblyWatcher.Add(assembly);
         }
 
@@ -188,13 +195,13 @@ namespace Gallio.Icarus.Adapter
             assemblyWatcher.Clear();
         }
 
-        private void RemoveAssemblyEventHandler(object sender, SingleStringEventArgs e)
+        private void RemoveAssemblyEventHandler(object sender, SingleEventArgs<string> e)
         {
             string fileName;
-            if (testModelData.Tests.ContainsKey(e.String))
-                fileName = testModelData.Tests[e.String].Metadata.GetValue(MetadataKeys.CodeBase);
+            if (testModelData.Tests.ContainsKey(e.Arg))
+                fileName = testModelData.Tests[e.Arg].Metadata.GetValue(MetadataKeys.CodeBase);
             else
-                fileName = e.String;
+                fileName = e.Arg;
             
             // remove assembly
             assemblyWatcher.Remove(fileName);
@@ -272,19 +279,15 @@ namespace Gallio.Icarus.Adapter
                 SaveReportAs(this, e);
         }
 
-        private void SaveProjectEventHandler(object sender, SingleStringEventArgs e)
+        private void SaveProjectEventHandler(object sender, SingleEventArgs<string> e)
         {
-            SerializationUtils.SaveToXml(project, e.String);
+            SerializationUtils.SaveToXml(project, e.Arg);
         }
 
         private void OpenProjectEventHandler(object sender, OpenProjectEventArgs e)
         {
             // deserialize project
-            project = SerializationUtils.LoadFromXml<Project>(e.FileName);
-            projectAdapterView.HintDirectories = project.TestPackageConfig.HintDirectories;
-            projectAdapterView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
-            projectAdapterView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
-            projectAdapterView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
+            Project = SerializationUtils.LoadFromXml<Project>(e.FileName);
 
             // load test model data
             if (GetTestTree != null)
@@ -309,9 +312,9 @@ namespace Gallio.Icarus.Adapter
             project = new Project();
         }
 
-        private void OnGetSourceLocation(object sender, SingleStringEventArgs e)
+        private void OnGetSourceLocation(object sender, SingleEventArgs<string> e)
         {
-            TestData testData = testModelData.Tests[e.String];
+            TestData testData = testModelData.Tests[e.Arg];
             if (testData != null)
                 projectAdapterView.SourceCodeLocation = testData.CodeLocation;
         }

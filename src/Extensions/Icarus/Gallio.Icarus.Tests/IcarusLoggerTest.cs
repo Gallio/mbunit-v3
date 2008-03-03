@@ -15,20 +15,27 @@
 
 using System;
 
-namespace Gallio.Icarus.Core.CustomEventArgs 
+using Castle.Core.Logging;
+
+using Gallio.Icarus.Interfaces;
+
+using MbUnit.Framework;
+
+namespace Gallio.Icarus.Tests
 {
-    public class AddAssembliesEventArgs : EventArgs
+    [TestFixture]
+    public class IcarusLoggerTest : MockTest
     {
-        private readonly string[] assemblies;
-
-        public AddAssembliesEventArgs(string[] assemblies)
+        [Test]
+        public void CreateChildLogger_Test()
         {
-            this.assemblies = assemblies;
-        }
-
-        public string[] Assemblies
-        {
-            get { return assemblies; }
+            IProjectAdapterView projectAdapterView = mocks.CreateMock<IProjectAdapterView>();
+            Exception e = new Exception("test");
+            //projectAdapterView.WriteToLog(LoggerLevel.Debug, "test", "test", e);
+            mocks.ReplayAll();
+            IcarusLogger icarusLogger = new IcarusLogger(projectAdapterView);
+            IcarusLogger childLogger = (IcarusLogger)icarusLogger.CreateChildLogger("test");
+            //childLogger.Debug("test", e);
         }
     }
 }

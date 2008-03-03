@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 using Gallio.Icarus.Adapter;
@@ -153,7 +154,7 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
 
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            addAssembliesEvent.Raise(mockView, new AddAssembliesEventArgs(new string[] { "test.dll" }));
+            addAssembliesEvent.Raise(mockView, new SingleEventArgs<IList<string>>(new string[] { "test.dll" }));
             Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Contains("test.dll"));
         }
 
@@ -179,11 +180,11 @@ namespace Gallio.Icarus.Tests
             projectAdapter.TestModelData = new TestModelData(testData);
             projectAdapter.Project.TestPackageConfig.AssemblyFiles.AddRange(new string[] { "test.dll", "test3.dll" });
             Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 2);
-            removeAssemblyEvent.Raise(mockView, new SingleStringEventArgs("test2.dll"));
+            removeAssemblyEvent.Raise(mockView, new SingleEventArgs<string>("test2.dll"));
             Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 2);
-            removeAssemblyEvent.Raise(mockView, new SingleStringEventArgs("test.dll"));
+            removeAssemblyEvent.Raise(mockView, new SingleEventArgs<string>("test.dll"));
             Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 1);
-            removeAssemblyEvent.Raise(mockView, new SingleStringEventArgs("test"));
+            removeAssemblyEvent.Raise(mockView, new SingleEventArgs<string>("test"));
             Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count == 0);
         }
 
@@ -279,7 +280,7 @@ namespace Gallio.Icarus.Tests
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.Project.TestPackageConfig.AssemblyFiles.Add("test.dll");
             string fileName = Path.GetTempFileName();
-            saveProjectEvent.Raise(mockView, new SingleStringEventArgs(fileName));
+            saveProjectEvent.Raise(mockView, new SingleEventArgs<string>(fileName));
             Project project = SerializationUtils.LoadFromXml<Project>(fileName);
             Assert.AreEqual(1, project.TestPackageConfig.AssemblyFiles.Count);
             File.Delete(fileName);
@@ -289,7 +290,7 @@ namespace Gallio.Icarus.Tests
         public void OpenProjectEventHandler_Test()
         {
             Project project = new Project();
-            project.TestPackageConfig.AssemblyFiles.Add("test.dll");
+            project.TestPackageConfig.AssemblyFiles.Add(Assembly.GetExecutingAssembly().Location);
             IdFilter<ITest> idFilter = new IdFilter<ITest>(new EqualityFilter<string>("test"));
             project.TestFilters.Add(new FilterInfo("Latest", idFilter.ToFilterExpr()));
             mockView.HintDirectories = project.TestPackageConfig.HintDirectories;
@@ -324,7 +325,7 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             Assert.AreEqual(0, projectAdapter.Project.TestPackageConfig.HintDirectories.Count);
-            updateHintDirectoriesEvent.Raise(mockView, new StringListEventArgs(list));
+            updateHintDirectoriesEvent.Raise(mockView, new SingleEventArgs<IList<string>>(list));
             Assert.AreEqual(1, projectAdapter.Project.TestPackageConfig.HintDirectories.Count);
             Assert.AreEqual("test", projectAdapter.Project.TestPackageConfig.HintDirectories[0]);
         }
@@ -336,7 +337,7 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             Assert.AreEqual(string.Empty, projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
-            updateApplicationBaseDirectoryEvent.Raise(mockView, new SingleStringEventArgs(applicationBaseDirectory));
+            updateApplicationBaseDirectoryEvent.Raise(mockView, new SingleEventArgs<string>(applicationBaseDirectory));
             Assert.AreEqual(applicationBaseDirectory, projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
         }
 
@@ -347,7 +348,7 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             Assert.AreEqual(string.Empty, projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory);
-            updateWorkingDirectoryEvent.Raise(mockView, new SingleStringEventArgs(workingDirectory));
+            updateWorkingDirectoryEvent.Raise(mockView, new SingleEventArgs<string>(workingDirectory));
             Assert.AreEqual(workingDirectory, projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory);
         }
 
@@ -403,7 +404,7 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.TestModelData = new TestModelData(testData);
-            getSourceLocationEvent.Raise(mockView, new SingleStringEventArgs("test"));
+            getSourceLocationEvent.Raise(mockView, new SingleEventArgs<string>("test"));
         }
 
         [Test]
@@ -457,8 +458,12 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Project_Test()
         {
-            mocks.ReplayAll();
             Project project = new Project();
+            mockView.HintDirectories = project.TestPackageConfig.HintDirectories;
+            mockView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
+            mockView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
+            mockView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
+            mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.Project = project;
             Assert.AreEqual(project, projectAdapter.Project);

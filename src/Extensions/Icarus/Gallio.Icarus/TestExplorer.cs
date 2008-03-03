@@ -18,6 +18,8 @@ using System.Windows.Forms;
 
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Interfaces;
+using Gallio.Model;
+using Gallio.Model.Filters;
 
 namespace Gallio.Icarus
 {
@@ -61,7 +63,8 @@ namespace Gallio.Icarus
         {
             testTree.BeginUpdate();
             testTree.CollapseAll();
-            TestNodes(testTree.Nodes[0], state);
+            foreach (TreeNode node in testTree.Nodes)
+                TestNodes(node, state);
             testTree.EndUpdate();
         }
 
@@ -116,6 +119,7 @@ namespace Gallio.Icarus
         {
             if (e.Action != TreeViewAction.Unknown)
                 projectAdapterView.CreateFilter(testTree.Nodes);
+            CountTests();
         }
 
         public TreeNode[] FindNodes(string key)
@@ -197,6 +201,39 @@ namespace Gallio.Icarus
         private void filterInconclusiveTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             testTree.FilterInconclusive = filterInconclusiveTestsToolStripButton.Checked = filterInconclusiveTestsToolStripMenuItem.Checked;
+        }
+
+        public void ApplyFilter(Filter<ITest> filter)
+        {
+            if (filter is NoneFilter<ITest>)
+                return;
+            if (filter is OrFilter<ITest>)
+            {
+                OrFilter<ITest> orFilter = (OrFilter<ITest>)filter;
+                foreach (Filter<ITest> childFilter in orFilter.Filters)
+                    ApplyFilter(childFilter);
+            }
+            else if (filter is IdFilter<ITest>)
+            {
+                IdFilter<ITest> idFilter = (IdFilter<ITest>)filter;
+                foreach (TestTreeNode n in FindNodes(idFilter.ToString().Substring(13, 16)))
+                    n.Toggle();
+            }
+        }
+
+        public void CountTests()
+        {
+            projectAdapterView.TotalTests = testTree.CountTests();
+        }
+
+        private void addAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            projectAdapterView.AddAssembliesToTree();
+        }
+
+        private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            projectAdapterView.RemoveAssembliesFromTree();
         }
     }
 }

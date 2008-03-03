@@ -31,6 +31,10 @@ namespace Gallio.Icarus
 {
     static class Program
     {
+        private static Main main;
+        private static ProjectAdapter projectAdapter;
+        private static ProjectPresenter projectPresenter;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -41,16 +45,26 @@ namespace Gallio.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            IcarusLogger icarusLogger = new IcarusLogger();
-            Runtime.Initialize(new RuntimeSetup(), icarusLogger);
             try
             {
+                main = new Main();
+
+                RuntimeSetup runtimeSetup = new RuntimeSetup();
+                // Set the installation path explicitly to ensure that we do not encounter problems
+                // when the test assembly contains a local copy of the primary runtime assemblies
+                // which will confuse the runtime into searching in the wrong place for plugins.
+                runtimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(Program).Assembly));
+                runtimeSetup.PluginDirectories.AddRange(main.Settings.PluginDirectories);
+                Runtime.Initialize(runtimeSetup, new IcarusLogger(main));
+
                 // wire up model
-                Main main = new Main();
-                icarusLogger.ProjectAdapterView = main;
-                ProjectAdapter projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
+                projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
                 if (args.Length > 0)
-                    projectAdapter.Project = ParseArguments(args);
+                {
+                    Project project = ParseArguments(args);
+                    if (project != null)
+                        projectAdapter.Project = project;
+                }
                 else
                 {
                     if (main.Settings.RestorePreviousSettings)
@@ -58,24 +72,11 @@ namespace Gallio.Icarus
                         string defaultProject = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                             "Gallio/Icarus/Icarus.gallio");
                         if (File.Exists(defaultProject))
-                        {
-                            try
-                            {
-                                projectAdapter.Project = LoadProject(defaultProject);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Cannot load default project \"" + defaultProject + "\"");
-                                //TODO: Maybe delete the buggy project?
-                            }
-                        }
+                            main.ProjectFileName = defaultProject;
                     }
                 }
-                main.HintDirectories = projectAdapter.Project.TestPackageConfig.HintDirectories;
-                main.ApplicationBaseDirectory = projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
-                main.ShadowCopy = projectAdapter.Project.TestPackageConfig.HostSetup.ShadowCopy;
-                main.WorkingDirectory = projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory;
-                ProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, new TestRunnerModel());
+                projectPresenter = new ProjectPresenter(projectAdapter, new TestRunnerModel());
+
                 Application.Run(main);
             }
             finally
@@ -98,26 +99,14 @@ namespace Gallio.Icarus
                     {
                         if (file.EndsWith(".gallio"))
                         {
-                            project = LoadProject(file);
-                            break;
+                            main.ProjectFileName = file;
+                            return null;
                         }
                         else
                             project.TestPackageConfig.AssemblyFiles.Add(file);
                     }
                 }
             }
-            return project;
-        }
-
-        private static Project LoadProject(string fileName)
-        {
-            Project project = new Project();
-            try
-            {
-                project = SerializationUtils.LoadFromXml<Project>(fileName);
-            }
-            catch
-            { }
             return project;
         }
     }

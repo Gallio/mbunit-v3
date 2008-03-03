@@ -116,13 +116,10 @@
     <Compile Include="Controls\TestTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Core\CustomEventArgs\AddAssembliesEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SingleEventArgs.cs" />
-    <Compile Include="Core\CustomEventArgs\StringListEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\GetTestTreeEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\OpenProjectEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SaveReportAsEventArgs.cs" />
-    <Compile Include="Core\CustomEventArgs\SingleStringEventArgs.cs" />
     <Compile Include="Core\CustomEventArgs\SetFilterEventArgs.cs" />
     <Compile Include="Core\Interfaces\IProjectPresenter.cs" />
     <Compile Include="Core\Interfaces\ITestRunnerModel.cs" />

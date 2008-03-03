@@ -14,11 +14,17 @@
 // limitations under the License.
 
 using System;
+using System.Drawing;
 
 namespace Gallio.Icarus
 {
     public partial class LogWindow : DockWindow
     {
+        public string LogBody
+        {
+            get { return logBody.Text; }
+        }
+
         public LogWindow()
         {
             InitializeComponent();
@@ -29,10 +35,30 @@ namespace Gallio.Icarus
             Text = text;
         }
 
-        public string LogBody
+        public void AppendText(string text)
         {
-            get { return logBody.Text; }
-            set { logBody.Text = value; }
+            logBody.AppendText(text);
+        }
+
+        public void AppendText(string text, Color color)
+        {
+            int start = logBody.TextLength;
+            logBody.AppendText(text);
+            int end = logBody.TextLength;
+           
+            // Textbox may transform chars, so (end-start) != text.Length
+            logBody.Select(start, end - start);
+            {
+                logBody.SelectionColor = color;
+                // could set box.SelectionBackColor, box.SelectionFont too.
+            }
+            // clear selection
+            logBody.SelectionLength = 0;
+        }
+
+        public void Clear()
+        {
+            logBody.Clear();
         }
 
         private void clearAllToolStripButton_Click(object sender, EventArgs e)

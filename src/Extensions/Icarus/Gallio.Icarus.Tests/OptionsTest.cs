@@ -13,21 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.Reflection;
-using System.Windows.Forms;
-
-using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Interfaces;
-using Gallio.Model;
-using Gallio.Model.Serialization;
 
 using MbUnit.Framework;
+
+using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests
 {
     [TestFixture]
     public class OptionsTest : MockTest
     {
+        public void SetUp()
+        { }
+
+        [Test]
+        public void Options_Test()
+        {
+            IProjectAdapterView projectAdapterView = mocks.CreateMock<IProjectAdapterView>();
+            Expect.Call(projectAdapterView.Settings).Return(new Settings());
+            mocks.ReplayAll();
+            Options options = new Options(projectAdapterView);
+        }
     }
 }

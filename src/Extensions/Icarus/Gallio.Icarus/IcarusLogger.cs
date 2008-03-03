@@ -21,29 +21,25 @@ using Gallio.Icarus.Interfaces;
 
 namespace Gallio.Icarus
 {
-    internal class IcarusLogger : LevelFilteredLogger
+    public class IcarusLogger : LevelFilteredLogger
     {
         private IProjectAdapterView projectAdapterView;
 
-        public IProjectAdapterView ProjectAdapterView
+        public IcarusLogger(IProjectAdapterView projectAdapterView)
         {
-            set { projectAdapterView = value; }
+            this.projectAdapterView = projectAdapterView;
         }
-
-        public IcarusLogger()
-        { }
 
         /// <inheritdoc />
         public override ILogger CreateChildLogger(string name)
         {
-            IcarusLogger childLogger = new IcarusLogger();
-            childLogger.ProjectAdapterView = projectAdapterView;
-            return childLogger;
+            return new IcarusLogger(projectAdapterView);
         }
 
         /// <inheritdoc />
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
+            projectAdapterView.WriteToLog(level, name, message, exception);
         }
     }
 }

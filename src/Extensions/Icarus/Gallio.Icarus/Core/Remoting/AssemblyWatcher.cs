@@ -67,7 +67,7 @@ namespace Gallio.Icarus.Core.Remoting
 	/// </remarks>
 	public class AssemblyWatcher
 	{
-		private List<FileWatcher> fileWatchers = new List<FileWatcher>();
+		private Dictionary<string, FileWatcher> fileWatchers = new Dictionary<string, FileWatcher>();
 
 		protected System.Timers.Timer timer;
 		protected string changedAssemblyPath; 
@@ -83,7 +83,7 @@ namespace Gallio.Icarus.Core.Remoting
 			timer.Elapsed += new ElapsedEventHandler(OnTimer);
 		}
 
-        public void Add(List<string> files)
+        public void Add(IList<string> files)
         {
             foreach (string file in files)
                 Add(file);
@@ -91,56 +91,57 @@ namespace Gallio.Icarus.Core.Remoting
 
 		public void Add(string filePath)
 		{
-			FileWatcher fw = new FileWatcher(new FileInfo(filePath));
-				
-			fw.Watcher.Path = fw.Info.DirectoryName;
-			fw.Watcher.Filter = fw.Info.Name;
-			fw.Watcher.NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite;
-			fw.Watcher.Changed += new FileSystemEventHandler(OnChanged);
-			fw.Watcher.EnableRaisingEvents = false;
+            if (!fileWatchers.ContainsKey(filePath))
+            {
+                FileWatcher fw = new FileWatcher(new FileInfo(filePath));
 
-			fileWatchers.Add(fw);
+                fw.Watcher.Path = fw.Info.DirectoryName;
+                fw.Watcher.Filter = fw.Info.Name;
+                fw.Watcher.NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite;
+                fw.Watcher.Changed += new FileSystemEventHandler(OnChanged);
+                fw.Watcher.EnableRaisingEvents = false;
 
-            if (fileWatchers.Count > 0)
-                Start();
+                fileWatchers.Add(filePath, fw);
+
+                if (fileWatchers.Count > 0)
+                    Start();
+            }
 		}
 
 		public void Remove(string filePath)
 		{
-			foreach(FileWatcher fw in fileWatchers)
-			{
-                if (fw.Info.FullName == filePath)
-                {
-                    fw.Watcher.Changed -= new FileSystemEventHandler(OnChanged);
-                    fileWatchers.Remove(fw);
-                }
-			}
+            if (fileWatchers.ContainsKey(filePath))
+                fileWatchers.Remove(filePath);
 		}
 
 		public void Clear()
 		{
-			this.Stop();
-			foreach(FileWatcher fw in this.fileWatchers)
+			Stop();
+			foreach(string key in fileWatchers.Keys)
 			{
-				fw.Watcher.Changed-=new FileSystemEventHandler(OnChanged);
+                FileWatcher fw = fileWatchers[key];
+				fw.Watcher.Changed -= new FileSystemEventHandler(OnChanged);
 			}
-			this.fileWatchers.Clear();
+			fileWatchers.Clear();
 		}
 
 		public void Start()
 		{
-			EnableWatchers( true );
+			EnableWatchers(true);
 		}
 
 		public void Stop()
 		{
-			EnableWatchers( false );
+			EnableWatchers(false);
 		}
 
-		private void EnableWatchers( bool enable )
+		private void EnableWatchers(bool enable)
 		{
-			foreach( FileWatcher watcher in this.fileWatchers )
-				watcher.Watcher.EnableRaisingEvents = enable;
+            foreach (string key in fileWatchers.Keys)
+            {
+                FileWatcher watcher = fileWatchers[key];
+                watcher.Watcher.EnableRaisingEvents = enable;
+            }
 		}
 
 		protected void OnTimer(Object source, ElapsedEventArgs e)

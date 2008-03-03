@@ -16,6 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
+using Castle.Core.Logging;
+
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -27,9 +30,9 @@ namespace Gallio.Icarus.Interfaces
 {
     public interface IProjectAdapterView
     {
-        event EventHandler<AddAssembliesEventArgs> AddAssemblies;
+        event EventHandler<SingleEventArgs<IList<string>>> AddAssemblies;
         event EventHandler<EventArgs> RemoveAssemblies;
-        event EventHandler<SingleStringEventArgs> RemoveAssembly;
+        event EventHandler<SingleEventArgs<string>> RemoveAssembly;
         event EventHandler<GetTestTreeEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> GenerateReport;
@@ -37,14 +40,14 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<SetFilterEventArgs> SetFilter;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
-        event EventHandler<SingleStringEventArgs> SaveProject;
+        event EventHandler<SingleEventArgs<string>> SaveProject;
         event EventHandler<OpenProjectEventArgs> OpenProject;
         event EventHandler<EventArgs> NewProject;
         event EventHandler<EventArgs> GetTestFrameworks;
-        event EventHandler<SingleStringEventArgs> GetSourceLocation;
-        event EventHandler<StringListEventArgs> UpdateHintDirectoriesEvent;
-        event EventHandler<SingleStringEventArgs> UpdateApplicationBaseDirectoryEvent;
-        event EventHandler<SingleStringEventArgs> UpdateWorkingDirectoryEvent;
+        event EventHandler<SingleEventArgs<string>> GetSourceLocation;
+        event EventHandler<SingleEventArgs<IList<string>>> UpdateHintDirectoriesEvent;
+        event EventHandler<SingleEventArgs<string>> UpdateApplicationBaseDirectoryEvent;
+        event EventHandler<SingleEventArgs<string>> UpdateWorkingDirectoryEvent;
         event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
         TreeNode[] TestTreeCollection { set; }
         ListViewItem[] Assemblies { set; }
@@ -69,6 +72,7 @@ namespace Gallio.Icarus.Interfaces
         void ReloadTree();
         void SaveReport(string fileName, string reportType);
         void WriteToLog(string logName, string logBody);
+        void WriteToLog(LoggerLevel level, string name, string message, Exception exception);
         void Reset();
         void CreateReport();
         void AddAssembliesToTree();

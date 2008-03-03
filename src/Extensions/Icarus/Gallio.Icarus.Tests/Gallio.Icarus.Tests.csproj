@@ -36,6 +36,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
@@ -45,6 +49,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.2.2864.18696, Culture=neutral, PublicKeyToken=d481317c817cec47, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
     <Reference Include="ZedGraph, Version=5.0.2.16769, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ZedGraph.dll</HintPath>
@@ -54,12 +62,21 @@
     <Compile Include="AdapterModel\ProjectAdapterModelTest.cs" />
     <Compile Include="Adapter\ProjectAdapterTest.cs" />
     <Compile Include="AboutTest.cs" />
+    <Compile Include="AssemblyListTest.cs" />
+    <Compile Include="Controls\TaskButtonTest.cs" />
     <Compile Include="Controls\TestResultsGraphTest.cs" />
     <Compile Include="Controls\TestResultsListTest.cs" />
     <Compile Include="Controls\TestStatusBarTest.cs">
     </Compile>
     <Compile Include="Controls\TestTreeNodeTest.cs" />
     <Compile Include="Controls\TestTreeViewTest.cs" />
+    <Compile Include="Core\Remoting\AssemblyWatcherTest.cs" />
+    <Compile Include="PropertiesWindowTest.cs" />
+    <Compile Include="TestExplorerTest.cs" />
+    <Compile Include="TestResultsTest.cs" />
+    <Compile Include="PerformanceMonitorTest.cs" />
+    <Compile Include="LogWindowTest.cs" />
+    <Compile Include="IcarusLoggerTest.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenterTest.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProviderTest.cs" />
     <Compile Include="Core\ProgressMonitoring\TestRunnerMonitorTest.cs" />

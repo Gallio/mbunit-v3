@@ -14,21 +14,45 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
+
+using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus
 {
+    [Serializable]
+    [XmlRoot("settings", Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
     public class Settings : ICloneable
     {
         private bool restorePreviousSettings = true;
+        private List<string> pluginDirectories;
 
+        [XmlAttribute("restorePreviousSettings")]
         public bool RestorePreviousSettings
         {
             get { return restorePreviousSettings; }
             set { restorePreviousSettings = value; }
         }
 
+        [XmlArray("pluginDirectories", IsNullable = false)]
+        [XmlArrayItem("pluginDirectory", typeof(string), IsNullable = false)]
+        public List<string> PluginDirectories
+        {
+            get { return pluginDirectories; }
+            set
+            {
+                pluginDirectories.Clear();
+                foreach (string dir in value)
+                    pluginDirectories.Add(dir);
+            }
+        }
+
         public Settings()
-        { }
+        {
+            pluginDirectories = new List<string>();
+        }
 
         object ICloneable.Clone()
         {

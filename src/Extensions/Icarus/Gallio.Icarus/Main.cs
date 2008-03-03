@@ -22,6 +22,8 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
+using Castle.Core.Logging;
+
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
@@ -31,6 +33,7 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -60,6 +63,7 @@ namespace Gallio.Icarus
         private LogWindow debugTraceWindow;
         private LogWindow warningsWindow;
         private LogWindow failuresWindow;
+        private LogWindow runtimeWindow;
         private PerformanceMonitor performanceMonitor;
         private About aboutDialog;
         private PropertiesWindow propertiesWindow;
@@ -284,28 +288,77 @@ namespace Gallio.Icarus
 
         public IList<string> HintDirectories
         {
-            set { propertiesWindow.HintDirectories = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                        {
+                            HintDirectories = value;
+                        }));
+                }
+                else
+                    propertiesWindow.HintDirectories = value;
+            }
         }
 
         public string ApplicationBaseDirectory
         {
-            set { propertiesWindow.ApplicationBaseDirectory = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        ApplicationBaseDirectory = value;
+                    }));
+                }
+                else
+                    propertiesWindow.ApplicationBaseDirectory = value;
+            }
         }
 
         public string WorkingDirectory
         {
-            set { propertiesWindow.WorkingDirectory = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        WorkingDirectory = value;
+                    }));
+                }
+                else
+                    propertiesWindow.WorkingDirectory = value;
+            }
         }
 
         public bool ShadowCopy
         {
-            set { propertiesWindow.ShadowCopy = value; }
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        ShadowCopy = value;
+                    }));
+                }
+                else
+                    propertiesWindow.ShadowCopy = value;
+            }
+        }
+
+        public string ProjectFileName
+        {
+            set { projectFileName = value; }
         }
 
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
-        public event EventHandler<AddAssembliesEventArgs> AddAssemblies;
+        public event EventHandler<SingleEventArgs<IList<string>>> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
-        public event EventHandler<SingleStringEventArgs> RemoveAssembly;
+        public event EventHandler<SingleEventArgs<string>> RemoveAssembly;
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> GenerateReport;
         public event EventHandler<EventArgs> StopTests;
@@ -313,13 +366,13 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<EventArgs> GetTestFrameworks;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
-        public event EventHandler<SingleStringEventArgs> SaveProject;
+        public event EventHandler<SingleEventArgs<string>> SaveProject;
         public event EventHandler<OpenProjectEventArgs> OpenProject;
         public event EventHandler<EventArgs> NewProject;
-        public event EventHandler<SingleStringEventArgs> GetSourceLocation;
-        public event EventHandler<StringListEventArgs> UpdateHintDirectoriesEvent;
-        public event EventHandler<SingleStringEventArgs> UpdateApplicationBaseDirectoryEvent;
-        public event EventHandler<SingleStringEventArgs> UpdateWorkingDirectoryEvent;
+        public event EventHandler<SingleEventArgs<string>> GetSourceLocation;
+        public event EventHandler<SingleEventArgs<IList<string>>> UpdateHintDirectoriesEvent;
+        public event EventHandler<SingleEventArgs<string>> UpdateApplicationBaseDirectoryEvent;
+        public event EventHandler<SingleEventArgs<string>> UpdateWorkingDirectoryEvent;
         public event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
 
         public Main()
@@ -337,6 +390,7 @@ namespace Gallio.Icarus
             debugTraceWindow = new LogWindow("Debug trace");
             warningsWindow = new LogWindow("Warnings");
             failuresWindow = new LogWindow("Failures");
+            runtimeWindow = new LogWindow("Runtime");
             performanceMonitor = new PerformanceMonitor();
             aboutDialog = new About();
             propertiesWindow = new PropertiesWindow(this);
@@ -381,6 +435,8 @@ namespace Gallio.Icarus
                         return warningsWindow;
                     case "Failures":
                         return failuresWindow;
+                    case "Runtime":
+                        return runtimeWindow;
                     default:
                         return null;
                 }
@@ -414,6 +470,7 @@ namespace Gallio.Icarus
                 warningsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
                 failuresWindow.Show(dockPanel, DockState.DockBottomAutoHide);
                 logWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                runtimeWindow.Show(dockPanel, DockState.DockBottomAutoHide);
                 testExplorer.Show(dockPanel, DockState.DockLeft);
             }
 
@@ -424,7 +481,10 @@ namespace Gallio.Icarus
                     GetReportTypes(this, EventArgs.Empty);
                 if (GetTestFrameworks != null)
                     GetTestFrameworks(this, EventArgs.Empty);
-                ThreadedReloadTree(true);
+                if (projectFileName != string.Empty)
+                    OpenProjectFromFile(projectFileName);
+                else
+                    ThreadedReloadTree(true);
                 StatusText = string.Empty;
             });
             workerThread.Start();
@@ -530,12 +590,7 @@ namespace Gallio.Icarus
             workerThread.Start();
         }
 
-        private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenProjectFromFile();
-        }
-
-        private void OpenProjectFromFile()
+        private void openProject_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
@@ -544,20 +599,25 @@ namespace Gallio.Icarus
                 AbortWorkerThread();
                 workerThread = new Thread(delegate()
                 {
-                    StatusText = "Opening project";
-                    try
-                    {
-                        if (OpenProject != null)
-                            OpenProject(this, new OpenProjectEventArgs(openFile.FileName, testExplorer.TreeFilter));
-                    }
-                    catch (Exception ex)
-                    {
-                        Exception = ex;
-                    }
-                    StatusText = string.Empty;
+                    OpenProjectFromFile(openFile.FileName);
                 });
                 workerThread.Start();
             }
+        }
+
+        private void OpenProjectFromFile(string fileName)
+        {
+            StatusText = "Opening project";
+            try
+            {
+                if (OpenProject != null)
+                    OpenProject(this, new OpenProjectEventArgs(fileName, testExplorer.TreeFilter));
+            }
+            catch (Exception ex)
+            {
+                Exception = ex;
+            }
+            StatusText = string.Empty;
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -587,7 +647,7 @@ namespace Gallio.Icarus
                 try
                 {
                     if (SaveProject != null)
-                        SaveProject(this, new SingleStringEventArgs(projectFileName));
+                        SaveProject(this, new SingleEventArgs<string>(projectFileName));
                 }
                 catch (Exception ex)
                 {
@@ -617,7 +677,7 @@ namespace Gallio.Icarus
                     try
                     {
                         if (AddAssemblies != null)
-                            AddAssemblies(this, new AddAssembliesEventArgs(openFile.FileNames));
+                            AddAssemblies(this, new SingleEventArgs<IList<string>>(openFile.FileNames));
                         ThreadedReloadTree(true);
                     }
                     catch (Exception ex)
@@ -800,7 +860,7 @@ namespace Gallio.Icarus
             {
                 StatusText = "Removing assembly";
                 if (RemoveAssembly != null)
-                    RemoveAssembly(this, new SingleStringEventArgs(assembly));
+                    RemoveAssembly(this, new SingleEventArgs<string>(assembly));
                 ThreadedReloadTree(true);
                 StatusText = string.Empty;
             });
@@ -820,7 +880,7 @@ namespace Gallio.Icarus
 
         private void openProjectToolStripButton_Click(object sender, EventArgs e)
         {
-            OpenProjectFromFile();
+
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -849,19 +909,17 @@ namespace Gallio.Icarus
 
         public void ApplyFilter(Filter<ITest> filter)
         {
-            if (filter is NoneFilter<ITest>)
-                return;
-            if (filter is OrFilter<ITest>)
+            if (InvokeRequired)
             {
-                OrFilter<ITest> orFilter = (OrFilter<ITest>)filter;
-                foreach (Filter<ITest> childFilter in orFilter.Filters)
-                    ApplyFilter(childFilter);
+                Invoke(new MethodInvoker(delegate()
+                {
+                    ApplyFilter(filter);
+                }));
             }
-            else if (filter is IdFilter<ITest>)
+            else
             {
-                IdFilter<ITest> idFilter = (IdFilter<ITest>)filter;
-                foreach (TestTreeNode n in testExplorer.FindNodes(idFilter.ToString().Substring(13, 16)))
-                    n.Toggle();
+                testExplorer.ApplyFilter(filter);
+                testExplorer.CountTests();
             }
         }
 
@@ -907,31 +965,58 @@ namespace Gallio.Icarus
             }
             else
             {
+                logBody = Environment.NewLine + logBody;
                 switch (logName)
                 {
                     case LogStreamNames.ConsoleError:
-                        consoleErrorWindow.LogBody += logBody;
+                        consoleErrorWindow.AppendText(logBody);
                         break;
                     case LogStreamNames.ConsoleInput:
-                        consoleInputWindow.LogBody += logBody;
+                        consoleInputWindow.AppendText(logBody);
                         break;
                     case LogStreamNames.ConsoleOutput:
-                        consoleOutputWindow.LogBody += logBody;
+                        consoleOutputWindow.AppendText(logBody);
                         break;
                     case LogStreamNames.DebugTrace:
-                        debugTraceWindow.LogBody += logBody;
+                        debugTraceWindow.AppendText(logBody);
                         break;
                     case LogStreamNames.Default:
-                        logWindow.LogBody += logBody;
+                        logWindow.AppendText(logBody);
                         break;
                     case LogStreamNames.Failures:
-                        failuresWindow.LogBody += logBody;
+                        failuresWindow.AppendText(logBody);
                         break;
                     case LogStreamNames.Warnings:
-                        warningsWindow.LogBody += logBody;
+                        warningsWindow.AppendText(logBody);
                         break;
                 }
             }
+        }
+
+        public void WriteToLog(LoggerLevel level, string name, string message, Exception exception)
+        {
+            Color color = Color.Black;
+            switch (level)
+            {
+                case LoggerLevel.Fatal:
+                case LoggerLevel.Error:
+                    color = Color.Red;
+                    break;
+
+                case LoggerLevel.Warn:
+                    color = Color.Yellow;
+                    break;
+
+                case LoggerLevel.Info:
+                    color = Color.Gray;
+                    break;
+
+                case LoggerLevel.Debug:
+                    color = Color.DarkGray;
+                    break;
+            }
+            runtimeWindow.AppendText(message, color);
+            runtimeWindow.AppendText(ExceptionUtils.SafeToString(exception), color);
         }
 
         public void CreateReport()
@@ -972,7 +1057,7 @@ namespace Gallio.Icarus
                 if (!Directory.Exists(gallioDir))
                     Directory.CreateDirectory(gallioDir);
                 if (SaveProject != null)
-                    SaveProject(this, new SingleStringEventArgs(Path.Combine(gallioDir, "Icarus.gallio")));
+                    SaveProject(this, new SingleEventArgs<string>(Path.Combine(gallioDir, "Icarus.gallio")));
                 dockPanel.SaveAsXml(dockConfigFile);
             }
             catch
@@ -982,7 +1067,7 @@ namespace Gallio.Icarus
         public void ViewSourceCode(string testId)
         {
             if (GetSourceLocation != null)
-                GetSourceLocation(this, new SingleStringEventArgs(testId));
+                GetSourceLocation(this, new SingleEventArgs<string>(testId));
         }
 
         private void showWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1027,6 +1112,12 @@ namespace Gallio.Icarus
                     CreateReport();
                     reportWindow.Show(dockPanel);
                     break;
+                case "runtimeToolStripMenuItem":
+                    runtimeWindow.Show(dockPanel);
+                    break;
+                case "propertiesToolStripMenuItem":
+                    propertiesWindow.Show(dockPanel);
+                    break;
             }
         }
 
@@ -1037,24 +1128,19 @@ namespace Gallio.Icarus
         public void UpdateHintDirectories(IList<string> hintDirectories)
         {
             if (UpdateHintDirectoriesEvent != null)
-                UpdateHintDirectoriesEvent(this, new StringListEventArgs(hintDirectories));
-        }
-
-        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            propertiesWindow.Show(dockPanel, DockState.Document);
+                UpdateHintDirectoriesEvent(this, new SingleEventArgs<IList<string>>(hintDirectories));
         }
 
         public void UpdateApplicationBaseDirectory(string applicationBaseDirectory)
         {
             if (UpdateApplicationBaseDirectoryEvent != null)
-                UpdateApplicationBaseDirectoryEvent(this, new SingleStringEventArgs(applicationBaseDirectory));
+                UpdateApplicationBaseDirectoryEvent(this, new SingleEventArgs<string>(applicationBaseDirectory));
         }
 
         public void UpdateWorkingDirectory(string workingDirectory)
         {
             if (UpdateWorkingDirectoryEvent != null)
-                UpdateWorkingDirectoryEvent(this, new SingleStringEventArgs(workingDirectory));
+                UpdateWorkingDirectoryEvent(this, new SingleEventArgs<string>(workingDirectory));
         }
 
         public void UpdateShadowCopy(bool shadowCopy)

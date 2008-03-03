@@ -83,6 +83,7 @@ namespace Gallio.Icarus
             this.debugTraceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.warningsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.failuresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runtimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -156,7 +157,7 @@ namespace Gallio.Icarus
             this.openProjectMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openProjectMenuItem.Size = new System.Drawing.Size(186, 22);
             this.openProjectMenuItem.Text = "&Open Project";
-            this.openProjectMenuItem.Click += new System.EventHandler(this.openProjectToolStripMenuItem_Click);
+            this.openProjectMenuItem.Click += new System.EventHandler(this.openProject_Click);
             // 
             // toolStripSeparator3
             // 
@@ -250,7 +251,7 @@ namespace Gallio.Icarus
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
             this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
-            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
+            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // assembliesToolStripMenuItem
             // 
@@ -340,7 +341,8 @@ namespace Gallio.Icarus
             this.consoleErrorToolStripMenuItem,
             this.debugTraceToolStripMenuItem,
             this.warningsToolStripMenuItem,
-            this.failuresToolStripMenuItem});
+            this.failuresToolStripMenuItem,
+            this.runtimeToolStripMenuItem});
             this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
             this.windowsToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.windowsToolStripMenuItem.Text = "Windows";
@@ -400,6 +402,14 @@ namespace Gallio.Icarus
             this.failuresToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.failuresToolStripMenuItem.Text = "Failures";
             this.failuresToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // runtimeToolStripMenuItem
+            // 
+            this.runtimeToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
+            this.runtimeToolStripMenuItem.Name = "runtimeToolStripMenuItem";
+            this.runtimeToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.runtimeToolStripMenuItem.Text = "Runtime";
+            this.runtimeToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -487,7 +497,7 @@ namespace Gallio.Icarus
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(264, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(287, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
@@ -510,7 +520,7 @@ namespace Gallio.Icarus
             this.openProjectToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.openProjectToolStripButton.Text = "Open";
             this.openProjectToolStripButton.ToolTipText = "Open Project";
-            this.openProjectToolStripButton.Click += new System.EventHandler(this.openProjectToolStripButton_Click);
+            this.openProjectToolStripButton.Click += new System.EventHandler(this.openProject_Click);
             // 
             // toolStripSeparator1
             // 
@@ -684,6 +694,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem performanceMonitorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testResultsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runtimeToolStripMenuItem;
     }
 }
 

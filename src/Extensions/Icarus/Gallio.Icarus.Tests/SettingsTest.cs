@@ -13,6 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+
 using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests
@@ -37,11 +40,35 @@ namespace Gallio.Icarus.Tests
         }
 
         [Test]
+        public void PluginDirectories_Test()
+        {
+            List<string> pluginDirectories = new List<string>();
+            pluginDirectories.Add("test");
+            Assert.AreEqual(0, settings.PluginDirectories.Count);
+            settings.PluginDirectories = pluginDirectories;
+            Assert.AreEqual(1, settings.PluginDirectories.Count);
+            Assert.AreEqual("test", settings.PluginDirectories[0]);
+        }
+
+        [Test]
         public void Clone_Test()
         {
             settings.RestorePreviousSettings = false;
             Assert.IsFalse(settings.RestorePreviousSettings);
             Settings clonedSettings = settings.Clone();
+            Assert.IsFalse(clonedSettings.RestorePreviousSettings);
+            settings.RestorePreviousSettings = true;
+            Assert.IsTrue(settings.RestorePreviousSettings);
+            Assert.IsFalse(clonedSettings.RestorePreviousSettings);
+        }
+
+        [Test]
+        public void ICloneable_Test()
+        {
+            settings.RestorePreviousSettings = false;
+            Assert.IsFalse(settings.RestorePreviousSettings);
+            ICloneable ic = (ICloneable)settings;
+            Settings clonedSettings = (Settings)ic.Clone();
             Assert.IsFalse(clonedSettings.RestorePreviousSettings);
             settings.RestorePreviousSettings = true;
             Assert.IsTrue(settings.RestorePreviousSettings);

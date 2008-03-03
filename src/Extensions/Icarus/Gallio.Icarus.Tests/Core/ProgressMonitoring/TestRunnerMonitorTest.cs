@@ -38,15 +38,5 @@ namespace Gallio.Icarus.Tests.Core.ProgressMonitoring
             mocks.ReplayAll();
             TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(projectPresenter, null);
         }
-
-        //[Test]
-        //public void StepFinished_Test()
-        //{
-        //    IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
-        //    ReportMonitor reportMonitor = mocks.CreateMock<ReportMonitor>();
-        //    TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor);
-        //    ITestRunner testRunner = mocks.CreateMock<ITestRunner>();
-        //    testRunnerMonitor.Attach(testRunner);
-        //}
     }
 }

@@ -69,12 +69,15 @@ namespace Gallio.Icarus
             if (Directory.Exists(newHintDirectoryTextBox.Text))
             {
                 hintDirectoriesListBox.Items.Add(newHintDirectoryTextBox.Text);
+                newHintDirectoryTextBox.Clear();
                 UpdateHintDirectories();
             }
             else
             {
+                // TODO: move to resources for localisation
                 string message = "Folder path does not exist." + Environment.NewLine + "Please select a valid folder path.";
-                MessageBox.Show(message, "Invalid folder path", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string title = "Invalid folder path";
+                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
