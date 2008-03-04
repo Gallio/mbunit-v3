@@ -150,6 +150,25 @@ Section "MbUnit v3 Visual Studio 2005 Templates" MbUnitVS2005TemplatesSection
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0" "InstallDir"
 	IfErrors SkipMbUnitVS2005Templates
 
+        ; C# Item Templates
+	SetOutPath "$0\ItemTemplates\CSharp\Test"
+	File "${TARGETDIR}\extras\Templates\VS2005\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip"
+
+	; C# Project Templates
+	SetOutPath "$0\ProjectTemplates\CSharp\Test"
+	File "${TARGETDIR}\extras\Templates\VS2005\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip"
+
+        ; VB Item Templates
+	SetOutPath "$0\ItemTemplates\VisualBasic\Test"
+	File "${TARGETDIR}\extras\Templates\VS2005\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip"
+
+	; VB Project Templates
+	SetOutPath "$0\ProjectTemplates\VisualBasic\Test"
+	File "${TARGETDIR}\extras\Templates\VS2005\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip"
+
+	; Run DevEnv /setup to register the templates.
+	ExecWait '"$0\devenv.exe" /setup'
+
 	SkipMbUnitVS2005Templates:
 SectionEnd
 
@@ -163,12 +182,12 @@ Section "MbUnit v3 Visual Studio 2008 Templates" MbUnitVS2008TemplatesSection
 
         ; C# Item Templates
 	SetOutPath "$0\ItemTemplates\CSharp\Test"
-	File "${TARGETDIR}\extras\Templates\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip"
 
 	; C# Project Templates
 	SetOutPath "$0\ProjectTemplates\CSharp\Test"
-	File "${TARGETDIR}\extras\Templates\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip"
-	File "${TARGETDIR}\extras\Templates\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip"
 
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "Path" "CSharp\Test"
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "Template" "MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip"
@@ -177,19 +196,19 @@ Section "MbUnit v3 Visual Studio 2008 Templates" MbUnitVS2008TemplatesSection
 
         ; VB Item Templates
 	SetOutPath "$0\ItemTemplates\VisualBasic\Test"
-	File "${TARGETDIR}\extras\Templates\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip"
 
 	; VB Project Templates
 	SetOutPath "$0\ProjectTemplates\VisualBasic\Test"
-	File "${TARGETDIR}\extras\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip"
-	File "${TARGETDIR}\extras\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
 
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "Path" "VisualBasic\Test"
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "Template" "MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "TestFrameworkName" "MbUnit v3"
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "AdditionalInfo" "http://www.mbunit.com/"
 
-	; Run DevEnv /setup to register the MVC templates.
+	; Run DevEnv /setup to register the templates.
 	ExecWait '"$0\devenv.exe" /setup'
 
 	SkipMbUnitVS2008Templates:
@@ -555,6 +574,15 @@ Section Uninstall
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0" "InstallDir"
 	IfErrors SkipMbUnitVS2005Templates
 
+	Delete "$0\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip"
+	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip"
+
+	Delete "$0\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip"
+	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip"
+
+	; Run DevEnv /setup to unregister the templates.
+	ExecWait '"$0\devenv.exe" /setup'
+
 	SkipMbUnitVS2005Templates:
 
 	; Uninstall the Visual Studio 2008 templates
@@ -572,7 +600,7 @@ Section Uninstall
 	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
 	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB"
 
-	; Run DevEnv /setup to unregister the MVC templates.
+	; Run DevEnv /setup to unregister the templates.
 	ExecWait '"$0\devenv.exe" /setup'
 
 	SkipMbUnitVS2008Templates:

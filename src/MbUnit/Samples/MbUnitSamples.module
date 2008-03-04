@@ -1,0 +1,40 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+
+  <ItemGroup>
+    <CSharpProject Include="MbUnit.Samples\MbUnit.Samples.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="*.sln">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="**\*.cs" Exclude="**\AdditionalAssemblyInfo.cs">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="**\*.resx">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="**\*.png">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="**\*.csproj">
+        <Folder>Samples</Folder>
+    </Binary>
+    <Binary Include="MbUnit.Samples\bin\MbUnit.Samples.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="MbUnit.Samples\bin\MbUnit.Samples.pdb">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(RootDir)\libs\WatiN\bin\Interop.SHDocVw.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(RootDir)\libs\WatiN\bin\Microsoft.mshtml.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+    <Binary Include="$(RootDir)\libs\WatiN\bin\WatiN.Core.dll">
+        <Folder>Samples\bin</Folder>
+    </Binary>
+  </ItemGroup>
+</Project>
