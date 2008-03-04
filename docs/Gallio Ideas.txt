@@ -245,3 +245,11 @@
   {
   }
   
+* Common instrumentation framework:
+
+It would provide basic services for profiling, dynamic proxies, performance measurement, adaptive load generation, and real-time monitoring services.
+
+The idea here would be to provide a common infrastructure for a variety of tools that require additional hooks into the runtime for interception, data collection, analysis and reporting purposes.
+
+Imagine defining a common means of capturing data traces for performance analysis.  Any number of performance data providers could then  record measurements during test execution (or authoring, perhaps).  This data might end up inside test reports or in a data warehouse of some kind.
+
