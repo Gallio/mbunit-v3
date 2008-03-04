@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using Castle.Core.Logging;
 using Gallio.Hosting;
+using Gallio.Tests.Integration;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -28,7 +30,14 @@ namespace Gallio.Tests.Hosting
         public void CreateHostThrowsIfHostSetupIsNull()
         {
             StubHostFactory factory = new StubHostFactory();
-            factory.CreateHost(null);
+            factory.CreateHost(null, new LogStreamLogger());
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void CreateHostThrowsIfLoggerIsNull()
+        {
+            StubHostFactory factory = new StubHostFactory();
+            factory.CreateHost(new HostSetup(), null);
         }
 
         [Test]
@@ -37,19 +46,23 @@ namespace Gallio.Tests.Hosting
             StubHostFactory factory = new StubHostFactory();
 
             HostSetup originalHostSetup = new HostSetup();
-            Assert.IsNotNull(factory.CreateHost(originalHostSetup));
+            ILogger logger = new ConsoleLogger();
+            Assert.IsNotNull(factory.CreateHost(originalHostSetup, logger));
 
             Assert.AreNotSame(originalHostSetup, factory.HostSetup);
             Assert.AreEqual(Environment.CurrentDirectory, factory.HostSetup.WorkingDirectory);
+            Assert.AreSame(logger, factory.Logger);
         }
 
         private class StubHostFactory : BaseHostFactory
         {
             public HostSetup HostSetup;
+            public ILogger Logger;
 
-            protected override IHost CreateHostImpl(HostSetup hostSetup)
+            protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
             {
                 HostSetup = hostSetup;
+                Logger = logger;
                 return new MockRepository().Stub<IHost>();
             }
         }

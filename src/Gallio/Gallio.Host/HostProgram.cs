@@ -14,10 +14,10 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.Remoting;
 using Gallio.Hosting.ConsoleSupport;
 using Gallio.Hosting;
 using Gallio.Hosting.Channels;
+using Gallio.Utilities;
 
 namespace Gallio.Host
 {
@@ -37,7 +37,8 @@ namespace Gallio.Host
                 return -1;
             }
 
-            Console.WriteLine(String.Format("* Started at {0}.", DateTime.Now));
+            UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;
+            Console.WriteLine(String.Format("* Host started at {0}.", DateTime.Now));
 
             try
             {
@@ -51,17 +52,28 @@ namespace Gallio.Host
 
                             Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
                             hostService.WaitUntilDisposed();
+
+                            if (hostService.WatchdogTimerExpired)
+                                Console.WriteLine("* Watchdog timer expired!");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(String.Format("* A fatal exception occurred: {0}", ex));
+                Console.WriteLine(String.Format("* Fatal exception: {0}", ExceptionUtils.SafeToString(ex)));
             }
 
-            Console.WriteLine(String.Format("* Stopped at {0}.", DateTime.Now));
+            Console.WriteLine(String.Format("* Host stopped at {0}.", DateTime.Now));
             return 0;
+        }
+
+        private void HandleUnhandledExceptionNotification(object sender, CorrelatedExceptionEventArgs e)
+        {
+            if (e.IsRecursive)
+                return;
+
+            Console.WriteLine("* Unhandled exception: " + e.GetDescription());
         }
 
         [STAThread]

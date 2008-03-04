@@ -178,8 +178,7 @@ namespace Gallio.Hosting
             if (e.IsRecursive)
                 return;
 
-            Logger.Fatal("Internal Error: {0}\n{1}\n\nReported By: {2}", e.Message,
-                ExceptionUtils.SafeToString(e.Exception), e.ReporterStackTrace ?? "<unknown>");
+            Logger.Fatal("Internal error: " + e.GetDescription());
         }
     }
 }

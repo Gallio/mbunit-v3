@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Castle.Core.Logging;
 
 namespace Gallio.Hosting
 {
@@ -26,8 +27,10 @@ namespace Gallio.Hosting
         /// Creates a host instance.
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
+        /// <param name="logger">The logger for host message output</param>
         /// <returns>The newly created host</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> is null</exception>
-        IHost CreateHost(HostSetup hostSetup);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
+        /// or <paramref name="logger"/> is null</exception>
+        IHost CreateHost(HostSetup hostSetup, ILogger logger);
     }
 }

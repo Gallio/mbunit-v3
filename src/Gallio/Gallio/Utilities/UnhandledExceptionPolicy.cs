@@ -139,14 +139,16 @@ namespace Gallio.Utilities
         private static void HandleAppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             string threadName = Thread.CurrentThread.Name;
+            string message;
             if (string.IsNullOrEmpty(threadName))
-                threadName = "<unnamed>";
+                message = "An unhandled exception occurred.";
+            else
+                message = String.Format("An unhandled exception occurred in thread '{0}'.", threadName);
 
             // Note: There is no need to include the reporter's stack trace because it will already
             //       be fully contained in the exception since it must have bubbled up to the thread entry point.
             Exception unhandledException = e.ExceptionObject as Exception ?? new Exception("An unknown exception occurred.");
-            ReportInternal(String.Format("An unhandled exception occurred in thread '{0}'.", threadName),
-                unhandledException, false);
+            ReportInternal(message, unhandledException, false);
         }
     }
 }

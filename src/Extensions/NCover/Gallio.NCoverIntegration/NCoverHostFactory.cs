@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Castle.Core.Logging;
 using Gallio.Hosting;
 
 namespace Gallio.NCoverIntegration
@@ -26,9 +27,9 @@ namespace Gallio.NCoverIntegration
     public class NCoverHostFactory : IsolatedProcessHostFactory
     {
         /// <inheritdoc />
-        protected override IHost CreateHostImpl(HostSetup hostSetup)
+        protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            NCoverHost host = new NCoverHost(hostSetup);
+            NCoverHost host = new NCoverHost(hostSetup, logger);
             host.Initialize();
             return host;
         }

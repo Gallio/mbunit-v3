@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Castle.Core.Logging;
 using Gallio.Concurrency;
 using Gallio.Hosting.Channels;
 using Gallio.Utilities;
@@ -54,9 +55,11 @@ namespace Gallio.Hosting
         /// Creates an uninitialized host.
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> is null</exception>
-        public IsolatedProcessHost(HostSetup hostSetup)
-            : base(hostSetup)
+        /// <param name="logger">The logger for host message output</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
+        /// or <paramref name="logger"/> is null</exception>
+        public IsolatedProcessHost(HostSetup hostSetup, ILogger logger)
+            : base(hostSetup, logger)
         {
         }
 
@@ -128,8 +131,11 @@ namespace Gallio.Hosting
                 string arguments = "/ipc:" + portName;
 
                 processTask = CreateProcessTask(profile.HostProcessPath, arguments, HostSetup.WorkingDirectory);
-                processTask.CaptureConsoleError = true;
                 processTask.CaptureConsoleOutput = true;
+                processTask.CaptureConsoleError = true;
+                processTask.ConsoleOutputDataReceived += LogConsoleOutput;
+                processTask.ConsoleErrorDataReceived += LogConsoleError;
+                processTask.Terminated += LogExitCode;
                 processTask.Terminated += delegate { profile.Dispose(); };
 
                 processTask.Start();
@@ -139,6 +145,24 @@ namespace Gallio.Hosting
                 profile.Dispose();
                 throw;
             }
+        }
+
+        private void LogConsoleOutput(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data != null)
+                Logger.Info(e.Data);
+        }
+
+        private void LogConsoleError(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data != null)
+                Logger.Error(e.Data);
+        }
+
+        private void LogExitCode(object sender, EventArgs e)
+        {
+            ProcessTask processTask = (ProcessTask)sender;
+            Logger.Debug("Host Process Exit Code: {0}", processTask.ExitCode);
         }
 
         private void WaitUntilReady(IHostService hostService)

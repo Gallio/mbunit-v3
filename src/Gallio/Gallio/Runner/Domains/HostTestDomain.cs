@@ -109,7 +109,7 @@ namespace Gallio.Runner.Domains
         private void CreateHost(TestPackageConfig packageConfig)
         {
             HostSetup hostSetup = CreateHostSetup(packageConfig);
-            host = hostFactory.CreateHost(hostSetup);
+            host = hostFactory.CreateHost(hostSetup, logger);
         }
 
         private HostSetup CreateHostSetup(TestPackageConfig packageConfig)

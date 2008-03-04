@@ -35,6 +35,7 @@ namespace Gallio.Hosting
     public abstract class RemoteHost : IHost
     {
         private readonly HostSetup hostSetup;
+        private readonly ILogger logger;
         private bool isDisposed;
         private IHostService hostService;
         private TimeSpan? pingInterval;
@@ -42,18 +43,32 @@ namespace Gallio.Hosting
         private readonly object pingLock = new object();
         private Timer pingTimer;
         private bool lastPingFailed;
+        private bool pingInProgress;
 
         /// <summary>
         /// Creates an uninitialized host.
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> is null</exception>
-        protected RemoteHost(HostSetup hostSetup)
+        /// <param name="logger">The logger for host message output</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
+        /// or <paramref name="logger"/> is null</exception>
+        protected RemoteHost(HostSetup hostSetup, ILogger logger)
         {
             if (hostSetup == null)
                 throw new ArgumentNullException("hostSetup");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
 
             this.hostSetup = hostSetup;
+            this.logger = logger;
+        }
+
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        protected ILogger Logger
+        {
+            get { return logger; }
         }
 
         /// <inheritdoc />
@@ -300,17 +315,35 @@ namespace Gallio.Hosting
 
         private void PingTimerElapsed(object state)
         {
+            bool pinged = false;
             try
             {
+                lock (pingLock)
+                {
+                    if (pingInProgress || pingTimer == null)
+                        return;
+
+                    pinged = true;
+                    pingInProgress = true;
+                }
+
                 if (hostService != null)
                     hostService.Ping();
+
                 lastPingFailed = false;
             }
             catch (Exception ex)
             {
-                if (! lastPingFailed)
+                if (!lastPingFailed)
+                {
                     UnhandledExceptionPolicy.Report("Could not send Ping message to the remote host service.", ex);
-                lastPingFailed = true;
+                    lastPingFailed = true;
+                }
+            }
+            finally
+            {
+                if (pinged)
+                    pingInProgress = false;
             }
         }
     }

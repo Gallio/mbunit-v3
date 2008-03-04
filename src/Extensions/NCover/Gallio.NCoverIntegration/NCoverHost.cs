@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Castle.Core.Logging;
 using Gallio.Concurrency;
 using Gallio.Hosting;
 
@@ -29,9 +30,11 @@ namespace Gallio.NCoverIntegration
         /// Creates an uninitialized host.
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> is null</exception>
-        public NCoverHost(HostSetup hostSetup)
-            : base(hostSetup)
+        /// <param name="logger">The logger for host message output</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
+        /// or <paramref name="logger"/> is null</exception>
+        public NCoverHost(HostSetup hostSetup, ILogger logger)
+            : base(hostSetup, logger)
         {
         }
 

@@ -15,6 +15,7 @@
 
 using System.Diagnostics;
 using Gallio.Hosting;
+using Gallio.Tests.Integration;
 using MbUnit.Framework;
 using TypeMock.Integration;
 
@@ -38,7 +39,7 @@ namespace Gallio.TypeMockIntegration.Tests
         {
             TypeMockHostFactory factory = new TypeMockHostFactory();
 
-            using (IHost host = factory.CreateHost(new HostSetup()))
+            using (IHost host = factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
 

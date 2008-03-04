@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Text;
 
 namespace Gallio.Utilities
 {
@@ -100,6 +101,27 @@ namespace Gallio.Utilities
                 throw new ArgumentNullException("correlationMessage");
 
             message = string.Concat(message, "\n", correlationMessage);
+        }
+
+        /// <summary>
+        /// Formats a description of the exception to a string like: "Message\nException\nReported by: ReporterStackTrace".
+        /// </summary>
+        /// <returns>The formatted string</returns>
+        public string GetDescription()
+        {
+            StringBuilder description = new StringBuilder(message);
+            description.AppendLine();
+            description.AppendLine(ExceptionUtils.SafeToString(exception));
+
+            if (reporterStackTrace != null)
+            {
+                if (description[description.Length - 1] != '\n')
+                    description.AppendLine();
+
+                description.AppendLine("Reported by: ").Append(ReporterStackTrace);
+            }
+
+            return description.ToString();
         }
     }
 }

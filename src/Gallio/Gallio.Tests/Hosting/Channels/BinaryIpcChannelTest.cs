@@ -16,8 +16,10 @@
 using System;
 using System.Runtime.Remoting;
 using System.Threading;
+using Castle.Core.Logging;
 using Gallio.Hosting;
 using Gallio.Hosting.Channels;
+using Gallio.Tests.Integration;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting.Channels
@@ -47,7 +49,7 @@ namespace Gallio.Tests.Hosting.Channels
         [Test]
         public void RegisteredServiceCanBeAccessedWithGetService()
         {
-            using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup()))
+            using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
 

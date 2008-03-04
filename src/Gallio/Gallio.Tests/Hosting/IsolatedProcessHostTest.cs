@@ -15,8 +15,10 @@
 
 using System;
 using System.Threading;
+using Castle.Core.Logging;
 using Gallio.Hosting;
 using Gallio.Tests.Hosting.Channels;
+using Gallio.Tests.Integration;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting
@@ -39,7 +41,7 @@ namespace Gallio.Tests.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.Configuration.LegacyUnhandledExceptionPolicyEnabled = true;
 
-            using (IHost host = Factory.CreateHost(hostSetup))
+            using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
                 host.DoCallback(ThrowUnhandledExceptionCallback);

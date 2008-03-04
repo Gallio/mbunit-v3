@@ -14,13 +14,13 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Model.Execution;
 using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Runner.Domains;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Domains
 {
@@ -161,7 +161,7 @@ namespace Gallio.Runner.Domains
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Failed to safely disconnect from remote test domain: " + ex);
+                UnhandledExceptionPolicy.Report("Failed to safely disconnect from remote test domain.", ex);
             }
             finally
             {

@@ -69,12 +69,12 @@ namespace Gallio.Tests.Integration
 
         public void Run()
         {
-            LogStreamWriter logStreamWriter = Log.ConsoleOutput;
+            LogStreamWriter logStreamWriter = Log.Default;
 
             using (TestLauncher launcher = new TestLauncher())
             {
                 launcher.TestPackageConfig = packageConfig;
-                launcher.Logger = new DebugLogger(logStreamWriter);
+                launcher.Logger = new LogStreamLogger(logStreamWriter);
                 launcher.Filter = new OrFilter<ITest>(filters.ToArray());
                 launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
 
@@ -93,36 +93,6 @@ namespace Gallio.Tests.Integration
                     {
                         logStreamWriter.WriteLine(File.ReadAllText(reportPath));
                     }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Castle's StreamLogger doesn't accept arbitrary TextWriters!
-        /// </summary>
-        private sealed class DebugLogger : LevelFilteredLogger
-        {
-            private readonly TextWriter writer;
-
-            public DebugLogger(TextWriter writer)
-            {
-                this.writer = writer;
-                Level = LoggerLevel.Debug;
-            }
-
-            public override ILogger CreateChildLogger(string name)
-            {
-                return this;
-            }
-
-            protected override void Log(LoggerLevel level, string name, string message, Exception exception)
-            {
-                writer.WriteLine(message);
-
-                if (exception != null)
-                {
-                    writer.Write(">>> ");
-                    writer.WriteLine(exception);
                 }
             }
         }

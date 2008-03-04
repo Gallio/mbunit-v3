@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Castle.Core.Logging;
 using Gallio.Hosting;
 using TypeMock.Integration;
 
@@ -26,12 +27,12 @@ namespace Gallio.TypeMockIntegration
     public class TypeMockHostFactory : IsolatedProcessHostFactory
     {
         /// <inheritdoc />
-        protected override IHost CreateHostImpl(HostSetup hostSetup)
+        protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
             if (! Service.IsInstalled)
                 throw new IntegrationNotInstalledException("TypeMock does not appear to be installed.");
 
-            TypeMockHost host = new TypeMockHost(hostSetup);
+            TypeMockHost host = new TypeMockHost(hostSetup, logger);
             host.Initialize();
             return host;
         }

@@ -175,19 +175,31 @@ namespace Gallio.Concurrency
         /// The event fired when new output is received on the console output stream.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This event should be wired up before starting the task to ensure that
         /// no data is lost.
+        /// </para>
+        /// <para>
+        /// Please node that the <see cref="DataReceivedEventArgs.Data" /> property
+        /// will be null when the redirected stream is closed after the process exits.
+        /// </para>
         /// </remarks>
-        public event EventHandler<DataReceivedEventArgs> OutputDataReceived;
+        public event EventHandler<DataReceivedEventArgs> ConsoleOutputDataReceived;
 
         /// <summary>
         /// The event fired when new output is received on the console error stream.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This event should be wired up before starting the task to ensure that
         /// no data is lost.
+        /// </para>
+        /// <para>
+        /// Please node that the <see cref="DataReceivedEventArgs.Data" /> property
+        /// will be null when the redirected stream is closed after the process exits.
+        /// </para>
         /// </remarks>
-        public event EventHandler<DataReceivedEventArgs> ErrorDataReceived;
+        public event EventHandler<DataReceivedEventArgs> ConsoleErrorDataReceived;
 
         /// <inheritdoc />
         protected override void StartImpl()
@@ -205,8 +217,8 @@ namespace Gallio.Concurrency
             startInfo.WorkingDirectory = workingDirectory;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
-            startInfo.RedirectStandardOutput = captureConsoleOutput || OutputDataReceived != null;
-            startInfo.RedirectStandardError = captureConsoleError || ErrorDataReceived != null;
+            startInfo.RedirectStandardOutput = captureConsoleOutput || ConsoleOutputDataReceived != null;
+            startInfo.RedirectStandardError = captureConsoleError || ConsoleErrorDataReceived != null;
 
             process = StartProcess(startInfo);
             process.EnableRaisingEvents = true;
@@ -276,18 +288,18 @@ namespace Gallio.Concurrency
 
         private void LogOutputData(object sender, DataReceivedEventArgs e)
         {
-            if (captureConsoleOutput)
+            if (captureConsoleOutput && e.Data != null)
                 consoleOutputCaptureWriter.WriteLine(e.Data);
 
-            EventHandlerUtils.SafeInvoke(OutputDataReceived, this, e);
+            EventHandlerUtils.SafeInvoke(ConsoleOutputDataReceived, this, e);
         }
 
         private void LogErrorData(object sender, DataReceivedEventArgs e)
         {
-            if (captureConsoleError)
+            if (captureConsoleError && e.Data != null)
                 consoleErrorCaptureWriter.WriteLine(e.Data);
 
-            EventHandlerUtils.SafeInvoke(OutputDataReceived, this, e);
+            EventHandlerUtils.SafeInvoke(ConsoleOutputDataReceived, this, e);
         }
     }
 }

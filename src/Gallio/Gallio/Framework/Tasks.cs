@@ -135,14 +135,16 @@ namespace Gallio.Framework
                 writer.WriteLine("Working Directory: {0}", task.WorkingDirectory);
             };
 
-            task.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
+            task.ConsoleOutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
             {
-                writer.WriteLine(e.Data);
+                if (e.Data != null)
+                    writer.WriteLine(e.Data);
             };
 
-            task.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
+            task.ConsoleErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
             {
-                writer.WriteLine(e.Data);
+                if (e.Data != null)
+                    writer.WriteLine(e.Data);
             };
 
             task.Aborted += delegate

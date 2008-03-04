@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Castle.Core.Logging;
+
 namespace Gallio.Hosting
 {
     /// <summary>
@@ -23,9 +25,9 @@ namespace Gallio.Hosting
     public class IsolatedProcessHostFactory : BaseHostFactory
     {
         /// <inheritdoc />
-        protected override IHost CreateHostImpl(HostSetup hostSetup)
+        protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            IsolatedProcessHost host = new IsolatedProcessHost(hostSetup);
+            IsolatedProcessHost host = new IsolatedProcessHost(hostSetup, logger);
             host.Initialize();
             return host;
         }

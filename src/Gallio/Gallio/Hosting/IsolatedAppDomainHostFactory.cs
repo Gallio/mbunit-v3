@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Castle.Core.Logging;
 
 namespace Gallio.Hosting
 {
@@ -25,9 +26,9 @@ namespace Gallio.Hosting
     public class IsolatedAppDomainHostFactory : BaseHostFactory
     {
         /// <inheritdoc />
-        protected override IHost CreateHostImpl(HostSetup hostSetup)
+        protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            IsolatedAppDomainHost host = new IsolatedAppDomainHost(hostSetup);
+            IsolatedAppDomainHost host = new IsolatedAppDomainHost(hostSetup, logger);
             host.Initialize();
             return host;
         }

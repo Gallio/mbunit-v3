@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Castle.Core.Logging;
 
 namespace Gallio.Hosting
 {
@@ -23,22 +24,25 @@ namespace Gallio.Hosting
     public abstract class BaseHostFactory : IHostFactory
     {
         /// <inheritdoc />
-        public IHost CreateHost(HostSetup hostSetup)
+        public IHost CreateHost(HostSetup hostSetup, ILogger logger)
         {
             if (hostSetup == null)
                 throw new ArgumentNullException("hostSetup");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
 
             HostSetup canonicalHostSetup = hostSetup.Copy();
             canonicalHostSetup.Canonicalize(null);
 
-            return CreateHostImpl(canonicalHostSetup);
+            return CreateHostImpl(canonicalHostSetup, logger);
         }
 
         /// <summary>
         /// Creates the host.
         /// </summary>
-        /// <param name="hostSetup">The host setup, non-null</param>
+        /// <param name="hostSetup">The canonicalized host setup, non-null</param>
+        /// <param name="logger">The logger, non-null</param>
         /// <returns>The host</returns>
-        protected abstract IHost CreateHostImpl(HostSetup hostSetup);
+        protected abstract IHost CreateHostImpl(HostSetup hostSetup, ILogger logger);
     }
 }

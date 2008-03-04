@@ -19,10 +19,10 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Remoting;
-using System.Threading;
 using Castle.Core.Logging;
 using Gallio.Collections;
 using Gallio.Hosting;
+using Gallio.Tests.Integration;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting
@@ -35,14 +35,20 @@ namespace Gallio.Tests.Hosting
         [Test, ExpectedArgumentNullException]
         public void CreateHostThrowsIfHostSetupIsNull()
         {
-            Factory.CreateHost(null);
+            Factory.CreateHost(null, new LogStreamLogger());
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void CreateHostThrowsIfLoggerIsNull()
+        {
+            Factory.CreateHost(new HostSetup(), null);
         }
 
         [Test]
         public void PingSucceedsUntilHostIsDisposed()
         {
             IHost host;
-            using (host = Factory.CreateHost(new HostSetup()))
+            using (host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 // Should work fine.
                 host.Ping();
@@ -55,7 +61,7 @@ namespace Gallio.Tests.Hosting
         [Test]
         public void CreateInstanceCreatesAValidObjectHandle()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup()))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 Type remoteType = typeof(ArrayList);
                 ObjectHandle handle = host.CreateInstance(remoteType.Assembly.FullName, remoteType.FullName);
@@ -67,7 +73,7 @@ namespace Gallio.Tests.Hosting
         [Test]
         public void CreateInstanceFromCreatesAValidObjectHandle()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup()))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 Type serviceType = typeof(TestService);
                 TestService serviceProxy = (TestService)host.CreateInstanceFrom(
@@ -80,7 +86,7 @@ namespace Gallio.Tests.Hosting
         [Test]
         public void DoCallbackHasRemoteSideEffects()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup()))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
 
@@ -113,7 +119,7 @@ namespace Gallio.Tests.Hosting
 
             using (Mocks.Playback())
             {
-                using (IHost host = Factory.CreateHost(new HostSetup()))
+                using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
                 {
                     host.InitializeRuntime(new RuntimeSetup(), logger);
 
@@ -137,7 +143,7 @@ namespace Gallio.Tests.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.WorkingDirectory = Path.GetTempPath();
 
-            using (IHost host = Factory.CreateHost(hostSetup))
+            using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
                 host.DoCallback(HostRunsInRequestedWorkingDirectoryCallback);
@@ -157,7 +163,7 @@ namespace Gallio.Tests.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.ShadowCopy = true;
 
-            using (IHost host = Factory.CreateHost(hostSetup))
+            using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
                 host.DoCallback(HostRunsWithShadowCopyingEnabledOnRequestCallback);
@@ -174,7 +180,7 @@ namespace Gallio.Tests.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.ApplicationBaseDirectory = Path.GetTempPath();
 
-            using (IHost host = Factory.CreateHost(hostSetup))
+            using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
                 host.DoCallback(HostRunsWithSpecifiedApplicationBaseDirectoryCallback);
@@ -196,7 +202,7 @@ namespace Gallio.Tests.Hosting
                 + "  </appSettings>"
                 + "</configuration>";
 
-            using (IHost host = Factory.CreateHost(hostSetup))
+            using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
                 host.DoCallback(HostRunsWithSpecifiedConfigurationXmlCallback);
@@ -213,7 +219,7 @@ namespace Gallio.Tests.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.Configuration.AssertUiEnabled = true;
 
-            using (IHost host = Factory.CreateHost(hostSetup))
+            using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
                 host.DoCallback(HostRunsWithAssertUiEnabledCallback);
@@ -221,7 +227,7 @@ namespace Gallio.Tests.Hosting
 
             hostSetup.Configuration.AssertUiEnabled = false;
 
-            using (IHost host = Factory.CreateHost(hostSetup))
+            using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
                 host.DoCallback(HostRunsWithAssertUiDisabledCallback);
