@@ -1,22 +1,17 @@
 <Project DefaultTargets="Clean;Build;Test" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Configure the modules. -->
   <PropertyGroup>
     <RootDir>$(MSBuildProjectDirectory)</RootDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <NestedModule Include="$(SourceDir)\All.module" />
+  </ItemGroup>
 
-    <LibsDir>$(RootDir)\libs</LibsDir>
-    <SourceDir>$(RootDir)\src</SourceDir>
+  <Import Project="$(RootDir)\Module.targets" />
 
-    <BuildDir>$(RootDir)\build</BuildDir>
-    <BuildReportsDir>$(BuildDir)\reports</BuildReportsDir>
-    <BuildReleaseDir>$(BuildDir)\release</BuildReleaseDir>
-    <BuildTempDir>$(BuildDir)\temp</BuildTempDir>
-
-    <TargetDir>$(BuildDir)\target</TargetDir>
-    <TargetBinDir>$(TargetDir)\bin</TargetBinDir>
-    <TargetDocsDir>$(TargetDir)\docs</TargetDocsDir>
-    <TargetExtrasDir>$(TargetDir)\extras</TargetExtrasDir>
-    
+  <!-- Configure other properties. -->
+  <PropertyGroup>
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
-
     <Coverage Condition="'$(Coverage)'==''">true</Coverage>
     
     <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
@@ -26,8 +21,6 @@
     <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
     <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
-    <MSBuildCommunityTasksPath>$(LibsDir)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
-    <NCoverExplorerPath>$(LibsDir)\NCoverExplorer</NCoverExplorerPath>
 
     <SatisfactoryCoverage>70</SatisfactoryCoverage>
     
@@ -39,18 +32,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <NestedModule Include="$(SourceDir)\All.module" />
-  </ItemGroup>
-
-  <!-- Note: The tasks assembly gets loaded lazily. -->
-  <UsingTask AssemblyFile="$(TargetBinDir)\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
-
-  <UsingTask AssemblyFile="$(NCoverExplorerPath)\NCoverExplorer.MSBuildTasks.dll" TaskName="NCoverExplorer.MSBuildTasks.NCoverExplorer" />
-
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
-  <Import Project="$(RootDir)\Module.targets" />
-
-  <ItemGroup>
     <File Include="$(RootDir)\Gallio License.txt" />
     <File Include="$(RootDir)\Release Notes.txt" />
     <File Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
@@ -60,17 +41,42 @@
     </Extra>
   </ItemGroup>
 
+  <PropertyGroup>
+    <BuildDependsOnTargets>
+      RecursiveBeforeBuild;
+      BuildCSharpProjects;
+      RecursiveAfterBuild;
+      CopyFiles
+    </BuildDependsOnTargets>
+    <RebuildDependsOnTargets>
+      RecursiveBeforeBuild;
+      RebuildCSharpProjects;
+      RecursiveAfterBuild;
+      CopyFiles
+    </RebuildDependsOnTargets>
+    <CleanDependsOnTargets>
+      CleanCSharpProjects;
+      RemoveBuildDir;
+    </CleanDependsOnTargets>
+  </PropertyGroup>
+
   <Target Name="Build"
-          DependsOnTargets="BuildCSharpProjects;CopyFiles" />
+          DependsOnTargets="$(BuildDependsOnTargets)" />
 
   <Target Name="Rebuild"
-          DependsOnTargets="RebuildCSharpProjects;CopyFiles" />
+          DependsOnTargets="$(RebuildDependsOnTargets)" />
 
   <Target Name="Clean"
-          DependsOnTargets="CleanCSharpProjects">
+          DependsOnTargets="$(CleanDependsOnTargets)">
+  </Target>
+
+  <Target Name="RemoveBuildDir">
     <RemoveDir Directories="$(BuildDir)"
                Condition="Exists('$(BuildDir)')" />
   </Target>
+
+  <!-- Note: The Gallio MSBuildTasks assembly gets loaded lazily so it's ok that it has not been built yet. -->
+  <UsingTask AssemblyFile="$(TargetBinDir)\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
 
   <PropertyGroup>
     <RunnerType Condition="$(Coverage)">NCover</RunnerType>

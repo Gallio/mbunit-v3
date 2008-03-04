@@ -9,7 +9,6 @@
        - CSharpProject: Path of a C# project file.
        - TestAssembly: Path of a compiled test assembly to run.
 
-       - InstallerInclude: Path of an include file to add to the NSIS installer. (TODO)
        - DocumentedAssembly: Path of an assembly with XML documentation to include.
 
        - Binary: Path of a file to copy into the build\target\bin dir.
@@ -19,7 +18,28 @@
 
        (Binary, Document and File may have optional Folder metadata
         to specify a relative destination path within the respective dir.)
+
+       It can also add additional build actions by overriding the BeforeBuild and AfterBuild targets.
   -->
+  <PropertyGroup>
+    <LibsDir>$(RootDir)\libs</LibsDir>
+    <SourceDir>$(RootDir)\src</SourceDir>
+
+    <BuildDir>$(RootDir)\build</BuildDir>
+    <BuildReportsDir>$(BuildDir)\reports</BuildReportsDir>
+    <BuildReleaseDir>$(BuildDir)\release</BuildReleaseDir>
+    <BuildTempDir>$(BuildDir)\temp</BuildTempDir>
+
+    <TargetDir>$(BuildDir)\target</TargetDir>
+    <TargetBinDir>$(TargetDir)\bin</TargetBinDir>
+    <TargetDocsDir>$(TargetDir)\docs</TargetDocsDir>
+    <TargetExtrasDir>$(TargetDir)\extras</TargetExtrasDir>
+
+    <MSBuildCommunityTasksPath>$(LibsDir)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+    <NCoverExplorerPath>$(LibsDir)\NCoverExplorer</NCoverExplorerPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
+  <UsingTask AssemblyFile="$(NCoverExplorerPath)\NCoverExplorer.MSBuildTasks.dll" TaskName="NCoverExplorer.MSBuildTasks.NCoverExplorer" />
 
   <Target Name="GetModuleItems"
           Outputs="@(ModuleItem)">
@@ -72,5 +92,30 @@
                 AdditionalMetadata="ItemName=File">
       <Output TaskParameter="Include" ItemName="ModuleItem" />
     </CreateItem>
+  </Target>
+
+  <Target Name="RecursiveBeforeBuild" DependsOnTargets="BeforeBuild;_NestedRecursiveBeforeBuild"/>
+  <Target Name="RecursiveAfterBuild" DependsOnTargets="_NestedRecursiveAfterBuild;AfterBuild"/>
+
+  <Target Name="_NestedRecursiveBeforeBuild">
+    <MSBuild Projects="@(NestedModule)"
+             Targets="RecursiveBeforeBuild"
+	     Properties="RootDir=$(RootDir)"
+	     Condition="'@(NestedModule)'!=''" />
+  </Target>
+
+  <Target Name="_NestedRecursiveAfterBuild">
+    <MSBuild Projects="@(NestedModule)"
+             Targets="RecursiveAfterBuild"
+	     Properties="RootDir=$(RootDir)"
+	     Condition="'@(NestedModule)'!=''" />
+  </Target>
+
+  <!-- Override this target to add custom before build actions -->
+  <Target Name="BeforeBuild">
+  </Target>
+
+  <!-- Override this target to add custom after build actions -->
+  <Target Name="AfterBuild">
   </Target>
 </Project>

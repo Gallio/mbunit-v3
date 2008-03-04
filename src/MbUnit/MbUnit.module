@@ -56,4 +56,137 @@
   <ItemGroup>
     <TestAssembly Include="MbUnit.Tests\bin\MbUnit.Tests.dll" />
   </ItemGroup>
+
+  <!-- MVC C# Test Project -->
+  <ItemGroup>
+    <TemplateFile Include="MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.csproj">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.vstemplate">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.ico">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Properties\AssemblyInfo.cs">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Controllers\HomeControllerTest.cs">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+  </ItemGroup>
+
+  <!-- MVC VB Test Project -->
+  <ItemGroup>
+    <TemplateFile Include="MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.vbproj">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.vstemplate">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.ico">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="My Project\AssemblyInfo.vb">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Controllers\HomeControllerTest.vb">
+      <Base>Templates\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+  </ItemGroup>
+
+  <!-- C# Test Project -->
+  <ItemGroup>
+    <TemplateFile Include="MbUnit.TestProjectTemplate.CSharp.csproj">
+      <Base>Templates\MbUnit.TestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.vstemplate">
+      <Base>Templates\MbUnit.TestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.ico">
+      <Base>Templates\MbUnit.TestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Properties\AssemblyInfo.cs">
+      <Base>Templates\MbUnit.TestProjectTemplate.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+  </ItemGroup>
+
+  <!-- VB Test Project -->
+  <ItemGroup>
+    <TemplateFile Include="MbUnit.TestProjectTemplate.VisualBasic.vbproj">
+      <Base>Templates\MbUnit.TestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.vstemplate">
+      <Base>Templates\MbUnit.TestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.ico">
+      <Base>Templates\MbUnit.TestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="My Project\AssemblyInfo.vb">
+      <Base>Templates\MbUnit.TestProjectTemplate.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+  </ItemGroup>
+
+  <!-- C# Test Fixture -->
+  <ItemGroup>
+    <TemplateFile Include="TestFixture.cs">
+      <Base>Templates\MbUnit.ItemTemplates.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="TestFixture.vstemplate">
+      <Base>Templates\MbUnit.ItemTemplates.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.ico">
+      <Base>Templates\MbUnit.ItemTemplates.CSharp</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip</Zip>
+    </TemplateFile>
+  </ItemGroup>
+
+  <!-- VB Test Fixture -->
+  <ItemGroup>
+    <TemplateFile Include="TestFixture.vb">
+      <Base>Templates\MbUnit.ItemTemplates.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="TestFixture.vstemplate">
+      <Base>Templates\MbUnit.ItemTemplates.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+    <TemplateFile Include="Template.ico">
+      <Base>Templates\MbUnit.ItemTemplates.VisualBasic</Base>
+      <Zip>$(TargetExtrasDir)\Templates\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip</Zip>
+    </TemplateFile>
+  </ItemGroup>
+
+  <Target Name="AfterBuild">
+    <CreateItem Include="%(TemplateFile.Zip)">
+      <Output TaskParameter="Include" ItemName="ZipFile" />
+    </CreateItem>
+
+    <MakeDir Directories="@(ZipFile->'%(RootDir)%(Directory)')" />
+
+    <Zip Files="@(TemplateFile->'%(Base)\%(Identity)')"
+         WorkingDirectory="%(Base)"
+         ZipFileName="%(Zip)"
+         ZipLevel="9" />
+  </Target>
 </Project>
