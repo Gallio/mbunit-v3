@@ -1,0 +1,29 @@
+﻿<VSTemplate Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+  <TemplateData>
+    <Name>MbUnit.MvcWebApplicationTestProjectTemplate</Name>
+    <Description>MbUnit template for ASP.Net MVC</Description>
+    <Icon>Template.ico</Icon>
+    <ProjectType>CSharp</ProjectType>
+    <ProjectSubType>
+    </ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>MvcApplicationTest</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+ </TemplateData>
+  <TemplateContent>
+    <CustomParameters>
+      <CustomParameter Name="$MVCReferences$" Value="System.Web.Abstractions.dll;System.Web.Mvc.dll;System.Web.Routing.dll"/>
+    </CustomParameters>
+    <Project File="MbUnit.MvcWebApplicationTestProjectTemplate.csproj" ReplaceParameters="true">
+      <Folder Name="Controllers" TargetFolderName="Controllers">
+        <ProjectItem ReplaceParameters="true" TargetFileName="HomeControllerTest.cs">HomeControllerTest.cs</ProjectItem>
+      </Folder>
+      <Folder Name="Properties" TargetFolderName="Properties">
+        <ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      </Folder>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Gallio")]
-[assembly: AssemblyCopyright("Copyright © 2008 MbUnit Project - http://www.mbunit.com/")]
+[assembly: AssemblyCopyright("Copyright © 2005-2008 Gallio Project - http://www.gallio.org/")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

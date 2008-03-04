@@ -1,4 +1,4 @@
-// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -137,13 +137,7 @@ namespace Gallio.TDNetRunner
                 launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
                 launcher.Filter = filter;
                 launcher.RuntimeSetup = new RuntimeSetup();
-
-                // FIXME: For now, we use a local test runner instead of the isolated test runner.
-                // TestDriven.Net will crash during debugging otherwise.  Moreover, there can
-                // be interesting side-effects because of the assembly binding redirection
-                // that occurs such as the wrong version of Gallio being used which makes
-                // testing more difficult.  Needs more thought.  -- Jeff.
-                launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
+                launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
 
                 // Set the installation path explicitly to ensure that we do not encounter problems
                 // when the test assembly contains a local copy of the primary runtime assemblies

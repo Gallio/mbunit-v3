@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <File Include="Gallio Website.url" />
+  
     <Binary Include="$(RootDir)\libs\Castle\bin\Castle.Core.dll" />
     <Binary Include="$(RootDir)\libs\Castle\bin\Castle.MicroKernel.dll" />
     <Binary Include="$(RootDir)\libs\Castle\bin\Castle.Windsor.dll" />

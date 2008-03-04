@@ -50,13 +50,8 @@
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
   <Import Project="$(RootDir)\Module.targets" />
 
-  <!-- The NDoc projects to compile. -->
   <ItemGroup>
-    <NDocProject Include="$(SourceDir)\MbUnit\Docs\MbUnit.ndoc" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <File Include="$(RootDir)\MbUnit License.txt" />
+    <File Include="$(RootDir)\Gallio License.txt" />
     <File Include="$(RootDir)\Release Notes.txt" />
     <File Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
 
@@ -189,7 +184,7 @@
     <Warning Text="The NSIS tools must be installed to generate the installer.  Look in libs\Setup Files for the NSIS installer."
              Condition="! Exists('$(NSISPath)')" />
 
-    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\Installer\MbUnit.nsi&quot;"
+    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\Installer\GallioBundle.nsi&quot;"
           Condition="Exists('$(NSISPath)')" />
   </Target>
 
@@ -201,7 +196,7 @@
 
     <Zip Files="@(ZipFiles)"
          WorkingDirectory="$(TargetDir)"
-         ZipFileName="$(BuildReleaseDir)\MbUnit-$(Version).zip"
+         ZipFileName="$(BuildReleaseDir)\GallioBundle-$(Version).zip"
          ZipLevel="9" />
   </Target>
 

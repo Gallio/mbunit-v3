@@ -1,4 +1,4 @@
-// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -308,7 +308,11 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IProject projectHandle = moduleHandle as IProject;
             if (projectHandle != null)
-                return GetAssemblyFile(projectHandle).AssemblyName;
+            {
+                AssemblyName name = (AssemblyName)GetAssemblyFile(projectHandle).AssemblyName.Clone();
+                name.Version = new Version(0, 0, 0, 0);
+                return name;
+            }
 
             IAssembly assemblyHandle = (IAssembly) moduleHandle;
             return assemblyHandle.AssemblyName;

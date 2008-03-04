@@ -15,6 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <File Include="MbUnit Website.url" />
+    
     <Binary Include="MbUnit\bin\MbUnit.dll" />
     <Binary Include="MbUnit\bin\MbUnit.pdb" />
     <Binary Include="MbUnit\MbUnit.plugin" />

@@ -8,9 +8,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Binary Include="MbUnit.Pex\bin\MbUnit.Pex.dll">
-        <Folder>NCover</Folder>
-    </Binary>
+    <Binary Include="MbUnit.Pex\bin\MbUnit.Pex.dll" />
   </ItemGroup>
 
   <ItemGroup>

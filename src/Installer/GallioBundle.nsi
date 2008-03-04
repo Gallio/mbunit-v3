@@ -7,8 +7,8 @@
 !endif
 
 ; Define your application name
-!define APPNAME "MbUnit v3"
-!define APPNAMEANDVERSION "MbUnit v${VERSION}"
+!define APPNAME "Gallio"
+!define APPNAMEANDVERSION "Gallio v${VERSION}"
 !define LIBSDIR "${ROOTDIR}libs"
 !define BUILDDIR "${ROOTDIR}\build"
 !define TARGETDIR "${BUILDDIR}\target"
@@ -18,17 +18,17 @@
 
 ; Main Install settings
 Name "${APPNAMEANDVERSION}"
-InstallDir "$PROGRAMFILES\MbUnit v3"
-OutFile "${RELEASEDIR}\MbUnit-${VERSION}-Setup.exe"
+InstallDir "$PROGRAMFILES\Gallio"
+OutFile "${RELEASEDIR}\GallioBundle-${VERSION}-Setup.exe"
 
-BrandingText "mbunit.com"
+BrandingText "gallio.org"
 
 InstType "Full"
 InstType "Typical"
 
 ; Constants
-!define /math SF_SELECTED_MASK 255 - ${SF_SELECTED}
-!define /math SF_RO_MASK 255 - ${SF_RO}
+!define SF_SELECTED_MASK 254
+!define SF_RO_MASK 239
 
 ; Modern interface settings
 !define MUI_COMPONENTSPAGE_SMALLDESC ; Put description on bottom.
@@ -38,7 +38,7 @@ InstType "Typical"
 ; Installer pages
 !insertmacro MUI_PAGE_WELCOME
 Page custom AddRemovePageEnter AddRemovePageLeave
-!insertmacro MUI_PAGE_LICENSE "${TARGETDIR}\MbUnit License.txt"
+!insertmacro MUI_PAGE_LICENSE "${TARGETDIR}\Gallio License.txt"
 Page custom UserSelectionPageEnter UserSelectionPageLeave
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
@@ -80,7 +80,7 @@ Var UserContext
 !endif
 
 ; Define sections
-Section "!MbUnit v3 and Gallio" GallioSection
+Section "!Gallio" GallioSection
 	; Set Section properties
 	SectionIn RO
 	SetOverwrite on
@@ -88,10 +88,9 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR"
 	File "${TARGETDIR}\ASL - Apache Software Foundation License.txt"
-	File "${TARGETDIR}\MbUnit License.txt"
+	File "${TARGETDIR}\Gallio License.txt"
 	File "${TARGETDIR}\Release Notes.txt"
-	File "MbUnit Website.url"
-	File "Online Documentation.url"
+	File "${TARGETDIR}\Gallio Website.url"
 
 	SetOutPath "$INSTDIR\bin"
 	File "${TARGETDIR}\bin\Castle.Core.dll"
@@ -104,10 +103,6 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	File "${TARGETDIR}\bin\Gallio.plugin"
 	File "${TARGETDIR}\bin\Gallio.xml"
 	File "${TARGETDIR}\bin\Gallio.Host.exe"
-	File "${TARGETDIR}\bin\MbUnit.dll"
-	File "${TARGETDIR}\bin\MbUnit.pdb"
-	File "${TARGETDIR}\bin\MbUnit.plugin"
-	File "${TARGETDIR}\bin\MbUnit.xml"
 
 	SetOutPath "$INSTDIR\bin\Reports"
 	File /r "${TARGETDIR}\bin\Reports\*"
@@ -116,10 +111,69 @@ Section "!MbUnit v3 and Gallio" GallioSection
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
-
-	File "MbUnit Website.url"
-	File "Online Documentation.url"
+	File "${TARGETDIR}\Gallio Website.url"
 SectionEnd
+
+SectionGroup "!MbUnit v3"
+Section "!MbUnit v3 Framework" MbUnitSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR"
+	File "${TARGETDIR}\MbUnit Website.url"
+
+	SetOutPath "$INSTDIR\bin"
+	File "${TARGETDIR}\bin\MbUnit.dll"
+	File "${TARGETDIR}\bin\MbUnit.pdb"
+	File "${TARGETDIR}\bin\MbUnit.plugin"
+	File "${TARGETDIR}\bin\MbUnit.xml"
+
+	; Create Shortcuts
+	SetOutPath "$SMPROGRAMS\${APPNAME}"
+	File "${TARGETDIR}\MbUnit Website.url"
+SectionEnd
+
+Section "MbUnit v3 Pex Package" MbUnitPexSection
+	; Set Section properties
+	SetOverwrite on
+	
+	SetOutPath "$INSTDIR\bin"
+	File "${TARGETDIR}\bin\MbUnit.Pex.dll"
+SectionEnd
+
+Section "MbUnit v3 ASP.Net MVC Templates" MbUnitMVCSection
+	; Set Section properties
+	SetOverwrite on
+
+	ClearErrors
+	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
+	IfErrors Skip
+
+	; C#
+	SetOutPath "$0\Common7\IDE\ProjectTemplates\CSharp\Test"
+	File "${TARGETDIR}\extras\Templates\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationProjectTemplate.CSharp.zip"
+
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "Path" "CSharp\Test"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "Template" "MbUnit.MvcWebApplicationProjectTemplate.CSharp.zip"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "TestFrameworkName" "MbUnit v3"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "AdditionalInfo" "http://www.mbunit.com/"
+
+	; Visual Basic
+	SetOutPath "$0\Common7\IDE\ProjectTemplates\VisualBasic\Test"
+	File "${TARGETDIR}\extras\Templates\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationProjectTemplate.VisualBasic.zip"
+
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "Path" "VisualBasic\Test"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "Template" "MbUnit.MvcWebApplicationProjectTemplate.VisualBasic.zip"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "TestFrameworkName" "MbUnit v3"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "AdditionalInfo" "http://www.mbunit.com/"
+
+	; Run DevEnv /setup to register the new templates.
+	ExecWait '"$0\Common7\IDE\devenv.exe" /setup'
+
+	Skip:
+SectionEnd
+SectionGroupEnd
 
 SectionGroup "Plugins"
 Section "MbUnit v2 Plugin" MbUnit2PluginSection
@@ -302,7 +356,7 @@ FunctionEnd
 		RMDir "$ReSharperPluginDir\Gallio"
 !macroend
 
-Section "ReSharper v3 Plug-in" ReSharperRunnerSection
+Section "ReSharper v3.1 Runner" ReSharperRunnerSection
 	; Set Section properties
 	SetOverwrite on
 	
@@ -323,23 +377,23 @@ SectionEnd
 	DeleteRegKey SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}"
 !macroend
 
-Section "TestDriven.Net Runner for MbUnit v3" TDNetAddInSection
+Section "TestDriven.Net Runner" TDNetAddInSection
 	; Set Section properties
 	SetOverwrite on
 	
-	; Registry Keys
-	!insertmacro InstallTDNetRunner "Gallio_MbUnit" "MbUnit" "10"
-
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\bin"
 	File "${TARGETDIR}\bin\Gallio.TDNetRunner.dll"
-SectionEnd
 
-Section "TestDriven.Net Runner for Other Supported Frameworks" TDNetAddInOtherFrameworksSection
-	; Set Section properties
-	SetOverwrite on
-	
 	; Registry Keys
+	SectionGetFlags ${MbUnitSection} $0
+	IntOp $0 $0 & ${SF_SELECTED}
+	IntCmp $0 0 NoMbUnit
+		!insertmacro InstallTDNetRunner "Gallio_MbUnit" "MbUnit" "10"
+	NoMbUnit:
+
+	; TODO: We should probably allow users to select whether Gallio should override
+	;       their existing TD.Net addins.
 	SectionGetFlags ${MbUnit2PluginSection} $0
 	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoMbUnit2
@@ -446,10 +500,10 @@ Section -FinishSection
 	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
 	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$INSTDIR\uninstall.exe"
 	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "InstallLocation" "$INSTDIR"
-	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "HelpLink" "http://www.mbunit.com/"
-	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLUpdateInfo" "http://www.mbunit.com/"
-	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLInfoAbout" "http://www.mbunit.com/"
-	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLInfoAbout" "http://www.mbunit.com/"
+	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "HelpLink" "http://www.gallio.org/"
+	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLUpdateInfo" "http://www.gallio.org/"
+	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLInfoAbout" "http://www.gallio.org/"
+	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLInfoAbout" "http://www.gallio.org/"
 	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoModify" "1"
 	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoRepair" "1"
 	WriteUninstaller "$INSTDIR\uninstall.exe"
@@ -491,7 +545,11 @@ SectionEnd
 
 ; Component descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-	!insertmacro MUI_DESCRIPTION_TEXT ${GallioSection} "Installs the MbUnit v3 framework components and the Gallio test automation platform."
+	!insertmacro MUI_DESCRIPTION_TEXT ${GallioSection} "Installs the Gallio test automation platform."
+
+	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnitSection} "Installs the MbUnit v3 framework components."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnitPexSection} "Installs the MbUnit v3 Pex package."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnitMVCSection} "Installs the MbUnit v3 ASP.Net MVC templates for Visual Studio 2008."
 
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit2PluginSection} "Installs the MbUnit v2 plugin.  Enables Gallio to run MbUnit v2 tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${MSTestPluginSection} "Installs the MSTest plugin.  Enables Gallio to run MSTest tests."
@@ -504,8 +562,7 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${NAntTasksSection} "Installs the NAnt tasks."
 	!insertmacro MUI_DESCRIPTION_TEXT ${PowerShellCommandsSection} "Installs the PowerShell commands."
 	!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3 plug-in."
-	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in for MbUnit v3."
-	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInOtherFrameworksSection} "Enables the TestDriven.Net add-in to run tests for other supported frameworks."
+	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in."
 
 	!insertmacro MUI_DESCRIPTION_TEXT ${NCoverSection} "Provides integration with the NCover code coverage tool."
 	!insertmacro MUI_DESCRIPTION_TEXT ${TypeMockSection} "Provides integration with the TypeMock.Net mock object framework."
@@ -513,11 +570,11 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${CCNetSection} "Installs additional resources to assist with CruiseControl.Net integration."
 
 	!ifndef MISSING_CHM_HELP
-		!insertmacro MUI_DESCRIPTION_TEXT ${CHMHelpSection} "Installs the MbUnit standalone help documentation CHM file."
+		!insertmacro MUI_DESCRIPTION_TEXT ${CHMHelpSection} "Installs the standalone help documentation CHM file."
 	!endif
 
 	!ifndef MISSING_VS2005_HELP
-		!insertmacro MUI_DESCRIPTION_TEXT ${VS2005HelpSection} "Installs the MbUnit integrated help documentation for Visual Studio 2005 access with F1."
+		!insertmacro MUI_DESCRIPTION_TEXT ${VS2005HelpSection} "Installs the integrated help documentation for Visual Studio 2005 access with F1."
 	!endif
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -528,7 +585,14 @@ Function .onInit
 	!insertmacro MUI_INSTALLOPTIONS_EXTRACT "UserSelectionPage.ini"
 
 	; Set installation types.
-	SectionSetInstTypes ${GallioSection} 3
+	; Bits:
+	;   1 - Full
+	;   2 - Typical
+	SectionSetInstTypes ${GallioSection} 7
+
+	SectionSetInstTypes ${MbUnitSection} 3
+	SectionSetInstTypes ${MbUnitPexSection} 1
+	SectionSetInstTypes ${MbUnitMVCSection} 1
 
 	SectionSetInstTypes ${MbUnit2PluginSection} 1
 	SectionSetInstTypes ${MSTestPluginSection} 1
@@ -542,12 +606,11 @@ Function .onInit
 	SectionSetInstTypes ${PowerShellCommandsSection} 3
 	SectionSetInstTypes ${ReSharperRunnerSection} 3
 	SectionSetInstTypes ${TDNetAddInSection} 3
-	SectionSetInstTypes ${TDNetAddInOtherFrameworksSection} 1
 
-	SectionSetInstTypes ${NCoverSection} 3
-	SectionSetInstTypes ${TypeMockSection} 3
+	SectionSetInstTypes ${NCoverSection} 1
+	SectionSetInstTypes ${TypeMockSection} 1
 
-	SectionSetInstTypes ${CCNetSection} 3
+	SectionSetInstTypes ${CCNetSection} 1
 	!ifndef MISSING_CHM_HELP
 		SectionSetInstTypes ${CHMHelpSection} 3
 	!endif
@@ -565,8 +628,15 @@ Function .onInit
 	ReadRegDWORD $0 HKLM "Software\Microsoft\DevDiv\VS\Servicing\8.0" "SP"
 	IfErrors 0 +3
 		SectionSetFlags ${VS2005HelpSection} ${SF_RO}
-		SectionSetText ${VS2005HelpSection} "The MbUnit integrated help documentation for Visual Studio 2005 requires Visual Studio 2005 Standard Edition or higher to be installed.  Visual Studio 2005 Express Edition is not supported."
+		SectionSetText ${VS2005HelpSection} "The integrated help documentation for Visual Studio 2005 requires Visual Studio 2005 Standard Edition or higher to be installed.  Visual Studio 2005 Express Edition is not supported."
 	!endif
+
+	; Disable VS2008 MVC support if not installed.
+	ClearErrors
+	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
+	IfErrors 0 +3
+		SectionSetFlags ${MbUnitMVCSection} ${SF_RO}
+		SectionSetText ${MbUnitMVCSection} "The MbUnit v3 ASP.Net MVC templates require Visual Studio 2008 to be installed."
 FunctionEnd
 
 ; Uninstaller initialization code.
@@ -589,42 +659,10 @@ Function un.onInit
 		Goto Installed
 	NotInstalledForSystem:
 
-	MessageBox MB_OK "MbUnit does not appear to be installed!  Abandoning uninstallation."
+	MessageBox MB_OK "Gallio does not appear to be installed!  Abandoning uninstallation."
 	Abort
 
 	Installed:	
-FunctionEnd
-
-; Selection change code
-Function .onSelChange
-	; Only allow selection of the TDNet addin for other frameworks
-	; when at least one of them is selected and the TDNet addin is
-	; being installed
-	SectionGetFlags ${MbUnit2PluginSection} $0
-
-	SectionGetFlags ${MSTestPluginSection} $1
-	IntOp $0 $0 | $1
-
-	SectionGetFlags ${NUnitPluginSection} $1
-	IntOp $0 $0 | $1
-
-	SectionGetFlags ${XunitPluginSection} $1
-	IntOp $0 $0 | $1
-
-	SectionGetFlags ${TDNetAddInSection} $1
-	IntOp $0 $0 & $1
-	IntOp $0 $0 & ${SF_SELECTED}
-
-	SectionGetFlags ${TDNetAddInOtherFrameworksSection} $1
-	IntCmp $0 0 Disable
-		IntOp $1 $1 & ${SF_RO_MASK}
-		Goto Done
-	Disable:
-		IntOp $1 $1 & ${SF_SELECTED_MASK}
-		IntOp $1 $1 | ${SF_RO}
-	Done:
-	
-	SectionSetFlags ${TDNetAddInOtherFrameworksSection} $1
 FunctionEnd
 
 ; Add-remove page.
@@ -660,7 +698,7 @@ FunctionEnd
 
 ; User-selection page.
 Function UserSelectionPageEnter
-	!insertmacro MUI_HEADER_TEXT "Installation Options" "Please select for which users to install MbUnit."
+	!insertmacro MUI_HEADER_TEXT "Installation Options" "Please select for which users to install Gallio."
 	!insertmacro MUI_INSTALLOPTIONS_DISPLAY "UserSelectionPage.ini"
 FunctionEnd
 
@@ -676,4 +714,24 @@ Function UserSelectionPageLeave
 	Done:
 FunctionEnd
 
+
+; Enforces a dependency from a source section on a target section.
+!macro EnforceSelectionDependency SourceSection TargetSection
+	SectionGetFlags ${SourceSection} $1
+
+	SectionGetFlags ${TargetSection} $0
+	IntOp $0 $0 & ${SF_SELECTED}
+	IntCmp $0 0 +3
+		IntOp $1 $1 & ${SF_RO_MASK}
+		Goto +3
+		IntOp $1 $1 & ${SF_SELECTED_MASK}
+		IntOp $1 $1 | ${SF_RO}
+	
+	SectionSetFlags ${SourceSection} $1
+!macroend
+
+Function .onSelChange
+	!insertmacro EnforceSelectionDependency ${MbUnitPexSection} ${MbUnitSection}
+	!insertmacro EnforceSelectionDependency ${MbUnitMVCSection} ${MbUnitSection}
+FunctionEnd
 
