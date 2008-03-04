@@ -61,7 +61,7 @@ namespace Gallio.Hosting
         /// </summary>
         public bool WatchdogTimerExpired
         {
-            get { return watchdogTimerExpired = true; }
+            get { return watchdogTimerExpired; }
         }
 
         /// <summary>
