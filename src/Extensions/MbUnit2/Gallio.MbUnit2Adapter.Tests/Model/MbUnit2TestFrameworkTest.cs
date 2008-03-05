@@ -218,7 +218,7 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
 
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
-            StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "MbUnit Project");
+            StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
             Assert.AreEqual("A sample test assembly for MbUnit v2.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
             Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
             Assert.AreEqual("Gallio.MbUnit2Adapter.TestResources", assemblyTest.Metadata.GetValue(MetadataKeys.Title));

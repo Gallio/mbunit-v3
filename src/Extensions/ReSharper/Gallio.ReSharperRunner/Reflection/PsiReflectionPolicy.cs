@@ -309,8 +309,12 @@ namespace Gallio.ReSharperRunner.Reflection
             IProject projectHandle = moduleHandle as IProject;
             if (projectHandle != null)
             {
-                AssemblyName name = (AssemblyName)GetAssemblyFile(projectHandle).AssemblyName.Clone();
-                name.Version = new Version(0, 0, 0, 0);
+                AssemblyName name = GetAssemblyFile(projectHandle).AssemblyName;
+                if (name.Version == null)
+                {
+                    name = (AssemblyName) name.Clone();
+                    name.Version = new Version(0, 0, 0, 0);
+                }
                 return name;
             }
 
