@@ -36,13 +36,13 @@ namespace Gallio.Icarus.Tests.Controls
         {
             TestTreeView treeView = new TestTreeView();
             treeView.CheckBoxes = true;
-            parent = new TestTreeNode("parent", "parent", 0, true);
-            testTreeNode = new TestTreeNode("test", "test", 0, true);
+            parent = new TestTreeNode("parent", "parent", 0);
+            testTreeNode = new TestTreeNode("test", "test", 0);
             parent.Nodes.Add(testTreeNode);
-            child1 = new TestTreeNode("child1", "child1", 0, true);
-            child2 = new TestTreeNode("child2", "child2", 0, true);
+            child1 = new TestTreeNode("child1", "child1", 0);
+            child2 = new TestTreeNode("child2", "child2", 0);
             testTreeNode.Nodes.AddRange(new TreeNode[] { child1, child2 });
-            child3 = new TestTreeNode("child3", "child3", 0, true);
+            child3 = new TestTreeNode("child3", "child3", 0);
             child1.Nodes.Add(child3);
             treeView.Nodes.Add(parent);
         }

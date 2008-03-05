@@ -36,17 +36,17 @@ namespace Gallio.Icarus.Tests.Controls
         public void SetUp()
         {
             testTreeView = new TestTreeView();
-            node1 = new TestTreeNode("node1", "node1", 0, true);
+            node1 = new TestTreeNode("node1", "node1", 0);
             testTreeView.Nodes.Add(node1);
-            node2 = new TestTreeNode("node2", "node2", 0, true);
+            node2 = new TestTreeNode("node2", "node2", 0);
             node1.Nodes.Add(node2);
-            node3 = new TestTreeNode("node3", "node3", 0, true);
+            node3 = new TestTreeNode("node3", "node3", 0);
             node3.IsTest = true;
-            node4 = new TestTreeNode("node4", "node4", 0, true);
+            node4 = new TestTreeNode("node4", "node4", 0);
             node4.IsTest = true;
-            node5 = new TestTreeNode("node5", "node5", 0, true);
+            node5 = new TestTreeNode("node5", "node5", 0);
             node5.IsTest = true;
-            node6 = new TestTreeNode("node6", "node6", 0, true);
+            node6 = new TestTreeNode("node6", "node6", 0);
             node6.IsTest = true;
             node2.Nodes.AddRange(new TreeNode[] { node3, node4, node5, node6 });
         }

@@ -343,7 +343,7 @@ namespace Gallio.Icarus.Controls
                 filterNode = (TestTreeNode)node.Parent.Nodes.Find(key, false)[0];
             else
             {
-                filterNode = new TestTreeNode(text, key, imgIndex, true);
+                filterNode = new TestTreeNode(text, key, imgIndex);
                 filterNode.TestState = testState;
                 node.Parent.Nodes.Add(filterNode);
             }

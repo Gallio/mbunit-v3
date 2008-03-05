@@ -25,6 +25,7 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus.Interfaces
 {
@@ -38,6 +39,7 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> GenerateReport;
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
+        event EventHandler<SingleEventArgs<string>> RemoveFilter;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         event EventHandler<SingleEventArgs<string>> SaveProject;
@@ -59,6 +61,7 @@ namespace Gallio.Icarus.Interfaces
         string ApplicationBaseDirectory { set; }
         string WorkingDirectory { set; }
         bool ShadowCopy { set; }
+        IList<FilterInfo> TestFilters { set; }
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
@@ -66,9 +69,8 @@ namespace Gallio.Icarus.Interfaces
         CodeLocation SourceCodeLocation { set; }
         Settings Settings { get; set; }
         void Update(TestData testData, TestStepRun testStepRun);
-        void ApplyFilter(Filter<ITest> filter);
+        void ApplyFilter(string filter);
         void ThreadedRemoveAssembly(string assembly);
-        void CreateFilter(TreeNodeCollection nodes);
         void ReloadTree();
         void SaveReport(string fileName, string reportType);
         void WriteToLog(string logName, string logBody);
@@ -83,5 +85,7 @@ namespace Gallio.Icarus.Interfaces
         void UpdateApplicationBaseDirectory(string applicationBaseDirectory);
         void UpdateWorkingDirectory(string workingDirectory);
         void UpdateShadowCopy(bool shadowCopy);
+        void SaveFilter(string filterName);
+        void DeleteFilter(string filterName);
     }
 }

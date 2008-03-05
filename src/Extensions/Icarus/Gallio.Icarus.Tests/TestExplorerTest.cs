@@ -24,6 +24,8 @@ using Gallio.Model.Filters;
 
 using MbUnit.Framework;
 
+using Rhino.Mocks;
+
 namespace Gallio.Icarus.Tests
 {
     [TestFixture]
@@ -43,13 +45,14 @@ namespace Gallio.Icarus.Tests
         public void ApplyFilter_Test()
         {
             projectAdapterView.TotalTests = 0;
+            LastCall.Repeat.AtLeastOnce();
             mocks.ReplayAll();
             testExplorer = new TestExplorer(projectAdapterView);
-            TestTreeNode node = new TestTreeNode("test", "testtesttesttest", 0, false);
+            TestTreeNode node = new TestTreeNode("test", "testtesttesttest", 0);
             testExplorer.DataBind(new TreeNode[] { node });
             Filter<ITest> filter = new OrFilter<ITest>(new Filter<ITest>[] { new NoneFilter<ITest>(), 
                 new IdFilter<ITest>(new EqualityFilter<string>("testtesttesttest")) });
-            testExplorer.ApplyFilter(filter);
+            testExplorer.ApplyFilter(filter.ToFilterExpr());
             Assert.IsTrue(node.Checked);
         }
 
@@ -67,10 +70,10 @@ namespace Gallio.Icarus.Tests
         {
             mocks.ReplayAll();
             testExplorer = new TestExplorer(projectAdapterView);
-            TestTreeNode node = new TestTreeNode("test", "test", 0, true);
-            TestTreeNode child = new TestTreeNode("child", "child", 0, true);
+            TestTreeNode node = new TestTreeNode("test", "test", 0);
+            TestTreeNode child = new TestTreeNode("child", "child", 0);
             child.TestState = TestStates.Success;
-            TestTreeNode child2 = new TestTreeNode("child2", "child2", 0, true);
+            TestTreeNode child2 = new TestTreeNode("child2", "child2", 0);
             child2.TestState = TestStates.Success;
             child.Nodes.Add(child2);
             node.Nodes.Add(child);
@@ -106,7 +109,7 @@ namespace Gallio.Icarus.Tests
         {
             mocks.ReplayAll();
             testExplorer = new TestExplorer(projectAdapterView);
-            TestTreeNode node = new TestTreeNode("test", "test", 0, true);
+            TestTreeNode node = new TestTreeNode("test", "test", 0);
             testExplorer.DataBind(new TreeNode[] { node });
             testExplorer.UpdateTestState("test", TestStates.Success);
             Assert.AreEqual(TestStates.Success, node.TestState);

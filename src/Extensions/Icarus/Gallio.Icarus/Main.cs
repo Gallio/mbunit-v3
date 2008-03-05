@@ -33,6 +33,7 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Projects;
 using Gallio.Utilities;
 
 using WeifenLuo.WinFormsUI.Docking;
@@ -67,6 +68,7 @@ namespace Gallio.Icarus
         private PerformanceMonitor performanceMonitor;
         private About aboutDialog;
         private PropertiesWindow propertiesWindow;
+        private FiltersWindow filtersWindow;
         
         public TreeNode[] TestTreeCollection
         {
@@ -355,6 +357,22 @@ namespace Gallio.Icarus
             set { projectFileName = value; }
         }
 
+        public IList<FilterInfo> TestFilters
+        {
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        TestFilters = value;
+                    }));
+                }
+                else
+                    filtersWindow.Filters = value;
+            }
+        }
+
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<SingleEventArgs<IList<string>>> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
@@ -363,6 +381,7 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> GenerateReport;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
+        public event EventHandler<SingleEventArgs<string>> RemoveFilter;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<EventArgs> GetTestFrameworks;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
@@ -394,6 +413,7 @@ namespace Gallio.Icarus
             performanceMonitor = new PerformanceMonitor();
             aboutDialog = new About();
             propertiesWindow = new PropertiesWindow(this);
+            filtersWindow = new FiltersWindow(this);
 
             deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
         }
@@ -412,6 +432,8 @@ namespace Gallio.Icarus
                 return performanceMonitor;
             else if (persistString == typeof(PropertiesWindow).ToString())
                 return propertiesWindow;
+            else if (persistString == typeof(FiltersWindow).ToString())
+                return filtersWindow;
             else
             {
                 string[] parsedStrings = persistString.Split(new char[] { ',' });
@@ -509,6 +531,8 @@ namespace Gallio.Icarus
         {
             try
             {
+                StatusText = "Running tests";
+
                 // reset progress monitors
                 Reset();
 
@@ -519,11 +543,14 @@ namespace Gallio.Icarus
                 AbortWorkerThread();
                 workerThread = new Thread(delegate()
                 {
+                    // save test filter
+                    SaveFilter("LastRun");
+                    
                     // run tests
-                    StatusText = "Running tests";
                     if (RunTests != null)
                         RunTests(this, new EventArgs());
 
+                    // create report (if necessary)
                     if (!reportWindow.IsHidden)
                         ThreadedCreateReport();
 
@@ -533,6 +560,7 @@ namespace Gallio.Icarus
                         stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                         startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                     });
+
                     StatusText = string.Empty;
                 });
                 workerThread.Start();
@@ -867,12 +895,6 @@ namespace Gallio.Icarus
             workerThread.Start();
         }
 
-        public void CreateFilter(TreeNodeCollection nodes)
-        {
-            if (SetFilter != null)
-                SetFilter(this, new SetFilterEventArgs("Latest", nodes));
-        }
-
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveProjectToFile();
@@ -907,7 +929,7 @@ namespace Gallio.Icarus
             CreateNewProject();
         }
 
-        public void ApplyFilter(Filter<ITest> filter)
+        public void ApplyFilter(string filter)
         {
             if (InvokeRequired)
             {
@@ -917,10 +939,7 @@ namespace Gallio.Icarus
                 }));
             }
             else
-            {
                 testExplorer.ApplyFilter(filter);
-                testExplorer.CountTests();
-            }
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1053,15 +1072,25 @@ namespace Gallio.Icarus
         {
             try
             {
+                // create folder (if necessary)
                 string gallioDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Gallio/Icarus");
                 if (!Directory.Exists(gallioDir))
                     Directory.CreateDirectory(gallioDir);
+
+                // save test filter
+                SaveFilter("AutoSave");
+
+                // save project
                 if (SaveProject != null)
                     SaveProject(this, new SingleEventArgs<string>(Path.Combine(gallioDir, "Icarus.gallio")));
+
+                // save dock panel config
                 dockPanel.SaveAsXml(dockConfigFile);
             }
             catch
-            { }
+            {
+                // eat any exceptions
+            }
         }
 
         public void ViewSourceCode(string testId)
@@ -1118,6 +1147,9 @@ namespace Gallio.Icarus
                 case "propertiesToolStripMenuItem":
                     propertiesWindow.Show(dockPanel);
                     break;
+                case "testFiltersToolStripMenuItem":
+                    filtersWindow.Show(dockPanel);
+                    break;
             }
         }
 
@@ -1147,6 +1179,18 @@ namespace Gallio.Icarus
         {
             if (UpdateShadowCopyEvent != null)
                 UpdateShadowCopyEvent(this, new SingleEventArgs<bool>(shadowCopy));
+        }
+
+        public void SaveFilter(string filterName)
+        {
+            if (SetFilter != null)
+                SetFilter(this, new SetFilterEventArgs(filterName, testExplorer.CreateFilter()));
+        }
+
+        public void DeleteFilter(string filterName)
+        {
+            if (RemoveFilter != null)
+                RemoveFilter(this, new SingleEventArgs<string>(filterName));
         }
     }
 }

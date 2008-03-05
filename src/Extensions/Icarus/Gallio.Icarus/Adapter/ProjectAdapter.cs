@@ -36,7 +36,6 @@ namespace Gallio.Icarus.Adapter
         
         private TestModelData testModelData;
         private Project project;
-        private Filter<ITest> filter;
 
         private AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
 
@@ -60,6 +59,9 @@ namespace Gallio.Icarus.Adapter
                 projectAdapterView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
                 projectAdapterView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
                 projectAdapterView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
+
+                // show available filters
+                projectAdapterView.TestFilters = project.TestFilters;
                 
                 // attach assembly watcher
                 assemblyWatcher.Add(value.TestPackageConfig.AssemblyFiles);
@@ -129,7 +131,6 @@ namespace Gallio.Icarus.Adapter
             projectAdapterModel = model;
 
             project = new Project();
-            filter = new NoneFilter<ITest>();
 
             // Wire up event handlers
             projectAdapterView.AddAssemblies += AddAssembliesEventHandler;
@@ -140,6 +141,7 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.GenerateReport += OnGenerateReport;
             projectAdapterView.StopTests += StopTestsEventHandler;
             projectAdapterView.SetFilter += SetFilterEventHandler;
+            projectAdapterView.RemoveFilter += RemoveFilterEventHandler;
             projectAdapterView.GetReportTypes += GetReportTypesEventHandler;
             projectAdapterView.SaveReportAs += SaveReportAsEventHandler;
             projectAdapterView.SaveProject += SaveProjectEventHandler;
@@ -211,14 +213,11 @@ namespace Gallio.Icarus.Adapter
         private void GetTestTreeEventHandler(object sender, GetTestTreeEventArgs e)
         {
             if (GetTestTree != null)
-                GetTestTree(this, new GetTestTreeEventArgs(e.Mode, e.ReloadTestModelData, true, project.TestPackageConfig));
+                GetTestTree(this, new GetTestTreeEventArgs(e.Mode, e.ReloadTestModelData, project.TestPackageConfig));
         }
 
         private void RunTestsEventHandler(object sender, EventArgs e)
         {
-            // add/update "last run" filter in project
-            UpdateProjectFilter("LastRun", filter);
-
             // run tests
             if (RunTests != null)
                 RunTests(this, e);
@@ -238,13 +237,20 @@ namespace Gallio.Icarus.Adapter
 
         private void SetFilterEventHandler(object sender, SetFilterEventArgs e)
         {
+            UpdateProjectFilter(e.FilterName, e.Filter);
             if (SetFilter != null)
+                SetFilter(this, e);
+        }
+
+        private void RemoveFilterEventHandler(object sender, SingleEventArgs<string> e)
+        {
+            foreach (FilterInfo filterInfo in project.TestFilters)
             {
-                filter = projectAdapterModel.GetFilter(e.Nodes);
-                if (filter == null)
-                    filter = new NoneFilter<ITest>();
-                UpdateProjectFilter(e.FilterName, filter);
-                SetFilter(this, new SetFilterEventArgs(e.FilterName, filter));
+                if (filterInfo.FilterName == e.Arg)
+                {
+                    project.TestFilters.Remove(filterInfo);
+                    return;
+                }
             }
         }
 
@@ -291,17 +297,16 @@ namespace Gallio.Icarus.Adapter
 
             // load test model data
             if (GetTestTree != null)
-                GetTestTree(this, new GetTestTreeEventArgs(e.Mode, true, false, project.TestPackageConfig));
+                GetTestTree(this, new GetTestTreeEventArgs(e.Mode, true, project.TestPackageConfig));
 
             // set filter (when available)
             foreach (FilterInfo filterInfo in project.TestFilters)
             {
-                if (filterInfo.FilterName == "Latest")
+                if (filterInfo.FilterName == "AutoSave")
                 {
-                    filter = FilterUtils.ParseTestFilter(filterInfo.Filter);
-                    projectAdapterView.ApplyFilter(filter);
+                    projectAdapterView.ApplyFilter(filterInfo.Filter);
                     if (SetFilter != null)
-                        SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, filter));
+                        SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, FilterUtils.ParseTestFilter(filterInfo.Filter)));
                     break;
                 }
             }
@@ -319,10 +324,10 @@ namespace Gallio.Icarus.Adapter
                 projectAdapterView.SourceCodeLocation = testData.CodeLocation;
         }
 
-        public void DataBind(string mode, bool initialCheckState)
+        public void DataBind(string mode)
         {
             projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
-            projectAdapterView.TestTreeCollection = projectAdapterModel.BuildTestTree(testModelData, mode, initialCheckState);
+            projectAdapterView.TestTreeCollection = projectAdapterModel.BuildTestTree(testModelData, mode);
             projectAdapterView.TotalTests = projectAdapterModel.CountTests(testModelData);
         }
 

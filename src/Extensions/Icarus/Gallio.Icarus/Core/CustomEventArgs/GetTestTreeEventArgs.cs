@@ -36,7 +36,6 @@ namespace Gallio.Icarus.Core.CustomEventArgs
     {
         private readonly string mode;
         private readonly bool reloadTestModelData;
-        private readonly bool initialCheckState;
         private readonly TestPackageConfig testPackageConfig;
 
         public GetTestTreeEventArgs(string mode, bool reloadTestModelData)
@@ -45,10 +44,9 @@ namespace Gallio.Icarus.Core.CustomEventArgs
             this.reloadTestModelData = reloadTestModelData;
         }
 
-        public GetTestTreeEventArgs(string mode, bool reloadTestModelData, bool initialCheckState, TestPackageConfig testPackageConfig)
+        public GetTestTreeEventArgs(string mode, bool reloadTestModelData, TestPackageConfig testPackageConfig)
             : this(mode, reloadTestModelData)
         {
-            this.initialCheckState = initialCheckState;
             this.testPackageConfig = testPackageConfig;
         }
 
@@ -60,11 +58,6 @@ namespace Gallio.Icarus.Core.CustomEventArgs
         public bool ReloadTestModelData
         {
             get { return reloadTestModelData; }
-        }
-
-        public bool InitialCheckState
-        {
-            get { return initialCheckState; }
         }
 
         public TestPackageConfig TestPackageConfig

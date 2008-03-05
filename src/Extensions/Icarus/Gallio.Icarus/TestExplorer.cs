@@ -14,9 +14,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 using Gallio.Icarus.Controls;
+using Gallio.Icarus.Controls.Enums;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -117,8 +119,6 @@ namespace Gallio.Icarus
 
         private void testTree_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (e.Action != TreeViewAction.Unknown)
-                projectAdapterView.CreateFilter(testTree.Nodes);
             CountTests();
         }
 
@@ -203,7 +203,20 @@ namespace Gallio.Icarus
             testTree.FilterInconclusive = filterInconclusiveTestsToolStripButton.Checked = filterInconclusiveTestsToolStripMenuItem.Checked;
         }
 
-        public void ApplyFilter(Filter<ITest> filter)
+        public void ApplyFilter(string filter)
+        {
+            // toggle root node
+            foreach (TestTreeNode node in testTree.Nodes)
+            {
+                node.CheckState = CheckBoxStates.Checked;
+                node.Toggle();
+            }
+
+            ApplyFilter(FilterUtils.ParseTestFilter(filter));
+            CountTests();
+        }
+
+        private void ApplyFilter(Filter<ITest> filter)
         {
             if (filter is NoneFilter<ITest>)
                 return;
@@ -216,7 +229,8 @@ namespace Gallio.Icarus
             else if (filter is IdFilter<ITest>)
             {
                 IdFilter<ITest> idFilter = (IdFilter<ITest>)filter;
-                foreach (TestTreeNode n in FindNodes(idFilter.ToString().Substring(13, 16)))
+                EqualityFilter<string> equalityFilter = (EqualityFilter<string>)idFilter.ValueFilter;
+                foreach (TestTreeNode n in FindNodes(equalityFilter.Comparand))
                     n.Toggle();
             }
         }
@@ -234,6 +248,45 @@ namespace Gallio.Icarus
         private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             projectAdapterView.RemoveAssembliesFromTree();
+        }
+
+        public Filter<ITest> CreateFilter()
+        {
+            return CreateFilter(testTree.Nodes);
+        }
+
+        private Filter<ITest> CreateFilter(TreeNodeCollection treeNodeCollection)
+        {
+            List<Filter<ITest>> filters = new List<Filter<ITest>>();
+            foreach (TestTreeNode node in treeNodeCollection)
+            {
+                switch (node.CheckState)
+                {
+                    case CheckBoxStates.Checked:
+                        {
+                            if (node.SelectedImageIndex != 2)
+                                filters.Add(new IdFilter<ITest>(new EqualityFilter<string>(node.Name)));
+                            else
+                            {
+                                Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                                if (childFilters != null)
+                                    filters.Add(childFilters);
+                            }
+                            break;
+                        }
+                    case CheckBoxStates.Indeterminate:
+                        {
+                            Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                            if (childFilters != null)
+                                filters.Add(childFilters);
+                            break;
+                        }
+                }
+            }
+            if (filters.Count > 0)
+                return new OrFilter<ITest>(filters.ToArray());
+            else
+                return null;
         }
     }
 }

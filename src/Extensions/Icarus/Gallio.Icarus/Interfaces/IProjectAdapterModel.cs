@@ -16,17 +16,14 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using Gallio.Model;
-using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus.Interfaces
 {
     public interface IProjectAdapterModel
     {
-        TreeNode[] BuildTestTree(TestModelData testModelData, string mode, bool initialCheckState);
+        TreeNode[] BuildTestTree(TestModelData testModelData, string mode);
         int CountTests(TestModelData testModelData);
         ListViewItem[] BuildAssemblyList(List<string> assemblyList);
-        Filter<ITest> GetFilter(TreeNodeCollection treeNodeCollection);
     }
 }

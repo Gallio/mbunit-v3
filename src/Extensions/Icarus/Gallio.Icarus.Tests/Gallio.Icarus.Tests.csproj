@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A90A40C4-4D48-4D0B-BE9B-432510EB1057}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="Controls\TestTreeNodeTest.cs" />
     <Compile Include="Controls\TestTreeViewTest.cs" />
+    <Compile Include="FiltersWindowTest.cs" />
     <Compile Include="Core\Remoting\AssemblyWatcherTest.cs" />
     <Compile Include="PropertiesWindowTest.cs" />
     <Compile Include="TestExplorerTest.cs" />

@@ -24,14 +24,7 @@ namespace Gallio.Icarus.Core.CustomEventArgs
     public class SetFilterEventArgs : EventArgs
     {
         private readonly string filterName;
-        private readonly TreeNodeCollection nodes;
         private readonly Filter<ITest> filter;
-
-        public SetFilterEventArgs(string filterName, TreeNodeCollection nodes)
-        {
-            this.filterName = filterName;
-            this.nodes = nodes;
-        }
 
         public SetFilterEventArgs(string filterName, Filter<ITest> filter)
         {
@@ -42,11 +35,6 @@ namespace Gallio.Icarus.Core.CustomEventArgs
         public string FilterName
         {
             get { return filterName; }
-        }
-
-        public TreeNodeCollection Nodes
-        {
-            get { return nodes; }
         }
 
         public Filter<ITest> Filter

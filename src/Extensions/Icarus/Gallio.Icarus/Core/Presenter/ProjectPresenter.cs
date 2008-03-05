@@ -14,13 +14,15 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Specialized;
+
+using Gallio.Hosting;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
-using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
-using Gallio.Runner.Domains;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Domains;
 
 namespace Gallio.Icarus.Core.Presenter
 {
@@ -61,8 +63,13 @@ namespace Gallio.Icarus.Core.Presenter
             testRunnerModel = testrunnermodel;
             testRunnerModel.ProjectPresenter = this;
 
+#if DEBUG
             testRunner = new DomainTestRunner(new LocalTestDomainFactory());
-            
+#else
+            testRunner = Runtime.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess,
+                new NameValueCollection());
+#endif
+
             // wire up events
             projectAdapter.GetTestTree += GetTestTree;
             projectAdapter.RunTests += RunTests;
@@ -81,7 +88,7 @@ namespace Gallio.Icarus.Core.Presenter
                 testRunnerModel.LoadPackage(e.TestPackageConfig);
                 projectAdapter.TestModelData = testRunnerModel.BuildTests();
             }
-            projectAdapter.DataBind(e.Mode, e.InitialCheckState);
+            projectAdapter.DataBind(e.Mode);
         }
 
         public void RunTests(object sender, EventArgs e)

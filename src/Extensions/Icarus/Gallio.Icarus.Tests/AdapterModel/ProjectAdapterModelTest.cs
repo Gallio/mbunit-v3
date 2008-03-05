@@ -42,7 +42,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void BuildNamespaceTestTree_Test()
         {
-            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces", true);
+            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
             Assert.AreEqual(1, treeNodes.Length);
 
             // check Root node
@@ -112,7 +112,7 @@ namespace Gallio.Icarus.Tests
             string[] names = new string[] { "Authors", "Categories", "Importance", "TestsOn" };
             foreach (string name in names)
             {
-                TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), name, true);
+                TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), name);
                 Assert.AreEqual(1, treeNodes.Length);
 
                 // check Root node
@@ -222,29 +222,6 @@ namespace Gallio.Icarus.Tests
             test4.IsTestCase = true;
             fixture2.Children.Add(test4);
             return new TestModelData(rootTest);
-        }
-
-        [Test]
-        public void GetEmptyFilter_Test()
-        {
-            TreeView treeView = new TreeView();
-            Assert.IsNull(projectAdapterModel.GetFilter(treeView.Nodes));
-        }
-
-        [Test]
-        public void GetFilter_Test()
-        {
-            TreeView treeView = new TreeView();
-            TestTreeNode root = new TestTreeNode("Root", "Root", 0, true);
-            root.CheckState = CheckBoxStates.Indeterminate;
-            TestTreeNode child = new TestTreeNode("Child", "Child", 2, true);
-            child.CheckState = CheckBoxStates.Checked;
-            root.Nodes.Add(child);
-            TestTreeNode child2 = new TestTreeNode("Child2", "Child2", 3, true);
-            child2.CheckState = CheckBoxStates.Checked;
-            child.Nodes.Add(child2);
-            treeView.Nodes.Add(root);
-            Assert.IsNotNull(projectAdapterModel.GetFilter(treeView.Nodes));
         }
     }
 }

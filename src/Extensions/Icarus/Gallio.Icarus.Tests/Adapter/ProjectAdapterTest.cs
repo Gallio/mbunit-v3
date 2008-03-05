@@ -53,6 +53,7 @@ namespace Gallio.Icarus.Tests
         private IEventRaiser generateReportEvent;
         private IEventRaiser stopTestsEvent;
         private IEventRaiser setFilterEvent;
+        private IEventRaiser removeFilterEvent;
         private IEventRaiser getReportTypesEvent;
         private IEventRaiser saveReportAsEvent;
         private IEventRaiser saveProjectEvent;
@@ -102,6 +103,10 @@ namespace Gallio.Icarus.Tests
             mockView.SetFilter += null;
             LastCall.IgnoreArguments();
             setFilterEvent = LastCall.GetEventRaiser();
+
+            mockView.RemoveFilter += null;
+            LastCall.IgnoreArguments();
+            removeFilterEvent = LastCall.GetEventRaiser();
 
             mockView.GetReportTypes += null;
             LastCall.IgnoreArguments();
@@ -192,7 +197,7 @@ namespace Gallio.Icarus.Tests
         public void GetTestTreeEventHandler_Test()
         {
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            mockPresenter.GetTestTree(projectAdapter, new GetTestTreeEventArgs("mode", true, true, projectAdapter.Project.TestPackageConfig));
+            mockPresenter.GetTestTree(projectAdapter, new GetTestTreeEventArgs("mode", true, projectAdapter.Project.TestPackageConfig));
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
@@ -238,13 +243,27 @@ namespace Gallio.Icarus.Tests
         public void SetFilterEventHandler_Test()
         {
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            mockPresenter.SetFilter(projectAdapter, new SetFilterEventArgs("test", new NoneFilter<ITest>()));
+            SetFilterEventArgs e = new SetFilterEventArgs("test", new NoneFilter<ITest>());
+            mockPresenter.SetFilter(projectAdapter, e);
             LastCall.IgnoreArguments();
-            Expect.Call(mockModel.GetFilter(null)).Return(null);
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.SetFilter += new EventHandler<SetFilterEventArgs>(mockPresenter.SetFilter);
-            setFilterEvent.Raise(mockView, new SetFilterEventArgs("test", (TreeNodeCollection)null));
+            setFilterEvent.Raise(mockView, e);
+        }
+
+        [Test]
+        public void RemoveFilterEventHandler_Test()
+        {
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            Assert.AreEqual(0, projectAdapter.Project.TestFilters.Count);
+            projectAdapter.Project.TestFilters.Add(new FilterInfo("Test", new NoneFilter<ITest>().ToFilterExpr()));
+            Assert.AreEqual(1, projectAdapter.Project.TestFilters.Count);
+            removeFilterEvent.Raise(mockView, new SingleEventArgs<string>("NotTest"));
+            Assert.AreEqual(1, projectAdapter.Project.TestFilters.Count);
+            removeFilterEvent.Raise(mockView, new SingleEventArgs<string>("Test"));
+            Assert.AreEqual(0, projectAdapter.Project.TestFilters.Count);
         }
 
         [Test]
@@ -292,19 +311,23 @@ namespace Gallio.Icarus.Tests
             Project project = new Project();
             project.TestPackageConfig.AssemblyFiles.Add(Assembly.GetExecutingAssembly().Location);
             IdFilter<ITest> idFilter = new IdFilter<ITest>(new EqualityFilter<string>("test"));
-            project.TestFilters.Add(new FilterInfo("Latest", idFilter.ToFilterExpr()));
+            List<FilterInfo> filters = new List<FilterInfo>();
+            string filterName = "AutoSave";
+            filters.Add(new FilterInfo(filterName, idFilter.ToFilterExpr()));
+            project.TestFilters = filters;
             mockView.HintDirectories = project.TestPackageConfig.HintDirectories;
             mockView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
             mockView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
             mockView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
-            string mode = "Namespace";
+            mockView.TestFilters = filters;
+            LastCall.IgnoreArguments();
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            GetTestTreeEventArgs e = new GetTestTreeEventArgs(mode, true, false, new TestPackageConfig());
-            mockPresenter.GetTestTree(projectAdapter, e);
+            string mode = "Namespace";
+            mockPresenter.GetTestTree(projectAdapter, new GetTestTreeEventArgs(mode, true, new TestPackageConfig()));
             LastCall.IgnoreArguments();
-            mockView.ApplyFilter(idFilter);
+            mockView.ApplyFilter(idFilter.ToFilterExpr());
             LastCall.IgnoreArguments();
-            mockPresenter.SetFilter(projectAdapter, new SetFilterEventArgs("Latest", idFilter));
+            mockPresenter.SetFilter(projectAdapter, new SetFilterEventArgs(filterName, idFilter));
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
@@ -463,6 +486,7 @@ namespace Gallio.Icarus.Tests
             mockView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
             mockView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
             mockView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
+            mockView.TestFilters = project.TestFilters;
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.Project = project;
@@ -508,7 +532,7 @@ namespace Gallio.Icarus.Tests
             Expect.Call(mockModel.BuildAssemblyList(testPackageConfig.AssemblyFiles)).Return(new ListViewItem[0]);
             mockView.TestTreeCollection = null;
             LastCall.IgnoreArguments();
-            Expect.Call(mockModel.BuildTestTree(null, "", true)).IgnoreArguments().Return(new TreeNode[0]);
+            Expect.Call(mockModel.BuildTestTree(null, "")).IgnoreArguments().Return(new TreeNode[0]);
             mockView.TotalTests = 0;
             LastCall.IgnoreArguments();
             Expect.Call(mockModel.CountTests(null)).IgnoreArguments().Return(0);
@@ -516,7 +540,7 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
 
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.DataBind("mode", true);
+            projectAdapter.DataBind("mode");
         }
 
         [Test]

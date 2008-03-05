@@ -27,13 +27,12 @@ namespace Gallio.Icarus.Controls
         private TestStates testState = TestStates.Undefined;
         private bool sourceCodeAvailable, isTest;
 
-        public TestTreeNode(string text, string id, int imgIndex, bool initialCheckState)
+        public TestTreeNode(string text, string id, int imgIndex)
             : base(text, imgIndex, imgIndex)
         {
             Name = id;
-            Checked = initialCheckState;
-            if (initialCheckState)
-                CheckState = CheckBoxStates.Checked;
+            Checked = true;
+            CheckState = CheckBoxStates.Checked;
         }
 
         [Category("Behaviour"),

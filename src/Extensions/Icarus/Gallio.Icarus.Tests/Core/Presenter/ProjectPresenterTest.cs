@@ -135,10 +135,10 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             Expect.Call(mockModel.BuildTests()).Return(null);
             mockAdapter.TestModelData = null;
             LastCall.IgnoreArguments();
-            mockAdapter.DataBind("mode", true);
+            mockAdapter.DataBind("mode");
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            getTestTreeEvent.Raise(mockAdapter, new GetTestTreeEventArgs("mode", true, true, testPackageConfig));
+            getTestTreeEvent.Raise(mockAdapter, new GetTestTreeEventArgs("mode", true, testPackageConfig));
         }
 
         [Test]
