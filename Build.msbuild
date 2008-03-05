@@ -4,7 +4,7 @@
     <RootDir>$(MSBuildProjectDirectory)</RootDir>
   </PropertyGroup>
   <ItemGroup>
-    <NestedModule Include="$(SourceDir)\All.module" />
+    <NestedModule Include="Build.module" />
   </ItemGroup>
 
   <Import Project="$(RootDir)\Module.targets" />
@@ -31,16 +31,6 @@
     </CSharpProperties>
   </PropertyGroup>
 
-  <ItemGroup>
-    <File Include="$(RootDir)\Gallio License.txt" />
-    <File Include="$(RootDir)\Release Notes.txt" />
-    <File Include="$(RootDir)\ASL - Apache Software Foundation License.txt" />
-
-    <Extra Include="$(LibsDir)\H2Reg\H2Reg.*">
-      <Folder>H2Reg</Folder>
-    </Extra>
-  </ItemGroup>
-
   <PropertyGroup>
     <BuildDependsOnTargets>
       RecursiveBeforeBuild;
@@ -59,6 +49,9 @@
       RemoveBuildDir;
     </CleanDependsOnTargets>
   </PropertyGroup>
+
+  <Target Name="Release"
+          DependsOnTargets="Clean;Build;Test;BuildSourceServerIndex;BuildDocs;BuildInstaller;BuildZip" />
 
   <Target Name="Build"
           DependsOnTargets="$(BuildDependsOnTargets)" />
@@ -110,9 +103,6 @@
              Condition="'$(ExitCode)'!='0'" />
   </Target>
 
-  <Target Name="Release"
-          DependsOnTargets="Clean;Build;Test;BuildSourceServerIndex;BuildDocs;BuildInstaller;BuildZip" />
-
   <Target Name="BuildCSharpProjects">
     <MSBuild Projects="@(CSharpProject)"
              Targets="Build"
@@ -149,8 +139,8 @@
           DependsOnTargets="BuildXMLDocs;BuildCHMDocs;BuildHxSDocs" />
 
   <PropertyGroup>
-    <CopyrightText>Copyright 2008 MbUnit Project - http://www.mbunit.com/</CopyrightText>
-    <CopyrightHref>http://www.mbunit.com/</CopyrightHref>
+    <CopyrightText>Copyright 2005-2008 Gallio Project - http://www.gallio.org/</CopyrightText>
+    <CopyrightHref>http://www.gallio.org/</CopyrightHref>
 
     <NDocCommonOptions>@(DocumentedAssembly->'"%(FullPath)"', ' ')</NDocCommonOptions>
 

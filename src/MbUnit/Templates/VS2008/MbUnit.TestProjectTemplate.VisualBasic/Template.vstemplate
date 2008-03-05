@@ -10,6 +10,7 @@
     <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
     <DefaultName>TestProject</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
   </TemplateData>
   <TemplateContent>
     <Project File="MbUnit.TestProjectTemplate.VisualBasic.vbproj" ReplaceParameters="true">

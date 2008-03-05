@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Version>$(CCNetLabel)</Version>
     <ShowReports>false</ShowReports>
-    <ReportTypes>XML-Inline</ReportTypes>
+    <ReportTypes>XML</ReportTypes>
   </PropertyGroup>
 
   <Import Project="Build.msbuild" />

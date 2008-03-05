@@ -1,3 +1,5 @@
+!include "StrRep.nsh"
+
 ; Check arguments.
 !ifndef VERSION
 	!error "The /DVersion=x.y.z.w argument must be specified."
@@ -6,15 +8,14 @@
 	!error "The /DRootDir=... argument must be specified."
 !endif
 
-; Define your application name
-!define APPNAME "Gallio"
-!define APPNAMEANDVERSION "Gallio v${VERSION}"
-!define LIBSDIR "${ROOTDIR}libs"
+; Common directories
 !define BUILDDIR "${ROOTDIR}\build"
 !define TARGETDIR "${BUILDDIR}\target"
 !define RELEASEDIR "${BUILDDIR}\release"
 
-!include "StrRep.nsh"
+; Define your application name
+!define APPNAME "Gallio"
+!define APPNAMEANDVERSION "Gallio v${VERSION}"
 
 ; Main Install settings
 Name "${APPNAMEANDVERSION}"
@@ -107,6 +108,9 @@ Section "!Gallio" GallioSection
 	SetOutPath "$INSTDIR\bin\Reports"
 	File /r "${TARGETDIR}\bin\Reports\*"
 
+	; Register the folder so that Visual Studio Add References can find it
+	WriteRegStr SHCTX "SOFTWARE\Microsoft\.NETFramework\v2.0.50727\AssemblyFoldersEx\Gallio" "" "$INSTDIR\bin"
+
 	; Create Shortcuts
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
@@ -115,7 +119,7 @@ Section "!Gallio" GallioSection
 SectionEnd
 
 SectionGroup "!MbUnit v3"
-Section "!MbUnit v3 Framework" MbUnitSection
+Section "!MbUnit v3 Framework" MbUnit3Section
 	; Set Section properties
 	SetOverwrite on
 	
@@ -134,7 +138,7 @@ Section "!MbUnit v3 Framework" MbUnitSection
 	File "${TARGETDIR}\MbUnit Website.url"
 SectionEnd
 
-Section "MbUnit v3 Pex Package" MbUnitPexSection
+Section "MbUnit v3 Pex Package" MbUnit3PexSection
 	; Set Section properties
 	SetOverwrite on
 	
@@ -142,76 +146,76 @@ Section "MbUnit v3 Pex Package" MbUnitPexSection
 	File "${TARGETDIR}\bin\MbUnit.Pex.dll"
 SectionEnd
 
-Section "MbUnit v3 Visual Studio 2005 Templates" MbUnitVS2005TemplatesSection
+Section "MbUnit v3 Visual Studio 2005 Templates" MbUnit3VS2005TemplatesSection
 	; Set Section properties
 	SetOverwrite on
 
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0" "InstallDir"
-	IfErrors SkipMbUnitVS2005Templates
+	IfErrors SkipVS2005Templates
 
         ; C# Item Templates
 	SetOutPath "$0\ItemTemplates\CSharp\Test"
-	File "${TARGETDIR}\extras\Templates\VS2005\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip"
+	File "${TARGETDIR}\extras\Templates\VS2005\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip"
 
 	; C# Project Templates
 	SetOutPath "$0\ProjectTemplates\CSharp\Test"
-	File "${TARGETDIR}\extras\Templates\VS2005\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip"
+	File "${TARGETDIR}\extras\Templates\VS2005\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip"
 
         ; VB Item Templates
 	SetOutPath "$0\ItemTemplates\VisualBasic\Test"
-	File "${TARGETDIR}\extras\Templates\VS2005\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip"
+	File "${TARGETDIR}\extras\Templates\VS2005\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
 
 	; VB Project Templates
 	SetOutPath "$0\ProjectTemplates\VisualBasic\Test"
-	File "${TARGETDIR}\extras\Templates\VS2005\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip"
+	File "${TARGETDIR}\extras\Templates\VS2005\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
 
 	; Run DevEnv /setup to register the templates.
 	ExecWait '"$0\devenv.exe" /setup'
 
-	SkipMbUnitVS2005Templates:
+	SkipVS2005Templates:
 SectionEnd
 
-Section "MbUnit v3 Visual Studio 2008 Templates" MbUnitVS2008TemplatesSection
+Section "MbUnit v3 Visual Studio 2008 Templates" MbUnit3VS2008TemplatesSection
 	; Set Section properties
 	SetOverwrite on
 
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
-	IfErrors SkipMbUnitVS2008Templates
+	IfErrors SkipVS2008Templates
 
         ; C# Item Templates
 	SetOutPath "$0\ItemTemplates\CSharp\Test"
-	File "${TARGETDIR}\extras\Templates\VS2008\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip"
 
 	; C# Project Templates
 	SetOutPath "$0\ProjectTemplates\CSharp\Test"
-	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip"
-	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip"
 
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "Path" "CSharp\Test"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "Template" "MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "TestFrameworkName" "MbUnit v3"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#" "AdditionalInfo" "http://www.mbunit.com/"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#" "Path" "CSharp\Test"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#" "Template" "MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#" "TestFrameworkName" "MbUnit v3"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#" "AdditionalInfo" "http://www.mbunit.com/"
 
         ; VB Item Templates
 	SetOutPath "$0\ItemTemplates\VisualBasic\Test"
-	File "${TARGETDIR}\extras\Templates\VS2008\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
 
 	; VB Project Templates
 	SetOutPath "$0\ProjectTemplates\VisualBasic\Test"
-	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip"
-	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
+	File "${TARGETDIR}\extras\Templates\VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
 
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "Path" "VisualBasic\Test"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "Template" "MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "TestFrameworkName" "MbUnit v3"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB" "AdditionalInfo" "http://www.mbunit.com/"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB" "Path" "VisualBasic\Test"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB" "Template" "MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB" "TestFrameworkName" "MbUnit v3"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB" "AdditionalInfo" "http://www.mbunit.com/"
 
 	; Run DevEnv /setup to register the templates.
 	ExecWait '"$0\devenv.exe" /setup'
 
-	SkipMbUnitVS2008Templates:
+	SkipVS2008Templates:
 SectionEnd
 SectionGroupEnd
 
@@ -426,7 +430,7 @@ Section "TestDriven.Net Runner" TDNetAddInSection
 	File "${TARGETDIR}\bin\Gallio.TDNetRunner.dll"
 
 	; Registry Keys
-	SectionGetFlags ${MbUnitSection} $0
+	SectionGetFlags ${MbUnit3Section} $0
 	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoMbUnit
 		!insertmacro InstallTDNetRunner "Gallio_MbUnit" "MbUnit" "10"
@@ -551,6 +555,9 @@ SectionEnd
 
 ;Uninstall section
 Section Uninstall
+	; Uninstall from assembly folders
+	DeleteRegKey SHCTX "SOFTWARE\Microsoft\.NETFramework\v2.0.50727\AssemblyFoldersEx\Gallio"
+
 	; Uninstall from TD.Net
 	!insertmacro UninstallTDNetRunner "Gallio_MbUnit"
 	!insertmacro UninstallTDNetRunner "Gallio_MbUnit2"
@@ -572,38 +579,38 @@ Section Uninstall
 	; Uninstall the Visual Studio 2005 templates
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0" "InstallDir"
-	IfErrors SkipMbUnitVS2005Templates
+	IfErrors SkipVS2005Templates
 
-	Delete "$0\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip"
-	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip"
+	Delete "$0\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip"
+	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip"
 
-	Delete "$0\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip"
-	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip"
+	Delete "$0\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
+	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
 
 	; Run DevEnv /setup to unregister the templates.
 	ExecWait '"$0\devenv.exe" /setup'
 
-	SkipMbUnitVS2005Templates:
+	SkipVS2005Templates:
 
 	; Uninstall the Visual Studio 2008 templates
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
-	IfErrors SkipMbUnitVS2008Templates
+	IfErrors SkipVS2008Templates
 
-	Delete "$0\ItemTemplates\CSharp\Test\MbUnit.TestFixtureTemplate.CSharp.zip"
-	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit.TestProjectTemplate.CSharp.zip"
-	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.zip"
-	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\C#"
+	Delete "$0\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip"
+	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip"
+	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip"
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#"
 
-	Delete "$0\ItemTemplates\VisualBasic\Test\MbUnit.TestFixtureTemplate.VisualBasic.zip"
-	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit.TestProjectTemplate.VisualBasic.zip"
-	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
-	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit\VB"
+	Delete "$0\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
+	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
+	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB"
 
 	; Run DevEnv /setup to unregister the templates.
 	ExecWait '"$0\devenv.exe" /setup'
 
-	SkipMbUnitVS2008Templates:
+	SkipVS2008Templates:
 
 	; Delete Shortcuts
 	RMDir /r "$SMPROGRAMS\${APPNAME}"
@@ -623,10 +630,10 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${GallioSection} "Installs the Gallio test automation platform."
 
-	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnitSection} "Installs the MbUnit v3 framework components."
-	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnitPexSection} "Installs the MbUnit v3 Pex package."
-	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnitVS2005TemplatesSection} "Installs the MbUnit v3 Visual Studio 2005 templates."
-	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnitVS2008TemplatesSection} "Installs the MbUnit v3 Visual Studio 2008 templates."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3Section} "Installs the MbUnit v3 framework components."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3PexSection} "Installs the MbUnit v3 Pex package."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3VS2005TemplatesSection} "Installs the MbUnit v3 Visual Studio 2005 templates."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3VS2008TemplatesSection} "Installs the MbUnit v3 Visual Studio 2008 templates."
 
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit2PluginSection} "Installs the MbUnit v2 plugin.  Enables Gallio to run MbUnit v2 tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${MSTestPluginSection} "Installs the MSTest plugin.  Enables Gallio to run MSTest tests."
@@ -665,12 +672,12 @@ Function .onInit
 	; Bits:
 	;   1 - Full
 	;   2 - Typical
-	SectionSetInstTypes ${GallioSection} 7
+	SectionSetInstTypes ${GallioSection} 3
 
-	SectionSetInstTypes ${MbUnitSection} 3
-	SectionSetInstTypes ${MbUnitPexSection} 1
-	SectionSetInstTypes ${MbUnitVS2005TemplatesSection} 1
-	SectionSetInstTypes ${MbUnitVS2008TemplatesSection} 1
+	SectionSetInstTypes ${MbUnit3Section} 3
+	SectionSetInstTypes ${MbUnit3PexSection} 1
+	SectionSetInstTypes ${MbUnit3VS2005TemplatesSection} 1
+	SectionSetInstTypes ${MbUnit3VS2008TemplatesSection} 1
 
 	SectionSetInstTypes ${MbUnit2PluginSection} 1
 	SectionSetInstTypes ${MSTestPluginSection} 1
@@ -713,15 +720,15 @@ Function .onInit
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0" "InstallDir"
 	IfErrors 0 +3
-		SectionSetFlags ${MbUnitVS2005TemplatesSection} ${SF_RO}
-		SectionSetText ${MbUnitVS2005TemplatesSection} "The MbUnit v3 Visual Studio 2005 templates require Visual Studio 2005 to be installed."
+		SectionSetFlags ${MbUnit3VS2005TemplatesSection} ${SF_RO}
+		SectionSetText ${MbUnit3VS2005TemplatesSection} "The MbUnit v3 Visual Studio 2005 templates require Visual Studio 2005 to be installed."
 
 	; Disable VS2008 templates if not installed.
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
 	IfErrors 0 +3
-		SectionSetFlags ${MbUnitVS2008TemplatesSection} ${SF_RO}
-		SectionSetText ${MbUnitVS2008TemplatesSection} "The MbUnit v3 Visual Studio 2008 templates require Visual Studio 2008 to be installed."
+		SectionSetFlags ${MbUnit3VS2008TemplatesSection} ${SF_RO}
+		SectionSetText ${MbUnit3VS2008TemplatesSection} "The MbUnit v3 Visual Studio 2008 templates require Visual Studio 2008 to be installed."
 FunctionEnd
 
 ; Uninstaller initialization code.
@@ -816,8 +823,8 @@ FunctionEnd
 !macroend
 
 Function .onSelChange
-	!insertmacro EnforceSelectionDependency ${MbUnitPexSection} ${MbUnitSection}
-	!insertmacro EnforceSelectionDependency ${MbUnitVS2005TemplatesSection} ${MbUnitSection}
-	!insertmacro EnforceSelectionDependency ${MbUnitVS2008TemplatesSection} ${MbUnitSection}
+	!insertmacro EnforceSelectionDependency ${MbUnit3PexSection} ${MbUnit3Section}
+	!insertmacro EnforceSelectionDependency ${MbUnit3VS2005TemplatesSection} ${MbUnit3Section}
+	!insertmacro EnforceSelectionDependency ${MbUnit3VS2008TemplatesSection} ${MbUnit3Section}
 FunctionEnd
 

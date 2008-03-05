@@ -18,7 +18,7 @@ namespace $safeprojectname$.Controllers
         public void About()
         {
             //
-            // TODO: Add test logic	here
+            // TODO: Add test logic here
             //
         }
 
@@ -26,7 +26,7 @@ namespace $safeprojectname$.Controllers
         public void Index()
         {
             //
-            // TODO: Add test logic	here
+            // TODO: Add test logic here
             //
         }
     }

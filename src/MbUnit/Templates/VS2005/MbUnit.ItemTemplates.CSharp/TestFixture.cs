@@ -7,14 +7,14 @@ using MbUnit.Framework;
 namespace $rootnamespace$
 {
     [TestFixture]
-	public class $safeitemrootname$
-	{
+    public class $safeitemrootname$
+    {
         [Test]
         public void Test()
         {
             //
-            // TODO: Add test logic	here
+            // TODO: Add test logic here
             //
         }
-	}
+    }
 }
