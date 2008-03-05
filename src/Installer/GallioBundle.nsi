@@ -70,7 +70,7 @@ Var UserContext
 ; Detect whether any components are missing
 !tempfile DETECT_TEMP
 !system 'if not exist "${TARGETDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
-!system 'if not exist "${TARGETDIR}\docs\vs2005\Gallio.HxS" echo !define MISSING_VS2005_HELP >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\docs\vs\Gallio.HxS" echo !define MISSING_VS_HELP >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
 !delfile "${DETECT_TEMP}"
 
@@ -79,8 +79,8 @@ Var UserContext
 	!warning "Missing CHM file."
 !endif
 
-!ifdef MISSING_VS2005_HELP
-	!warning "Missing VS2005 help collection."
+!ifdef MISSING_VS_HELP
+	!warning "Missing Visual Studio help collection."
 !endif
 
 ; Define sections
@@ -490,7 +490,7 @@ SectionEnd
 
 SectionGroupEnd
 
-!ifndef MISSING_CHM_HELP | MISSING_VS2005_HELP
+!ifndef MISSING_CHM_HELP | MISSING_VS_HELP
 SectionGroup "Documentation"
 !ifndef MISSING_CHM_HELP
 Section "Standalone Help Docs" CHMHelpSection
@@ -509,21 +509,21 @@ Section "Standalone Help Docs" CHMHelpSection
 SectionEnd
 !endif
 
-!ifndef MISSING_VS2005_HELP
-Section "Visual Studio 2005 Help Docs" VS2005HelpSection
+!ifndef MISSING_VS_HELP
+Section "Visual Studio Help Docs" VSHelpSection
 	; Set Section properties
 	SetOverwrite on
 
 	; Set Section Files and Shortcuts
-	SetOutPath "$INSTDIR\docs\vs2005"
-	File "${TARGETDIR}\docs\vs2005\Gallio.Hx?"
-	File "${TARGETDIR}\docs\vs2005\GallioCollection.*"
+	SetOutPath "$INSTDIR\docs\vs"
+	File "${TARGETDIR}\docs\vs\Gallio.Hx?"
+	File "${TARGETDIR}\docs\vs\GallioCollection.*"
 
 	SetOutPath "$INSTDIR\extras\H2Reg"
 	File "${TARGETDIR}\extras\H2Reg\*"
 
 	; Merge the collection
-	ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -r CmdFile="$INSTDIR\docs\vs2005\GallioCollection.h2reg.ini"'
+	ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -r CmdFile="$INSTDIR\docs\vs\GallioCollection.h2reg.ini"'
 SectionEnd
 !endif
 SectionGroupEnd
@@ -576,8 +576,8 @@ Section Uninstall
 	DeleteRegKey SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio"
 
 	; Uninstall the help collection
-	IfFileExists "$INSTDIR\docs\vs2005\GallioCollection.h2reg.ini" 0 +2
-		ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs2005\GallioCollection.h2reg.ini"'
+	IfFileExists "$INSTDIR\docs\vs\GallioCollection.h2reg.ini" 0 +2
+		ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs\GallioCollection.h2reg.ini"'
 
 	; Uninstall the Visual Studio 2005 templates
 	ClearErrors
@@ -660,8 +660,8 @@ SectionEnd
 		!insertmacro MUI_DESCRIPTION_TEXT ${CHMHelpSection} "Installs the standalone help documentation CHM file."
 	!endif
 
-	!ifndef MISSING_VS2005_HELP
-		!insertmacro MUI_DESCRIPTION_TEXT ${VS2005HelpSection} "Installs the integrated help documentation for Visual Studio 2005 access with F1."
+	!ifndef MISSING_VS_HELP
+		!insertmacro MUI_DESCRIPTION_TEXT ${VSHelpSection} "Installs the integrated documentation for Visual Studio 2005 or Visual Studio 2008 access with F1 Help."
 	!endif
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -702,21 +702,23 @@ Function .onInit
 	!ifndef MISSING_CHM_HELP
 		SectionSetInstTypes ${CHMHelpSection} 3
 	!endif
-	!ifndef MISSING_VS2005_HELP
-		SectionSetInstTypes ${VS2005HelpSection} 3
+	!ifndef MISSING_VS_HELP
+		SectionSetInstTypes ${VSHelpSection} 3
 	!endif
 
 	SetCurInstType 0
 
-	; Disable VS2005 help section if not installed.
-	!ifndef MISSING_VS2005_HELP
-	; Check if VS 2005 Standard or above is installed.
-	; Specifically exclude Express editions.
+	; Disable Visual Studio help section if not installed.
+	!ifndef MISSING_VS_HELP
 	ClearErrors
-	ReadRegDWORD $0 HKLM "Software\Microsoft\DevDiv\VS\Servicing\8.0" "SP"
-	IfErrors 0 +3
-		SectionSetFlags ${VS2005HelpSection} ${SF_RO}
-		SectionSetText ${VS2005HelpSection} "The integrated help documentation for Visual Studio 2005 requires Visual Studio 2005 Standard Edition or higher to be installed.  Visual Studio 2005 Express Edition is not supported."
+	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0" "InstallDir"
+	IfErrors 0 IncludeVSHelp
+	ClearErrors
+	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
+	IfErrors 0 IncludeVSHelp
+		SectionSetFlags ${VSHelpSection} ${SF_RO}
+		SectionSetText ${VSHelpSection} "The integrated documentation for Visual Studio requires Visual Studio 2005 or Visual Studio 2008 to be installed."
+	IncludeVSHelp:
 	!endif
 
 	; Disable VS2005 templates if not installed.

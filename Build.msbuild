@@ -148,7 +148,7 @@
 
     <NDocCHMOptions>$(NDocCommonOptions) -documenter=MSDN-CHM "-OutputDirectory=$(TargetDocsDir)" -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocCHMOptions>
 
-    <NDocHxSOptions>$(NDocCommonOptions) -documenter=MSDN-Help2 "-OutputDirectory=$(TargetDocsDir)\vs2005" -GenerateCollectionFiles=True -PlugInNamespace=ms.vsipcc -AllLinksWithinVSHelpCollection=True -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHxSOptions>
+    <NDocHxSOptions>$(NDocCommonOptions) -documenter=MSDN-Help2 "-OutputDirectory=$(TargetDocsDir)\vs" -GenerateCollectionFiles=True -PlugInNamespace=ms.vsipcc -AllLinksWithinVSHelpCollection=True -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHxSOptions>
   </PropertyGroup>
 
   <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
@@ -167,12 +167,12 @@
   </Target>
 
   <Target Name="BuildHxSDocs">
-    <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (Hxs) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the Visual Studio 2005 SDK installer."
+    <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the Visual Studio 2005 SDK installer."
            Condition="! Exists('$(VS2005SDKHelpPath)')" />
 
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
           Condition="Exists('$(VS2005SDKHelpPath)')" />
-    <RemoveDir Directories="$(TargetDocsDir)\vs2005\ndoc_htmlhelp2_temp" />
+    <RemoveDir Directories="$(TargetDocsDir)\vs\ndoc_htmlhelp2_temp" />
   </Target>
 
   <Target Name="BuildInstaller"
