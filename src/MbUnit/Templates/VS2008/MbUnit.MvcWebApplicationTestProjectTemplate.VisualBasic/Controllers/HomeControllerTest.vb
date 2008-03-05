@@ -4,7 +4,7 @@ Imports System.Collections.Generic
 Imports Gallio.Framework
 Imports MbUnit.Framework
 
-<TestFixture(), TestsOn(TypeOf(HomeController))> _
+<TestFixture()> _
 Public Class HomeControllerTest
     <Test()> _
     Public Sub Index()

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <Name>MbUnit v3 ASP.NET MVC Test</Name>
-    <Description>An MbUnit v3 project for testing an ASP.NET MVC web application (.NET Framework 3.5)</Description>
+    <Name>MbUnit v3 ASP.NET MVC Test Project</Name>
+    <Description>An MbUnit v3 project for testing an ASP.NET MVC web application</Description>
     <Icon>Template.ico</Icon>
     <ProjectType>VisualBasic</ProjectType>
     <SortOrder>100</SortOrder>

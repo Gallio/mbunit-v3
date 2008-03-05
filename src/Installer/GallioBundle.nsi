@@ -24,6 +24,9 @@ OutFile "${RELEASEDIR}\GallioBundle-${VERSION}-Setup.exe"
 
 BrandingText "gallio.org"
 
+ShowInstDetails show
+ShowUnInstDetails show
+
 InstType "Full"
 InstType "Typical"
 
@@ -775,17 +778,19 @@ FunctionEnd
 Function AddRemovePageLeave
 	!insertmacro MUI_INSTALLOPTIONS_READ $INI_VALUE "AddRemovePage.ini" "Field 2" "State"
 
-	MessageBox MB_OKCANCEL "Uninstall the current version?" IDOK Uninstall
+	; Note: We don't uninstall silently anymore because it takes too
+	;       long and it sucks not to get any feedback during the process.
+	ExecWait '"$OLD_INSTALL_DIR\uninstall.exe" _?=$OLD_INSTALL_DIR' $0
+	IntCmp $0 0 Ok
+	MessageBox MB_OK "Cannot proceed because the old version was not successfully uninstalled."
 	Abort
 
-	Uninstall:
-	ExecWait '"$OLD_INSTALL_DIR\uninstall.exe" /S _?=$OLD_INSTALL_DIR' $0
-	DetailPrint "Uninstaller returned $0"
-
+	Ok:
 	IntCmp $INI_VALUE 1 Upgrade
 	Quit
 
 	Upgrade:
+	BringToFront
 FunctionEnd
 
 ; User-selection page.
