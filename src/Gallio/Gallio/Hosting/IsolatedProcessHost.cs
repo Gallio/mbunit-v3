@@ -43,9 +43,9 @@ namespace Gallio.Hosting
     {
         private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
-        private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan PingInterval = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan JoinBeforeAbortTimeout = TimeSpan.FromSeconds(60);
-        private static readonly TimeSpan JoinAfterAbortTimeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan JoinAfterAbortTimeout = TimeSpan.FromSeconds(15);
 
         private ProcessTask processTask;
         private IClientChannel clientChannel;
@@ -82,7 +82,7 @@ namespace Gallio.Hosting
                 if (HostSetup.ShadowCopy)
                     hostService.DoCallback(RemotelyEnableShadowCopy);
 
-                ConfigureHostService(hostService, PingTimeout);
+                ConfigureHostService(hostService, PingInterval);
             }
             catch (Exception ex)
             {
