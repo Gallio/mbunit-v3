@@ -246,6 +246,8 @@ namespace Gallio.Icarus.Tests
             SetFilterEventArgs e = new SetFilterEventArgs("test", new NoneFilter<ITest>());
             mockPresenter.SetFilter(projectAdapter, e);
             LastCall.IgnoreArguments();
+            mockView.TestFilters = projectAdapter.Project.TestFilters;
+            LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.SetFilter += new EventHandler<SetFilterEventArgs>(mockPresenter.SetFilter);
@@ -255,14 +257,19 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void RemoveFilterEventHandler_Test()
         {
+            List<FilterInfo> list = new List<FilterInfo>();
+            FilterInfo filterInfo = new FilterInfo("Test", new NoneFilter<ITest>().ToFilterExpr());
+            list.Add(filterInfo);
+            mockView.TestFilters = list;
+            LastCall.IgnoreArguments().Repeat.AtLeastOnce();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             Assert.AreEqual(0, projectAdapter.Project.TestFilters.Count);
-            projectAdapter.Project.TestFilters.Add(new FilterInfo("Test", new NoneFilter<ITest>().ToFilterExpr()));
+            projectAdapter.Project.TestFilters = list;
             Assert.AreEqual(1, projectAdapter.Project.TestFilters.Count);
-            removeFilterEvent.Raise(mockView, new SingleEventArgs<string>("NotTest"));
+            removeFilterEvent.Raise(mockView, new SingleEventArgs<FilterInfo>(new FilterInfo("NotTest", new NoneFilter<ITest>().ToFilterExpr())));
             Assert.AreEqual(1, projectAdapter.Project.TestFilters.Count);
-            removeFilterEvent.Raise(mockView, new SingleEventArgs<string>("Test"));
+            removeFilterEvent.Raise(mockView, new SingleEventArgs<FilterInfo>(filterInfo));
             Assert.AreEqual(0, projectAdapter.Project.TestFilters.Count);
         }
 
