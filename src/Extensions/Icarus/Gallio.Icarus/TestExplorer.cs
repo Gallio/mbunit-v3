@@ -252,7 +252,10 @@ namespace Gallio.Icarus
 
         public Filter<ITest> CreateFilter()
         {
-            return CreateFilter(testTree.Nodes);
+            Filter<ITest> filter = CreateFilter(testTree.Nodes);
+            if (filter == null)
+                filter = new NoneFilter<ITest>();
+            return filter;
         }
 
         private Filter<ITest> CreateFilter(TreeNodeCollection treeNodeCollection)

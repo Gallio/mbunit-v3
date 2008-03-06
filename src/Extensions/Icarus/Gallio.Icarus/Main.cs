@@ -381,7 +381,7 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> GenerateReport;
         public event EventHandler<EventArgs> StopTests;
         public event EventHandler<SetFilterEventArgs> SetFilter;
-        public event EventHandler<SingleEventArgs<string>> RemoveFilter;
+        public event EventHandler<SingleEventArgs<FilterInfo>> RemoveFilter;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<EventArgs> GetTestFrameworks;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
@@ -1187,10 +1187,10 @@ namespace Gallio.Icarus
                 SetFilter(this, new SetFilterEventArgs(filterName, testExplorer.CreateFilter()));
         }
 
-        public void DeleteFilter(string filterName)
+        public void DeleteFilter(FilterInfo filterInfo)
         {
             if (RemoveFilter != null)
-                RemoveFilter(this, new SingleEventArgs<string>(filterName));
+                RemoveFilter(this, new SingleEventArgs<FilterInfo>(filterInfo));
         }
     }
 }

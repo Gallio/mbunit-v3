@@ -39,7 +39,7 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> GenerateReport;
         event EventHandler<EventArgs> StopTests;
         event EventHandler<SetFilterEventArgs> SetFilter;
-        event EventHandler<SingleEventArgs<string>> RemoveFilter;
+        event EventHandler<SingleEventArgs<FilterInfo>> RemoveFilter;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         event EventHandler<SingleEventArgs<string>> SaveProject;
@@ -86,6 +86,6 @@ namespace Gallio.Icarus.Interfaces
         void UpdateWorkingDirectory(string workingDirectory);
         void UpdateShadowCopy(bool shadowCopy);
         void SaveFilter(string filterName);
-        void DeleteFilter(string filterName);
+        void DeleteFilter(FilterInfo filterInfo);
     }
 }

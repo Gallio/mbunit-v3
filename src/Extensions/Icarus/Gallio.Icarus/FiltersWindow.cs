@@ -26,18 +26,15 @@ namespace Gallio.Icarus
     public partial class FiltersWindow : DockWindow
     {
         private IProjectAdapterView projectAdapterView;
-        private IList<FilterInfo> filters;
 
         public IList<FilterInfo> Filters
         {
             set
             {
-                filters = value;
-
                 // populate list box
                 filtersListBox.Items.Clear();
                 foreach (FilterInfo filterInfo in value)
-                    filtersListBox.Items.Add(filterInfo.FilterName);
+                    filtersListBox.Items.Add(filterInfo);
             }
         }
 
@@ -54,8 +51,7 @@ namespace Gallio.Icarus
 
         private void removeFilterButton_Click(object sender, EventArgs e)
         {
-            projectAdapterView.DeleteFilter((string)filtersListBox.SelectedItem);
-            filtersListBox.Items.Remove(filtersListBox.SelectedItem);
+            projectAdapterView.DeleteFilter((FilterInfo)filtersListBox.SelectedItem);
         }
 
         private void filterNameTextBox_TextChanged(object sender, EventArgs e)
@@ -75,21 +71,13 @@ namespace Gallio.Icarus
             else
             {
                 projectAdapterView.SaveFilter(filterNameTextBox.Text);
-                filtersListBox.Items.Add(filterNameTextBox.Text);
                 filterNameTextBox.Clear();
             }
         }
 
         private void applyFilterButton_Click(object sender, EventArgs e)
         {
-            foreach (FilterInfo filterInfo in filters)
-            {
-                if (filterInfo.FilterName == (string)filtersListBox.SelectedItem)
-                {
-                    projectAdapterView.ApplyFilter(filterInfo.Filter);
-                    break;
-                }
-            }
+            projectAdapterView.ApplyFilter(((FilterInfo)filtersListBox.SelectedItem).Filter);
         }
     }
 }

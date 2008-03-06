@@ -240,18 +240,13 @@ namespace Gallio.Icarus.Adapter
             UpdateProjectFilter(e.FilterName, e.Filter);
             if (SetFilter != null)
                 SetFilter(this, e);
+            projectAdapterView.TestFilters = project.TestFilters;
         }
 
-        private void RemoveFilterEventHandler(object sender, SingleEventArgs<string> e)
+        private void RemoveFilterEventHandler(object sender, SingleEventArgs<FilterInfo> e)
         {
-            foreach (FilterInfo filterInfo in project.TestFilters)
-            {
-                if (filterInfo.FilterName == e.Arg)
-                {
-                    project.TestFilters.Remove(filterInfo);
-                    return;
-                }
-            }
+            project.TestFilters.Remove(e.Arg);
+            projectAdapterView.TestFilters = project.TestFilters;
         }
 
         public void UpdateProjectFilter(string filterName, Filter<ITest> filter)
