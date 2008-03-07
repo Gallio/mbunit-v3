@@ -33,7 +33,7 @@ namespace Gallio.Reflection.Impl
         /// <param name="handle">The underlying reflection object</param>
         /// <param name="declaringType">The declaring type, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
-        public StaticMemberWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
+        protected StaticMemberWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
             : base(policy, handle)
         {
             this.declaringType = declaringType;
@@ -52,7 +52,7 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
-                CodeReference reference = DeclaringType.CodeReference;
+                CodeReference reference = ReflectedType.CodeReference;
                 reference.MemberName = Name;
                 return reference;
             }
@@ -74,6 +74,18 @@ namespace Gallio.Reflection.Impl
         ITypeInfo IMemberInfo.DeclaringType
         {
             get { return DeclaringType; }
+        }
+
+        /// <summary>
+        /// Gets the reflected type, or null if none.
+        /// </summary>
+        public virtual StaticDeclaredTypeWrapper ReflectedType
+        {
+            get { return DeclaringType; }
+        }
+        ITypeInfo IMemberInfo.ReflectedType
+        {
+            get { return ReflectedType; }
         }
 
         /// <inheritdoc />

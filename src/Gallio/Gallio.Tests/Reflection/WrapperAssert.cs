@@ -674,6 +674,27 @@ namespace Gallio.Tests.Reflection
                         });
                     }
                 }
+
+                foreach (Type nestedType in target.GetNestedTypes(AllPublic))
+                {
+                    try
+                    {
+                        Type nestedTypeByName = target.GetNestedType(nestedType.Name, AllPublic);
+                        Assert.IsNotNull(nestedTypeByName);
+
+                        InterimAssert.DoesNotThrow(delegate
+                        {
+                            AreEqualWhenResolved(nestedTypeByName, info.GetNestedType(nestedTypeByName.Name, AllPublic));
+                        });
+                    }
+                    catch (AmbiguousMatchException)
+                    {
+                        InterimAssert.Throws<AmbiguousMatchException>(delegate
+                        {
+                            Assert.IsNotNull(info.GetNestedType(nestedType.Name, AllPublic));
+                        });
+                    }
+                }
             });
 
             if (recursive)
@@ -730,6 +751,12 @@ namespace Gallio.Tests.Reflection
                     IMethodInfo methodInfo = GetMemberThatIsEqualWhenResolved(method, info.GetMethods(All));
                     AreEquivalent(method, methodInfo, true);
                 }
+
+                foreach (Type nestedType in target.GetNestedTypes(All))
+                {
+                    ITypeInfo nestedTypeInfo = GetMemberThatIsEqualWhenResolved(nestedType, info.GetNestedTypes(All));
+                    AreEquivalent(nestedType, nestedTypeInfo, true);
+                }
             }
         }
 
@@ -742,6 +769,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(target.Name, info.Name);
             AreEqualUpToAssemblyDisplayName(CodeReference.CreateFromMember(target), info.CodeReference);
             AreEqualWhenResolved(target.DeclaringType, info.DeclaringType);
+            AreEqualWhenResolved(target.ReflectedType, info.ReflectedType);
 
             string xmlDocumentation = info.GetXmlDocumentation();
             if (xmlDocumentation != null)

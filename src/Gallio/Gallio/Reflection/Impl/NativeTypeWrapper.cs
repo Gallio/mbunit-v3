@@ -262,6 +262,17 @@ namespace Gallio.Reflection.Impl
             return Array.ConvertAll<EventInfo, IEventInfo>(events, Reflector.Wrap);
         }
 
+        public ITypeInfo GetNestedType(string nestedTypeName, BindingFlags bindingFlags)
+        {
+            return Reflector.Wrap(Target.GetNestedType(nestedTypeName, bindingFlags));
+        }
+
+        public IList<ITypeInfo> GetNestedTypes(BindingFlags bindingFlags)
+        {
+            Type[] nestedTypes = Target.GetNestedTypes(bindingFlags);
+            return Array.ConvertAll<Type, ITypeInfo>(nestedTypes, Reflector.Wrap);
+        }
+
         public IList<ITypeInfo> GenericArguments
         {
             get { return Array.ConvertAll<Type, ITypeInfo>(Target.GetGenericArguments(), Reflector.Wrap); }

@@ -71,6 +71,7 @@ Var UserContext
 !tempfile DETECT_TEMP
 !system 'if not exist "${TARGETDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\docs\vs\Gallio.HxS" echo !define MISSING_VS_HELP >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\MbUnit.Pex.dll" echo !define MISSING_MBUNIT_PEX_PACKAGE >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
 !delfile "${DETECT_TEMP}"
 
@@ -81,6 +82,10 @@ Var UserContext
 
 !ifdef MISSING_VS_HELP
 	!warning "Missing Visual Studio help collection."
+!endif
+
+!ifdef MISSING_MBUNIT_PEX_PACKAGE
+	!warning "Missing MbUnit Pex package."
 !endif
 
 ; Define sections
@@ -141,6 +146,7 @@ Section "!MbUnit v3 Framework" MbUnit3Section
 	File "${TARGETDIR}\MbUnit Website.url"
 SectionEnd
 
+!ifndef MISSING_MBUNIT_PEX_PACKAGE
 Section "MbUnit v3 Pex Package" MbUnit3PexSection
 	; Set Section properties
 	SetOverwrite on
@@ -148,6 +154,7 @@ Section "MbUnit v3 Pex Package" MbUnit3PexSection
 	SetOutPath "$INSTDIR\bin"
 	File "${TARGETDIR}\bin\MbUnit.Pex.dll"
 SectionEnd
+!endif
 
 Section "MbUnit v3 Visual Studio 2005 Templates" MbUnit3VS2005TemplatesSection
 	; Set Section properties
@@ -634,7 +641,9 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${GallioSection} "Installs the Gallio test automation platform."
 
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3Section} "Installs the MbUnit v3 framework components."
-	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3PexSection} "Installs the MbUnit v3 Pex package."
+	!ifndef MISSING_MBUNIT_PEX_PACKAGE
+		!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3PexSection} "Installs the MbUnit v3 Pex package."
+	!endif
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3VS2005TemplatesSection} "Installs the MbUnit v3 Visual Studio 2005 templates."
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3VS2008TemplatesSection} "Installs the MbUnit v3 Visual Studio 2008 templates."
 
@@ -678,7 +687,9 @@ Function .onInit
 	SectionSetInstTypes ${GallioSection} 3
 
 	SectionSetInstTypes ${MbUnit3Section} 3
-	SectionSetInstTypes ${MbUnit3PexSection} 1
+	!ifndef MISSING_MBUNIT_PEX_PACKAGE
+		SectionSetInstTypes ${MbUnit3PexSection} 1
+	!endif
 	SectionSetInstTypes ${MbUnit3VS2005TemplatesSection} 1
 	SectionSetInstTypes ${MbUnit3VS2008TemplatesSection} 1
 
@@ -830,7 +841,9 @@ FunctionEnd
 !macroend
 
 Function .onSelChange
-	!insertmacro EnforceSelectionDependency ${MbUnit3PexSection} ${MbUnit3Section}
+	!ifndef MISSING_MBUNIT_PEX_PACKAGE
+		!insertmacro EnforceSelectionDependency ${MbUnit3PexSection} ${MbUnit3Section}
+	!endif
 	!insertmacro EnforceSelectionDependency ${MbUnit3VS2005TemplatesSection} ${MbUnit3Section}
 	!insertmacro EnforceSelectionDependency ${MbUnit3VS2008TemplatesSection} ${MbUnit3Section}
 FunctionEnd

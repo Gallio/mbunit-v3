@@ -32,7 +32,7 @@ namespace Gallio.Reflection.Impl
         /// <param name="handle">The underlying reflection object</param>
         /// <param name="declaringType">The declaring type, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
-        public StaticTypeWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
+        protected StaticTypeWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
             : base(policy, handle, declaringType)
         {
         }
@@ -296,6 +296,12 @@ namespace Gallio.Reflection.Impl
 
         /// <inheritdoc />
         public abstract IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
+
+        /// <inheritdoc />
+        public abstract ITypeInfo GetNestedType(string nestedTypeName, BindingFlags bindingFlags);
+
+        /// <inheritdoc />
+        public abstract IList<ITypeInfo> GetNestedTypes(BindingFlags bindingFlags);
 
         /// <inheritdoc />
         public bool IsAssignableFrom(ITypeInfo type)

@@ -41,18 +41,30 @@
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
   <UsingTask AssemblyFile="$(NCoverExplorerPath)\NCoverExplorer.MSBuildTasks.dll" TaskName="NCoverExplorer.MSBuildTasks.NCoverExplorer" />
 
-  <Target Name="GetModuleItems"
-          Outputs="@(ModuleItem)">
+  <PropertyGroup>
+    <GetModuleItemsDependsOn>
+      _CheckRootDir;
+      _RecurseIntoNestedModules;
+    </GetModuleItemsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="_CheckRootDir">
     <Error Text="RootDir property must be defined."
            Condition="'$(RootDir)'==''" />
+  </Target>
 
+  <Target Name="_RecurseIntoNestedModules">
     <MSBuild Projects="@(NestedModule)"
              Targets="GetModuleItems"
 	     Properties="RootDir=$(RootDir)"
 	     Condition="'@(NestedModule)'!=''">
       <Output TaskParameter="TargetOutputs" ItemName="NestedModuleItem" />
     </MSBuild>
+  </Target>
 
+  <Target Name="GetModuleItems"
+          DependsOnTargets="$(GetModuleItemsDependsOn)"
+          Outputs="@(ModuleItem)">
     <CreateItem Include="@(NestedModuleItem)"
                 Condition="'@(NestedModuleItem)'!=''">
       <Output TaskParameter="Include" ItemName="%(NestedModuleItem.ItemName)" />

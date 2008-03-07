@@ -59,6 +59,23 @@ namespace Gallio.Collections
         }
 
         /// <summary>
+        /// Determines whether a key has an associated value in the collection.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <returns>True if the key has an associated value</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
+        public bool HasValue(string key)
+        {
+            if (key == null)
+                throw new ArgumentNullException("key");
+
+            lock (this)
+            {
+                return items != null && items.ContainsKey(key);
+            }
+        }
+
+        /// <summary>
         /// Sets a value in the collection.
         /// </summary>
         /// <param name="key">The key</param>

@@ -279,6 +279,21 @@ namespace Gallio.Reflection
         IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
 
         /// <summary>
+        /// Gets a nested type by name, or null if not found.
+        /// </summary>
+        /// <param name="nestedTypeName">The nested type name</param>
+        /// <param name="bindingFlags">The binding flags</param>
+        /// <returns>The nested type</returns>
+        ITypeInfo GetNestedType(string nestedTypeName, BindingFlags bindingFlags);
+
+        /// <summary>
+        /// Gets all nested types of the type that satisfy the binding flags.
+        /// </summary>
+        /// <param name="bindingFlags">The binding flags</param>
+        /// <returns>The nested types</returns>
+        IList<ITypeInfo> GetNestedTypes(BindingFlags bindingFlags);
+
+        /// <summary>
         /// Returns true if variables of this type can be assigned with values of the specified type.
         /// </summary>
         /// <param name="type">The other type</param>

@@ -38,16 +38,14 @@ namespace Gallio.Reflection.Impl
         /// <param name="policy">The reflection policy</param>
         /// <param name="handle">The underlying reflection object</param>
         /// <param name="declaringType">The declaring type</param>
+        /// <param name="reflectedType">The reflected type</param>
         /// <param name="substitution">The type substitution for generic parameters</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>,
-        /// or <paramref name="declaringType"/> is null</exception>
+        /// or <paramref name="declaringType"/> or <paramref name="reflectedType"/> is null</exception>
         public StaticMethodWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType,
-            StaticTypeSubstitution substitution)
-            : base(policy, handle, declaringType)
-        {
-            if (declaringType == null)
-                throw new ArgumentNullException("declaringType");
-
+            StaticDeclaredTypeWrapper reflectedType, StaticTypeSubstitution substitution)
+            : base(policy, handle, declaringType, reflectedType)
+        { 
             this.substitution = substitution;
         }
 
@@ -115,7 +113,7 @@ namespace Gallio.Reflection.Impl
                 if (IsGenericMethodDefinition)
                     return this;
 
-                return new StaticMethodWrapper(Policy, Handle, DeclaringType, DeclaringType.Substitution);
+                return new StaticMethodWrapper(Policy, Handle, DeclaringType, ReflectedType, DeclaringType.Substitution);
             }
         }
         IMethodInfo IMethodInfo.GenericMethodDefinition
@@ -161,7 +159,7 @@ namespace Gallio.Reflection.Impl
 
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
-                foreach (StaticMethodWrapper other in Policy.GetTypeMethods(baseType))
+                foreach (StaticMethodWrapper other in Policy.GetTypeMethods(baseType, ReflectedType))
                 {
                     if (HidesMethod(other))
                     {
@@ -243,7 +241,7 @@ namespace Gallio.Reflection.Impl
             if (!IsGenericMethodDefinition)
                 throw new InvalidOperationException("The method is not a generic method definition.");
 
-            return new StaticMethodWrapper(Policy, Handle, DeclaringType, Substitution.Extend(GenericParameters, genericArguments));
+            return new StaticMethodWrapper(Policy, Handle, DeclaringType, ReflectedType, Substitution.Extend(GenericParameters, genericArguments));
         }
         IMethodInfo IMethodInfo.MakeGenericMethod(IList<ITypeInfo> genericArguments)
         {

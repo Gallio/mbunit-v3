@@ -25,7 +25,7 @@ namespace Gallio.Reflection.Impl
     /// <summary>
     /// A <see cref="StaticReflectionPolicy"/> event wrapper.
     /// </summary>
-    public sealed class StaticEventWrapper : StaticMemberWrapper, IEventInfo
+    public sealed class StaticEventWrapper : StaticReflectedMemberWrapper, IEventInfo
     {
         private readonly Memoizer<EventAttributes> eventAttributesMemoizer = new Memoizer<EventAttributes>();
 
@@ -35,13 +35,13 @@ namespace Gallio.Reflection.Impl
         /// <param name="policy">The reflection policy</param>
         /// <param name="handle">The underlying reflection object</param>
         /// <param name="declaringType">The declaring type</param>
+        /// <param name="reflectedType">The reflected type</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>,
-        /// or <paramref name="declaringType"/> is null</exception>
-        public StaticEventWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
-            : base(policy, handle, declaringType)
+        /// <paramref name="declaringType"/>, or <paramref name="reflectedType"/> is null</exception>
+        public StaticEventWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType,
+            StaticDeclaredTypeWrapper reflectedType)
+            : base(policy, handle, declaringType, reflectedType)
         {
-            if (declaringType == null)
-                throw new ArgumentNullException("declaringType");
         }
 
         /// <inheritdoc />
@@ -112,7 +112,7 @@ namespace Gallio.Reflection.Impl
             string eventName = Name;
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
-                foreach (StaticEventWrapper other in Policy.GetTypeEvents(baseType))
+                foreach (StaticEventWrapper other in Policy.GetTypeEvents(baseType, ReflectedType))
                 {
                     if (eventName == other.Name)
                     {

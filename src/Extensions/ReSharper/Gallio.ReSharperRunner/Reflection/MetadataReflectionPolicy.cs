@@ -82,7 +82,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return null;
 
             StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(target.DeclaringType);
-            return new StaticPropertyWrapper(this, target, declaringType);
+            return new StaticPropertyWrapper(this, target, declaringType, declaringType);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return null;
 
             StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(target.DeclaringType);
-            return new StaticFieldWrapper(this, target, declaringType);
+            return new StaticFieldWrapper(this, target, declaringType, declaringType);
         }
         #endregion
 
@@ -594,39 +594,51 @@ namespace Gallio.ReSharperRunner.Reflection
             }
         }
 
-        protected override IEnumerable<StaticMethodWrapper> GetTypeMethods(StaticDeclaredTypeWrapper type)
+        protected override IEnumerable<StaticMethodWrapper> GetTypeMethods(StaticDeclaredTypeWrapper type,
+            StaticDeclaredTypeWrapper reflectedType)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
             foreach (IMetadataMethod methodHandle in typeHandle.GetMethods())
             {
                 if (!IsConstructor(methodHandle))
-                    yield return new StaticMethodWrapper(this, methodHandle, type, type.Substitution);
+                    yield return new StaticMethodWrapper(this, methodHandle, type, reflectedType, type.Substitution);
             }
         }
 
-        protected override IEnumerable<StaticPropertyWrapper> GetTypeProperties(StaticDeclaredTypeWrapper type)
+        protected override IEnumerable<StaticPropertyWrapper> GetTypeProperties(StaticDeclaredTypeWrapper type,
+            StaticDeclaredTypeWrapper reflectedType)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
             foreach (IMetadataProperty propertyHandle in typeHandle.GetProperties())
-                yield return new StaticPropertyWrapper(this, propertyHandle, type);
+                yield return new StaticPropertyWrapper(this, propertyHandle, type, reflectedType);
         }
 
-        protected override IEnumerable<StaticFieldWrapper> GetTypeFields(StaticDeclaredTypeWrapper type)
+        protected override IEnumerable<StaticFieldWrapper> GetTypeFields(StaticDeclaredTypeWrapper type,
+            StaticDeclaredTypeWrapper reflectedType)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
             foreach (IMetadataField fieldHandle in typeHandle.GetFields())
-                yield return new StaticFieldWrapper(this, fieldHandle, type);
+                yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
         }
 
-        protected override IEnumerable<StaticEventWrapper> GetTypeEvents(StaticDeclaredTypeWrapper type)
+        protected override IEnumerable<StaticEventWrapper> GetTypeEvents(StaticDeclaredTypeWrapper type,
+            StaticDeclaredTypeWrapper reflectedType)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
 
             foreach (IMetadataEvent eventHandle in typeHandle.GetEvents())
-                yield return new StaticEventWrapper(this, eventHandle, type);
+                yield return new StaticEventWrapper(this, eventHandle, type, reflectedType);
+        }
+
+        protected override IEnumerable<StaticTypeWrapper> GetTypeNestedTypes(StaticDeclaredTypeWrapper type)
+        {
+            IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
+
+            foreach (IMetadataTypeInfo nestedTypeHandle in typeHandle.GetNestedTypes())
+                yield return new StaticDeclaredTypeWrapper(this, nestedTypeHandle, type, type.Substitution);
         }
 
         private StaticTypeWrapper MakeType(IMetadataType typeHandle)
@@ -720,7 +732,7 @@ namespace Gallio.ReSharperRunner.Reflection
             else
             {
                 StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(parameterHandle.MethodOwner.DeclaringType);
-                StaticMethodWrapper declaringMethod = new StaticMethodWrapper(this, parameterHandle.MethodOwner, declaringType, declaringType.Substitution);
+                StaticMethodWrapper declaringMethod = new StaticMethodWrapper(this, parameterHandle.MethodOwner, declaringType, declaringType, declaringType.Substitution);
                 return StaticGenericParameterWrapper.CreateGenericMethodParameter(this, parameterHandle, declaringMethod);
             }
         }
@@ -1039,7 +1051,7 @@ namespace Gallio.ReSharperRunner.Reflection
         #region Misc
         private StaticMethodWrapper WrapAccessor(IMetadataMethod accessorHandle, StaticMemberWrapper member)
         {
-            return accessorHandle != null ? new StaticMethodWrapper(this, accessorHandle, member.DeclaringType, member.Substitution) : null;
+            return accessorHandle != null ? new StaticMethodWrapper(this, accessorHandle, member.DeclaringType, member.ReflectedType, member.Substitution) : null;
         }
         #endregion
     }

@@ -32,12 +32,34 @@ namespace Gallio.Reflection
     public interface IMemberInfo : ICodeElementInfo, IEquatable<IMemberInfo>
     {
         /// <summary>
-        /// Gets the declaring type of the member.  If the member not a type or is a nested type,
+        /// <para>
+        /// Gets the declaring type of the member.
+        /// </para>
+        /// <para>
+        /// If the member not a type or is a nested type,
         /// returns its containing type.  If it is a generic parameter, returns the type
         /// to which it (or its declaring method) belongs.  Otherwise returns null.
+        /// </para>
         /// </summary>
         /// <seealso cref="IGenericParameterInfo.DeclaringMethod"/>
+        /// <seealso cref="IMemberInfo.ReflectedType"/>
         ITypeInfo DeclaringType { get; }
+
+        /// <summary>
+        /// <para>
+        /// Gets the reflected type of the member.  The reflected type is the type that was
+        /// used to locate the member.  If the member was inherited from a base class, its
+        /// declaring type will be the base class but its reflected type will be the inherited
+        /// class from which the member was accessed.
+        /// </para>
+        /// <para>
+        /// If the member not a type or is a nested type, returns its reflected containing type.
+        /// If it is a generic parameter, returns the declaring type to which it (or its
+        /// declaring method) belongs.  Otherwise returns null.
+        /// </para>
+        /// </summary>
+        /// <seealso cref="IMemberInfo.DeclaringType"/>
+        ITypeInfo ReflectedType { get; }
 
         /// <summary>
         /// Gets the member to its underlying native reflection type.

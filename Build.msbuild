@@ -32,35 +32,35 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <BuildDependsOnTargets>
+    <BuildDependsOn>
       RecursiveBeforeBuild;
       BuildCSharpProjects;
       RecursiveAfterBuild;
       CopyFiles
-    </BuildDependsOnTargets>
-    <RebuildDependsOnTargets>
+    </BuildDependsOn>
+    <RebuildDependsOn>
       RecursiveBeforeBuild;
       RebuildCSharpProjects;
       RecursiveAfterBuild;
       CopyFiles
-    </RebuildDependsOnTargets>
-    <CleanDependsOnTargets>
+    </RebuildDependsOn>
+    <CleanDependsOn>
       CleanCSharpProjects;
       RemoveBuildDir;
-    </CleanDependsOnTargets>
+    </CleanDependsOn>
   </PropertyGroup>
 
   <Target Name="Release"
           DependsOnTargets="Clean;Build;Test;BuildSourceServerIndex;BuildDocs;BuildInstaller;BuildZip" />
 
   <Target Name="Build"
-          DependsOnTargets="$(BuildDependsOnTargets)" />
+          DependsOnTargets="$(BuildDependsOn)" />
 
   <Target Name="Rebuild"
-          DependsOnTargets="$(RebuildDependsOnTargets)" />
+          DependsOnTargets="$(RebuildDependsOn)" />
 
   <Target Name="Clean"
-          DependsOnTargets="$(CleanDependsOnTargets)">
+          DependsOnTargets="$(CleanDependsOn)">
   </Target>
 
   <Target Name="RemoveBuildDir">

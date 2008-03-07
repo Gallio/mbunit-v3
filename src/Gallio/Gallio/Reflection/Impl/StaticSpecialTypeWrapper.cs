@@ -35,7 +35,7 @@ namespace Gallio.Reflection.Impl
         /// <param name="handle">The underlying reflection object</param>
         /// <param name="declaringType">The declaring type, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
-        public StaticSpecialTypeWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
+        protected StaticSpecialTypeWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
             : base(policy, handle, declaringType)
         {
         }
@@ -110,6 +110,18 @@ namespace Gallio.Reflection.Impl
         public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
         {
             return EmptyArray<IEventInfo>.Instance;
+        }
+
+        /// <inheritdoc />
+        public override ITypeInfo GetNestedType(string nestedTypeName, BindingFlags bindingFlags)
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override IList<ITypeInfo> GetNestedTypes(BindingFlags bindingFlags)
+        {
+            return EmptyArray<ITypeInfo>.Instance;
         }
 
         /// <inheritdoc />

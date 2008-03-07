@@ -34,10 +34,8 @@ namespace Gallio.Reflection.Impl
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>,
         /// or <paramref name="declaringType"/> is null</exception>
         public StaticConstructorWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
-            : base(policy, handle, declaringType)
+            : base(policy, handle, declaringType, declaringType)
         {
-            if (declaringType == null)
-                throw new ArgumentNullException("declaringType");
         }
 
         /// <inheritdoc />

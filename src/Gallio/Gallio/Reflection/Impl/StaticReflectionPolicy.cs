@@ -406,32 +406,48 @@ namespace Gallio.Reflection.Impl
         /// Only includes declared methods, not inherited ones.
         /// </summary>
         /// <param name="type">The type, not null</param>
+        /// <param name="reflectedType">The reflected type, not null</param>
         /// <returns>The type's methods</returns>
-        protected internal abstract IEnumerable<StaticMethodWrapper> GetTypeMethods(StaticDeclaredTypeWrapper type);
+        protected internal abstract IEnumerable<StaticMethodWrapper> GetTypeMethods(StaticDeclaredTypeWrapper type,
+            StaticDeclaredTypeWrapper reflectedType);
 
         /// <summary>
         /// Gets the properties of a type.
         /// Only includes declared methods, not inherited ones.
         /// </summary>
         /// <param name="type">The type, not null</param>
+        /// <param name="reflectedType">The reflected type, not null</param>
         /// <returns>The type's properties</returns>
-        protected internal abstract IEnumerable<StaticPropertyWrapper> GetTypeProperties(StaticDeclaredTypeWrapper type);
+        protected internal abstract IEnumerable<StaticPropertyWrapper> GetTypeProperties(StaticDeclaredTypeWrapper type,
+            StaticDeclaredTypeWrapper reflectedType);
 
         /// <summary>
         /// Gets the fields of a type.
         /// Only includes declared methods, not inherited ones.
         /// </summary>
         /// <param name="type">The type, not null</param>
+        /// <param name="reflectedType">The reflected type, not null</param>
         /// <returns>The type's fields</returns>
-        protected internal abstract IEnumerable<StaticFieldWrapper> GetTypeFields(StaticDeclaredTypeWrapper type);
+        protected internal abstract IEnumerable<StaticFieldWrapper> GetTypeFields(StaticDeclaredTypeWrapper type,
+            StaticDeclaredTypeWrapper reflectedType);
 
         /// <summary>
         /// Gets the events of a type.
         /// Only includes declared methods, not inherited ones.
         /// </summary>
         /// <param name="type">The type, not null</param>
+        /// <param name="reflectedType">The reflected type, not null</param>
         /// <returns>The type's events</returns>
-        protected internal abstract IEnumerable<StaticEventWrapper> GetTypeEvents(StaticDeclaredTypeWrapper type);
+        protected internal abstract IEnumerable<StaticEventWrapper> GetTypeEvents(StaticDeclaredTypeWrapper type,
+            StaticDeclaredTypeWrapper reflectedType);
+
+        /// <summary>
+        /// Gets the nested types of a type.
+        /// Only includes declared nested types, not inherited ones.
+        /// </summary>
+        /// <param name="type">The type, not null</param>
+        /// <returns>The type's nested types</returns>
+        protected internal abstract IEnumerable<StaticTypeWrapper> GetTypeNestedTypes(StaticDeclaredTypeWrapper type);
         #endregion
 
         #region Generic Parameters

@@ -1,0 +1,15 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+    	<PexInstalled>false</PexInstalled>
+	<PexInstalled Condition="Exists('$(ProgramFiles)\Microsoft Pex\bin\Microsoft.Pex.Framework.dll')">true</PexInstalled>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="! $(PexInstalled)">
+        <BuildDependsOn>MissingPex</BuildDependsOn>
+        <RebuildDependsOn>MissingPex</RebuildDependsOn>
+    </PropertyGroup>
+
+    <Target Name="MissingPex">
+    	<Warning Text="Skipped build.  Pex is not installed or could not be located." />
+    </Target>
+</Project>

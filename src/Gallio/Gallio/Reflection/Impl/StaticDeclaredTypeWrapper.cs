@@ -235,7 +235,7 @@ namespace Gallio.Reflection.Impl
         private IList<IMethodInfo> GetMethods(BindingFlags bindingFlags, bool excludeOverridesOnly)
         {
             List<IMethodInfo> result = new List<IMethodInfo>();
-            AddAll(result, EnumerateDeclaredMethods(bindingFlags));
+            AddAll(result, EnumerateDeclaredMethods(bindingFlags, this));
 
             BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
             if (inheritanceBindingFlags != BindingFlags.Default)
@@ -246,7 +246,7 @@ namespace Gallio.Reflection.Impl
 
                 foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
                 {
-                    foreach (StaticMethodWrapper inheritedMethod in baseType.EnumerateDeclaredMethods(inheritanceBindingFlags))
+                    foreach (StaticMethodWrapper inheritedMethod in baseType.EnumerateDeclaredMethods(inheritanceBindingFlags, this))
                     {
                         if (!overrides.Contains(inheritedMethod) && !IsSpecialNonInheritedMethod(inheritedMethod))
                         {
@@ -259,9 +259,10 @@ namespace Gallio.Reflection.Impl
 
             return result;
         }
-        private IEnumerable<StaticMethodWrapper> EnumerateDeclaredMethods(BindingFlags bindingFlags)
+        private IEnumerable<StaticMethodWrapper> EnumerateDeclaredMethods(BindingFlags bindingFlags,
+            StaticDeclaredTypeWrapper reflectedType)
         {
-            foreach (StaticMethodWrapper method in Policy.GetTypeMethods(this))
+            foreach (StaticMethodWrapper method in Policy.GetTypeMethods(this, reflectedType))
             {
                 if (MatchesBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
                     yield return method;
@@ -281,7 +282,7 @@ namespace Gallio.Reflection.Impl
         public override IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags)
         {
             List<IPropertyInfo> result = new List<IPropertyInfo>();
-            AddAll(result, EnumerateProperties(bindingFlags));
+            AddAll(result, EnumerateProperties(bindingFlags, this));
 
             BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
             if (inheritanceBindingFlags != BindingFlags.Default)
@@ -292,7 +293,7 @@ namespace Gallio.Reflection.Impl
 
                 foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
                 {
-                    foreach (StaticPropertyWrapper inheritedProperty in baseType.EnumerateProperties(inheritanceBindingFlags))
+                    foreach (StaticPropertyWrapper inheritedProperty in baseType.EnumerateProperties(inheritanceBindingFlags, this))
                     {
                         if (!overrides.Contains(inheritedProperty))
                         {
@@ -306,9 +307,10 @@ namespace Gallio.Reflection.Impl
             return result;
         }
 
-        private IEnumerable<StaticPropertyWrapper> EnumerateProperties(BindingFlags bindingFlags)
+        private IEnumerable<StaticPropertyWrapper> EnumerateProperties(BindingFlags bindingFlags,
+            StaticDeclaredTypeWrapper reflectedType)
         {
-            foreach (StaticPropertyWrapper property in Policy.GetTypeProperties(this))
+            foreach (StaticPropertyWrapper property in Policy.GetTypeProperties(this, reflectedType))
             {
                 IMethodInfo getMethod = property.GetMethod;
                 IMethodInfo setMethod = property.SetMethod;
@@ -336,7 +338,7 @@ namespace Gallio.Reflection.Impl
         public override IList<IEventInfo> GetEvents(BindingFlags bindingFlags)
         {
             List<IEventInfo> result = new List<IEventInfo>();
-            AddAll(result, EnumerateEvents(bindingFlags));
+            AddAll(result, EnumerateEvents(bindingFlags, this));
 
             BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
             if (inheritanceBindingFlags != BindingFlags.Default)
@@ -347,7 +349,7 @@ namespace Gallio.Reflection.Impl
 
                 foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
                 {
-                    foreach (StaticEventWrapper inheritedEvent in baseType.EnumerateEvents(inheritanceBindingFlags))
+                    foreach (StaticEventWrapper inheritedEvent in baseType.EnumerateEvents(inheritanceBindingFlags, this))
                     {
                         if (!overrides.Contains(inheritedEvent))
                         {
@@ -361,9 +363,10 @@ namespace Gallio.Reflection.Impl
             return result;
         }
 
-        private IEnumerable<StaticEventWrapper> EnumerateEvents(BindingFlags bindingFlags)
+        private IEnumerable<StaticEventWrapper> EnumerateEvents(BindingFlags bindingFlags,
+            StaticDeclaredTypeWrapper reflectedType)
         {
-            foreach (StaticEventWrapper @event in Policy.GetTypeEvents(this))
+            foreach (StaticEventWrapper @event in Policy.GetTypeEvents(this, reflectedType))
             {
                 IMethodInfo addMethod = @event.AddMethod;
                 IMethodInfo removeMethod = @event.RemoveMethod;
@@ -404,7 +407,7 @@ namespace Gallio.Reflection.Impl
         public override IList<IFieldInfo> GetFields(BindingFlags bindingFlags)
         {
             List<IFieldInfo> result = new List<IFieldInfo>();
-            AddAll(result, EnumerateFields(bindingFlags));
+            AddAll(result, EnumerateFields(bindingFlags, this));
 
             BindingFlags inheritanceBindingFlags = GetInheritanceBindingFlags(bindingFlags);
 
@@ -412,7 +415,7 @@ namespace Gallio.Reflection.Impl
             {
                 foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
                 {
-                    foreach (StaticFieldWrapper inheritedField in baseType.EnumerateFields(inheritanceBindingFlags))
+                    foreach (StaticFieldWrapper inheritedField in baseType.EnumerateFields(inheritanceBindingFlags, this))
                     {
                         // Note: Fields are inherited on the basis of visibility.
                         if (inheritedField.IsPrivate
@@ -427,15 +430,71 @@ namespace Gallio.Reflection.Impl
             return result;
         }
 
-        private IEnumerable<StaticFieldWrapper> EnumerateFields(BindingFlags bindingFlags)
+        private IEnumerable<StaticFieldWrapper> EnumerateFields(BindingFlags bindingFlags,
+            StaticDeclaredTypeWrapper reflectedType)
         {
-            foreach (StaticFieldWrapper field in Policy.GetTypeFields(this))
+            foreach (StaticFieldWrapper field in Policy.GetTypeFields(this, reflectedType))
             {
                 if (MatchesBindingFlags(bindingFlags, field.IsPublic, field.IsStatic))
                     yield return field;
             }
         }
 
+        /// <inheritdoc />
+        public override ITypeInfo GetNestedType(string nestedTypeName, BindingFlags bindingFlags)
+        {
+            if (nestedTypeName == null)
+                throw new ArgumentNullException("nestedTypeName");
+
+            foreach (ITypeInfo nestedType in GetNestedTypes(bindingFlags))
+            {
+                if (nestedType.Name == nestedTypeName)
+                    return nestedType;
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override IList<ITypeInfo> GetNestedTypes(BindingFlags bindingFlags)
+        {
+            bool includePublicTypes = (bindingFlags & BindingFlags.Public) != 0;
+            bool includeNonPublicTypes = (bindingFlags & BindingFlags.NonPublic) != 0;
+
+            List<ITypeInfo> result = new List<ITypeInfo>();
+            AddAll(result, EnumerateNestedTypes(includePublicTypes, includeNonPublicTypes));
+
+            foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
+            {
+                foreach (StaticTypeWrapper inheritedNestedType in baseType.EnumerateNestedTypes(includePublicTypes, includeNonPublicTypes))
+                {
+                    result.Add(inheritedNestedType);
+                }
+            }
+
+            return result;
+        }
+
+        private IEnumerable<StaticTypeWrapper> EnumerateNestedTypes(bool includePublicTypes, bool includeNonPublicTypes)
+        {
+            foreach (StaticTypeWrapper nestedType in Policy.GetTypeNestedTypes(this))
+            {
+                if (nestedType.IsNestedPublic)
+                {
+                    if (!includePublicTypes)
+                        continue;
+                }
+                else
+                {
+                    if (!includeNonPublicTypes)
+                        continue;
+                }
+
+                yield return nestedType;
+            }
+        }
+
+        #region Naming
         /// <inheritdoc />
         public override string Name
         {
@@ -538,6 +597,7 @@ namespace Gallio.Reflection.Impl
                 return sig.ToString();
             });
         }
+        #endregion
 
         /// <summary>
         /// Gets an enumeration of all base types.

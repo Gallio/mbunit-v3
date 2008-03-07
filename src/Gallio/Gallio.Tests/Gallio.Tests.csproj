@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseUnitTest.cs" />
+    <Compile Include="Collections\UserDataCollectionTest.cs" />
     <Compile Include="Framework\Data\BaseDataRowTest.cs" />
     <Compile Include="Framework\Data\BaseDataSetTest.cs" />
     <Compile Include="Framework\Data\Binders\BaseDataBinderTest.cs" />

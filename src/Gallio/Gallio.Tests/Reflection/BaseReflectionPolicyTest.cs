@@ -495,7 +495,6 @@ namespace Gallio.Tests.Reflection
         }
 
         [Test]
-        [Ignore("This test seems to be causing the build to abort unnaturally.  Disabling for just now.")]
         public void ExhausiveComparison()
         {
             Assembly assembly = typeof(ReflectionPolicySample).Assembly;

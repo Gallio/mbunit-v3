@@ -41,7 +41,7 @@ namespace Gallio.TypeMockIntegration
         /// <inheritdoc />
         protected override ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
-            return new TypeMockProcessTask(executablePath, arguments, workingDirectory);
+            return new TypeMockProcessTask(executablePath, arguments, workingDirectory, Logger);
         }
     }
 }

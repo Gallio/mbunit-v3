@@ -15,6 +15,7 @@
 
 using System;
 using System.Diagnostics;
+using Castle.Core.Logging;
 using Gallio.Concurrency;
 using TypeMock.Integration;
 
@@ -27,22 +28,31 @@ namespace Gallio.TypeMockIntegration
     /// </summary>
     public class TypeMockProcessTask : ProcessTask
     {
+        private readonly ILogger logger;
+
         /// <summary>
         /// Creates a process task.
         /// </summary>
         /// <param name="executablePath">The path of the executable executable</param>
         /// <param name="arguments">The arguments for the executable</param>
         /// <param name="workingDirectory">The working directory</param>
+        /// <param name="logger">The logger</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
-        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null</exception>
-        public TypeMockProcessTask(string executablePath, string arguments, string workingDirectory)
+        /// <paramref name="arguments"/>, <paramref name="workingDirectory"/>, or <paramref name="logger"/> is null</exception>
+        public TypeMockProcessTask(string executablePath, string arguments, string workingDirectory, ILogger logger)
             : base(executablePath, arguments, workingDirectory)
         {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
+            this.logger = logger;
         }
         
         /// <inheritdoc />
         protected override Process StartProcess(ProcessStartInfo startInfo)
         {
+            logger.Info("* Starting TypeMock.");
+
             TypeMockProcess process = new TypeMockProcess(startInfo, false);
             process.Start();
             return process;

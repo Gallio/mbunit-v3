@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Castle.Core.Logging;
 using Gallio.Concurrency;
 using Gallio.Hosting;
 using Gallio.Utilities;
@@ -35,20 +36,26 @@ namespace Gallio.NCoverIntegration
         // Note: NCover can take a long time to finish writing out its results.
         private readonly TimeSpan WaitForExitTimeout = TimeSpan.FromSeconds(120);
 
+        private readonly ILogger logger;
         private ProfilerDriver driver;
         private ThreadTask waitForExitTask;
-        
+
         /// <summary>
         /// Creates a process task.
         /// </summary>
         /// <param name="executablePath">The path of the executable executable</param>
         /// <param name="arguments">The arguments for the executable</param>
         /// <param name="workingDirectory">The working directory</param>
+        /// <param name="logger">The logger</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
-        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null</exception>
-        public NCoverProcessTask(string executablePath, string arguments, string workingDirectory)
+        /// <paramref name="arguments"/>, <paramref name="workingDirectory"/> or <paramref name="logger" /> is null</exception>
+        public NCoverProcessTask(string executablePath, string arguments, string workingDirectory, ILogger logger)
             : base(executablePath, arguments, workingDirectory)
         {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
+            this.logger = logger;
         }
 
         /// <inheritdoc />
@@ -71,13 +78,18 @@ namespace Gallio.NCoverIntegration
 
         private Process RegisterAndStartProfiler(ProfilerSettings settings, bool redirectOutput)
         {
+            logger.Info("* Starting NCover profiler.");
+
             driver = new ProfilerDriver(settings);
 
             RegisterProfilerIfNeeded();
 
             driver.Start(redirectOutput);
             if (!driver.MessageCenter.WaitForProfilerReadyEvent())
-                throw new HostException("Timed out waiting for the NCover profiler to become ready.  The launch may have failed because this version of NCover does not support running programs in 64bit mode.");
+            {
+                logger.Error("* Timed out waiting for the NCover profiler to become ready.  The launch may have failed because this version of NCover does not support running programs in 64bit mode.");
+                throw new HostException("Timed out waiting for the NCover profiler to become ready.");
+            }
 
             driver.ConfigureProfiler();
             driver.MessageCenter.SetDriverReadyEvent();
@@ -121,8 +133,12 @@ namespace Gallio.NCoverIntegration
             {
                 // Allow some time for the final processing to take place such as writing out the 
                 // XML reports.  If it really takes too long then abort it.
+                logger.Info("* Waiting for NCover to exit.");
                 if (waitForExitTask != null && ! waitForExitTask.Join(WaitForExitTimeout))
+                {
+                    logger.Error("* Timed out.  Aborting NCover.");
                     waitForExitTask.Abort();
+                }
 
                 driver = null;
                 waitForExitTask = null;

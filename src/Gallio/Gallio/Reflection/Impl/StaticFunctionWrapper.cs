@@ -25,7 +25,7 @@ namespace Gallio.Reflection.Impl
     /// <summary>
     /// A <see cref="StaticReflectionPolicy"/> function wrapper.
     /// </summary>
-    public abstract class StaticFunctionWrapper : StaticMemberWrapper, IFunctionInfo
+    public abstract class StaticFunctionWrapper : StaticReflectedMemberWrapper, IFunctionInfo
     {
         private readonly Memoizer<MethodAttributes> methodAttributesMemoizer = new Memoizer<MethodAttributes>();
         private readonly Memoizer<IList<StaticParameterWrapper>> parametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
@@ -36,13 +36,13 @@ namespace Gallio.Reflection.Impl
         /// <param name="policy">The reflection policy</param>
         /// <param name="handle">The underlying reflection object</param>
         /// <param name="declaringType">The declaring type</param>
+        /// <param name="reflectedType">The reflected type, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>,
-        /// or <paramref name="declaringType"/> is null</exception>
-        public StaticFunctionWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
-            : base(policy, handle, declaringType)
+        /// <paramref name="declaringType"/>, or <paramref name="reflectedType"/> is null</exception>
+        protected StaticFunctionWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType,
+            StaticDeclaredTypeWrapper reflectedType)
+            : base(policy, handle, declaringType, reflectedType)
         {
-            if (declaringType == null)
-                throw new ArgumentNullException("declaringType");
         }
 
         /// <inheritdoc />

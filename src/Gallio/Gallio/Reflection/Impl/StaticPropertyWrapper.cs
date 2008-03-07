@@ -25,7 +25,7 @@ namespace Gallio.Reflection.Impl
     /// <summary>
     /// A <see cref="StaticReflectionPolicy"/> property wrapper.
     /// </summary>
-    public sealed class StaticPropertyWrapper : StaticMemberWrapper, IPropertyInfo
+    public sealed class StaticPropertyWrapper : StaticReflectedMemberWrapper, IPropertyInfo
     {
         private readonly Memoizer<PropertyAttributes> propertyAttributesMemoizer = new Memoizer<PropertyAttributes>();
         private readonly Memoizer<IList<StaticParameterWrapper>> indexParametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
@@ -36,13 +36,13 @@ namespace Gallio.Reflection.Impl
         /// <param name="policy">The reflection policy</param>
         /// <param name="handle">The underlying reflection object</param>
         /// <param name="declaringType">The declaring type</param>
+        /// <param name="reflectedType">The reflected type</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>,
-        /// or <paramref name="declaringType"/> is null</exception>
-        public StaticPropertyWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
-            : base(policy, handle, declaringType)
+        /// <paramref name="declaringType"/>, or <paramref name="reflectedType"/> is null</exception>
+        public StaticPropertyWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType,
+            StaticDeclaredTypeWrapper reflectedType)
+            : base(policy, handle, declaringType, reflectedType)
         {
-            if (declaringType == null)
-                throw new ArgumentNullException("declaringType");
         }
 
         /// <inheritdoc />
@@ -163,7 +163,7 @@ namespace Gallio.Reflection.Impl
             string propertyName = Name;
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
-                foreach (StaticPropertyWrapper other in Policy.GetTypeProperties(baseType))
+                foreach (StaticPropertyWrapper other in Policy.GetTypeProperties(baseType, ReflectedType))
                 {
                     if (propertyName == other.Name)
                     {

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Runtime.Remoting;
 
 namespace Gallio.Hosting
 {
@@ -23,6 +24,11 @@ namespace Gallio.Hosting
     /// object whose lifetime is managed explicitly.  It ensures that long-lived
     /// services are not inadvertently disconnected by the remoting infrastructure
     /// and remain accessible until the application discards them.
+    /// </para>
+    /// <para>
+    /// However, it is important to keep a reference to the marshalled object
+    /// to ensure it does not get garbage collected prematurely.  A marshalled
+    /// object can also be explicitly disconnected via <see cref="RemotingServices.Disconnect" />.
     /// </para>
     /// </summary>
     /// <remarks>

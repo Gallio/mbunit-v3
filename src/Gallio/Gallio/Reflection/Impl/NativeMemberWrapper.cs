@@ -57,6 +57,11 @@ namespace Gallio.Reflection.Impl
             get { return Reflector.Wrap(Target.DeclaringType); }
         }
 
+        public ITypeInfo ReflectedType
+        {
+            get { return Reflector.Wrap(Target.ReflectedType); }
+        }
+
         public MemberInfo Resolve(bool throwOnError)
         {
             return Target;
