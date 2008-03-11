@@ -16,8 +16,8 @@
 using System;
 using System.Text;
 using Castle.Core.Logging;
-using Gallio.Logging;
 using Gallio.Model;
+using Gallio.Model.Execution;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Monitors
@@ -82,7 +82,7 @@ namespace Gallio.Runner.Monitors
             string failures = FormatStream(e.TestStepRun, LogStreamNames.Failures);
 
             StringBuilder messageBuilder = new StringBuilder();
-            messageBuilder.AppendFormat("[{0}] {1}", outcome.DisplayName, e.GetStepKind());
+            messageBuilder.AppendFormat("[{0}] {1} {2}", outcome.DisplayName, e.GetStepKind(), e.TestStepRun.Step.FullName);
 
             if (warnings.Length != 0)
             {

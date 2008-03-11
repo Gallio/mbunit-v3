@@ -25,27 +25,26 @@ namespace Gallio.Concurrency
     /// </summary>
     public class ThreadTask : Task
     {
-        private static readonly object abortToken = new object();
-
-        private readonly Func<object> block;
-        private volatile Thread thread;
+        private readonly Func<object> action;
+        private readonly ThreadAbortScope threadAbortScope = new ThreadAbortScope();
+        private Thread thread;
 
         /// <summary>
         /// Creates a task that will execute code within a new locally running thread.
         /// When the task terminates successfully, its result will contain the value
-        /// returned by <paramref name="block"/>.
+        /// returned by <paramref name="action"/>.
         /// </summary>
         /// <param name="name">The name of the task</param>
-        /// <param name="block">The block of code to run within the thread</param>
+        /// <param name="action">The action to perform within the thread</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
-        /// or <paramref name="block"/> is null</exception>
-        public ThreadTask(string name, Func<object> block)
+        /// or <paramref name="action"/> is null</exception>
+        public ThreadTask(string name, Func<object> action)
             : base(name)
         {
-            if (block == null)
-                throw new ArgumentNullException("block");
+            if (action == null)
+                throw new ArgumentNullException("action");
 
-            this.block = block;
+            this.action = action;
         }
 
         /// <summary>
@@ -62,7 +61,7 @@ namespace Gallio.Concurrency
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            this.block = delegate
+            this.action = delegate
             {
                 action();
                 return null;
@@ -83,10 +82,10 @@ namespace Gallio.Concurrency
         {
             lock (this)
             {
-                Thread newThread = new Thread(Run);
-                newThread.IsBackground = true;
-                newThread.Name = String.Format("Task: {0}", Name);
-                newThread.Start();
+                thread = new Thread(Run);
+                thread.IsBackground = true;
+                thread.Name = String.Format("Task: {0}", Name);
+                thread.Start();
             }
         }
 
@@ -95,15 +94,18 @@ namespace Gallio.Concurrency
         {
             lock (this)
             {
-                if (thread != null)
-                    thread.Abort(abortToken);
+                threadAbortScope.Abort();
             }
         }
 
         /// <inheritdoc />
         protected override bool JoinImpl(TimeSpan timeout)
         {
-            Thread cachedThread = thread;
+            Thread cachedThread;
+            lock (this)
+            {
+                cachedThread = thread;
+            }
 
             if (cachedThread != null)
                 return cachedThread.Join(timeout);
@@ -117,75 +119,29 @@ namespace Gallio.Concurrency
             {
                 try
                 {
-                    object value = RunUserCode();
-                    ClearInterruptedFlag();
-
-                    NotifyTerminated(TaskResult.CreateFromValue(value));
-                }
-                catch (ThreadAbortException ex)
-                {
-                    if (ex.ExceptionState == abortToken)
+                    object result = null;
+                    ThreadAbortException ex = threadAbortScope.Run(delegate
                     {
-                        Thread.ResetAbort();
-                        ClearInterruptedFlag();
-                    }
+                        result = action();
+                    });
 
-                    NotifyTerminated(TaskResult.CreateFromException(ex));
+                    if (ex != null)
+                    {
+                        NotifyTerminated(TaskResult.CreateFromException(ex));
+                    }
+                    else
+                    {
+                        NotifyTerminated(TaskResult.CreateFromValue(result));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    ClearInterruptedFlag();
-
                     NotifyTerminated(TaskResult.CreateFromException(ex));
                 }
             }
             catch (Exception ex)
             {
                 UnhandledExceptionPolicy.Report("An unhandled exception occurred in a thread task.", ex);
-            }
-        }
-
-        private object RunUserCode()
-        {
-            // Note: The two identical finally blocks here serve a purpose.
-            // There are 3 possible cases where the thread may be aborted.
-            // 
-            // 1. It may occur within user code in which case we will reset the thread field in the innermost finally.
-            // 2. It may occur within the innermost finally block in which case we will reset the thread field in the outermost finally.
-            // 3. It may occur somewhere else in which case we leave it alone.  This can only happen due to some
-            //    other code outside of this class causing the Abort because of how the thread field governs aborts.
-            try
-            {
-                try
-                {
-                    thread = Thread.CurrentThread;
-
-                    // Cause a thread abort here in case we were aborted while we were not running user code.
-                    if (IsAborted)
-                        Thread.Abort(abortToken);
-
-                    return block();
-                }
-                finally
-                {
-                    thread = null;
-                }
-            }
-            finally
-            {
-                thread = null;
-            }
-        }
-
-        private static void ClearInterruptedFlag()
-        {
-            try
-            {
-                Thread.Sleep(0);
-            }
-            catch (ThreadInterruptedException)
-            {
-                // Ignore it.
             }
         }
     }

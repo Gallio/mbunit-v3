@@ -22,6 +22,11 @@ namespace Gallio.Model
     public static class LifecyclePhases
     {
         /// <summary>
+        /// The test step is starting.
+        /// </summary>
+        public const string Starting = "Starting";
+
+        /// <summary>
         /// The test is being initialize.  (Fixture construction, etc.)
         /// </summary>
         public const string Initialize = "Initialize";
@@ -45,5 +50,10 @@ namespace Gallio.Model
         /// The test step's context is being disposed.
         /// </summary>
         public const string Dispose = "Dispose";
+
+        /// <summary>
+        /// The test step is finishing.
+        /// </summary>
+        public const string Finishing = "Finishing";
     }
 }

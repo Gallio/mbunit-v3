@@ -137,7 +137,7 @@ namespace Gallio.Model.Execution
                 throw new ArgumentException("Expected the root step of an instance of this test.", "rootStep");
 
             ITestContext context = contextManager.StartStep(rootStep);
-            context.CleanUp += UpdateFailureCount;
+            context.Finishing += UpdateFailureCount;
             return context;
         }
 

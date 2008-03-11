@@ -16,14 +16,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Logging;
+using Gallio.Model.Execution;
 
 namespace Gallio.Runner.Reports
 {
     /// <summary>
     /// Writes execution logs to an Xml-serializable format.
     /// </summary>
-    public sealed class ExecutionLogWriter : TrackingLogWriter
+    public sealed class ExecutionLogWriter : BaseTestLogWriter
     {
         private readonly ExecutionLog executionLog;
         private Dictionary<string, ExecutionLogStreamWriter> streamWriters;
@@ -45,77 +45,82 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        protected override LogStreamWriter GetLogStreamWriterImpl(string streamName)
+        protected override void CloseImpl()
         {
-            lock (executionLog)
+            if (streamWriters != null)
             {
-                ThrowIfClosed();
+                foreach (ExecutionLogStreamWriter writer in streamWriters.Values)
+                    writer.Flush();
 
-                ExecutionLogStreamWriter streamWriter;
-                if (streamWriters != null)
-                {
-                    if (streamWriters.TryGetValue(streamName, out streamWriter))
-                        return streamWriter;
-                }
-                else
-                {
-                    streamWriters = new Dictionary<string, ExecutionLogStreamWriter>();
-                }
-
-                streamWriter = new ExecutionLogStreamWriter(this, streamName);
-                streamWriters.Add(streamName, streamWriter);
-
-                executionLog.Streams.Add(streamWriter.ExecutionLogStream);
-                return streamWriter;
+                streamWriters = null;
             }
         }
 
         /// <inheritdoc />
-        protected override void AttachImpl(Attachment attachment)
+        protected override void AttachTextImpl(string attachmentName, string contentType, string text)
         {
-            lock (executionLog)
-            {
-                ThrowIfClosed();
-
-                InternalAttach(attachment);
-            }
+            executionLog.Attachments.Add(ExecutionLogAttachment.CreateTextAttachment(attachmentName, contentType, text));
         }
 
         /// <inheritdoc />
-        protected override void Dispose(bool disposing)
+        protected override void AttachBytesImpl(string attachmentName, string contentType, byte[] bytes)
         {
-            lock (executionLog)
+            executionLog.Attachments.Add(ExecutionLogAttachment.CreateBinaryAttachment(attachmentName, contentType, bytes));
+        }
+
+        /// <inheritdoc />
+        protected override void WriteImpl(string streamName, string text)
+        {
+            GetLogStreamWriter(streamName).Write(text);
+        }
+
+        /// <inheritdoc />
+        protected override void EmbedImpl(string streamName, string attachmentName)
+        {
+            GetLogStreamWriter(streamName).Embed(attachmentName);
+        }
+
+        /// <inheritdoc />
+        protected override void BeginSectionImpl(string streamName, string sectionName)
+        {
+            GetLogStreamWriter(streamName).BeginSection(sectionName);
+        }
+
+        /// <inheritdoc />
+        protected override void EndSectionImpl(string streamName)
+        {
+            GetLogStreamWriter(streamName).EndSection();
+        }
+
+        /// <inheritdoc />
+        private ExecutionLogStreamWriter GetLogStreamWriter(string streamName)
+        {
+            ExecutionLogStreamWriter streamWriter;
+            if (streamWriters != null)
             {
-                base.Dispose(disposing);
-
-                if (streamWriters != null)
-                {
-                    foreach (ExecutionLogStreamWriter writer in streamWriters.Values)
-                        writer.InternalFlush();
-
-                    streamWriters = null;
-                }
+                if (streamWriters.TryGetValue(streamName, out streamWriter))
+                    return streamWriter;
             }
+            else
+            {
+                streamWriters = new Dictionary<string, ExecutionLogStreamWriter>();
+            }
+
+            streamWriter = new ExecutionLogStreamWriter(streamName);
+            streamWriters.Add(streamName, streamWriter);
+
+            executionLog.Streams.Add(streamWriter.ExecutionLogStream);
+            return streamWriter;
         }
 
-        private void InternalAttach(Attachment attachment)
+        private sealed class ExecutionLogStreamWriter
         {
-            if (TrackAttachment(attachment))
-                executionLog.Attachments.Add(new ExecutionLogAttachment(attachment));
-        }
-
-        private sealed class ExecutionLogStreamWriter : LogStreamWriter
-        {
-            private readonly ExecutionLogWriter logWriter;
             private readonly ExecutionLogStream executionLogStream;
             private readonly Stack<ExecutionLogStreamContainerTag> containerStack;
             private readonly StringBuilder textBuilder;
 
-            public ExecutionLogStreamWriter(ExecutionLogWriter logWriter, string streamName)
-                : base(streamName)
+            public ExecutionLogStreamWriter(string streamName)
             {
-                this.logWriter = logWriter;
-
                 executionLogStream = new ExecutionLogStream(streamName);
                 containerStack = new Stack<ExecutionLogStreamContainerTag>();
                 textBuilder = new StringBuilder();
@@ -128,86 +133,42 @@ namespace Gallio.Runner.Reports
                 get { return executionLogStream; }
             }
 
-            protected override void FlushImpl()
-            {
-                lock (logWriter.executionLog)
-                {
-                    logWriter.ThrowIfClosed();
-                    InternalFlush();
-                }
-            }
-
-            protected override void WriteImpl(string text)
-            {
-                lock (logWriter.executionLog)
-                {
-                    logWriter.ThrowIfClosed();
-                    textBuilder.Append(text);
-                }
-            }
-
-            protected override void BeginSectionImpl(string sectionName)
-            {
-                lock (logWriter.executionLog)
-                {
-                    logWriter.ThrowIfClosed();
-                    InternalFlush();
-
-                    ExecutionLogStreamSectionTag tag = new ExecutionLogStreamSectionTag(sectionName);
-                    containerStack.Peek().Contents.Add(tag);
-                    containerStack.Push(tag);
-                }
-            }
-
-            protected override void EndSectionImpl()
-            {
-                lock (logWriter.executionLog)
-                {
-                    logWriter.ThrowIfClosed();
-
-                    if (containerStack.Count == 1)
-                        throw new InvalidOperationException("There is no current section to be ended.");
-
-                    InternalFlush();
-                    containerStack.Pop();
-                }
-            }
-
-            protected override void EmbedImpl(Attachment attachment)
-            {
-                lock (logWriter.executionLog)
-                {
-                    logWriter.ThrowIfClosed();
-                    logWriter.InternalAttach(attachment);
-
-                    InternalEmbedExisting(attachment.Name);
-                }
-            }
-
-            protected override void EmbedExistingImpl(string attachmentName)
-            {
-                lock (logWriter.executionLog)
-                {
-                    logWriter.ThrowIfClosed();
-                    logWriter.VerifyAttachmentExists(attachmentName);
-
-                    InternalEmbedExisting(attachmentName);
-                }
-            }
-
-            private void InternalEmbedExisting(string attachmentName)
-            {
-                InternalFlush();
-                containerStack.Peek().Contents.Add(new ExecutionLogStreamEmbedTag(attachmentName));
-            }
-
-            public void InternalFlush()
+            public void Flush()
             {
                 if (textBuilder.Length != 0)
                 {
                     containerStack.Peek().Contents.Add(new ExecutionLogStreamTextTag(textBuilder.ToString()));
                     textBuilder.Length = 0;
                 }
+            }
+
+            public void Write(string text)
+            {
+                textBuilder.Append(text);
+            }
+
+            public void BeginSection(string sectionName)
+            {
+                Flush();
+
+                ExecutionLogStreamSectionTag tag = new ExecutionLogStreamSectionTag(sectionName);
+                containerStack.Peek().Contents.Add(tag);
+                containerStack.Push(tag);
+            }
+
+            public void EndSection()
+            {
+                if (containerStack.Count == 1)
+                    throw new InvalidOperationException("There is no current section to be ended.");
+
+                Flush();
+                containerStack.Pop();
+            }
+
+            public void Embed(string attachmentName)
+            {
+                Flush();
+                containerStack.Peek().Contents.Add(new ExecutionLogStreamEmbedTag(attachmentName));
             }
         }
     }

@@ -191,7 +191,7 @@ namespace Gallio.Tests.Model.Execution
                 InterimAssert.Throws<InvalidOperationException>(delegate { cookie.Dispose(); });
             });
 
-            Tasks.JoinAndVerify(new TimeSpan(0, 0, 15));
+            Tasks.JoinAndVerify(new TimeSpan(0, 0, 5));
         }
     }
 }

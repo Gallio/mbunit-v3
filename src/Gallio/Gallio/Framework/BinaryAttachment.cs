@@ -14,18 +14,17 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Gallio.Model.Execution;
 
-namespace Gallio.Logging
+namespace Gallio.Framework
 {
     /// <summary>
     /// Represents a binary-encoded attachments.
     /// </summary>
     [Serializable]
-    public class BinaryAttachment : Attachment
+    public sealed class BinaryAttachment : Attachment
     {
-        private byte[] data;
+        private readonly byte[] data;
 
         /// <summary>
         /// Creates an attachment.
@@ -52,9 +51,9 @@ namespace Gallio.Logging
         }
 
         /// <inheritdoc />
-        public override void Accept(IAttachmentVisitor visitor)
+        internal override void Attach(ITestLogWriter logWriter)
         {
-            visitor.VisitBinaryAttachment(this);
+            logWriter.AttachBytes(Name, ContentType, data);
         }
     }
 }

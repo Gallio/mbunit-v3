@@ -20,7 +20,6 @@ using System.Text;
 using Gallio.Collections;
 using Gallio.MbUnit2Adapter.Properties;
 using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using MbUnit2::MbUnit.Core;
@@ -33,7 +32,7 @@ namespace Gallio.MbUnit2Adapter.Model
     /// <summary>
     /// Controls the execution of MbUnit v2 tests.
     /// </summary>
-    internal class MbUnit2TestController : ITestController
+    internal class MbUnit2TestController : BaseTestController
     {
         private FixtureExplorer fixtureExplorer;
 
@@ -47,14 +46,14 @@ namespace Gallio.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        public void Dispose()
+        public override void Dispose()
         {
             fixtureExplorer = null;
         }
 
         /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, ITestCommand rootTestCommand,
-            ITestInstance parentTestInstance)
+        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+            TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
 
@@ -65,12 +64,19 @@ namespace Gallio.MbUnit2Adapter.Model
                 if (progressMonitor.IsCanceled)
                     return;
 
-                IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
-
-                using (InstrumentedFixtureRunner fixtureRunner = new InstrumentedFixtureRunner(fixtureExplorer,
-                    testCommands, progressMonitor, parentTestInstance))
+                if (options.SkipTestInstanceExecution)
                 {
-                    fixtureRunner.Run();
+                    SkipAll(rootTestCommand, parentTestInstance);
+                }
+                else
+                {
+                    IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
+
+                    using (InstrumentedFixtureRunner fixtureRunner = new InstrumentedFixtureRunner(fixtureExplorer,
+                        testCommands, progressMonitor, parentTestInstance))
+                    {
+                        fixtureRunner.Run();
+                    }
                 }
             }
         }
@@ -173,10 +179,13 @@ namespace Gallio.MbUnit2Adapter.Model
 
             public void Run()
             {
-                ReportListener reportListener = new ReportListener();
-                Run(fixtureExplorer, reportListener);
+                if (assemblyTestCommand != null)
+                {
+                    ReportListener reportListener = new ReportListener();
+                    Run(fixtureExplorer, reportListener);
 
-                // TODO: Do we need to do anyhing with the result in the report listener?
+                    // TODO: Do we need to do anyhing with the result in the report listener?
+                }
             }
 
             #region Overrides to track assembly and fixture lifecycle
@@ -184,7 +193,7 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 CheckCanceled();
 
-                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningAssemblySetUp, Explorer.AssemblyName));
+                progressMonitor.SetStatus(assemblyTestCommand.Test.Name);
 
                 HandleAssemblyStart();
 
@@ -198,8 +207,12 @@ namespace Gallio.MbUnit2Adapter.Model
                 //       so we need to make sure we finish things up ourselves.
                 if (!success)
                 {
-                    assemblyTestContext.LogWriter[LogStreamNames.Failures].Write("The test assembly setup failed.");
+                    assemblyTestContext.LogWriter.Write(LogStreamNames.Failures, "The test assembly setup failed.\n");
                     HandleAssemblyFinish(TestOutcome.Failed);
+                }
+                else
+                {
+                    assemblyTestContext.LifecyclePhase = LifecyclePhases.Execute;
                 }
 
                 progressMonitor.Worked(workUnit);
@@ -208,10 +221,10 @@ namespace Gallio.MbUnit2Adapter.Model
 
             protected override bool RunAssemblyTearDown()
             {
-                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningAssemblyTearDown, Explorer.AssemblyName));
+                progressMonitor.SetStatus(assemblyTestCommand.Test.Name);
 
                 ITestContext assemblyTestContext = activeTestContexts[assemblyTestCommand];
-                if (Explorer.HasAssemblyTearDown && assemblyTestCommand != null)
+                if (Explorer.HasAssemblyTearDown)
                     assemblyTestContext.LifecyclePhase = LifecyclePhases.TearDown;
 
                 bool success = base.RunAssemblyTearDown();
@@ -222,7 +235,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 }
                 else
                 {
-                    assemblyTestContext.LogWriter[LogStreamNames.Failures].Write("The test assembly teardown failed.");
+                    assemblyTestContext.LogWriter.Write(LogStreamNames.Failures, "The test assembly teardown failed.\n");
                     HandleAssemblyFinish(TestOutcome.Failed);
                 }
 
@@ -271,16 +284,20 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 CheckCanceled();
 
-                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningFixtureSetUp, fixture.Name));
-
                 ITestCommand fixtureTestCommand;
-                if (fixture.HasSetUp && fixtureTestCommands.TryGetValue(fixture, out fixtureTestCommand))
+                ITestContext fixtureTestContext = null;
+                if (fixtureTestCommands.TryGetValue(fixture, out fixtureTestCommand))
                 {
-                    ITestContext fixtureTestContext = activeTestContexts[fixtureTestCommand];
+                    progressMonitor.SetStatus(fixtureTestCommand.Test.Name);
+
+                    fixtureTestContext = activeTestContexts[fixtureTestCommand];
                     fixtureTestContext.LifecyclePhase = LifecyclePhases.SetUp;
                 }
 
                 object result = base.RunFixtureSetUp(fixture, fixtureInstance);
+
+                if (fixtureTestContext != null)
+                    fixtureTestContext.LifecyclePhase = LifecyclePhases.Execute;
 
                 progressMonitor.Worked(workUnit);
                 return result;
@@ -290,11 +307,11 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 CheckCanceled();
 
-                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningFixtureTearDown, fixture.Name));
-
                 ITestCommand fixtureTestCommand;
-                if (fixture.HasSetUp && fixtureTestCommands.TryGetValue(fixture, out fixtureTestCommand))
+                if (fixtureTestCommands.TryGetValue(fixture, out fixtureTestCommand))
                 {
+                    progressMonitor.SetStatus(fixtureTestCommand.Test.Name);
+
                     ITestContext fixtureTestContext = activeTestContexts[fixtureTestCommand];
                     fixtureTestContext.LifecyclePhase = LifecyclePhases.TearDown;
                 }
@@ -350,18 +367,12 @@ namespace Gallio.MbUnit2Adapter.Model
 
             private void HandleAssemblyStart()
             {
-                if (assemblyTestCommand == null)
-                    return;
-
                 ITestContext assemblyTestContext = assemblyTestCommand.StartRootStep(topTestInstance);
                 activeTestContexts.Add(assemblyTestCommand, assemblyTestContext);
             }
 
             private void HandleAssemblyFinish(TestOutcome outcome)
             {
-                if (assemblyTestCommand == null)
-                    return;
-
                 ITestContext assemblyTestContext = activeTestContexts[assemblyTestCommand];
                 activeTestContexts.Remove(assemblyTestCommand);
 
@@ -395,8 +406,6 @@ namespace Gallio.MbUnit2Adapter.Model
 
             private void HandleTestStart(RunPipe runPipe)
             {
-                progressMonitor.SetStatus(String.Format(Resources.MbUnit2TestController_StatusMessage_RunningTest, runPipe.ShortName));
-
                 ITestCommand runPipeTestCommand;
                 if (!runPipeTestCommands.TryGetValue(runPipe, out runPipeTestCommand))
                     return;
@@ -407,8 +416,12 @@ namespace Gallio.MbUnit2Adapter.Model
                 if (!activeTestContexts.TryGetValue(fixtureTestCommand, out fixtureTestContext))
                     return;
 
+                progressMonitor.SetStatus(runPipeTestCommand.Test.Name);
+
                 ITestContext runPipeTestContext = runPipeTestCommand.StartRootStep(fixtureTestContext.TestStep.TestInstance);
                 activeTestContexts.Add(runPipeTestCommand, runPipeTestContext);
+
+                runPipeTestContext.LifecyclePhase = LifecyclePhases.Execute;
             }
 
             private void HandleTestFinish(RunPipe runPipe, ReportRun reportRun)
@@ -423,23 +436,23 @@ namespace Gallio.MbUnit2Adapter.Model
                     // Note: ReportRun.Asserts is not actually populated by MbUnit so we ignore it.
                     if (reportRun.ConsoleOut.Length != 0)
                     {
-                        testContext.LogWriter[LogStreamNames.ConsoleOutput].Write(reportRun.ConsoleOut);
+                        testContext.LogWriter.Write(LogStreamNames.ConsoleOutput, reportRun.ConsoleOut);
                     }
                     if (reportRun.ConsoleError.Length != 0)
                     {
-                        testContext.LogWriter[LogStreamNames.ConsoleError].Write(reportRun.ConsoleError);
+                        testContext.LogWriter.Write(LogStreamNames.ConsoleError, reportRun.ConsoleError);
                     }
                     foreach (ReportWarning warning in reportRun.Warnings)
                     {
-                        testContext.LogWriter[LogStreamNames.Warnings].BeginSection("Warning");
-                        testContext.LogWriter[LogStreamNames.Warnings].WriteLine(warning.Text);
-                        testContext.LogWriter[LogStreamNames.Warnings].EndSection();
+                        testContext.LogWriter.BeginSection(LogStreamNames.Warnings, "Warning");
+                        testContext.LogWriter.Write(LogStreamNames.Warnings, warning.Text);
+                        testContext.LogWriter.EndSection(LogStreamNames.Warnings);
                     }
                     if (reportRun.Exception != null)
                     {
-                        testContext.LogWriter[LogStreamNames.Failures].BeginSection("Exception");
-                        testContext.LogWriter[LogStreamNames.Failures].Write(FormatReportException(reportRun.Exception));
-                        testContext.LogWriter[LogStreamNames.Failures].EndSection();
+                        testContext.LogWriter.BeginSection(LogStreamNames.Failures, "Exception");
+                        testContext.LogWriter.Write(LogStreamNames.Failures, FormatReportException(reportRun.Exception));
+                        testContext.LogWriter.EndSection(LogStreamNames.Failures);
                     }
 
                     // Finish up...

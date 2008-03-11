@@ -247,7 +247,7 @@ namespace Gallio.Runner.Harness
                     progressMonitor.Worked(5);
                     progressMonitor.SetStatus(@"");
 
-                    RunTestCommandsWithinANullContext(rootTestCommand, progressMonitor.CreateSubProgressMonitor(85));
+                    RunTestCommandsWithinANullContext(rootTestCommand, options, progressMonitor.CreateSubProgressMonitor(85));
                 }
                 finally
                 {
@@ -260,7 +260,7 @@ namespace Gallio.Runner.Harness
             }
         }
 
-        private void RunTestCommandsWithinANullContext(ITestCommand rootTestCommand, IProgressMonitor progressMonitor)
+        private void RunTestCommandsWithinANullContext(ITestCommand rootTestCommand, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor)
             {
@@ -273,7 +273,7 @@ namespace Gallio.Runner.Harness
                         if (rootTestControllerFactory != null)
                         {
                             using (ITestController controller = rootTestControllerFactory())
-                                controller.RunTests(progressMonitor, rootTestCommand, null);
+                                controller.RunTests(rootTestCommand, null, options, progressMonitor);
                         }
                     }
                 }

@@ -15,7 +15,7 @@
 
 using System;
 using Castle.Core.Logging;
-using Gallio.Logging;
+using Gallio.Framework;
 
 namespace Gallio.Tests.Integration
 {
@@ -30,7 +30,7 @@ namespace Gallio.Tests.Integration
         /// Creates a logger for the default log stream.
         /// </summary>
         public LogStreamLogger()
-            : this(Gallio.Logging.Log.Default)
+            : this(Gallio.Framework.Log.Default)
         {
         }
 

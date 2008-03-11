@@ -17,15 +17,13 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using Gallio.Logging;
 using Gallio.Utilities;
 
 namespace Gallio.Concurrency
 {
     /// <summary>
     /// A process task provides support for launching external processes
-    /// and collecting their output.  By default, the output is written
-    /// to the <see cref="Log.Default" /> log stream.
+    /// and collecting their output.
     /// </summary>
     public class ProcessTask : Task
     {

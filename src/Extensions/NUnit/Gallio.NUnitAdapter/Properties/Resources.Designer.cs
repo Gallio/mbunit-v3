@@ -97,15 +97,6 @@ namespace Gallio.NUnitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run test: {0}..
-        /// </summary>
-        internal static string NUnitTestController_StatusMessages_RunningTest {
-            get {
-                return ResourceManager.GetString("NUnitTestController_StatusMessages_RunningTest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unhandled Exception.
         /// </summary>
         internal static string NUnitTestController_UnhandledExceptionSectionName {

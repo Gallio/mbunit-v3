@@ -24,7 +24,6 @@ using System;
 using Gallio.Concurrency;
 using Gallio.Framework;
 using Gallio.Hosting;
-using Gallio.Logging;
 using MbUnit.Framework;
 using MbUnit.Pex.TestResources;
 using Microsoft.Pex.Engine;

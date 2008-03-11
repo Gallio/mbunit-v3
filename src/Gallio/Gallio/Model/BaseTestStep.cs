@@ -112,9 +112,9 @@ namespace Gallio.Model
             if (parent == null)
                 return testInstance.FullName;
             else if (parent.Parent == null)
-                return parent.FullName + @":" + Name;
+                return string.Concat(parent.FullName, @":", Name);
             else
-                return parent.FullName + @"/" + Name;
+                return string.Concat(parent.FullName, @"/", Name);
         }
     }
 }

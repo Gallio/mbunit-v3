@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using Gallio.Utilities;
 
@@ -29,6 +28,12 @@ namespace Gallio.Concurrency
     /// executing in a local <see cref="Thread" />.  It can represent other processes
     /// that execute remotely or that are represented by some other mechanism.
     /// </para>
+    /// <para>
+    /// A <see cref="Task" /> is guaranteed to send events in the following order:
+    /// <see cref="Started" />, <see cref="Aborted" /> (if applicable), <see cref="Terminated" />.
+    /// The events are dispatched synchronously such that the next event in the sequence
+    /// will not be fired until the previous event is completely processed.
+    /// </para>
     /// </summary>
     /// <seealso cref="TaskContainer"/>
     public abstract class Task
@@ -41,6 +46,14 @@ namespace Gallio.Concurrency
         private bool isStarted;
         private bool isAborted;
         private TaskResult result;
+
+        /// <summary>
+        /// This lock ensures that Start, Abort and NotifyTerminated are serialized.
+        /// Without it, we could end up sending a Terminated event before the client
+        /// received the Started event.  Since events are dispatched synchronously,
+        /// serializing them in this manner helps clients to maintain correct internal state.
+        /// </summary>
+        private readonly object sequenceLock = new object();
 
         /// <summary>
         /// Creates a task.
@@ -144,27 +157,27 @@ namespace Gallio.Concurrency
         /// <seealso cref="IsPending"/>
         public void Start()
         {
-            lock (this)
+            lock (sequenceLock)
             {
-                if (! IsPending)
+                if (!IsPending)
                     return;
                 isStarted = true;
-            }
 
-            try
-            {
                 try
                 {
-                    StartImpl();
+                    try
+                    {
+                        StartImpl();
+                    }
+                    finally
+                    {
+                        OnStarted();
+                    }
                 }
-                finally
+                catch (Exception ex)
                 {
-                    OnStarted();
+                    NotifyTerminated(TaskResult.CreateFromException(ex));
                 }
-            }
-            catch (Exception ex)
-            {
-                NotifyTerminated(TaskResult.CreateFromException(ex));
             }
         }
 
@@ -174,7 +187,8 @@ namespace Gallio.Concurrency
         /// </para>
         /// <para>
         /// If the task has not been started, then the task will be forbidden from starting later
-        /// and its <see cref="IsAborted" /> property will be set.
+        /// and its <see cref="IsAborted" /> property will be set.  If the task has already
+        /// terminated, then does nothing.
         /// </para>
         /// </summary>
         /// <remarks>
@@ -191,21 +205,21 @@ namespace Gallio.Concurrency
         /// <seealso cref="IsAborted"/>
         public void Abort()
         {
-            lock (this)
+            lock (sequenceLock)
             {
-                if (isAborted)
+                if (isAborted || IsTerminated)
                     return;
 
                 isAborted = true;
-            }
 
-            try
-            {
-                AbortImpl();
-            }
-            finally
-            {
-                OnAborted();
+                try
+                {
+                    AbortImpl();
+                }
+                finally
+                {
+                    OnAborted();
+                }
             }
         }
 
@@ -281,15 +295,15 @@ namespace Gallio.Concurrency
             if (result == null)
                 throw new ArgumentNullException("result");
 
-            lock (this)
+            lock (sequenceLock)
             {
                 if (!IsRunning)
                     throw new InvalidOperationException("The task is not currently running.");
 
                 this.result = result;
-            }
 
-            OnTerminated();
+                OnTerminated();
+            }
         }
 
         /// <summary>

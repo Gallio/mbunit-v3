@@ -17,7 +17,6 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Gallio.Collections;
-using Gallio.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Utilities;
@@ -39,12 +38,12 @@ namespace Gallio.Model.Execution
         private readonly ObservableTestContextManager manager;
         private readonly ITestContext parent;
         private readonly ITestStep testStep;
-        private readonly TestListenerLogWriter logWriter;
+        private readonly ObservableTestLogWriter logWriter;
         private UserDataCollection data;
 
         private string lifecyclePhase = @"";
-        private TestOutcome interimOutcome = TestOutcome.Passed;
-        private event EventHandler cleanUpHandlers;
+        private TestOutcome outcome = TestOutcome.Passed;
+        private event EventHandler finishingHandlers;
         private int assertCount;
 
         private int executionStatus;
@@ -69,7 +68,7 @@ namespace Gallio.Model.Execution
             this.testStep = testStep;
             this.parent = parent;
 
-            logWriter = new TestListenerLogWriter(Listener, testStep.Id);
+            logWriter = new ObservableTestLogWriter(Listener, testStep.Id);
         }
 
         /// <inheritdoc />
@@ -85,7 +84,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public LogWriter LogWriter
+        public ITestLogWriter LogWriter
         {
             get { return logWriter; }
         }
@@ -116,17 +115,7 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         public TestOutcome Outcome
         {
-            get { return interimOutcome; }
-            set
-            {
-                lock (syncRoot)
-                {
-                    if (! IsRunning)
-                        throw new InvalidOperationException("Cannot set the outcome unless the test step is running.");
-
-                    interimOutcome = value;
-                }
-            }
+            get { return outcome; }
         }
 
         /// <inheritdoc />
@@ -153,7 +142,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public event EventHandler CleanUp
+        public event EventHandler Finishing
         {
             add
             {
@@ -161,7 +150,7 @@ namespace Gallio.Model.Execution
                 {
                     if (executionStatus < StatusFinishing)
                     {
-                        cleanUpHandlers += value;
+                        finishingHandlers += value;
                         return;
                     }
                 }
@@ -171,7 +160,7 @@ namespace Gallio.Model.Execution
             remove
             {
                 lock (syncRoot)
-                    cleanUpHandlers -= value;
+                    finishingHandlers -= value;
             }
         }
 
@@ -196,6 +185,18 @@ namespace Gallio.Model.Execution
 
                 testStep.Metadata.CopyOnWriteAdd(metadataKey, metadataValue);
                 Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateAddMetadataEvent(testStep.Id, metadataKey, metadataValue));
+            }
+        }
+
+        /// <inheritdoc />
+        public void SetInterimOutcome(TestOutcome outcome)
+        {
+            lock (syncRoot)
+            {
+                if (! IsRunning)
+                    throw new InvalidOperationException("Cannot set the interim outcome unless the test step is running.");
+
+                this.outcome = outcome;
             }
         }
 
@@ -253,6 +254,7 @@ namespace Gallio.Model.Execution
 
                 // Consider the test started.
                 executionStatus = StatusStarted;
+                LifecyclePhase = LifecyclePhases.Starting;
 
                 // Enter the context.
                 contextCookie = Enter();
@@ -260,12 +262,12 @@ namespace Gallio.Model.Execution
 
             // Note: We exit the lock before manipulating the parent context to avoid reentry.
             if (parent != null)
-                parent.CleanUp += HandleParentDisposed;
+                parent.Finishing += HandleParentFinishedBeforeThisContext;
         }
 
         private void FinishStep(TestOutcome outcome, TimeSpan? actualDuration, bool isDisposing)
         {
-            EventHandler cachedCleanUpHandlers;
+            EventHandler cachedFinishingHandlers;
             lock (syncRoot)
             {
                 if (! IsRunning)
@@ -275,33 +277,26 @@ namespace Gallio.Model.Execution
                     throw new InvalidOperationException("Cannot finish a step unless the test step is running.");
                 }
 
+                this.outcome = outcome;
                 executionStatus = StatusFinishing;
+                LifecyclePhase = LifecyclePhases.Finishing;
 
-                cachedCleanUpHandlers = cleanUpHandlers;
-                cleanUpHandlers = null;
-
-                interimOutcome = outcome;
+                cachedFinishingHandlers = finishingHandlers;
+                finishingHandlers = null;
             }
 
-            // Note: We no longer need to hold the lock because none of the state used from here on can change.
+            // Note: We no longer need to hold the lock because none of the state used from here on can change
+            //       since the status is now StatusFinishing.
             try
             {
                 if (parent != null)
-                    parent.CleanUp -= HandleParentDisposed;
+                    parent.Finishing -= HandleParentFinishedBeforeThisContext;
 
-                RunCleanUpHandlers(cachedCleanUpHandlers);
+                using (Enter())
+                    EventHandlerUtils.SafeInvoke(cachedFinishingHandlers, this, EventArgs.Empty);
 
                 if (isDisposing)
-                {
-                    try
-                    {
-                        logWriter[LogStreamNames.Failures].WriteLine("The test step was orphaned by the test runner!");
-                    }
-                    catch
-                    {
-                        // Don't worry about it.  Something much worse must be happening.
-                    }
-                }
+                    logWriter.Write(LogStreamNames.Failures, "The test step was orphaned by the test runner!\n");
 
                 logWriter.Close();
 
@@ -345,38 +340,9 @@ namespace Gallio.Model.Execution
             return ContextTracker.EnterContext(this);
         }
 
-        private void HandleParentDisposed(object sender, EventArgs e)
+        private void HandleParentFinishedBeforeThisContext(object sender, EventArgs e)
         {
             Dispose();
-        }
-
-        private void RunCleanUpHandlers(EventHandler handlers)
-        {
-            if (handlers == null)
-                return;
-
-            using (Enter())
-            {
-                foreach (EventHandler handler in handlers.GetInvocationList())
-                {
-                    try
-                    {
-                        handler(this, EventArgs.Empty);
-                    }
-                    catch (Exception ex)
-                    {
-                        try
-                        {
-                            logWriter[LogStreamNames.Failures].WriteLine(
-                                "An exception occurred while executing a Context Dispose handler:\n{0}", ex);
-                        }
-                        catch (Exception)
-                        {
-                            UnhandledExceptionPolicy.Report("An exception occurred while executing a Context Dispose handler.", ex);
-                        }
-                    }
-                }
-            }
         }
     }
 }

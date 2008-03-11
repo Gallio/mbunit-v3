@@ -18,14 +18,54 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Xml.Serialization;
+using Gallio.Model.Execution;
+using Gallio.Utilities;
 
-namespace Gallio.Logging
+namespace Gallio.Framework
 {
     /// <summary>
-    /// Provides utilities for manipulating attachments.
+    /// An attachment is an embedded object in an execution log.  An attachment must specify a
+    /// content type (a MIME type), and some contents.
     /// </summary>
-    public static class AttachmentUtils
+    [Serializable]
+    public abstract class Attachment
     {
+        private readonly string name;
+        private readonly string contentType;
+
+        /// <summary>
+        /// Creates an attachment.
+        /// </summary>
+        /// <param name="name">The name of attachment, or null to automatically assign one.  The attachment
+        /// name must be unique within the scope of the currently executing test step.</param>
+        /// <param name="contentType">The content type, not null</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> is null</exception>
+        internal /*to prevent subclassing outside of the framework*/ Attachment(string name, string contentType)
+        {
+            if (contentType == null)
+                throw new ArgumentNullException("contentType");
+
+            this.name = name ?? Hash64.CreateUniqueHash().ToString();
+            this.contentType = contentType;
+        }
+
+        /// <summary>
+        /// Gets the name of the attachment, not null.
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+        }
+
+        /// <summary>
+        /// Gets the content type of the attachment specified as a MIME type, not null.
+        /// <seealso cref="MimeTypes"/> for definitions of common supported MIME types.
+        /// </summary>
+        public string ContentType
+        {
+            get { return contentType; }
+        }
+
         /// <summary>
         /// Creates a plain text attachment.
         /// </summary>
@@ -116,5 +156,11 @@ namespace Gallio.Logging
                 return CreateXmlAttachment(name, writer.ToString());
             }
         }
+
+        /// <summary>
+        /// Writes the attachment to the log writer.
+        /// </summary>
+        /// <param name="logWriter">The log writer</param>
+        internal abstract void Attach(ITestLogWriter logWriter);
     }
 }

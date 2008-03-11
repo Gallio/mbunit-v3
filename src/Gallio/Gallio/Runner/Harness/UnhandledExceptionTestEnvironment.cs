@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Framework;
+using Gallio.Model.Execution;
 using Gallio.Utilities;
 
 namespace Gallio.Runner.Harness
@@ -44,7 +44,7 @@ namespace Gallio.Runner.Harness
 
             private static void CorrelateUnhandledException(object sender, CorrelatedExceptionEventArgs e)
             {
-                Context context = Context.CurrentContext;
+                ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
                 if (context != null)
                     e.AddCorrelationMessage(String.Format("The exception occurred while test instance or step '{0}' was running.", context.TestStep.FullName));
             }

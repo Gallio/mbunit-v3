@@ -15,7 +15,7 @@
 
 using System;
 using System.Diagnostics;
-using Gallio.Logging;
+using Gallio.Model.Execution;
 using Gallio.Utilities;
 
 namespace Gallio.Runner.Harness
@@ -40,42 +40,35 @@ namespace Gallio.Runner.Harness
         /// <inheritdoc />
         public override void Write(string message)
         {
+            if (message == null)
+                return;
+
             WriteIndentIfNeeded();
 
             try
             {
-                CurrentLogStreamWriter.Write(message);
+                ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
+                if (context == null)
+                    return;
+
+                context.LogWriter.Write(streamName, message);
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
+                UnhandledExceptionPolicy.Report(String.Format("Could not write to the {0} log stream.", streamName), ex);
             }
         }
 
         /// <inheritdoc />
         public override void WriteLine(string message)
         {
-            WriteIndentIfNeeded();
-
-            try
-            {
-                CurrentLogStreamWriter.WriteLine(message);
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
-            }
+            Write(message + "\n");
         }
 
         /// <inheritdoc />
         public override bool IsThreadSafe
         {
             get { return true; }
-        }
-
-        private LogStreamWriter CurrentLogStreamWriter
-        {
-            get { return Log.Writer[streamName]; }
         }
 
         private void WriteIndentIfNeeded()

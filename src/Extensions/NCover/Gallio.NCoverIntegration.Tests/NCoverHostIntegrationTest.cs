@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Gallio.Hosting;
-using Gallio.Logging;
+using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;

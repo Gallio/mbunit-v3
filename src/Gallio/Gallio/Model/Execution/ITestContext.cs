@@ -15,7 +15,6 @@
 
 using System;
 using Gallio.Collections;
-using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Reflection;
 
@@ -34,8 +33,8 @@ namespace Gallio.Model.Execution
     /// </para>
     /// <para>
     /// Arbitrary user data can be associated with a context.  Furthermore, client
-    /// code may attach <see cref="CleanUp" /> event handlers to perform resource
-    /// reclamation just prior to marking the test step as finished.
+    /// code may attach <see cref="Finishing" /> event handlers to perform resource
+    /// reclamation or other updates when the test step is finished.
     /// </para>
     /// <para>
     /// When the context is disposed, its associated test step is automatically
@@ -58,7 +57,7 @@ namespace Gallio.Model.Execution
 
         /// <summary>
         /// <para>
-        /// Gets the log writer for this context.
+        /// Gets the log writer for the test executing in this context.
         /// </para>
         /// <para>
         /// Each test step gets its own log writer that is distinct from those
@@ -66,26 +65,32 @@ namespace Gallio.Model.Execution
         /// particular to the step represented by this test context.
         /// </para>
         /// </summary>
-        LogWriter LogWriter { get; }
+        ITestLogWriter LogWriter { get; }
 
         /// <summary>
         /// Gets or sets the lifecycle phase the context is in.
         /// </summary>
         /// <seealso cref="LifecyclePhases"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if attempting to set the phase while the test is not running</exception>
         string LifecyclePhase { get; set; }
 
         /// <summary>
-        /// Gets or sets the step's outcome.  Ths value of this property is initially
-        /// <see cref="TestOutcome.Passed" /> but may change over the course of execution
-        /// depending on how particular lifecycle phases behave.  The step's outcome value
-        /// becomes frozen once the step finishes.
+        /// <para>
+        /// Gets the step's outcome or its interim outcome if the test is still running.
+        /// </para>
+        /// <para>
+        /// The value of this property is initially <see cref="TestOutcome.Passed" /> but may change
+        /// over the course of execution to reflect the anticipated outcome of the test.  When
+        /// the test finishes, its outcome is frozen.
+        /// </para>
         /// </summary>
         /// <remarks>
-        /// For example, this property enables code running in a tear down method to
-        /// determine whether the test failed and to perform different actions in that case.
+        /// For example, this property enables code running as part of the tear down phase to
+        /// determine whether the test is failing and to perform different actions in that case.
         /// </remarks>
-        TestOutcome Outcome { get; set; }
+        /// <seealso cref="SetInterimOutcome"/>
+        TestOutcome Outcome { get; }
 
         /// <summary>
         /// Gets the user data collection associated with the context.  It may be used
@@ -100,14 +105,14 @@ namespace Gallio.Model.Execution
 
         /// <summary>
         /// Returns true if the step associated with the context has finished execution
-        /// and completed all <see cref="CleanUp" /> actions.
+        /// and completed all <see cref="Finishing" /> actions.
         /// </summary>
         bool IsFinished { get; }
 
         /// <summary>
         /// <para>
-        /// The <see cref="CleanUp" /> event is raised just before the test step
-        /// finishes execution to perform resource reclamation.
+        /// The <see cref="Finishing" /> event is raised when the test step
+        /// is finishing to perform resource reclamation or other updates.
         /// </para>
         /// <para>
         /// Clients may attach handlers to this event to perform cleanup
@@ -115,12 +120,13 @@ namespace Gallio.Model.Execution
         /// added and the step has already finished, the handler is immediately invoked.
         /// </para>
         /// </summary>
-        event EventHandler CleanUp;
+        event EventHandler Finishing;
 
         /// <summary>
         /// Adds the specified amount to the assert count atomically.
         /// </summary>
         /// <param name="value">The amount to add to the assert count</param>
+        /// <exception cref="InvalidOperationException">Thrown if the test is not running</exception>
         void AddAssertCount(int value);
 
         /// <summary>
@@ -130,7 +136,25 @@ namespace Gallio.Model.Execution
         /// <param name="metadataValue">The metadata value</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
         /// or <paramref name="metadataValue"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the test is not running</exception>
         void AddMetadata(string metadataKey, string metadataValue);
+
+        /// <summary>
+        /// <para>
+        /// Sets the step's interim <see cref="Outcome" />.  The interim outcome is used
+        /// to communicate the anticipated outcome of the step to later phases of execution.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The value set here will be overridden by whatever final outcome the step
+        /// returns.  Consequently the actual outcome may still differ from the anticipated outcome
+        /// that was set using this method.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">Thrown if attempting to set the outcome while the test is not running</exception>
+        /// <seealso cref="Outcome"/>
+        void SetInterimOutcome(TestOutcome outcome);
 
         /// <summary>
         /// Starts a child step of the test and returns its context.
@@ -170,13 +194,13 @@ namespace Gallio.Model.Execution
         /// </summary>
         /// <remarks>
         /// If any children of the step are still executing their contexts are automatically
-        /// disposed.  Then <see cref="CleanUp"/> actions are executed.  Finally, the current
+        /// disposed.  Then <see cref="Finishing"/> actions are executed.  Finally, the current
         /// thread's test context is exited.
         /// </remarks>
         /// <param name="outcome">The final test outcome</param>
         /// <param name="actualDuration">The actual duration of the step, if null the step monitor
         /// will record the duration as the total amount of time since the step monitor was started</param>
-        /// <seealso cref="CleanUp"/>
+        /// <seealso cref="Finishing"/>
         void FinishStep(TestOutcome outcome, TimeSpan? actualDuration);
     }
 }

@@ -126,21 +126,6 @@
   <data name="MbUnit2TestController_InitializingMbUnitTestRunner" xml:space="preserve">
     <value>Initializing MbUnit v2 test runner.</value>
   </data>
-  <data name="MbUnit2TestController_StatusMessage_RunningAssemblySetUp" xml:space="preserve">
-    <value>Run assembly set up: {0}.</value>
-  </data>
-  <data name="MbUnit2TestController_StatusMessage_RunningAssemblyTearDown" xml:space="preserve">
-    <value>Run assembly tear down: {0}.</value>
-  </data>
-  <data name="MbUnit2TestController_StatusMessage_RunningFixtureSetUp" xml:space="preserve">
-    <value>Run fixture set up: {0}.</value>
-  </data>
-  <data name="MbUnit2TestController_StatusMessage_RunningFixtureTearDown" xml:space="preserve">
-    <value>Run fixture tear down: {0}.</value>
-  </data>
-  <data name="MbUnit2TestController_StatusMessage_RunningTest" xml:space="preserve">
-    <value>Run test: {0}.</value>
-  </data>
   <data name="MbUnit2TestController_EndOfInnerExceptionStackTrace" xml:space="preserve">
     <value>End of inner exception stack trace</value>
   </data>

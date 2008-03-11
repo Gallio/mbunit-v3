@@ -66,6 +66,7 @@
     <Compile Include="ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Collections\UserDataCollectionTest.cs" />
+    <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
     <Compile Include="Framework\Data\BaseDataRowTest.cs" />
     <Compile Include="Framework\Data\BaseDataSetTest.cs" />
     <Compile Include="Framework\Data\Binders\BaseDataBinderTest.cs" />
@@ -151,8 +152,8 @@
     <Compile Include="Hosting\LoaderTest.cs" />
     <Compile Include="Hosting\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextTest.cs" />
-    <Compile Include="Logging\LogTest.cs" />
-    <Compile Include="Logging\TextLogWriterTest.cs" />
+    <Compile Include="Framework\LogTest.cs" />
+    <Compile Include="Model\Execution\StubTestLogWriterTest.cs" />
     <Compile Include="Model\Execution\TestCommandFactoryTest.cs" />
     <Compile Include="Model\Filters\NameFilterTest.cs" />
     <Compile Include="Model\Filters\EqualityFilterTest.cs" />

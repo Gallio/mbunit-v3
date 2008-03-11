@@ -162,8 +162,8 @@
 	Stream Name: {1}
 	Text:        {2}</value>
   </data>
-  <data name="DebugMonitor_ExecutionLogEvent_Attach_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Attach ({0})]
+  <data name="DebugMonitor_ExecutionLogEvent_AttachText_EventFormat" xml:space="preserve">
+    <value>[Execution Log: AttachText ({0})]
 	Attachment Name:         {1}
 	Attachment Content Type: {2}</value>
   </data>
@@ -293,5 +293,10 @@
   </data>
   <data name="FilterParser_UnexpectedEndOfInput" xml:space="preserve">
     <value>Unexpected end of input</value>
+  </data>
+  <data name="DebugMonitor_ExecutionLogEvent_AttachBytes_EventFormat" xml:space="preserve">
+    <value>[Execution Log: AttachBytes ({0})]
+	Attachment Name:         {1}
+	Attachment Content Type: {2}</value>
   </data>
 </root>

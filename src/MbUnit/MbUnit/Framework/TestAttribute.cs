@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Logging;
+using Gallio.Framework;
 using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework

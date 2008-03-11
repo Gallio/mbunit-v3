@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 using System.Text;
-using Gallio.Logging;
+using Gallio.Model.Execution;
 using Gallio.Utilities;
 
 namespace Gallio.Runner.Harness
@@ -57,47 +57,35 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public override void Write(char value)
+        public override void Write(string value)
         {
+            if (value == null)
+                return;
+
             try
             {
-                CurrentLogStreamWriter.Write(value);
+                ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
+                if (context == null)
+                    return;
+
+                context.LogWriter.Write(streamName, value);
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
+                UnhandledExceptionPolicy.Report(String.Format("Could not write to the {0} log stream.", streamName), ex);
             }
         }
 
         /// <inheritdoc />
-        public override void Write(string value)
+        public override void Write(char value)
         {
-            try
-            {
-                CurrentLogStreamWriter.Write(value);
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
-            }
+            Write(new string(value, 1));
         }
 
         /// <inheritdoc />
         public override void Write(char[] buffer, int index, int count)
         {
-            try
-            {
-                CurrentLogStreamWriter.Write(buffer, index, count);
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("Could not write to the log stream.", ex);
-            }
-        }
-
-        private LogStreamWriter CurrentLogStreamWriter
-        {
-            get { return Log.Writer[streamName]; }
+            Write(new string(buffer, index, count));
         }
     }
 }

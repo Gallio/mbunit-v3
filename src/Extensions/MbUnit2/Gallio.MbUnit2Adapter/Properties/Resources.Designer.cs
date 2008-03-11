@@ -97,51 +97,6 @@ namespace Gallio.MbUnit2Adapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run assembly set up: {0}..
-        /// </summary>
-        internal static string MbUnit2TestController_StatusMessage_RunningAssemblySetUp {
-            get {
-                return ResourceManager.GetString("MbUnit2TestController_StatusMessage_RunningAssemblySetUp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Run assembly tear down: {0}..
-        /// </summary>
-        internal static string MbUnit2TestController_StatusMessage_RunningAssemblyTearDown {
-            get {
-                return ResourceManager.GetString("MbUnit2TestController_StatusMessage_RunningAssemblyTearDown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Run fixture set up: {0}..
-        /// </summary>
-        internal static string MbUnit2TestController_StatusMessage_RunningFixtureSetUp {
-            get {
-                return ResourceManager.GetString("MbUnit2TestController_StatusMessage_RunningFixtureSetUp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Run fixture tear down: {0}..
-        /// </summary>
-        internal static string MbUnit2TestController_StatusMessage_RunningFixtureTearDown {
-            get {
-                return ResourceManager.GetString("MbUnit2TestController_StatusMessage_RunningFixtureTearDown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Run test: {0}..
-        /// </summary>
-        internal static string MbUnit2TestController_StatusMessage_RunningTest {
-            get {
-                return ResourceManager.GetString("MbUnit2TestController_StatusMessage_RunningTest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to MbUnit v{0}.
         /// </summary>
         internal static string MbUnit2TestExplorer_FrameworkNameWithVersionFormat {

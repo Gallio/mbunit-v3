@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Threading;
 using Gallio.Model.Execution;
 using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Logging;
 using Gallio.Model;
 using Gallio.NUnitAdapter.Properties;
 using NUnit.Core;
@@ -30,7 +29,7 @@ namespace Gallio.NUnitAdapter.Model
     /// <summary>
     /// Controls the execution of NUnit tests.
     /// </summary>
-    internal class NUnitTestController : ITestController
+    internal class NUnitTestController : BaseTestController
     {
         private TestRunner runner;
 
@@ -44,14 +43,14 @@ namespace Gallio.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        public void Dispose()
+        public override void Dispose()
         {
             runner = null;
         }
 
         /// <inheritdoc />
-        public void RunTests(IProgressMonitor progressMonitor, ITestCommand rootTestCommand,
-            ITestInstance parentTestInstance)
+        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+            TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
 
@@ -60,10 +59,19 @@ namespace Gallio.NUnitAdapter.Model
                 IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
 
                 progressMonitor.BeginTask(Resources.NUnitTestController_RunningNUnitTests, testCommands.Count);
+                if (progressMonitor.IsCanceled)
+                    return;
 
-                using (RunMonitor monitor = new RunMonitor(runner, testCommands, parentTestInstance, progressMonitor))
+                if (options.SkipTestInstanceExecution)
                 {
-                    monitor.Run();
+                    SkipAll(rootTestCommand, parentTestInstance);
+                }
+                else
+                {
+                    using (RunMonitor monitor = new RunMonitor(runner, testCommands, parentTestInstance, progressMonitor))
+                    {
+                        monitor.Run();
+                    }
                 }
             }
         }
@@ -183,7 +191,7 @@ namespace Gallio.NUnitAdapter.Model
                         break;
                 }
 
-                testContext.LogWriter[streamName].Write(testOutput.Text);
+                testContext.LogWriter.Write(streamName, testOutput.Text);
             }
 
             void EventListener.SuiteStarted(TestName testName)
@@ -208,7 +216,7 @@ namespace Gallio.NUnitAdapter.Model
 
                 ITestContext testContext = testContextStack.Peek();
 
-                testContext.LogWriter[LogStreamNames.Failures].WriteException(exception, Resources.NUnitTestController_UnhandledExceptionSectionName);
+                TestLogWriterUtils.WriteException(testContext.LogWriter, LogStreamNames.Failures, exception, Resources.NUnitTestController_UnhandledExceptionSectionName);
             }
 
             private void HandleTestOrSuiteStarted(TestName testName)
@@ -217,11 +225,13 @@ namespace Gallio.NUnitAdapter.Model
                 if (!testCommandsByTestName.TryGetValue(testName, out testCommand))
                     return;
 
-                progressMonitor.SetStatus(String.Format(Resources.NUnitTestController_StatusMessages_RunningTest, testCommand.Test.Name));
+                progressMonitor.SetStatus(testCommand.Test.Name);
 
                 ITestInstance parentTestInstance = testContextStack.Count != 0 ? testContextStack.Peek().TestStep.TestInstance : topTestInstance;
                 ITestContext testContext = testCommand.StartRootStep(parentTestInstance);
                 testContextStack.Push(testContext);
+
+                testContext.LifecyclePhase = LifecyclePhases.Execute;
             }
 
             private void HandleTestOrSuiteFinished(NUnitTestResult nunitResult)
@@ -238,20 +248,20 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.Worked(1);
 
-                LogStreamWriter logWriter = testContext.LogWriter[
-                    nunitResult.ResultState == ResultState.Success ? LogStreamNames.Warnings : LogStreamNames.Failures];
+                string logStreamName = nunitResult.ResultState == ResultState.Success ? LogStreamNames.Warnings : LogStreamNames.Failures;
 
+                ITestLogWriter logWriter = testContext.LogWriter;
                 if (nunitResult.Message != null)
                 {
-                    logWriter.BeginSection(Resources.NUnitTestController_ResultMessageSectionName);
-                    logWriter.Write(nunitResult.Message);
-                    logWriter.EndSection();
+                    logWriter.BeginSection(logStreamName, Resources.NUnitTestController_ResultMessageSectionName);
+                    logWriter.Write(logStreamName, nunitResult.Message);
+                    logWriter.EndSection(logStreamName);
                 }
                 if (nunitResult.StackTrace != null)
                 {
-                    logWriter.BeginSection(Resources.NUnitTestController_ResultStackTraceSectionName);
-                    logWriter.Write(nunitResult.StackTrace);
-                    logWriter.EndSection();
+                    logWriter.BeginSection(logStreamName, Resources.NUnitTestController_ResultStackTraceSectionName);
+                    logWriter.Write(logStreamName, nunitResult.StackTrace);
+                    logWriter.EndSection(logStreamName);
                 }
 
                 testContext.AddAssertCount(nunitResult.AssertCount);

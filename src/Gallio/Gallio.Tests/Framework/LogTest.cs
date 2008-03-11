@@ -14,14 +14,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Gallio.Collections;
-using Gallio.Logging;
+using Gallio.Framework;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Logging
+namespace Gallio.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(Log))]

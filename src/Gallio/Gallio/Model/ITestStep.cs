@@ -55,9 +55,9 @@ namespace Gallio.Model
         /// <para>
         /// Examples:
         /// <list type="bullet">
-        /// <item><term>SomeAssembly.SomeFixture.SomeTest</term><description>The root step of SomeTest</description></item>
-        /// <item><term>SomeAssembly.SomeFixture.SomeTest:ChildStep</term><description>A child step of the root step of SomeTest</description></item>
-        /// <item><term>SomeAssembly.SomeFixture.SomeTest:ChildStep/GrandchildStep/BabyStep</term><description>A deeply nested descendent step</description></item>
+        /// <item><term>SomeAssembly/SomeFixture/SomeTest</term><description>The root step of SomeTest</description></item>
+        /// <item><term>SomeAssembly/SomeFixture/SomeTest:ChildStep</term><description>A child step of the root step of SomeTest</description></item>
+        /// <item><term>SomeAssembly/SomeFixture/SomeTest:ChildStep/GrandchildStep/BabyStep</term><description>A deeply nested descendent step</description></item>
         /// </list>
         /// </para>
         /// </summary>

@@ -19,7 +19,6 @@ using System.Globalization;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Logging;
 
 namespace Gallio.Runner.Reports
 {
@@ -169,22 +168,7 @@ namespace Gallio.Runner.Reports
                 // TODO: How should we handle missing attachments?  Currently we just throw an exception.
                 try
                 {
-                    switch (attachment.Encoding)
-                    {
-                        case ExecutionLogAttachmentEncoding.Text:
-                            {
-                                string text = ReadAllText(attachmentStream);
-                                attachment.Contents = new TextAttachment(attachment.Name, attachment.ContentType, text);
-                            }
-                            break;
-
-                        case ExecutionLogAttachmentEncoding.Base64:
-                            {
-                                byte[] data = ReadAllBytes(attachmentStream);
-                                attachment.Contents = new BinaryAttachment(attachment.Name, attachment.ContentType, data);
-                            }
-                            break;
-                    }
+                    attachment.LoadContents(attachmentStream);
                 }
                 catch (Exception ex)
                 {
@@ -192,19 +176,6 @@ namespace Gallio.Runner.Reports
                         "Unable to load report attachment from file: '{0}'.", attachmentPath), ex);
                 }
             }
-        }
-
-        private static string ReadAllText(Stream stream)
-        {
-            return new StreamReader(stream).ReadToEnd();
-        }
-
-        private static byte[] ReadAllBytes(Stream stream)
-        {
-            byte[] bytes = new byte[stream.Length];
-            if (stream.Read(bytes, 0, (int)stream.Length) != stream.Length)
-                throw new IOException("Did not read entire stream.");
-            return bytes;
         }
     }
 }

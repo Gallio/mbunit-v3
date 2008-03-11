@@ -20,7 +20,7 @@ using Castle.Core.Logging;
 using Gallio.Model;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
-using Gallio.Logging;
+using Gallio.Framework;
 using Gallio.Model.Filters;
 using MbUnit.Framework;
 

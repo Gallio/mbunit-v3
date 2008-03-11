@@ -297,7 +297,6 @@ namespace Gallio.Runner.Monitors
             lock (report)
             {
                 TestStepState state = GetTestStepState(e.StepId);
-
                 e.ApplyToLogWriter(state.ExecutionLogWriter);
             }
         }

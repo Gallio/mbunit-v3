@@ -86,6 +86,8 @@ namespace Gallio.Model
             get
             {
                 if (parent == null)
+                    return @"";
+                if (parent.Parent == null)
                     return Name;
                 return String.Concat(parent.FullName, "/", Name);
             }

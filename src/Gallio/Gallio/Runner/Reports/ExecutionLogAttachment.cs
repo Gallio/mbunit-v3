@@ -14,10 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Globalization;
-using System.Xml;
+using System.IO;
 using System.Xml.Serialization;
-using Gallio.Logging;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Runner.Reports
@@ -28,21 +26,21 @@ namespace Gallio.Runner.Reports
     /// </para>
     /// <para>
     /// The contents of the attachment are embedded in the execution log according to
-    /// their encoding.  Text and Xml markup are directly embedded into the Xml whereas
+    /// their encoding.  Text is directly embedded into the Xml whereas
     /// binary attachments are base 64 encoded.
     /// </para>
     /// </summary>
     [Serializable]
     [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    public sealed class ExecutionLogAttachment : IAttachmentVisitor
+    public sealed class ExecutionLogAttachment
     {
         private string name;
         private string contentType;
         private ExecutionLogAttachmentEncoding encoding;
         private ExecutionLogAttachmentContentDisposition contentDisposition;
-        private string innerText;
+        private string serializedContents;
+        private byte[] bytes;
         private string contentPath;
-        private Attachment contents;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -51,32 +49,8 @@ namespace Gallio.Runner.Reports
         {
         }
 
-        /// <summary>
-        /// Creates a fully initialized attachment.
-        /// </summary>
-        /// <param name="attachment">The attachment</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
-        public ExecutionLogAttachment(Attachment attachment)
-        {
-            if (attachment == null)
-                throw new ArgumentNullException("attachment");
-
-            this.contents = attachment;
-
-            name = attachment.Name;
-            contentType = attachment.ContentType;
-        }
-
-        /// <summary>
-        /// Creates a fully initialized attachment.
-        /// </summary>
-        /// <param name="name">The attachment name</param>
-        /// <param name="contentType">The content type</param>
-        /// <param name="encoding">The content encoding</param>
-        /// <param name="innerText">The inner text or "" if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="contentType"/> is null</exception>
-        public ExecutionLogAttachment(string name, string contentType,
-            ExecutionLogAttachmentEncoding encoding, string innerText)
+        private ExecutionLogAttachment(string name, string contentType,
+            ExecutionLogAttachmentEncoding encoding, string serializedContents, byte[] bytes)
         {
             if (name == null)
                 throw new ArgumentNullException(@"name");
@@ -86,21 +60,41 @@ namespace Gallio.Runner.Reports
             this.name = name;
             this.contentType = contentType;
             this.encoding = encoding;
-            this.innerText = innerText;
+            this.serializedContents = serializedContents;
+            this.bytes = bytes;
         }
 
         /// <summary>
-        /// Gets or sets the deserialized attachment contents.
+        /// Creates a text attachment.
         /// </summary>
-        [XmlIgnore]
-        public Attachment Contents
+        /// <param name="name">The attachment name</param>
+        /// <param name="contentType">The content type</param>
+        /// <param name="text">The text</param>
+        /// <returns>The attachment</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, <paramref name="contentType"/>
+        /// or <paramref name="text"/> is null</exception>
+        public static ExecutionLogAttachment CreateTextAttachment(string name, string contentType, string text)
         {
-            get
-            {
-                EnsureAttachmentDeserialized();
-                return contents;
-            }
-            set { contents = value; }
+            if (text == null)
+                throw new ArgumentNullException("text");
+            return new ExecutionLogAttachment(name, contentType, ExecutionLogAttachmentEncoding.Text, text, null);
+        }
+
+        /// <summary>
+        /// Creates a binary attachment.
+        /// </summary>
+        /// <param name="name">The attachment name</param>
+        /// <param name="contentType">The content type</param>
+        /// <param name="bytes">The binary data</param>
+        /// <returns>The attachment</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, <paramref name="contentType"/>
+        /// or <paramref name="bytes"/> is null</exception>
+        public static ExecutionLogAttachment CreateBinaryAttachment(string name, string contentType, byte[] bytes)
+        {
+            if (bytes == null)
+                throw new ArgumentNullException("bytes");
+            return new ExecutionLogAttachment(name, contentType, ExecutionLogAttachmentEncoding.Base64,
+                null, bytes);
         }
 
         /// <summary>
@@ -142,11 +136,7 @@ namespace Gallio.Runner.Reports
         [XmlAttribute("encoding")]
         public ExecutionLogAttachmentEncoding Encoding
         {
-            get
-            {
-                EnsureAttachmentSerialized();
-                return encoding;
-            }
+            get { return encoding; }
             set { encoding = value; }
         }
 
@@ -177,71 +167,106 @@ namespace Gallio.Runner.Reports
         /// Gets or sets the attachment content serialized as text (including Base64 attachments), possibly null if none.
         /// </summary>
         [XmlText]
-        public string InnerText
+        public string SerializedContents
         {
             get
             {
-                EnsureAttachmentSerialized();
-                return innerText;
+                if (serializedContents == null && bytes != null)
+                    serializedContents = Convert.ToBase64String(bytes, Base64FormattingOptions.None);
+                return serializedContents;
             }
-            set { innerText = value; }
-        }
-
-        private void EnsureAttachmentSerialized()
-        {
-            if (innerText == null)
+            set
             {
-                if (contents == null)
-                    throw new InvalidOperationException("The attachment property is not initialized so its contents cannot be serialized.");
-
-                contents.Accept(this);
+                serializedContents = value;
+                bytes = null;
             }
         }
 
-        private void EnsureAttachmentDeserialized()
+        /// <summary>
+        /// Returns true if the attachment is textual, false if it is binary.
+        /// </summary>
+        public bool IsText
         {
-            if (contents == null)
+            get { return encoding == ExecutionLogAttachmentEncoding.Text; }
+        }
+
+        /// <summary>
+        /// Gets the text contents of a text attachment.
+        /// </summary>
+        /// <returns>The text, or null if not available</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the attachment is not textual</exception>
+        public string GetText()
+        {
+            if (! IsText)
+                throw new InvalidOperationException("The attachment is not text.");
+
+            return serializedContents;
+        }
+
+        /// <summary>
+        /// Gets the binary contents of a binary attachment.
+        /// </summary>
+        /// <returns>The bytes, or null if not available</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the attachment is not binary</exception>
+        public byte[] GetBytes()
+        {
+            if (IsText)
+                throw new InvalidOperationException("The attachment is not binary.");
+
+            if (bytes == null && serializedContents != null)
+                bytes = Convert.FromBase64String(serializedContents);
+            return bytes;
+        }
+
+        /// <summary>
+        /// Loads the attachment contents from a stream.
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
+        /// <exception cref="IOException">If the attachment could not be loaded</exception>
+        public void LoadContents(Stream stream)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            if (IsText)
             {
-                if (name == null)
-                    throw new InvalidOperationException("The attachment is missing its name attribute.");
-                if (contentType == null)
-                    throw new InvalidOperationException("The attachment is missing its contentType attribute.");
-                if (innerText == null)
-                    throw new InvalidOperationException("The attachment is missing its text contents.");
-
-                switch (encoding)
-                {
-                    case ExecutionLogAttachmentEncoding.Text:
-                        if (innerText == null)
-                            throw new XmlException("The text encoded attachment is missing its text contents.");
-
-                        contents = new TextAttachment(name, contentType, innerText);
-                        break;
-
-                    case ExecutionLogAttachmentEncoding.Base64:
-                        if (innerText == null)
-                            throw new XmlException("The base64 encoded attachment is missing its text contents.");
-
-                        contents = new BinaryAttachment(name, contentType, Convert.FromBase64String(innerText));
-                        break;
-
-                    default:
-                        throw new XmlException(String.Format(CultureInfo.CurrentCulture,
-                            "Unrecognized Xml content encoding '{0}'.", encoding));
-                }
+                serializedContents = new StreamReader(stream).ReadToEnd();
+                bytes = null;
+            }
+            else
+            {
+                bytes = new byte[stream.Length];
+                if (stream.Read(bytes, 0, (int)stream.Length) != stream.Length)
+                    throw new IOException("Did not read entire stream.");
+                serializedContents = null;
             }
         }
 
-        void IAttachmentVisitor.VisitTextAttachment(TextAttachment attachment)
+        /// <summary>
+        /// Saves the attachment contents to a stream.
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
+        /// <exception cref="IOException">If the attachment could not be saved</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the attachment contents are not available</exception>
+        public void SaveContents(Stream stream)
         {
-            encoding = ExecutionLogAttachmentEncoding.Text;
-            innerText = attachment.Text;
-        }
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+            if (serializedContents == null && bytes == null)
+                throw new InvalidOperationException("The attachment contents cannot be saved because they are not available.");
 
-        void IAttachmentVisitor.VisitBinaryAttachment(BinaryAttachment attachment)
-        {
-            encoding = ExecutionLogAttachmentEncoding.Base64;
-            innerText = Convert.ToBase64String(attachment.Data, Base64FormattingOptions.None);
+            if (IsText)
+            {
+                using (StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8))
+                    writer.Write(serializedContents);
+            }
+            else
+            {
+                GetBytes();
+                stream.Write(bytes, 0, bytes.Length);
+            }
         }
     }
 }

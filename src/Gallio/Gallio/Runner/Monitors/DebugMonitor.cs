@@ -100,12 +100,17 @@ namespace Gallio.Runner.Monitors
 
             switch (e.EventType)
             {
-                case LogEventType.Attach:
-                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_Attach_EventFormat,
-                        stepName, e.Attachment.Name, e.Attachment.ContentType);
+                case LogEventType.AttachText:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_AttachText_EventFormat,
+                        stepName, e.AttachmentName, e.ContentType);
                     break;
 
-                case LogEventType.EmbedExisting:
+                case LogEventType.AttachBytes:
+                    logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_AttachBytes_EventFormat,
+                        stepName, e.AttachmentName, e.ContentType);
+                    break;
+
+                case LogEventType.Embed:
                     logger.DebugFormat(Resources.DebugMonitor_ExecutionLogEvent_EmbedExisting_EventFormat,
                         stepName, e.StreamName, e.AttachmentName);
                     break;

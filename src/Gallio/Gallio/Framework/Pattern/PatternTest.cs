@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Framework.Data;
 using Gallio.Hosting;
+using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Model;
@@ -161,12 +162,6 @@ namespace Gallio.Framework.Pattern
         public override Func<ITestController> TestControllerFactory
         {
             get { return GetTestController; }
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<ITestInstance> GetInstances(ITestInstance parentTestInstance, bool guessDynamicInstances)
-        {
-            return ResolveTestController().GetInstances(this, parentTestInstance, guessDynamicInstances);
         }
 
         private static ITestController GetTestController()

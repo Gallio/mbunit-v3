@@ -68,7 +68,7 @@ namespace Gallio.MSBuildTasks
                 ?? new CodeLocation(@"(unknown)", 0, 0);
 
             TestOutcome outcome = e.TestStepRun.Result.Outcome;
-            string description = String.Format("{0} '{1}' {2}.", e.GetStepKind(), e.TestStepRun.Step.FullName, outcome.DisplayName);
+            string description = String.Format("[{0}] {1} {2}", outcome.DisplayName, e.GetStepKind(), e.TestStepRun.Step.FullName);
 
             // Note: We exclude code location column information since it is not very useful in the build output.
             switch (outcome.Status)

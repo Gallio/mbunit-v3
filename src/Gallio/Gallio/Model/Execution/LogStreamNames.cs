@@ -14,11 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
-namespace Gallio.Logging
+namespace Gallio.Model.Execution
 {
     /// <summary>
     /// Common execution log stream names.
@@ -61,8 +59,9 @@ namespace Gallio.Logging
         public const string Failures = "Failures";
 
         /// <summary>
-        /// The name of the built-in log stream where the output from
-        /// the convenience methods of the <see cref="Log" /> class is recorded.
+        /// The name of the built-in log stream where additional log output is recorded.
+        /// In new test frameworks, this stream should be used instead of the console output
+        /// and error streams for logging test output.
         /// </summary>
         public const string Default = "Log";
     }

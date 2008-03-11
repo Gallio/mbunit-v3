@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Logging;
-
 namespace Gallio.Model.Execution
 {
     /// <summary>
@@ -23,33 +21,33 @@ namespace Gallio.Model.Execution
     public enum LogEventType
     {
         /// <summary>
-        /// Adds an attachment to a log.
+        /// Adds a text attachment to a log.
         /// </summary>
-        /// <seealso cref="LogWriter.Attach"/>
-        Attach,
+        AttachText,
+
+        /// <summary>
+        /// Adds a binary attachment to a log.
+        /// </summary>
+        AttachBytes,
 
         /// <summary>
         /// Writes text to a log stream.
         /// </summary>
-        /// <seealso cref="LogStreamWriter.Write(string)"/>
         Write,
 
         /// <summary>
         /// Embeds an existing named attachment into a log stream.
         /// </summary>
-        /// <seealso cref="LogStreamWriter.EmbedExisting"/>
-        EmbedExisting,
+        Embed,
 
         /// <summary>
         /// Begins a section within a log stream.
         /// </summary>
-        /// <seealso cref="LogStreamWriter.BeginSection"/>
         BeginSection,
 
         /// <summary>
         /// Ends a section of a log stream.
         /// </summary>
-        /// <seealso cref="LogStreamWriter.EndSection"/>
         EndSection
     }
 }

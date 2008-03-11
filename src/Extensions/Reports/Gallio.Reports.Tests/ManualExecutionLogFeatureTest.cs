@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Logging;
+using Gallio.Framework;
 using Gallio.Reports.Tests.Properties;
 using MbUnit.Framework;
 

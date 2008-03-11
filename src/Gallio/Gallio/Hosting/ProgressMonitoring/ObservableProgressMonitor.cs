@@ -336,6 +336,15 @@ namespace Gallio.Hosting.ProgressMonitoring
         }
 
         /// <summary>
+        /// Called when <see cref="NotifyRecursiveSubTaskChanged" /> performs its updates.
+        /// </summary>
+        /// <param name="subProgressMonitor">The sub-task's progress monitor</param>
+        protected virtual void OnRecursiveSubTaskChange(ObservableProgressMonitor subProgressMonitor)
+        {
+            OnChange();
+        }
+
+        /// <summary>
         /// Called when a state change occurs.
         /// </summary>
         protected virtual void OnChange()
@@ -351,11 +360,19 @@ namespace Gallio.Hosting.ProgressMonitoring
             EventHandlerUtils.SafeInvoke(SubProgressMonitorCreated, this, new SubProgressMonitorCreatedEventArgs(subProgressMonitor));
         }
 
+        /// <inheritdoc />
+        protected override void OnCancel()
+        {
+            base.OnCancel();
+
+            OnChange();
+        }
+
         /// <summary>
         /// Begins a sub-task in a sub-progress monitor.
         /// </summary>
         /// <param name="subProgressMonitor">The sub-progress monitor</param>
-        protected void BeginSubTask(ObservableProgressMonitor subProgressMonitor)
+        protected virtual void BeginSubTask(ObservableProgressMonitor subProgressMonitor)
         {
             if (subProgressMonitor == null)
                 throw new ArgumentNullException("subProgressMonitor");
@@ -375,7 +392,7 @@ namespace Gallio.Hosting.ProgressMonitoring
         /// Ends a sub-task in a sub-progress monitor.
         /// </summary>
         /// <param name="subProgressMonitor">The sub-progress monitor</param>
-        protected void EndSubTask(ObservableProgressMonitor subProgressMonitor)
+        protected virtual void EndSubTask(ObservableProgressMonitor subProgressMonitor)
         {
             if (subProgressMonitor == null)
                 throw new ArgumentNullException("subProgressMonitor");
@@ -389,6 +406,18 @@ namespace Gallio.Hosting.ProgressMonitoring
             child = null;
 
             OnEndSubTask(subProgressMonitor);
+        }
+
+        /// <summary>
+        /// Called when a subtask changes in any way, including one of its own subtasks changing.
+        /// </summary>
+        /// <param name="subProgressMonitor">The sub-progress monitor</param>
+        protected virtual void NotifyRecursiveSubTaskChanged(ObservableProgressMonitor subProgressMonitor)
+        {
+            if (subProgressMonitor == null)
+                throw new ArgumentNullException("subProgressMonitor");
+
+            OnRecursiveSubTaskChange(subProgressMonitor);
         }
 
         /// <summary>
@@ -420,6 +449,8 @@ namespace Gallio.Hosting.ProgressMonitoring
             /// <inheritdoc />
             protected override void OnBeginTask(string taskName, double totalWorkUnits)
             {
+                base.OnBeginTask(taskName, totalWorkUnits);
+
                 parent.BeginSubTask(this);
                 beganTask = true;
 
@@ -429,6 +460,8 @@ namespace Gallio.Hosting.ProgressMonitoring
             /// <inheritdoc />
             protected override void OnWorked(double workUnits)
             {
+                base.OnWorked(workUnits);
+
                 if (!double.IsNaN(TotalWorkUnits))
                 {
                     parent.Worked(workUnits * parentWorkUnits / TotalWorkUnits);
@@ -438,12 +471,16 @@ namespace Gallio.Hosting.ProgressMonitoring
             /// <inheritdoc />
             protected override void OnCancel()
             {
+                base.OnCancel();
+
                 parent.Cancel();
             }
 
             /// <inheritdoc />
             protected override void OnDone()
             {
+                base.OnDone();
+
                 if (double.IsNaN(TotalWorkUnits))
                 {
                     parent.Worked(parentWorkUnits);
@@ -455,6 +492,14 @@ namespace Gallio.Hosting.ProgressMonitoring
 
                     parent.Canceled -= parent_Canceled;
                 }
+            }
+
+            /// <inheritdoc />
+            protected override void OnChange()
+            {
+                base.OnChange();
+
+                parent.NotifyRecursiveSubTaskChanged(this);
             }
 
             private void parent_Canceled(object sender, EventArgs e)

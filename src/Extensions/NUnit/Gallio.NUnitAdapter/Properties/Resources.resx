@@ -132,9 +132,6 @@
   <data name="NUnitTestController_UnhandledExceptionSectionName" xml:space="preserve">
     <value>Unhandled Exception</value>
   </data>
-  <data name="NUnitTestController_StatusMessages_RunningTest" xml:space="preserve">
-    <value>Run test: {0}.</value>
-  </data>
   <data name="NUnitTestController_ResultMessageSectionName" xml:space="preserve">
     <value>Message</value>
   </data>

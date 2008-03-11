@@ -18,7 +18,6 @@ using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using Gallio.Framework;
-using Gallio.Logging;
 
 #pragma warning disable 1591
 #pragma warning disable 3001

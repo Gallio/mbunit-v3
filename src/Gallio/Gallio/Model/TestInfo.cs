@@ -129,11 +129,6 @@ namespace Gallio.Model
             throw new NotSupportedException();
         }
 
-        IEnumerable<ITestInstance> ITest.GetInstances(ITestInstance parentTestInstance, bool guessDynamicInstances)
-        {
-            throw new NotSupportedException();
-        }
-
         Func<ITestController> ITest.TestControllerFactory
         {
             get { throw new NotSupportedException(); }

@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Tests.Integration;
 using MbUnit.TestResources.Fixtures;

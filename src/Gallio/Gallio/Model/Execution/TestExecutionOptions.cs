@@ -25,6 +25,8 @@ namespace Gallio.Model.Execution
     public class TestExecutionOptions
     {
         private Filter<ITest> filter = new AnyFilter<ITest>();
+        private bool skipDynamicTestInstances;
+        private bool skipTestInstanceExecution;
 
         /// <summary>
         /// Gets or sets the filter.
@@ -41,6 +43,40 @@ namespace Gallio.Model.Execution
 
                 filter = value;
             }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets whether to skip running dynamic test instances.
+        /// </para>
+        /// <para>
+        /// This flag can be useful in combination with <see cref="SkipTestInstanceExecution" />
+        /// to enumerate non-dynamic test instances only.
+        /// </para>
+        /// </summary>
+        /// <value>Defaults to <c>false</c></value>
+        public bool SkipDynamicTestInstances
+        {
+            get { return skipDynamicTestInstances; }
+            set { skipDynamicTestInstances = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets whether to skip the execution of test instances.
+        /// </para>
+        /// <para>
+        /// The test runner will go through most of the motions of running tests but will skip
+        /// the actual execution phase.  This option can be used to enumerate test instances without
+        /// running them and to pre-validate the test environment without doing most of the work
+        /// of test execution.
+        /// </para>
+        /// </summary>
+        /// <value>Defaults to <c>false</c></value>
+        public bool SkipTestInstanceExecution
+        {
+            get { return skipTestInstanceExecution; }
+            set { skipTestInstanceExecution = value; }
         }
     }
 }

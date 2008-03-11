@@ -14,13 +14,11 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Security.Permissions;
 using System.Threading;
 using Gallio;
 using Gallio.Collections;
 using Gallio.Framework;
-using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
@@ -41,26 +39,33 @@ namespace Gallio.Framework
     /// </para>
     /// <para>
     /// Arbitrary user data can be associated with a context.  Furthermore, client
-    /// code may attach <see cref="CleanUp" /> event handlers to perform resource
+    /// code may attach <see cref="Finishing" /> event handlers to perform resource
     /// reclamation just prior to marking the test step as finished.
     /// </para>
     /// </summary>
     /// <seealso cref="Step"/>
     public sealed class Context
     {
+        private const string GallioFrameworkContextKey = "Gallio.Framework.Context";
         private readonly ITestContext inner;
+        private readonly Sandbox sandbox;
+        private readonly LogWriter logWriter;
+        private EventHandler finishingHandlers;
 
         /// <summary>
         /// Creates a wrapper for a <see cref="ITestContext" />.
         /// </summary>
         /// <param name="inner">The context to wrap</param>
+        /// <param name="sandbox">The sandbox to use, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
-        private Context(ITestContext inner)
+        private Context(ITestContext inner, Sandbox sandbox)
         {
             if (inner == null)
                 throw new ArgumentNullException("inner");
 
             this.inner = inner;
+            this.sandbox = sandbox;
+            logWriter = new InternalLogWriter(inner.LogWriter);
         }
 
         private static ITestContextTracker ContextTracker
@@ -74,7 +79,7 @@ namespace Gallio.Framework
         /// </summary>
         public static Context CurrentContext
         {
-            get { return Wrap(ContextTracker.CurrentContext); }
+            get { return WrapContext(ContextTracker.CurrentContext); }
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace Gallio.Framework
         /// </summary>
         public static Context GlobalContext
         {
-            get { return Wrap(ContextTracker.GlobalContext); }
+            get { return WrapContext(ContextTracker.GlobalContext); }
         }
 
         /// <summary>
@@ -134,7 +139,7 @@ namespace Gallio.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
         public static Context GetThreadDefaultContext(Thread thread)
         {
-            return Wrap(ContextTracker.GetThreadDefaultContext(thread));
+            return WrapContext(ContextTracker.GetThreadDefaultContext(thread));
         }
 
         /// <summary>
@@ -155,34 +160,11 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Performs an action within the specified context.
-        /// </summary>
-        /// <remarks>
-        /// Conceptually this method pushes the specified context onto the context stack
-        /// of the current thread so that it becomes the current context, performs the action,
-        /// then unwinds the context stack for the current thread until this test context
-        /// is again popped off the top.
-        /// </remarks>
-        /// <param name="context">The context within which to perform the action, or null to 
-        /// perform it without a context</param>
-        /// <param name="action">The action to perform</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
-        /// <exception cref="Exception">Any exception thrown by the action</exception>
-        public static void RunWithContext(Context context, Action action)
-        {
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            using (EnterContext(context))
-                action();
-        }
-
-        /// <summary>
         /// Gets the parent context or null if this context has no parent.
         /// </summary>
         public Context Parent
         {
-            get { return Wrap(inner.Parent); }
+            get { return WrapContext(inner.Parent); }
         }
 
         /// <summary>
@@ -221,7 +203,19 @@ namespace Gallio.Framework
         /// </summary>
         public LogWriter LogWriter
         {
-            get { return inner.LogWriter; }
+            get { return logWriter; }
+        }
+
+        /// <summary>
+        /// Gets the sandbox of the test step, or null if none.
+        /// </summary>
+        /// <remarks>
+        /// The value will typically only be null in the case where the test step
+        /// belongs to a different test framework that does not use sandboxes.
+        /// </remarks>
+        public Sandbox Sandbox
+        {
+            get { return sandbox; }
         }
 
         /// <summary>
@@ -244,15 +238,20 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Gets the step's outcome.  Ths value of this property is initially
-        /// <see cref="TestOutcome.Passed" /> but may change over the course of execution
-        /// depending on how particular lifecycle phases behave.  The step's outcome value
-        /// becomes frozen once the step finishes.
+        /// <para>
+        /// Gets the step's outcome or its interim outcome if the test is still running.
+        /// </para>
+        /// <para>
+        /// The value of this property is initially <see cref="TestOutcome.Passed" /> but may change
+        /// over the course of execution to reflect the anticipated outcome of the test.  When
+        /// the test finishes, its outcome is frozen.
+        /// </para>
         /// </summary>
         /// <remarks>
-        /// For example, this property enables code running in a tear down method to
-        /// determine whether the test failed and to perform different actions in that case.
+        /// For example, this property enables code running as part of the tear down phase to
+        /// determine whether the test is failing and to perform different actions in that case.
         /// </remarks>
+        /// <seealso cref="SetInterimOutcome"/>
         public TestOutcome Outcome
         {
             get { return inner.Outcome; }
@@ -260,7 +259,7 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Returns true if the step associated with the context has finished execution
-        /// and completed all <see cref="CleanUp" /> actions.
+        /// and completed all <see cref="Finishing" /> actions.
         /// </summary>
         public bool IsFinished
         {
@@ -278,58 +277,24 @@ namespace Gallio.Framework
 
         /// <summary>
         /// <para>
-        /// The <see cref="CleanUp" /> event is raised just before the test step
-        /// finishes execution to perform resource reclamation.
-        /// </para>
-        /// <para>
-        /// Clients may attach handlers to this event to perform cleanup
-        /// activities and other tasks as needed.  If a new event handler is
-        /// added and the step has already finished, the handler is immediately invoked.
+        /// The <see cref="Finishing" /> event is raised when the test is finishing to provide
+        /// clients with an opportunity to perform additional clean up tasks after all ordinary
+        /// test processing is finished.
         /// </para>
         /// </summary>
-        public event EventHandler CleanUp
+        public event EventHandler Finishing
         {
             add
             {
-                EventHandler wrapper;
-                lock (inner.Data)
-                {
-                    IDictionary<EventHandler, EventHandler> wrappers = CleanUpWrappers;
-                    if (wrappers == null)
-                    {
-                        wrappers = new Dictionary<EventHandler, EventHandler>();
-                        CleanUpWrappers = wrappers;
-                    }
-                    else if (wrappers.ContainsKey(value))
-                        return;
-
-                    wrapper = delegate { value(this, EventArgs.Empty); };
-                    wrappers.Add(value, wrapper);
-                }
-
-                inner.CleanUp += wrapper;
+                lock (this)
+                    finishingHandlers += value;
             }
             remove
             {
-                EventHandler wrapper;
-                lock (inner.Data)
-                {
-                    IDictionary<EventHandler, EventHandler> wrappers = CleanUpWrappers;
-                    if (wrappers == null || ! wrappers.TryGetValue(value, out wrapper))
-                        return;
-
-                    wrappers.Remove(value);
-                }
-
-                inner.CleanUp -= wrapper;
+                lock (this)
+                    finishingHandlers -= value;
             }
         }
-        private IDictionary<EventHandler, EventHandler> CleanUpWrappers
-        {
-            get { return inner.Data.GetValue<IDictionary<EventHandler, EventHandler>>(CleanUpWrappersKey); }
-            set { inner.Data.SetValue(CleanUpWrappersKey, value); }
-        }
-        private const string CleanUpWrappersKey = "Context.CleanUpHandlerWrappers";
 
         /// <summary>
         /// Gets the context that represents the initial (root) step of the
@@ -345,7 +310,7 @@ namespace Gallio.Framework
                 ITestContext parent = context.Parent;
 
                 if (parent == null || parent.TestStep.TestInstance.Test != test)
-                    return Wrap(context);
+                    return WrapContext(context);
 
                 context = parent;
             }
@@ -361,71 +326,6 @@ namespace Gallio.Framework
         {
             Context parent = GetInitialContext().Parent;
             return parent == null ? null : parent.GetInitialContext();
-        }
-
-        /// <summary>
-        /// Performs an action within this context.
-        /// </summary>
-        /// <remarks>
-        /// Conceptually this method pushes this test context onto the context stack
-        /// of the current thread so that it becomes the current context, performs the action,
-        /// then unwinds the context stack for the current thread until this test context
-        /// is again popped off the top.
-        /// </remarks>
-        /// <param name="action">The action to perform</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
-        /// <exception cref="Exception">Any exception thrown by the action</exception>
-        public void Run(Action action)
-        {
-            RunWithContext(this, action);
-        }
-
-        /// <summary>
-        /// Performs an action within this context using <see cref="ThreadPool.QueueUserWorkItem(WaitCallback)" />.
-        /// </summary>
-        /// <param name="action">The action to perform</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
-        public void RunBackground(Action action)
-        {
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            ThreadPool.QueueUserWorkItem(delegate
-            {
-                using (Enter())
-                    action();
-            });
-        }
-
-        /// <summary>
-        /// Performs an action asynchronously within this context.
-        /// </summary>
-        /// <param name="action">The action to perform</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
-        public IAsyncResult RunAsync(Action action)
-        {
-            return RunAsync(action, null, null);
-        }
-
-        /// <summary>
-        /// Performs an action within this context asynchronously.
-        /// </summary>
-        /// <param name="action">The action to perform</param>
-        /// <param name="callback">The asynchronous callback, or null if none</param>
-        /// <param name="state">The asynchronous state object, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action "/> is null</exception>
-        public IAsyncResult RunAsync(Action action, AsyncCallback callback, object state)
-        {
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            Action wrappedAction = delegate
-            {
-                using (Enter())
-                    action();
-            };
-
-            return wrappedAction.BeginInvoke(callback, state);
         }
 
         /// <summary>
@@ -484,14 +384,13 @@ namespace Gallio.Framework
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            ITestContext childContext = inner.StartChildStep(name, codeElement);
+            Context childContext = StartChildStep(name, codeElement);
 
             childContext.LifecyclePhase = LifecyclePhases.Execute;
-            TestOutcome outcome = TestActionInvoker.Run(action, null, null);
+            TestOutcome outcome = childContext.Sandbox.Run(action, null, null);
 
-            childContext.FinishStep(outcome, null);
-
-            return new Context(childContext);
+            childContext.FinishStep(outcome);
+            return childContext;
         }
 
         /// <summary>
@@ -504,6 +403,26 @@ namespace Gallio.Framework
         public void AddMetadata(string metadataKey, string metadataValue)
         {
             inner.AddMetadata(metadataKey, metadataValue);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets the step's interim <see cref="Outcome" />.  The interim outcome is used
+        /// to communicate the anticipated outcome of the step to later phases of execution.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The value set here will be overridden by whatever final outcome the step
+        /// returns.  Consequently the actual outcome may still differ from the anticipated outcome
+        /// that was set using this method.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">Thrown if attempting to set the outcome while the test is not running</exception>
+        /// <seealso cref="Outcome"/>
+        public void SetInterimOutcome(TestOutcome outcome)
+        {
+            inner.SetInterimOutcome(outcome);
         }
 
         /// <summary>
@@ -538,9 +457,75 @@ namespace Gallio.Framework
             inner.AddAssertCount(value);
         }
 
-        private static Context Wrap(ITestContext inner)
+        /// <summary>
+        /// Starts a child step of the context.
+        /// </summary>
+        /// <param name="name">The name of the step</param>
+        /// <param name="codeElement">The code element, or null if none</param>
+        /// <returns>The context of the child step</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        internal Context StartChildStep(string name, ICodeElementInfo codeElement)
         {
-            return inner != null ? new Context(inner) : null;
+            return PrepareContext(inner.StartChildStep(name, codeElement), Sandbox.CreateChild());
+        }
+
+        /// <summary>
+        /// Finishes the step represented by the context.
+        /// </summary>
+        /// <param name="outcome">The outcome</param>
+        internal void FinishStep(TestOutcome outcome)
+        {
+            inner.FinishStep(outcome, null);
+        }
+
+        /// <summary>
+        /// Prepares a <see cref="Context" /> wrapper for the given inner context.
+        /// The wrapper is cached for the duration of the lifetime of the inner context.
+        /// </summary>
+        /// <param name="inner">The new inner context</param>
+        /// <param name="sandbox">The sandbox to use, or null if none</param>
+        /// <returns>The wrapper context</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
+        internal static Context PrepareContext(ITestContext inner, Sandbox sandbox)
+        {
+            Context context = new Context(inner, sandbox);
+            inner.Data.SetValue(GallioFrameworkContextKey, context);
+            inner.Finishing += context.NotifyFinishing;
+            return context;
+        }
+
+        /// <summary>
+        /// Wraps an existing context.  If the context has already been prepared, returns
+        /// the prepared context.  Otherwise creates a new wrapper.
+        /// </summary>
+        /// <param name="inner">The context to wrap, or null if none</param>
+        /// <returns>The wrapped context, or null if none</returns>
+        internal static Context WrapContext(ITestContext inner)
+        {
+            if (inner == null)
+                return null;
+
+            UserDataCollection data = inner.Data;
+            lock (data)
+            {
+                Context context = inner.Data.GetValue<Context>(GallioFrameworkContextKey);
+                if (context == null)
+                    context = PrepareContext(inner, null);
+
+                return context;
+            }
+        }
+
+        private void NotifyFinishing(object sender, EventArgs e)
+        {
+            try
+            {
+                EventHandlerUtils.SafeInvoke(finishingHandlers, this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                logWriter.Failures.WriteException(ex, "An exception during Finishing event processing.");
+            }
         }
     }
 }

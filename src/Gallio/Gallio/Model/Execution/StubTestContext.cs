@@ -15,23 +15,22 @@
 
 using System;
 using Gallio.Collections;
-using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Reflection;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// A stub implementation of <see cref="ITestContext" /> that uses a <see cref="TextLogWriter" /> that
-    /// logs output to <see cref="Console.Out" />.  Does not fully support nested test steps
-    /// or other dynamic features.
+    /// A stub implementation of <see cref="ITestContext" /> using a <see cref="StubTestLogWriter" />.
+    /// Does not fully support nested test steps or other dynamic features.
     /// </summary>
     /// <seealso cref="StubTestContextTracker" />
+    /// <seealso cref="StubTestLogWriter"/>
     public class StubTestContext : ITestContext
     {
         private readonly UserDataCollection data;
         private readonly ITestStep testStep;
-        private readonly LogWriter logWriter;
+        private readonly StubTestLogWriter logWriter;
 
         /// <summary>
         /// Creates a stub context.
@@ -40,7 +39,7 @@ namespace Gallio.Model.Execution
         {
             data = new UserDataCollection();
             testStep = new TestStepInfo(new BaseTestStep(new BaseTestInstance(new RootTest(), null)));
-            logWriter = new TextLogWriter(Console.Out);
+            logWriter = new StubTestLogWriter();
         }
 
         /// <inheritdoc />
@@ -56,7 +55,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public LogWriter LogWriter
+        public ITestLogWriter LogWriter
         {
             get { return logWriter; }
         }
@@ -72,7 +71,6 @@ namespace Gallio.Model.Execution
         public TestOutcome Outcome
         {
             get { return TestOutcome.Passed; }
-            set { }
         }
 
         /// <inheritdoc />
@@ -94,7 +92,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public event EventHandler CleanUp
+        public event EventHandler Finishing
         {
             add { }
             remove { }
@@ -124,6 +122,11 @@ namespace Gallio.Model.Execution
 
         /// <inheritdoc />
         public void AddMetadata(string metadataKey, string metadataValue)
+        {
+        }
+
+        /// <inheritdoc />
+        public void SetInterimOutcome(TestOutcome outcome)
         {
         }
 

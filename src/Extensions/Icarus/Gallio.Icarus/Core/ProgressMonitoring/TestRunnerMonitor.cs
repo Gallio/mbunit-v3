@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Icarus.Core.Interfaces;
-using Gallio.Logging;
+using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Monitors;

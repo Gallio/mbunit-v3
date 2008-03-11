@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Logging;
 
 namespace Gallio.Model.Execution
 {
@@ -27,9 +26,10 @@ namespace Gallio.Model.Execution
     {
         private readonly LogEventType eventType;
         private string streamName;
-        private string text;
-        private Attachment attachment;
         private string attachmentName;
+        private string contentType;
+        private string text;
+        private byte[] bytes;
         private string sectionName;
 
         private LogEventArgs(string stepId, LogEventType eventType)
@@ -53,7 +53,7 @@ namespace Gallio.Model.Execution
         /// Valid for events of the following types:
         /// <list type="bullet">
         /// <item><see cref="LogEventType.Write" />, non-null</item>
-        /// <item><see cref="LogEventType.EmbedExisting" />, possibly null</item>
+        /// <item><see cref="LogEventType.Embed" />, possibly null</item>
         /// <item><see cref="LogEventType.BeginSection" />, non-null</item>
         /// <item><see cref="LogEventType.EndSection" />, non-null</item>
         /// </list>
@@ -64,12 +64,13 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
-        /// Gets the text.
+        /// Gets the text contents.
         /// </summary>
         /// <remarks>
         /// Valid for events of the following types:
         /// <list type="bullet">
         /// <item><see cref="LogEventType.Write" />, non-null</item>
+        /// <item><see cref="LogEventType.AttachText" />, non-null</item>
         /// </list>
         /// </remarks>
         public string Text
@@ -78,26 +79,43 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
-        /// Gets the attachment.
+        /// Gets the binary contents.
         /// </summary>
         /// <remarks>
         /// Valid for events of the following types:
         /// <list type="bullet">
-        /// <item><see cref="LogEventType.Attach" />, non-null</item>
+        /// <item><see cref="LogEventType.AttachBytes" />, non-null</item>
         /// </list>
         /// </remarks>
-        public Attachment Attachment
+        public byte[] Bytes
         {
-            get { return attachment; }
+            get { return bytes; }
         }
 
         /// <summary>
-        /// Gets the name of the attachment to embed.
+        /// Gets the content type.
         /// </summary>
         /// <remarks>
         /// Valid for events of the following types:
         /// <list type="bullet">
-        /// <item><see cref="LogEventType.EmbedExisting" />, non-null</item>
+        /// <item><see cref="LogEventType.AttachText" />, non-null</item>
+        /// <item><see cref="LogEventType.AttachBytes" />, non-null</item>
+        /// </list>
+        /// </remarks>
+        public string ContentType
+        {
+            get { return contentType; }
+        }
+
+        /// <summary>
+        /// Gets the attachment name.
+        /// </summary>
+        /// <remarks>
+        /// Valid for events of the following types:
+        /// <list type="bullet">
+        /// <item><see cref="LogEventType.Embed" />, non-null</item>
+        /// <item><see cref="LogEventType.AttachText" />, non-null</item>
+        /// <item><see cref="LogEventType.AttachBytes" />, non-null</item>
         /// </list>
         /// </remarks>
         public string AttachmentName
@@ -120,27 +138,60 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
-        /// Creates a <see cref="LogEventType.Attach" /> event.
+        /// Creates a <see cref="LogEventType.AttachText" /> event.
         /// </summary>
-        /// <seealso cref="LogWriter.Attach"/>
         /// <param name="stepId">The id of the test step this event is about</param>
-        /// <param name="attachment">The attachment</param>
+        /// <param name="attachmentName">The attachment name</param>
+        /// <param name="contentType">The content type</param>
+        /// <param name="text">The text contents</param>
         /// <returns>The event</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/> or <paramref name="attachment"/> is null</exception>
-        public static LogEventArgs CreateAttachEvent(string stepId, Attachment attachment)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/>, <paramref name="attachmentName"/>,
+        /// <paramref name="contentType"/> or <paramref name="text"/> is null</exception>
+        public static LogEventArgs CreateAttachTextEvent(string stepId, string attachmentName, string contentType, string text)
         {
-            if (attachment == null)
-                throw new ArgumentNullException(@"attachment");
+            if (attachmentName == null)
+                throw new ArgumentNullException(@"attachmentName");
+            if (contentType == null)
+                throw new ArgumentNullException(@"contentType");
+            if (text == null)
+                throw new ArgumentNullException(@"text");
 
-            LogEventArgs e = new LogEventArgs(stepId, LogEventType.Attach);
-            e.attachment = attachment;
+            LogEventArgs e = new LogEventArgs(stepId, LogEventType.AttachText);
+            e.attachmentName = attachmentName;
+            e.contentType = contentType;
+            e.text = text;
+            return e;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="LogEventType.AttachBytes" /> event.
+        /// </summary>
+        /// <param name="stepId">The id of the test step this event is about</param>
+        /// <param name="attachmentName">The attachment name</param>
+        /// <param name="contentType">The content type</param>
+        /// <param name="bytes">The binary contents</param>
+        /// <returns>The event</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/>, <paramref name="attachmentName"/>,
+        /// <paramref name="contentType"/> or <paramref name="bytes"/> is null</exception>
+        public static LogEventArgs CreateAttachBytesEvent(string stepId, string attachmentName, string contentType, byte[] bytes)
+        {
+            if (attachmentName == null)
+                throw new ArgumentNullException(@"attachmentName");
+            if (contentType == null)
+                throw new ArgumentNullException(@"contentType");
+            if (bytes == null)
+                throw new ArgumentNullException("bytes");
+
+            LogEventArgs e = new LogEventArgs(stepId, LogEventType.AttachBytes);
+            e.attachmentName = attachmentName;
+            e.contentType = contentType;
+            e.bytes = bytes;
             return e;
         }
 
         /// <summary>
         /// Creates a <see cref="LogEventType.Write" /> event.
         /// </summary>
-        /// <seealso cref="LogStreamWriter.Write(string)"/>
         /// <param name="stepId">The id of the test step this event is about</param>
         /// <param name="streamName">The stream name</param>
         /// <param name="text">The text</param>
@@ -160,23 +211,22 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
-        /// Creates a <see cref="LogEventType.EmbedExisting" /> event.
+        /// Creates a <see cref="LogEventType.Embed" /> event.
         /// </summary>
-        /// <seealso cref="LogWriter.Attach"/>
         /// <param name="stepId">The id of the test step this event is about</param>
         /// <param name="streamName">The stream name</param>
         /// <param name="attachmentName">The attachment name</param>
         /// <returns>The event</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stepId"/>, <paramref name="streamName" />
         /// or <paramref name="attachmentName"/> is null</exception>
-        public static LogEventArgs CreateEmbedExistingEvent(string stepId, string streamName, string attachmentName)
+        public static LogEventArgs CreateEmbedEvent(string stepId, string streamName, string attachmentName)
         {
             if (streamName == null)
                 throw new ArgumentNullException(@"streamName");
             if (attachmentName == null)
                 throw new ArgumentNullException(@"attachmentName");
 
-            LogEventArgs e = new LogEventArgs(stepId, LogEventType.EmbedExisting);
+            LogEventArgs e = new LogEventArgs(stepId, LogEventType.Embed);
             e.streamName = streamName;
             e.attachmentName = attachmentName;
             return e;
@@ -185,7 +235,6 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Creates a <see cref="LogEventType.BeginSection" /> event.
         /// </summary>
-        /// <seealso cref="LogStreamWriter.BeginSection"/>
         /// <param name="stepId">The id of the test step this event is about</param>
         /// <param name="streamName">The stream name</param>
         /// <param name="sectionName">The section name</param>
@@ -207,7 +256,6 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Creates a <see cref="LogEventType.EndSection" /> event.
         /// </summary>
-        /// <seealso cref="LogStreamWriter.EndSection"/>
         /// <param name="stepId">The id of the test step this event is about</param>
         /// <param name="streamName">The stream name</param>
         /// <returns>The event</returns>
@@ -226,28 +274,32 @@ namespace Gallio.Model.Execution
         /// Applies the event to the specified log writer.
         /// </summary>
         /// <param name="logWriter">The log writer</param>
-        public void ApplyToLogWriter(LogWriter logWriter)
+        public void ApplyToLogWriter(ITestLogWriter logWriter)
         {
             switch (eventType)
             {
-                case LogEventType.Attach:
-                    logWriter.Attach(attachment);
+                case LogEventType.AttachBytes:
+                    logWriter.AttachBytes(attachmentName, contentType, bytes);
+                    break;
+
+                case LogEventType.AttachText:
+                    logWriter.AttachText(attachmentName, contentType, text);
                     break;
 
                 case LogEventType.Write:
-                    logWriter[streamName].Write(text);
+                    logWriter.Write(streamName, text);
                     break;
 
                 case LogEventType.BeginSection:
-                    logWriter[streamName].BeginSection(sectionName);
+                    logWriter.BeginSection(streamName, sectionName);
                     break;
 
                 case LogEventType.EndSection:
-                    logWriter[streamName].EndSection();
+                    logWriter.EndSection(streamName);
                     break;
 
-                case LogEventType.EmbedExisting:
-                    logWriter[streamName].EmbedExisting(attachmentName);
+                case LogEventType.Embed:
+                    logWriter.Embed(streamName, attachmentName);
                     break;
             }
         }

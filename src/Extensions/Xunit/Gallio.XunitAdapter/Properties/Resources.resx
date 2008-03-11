@@ -120,9 +120,6 @@
   <data name="XunitTestController_RunningXunitTests" xml:space="preserve">
     <value>Running xUnit.Net tests.</value>
   </data>
-  <data name="XunitTestController_StatusMessages_RunningTest" xml:space="preserve">
-    <value>Run test: {0}.</value>
-  </data>
   <data name="XunitTestExplorer_FrameworkNameWithVersionFormat" xml:space="preserve">
     <value>xUnit.Net v{0}</value>
   </data>

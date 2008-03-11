@@ -17,10 +17,10 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
-using Gallio.Logging;
+using Gallio.Framework;
 using Gallio.Model.Execution;
 
-namespace Gallio.Logging
+namespace Gallio.Framework
 {
     /// <summary>
     /// <para>
@@ -56,7 +56,7 @@ namespace Gallio.Logging
         {
             get
             {
-                ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
+                Context context = Context.CurrentContext;
                 if (context == null)
                     throw new InvalidOperationException("There is no test context currently available.  Consequently there is no current log writer.");
                 return context.LogWriter;
@@ -71,7 +71,7 @@ namespace Gallio.Logging
         /// </summary>
         public static LogStreamWriter ConsoleInput
         {
-            get { return Writer[LogStreamNames.ConsoleInput]; }
+            get { return Writer.ConsoleInput; }
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Gallio.Logging
         /// </summary>
         public static LogStreamWriter ConsoleOutput
         {
-            get { return Writer[LogStreamNames.ConsoleOutput]; }
+            get { return Writer.ConsoleOutput; }
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Gallio.Logging
         /// </summary>
         public static LogStreamWriter ConsoleError
         {
-            get { return Writer[LogStreamNames.ConsoleError]; }
+            get { return Writer.ConsoleError; }
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Gallio.Logging
         /// </summary>
         public static LogStreamWriter DebugTrace
         {
-            get { return Writer[LogStreamNames.DebugTrace]; }
+            get { return Writer.DebugTrace; }
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Gallio.Logging
         /// </summary>
         public static LogStreamWriter Failures
         {
-            get { return Writer[LogStreamNames.Failures]; }
+            get { return Writer.Failures; }
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Gallio.Logging
         /// </summary>
         public static LogStreamWriter Warnings
         {
-            get { return Writer[LogStreamNames.Warnings]; }
+            get { return Writer.Warnings; }
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Gallio.Logging
         /// </summary>
         public static LogStreamWriter Default
         {
-            get { return Writer[LogStreamNames.Default]; }
+            get { return Writer.Default; }
         }
         #endregion
 
@@ -136,19 +136,12 @@ namespace Gallio.Logging
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
-        /// <remarks>
-        /// Only one copy of an attachment instance is saved with an execution log even if
-        /// <see cref="LogWriter.Attach" /> or <see cref="LogStreamWriter.Embed" /> are
-        /// called multiple times with the same instance.  However, an attachment instance
-        /// can be embedded multiple times into multiple log streams since each
-        /// embedded copy is represented as a link to the same common attachment instance.
-        /// </remarks>
         /// <param name="attachment">The attachment to include</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.Embed"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if a different attachment instance
-        /// with the same name was already attached or embedded</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static Attachment Attach(Attachment attachment)
         {
             return Writer.Attach(attachment);
@@ -168,6 +161,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment AttachPlainText(string attachmentName, string text)
         {
             return Writer.AttachPlainText(attachmentName, text);
@@ -187,6 +182,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment AttachHtml(string attachmentName, string html)
         {
             return Writer.AttachHtml(attachmentName, html);
@@ -206,6 +203,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment AttachXHtml(string attachmentName, string xhtml)
         {
             return Writer.AttachXHtml(attachmentName, xhtml);
@@ -225,6 +224,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment AttachXml(string attachmentName, string xml)
         {
             return Writer.AttachXml(attachmentName, xml);
@@ -244,6 +245,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static BinaryAttachment AttachImage(string attachmentName, Image image)
         {
             return Writer.AttachImage(attachmentName, image);
@@ -264,6 +267,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment AttachObjectAsXml(string attachmentName, object obj)
         {
             return Writer.AttachObjectAsXml(attachmentName, obj);
@@ -286,6 +291,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
             return Writer.AttachObjectAsXml(attachmentName, obj, xmlSerializer);
@@ -553,8 +560,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.Attach"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if a different attachment instance
-        /// with the same name was already attached or embedded</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static Attachment Embed(Attachment attachment)
         {
             return Default.Embed(attachment);
@@ -604,6 +611,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment EmbedPlainText(string attachmentName, string text)
         {
             return Default.EmbedPlainText(attachmentName, text);
@@ -623,6 +632,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment EmbedHtml(string attachmentName, string html)
         {
             return Default.EmbedHtml(attachmentName, html);
@@ -642,6 +653,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment EmbedXHtml(string attachmentName, string xhtml)
         {
             return Default.EmbedXHtml(attachmentName, xhtml);
@@ -661,6 +674,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment EmbedXml(string attachmentName, string xml)
         {
             return Default.EmbedXml(attachmentName, xml);
@@ -680,6 +695,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static BinaryAttachment EmbedImage(string attachmentName, Image image)
         {
             return Default.EmbedImage(attachmentName, image);
@@ -700,6 +717,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment EmbedObjectAsXml(string attachmentName, object obj)
         {
             return Default.EmbedObjectAsXml(attachmentName, obj);
@@ -722,6 +741,8 @@ namespace Gallio.Logging
         /// <returns>The attachment</returns>
         /// <seealso cref="LogWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name</exception>
         public static TextAttachment EmbedObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
             return Default.EmbedObjectAsXml(attachmentName, obj, xmlSerializer);

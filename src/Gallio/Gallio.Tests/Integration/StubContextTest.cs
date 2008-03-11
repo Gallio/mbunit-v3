@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 using Gallio.Hosting;
-using Gallio.Logging;
+using Gallio.Framework;
 using Gallio.Model.Execution;
 using MbUnit.Framework;
 
@@ -48,11 +48,10 @@ namespace Gallio.Tests.Integration
 
                 string output = remoteCode.Run();
 
-                Assert.AreEqual("[Attach 'Attachment1': text/plain]\n"
+                Assert.AreEqual("[Attachment 'Attachment1': text/plain]\n"
                     + "[Begin Section 'Test Section']\n"
                     + "Foo\n"
-                    + "[Embed 'Attachment2': text/plain]\n"
-                    + "[Embed 'Attachment1']\n"
+                    + "[Embedded Attachment 'Attachment1']\n"
                     + "[End Section]\n",
                     output);
             }
@@ -76,7 +75,6 @@ namespace Gallio.Tests.Integration
                 using (Log.BeginSection("Test Section"))
                 {
                     Log.WriteLine("Foo");
-                    Log.EmbedPlainText("Attachment2", "Text");
                     Log.EmbedExisting("Attachment1");
                 }
 

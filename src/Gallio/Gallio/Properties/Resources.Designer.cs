@@ -313,13 +313,24 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Execution Log: Attach ({0})]
+        ///   Looks up a localized string similar to [Execution Log: AttachBytes ({0})]
         ///	Attachment Name:         {1}
         ///	Attachment Content Type: {2}.
         /// </summary>
-        internal static string DebugMonitor_ExecutionLogEvent_Attach_EventFormat {
+        internal static string DebugMonitor_ExecutionLogEvent_AttachBytes_EventFormat {
             get {
-                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_Attach_EventFormat", resourceCulture);
+                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_AttachBytes_EventFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Execution Log: AttachText ({0})]
+        ///	Attachment Name:         {1}
+        ///	Attachment Content Type: {2}.
+        /// </summary>
+        internal static string DebugMonitor_ExecutionLogEvent_AttachText_EventFormat {
+            get {
+                return ResourceManager.GetString("DebugMonitor_ExecutionLogEvent_AttachText_EventFormat", resourceCulture);
             }
         }
         

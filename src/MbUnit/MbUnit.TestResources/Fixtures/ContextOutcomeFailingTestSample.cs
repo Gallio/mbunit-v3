@@ -15,7 +15,6 @@
 
 using Gallio.Framework;
 using MbUnit.Framework;
-using Gallio.Logging;
 
 namespace MbUnit.TestResources.Fixtures
 {

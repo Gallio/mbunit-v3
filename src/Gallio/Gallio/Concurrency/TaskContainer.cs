@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using Gallio.Collections;
 using Gallio.Utilities;
+using System.Threading;
 
 namespace Gallio.Concurrency
 {
@@ -135,29 +136,23 @@ namespace Gallio.Concurrency
                     activeTasks.CopyTo(cachedActiveTasks, 0);
                 }
 
-                // Loop over them all at least once until a timeout occurs.
-                // This ensures we continue cleaning up all possible tasks
-                // We keep going even after a timeout to ensure that we clean up
-                // all tasks that have finished even when the timeout is 0.
+                // Release the time slice to allow pending asynchronous events to be delivered
+                // and to avoid spinning in a tight loop in case Join returns immediately
+                // but we have not received a notification yet.
+                Thread.Sleep(0);
+
+                // Loop over all currently active tasks.  Give up if one of them times out.
                 foreach (Task task in cachedActiveTasks)
                 {
-                    TimeSpan remainingTimeout;
-                    if (!elapsed)
+                    TimeSpan remainingTimeout = timeout - stopwatch.Elapsed;
+                    if (remainingTimeout.Ticks <= 0)
                     {
-                        remainingTimeout = timeout - stopwatch.Elapsed;
-
-                        if (remainingTimeout.Ticks <= 0)
-                        {
-                            elapsed = true;
-                            remainingTimeout = new TimeSpan();
-                        }
-                    }
-                    else
-                    {
-                        remainingTimeout = new TimeSpan();
+                        elapsed = true;
+                        break;
                     }
 
-                    task.Join(remainingTimeout);
+                    if (!task.Join(remainingTimeout))
+                        return false;
                 }
             }
         }

@@ -20,7 +20,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Logging;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Runner.Reports
@@ -237,7 +236,7 @@ namespace Gallio.Runner.Reports
         private void SaveAttachmentContents(ExecutionLogAttachment attachment, string attachmentPath)
         {
             using (Stream attachmentStream = reportContainer.OpenReportFile(attachmentPath, FileMode.Create, FileAccess.Write))
-                attachment.Contents.Accept(new SaveAttachmentVisitor(attachmentStream));
+                attachment.SaveContents(attachmentStream);
         }
 
         private string GetAttachmentPath(string testStepId, string attachmentName)
@@ -264,28 +263,6 @@ namespace Gallio.Runner.Reports
             }
 
             return count;
-        }
-
-        private class SaveAttachmentVisitor : IAttachmentVisitor
-        {
-            private readonly Stream attachmentStream;
-
-            public SaveAttachmentVisitor(Stream attachmentStream)
-            {
-                this.attachmentStream = attachmentStream;
-            }
-
-            public void VisitTextAttachment(TextAttachment attachment)
-            {
-                using (StreamWriter writer = new StreamWriter(attachmentStream, Encoding.UTF8))
-                    writer.Write(attachment.Text);
-            }
-
-            public void VisitBinaryAttachment(BinaryAttachment attachment)
-            {
-                byte[] bytes = attachment.Data;
-                attachmentStream.Write(bytes, 0, bytes.Length);
-            }
         }
     }
 }

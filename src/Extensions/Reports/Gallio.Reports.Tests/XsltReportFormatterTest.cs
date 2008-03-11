@@ -19,7 +19,7 @@ using System.IO;
 using System.Xml;
 using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
-using Gallio.Logging;
+using Gallio.Framework;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
 using MbUnit.Framework;

@@ -17,7 +17,6 @@ using System.Text.RegularExpressions;
 using Gallio.Framework;
 using MbUnit.Framework;
 using Gallio.Model;
-using Gallio.Logging;
 using WatiN.Core;
 using WatiN.Core.Interfaces;
 using WatiN.Core.Logging;
@@ -45,7 +44,7 @@ namespace MbUnit.Samples
         public void DisposeBrowser()
         {
             if (Context.CurrentContext.Outcome.Status == TestStatus.Failed)
-                Snapshot("Final screen when failure occurred.", LogStreamNames.Failures);
+                Snapshot("Final screen when failure occurred.", Log.Failures);
 
             if (ie != null)
                 ie.Dispose();
@@ -99,15 +98,15 @@ namespace MbUnit.Samples
 
         private void Snapshot(string caption)
         {
-            Snapshot(caption, LogStreamNames.Default);
+            Snapshot(caption, Log.Default);
         }
 
-        private void Snapshot(string caption, string logStreamName)
+        private void Snapshot(string caption, LogStreamWriter logStreamWriter)
         {
-            using (Log.Writer[logStreamName].BeginSection(caption))
+            using (logStreamWriter.BeginSection(caption))
             {
-                Log.Writer[logStreamName].WriteLine("Url: {0}", ie.Url);
-                Log.Writer[logStreamName].EmbedImage(null, new CaptureWebPage(ie).CaptureWebPageImage(false, false, 100));
+                logStreamWriter.WriteLine("Url: {0}", ie.Url);
+                logStreamWriter.EmbedImage(null, new CaptureWebPage(ie).CaptureWebPageImage(false, false, 100));
             }
         }
 

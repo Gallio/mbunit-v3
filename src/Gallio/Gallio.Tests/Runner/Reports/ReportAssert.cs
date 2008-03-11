@@ -155,7 +155,7 @@ namespace Gallio.Tests.Runner.Reports
             Assert.AreEqual(expected.ContentType, actual.ContentType);
             Assert.AreEqual(expected.Encoding, actual.Encoding);
             Assert.AreEqual(expected.ContentPath, actual.ContentPath);
-            Assert.AreEqual(expected.InnerText, actual.InnerText);
+            Assert.AreEqual(expected.SerializedContents, actual.SerializedContents);
         }
     }
 }

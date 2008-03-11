@@ -14,13 +14,14 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Execution;
 using Gallio.TDNetRunner.Properties;
-using Gallio.Logging;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
 using TestDriven.Framework;
+using ITestListener=TestDriven.Framework.ITestListener;
 using TDF = TestDriven.Framework;
 using TestResult=TestDriven.Framework.TestResult;
 

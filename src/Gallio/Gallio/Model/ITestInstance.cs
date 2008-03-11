@@ -36,9 +36,14 @@ namespace Gallio.Model
         ITestInstance Parent { get; }
 
         /// <summary>
+        /// <para>
         /// Gets the full name of the test instance.  The full name is derived by concatenating the
         /// <see cref="FullName" /> of the <see cref="Parent"/> followed by a slash ('/')
         /// followed by the <see cref="ITestComponent.Name" /> of this test instance.
+        /// </para>
+        /// <para>
+        /// The full name of the root test instance is empty.
+        /// </para>
         /// </summary>
         string FullName { get; }
 

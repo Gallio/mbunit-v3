@@ -70,15 +70,6 @@ namespace Gallio.XunitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run test: {0}..
-        /// </summary>
-        internal static string XunitTestController_StatusMessages_RunningTest {
-            get {
-                return ResourceManager.GetString("XunitTestController_StatusMessages_RunningTest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to xUnit.Net v{0}.
         /// </summary>
         internal static string XunitTestExplorer_FrameworkNameWithVersionFormat {

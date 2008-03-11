@@ -14,18 +14,17 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Gallio.Model.Execution;
 
-namespace Gallio.Logging
+namespace Gallio.Framework
 {
     /// <summary>
     /// Represents a text-encoded attachment.
     /// </summary>
     [Serializable]
-    public class TextAttachment : Attachment
+    public sealed class TextAttachment : Attachment
     {
-        private string text;
+        private readonly string text;
 
         /// <summary>
         /// Creates an attachment.
@@ -52,9 +51,9 @@ namespace Gallio.Logging
         }
 
         /// <inheritdoc />
-        public override void Accept(IAttachmentVisitor visitor)
+        internal override void Attach(ITestLogWriter logWriter)
         {
-            visitor.VisitTextAttachment(this);
+            logWriter.AttachText(Name, ContentType, text);
         }
     }
 }

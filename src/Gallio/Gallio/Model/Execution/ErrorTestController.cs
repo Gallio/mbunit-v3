@@ -15,7 +15,6 @@
 
 using System;
 using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Logging;
 
 namespace Gallio.Model.Execution
 {
@@ -25,13 +24,13 @@ namespace Gallio.Model.Execution
     public class ErrorTestController : BaseTestController
     {
         /// <inheritdoc />
-        public override void RunTests(IProgressMonitor progressMonitor, ITestCommand rootTestCommand,
-            ITestInstance parentTestInstance)
+        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+            TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ITestContext testContext = rootTestCommand.StartRootStep(parentTestInstance);
 
-            testContext.LogWriter[LogStreamNames.Failures].WriteLine("An error occurred during test enumeration.  {0}",
-                rootTestCommand.Test.Metadata[MetadataKeys.Description]);
+            testContext.LogWriter.Write(LogStreamNames.Failures, String.Format("An error occurred during test enumeration.  {0}\n",
+                rootTestCommand.Test.Metadata[MetadataKeys.Description]));
 
             testContext.FinishStep(TestOutcome.Error, null);
         }

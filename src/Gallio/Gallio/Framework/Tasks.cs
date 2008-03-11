@@ -18,7 +18,6 @@ using System.Diagnostics;
 using Gallio;
 using Gallio.Concurrency;
 using Gallio.Framework;
-using Gallio.Logging;
 
 namespace Gallio.Framework
 {
@@ -37,7 +36,7 @@ namespace Gallio.Framework
         private const string ContainerKey = "Tasks.Container";
         private const string FailureFlagKey = "Tasks.Failure";
 
-        private static readonly TimeSpan DisposeTimeout = new TimeSpan(0, 0, 30);
+        private static readonly TimeSpan DisposeTimeout = new TimeSpan(0, 0, 5);
 
         /// <summary>
         /// Gets the task container for the current <see cref="Context" />.
@@ -228,7 +227,7 @@ namespace Gallio.Framework
         {
             TaskContainer container = new TaskContainer();
 
-            context.CleanUp += delegate { ReapTasks(context, container); };
+            context.Finishing += delegate { ReapTasks(context, container); };
             container.TaskTerminated += delegate(object sender, TaskEventArgs e) { RecordTaskResult(context, e.Task); };
 
             return container;
@@ -240,7 +239,7 @@ namespace Gallio.Framework
 
             if (!container.JoinAll(DisposeTimeout))
             {
-                context.LogWriter[LogStreamNames.Warnings].WriteLine("Some tasks failed to abort within {0} seconds!", DisposeTimeout.TotalSeconds);
+                context.LogWriter.Warnings.WriteLine("Some tasks failed to abort within {0} seconds!", DisposeTimeout.TotalSeconds);
             }
         }
 
@@ -248,7 +247,7 @@ namespace Gallio.Framework
         {
             if (task.Result != null && task.Result.Exception != null)
             {
-                context.LogWriter[LogStreamNames.Failures].WriteException(task.Result.Exception, "Task '{0}' failed.", task.Name);
+                context.LogWriter.Warnings.WriteException(task.Result.Exception, "Task '{0}' failed.", task.Name);
                 FailureFlag = true;
             }
         }

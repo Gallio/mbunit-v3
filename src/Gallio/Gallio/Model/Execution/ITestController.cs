@@ -29,11 +29,14 @@ namespace Gallio.Model.Execution
         /// <remarks>
         /// This method can be called at most once during the lifetime of a test controller.
         /// </remarks>
-        /// <param name="progressMonitor">The progress monitor</param>
         /// <param name="rootTestCommand">The root test monitor</param>
         /// <param name="parentTestInstance">The parent test instance or null when
         /// running the tests should produce a root test</param>
-        void RunTests(IProgressMonitor progressMonitor, ITestCommand rootTestCommand,
-            ITestInstance parentTestInstance);
+        /// <param name="options">The test execution options</param>
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTestCommand"/>
+        /// <paramref name="progressMonitor"/>, or <paramref name="options"/> is null</exception>
+        void RunTests(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+            TestExecutionOptions options, IProgressMonitor progressMonitor);
     }
 }

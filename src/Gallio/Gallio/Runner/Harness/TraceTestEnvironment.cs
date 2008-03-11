@@ -15,7 +15,7 @@
 
 using System;
 using System.Diagnostics;
-using Gallio.Logging;
+using Gallio.Model.Execution;
 
 namespace Gallio.Runner.Harness
 {

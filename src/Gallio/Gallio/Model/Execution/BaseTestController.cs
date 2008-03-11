@@ -14,14 +14,15 @@
 // limitations under the License.
 
 
+using System;
 using Gallio.Hosting.ProgressMonitoring;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// An abstract test controller base class.
+    /// Base implementation of <see cref="ITestController" /> that does nothing.
     /// </summary>
-    public class BaseTestController : ITestController
+    public abstract class BaseTestController : ITestController
     {
         /// <inheritdoc />
         public virtual void Dispose()
@@ -29,9 +30,47 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public virtual void RunTests(IProgressMonitor progressMonitor, ITestCommand rootTestCommand,
-            ITestInstance parentTestInstance)
+        public void RunTests(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+            TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
+            if (rootTestCommand == null)
+                throw new ArgumentNullException("rootTestCommand");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+            if (options == null)
+                throw new ArgumentNullException("options");
+
+            RunTestsInternal(rootTestCommand, parentTestInstance, options, progressMonitor);
+        }
+
+        /// <summary>
+        /// Implementation of <see cref="RunTests" /> called after argument validation has taken place.
+        /// </summary>
+        /// <param name="rootTestCommand">The root test command, not null</param>
+        /// <param name="parentTestInstance">The parent test instance, or null if none</param>
+        /// <param name="options">The test execution options, not null</param>
+        /// <param name="progressMonitor">The progress monitor, not null</param>
+        protected abstract void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+            TestExecutionOptions options, IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Recursively generates single test instances for each <see cref="ITestCommand" /> and
+        /// sets the final outcome to <see cref="TestOutcome.Skipped" />.
+        /// </summary>
+        /// <remarks>
+        /// This is useful for implementing fallback behavior when <see cref="TestExecutionOptions.SkipTestInstanceExecution" />
+        /// is true.
+        /// </remarks>
+        /// <param name="rootTestCommand">The root test command</param>
+        /// <param name="parentTestInstance">The parent test instance</param>
+        protected static void SkipAll(ITestCommand rootTestCommand, ITestInstance parentTestInstance)
+        {
+            ITestContext context = rootTestCommand.StartRootStep(parentTestInstance);
+
+            foreach (ITestCommand child in rootTestCommand.Children)
+                SkipAll(child, context.TestStep.TestInstance);
+
+            context.FinishStep(TestOutcome.Skipped, null);
         }
     }
 }

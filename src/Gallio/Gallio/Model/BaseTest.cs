@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Properties;
@@ -117,6 +116,8 @@ namespace Gallio.Model
             get
             {
                 if (parent == null)
+                    return @"";
+                if (parent.Parent == null)
                     return Name;
                 return String.Concat(parent.FullName, "/", Name);
             }
@@ -210,15 +211,6 @@ namespace Gallio.Model
 
             if (! dependencies.Contains(test))
                 dependencies.Add(test);
-        }
-
-        /// <inheritdoc />
-        public virtual IEnumerable<ITestInstance> GetInstances(ITestInstance parentTestInstance, bool guessDynamicInstances)
-        {
-            if (parameters.Count == 0)
-                return new ITestInstance[] { new BaseTestInstance(this, parentTestInstance) };
-            else
-                return EmptyArray<ITestInstance>.Instance;
         }
 
         /// <inheritdoc />

@@ -66,6 +66,9 @@ namespace Gallio.Model
         /// <see cref="FullName" /> of the <see cref="Parent"/> followed by a slash ('/')
         /// followed by the <see cref="ITestComponent.Name" /> of this test.
         /// </para>
+        /// <para>
+        /// The full name of the root test is empty.
+        /// </para>
         /// </summary>
         string FullName { get; }
 
@@ -194,36 +197,5 @@ namespace Gallio.Model
         /// <param name="test">The test to add as a dependency</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
         void AddDependency(ITest test);
-
-        /// <summary>
-        /// <para>
-        /// Gets an enumeration of known test instances.
-        /// </para>
-        /// <para>
-        /// When <paramref name="guessDynamicInstances"/> is <c>false</c>, the
-        /// enumeration only contains test instances that are statically
-        /// known ahead of time.  These test instances will always be created
-        /// no matter what because their parameters are bound to values that are fixed.
-        /// </para>
-        /// <para>
-        /// When <paramref name="guessDynamicInstances"/> is <c>true</c>, in addition
-        /// to static test instances, the enumeration may contain some dynamic
-        /// test instances based on currently available information.  The dynamic
-        /// test instance information may be incomplete and it is subject to
-        /// change upon test execution.  Dynamic test information is provided only
-        /// as a hint to a user who is able to make an informed judgement about the
-        /// reliability of the information.  When using this information in a GUI,
-        /// be prepared to throw it away, extend it or rebuild it from scratch based
-        /// on actual test execution behavior that is observed.
-        /// </para>
-        /// </summary>
-        /// <param name="parentTestInstance">The parent test instance, or null if there is
-        /// no parent because the root test instance is to be obtained</param>
-        /// <param name="guessDynamicInstances">If true, tries to obtain dynamic
-        /// test instances based on currently available information</param>
-        /// <returns>The enumeration of statically known test instances</returns>
-        /// <seealso cref="ITestInstance.IsDynamic"/>
-        IEnumerable<ITestInstance> GetInstances(ITestInstance parentTestInstance,
-            bool guessDynamicInstances);
     }
 }
