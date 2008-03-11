@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{44619920-B523-4C1F-9C5D-163534365A3B}</ProjectGuid>
+    <ProjectGuid>{$guid1$}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MbUnit.TestProjectTemplate.VisualBasic</RootNamespace>
-    <AssemblyName>MbUnit.TestProjectTemplate.VisualBasic</AssemblyName>
+    <RootNamespace>$safeprojectname$</RootNamespace>
+    <AssemblyName>$safeprojectname$</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <OptionExplicit>On</OptionExplicit>
