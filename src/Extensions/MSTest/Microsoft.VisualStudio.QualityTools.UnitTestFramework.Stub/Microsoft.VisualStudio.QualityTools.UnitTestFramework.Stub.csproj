@@ -12,6 +12,7 @@
     <AssemblyName>Microsoft.VisualStudio.QualityTools.UnitTestFramework</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <OriginalAssemblyName>Microsoft.VisualStudio.QualityTools.UnitTestFramework</OriginalAssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +23,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OriginalAssemblyName>Microsoft.VisualStudio.QualityTools.UnitTestFramework</OriginalAssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
