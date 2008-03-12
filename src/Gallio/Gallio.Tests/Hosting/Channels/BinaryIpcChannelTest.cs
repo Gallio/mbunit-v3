@@ -15,8 +15,6 @@
 
 using System;
 using System.Runtime.Remoting;
-using System.Threading;
-using Castle.Core.Logging;
 using Gallio.Hosting;
 using Gallio.Hosting.Channels;
 using Gallio.Tests.Integration;

@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
+using System.Threading;
 
 namespace Gallio.Hosting.Channels
 {
@@ -30,6 +31,7 @@ namespace Gallio.Hosting.Channels
         static BaseChannel()
         {
             RemotingConfiguration.Configure(null, false);
+            InitializeAppDomainUnloadAutomaticUnregistrationHack();
         }
 
         /// <summary>
@@ -101,6 +103,38 @@ namespace Gallio.Hosting.Channels
                 throw new ArgumentNullException("serviceName");
 
             return new Uri(ChannelUri, serviceName).ToString();
+        }
+
+        private static void InitializeAppDomainUnloadAutomaticUnregistrationHack()
+        {
+            // HACK: When the AppDomain is being unloaded, we can encounter problems because the channel
+            //       tries to keep communicating but fails.  In particular, there is a problem in the
+            //       IpcPort implementation wherein it will receive a final overlapped I/O call
+            //       from its last pending read after it has been disposed.  When this happens, it
+            //       will continue to process the next message in the pipe.
+            //
+            //       This wreaks some havoc during the rather precarious time of AppDomain unloading.
+            //       So as a precaution, we now ensure that all channels are promptly unregistered
+            //       as the AppDomain gets unloaded.  This avoids the apparent race condition we
+            //       are observing with the I/O completion port notification occurring after finalization.
+            //
+            //       A better solution would be to ensure that we dispose channels explicitly before
+            //       unloading, but we might not actually be in control of the unload.  It would be
+            //       even better if the .Net framework better tolerated active channels during unload.
+            //       Oh well.
+            //
+            //       To reproduce, run the BinaryIpcChannelTest a few times with the following line commented.
+            //       The problem will manifest as an unhandled exception due to an invalid cross-AppDomain
+            //       call just as the AppDomain is being unloaded.
+            //       -- Jeff.
+            AppDomain.CurrentDomain.DomainUnload += delegate
+            {
+                foreach (IChannel channel in ChannelServices.RegisteredChannels)
+                    ChannelServices.UnregisterChannel(channel);
+
+                // Sleep a litle to drain any pending I/O requests.
+                Thread.Sleep(10);
+            };
         }
     }
 }

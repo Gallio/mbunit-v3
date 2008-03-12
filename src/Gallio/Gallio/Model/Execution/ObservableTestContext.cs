@@ -106,8 +106,8 @@ namespace Gallio.Model.Execution
                     if (lifecyclePhase == value)
                         return;
 
-                    Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateSetPhaseEvent(testStep.Id, lifecyclePhase));
                     lifecyclePhase = value;
+                    Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateSetPhaseEvent(testStep.Id, lifecyclePhase));
                 }
             }
         }
