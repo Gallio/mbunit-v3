@@ -24,6 +24,7 @@ using JetBrains.ReSharper.Editor;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using Gallio.Collections;
+using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Impl.Special;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
@@ -396,7 +397,7 @@ namespace Gallio.ReSharperRunner.Reflection
             List<object> values = new List<object>();
             for (int i = 0; ; i++)
             {
-                ConstantValue2 rawValue = attributeHandle.PositionParameter(i);
+                ConstantValue2 rawValue = GetAttributePositionParameterHack(attributeHandle, i);
                 if (rawValue.IsBadValue())
                     break;
 
@@ -436,7 +437,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 if (ReflectorAttributeUtils.IsAttributeField(field))
                 {
                     IField fieldHandle = (IField)field.Handle;
-                    ConstantValue2 value = attributeHandle.NamedParameter(fieldHandle);
+                    ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, fieldHandle);
                     if (!value.IsBadValue())
                         values.Add(new KeyValuePair<StaticFieldWrapper, object>(field, ResolveAttributeValue(value.Value)));
                 }
@@ -456,7 +457,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 if (ReflectorAttributeUtils.IsAttributeProperty(property))
                 {
                     IProperty propertyHandle = (IProperty)property.Handle;
-                    ConstantValue2 value = attributeHandle.NamedParameter(propertyHandle);
+                    ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, propertyHandle);
                     if (!value.IsBadValue())
                         values.Add(new KeyValuePair<StaticPropertyWrapper, object>(property, ResolveAttributeValue(value.Value)));
                 }
@@ -467,18 +468,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private object ResolveAttributeValue(object value)
         {
-            if (value != null)
-            {
-                IType type = value as IType;
-                if (type != null)
-                    return MakeType(type).Resolve(false);
-
-                // TODO: It's not clear to me that the PSI internal implementation is complete!
-                //       I found a special case for mapping types but nothing for arrays.
-                //       So I've omitted the array code from here for now.  -- Jeff.
-            }
-
-            return value;
+            return ResolveConstant<IType>(value, delegate(IType type) { return MakeType(type).Resolve(false); });
         }
         #endregion
 
@@ -1036,7 +1026,11 @@ namespace Gallio.ReSharperRunner.Reflection
 
             ITypeInfo[] genericArguments = GenericUtils.ConvertAllToArray<ITypeParameter, ITypeInfo>(typeParameterHandles, delegate(ITypeParameter typeParameterHandle)
             {
-                return MakeType(substitutionHandle.Apply(typeParameterHandle));
+                IType substitutedType = substitutionHandle.Apply(typeParameterHandle);
+                if (substitutedType.IsUnknown)
+                    return MakeGenericParameterType(typeParameterHandle);
+
+                return MakeType(substitutedType);
             });
             return type.MakeGenericType(genericArguments);
         }
@@ -1117,6 +1111,128 @@ namespace Gallio.ReSharperRunner.Reflection
         private StaticMethodWrapper WrapAccessor(IAccessor accessorHandle, StaticMemberWrapper member)
         {
             return accessorHandle != null ? new StaticMethodWrapper(this, accessorHandle, member.DeclaringType, member.ReflectedType, member.Substitution) : null;
+        }
+        #endregion
+
+        #region HACKS
+        private static FieldInfo CSharpAttributeInstanceMyAttributeField;
+
+        private ConstantValue2 GetAttributePositionParameterHack(IAttributeInstance attributeInstance, int index)
+        {
+            IAttribute attribute = GetCSharpAttributeHack(attributeInstance);
+            if (attribute != null)
+            {
+                IList<ICSharpArgument> arguments = attribute.Arguments;
+                if (index >= arguments.Count)
+                    return ConstantValue2.BAD_VALUE;
+
+                ICSharpExpression expression = arguments[index].Value;
+
+                IList<IParameter> parameters = attributeInstance.Constructor.Parameters;
+                int lastParameterIndex = parameters.Count - 1;
+                if (index >= lastParameterIndex && parameters[lastParameterIndex].IsParameterArray)
+                    return GetCSharpConstantValueHack(expression, ((IArrayType)parameters[lastParameterIndex].Type).ElementType);
+
+                return GetCSharpConstantValueHack(arguments[index].Value, parameters[index].Type);
+            }
+
+            return attributeInstance.PositionParameter(index);
+        }
+
+        private ConstantValue2 GetAttributeNamedParameterHack(IAttributeInstance attributeInstance, ITypeMember typeMember)
+        {
+            IAttribute attribute = GetCSharpAttributeHack(attributeInstance);
+            if (attribute != null)
+            {
+                foreach (IPropertyAssignmentNode propertyAssignmentNode in attribute.ToTreeNode().PropertyAssignments)
+                {
+                    IPropertyAssignment propertyAssignment = propertyAssignmentNode;
+                    if (propertyAssignment.Reference.Resolve().DeclaredElement == typeMember)
+                    {
+                        IType propertyType = ((ITypeOwner)typeMember).Type;
+                        ICSharpExpression expression = propertyAssignment.Source;
+                        return GetCSharpConstantValueHack(expression, propertyType);
+                    }
+                }
+
+                return ConstantValue2.BAD_VALUE;
+            }
+
+            return attributeInstance.NamedParameter(typeMember);
+        }
+
+        private IAttribute GetCSharpAttributeHack(IAttributeInstance attributeInstance)
+        {
+            if (attributeInstance.GetType().Name != "CSharpAttributeInstance")
+                return null;
+
+            if (CSharpAttributeInstanceMyAttributeField == null)
+                CSharpAttributeInstanceMyAttributeField = attributeInstance.GetType().GetField("myAttribute",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+
+            if (CSharpAttributeInstanceMyAttributeField == null)
+                return null;
+
+            return (IAttribute) CSharpAttributeInstanceMyAttributeField.GetValue(attributeInstance);
+        }
+
+        private ConstantValue2 GetCSharpConstantValueHack(ICSharpExpression expression, IType type)
+        {
+            if (expression == null)
+                return ConstantValue2.NOT_COMPILE_TIME_CONSTANT;
+
+            IArrayCreationExpression arrayExpression = expression as IArrayCreationExpression;
+            if (arrayExpression != null)
+            {
+                int[] dimensions = arrayExpression.Dimensions;
+                int rank = dimensions.Length;
+                for (int i = 0; i < rank; i++)
+                    if (dimensions[i] != 1)
+                        return ConstantValue2.NOT_COMPILE_TIME_CONSTANT;
+
+                IArrayType arrayType = arrayExpression.Type() as IArrayType;
+                if (arrayType == null)
+                    return ConstantValue2.NOT_COMPILE_TIME_CONSTANT;
+
+                IArrayInitializer arrayInitializer = arrayExpression.Initializer;
+                if (arrayInitializer == null)
+                    return ConstantValue2.NOT_COMPILE_TIME_CONSTANT;
+                
+                IType elementType = arrayType.ElementType;
+
+                Type resolvedScalarType = MakeType(arrayType.GetScalarType()).Resolve(true);
+                if (resolvedScalarType == typeof(Type))
+                    resolvedScalarType = typeof(IType);
+
+                Type resolvedElementType = rank == 1 ? resolvedScalarType : rank == 2 ? resolvedScalarType.MakeArrayType() : resolvedScalarType.MakeArrayType(rank - 1);
+
+                IList<IVariableInitializer> elementInitializers = arrayInitializer.ElementInitializers;
+                int length = elementInitializers.Count;
+                Array array = Array.CreateInstance(resolvedElementType, length);
+
+                for (int i = 0; i < length; i++)
+                {
+                    IExpressionInitializer initializer = elementInitializers[i] as IExpressionInitializer;
+                    if (initializer == null)
+                        return ConstantValue2.NOT_COMPILE_TIME_CONSTANT;
+
+                    ConstantValue2 elementValue = GetCSharpConstantValueHack(initializer.Value, elementType);
+                    if (elementValue.IsBadValue())
+                        return ConstantValue2.NOT_COMPILE_TIME_CONSTANT;
+
+                    array.SetValue(elementValue.Value, i);
+                }
+
+                return new ConstantValue2(array, arrayType, type.GetManager().Solution);
+            }
+
+            ITypeofExpression typeExpression = expression as ITypeofExpression;
+            if (typeExpression != null)
+            {
+                return new ConstantValue2(typeExpression.ArgumentType, type, type.GetManager().Solution);
+            }
+
+            return expression.ConstantCalculator.ToTypeImplicit(expression.CompileTimeConstantValue(), type);
         }
         #endregion
     }

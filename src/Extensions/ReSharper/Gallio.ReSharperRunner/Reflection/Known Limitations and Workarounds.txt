@@ -105,10 +105,16 @@ Recommendation:
 
 
 5. Cannot obtain arrays of constants from an IAttributeInstance.
-  I really have no idea how they're represented as ConstantValue2 objects.
+  Also, certain TypeofExpressions yield bad ConstantValue2 objects when they contain
+  references to non-predefined types.
 
 Workaround:
-  None known.  Possibly I'm just missing something obvious.
+  Dig into the C# Psi implementation to pull out what we need from the raw
+    expressions.
+  Not sure what to do for VisualBasic.  Probably the same thing.
+
+Recommendation:
+  Produce suitable ConstantValue2 objects for all types and arrays.
   
   
 6. IFunction.HidePolicy sometimes returns the wrong value when it should be HIDE_BY_SIGNATURE.

@@ -63,5 +63,49 @@ namespace Gallio.ReSharperRunner.Reflection
         /// Gets the project to which a code element belongs, or null if none.
         /// </summary>
         protected abstract IProject GetProject(StaticWrapper element);
+
+        /// <summary>
+        /// Resolves the types that may be present in constant values.
+        /// </summary>
+        /// <param name="value">The unresolved value</param>
+        /// <param name="typeResolver">A function for resolving types</param>
+        /// <returns>The value with types fully resolved</returns>
+        protected static object ResolveConstant<TType>(object value, Func<TType, Type> typeResolver)
+            where TType : class
+        {
+            if (value != null)
+            {
+                TType type = value as TType;
+                if (type != null)
+                    return typeResolver(type);
+
+                Type valueType = value.GetType();
+                if (valueType.IsArray)
+                {
+                    Array valueArray = (Array) value;
+                    int length = valueArray.Length;
+                    Array resolvedValueArray = Array.CreateInstance(MapConstantArrayElementType<TType>(valueType), length);
+
+                    for (int i = 0; i < length; i++)
+                        resolvedValueArray.SetValue(ResolveConstant(valueArray.GetValue(i), typeResolver), i);
+
+                    return resolvedValueArray;
+                }
+            }
+
+            return value;
+        }
+
+        private static Type MapConstantArrayElementType<TType>(Type arrayType)
+        {
+            Type elementType = arrayType.GetElementType();
+            if (elementType.IsArray)
+                return MapConstantArrayElementType<TType>(elementType).MakeArrayType();
+
+            if (typeof(TType).IsAssignableFrom(elementType))
+                return typeof(Type);
+
+            return elementType;
+        }
     }
 }

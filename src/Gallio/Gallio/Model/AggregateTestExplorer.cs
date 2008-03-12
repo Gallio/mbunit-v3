@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Reflection;
 using Gallio.Hosting;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -79,8 +80,17 @@ namespace Gallio.Model
         public bool IsTest(ICodeElementInfo element)
         {
             foreach (ITestExplorer explorer in explorers)
-                if (explorer.IsTest(element))
-                    return true;
+            {
+                try
+                {
+                    if (explorer.IsTest(element))
+                        return true;
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report(String.Format("A test explorer failed while determining whether code element '{0}' is a test.", element), ex);
+                }
+            }
 
             return false;
         }
@@ -89,14 +99,32 @@ namespace Gallio.Model
         public void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
         {
             foreach (ITestExplorer explorer in explorers)
-                explorer.ExploreAssembly(assembly, consumer);
+            {
+                try
+                {
+                    explorer.ExploreAssembly(assembly, consumer);
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report(String.Format("A test explorer failed while enumerating tests in assembly '{0}'.", assembly.Name), ex);
+                }
+            }
         }
 
         /// <inheritdoc />
         public void ExploreType(ITypeInfo type, Action<ITest> consumer)
         {
             foreach (ITestExplorer explorer in explorers)
-                explorer.ExploreType(type, consumer);
+            {
+                try
+                {
+                    explorer.ExploreType(type, consumer);
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report(String.Format("A test explorer failed while enumerating tests in type '{0}'.", type), ex);
+                }
+            }
         }
     }
 }

@@ -254,31 +254,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private object ResolveAttributeValue(object value)
         {
-            if (value != null)
-            {
-                IMetadataType type = value as IMetadataType;
-                if (type != null)
-                    return ResolveType(type);
-
-                Type valueType = value.GetType();
-                if (valueType.IsArray)
-                {
-                    Type elementType = valueType.GetElementType();
-
-                    if (elementType == typeof(IMetadataType))
-                        return GenericUtils.ConvertAllToArray<IMetadataType, Type>((IMetadataType[])value, ResolveType);
-
-                    if (elementType == typeof(Object))
-                        return GenericUtils.ConvertAllToArray<object, object>((object[])value, ResolveAttributeValue);
-                }
-            }
-
-            return value;
-        }
-
-        private Type ResolveType(IMetadataType type)
-        {
-            return MakeType(type).Resolve(false);
+            return ResolveConstant<IMetadataType>(value, delegate(IMetadataType type) { return MakeType(type).Resolve(false); });
         }
 
         private IEnumerable<StaticAttributeWrapper> EnumerateAttributesForEntity(IMetadataEntity entityHandle)
