@@ -16,7 +16,6 @@
 using System;
 using Gallio.Framework.Data;
 using Gallio.Reflection;
-using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -25,7 +24,7 @@ namespace MbUnit.Framework
     /// </summary>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
-    public class RowAttribute : DataPatternAttribute
+    public class RowAttribute : DataAttribute
     {
         private readonly object[] values;
 

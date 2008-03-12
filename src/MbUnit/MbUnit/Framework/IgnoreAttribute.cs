@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
@@ -31,6 +32,8 @@ namespace MbUnit.Framework
     /// without commenting them out or removing them from the source code.
     /// </para>
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
+        AllowMultiple = false, Inherited = true)]
     public class IgnoreAttribute : TestDecoratorPatternAttribute
     {
         private readonly string reason;
@@ -58,7 +61,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets the reason that the test has been ignored.
+        /// Gets the reason that the test has been ignored, or an empty string if none.
         /// </summary>
         public string Reason
         {
@@ -69,6 +72,15 @@ namespace MbUnit.Framework
         protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
         {
             builder.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
+
+            builder.Test.TestActions.BeforeTestChain.Before(delegate
+            {
+                string message = "The test was ignored.";
+                if (reason.Length != 0)
+                    message += "\nReason: " + reason;
+
+                throw new SilentTestException(TestOutcome.Ignored, message);
+            });
         }
     }
 }

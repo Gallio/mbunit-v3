@@ -14,8 +14,12 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
+using Gallio.Model;
+using Gallio.Reflection;
+using Gallio.Utilities;
 
 namespace MbUnit.Framework
 {
@@ -51,5 +55,53 @@ namespace MbUnit.Framework
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class TestAttribute : TestMethodPatternAttribute
     {
+        /// <inheritdoc />
+        protected override void SetTestSemantics(PatternTest test, IMethodInfo method)
+        {
+            base.SetTestSemantics(test, method);
+
+            test.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState state, Action<PatternTestInstanceState> action)
+            {
+                string expectedExceptionType = state.TestInstance.Metadata.GetValue(MetadataKeys.ExpectedException)
+                    ?? state.Test.Metadata.GetValue(MetadataKeys.ExpectedException);
+
+                if (expectedExceptionType != null)
+                {
+                    try
+                    {
+                        action(state);
+
+                        using (Log.Failures.BeginSection("Expected Exception"))
+                        {
+                            Log.Failures.WriteLine("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType);
+                        }
+
+                        throw new SilentTestException(TestOutcome.Failed);
+                    }
+                    catch (TargetInvocationException ex)
+                    {
+                        Exception exception = ex.InnerException ?? ex;
+
+                        Type exceptionType = exception.GetType();
+                        if (exceptionType.Name != expectedExceptionType
+                            && exceptionType.FullName != expectedExceptionType
+                            && exceptionType.AssemblyQualifiedName != expectedExceptionType)
+                        {
+                            using (Log.Failures.BeginSection("Expected Exception"))
+                            {
+                                Log.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
+                                Log.Failures.WriteLine(ExceptionUtils.SafeToString(exception));
+                            }
+
+                            throw new SilentTestException(TestOutcome.Failed);
+                        }
+                    }
+                }
+                else
+                {
+                    action(state);
+                }
+            });
+        }
     }
 }

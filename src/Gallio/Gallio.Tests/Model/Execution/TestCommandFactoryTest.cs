@@ -85,7 +85,7 @@ namespace Gallio.Tests.Model.Execution
 
             BuildCommands(new NameFilter<ITest>(new EqualityFilter<string>("A")));
             AssertCommandStructure("Root", "A", "A1", "A2", "A3");
-            AssertCommandExplicit("A");
+            AssertCommandExplicit("Root", "A");
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace Gallio.Tests.Model.Execution
 
             BuildCommands(new NameFilter<ITest>(new EqualityFilter<string>("A2")));
             AssertCommandStructure("Root", "A", "A2");
-            AssertCommandExplicit("A2");
+            AssertCommandExplicit("Root", "A", "A2");
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace Gallio.Tests.Model.Execution
 
             BuildCommands(new NameFilter<ITest>(new RegexFilter(new Regex("A2|B"))));
             AssertCommandStructure("Root", "A", "A2", "B", "B1");
-            AssertCommandExplicit("A2", "B");
+            AssertCommandExplicit("Root", "A", "A2", "B");
         }
 
         [Test, ExpectedException(typeof(ModelException))]

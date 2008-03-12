@@ -109,6 +109,15 @@ namespace Gallio.Model
         public const string ExpectedException = "ExpectedException";
 
         /// <summary>
+        /// The metadata key that describes the reason that a test should be run explicitly.
+        /// (Tests may of course be marked explicit without a declared reason.)
+        /// </summary>
+        /// <remarks>
+        /// May be derived from <c>ExplicitAttribute</c> in MbUnit or its equivalent.
+        /// </remarks>
+        public const string ExplicitReason = "ExplicitReason";
+
+        /// <summary>
         /// The metadata key for a file version number associated with a test.
         /// </summary>
         /// <remarks>

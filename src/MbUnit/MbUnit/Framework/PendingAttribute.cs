@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Reflection;
@@ -32,6 +33,8 @@ namespace MbUnit.Framework
     /// also serve as a placeholder for test that have yet to be implemented.
     /// </para>
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
+        AllowMultiple = false, Inherited = true)]
     public class PendingAttribute : TestDecoratorPatternAttribute
     {
         private readonly string reason;
@@ -70,6 +73,15 @@ namespace MbUnit.Framework
         protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
         {
             builder.Test.Metadata.Add(MetadataKeys.PendingReason, reason);
+
+            builder.Test.TestActions.BeforeTestChain.Before(delegate
+            {
+                string message = "The test depends on pending functionality.";
+                if (reason.Length != 0)
+                    message += "\nReason: " + reason;
+
+                throw new SilentTestException(TestOutcome.Pending, message);
+            });
         }
     }
 }

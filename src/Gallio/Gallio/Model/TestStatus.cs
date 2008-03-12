@@ -18,21 +18,28 @@ using System.Xml.Serialization;
 namespace Gallio.Model
 {
     /// <summary>
-    /// Describes whether a test was skipped, passed, failed or was inconclusive.
+    /// <para>
+    /// Describes whether a test passed, failed, was skipped or was inconclusive.
+    /// </para>
+    /// <para>
+    /// The status codes are ranked in order of severity from least to greatest
+    /// as follows: <see cref="Passed" />, <see cref="Skipped"/>, <see cref="Inconclusive" />,
+    /// <see cref="Failed" />.
+    /// </para>
     /// </summary>
     public enum TestStatus
     {
         /// <summary>
-        /// The test did not run so nothing is known about its status.
-        /// </summary>
-        [XmlEnum("skipped")]
-        Skipped = 0,
-
-        /// <summary>
         /// The test passed.
         /// </summary>
         [XmlEnum("passed")]
-        Passed = 1,
+        Passed = 0,
+
+        /// <summary>
+        /// The test did not run so nothing is known about its status.
+        /// </summary>
+        [XmlEnum("skipped")]
+        Skipped = 1,
 
         /// <summary>
         /// The test did not run or its result was inconclusive.

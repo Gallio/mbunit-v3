@@ -127,6 +127,7 @@ namespace Gallio.Model
         /// </remarks>
         /// <param name="other">The other outcome</param>
         /// <returns>The combined outcome</returns>
+        /// <seealso cref="TestStatus"/> for test status severity ranking information.
         public TestOutcome CombineWith(TestOutcome other)
         {
             if (other.status > status)
@@ -262,6 +263,20 @@ namespace Gallio.Model
         public static TestOutcome Pending
         {
             get { return new TestOutcome(TestStatus.Skipped, "pending"); }
+        }
+
+        /// <summary>
+        /// Gets a standard outcome for a test that did not run because it must be selected explicitly.
+        /// The test may be particularly expensive or require manual supervision by an operator.
+        /// </summary>
+        /// <remarks>
+        /// Status: <see cref="TestStatus.Skipped"/>.
+        /// Category: "explicit".
+        /// </remarks>
+        /// <returns>The outcome</returns>
+        public static TestOutcome Explicit
+        {
+            get { return new TestOutcome(TestStatus.Skipped, "explicit"); }
         }
         #endregion
 

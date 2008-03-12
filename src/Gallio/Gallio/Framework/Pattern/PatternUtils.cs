@@ -14,7 +14,6 @@
 // limitations under the License.
 
 
-using System.Collections.Generic;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 

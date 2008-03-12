@@ -65,15 +65,21 @@ namespace Gallio.Model.Execution
 
             List<ManagedTestCommand> children = new List<ManagedTestCommand>(test.Children.Count);
 
+            bool hasExplicitChild = false;
             foreach (ITest child in test.Children)
             {
                 ManagedTestCommand childMonitor = CreateFilteredClosure(commands, child, filter, contextManager);
                 if (childMonitor != null)
+                {
                     children.Add(childMonitor);
+
+                    if (childMonitor.IsExplicit)
+                        hasExplicitChild = true;
+                }
             }
 
             if (children.Count != 0)
-                return CreateCommand(commands, test, children, false, contextManager);
+                return CreateCommand(commands, test, children, hasExplicitChild, contextManager);
 
             return null;
         }

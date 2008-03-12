@@ -387,7 +387,7 @@ namespace Gallio.Framework
             Context childContext = StartChildStep(name, codeElement);
 
             childContext.LifecyclePhase = LifecyclePhases.Execute;
-            TestOutcome outcome = childContext.Sandbox.Run(action, null, null);
+            TestOutcome outcome = childContext.Sandbox.Run(action, null);
 
             childContext.FinishStep(outcome);
             return childContext;

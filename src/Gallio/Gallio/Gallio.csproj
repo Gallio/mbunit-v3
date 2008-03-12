@@ -207,6 +207,7 @@
     <Compile Include="Framework\Pattern\TestTypePatternAttribute.cs" />
     <Compile Include="Framework\Pattern\ToolInfo.cs" />
     <Compile Include="Framework\Sandbox.cs" />
+    <Compile Include="Framework\SilentTestException.cs" />
     <Compile Include="Framework\Step.cs" />
     <Compile Include="Framework\Tasks.cs" />
     <Compile Include="Model\Execution\BaseTestLogWriter.cs" />

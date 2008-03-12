@@ -51,6 +51,7 @@ namespace Gallio.Framework.Pattern
         private readonly IPatternTestHandler testHandler;
         private readonly IConverter converter;
         private readonly IFormatter formatter;
+        private readonly bool isExplicit;
 
         private readonly DataBindingContext bindingContext;
         private readonly Dictionary<ISlotInfo, IDataBindingAccessor> slotBindingAccessors;
@@ -63,10 +64,11 @@ namespace Gallio.Framework.Pattern
         /// <param name="testHandler">The handler for the test</param>
         /// <param name="converter">The converter for data binding</param>
         /// <param name="formatter">The formatter for data binding</param>
+        /// <param name="isExplicit">True if the test was selected explicitly</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/>,
         /// <paramref name="testHandler"/>, <paramref name="converter"/>
         /// or <paramref name="formatter"/> is null</exception>
-        public PatternTestState(PatternTest test, IPatternTestHandler testHandler, IConverter converter, IFormatter formatter)
+        public PatternTestState(PatternTest test, IPatternTestHandler testHandler, IConverter converter, IFormatter formatter, bool isExplicit)
         {
             if (test == null)
                 throw new ArgumentNullException("test");
@@ -81,6 +83,7 @@ namespace Gallio.Framework.Pattern
             this.testHandler = testHandler;
             this.converter = converter;
             this.formatter = formatter;
+            this.isExplicit = isExplicit;
 
             bindingContext = new DataBindingContext(converter);
             slotBindingAccessors = new Dictionary<ISlotInfo, IDataBindingAccessor>();
@@ -126,6 +129,14 @@ namespace Gallio.Framework.Pattern
         public IFormatter Formatter
         {
             get { return formatter; }
+        }
+
+        /// <summary>
+        /// Returns true if the test was selected explicitly.
+        /// </summary>
+        public bool IsExplicit
+        {
+            get { return isExplicit; }
         }
 
         /// <summary>

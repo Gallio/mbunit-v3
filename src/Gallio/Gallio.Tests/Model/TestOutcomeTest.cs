@@ -70,10 +70,11 @@ namespace Gallio.Tests.Model
         public void CombineWithChoosesOutcomeWithGreaterSeverity()
         {
             Assert.AreEqual(TestOutcome.Passed, TestOutcome.Passed.CombineWith(TestOutcome.Passed));
-            Assert.AreEqual(TestOutcome.Passed, TestOutcome.Passed.CombineWith(TestOutcome.Skipped));
-            Assert.AreEqual(TestOutcome.Passed, TestOutcome.Skipped.CombineWith(TestOutcome.Passed));
+            Assert.AreEqual(TestOutcome.Skipped, TestOutcome.Passed.CombineWith(TestOutcome.Skipped));
+            Assert.AreEqual(TestOutcome.Inconclusive, TestOutcome.Skipped.CombineWith(TestOutcome.Inconclusive));
+            Assert.AreEqual(TestOutcome.Error, TestOutcome.Inconclusive.CombineWith(TestOutcome.Error));
             Assert.AreEqual(TestOutcome.Error, TestOutcome.Skipped.CombineWith(TestOutcome.Error));
-            Assert.AreEqual(TestOutcome.Error, TestOutcome.Error.CombineWith(TestOutcome.Inconclusive));
+            Assert.AreEqual(TestOutcome.Error, TestOutcome.Error.CombineWith(TestOutcome.Passed));
         }
 
         [Test]

@@ -9,6 +9,8 @@ namespace MbUnit.Framework
     /// Sets the maximum amount of time that a test or fixture is permitted to run.
     /// </para>
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
+        AllowMultiple = false, Inherited = true)]
     public class TimeoutAttribute : TestDecoratorPatternAttribute
     {
         private readonly int timeoutSeconds;

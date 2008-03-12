@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Reflection\ReflectionPolicySample.cs" />
     <Compile Include="Reflection\SampleAttribute.cs" />
+    <Compile Include="SkippedTests.cs" />
     <Compile Include="UnhandledExceptionTest.cs" />
     <Compile Include="DataBinding\DataBindingSample.cs">
       <SubType>Code</SubType>

@@ -69,8 +69,10 @@
     <Compile Include="Framework\AssemblyFixtureAttribute.cs" />
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
+    <Compile Include="Framework\DataAttribute.cs" />
     <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
     <Compile Include="Framework\DependsOnAttribute.cs" />
+    <Compile Include="Framework\ExplicitAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
     <Compile Include="Framework\PendingAttribute.cs" />

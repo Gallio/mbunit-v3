@@ -204,13 +204,10 @@ namespace Gallio.Framework
         /// <para>
         /// Produces an outcome in the following manner:
         /// <list type="bullet">
-        /// <item>If the action completed without throwing an exception and none was expected,
-        /// returns <see cref="TestOutcome.Passed"/>.</item>
-        /// <item>If the action completed without throwing an exception but one was expected,
-        /// logs a message about the expected exception and returns <see cref="TestOutcome.Failed" />.</item>
-        /// <item>If the action threw a <see cref="TestException" /> and it was not expected, returns
-        /// the value of the <see cref="TestException.Outcome" /> property.</item>
-        /// <item>If the action threw an different kind of exception and it was not expected, logs
+        /// <item>If the action completed without throwing an exception returns <see cref="TestOutcome.Passed"/>.</item>
+        /// <item>If the action threw a <see cref="TestException" />, returns the value of the
+        /// <see cref="TestException.Outcome" /> property.</item>
+        /// <item>If the action threw an different kind of exception, logs
         /// the exception and returns <see cref="TestOutcome.Failed"/>.</item>
         /// <item>If the action was aborted, returns <see cref="AbortOutcome" />.</item>
         /// </list>
@@ -218,12 +215,10 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="action">The action to run</param>
         /// <param name="description">A description of the action being performed,
-        /// to be used when reporting failures, or null if none</param>
-        /// <param name="expectedExceptionType">The expected exception type name, fullname or assembly-qualified name,
-        /// or null if none</param>
+        /// to be used as a log section name when reporting failures, or null if none</param>
         /// <returns>The outcome of the action</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        public TestOutcome Run(Action action, string description, string expectedExceptionType)
+        public TestOutcome Run(Action action, string description)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
@@ -246,7 +241,7 @@ namespace Gallio.Framework
                 if (scope == null)
                     return HandleAbort(description, null);
 
-                return RunWithScope(scope, action, description, expectedExceptionType);
+                return RunWithScope(scope, action, description);
             }
             finally
             {
@@ -259,20 +254,13 @@ namespace Gallio.Framework
             }
         }
 
-        private TestOutcome RunWithScope(ThreadAbortScope scope, Action action, string description, string expectedExceptionType)
+        private TestOutcome RunWithScope(ThreadAbortScope scope, Action action, string description)
         {
             try
             {
                 ThreadAbortException ex = scope.Run(action);
                 if (ex != null)
                     return HandleAbort(description, ex);
-
-                if (expectedExceptionType != null)
-                {
-                    LogMessage(description, TestOutcome.Failed,
-                        String.Format("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType), null);
-                    return TestOutcome.Failed;
-                }
 
                 return TestOutcome.Passed;
             }
@@ -281,26 +269,23 @@ namespace Gallio.Framework
                 if (ex is TargetInvocationException)
                     ex = ex.InnerException;
 
-                if (expectedExceptionType != null)
+                TestOutcome outcome;
+                TestException testException = ex as TestException;
+                if (testException != null)
                 {
-                    Type exceptionType = ex.GetType();
-                    if (exceptionType.Name == expectedExceptionType
-                        || exceptionType.FullName == expectedExceptionType
-                        || exceptionType.AssemblyQualifiedName == expectedExceptionType)
-                        return TestOutcome.Passed;
+                    outcome = testException.Outcome;
 
-                    if (!(ex is TestException))
-                    {
-                        LogMessage(description, TestOutcome.Failed,
-                            String.Format("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType), ex);
-                        return TestOutcome.Failed;
-                    }
+                    if (testException.ExcludeStackTrace)
+                        LogMessage(description, outcome, testException.Message, null);
+                    else
+                        LogMessage(description, outcome, null, testException);
+                }
+                else
+                {
+                    outcome = TestOutcome.Failed;
+                    LogMessage(description, outcome, null, ex);
                 }
 
-                TestException testException = ex as TestException;
-                TestOutcome outcome = testException != null ? testException.Outcome : TestOutcome.Failed;
-
-                LogMessage(description, outcome, null, ex);
                 return outcome;
             }
         }
@@ -324,6 +309,9 @@ namespace Gallio.Framework
 
         private static void LogMessage(string actionDescription, TestOutcome outcome, string message, Exception ex)
         {
+            if (message == null && ex == null)
+                return;
+
             LogStreamWriter stream = GetLogStreamWriterForOutcome(outcome);
             using (actionDescription != null ? stream.BeginSection(actionDescription) : null)
             {

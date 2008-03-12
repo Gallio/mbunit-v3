@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 
@@ -54,8 +52,6 @@ namespace Gallio.Framework.Pattern
     public abstract class DataPatternAttribute : DecoratorPatternAttribute
     {
         private string sourceName = "";
-        private string description;
-        private Type expectedException;
 
         /// <summary>
         /// <para>
@@ -84,25 +80,6 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        /// <summary>
-        /// Gets or sets a description of the values provided by the data source.
-        /// </summary>
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the type of exception that should be thrown when the
-        /// values provided by the data source are consumed by test.
-        /// </summary>
-        public Type ExpectedException
-        {
-            get { return expectedException; }
-            set { expectedException = value; }
-        }
-
         /// <inheritdoc />
         public override void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
         {
@@ -128,18 +105,6 @@ namespace Gallio.Framework.Pattern
         /// <param name="codeElement">The code element</param>
         protected virtual void PopulateDataSource(DataSource dataSource, ICodeElementInfo codeElement)
         {
-        }
-
-        /// <summary>
-        /// Gets the metadata for the data source.
-        /// </summary>
-        /// <returns>The metadata keys and values</returns>
-        protected virtual IEnumerable<KeyValuePair<string, string>> GetMetadata()
-        {
-            if (description != null)
-                yield return new KeyValuePair<string, string>(MetadataKeys.Description, description);
-            if (expectedException != null)
-                yield return new KeyValuePair<string, string>(MetadataKeys.ExpectedException, expectedException.FullName);
         }
     }
 }

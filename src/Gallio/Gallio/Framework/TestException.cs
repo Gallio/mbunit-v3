@@ -32,6 +32,9 @@ namespace Gallio.Framework
     [Serializable]
     public abstract class TestException : Exception
     {
+        private const string HaveMessageKey = "HaveMessage";
+        private readonly bool haveMessage;
+
         /// <summary>
         /// Creates an exception.
         /// </summary>
@@ -44,7 +47,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="message">The message</param>
         protected TestException(string message)
-            : base(message)
+            : this(message, null)
         {
         }
 
@@ -56,6 +59,7 @@ namespace Gallio.Framework
         protected TestException(string message, Exception innerException)
             : base(message, innerException)
         {
+            haveMessage = !string.IsNullOrEmpty(message);
         }
 
         /// <summary>
@@ -66,11 +70,43 @@ namespace Gallio.Framework
         protected TestException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            haveMessage = info.GetBoolean(HaveMessageKey);
+        }
+
+        /// <summary>
+        /// Gets the message text, or null if none.
+        /// </summary>
+        public override string Message
+        {
+            get
+            {
+                // We override this method because the base Exception type will return a non-null
+                // default message constructed from the class name otherwise.  Here we really want
+                // to be able to distinguish the lack of a message from the presence of a default one.
+                return haveMessage ? base.Message : null;
+            }
         }
 
         /// <summary>
         /// Gets the outcome of the test.
         /// </summary>
         public abstract TestOutcome Outcome { get; }
+
+        /// <summary>
+        /// Returns true if the outcome and message (if any) should be used but the exception
+        /// stack trace should not be logged.
+        /// </summary>
+        public virtual bool ExcludeStackTrace
+        {
+            get { return false; }
+        }
+
+        /// <inheritdoc />
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue(HaveMessageKey, haveMessage);
+        }
     }
 }

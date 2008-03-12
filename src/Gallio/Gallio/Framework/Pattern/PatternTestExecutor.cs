@@ -83,7 +83,7 @@ namespace Gallio.Framework.Pattern
 
                 if (outcome.Status == TestStatus.Passed)
                 {
-                    PatternTestState testState = new PatternTestState(test, testHandler, converter, formatter);
+                    PatternTestState testState = new PatternTestState(test, testHandler, converter, formatter, testCommand.IsExplicit);
 
                     outcome = outcome.CombineWith(DoBeforeTest(sandbox, testState));
                     if (outcome.Status == TestStatus.Passed)
@@ -239,7 +239,7 @@ namespace Gallio.Framework.Pattern
             return sandbox.Run(delegate
             {
                 testState.TestHandler.BeforeTest(testState);
-            }, "Before Test", null);
+            }, "Before Test");
         }
 
         private static TestOutcome DoAfterTest(Sandbox sandbox, PatternTestState testState)
@@ -247,7 +247,7 @@ namespace Gallio.Framework.Pattern
             return sandbox.Run(delegate
             {
                 testState.TestHandler.AfterTest(testState);
-            }, "After Test", null);
+            }, "After Test");
         }
 
         private static TestOutcome DoDecorateTestInstance(Sandbox sandbox, PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
@@ -255,7 +255,7 @@ namespace Gallio.Framework.Pattern
             return sandbox.Run(delegate
             {
                 testState.TestHandler.DecorateTestInstance(testState, decoratedTestInstanceActions);
-            }, "Decorate Child Test", null);
+            }, "Decorate Child Test");
         }
 
         private static TestOutcome DoBeforeTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
@@ -272,7 +272,7 @@ namespace Gallio.Framework.Pattern
             return sandbox.Run(delegate
             {
                 testInstanceState.TestInstanceHandler.BeforeTestInstance(testInstanceState);
-            }, "Before Test Instance", null);
+            }, "Before Test Instance");
         }
 
         private static TestOutcome DoInitializeTestInstance(Context context, PatternTestInstanceState testInstanceState)
@@ -284,7 +284,7 @@ namespace Gallio.Framework.Pattern
                 return context.Sandbox.Run(delegate
                 {
                     testInstanceState.TestInstanceHandler.InitializeTestInstance(testInstanceState);
-                }, "Initialize", null);
+                }, "Initialize");
             }
         }
 
@@ -297,7 +297,7 @@ namespace Gallio.Framework.Pattern
                 return context.Sandbox.Run(delegate
                 {
                     testInstanceState.TestInstanceHandler.SetUpTestInstance(testInstanceState);
-                }, "Set Up", null);
+                }, "Set Up");
             }
         }
 
@@ -307,13 +307,10 @@ namespace Gallio.Framework.Pattern
             {
                 context.LifecyclePhase = LifecyclePhases.Execute;
 
-                string expectedExceptionType = testInstanceState.TestInstance.Metadata.GetValue(MetadataKeys.ExpectedException)
-                    ?? testInstanceState.Test.Metadata.GetValue(MetadataKeys.ExpectedException);
-
                 return context.Sandbox.Run(delegate
                 {
                     testInstanceState.TestInstanceHandler.ExecuteTestInstance(testInstanceState);
-                }, null, expectedExceptionType);
+                }, null);
             }
         }
 
@@ -326,7 +323,7 @@ namespace Gallio.Framework.Pattern
                 return context.Sandbox.Run(delegate
                 {
                     testInstanceState.TestInstanceHandler.TearDownTestInstance(testInstanceState);
-                }, "Tear Down", null);
+                }, "Tear Down");
             }
         }
 
@@ -339,7 +336,7 @@ namespace Gallio.Framework.Pattern
                 return context.Sandbox.Run(delegate
                 {
                     testInstanceState.TestInstanceHandler.DisposeTestInstance(testInstanceState);
-                }, "Dispose", null);
+                }, "Dispose");
             }
         }
 
@@ -348,7 +345,7 @@ namespace Gallio.Framework.Pattern
             return sandbox.Run(delegate
             {
                 testInstanceState.TestInstanceHandler.AfterTestInstance(testInstanceState);
-            }, "After Test Instance", null);
+            }, "After Test Instance");
         }
 
         private static TestOutcome DoDecorateChildTest(Sandbox sandbox, PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
@@ -356,7 +353,7 @@ namespace Gallio.Framework.Pattern
             return sandbox.Run(delegate
             {
                 testInstanceState.TestInstanceHandler.DecorateChildTest(testInstanceState, decoratedChildTestActions);
-            }, "Decorate Child Test", null);
+            }, "Decorate Child Test");
         }
         #endregion
 
@@ -385,6 +382,7 @@ namespace Gallio.Framework.Pattern
         {
             switch (combinedInheritedOutcome.Status)
             {
+                case TestStatus.Skipped:
                 case TestStatus.Passed:
                     return TestOutcome.Passed;
                 case TestStatus.Failed:
