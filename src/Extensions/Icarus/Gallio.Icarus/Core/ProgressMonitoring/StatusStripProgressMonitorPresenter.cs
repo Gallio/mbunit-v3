@@ -33,7 +33,6 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         {
             ProgressMonitor.TaskStarting += HandleTaskStarting;
             ProgressMonitor.TaskFinished += HandleTaskFinished;
-            ProgressMonitor.Canceled += HandleCanceled;
             ProgressMonitor.Changed += HandleChanged;
         }
 
@@ -45,28 +44,31 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         /// <inheritdoc />
         private void HandleChanged(object sender, EventArgs e)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(ProgressMonitor.TaskName);
-
-            string currentSubTaskName = ProgressMonitor.LeafSubTaskName;
-            if (currentSubTaskName != "")
+            if (ProgressMonitor.IsCanceled)
             {
-                sb.Append(" - ");
-                sb.Append(currentSubTaskName);
+                presenter.StatusText = "Tests cancelled";
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(ProgressMonitor.TaskName);
+
+                string currentSubTaskName = ProgressMonitor.LeafSubTaskName;
+                if (currentSubTaskName != "")
+                {
+                    sb.Append(" - ");
+                    sb.Append(currentSubTaskName);
+                }
+
+                presenter.StatusText = sb.ToString();
             }
 
-            presenter.StatusText = sb.ToString();
             presenter.CompletedWorkUnits = Convert.ToInt32(ProgressMonitor.CompletedWorkUnits);
         }
 
         private void HandleTaskFinished(object sender, EventArgs e)
         {
             presenter.CompletedWorkUnits = 0;
-        }
-
-        private void HandleCanceled(object sender, EventArgs e)
-        {
-            presenter.StatusText = "Tests cancelled";
         }
     }
 }

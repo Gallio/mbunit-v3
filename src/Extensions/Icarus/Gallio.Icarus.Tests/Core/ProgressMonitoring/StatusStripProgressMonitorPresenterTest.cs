@@ -29,7 +29,9 @@ namespace Gallio.Icarus.Tests.Core.ProgressMonitoring
         {
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
             projectPresenter.StatusText = "Tests cancelled";
+            projectPresenter.CompletedWorkUnits = 0;
             mocks.ReplayAll();
+
             StatusStripProgressMonitorPresenter statusStripProgressMonitorPresenter = new StatusStripProgressMonitorPresenter(projectPresenter);
             ObservableProgressMonitor observableProgressMonitor = new ObservableProgressMonitor();
             statusStripProgressMonitorPresenter.Present(observableProgressMonitor);
