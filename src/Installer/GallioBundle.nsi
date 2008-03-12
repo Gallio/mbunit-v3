@@ -37,6 +37,9 @@ InstType "Typical"
 ; Modern interface settings
 !define MUI_COMPONENTSPAGE_SMALLDESC ; Put description on bottom.
 !define MUI_ABORTWARNING
+!define MUI_WELCOMEFINISHPAGE_BITMAP "banner-left.bmp"
+!define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_BITMAP "banner-top.bmp"
 !include "MUI.nsh"
 
 ; Installer pages
