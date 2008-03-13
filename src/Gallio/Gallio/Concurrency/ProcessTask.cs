@@ -22,8 +22,15 @@ using Gallio.Utilities;
 namespace Gallio.Concurrency
 {
     /// <summary>
+    /// <para>
     /// A process task provides support for launching external processes
     /// and collecting their output.
+    /// </para>
+    /// <para>
+    /// The process task provides a guarnatee that when you call <see cref="Task.Join" />
+    /// all redirected output from the console output and error streams will already
+    /// have been captured and delivered to the event handlers, as appropriate.
+    /// </para>
     /// </summary>
     public class ProcessTask : Task
     {
@@ -39,6 +46,9 @@ namespace Gallio.Concurrency
 
         private Process process;
         private int exited;
+
+        private ManualResetEvent consoleOutputFinished;
+        private ManualResetEvent consoleErrorFinished;
 
         /// <summary>
         /// Creates a process task.
@@ -215,8 +225,14 @@ namespace Gallio.Concurrency
             startInfo.WorkingDirectory = workingDirectory;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
+
             startInfo.RedirectStandardOutput = captureConsoleOutput || ConsoleOutputDataReceived != null;
+            if (startInfo.RedirectStandardOutput)
+                consoleOutputFinished = new ManualResetEvent(false);
+
             startInfo.RedirectStandardError = captureConsoleError || ConsoleErrorDataReceived != null;
+            if (startInfo.RedirectStandardError)
+                consoleErrorFinished = new ManualResetEvent(false);
 
             process = StartProcess(startInfo);
             process.EnableRaisingEvents = true;
@@ -255,18 +271,30 @@ namespace Gallio.Concurrency
         /// <inheritdoc />
         protected override void AbortImpl()
         {
-            Process cachedProcess = process;
-
-            if (cachedProcess != null && !cachedProcess.HasExited)
-                cachedProcess.Kill();
+            if (process != null && !process.HasExited)
+                process.Kill();
         }
 
         /// <inheritdoc />
         protected override bool JoinImpl(TimeSpan timeout)
         {
-            Process cachedProcess = process;
+            if (process == null)
+                return true;
 
-            return cachedProcess == null || cachedProcess.WaitForExit((int)timeout.TotalMilliseconds);
+            if (!process.WaitForExit((int)timeout.TotalMilliseconds))
+                return false;
+
+            // Since the process has exited, it should not take too long to read
+            // its remaining output buffer.  The extra synchronization code here
+            // helps clients of the ProcessTask to handle process termination more
+            // robustly as it is guaranteed to have all of the output available
+            // at that time.
+            if (consoleOutputFinished != null)
+                consoleOutputFinished.WaitOne();
+            if (consoleErrorFinished != null)
+                consoleErrorFinished.WaitOne();
+
+            return true;
         }
 
         private void StartLogging()
@@ -286,18 +314,34 @@ namespace Gallio.Concurrency
 
         private void LogOutputData(object sender, DataReceivedEventArgs e)
         {
-            if (captureConsoleOutput && e.Data != null)
-                consoleOutputCaptureWriter.WriteLine(e.Data);
+            try
+            {
+                if (captureConsoleOutput && e.Data != null)
+                    consoleOutputCaptureWriter.WriteLine(e.Data);
 
-            EventHandlerUtils.SafeInvoke(ConsoleOutputDataReceived, this, e);
+                EventHandlerUtils.SafeInvoke(ConsoleOutputDataReceived, this, e);
+            }
+            finally
+            {
+                if (e.Data == null)
+                    consoleOutputFinished.Set();
+            }
         }
 
         private void LogErrorData(object sender, DataReceivedEventArgs e)
         {
-            if (captureConsoleError && e.Data != null)
-                consoleErrorCaptureWriter.WriteLine(e.Data);
+            try
+            {
+                if (captureConsoleError && e.Data != null)
+                    consoleErrorCaptureWriter.WriteLine(e.Data);
 
-            EventHandlerUtils.SafeInvoke(ConsoleOutputDataReceived, this, e);
+                EventHandlerUtils.SafeInvoke(ConsoleOutputDataReceived, this, e);
+            }
+            finally
+            {
+                if (e.Data == null)
+                    consoleErrorFinished.Set();
+            }
         }
     }
 }

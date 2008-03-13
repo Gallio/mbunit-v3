@@ -118,7 +118,8 @@ namespace Gallio.Hosting
                 SetRuntime(runtime);
                 runtime.Initialize(logger);
 
-                UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;
+                if (! UnhandledExceptionPolicy.HasReportUnhandledExceptionHandler)
+                    UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;
             }
             catch (Exception)
             {

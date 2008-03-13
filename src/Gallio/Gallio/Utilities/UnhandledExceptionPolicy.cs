@@ -83,6 +83,25 @@ namespace Gallio.Utilities
         }
 
         /// <summary>
+        /// <para>
+        /// Returns true if there is at least one handler registered for
+        /// <see cref="ReportUnhandledException"/>.
+        /// </para>
+        /// <para>
+        /// This property can be used to avoid duplicate exception reporting
+        /// if some other system component has already registered a handler.
+        /// </para>
+        /// </summary>
+        public static bool HasReportUnhandledExceptionHandler
+        {
+            get
+            {
+                lock (syncRoot)
+                    return reportUnhandledException != null;
+            }
+        }
+
+        /// <summary>
         /// Reports an unhandled exception.
         /// </summary>
         /// <param name="message">A message to explain how the exception was intercepted</param>
