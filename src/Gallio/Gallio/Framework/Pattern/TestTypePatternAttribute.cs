@@ -278,22 +278,22 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to fields that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// The default implementation returns <see cref="TestParameterPatternAttribute.AutomaticInstance" />.
         /// </remarks>
         protected virtual IPattern DefaultFieldPattern
         {
-            get { return TestParameterPatternAttribute.DefaultInstance; }
+            get { return TestParameterPatternAttribute.AutomaticInstance; }
         }
 
         /// <summary>
         /// Gets the default pattern to apply to properties that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// The default implementation returns <see cref="TestParameterPatternAttribute.AutomaticInstance" />.
         /// </remarks>
         protected virtual IPattern DefaultPropertyPattern
         {
-            get { return TestParameterPatternAttribute.DefaultInstance; }
+            get { return TestParameterPatternAttribute.AutomaticInstance; }
         }
 
         /// <summary>
