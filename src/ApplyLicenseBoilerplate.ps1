@@ -1,7 +1,7 @@
 Param
 (
-	[bool] $verifyOnly = $false, # No changes will be made if set to true
-	[bool] $verbose = $false
+	[Switch] $verifyOnly, # No changes will be made if set to true
+	[Switch] $verbose     # Additional output provided if set to true
 )
 
 function GetFileContent([string] $path)
@@ -20,7 +20,7 @@ function Recurse([string] $path)
 			if ($file -isnot [System.IO.DirectoryInfo])
 			{
 				$extension = $file.Extension.ToLower()
-				if ($licencesByExtension.ContainsKey($extension) -and -not $excludedFiles.Contains($file.Name))
+				if ($licencesByExtension.ContainsKey($extension) -and $file.Name -notmatch $excludedFilePattern)
 				{
 					$fileContent = GetFileContent $file.FullName
 					$relativeName = $file.FullName.Replace($startPath, "")
@@ -53,7 +53,7 @@ function Recurse([string] $path)
 			}
 			else
 			{
-				if ($excludedFolders.Contains($file.Name.ToLower()))
+				if ($file.Name -match $excludedFolderPattern)
 				{
 					if ($verbose)
 					{
@@ -80,22 +80,24 @@ $firstLicenseLine = (Get-Content $licenseFile)[0].Replace("// ", "")
 $licencesByExtension = @{}
 $licencesByExtension[".cs"] = ($licenseContent + $newLine)
 $licencesByExtension[".vb"] = ($licenseContent.Replace("// ", "' ") + $newLine)
-$licencesByExtension[".xml"] = ("<!--" + $newLine + $licenseContent + "-->" + $newLine + $newLine)
 
-# Special folders to exclude
-$excludedFolders = New-Object System.Collections.ArrayList
-$excludedFolders.Add("bin") | Out-Null
-$excludedFolders.Add("templates") | Out-Null
-$excludedFolders.Add("obj") | Out-Null
+## We don't really want most, if any, xml files processed.
+## Quite a few of them belong to third party libraries or are configuration
+## markup.  Maybe we could turn it on selectively for a few of them.  --Jeff.
+## $licencesByExtension[".xml"] = ("<!--" + $newLine + $licenseContent + "-->" + $newLine + $newLine)
 
-# Special files can also be excluded
-$excludedFiles = New-Object System.Collections.ArrayList
-$excludedFiles.Add("Resources.Designer.cs") | Out-Null
+# Special folder patterns to exclude
+$excludedFolderPattern = "^(bin|obj|Templates|NDependOut)$"
+
+# Special file patterns can also be excluded
+$excludedFilePattern = "Designer.cs$"
 
 $filesToUpdate = New-Object System.Collections.ArrayList
 $skippedFolders = New-Object System.Collections.ArrayList
 
 cls
+if ($verifyOnly) { echo ("** Verify Only **" + $newLine) }
+
 "Processing..."
 $startPath = gl # Need to save it for later
 $startPath | Recurse
