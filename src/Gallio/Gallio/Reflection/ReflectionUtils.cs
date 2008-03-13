@@ -15,11 +15,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
-using Gallio.Collections;
-using Gallio.Properties;
 
 namespace Gallio.Reflection
 {

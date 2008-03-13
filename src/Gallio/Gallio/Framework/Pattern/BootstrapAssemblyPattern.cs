@@ -28,36 +28,71 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         public static readonly BootstrapAssemblyPattern Instance = new BootstrapAssemblyPattern();
 
-        /// <summary>
-        /// Processes an assembly.
-        /// </summary>
-        /// <param name="containingTestBuilder">The containing test builder</param>
-        /// <param name="assembly">The assembly</param>
-        /// <returns>True if the assembly was consumed</returns>
-        protected virtual bool ProcessAssembly(IPatternTestBuilder containingTestBuilder, IAssemblyInfo assembly)
+        /// <inheritdoc />
+        public override bool IsPrimary
         {
-            return PatternUtils.ConsumeWithFallback(containingTestBuilder, assembly, ProcessAssemblyFallback);
-        }
-
-        /// <summary>
-        /// Processes an assembly using a default rule because no associated pattern has consumed it.
-        /// </summary>
-        /// <param name="containingTestBuilder">The containing test builder</param>
-        /// <param name="assembly">The assembly</param>
-        /// <returns>True if the assembly was consumed</returns>
-        protected virtual bool ProcessAssemblyFallback(IPatternTestBuilder containingTestBuilder, IAssemblyInfo assembly)
-        {
-            return AssemblyPatternAttribute.DefaultInstance.Consume(containingTestBuilder, assembly);
+            get { return true; }
         }
 
         /// <inheritdoc />
-        public override bool Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        public override bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement)
+        {
+            IPattern pattern = PatternUtils.GetPrimaryPattern(patternResolver, codeElement);
+            if (pattern == null)
+            {
+                IAssemblyInfo assembly = codeElement as IAssemblyInfo;
+                if (assembly != null)
+                    pattern = DefaultAssemblyPattern;
+
+                if (pattern == null)
+                    return false;
+            }
+
+            // TODO: Need to find a way to handle default patterns for elements besides assemblies.
+            return pattern.IsTest(patternResolver, codeElement);
+        }
+
+        /// <inheritdoc />
+        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
         {
             IAssemblyInfo assembly = codeElement as IAssemblyInfo;
-            if (assembly == null)
-                return false;
+            if (assembly != null)
+                ProcessAssembly(containingTestBuilder, assembly, skipChildren);
+        }
 
-            return ProcessAssembly(containingTestBuilder, assembly);
+        /// <summary>
+        /// Gets the default pattern to apply to assemblies that do not have a primary pattern, or null if none.
+        /// </summary>
+        /// <remarks>
+        /// The default implementation returns <see cref="AssemblyPatternAttribute.DefaultInstance" />.
+        /// </remarks>
+        protected virtual IPattern DefaultAssemblyPattern
+        {
+            get { return AssemblyPatternAttribute.DefaultInstance; }
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of an assembly, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="assembly">The assembly</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryAssemblyPattern(IPatternResolver patternResolver, IAssemblyInfo assembly)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, assembly) ?? DefaultAssemblyPattern;
+        }
+
+        /// <summary>
+        /// Processes an assembly.
+        /// </summary>
+        /// <param name="frameworkTestBuilder">The test builder for the framework</param>
+        /// <param name="assembly">The assembly</param>
+        /// <param name="skipChildren">If true, skips processing types within the assembly (if supported)</param>
+        protected virtual void ProcessAssembly(IPatternTestBuilder frameworkTestBuilder, IAssemblyInfo assembly, bool skipChildren)
+        {
+            IPattern pattern = GetPrimaryAssemblyPattern(frameworkTestBuilder.TestModelBuilder.PatternResolver, assembly);
+            if (pattern != null)
+                pattern.Consume(frameworkTestBuilder, assembly, skipChildren);
         }
     }
 }

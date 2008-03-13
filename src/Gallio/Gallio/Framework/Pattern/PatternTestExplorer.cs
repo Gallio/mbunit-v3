@@ -31,7 +31,7 @@ namespace Gallio.Framework.Pattern
     public class PatternTestExplorer : BaseTestExplorer
     {
         private readonly IPatternTestModelBuilder builder;
-        private readonly List<IAssemblyInfo> assemblies;
+        private readonly Dictionary<IAssemblyInfo, bool> assemblies;
         private readonly Dictionary<string, IPatternTestBuilder> topLevelTestBuilders;
 
         /// <summary>
@@ -43,28 +43,30 @@ namespace Gallio.Framework.Pattern
             : base(testModel)
         {
             builder = new DefaultPatternTestModelBuilder(testModel, DeclarativePatternResolver.Instance);
-            assemblies = new List<IAssemblyInfo>();
+            assemblies = new Dictionary<IAssemblyInfo, bool>();
             topLevelTestBuilders = new Dictionary<string, IPatternTestBuilder>();
         }
 
         /// <inheritdoc />
         public override bool IsTest(ICodeElementInfo element)
         {
-            // FIXME: This check is not entirely accurate because it
-            //        ignores any custom rules that might be defined elsewhere.
-            return AttributeUtils.HasAttribute<PatternAttribute>(element, true);
+            return BootstrapAssemblyPattern.Instance.IsTest(builder.PatternResolver, element);
         }
 
         /// <inheritdoc />
         public override void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
         {
-            BuildAssemblyTest(assembly);
-
-            foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(assembly))
+            if (BuildAssemblyTest(assembly, false))
             {
-                testBuilder.Test.Populate(true);
+                foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(assembly))
+                    testBuilder.PopulateChildrenChain.Action(null);
 
-                if (consumer != null)
+                assemblies[assembly] = true;
+            }
+
+            if (consumer != null)
+            {
+                foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(assembly))
                     consumer(testBuilder.Test);
             }
         }
@@ -74,36 +76,41 @@ namespace Gallio.Framework.Pattern
         {
             IAssemblyInfo assembly = type.Assembly;
 
-            BuildAssemblyTest(assembly);
-
-            foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(assembly))
-                testBuilder.Test.Populate(false);
-
-            foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(type))
+            if (! BuildAssemblyTest(assembly, true))
             {
-                testBuilder.Test.Populate(true);
-
-                if (consumer != null)
+                foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(assembly))
+                    testBuilder.PopulateChildrenChain.Action(type);
+            }
+            
+            if (consumer != null)
+            {
+                foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(type))
                     consumer(testBuilder.Test);
             }
         }
 
-        private void BuildAssemblyTest(IAssemblyInfo assembly)
+        private bool BuildAssemblyTest(IAssemblyInfo assembly, bool skipChildren)
         {
-            if (assemblies.Contains(assembly))
-                return;
-
-            assemblies.Add(assembly);
+            bool fullyPopulated;
+            if (assemblies.TryGetValue(assembly, out fullyPopulated))
+                return fullyPopulated;
 
             IList<ToolInfo> tools = GetReferencedToolsSortedById(assembly);
             if (tools.Count == 0)
-                return;
+                fullyPopulated = true;
 
-            IPatternTestBuilder topLevelTestBuilder = GetTopLevelTestBuilder(tools);
+            assemblies.Add(assembly, fullyPopulated);
 
-            InitializeAssembly(topLevelTestBuilder, assembly);
+            if (!fullyPopulated)
+            {
+                IPatternTestBuilder topLevelTestBuilder = GetTopLevelTestBuilder(tools);
 
-            BootstrapAssemblyPattern.Instance.Consume(topLevelTestBuilder, assembly);
+                InitializeAssembly(topLevelTestBuilder, assembly);
+
+                BootstrapAssemblyPattern.Instance.Consume(topLevelTestBuilder, assembly, skipChildren);
+            }
+
+            return fullyPopulated;
         }
 
         private IPatternTestBuilder GetTopLevelTestBuilder(IList<ToolInfo> tools)

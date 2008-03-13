@@ -41,17 +41,45 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         public static readonly TestParameterPatternAttribute DefaultInstance = new DefaultImpl();
 
+        /// <summary>
+        /// Gets an instance of the parameter pattern attribute to use when no
+        /// other pattern consumes the parameter but when the parameter appears to have
+        /// other contributing pattern attributes associated with it.  So a test parameter
+        /// is created automatically if we try to apply contributions to it, such as data items,
+        /// but otherwise it is silent.  This is particularly useful with fields and properties.
+        /// </summary>
+        public static readonly TestParameterPatternAttribute AutomaticInstance = new AutomaticImpl();
+
         /// <inheritdoc />
-        public override bool Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        public override bool IsPrimary
+        {
+            get { return true; }
+        }
+
+        /// <inheritdoc />
+        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
         {
             ISlotInfo slot = (ISlotInfo)codeElement;
+            Validate(slot);
 
             PatternTestParameter testParameter = CreateTestParameter(containingTestBuilder, slot);
             IPatternTestParameterBuilder testParameterBuilder = containingTestBuilder.AddParameter(testParameter);
             InitializeTestParameter(testParameterBuilder, slot);
 
             testParameterBuilder.ApplyDecorators();
-            return true;
+        }
+
+        /// <summary>
+        /// Validates whether the attribute has been applied to a valid <see cref="ISlotInfo" />.
+        /// Called by <see cref="Consume" />.
+        /// </summary>
+        /// <remarks>
+        /// The default implementation does nothing.
+        /// </remarks>
+        /// <param name="slot">The slot</param>
+        /// <exception cref="ModelException">Thrown if the attribute is applied to an inappropriate slot</exception>
+        protected virtual void Validate(ISlotInfo slot)
+        {
         }
 
         /// <summary>
@@ -83,6 +111,15 @@ namespace Gallio.Framework.Pattern
         
         private sealed class DefaultImpl : TestParameterPatternAttribute
         {
+        }
+
+        private sealed class AutomaticImpl : TestParameterPatternAttribute
+        {
+            public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+            {
+                if (containingTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(codeElement, true).GetEnumerator().MoveNext())
+                    base.Consume(containingTestBuilder, codeElement, skipChildren);
+            }
         }
     }
 }

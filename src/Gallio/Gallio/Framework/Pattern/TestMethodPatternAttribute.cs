@@ -41,11 +41,22 @@ namespace Gallio.Framework.Pattern
         public static readonly TestMethodPatternAttribute DefaultInstance = new DefaultImpl();
 
         /// <inheritdoc />
-        public override bool Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        public override bool IsPrimary
+        {
+            get { return true; }
+        }
+
+        /// <inheritdoc />
+        public override bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
         {
             IMethodInfo method = (IMethodInfo)codeElement;
-            if (!ShouldConsume(method))
-                return false;
+            Validate(method);
 
             PatternTest test = CreateTest(containingTestBuilder, method);
             IPatternTestBuilder testBuilder = containingTestBuilder.AddChild(test);
@@ -53,21 +64,21 @@ namespace Gallio.Framework.Pattern
             SetTestSemantics(testBuilder.Test, method);
 
             testBuilder.ApplyDecorators();
-            return true;
         }
 
         /// <summary>
-        /// Returns true if the <see cref="Consume" /> method should proceed
-        /// to call <see cref="CreateTest" /> for the specified <see cref="IMethodInfo" />.
+        /// Validates whether the attribute has been applied to a valid <see cref="IMethodInfo" />.
+        /// Called by <see cref="Consume" />.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns true <paramref name="method"/> is not abstract.
+        /// The default implementation throws an exception if <paramref name="method"/> is abstract.
         /// </remarks>
         /// <param name="method">The method</param>
-        /// <returns>True if the method should be consumed</returns>
-        protected virtual bool ShouldConsume(IMethodInfo method)
+        /// <exception cref="ModelException">Thrown if the attribute is applied to an inappropriate method</exception>
+        protected virtual void Validate(IMethodInfo method)
         {
-            return !method.IsAbstract;
+            if (method.IsAbstract)
+                throw new ModelException(String.Format("The {0} attribute is not valid for use on method '{1}'.  The method must not be abstract.", GetType().Name, method));
         }
 
         /// <summary>
@@ -101,11 +112,11 @@ namespace Gallio.Framework.Pattern
             if (method.IsGenericMethodDefinition)
             {
                 foreach (IGenericParameterInfo parameter in method.GenericArguments)
-                    ProcessSlot(methodTestBuilder, parameter);
+                    ProcessGenericParameter(methodTestBuilder, parameter);
             }
 
             foreach (IParameterInfo parameter in method.Parameters)
-                ProcessSlot(methodTestBuilder, parameter);
+                ProcessMethodParameter(methodTestBuilder, parameter);
         }
 
         /// <summary>
@@ -156,25 +167,71 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Processes a method parameter or generic parameter slot.
+        /// Gets the default pattern to apply to generic parameters that do not have a primary pattern, or null if none.
         /// </summary>
-        /// <param name="methodTestBuilder">The test builder for the method</param>
-        /// <param name="slot">The slot</param>
-        /// <returns>True if the slot was consumed</returns>
-        protected virtual bool ProcessSlot(IPatternTestBuilder methodTestBuilder, ISlotInfo slot)
+        /// <remarks>
+        /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </remarks>
+        protected virtual IPattern DefaultGenericParameterPattern
         {
-            return PatternUtils.ConsumeWithFallback(methodTestBuilder, slot, ProcessSlotFallback);
+            get { return TestParameterPatternAttribute.DefaultInstance; }
         }
 
         /// <summary>
-        /// Processes a slot using a default rule because no associated pattern has consumed it.
+        /// Gets the default pattern to apply to method parameters that do not have a primary pattern, or null if none.
         /// </summary>
-        /// <param name="methodTestBuilder">The test builder for the method</param>
-        /// <param name="slot">The slot</param>
-        /// <returns>True if the slot was consumed</returns>
-        protected virtual bool ProcessSlotFallback(IPatternTestBuilder methodTestBuilder, ISlotInfo slot)
+        /// <remarks>
+        /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </remarks>
+        protected virtual IPattern DefaultMethodParameterPattern
         {
-            return TestParameterPatternAttribute.DefaultInstance.Consume(methodTestBuilder, slot);
+            get { return TestParameterPatternAttribute.DefaultInstance; }
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of a generic parameter, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="genericParameter">The generic parameter</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryGenericParameterPattern(IPatternResolver patternResolver, IGenericParameterInfo genericParameter)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, genericParameter) ?? DefaultGenericParameterPattern;
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of a method parameter, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="methodParameter">The method parameter</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryMethodParameterPattern(IPatternResolver patternResolver, IParameterInfo methodParameter)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, methodParameter) ?? DefaultMethodParameterPattern;
+        }
+
+        /// <summary>
+        /// Processes a generic parameter.
+        /// </summary>
+        /// <param name="typeTestBuilder">The test builder for the type</param>
+        /// <param name="genericParameter">The generic parameter</param>
+        protected virtual void ProcessGenericParameter(IPatternTestBuilder typeTestBuilder, IGenericParameterInfo genericParameter)
+        {
+            IPattern pattern = GetPrimaryGenericParameterPattern(typeTestBuilder.TestModelBuilder.PatternResolver, genericParameter);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, genericParameter, false);
+        }
+
+        /// <summary>
+        /// Processes a method parameter.
+        /// </summary>
+        /// <param name="typeTestBuilder">The test builder for the type</param>
+        /// <param name="methodParameter">The method parameter</param>
+        protected virtual void ProcessMethodParameter(IPatternTestBuilder typeTestBuilder, IParameterInfo methodParameter)
+        {
+            IPattern pattern = GetPrimaryMethodParameterPattern(typeTestBuilder.TestModelBuilder.PatternResolver, methodParameter);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, methodParameter, false);
         }
 
         private sealed class DefaultImpl : TestMethodPatternAttribute

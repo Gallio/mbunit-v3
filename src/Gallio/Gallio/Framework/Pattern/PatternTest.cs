@@ -14,10 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using Gallio.Framework.Data;
 using Gallio.Hosting;
-using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Model;
@@ -31,11 +29,8 @@ namespace Gallio.Framework.Pattern
     /// <seealso cref="PatternTestFramework"/>
     public class PatternTest : BaseTest, IDataSourceScope
     {
-        private DataSourceTable dataSourceTable;
-        private event PatternTestPopulator populator;
-
         private readonly PatternTestActions testActions;
-
+        private DataSourceTable dataSourceTable;
         private TimeSpan? timeout;
 
         /// <summary>
@@ -69,16 +64,6 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Returns <c>true</c> if there is no additional work required to populate
-        /// the children of this test.
-        /// </summary>
-        /// <seealso cref="Populate"/>
-        public bool IsPopulated
-        {
-            get { return populator == null; }
-        }
-
-        /// <summary>
         /// Gets the set of actions that describe the behavior of the test.
         /// </summary>
         public PatternTestActions TestActions
@@ -92,47 +77,6 @@ namespace Gallio.Framework.Pattern
         public PatternTestInstanceActions TestInstanceActions
         {
             get { return testActions.TestInstanceActions; }
-        }
-
-        /// <summary>
-        /// Populates the children of this test if not already populated.
-        /// Otherwise does nothing.
-        /// </summary>
-        /// <param name="recurse">If true, the populator should recursively populate
-        /// all of its newly populated test elements in addition to itself</param>
-        public void Populate(bool recurse)
-        {
-            PatternTestPopulator oldPopulator = populator;
-
-            if (oldPopulator != null)
-            {
-                populator = null;
-                oldPopulator(recurse);
-            }
-        }
-
-        /// <summary>
-        /// <para>
-        /// Adds a populator to the list of actions to perform to populate
-        /// the children of this test lazily.
-        /// </para>
-        /// <para>
-        /// When the test is initially created, it may not
-        /// have all of its children in place.  This can occur because we only
-        /// require a subset of the tests to be populated for certain operations
-        /// such as enumerating the tests within a type.  The delegate added here
-        /// will eventually be called by <see cref="Populate" /> if the children
-        /// of this test are needed.
-        /// </para>
-        /// </summary>
-        /// <param name="populator">The populator to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="populator"/> is null</exception>
-        public void AddPopulator(PatternTestPopulator populator)
-        {
-            if (populator == null)
-                throw new ArgumentNullException("populator");
-
-            this.populator += populator;
         }
 
         /// <inheritdoc />

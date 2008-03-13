@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Framework.Data;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 

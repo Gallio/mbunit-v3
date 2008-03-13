@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Model;
+using Gallio.Reflection;
 
 namespace Gallio.Framework.Pattern
 {
@@ -34,6 +35,19 @@ namespace Gallio.Framework.Pattern
         /// Gets the builder for the test model.
         /// </summary>
         IPatternTestModelBuilder TestModelBuilder { get; }
+
+        /// <summary>
+        /// <para>
+        /// Gets a chain of actions that are used to lazily populate children of this
+        /// test that are declared by the specified code element.  Does nothing if the children have
+        /// already been populated.
+        /// </para>
+        /// <para>
+        /// The action's parameter specified the code element that declares the child to be
+        /// populated.  If its value is null, then all children should be populated.
+        /// </para>
+        /// </summary>
+        ActionChain<ICodeElementInfo> PopulateChildrenChain { get; }
 
         /// <summary>
         /// Adds a test as a child of this test and returns a new <see cref="IPatternTestBuilder" />.

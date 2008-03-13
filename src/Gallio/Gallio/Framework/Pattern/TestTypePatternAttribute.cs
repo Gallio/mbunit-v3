@@ -44,11 +44,22 @@ namespace Gallio.Framework.Pattern
         public static readonly TestTypePatternAttribute DefaultInstance = new DefaultImpl();
 
         /// <inheritdoc />
-        public override bool Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        public override bool IsPrimary
+        {
+            get { return true; }
+        }
+
+        /// <inheritdoc />
+        public override bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
         {
             ITypeInfo type = (ITypeInfo)codeElement;
-            if (!ShouldConsume(type))
-                return false;
+            Validate(type);
 
             PatternTest test = CreateTest(containingTestBuilder, type);
             IPatternTestBuilder testBuilder = containingTestBuilder.AddChild(test);
@@ -56,24 +67,23 @@ namespace Gallio.Framework.Pattern
             SetTestSemantics(test, type);
 
             testBuilder.ApplyDecorators();
-            return true;
         }
 
         /// <summary>
-        /// Returns true if the <see cref="Consume" /> method should proceed
-        /// to call <see cref="CreateTest" /> for the specified <see cref="ITypeInfo" />.
+        /// Validates whether the attribute has been applied to a valid <see cref="ITypeInfo" />.
+        /// Called by <see cref="Consume" />.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns true if <paramref name="type"/> is a
-        /// concrete class.  Returns false for interfaces, abstract classes, open
-        /// generic type definitions, generic type parameters, generic method parameters,
-        /// arrays, pointers and references.
+        /// The default implementation throws an exception if <paramref name="type"/> is an interface,
+        /// abstract class, open generic type definition, generic type parameter, generic method parameter,
+        /// array, pointer or reference.
         /// </remarks>
         /// <param name="type">The type</param>
-        /// <returns>True if the type should be consumed</returns>
-        protected virtual bool ShouldConsume(ITypeInfo type)
+        /// <exception cref="ModelException">Thrown if the attribute is applied to an inappropriate type</exception>
+        protected virtual void Validate(ITypeInfo type)
         {
-            return !type.IsArray && !type.IsByRef && !type.IsPointer && type.IsClass;
+            if (! type.IsClass || type.IsArray || type.IsByRef || type.IsPointer || type.ContainsGenericParameters)
+                throw new ModelException(String.Format("The {0} attribute is not valid for use on type '{1}'.  The type must be a concrete class.", GetType().Name, type));
         }
 
         /// <summary>
@@ -111,7 +121,7 @@ namespace Gallio.Framework.Pattern
             if (type.IsGenericTypeDefinition)
             {
                 foreach (IGenericParameterInfo parameter in type.GenericArguments)
-                    ProcessSlot(typeTestBuilder, parameter);
+                    ProcessGenericParameter(typeTestBuilder, parameter);
             }
 
             BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public;
@@ -121,10 +131,10 @@ namespace Gallio.Framework.Pattern
             // TODO: We should probably process groups of members in sorted order working outwards
             //       from the base type, like an onion.
             foreach (IFieldInfo field in CodeElementSorter.SortMembersByDeclaringType(type.GetFields(bindingFlags)))
-                ProcessSlot(typeTestBuilder, field);
+                ProcessField(typeTestBuilder, field);
 
             foreach (IPropertyInfo property in CodeElementSorter.SortMembersByDeclaringType(type.GetProperties(bindingFlags)))
-                ProcessSlot(typeTestBuilder, property);
+                ProcessProperty(typeTestBuilder, property);
 
             foreach (IMethodInfo method in CodeElementSorter.SortMembersByDeclaringType(type.GetMethods(bindingFlags)))
                 ProcessMethod(typeTestBuilder, method);
@@ -232,75 +242,147 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Processes a field, property, constructor parameter or generic parameter slot.
+        /// Gets the default pattern to apply to generic parameters that do not have a primary pattern, or null if none.
         /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="slot">The slot</param>
-        /// <returns>True if the slot was consumed</returns>
-        protected virtual bool ProcessSlot(IPatternTestBuilder typeTestBuilder, ISlotInfo slot)
+        /// <remarks>
+        /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </remarks>
+        protected virtual IPattern DefaultGenericParameterPattern
         {
-            return PatternUtils.ConsumeWithFallback(typeTestBuilder, slot, ProcessSlotFallback);
+            get { return TestParameterPatternAttribute.DefaultInstance; }
         }
 
         /// <summary>
-        /// Processes a slot using a default rule because no associated pattern has consumed it.
+        /// Gets the default pattern to apply to methods that do not have a primary pattern, or null if none.
         /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="slot">The slot</param>
-        /// <returns>True if the slot was consumed</returns>
-        protected virtual bool ProcessSlotFallback(IPatternTestBuilder typeTestBuilder, ISlotInfo slot)
+        /// <remarks>
+        /// The default implementation returns <c>null</c>.
+        /// </remarks>
+        protected virtual IPattern DefaultMethodPattern
         {
-            if (slot is IFieldInfo || slot is IPropertyInfo)
-                return false;
-
-            return TestParameterPatternAttribute.DefaultInstance.Consume(typeTestBuilder, slot);
+            get { return null; }
         }
 
         /// <summary>
-        /// Processes a constructor.
+        /// Gets the default pattern to apply to events that do not have a primary pattern, or null if none.
         /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="constructor">The constructor</param>
-        /// <returns>True if the constructor was consumed</returns>
-        protected virtual bool ProcessConstructor(IPatternTestBuilder typeTestBuilder, IConstructorInfo constructor)
+        /// <remarks>
+        /// The default implementation returns <c>null</c>.
+        /// </remarks>
+        protected virtual IPattern DefaultEventPattern
         {
-            return PatternUtils.ConsumeWithFallback(typeTestBuilder, constructor, ProcessConstructorFallback);
+            get { return null; }
         }
 
         /// <summary>
-        /// Processes a constructor using a default rule because no associated pattern has consumed it.
+        /// Gets the default pattern to apply to fields that do not have a primary pattern, or null if none.
         /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="constructor">The constructor</param>
-        /// <returns>True if the constructor was consumed</returns>
-        protected virtual bool ProcessConstructorFallback(IPatternTestBuilder typeTestBuilder, IConstructorInfo constructor)
+        /// <remarks>
+        /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </remarks>
+        protected virtual IPattern DefaultFieldPattern
         {
-            foreach (IParameterInfo parameter in constructor.Parameters)
-                ProcessSlot(typeTestBuilder, parameter);
-
-            return true;
+            get { return TestParameterPatternAttribute.DefaultInstance; }
         }
 
         /// <summary>
-        /// Processes an event.
+        /// Gets the default pattern to apply to properties that do not have a primary pattern, or null if none.
         /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
+        /// <remarks>
+        /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </remarks>
+        protected virtual IPattern DefaultPropertyPattern
+        {
+            get { return TestParameterPatternAttribute.DefaultInstance; }
+        }
+
+        /// <summary>
+        /// Gets the default pattern to apply to constructors that do not have a primary pattern, or null if none.
+        /// </summary>
+        /// <remarks>
+        /// The default implementation returns <see cref="TestConstructorPatternAttribute.DefaultInstance" />.
+        /// </remarks>
+        protected virtual IPattern DefaultConstructorPattern
+        {
+            get { return TestConstructorPatternAttribute.DefaultInstance; }
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of a generic parameter, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="genericParameter">The generic parameter</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryGenericParameterPattern(IPatternResolver patternResolver, IGenericParameterInfo genericParameter)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, genericParameter) ?? DefaultGenericParameterPattern;
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of a method, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="method">The method</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryMethodPattern(IPatternResolver patternResolver, IMethodInfo method)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, method) ?? DefaultMethodPattern;
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of an event, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
         /// <param name="event">The event</param>
-        /// <returns>True if the event was consumed</returns>
-        protected virtual bool ProcessEvent(IPatternTestBuilder typeTestBuilder, IEventInfo @event)
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryEventPattern(IPatternResolver patternResolver, IEventInfo @event)
         {
-            return PatternUtils.ConsumeWithFallback(typeTestBuilder, @event, ProcessEventFallback);
+            return PatternUtils.GetPrimaryPattern(patternResolver, @event) ?? DefaultEventPattern;
         }
 
         /// <summary>
-        /// Processes an event using a default rule because no associated pattern has consumed it.
+        /// Gets the primary pattern of a field, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="field">The field</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryFieldPattern(IPatternResolver patternResolver, IFieldInfo field)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, field) ?? DefaultFieldPattern;
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of a property, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="property">The property</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryPropertyPattern(IPatternResolver patternResolver, IPropertyInfo property)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, property) ?? DefaultPropertyPattern;
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of a constructor, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="constructor">The constructor</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryConstructorPattern(IPatternResolver patternResolver, IConstructorInfo constructor)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, constructor) ?? DefaultConstructorPattern;
+        }
+
+        /// <summary>
+        /// Processes a generic parameter.
         /// </summary>
         /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="event">The event</param>
-        /// <returns>True if the event was consumed</returns>
-        protected virtual bool ProcessEventFallback(IPatternTestBuilder typeTestBuilder, IEventInfo @event)
+        /// <param name="genericParameter">The generic parameter</param>
+        protected virtual void ProcessGenericParameter(IPatternTestBuilder typeTestBuilder, IGenericParameterInfo genericParameter)
         {
-            return false;
+            IPattern pattern = GetPrimaryGenericParameterPattern(typeTestBuilder.TestModelBuilder.PatternResolver, genericParameter);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, genericParameter, false);
         }
 
         /// <summary>
@@ -308,21 +390,59 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="typeTestBuilder">The test builder for the type</param>
         /// <param name="method">The method</param>
-        /// <returns>True if the method was consumed</returns>
-        protected virtual bool ProcessMethod(IPatternTestBuilder typeTestBuilder, IMethodInfo method)
+        protected virtual void ProcessMethod(IPatternTestBuilder typeTestBuilder, IMethodInfo method)
         {
-            return PatternUtils.ConsumeWithFallback(typeTestBuilder, method, ProcessMethodFallback);
+            IPattern pattern = GetPrimaryMethodPattern(typeTestBuilder.TestModelBuilder.PatternResolver, method);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, method, false);
         }
 
         /// <summary>
-        /// Processes a method using a default rule because no associated pattern has consumed it.
+        /// Processes an event.
         /// </summary>
         /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="method">The method</param>
-        /// <returns>True if the method was consumed</returns>
-        protected virtual bool ProcessMethodFallback(IPatternTestBuilder typeTestBuilder, IMethodInfo method)
+        /// <param name="event">The event</param>
+        protected virtual void ProcessEvent(IPatternTestBuilder typeTestBuilder, IEventInfo @event)
         {
-            return false;
+            IPattern pattern = GetPrimaryEventPattern(typeTestBuilder.TestModelBuilder.PatternResolver, @event);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, @event, false);
+        }
+
+        /// <summary>
+        /// Processes a field.
+        /// </summary>
+        /// <param name="typeTestBuilder">The test builder for the type</param>
+        /// <param name="field">The field</param>
+        protected virtual void ProcessField(IPatternTestBuilder typeTestBuilder, IFieldInfo field)
+        {
+            IPattern pattern = GetPrimaryFieldPattern(typeTestBuilder.TestModelBuilder.PatternResolver, field);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, field, false);
+        }
+
+        /// <summary>
+        /// Processes a property.
+        /// </summary>
+        /// <param name="typeTestBuilder">The test builder for the type</param>
+        /// <param name="property">The property</param>
+        protected virtual void ProcessProperty(IPatternTestBuilder typeTestBuilder, IPropertyInfo property)
+        {
+            IPattern pattern = GetPrimaryPropertyPattern(typeTestBuilder.TestModelBuilder.PatternResolver, property);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, property, false);
+        }
+
+        /// <summary>
+        /// Processes a constructor.
+        /// </summary>
+        /// <param name="typeTestBuilder">The test builder for the type</param>
+        /// <param name="constructor">The constructor</param>
+        protected virtual void ProcessConstructor(IPatternTestBuilder typeTestBuilder, IConstructorInfo constructor)
+        {
+            IPattern pattern = GetPrimaryConstructorPattern(typeTestBuilder.TestModelBuilder.PatternResolver, constructor);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, constructor, false);
         }
 
         private sealed class DefaultImpl : TestTypePatternAttribute

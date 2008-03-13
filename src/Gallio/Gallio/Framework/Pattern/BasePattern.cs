@@ -25,9 +25,20 @@ namespace Gallio.Framework.Pattern
     public abstract class BasePattern : IPattern
     {
         /// <inheritdoc />
-        public virtual bool Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        public virtual bool IsPrimary
+        {
+            get { return false; }
+        }
+
+        /// <inheritdoc />
+        public virtual bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement)
         {
             return false;
+        }
+
+        /// <inheritdoc />
+        public virtual void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        {
         }
 
         /// <inheritdoc />

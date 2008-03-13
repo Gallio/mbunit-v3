@@ -61,11 +61,10 @@ namespace MbUnit.Framework
     public class AssemblyFixtureAttribute : TestTypePatternAttribute
     {
         /// <inheritdoc />
-        public override bool Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
         {
             ITypeInfo type = (ITypeInfo)codeElement;
-            if (!ShouldConsume(type))
-                return false;
+            Validate(type);
 
             PatternTest assemblyTest = containingTestBuilder.Test;
             if (assemblyTest.Kind != TestKinds.Assembly)
@@ -73,7 +72,6 @@ namespace MbUnit.Framework
 
             InitializeTest(containingTestBuilder, type);
             SetTestSemantics(assemblyTest, type);
-            return true;
         }
 
         /// <inheritdoc />

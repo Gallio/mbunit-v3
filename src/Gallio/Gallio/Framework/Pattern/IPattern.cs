@@ -48,6 +48,46 @@ namespace Gallio.Framework.Pattern
     {
         /// <summary>
         /// <para>
+        /// Returns true if this is a primary pattern.
+        /// </para>
+        /// <para>
+        /// A primary pattern is a pattern that defines the ultimate purpose of a code
+        /// element and the nature of the tests or test parameters that are produced from it.
+        /// Consequently the primary pattern is the only one on which the <see cref="Consume" />
+        /// method will be called.
+        /// </para>
+        /// <para>
+        /// Each code element may have at most one primary pattern.  It is an error
+        /// for a code element to have more than one associated primary pattern.
+        /// </para>
+        /// <para>
+        /// If a code element does not have an associated primary pattern, its containing
+        /// test may choose to apply default processing to it instead.  For example, the
+        /// containing test may give an opportunity to patterns associated with the code element
+        /// to consume a test method parameter but will revert to default behavior if no
+        /// primary patterns explicitly claim it.
+        /// </para>
+        /// <para>
+        /// Non-primary patterns still play a very important part in the construction
+        /// of the test model.  Non-primary patterns may implement <see cref="ProcessTest" /> and
+        /// <see cref="ProcessTestParameter" /> to decorate tests and test parameters
+        /// created by the primary pattern.
+        /// </para>
+        /// </summary>
+        bool IsPrimary { get; }
+
+        /// <summary>
+        /// <para>
+        /// Returns true if the code element associated with the pattern represents a test.
+        /// </para>
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="codeElement">The code element</param>
+        /// <returns>True if the code element represents a test</returns>
+        bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement);
+
+        /// <summary>
+        /// <para>
         /// Consumes the <paramref name="codeElement" /> and applies its contributions to
         /// the <paramref name="containingTestBuilder"/>.
         /// </para>
@@ -66,15 +106,19 @@ namespace Gallio.Framework.Pattern
         /// with methods, fields, properties, events, constructors and generic type parameters.
         /// </para>
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method is only called for primary patterns.
+        /// </para>
+        /// </remarks>
         /// <param name="containingTestBuilder">The containing test builder</param>
         /// <param name="codeElement">The code element to process</param>
-        /// <returns>True if the pattern has consumed the code element and
-        /// will generate new test components from it.  False if the containing
-        /// test should apply whatever default processing it may have to consume
-        /// code element.  For example, the containing test may give an opportunity to
-        /// patterns associated with the code element to consume a test method parameter
-        /// but will revert to default behavior if no patterns claim it.</returns>
-        bool Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement);
+        /// <param name="skipChildren">If true, skips generating child tests.  Instead the children may
+        /// be populated on demand using <see cref="IPatternTestBuilder.PopulateChildrenChain" />.  The implementation
+        /// may safely ignore the value of this flag so long as subsequent attempts to populate children on
+        /// demand have no adverse side-effects.</param>
+        /// <seealso cref="IsPrimary"/>
+        void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren);
 
         /// <summary>
         /// <para>

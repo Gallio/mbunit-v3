@@ -198,6 +198,7 @@
     <Compile Include="Framework\Pattern\PatternTestPopulator.cs" />
     <Compile Include="Framework\Pattern\PatternTestState.cs" />
     <Compile Include="Framework\Pattern\PatternUtils.cs" />
+    <Compile Include="Framework\Pattern\TestConstructorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestMethodDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestMethodPatternAttribute.cs" />

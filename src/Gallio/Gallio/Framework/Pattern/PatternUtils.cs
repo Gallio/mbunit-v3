@@ -14,6 +14,8 @@
 // limitations under the License.
 
 
+using System;
+using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 
@@ -25,36 +27,26 @@ namespace Gallio.Framework.Pattern
     public static class PatternUtils
     {
         /// <summary>
-        /// Delegate for consuming a code element.
+        /// Gets the primary pattern associated with a code element, or null if none.
         /// </summary>
-        /// <typeparam name="T">The code element type</typeparam>
-        /// <param name="containingTestBuilder">The containing test builder</param>
+        /// <param name="patternResolver">The pattern resolver</param>
         /// <param name="codeElement">The code element</param>
-        /// <returns>True if the element was consumed</returns>
-        public delegate bool Consumer<T>(IPatternTestBuilder containingTestBuilder, T codeElement)
-            where T : ICodeElementInfo;
-
-        /// <summary>
-        /// Tries to consume a code element by calling the <see cref="IPattern.Consume" />
-        /// method of all of its associated patterns.  If none of the patterns consumes
-        /// the element, applies a fallback procedure by invoking <paramref name="fallback"/>.
-        /// </summary>
-        /// <typeparam name="T">The code element type</typeparam>
-        /// <param name="containingTestBuilder">The containing test builder</param>
-        /// <param name="codeElement">The code element</param>
-        /// <param name="fallback">The fallback procedure</param>
-        /// <returns>True if the element was consumed</returns>
-        public static bool ConsumeWithFallback<T>(IPatternTestBuilder containingTestBuilder, T codeElement,
-            Consumer<T> fallback) where T : ICodeElementInfo
+        /// <returns>The primary pattern, or null if none</returns>
+        /// <exception cref="ModelException">Thrown if there are multiple primary patterns associated with the code element</exception>
+        public static IPattern GetPrimaryPattern(IPatternResolver patternResolver, ICodeElementInfo codeElement)
         {
-            bool consumed = false;
-            foreach (IPattern pattern in containingTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(codeElement, true))
-                consumed |= pattern.Consume(containingTestBuilder, codeElement);
+            IPattern primaryPattern = null;
+            foreach (IPattern pattern in patternResolver.GetPatterns(codeElement, true))
+            {
+                if (pattern.IsPrimary)
+                {
+                    if (primaryPattern != null)
+                        throw new ModelException(String.Format("There are multiple primary patterns associated with code element '{0}'.  Perhaps it has inappropriate attributes.", codeElement));
+                    primaryPattern = pattern;
+                }
+            }
 
-            if (!consumed)
-                consumed = fallback(containingTestBuilder, codeElement);
-
-            return consumed;
+            return primaryPattern;
         }
     }
 }

@@ -25,18 +25,21 @@ namespace Gallio.Framework.Pattern
     /// such as by introducing a new setup or teardown action.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public abstract class ContributionPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override bool Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        public override bool IsPrimary
         {
-            containingTestBuilder.AddDecorator(Order, delegate(IPatternTestBuilder methodTestBuilder)
-            {
-                DecorateContainingTest(methodTestBuilder, codeElement);
-            });
+            get { return true; }
+        }
 
-            return true;
+        /// <inheritdoc />
+        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        {
+            containingTestBuilder.AddDecorator(Order, delegate
+            {
+                DecorateContainingTest(containingTestBuilder, codeElement);
+            });
         }
 
         /// <summary>

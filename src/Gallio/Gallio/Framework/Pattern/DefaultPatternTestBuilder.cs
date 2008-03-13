@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model;
+using Gallio.Reflection;
 
 namespace Gallio.Framework.Pattern
 {
@@ -28,6 +29,7 @@ namespace Gallio.Framework.Pattern
         private readonly IPatternTestModelBuilder testModelBuilder;
         private readonly PatternTest test;
         private List<KeyValuePair<int, Action<IPatternTestBuilder>>> decorators;
+        private ActionChain<ICodeElementInfo> populateChildrenChain;
 
         /// <summary>
         /// Creates a test builder.
@@ -57,6 +59,17 @@ namespace Gallio.Framework.Pattern
         public IPatternTestModelBuilder TestModelBuilder
         {
             get { return testModelBuilder; }
+        }
+
+        /// <inheritdoc />
+        public ActionChain<ICodeElementInfo> PopulateChildrenChain
+        {
+            get
+            {
+                if (populateChildrenChain == null)
+                    populateChildrenChain = new ActionChain<ICodeElementInfo>();
+                return populateChildrenChain;
+            }
         }
 
         /// <inheritdoc />
