@@ -51,6 +51,28 @@ namespace Gallio.Hosting
         }
 
         /// <summary>
+        /// Gets the location of the assembly, or null if it is dynamic.
+        /// </summary>
+        /// <param name="assembly">The assembly</param>
+        /// <returns>The assembly location as returned by <see cref="Assembly.Location" /> or
+        /// null if the assembly is dynamic and does not have a location</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        public static string GetAssemblyLocation(Assembly assembly)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException(@"assembly");
+
+            try
+            {
+                return assembly.Location;
+            }
+            catch (NotSupportedException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Gets the local path of the assembly prior to shadow copying.
         /// Returns null if the original location of the assembly is not local.
         /// </summary>
@@ -83,7 +105,8 @@ namespace Gallio.Hosting
         /// </summary>
         /// <param name="assembly">The assembly</param>
         /// <returns>The local path of the assembly, preferably its original
-        /// non-shadow copied location</returns>
+        /// non-shadow copied location, or null if the assembly is dynamic and does not
+        /// have a location</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
         public static string GetFriendlyAssemblyLocation(Assembly assembly)
         {
@@ -91,7 +114,7 @@ namespace Gallio.Hosting
             if (localPath != null)
                 return localPath;
 
-            return assembly.Location;
+            return GetAssemblyLocation(assembly);
         }
 
         /// <summary>

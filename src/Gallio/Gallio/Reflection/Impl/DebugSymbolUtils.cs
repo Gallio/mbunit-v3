@@ -93,7 +93,7 @@ namespace Gallio.Reflection.Impl
                 throw new ArgumentNullException("method");
 
             Assembly assembly = method.DeclaringType.Assembly;
-            string assemblyPath = assembly.Location; // use the shadow-copied location if applicable
+            string assemblyPath = Loader.GetAssemblyLocation(assembly); // use the shadow-copied location if applicable
             if (assemblyPath == null)
                 return null;
 
