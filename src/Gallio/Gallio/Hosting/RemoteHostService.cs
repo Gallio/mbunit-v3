@@ -30,6 +30,7 @@ namespace Gallio.Hosting
         private readonly object watchdogLock = new object();
         private readonly TimeSpan? watchdogTimeout;
         private Timer watchdogTimer;
+        private int watchdogTimerPings;
         private bool watchdogTimerExpired;
 
         private readonly ManualResetEvent shutdownEvent;
@@ -115,7 +116,7 @@ namespace Gallio.Hosting
 
             lock (watchdogLock)
             {
-                watchdogTimer = new Timer(HandleWatchdogTimerExpired, null, watchdogTimeout.Value, TimeSpan.FromMilliseconds(-1));
+                watchdogTimer = new Timer(HandleWatchdogTimerExpired, null, watchdogTimeout.Value, watchdogTimeout.Value);
             }
         }
 
@@ -133,17 +134,16 @@ namespace Gallio.Hosting
 
         private void ResetWatchdogTimer()
         {
-            lock (watchdogLock)
-            {
-                if (watchdogTimer != null)
-                    watchdogTimer.Change(watchdogTimeout.Value, TimeSpan.FromMilliseconds(-1));
-            }
+            Interlocked.Increment(ref watchdogTimerPings);
         }
 
         private void HandleWatchdogTimerExpired(object state)
         {
-            watchdogTimerExpired = true;
-            Dispose();
+            if (Interlocked.Exchange(ref watchdogTimerPings, 0) == 0)
+            {
+                watchdogTimerExpired = true;
+                Dispose();
+            }
         }
     }
 }

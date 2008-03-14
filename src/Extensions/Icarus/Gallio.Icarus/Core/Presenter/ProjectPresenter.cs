@@ -63,7 +63,7 @@ namespace Gallio.Icarus.Core.Presenter
             testRunnerModel = testrunnermodel;
             testRunnerModel.ProjectPresenter = this;
 
-#if DEBUG
+#if LOCALDEBUG
             testRunner = new DomainTestRunner(new LocalTestDomainFactory());
 #else
             testRunner = Runtime.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess,

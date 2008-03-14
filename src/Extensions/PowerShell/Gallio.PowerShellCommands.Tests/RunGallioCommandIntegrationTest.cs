@@ -70,11 +70,11 @@ namespace Gallio.PowerShellCommands.Tests
         public void CmdletDoesNotCausePowerShellToTerminateAbruptlyOnUnhandledExceptions()
         {
             ProcessTask task = RunPowerShell("-verbose -filter Type:UnhandledExceptionTest");
-            Assert.Contains(task.ConsoleError, "Unhandled!");
+            Assert.Contains(task.ConsoleOutput, "Unhandled!");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.IsFalse(task.ConsoleOutput.Contains("An error has occurred that was not properly handled. Additional information is shown below. The Windows PowerShell process will exit."),
                 "Should not print a message about the unhandled exception.");
-            Assert.AreEqual(task.ExitCode, 1, "Exit code should be one because PowerShell interprets an Error message as indicating that the command failed.");
+            Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero because none of the tests actually failed and the unhandled exception is logged informationally by the host only.");
         }
 
         private ProcessTask RunPowerShell(string options)

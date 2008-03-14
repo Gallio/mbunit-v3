@@ -88,8 +88,7 @@ namespace Gallio.Hosting
             {
                 string diagnostics = "";
                 if (processTask != null)
-                    diagnostics = String.Format("\n\nConsole Output:\n{0}\n\nConsole Error:\n{1}\n\nResult: {2}",
-                        processTask.ConsoleOutput, processTask.ConsoleError, processTask.Result);
+                    diagnostics = String.Format("  Exit code: {0}.  See log for more details.", processTask.Result);
 
                 FreeResources(true);
 

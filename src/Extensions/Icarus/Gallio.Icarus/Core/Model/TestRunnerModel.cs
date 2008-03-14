@@ -47,7 +47,7 @@ namespace Gallio.Icarus.Core.Model
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException(@"projectPresenter");
+                    throw new ArgumentNullException(@"value");
 
                 projectPresenter = value;
                 progressMonitorProvider = new StatusStripProgressMonitorProvider(projectPresenter);

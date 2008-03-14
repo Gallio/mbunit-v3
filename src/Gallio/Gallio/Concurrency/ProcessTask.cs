@@ -38,8 +38,8 @@ namespace Gallio.Concurrency
         private readonly string arguments;
         private readonly string workingDirectory;
 
-        private bool captureConsoleOutput = true;
-        private bool captureConsoleError = true;
+        private bool captureConsoleOutput;
+        private bool captureConsoleError;
 
         private StringWriter consoleOutputCaptureWriter;
         private StringWriter consoleErrorCaptureWriter;
@@ -112,7 +112,7 @@ namespace Gallio.Concurrency
         /// and made available via the <see cref="ConsoleOutput" /> property.
         /// </para>
         /// <para>
-        /// The default value is <c>true</c>.
+        /// The default value is <c>false</c>.
         /// </para>
         /// </summary>
         public bool CaptureConsoleOutput
@@ -127,7 +127,7 @@ namespace Gallio.Concurrency
         /// and made available via the <see cref="ConsoleError" /> property.
         /// </para>
         /// <para>
-        /// The default value is <c>true</c>.
+        /// The default value is <c>false</c>.
         /// </para>
         /// </summary>
         public bool CaptureConsoleError

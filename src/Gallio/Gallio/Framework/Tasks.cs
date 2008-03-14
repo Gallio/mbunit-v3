@@ -99,8 +99,15 @@ namespace Gallio.Framework
         }
 
         /// <summary>
+        /// <para>
         /// Creates a new process task but does not start it.
-        /// The output of the process will be logged and included as part of the test results.
+        /// </para>
+        /// <para>
+        /// The output of the process will be logged and included as part of the test results.  It
+        /// may also be examined using the <see cref="ProcessTask.ConsoleOutput" /> and
+        /// <see cref="ProcessTask.ConsoleError" /> properties while the process executes and
+        /// after it terminates.
+        /// </para>
         /// </summary>
         /// <remarks>
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
@@ -121,6 +128,9 @@ namespace Gallio.Framework
                 throw new ArgumentNullException("workingDirectory");
 
             ProcessTask task = new ProcessTask(executablePath, arguments, workingDirectory);
+            task.CaptureConsoleOutput = true;
+            task.CaptureConsoleError = true;
+
             ConfigureProcessTaskForLogging(task, Log.Default);
             WatchTask(task);
             return task;
@@ -160,8 +170,15 @@ namespace Gallio.Framework
         }
 
         /// <summary>
+        /// <para>
         /// Starts a new process and begins watching it.
-        /// The output of the process will be logged and included as part of the test results.
+        /// </para>
+        /// <para>
+        /// The output of the process will be logged and included as part of the test results.  It
+        /// may also be examined using the <see cref="ProcessTask.ConsoleOutput" /> and
+        /// <see cref="ProcessTask.ConsoleError" /> properties while the process executes and
+        /// after it terminates.
+        /// </para>
         /// </summary>
         /// <remarks>
         /// There is no need to call <see cref="WatchTask" /> on the returned task.

@@ -26,7 +26,7 @@ namespace Gallio.Host
     /// </summary>
     public sealed class HostProgram : ConsoleProgram<HostArguments>
     {
-        private readonly TimeSpan WatchdogTimeout = TimeSpan.FromSeconds(30);
+        private readonly TimeSpan WatchdogTimeout = TimeSpan.FromSeconds(15);
 
         /// <inheritdoc />
         protected override int RunImpl(string[] args)

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using Gallio.Hosting;
@@ -91,9 +92,34 @@ namespace Gallio.Reflection.Impl
             if (method == null)
                 throw new ArgumentNullException("method");
 
-            string assemblyPath = Loader.GetAssemblyLocalPath(method.DeclaringType.Assembly);
+            Assembly assembly = method.DeclaringType.Assembly;
+            string assemblyPath = assembly.Location; // use the shadow-copied location if applicable
             if (assemblyPath == null)
                 return null;
+
+            if (AppDomain.CurrentDomain.ShadowCopyFiles)
+            {
+                try
+                {
+                    string pdbPath = Path.ChangeExtension(assemblyPath, @".pdb");
+                    if (!File.Exists(pdbPath))
+                    {
+                        string originalAssemblyPath = Loader.GetAssemblyLocalPath(assembly);
+                        if (originalAssemblyPath == null)
+                            return null;
+
+                        string originalPdbPath = Path.ChangeExtension(originalAssemblyPath, @".pdb");
+                        if (!File.Exists(originalPdbPath))
+                            return null;
+
+                        File.Copy(originalPdbPath, pdbPath);
+                    }
+                }
+                catch (IOException)
+                {
+                    return null;
+                }
+            }
 
             return Resolver.GetSourceLocationForMethod(assemblyPath, method.MetadataToken);
         }
