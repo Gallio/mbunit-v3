@@ -26,8 +26,6 @@ namespace Gallio.Host
     /// </summary>
     public sealed class HostProgram : ConsoleProgram<HostArguments>
     {
-        private readonly TimeSpan WatchdogTimeout = TimeSpan.FromSeconds(15);
-
         /// <inheritdoc />
         protected override int RunImpl(string[] args)
         {
@@ -37,20 +35,44 @@ namespace Gallio.Host
                 return -1;
             }
 
+            if (Arguments.IpcPortName != null && Arguments.TcpPortNumber >= 0
+                || Arguments.IpcPortName == null && Arguments.TcpPortNumber < 0)
+            {
+                ShowErrorMessage("Either /ipc-port or /tcp-port must be specified, not both.");
+                return -1;
+            }
+
+            TimeSpan? watchdogTimeout = Arguments.TimeoutSeconds <= 0 ? (TimeSpan?)null : TimeSpan.FromSeconds(Arguments.TimeoutSeconds);
+
             UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;
             Console.WriteLine(String.Format("* Host started at {0}.", DateTime.Now));
 
             try
             {
-                using (BinaryIpcServerChannel serverChannel = new BinaryIpcServerChannel(Arguments.IpcPortName))
+                IServerChannel serverChannel;
+                IClientChannel callbackChannel;
+                if (Arguments.IpcPortName != null)
                 {
-                    using (new BinaryIpcClientChannel(Arguments.IpcPortName + @".Callback"))
+                    Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
+
+                    serverChannel = new BinaryIpcServerChannel(Arguments.IpcPortName);
+                    callbackChannel = new BinaryIpcClientChannel(Arguments.IpcPortName + @".Callback");
+                }
+                else
+                {
+                    Console.WriteLine(String.Format("* Listening for connections on TCP port: '{0}'", Arguments.TcpPortNumber));
+
+                    serverChannel = new BinaryTcpServerChannel("localhost", Arguments.TcpPortNumber);
+                    callbackChannel = new BinaryTcpClientChannel("localhost", Arguments.TcpPortNumber);
+                }
+
+                using (serverChannel)
+                {
+                    using (callbackChannel)
                     {
-                        using (RemoteHostService hostService = new RemoteHostService(WatchdogTimeout))
+                        using (RemoteHostService hostService = new RemoteHostService(watchdogTimeout))
                         {
                             HostServiceChannelInterop.RegisterWithChannel(hostService, serverChannel);
-
-                            Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
                             hostService.WaitUntilDisposed();
 
                             if (hostService.WatchdogTimerExpired)

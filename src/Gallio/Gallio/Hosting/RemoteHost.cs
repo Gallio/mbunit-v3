@@ -327,6 +327,9 @@ namespace Gallio.Hosting
                     pingInProgress = true;
                 }
 
+#if DEBUG // FIXME: For debugging the remoting starvation issue.  See Google Code issue #147.  Remove when fixed.
+                Runtime.Logger.DebugFormat("[Ping] {0:o}", DateTime.Now);
+#endif
                 if (hostService != null)
                     hostService.Ping();
 

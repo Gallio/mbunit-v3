@@ -23,11 +23,30 @@ namespace Gallio.Host
     public class HostArguments
     {
         [CommandLineArgument(
-            CommandLineArgumentFlags.Required,
+            CommandLineArgumentFlags.AtMostOnce,
             Description = "The name of the IPC port to create and listen on for requests.",
             ValueLabel = "portName",
-            LongName="ipc"            
+            LongName="ipc-port",
+            ShortName = "ipcp"
             )]
         public string IpcPortName;
+
+        [CommandLineArgument(
+            CommandLineArgumentFlags.AtMostOnce,
+            Description = "The TCP port number to listen on for requests.",
+            ValueLabel = "portNumber",
+            LongName = "tcp-port",
+            ShortName = "tcpp"
+            )]
+        public int TcpPortNumber = -1;
+
+        [CommandLineArgument(
+            CommandLineArgumentFlags.AtMostOnce,
+            Description = "The number of seconds to wait before shutting down the host application automatically if no Ping messages are received.  May be 0 to disable the timeout altogether.  This timeout mechanism constitutes a watchdog timer that is intended to protect the test runner apparatus from connection drop-outs.",
+            ValueLabel = "seconds",
+            LongName = "timeout",
+            ShortName = "t"
+            )]
+        public int TimeoutSeconds = 15;
     }
 }

@@ -28,9 +28,8 @@ namespace Gallio.Hosting
     public class RemoteHostService : LongLivedMarshalByRefObject, IHostService
     {
         private readonly object watchdogLock = new object();
-        private readonly TimeSpan? watchdogTimeout;
+        private readonly int watchdogTimeoutMilliseconds;
         private Timer watchdogTimer;
-        private int watchdogTimerPings;
         private bool watchdogTimerExpired;
 
         private readonly ManualResetEvent shutdownEvent;
@@ -42,7 +41,8 @@ namespace Gallio.Hosting
         /// before automatically disposing the host service, or null if there should be no timeout</param>
         public RemoteHostService(TimeSpan? watchdogTimeout)
         {
-            this.watchdogTimeout = watchdogTimeout;
+            if (watchdogTimeout.HasValue)
+                watchdogTimeoutMilliseconds = (int)watchdogTimeout.Value.TotalMilliseconds;
 
             shutdownEvent = new ManualResetEvent(false);
 
@@ -76,6 +76,10 @@ namespace Gallio.Hosting
         /// <inheritdoc />
         public void Ping()
         {
+#if DEBUG // FIXME: For debugging the remoting starvation issue.  See Google Code issue #147.  Remove when fixed.
+            Runtime.Logger.DebugFormat("[Pong] {0:o}", DateTime.Now);
+#endif
+
             ResetWatchdogTimer();
         }
 
@@ -111,12 +115,12 @@ namespace Gallio.Hosting
 
         private void StartWatchdogTimer()
         {
-            if (!watchdogTimeout.HasValue)
+            if (watchdogTimeoutMilliseconds <= 0)
                 return;
 
             lock (watchdogLock)
             {
-                watchdogTimer = new Timer(HandleWatchdogTimerExpired, null, watchdogTimeout.Value, watchdogTimeout.Value);
+                watchdogTimer = new Timer(HandleWatchdogTimerExpired, null, watchdogTimeoutMilliseconds, Timeout.Infinite);
             }
         }
 
@@ -134,16 +138,17 @@ namespace Gallio.Hosting
 
         private void ResetWatchdogTimer()
         {
-            Interlocked.Increment(ref watchdogTimerPings);
+            lock (watchdogLock)
+            {
+                if (watchdogTimer != null)
+                    watchdogTimer.Change(watchdogTimeoutMilliseconds, Timeout.Infinite);
+            }
         }
 
         private void HandleWatchdogTimerExpired(object state)
         {
-            if (Interlocked.Exchange(ref watchdogTimerPings, 0) == 0)
-            {
-                watchdogTimerExpired = true;
-                Dispose();
-            }
+            watchdogTimerExpired = true;
+            Dispose();
         }
     }
 }

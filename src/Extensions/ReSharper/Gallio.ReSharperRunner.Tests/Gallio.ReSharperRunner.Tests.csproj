@@ -43,61 +43,54 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.ActionManagement, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="JetBrains.Metadata, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.DocumentManager, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.DocumentManager.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.DocumentModel, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.DocumentModel.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.IDECore, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="JetBrains.ReSharper.ProjectModel, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.ProjectModel.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Psi, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.Psi.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.CSharp, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.Psi.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Resources, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.Resources.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.SolutionBuilder, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.SolutionBuilder.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.TaskRunnerFramework, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.TaskRunnerFramework.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.ReSharper.TextControl, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="JetBrains.ReSharper.TreeModelBrowser, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.TreeModelBrowser.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.UnitTestExplorer, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.ReSharper.UnitTestExplorer.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Shell, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.Shell.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.UI, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.UI.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Util, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\JetBrains.Util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -135,6 +128,7 @@
     <None Include="TestSolution.sln" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\ReSharper.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

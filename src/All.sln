@@ -16,6 +16,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{24B192F6-0332-4F79-B09A-A0D5C7080BFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo", "Extensions\Echo\Gallio.Echo\Gallio.Echo.csproj", "{22AE34D9-185F-41A7-A48D-205BE68B1F7D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{35FFAF24-1019-4BE2-901D-02E627C757DC} = {35FFAF24-1019-4BE2-901D-02E627C757DC}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus", "Extensions\Icarus\Gallio.Icarus\Gallio.Icarus.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
 EndProject
@@ -35,8 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Tests", "MbUnit\MbUn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "MbUnit\Samples\MbUnit.Samples\MbUnit.Samples.csproj", "{12850856-0A27-4E50-9116-5A3B19C7D779}"
 	ProjectSection(ProjectDependencies) = postProject
-		{6CAB7735-05DA-480D-9A04-50615B00F886} = {6CAB7735-05DA-480D-9A04-50615B00F886}
 		{A9B54755-56B7-48C1-8941-BB69FCEFFF32} = {A9B54755-56B7-48C1-8941-BB69FCEFFF32}
+		{6CAB7735-05DA-480D-9A04-50615B00F886} = {6CAB7735-05DA-480D-9A04-50615B00F886}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility", "MbUnit\MbUnit.Compatibility\MbUnit.Compatibility.csproj", "{F588B51F-786A-48E2-950E-636062F9C302}"

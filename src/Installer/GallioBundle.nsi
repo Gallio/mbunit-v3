@@ -77,6 +77,7 @@ Var UserContext
 !system 'if not exist "${TARGETDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\docs\vs\Gallio.HxS" echo !define MISSING_VS_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\bin\MbUnit.Pex.dll" echo !define MISSING_MBUNIT_PEX_PACKAGE >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\Gallio.ReSharperRunner.dll" echo !define MISSING_RESHARPER_RUNNER >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
 !delfile "${DETECT_TEMP}"
 
@@ -91,6 +92,10 @@ Var UserContext
 
 !ifdef MISSING_MBUNIT_PEX_PACKAGE
 	!warning "Missing MbUnit Pex package."
+!endif
+
+!ifdef MISSING_RESHARPER_RUNNER
+	!warning "Missing ReSharper runner."
 !endif
 
 ; Define sections
@@ -339,6 +344,7 @@ Section "PowerShell Commands" PowerShellCommandsSection
 	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "Version" "${VERSION}"
 SectionEnd
 
+!ifndef MISSING_RESHARPER_RUNNER
 Var ReSharperInstallDir
 Var ReSharperPluginDir
 !macro GetReSharperPluginDir RSVersion VSVersion
@@ -423,6 +429,7 @@ Section "ReSharper v3.1 Runner" ReSharperRunnerSection
 	!insertmacro InstallReSharperRunner "v3.1" "vs8.0" "${TARGETDIR}\bin"
 	!insertmacro InstallReSharperRunner "v3.1" "vs9.0" "${TARGETDIR}\bin"
 SectionEnd
+!endif
 
 !macro InstallTDNetRunner Key Framework Priority
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "" "${Priority}"
@@ -581,8 +588,10 @@ Section Uninstall
 	!insertmacro UninstallTDNetRunner "Gallio_Xunit"
 
 	; Uninstall from ReSharper
-	!insertmacro UninstallReSharperRunner "v3.0" "vs8.0"
-	!insertmacro UninstallReSharperRunner "v3.0" "vs9.0"
+	!ifndef MISSING_RESHARPER_RUNNER
+		!insertmacro UninstallReSharperRunner "v3.0" "vs8.0"
+		!insertmacro UninstallReSharperRunner "v3.0" "vs9.0"
+	!endif
 
 	; Uninstall from PowerShell
 	DeleteRegKey SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio"
@@ -662,7 +671,9 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${MSBuildTasksSection} "Installs the MSBuild tasks."
 	!insertmacro MUI_DESCRIPTION_TEXT ${NAntTasksSection} "Installs the NAnt tasks."
 	!insertmacro MUI_DESCRIPTION_TEXT ${PowerShellCommandsSection} "Installs the PowerShell commands."
-	!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3 plug-in."
+	!ifndef MISSING_RESHARPER_RUNNER
+		!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3.1 plug-in."
+	!endif
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in."
 
 	!insertmacro MUI_DESCRIPTION_TEXT ${NCoverSection} "Provides integration with the NCover code coverage tool."
@@ -708,7 +719,9 @@ Function .onInit
 	SectionSetInstTypes ${MSBuildTasksSection} 3
 	SectionSetInstTypes ${NAntTasksSection} 3
 	SectionSetInstTypes ${PowerShellCommandsSection} 3
-	SectionSetInstTypes ${ReSharperRunnerSection} 3
+	!ifndef MISSING_RESHARPER_RUNNER
+		SectionSetInstTypes ${ReSharperRunnerSection} 3
+	!endif
 	SectionSetInstTypes ${TDNetAddInSection} 3
 
 	SectionSetInstTypes ${NCoverSection} 1

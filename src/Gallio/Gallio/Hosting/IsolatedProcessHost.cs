@@ -47,6 +47,10 @@ namespace Gallio.Hosting
         private static readonly TimeSpan JoinBeforeAbortTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan JoinAfterAbortTimeout = TimeSpan.FromSeconds(15);
 
+        // FIXME: Large timeout to workaround the remoting starvation issue.  See Google Code issue #147.  Reduce value when fixed.
+        private static readonly TimeSpan WatchdogTimeout = TimeSpan.FromSeconds(120);
+
+        private readonly string uniqueId;
         private ProcessTask processTask;
         private IClientChannel clientChannel;
         private IServerChannel callbackChannel;
@@ -61,6 +65,7 @@ namespace Gallio.Hosting
         public IsolatedProcessHost(HostSetup hostSetup, ILogger logger)
             : base(hostSetup, logger)
         {
+            uniqueId = Hash64.CreateUniqueHash().ToString();
         }
 
         /// <inheritdoc />
@@ -68,13 +73,16 @@ namespace Gallio.Hosting
         {
             try
             {
-                string portName = @"IsolatedProcessHost." + Hash64.CreateUniqueHash();
+                string hostArguments;
+                Func<IClientChannel> clientChannelFactory;
+                Func<IServerChannel> callbackChannelFactory;
+                PrepareConnection(uniqueId, out hostArguments, out clientChannelFactory, out callbackChannelFactory);
 
-                StartProcess(portName);
+                StartProcess(hostArguments);
                 EnsureProcessIsRunning();
 
-                clientChannel = new BinaryIpcClientChannel(portName);
-                callbackChannel = new BinaryIpcServerChannel(portName + ".Callback");
+                clientChannel = clientChannelFactory();
+                callbackChannel = callbackChannelFactory();
 
                 IHostService hostService = HostServiceChannelInterop.GetRemoteHostService(clientChannel);
                 WaitUntilReady(hostService);
@@ -120,16 +128,43 @@ namespace Gallio.Hosting
             return new ProcessTask(executablePath, arguments, workingDirectory);
         }
 
-        private void StartProcess(string portName)
+        /// <summary>
+        /// Prepares the parameters for the remote connection.
+        /// </summary>
+        /// <param name="uniqueId">The unique id of the host</param>
+        /// <param name="hostArguments">Set to the host application arguments used to configure its server channel</param>
+        /// <param name="clientChannelFactory">Set to a factory used to create the local client channel</param>
+        /// <param name="callbackChannelFactory">Set to a factory used to create the local server channel to allow the remote host to call back to this one</param>
+        protected virtual void PrepareConnection(string uniqueId, out string hostArguments,
+            out Func<IClientChannel> clientChannelFactory, out Func<IServerChannel> callbackChannelFactory)
         {
-            HostApplicationProfile profile = new HostApplicationProfile(HostSetup, portName);
+#if true
+            string portName = @"IsolatedProcessHost." + uniqueId;
+
+            hostArguments = "/ipc-port:" + portName;
+            clientChannelFactory = delegate { return new BinaryIpcClientChannel(portName); };
+            callbackChannelFactory = delegate { return new BinaryIpcServerChannel(portName + ".Callback"); };
+#else
+            // The TCP channel implementation needs some work to become useful.
+            // I implemented it partially as part of an effort to isolate the source of some
+            // remoting timeouts that were occurring.  In due time the whole channel-based
+            // remoting infrastructure will probably need to be overhauled to use truly
+            // bidirectional channels.  -- Jeff.
+            hostArguments = "/tcp-port:33333";
+            clientChannelFactory = delegate { return new BinaryTcpClientChannel("localhost", 33333); };
+            callbackChannelFactory = delegate { return new BinaryTcpServerChannel("localhost", 33334); };
+#endif
+        }
+
+        private void StartProcess(string hostArguments)
+        {
+            HostApplicationProfile profile = new HostApplicationProfile(HostSetup, uniqueId);
             try
             {
                 profile.Initialize();
 
-                string arguments = "/ipc:" + portName;
-
-                processTask = CreateProcessTask(profile.HostProcessPath, arguments, HostSetup.WorkingDirectory);
+                hostArguments += @" /timeout:" + (int) WatchdogTimeout.TotalSeconds;
+                processTask = CreateProcessTask(profile.HostProcessPath, hostArguments, HostSetup.WorkingDirectory);
                 processTask.CaptureConsoleOutput = true;
                 processTask.CaptureConsoleError = true;
                 processTask.ConsoleOutputDataReceived += LogConsoleOutput;
@@ -161,7 +196,7 @@ namespace Gallio.Hosting
         private void LogExitCode(object sender, EventArgs e)
         {
             ProcessTask processTask = (ProcessTask)sender;
-            Logger.Debug("Host Process Exit Code: {0}", processTask.ExitCode);
+            Logger.Debug("* Host process exit code: {0}", processTask.ExitCode);
         }
 
         private void WaitUntilReady(IHostService hostService)
@@ -237,11 +272,11 @@ namespace Gallio.Hosting
             private readonly string hostAppPath;
             private readonly string hostConfigPath;
 
-            public HostApplicationProfile(HostSetup hostSetup, string portName)
+            public HostApplicationProfile(HostSetup hostSetup, string uniqueId)
             {
                 this.hostSetup = hostSetup;
 
-                hostAppPath = Path.Combine(hostSetup.ApplicationBaseDirectory, "Gallio.Host." + portName + ".tmp");
+                hostAppPath = Path.Combine(hostSetup.ApplicationBaseDirectory, "Gallio.Host." + uniqueId + ".tmp");
                 hostConfigPath = hostAppPath + ".config";
             }
 

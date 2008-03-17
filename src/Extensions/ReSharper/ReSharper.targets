@@ -1,0 +1,27 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ReSharperPath Condition="'$(ReSharperPath)'=='' and Exists('$(ProgramFiles)\JetBrains\ReSharper\v3.1\vs9.0\Bin')">$(ProgramFiles)\JetBrains\ReSharper\v3.1\vs9.0\Bin</ReSharperPath>
+    <ReSharperPath Condition="'$(ReSharperPath)'=='' and Exists('$(ProgramFiles)\JetBrains\ReSharper\v3.1\vs8.0\Bin')">$(ProgramFiles)\JetBrains\ReSharper\v3.1\vs8.0\Bin</ReSharperPath>
+
+    <ReSharperInstalled>false</ReSharperInstalled>
+    <ReSharperInstalled Condition="'$(ReSharperPath)'!=''">true</ReSharperInstalled>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="$(ReSharperInstalled)">
+      <PropertyGroup>
+        <AssemblySearchPaths>$(ReSharperPath);$(AssemblySearchPaths)</AssemblySearchPaths>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <BuildDependsOn>MissingReSharper</BuildDependsOn>
+        <RebuildDependsOn>MissingReSharper</RebuildDependsOn>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Target Name="MissingReSharper">
+    <Warning Text="Skipped build.  ReSharper is not installed or could not be located." />
+  </Target>
+</Project>

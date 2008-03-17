@@ -133,6 +133,7 @@
     <Compile Include="Framework\Data\XmlDataSetTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkTest.cs" />
     <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
+    <Compile Include="Hosting\Channels\BinaryTcpChannelTest.cs" />
     <Compile Include="Integration\LogStreamLogger.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />
     <Compile Include="Framework\StepTest.cs" />

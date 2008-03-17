@@ -49,11 +49,16 @@ namespace Gallio.ReSharperRunner.Tests
         [FixtureTearDown]
         public static void TearDown()
         {
+            if (isTestSolutionLoaded)
+            {
+                SolutionManager.Instance.CloseSolution(SolutionManager.Instance.CurrentSolution);
+                isTestSolutionLoaded = false;
+            }
+
             TestShell shell = Shell.Instance as TestShell;
             if (shell != null)
             {
                 shell.TearDown();
-                isTestSolutionLoaded = false;
             }
         }
 

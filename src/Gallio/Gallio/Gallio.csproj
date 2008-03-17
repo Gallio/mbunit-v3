@@ -211,6 +211,12 @@
     <Compile Include="Framework\SilentTestException.cs" />
     <Compile Include="Framework\Step.cs" />
     <Compile Include="Framework\Tasks.cs" />
+    <Compile Include="Hosting\Channels\BinaryTcpClientChannel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Hosting\Channels\BinaryTcpServerChannel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\Execution\BaseTestLogWriter.cs" />
     <Compile Include="Model\Execution\ITestLogWriter.cs" />
     <Compile Include="Model\Execution\ManagedTestCommand.cs" />
