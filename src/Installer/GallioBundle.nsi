@@ -40,6 +40,8 @@ InstType "Typical"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "banner-left.bmp"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "banner-top.bmp"
+!define MUI_ICON "installer.ico"
+!define MUI_UNICON "uninstaller.ico"
 !include "MUI.nsh"
 
 ; Installer pages
