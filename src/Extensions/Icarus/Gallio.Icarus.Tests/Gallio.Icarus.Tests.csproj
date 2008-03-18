@@ -36,6 +36,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aga.Controls, Version=1.6.1.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Aga.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
@@ -69,7 +73,9 @@
     <Compile Include="Controls\TestStatusBarTest.cs">
     </Compile>
     <Compile Include="Controls\TestTreeNodeTest.cs" />
-    <Compile Include="Controls\TestTreeViewTest.cs" />
+    <Compile Include="Controls\TestTreeViewTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="FiltersWindowTest.cs" />
     <Compile Include="Core\Remoting\AssemblyWatcherTest.cs" />
     <Compile Include="PropertiesWindowTest.cs" />

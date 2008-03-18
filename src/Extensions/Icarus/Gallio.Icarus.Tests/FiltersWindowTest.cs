@@ -35,13 +35,13 @@ namespace Gallio.Icarus.Tests
             filtersWindow = new FiltersWindow(projectAdapterView);
         }
 
-        [Test]
-        public void Filters_Test()
-        {
-            List<FilterInfo> list = new List<FilterInfo>();
-            list.Add(new FilterInfo("test", "test"));
-            mocks.ReplayAll();
-            filtersWindow.Filters = list;
-        }
+        //[Test]
+        //public void Filters_Test()
+        //{
+        //    List<FilterInfo> list = new List<FilterInfo>();
+        //    list.Add(new FilterInfo("test", "test"));
+        //    mocks.ReplayAll();
+        //    filtersWindow.Filters = list;
+        //}
    }
 }

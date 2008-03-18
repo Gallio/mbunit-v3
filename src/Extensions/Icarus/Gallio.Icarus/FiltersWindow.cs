@@ -42,14 +42,14 @@ namespace Gallio.Icarus
     {
         private IProjectAdapterView projectAdapterView;
 
-        public IList<FilterInfo> Filters
+        public IList<string> Filters
         {
             set
             {
                 // populate list box
                 filtersListBox.Items.Clear();
-                foreach (FilterInfo filterInfo in value)
-                    filtersListBox.Items.Add(filterInfo);
+                foreach (string filter in value)
+                    filtersListBox.Items.Add(filter);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Gallio.Icarus
 
         private void removeFilterButton_Click(object sender, EventArgs e)
         {
-            projectAdapterView.DeleteFilter((FilterInfo)filtersListBox.SelectedItem);
+            projectAdapterView.OnDeleteFilter((string)filtersListBox.SelectedItem);
         }
 
         private void filterNameTextBox_TextChanged(object sender, EventArgs e)
@@ -85,14 +85,14 @@ namespace Gallio.Icarus
             }
             else
             {
-                projectAdapterView.SaveFilter(filterNameTextBox.Text);
+                projectAdapterView.OnSaveFilter(filterNameTextBox.Text);
                 filterNameTextBox.Clear();
             }
         }
 
         private void applyFilterButton_Click(object sender, EventArgs e)
         {
-            projectAdapterView.ApplyFilter(((FilterInfo)filtersListBox.SelectedItem).Filter);
+            projectAdapterView.OnApplyFilter((string)filtersListBox.SelectedItem);
         }
     }
 }

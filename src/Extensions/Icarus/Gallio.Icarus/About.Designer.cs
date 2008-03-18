@@ -43,6 +43,7 @@ namespace Gallio.Icarus
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(About));
             this.buttonClose = new System.Windows.Forms.Button();
             this.versionLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -106,7 +107,7 @@ namespace Gallio.Icarus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Gallio.Icarus.Properties.Resources.about;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(433, 343);
             this.Controls.Add(this.websiteLink);
             this.Controls.Add(this.componentList);

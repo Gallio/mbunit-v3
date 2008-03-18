@@ -19,6 +19,7 @@ using System.Drawing;
 using Gallio.Icarus.Controls;
 
 using MbUnit.Framework;
+using Gallio.Model;
 
 namespace Gallio.Icarus.Tests.Controls
 {
@@ -31,30 +32,38 @@ namespace Gallio.Icarus.Tests.Controls
         public void SetUp()
         {
             testResultsList = new TestResultsList();
-            testResultsList.UpdateTestResults("test1", "Passed", Color.Green, "10", "type", "namespace", "assembly");
-            testResultsList.UpdateTestResults("test2", "Failed", Color.Red, "10", "type", "namespace", "assembly");
-            testResultsList.UpdateTestResults("test3", "Inconclusive", Color.Yellow, "10", "type", "namespace", "assembly");
-            Assert.AreEqual(3, testResultsList.Items.Count);
+            testResultsList.UpdateTestResults("test1", TestOutcome.Passed, Color.Green, "10", "type", "namespace", "assembly");
+            testResultsList.UpdateTestResults("test2", TestOutcome.Failed, Color.Red, "10", "type", "namespace", "assembly");
+            testResultsList.UpdateTestResults("test3", TestOutcome.Skipped, Color.Yellow, "10", "type", "namespace", "assembly");
+            testResultsList.UpdateTestResults("test4", TestOutcome.Inconclusive, Color.SlateGray, "10", "type", "namespace", "assembly");
+            Assert.AreEqual(4, testResultsList.Items.Count);
         }
 
         [Test]
         public void FilterPassed_Test()
         {
-            testResultsList.Filter = "Passed";
+            testResultsList.Filter = TestOutcome.Passed.ToString();
             Assert.AreEqual(1, testResultsList.Items.Count);
         }
 
         [Test]
         public void FilterFailed_Test()
         {
-            testResultsList.Filter = "Failed";
+            testResultsList.Filter = TestOutcome.Failed.ToString();
+            Assert.AreEqual(1, testResultsList.Items.Count);
+        }
+
+        [Test]
+        public void FilterSkipped_Test()
+        {
+            testResultsList.Filter = TestOutcome.Skipped.ToString();
             Assert.AreEqual(1, testResultsList.Items.Count);
         }
 
         [Test]
         public void FilterInconclusive_Test()
         {
-            testResultsList.Filter = "Inconclusive";
+            testResultsList.Filter = TestOutcome.Inconclusive.ToString();
             Assert.AreEqual(1, testResultsList.Items.Count);
         }
 
@@ -62,7 +71,7 @@ namespace Gallio.Icarus.Tests.Controls
         public void RemoveFilter_Test()
         {
             testResultsList.Filter = string.Empty;
-            Assert.AreEqual(3, testResultsList.Items.Count);
+            Assert.AreEqual(4, testResultsList.Items.Count);
         }
 
         [Test]

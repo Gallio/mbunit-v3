@@ -17,15 +17,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+
+using Gallio.Model;
 
 namespace Gallio.Icarus.Controls
 {
     public class TestResultsList : ListView
     {
         private TestResultsListColumnSorter columnSorter;
-        private List<ListViewItem> passed, failed, inconclusive;
+        private List<ListViewItem> passed, failed, skipped, inconclusive;
         private string filter = string.Empty;
 
         public string Filter
@@ -43,6 +44,7 @@ namespace Gallio.Icarus.Controls
             ListViewItemSorter = columnSorter;
             passed = new List<ListViewItem>();
             failed = new List<ListViewItem>();
+            skipped = new List<ListViewItem>();
             inconclusive = new List<ListViewItem>();
         }
 
@@ -55,13 +57,9 @@ namespace Gallio.Icarus.Controls
             {
                 // Reverse the current sort direction for this column.
                 if (columnSorter.Order == SortOrder.Ascending)
-                {
                     columnSorter.Order = SortOrder.Descending;
-                }
                 else
-                {
                     columnSorter.Order = SortOrder.Ascending;
-                }
             }
             else
             {
@@ -74,29 +72,30 @@ namespace Gallio.Icarus.Controls
             Sort();
         }
 
-        public void UpdateTestResults(string testName, string testOutcome, Color foreColor, 
+        public void UpdateTestResults(string testName, TestOutcome testOutcome, Color foreColor, 
             string duration, string typeName, string namespaceName, string assemblyName)
         {
             ListViewItem lvi = new ListViewItem(testName);
             lvi.UseItemStyleForSubItems = false;
-            lvi.SubItems.Add(new ListViewItem.ListViewSubItem(lvi, testOutcome, foreColor, BackColor, Font));
+            lvi.SubItems.Add(new ListViewItem.ListViewSubItem(lvi, testOutcome.ToString(), foreColor, BackColor, Font));
             lvi.SubItems.AddRange(new string[] { duration, typeName, namespaceName, assemblyName });
-            switch (testOutcome)
+            switch (testOutcome.Status)
             {
-                case "Passed":
+                case TestStatus.Passed:
                     passed.Add(lvi);
                     break;
-                case "Failed":
+                case TestStatus.Failed:
                     failed.Add(lvi);
                     break;
-                case "Inconclusive":
+                case TestStatus.Skipped:
+                    skipped.Add(lvi);
+                    break;
+                case TestStatus.Inconclusive:
                     inconclusive.Add(lvi);
                     break;
             }
-            if (filter == string.Empty || testOutcome == filter)
-            {
+            if (filter == string.Empty || testOutcome.Status.ToString() == filter)
                 Items.Add((ListViewItem)lvi.Clone());
-            }
         }
 
         private void FilterItems()
@@ -104,19 +103,23 @@ namespace Gallio.Icarus.Controls
             Items.Clear();
             switch (filter)
             {
-                case "Passed":
+                case "passed":
                     Items.AddRange(passed.ToArray());
                     break;
-                case "Failed":
+                case "failed":
                     Items.AddRange(failed.ToArray());
                     break;
-                case "Inconclusive":
+                case "inconclusive":
                     Items.AddRange(inconclusive.ToArray());
+                    break;
+                case "skipped":
+                    Items.AddRange(skipped.ToArray());
                     break;
                 default:
                     Items.AddRange(failed.ToArray());
                     Items.AddRange(inconclusive.ToArray());
                     Items.AddRange(passed.ToArray());
+                    Items.AddRange(skipped.ToArray());
                     break;
             }
         }
@@ -127,6 +130,7 @@ namespace Gallio.Icarus.Controls
             passed.Clear();
             failed.Clear();
             inconclusive.Clear();
+            skipped.Clear();
         }
     }
 

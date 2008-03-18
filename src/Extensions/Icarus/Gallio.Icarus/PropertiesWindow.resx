@@ -118,6 +118,17 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="removeHintDirectoryButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAQNJREFUOE9jYKAU
+        fD+17///nvz/f79//U+WWT+95f//MWb4D6LJMuTHg1tgA2CGgPi4XAKS+18Rhin/++O7/9+85P9/NGAA
+        Y2yG/Fg3G2wJTgtAzv+SYI1hCEj8Z3kY2Iv/Xj0lHE6fy8IQhgBtBbkI5DqSwgfk3Kd6EO+AaJI0gxS/
+        jrP+/0gXohlEgwwkKopBaQKkAYTflgL9fe3s/4du8mD+xzUEDHnTkf//hjZE86tZbXAbQS4CGQKSw2oI
+        SMEdF4gCnIqA7n9eEoZd/ml7/v9LWgxg/I6AM0EuA6kDuRYeJqBEBDIEXwpEDkCQJSBDQHqIClhsikCW
+        IYcT2QaBNAIAHmX3e1epvwEAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAABAA

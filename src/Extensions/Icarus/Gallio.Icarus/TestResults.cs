@@ -15,34 +15,15 @@
 
 using System;
 using System.Drawing;
+using System.Windows.Forms;
+
+using Gallio.Model;
 
 namespace Gallio.Icarus
 {
     public partial class TestResults : DockWindow
     {
-        public int Passed
-        {
-            get { return testProgressStatusBar.Passed; }
-            set { testProgressStatusBar.Passed = value; }
-        }
-
-        public int Failed
-        {
-            get { return testProgressStatusBar.Failed; }
-            set { testProgressStatusBar.Failed = value; }
-        }
-
-        public int Inconclusive
-        {
-            get { return testProgressStatusBar.Inconclusive; }
-            set { testProgressStatusBar.Inconclusive = value; }
-        }
-
-        public int Total
-        {
-            get { return testProgressStatusBar.Total; }
-            set { testProgressStatusBar.Total = value; }
-        }
+        public int TotalTests { set { testProgressStatusBar.Total = value; } }
 
         public TestResults()
         {
@@ -56,11 +37,41 @@ namespace Gallio.Icarus
             testResultsList.Items.Clear();
         }
 
-        public void UpdateTestResults(string testName, string testOutcome, Color foreColor, 
-            string duration, string typeName, string namespaceName, string assemblyName)
+        public void UpdateTestResults(string testName, TestOutcome testOutcome, double duration, 
+            string typeName, string namespaceName, string assemblyName)
         {
-            testResultsList.UpdateTestResults(testName, testOutcome, foreColor, duration, 
-                typeName, namespaceName, assemblyName);
+            if (testResultsList.InvokeRequired)
+            {
+                testResultsList.Invoke((MethodInvoker)delegate
+                {
+                    UpdateTestResults(testName, testOutcome, duration, typeName, namespaceName, assemblyName);
+                });
+            }
+            else
+            {
+                Color foreColor = Color.Black;
+                switch (testOutcome.Status)
+                {
+                    case TestStatus.Passed:
+                        testProgressStatusBar.Passed += 1;
+                        foreColor = Color.Green;
+                        break;
+                    case TestStatus.Failed:
+                        testProgressStatusBar.Failed += 1;
+                        foreColor = Color.Red;
+                        break;
+                    case TestStatus.Skipped:
+                        testProgressStatusBar.Skipped += 1;
+                        foreColor = Color.Yellow;
+                        break;
+                    case TestStatus.Inconclusive:
+                        testProgressStatusBar.Inconclusive += 1;
+                        foreColor = Color.SlateGray;
+                        break;
+                }
+                testResultsList.UpdateTestResults(testName, testOutcome, foreColor, duration.ToString(),
+                    typeName, namespaceName, assemblyName);
+            }
         }
 
         private void filterTestResultsCombo_SelectedIndexChanged(object sender, EventArgs e)
@@ -71,13 +82,16 @@ namespace Gallio.Icarus
                     testResultsList.Filter = string.Empty;
                     break;
                 case "Passed tests":
-                    testResultsList.Filter = "Passed";
+                    testResultsList.Filter = "passed";
                     break;
                 case "Failed tests":
-                    testResultsList.Filter = "Failed";
+                    testResultsList.Filter = "failed";
+                    break;
+                case "Skipped tests":
+                    testResultsList.Filter = "skipped";
                     break;
                 case "Inconclusive tests":
-                    testResultsList.Filter = "Inconclusive";
+                    testResultsList.Filter = "inconclusive";
                     break;
             }
         }

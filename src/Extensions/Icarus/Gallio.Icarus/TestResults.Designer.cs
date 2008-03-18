@@ -72,21 +72,12 @@ namespace Gallio.Icarus
             // 
             this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
             this.testProgressStatusBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.testProgressStatusBar.ElapsedTime = 0;
-            this.testProgressStatusBar.Failed = 0;
-            this.testProgressStatusBar.FailedColor = System.Drawing.Color.Red;
             this.testProgressStatusBar.Font = new System.Drawing.Font("Verdana", 8F);
-            this.testProgressStatusBar.Inconclusive = 0;
-            this.testProgressStatusBar.InconclusiveColor = System.Drawing.Color.Gold;
             this.testProgressStatusBar.Location = new System.Drawing.Point(0, 0);
             this.testProgressStatusBar.Mode = "MbUnit";
             this.testProgressStatusBar.Name = "testProgressStatusBar";
-            this.testProgressStatusBar.Passed = 0;
-            this.testProgressStatusBar.PassedColor = System.Drawing.Color.Green;
             this.testProgressStatusBar.Size = new System.Drawing.Size(292, 56);
             this.testProgressStatusBar.TabIndex = 5;
-            this.testProgressStatusBar.Text = "{0} tests - {1} successes - {2} inconclusive - {3} failures - {4:0.0}s";
-            this.testProgressStatusBar.Total = 0;
             // 
             // filterTestResultsCombo
             // 
@@ -96,6 +87,7 @@ namespace Gallio.Icarus
             "All tests",
             "Passed tests",
             "Failed tests",
+            "Skipped tests",
             "Inconclusive tests"});
             this.filterTestResultsCombo.Location = new System.Drawing.Point(74, 68);
             this.filterTestResultsCombo.Name = "filterTestResultsCombo";

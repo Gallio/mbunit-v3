@@ -114,7 +114,7 @@ namespace Gallio.Icarus
             // 
             this.removeHintDirectoryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.removeHintDirectoryButton.Enabled = false;
-            this.removeHintDirectoryButton.Image = global::Gallio.Icarus.Properties.Resources.ClearAll;
+            this.removeHintDirectoryButton.Image = ((System.Drawing.Image)(resources.GetObject("removeHintDirectoryButton.Image")));
             this.removeHintDirectoryButton.Location = new System.Drawing.Point(636, 81);
             this.removeHintDirectoryButton.Name = "removeHintDirectoryButton";
             this.removeHintDirectoryButton.Size = new System.Drawing.Size(33, 28);

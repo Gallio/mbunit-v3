@@ -13,16 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+
+using Aga.Controls.Tree;
 
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
+using Gallio.Runner.Reports;
+using Gallio.Icarus.Core.CustomEventArgs;
 
 namespace Gallio.Icarus.AdapterModel
 {
@@ -31,14 +39,30 @@ namespace Gallio.Icarus.AdapterModel
     /// </summary>
     public class ProjectAdapterModel : IProjectAdapterModel
     {
-        /// <summary>
-        /// Builds a winforms test tree from a gallio test tree
-        /// </summary>
-        /// <param name="testModelData">gallio test tree</param>
-        /// <returns></returns>
-        public TreeNode[] BuildTestTree(TestModelData testModelData, string mode)
+        private TestTreeModel testTreeModel;
+        private SortedTreeModel sortedTreeModel;
+
+        public ITreeModel TreeModel
         {
-            TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, 0);
+            get { return sortedTreeModel; }
+        }
+
+        public ProjectAdapterModel()
+        {
+            testTreeModel = new TestTreeModel();
+            sortedTreeModel = new SortedTreeModel(testTreeModel);
+        }
+
+        /// <summary>
+        /// Builds the tree model from a Gallio test model.
+        /// </summary>
+        /// <param name="testModelData">Gallio test model data</param>
+        /// <param name="mode">How to group the tree.</param>
+        public void BuildTestTree(TestModelData testModelData, string mode)
+        {
+            testTreeModel.Nodes.Clear();
+            TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id);
+            testTreeModel.Nodes.Add(root);
             switch (mode)
             {
                 case "Namespaces":
@@ -46,23 +70,22 @@ namespace Gallio.Icarus.AdapterModel
                     break;
 
                 case "Authors":
-                    PopulateMetadataTree(MetadataKeys.AuthorName, testModelData.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.AuthorName, testModelData.RootTest.Children, root);
                     break;
 
                 case "Categories":
-                    PopulateMetadataTree(MetadataKeys.CategoryName, testModelData.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.CategoryName, testModelData.RootTest.Children, root);
                     break;
                 
                 case "Importance":
-                    PopulateMetadataTree(MetadataKeys.Importance, testModelData.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.Importance, testModelData.RootTest.Children, root);
                     break;
 
                 case "TestsOn":
-                    PopulateMetadataTree(MetadataKeys.TestsOn, testModelData.RootTest.Children, root, root);
+                    PopulateMetadataTree(MetadataKeys.TestsOn, testModelData.RootTest.Children, root);
                     break;
             }
-            root.ExpandAll();
-            return new TreeNode[] { root };
+            testTreeModel.OnTestCountChanged(EventArgs.Empty);
         }
 
         private void PopulateNamespaceTree(List<TestData> list, TestTreeNode parent)
@@ -73,12 +96,12 @@ namespace Gallio.Icarus.AdapterModel
                 string componentKind = td.Metadata.GetValue(MetadataKeys.TestKind);
                 if (componentKind != null)
                 {
-                    int imgIndex = GetImageIndex(componentKind);
                     TestTreeNode ttnode;
                     if (componentKind != TestKinds.Fixture)
                     {
                         // create an appropriate node
-                        ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                        ttnode = new TestTreeNode(td.Name, td.Id);
+                        ttnode.NodeTypeIcon = GetNodeTypeIcon(componentKind);
                         parent.Nodes.Add(ttnode);
                     }
                     else
@@ -88,16 +111,19 @@ namespace Gallio.Icarus.AdapterModel
 
                         // find the namespace node (or add if it doesn't exist)
                         TestTreeNode nsNode;
-                        if (parent.Nodes.ContainsKey(@namespace))
-                            nsNode = parent.Nodes.Find(@namespace, false)[0] as TestTreeNode;
+                        List<TestTreeNode> nodes = parent.Find(@namespace, true);
+                        if (nodes.Count > 0)
+                            nsNode = nodes[0] as TestTreeNode;
                         else
                         {
-                            nsNode = new TestTreeNode(@namespace, @namespace, 2);
+                            nsNode = new TestTreeNode(@namespace, @namespace);
+                            nsNode.NodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Namespace;
                             parent.Nodes.Add(nsNode);
                         }
 
                         // add the fixture to the namespace
-                        ttnode = new TestTreeNode(td.Name, td.Id, 3);
+                        ttnode = new TestTreeNode(td.Name, td.Id);
+                        ttnode.NodeTypeIcon = GetNodeTypeIcon(componentKind);
                         nsNode.Nodes.Add(ttnode);
                     }
                     ttnode.SourceCodeAvailable = (td.CodeLocation != null);
@@ -109,7 +135,7 @@ namespace Gallio.Icarus.AdapterModel
             }
         }
 
-        private void PopulateMetadataTree(string key, List<TestData> list, TestTreeNode root, TestTreeNode parent)
+        private void PopulateMetadataTree(string key, List<TestData> list, TestTreeNode parent)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -121,7 +147,6 @@ namespace Gallio.Icarus.AdapterModel
                     {
                         case TestKinds.Fixture:
                         case TestKinds.Test:
-                            int imgIndex = GetImageIndex(componentKind);
                             IList<string> metadata = td.Metadata[key];
                             if (metadata.Count == 0)
                             {
@@ -132,23 +157,27 @@ namespace Gallio.Icarus.AdapterModel
                             {
                                 // find metadata node (or add if it doesn't exist)
                                 TestTreeNode metadataNode;
-                                if (root.Nodes.ContainsKey(m))
-                                    metadataNode = root.Nodes.Find(m, false)[0] as TestTreeNode;
+                                List<TestTreeNode> nodes = testTreeModel.Root.Find(m, false);
+                                if (nodes.Count > 0)
+                                    metadataNode = nodes[0] as TestTreeNode;
                                 else
                                 {
-                                    metadataNode = new TestTreeNode(m, m, 0);
-                                    root.Nodes.Add(metadataNode);
+                                    metadataNode = new TestTreeNode(m, m);
+                                    metadataNode.NodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Namespace;
+                                    testTreeModel.Root.Nodes.Add(metadataNode);
                                 }
                                 // add node in the appropriate place
                                 if (componentKind == TestKinds.Fixture)
                                 {
-                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id);
+                                    ttnode.NodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Fixture;
                                     metadataNode.Nodes.Add(ttnode);
-                                    PopulateMetadataTree(key, td.Children, root, ttnode);
+                                    PopulateMetadataTree(key, td.Children, ttnode);
                                 }
                                 else
                                 {
-                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, imgIndex);
+                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id);
+                                    ttnode.NodeTypeIcon = GetNodeTypeIcon(componentKind);
                                     ttnode.SourceCodeAvailable = (td.CodeLocation != null);
                                     ttnode.IsTest = td.IsTestCase;
                                     if (m != "None")
@@ -160,42 +189,24 @@ namespace Gallio.Icarus.AdapterModel
                             break;
                     }
                     if (componentKind != TestKinds.Fixture)
-                        PopulateMetadataTree(key, td.Children, root, parent);
+                        PopulateMetadataTree(key, td.Children, parent);
                 }
             }
         }
 
-        private int GetImageIndex(string componentKind)
+        private Image GetNodeTypeIcon(string componentKind)
         {
             switch (componentKind)
             {
-                case TestKinds.Root:
-                case TestKinds.Framework:
-                    return 0;
                 case TestKinds.Assembly:
-                    return 1;
+                    return global::Gallio.Icarus.Properties.Resources.Assembly;
                 case TestKinds.Fixture:
-                    return 3;
+                    return global::Gallio.Icarus.Properties.Resources.Fixture;
                 case TestKinds.Test:
-                    return 4;
+                    return global::Gallio.Icarus.Properties.Resources.Test;
                 default:
-                    return 0;
+                    return null;
             }
-        }
-
-        public int CountTests(TestModelData testModelData)
-        {
-            return CountTests(testModelData.RootTest);
-        }
-
-        private int CountTests(TestData td)
-        {
-            int testCount = 0;
-            if (td.IsTestCase)
-                testCount++;
-            foreach (TestData child in td.Children)
-                testCount += CountTests(child);
-            return testCount;
         }
 
         public ListViewItem[] BuildAssemblyList(List<string> assemblyList)
@@ -210,6 +221,107 @@ namespace Gallio.Icarus.AdapterModel
                 assemblies[i] = new ListViewItem(assemblyInfo);
             }
             return assemblies;
+        }
+
+        public void Update(TestData testData, TestStepRun testStepRun)
+        {
+            // update tree model
+            testTreeModel.UpdateTestStatus(testData.Id, testStepRun.Result.Outcome.Status);
+            // get code reference (if there is one)
+            CodeReference codeReference = testData.CodeReference ?? CodeReference.Unknown;
+            // update test results
+            double duration = (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds;
+            testTreeModel.OnTestResult(new TestResultEventArgs(testData.Name, testStepRun.Result.Outcome,
+                duration, codeReference.TypeName, codeReference.NamespaceName, codeReference.AssemblyName));
+        }
+
+        public Filter<ITest> CreateFilter()
+        {
+            if (testTreeModel.Root.CheckState == CheckState.Checked)
+                return new AnyFilter<ITest>();
+            if (testTreeModel.Root.CheckState == CheckState.Unchecked)
+                return new NoneFilter<ITest>();
+            return CreateFilter(testTreeModel.Nodes);
+        }
+
+        private Filter<ITest> CreateFilter(Collection<Node> nodes)
+        {
+            List<Filter<ITest>> filters = new List<Filter<ITest>>();
+            foreach (Node n in nodes)
+            {
+                if (n is TestTreeNode)
+                {
+                    TestTreeNode node = (TestTreeNode)n;
+                    switch (node.CheckState)
+                    {
+                        case CheckState.Checked:
+                            {
+                                if (node.NodeTypeIcon != global::Gallio.Icarus.Properties.Resources.Namespace)
+                                    filters.Add(new IdFilter<ITest>(new EqualityFilter<string>(node.Name)));
+                                else
+                                {
+                                    Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                                    if (childFilters != null)
+                                        filters.Add(childFilters);
+                                }
+                                break;
+                            }
+                        case CheckState.Indeterminate:
+                            {
+                                Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                                if (childFilters != null)
+                                    filters.Add(childFilters);
+                                break;
+                            }
+                    }
+                }
+            }
+            return new OrFilter<ITest>(filters.ToArray());
+        }
+
+        public void ApplyFilter(Filter<ITest> filter)
+        {
+            if (!(filter is AnyFilter<ITest>))
+            {
+                // toggle root node
+                foreach (Node node in testTreeModel.Nodes)
+                {
+                    if (node is TestTreeNode)
+                    {
+                        node.CheckState = CheckState.Unchecked;
+                        ((TestTreeNode)node).UpdateStateOfRelatedNodes();
+                    }
+                }
+                RecursivelyApplyFilter(filter);
+                testTreeModel.OnTestCountChanged(EventArgs.Empty);
+            }
+        }
+
+        private void RecursivelyApplyFilter(Filter<ITest> filter)
+        {
+            if (filter is NoneFilter<ITest>)
+                return;
+            if (filter is OrFilter<ITest>)
+            {
+                OrFilter<ITest> orFilter = (OrFilter<ITest>)filter;
+                foreach (Filter<ITest> childFilter in orFilter.Filters)
+                    RecursivelyApplyFilter(childFilter);
+            }
+            else if (filter is IdFilter<ITest>)
+            {
+                IdFilter<ITest> idFilter = (IdFilter<ITest>)filter;
+                EqualityFilter<string> equalityFilter = (EqualityFilter<string>)idFilter.ValueFilter;
+                foreach (TestTreeNode n in testTreeModel.Root.Find(equalityFilter.Comparand, true))
+                {
+                    n.CheckState = CheckState.Checked;
+                    n.UpdateStateOfRelatedNodes();
+                }
+            }
+        }
+
+        public void ResetTestStatus()
+        {
+            testTreeModel.ResetTestStatus();
         }
     }
 }

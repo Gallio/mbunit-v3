@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Model;
+
 using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests
@@ -24,7 +26,7 @@ namespace Gallio.Icarus.Tests
         public void UpdateTestResults_Test()
         {
             PerformanceMonitor performanceMonitor = new PerformanceMonitor();
-            performanceMonitor.UpdateTestResults("Passed", "Type", "Namespace", "Assembly");
+            performanceMonitor.UpdateTestResults(TestOutcome.Passed, "Type", "Namespace", "Assembly");
         }
     }
 }

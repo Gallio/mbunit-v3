@@ -41,53 +41,21 @@ namespace Gallio.Icarus.Tests
             projectAdapterView.ReloadTree();
         }
 
-        [Test]
-        public void ApplyFilter_Test()
-        {
-            projectAdapterView.TotalTests = 0;
-            LastCall.Repeat.AtLeastOnce();
-            mocks.ReplayAll();
-            testExplorer = new TestExplorer(projectAdapterView);
-            TestTreeNode node = new TestTreeNode("test", "testtesttesttest", 0);
-            testExplorer.DataBind(new TreeNode[] { node });
-            Filter<ITest> filter = new OrFilter<ITest>(new Filter<ITest>[] { new NoneFilter<ITest>(), 
-                new IdFilter<ITest>(new EqualityFilter<string>("testtesttesttest")) });
-            testExplorer.ApplyFilter(filter.ToFilterExpr());
-            Assert.IsTrue(node.Checked);
-        }
-
-        [Test]
-        public void CountTests_Test()
-        {
-            projectAdapterView.TotalTests = 0;
-            mocks.ReplayAll();
-            testExplorer = new TestExplorer(projectAdapterView);
-            testExplorer.CountTests();
-        }
-
-        [Test]
-        public void ExpandTree_Test()
-        {
-            mocks.ReplayAll();
-            testExplorer = new TestExplorer(projectAdapterView);
-            TestTreeNode node = new TestTreeNode("test", "test", 0);
-            TestTreeNode child = new TestTreeNode("child", "child", 0);
-            child.TestState = TestStates.Success;
-            TestTreeNode child2 = new TestTreeNode("child2", "child2", 0);
-            child2.TestState = TestStates.Success;
-            child.Nodes.Add(child2);
-            node.Nodes.Add(child);
-            testExplorer.DataBind(new TreeNode[] { node });
-            testExplorer.ExpandTree(TestStates.Success);
-        }
-
-        [Test]
-        public void Reset_Test()
-        {
-            mocks.ReplayAll();
-            testExplorer = new TestExplorer(projectAdapterView);
-            testExplorer.Reset();
-        }
+        //[Test]
+        //public void ExpandTree_Test()
+        //{
+        //    mocks.ReplayAll();
+        //    testExplorer = new TestExplorer(projectAdapterView);
+        //    TestTreeNode node = new TestTreeNode("test", "test", 0);
+        //    TestTreeNode child = new TestTreeNode("child", "child", 0);
+        //    child.TestState = TestStates.Success;
+        //    TestTreeNode child2 = new TestTreeNode("child2", "child2", 0);
+        //    child2.TestState = TestStates.Success;
+        //    child.Nodes.Add(child2);
+        //    node.Nodes.Add(child);
+        //    testExplorer.DataBind(new TreeNode[] { node });
+        //    testExplorer.ExpandTree(TestStates.Success);
+        //}
 
         [Test]
         public void TreeFilter_Test()
@@ -104,15 +72,15 @@ namespace Gallio.Icarus.Tests
             Assert.AreEqual("Namespaces", treeFilter);
         }
 
-        [Test]
-        public void UpdateTestState_Test()
-        {
-            mocks.ReplayAll();
-            testExplorer = new TestExplorer(projectAdapterView);
-            TestTreeNode node = new TestTreeNode("test", "test", 0);
-            testExplorer.DataBind(new TreeNode[] { node });
-            testExplorer.UpdateTestState("test", TestStates.Success);
-            Assert.AreEqual(TestStates.Success, node.TestState);
-        }
+        //[Test]
+        //public void UpdateTestState_Test()
+        //{
+        //    mocks.ReplayAll();
+        //    testExplorer = new TestExplorer(projectAdapterView);
+        //    TestTreeNode node = new TestTreeNode("test", "test", 0);
+        //    testExplorer.DataBind(new TreeNode[] { node });
+        //    testExplorer.UpdateTestState("test", TestStates.Success);
+        //    Assert.AreEqual(TestStates.Success, node.TestState);
+        //}
    }
 }

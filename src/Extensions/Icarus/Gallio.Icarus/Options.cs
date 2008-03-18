@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 
@@ -74,6 +75,7 @@ namespace Gallio.Icarus
 
         private void CreatePluginDirectoriesControls()
         {
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(PropertiesWindow));
             Button removePluginDirectoryButton = new Button();
             Button addFolderButton = new Button();
             Button findPluginDirectoryButton = new Button();
@@ -85,7 +87,7 @@ namespace Gallio.Icarus
             // 
             removePluginDirectoryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             removePluginDirectoryButton.Enabled = false;
-            removePluginDirectoryButton.Image = global::Gallio.Icarus.Properties.Resources.ClearAll;
+            removePluginDirectoryButton.Image = ((System.Drawing.Image)(resources.GetObject("removePluginDirectoryButton.Image")));
             removePluginDirectoryButton.Location = new System.Drawing.Point(397, 82);
             removePluginDirectoryButton.Name = "removePluginDirectoryButton";
             removePluginDirectoryButton.Size = new System.Drawing.Size(30, 28);

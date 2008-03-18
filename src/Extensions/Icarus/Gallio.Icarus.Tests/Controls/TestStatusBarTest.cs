@@ -21,9 +21,6 @@ using Gallio.Icarus.Tests.Properties;
 
 using MbUnit.Framework;
 
-using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
-
 namespace Gallio.Icarus.Tests.Controls
 {
     [TestFixture]
@@ -56,16 +53,16 @@ namespace Gallio.Icarus.Tests.Controls
         {
             Assert.AreEqual(0, testStatusBar.Passed);
             Assert.AreEqual(0, testStatusBar.Failed);
-            Assert.AreEqual(0, testStatusBar.Inconclusive);
+            Assert.AreEqual(0, testStatusBar.Skipped);
             Assert.AreEqual(0, testStatusBar.ElapsedTime);
             testStatusBar.Passed = 5;
             testStatusBar.Failed = 3;
-            testStatusBar.Inconclusive = 15;
+            testStatusBar.Skipped = 15;
             testStatusBar.ElapsedTime = 12;
             testStatusBar.Clear();
             Assert.AreEqual(0, testStatusBar.Passed);
             Assert.AreEqual(0, testStatusBar.Failed);
-            Assert.AreEqual(0, testStatusBar.Inconclusive);
+            Assert.AreEqual(0, testStatusBar.Skipped);
             Assert.AreEqual(0, testStatusBar.ElapsedTime);
         }
 
@@ -80,9 +77,9 @@ namespace Gallio.Icarus.Tests.Controls
         [Test]
         public void InconclusiveColor_Test()
         {
-            Assert.AreEqual(Color.Gold, testStatusBar.InconclusiveColor);
-            testStatusBar.InconclusiveColor = Color.Black;
-            Assert.AreEqual(Color.Black, testStatusBar.InconclusiveColor);
+            Assert.AreEqual(Color.Yellow, testStatusBar.SkippedColor);
+            testStatusBar.SkippedColor = Color.Black;
+            Assert.AreEqual(Color.Black, testStatusBar.SkippedColor);
         }
 
         [Test]
@@ -103,7 +100,7 @@ namespace Gallio.Icarus.Tests.Controls
         [Test]
         public void Text_Test()
         {
-            Assert.AreEqual("{0} tests - {1} successes - {2} inconclusive - {3} failures - {4:0.0}s", testStatusBar.Text);
+            Assert.AreEqual("{0} tests - {1} passed - {2} skipped - {3} failed - {4} inconclusive - {5:0.0}s", testStatusBar.Text);
         }
 
         [Test]

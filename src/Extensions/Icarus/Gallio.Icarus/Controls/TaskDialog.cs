@@ -81,7 +81,6 @@ namespace Gallio.Icarus.Controls
                 // 
                 // picLogo
                 // 
-                picLogo.Image = Resources.MbUnitLogo;
                 picLogo.Location = new Point(360, 12);
                 picLogo.Name = "picLogo";
                 picLogo.Size = new Size(78, 55);

@@ -16,14 +16,23 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using Aga.Controls.Tree;
+
+using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Interfaces
 {
     public interface IProjectAdapterModel
     {
-        TreeNode[] BuildTestTree(TestModelData testModelData, string mode);
-        int CountTests(TestModelData testModelData);
+        ITreeModel TreeModel { get; }
+        void BuildTestTree(TestModelData testModelData, string mode);
         ListViewItem[] BuildAssemblyList(List<string> assemblyList);
+        void Update(TestData testData, TestStepRun testStepRun);
+        Filter<ITest> CreateFilter();
+        void ApplyFilter(Filter<ITest> filter);
+        void ResetTestStatus();
     }
 }

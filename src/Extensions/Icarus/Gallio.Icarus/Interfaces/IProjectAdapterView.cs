@@ -27,6 +27,8 @@ using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runner.Projects;
 
+using Aga.Controls.Tree;
+
 namespace Gallio.Icarus.Interfaces
 {
     public interface IProjectAdapterView
@@ -38,8 +40,9 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> GenerateReport;
         event EventHandler<EventArgs> StopTests;
-        event EventHandler<SetFilterEventArgs> SetFilter;
-        event EventHandler<SingleEventArgs<FilterInfo>> RemoveFilter;
+        event EventHandler<SingleEventArgs<string>> SaveFilter;
+        event EventHandler<SingleEventArgs<string>> ApplyFilter;
+        event EventHandler<SingleEventArgs<string>> DeleteFilter;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         event EventHandler<SingleEventArgs<string>> SaveProject;
@@ -51,25 +54,24 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<SingleEventArgs<string>> UpdateApplicationBaseDirectoryEvent;
         event EventHandler<SingleEventArgs<string>> UpdateWorkingDirectoryEvent;
         event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
-        TreeNode[] TestTreeCollection { set; }
+        event EventHandler<EventArgs> ResetTestStatus;
+        ITreeModel TreeModel { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
         string ReportPath { set; }
+        IList<string> TestFilters { set; }
         IList<string> ReportTypes { set; }
         IList<string> TestFrameworks { set; }
         IList<string> HintDirectories { set; }
         string ApplicationBaseDirectory { set; }
         string WorkingDirectory { set; }
         bool ShadowCopy { set; }
-        IList<FilterInfo> TestFilters { set; }
         Exception Exception { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         int TotalTests { set; }
         CodeLocation SourceCodeLocation { set; }
         Settings Settings { get; set; }
-        void Update(TestData testData, TestStepRun testStepRun);
-        void ApplyFilter(string filter);
         void ThreadedRemoveAssembly(string assembly);
         void ReloadTree();
         void SaveReport(string fileName, string reportType);
@@ -85,7 +87,9 @@ namespace Gallio.Icarus.Interfaces
         void UpdateApplicationBaseDirectory(string applicationBaseDirectory);
         void UpdateWorkingDirectory(string workingDirectory);
         void UpdateShadowCopy(bool shadowCopy);
-        void SaveFilter(string filterName);
-        void DeleteFilter(FilterInfo filterInfo);
+        void OnApplyFilter(string filter);
+        void OnSaveFilter(string filter);
+        void OnDeleteFilter(string filter);
+        void LoadComplete();
     }
 }

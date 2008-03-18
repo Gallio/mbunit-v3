@@ -13,59 +13,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
-using Gallio.Icarus.Controls.Enums;
+
+using Aga.Controls.Tree;
+
+using Gallio.Model;
+using System.Collections.Generic;
 
 namespace Gallio.Icarus.Controls
 {
-    [Serializable]
-    public class TestTreeNode : TreeNode
+    public class TestTreeNode : Node
     {
-        private CheckBoxStates checkState = CheckBoxStates.Unchecked;
-        private TestStates testState = TestStates.Undefined;
+        private TestStatus testStatus = TestStatus.Inconclusive;
         private bool sourceCodeAvailable, isTest;
+        private string name;
+        protected Image nodeTypeIcon, testStatusIcon;
 
-        public TestTreeNode(string text, string id, int imgIndex)
-            : base(text, imgIndex, imgIndex)
+        public string Name
         {
-            Name = id;
-            Checked = true;
-            CheckState = CheckBoxStates.Checked;
+            get { return name; }
         }
 
-        [Category("Behaviour"),
-         Description("The current state of the node's checkbox, Unchecked, Checked, or Indeterminate"),
-         DefaultValue(CheckBoxStates.Unchecked),
-         TypeConverter(typeof (CheckBoxStates)),
-         Editor("Gallio.Icarus.Controls.Enums.CheckBoxState", typeof (CheckBoxStates))]
-        public CheckBoxStates CheckState
+        public TestStatus TestStatus
         {
-            get { return checkState; }
+            get { return testStatus; }
             set
             {
-                if (checkState != value)
-                {
-                    checkState = value;
-
-                    // Ensure if checkboxes are used to make the checkbox checked or unchecked.
-                    // When go to a fully drawn control, this will be managed in the drawing code.
-                    // Setting the Checked property in code will cause the OnAfterCheck to be called
-                    // and the action will be 'Unknown'; do not handle that case.
-                    if ((TreeView != null) && (TreeView.CheckBoxes))
-                        Checked = (checkState == CheckBoxStates.Checked);
-                }
-            }
-        }
-
-        public TestStates TestState
-        {
-            get { return testState; }
-            set
-            {
-                testState = value;
-                UpdateParentTestState();
+                testStatus = value;
+                UpdateParentTestStatus();
             }
         }
 
@@ -84,92 +60,109 @@ namespace Gallio.Icarus.Controls
         /// <summary>
         /// Returns the 'combined' state for all siblings of a node.
         /// </summary>
-        private CheckBoxStates SiblingsState
+        private CheckState SiblingsState
         {
             get
             {
                 // If parent is null, cannot have any siblings or if the parent
                 // has only one child (i.e. this node) then return the state of this 
                 // instance as the state.
-                if ((Parent == null) || (Parent.Nodes.Count == 1))
+                if (Parent == null || Parent.Nodes.Count == 1)
                     return CheckState;
 
                 // The parent has more than one child.  Walk through parent's child
                 // nodes to determine the state of all this node's siblings,
                 // including this node.
-                CheckBoxStates state = 0;
-                foreach (TreeNode node in Parent.Nodes)
+                foreach (Node node in Parent.Nodes)
                 {
                     TestTreeNode child = node as TestTreeNode;
-                    if (child != null)
-                        state |= child.CheckState;
-
-                    // If the state is now indeterminate then know there
-                    // is a combination of checked and unchecked nodes
-                    // and no longer need to continue evaluating the rest
-                    // of the sibling nodes.
-                    if (state == CheckBoxStates.Indeterminate)
-                        break;
+                    if (child != null && CheckState != child.CheckState)
+                        return CheckState.Indeterminate;
                 }
-
-                return (state == 0) ? CheckBoxStates.Unchecked : state;
+                return CheckState;
             }
         }
 
-        private TestStates SiblingTestState
+        private TestStatus SiblingTestStatus
         {
             get
             {
-                if ((Parent == null) || (Parent.Nodes.Count == 1))
-                    return TestState;
+                if (Parent == null || Parent.Nodes.Count == 1)
+                    return TestStatus;
 
-                TestStates testStates = TestStates.Undefined;
-                foreach (TreeNode node in Parent.Nodes)
+                TestStatus ts = TestStatus.Inconclusive;
+                foreach (Node node in Parent.Nodes)
                 {
                     TestTreeNode child = node as TestTreeNode;
-                    if (child != null && child.TestState > testStates)
-                        testStates = child.TestState;
-
-                    // Failed is the worst state we can get to, dont bother checking the rest.
-                    if (testStates == TestStates.Failed)
-                        break;
+                    if (child != null)
+                    {
+                        if (child.TestStatus == TestStatus.Failed)
+                            return TestStatus.Failed;
+                        if (child.TestStatus == TestStatus.Skipped)
+                            ts = TestStatus.Skipped;
+                        if (child.TestStatus == TestStatus.Passed && ts != TestStatus.Skipped)
+                            ts = TestStatus.Passed;
+                    }
                 }
-
-                return testStates;
+                return ts;
             }
         }
 
-        /// <summary>
-        /// Manages state changes from one state to the next.
-        /// </summary>
-        /// <param name="fromState">The state upon which to base the state change.</param>
-        public void Toggle(CheckBoxStates fromState)
+        public Image NodeTypeIcon
         {
-            switch (fromState)
+            get { return nodeTypeIcon; }
+            set
             {
-                case CheckBoxStates.Unchecked:
-                    {
-                        CheckState = CheckBoxStates.Checked;
-                        break;
-                    }
-                case CheckBoxStates.Checked:
-                case CheckBoxStates.Indeterminate:
-                default:
-                    {
-                        CheckState = CheckBoxStates.Unchecked;
-                        break;
-                    }
+                nodeTypeIcon = value;
+                NotifyModel();
             }
-
-            UpdateStateOfRelatedNodes();
         }
 
-        /// <summary>
-        /// Manages state changes from one state to the next.
-        /// </summary>
-        public new void Toggle()
+        public Image TestStatusIcon
         {
-            Toggle(CheckState);
+            get { return testStatusIcon; }
+            set
+            {
+                testStatusIcon = value;
+                NotifyModel();
+            }
+        }
+
+        public TestTreeNode(string text, string name)
+            : base(text)
+        {
+            this.name = name;
+            CheckState = CheckState.Checked;
+        }
+
+        public List<TestTreeNode> Find(string key, bool searchChildren)
+        {
+            List<TestTreeNode> nodes = new List<TestTreeNode>();
+
+            // always search one level deep...
+            foreach (Node n in Nodes)
+                nodes.AddRange(Find(key, searchChildren, n));
+
+            return nodes;
+        }
+
+        private List<TestTreeNode> Find(string key, bool searchChildren, Node node)
+        {
+            List<TestTreeNode> nodes = new List<TestTreeNode>();
+            if (node is TestTreeNode)
+            {
+                TestTreeNode ttnode = (TestTreeNode)node;
+                if (ttnode.Name == key)
+                    nodes.Add(ttnode);
+
+                // continue down the tree if necessary
+                if (searchChildren)
+                {
+                    foreach (Node n in node.Nodes)
+                        nodes.AddRange(Find(key, searchChildren, n));
+                }
+            }
+            return nodes;
         }
 
         /// <summary>
@@ -177,20 +170,13 @@ namespace Gallio.Icarus.Controls
         /// </summary>
         public void UpdateStateOfRelatedNodes()
         {
-            TestTreeView tv = TreeView as TestTreeView;
-            if ((tv != null) && tv.CheckBoxes && tv.UseTriStateCheckBoxes)
-            {
-                tv.BeginUpdate();
 
-                // If want to cascade checkbox state changes to child nodes of this node and
-                // if the current state is not intermediate, update the state of child nodes.
-                if (CheckState != CheckBoxStates.Indeterminate)
-                    UpdateChildNodeState();
+            // If want to cascade checkbox state changes to child nodes of this node and
+            // if the current state is not intermediate, update the state of child nodes.
+            if (CheckState != CheckState.Indeterminate)
+                UpdateChildNodeState();
 
-                UpdateParentNodeState(true);
-
-                tv.EndUpdate();
-            }
+            UpdateParentNodeState(true);
         }
 
         /// <summary>
@@ -198,14 +184,13 @@ namespace Gallio.Icarus.Controls
         /// </summary>
         private void UpdateChildNodeState()
         {
-            foreach (TreeNode node in Nodes)
+            foreach (Node node in Nodes)
             {
                 // It is possible node is not a ThreeStateTreeNode, so check first.
                 TestTreeNode child = node as TestTreeNode;
                 if (child != null)
                 {
                     child.CheckState = CheckState;
-                    child.Checked = (CheckState != CheckBoxStates.Unchecked);
                     child.UpdateChildNodeState();
                 }
             }
@@ -226,15 +211,14 @@ namespace Gallio.Icarus.Controls
             // state.  However, if not in an indeterminate state, then still need
             // to evaluate the state of all the siblings of this node, including the state
             // of this node before setting the state of the parent of this instance.
-
             TestTreeNode parent = Parent as TestTreeNode;
             if (parent != null)
             {
-                CheckBoxStates state;
+                CheckState state;
 
                 // Determine the new state
-                if (!isStartingPoint && (CheckState == CheckBoxStates.Indeterminate))
-                    state = CheckBoxStates.Indeterminate;
+                if (!isStartingPoint && (CheckState == CheckState.Indeterminate))
+                    state = CheckState.Indeterminate;
                 else
                     state = SiblingsState;
 
@@ -242,24 +226,16 @@ namespace Gallio.Icarus.Controls
                 if (parent.CheckState != state)
                 {
                     parent.CheckState = state;
-                    parent.Checked = (state != CheckBoxStates.Unchecked);
                     parent.UpdateParentNodeState(false);
                 }
             }
         }
 
-        private void UpdateParentTestState()
+        private void UpdateParentTestStatus()
         {
-            if (TreeView != null)
-            {
-                TreeView.BeginUpdate();
-
-                TestTreeNode parent = Parent as TestTreeNode;
-                if (parent != null)
-                    parent.TestState = SiblingTestState;
-
-                TreeView.EndUpdate();
-            }
+            TestTreeNode parent = Parent as TestTreeNode;
+            if (parent != null)
+                parent.TestStatus = SiblingTestStatus;
         }
     }
 }

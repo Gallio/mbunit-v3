@@ -66,6 +66,7 @@ namespace Gallio.Icarus
             this.performanceMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testFiltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.assembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeAssembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,7 +106,6 @@ namespace Gallio.Icarus
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.testFiltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -210,7 +210,6 @@ namespace Gallio.Icarus
             // 
             // testExplorerToolStripMenuItem
             // 
-            this.testExplorerToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.MbUnit;
             this.testExplorerToolStripMenuItem.Name = "testExplorerToolStripMenuItem";
             this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.testExplorerToolStripMenuItem.Text = "Test Explorer";
@@ -218,7 +217,6 @@ namespace Gallio.Icarus
             // 
             // assemblyListToolStripMenuItem
             // 
-            this.assemblyListToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.AssemblyIcon;
             this.assemblyListToolStripMenuItem.Name = "assemblyListToolStripMenuItem";
             this.assemblyListToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.assemblyListToolStripMenuItem.Text = "Modules";
@@ -226,7 +224,7 @@ namespace Gallio.Icarus
             // 
             // reportToolStripMenuItem
             // 
-            this.reportToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.Report;
+            this.reportToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("reportToolStripMenuItem.Image")));
             this.reportToolStripMenuItem.Name = "reportToolStripMenuItem";
             this.reportToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.reportToolStripMenuItem.Text = "Report";
@@ -249,11 +247,18 @@ namespace Gallio.Icarus
             // 
             // propertiesToolStripMenuItem
             // 
-            this.propertiesToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.PropertyWindow;
+            this.propertiesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("propertiesToolStripMenuItem.Image")));
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
             this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
+            // testFiltersToolStripMenuItem
+            // 
+            this.testFiltersToolStripMenuItem.Name = "testFiltersToolStripMenuItem";
+            this.testFiltersToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.testFiltersToolStripMenuItem.Text = "Test filters";
+            this.testFiltersToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // assembliesToolStripMenuItem
             // 
@@ -305,7 +310,7 @@ namespace Gallio.Icarus
             // startTestsToolStripMenuItem
             // 
             this.startTestsToolStripMenuItem.Enabled = false;
-            this.startTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.start;
+            this.startTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("startTestsToolStripMenuItem.Image")));
             this.startTestsToolStripMenuItem.Name = "startTestsToolStripMenuItem";
             this.startTestsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
             this.startTestsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -315,7 +320,7 @@ namespace Gallio.Icarus
             // stopTestsToolStripMenuItem
             // 
             this.stopTestsToolStripMenuItem.Enabled = false;
-            this.stopTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.stop;
+            this.stopTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("stopTestsToolStripMenuItem.Image")));
             this.stopTestsToolStripMenuItem.Name = "stopTestsToolStripMenuItem";
             this.stopTestsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
             this.stopTestsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -351,7 +356,6 @@ namespace Gallio.Icarus
             // 
             // logToolStripMenuItem
             // 
-            this.logToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
             this.logToolStripMenuItem.Name = "logToolStripMenuItem";
             this.logToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.logToolStripMenuItem.Text = "Log";
@@ -359,7 +363,6 @@ namespace Gallio.Icarus
             // 
             // consoleInputToolStripMenuItem
             // 
-            this.consoleInputToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
             this.consoleInputToolStripMenuItem.Name = "consoleInputToolStripMenuItem";
             this.consoleInputToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.consoleInputToolStripMenuItem.Text = "Console input";
@@ -367,7 +370,6 @@ namespace Gallio.Icarus
             // 
             // consoleOutputToolStripMenuItem
             // 
-            this.consoleOutputToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
             this.consoleOutputToolStripMenuItem.Name = "consoleOutputToolStripMenuItem";
             this.consoleOutputToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.consoleOutputToolStripMenuItem.Text = "Console output";
@@ -375,7 +377,6 @@ namespace Gallio.Icarus
             // 
             // consoleErrorToolStripMenuItem
             // 
-            this.consoleErrorToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
             this.consoleErrorToolStripMenuItem.Name = "consoleErrorToolStripMenuItem";
             this.consoleErrorToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.consoleErrorToolStripMenuItem.Text = "Console error";
@@ -383,7 +384,6 @@ namespace Gallio.Icarus
             // 
             // debugTraceToolStripMenuItem
             // 
-            this.debugTraceToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
             this.debugTraceToolStripMenuItem.Name = "debugTraceToolStripMenuItem";
             this.debugTraceToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.debugTraceToolStripMenuItem.Text = "Debug trace";
@@ -391,7 +391,6 @@ namespace Gallio.Icarus
             // 
             // warningsToolStripMenuItem
             // 
-            this.warningsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
             this.warningsToolStripMenuItem.Name = "warningsToolStripMenuItem";
             this.warningsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.warningsToolStripMenuItem.Text = "Warnings";
@@ -399,7 +398,6 @@ namespace Gallio.Icarus
             // 
             // failuresToolStripMenuItem
             // 
-            this.failuresToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
             this.failuresToolStripMenuItem.Name = "failuresToolStripMenuItem";
             this.failuresToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.failuresToolStripMenuItem.Text = "Failures";
@@ -407,7 +405,6 @@ namespace Gallio.Icarus
             // 
             // runtimeToolStripMenuItem
             // 
-            this.runtimeToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.LogStream;
             this.runtimeToolStripMenuItem.Name = "runtimeToolStripMenuItem";
             this.runtimeToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.runtimeToolStripMenuItem.Text = "Runtime";
@@ -424,7 +421,7 @@ namespace Gallio.Icarus
             // optionsMenuItem
             // 
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.optionsMenuItem.Size = new System.Drawing.Size(152, 22);
             this.optionsMenuItem.Text = "&Options...";
             this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
@@ -608,13 +605,6 @@ namespace Gallio.Icarus
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
-            // 
-            // testFiltersToolStripMenuItem
-            // 
-            this.testFiltersToolStripMenuItem.Name = "testFiltersToolStripMenuItem";
-            this.testFiltersToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.testFiltersToolStripMenuItem.Text = "Test filters";
-            this.testFiltersToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // Main
             // 

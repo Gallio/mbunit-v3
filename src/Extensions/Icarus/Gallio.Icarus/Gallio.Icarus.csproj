@@ -11,7 +11,7 @@
     <AssemblyName>Gallio.Icarus</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <ApplicationIcon>Resources\GallioIcarus.ico</ApplicationIcon>
+    <ApplicationIcon>GallioIcarus.ico</ApplicationIcon>
     <PublishUrl>http://localhost/Gallio.Icarus/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -50,6 +50,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aga.Controls, Version=1.6.1.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Aga.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
@@ -95,7 +99,9 @@
     <Compile Include="CodeWindow.Designer.cs">
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CheckBoxStates.cs" />
+    <Compile Include="Controls\NodeCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\TaskButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -108,14 +114,15 @@
     <Compile Include="Controls\TestResultsList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\TestStates.cs" />
     <Compile Include="Controls\TestStatusBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TestTreeModel.cs" />
     <Compile Include="Controls\TestTreeNode.cs" />
     <Compile Include="Controls\TestTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Core\CustomEventArgs\TestResultEventArgs.cs" />
     <Compile Include="FiltersWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -273,46 +280,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\about.png" />
-    <Content Include="Resources\arrow_refresh.png" />
-    <Content Include="Resources\Assembly.ico" />
-    <Content Include="Resources\ClearAll.ico" />
-    <Content Include="Resources\cross.png" />
-    <Content Include="Resources\document-save-as.png" />
-    <Content Include="Resources\document-save.png" />
-    <Content Include="Resources\error.png" />
-    <Content Include="Resources\FailMb.ico" />
-    <Content Include="Resources\FilterFailed.ico" />
-    <Content Include="Resources\FilterInconclusive.ico" />
-    <Content Include="Resources\FilterPassed.ico" />
-    <Content Include="Resources\folder_open.png" />
-    <None Include="Resources\GallioIcarus.ico" />
-    <Content Include="Resources\Graph.png" />
-    <Content Include="Resources\help-browser.png" />
-    <Content Include="Resources\LinkToMBU.png" />
-    <Content Include="Resources\list-add.png" />
-    <Content Include="Resources\list-remove.png" />
-    <Content Include="Resources\LogStream.ico" />
-    <Content Include="Resources\MbUnitLogo.png" />
-    <Content Include="Resources\MbUnitLogoText.png" />
-    <Content Include="Resources\new.png" />
-    <Content Include="Resources\OpenInVS.ico" />
-    <Content Include="Resources\Options.ico" />
-    <Content Include="Resources\PassMb.ico" />
-    <None Include="Resources\PropertyWindow.ico" />
-    <Content Include="Resources\Reload.ico" />
-    <Content Include="Resources\Report.ico" />
-    <Content Include="Resources\Sort.png" />
-    <Content Include="Resources\SortUp.png" />
-    <Content Include="Resources\start.png" />
-    <Content Include="Resources\Statistics.ico" />
-    <Content Include="Resources\stop.png" />
-    <Content Include="Resources\text-x-python.png" />
-    <Content Include="Resources\tick.png" />
-    <Content Include="Resources\WarningMb.ico" />
-    <None Include="Resources\MbUnit.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
@@ -334,6 +301,52 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\about.png" />
+    <None Include="Resources\GallioIcarus.ico" />
+    <None Include="Resources\MbUnit.ico" />
+    <None Include="Resources\PropertyWindow.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GallioIcarus.ico" />
+    <Content Include="Resources\arrow_refresh.png" />
+    <Content Include="Resources\Assembly.ico" />
+    <Content Include="Resources\Assembly.png" />
+    <Content Include="Resources\ClearAll.ico" />
+    <Content Include="Resources\cross.png" />
+    <Content Include="Resources\document-save-as.png" />
+    <Content Include="Resources\document-save.png" />
+    <Content Include="Resources\error.png" />
+    <Content Include="Resources\FailMb.ico" />
+    <Content Include="Resources\FilterFailed.ico" />
+    <Content Include="Resources\FilterPassed.ico" />
+    <Content Include="Resources\FilterSkipped.ico" />
+    <Content Include="Resources\Fixture.png" />
+    <Content Include="Resources\folder_open.png" />
+    <Content Include="Resources\Graph.png" />
+    <Content Include="Resources\help-browser.png" />
+    <Content Include="Resources\LinkToMBU.png" />
+    <Content Include="Resources\list-add.png" />
+    <Content Include="Resources\list-remove.png" />
+    <Content Include="Resources\LogStream.ico" />
+    <Content Include="Resources\MbUnitLogo.png" />
+    <Content Include="Resources\MbUnitLogoText.png" />
+    <Content Include="Resources\Namespace.png" />
+    <Content Include="Resources\new.png" />
+    <Content Include="Resources\OpenInVS.ico" />
+    <Content Include="Resources\Options.ico" />
+    <Content Include="Resources\PassMb.ico" />
+    <Content Include="Resources\Reload.ico" />
+    <Content Include="Resources\Report.ico" />
+    <Content Include="Resources\Sort.png" />
+    <Content Include="Resources\SortUp.png" />
+    <Content Include="Resources\start.png" />
+    <Content Include="Resources\Statistics.ico" />
+    <Content Include="Resources\stop.png" />
+    <Content Include="Resources\Test.png" />
+    <Content Include="Resources\text-x-python.png" />
+    <Content Include="Resources\tick.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

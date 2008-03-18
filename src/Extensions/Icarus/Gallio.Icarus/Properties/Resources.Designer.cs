@@ -60,23 +60,9 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap about {
+        internal static System.Drawing.Bitmap Assembly {
             get {
-                object obj = ResourceManager.GetObject("about", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap AssemblyIcon {
-            get {
-                object obj = ResourceManager.GetObject("AssemblyIcon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap ClearAll {
-            get {
-                object obj = ResourceManager.GetObject("ClearAll", resourceCulture);
+                object obj = ResourceManager.GetObject("Assembly", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -95,23 +81,9 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
-        internal static System.Drawing.Icon FailMb {
-            get {
-                object obj = ResourceManager.GetObject("FailMb", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap FilterFailed {
             get {
                 object obj = ResourceManager.GetObject("FilterFailed", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap FilterInconclusive {
-            get {
-                object obj = ResourceManager.GetObject("FilterInconclusive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,6 +95,20 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap FilterSkipped {
+            get {
+                object obj = ResourceManager.GetObject("FilterSkipped", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Fixture {
+            get {
+                object obj = ResourceManager.GetObject("Fixture", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon GallioIcarus {
             get {
                 object obj = ResourceManager.GetObject("GallioIcarus", resourceCulture);
@@ -130,58 +116,16 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap help_browser {
+        internal static System.Drawing.Bitmap Namespace {
             get {
-                object obj = ResourceManager.GetObject("help_browser", resourceCulture);
+                object obj = ResourceManager.GetObject("Namespace", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap LogStream {
+        internal static System.Drawing.Bitmap Test {
             get {
-                object obj = ResourceManager.GetObject("LogStream", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap MbUnit {
-            get {
-                object obj = ResourceManager.GetObject("MbUnit", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap MbUnitLogo {
-            get {
-                object obj = ResourceManager.GetObject("MbUnitLogo", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap PropertyWindow {
-            get {
-                object obj = ResourceManager.GetObject("PropertyWindow", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap Report {
-            get {
-                object obj = ResourceManager.GetObject("Report", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap start {
-            get {
-                object obj = ResourceManager.GetObject("start", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap stop {
-            get {
-                object obj = ResourceManager.GetObject("stop", resourceCulture);
+                object obj = ResourceManager.GetObject("Test", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

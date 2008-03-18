@@ -17,6 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using Aga.Controls.Tree;
+
+using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Remoting;
@@ -61,7 +64,7 @@ namespace Gallio.Icarus.Adapter
                 projectAdapterView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
 
                 // show available filters
-                projectAdapterView.TestFilters = project.TestFilters;
+                projectAdapterView.TestFilters = UpdateTestFilters(project.TestFilters);
                 
                 // attach assembly watcher
                 assemblyWatcher.Add(value.TestPackageConfig.AssemblyFiles);
@@ -140,8 +143,8 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.RunTests += RunTestsEventHandler;
             projectAdapterView.GenerateReport += OnGenerateReport;
             projectAdapterView.StopTests += StopTestsEventHandler;
-            projectAdapterView.SetFilter += SetFilterEventHandler;
-            projectAdapterView.RemoveFilter += RemoveFilterEventHandler;
+            projectAdapterView.SaveFilter += SaveFilterEventHandler;
+            projectAdapterView.DeleteFilter += DeleteFilterEventHandler;
             projectAdapterView.GetReportTypes += GetReportTypesEventHandler;
             projectAdapterView.SaveReportAs += SaveReportAsEventHandler;
             projectAdapterView.SaveProject += SaveProjectEventHandler;
@@ -153,6 +156,11 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.UpdateApplicationBaseDirectoryEvent += OnUpdateApplicationBaseDirectoryEvent;
             projectAdapterView.UpdateWorkingDirectoryEvent += UpdateWorkingDirectoryEventHandler;
             projectAdapterView.UpdateShadowCopyEvent += UpdateShadowCopyEventHandler;
+            projectAdapterView.ResetTestStatus += OnResetTestStatus;
+            projectAdapterView.ApplyFilter += OnApplyFilter;
+
+            // wire up tree model
+            projectAdapterView.TreeModel = projectAdapterModel.TreeModel;
 
             // assembly watcher
             assemblyWatcher.AssemblyChangedEvent += new AssemblyWatcher.AssemblyChangedHandler(assemblyWatcher_AssemblyChangedEvent);
@@ -235,18 +243,34 @@ namespace Gallio.Icarus.Adapter
                 StopTests(this, e);
         }
 
-        private void SetFilterEventHandler(object sender, SetFilterEventArgs e)
+        private void SaveFilterEventHandler(object sender, SingleEventArgs<string> e)
         {
-            UpdateProjectFilter(e.FilterName, e.Filter);
+            Filter<ITest> filter = projectAdapterModel.CreateFilter();
+            UpdateProjectFilter(e.Arg, filter);
             if (SetFilter != null)
-                SetFilter(this, e);
-            projectAdapterView.TestFilters = project.TestFilters;
+                SetFilter(this, new SetFilterEventArgs(e.Arg, filter));
+            projectAdapterView.TestFilters = UpdateTestFilters(project.TestFilters);
         }
 
-        private void RemoveFilterEventHandler(object sender, SingleEventArgs<FilterInfo> e)
+        private void DeleteFilterEventHandler(object sender, SingleEventArgs<string> e)
         {
-            project.TestFilters.Remove(e.Arg);
-            projectAdapterView.TestFilters = project.TestFilters;
+            foreach (FilterInfo filterInfo in project.TestFilters)
+            {
+                if (filterInfo.FilterName == e.Arg)
+                {
+                    project.TestFilters.Remove(filterInfo);
+                    break;
+                }
+            }
+            projectAdapterView.TestFilters = UpdateTestFilters(project.TestFilters);
+        }
+
+        private List<string> UpdateTestFilters(List<FilterInfo> filters)
+        {
+            List<string> list = new List<string>();
+            foreach (FilterInfo filter in filters)
+                list.Add(filter.FilterName);
+            return list;
         }
 
         public void UpdateProjectFilter(string filterName, Filter<ITest> filter)
@@ -294,15 +318,21 @@ namespace Gallio.Icarus.Adapter
             if (GetTestTree != null)
                 GetTestTree(this, new GetTestTreeEventArgs(e.Mode, true, project.TestPackageConfig));
 
+            ApplyFilter("AutoSave");
+        }
+
+        private void ApplyFilter(string filterName)
+        {
             // set filter (when available)
             foreach (FilterInfo filterInfo in project.TestFilters)
             {
-                if (filterInfo.FilterName == "AutoSave")
+                if (filterInfo.FilterName == filterName)
                 {
-                    projectAdapterView.ApplyFilter(filterInfo.Filter);
+                    Filter<ITest> filter = FilterUtils.ParseTestFilter(filterInfo.Filter);
+                    projectAdapterModel.ApplyFilter(filter);
                     if (SetFilter != null)
-                        SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, FilterUtils.ParseTestFilter(filterInfo.Filter)));
-                    break;
+                        SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, filter));
+                    return;
                 }
             }
         }
@@ -319,21 +349,31 @@ namespace Gallio.Icarus.Adapter
                 projectAdapterView.SourceCodeLocation = testData.CodeLocation;
         }
 
+        private void OnApplyFilter(object sender, SingleEventArgs<string> e)
+        {
+            ApplyFilter(e.Arg);
+        }
+
         public void DataBind(string mode)
         {
             projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
-            projectAdapterView.TestTreeCollection = projectAdapterModel.BuildTestTree(testModelData, mode);
-            projectAdapterView.TotalTests = projectAdapterModel.CountTests(testModelData);
+            projectAdapterModel.BuildTestTree(testModelData, mode);
+            projectAdapterView.LoadComplete();
         }
 
         public void Update(TestData testData, TestStepRun testStepRun)
         {
-            projectAdapterView.Update(testData, testStepRun);
+            projectAdapterModel.Update(testData, testStepRun);
         }
 
         public void WriteToLog(string logName, string logBody)
         {
             projectAdapterView.WriteToLog(logName, logBody);
+        }
+
+        public void OnResetTestStatus(object sender, EventArgs e)
+        {
+            projectAdapterModel.ResetTestStatus();
         }
     }
 }

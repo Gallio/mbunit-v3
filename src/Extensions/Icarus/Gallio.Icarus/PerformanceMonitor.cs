@@ -21,6 +21,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using Gallio.Model;
+
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
@@ -35,9 +37,12 @@ namespace Gallio.Icarus
             testResultsGraph.DisplayGraph();
         }
 
-        public void UpdateTestResults(string testOutcome, string typeName, string namespaceName, string assemblyName)
+        public void UpdateTestResults(TestOutcome testOutcome, string typeName, string namespaceName, string assemblyName)
         {
-            testResultsGraph.UpdateTestResults(testOutcome, typeName, namespaceName, assemblyName);
+            if (testResultsGraph.InvokeRequired)
+                testResultsGraph.Invoke((MethodInvoker)delegate { UpdateTestResults(testOutcome, typeName, namespaceName, assemblyName); });
+            else
+                testResultsGraph.UpdateTestResults(testOutcome.ToString(), typeName, namespaceName, assemblyName);
         }
 
         private void graphFilter_SelectedIndexChanged(object sender, EventArgs e)

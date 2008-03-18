@@ -22,18 +22,16 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
+using Aga.Controls.Tree;
+
 using Castle.Core.Logging;
 
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
-using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
-using Gallio.Runner.Reports;
-using Gallio.Runner.Projects;
 using Gallio.Utilities;
 
 using WeifenLuo.WinFormsUI.Docking;
@@ -70,7 +68,7 @@ namespace Gallio.Icarus
         private PropertiesWindow propertiesWindow;
         private FiltersWindow filtersWindow;
         
-        public TreeNode[] TestTreeCollection
+        public ITreeModel TreeModel
         {
             set
             {
@@ -78,13 +76,21 @@ namespace Gallio.Icarus
                 {
                     Invoke(new MethodInvoker(delegate()
                         {
-                            TestTreeCollection = value;
+                            TreeModel = value;
                         }));
                 }
                 else
                 {
-                    testExplorer.DataBind(value);
-                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                    testExplorer.TreeModel = value;
+                    ((TestTreeModel)((SortedTreeModel)value).InnerModel).TestCountChanged += delegate
+                    {
+                        TotalTests = ((TestTreeModel)((SortedTreeModel)value).InnerModel).TestCount;
+                    };
+                    ((TestTreeModel)((SortedTreeModel)value).InnerModel).TestResult += delegate(object sender, TestResultEventArgs e)
+                    {
+                        testResults.UpdateTestResults(e.TestName, e.TestOutcome, e.Duration, e.TypeName, e.NamespaceName, e.AssemblyName);
+                        performanceMonitor.UpdateTestResults(e.TestOutcome, e.TypeName, e.NamespaceName, e.AssemblyName);
+                    };
                 }
             }
         }
@@ -167,7 +173,9 @@ namespace Gallio.Icarus
                     });
                 }
                 else
-                    testResults.Total = value;
+                {
+                    testResults.TotalTests = value;
+                }
             }
         }
 
@@ -357,7 +365,7 @@ namespace Gallio.Icarus
             set { projectFileName = value; }
         }
 
-        public IList<FilterInfo> TestFilters
+        public IList<string> TestFilters
         {
             set
             {
@@ -380,8 +388,9 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> GenerateReport;
         public event EventHandler<EventArgs> StopTests;
-        public event EventHandler<SetFilterEventArgs> SetFilter;
-        public event EventHandler<SingleEventArgs<FilterInfo>> RemoveFilter;
+        public event EventHandler<SingleEventArgs<string>> SaveFilter;
+        public event EventHandler<SingleEventArgs<string>> ApplyFilter;
+        public event EventHandler<SingleEventArgs<string>> DeleteFilter;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<EventArgs> GetTestFrameworks;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
@@ -393,6 +402,7 @@ namespace Gallio.Icarus
         public event EventHandler<SingleEventArgs<string>> UpdateApplicationBaseDirectoryEvent;
         public event EventHandler<SingleEventArgs<string>> UpdateWorkingDirectoryEvent;
         public event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
+        public event EventHandler<EventArgs> ResetTestStatus;
 
         public Main()
         {
@@ -544,7 +554,7 @@ namespace Gallio.Icarus
                 workerThread = new Thread(delegate()
                 {
                     // save test filter
-                    SaveFilter("LastRun");
+                    OnSaveFilter("LastRun");
                     
                     // run tests
                     if (RunTests != null)
@@ -760,8 +770,9 @@ namespace Gallio.Icarus
 
         public void Reset()
         {
-            testExplorer.Reset();
             testResults.Reset();
+            if (ResetTestStatus != null)
+                ResetTestStatus(this, EventArgs.Empty);
         }
 
         private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -808,51 +819,6 @@ namespace Gallio.Icarus
                     if (ex is ThreadAbortException)
                         return;
                 }
-            }
-        }
-
-        public void Update(TestData testData, TestStepRun testStepRun)
-        {
-            if (InvokeRequired)
-            {
-                Invoke((MethodInvoker)delegate()
-                {
-                    Update(testData, testStepRun);
-                });
-            }
-            else
-            {
-                // update test tree
-                Color foreColor = Color.SlateGray;
-                switch (testStepRun.Result.Outcome.Status)
-                {
-                    case TestStatus.Passed:
-                        testResults.Passed++;
-                        testExplorer.UpdateTestState(testData.Id, TestStates.Success);
-                        foreColor = Color.Green;
-                        break;
-                    case TestStatus.Failed:
-                        testResults.Failed++;
-                        testExplorer.UpdateTestState(testData.Id, TestStates.Failed);
-                        foreColor = Color.Red;
-                        break;
-                    case TestStatus.Inconclusive:
-                        testResults.Inconclusive++;
-                        testExplorer.UpdateTestState(testData.Id, TestStates.Inconclusive);
-                        foreColor = Color.Yellow;
-                        break;
-                }
-
-                CodeReference codeReference = testData.CodeReference ?? CodeReference.Unknown;
-                
-                // update test results list
-                testResults.UpdateTestResults(testData.Name, testStepRun.Result.Outcome.ToString(), foreColor, 
-                    (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds.ToString(), codeReference.TypeName, 
-                    codeReference.NamespaceName, codeReference.AssemblyName);
-
-                // update test results graph
-                performanceMonitor.UpdateTestResults(testStepRun.Result.Outcome.ToString(), codeReference.TypeName,
-                    codeReference.NamespaceName, codeReference.AssemblyName);
             }
         }
 
@@ -927,19 +893,6 @@ namespace Gallio.Icarus
         private void newProjectToolStripButton_Click(object sender, EventArgs e)
         {
             CreateNewProject();
-        }
-
-        public void ApplyFilter(string filter)
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate()
-                {
-                    ApplyFilter(filter);
-                }));
-            }
-            else
-                testExplorer.ApplyFilter(filter);
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1078,7 +1031,7 @@ namespace Gallio.Icarus
                     Directory.CreateDirectory(gallioDir);
 
                 // save test filter
-                SaveFilter("AutoSave");
+                OnSaveFilter("AutoSave");
 
                 // save project
                 if (SaveProject != null)
@@ -1181,16 +1134,36 @@ namespace Gallio.Icarus
                 UpdateShadowCopyEvent(this, new SingleEventArgs<bool>(shadowCopy));
         }
 
-        public void SaveFilter(string filterName)
+        public void OnSaveFilter(string filterName)
         {
-            if (SetFilter != null)
-                SetFilter(this, new SetFilterEventArgs(filterName, testExplorer.CreateFilter()));
+            if (SaveFilter != null)
+                SaveFilter(this, new SingleEventArgs<string>(filterName));
         }
 
-        public void DeleteFilter(FilterInfo filterInfo)
+        public void OnApplyFilter(string filterName)
         {
-            if (RemoveFilter != null)
-                RemoveFilter(this, new SingleEventArgs<FilterInfo>(filterInfo));
+            if (ApplyFilter != null)
+                ApplyFilter(this, new SingleEventArgs<string>(filterName));
+        }
+
+        public void OnDeleteFilter(string filterName)
+        {
+            if (DeleteFilter != null)
+                DeleteFilter(this, new SingleEventArgs<string>(filterName));
+        }
+
+        public void LoadComplete()
+        {
+            if (InvokeRequired)
+            {
+                Invoke((MethodInvoker)delegate { LoadComplete(); });
+            }
+            else
+            {
+                testExplorer.ExpandAll();
+                startButton.Enabled = true;
+                startTestsToolStripMenuItem.Enabled = true;
+            }
         }
     }
 }

@@ -17,7 +17,6 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Gallio.Icarus.Controls;
-using Gallio.Icarus.Controls.Enums;
 
 using MbUnit.Framework;
 

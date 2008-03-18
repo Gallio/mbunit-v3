@@ -16,20 +16,23 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
+
 using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Controls;
-using Gallio.Icarus.Controls.Enums;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
+
 using MbUnit.Framework;
+
+using Aga.Controls.Tree;
 
 namespace Gallio.Icarus.Tests
 {
-    [TestFixture, Category("ProjectAdapterModel"), Category("Category2")]
-    public class ProjectAdapterModelTest : MockTest
+    [TestFixture]
+    public class ProjectAdapterModelTest
     {
         private ProjectAdapterModel projectAdapterModel;
 
@@ -42,37 +45,33 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void BuildNamespaceTestTree_Test()
         {
-            TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
-            Assert.AreEqual(1, treeNodes.Length);
+            projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
+            TestTreeModel testTreeModel = (TestTreeModel)((SortedTreeModel)projectAdapterModel.TreeModel).InnerModel;
+            Assert.AreEqual(1, testTreeModel.Nodes.Count);
 
             // check Root node
-            TreeNode rootNode = treeNodes[0];
+            TestTreeNode rootNode = testTreeModel.Root;
             Assert.AreEqual("Root", rootNode.Name);
-            Assert.AreEqual(0, rootNode.ImageIndex);
             Assert.AreEqual(1, rootNode.Nodes.Count);
 
             // check Framework node
-            TreeNode frameworkNode = rootNode.Nodes[0];
+            TestTreeNode frameworkNode = (TestTreeNode)rootNode.Nodes[0];
             Assert.AreEqual("Framework", frameworkNode.Name);
-            Assert.AreEqual(0, frameworkNode.ImageIndex);
             Assert.AreEqual(1, frameworkNode.Nodes.Count);
 
             // check Assembly node
-            TreeNode assemblyNode = frameworkNode.Nodes[0];
+            TestTreeNode assemblyNode = (TestTreeNode)frameworkNode.Nodes[0];
             Assert.AreEqual("Assembly", assemblyNode.Name);
-            Assert.AreEqual(1, assemblyNode.ImageIndex);
             Assert.AreEqual(1, assemblyNode.Nodes.Count);
 
             // check Namespace node
-            TreeNode namespaceNode = assemblyNode.Nodes[0];
+            TestTreeNode namespaceNode = (TestTreeNode)assemblyNode.Nodes[0];
             Assert.AreEqual("Namespace", namespaceNode.Name);
-            Assert.AreEqual(2, namespaceNode.ImageIndex);
             Assert.AreEqual(2, namespaceNode.Nodes.Count);
 
             // check Fixture node
-            TreeNode fixtureNode = namespaceNode.Nodes[0];
+            TestTreeNode fixtureNode = (TestTreeNode)namespaceNode.Nodes[0];
             Assert.AreEqual("Fixture", fixtureNode.Name);
-            Assert.AreEqual(3, fixtureNode.ImageIndex);
             Assert.AreEqual(2, fixtureNode.Nodes.Count);
 
             // check Test nodes
@@ -81,96 +80,77 @@ namespace Gallio.Icarus.Tests
             {
                 testNode = (TestTreeNode)fixtureNode.Nodes[i];
                 Assert.AreEqual("Test" + (i + 1), testNode.Name);
-                Assert.AreEqual(4, testNode.ImageIndex);
                 Assert.AreEqual(0, testNode.Nodes.Count);
             }
 
             // check Fixture2 node
-            fixtureNode = namespaceNode.Nodes[1];
+            fixtureNode = (TestTreeNode)namespaceNode.Nodes[1];
             Assert.AreEqual("Fixture2", fixtureNode.Name);
-            Assert.AreEqual(3, fixtureNode.ImageIndex);
             Assert.AreEqual(2, fixtureNode.Nodes.Count);
 
             // check Test nodes
             testNode = (TestTreeNode)fixtureNode.Nodes[0];
             Assert.AreEqual("Test3", testNode.Name);
-            Assert.AreEqual(4, testNode.ImageIndex);
             Assert.AreEqual(0, testNode.Nodes.Count);
             Assert.IsTrue(testNode.SourceCodeAvailable);
 
             testNode = (TestTreeNode)fixtureNode.Nodes[1];
             Assert.AreEqual("Test4", testNode.Name);
-            Assert.AreEqual(0, testNode.ImageIndex);
             Assert.AreEqual(0, testNode.Nodes.Count);
         }
 
-        //[RowTest, Row("Authors"), Row("Categories"), Row("Importance"), Row("TestsOn")]
-        //public void BuildMetadataTestTree_Test(string name)
         [Test]
         public void BuildMetadataTestTree_Test()
         {
             string[] names = new string[] { "Authors", "Categories", "Importance", "TestsOn" };
             foreach (string name in names)
             {
-                TreeNode[] treeNodes = projectAdapterModel.BuildTestTree(CreateTestModel(), name);
-                Assert.AreEqual(1, treeNodes.Length);
+                projectAdapterModel.BuildTestTree(CreateTestModel(), name);
+                TestTreeModel testTreeModel = (TestTreeModel)((SortedTreeModel)projectAdapterModel.TreeModel).InnerModel;
+                Assert.AreEqual(1, testTreeModel.Nodes.Count);
 
                 // check Root node
-                TreeNode node = treeNodes[0];
+                TestTreeNode node = testTreeModel.Root;
                 Assert.AreEqual("Root", node.Name);
-                Assert.AreEqual(0, node.ImageIndex);
                 Assert.AreEqual(2, node.Nodes.Count);
-                Assert.IsTrue(node.Checked);
+                Assert.IsTrue(node.IsChecked);
 
                 // check None node
-                node = node.Nodes[0];
+                node = (TestTreeNode)node.Nodes[0];
                 Assert.AreEqual("None", node.Name);
-                Assert.AreEqual(0, node.ImageIndex);
                 Assert.AreEqual(2, node.Nodes.Count);
 
                 // check Fixture node
-                node = node.Nodes[0];
+                node = (TestTreeNode)node.Nodes[0];
                 Assert.AreEqual("Fixture", node.Name);
-                Assert.AreEqual(3, node.ImageIndex);
                 Assert.AreEqual(1, node.Nodes.Count);
 
                 // check Test node
-                node = node.Nodes[0];
+                node = (TestTreeNode)node.Nodes[0];
                 Assert.AreEqual("Test2", node.Name);
-                Assert.AreEqual(4, node.ImageIndex);
                 Assert.AreEqual(0, node.Nodes.Count);
 
                 // check Fixture node
-                node = node.Parent.Parent;
-                node = node.Nodes[1];
+                node = (TestTreeNode)node.Parent.Parent;
+                node = (TestTreeNode)node.Nodes[1];
                 Assert.AreEqual("Fixture2", node.Name);
-                Assert.AreEqual(3, node.ImageIndex);
                 Assert.AreEqual(1, node.Nodes.Count);
 
                 // check Test node
-                node = node.Nodes[0];
+                node = (TestTreeNode)node.Nodes[0];
                 Assert.AreEqual("Test3", node.Name);
-                Assert.AreEqual(4, node.ImageIndex);
                 Assert.AreEqual(0, node.Nodes.Count);
 
                 // check Author node
-                node = node.Parent.Parent.Parent.Nodes[1];
+                node = (TestTreeNode)node.Parent.Parent.Parent.Nodes[1];
                 Assert.AreEqual(name, node.Name);
-                Assert.AreEqual(0, node.ImageIndex);
                 Assert.AreEqual(1, node.Nodes.Count);
 
                 // check Test node
-                node = node.Nodes[0];
+                node = (TestTreeNode)node.Nodes[0];
                 Assert.AreEqual("Test1", node.Name);
-                Assert.AreEqual(4, node.ImageIndex);
                 Assert.AreEqual(0, node.Nodes.Count);
             }
-        }
-
-        [Test]
-        public void CountTests_Test()
-        {
-            Assert.AreEqual(4, projectAdapterModel.CountTests(CreateTestModel()));
         }
 
         [Test]
@@ -222,6 +202,43 @@ namespace Gallio.Icarus.Tests
             test4.IsTestCase = true;
             fixture2.Children.Add(test4);
             return new TestModelData(rootTest);
+        }
+
+        [Test]
+        public void ApplyNoneFilter_Test()
+        {
+            projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
+            TestTreeModel testTreeModel = (TestTreeModel)((SortedTreeModel)projectAdapterModel.TreeModel).InnerModel;
+            Filter<ITest> filter = new NoneFilter<ITest>();
+            projectAdapterModel.ApplyFilter(filter);
+            Assert.IsFalse(testTreeModel.Root.IsChecked);
+        }
+
+        [Test]
+        public void ApplyFilter_Test()
+        {
+            projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
+            TestTreeModel testTreeModel = (TestTreeModel)((SortedTreeModel)projectAdapterModel.TreeModel).InnerModel;
+            Filter<ITest> filter = new OrFilter<ITest>(new Filter<ITest>[] { new IdFilter<ITest>(new EqualityFilter<string>("Test2")), 
+                new IdFilter<ITest>(new EqualityFilter<string>("Fixture2")) });
+            projectAdapterModel.ApplyFilter(filter);
+            // root node
+            Assert.AreEqual(CheckState.Indeterminate, testTreeModel.Root.CheckState);
+            // assembly node
+            TestTreeNode node = (TestTreeNode)testTreeModel.Root.Nodes[0];
+            Assert.AreEqual(CheckState.Indeterminate, node.CheckState);
+            // namespace node
+            node = (TestTreeNode)node.Nodes[0];
+            Assert.AreEqual(CheckState.Indeterminate, node.CheckState);
+            // fixture node
+            node = (TestTreeNode)node.Nodes[0];
+            Assert.AreEqual(CheckState.Indeterminate, node.CheckState);
+            // fixture node
+            node = (TestTreeNode)node.Nodes[0];
+            Assert.AreEqual(CheckState.Indeterminate, node.CheckState);
+            // fixture2 node
+            node = (TestTreeNode)node.Parent.Nodes[1];
+            Assert.AreEqual(CheckState.Checked, node.CheckState);
         }
     }
 }
