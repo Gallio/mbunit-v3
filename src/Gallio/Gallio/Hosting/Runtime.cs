@@ -86,6 +86,18 @@ namespace Gallio.Hosting
         }
 
         /// <summary>
+        /// Gets the local path of the Gallio installation.
+        /// </summary>
+        /// <returns>The installation path</returns>
+        public static string InstallationPath
+        {
+            get
+            {
+                return Runtime.Instance.GetRuntimeSetup().InstallationPath;
+            }
+        }
+
+        /// <summary>
         /// <para>
         /// Initializes the runtime.
         /// </para>

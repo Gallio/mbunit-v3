@@ -90,7 +90,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override CodeLocation GetCodeLocation()
         {
-            return null;
+            return CodeLocation.Unknown;
         }
 
         /// <inheritdoc />

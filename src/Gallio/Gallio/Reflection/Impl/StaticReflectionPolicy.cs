@@ -184,7 +184,7 @@ namespace Gallio.Reflection.Impl
         /// Gets the source code location of a member.
         /// </summary>
         /// <param name="member">The member, not null</param>
-        /// <returns>The source code location, or null if not available</returns>
+        /// <returns>The source code location, or <see cref="CodeLocation.Unknown" /> if not available</returns>
         protected internal abstract CodeLocation GetMemberSourceLocation(StaticMemberWrapper member);
         #endregion
 

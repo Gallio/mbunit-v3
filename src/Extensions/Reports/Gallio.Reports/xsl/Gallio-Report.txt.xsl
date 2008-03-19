@@ -66,14 +66,14 @@
 	</xsl:template>
 
   <xsl:template match="g:testStepRun">
-    <xsl:variable name="testInstanceRun" select="ancestor::g:testInstanceRun" />
+    <xsl:variable name="testInstanceRun" select="ancestor::g:testInstanceRun[1]" />
     <xsl:variable name="testId" select="$testInstanceRun/g:testInstance/@testId" />
     <xsl:variable name="test" select="//g:test[@id=$testId]" />
 
     <xsl:text>[</xsl:text>
     <xsl:value-of select="$test/g:metadata/g:entry[@key='TestKind']/g:value" />
     <xsl:text>] </xsl:text>
-    <xsl:value-of select="@fullName" />
+    <xsl:value-of select="g:testStep/@fullName" />
     <xsl:text>&#xA;</xsl:text>
     <xsl:apply-templates select="g:executionLog" />
     <xsl:text>&#xA;</xsl:text>

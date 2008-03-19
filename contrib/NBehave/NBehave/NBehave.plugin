@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <castle>
+    <components>
+      <component id="NBehave.NBehaveTestFrameworkExtension"
+                 service="Gallio.Framework.Pattern.IPatternTestFrameworkExtension, Gallio"
+                 type="NBehave.Core.NBehaveTestFrameworkExtension, NBehave" />
+    </components>
+  </castle>
+</configuration>

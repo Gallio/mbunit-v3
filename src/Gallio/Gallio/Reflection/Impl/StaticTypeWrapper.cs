@@ -49,9 +49,7 @@ namespace Gallio.Reflection.Impl
             get
             {
                 CodeReference reference = Assembly.CodeReference;
-                reference.NamespaceName = Namespace.Name;
-                reference.TypeName = FullName ?? Name;
-                return reference;
+                return new CodeReference(reference.AssemblyName, Namespace.Name, FullName ?? Name, null, null);
             }
         }
 

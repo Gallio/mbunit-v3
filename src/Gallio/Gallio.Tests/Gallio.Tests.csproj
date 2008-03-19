@@ -134,7 +134,6 @@
     <Compile Include="Framework\Pattern\PatternTestFrameworkTest.cs" />
     <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
     <Compile Include="Hosting\Channels\BinaryTcpChannelTest.cs" />
-    <Compile Include="Integration\LogStreamLogger.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />
     <Compile Include="Framework\StepTest.cs" />
     <Compile Include="Hosting\Channels\BaseChannelTest.cs" />
@@ -150,7 +149,7 @@
     <Compile Include="Hosting\IsolatedProcessHostTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Hosting\LoaderTest.cs" />
+    <Compile Include="Hosting\RuntimeTest.cs" />
     <Compile Include="Hosting\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextTest.cs" />
     <Compile Include="Framework\LogTest.cs" />
@@ -180,7 +179,6 @@
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />
     <Compile Include="Integration\BaseSampleTest.cs" />
-    <Compile Include="Integration\SampleRunner.cs" />
     <Compile Include="ActionChainTest.cs" />
     <Compile Include="Model\Filters\AndFilterTest.cs" />
     <Compile Include="Model\Filters\AnyFilterTest.cs" />

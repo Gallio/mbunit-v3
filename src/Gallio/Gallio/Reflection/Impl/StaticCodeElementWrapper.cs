@@ -120,7 +120,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public virtual CodeLocation GetCodeLocation()
         {
-            return null;
+            return CodeLocation.Unknown;
         }
 
         /// <inheritdoc />

@@ -63,12 +63,11 @@ namespace MbUnit.Tests.Integration
             AssertFixtureResult("failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample));
         }
 
-        private void AssertTestResult(string expectedOutput, TestStatus expectedStatus, Type fixtureType, string memberName)
+        private void AssertTestResult(string expectedOutput, TestStatus expectedStatus, Type fixtureType, string methodName)
         {
-            CodeReference codeReference = CodeReference.CreateFromType(fixtureType);
-            codeReference.MemberName = memberName;
+            CodeReference codeReference = CodeReference.CreateFromMember(fixtureType.GetMethod(methodName));
 
-            TestInstanceRun run = GetFirstTestInstanceRun(codeReference);
+            TestInstanceRun run = Runner.GetFirstTestInstanceRun(codeReference);
             Assert.AreEqual(expectedStatus, run.RootTestStepRun.Result.Outcome.Status);
 
             string actualOutput = run.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.Default).ToString();
@@ -79,7 +78,7 @@ namespace MbUnit.Tests.Integration
         {
             CodeReference codeReference = CodeReference.CreateFromType(fixtureType);
 
-            TestInstanceRun run = GetFirstTestInstanceRun(codeReference);
+            TestInstanceRun run = Runner.GetFirstTestInstanceRun(codeReference);
             Assert.AreEqual(expectedStatus, run.RootTestStepRun.Result.Outcome.Status);
 
             string actualOutput = run.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.Default).ToString();

@@ -16,9 +16,9 @@
 using System;
 using System.Threading;
 using Castle.Core.Logging;
+using Gallio.Framework.Utilities;
 using Gallio.Hosting;
 using Gallio.Tests.Hosting.Channels;
-using Gallio.Tests.Integration;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting

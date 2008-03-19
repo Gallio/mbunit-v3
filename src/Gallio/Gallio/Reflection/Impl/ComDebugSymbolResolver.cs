@@ -56,7 +56,7 @@ namespace Gallio.Reflection.Impl
             {
                 ISymbolReader reader = GetSymbolReader(assemblyPath);
                 if (reader == null)
-                    return null;
+                    return CodeLocation.Unknown;
 
                 ISymbolMethod method = reader.GetMethod(new SymbolToken(methodToken));
 
@@ -85,7 +85,7 @@ namespace Gallio.Reflection.Impl
             catch (COMException ex)
             {
                 if (ex.ErrorCode == E_FAIL)
-                    return null;
+                    return CodeLocation.Unknown;
                 throw;
             }
         }

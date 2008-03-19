@@ -14,12 +14,10 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Reflection;
-using System.Security.Permissions;
 using Gallio.Reflection;
 using MbUnit.Framework;
-using Gallio.Utilities;
+using MbUnit.Framework.Xml;
 
 namespace Gallio.Tests.Reflection
 {
@@ -45,7 +43,7 @@ namespace Gallio.Tests.Reflection
         }
 
         [Test]
-        public void Unknown_IsAllNulls()
+        public void Unknown_IsDefinedAsAllNulls()
         {
             Assert.IsNull(CodeReference.Unknown.AssemblyName);
             Assert.IsNull(CodeReference.Unknown.NamespaceName);
@@ -54,32 +52,6 @@ namespace Gallio.Tests.Reflection
             Assert.IsNull(CodeReference.Unknown.ParameterName);
 
             Assert.AreEqual(CodeReferenceKind.Unknown, CodeReference.Unknown.Kind);
-        }
-
-        [Test]
-        public void Copy()
-        {
-            CodeReference original = CodeReference.CreateFromParameter(parameter);
-            CodeReference copy = original.Copy();
-
-            Assert.AreNotSame(original, copy);
-            Assert.AreEqual(original, copy);
-        }
-
-        [Test]
-        public void ReadOnlyCopy()
-        {
-            CodeReference original = CodeReference.CreateFromParameter(parameter);
-            CodeReference copy = original.ReadOnlyCopy();
-
-            Assert.AreNotSame(original, copy);
-            Assert.AreEqual(original, copy);
-
-            InterimAssert.Throws<InvalidOperationException>(delegate { copy.AssemblyName = ""; });
-            InterimAssert.Throws<InvalidOperationException>(delegate { copy.NamespaceName = ""; });
-            InterimAssert.Throws<InvalidOperationException>(delegate { copy.TypeName = ""; });
-            InterimAssert.Throws<InvalidOperationException>(delegate { copy.MemberName = ""; });
-            InterimAssert.Throws<InvalidOperationException>(delegate { copy.ParameterName = ""; });
         }
 
         [Test]
@@ -191,11 +163,17 @@ namespace Gallio.Tests.Reflection
         }
 
         [Test]
-        public void Equals_SeemsSane()
+        public void Equality()
         {
             Assert.IsFalse(CodeReference.Unknown.Equals(null));
+
             Assert.IsFalse(CodeReference.Unknown.Equals(CodeReference.CreateFromParameter(parameter)));
+            Assert.IsFalse(CodeReference.Unknown == CodeReference.CreateFromParameter(parameter));
+            Assert.IsTrue(CodeReference.Unknown != CodeReference.CreateFromParameter(parameter));
+
             Assert.IsTrue(CodeReference.CreateFromParameter(parameter).Equals(CodeReference.CreateFromParameter(parameter)));
+            Assert.IsTrue(CodeReference.CreateFromParameter(parameter) == CodeReference.CreateFromParameter(parameter));
+            Assert.IsFalse(CodeReference.CreateFromParameter(parameter) != CodeReference.CreateFromParameter(parameter));
         }
 
         [Test]
@@ -203,6 +181,24 @@ namespace Gallio.Tests.Reflection
         {
             Assert.AreNotEqual(CodeReference.CreateFromParameter(parameter).GetHashCode(),
                 CodeReference.Unknown.GetHashCode());
+        }
+
+        [Test]
+        public void TypeIsXmlSerializable()
+        {
+            XmlSerializationAssert.IsXmlSerializable(typeof(CodeReference));
+        }
+
+        [Test]
+        public void RoundTripXmlSerializationFullyPopulatedProperties()
+        {
+            XmlSerializationAssert.AreEqualAfterRoundTrip(CodeReference.CreateFromParameter(parameter));
+        }
+
+        [Test]
+        public void RoundTripXmlSerializationUnknown()
+        {
+            XmlSerializationAssert.AreEqualAfterRoundTrip(CodeReference.Unknown);
         }
 
         internal void Dummy(object dummy)

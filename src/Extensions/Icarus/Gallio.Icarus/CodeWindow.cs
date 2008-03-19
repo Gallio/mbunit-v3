@@ -25,9 +25,18 @@ namespace Gallio.Icarus
         {
             InitializeComponent();
 
-            Text = Path.GetFileName(codeLocation.Path);
-            textEditorControl.LoadFile(codeLocation.Path);
-            textEditorControl.ActiveTextAreaControl.JumpTo(codeLocation.Line, codeLocation.Column);
+            if (codeLocation == CodeLocation.Unknown)
+            {
+                Text = "(unknown)";
+            }
+            else
+            {
+                Text = Path.GetFileName(codeLocation.Path) ?? "(unknown)";
+                textEditorControl.LoadFile(codeLocation.Path);
+
+                if (codeLocation.Line != 0)
+                    textEditorControl.ActiveTextAreaControl.JumpTo(codeLocation.Line, codeLocation.Column);
+            }
         }
     }
 }

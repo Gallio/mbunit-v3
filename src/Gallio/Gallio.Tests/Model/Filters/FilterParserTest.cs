@@ -58,7 +58,7 @@ namespace Gallio.Tests.Model.Filters
             SetupResult.For(fixture3.CodeElement).Return(codeElement3);
             fixture3TypeName = codeElement3.Name;
 
-            ICodeElementInfo codeElement4 = Reflector.Wrap(typeof(FixtureInheritanceSample.DerivedFixture));
+            ICodeElementInfo codeElement4 = Reflector.Wrap(typeof(DerivedFixture));
             SetupResult.For(fixture4.CodeElement).Return(codeElement4);
 
             Mocks.ReplayAll();

@@ -32,6 +32,7 @@ namespace Gallio.Hosting
         private readonly List<string> pluginDirectories;
         private string runtimeFactoryType;
         private string installationPath;
+        private InstallationConfiguration installationConfiguration;
         private string configurationFilePath;
 
         /// <summary>
@@ -83,6 +84,19 @@ namespace Gallio.Hosting
         }
 
         /// <summary>
+        /// Gets or sets the installation configuraiton, or null to determine it automatically.
+        /// </summary>
+        /// <value>
+        /// The installation configuration.  Default is <c>null</c>.
+        /// </value>
+        [XmlElement("installationConfiguration")]
+        public InstallationConfiguration InstallationConfiguration
+        {
+            get { return installationConfiguration; }
+            set { installationConfiguration = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the path of the primary configuration file to be
         /// loaded by the runtime (if it exists).  This is useful
         /// when Gallio is launched by a library instead of as a standalone
@@ -109,6 +123,7 @@ namespace Gallio.Hosting
             copy.pluginDirectories.AddRange(pluginDirectories);
             copy.runtimeFactoryType = runtimeFactoryType;
             copy.installationPath = installationPath;
+            copy.installationConfiguration = installationConfiguration;
             copy.configurationFilePath = configurationFilePath;
             return copy;
         }

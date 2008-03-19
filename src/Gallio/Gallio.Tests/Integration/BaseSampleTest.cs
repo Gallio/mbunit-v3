@@ -14,11 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Text;
-using Gallio.Collections;
-using Gallio.Reflection;
+using Gallio.Framework.Utilities;
 using Gallio.Runner.Reports;
-using Gallio.Model.Serialization;
 
 namespace Gallio.Tests.Integration
 {
@@ -55,65 +52,6 @@ namespace Gallio.Tests.Integration
                 runner.AddFixture(fixtureType);
 
             runner.Run();
-        }
-
-        protected TestData GetTestInfo(CodeReference codeReference)
-        {
-            foreach (TestData info in Report.TestModelData.Tests.Values)
-            {
-                if (Equals(info.CodeReference, codeReference))
-                    return info;
-            }
-
-            return null;
-        }
-
-        protected TestInstanceRun GetFirstTestInstanceRun(CodeReference codeReference)
-        {
-            TestData data = GetTestInfo(codeReference);
-            if (data != null)
-            {
-                return GenericUtils.Find(Report.PackageRun.TestInstanceRuns, delegate(TestInstanceRun run)
-                {
-                    return run.TestInstance.TestId == data.Id;
-                });
-            }
-
-            return null;
-        }
-
-        protected string GetStreamText(CodeReference codeReference, string streamName)
-        {
-            TestInstanceRun run = GetFirstTestInstanceRun(codeReference);
-            if (run == null)
-                return null;
-
-            StringBuilder contents = new StringBuilder();
-            foreach (TestStepRun step in run.TestStepRuns)
-            {
-                ExecutionLogStream stream = step.ExecutionLog.GetStream(streamName);
-                if (stream != null)
-                    AppendText(contents, stream.Body);
-            }
-
-            return contents.ToString();
-        }
-
-        private static void AppendText(StringBuilder contents, ExecutionLogStreamTag tag)
-        {
-            ExecutionLogStreamTextTag textTag = tag as ExecutionLogStreamTextTag;
-            if (textTag != null)
-            {
-                contents.Append(textTag.Text).AppendLine();
-                return;
-            }
-
-            ExecutionLogStreamContainerTag containerTag = tag as ExecutionLogStreamContainerTag;
-            if (containerTag != null)
-            {
-                foreach (ExecutionLogStreamTag childTag in containerTag.Contents)
-                    AppendText(contents, childTag);
-            }
         }
     }
 }

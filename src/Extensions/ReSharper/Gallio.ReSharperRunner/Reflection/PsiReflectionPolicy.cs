@@ -501,11 +501,11 @@ namespace Gallio.ReSharperRunner.Reflection
             IDeclaredElement memberHandle = (IDeclaredElement)member.Handle;
             IDeclaration[] decl = memberHandle.GetDeclarations();
             if (decl.Length == 0)
-                return null;
+                return CodeLocation.Unknown;
 
             ReSharperDocumentRange range = decl[0].GetDocumentRange();
             if (!range.IsValid)
-                return null;
+                return CodeLocation.Unknown;
 
             string filename = decl[0].GetProjectFile().Location.FullPath;
             DocumentCoords start = range.Document.GetCoordsByOffset(range.TextRange.StartOffset);
@@ -517,7 +517,6 @@ namespace Gallio.ReSharperRunner.Reflection
         #region Events
         protected override EventAttributes GetEventAttributes(StaticEventWrapper @event)
         {
-            IEvent eventHandle = (IEvent)@event.Handle;
             return EventAttributes.None;
         }
 

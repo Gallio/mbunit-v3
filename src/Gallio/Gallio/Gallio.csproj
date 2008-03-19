@@ -174,6 +174,7 @@
     <Compile Include="Framework\Pattern\DefaultPatternTestBuilder.cs" />
     <Compile Include="Framework\Pattern\DefaultPatternTestModelBuilder.cs" />
     <Compile Include="Framework\Pattern\DefaultPatternTestParameterBuilder.cs" />
+    <Compile Include="Framework\Pattern\RecursiveTypePattern.cs" />
     <Compile Include="Framework\Pattern\DependencyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\IPattern.cs" />
     <Compile Include="Framework\Pattern\IPatternResolver.cs" />
@@ -211,12 +212,15 @@
     <Compile Include="Framework\SilentTestException.cs" />
     <Compile Include="Framework\Step.cs" />
     <Compile Include="Framework\Tasks.cs" />
+    <Compile Include="Framework\Utilities\LogStreamLogger.cs" />
+    <Compile Include="Framework\Utilities\SampleRunner.cs" />
     <Compile Include="Hosting\Channels\BinaryTcpClientChannel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Hosting\Channels\BinaryTcpServerChannel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Hosting\InstallationConfiguration.cs" />
     <Compile Include="Model\Execution\BaseTestLogWriter.cs" />
     <Compile Include="Model\Execution\ITestLogWriter.cs" />
     <Compile Include="Model\Execution\ManagedTestCommand.cs" />

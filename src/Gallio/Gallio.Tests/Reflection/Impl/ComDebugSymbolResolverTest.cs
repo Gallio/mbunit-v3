@@ -46,10 +46,10 @@ namespace Gallio.Tests.Reflection.Impl
         }
 
         [Test]
-        public void GetSourceLocationForMethod_ReturnsNullIfMethodIsAbstract()
+        public void GetSourceLocationForMethod_ReturnsUnknownIfMethodIsAbstract()
         {
             CodeLocation codeLocation = GetSourceLocationForMethod("AbstractMethod");
-            Assert.IsNull(codeLocation);
+            Assert.AreEqual(CodeLocation.Unknown, codeLocation);
         }
 
         [Test]

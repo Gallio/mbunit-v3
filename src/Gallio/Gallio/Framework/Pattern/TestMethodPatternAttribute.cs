@@ -34,12 +34,6 @@ namespace Gallio.Framework.Pattern
     [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public abstract class TestMethodPatternAttribute : PatternAttribute
     {
-        /// <summary>
-        /// Gets a default instance of the method pattern attribute to use
-        /// when no other pattern consumes a method.
-        /// </summary>
-        public static readonly TestMethodPatternAttribute DefaultInstance = new DefaultImpl();
-
         /// <inheritdoc />
         public override bool IsPrimary
         {
@@ -232,10 +226,6 @@ namespace Gallio.Framework.Pattern
             IPattern pattern = GetPrimaryMethodParameterPattern(typeTestBuilder.TestModelBuilder.PatternResolver, methodParameter);
             if (pattern != null)
                 pattern.Consume(typeTestBuilder, methodParameter, false);
-        }
-
-        private sealed class DefaultImpl : TestMethodPatternAttribute
-        {
         }
     }
 }

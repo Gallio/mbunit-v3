@@ -37,12 +37,6 @@ namespace Gallio.Framework.Pattern
     {
         private const string FixtureObjectCreationSpecKey = "FixtureObjectCreationSpec";
 
-        /// <summary>
-        /// Gets a default instance of the type pattern attribute to use
-        /// when no other pattern consumes a type.
-        /// </summary>
-        public static readonly TestTypePatternAttribute DefaultInstance = new DefaultImpl();
-
         /// <inheritdoc />
         public override bool IsPrimary
         {
@@ -157,6 +151,9 @@ namespace Gallio.Framework.Pattern
                     break;
                 }
             }
+
+            foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public))
+                ProcessNestedType(typeTestBuilder, nestedType);
         }
 
         /// <summary>
@@ -308,6 +305,17 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
+        /// Gets the default pattern to apply to nested types that do not have a primary pattern, or null if none.
+        /// </summary>
+        /// <remarks>
+        /// The default implementation returns <see cref="RecursiveTypePattern.Instance"/>.
+        /// </remarks>
+        protected virtual IPattern DefaultNestedTypePattern
+        {
+            get { return RecursiveTypePattern.Instance; }
+        }
+
+        /// <summary>
         /// Gets the primary pattern of a generic parameter, or null if none.
         /// </summary>
         /// <param name="patternResolver">The pattern resolver</param>
@@ -371,6 +379,17 @@ namespace Gallio.Framework.Pattern
         protected IPattern GetPrimaryConstructorPattern(IPatternResolver patternResolver, IConstructorInfo constructor)
         {
             return PatternUtils.GetPrimaryPattern(patternResolver, constructor) ?? DefaultConstructorPattern;
+        }
+
+        /// <summary>
+        /// Gets the primary pattern of a nested type, or null if none.
+        /// </summary>
+        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="nestedType">The nested type</param>
+        /// <returns>The primary pattern, or null if none</returns>
+        protected IPattern GetPrimaryNestedTypePattern(IPatternResolver patternResolver, ITypeInfo nestedType)
+        {
+            return PatternUtils.GetPrimaryPattern(patternResolver, nestedType) ?? DefaultNestedTypePattern;
         }
 
         /// <summary>
@@ -445,8 +464,16 @@ namespace Gallio.Framework.Pattern
                 pattern.Consume(typeTestBuilder, constructor, false);
         }
 
-        private sealed class DefaultImpl : TestTypePatternAttribute
+        /// <summary>
+        /// Processes a nested type.
+        /// </summary>
+        /// <param name="typeTestBuilder">The test builder for the type</param>
+        /// <param name="nestedType">The nested type</param>
+        protected virtual void ProcessNestedType(IPatternTestBuilder typeTestBuilder, ITypeInfo nestedType)
         {
+            IPattern pattern = GetPrimaryNestedTypePattern(typeTestBuilder.TestModelBuilder.PatternResolver, nestedType);
+            if (pattern != null)
+                pattern.Consume(typeTestBuilder, nestedType, false);
         }
     }
 }

@@ -73,8 +73,11 @@ namespace Gallio.Hosting
             ConfigureForDebugging();
 
             SetInstallationPath();
-            SetDefaultPluginDirectories();
+            SetInstallationConfiguration();
+
+            ConfigureDefaultPluginDirectories();
             ConfigurePluginDirectoriesFromSetup();
+            ConfigurePluginDirectoriesFromInstallationConfiguration();
         }
 
         /// <inheritdoc />
@@ -208,7 +211,13 @@ namespace Gallio.Hosting
                 runtimeSetup.InstallationPath = Path.GetFullPath(runtimeSetup.InstallationPath);
         }
 
-        private void SetDefaultPluginDirectories()
+        private void SetInstallationConfiguration()
+        {
+            if (runtimeSetup.InstallationConfiguration == null)
+                runtimeSetup.InstallationConfiguration = InstallationConfiguration.LoadFromRegistry();
+        }
+
+        private void ConfigureDefaultPluginDirectories()
         {
             AddPluginDirectory(runtimeSetup.InstallationPath);
         }
@@ -217,6 +226,15 @@ namespace Gallio.Hosting
         {
             foreach (string pluginDirectory in runtimeSetup.PluginDirectories)
                 AddPluginDirectory(pluginDirectory);
+        }
+
+        private void ConfigurePluginDirectoriesFromInstallationConfiguration()
+        {
+            if (runtimeSetup.InstallationConfiguration != null)
+            {
+                foreach (string pluginDirectory in runtimeSetup.InstallationConfiguration.AdditionalPluginDirectories)
+                    AddPluginDirectory(pluginDirectory);
+            }
         }
 
         private void LoadAllPluginConfiguration()

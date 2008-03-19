@@ -180,7 +180,7 @@ namespace Gallio.Tests.Reflection
                 Assert.IsFalse(info.GetAttributes(null, false).GetEnumerator().MoveNext());
                 Assert.IsFalse(info.HasAttribute(null, false));
 
-                Assert.IsNull(info.GetCodeLocation());
+                Assert.AreEqual(CodeLocation.Unknown, info.GetCodeLocation());
                 Assert.IsNull(info.GetXmlDocumentation());
             });
         }
@@ -482,11 +482,12 @@ namespace Gallio.Tests.Reflection
 
                 // The source location may not be exactly the same with some wrappers.
                 // What's important is that it is in the same file at least when it is available at all.
-                CodeLocation targetLocation = DebugSymbolUtils.GetSourceLocation(target)
-                    ?? DebugSymbolUtils.GetSourceLocation(target.DeclaringType);
+                CodeLocation targetLocation = DebugSymbolUtils.GetSourceLocation(target);
+                if (targetLocation == CodeLocation.Unknown)
+                    targetLocation = DebugSymbolUtils.GetSourceLocation(target.DeclaringType);
                 CodeLocation infoLocation = info.GetCodeLocation();
 
-                if (targetLocation != null && infoLocation != null)
+                if (targetLocation != CodeLocation.Unknown && infoLocation != CodeLocation.Unknown)
                     StringAssert.AreEqualIgnoreCase(targetLocation.Path, infoLocation.Path);
             });
 

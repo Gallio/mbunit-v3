@@ -74,9 +74,6 @@ namespace Gallio.Model.Serialization
             if (codeElement != null)
             {
                 codeReference = codeElement.CodeReference;
-                if (codeReference.Kind == CodeReferenceKind.Unknown)
-                    codeReference = null;
-
                 codeLocation = codeElement.GetCodeLocation();
             }
 
@@ -118,7 +115,7 @@ namespace Gallio.Model.Serialization
         }
 
         /// <summary>
-        /// Gets or sets the code reference, or null if unknown.
+        /// Gets or sets the code reference or <see cref="Reflection.CodeReference.Unknown" /> if not available.
         /// </summary>
         /// <seealso cref="ITestComponent.CodeElement"/>
         [XmlElement("codeReference", IsNullable=false)]
@@ -129,7 +126,7 @@ namespace Gallio.Model.Serialization
         }
 
         /// <summary>
-        /// Gets or sets the code location, or null if unknown.
+        /// Gets or sets the code location or <see cref="Reflection.CodeLocation.Unknown" /> if not available.
         /// </summary>
         /// <seealso cref="ITestComponent.CodeElement"/>
         [XmlElement("codeLocation", IsNullable = false)]

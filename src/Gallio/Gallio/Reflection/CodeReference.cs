@@ -16,6 +16,8 @@
 using System;
 using System.Reflection;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
 using Gallio.Properties;
@@ -28,18 +30,9 @@ namespace Gallio.Reflection
     /// typically used to identify the point of definition of a test component.
     /// </summary>
     [Serializable]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
-    public class CodeReference : IEquatable<CodeReference>
+    [XmlRoot("codeReference", Namespace = SerializationUtils.XmlNamespace)]
+    public struct CodeReference : IEquatable<CodeReference>, IXmlSerializable
     {
-        /// <summary>
-        /// Gets an empty code reference used to indicate that the actual
-        /// reference is unknown.
-        /// </summary>
-        public static CodeReference Unknown
-        {
-            get { return new CodeReference(); }
-        }
-
         private string assemblyName;
         private string namespaceName;
         private string typeName;
@@ -47,11 +40,10 @@ namespace Gallio.Reflection
         private string parameterName;
 
         /// <summary>
-        /// Creates an empty code reference.
+        /// Gets an empty code reference used to indicate that the actual
+        /// reference is unknown.
         /// </summary>
-        public CodeReference()
-        {
-        }
+        public static readonly CodeReference Unknown = new CodeReference();
 
         /// <summary>
         /// Creates a code reference from strings.
@@ -94,91 +86,43 @@ namespace Gallio.Reflection
         }
 
         /// <summary>
-        /// Gets or sets the assembly name, or null if none.
+        /// Gets the assembly name, or null if none.
         /// </summary>
-        [XmlAttribute("assembly")]
         public string AssemblyName
         {
             get { return assemblyName; }
-            set
-            {
-                ThrowIfReadOnly();
-                assemblyName = value;
-            }
         }
 
         /// <summary>
-        /// Gets or sets the namespace name, or null if none.
+        /// Gets the namespace name, or null if none.
         /// </summary>
-        [XmlAttribute("namespace")]
         public string NamespaceName
         {
             get { return namespaceName; }
-            set
-            {
-                ThrowIfReadOnly();
-                namespaceName = value;
-            }
         }
 
         /// <summary>
-        /// Gets or sets the fully-qualified type name, or null if none.
+        /// Gets the fully-qualified type name, or null if none.
         /// </summary>
-        [XmlAttribute("type")]
         public string TypeName
         {
             get { return typeName; }
-            set
-            {
-                ThrowIfReadOnly();
-                typeName = value;
-            }
         }
 
         /// <summary>
-        /// Gets or sets the member name, or null if none.
+        /// Gets the member name, or null if none.
         /// </summary>
-        [XmlAttribute("member")]
         public string MemberName
         {
             get { return memberName; }
-            set
-            {
-                ThrowIfReadOnly();
-                memberName = value;
-            }
         }
 
         /// <summary>
-        /// Gets or sets the parameter name, or null if none.
+        /// Gets the parameter name, or null if none.
         /// </summary>
-        [XmlAttribute("parameter")]
         public string ParameterName
         {
             get { return parameterName; }
-            set
-            {
-                ThrowIfReadOnly();
-                parameterName = value;
-            }
-        }
-
-        /// <summary>
-        /// Creates a copy of the code reference.
-        /// </summary>
-        /// <returns>The copy</returns>
-        public CodeReference Copy()
-        {
-            return new CodeReference().InitializeFrom(this);
-        }
-
-        /// <summary>
-        /// Creates a read-only copy of the code reference.
-        /// </summary>
-        /// <returns>The read-only copy</returns>
-        public CodeReference ReadOnlyCopy()
-        {
-            return new ReadOnlyCodeReference().InitializeFrom(this);
         }
 
         /// <summary>
@@ -292,21 +236,43 @@ namespace Gallio.Reflection
             return new CodeReference(assembly.FullName, null, null, null, null);
         }
 
+        #region Equality
+        /// <summary>
+        /// Compares two code references for equality.
+        /// </summary>
+        /// <param name="a">The first code reference</param>
+        /// <param name="b">The second code reference</param>
+        /// <returns>True if the code references are equal</returns>
+        public static bool operator ==(CodeReference a, CodeReference b)
+        {
+            return a.Equals(b);
+        }
+
+        /// <summary>
+        /// Compares two code references for inequality.
+        /// </summary>
+        /// <param name="a">The first code reference</param>
+        /// <param name="b">The second code reference</param>
+        /// <returns>True if the code references are not equal</returns>
+        public static bool operator !=(CodeReference a, CodeReference b)
+        {
+            return !a.Equals(b);
+        }
+
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return Equals(obj as CodeReference);
+            return obj is CodeReference && Equals((CodeReference) obj);
         }
 
         /// <inheritdoc />
         public bool Equals(CodeReference other)
         {
-            return other != null
-                   && assemblyName == other.assemblyName
-                   && namespaceName == other.namespaceName
-                   && typeName == other.typeName
-                   && memberName == other.memberName
-                   && parameterName == other.parameterName;
+            return assemblyName == other.assemblyName
+               && namespaceName == other.namespaceName
+               && typeName == other.typeName
+               && memberName == other.memberName
+               && parameterName == other.parameterName;
         }
 
         /// <inheritdoc />
@@ -318,32 +284,38 @@ namespace Gallio.Reflection
                    ^ (memberName != null ? memberName.GetHashCode() : 0)
                    ^ (parameterName != null ? parameterName.GetHashCode() : 0);
         }
+        #endregion
 
-        /// <summary>
-        /// Provides an opportunity for a read-only code reference to
-        /// throw an exception prior to modifications.  Normal behavior
-        /// is to simply clear the cache.
-        /// </summary>
-        protected virtual void ThrowIfReadOnly()
+        #region Xml Serialization
+        /* Note: We implement out own Xml serialization so that the code reference object can still appear to be immutable.
+                 since we don't need any property setters unlike if we were using [XmlAttribute] attributes. */
+        XmlSchema IXmlSerializable.GetSchema()
         {
+            return null;
         }
 
-        private CodeReference InitializeFrom(CodeReference other)
+        void IXmlSerializable.ReadXml(XmlReader reader)
         {
-            assemblyName = other.assemblyName;
-            namespaceName = other.namespaceName;
-            typeName = other.typeName;
-            memberName = other.memberName;
-            parameterName = other.parameterName;
-            return this;
+            assemblyName = reader.GetAttribute(@"assembly");
+            namespaceName = reader.GetAttribute(@"namespace");
+            typeName = reader.GetAttribute(@"type");
+            memberName = reader.GetAttribute(@"member");
+            parameterName = reader.GetAttribute(@"parameter");
         }
 
-        private sealed class ReadOnlyCodeReference : CodeReference
+        void IXmlSerializable.WriteXml(XmlWriter writer)
         {
-            protected override void ThrowIfReadOnly()
-            {
-                throw new InvalidOperationException("The code reference is read-only.");
-            }
+            if (assemblyName != null)
+                writer.WriteAttributeString(@"assembly", assemblyName);
+            if (namespaceName != null)
+                writer.WriteAttributeString(@"namespace", namespaceName);
+            if (typeName != null)
+                writer.WriteAttributeString(@"type", typeName);
+            if (memberName != null)
+                writer.WriteAttributeString(@"member", memberName);
+            if (parameterName != null)
+                writer.WriteAttributeString(@"parameter", parameterName);
         }
+        #endregion
     }
 }

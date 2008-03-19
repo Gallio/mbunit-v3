@@ -21,8 +21,8 @@ using System.IO;
 using System.Runtime.Remoting;
 using Castle.Core.Logging;
 using Gallio.Collections;
+using Gallio.Framework.Utilities;
 using Gallio.Hosting;
-using Gallio.Tests.Integration;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting

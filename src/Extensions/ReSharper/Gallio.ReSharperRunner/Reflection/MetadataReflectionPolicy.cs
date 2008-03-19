@@ -305,7 +305,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
-            return null;
+            return CodeLocation.Unknown;
         }
         #endregion
 

@@ -27,10 +27,10 @@ namespace Gallio.Tests.Reflection
     public class ReflectorTest
     {
         [Test]
-        public void Resolve_Null_ReturnsNull()
+        public void Resolve_Unknown_ReturnsNull()
         {
-            Assert.IsNull(Reflector.Resolve(null, false));
-            Assert.IsNull(Reflector.Resolve(null, true));
+            Assert.IsNull(Reflector.Resolve(CodeReference.Unknown, false));
+            Assert.IsNull(Reflector.Resolve(CodeReference.Unknown, true));
         }
 
         [Test]
@@ -90,9 +90,9 @@ namespace Gallio.Tests.Reflection
         }
 
         [Test]
-        public void GetSourceLocation_ReturnsNullForNamespaces()
+        public void GetSourceLocation_ReturnsUnknownForNamespaces()
         {
-            Assert.IsNull(Reflector.WrapNamespace("foo").GetCodeLocation());
+            Assert.AreEqual(CodeLocation.Unknown, Reflector.WrapNamespace("foo").GetCodeLocation());
         }
 
         [Test]

@@ -39,17 +39,14 @@ namespace Gallio.Reflection
         /// <summary>
         /// Resolves the specified <see cref="CodeReference" />. 
         /// </summary>
-        /// <param name="reference">The code reference, or null</param>
+        /// <param name="reference">The code reference</param>
         /// <param name="throwOnError">If true, throws an exception on error</param>
         /// <returns>The associated code element, or null if the code reference
-        /// is null or if it is of kind <see cref="CodeReferenceKind.Unknown" /></returns>
+        /// is of kind <see cref="CodeReferenceKind.Unknown" /></returns>
         /// <exception cref="InvalidOperationException">Thrown if <paramref name="throwOnError"/>
         /// is true and <paramref name="reference"/> cannot be resolved</exception>
         public static ICodeElementInfo Resolve(CodeReference reference, bool throwOnError)
         {
-            if (reference == null)
-                return null;
-
             try
             {
                 CodeReferenceKind kind = reference.Kind;

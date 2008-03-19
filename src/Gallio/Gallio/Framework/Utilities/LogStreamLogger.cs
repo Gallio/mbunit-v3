@@ -17,10 +17,11 @@ using System;
 using Castle.Core.Logging;
 using Gallio.Framework;
 
-namespace Gallio.Tests.Integration
+namespace Gallio.Framework.Utilities
 {
     /// <summary>
-    /// Logs messages to the specified text writer for debugging as part of a test.
+    /// A <see cref="ILogger" /> implementation that logs messages to the specified <see cref="LogStreamWriter" />.
+    /// This can be used to write log messages to the test execution log.
     /// </summary>
     public sealed class LogStreamLogger : LevelFilteredLogger
     {
@@ -48,11 +49,13 @@ namespace Gallio.Tests.Integration
             Level = LoggerLevel.Debug;
         }
 
+        /// <inheritdoc />
         public override ILogger CreateChildLogger(string name)
         {
             return this;
         }
 
+        /// <inheritdoc />
         protected override void Log(LoggerLevel level, string name, string message, Exception exception)
         {
             message = String.Format("[{0}] {1}", level.ToString().ToLowerInvariant(), message);

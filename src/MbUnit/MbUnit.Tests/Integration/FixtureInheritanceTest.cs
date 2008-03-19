@@ -30,7 +30,7 @@ namespace MbUnit.Tests.Integration
         [FixtureSetUp]
         public void RunSample()
         {
-            RunFixtures(typeof(FixtureInheritanceSample), typeof(FixtureInheritanceSample.DerivedFixture));
+            RunFixtures(typeof(FixtureInheritanceSample), typeof(DerivedFixture), typeof(FixtureInheritanceSample.NestedFixture));
         }
 
         [Test]
@@ -46,26 +46,36 @@ namespace MbUnit.Tests.Integration
         public void BaseTestOnDerivedFixtureIncludesBaseFixtureContributionsFirst()
         {
             AssertOutput("BaseTestFixtureSetUp\nDerivedTestFixtureSetUp\nDerivedTestFixtureTearDown\nBaseTestFixtureTearDown\n",
-                typeof(FixtureInheritanceSample.DerivedFixture), null);
+                typeof(DerivedFixture), null);
             AssertOutput("BaseSetUp\nDerivedSetUp\nBaseTest\nDerivedTearDown\nBaseTearDown\n",
-                typeof(FixtureInheritanceSample.DerivedFixture), "BaseTest");
+                typeof(DerivedFixture), "BaseTest");
         }
 
         [Test]
         public void DerivedTestOnDerivedFixtureIncludesBaseFixtureContributionsFirst()
         {
             AssertOutput("BaseTestFixtureSetUp\nDerivedTestFixtureSetUp\nDerivedTestFixtureTearDown\nBaseTestFixtureTearDown\n",
-                typeof(FixtureInheritanceSample.DerivedFixture), null);
+                typeof(DerivedFixture), null);
             AssertOutput("BaseSetUp\nDerivedSetUp\nDerivedTest\nDerivedTearDown\nBaseTearDown\n",
-                typeof(FixtureInheritanceSample.DerivedFixture), "DerivedTest");
+                typeof(DerivedFixture), "DerivedTest");
         }
 
-        private void AssertOutput(string expectedOutput, Type fixtureType, string memberName)
+        [Test]
+        public void NestedTestRunsInTheContextOfTheDeclaringTest()
         {
-            CodeReference codeReference = CodeReference.CreateFromType(fixtureType);
-            codeReference.MemberName = memberName;
+            AssertOutput("BaseSetUp\nNestedTestFixtureSetUp\nNestedTestFixtureTearDown\nBaseTearDown\n",
+                typeof(DerivedFixture.NestedFixture), null);
+            AssertOutput("NestedTest\n",
+                typeof(DerivedFixture.NestedFixture), "NestedTest");
+        }
 
-            TestInstanceRun testInstanceRun = GetFirstTestInstanceRun(codeReference);
+        private void AssertOutput(string expectedOutput, Type fixtureType, string methodName)
+        {
+            CodeReference codeReference = methodName != null
+                ? CodeReference.CreateFromMember(fixtureType.GetMethod(methodName))
+                : CodeReference.CreateFromType(fixtureType);
+
+            TestInstanceRun testInstanceRun = Runner.GetFirstTestInstanceRun(codeReference);
             Assert.AreEqual(TestStatus.Passed, testInstanceRun.RootTestStepRun.Result.Outcome.Status);
 
             string actualOutput = testInstanceRun.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.ConsoleOutput).ToString();

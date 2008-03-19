@@ -15,9 +15,9 @@
 
 using System;
 using System.Runtime.Remoting;
+using Gallio.Framework.Utilities;
 using Gallio.Hosting;
 using Gallio.Hosting.Channels;
-using Gallio.Tests.Integration;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Hosting.Channels

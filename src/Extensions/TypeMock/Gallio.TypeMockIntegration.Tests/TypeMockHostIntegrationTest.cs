@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System.Diagnostics;
+using Gallio.Framework.Utilities;
 using Gallio.Hosting;
-using Gallio.Tests.Integration;
 using MbUnit.Framework;
 using TypeMock.Integration;
 

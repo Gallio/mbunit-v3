@@ -47,21 +47,25 @@ namespace Gallio.Reflection.Impl
         /// null if not available.
         /// </summary>
         /// <param name="type">The type</param>
-        /// <returns>The code location, or null if unknown</returns>
+        /// <returns>The code location, or <see cref="CodeLocation.Unknown" /> if unknown</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
         public static CodeLocation GetSourceLocation(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            return GuessSourceLocationForType(type, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public)
-                ?? GuessSourceLocationForType(type, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+            CodeLocation location = GuessSourceLocationForType(type, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
+            if (location == CodeLocation.Unknown)
+                location = GuessSourceLocationForType(type, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+            return location;
         }
 
         private static CodeLocation GuessSourceLocationForType(Type type, BindingFlags bindingFlags)
         {
-            return GuessSourceLocationForTypeFromItsMethods(type.GetConstructors(bindingFlags))
-                ?? GuessSourceLocationForTypeFromItsMethods(type.GetMethods(bindingFlags));
+            CodeLocation location = GuessSourceLocationForTypeFromItsMethods(type.GetConstructors(bindingFlags));
+            if (location == CodeLocation.Unknown)
+                location = GuessSourceLocationForTypeFromItsMethods(type.GetMethods(bindingFlags));
+            return location;
         }
 
         private static CodeLocation GuessSourceLocationForTypeFromItsMethods(IEnumerable<MethodBase> methods)
@@ -69,15 +73,11 @@ namespace Gallio.Reflection.Impl
             foreach (MethodBase method in methods)
             {
                 CodeLocation codeLocation = GetSourceLocation(method);
-                if (codeLocation != null)
-                {
-                    codeLocation.Line = 0;
-                    codeLocation.Column = 0;
-                    return codeLocation;
-                }
+                if (codeLocation != CodeLocation.Unknown)
+                    return new CodeLocation(codeLocation.Path, 0, 0);
             }
 
-            return null;
+            return CodeLocation.Unknown;
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Gallio.Reflection.Impl
         /// null if not available.
         /// </summary>
         /// <param name="method">The method</param>
-        /// <returns>The source location, or null if unknown</returns>
+        /// <returns>The source location, or <see cref="CodeLocation.Unknown" /> if unknown</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
         public static CodeLocation GetSourceLocation(MethodBase method)
         {
@@ -95,7 +95,7 @@ namespace Gallio.Reflection.Impl
             Assembly assembly = method.DeclaringType.Assembly;
             string assemblyPath = Loader.GetAssemblyLocation(assembly); // use the shadow-copied location if applicable
             if (assemblyPath == null)
-                return null;
+                return CodeLocation.Unknown;
 
             if (AppDomain.CurrentDomain.ShadowCopyFiles)
             {
@@ -106,18 +106,18 @@ namespace Gallio.Reflection.Impl
                     {
                         string originalAssemblyPath = Loader.GetAssemblyLocalPath(assembly);
                         if (originalAssemblyPath == null)
-                            return null;
+                            return CodeLocation.Unknown;
 
                         string originalPdbPath = Path.ChangeExtension(originalAssemblyPath, @".pdb");
                         if (!File.Exists(originalPdbPath))
-                            return null;
+                            return CodeLocation.Unknown;
 
                         File.Copy(originalPdbPath, pdbPath);
                     }
                 }
                 catch (IOException)
                 {
-                    return null;
+                    return CodeLocation.Unknown;
                 }
             }
 

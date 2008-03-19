@@ -44,7 +44,6 @@ namespace Gallio.Reflection
 
         /// <summary>
         /// Gets a <see cref="CodeReference" /> for this code element.
-        /// This value is never null.
         /// </summary>
         /// <returns>The code reference</returns>
         CodeReference CodeReference { get; }
@@ -84,8 +83,8 @@ namespace Gallio.Reflection
 
         /// <summary>
         /// Gets the location of a resource that contains the declaration of this code element, or
-        /// null if not available.  The location may refer to the code element's source code
-        /// or to the location of its compiled assembly.
+        /// <see cref="CodeLocation.Unknown" /> if not available.  The location may refer to the code
+        /// element's source code or to the location of its compiled assembly.
         /// </summary>
         /// <returns>The code location</returns>
         CodeLocation GetCodeLocation();

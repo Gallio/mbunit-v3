@@ -107,7 +107,7 @@ namespace Gallio.Icarus.AdapterModel
                     else
                     {
                         // fixtures need special treatment to insert the namespace layer!
-                        string @namespace = (td.CodeReference ?? CodeReference.Unknown).NamespaceName ?? "";
+                        string @namespace = td.CodeReference.NamespaceName ?? "";
 
                         // find the namespace node (or add if it doesn't exist)
                         TestTreeNode nsNode;
@@ -228,7 +228,7 @@ namespace Gallio.Icarus.AdapterModel
             // update tree model
             testTreeModel.UpdateTestStatus(testData.Id, testStepRun.Result.Outcome.Status);
             // get code reference (if there is one)
-            CodeReference codeReference = testData.CodeReference ?? CodeReference.Unknown;
+            CodeReference codeReference = testData.CodeReference;
             // update test results
             double duration = (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds;
             testTreeModel.OnTestResult(new TestResultEventArgs(testData.Name, testStepRun.Result.Outcome,

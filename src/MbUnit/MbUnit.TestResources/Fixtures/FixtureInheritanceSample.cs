@@ -61,37 +61,59 @@ namespace MbUnit.TestResources.Fixtures
         }
 
         [TestFixture]
-        public class DerivedFixture : FixtureInheritanceSample
+        public class NestedFixture
         {
             [FixtureSetUp]
-            public void DerivedTestFixtureSetUp()
+            public void NestedTestFixtureSetUp()
             {
-                Console.WriteLine("DerivedTestFixtureSetUp");
+                Console.WriteLine("NestedTestFixtureSetUp");
             }
 
             [FixtureTearDown]
-            public void DerivedTestFixtureTearDown()
+            public void NestedTestFixtureTearDown()
             {
-                Console.WriteLine("DerivedTestFixtureTearDown");
-            }
-
-            [SetUp]
-            public void DerivedSetUp()
-            {
-                Console.WriteLine("DerivedSetUp");
-            }
-
-            [TearDown]
-            public void DerivedTearDown()
-            {
-                Console.WriteLine("DerivedTearDown");
+                Console.WriteLine("NestedTestFixtureTearDown");
             }
 
             [Test]
-            public void DerivedTest()
+            public void NestedTest()
             {
-                Console.WriteLine("DerivedTest");
+                Console.WriteLine("NestedTest");
             }
+        }
+    }
+
+    [TestFixture]
+    public class DerivedFixture : FixtureInheritanceSample
+    {
+        [FixtureSetUp]
+        public void DerivedTestFixtureSetUp()
+        {
+            Console.WriteLine("DerivedTestFixtureSetUp");
+        }
+
+        [FixtureTearDown]
+        public void DerivedTestFixtureTearDown()
+        {
+            Console.WriteLine("DerivedTestFixtureTearDown");
+        }
+
+        [SetUp]
+        public void DerivedSetUp()
+        {
+            Console.WriteLine("DerivedSetUp");
+        }
+
+        [TearDown]
+        public void DerivedTearDown()
+        {
+            Console.WriteLine("DerivedTearDown");
+        }
+
+        [Test]
+        public void DerivedTest()
+        {
+            Console.WriteLine("DerivedTest");
         }
     }
 }

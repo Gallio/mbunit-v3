@@ -14,10 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Model;
-using Gallio.Model.Serialization;
 using MbUnit.Framework.Xml;
 using MbUnit.Framework;
 

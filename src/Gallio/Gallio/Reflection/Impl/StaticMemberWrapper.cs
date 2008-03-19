@@ -53,8 +53,7 @@ namespace Gallio.Reflection.Impl
             get
             {
                 CodeReference reference = ReflectedType.CodeReference;
-                reference.MemberName = Name;
-                return reference;
+                return new CodeReference(reference.AssemblyName, reference.NamespaceName, reference.TypeName, Name, null);
             }
         }
 
@@ -92,14 +91,11 @@ namespace Gallio.Reflection.Impl
         public override CodeLocation GetCodeLocation()
         {
             CodeLocation location = Policy.GetMemberSourceLocation(this);
-            if (location == null && declaringType != null)
+            if (location == CodeLocation.Unknown && declaringType != null)
             {
                 location = DeclaringType.GetCodeLocation();
-                if (location != null)
-                {
-                    location.Line = 0;
-                    location.Column = 0;
-                }
+                if (location != CodeLocation.Unknown)
+                    location = new CodeLocation(location.Path, 0, 0);
             }
 
             return location;

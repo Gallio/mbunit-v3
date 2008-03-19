@@ -16,8 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Gallio.Framework.Utilities;
 using Gallio.Hosting;
-using Gallio.Tests.Integration;
 using Gallio.Utilities;
 using MbUnit.Framework;
 

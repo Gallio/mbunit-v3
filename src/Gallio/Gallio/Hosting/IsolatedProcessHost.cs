@@ -326,7 +326,7 @@ namespace Gallio.Hosting
 
             private static string GetInstalledHostProcessPath()
             {
-                string hostProcessPath = Path.Combine(Loader.InstallationPath, HostAppFileName);
+                string hostProcessPath = Path.Combine(Runtime.InstallationPath, HostAppFileName);
                 if (!File.Exists(hostProcessPath))
                     throw new HostException(String.Format("Could not find the installed host application in '{0}'.", hostProcessPath));
 

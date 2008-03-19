@@ -105,7 +105,8 @@ namespace Gallio.Framework.Pattern
         protected virtual void PopulateChildrenImmediately(IPatternTestBuilder assemblyTestBuilder, IAssemblyInfo assembly)
         {
             foreach (ITypeInfo type in assembly.GetExportedTypes())
-                ProcessType(assemblyTestBuilder, type);
+                if (! type.IsNested)
+                    ProcessType(assemblyTestBuilder, type);
         }
 
         /// <summary>
@@ -120,7 +121,7 @@ namespace Gallio.Framework.Pattern
             assemblyTestBuilder.PopulateChildrenChain.After(delegate(ICodeElementInfo childCodeElement)
             {
                 ITypeInfo type = childCodeElement as ITypeInfo;
-                if (type != null && !populatedTypes.Contains(type) && assembly.Equals(type.Assembly))
+                if (type != null && ! type.IsNested && !populatedTypes.Contains(type) && assembly.Equals(type.Assembly))
                 {
                     populatedTypes.Add(type);
                     PopulateChildrenOnDemand(assemblyTestBuilder, type);
@@ -136,18 +137,6 @@ namespace Gallio.Framework.Pattern
         protected virtual void PopulateChildrenOnDemand(IPatternTestBuilder assemblyTestBuilder, ITypeInfo type)
         {
             ProcessType(assemblyTestBuilder, type);
-        }
-
-        /// <summary>
-        /// Processes a type within the assembly.
-        /// </summary>
-        /// <param name="assemblyTestBuilder">The test builder for the assembly</param>
-        /// <param name="type">The type</param>
-        protected virtual void ProcessType(IPatternTestBuilder assemblyTestBuilder, ITypeInfo type)
-        {
-            IPattern pattern = GetPrimaryTypePattern(assemblyTestBuilder.TestModelBuilder.PatternResolver, type);
-            if (pattern != null)
-                pattern.Consume(assemblyTestBuilder, type, false);
         }
 
         /// <summary>
@@ -167,11 +156,11 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to types that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns <c>null</c>.
+        /// The default implementation returns <see cref="RecursiveTypePattern.Instance"/>.
         /// </remarks>
         protected virtual IPattern DefaultTypePattern
         {
-            get { return null; }
+            get { return RecursiveTypePattern.Instance; }
         }
 
         /// <summary>
@@ -183,6 +172,18 @@ namespace Gallio.Framework.Pattern
         protected IPattern GetPrimaryTypePattern(IPatternResolver patternResolver, ITypeInfo type)
         {
             return PatternUtils.GetPrimaryPattern(patternResolver, type) ?? DefaultTypePattern;
+        }
+
+        /// <summary>
+        /// Processes a type within the assembly.
+        /// </summary>
+        /// <param name="assemblyTestBuilder">The test builder for the assembly</param>
+        /// <param name="type">The type</param>
+        protected virtual void ProcessType(IPatternTestBuilder assemblyTestBuilder, ITypeInfo type)
+        {
+            IPattern pattern = GetPrimaryTypePattern(assemblyTestBuilder.TestModelBuilder.PatternResolver, type);
+            if (pattern != null)
+                pattern.Consume(assemblyTestBuilder, type, false);
         }
 
         private sealed class DefaultImpl : AssemblyPatternAttribute

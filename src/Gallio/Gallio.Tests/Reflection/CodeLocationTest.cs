@@ -26,37 +26,23 @@ namespace Gallio.Tests.Reflection
     public class CodeLocationTest
     {
         [Test]
-        [Row("file", 1, 1)]
-        [Row("file", 1, 0)]
-        [Row("file", 0, 1)]
-        [Row("file", 0, 0)]
-        [Row("file", -1, 1, ExpectedException = typeof(ArgumentOutOfRangeException))]
-        [Row("file", 1, -1, ExpectedException = typeof(ArgumentOutOfRangeException))]
-        [Row(null, 1, 1, ExpectedException = typeof(ArgumentNullException))]
-        public void Constructor(string filename, int line, int column)
+        public void UnknownIsDefinedWithANullPath()
         {
-            CodeLocation location = new CodeLocation(filename, line, column);
-            Assert.AreEqual(filename, location.Path);
-            Assert.AreEqual(line, location.Line);
-            Assert.AreEqual(column, location.Column);
+            Assert.AreEqual(new CodeLocation(null, 0, 0), CodeLocation.Unknown);
         }
 
         [Test]
+        [Row(null, 0, 0)]
         [Row("file", 1, 1)]
         [Row("file", 1, 0)]
-        [Row("file", 0, 1)]
+        [Row("file", 0, 1, ExpectedException = typeof(ArgumentException))]
         [Row("file", 0, 0)]
         [Row("file", -1, 1, ExpectedException = typeof(ArgumentOutOfRangeException))]
         [Row("file", 1, -1, ExpectedException = typeof(ArgumentOutOfRangeException))]
-        [Row(null, 1, 1, ExpectedException = typeof(ArgumentNullException))]
-        public void Setters(string filename, int line, int column)
+        [Row(null, 1, 0, ExpectedException = typeof(ArgumentException))]
+        public void Constructor(string filename, int line, int column)
         {
-            CodeLocation location = new CodeLocation("", 0, 0);
-
-            location.Path = filename;
-            location.Line = line;
-            location.Column = column;
-
+            CodeLocation location = new CodeLocation(filename, line, column);
             Assert.AreEqual(filename, location.Path);
             Assert.AreEqual(line, location.Line);
             Assert.AreEqual(column, location.Column);
@@ -71,9 +57,44 @@ namespace Gallio.Tests.Reflection
         [Test]
         new public void ToString()
         {
+            Assert.AreEqual("(unknown)", CodeLocation.Unknown.ToString());
+
             Assert.AreEqual("file", new CodeLocation("file", 0, 0).ToString());
             Assert.AreEqual("file(11)", new CodeLocation("file", 11, 0).ToString());
             Assert.AreEqual("file(11,33)", new CodeLocation("file", 11, 33).ToString());
+        }
+
+        [Test]
+        public void Equality()
+        {
+            Assert.IsFalse(CodeLocation.Unknown.Equals(null));
+
+            Assert.IsFalse(CodeLocation.Unknown.Equals(new CodeLocation("file", 42, 33)));
+            Assert.IsFalse(CodeLocation.Unknown == new CodeLocation("file", 42, 33));
+            Assert.IsTrue(CodeLocation.Unknown != new CodeLocation("file", 42, 33));
+
+            Assert.IsTrue(new CodeLocation("file", 42, 33).Equals(new CodeLocation("file", 42, 33)));
+            Assert.IsTrue(new CodeLocation("file", 42, 33) == new CodeLocation("file", 42, 33));
+            Assert.IsFalse(new CodeLocation("file", 42, 33) != new CodeLocation("file", 42, 33));
+        }
+
+        [Test]
+        public void GetHashCode_SeemsSane()
+        {
+            Assert.AreNotEqual(new CodeLocation("file", 42, 33).GetHashCode(),
+                CodeLocation.Unknown.GetHashCode());
+        }
+
+        [Test]
+        public void RoundTripXmlSerializationFullyPopulatedProperties()
+        {
+            XmlSerializationAssert.AreEqualAfterRoundTrip(new CodeLocation("path", 42, 33));
+        }
+
+        [Test]
+        public void RoundTripXmlSerializationAllUnknown()
+        {
+            XmlSerializationAssert.AreEqualAfterRoundTrip(CodeLocation.Unknown);
         }
     }
 }

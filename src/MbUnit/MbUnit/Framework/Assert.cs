@@ -37,7 +37,7 @@ namespace MbUnit.Framework
         /// <param name="a"></param>
         /// <param name="b"></param>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static new bool Equals(object a, object b)
+        public static new void Equals(object a, object b)
         {
             throw new AssertionException("Assert.Equals should not be used for Assertions");
         }

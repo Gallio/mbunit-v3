@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,7 +58,7 @@ namespace Gallio.Echo.Tests
             string executablePath = Path.Combine(workingDirectory, "Gallio.Echo.exe");
 
             ProcessTask task = Tasks.StartProcessTask(executablePath,
-                "\"" + testAssemblyPath + "\" /pd:\"" + Loader.InstallationPath + "\" " + options,
+                "\"" + testAssemblyPath + "\" /pd:\"" + Runtime.InstallationPath + "\" " + options,
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

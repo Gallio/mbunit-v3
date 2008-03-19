@@ -14,22 +14,20 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using MbUnit.Framework;
 using Gallio.Hosting;
 
 namespace Gallio.Tests.Hosting
 {
     [TestFixture]
-    [TestsOn(typeof(Loader))]
-    public class LoaderTest
+    [TestsOn(typeof(Runtime))]
+    public class RuntimeTest
     {
         [Test]
         public void InstallationPathContainsGallioAssembly()
         {
-            string path = Loader.InstallationPath;
+            string path = Runtime.InstallationPath;
             Assert.IsTrue(File.Exists(Path.Combine(path, Path.GetFileName(typeof(Loader).Assembly.Location))),
                 "Installation path should contain the main Gallio assembly.");
         }

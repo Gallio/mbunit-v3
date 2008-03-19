@@ -108,8 +108,10 @@ namespace Gallio.Reflection.Impl
 
         public override CodeLocation GetCodeLocation()
         {
-            return DebugSymbolUtils.GetSourceLocation(Target)
-                ?? base.GetCodeLocation();
+            CodeLocation location = DebugSymbolUtils.GetSourceLocation(Target);
+            if (location == CodeLocation.Unknown)
+                location = base.GetCodeLocation();
+            return location;
         }
 
         public bool Equals(IFunctionInfo other)

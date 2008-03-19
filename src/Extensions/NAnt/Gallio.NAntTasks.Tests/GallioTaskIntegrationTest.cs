@@ -79,7 +79,7 @@ namespace Gallio.NAntTasks.Tests
         {
             ProcessTask task = Tasks.StartProcessTask(executablePath,
                 String.Concat("/f:Integration.build ", target,
-                " /D:GallioPath=\"", Loader.InstallationPath, "\""),
+                " /D:GallioPath=\"", Runtime.InstallationPath, "\""),
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

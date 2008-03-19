@@ -34,12 +34,12 @@ namespace Gallio.Tests.Reflection.Impl
         }
 
         [Test]
-        public void GetSourceLocation_Method_ReturnsNullIfAssemblyIsDynamic()
+        public void GetSourceLocation_Method_ReturnsUnknownIfAssemblyIsDynamic()
         {
             ILogger mockLogger = Mocks.CreateMock<ILogger>();
             Mocks.ReplayAll();
 
-            Assert.IsNull(DebugSymbolUtils.GetSourceLocation(mockLogger.GetType().GetMethod("CreateChildLogger")));
+            Assert.AreEqual(CodeLocation.Unknown, DebugSymbolUtils.GetSourceLocation(mockLogger.GetType().GetMethod("CreateChildLogger")));
         }
 
         [Test]
@@ -59,18 +59,18 @@ namespace Gallio.Tests.Reflection.Impl
         }
 
         [Test]
-        public void GetSourceLocation_Type_ReturnsNullIfAssemblyIsDynamic()
+        public void GetSourceLocation_Type_ReturnsUnknownIfAssemblyIsDynamic()
         {
             ILogger mockLogger = Mocks.CreateMock<ILogger>();
             Mocks.ReplayAll();
 
-            Assert.IsNull(DebugSymbolUtils.GetSourceLocation(mockLogger.GetType()));
+            Assert.AreEqual(CodeLocation.Unknown, DebugSymbolUtils.GetSourceLocation(mockLogger.GetType()));
         }
 
         [Test]
-        public void GetSourceLocation_Type_ReturnsNullIfTypeHasNoMembers()
+        public void GetSourceLocation_Type_ReturnsUnknownIfTypeHasNoMembers()
         {
-            Assert.IsNull(DebugSymbolUtils.GetSourceLocation(typeof(EmptyType)));
+            Assert.AreEqual(CodeLocation.Unknown, DebugSymbolUtils.GetSourceLocation(typeof(EmptyType)));
         }
 
         [Test]

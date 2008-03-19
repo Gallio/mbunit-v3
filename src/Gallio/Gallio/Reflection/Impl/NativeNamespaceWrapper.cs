@@ -68,7 +68,7 @@ namespace Gallio.Reflection.Impl
 
         public CodeLocation GetCodeLocation()
         {
-            return null;
+            return CodeLocation.Unknown;
         }
 
         public override string ToString()
