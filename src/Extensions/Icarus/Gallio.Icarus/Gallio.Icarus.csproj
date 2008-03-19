@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -73,10 +73,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
-    <Reference Include="ZedGraph, Version=5.0.2.16769, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\ZedGraph.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="About.cs">
@@ -107,9 +103,6 @@
     </Compile>
     <Compile Include="Controls\TaskDialog.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controls\TestResultsGraph.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\TestResultsList.cs">
       <SubType>Component</SubType>
@@ -171,12 +164,6 @@
     <Compile Include="Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
-    <Compile Include="PerformanceMonitor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PerformanceMonitor.Designer.cs">
-      <DependentUpon>PerformanceMonitor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="PropertiesWindow.cs">
       <SubType>Form</SubType>
@@ -216,10 +203,6 @@
     <EmbeddedResource Include="Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PerformanceMonitor.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>PerformanceMonitor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PropertiesWindow.resx">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>

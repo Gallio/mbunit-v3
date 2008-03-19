@@ -13,12 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Controls;
-using TestStatusBar = Gallio.Icarus.Controls.TestStatusBar;
-using TestTreeView = Gallio.Icarus.Controls.TestTreeView;
-using TestResultsList = Gallio.Icarus.Controls.TestResultsList;
-using TestResultsGraph = Gallio.Icarus.Controls.TestResultsGraph;
-
 namespace Gallio.Icarus
 {
     partial class Main
@@ -63,7 +57,7 @@ namespace Gallio.Icarus
             this.testExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.assemblyListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.performanceMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            //this.performanceMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testFiltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -200,7 +194,7 @@ namespace Gallio.Icarus
             this.testExplorerToolStripMenuItem,
             this.assemblyListToolStripMenuItem,
             this.reportToolStripMenuItem,
-            this.performanceMonitorToolStripMenuItem,
+            //this.performanceMonitorToolStripMenuItem,
             this.testResultsToolStripMenuItem,
             this.propertiesToolStripMenuItem,
             this.testFiltersToolStripMenuItem});
@@ -232,11 +226,11 @@ namespace Gallio.Icarus
             // 
             // performanceMonitorToolStripMenuItem
             // 
-            this.performanceMonitorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("performanceMonitorToolStripMenuItem.Image")));
-            this.performanceMonitorToolStripMenuItem.Name = "performanceMonitorToolStripMenuItem";
-            this.performanceMonitorToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.performanceMonitorToolStripMenuItem.Text = "Performance monitor";
-            this.performanceMonitorToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            //this.performanceMonitorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("performanceMonitorToolStripMenuItem.Image")));
+            //this.performanceMonitorToolStripMenuItem.Name = "performanceMonitorToolStripMenuItem";
+            //this.performanceMonitorToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            //this.performanceMonitorToolStripMenuItem.Text = "Performance monitor";
+            //this.performanceMonitorToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // testResultsToolStripMenuItem
             // 
@@ -690,7 +684,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem debugTraceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem warningsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem failuresToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem performanceMonitorToolStripMenuItem;
+        //private System.Windows.Forms.ToolStripMenuItem performanceMonitorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testResultsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runtimeToolStripMenuItem;

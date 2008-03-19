@@ -63,7 +63,7 @@ namespace Gallio.Icarus
         private LogWindow warningsWindow;
         private LogWindow failuresWindow;
         private LogWindow runtimeWindow;
-        private PerformanceMonitor performanceMonitor;
+        //private PerformanceMonitor performanceMonitor;
         private About aboutDialog;
         private PropertiesWindow propertiesWindow;
         private FiltersWindow filtersWindow;
@@ -89,7 +89,7 @@ namespace Gallio.Icarus
                     ((TestTreeModel)((SortedTreeModel)value).InnerModel).TestResult += delegate(object sender, TestResultEventArgs e)
                     {
                         testResults.UpdateTestResults(e.TestName, e.TestOutcome, e.Duration, e.TypeName, e.NamespaceName, e.AssemblyName);
-                        performanceMonitor.UpdateTestResults(e.TestOutcome, e.TypeName, e.NamespaceName, e.AssemblyName);
+                        //performanceMonitor.UpdateTestResults(e.TestOutcome, e.TypeName, e.NamespaceName, e.AssemblyName);
                     };
                 }
             }
@@ -420,7 +420,7 @@ namespace Gallio.Icarus
             warningsWindow = new LogWindow("Warnings");
             failuresWindow = new LogWindow("Failures");
             runtimeWindow = new LogWindow("Runtime");
-            performanceMonitor = new PerformanceMonitor();
+            //performanceMonitor = new PerformanceMonitor();
             aboutDialog = new About();
             propertiesWindow = new PropertiesWindow(this);
             filtersWindow = new FiltersWindow(this);
@@ -438,8 +438,8 @@ namespace Gallio.Icarus
                 return testResults;
             else if (persistString == typeof(ReportWindow).ToString())
                 return reportWindow;
-            else if (persistString == typeof(PerformanceMonitor).ToString())
-                return performanceMonitor;
+            //else if (persistString == typeof(PerformanceMonitor).ToString())
+            //    return performanceMonitor;
             else if (persistString == typeof(PropertiesWindow).ToString())
                 return propertiesWindow;
             else if (persistString == typeof(FiltersWindow).ToString())
@@ -493,7 +493,7 @@ namespace Gallio.Icarus
             else
             {
                 assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
-                performanceMonitor.Show(dockPanel);
+                //performanceMonitor.Show(dockPanel);
                 testResults.Show(dockPanel);
                 consoleInputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
                 consoleOutputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
@@ -1078,9 +1078,9 @@ namespace Gallio.Icarus
                 case "failuresToolStripMenuItem":
                     failuresWindow.Show(dockPanel);
                     break;
-                case "performanceMonitorToolStripMenuItem":
-                    performanceMonitor.Show(dockPanel);
-                    break;
+                //case "performanceMonitorToolStripMenuItem":
+                //    performanceMonitor.Show(dockPanel);
+                //    break;
                 case "testResultsToolStripMenuItem":
                     testResults.Show(dockPanel);
                     break;

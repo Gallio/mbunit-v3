@@ -57,10 +57,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
-    <Reference Include="ZedGraph, Version=5.0.2.16769, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\ZedGraph.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdapterModel\ProjectAdapterModelTest.cs" />
@@ -68,7 +64,6 @@
     <Compile Include="AboutTest.cs" />
     <Compile Include="AssemblyListTest.cs" />
     <Compile Include="Controls\TaskButtonTest.cs" />
-    <Compile Include="Controls\TestResultsGraphTest.cs" />
     <Compile Include="Controls\TestResultsListTest.cs" />
     <Compile Include="Controls\TestStatusBarTest.cs">
     </Compile>
@@ -81,7 +76,6 @@
     <Compile Include="PropertiesWindowTest.cs" />
     <Compile Include="TestExplorerTest.cs" />
     <Compile Include="TestResultsTest.cs" />
-    <Compile Include="PerformanceMonitorTest.cs" />
     <Compile Include="LogWindowTest.cs" />
     <Compile Include="IcarusLoggerTest.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenterTest.cs" />
