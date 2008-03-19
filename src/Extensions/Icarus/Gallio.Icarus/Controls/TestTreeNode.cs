@@ -27,12 +27,17 @@ namespace Gallio.Icarus.Controls
     {
         private TestStatus testStatus = TestStatus.Inconclusive;
         private bool sourceCodeAvailable, isTest;
-        private string name;
+        private string name, nodeType;
         protected Image nodeTypeIcon, testStatusIcon;
 
         public string Name
         {
             get { return name; }
+        }
+
+        public string NodeType
+        {
+            get { return nodeType; }
         }
 
         public TestStatus TestStatus
@@ -111,11 +116,6 @@ namespace Gallio.Icarus.Controls
         public Image NodeTypeIcon
         {
             get { return nodeTypeIcon; }
-            set
-            {
-                nodeTypeIcon = value;
-                NotifyModel();
-            }
         }
 
         public Image TestStatusIcon
@@ -128,11 +128,38 @@ namespace Gallio.Icarus.Controls
             }
         }
 
-        public TestTreeNode(string text, string name)
+        public TestTreeNode(string text, string name, string nodeType)
             : base(text)
         {
             this.name = name;
+            this.nodeType = nodeType;
             CheckState = CheckState.Checked;
+
+            switch (nodeType)
+            {
+                case TestKinds.Assembly:
+                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Assembly;
+                    break;
+                case "Namespace":
+                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Namespace;
+                    break;
+                case TestKinds.Fixture:
+                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Fixture;
+                    break;
+                case TestKinds.Test:
+                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Test;
+                    break;
+                case "FilterPassed":
+                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.FilterPassed;
+                    break;
+                case "FilterFailed":
+                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.FilterFailed;
+                    break;
+                case "FilterSkipped":
+                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.FilterSkipped;
+                    break;
+                // TODO: Icons for metadata etc...
+            }
         }
 
         public List<TestTreeNode> Find(string key, bool searchChildren)

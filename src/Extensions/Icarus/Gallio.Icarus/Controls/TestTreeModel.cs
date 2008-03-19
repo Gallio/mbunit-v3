@@ -148,21 +148,21 @@ namespace Gallio.Icarus.Controls
                         case TestStatus.Passed:
                             if (filterPassed)
                             {
-                                FilterNode(node, "Passed", TestStatus.Passed, global::Gallio.Icarus.Properties.Resources.FilterPassed);
+                                FilterNode(node, "Passed", TestStatus.Passed, "FilterPassed");
                                 return false;
                             }
                             break;
                         case TestStatus.Skipped:
                             if (filterSkipped)
                             {
-                                FilterNode(node, "Skipped", TestStatus.Skipped, global::Gallio.Icarus.Properties.Resources.FilterSkipped);
+                                FilterNode(node, "Skipped", TestStatus.Skipped, "FilterSkipped");
                                 return false;
                             }
                             break;
                         case TestStatus.Failed:
                             if (filterFailed)
                             {
-                                FilterNode(node, "Failed", TestStatus.Failed, global::Gallio.Icarus.Properties.Resources.FilterFailed);
+                                FilterNode(node, "Failed", TestStatus.Failed, "FilterFailed");
                                 return false;
                             }
                             break;
@@ -182,7 +182,7 @@ namespace Gallio.Icarus.Controls
             return true;
         }
 
-        private void FilterNode(TestTreeNode node, string text, TestStatus testStatus, Image image)
+        private void FilterNode(TestTreeNode node, string text, TestStatus testStatus, string nodeType)
         {
             string key = testStatus.ToString();
             TestTreeNode filterNode;
@@ -191,8 +191,7 @@ namespace Gallio.Icarus.Controls
                 filterNode = nodes[0];
             else
             {
-                filterNode = new TestTreeNode(text, key);
-                filterNode.NodeTypeIcon = image;
+                filterNode = new TestTreeNode(text, key, nodeType);
                 filterNode.TestStatus = testStatus;
                 node.Parent.Nodes.Add(filterNode);
             }

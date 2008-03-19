@@ -61,7 +61,7 @@ namespace Gallio.Icarus.AdapterModel
         public void BuildTestTree(TestModelData testModelData, string mode)
         {
             testTreeModel.Nodes.Clear();
-            TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id);
+            TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, TestKinds.Root);
             testTreeModel.Nodes.Add(root);
             switch (mode)
             {
@@ -100,8 +100,7 @@ namespace Gallio.Icarus.AdapterModel
                     if (componentKind != TestKinds.Fixture)
                     {
                         // create an appropriate node
-                        ttnode = new TestTreeNode(td.Name, td.Id);
-                        ttnode.NodeTypeIcon = GetNodeTypeIcon(componentKind);
+                        ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
                         parent.Nodes.Add(ttnode);
                     }
                     else
@@ -116,14 +115,12 @@ namespace Gallio.Icarus.AdapterModel
                             nsNode = nodes[0] as TestTreeNode;
                         else
                         {
-                            nsNode = new TestTreeNode(@namespace, @namespace);
-                            nsNode.NodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Namespace;
+                            nsNode = new TestTreeNode(@namespace, @namespace, "Namespace");
                             parent.Nodes.Add(nsNode);
                         }
 
                         // add the fixture to the namespace
-                        ttnode = new TestTreeNode(td.Name, td.Id);
-                        ttnode.NodeTypeIcon = GetNodeTypeIcon(componentKind);
+                        ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
                         nsNode.Nodes.Add(ttnode);
                     }
                     ttnode.SourceCodeAvailable = (td.CodeLocation != null);
@@ -162,22 +159,19 @@ namespace Gallio.Icarus.AdapterModel
                                     metadataNode = nodes[0] as TestTreeNode;
                                 else
                                 {
-                                    metadataNode = new TestTreeNode(m, m);
-                                    metadataNode.NodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Namespace;
+                                    metadataNode = new TestTreeNode(m, m, m);
                                     testTreeModel.Root.Nodes.Add(metadataNode);
                                 }
                                 // add node in the appropriate place
                                 if (componentKind == TestKinds.Fixture)
                                 {
-                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id);
-                                    ttnode.NodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Fixture;
+                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
                                     metadataNode.Nodes.Add(ttnode);
                                     PopulateMetadataTree(key, td.Children, ttnode);
                                 }
                                 else
                                 {
-                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id);
-                                    ttnode.NodeTypeIcon = GetNodeTypeIcon(componentKind);
+                                    TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
                                     ttnode.SourceCodeAvailable = (td.CodeLocation != null);
                                     ttnode.IsTest = td.IsTestCase;
                                     if (m != "None")

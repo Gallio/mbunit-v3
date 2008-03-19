@@ -204,7 +204,7 @@ namespace Gallio.Icarus
         {
             if (testTree.SelectedNode != null)
             {
-                removeAssemblyToolStripMenuItem.Enabled = (((TestTreeNode)testTree.SelectedNode.Tag).NodeTypeIcon == global::Gallio.Icarus.Properties.Resources.Assembly);
+                removeAssemblyToolStripMenuItem.Enabled = (((TestTreeNode)testTree.SelectedNode.Tag).NodeType == TestKinds.Assembly);
                 viewSourceCodeToolStripMenuItem.Enabled = ((TestTreeNode)testTree.SelectedNode.Tag).SourceCodeAvailable;
             }
         }

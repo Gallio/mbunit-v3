@@ -260,6 +260,7 @@ namespace Gallio.Icarus
             this.removeAssemblyToolStripMenuItem.Name = "removeAssemblyToolStripMenuItem";
             this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.removeAssemblyToolStripMenuItem.Text = "Remove assembly";
+            this.removeAssemblyToolStripMenuItem.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem_Click);
             // 
             // removeAssembliesToolStripMenuItem
             // 

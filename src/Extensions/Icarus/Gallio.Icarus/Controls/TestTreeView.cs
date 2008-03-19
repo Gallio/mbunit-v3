@@ -50,6 +50,7 @@ namespace Gallio.Icarus.Controls
             NodeTextBox nodeTextBox = new NodeTextBox();
             nodeTextBox.DataPropertyName = "Text";
             nodeTextBox.IncrementalSearchEnabled = true;
+            nodeTextBox.EditEnabled = false;
             nodeTextBox.LeftMargin = 3;
             nodeTextBox.ParentColumn = null;
             nodeTextBox.DrawText += new EventHandler<DrawEventArgs>(nodeTextBox_DrawText);
