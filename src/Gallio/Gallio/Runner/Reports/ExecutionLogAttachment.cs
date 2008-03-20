@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
 
@@ -247,10 +248,11 @@ namespace Gallio.Runner.Reports
         /// Saves the attachment contents to a stream.
         /// </summary>
         /// <param name="stream">The stream</param>
+        /// <param name="encoding">The preferred encoding to use if writing text, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
         /// <exception cref="IOException">If the attachment could not be saved</exception>
         /// <exception cref="InvalidOperationException">Thrown if the attachment contents are not available</exception>
-        public void SaveContents(Stream stream)
+        public void SaveContents(Stream stream, Encoding encoding)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -259,7 +261,7 @@ namespace Gallio.Runner.Reports
 
             if (IsText)
             {
-                using (StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.UTF8))
+                using (StreamWriter writer = new StreamWriter(stream, encoding ?? System.Text.Encoding.UTF8))
                     writer.Write(serializedContents);
             }
             else

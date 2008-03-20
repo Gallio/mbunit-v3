@@ -213,4 +213,20 @@
       <xsl:apply-templates select="node()" mode="strip-namespace"/>
     </xsl:copy>
   </xsl:template>  
+  
+  <!-- Converting paths to URIs -->
+  <xsl:template name="path-to-uri">
+    <xsl:param name="path" />    
+    <xsl:if test="$path != ''">
+      <xsl:choose>
+        <xsl:when test="starts-with($path, '\')">/</xsl:when>
+        <xsl:when test="starts-with($path, ' ')">%20</xsl:when>
+        <xsl:when test="starts-with($path, '%')">%25</xsl:when>
+        <xsl:otherwise><xsl:value-of select="substring($path, 1, 1)"/></xsl:otherwise>
+      </xsl:choose>
+      <xsl:call-template name="path-to-uri">
+        <xsl:with-param name="path" select="substring($path, 2)" />
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
 </xsl:stylesheet>

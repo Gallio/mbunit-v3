@@ -31,6 +31,18 @@ namespace Gallio.Runner.Reports
     /// to allow the files associated with report rendered in multiple formats to coexist
     /// side by side unambiguously and without duplication of common attachment contents.
     /// </para>
+    /// <para>
+    /// Paths within reports are always specified relative to the root of the container
+    /// with each path segment delimited by backslashes.  The first path segment must be
+    /// <see cref="ReportName" />, optionally with an extra period-delimited extension.
+    /// For example, if <see cref="ReportName" /> is <c>"Report"</c> then <c>"Report.xml"</c> and
+    /// <c>"Report/Contents.txt"</c> are valid paths but <c>"Bar"</c> and
+    /// <c>"Report-NotAnExtension"</c> are not.
+    /// </para>
+    /// <para>
+    /// By convention report content such as attachments and images are 
+    /// stored in a folder with the same name as <see cref="ReportName" />.
+    /// </para>
     /// </summary>
     /// <example>
     /// <para>
@@ -67,42 +79,30 @@ namespace Gallio.Runner.Reports
         void DeleteReport();
 
         /// <summary>
-        /// <para>
-        /// Opens a report file.
-        /// </para>
-        /// <para>
-        /// The path specifies the relative path of the report file within the container
-        /// with path segments delimited by backslashes.  The first path segment must be
-        /// <see cref="ReportName" />, optionally with an extra period-delimited extension.
-        /// If <see cref="ReportName" /> is <c>"Report"</c> then <c>"Report.xml"</c> and
-        /// <c>"Report/Contents.txt"</c> are valid paths but <c>"Bar"</c> and
-        /// <c>"Report-NotAnExtension"</c> are not.
-        /// </para>
-        /// <para>
-        /// By convention report content such as attachments and images are 
-        /// stored in a folder called <see cref="ReportName" /> with no extra
-        /// extensions or adornments.
-        /// </para>
-        /// <para>
-        /// Containing directories are created on demand as necessary when creating files.
-        /// </para>
+        /// Opens a report file for reading.
         /// </summary>
-        /// <param name="path">The path of the report file</param>
-        /// <param name="mode">The file open/create mode</param>
-        /// <param name="access">The file access mode</param>
+        /// <param name="path">The relative path of the report file within the container</param>
         /// <returns>The stream</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
         /// <exception cref="IOException">Thrown if an I/O error occurs</exception>
-        Stream OpenReportFile(string path, FileMode mode, FileAccess access);
+        Stream OpenRead(string path);
 
         /// <summary>
-        /// Recursively copies files and folders from the source path in the native
-        /// file system to the destination path within the report container.
+        /// <para>
+        /// Opens a report file for writing, overwriting any previous file with the same name.
+        /// </para>
+        /// <para>
+        /// It is not necessary to create "directories" within the container.  They are
+        /// automatically created when new files are opened for writing within them.
+        /// </para>
         /// </summary>
-        /// <param name="sourcePathInFileSystem">The source file or directory path in the native file system</param>
-        /// <param name="destPathInContainer">The destination file or directory path in the report container</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePathInFileSystem"/> or <paramref name="destPathInContainer"/> is null</exception>
-        void CopyToReport(string sourcePathInFileSystem, string destPathInContainer);
+        /// <param name="path">The path of the report file</param>
+        /// <param name="contentType">The content type of the file, or null if not specified</param>
+        /// <param name="encoding">The text encoding of the file, or null if not specified or if the file is binary</param>
+        /// <returns>The stream</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        /// <exception cref="IOException">Thrown if an I/O error occurs</exception>
+        Stream OpenWrite(string path, string contentType, Encoding encoding);
 
         /// <summary>
         /// Replaces invalid characters in a file or directory name with underscores

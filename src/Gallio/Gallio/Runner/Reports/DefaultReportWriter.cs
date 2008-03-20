@@ -21,6 +21,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -174,7 +175,7 @@ namespace Gallio.Runner.Reports
                 progressMonitor.ThrowIfCanceled();
                 progressMonitor.SetStatus(reportPath);
 
-                using (XmlWriter writer = XmlWriter.Create(reportContainer.OpenReportFile(reportPath, FileMode.Create, FileAccess.Write), settings))
+                using (XmlWriter writer = XmlWriter.Create(reportContainer.OpenWrite(reportPath, MimeTypes.Xml, settings.Encoding), settings))
                 {
                     progressMonitor.ThrowIfCanceled();
                     SerializeReport(writer, attachmentContentDisposition);
@@ -235,8 +236,8 @@ namespace Gallio.Runner.Reports
 
         private void SaveAttachmentContents(ExecutionLogAttachment attachment, string attachmentPath)
         {
-            using (Stream attachmentStream = reportContainer.OpenReportFile(attachmentPath, FileMode.Create, FileAccess.Write))
-                attachment.SaveContents(attachmentStream);
+            using (Stream attachmentStream = reportContainer.OpenWrite(attachmentPath, attachment.ContentType, Encoding.UTF8))
+                attachment.SaveContents(attachmentStream, Encoding.UTF8);
         }
 
         private string GetAttachmentPath(string testStepId, string attachmentName)

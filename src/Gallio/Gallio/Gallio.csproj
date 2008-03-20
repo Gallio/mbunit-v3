@@ -350,6 +350,7 @@
     <Compile Include="Runner\Domains\IHostTestDomainContributor.cs" />
     <Compile Include="Runner\ITestRunnerFactory.cs" />
     <Compile Include="Runner\ITestRunnerManager.cs" />
+    <Compile Include="Runner\Reports\ReportContainerUtils.cs" />
     <Compile Include="Runner\Reports\TestOutcomeSummary.cs" />
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
@@ -594,7 +595,7 @@
     <Compile Include="Model\Execution\LogStreamNames.cs" />
     <Compile Include="Framework\LogStreamWriter.cs" />
     <Compile Include="Framework\LogWriter.cs" />
-    <Compile Include="Model\Execution\MimeTypes.cs" />
+    <Compile Include="Utilities\MimeTypes.cs" />
     <Compile Include="Framework\TextAttachment.cs" />
     <Compile Include="Hosting\Runtime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

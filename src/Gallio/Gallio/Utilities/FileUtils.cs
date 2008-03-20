@@ -65,6 +65,23 @@ namespace Gallio.Utilities
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePath"/> or <paramref name="destPath"/> is null</exception>
         public static void CopyAll(string sourcePath, string destPath, bool overwrite)
         {
+            CopyAllIndirect(sourcePath, destPath,
+                delegate(string destDirPath) { Directory.CreateDirectory(destDirPath); },
+                delegate(string sourceFilePath, string destFilePath) { File.Copy(sourceFilePath, destFilePath, overwrite); });
+        }
+
+        /// <summary>
+        /// Recursively copies files and folders from the source path to the destination
+        /// using an indirect mechanism to actually create a file or folder.
+        /// </summary>
+        /// <param name="sourcePath">The source file or directory path</param>
+        /// <param name="destPath">The destination file or directory path</param>
+        /// <param name="createDirectoryAction">A delegate used to create a directory with a given destination directory path, or null to do nothing</param>
+        /// <param name="copyFileAction">A delegate used to copy a source file to a given destination file path, or null to do nothing</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePath"/> or <paramref name="destPath"/> is null</exception>
+        public static void CopyAllIndirect(string sourcePath, string destPath,
+            Action<string> createDirectoryAction, Action<string, string> copyFileAction)
+        {
             if (sourcePath == null)
                 throw new ArgumentNullException(@"sourcePath");
             if (destPath == null)
@@ -72,18 +89,19 @@ namespace Gallio.Utilities
 
             if (Directory.Exists(sourcePath))
             {
-                Directory.CreateDirectory(destPath);
+                if (createDirectoryAction != null)
+                    createDirectoryAction(destPath);
 
                 foreach (FileSystemInfo entry in new DirectoryInfo(sourcePath).GetFileSystemInfos())
                 {
                     if (CanCopy(entry))
-                        CopyAll(entry.FullName, Path.Combine(destPath, entry.Name), overwrite);
+                        CopyAllIndirect(entry.FullName, Path.Combine(destPath, entry.Name), createDirectoryAction, copyFileAction);
                 }
             }
             else if (File.Exists(sourcePath))
             {
-                if (CanCopy(new FileInfo(sourcePath)))
-                    File.Copy(sourcePath, destPath, overwrite);
+                if (copyFileAction != null && CanCopy(new FileInfo(sourcePath)))
+                    copyFileAction(sourcePath, destPath);
             }
             else
             {
@@ -132,6 +150,30 @@ namespace Gallio.Utilities
             if (baseDirectory == null)
                 return path.Length == 0 ? Environment.CurrentDirectory : Path.GetFullPath(path);
             return Path.Combine(Path.GetFullPath(baseDirectory), path);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Copies the contents of a source stream to a destination stream.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// Does not close either stream.
+        /// </remarks>
+        /// <param name="sourceStream">The source stream</param>
+        /// <param name="destStream">The destination stream</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourceStream"/>
+        /// or <paramref name="destStream"/> is null</exception>
+        public static void CopyStreamContents(Stream sourceStream, Stream destStream)
+        {
+            if (sourceStream == null)
+                throw new ArgumentNullException("sourceStream");
+            if (destStream == null)
+                throw new ArgumentNullException("destStream");
+
+            byte[] buffer = new byte[4096];
+            for (int len; (len = sourceStream.Read(buffer, 0, buffer.Length)) > 0; )
+                destStream.Write(buffer, 0, len);
         }
 
         private static bool CanCopy(FileSystemInfo entry)

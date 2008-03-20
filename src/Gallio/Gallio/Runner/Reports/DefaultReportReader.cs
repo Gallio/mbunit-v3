@@ -68,7 +68,7 @@ namespace Gallio.Runner.Reports
                 XmlSerializer serializer = new XmlSerializer(typeof(Report));
 
                 Report report;
-                using (Stream stream = reportContainer.OpenReportFile(reportPath, FileMode.Open, FileAccess.Read))
+                using (Stream stream = reportContainer.OpenRead(reportPath))
                 {
                     progressMonitor.ThrowIfCanceled();
                     report = (Report)serializer.Deserialize(stream);
@@ -163,7 +163,7 @@ namespace Gallio.Runner.Reports
 
         private void LoadAttachmentContents(ExecutionLogAttachment attachment, string attachmentPath)
         {
-            using (Stream attachmentStream = reportContainer.OpenReportFile(attachmentPath, FileMode.Open, FileAccess.Read))
+            using (Stream attachmentStream = reportContainer.OpenRead(attachmentPath))
             {
                 // TODO: How should we handle missing attachments?  Currently we just throw an exception.
                 try

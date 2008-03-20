@@ -52,6 +52,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="MbUnit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL" />
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
@@ -206,6 +207,7 @@
     <Compile Include="Collections\TreeUtilsTest.cs" />
     <Compile Include="Utilities\ExceptionUtilsTest.cs" />
     <Compile Include="Utilities\CorrelatedExceptionEventArgsTest.cs" />
+    <Compile Include="Utilities\MimeTypesTest.cs" />
     <Compile Include="Utilities\StringUtilsTest.cs" />
     <Compile Include="Utilities\UnhandledExceptionPolicyTest.cs" />
   </ItemGroup>

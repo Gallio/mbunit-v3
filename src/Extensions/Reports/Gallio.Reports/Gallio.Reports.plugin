@@ -29,6 +29,7 @@
           <name>Text</name>
           <description>Generates plain text reports.</description>
           <extension>txt</extension>
+          <contentType>text/plain</contentType>
           <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
           <xsltPath>xsl/Gallio-Report.txt.xsl</xsltPath>
@@ -46,6 +47,7 @@
           <name>Html</name>
           <description>Generates HTML reports with linked attachment files.</description>
           <extension>html</extension>
+          <contentType>text/html</contentType>
           <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
           <xsltPath>xsl/Gallio-Report.html.xsl</xsltPath>
@@ -66,6 +68,7 @@
           <name>Html-Inline</name>
           <description>Generates HTML reports with inline encoded attachments (images only).</description>
           <extension>html</extension>
+          <contentType>text/html</contentType>
           <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
           <xsltPath>xsl/Gallio-Report.html.xsl</xsltPath>
@@ -86,6 +89,7 @@
           <name>XHtml</name>
           <description>Generates XHTML reports with linked attachment files.</description>
           <extension>xhtml</extension>
+          <contentType>text/xhtml+xml</contentType>
           <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
           <xsltPath>xsl/Gallio-Report.xhtml.xsl</xsltPath>
@@ -106,6 +110,7 @@
           <name>XHtml-Inline</name>
           <description>Generates XHTML reports with inline encoded attachments (images only).</description>
           <extension>xhtml</extension>
+          <contentType>text/xhtml+xml</contentType>
           <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
           <contentUri>plugin://Gallio.Reports/</contentUri>
           <xsltPath>xsl/Gallio-Report.xhtml.xsl</xsltPath>
@@ -116,6 +121,16 @@
               <item>img</item>
             </array>
           </resourcePaths>
+        </parameters>
+      </component>      
+      
+      <component id="ReportFormatter.MHtml"
+                 service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                 type="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
+        <parameters>
+          <name>MHtml</name>
+          <description>Generates MHTML reports with embedded attachments.</description>
+          <htmlReportFormatter>${ReportFormatter.Html}</htmlReportFormatter>
         </parameters>
       </component>      
     </components>

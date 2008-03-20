@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
@@ -86,26 +87,23 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        public Stream OpenReportFile(string path, FileMode mode, FileAccess access)
+        public Stream OpenRead(string path)
         {
             string reportFilePath = GetReportFilePath(path);
 
-            if (mode == FileMode.Create || mode == FileMode.CreateNew)
-            {
-                string containingDir = Path.GetDirectoryName(reportFilePath);
-                if (!string.IsNullOrEmpty(containingDir))
-                    Directory.CreateDirectory(containingDir);
-            }
-
-            return File.Open(reportFilePath, mode, access);
+            return File.Open(reportFilePath, FileMode.Open, FileAccess.Read);
         }
 
         /// <inheritdoc />
-        public void CopyToReport(string sourcePathInFileSystem, string destPathInContainer)
+        public Stream OpenWrite(string path, string contentType, Encoding encoding)
         {
-            string destPathInFileSystem = GetReportFilePath(destPathInContainer);
+            string reportFilePath = GetReportFilePath(path);
 
-            FileUtils.CopyAll(sourcePathInFileSystem, destPathInFileSystem, true);
+            string containingDir = Path.GetDirectoryName(reportFilePath);
+            if (!string.IsNullOrEmpty(containingDir))
+                Directory.CreateDirectory(containingDir);
+
+            return File.Open(reportFilePath, FileMode.Create, FileAccess.Write);
         }
 
         /// <inheritdoc />

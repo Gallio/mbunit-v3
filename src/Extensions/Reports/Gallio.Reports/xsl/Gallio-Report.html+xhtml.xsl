@@ -495,7 +495,7 @@
         </xsl:choose>
       </xsl:when>
       <xsl:when test="@contentDisposition = 'link'">
-        <xsl:variable name="attachmentUri" select="translate(@contentPath, '\', '/')" />
+        <xsl:variable name="attachmentUri"><xsl:call-template name="path-to-uri"><xsl:with-param name="path" select="@contentPath" /></xsl:call-template></xsl:variable>
         <xsl:choose>
           <xsl:when test="$isImage">
             <img src="{$attachmentUri}" alt="Attachment: {@name}" />
@@ -521,7 +521,7 @@
         <a href="{$attachmentBrokerQuery}"><xsl:value-of select="@name" /></a>
       </xsl:when>
       <xsl:when test="@contentDisposition = 'link'">
-        <xsl:variable name="attachmentUri" select="translate(@contentPath, '\', '/')" />        
+        <xsl:variable name="attachmentUri"><xsl:call-template name="path-to-uri"><xsl:with-param name="path" select="@contentPath" /></xsl:call-template></xsl:variable>
         <a href="{$attachmentUri}"><xsl:value-of select="@name" /></a>
       </xsl:when>
       <xsl:otherwise>

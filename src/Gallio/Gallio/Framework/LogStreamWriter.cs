@@ -19,7 +19,6 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 using Gallio.Framework;
-using Gallio.Model.Execution;
 using Gallio.Utilities;
 
 namespace Gallio.Framework

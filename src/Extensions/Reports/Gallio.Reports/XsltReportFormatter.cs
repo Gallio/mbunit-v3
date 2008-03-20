@@ -51,6 +51,7 @@ namespace Gallio.Reports
     public class XsltReportFormatter : BaseReportFormatter
     {
         private readonly string extension;
+        private readonly string contentType;
         private readonly string contentLocalPath;
         private readonly string xsltPath;
         private readonly string[] resourcePaths;
@@ -64,18 +65,21 @@ namespace Gallio.Reports
         /// <param name="name">The formatter name</param>
         /// <param name="description">The formatter description</param>
         /// <param name="extension">The preferred extension without a '.'</param>
+        /// <param name="contentType">The content type of the main report document</param>
         /// <param name="contentUri">The Uri of the content directory</param>
         /// <param name="xsltPath">The path of the XSLT relative to the content directory</param>
         /// <param name="resourcePaths">The paths of the resources (such as images or CSS) to copy
         /// to the report directory relative to the content directory</param>
         /// <exception cref="ArgumentNullException">Thrown if any arguments are null</exception>
-        public XsltReportFormatter(IRuntime runtime, string name, string description, string extension, string contentUri, string xsltPath, string[] resourcePaths)
+        public XsltReportFormatter(IRuntime runtime, string name, string description, string extension, string contentType, string contentUri, string xsltPath, string[] resourcePaths)
             : base(name, description)
         {
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");
             if (extension == null)
                 throw new ArgumentNullException(@"extension");
+            if (contentType == null)
+                throw new ArgumentNullException(@"contentType");
             if (contentUri == null)
                 throw new ArgumentNullException(@"contentUri");
             if (xsltPath == null)
@@ -84,6 +88,7 @@ namespace Gallio.Reports
                 throw new ArgumentNullException(@"resourcePaths");
 
             this.extension = extension;
+            this.contentType = contentType;
 
             contentLocalPath = runtime.MapUriToLocalPath(new Uri(contentUri));
             this.xsltPath = xsltPath;
@@ -143,8 +148,7 @@ namespace Gallio.Reports
 
             string reportPath = reportWriter.ReportContainer.ReportName + @"." + extension;
 
-            using (StreamWriter writer = new StreamWriter(reportWriter.ReportContainer.OpenReportFile(
-                reportPath, FileMode.Create, FileAccess.Write), Encoding.UTF8))
+            using (StreamWriter writer = new StreamWriter(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, Encoding.UTF8), Encoding.UTF8))
                 Transform.Transform(document, arguments, writer);
 
             reportWriter.AddReportDocumentPath(reportPath);
@@ -160,7 +164,7 @@ namespace Gallio.Reports
                 string sourceContentPath = Path.Combine(contentLocalPath, resourcePath);
                 string destContentPath = Path.Combine(reportWriter.ReportContainer.ReportName, resourcePath);
 
-                reportWriter.ReportContainer.CopyToReport(sourceContentPath, destContentPath);
+                ReportContainerUtils.CopyToReport(reportWriter.ReportContainer, sourceContentPath, destContentPath);
             }
         }
 

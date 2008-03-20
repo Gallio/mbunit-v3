@@ -16,12 +16,14 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Text;
 using System.Xml;
 using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Framework;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
+using Gallio.Utilities;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
@@ -37,76 +39,82 @@ namespace Gallio.Reports.Tests
         [Test, ExpectedArgumentNullException]
         public void RuntimeCannotBeNull()
         {
-            new XsltReportFormatter(null, "SomeName", "description", "ext", "file://content", "xslt", new string[0]);
+            new XsltReportFormatter(null, "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void NameCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), null, "description", "ext", "file://content", "xslt", new string[0]);
+            new XsltReportFormatter(Mocks.Stub<IRuntime>(), null, "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void DescriptionCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "name", null, "ext", "file://content", "xslt", new string[0]);
+            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "name", null, "ext", MimeTypes.PlainText, "file://content", "xslt", new string[0]);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ContentTypeCannotBeNull()
+        {
+            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "name", "description", "ext", null, "file://content", "xslt", new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ExtensionCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", null, "file://content", "xslt", new string[0]);
+            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", null, MimeTypes.PlainText, "file://content", "xslt", new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ContentPathCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", null, "xslt", new string[0]);
+            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, null, "xslt", new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void XsltPathCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", "file://content", null, new string[0]);
+            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", null, new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ResourcePathsCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", "file://content", "xslt", null);
+            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", null);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ResourcePathsCannotContainNulls()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", "file://content", "xslt", new string[] { null });
+            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { null });
         }
 
         [Test]
         public void NameIsTheSameAsWasSpecifiedInTheConstructor()
         {
-            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", "file://content", "xslt", new string[] { "res1", "res2" });
+            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { "res1", "res2" });
             Assert.AreEqual("SomeName", formatter.Name);
         }
 
         [Test]
         public void DescriptionIsTheSameAsWasSpecifiedInTheConstructor()
         {
-            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", "file://content", "xslt", new string[] { "res1", "res2" });
+            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { "res1", "res2" });
             Assert.AreEqual("description", formatter.Description);
         }
 
         [Test]
         public void TheDefaultAttachmentContentDispositionIsAbsent()
         {
-            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", "file://content", "xslt", new string[] { "res1", "res2" });
+            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { "res1", "res2" });
             Assert.AreEqual(ExecutionLogAttachmentContentDisposition.Absent, formatter.DefaultAttachmentContentDisposition);
         }
 
         [Test]
         public void TheDefaultAttachmentContentDispositionCanBeChanged()
         {
-            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", "file://content", "xslt", new string[] { "res1", "res2" });
+            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { "res1", "res2" });
 
             formatter.DefaultAttachmentContentDisposition = ExecutionLogAttachmentContentDisposition.Inline;
             Assert.AreEqual(ExecutionLogAttachmentContentDisposition.Inline, formatter.DefaultAttachmentContentDisposition);
@@ -143,12 +151,11 @@ namespace Gallio.Reports.Tests
                         });
 
                     SetupResult.For(reportContainer.ReportName).Return("Foo");
-                    Expect.Call(reportContainer.OpenReportFile("Foo.ext", FileMode.Create, FileAccess.Write))
+                    Expect.Call(reportContainer.OpenWrite("Foo.ext", MimeTypes.PlainText, Encoding.UTF8))
                         .Return(tempFileStream);
                     reportWriter.AddReportDocumentPath("Foo.ext");
 
-                    reportContainer.CopyToReport(Path.Combine(resourcePath, "res1"), @"Foo\res1");
-                    reportContainer.CopyToReport(Path.Combine(resourcePath, "res2"), @"Foo\res2");
+                    Expect.Call(reportContainer.OpenWrite(@"Foo\MbUnitLogo.png", MimeTypes.Png, null)).Return(new MemoryStream());
 
                     reportWriter.SaveReportAttachments(null);
                     LastCall.Constraints(Is.NotNull());
@@ -156,7 +163,7 @@ namespace Gallio.Reports.Tests
 
                 using (Mocks.Playback())
                 {
-                    XsltReportFormatter formatter = new XsltReportFormatter(runtime, "SomeName", "description", "ext", "file://content", "Diagnostic.xslt", new string[] { "res1", "res2" });
+                    XsltReportFormatter formatter = new XsltReportFormatter(runtime, "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "Diagnostic.xslt", new string[] { "MbUnitLogo.png" });
                     NameValueCollection options = new NameValueCollection();
                     options.Add(XsltReportFormatter.AttachmentContentDispositionOption, ExecutionLogAttachmentContentDisposition.Link.ToString());
 
