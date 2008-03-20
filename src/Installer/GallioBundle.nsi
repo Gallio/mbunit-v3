@@ -1,4 +1,5 @@
 !include "StrRep.nsh"
+!include "Path.nsh"
 
 ; Check arguments.
 !ifndef VERSION
@@ -125,6 +126,9 @@ Section "!Gallio" GallioSection
 
 	SetOutPath "$INSTDIR\bin\Reports"
 	File /r "${TARGETDIR}\bin\Reports\*"
+
+	; Add the Gallio bin folder to the path
+	!insertmacro AddPath "$UserContext" "$INSTDIR\bin"
 
 	; Register the folder so that Visual Studio Add References can find it
 	WriteRegStr SHCTX "SOFTWARE\Microsoft\.NETFramework\v2.0.50727\AssemblyFoldersEx\Gallio" "" "$INSTDIR\bin"
@@ -577,10 +581,16 @@ SectionEnd
 
 ;Uninstall section
 Section Uninstall
+	; Remove the Gallio bin folder to the path
+	DetailPrint "Removing Gallio from path."
+	!insertmacro RemovePath "$UserContext" "$INSTDIR\bin"
+
 	; Uninstall from assembly folders
+	DetailPrint "Removing Gallio from assembly folders."
 	DeleteRegKey SHCTX "SOFTWARE\Microsoft\.NETFramework\v2.0.50727\AssemblyFoldersEx\Gallio"
 
 	; Uninstall from TD.Net
+	DetailPrint "Uninstalling TestDriven.Net runner."
 	!insertmacro UninstallTDNetRunner "Gallio_MbUnit"
 	!insertmacro UninstallTDNetRunner "Gallio_MbUnit2"
 	!insertmacro UninstallTDNetRunner "Gallio_MSTest"
@@ -589,18 +599,22 @@ Section Uninstall
 
 	; Uninstall from ReSharper
 	!ifndef MISSING_RESHARPER_RUNNER
+		DetailPrint "Uninstalling ReSharper runner."
 		!insertmacro UninstallReSharperRunner "v3.0" "vs8.0"
 		!insertmacro UninstallReSharperRunner "v3.0" "vs9.0"
 	!endif
 
 	; Uninstall from PowerShell
+	DetailPrint "Uninstalling PowerShell runner."
 	DeleteRegKey SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio"
 
 	; Uninstall the help collection
-	IfFileExists "$INSTDIR\docs\vs\GallioCollection.h2reg.ini" 0 +2
+	IfFileExists "$INSTDIR\docs\vs\GallioCollection.h2reg.ini" 0 +3
+		DetailPrint "Uninstalling Visual Studio help collection."
 		ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -u CmdFile="$INSTDIR\docs\vs\GallioCollection.h2reg.ini"'
 
 	; Uninstall the Visual Studio 2005 templates
+	DetailPrint "Uninstalling Visual Studio 2005 templates."
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0" "InstallDir"
 	IfErrors SkipVS2005Templates
@@ -617,6 +631,7 @@ Section Uninstall
 	SkipVS2005Templates:
 
 	; Uninstall the Visual Studio 2008 templates
+	DetailPrint "Uninstalling Visual Studio 2008 templates."
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
 	IfErrors SkipVS2008Templates
@@ -637,13 +652,16 @@ Section Uninstall
 	SkipVS2008Templates:
 
 	; Delete Shortcuts
+	DetailPrint "Uninstalling shortcuts."
 	RMDir /r "$SMPROGRAMS\${APPNAME}"
 
 	; Remove from registry...
+	DetailPrint "Removing registry keys."
 	DeleteRegKey SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
 	DeleteRegKey SHCTX "SOFTWARE\${APPNAME}"
 
 	; Delete self
+	DetailPrint "Deleting files."
 	Delete "$INSTDIR\uninstall.exe"
 
 	; Remove all remaining contents
