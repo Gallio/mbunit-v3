@@ -16,6 +16,7 @@
     
     <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
     <ReportTypes Condition="'$(ReportTypes)'==''">Html</ReportTypes>
+    <IgnoreFailures Condition="'$(IgnoreFailures)'">false</IgnoreFailures>
 
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
     <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
@@ -82,7 +83,7 @@
             ReportDirectory="$(BuildReportsDir)"
             ReportTypes="$(ReportTypes)"
 	    RunnerType="$(RunnerType)"
-            IgnoreFailures="true"
+            IgnoreFailures="$(IgnoreFailures)"
             ShowReports="$(ShowReports)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
