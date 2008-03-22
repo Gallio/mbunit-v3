@@ -136,7 +136,8 @@ Section "!Gallio" GallioSection
 	; Create Shortcuts
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
-	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\Browse Install Folder.lnk" "$INSTDIR\"
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"	
 	File "${TARGETDIR}\Gallio Website.url"
 SectionEnd
 
@@ -158,6 +159,8 @@ Section "!MbUnit v3 Framework" MbUnit3Section
 	; Create Shortcuts
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
 	File "${TARGETDIR}\MbUnit Website.url"
+	Push "$INSTDIR\bin"
+	Call AddToPath
 SectionEnd
 
 !ifndef MISSING_MBUNIT_PEX_PACKAGE
