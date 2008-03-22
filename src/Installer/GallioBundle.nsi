@@ -600,8 +600,8 @@ Section Uninstall
 	; Uninstall from ReSharper
 	!ifndef MISSING_RESHARPER_RUNNER
 		DetailPrint "Uninstalling ReSharper runner."
-		!insertmacro UninstallReSharperRunner "v3.0" "vs8.0"
-		!insertmacro UninstallReSharperRunner "v3.0" "vs9.0"
+		!insertmacro UninstallReSharperRunner "v3.1" "vs8.0"
+		!insertmacro UninstallReSharperRunner "v3.1" "vs9.0"
 	!endif
 
 	; Uninstall from PowerShell
