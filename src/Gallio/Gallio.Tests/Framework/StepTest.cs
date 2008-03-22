@@ -28,11 +28,11 @@ namespace Gallio.Tests.Framework
 
             Step.RunStep("Step1", delegate
             {
-                StringAssert.Like(Step.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName:Step1$");
+                StringAssert.Like(Step.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName/Step1$");
 
                 Step.RunStep("Step2", delegate
                 {
-                    StringAssert.Like(Step.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName:Step1/Step2$");
+                    StringAssert.Like(Step.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName/Step1/Step2$");
                 });
             });
         }
