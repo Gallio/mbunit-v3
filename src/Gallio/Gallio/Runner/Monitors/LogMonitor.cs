@@ -104,10 +104,6 @@ namespace Gallio.Runner.Monitors
                 messageBuilder.AppendLine();
             }
 
-            // Exclude nested test steps from the results except as debug messages.
-            if (e.TestStepRun.Step.ParentId != null)
-                level = LoggerLevel.Debug;
-
             Log(level, messageBuilder.ToString());
         }
 

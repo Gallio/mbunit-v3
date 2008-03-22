@@ -31,7 +31,10 @@ namespace Gallio.Model.Serialization
     {
         private string fullName;
         private string parentId;
-        private string testInstanceId;
+        private string testId;
+        private bool isPrimary;
+        private bool isTestCase;
+        private bool isDynamic;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -46,19 +49,19 @@ namespace Gallio.Model.Serialization
         /// <param name="id">The step id</param>
         /// <param name="name">The step name</param>
         /// <param name="fullName">The full name of the step</param>
-        /// <param name="testInstanceId">The test instance id</param>
+        /// <param name="testId">The test id</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
-        /// <paramref name="fullName"/> or <paramref name="testInstanceId"/> is null</exception>
-        public TestStepData(string id, string name, string fullName, string testInstanceId)
+        /// <paramref name="fullName"/> or <paramref name="testId"/> is null</exception>
+        public TestStepData(string id, string name, string fullName, string testId)
             : base(id, name)
         {
             if (fullName == null)
                 throw new ArgumentNullException(@"fullName");
-            if (testInstanceId == null)
-                throw new ArgumentNullException("testInstanceId");
+            if (testId == null)
+                throw new ArgumentNullException("testId");
 
             this.fullName = fullName;
-            this.testInstanceId = testInstanceId;
+            this.testId = testId;
         }
 
         /// <summary>
@@ -70,7 +73,9 @@ namespace Gallio.Model.Serialization
             : base(source)
         {
             fullName = source.FullName;
-            testInstanceId = source.TestInstance.Id;
+            testId = source.Test.Id;
+            isPrimary = source.IsPrimary;
+            isTestCase = source.IsTestCase;
 
             if (source.Parent != null)
                 parentId = source.Parent.Id;
@@ -103,19 +108,52 @@ namespace Gallio.Model.Serialization
         }
 
         /// <summary>
-        /// Gets or sets the id of the test instance to which the step belongs.
+        /// Gets or sets the id of the test to which the step belongs.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlAttribute("testId")]
-        public string TestInstanceId
+        public string TestId
         {
-            get { return testInstanceId; }
+            get { return testId; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                testInstanceId = value;
+                testId = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the test step is primary.
+        /// </summary>
+        /// <seealso cref="ITestStep.IsPrimary"/>
+        [XmlAttribute("isPrimary")]
+        public bool IsPrimary
+        {
+            get { return isPrimary; }
+            set { isPrimary = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the test step represents a test case.
+        /// </summary>
+        /// <seealso cref="ITestStep.IsTestCase"/>
+        [XmlAttribute("isTestCase")]
+        public bool IsTestCase
+        {
+            get { return isTestCase; }
+            set { isTestCase = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the test step is dynamic.
+        /// </summary>
+        /// <seealso cref="ITestStep.IsDynamic"/>
+        [XmlAttribute("isDynamic")]
+        public bool IsDynamic
+        {
+            get { return isDynamic; }
+            set { isDynamic = value; }
         }
     }
 }

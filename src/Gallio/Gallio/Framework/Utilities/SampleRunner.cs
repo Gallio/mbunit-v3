@@ -145,21 +145,22 @@ namespace Gallio.Framework.Utilities
         }
 
         /// <summary>
-        /// Gets the first test instance run of a test with the given code reference.
+        /// Gets the primary test step run of a test with the given code reference.
+        /// If there are multiple primary steps, returns the first one found.
         /// </summary>
         /// <remarks>
         /// Can only be called after the tests have run.
         /// </remarks>
         /// <param name="codeReference">The code reference of the test</param>
-        /// <returns>The first test instance run, or null if not found</returns>
-        public TestInstanceRun GetFirstTestInstanceRun(CodeReference codeReference)
+        /// <returns>The first test step run, or null if not found</returns>
+        public TestStepRun GetPrimaryTestStepRun(CodeReference codeReference)
         {
             TestData data = GetTestData(codeReference);
             if (data != null)
             {
-                return GenericUtils.Find(Report.PackageRun.TestInstanceRuns, delegate(TestInstanceRun run)
+                return GenericUtils.Find(Report.PackageRun.TestStepRuns, delegate(TestStepRun run)
                 {
-                    return run.TestInstance.TestId == data.Id;
+                    return run.Step.IsPrimary && run.Step.TestId == data.Id;
                 });
             }
 

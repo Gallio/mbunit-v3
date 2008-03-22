@@ -128,7 +128,7 @@ namespace Gallio.Framework.Pattern
         /// is to configure the test actions as follows:
         /// <list type="bullet">
         /// <item><see cref="IPatternTestInstanceHandler.BeforeTestInstance" />: Set the
-        /// test instance name, <see cref="PatternTestInstanceState.TestMethod" /> and
+        /// test step name, <see cref="PatternTestInstanceState.TestMethod" /> and
         /// <see cref="PatternTestInstanceState.TestArguments" /> based on any values bound
         /// to the test method's generic parameter and method parameter slots.</item>
         /// <item><see cref="IPatternTestInstanceHandler.ExecuteTestInstance" />: Invoke the method.</item>
@@ -147,9 +147,11 @@ namespace Gallio.Framework.Pattern
                 {
                     MethodInvocationSpec spec = testInstanceState.GetTestMethodInvocationSpec(method);
 
-                    testInstanceState.TestInstance.Name += spec.Format(testInstanceState.Formatter);
                     testInstanceState.TestMethod = spec.ResolvedMethod;
                     testInstanceState.TestArguments = spec.ResolvedArguments;
+
+                    if (!testInstanceState.IsReusingPrimaryTestStep)
+                        testInstanceState.TestStep.Name += spec.Format(testInstanceState.Formatter);
                 });
 
             test.TestInstanceActions.ExecuteTestInstanceChain.After(

@@ -200,7 +200,6 @@
     <Compile Include="Runner\Reports\PackageRunTests.cs" />
     <Compile Include="Runner\Reports\ReportTest.cs" />
     <Compile Include="Runner\Reports\TestStepRunTests.cs" />
-    <Compile Include="Runner\Reports\TestInstanceRunTests.cs" />
     <Compile Include="Runner\TestLauncherTest.cs" />
     <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolverTest.cs" />
     <Compile Include="Collections\TreeUtilsTest.cs" />

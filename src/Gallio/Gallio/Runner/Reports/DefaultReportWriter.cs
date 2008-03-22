@@ -97,9 +97,7 @@ namespace Gallio.Runner.Reports
                 XmlAttributeOverrides overrides = new XmlAttributeOverrides();
 
                 // Prune unnecessary ids that can be determined implicitly from the report structure.
-                overrides.Add(typeof(TestInstanceData), @"ParentId", ignoreAttributes);
                 overrides.Add(typeof(TestStepData), @"ParentId", ignoreAttributes);
-                overrides.Add(typeof(TestStepData), @"TestInstanceId", ignoreAttributes);
 
                 // Only include content path when linking.
                 if (attachmentContentDisposition != ExecutionLogAttachmentContentDisposition.Link)
@@ -118,19 +116,16 @@ namespace Gallio.Runner.Reports
                 // Munge the content paths and content disposition.
                 if (report.PackageRun != null)
                 {
-                    foreach (TestInstanceRun testInstanceRun in report.PackageRun.TestInstanceRuns)
+                    foreach (TestStepRun testStepRun in report.PackageRun.TestStepRuns)
                     {
-                        foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
+                        foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                         {
-                            foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
-                            {
-                                originalAttachmentData.Add(attachment, new KeyValuePair<ExecutionLogAttachmentContentDisposition, string>(
-                                    attachment.ContentDisposition, attachment.ContentPath));
+                            originalAttachmentData.Add(attachment, new KeyValuePair<ExecutionLogAttachmentContentDisposition, string>(
+                                attachment.ContentDisposition, attachment.ContentPath));
 
-                                string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
-                                attachment.ContentDisposition = attachmentContentDisposition;
-                                attachment.ContentPath = attachmentPath;
-                            }
+                            string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
+                            attachment.ContentDisposition = attachmentContentDisposition;
+                            attachment.ContentPath = attachmentPath;
                         }
                     }
                 }
@@ -212,21 +207,18 @@ namespace Gallio.Runner.Reports
 
                 progressMonitor.BeginTask("Saving report attachments.", attachmentCount);
 
-                foreach (TestInstanceRun testInstanceRun in report.PackageRun.TestInstanceRuns)
+                foreach (TestStepRun testStepRun in report.PackageRun.TestStepRuns)
                 {
-                    foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
+                    foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                     {
-                        foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
-                        {
-                            string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
+                        string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
 
-                            progressMonitor.ThrowIfCanceled();
-                            progressMonitor.SetStatus(attachmentPath);
+                        progressMonitor.ThrowIfCanceled();
+                        progressMonitor.SetStatus(attachmentPath);
 
-                            SaveAttachmentContents(attachment, attachmentPath);
+                        SaveAttachmentContents(attachment, attachmentPath);
 
-                            progressMonitor.Worked(1);
-                        }
+                        progressMonitor.Worked(1);
                     }
                 }
 
@@ -254,12 +246,9 @@ namespace Gallio.Runner.Reports
 
             if (report.PackageRun != null)
             {
-                foreach (TestInstanceRun testInstanceRun in report.PackageRun.TestInstanceRuns)
+                foreach (TestStepRun testStepRun in report.PackageRun.TestStepRuns)
                 {
-                    foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
-                    {
-                        count += testStepRun.ExecutionLog.Attachments.Count;
-                    }
+                    count += testStepRun.ExecutionLog.Attachments.Count;
                 }
             }
 

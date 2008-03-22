@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -192,7 +192,7 @@
     <Compile Include="Framework\Pattern\PatternTestExecutor.cs" />
     <Compile Include="Framework\Pattern\PatternTestExplorer.cs" />
     <Compile Include="Framework\Pattern\PatternTestFramework.cs" />
-    <Compile Include="Framework\Pattern\PatternTestInstance.cs" />
+    <Compile Include="Framework\Pattern\PatternTestStep.cs" />
     <Compile Include="Framework\Pattern\PatternTestInstanceActions.cs" />
     <Compile Include="Framework\Pattern\PatternTestInstanceState.cs" />
     <Compile Include="Framework\Pattern\PatternTestParameter.cs" />
@@ -367,7 +367,6 @@
     <Compile Include="Runner\Harness\ContextualLogTextWriter.cs" />
     <Compile Include="Runner\Harness\ContextualLogTraceListener.cs" />
     <Compile Include="Model\BaseTestExplorer.cs" />
-    <Compile Include="Model\BaseTestInstance.cs" />
     <Compile Include="Model\BaseTestParameter.cs" />
     <Compile Include="Model\ErrorTest.cs" />
     <Compile Include="Model\Execution\BaseTestController.cs" />
@@ -382,10 +381,8 @@
     <Compile Include="Reflection\IReflectionPolicy.cs" />
     <Compile Include="Reflection\IGenericParameterInfo.cs" />
     <Compile Include="Reflection\CodeElementResolveException.cs" />
-    <Compile Include="Model\Serialization\TestInstanceData.cs" />
     <Compile Include="Model\Serialization\TestPackageData.cs" />
     <Compile Include="Model\TestDeclarationErrorException.cs" />
-    <Compile Include="Model\TestInstanceInfo.cs" />
     <Compile Include="Model\Filters\EqualityFilter.cs" />
     <Compile Include="Model\Filters\FilterLexer.cs" />
     <Compile Include="Model\Filters\FilterToken.cs" />
@@ -398,7 +395,6 @@
     <Compile Include="Model\ITestParameter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ITestInstance.cs" />
     <Compile Include="Model\NullTestExplorer.cs" />
     <Compile Include="Reflection\AttributeUtils.cs" />
     <Compile Include="Reflection\DeclaringTypeComparer.cs" />
@@ -460,7 +456,6 @@
     <Compile Include="Runner\Reports\IReportContainer.cs" />
     <Compile Include="Runner\Reports\IReportWriter.cs" />
     <Compile Include="Runner\Reports\IReportReader.cs" />
-    <Compile Include="Runner\Reports\TestInstanceRun.cs" />
     <Compile Include="Runner\TestLauncherResult.cs" />
     <Compile Include="Model\TestPackageConfig.cs" />
     <Compile Include="Hosting\Loader.cs" />

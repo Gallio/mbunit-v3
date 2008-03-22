@@ -24,7 +24,7 @@ namespace Gallio.Model
     public sealed class TestStepInfo : TestComponentInfo, ITestStep
     {
         private TestStepInfo cachedParent;
-        private TestInstanceInfo cachedTestInstance;
+        private TestInfo cachedTest;
 
         /// <summary>
         /// Creates a read-only wrapper of the specified test step.
@@ -58,18 +58,36 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public TestInstanceInfo TestInstance
+        public TestInfo Test
         {
             get
             {
-                if (cachedTestInstance == null)
-                    Interlocked.CompareExchange(ref cachedTestInstance, new TestInstanceInfo(Source.TestInstance), null);
-                return cachedTestInstance;
+                if (cachedTest == null)
+                    Interlocked.CompareExchange(ref cachedTest, new TestInfo(Source.Test), null);
+                return cachedTest;
             }
         }
-        ITestInstance ITestStep.TestInstance
+        ITest ITestStep.Test
         {
-            get { return TestInstance; }
+            get { return Test; }
+        }
+
+        /// <inheritdoc />
+        public bool IsPrimary
+        {
+            get { return Source.IsPrimary; }
+        }
+
+        /// <inheritdoc />
+        public bool IsDynamic
+        {
+            get { return Source.IsDynamic; }
+        }
+
+        /// <inheritdoc />
+        public bool IsTestCase
+        {
+            get { return Source.IsTestCase; }
         }
 
         /// <inheritdoc />

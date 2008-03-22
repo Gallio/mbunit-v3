@@ -61,15 +61,6 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Root.
-        /// </summary>
-        internal static string BaseStep_RootStepName {
-            get {
-                return ResourceManager.GetString("BaseStep_RootStepName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The parameter list already contains a parameter named &apos;{0}&apos;..
         /// </summary>
         internal static string BaseTest_ParameterListAlreadyContainsParameterWithSameName {
@@ -397,15 +388,6 @@ namespace Gallio.Properties {
         internal static string DebugMonitor_LifecycleEvent_Finish_EventFormat {
             get {
                 return ResourceManager.GetString("DebugMonitor_LifecycleEvent_Finish_EventFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [Lifecycle: NewInstance ({0})].
-        /// </summary>
-        internal static string DebugMonitor_LifecycleEvent_NewInstance_EventFormat {
-            get {
-                return ResourceManager.GetString("DebugMonitor_LifecycleEvent_NewInstance_EventFormat", resourceCulture);
             }
         }
         

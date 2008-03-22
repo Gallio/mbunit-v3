@@ -24,10 +24,10 @@ namespace Gallio.Model.Execution
     public class ErrorTestController : BaseTestController
     {
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            ITestContext testContext = rootTestCommand.StartRootStep(parentTestInstance);
+            ITestContext testContext = rootTestCommand.StartPrimaryChildStep(parentTestStep);
 
             testContext.LogWriter.Write(LogStreamNames.Failures, String.Format("An error occurred during test enumeration.  {0}\n",
                 rootTestCommand.Test.Metadata[MetadataKeys.Description]));

@@ -74,6 +74,27 @@ namespace Gallio.Framework.Data.Binders
 
         /// <summary>
         /// <para>
+        /// Returns true if the data binding context contains registered data bindings.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the context contains no data bindings then by definition it also contains
+        /// no data sets.  In the absence of bindings, <see cref="GetItems"/> will produce
+        /// exactly one <see cref="DataBindingItem" /> (containing a
+        /// <see cref="NullDataRow"/>) and no data binding work will actually
+        /// need to be performed by the client.  Consequently a client may choose
+        /// to treat this situation as a special case and may adopt a different
+        /// (possibly simpler) algorithm in response.
+        /// </para>
+        /// </remarks>
+        public bool HasBindings
+        {
+            get { return translatedBindings.Count != 0; }
+        }
+
+        /// <summary>
+        /// <para>
         /// Gets the immutable list of data sets to be enumerated during data binding.
         /// </para>
         /// </summary>
@@ -151,8 +172,8 @@ namespace Gallio.Framework.Data.Binders
         /// <see cref="DataBindingContext"/>.
         /// </para>
         /// <para>
-        /// If no data sets have been registered, this method returns exactly one
-        /// data item with a single <see cref="NullDataRow" />.
+        /// If no data bindings have been registered (<see cref="HasBindings"/> is false),
+        /// this method returns exactly one data item consisting of a <see cref="NullDataRow" />.
         /// </para>
         /// </remarks>
         /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
@@ -161,7 +182,7 @@ namespace Gallio.Framework.Data.Binders
         /// <returns>The enumeration of data binding items</returns>
         public IEnumerable<DataBindingItem> GetItems(bool includeDynamicRows)
         {
-            if (DataSets.Count == 0)
+            if (! HasBindings)
             {
                 yield return new DataBindingItem(NullDataRow.Instance);
             }

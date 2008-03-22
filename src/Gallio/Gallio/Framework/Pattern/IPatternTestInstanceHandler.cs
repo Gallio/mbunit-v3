@@ -49,16 +49,22 @@ namespace Gallio.Framework.Pattern
         /// Prepares a newly created test instance state before its use.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of its containing test
-        /// instance because the test instance has not yet been started.  Consequently
-        /// this method provides the last chance to configure the <see cref="PatternTestInstance" />.
+        /// This method runs in the <see cref="Context" /> of the <see cref="PatternTestState.PrimaryTestStep" />
+        /// because the test step for this instance (if different from the primary step) has not yet started.
+        /// </para>
+        /// <para>
+        /// If <see cref="PatternTestInstanceState.IsReusingPrimaryTestStep" /> is false
+        /// then this method has the opportunity to modify the name or add metadata to the
+        /// brand new <see cref="PatternTestStep" /> that was created for just this test instance.
         /// </para>
         /// <para>
         /// The following actions are typically performed during this phase:
         /// <list type="bullet">
         /// <item>Adding or changing slot values <see cref="PatternTestInstanceState.SlotValues"/>.</item>
         /// <item>Configuring the test environment in advance of test initialization.</item>
-        /// <item>Modifying the name or metadata of the <see cref="PatternTestInstance" />.</item>
+        /// <item>Modifying the name or metadata of the <see cref="PatternTestStep" />, if 
+        /// <see cref="PatternTestInstanceState.IsReusingPrimaryTestStep" /> is false
+        /// (since the primary test step has already started execution).</item>
         /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
         /// </list>
         /// </para>
@@ -68,6 +74,8 @@ namespace Gallio.Framework.Pattern
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way UNLESS <see cref="PatternTestInstanceState.IsReusingPrimaryTestStep" />
+        /// is false.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -76,7 +84,7 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Initializes a test instance state that has just started running.
+        /// Initializes a test instance that has just started running.
         /// </para>
         /// <para>
         /// This method runs in the <see cref="Context" /> of the test instance
@@ -97,7 +105,7 @@ namespace Gallio.Framework.Pattern
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
-        /// <item>Modifying the <see cref="PatternTestInstance" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -125,7 +133,7 @@ namespace Gallio.Framework.Pattern
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
-        /// <item>Modifying the <see cref="PatternTestInstance" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -153,7 +161,7 @@ namespace Gallio.Framework.Pattern
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
-        /// <item>Modifying the <see cref="PatternTestInstance" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -181,7 +189,7 @@ namespace Gallio.Framework.Pattern
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
-        /// <item>Modifying the <see cref="PatternTestInstance" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -211,7 +219,7 @@ namespace Gallio.Framework.Pattern
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
-        /// <item>Modifying the <see cref="PatternTestInstance" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -220,11 +228,11 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Cleans up a completed test instance state after its use.
+        /// Cleans up a completed test instance after its use.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of its containing test
-        /// instance because the test instance has terminated.
+        /// This method runs in the <see cref="Context" /> of the <see cref="PatternTestState.PrimaryTestStep" />
+        /// because the test step for this instance (if different from the primary step) has terminated.
         /// </para>
         /// <para>
         /// The following actions are typically performed during this phase:
@@ -239,7 +247,7 @@ namespace Gallio.Framework.Pattern
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
-        /// <item>Modifying the <see cref="PatternTestInstance" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -285,7 +293,7 @@ namespace Gallio.Framework.Pattern
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
-        /// <item>Modifying the <see cref="PatternTestInstance" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
         /// </summary>

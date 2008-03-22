@@ -29,7 +29,7 @@ namespace Gallio.Runner.Reports
     public sealed class PackageRun
     {
         private PackageRunStatistics statistics;
-        private TestInstanceRun rootTestInstanceRun;
+        private TestStepRun rootTestInstanceRun;
         private DateTime startTime;
         private DateTime endTime;
 
@@ -61,11 +61,10 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Gets or sets the root test run, or null if the root test instance
-        /// has not run.
+        /// Gets or sets the root test step run, or null if the root test has not run.
         /// </summary>
-        [XmlElement("testInstanceRun", IsNullable = false)]
-        public TestInstanceRun RootTestInstanceRun
+        [XmlElement("testStepRun", IsNullable = false)]
+        public TestStepRun RootTestStepRun
         {
             get { return rootTestInstanceRun; }
             set { rootTestInstanceRun = value; }
@@ -93,21 +92,21 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Recursively enumerates all test instance runs.
+        /// Recursively enumerates all test step runs.
         /// </summary>
         [XmlIgnore]
-        public IEnumerable<TestInstanceRun> TestInstanceRuns
+        public IEnumerable<TestStepRun> TestStepRuns
         {
             get
             {
                 if (rootTestInstanceRun == null)
-                    return EmptyArray<TestInstanceRun>.Instance;
+                    return EmptyArray<TestStepRun>.Instance;
 
                 return TreeUtils.GetPreOrderTraversal(rootTestInstanceRun, GetChildren);
             }
         }
 
-        private static IEnumerable<TestInstanceRun> GetChildren(TestInstanceRun node)
+        private static IEnumerable<TestStepRun> GetChildren(TestStepRun node)
         {
             return node.Children;
         }

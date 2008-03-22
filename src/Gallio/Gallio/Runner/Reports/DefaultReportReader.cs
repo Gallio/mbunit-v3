@@ -91,29 +91,17 @@ namespace Gallio.Runner.Reports
 
         private static void FixImplicitIds(Report report)
         {
-            if (report.PackageRun != null && report.PackageRun.RootTestInstanceRun != null)
-                FixImplicitIds(report.PackageRun.RootTestInstanceRun, null);
+            if (report.PackageRun != null && report.PackageRun.RootTestStepRun != null)
+                FixImplicitIds(report.PackageRun.RootTestStepRun, null);
         }
 
-        private static void FixImplicitIds(TestInstanceRun testInstanceRun, string parentId)
-        {
-            testInstanceRun.TestInstance.ParentId = parentId;
-
-            string id = testInstanceRun.TestInstance.Id;
-            foreach (TestInstanceRun child in testInstanceRun.Children)
-                FixImplicitIds(child, id);
-
-            FixImplicitIds(testInstanceRun.RootTestStepRun, null, id);
-        }
-
-        private static void FixImplicitIds(TestStepRun testStepRun, string parentId, string testInstanceId)
+        private static void FixImplicitIds(TestStepRun testStepRun, string parentId)
         {
             testStepRun.Step.ParentId = parentId;
-            testStepRun.Step.TestInstanceId = testInstanceId;
 
             string id = testStepRun.Step.Id;
             foreach (TestStepRun child in testStepRun.Children)
-                FixImplicitIds(child, id, testInstanceId);
+                FixImplicitIds(child, id);
         }
 
         /// <inheritdoc />
@@ -128,15 +116,12 @@ namespace Gallio.Runner.Reports
                     return;
 
                 List<ExecutionLogAttachment> attachmentsToLoad = new List<ExecutionLogAttachment>();
-                foreach (TestInstanceRun testInstanceRun in report.PackageRun.TestInstanceRuns)
+                foreach (TestStepRun testStepRun in report.PackageRun.TestStepRuns)
                 {
-                    foreach (TestStepRun testStepRun in testInstanceRun.TestStepRuns)
+                    foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                     {
-                        foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
-                        {
-                            if (attachment.ContentPath != null)
-                                attachmentsToLoad.Add(attachment);
-                        }
+                        if (attachment.ContentPath != null)
+                            attachmentsToLoad.Add(attachment);
                     }
                 }
 

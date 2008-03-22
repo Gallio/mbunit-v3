@@ -30,7 +30,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public void RunTests(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+        public void RunTests(ITestCommand rootTestCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             if (rootTestCommand == null)
@@ -40,35 +40,35 @@ namespace Gallio.Model.Execution
             if (options == null)
                 throw new ArgumentNullException("options");
 
-            RunTestsInternal(rootTestCommand, parentTestInstance, options, progressMonitor);
+            RunTestsInternal(rootTestCommand, parentTestStep, options, progressMonitor);
         }
 
         /// <summary>
         /// Implementation of <see cref="RunTests" /> called after argument validation has taken place.
         /// </summary>
         /// <param name="rootTestCommand">The root test command, not null</param>
-        /// <param name="parentTestInstance">The parent test instance, or null if none</param>
+        /// <param name="parentTestStep">The parent test step, or null if none</param>
         /// <param name="options">The test execution options, not null</param>
         /// <param name="progressMonitor">The progress monitor, not null</param>
-        protected abstract void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+        protected abstract void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Recursively generates single test instances for each <see cref="ITestCommand" /> and
+        /// Recursively generates single test steps for each <see cref="ITestCommand" /> and
         /// sets the final outcome to <see cref="TestOutcome.Skipped" />.
         /// </summary>
         /// <remarks>
-        /// This is useful for implementing fallback behavior when <see cref="TestExecutionOptions.SkipTestInstanceExecution" />
-        /// is true.
+        /// This is useful for implementing fallback behavior when
+        /// <see cref="TestExecutionOptions.SkipTestExecution" /> is true.
         /// </remarks>
         /// <param name="rootTestCommand">The root test command</param>
-        /// <param name="parentTestInstance">The parent test instance</param>
-        protected static void SkipAll(ITestCommand rootTestCommand, ITestInstance parentTestInstance)
+        /// <param name="parentTestStep">The parent test step</param>
+        protected static void SkipAll(ITestCommand rootTestCommand, ITestStep parentTestStep)
         {
-            ITestContext context = rootTestCommand.StartRootStep(parentTestInstance);
+            ITestContext context = rootTestCommand.StartPrimaryChildStep(parentTestStep);
 
             foreach (ITestCommand child in rootTestCommand.Children)
-                SkipAll(child, context.TestStep.TestInstance);
+                SkipAll(child, context.TestStep);
 
             context.FinishStep(TestOutcome.Skipped, null);
         }

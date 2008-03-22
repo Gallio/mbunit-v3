@@ -198,8 +198,10 @@ namespace Gallio.Framework.Pattern
                     ObjectCreationSpec spec = testInstanceState.GetFixtureObjectCreationSpec(type);
                     testInstanceState.Data.SetValue(FixtureObjectCreationSpecKey, spec);
 
-                    testInstanceState.TestInstance.Name += spec.Format(testInstanceState.Formatter);
                     testInstanceState.FixtureType = spec.ResolvedType;
+
+                    if (!testInstanceState.IsReusingPrimaryTestStep)
+                        testInstanceState.TestStep.Name += spec.Format(testInstanceState.Formatter);
                 });
 
             test.TestInstanceActions.InitializeTestInstanceChain.After(

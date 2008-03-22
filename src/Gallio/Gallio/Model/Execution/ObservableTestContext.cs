@@ -205,7 +205,7 @@ namespace Gallio.Model.Execution
         {
             if (childStep == null)
                 throw new ArgumentNullException(@"childStep");
-            if (childStep.Parent != testStep || childStep.TestInstance != testStep.TestInstance)
+            if (childStep.Parent != testStep)
                 throw new ArgumentException("Expected a child of this step.", "childStep");
 
             lock (syncRoot)
@@ -220,7 +220,7 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         public ITestContext StartChildStep(string name, ICodeElementInfo codeElement)
         {
-            return StartChildStep(new BaseTestStep(testStep.TestInstance, name, codeElement, testStep));
+            return StartChildStep(new BaseTestStep(testStep.Test, testStep, name, codeElement, false));
         }
 
         /// <inheritdoc />
@@ -248,8 +248,6 @@ namespace Gallio.Model.Execution
                 stopwatch = Stopwatch.StartNew();
 
                 // Dispatch the start notification.
-                if (testStep.Parent == null)
-                    Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateNewInstanceEvent(new TestInstanceData(testStep.TestInstance)));
                 Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new TestStepData(testStep)));
 
                 // Consider the test started.

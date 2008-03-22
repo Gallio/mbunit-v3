@@ -61,9 +61,6 @@ namespace Gallio.MSBuildTasks
 
         private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
-            if (e.TestStepRun.Step.ParentId != null)
-                return;
-
             CodeLocation codeLocation = e.TestStepRun.Step.CodeLocation;
             TestOutcome outcome = e.TestStepRun.Result.Outcome;
             string description = String.Format("[{0}] {1} {2}", outcome.DisplayName, e.GetStepKind(), e.TestStepRun.Step.FullName);

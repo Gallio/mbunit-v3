@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Model;
 using Gallio.Runner.Reports;
 using Gallio.Tests.Model;
@@ -67,7 +65,7 @@ namespace Gallio.Tests.Runner.Reports
             Assert.AreEqual(expected.EndTime, actual.EndTime);
             AreEqual(expected.Statistics, actual.Statistics);
 
-            MbUnit.Framework.InterimAssert.WithPairs(expected.TestInstanceRuns, actual.TestInstanceRuns, AreEqual);
+            MbUnit.Framework.InterimAssert.WithPairs(expected.TestStepRuns, actual.TestStepRuns, AreEqual);
         }
 
         public static void AreEqual(PackageRunStatistics expected, PackageRunStatistics actual)
@@ -86,18 +84,6 @@ namespace Gallio.Tests.Runner.Reports
             Assert.AreEqual(expected.SkippedCount, actual.SkippedCount);
             Assert.AreEqual(expected.RunCount, actual.RunCount);
             Assert.AreEqual(expected.TestCount, actual.TestCount);
-        }
-
-        public static void AreEqual(TestInstanceRun expected, TestInstanceRun actual)
-        {
-            if (expected == null)
-            {
-                Assert.IsNull(actual);
-                return;
-            }
-
-            ModelAssert.AreEqual(expected.TestInstance, actual.TestInstance);
-            AreEqual(expected.RootTestStepRun, actual.RootTestStepRun);
         }
 
         public static void AreEqual(TestStepRun expected, TestStepRun actual)

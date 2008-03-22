@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBehave", "NBehave\NBehave.csproj", "{38F8F2E2-D0D0-4FFD-8177-84AEDDA9E88F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBehave.Specs", "NBehave.Specs\NBehave.Specs.csproj", "{317E3A02-3EE3-4C78-8A16-713482C106CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38F8F2E2-D0D0-4FFD-8177-84AEDDA9E88F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38F8F2E2-D0D0-4FFD-8177-84AEDDA9E88F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38F8F2E2-D0D0-4FFD-8177-84AEDDA9E88F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38F8F2E2-D0D0-4FFD-8177-84AEDDA9E88F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{317E3A02-3EE3-4C78-8A16-713482C106CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{317E3A02-3EE3-4C78-8A16-713482C106CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{317E3A02-3EE3-4C78-8A16-713482C106CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{317E3A02-3EE3-4C78-8A16-713482C106CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

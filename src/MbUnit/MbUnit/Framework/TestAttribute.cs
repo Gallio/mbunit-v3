@@ -62,7 +62,7 @@ namespace MbUnit.Framework
 
             test.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState state, Action<PatternTestInstanceState> action)
             {
-                string expectedExceptionType = state.TestInstance.Metadata.GetValue(MetadataKeys.ExpectedException)
+                string expectedExceptionType = state.TestStep.Metadata.GetValue(MetadataKeys.ExpectedException)
                     ?? state.Test.Metadata.GetValue(MetadataKeys.ExpectedException);
 
                 if (expectedExceptionType != null)

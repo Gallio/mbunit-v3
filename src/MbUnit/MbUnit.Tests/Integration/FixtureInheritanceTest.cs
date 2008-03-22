@@ -75,10 +75,10 @@ namespace MbUnit.Tests.Integration
                 ? CodeReference.CreateFromMember(fixtureType.GetMethod(methodName))
                 : CodeReference.CreateFromType(fixtureType);
 
-            TestInstanceRun testInstanceRun = Runner.GetFirstTestInstanceRun(codeReference);
-            Assert.AreEqual(TestStatus.Passed, testInstanceRun.RootTestStepRun.Result.Outcome.Status);
+            TestStepRun testStepRun = Runner.GetPrimaryTestStepRun(codeReference);
+            Assert.AreEqual(TestStatus.Passed, testStepRun.Result.Outcome.Status);
 
-            string actualOutput = testInstanceRun.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.ConsoleOutput).ToString();
+            string actualOutput = testStepRun.ExecutionLog.GetStream(LogStreamNames.ConsoleOutput).ToString();
             Assert.AreEqual(expectedOutput, actualOutput);
         }
     }

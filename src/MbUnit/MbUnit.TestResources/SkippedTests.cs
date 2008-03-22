@@ -35,7 +35,7 @@ namespace MbUnit.TestResources
         }
 
         [Test]
-        [Explicit("Won't run")]
+        [Explicit("Should only run if explicitly selected.")]
         public void ExplicitTest()
         {
         }

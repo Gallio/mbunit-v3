@@ -215,7 +215,7 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         public void Update_Test()
         {
             TestData testData = new TestData("test1", "test1");
-            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testInstanceId"));
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "test1"));
             mockAdapter.Update(testData, testStepRun);
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);

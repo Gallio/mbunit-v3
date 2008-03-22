@@ -13,29 +13,29 @@ namespace NBehave.Specs.Spec.Framework.Constraints
         [Specification]
         public void ShouldPassWhenComparingOnes()
         {
-            TestInstanceRun run = Runner.GetFirstTestInstanceRun(CodeReference.CreateFromMember(typeof(Int32ComparisonSpecSample).GetMethod("CompareOnes")));
-            Specify.That(run.RootTestStepRun.Result.Outcome).ShouldEqual(TestOutcome.Passed);
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(Int32ComparisonSpecSample).GetMethod("CompareOnes")));
+            Specify.That(run.Result.Outcome).ShouldEqual(TestOutcome.Passed);
         }
 
         [Specification]
         public void ShouldPassWhenComparingMaxValues()
         {
-            TestInstanceRun run = Runner.GetFirstTestInstanceRun(CodeReference.CreateFromMember(typeof(Int32ComparisonSpecSample).GetMethod("CompareMaxValues")));
-            Specify.That(run.RootTestStepRun.Result.Outcome).ShouldEqual(TestOutcome.Passed);
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(Int32ComparisonSpecSample).GetMethod("CompareMaxValues")));
+            Specify.That(run.Result.Outcome).ShouldEqual(TestOutcome.Passed);
         }
 
         [Specification]
         public void ShouldPassWhenComparingMinValues()
         {
-            TestInstanceRun run = Runner.GetFirstTestInstanceRun(CodeReference.CreateFromMember(typeof(Int32ComparisonSpecSample).GetMethod("CompareMinValues")));
-            Specify.That(run.RootTestStepRun.Result.Outcome).ShouldEqual(TestOutcome.Passed);
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(Int32ComparisonSpecSample).GetMethod("CompareMinValues")));
+            Specify.That(run.Result.Outcome).ShouldEqual(TestOutcome.Passed);
         }
 
         [Specification]
         public void ShouldFailWhenComparingOneWithTwo()
         {
-            TestInstanceRun run = Runner.GetFirstTestInstanceRun(CodeReference.CreateFromMember(typeof(Int32ComparisonSpecSample).GetMethod("CompareOneWithTwo")));
-            Specify.That(run.RootTestStepRun.Result.Outcome).ShouldEqual(TestOutcome.Failed);
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(Int32ComparisonSpecSample).GetMethod("CompareOneWithTwo")));
+            Specify.That(run.Result.Outcome).ShouldEqual(TestOutcome.Failed);
         }
     }
 

@@ -80,7 +80,7 @@ namespace NBehave.Spec.Framework
         {
             builder.Test.Metadata.Add(MetadataKeys.ExplicitReason, reason);
 
-            builder.Test.TestActions.BeforeTestChain.Before(delegate(PatternTestState state)
+            builder.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
             {
                 if (!state.IsExplicit)
                 {

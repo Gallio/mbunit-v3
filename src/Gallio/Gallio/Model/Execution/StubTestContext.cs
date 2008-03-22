@@ -38,7 +38,7 @@ namespace Gallio.Model.Execution
         public StubTestContext()
         {
             data = new UserDataCollection();
-            testStep = new TestStepInfo(new BaseTestStep(new BaseTestInstance(new RootTest(), null)));
+            testStep = new TestStepInfo(new BaseTestStep(new RootTest(), null));
             logWriter = new StubTestLogWriter();
         }
 

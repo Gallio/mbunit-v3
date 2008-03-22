@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Xml.Serialization;
 using Gallio.Runner.Reports;
 using MbUnit.Framework.Xml;
 using Gallio.Model.Serialization;
@@ -27,62 +25,59 @@ namespace Gallio.Tests.Runner.Reports
     [Author("Vadim")]
     public class PackageRunTests
     {
-        private PackageRun _packageRun;
+        private PackageRun packageRun;
 
         [SetUp]
         public void TestStart()
         {
-            _packageRun = new PackageRun();
+            packageRun = new PackageRun();
         }
 
         [Test]
         public void StatisticsGetTest()
         {
-            Assert.IsNotNull(_packageRun.Statistics);
+            Assert.IsNotNull(packageRun.Statistics);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void StatisticsSetWithNullValueTest()
         {
-            _packageRun.Statistics = null;
+            packageRun.Statistics = null;
         }
 
         [Test]
         public void StatisticsSetTest()
         {
             PackageRunStatistics statistics = new PackageRunStatistics();
-            _packageRun.Statistics = statistics;
-            Assert.AreSame(statistics, _packageRun.Statistics);
+            packageRun.Statistics = statistics;
+            Assert.AreSame(statistics, packageRun.Statistics);
         }
 
         [Test]
         public void ReportTypeIsXmlSerializable()
         {
-            XmlSerializationAssert.IsXmlSerializable(_packageRun.GetType());
+            XmlSerializationAssert.IsXmlSerializable(packageRun.GetType());
         }
 
         [Test]
         public void RoundTripXmlSerialization()
         {
-            _packageRun.RootTestInstanceRun = new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId")));
+            packageRun.RootTestStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"));
 
-            PackageRun deserializedPackageRun = XmlSerializationAssert.RoundTrip(_packageRun);
-            ReportAssert.AreEqual(_packageRun, deserializedPackageRun);
+            PackageRun deserializedPackageRun = XmlSerializationAssert.RoundTrip(packageRun);
+            ReportAssert.AreEqual(packageRun, deserializedPackageRun);
         }
 
         [Test]
         public void TestInstanceRuns()
         {
-            TestInstanceRun testRun = new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId")));
-            testRun.Children.Add(new TestInstanceRun(new TestInstanceData("testInstanceId", "name", "testId", false),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"))));
-            _packageRun.RootTestInstanceRun = testRun;
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"));
+            testStepRun.Children.Add(new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId")));
+            packageRun.RootTestStepRun = testStepRun;
 
-            CollectionAssert.AreElementsEqual(new TestInstanceRun[] { testRun, testRun.Children[0] },
-                _packageRun.TestInstanceRuns);
+            CollectionAssert.AreElementsEqual(new TestStepRun[] { testStepRun, testStepRun.Children[0] },
+                packageRun.TestStepRuns);
         }
     }
 }

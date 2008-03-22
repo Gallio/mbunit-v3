@@ -15,7 +15,6 @@
 
 using System;
 using Gallio.Model;
-using Gallio.Reflection;
 using Gallio.Model.Serialization;
 using MbUnit.Framework;
 
@@ -64,8 +63,8 @@ namespace Gallio.Tests.Model
             AreEqual((TestComponentData)expected, actual);
 
             Assert.AreEqual(expected.IsTestCase, actual.IsTestCase);
-            MbUnit.Framework.InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
-            MbUnit.Framework.InterimAssert.WithPairs(expected.Parameters, actual.Parameters, AreEqual);
+            InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
+            InterimAssert.WithPairs(expected.Parameters, actual.Parameters, AreEqual);
         }
 
         public static void AreEqual(TestParameterData expected, TestParameterData actual)
@@ -90,7 +89,7 @@ namespace Gallio.Tests.Model
                 return;
             }
 
-            MbUnit.Framework.InterimAssert.WithKeyedPairs(expected, actual, CollectionAssert.AreElementsEqual);
+            InterimAssert.WithKeyedPairs(expected, actual, CollectionAssert.AreElementsEqual);
         }
 
         public static void AreEqual(TestStepData expected, TestStepData actual)
@@ -105,20 +104,9 @@ namespace Gallio.Tests.Model
 
             Assert.AreEqual(expected.FullName, actual.FullName);
             Assert.AreEqual(expected.ParentId, actual.ParentId);
-            Assert.AreEqual(expected.TestInstanceId, actual.TestInstanceId);
-        }
-
-        public static void AreEqual(TestInstanceData expected, TestInstanceData actual)
-        {
-            if (expected == null)
-            {
-                Assert.IsNull(actual);
-                return;
-            }
-
-            AreEqual((TestComponentData)expected, actual);
-
             Assert.AreEqual(expected.TestId, actual.TestId);
+            Assert.AreEqual(expected.IsPrimary, actual.IsPrimary);
+            Assert.AreEqual(expected.IsTestCase, actual.IsTestCase);
             Assert.AreEqual(expected.IsDynamic, actual.IsDynamic);
         }
 

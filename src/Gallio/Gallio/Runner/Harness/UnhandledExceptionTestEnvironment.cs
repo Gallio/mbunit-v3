@@ -46,7 +46,7 @@ namespace Gallio.Runner.Harness
             {
                 ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
                 if (context != null)
-                    e.AddCorrelationMessage(String.Format("The exception occurred while test instance or step '{0}' was running.", context.TestStep.FullName));
+                    e.AddCorrelationMessage(String.Format("The exception occurred while test step '{0}' was running.", context.TestStep.FullName));
             }
         }
     }

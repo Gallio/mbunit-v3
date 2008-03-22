@@ -74,7 +74,7 @@ namespace MbUnit.Framework
         {
             builder.Test.Metadata.Add(MetadataKeys.PendingReason, reason);
 
-            builder.Test.TestActions.BeforeTestChain.Before(delegate
+            builder.Test.TestActions.InitializeTestChain.Before(delegate
             {
                 string message = "The test depends on pending functionality.";
                 if (reason.Length != 0)

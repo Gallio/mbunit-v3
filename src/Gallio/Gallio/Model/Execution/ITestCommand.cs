@@ -81,7 +81,7 @@ namespace Gallio.Model.Execution
         /// </summary>
         /// <remarks>
         /// The value of this field is automatically updated as each root step
-        /// created by <see cref="StartRootStep(ITestStep)"/> finishes.
+        /// created by <see cref="StartPrimaryChildStep"/> finishes.
         /// </remarks>
         int RootStepFailureCount { get; }
 
@@ -136,33 +136,34 @@ namespace Gallio.Model.Execution
         bool AreDependenciesSatisfied();
 
         /// <summary>
-        /// Starts the root step of a new test instance and returns its test context.
+        /// Starts a new step of the test using the specified test step object.
         /// </summary>
         /// <remarks>
         /// The current thread's test context is set to a new context for the
         /// test step that is starting.  The new context will be a child of the
         /// current thread's context.
         /// </remarks>
-        /// <param name="rootStep">The test root step of the test instance</param>
-        /// <returns>The test context for the root step of the test instance</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootStep"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="rootStep"/> is not the root
-        /// step of an instance of this test</exception>
-        ITestContext StartRootStep(ITestStep rootStep);
+        /// <param name="testStep">The test step to start</param>
+        /// <returns>The test context for the test step</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="testStep"/> does not
+        /// belong to the test associated with this test command</exception>
+        ITestContext StartStep(ITestStep testStep);
 
         /// <summary>
         /// <para>
-        /// Starts the root step of a new test instance as a child of the specified
-        /// test instance and returns its test context.
+        /// Starts the primary step of the test associated with this command as a child
+        /// of the specified test step and returns its test context.
         /// </para>
         /// <para>
-        /// This method is equivalent to calling <see cref="StartRootStep(ITestStep)" />
+        /// This method is equivalent to calling <see cref="StartStep" />
         /// using a default implementation of <see cref="ITestStep" /> that is
-        /// initialized using <param name="parentTestInstance" />.
+        /// initialized using <paramref name="parentTestStep" />.
         /// </para>
         /// </summary>
-        /// <returns>The test context for the root step of the test instance</returns>
-        /// <seealso cref="StartRootStep(ITestStep)"/>
-        ITestContext StartRootStep(ITestInstance parentTestInstance);
+        /// <param name="parentTestStep">The parent test step, or null if none</param>
+        /// <returns>The test context for the new primary test step</returns>
+        /// <seealso cref="StartStep"/>
+        ITestContext StartPrimaryChildStep(ITestStep parentTestStep);
     }
 }

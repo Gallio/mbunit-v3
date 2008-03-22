@@ -129,14 +129,14 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestContext StartRootStep(ITestStep rootStep)
+        public ITestContext StartStep(ITestStep testStep)
         {
-            if (rootStep == null)
-                throw new ArgumentNullException("rootStep");
-            if (rootStep.Parent != null || rootStep.TestInstance.Test != test)
-                throw new ArgumentException("Expected the root step of an instance of this test.", "rootStep");
+            if (testStep == null)
+                throw new ArgumentNullException("testStep");
+            if (testStep.Test != test)
+                throw new ArgumentException("The test step must belong to the test associated with this test command.", "testStep");
 
-            ITestContext context = contextManager.StartStep(rootStep);
+            ITestContext context = contextManager.StartStep(testStep);
             context.Finishing += UpdateFailureCount;
             return context;
         }
@@ -149,9 +149,9 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestContext StartRootStep(ITestInstance parentTestInstance)
+        public ITestContext StartPrimaryChildStep(ITestStep parentTestStep)
         {
-            return StartRootStep(new BaseTestStep(new BaseTestInstance(test, parentTestInstance)));
+            return StartStep(new BaseTestStep(test, parentTestStep));
         }
 
         /// <summary>

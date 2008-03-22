@@ -73,7 +73,7 @@ namespace MbUnit.Framework
         {
             builder.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
 
-            builder.Test.TestActions.BeforeTestChain.Before(delegate
+            builder.Test.TestActions.InitializeTestChain.Before(delegate
             {
                 string message = "The test was ignored.";
                 if (reason.Length != 0)

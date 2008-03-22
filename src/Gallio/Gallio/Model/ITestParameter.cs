@@ -20,7 +20,7 @@ namespace Gallio.Model
     /// <summary>
     /// <para>
     /// A test parameter describes a formal parameter of a <see cref="ITest" />
-    /// to which a value be bound to produce a <see cref="ITestInstance" />.
+    /// to which a value may be bound and used during test execution.
     /// </para>
     /// <para>
     /// The <see cref="ITestComponent.Name" /> property of a test parameter should be

@@ -104,15 +104,5 @@ namespace Gallio.TDNetRunner.Properties {
                 return ResourceManager.GetString("TDNetLogMonitor_TestCasePassed", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warnings:
-        ///    {0}.
-        /// </summary>
-        internal static string TDNetLogMonitor_Warnings {
-            get {
-                return ResourceManager.GetString("TDNetLogMonitor_Warnings", resourceCulture);
-            }
-        }
     }
 }

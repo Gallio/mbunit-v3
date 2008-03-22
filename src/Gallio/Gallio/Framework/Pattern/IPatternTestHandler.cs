@@ -30,10 +30,12 @@ namespace Gallio.Framework.Pattern
     /// due to exceptions or if there is no work to be done.
     /// <list type="bullet">
     /// <item><see cref="BeforeTest" /></item>
+    /// <item><see cref="InitializeTest" /></item>
     /// <item>-- for each test instance --</item>
     /// <item><see cref="DecorateTestInstance" /></item>
-    /// <item>Runs the actions in the decorated <see cref="IPatternTestInstanceHandler" /></item>
+    /// <item>Run the actions in the decorated <see cref="IPatternTestInstanceHandler" /></item>
     /// <item>-- end --</item>
+    /// <item><see cref="DisposeTest" /></item>
     /// <item><see cref="AfterTest" /></item>
     /// </list>
     /// </para>
@@ -55,13 +57,13 @@ namespace Gallio.Framework.Pattern
         /// </para>
         /// <para>
         /// This method runs in the <see cref="Context" /> of its containing test
-        /// instance because the test has not yet been started.
+        /// step because the test has not yet been started.
         /// </para>
         /// <para>
         /// The following actions are typically performed during this phase:
         /// <list type="bullet">
         /// <item>Adding or changing slot binding accessors via <see cref="PatternTestState.SlotBindingAccessors"/>.</item>
-        /// <item>Configuring the test environment in advance of the enumeration and execution of all test instances.</item>
+        /// <item>Configuring the <see cref="PatternTestState.PrimaryTestStep"/> in anticipation of test execution.</item>
         /// <item>Accessing user data via <see cref="PatternTestState.Data" />.</item>
         /// </list>
         /// </para>
@@ -78,11 +80,37 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Cleans up a completed test state after its use.
+        /// Initializes a test prior to the execution of its instances.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of its containing test
-        /// instance because the test has terminated.
+        /// This method runs in the <see cref="Context" /> of the <see cref="PatternTestState.PrimaryTestStep" />.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Aborting the test run if any preconditions have not been satisfied or if the test is to be skipped.</item>
+        /// <item>Configuring the test environment in advance of the enumeration and execution of all test instances.</item>
+        /// <item>Accessing user data via <see cref="PatternTestState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        /// <param name="testState">The test state, never null</param>
+        void InitializeTest(PatternTestState testState);
+
+        /// <summary>
+        /// <para>
+        /// Cleans up a test following the execution of its instances.
+        /// </para>
+        /// <para>
+        /// This method runs in the <see cref="Context" /> of the <see cref="PatternTestState.PrimaryTestStep" />.
         /// </para>
         /// <para>
         /// The following actions are typically performed during this phase:
@@ -96,6 +124,33 @@ namespace Gallio.Framework.Pattern
         /// either go unnoticed or have undesirable side-effects upon test execution:
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        /// <param name="testState">The test state, never null</param>
+        void DisposeTest(PatternTestState testState);
+
+        /// <summary>
+        /// <para>
+        /// Cleans up a completed test state after its use.
+        /// </para>
+        /// <para>
+        /// This method runs in the <see cref="Context" /> of its containing test
+        /// step because the test has terminated.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Accessing user data via <see cref="PatternTestState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -104,7 +159,7 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Decorates the <see cref="IPatternTestHandler" /> of test instance before its
+        /// Decorates the <see cref="IPatternTestHandler" /> of a test instance before its
         /// <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> actions have a chance to run.
         /// </para>
         /// <para>
@@ -129,6 +184,7 @@ namespace Gallio.Framework.Pattern
         /// either go unnoticed or have undesirable side-effects upon test execution:
         /// <list type="bullet">
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
         /// </list>
         /// </para>

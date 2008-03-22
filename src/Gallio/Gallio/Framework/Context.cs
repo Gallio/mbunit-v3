@@ -172,15 +172,7 @@ namespace Gallio.Framework
         /// </summary>
         public TestInfo Test
         {
-            get { return TestInstance.Test; }
-        }
-
-        /// <summary>
-        /// Gets the test instance associated with the context.
-        /// </summary>
-        public TestInstanceInfo TestInstance
-        {
-            get { return TestStep.TestInstance; }
+            get { return TestStep.Test; }
         }
 
         /// <summary>
@@ -294,38 +286,6 @@ namespace Gallio.Framework
                 lock (this)
                     finishingHandlers -= value;
             }
-        }
-
-        /// <summary>
-        /// Gets the context that represents the initial (root) step of the
-        /// execution of the test associated with this context.
-        /// </summary>
-        /// <returns>The initial context of the test associated with this context</returns>
-        public Context GetInitialContext()
-        {
-            ITestContext context = inner;
-            ITest test = inner.TestStep.TestInstance.Test;
-            for (;;)
-            {
-                ITestContext parent = context.Parent;
-
-                if (parent == null || parent.TestStep.TestInstance.Test != test)
-                    return WrapContext(context);
-
-                context = parent;
-            }
-        }
-
-        /// <summary>
-        /// Gets the context that represents the initial (root) step of the
-        /// execution of the parent of the test associated with this context.
-        /// </summary>
-        /// <returns>The initial context of the parent of the test associated
-        /// with this context, or null if there is no parent test</returns>
-        public Context GetInitialContextOfParentTest()
-        {
-            Context parent = GetInitialContext().Parent;
-            return parent == null ? null : parent.GetInitialContext();
         }
 
         /// <summary>

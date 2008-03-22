@@ -27,14 +27,14 @@ namespace Gallio.Framework.Pattern
 {
     /// <summary>
     /// <para>
-    /// Represents the run-time state of a <see cref="PatternTestInstance" />
+    /// Represents the run-time state of a single instance of a <see cref="PatternTest" />
     /// that is to be executed.
     /// </para>
     /// <para>
     /// Typical lifecycle of <see cref="PatternTestInstanceState" />:
     /// <list type="bullet">
     /// <item>The <see cref="PatternTestController" /> creates a <see cref="PatternTestInstanceState" /> for the
-    /// <see cref="PatternTestInstance" /> to be executed.</item>
+    /// instance of the <see cref="PatternTest" /> to be executed using particular data bindings.</item>
     /// <item>The controller populates the instance state with slot values for each slot with
     /// an associated <see cref="IDataBindingAccessor" /> in the <see cref="PatternTestState" />.</item>
     /// <item>The controller calls <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> to give test extensions
@@ -47,7 +47,7 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     public class PatternTestInstanceState
     {
-        private readonly PatternTestInstance testInstance;
+        private readonly PatternTestStep testStep;
         private readonly IPatternTestInstanceHandler testInstanceHandler;
         private readonly PatternTestState testState;
         private readonly DataBindingItem bindingItem;
@@ -62,30 +62,30 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates an initial test instance state object.
         /// </summary>
-        /// <param name="testInstance">The test instance</param>
+        /// <param name="testStep">The test step used to execute the test instance</param>
         /// <param name="testInstanceHandler">The test instance handler</param>
         /// <param name="testState">The test state</param>
         /// <param name="bindingItem">The data binding item</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testInstance"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/>,
         /// <paramref name="testInstanceHandler"/> or <paramref name="testState"/> or <paramref name="bindingItem"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="testState"/> belongs to a
-        /// different test from the <paramref name="testInstance"/></exception>
-        public PatternTestInstanceState(PatternTestInstance testInstance, 
+        /// different test from the <paramref name="testStep"/></exception>
+        public PatternTestInstanceState(PatternTestStep testStep, 
             IPatternTestInstanceHandler testInstanceHandler,
             PatternTestState testState, DataBindingItem bindingItem)
         {
-            if (testInstance == null)
-                throw new ArgumentNullException("testInstance");
+            if (testStep == null)
+                throw new ArgumentNullException("testStep");
             if (testInstanceHandler == null)
                 throw new ArgumentNullException("testInstanceHandler");
             if (testState == null)
                 throw new ArgumentNullException("testState");
-            if (testInstance.Test != testState.Test)
-                throw new ArgumentException("The test state belongs to a different test from the test instance.", "testState");
+            if (testStep.Test != testState.Test)
+                throw new ArgumentException("The test state belongs to a different test from the test step.", "testState");
             if (bindingItem == null)
                 throw new ArgumentNullException("bindingItem");
 
-            this.testInstance = testInstance;
+            this.testStep = testStep;
             this.testInstanceHandler = testInstanceHandler;
             this.testState = testState;
             this.bindingItem = bindingItem;
@@ -111,11 +111,11 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets the test instance associated with this test instance state.
+        /// Gets the test step used to execute the test instance.
         /// </summary>
-        public PatternTestInstance TestInstance
+        public PatternTestStep TestStep
         {
-            get { return testInstance; }
+            get { return testStep; }
         }
 
         /// <summary>
@@ -244,6 +244,16 @@ namespace Gallio.Framework.Pattern
         public IDictionary<ISlotInfo, object> SlotValues
         {
             get { return slotValues; }
+        }
+
+        /// <summary>
+        /// Returns true if the <see cref="TestStep" /> is the <see cref="PatternTestState.PrimaryTestStep" />
+        /// that was created for the test.  False if a new <see cref="PatternTestStep"/> 
+        /// was created as a child of the primary test step just for this test instance.
+        /// </summary>
+        public bool IsReusingPrimaryTestStep
+        {
+            get { return testStep.IsPrimary; }
         }
 
         /// <summary>

@@ -44,25 +44,25 @@ namespace Gallio.XunitAdapter.Model
         private const string XunitTestNameKey = "Xunit:TestName";
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor)
             {
                 progressMonitor.BeginTask(Resources.XunitTestController_RunningXunitTests, rootTestCommand.TestCount);
 
-                if (options.SkipTestInstanceExecution)
+                if (options.SkipTestExecution)
                 {
-                    SkipAll(rootTestCommand, parentTestInstance);
+                    SkipAll(rootTestCommand, parentTestStep);
                 }
                 else
                 {
-                    RunTest(rootTestCommand, parentTestInstance, progressMonitor);
+                    RunTest(rootTestCommand, parentTestStep, progressMonitor);
                 }
             }
         }
 
-        private static bool RunTest(ITestCommand testCommand, ITestInstance parentTestInstance, IProgressMonitor progressMonitor)
+        private static bool RunTest(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             ITest test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
@@ -71,33 +71,33 @@ namespace Gallio.XunitAdapter.Model
             XunitTest xunitTest = test as XunitTest;
             if (xunitTest == null)
             {
-                passed = RunChildTests(testCommand, parentTestInstance, progressMonitor);
+                passed = RunChildTests(testCommand, parentTestStep, progressMonitor);
             }
             else
             {
-                passed = RunTestFixture(testCommand, xunitTest.TypeInfo, parentTestInstance);
+                passed = RunTestFixture(testCommand, xunitTest.TypeInfo, parentTestStep);
             }
 
             progressMonitor.Worked(1);
             return passed;
         }
 
-        private static bool RunChildTests(ITestCommand testCommand, ITestInstance parentTestInstance, IProgressMonitor progressMonitor)
+        private static bool RunChildTests(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
         {
-            ITestContext testContext = testCommand.StartRootStep(parentTestInstance);
+            ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
 
             bool passed = true;
             foreach (ITestCommand child in testCommand.Children)
-                passed &= RunTest(child, testContext.TestStep.TestInstance, progressMonitor);
+                passed &= RunTest(child, testContext.TestStep, progressMonitor);
 
             testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
             return passed;
         }
 
         private static bool RunTestFixture(ITestCommand testCommand, XunitTypeInfoAdapter typeInfo,
-            ITestInstance parentTestInstance)
+            ITestStep parentTestStep)
         {
-            ITestContext testContext = testCommand.StartRootStep(parentTestInstance);
+            ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
 
             XunitTestClassCommand testClassCommand;
             try
@@ -152,7 +152,7 @@ namespace Gallio.XunitAdapter.Model
                         testCommands.RemoveAt(nextTestIndex);
 
                         passed &= RunTestMethod(nextTestCommand, nextTestMethodInfo, testClassCommand,
-                            testContext.TestStep.TestInstance);
+                            testContext.TestStep);
                     }
                 }
 
@@ -180,7 +180,7 @@ namespace Gallio.XunitAdapter.Model
         }
 
         private static bool RunTestMethod(ITestCommand testCommand, MethodInfo methodInfo, XunitTestClassCommand testClassCommand,
-            ITestInstance parentTestInstance)
+            ITestStep parentTestStep)
         {
             List<XunitTestCommand> xunitTestCommands;
             try
@@ -190,7 +190,7 @@ namespace Gallio.XunitAdapter.Model
             catch (Exception ex)
             {
                 // Xunit can throw exceptions when making commands if the test is malformed.
-                ITestContext testContext = testCommand.StartRootStep(parentTestInstance);
+                ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
                 TestLogWriterUtils.WriteException(testContext.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
                 testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
@@ -199,7 +199,7 @@ namespace Gallio.XunitAdapter.Model
             bool passed = true;
             foreach (XunitTestCommand xunitTestCommand in xunitTestCommands)
             {
-                ITestContext testContext = testCommand.StartRootStep(parentTestInstance);
+                ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
                 passed &= RunTestCommandAndFinishStep(testContext, testClassCommand, xunitTestCommand);
             }
 
@@ -232,9 +232,7 @@ namespace Gallio.XunitAdapter.Model
             // Record the method name as metadata if it's not at all present in the step name.
             // That can happen with data-driven tests.
             string xunitTestName = result.MethodName;
-            if (xunitTestName != testContext.TestStep.TestInstance.Name
-                && xunitTestName != testContext.TestStep.FullName
-                && xunitTestName != testContext.TestStep.Name)
+            if (xunitTestName != testContext.TestStep.Name)
                 testContext.AddMetadata(XunitTestNameKey, xunitTestName);
 
             if (result is XunitPassedResult)

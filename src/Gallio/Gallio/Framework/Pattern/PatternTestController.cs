@@ -50,7 +50,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor)
@@ -64,7 +64,7 @@ namespace Gallio.Framework.Pattern
                     progressMonitor.Canceled += canceledHandler;
 
                     PatternTestExecutor executor = new PatternTestExecutor(options, progressMonitor, formatter, converter);
-                    executor.RunTest(rootTestCommand, parentTestInstance, sandbox, null);
+                    executor.RunTest(rootTestCommand, parentTestStep, sandbox, null);
                 }
                 finally
                 {

@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BaseStep_RootStepName" xml:space="preserve">
-    <value>Root</value>
-  </data>
   <data name="BaseTest_ParameterListAlreadyContainsParameterWithSameName" xml:space="preserve">
     <value>The parameter list already contains a parameter named '{0}'.</value>
   </data>
@@ -251,9 +248,6 @@
     <value>[Lifecycle: Add Metadata ({0})]
 	Metadata Key:   {1}
 	Metadata Value: {2}</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_NewInstance_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: NewInstance ({0})]</value>
   </data>
   <data name="FilterParser_EmptyFilterError" xml:space="preserve">
     <value>The filter expression can't be empty</value>

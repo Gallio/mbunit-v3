@@ -26,7 +26,6 @@ namespace Gallio.Model.Execution
     public class LifecycleEventArgs : StepEventArgs
     {
         private readonly LifecycleEventType eventType;
-        private TestInstanceData testInstanceData;
         private TestStepData testStepData;
         private string phaseName;
         private TestResult result;
@@ -45,20 +44,6 @@ namespace Gallio.Model.Execution
         public LifecycleEventType EventType
         {
             get { return eventType; }
-        }
-
-        /// <summary>
-        /// Gets information about the test instance just created.
-        /// </summary>
-        /// <remarks>
-        /// Valid for events of the following types:
-        /// <list type="bullet">
-        /// <item><see cref="LifecycleEventType.NewInstance" />, non-null</item>
-        /// </list>
-        /// </remarks>
-        public TestInstanceData TestInstanceData
-        {
-            get { return testInstanceData; }
         }
 
         /// <summary>
@@ -129,21 +114,6 @@ namespace Gallio.Model.Execution
         public string MetadataValue
         {
             get { return metadataValue; }
-        }
-
-        /// <summary>
-        /// Creates a <see cref="LifecycleEventType.NewInstance" /> event.
-        /// </summary>
-        /// <param name="testInstanceData">Information about the test instance that is being created</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testInstanceData"/> is null</exception>
-        public static LifecycleEventArgs CreateNewInstanceEvent(TestInstanceData testInstanceData)
-        {
-            if (testInstanceData == null)
-                throw new ArgumentNullException(@"testInstanceData");
-
-            LifecycleEventArgs e = new LifecycleEventArgs(testInstanceData.Id, LifecycleEventType.NewInstance);
-            e.testInstanceData = testInstanceData;
-            return e;
         }
 
         /// <summary>

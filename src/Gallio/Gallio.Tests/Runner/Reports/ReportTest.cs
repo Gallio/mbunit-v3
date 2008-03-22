@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Model;
@@ -44,11 +43,8 @@ namespace Gallio.Tests.Runner.Reports
 
             Report report = new Report();
             report.PackageRun = new PackageRun();
-            report.PackageRun.RootTestInstanceRun = new TestInstanceRun(new TestInstanceData("123", "name", "456", false),
-                new TestStepRun(new TestStepData("456", "abc", "456:abc", "testId")));
-            report.PackageRun.RootTestInstanceRun.RootTestStepRun.Children.Add(new TestStepRun(new TestStepData("child", "child", "child", "child")));
-            report.PackageRun.RootTestInstanceRun.Children.Add(new TestInstanceRun(new TestInstanceData("123", "name", "456", false),
-                new TestStepRun(new TestStepData("456", "abc", "456:abc", "testId"))));
+            report.PackageRun.RootTestStepRun = new TestStepRun(new TestStepData("456", "abc", "456:abc", "testId"));
+            report.PackageRun.RootTestStepRun.Children.Add(new TestStepRun(new TestStepData("child", "child", "child", "child")));
 
             serializer.Serialize(writer, report);
 

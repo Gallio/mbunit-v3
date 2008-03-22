@@ -65,10 +65,6 @@ namespace Gallio.Runner.Monitors
         {
             switch (e.EventType)
             {
-                case LifecycleEventType.NewInstance:
-                    logger.DebugFormat(Resources.DebugMonitor_LifecycleEvent_NewInstance_EventFormat, e.TestInstanceData.Name);
-                    break;
-
                 case LifecycleEventType.Start:
                     {
                         string stepName = e.TestStepData.FullName;

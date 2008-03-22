@@ -371,7 +371,7 @@ namespace Gallio.MSBuildTasks
         }
 
         /// <summary>
-        /// Gets the total number of test instances run.
+        /// Gets the total number of test cases run.
         /// </summary>
         /// <example>
         /// To use this property, you need to include an Output tag within the
@@ -384,8 +384,8 @@ namespace Gallio.MSBuildTasks
         ///           after the tests have been run: -->
         ///     <Output TaskParameter="TestCount" PropertyName="TestCount" />
         /// </Gallio>
-        /// <!-- After execution the number of test instances run can be retrieved like this: -->
-        /// <Message Text="$(TestCount) test instances were run." />
+        /// <!-- After execution the number of test cases run can be retrieved like this: -->
+        /// <Message Text="$(TestCount) test cases were run." />
         /// ]]>
         /// </code>
         /// </example>

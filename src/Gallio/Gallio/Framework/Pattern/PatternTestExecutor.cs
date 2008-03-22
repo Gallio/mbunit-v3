@@ -48,7 +48,7 @@ namespace Gallio.Framework.Pattern
             this.converter = converter;
         }
 
-        public TestOutcome RunTest(ITestCommand testCommand, ITestInstance parentTestInstance,
+        public TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep,
             Sandbox parentSandbox, PatternTestHandlerDecorator testHandlerDecorator)
         {
             if (progressMonitor.IsCanceled)
@@ -56,7 +56,7 @@ namespace Gallio.Framework.Pattern
 
             if (!testCommand.AreDependenciesSatisfied())
             {
-                ITestContext context = testCommand.StartRootStep(parentTestInstance);
+                ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
                 Log.Warnings.WriteLine("Skipped due to an unsatisfied test dependency.");
                 context.FinishStep(TestOutcome.Skipped, null);
                 return TestOutcome.Skipped;
@@ -69,12 +69,12 @@ namespace Gallio.Framework.Pattern
             {
                 using (Sandbox sandbox = parentSandbox.CreateChild())
                 {
-                    return RunTestBody(testCommand, parentTestInstance, sandbox, testHandlerDecorator, test);
+                    return RunTestBody(testCommand, parentTestStep, sandbox, testHandlerDecorator, test);
                 }
             }
             catch (Exception ex)
             {
-                return ReportTestError(testCommand, parentTestInstance, ex, String.Format("An exception occurred while preparing to run test '{0}'.", test.FullName));
+                return ReportTestError(testCommand, parentTestStep, ex, String.Format("An exception occurred while preparing to run test '{0}'.", test.FullName));
             }
             finally
             {
@@ -83,7 +83,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private TestOutcome RunTestBody(ITestCommand testCommand, ITestInstance parentTestInstance,
+        private TestOutcome RunTestBody(ITestCommand testCommand, ITestStep parentTestStep,
             Sandbox sandbox, PatternTestHandlerDecorator testHandlerDecorator, PatternTest test)
         {
             using (CreateTimeoutTimer(sandbox, test.Timeout))
@@ -98,11 +98,26 @@ namespace Gallio.Framework.Pattern
 
                 if (outcome.Status == TestStatus.Passed)
                 {
-                    PatternTestState testState = new PatternTestState(test, testHandler, converter, formatter, testCommand.IsExplicit);
+                    PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep, test.Name, test.CodeElement, true);
+                    PatternTestState testState = new PatternTestState(primaryTestStep, testHandler, converter, formatter, testCommand.IsExplicit);
 
                     outcome = outcome.CombineWith(DoBeforeTest(sandbox, testState));
                     if (outcome.Status == TestStatus.Passed)
-                        outcome = outcome.CombineWith(RunTestInstances(testCommand, parentTestInstance, sandbox, testState));
+                    {
+                        bool reusePrimaryTestStep = !testState.BindingContext.HasBindings;
+                        if (!reusePrimaryTestStep)
+                            primaryTestStep.IsTestCase = false;
+
+                        Context context = Context.PrepareContext(testCommand.StartStep(primaryTestStep), sandbox);
+                        outcome = outcome.CombineWith(DoInitializeTest(context, testState));
+
+                        if (outcome.Status == TestStatus.Passed)
+                            outcome = outcome.CombineWith(RunTestInstances(testCommand, context, testState, reusePrimaryTestStep));
+
+                        outcome = outcome.CombineWith(DoDisposeTest(context, testState));
+
+                        context.FinishStep(outcome);
+                    }
 
                     outcome = outcome.CombineWith(DoAfterTest(sandbox, testState));
                 }
@@ -111,27 +126,28 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private TestOutcome RunTestInstances(ITestCommand testCommand, ITestInstance parentTestInstance,
-            Sandbox sandbox, PatternTestState testState)
+        private TestOutcome RunTestInstances(ITestCommand testCommand, Context primaryContext,
+            PatternTestState testState, bool reusePrimaryTestStep)
         {
             try
             {
                 TestOutcome outcome = TestOutcome.Passed;
-                foreach (DataBindingItem item in testState.BindingContext.GetItems(! options.SkipDynamicTestInstances))
+                foreach (DataBindingItem item in testState.BindingContext.GetItems(! options.SkipDynamicTests))
                 {
-                    outcome = outcome.CombineWith(RunTestInstance(testCommand, parentTestInstance, sandbox, testState, item));
+                    outcome = outcome.CombineWith(RunTestInstance(testCommand, primaryContext, testState, item, reusePrimaryTestStep));
                 }
 
-                return GeneralizeInheritedOutcome(outcome);
+                return reusePrimaryTestStep ? outcome : GeneralizeInheritedOutcome(outcome);
             }
             catch (Exception ex)
             {
-                return ReportTestError(testCommand, parentTestInstance, ex, String.Format("An exception occurred while getting data items for test '{0}'.", testState.Test.FullName));
+                Log.Failures.WriteException(ex, String.Format("An exception occurred while getting data items for test '{0}'.", testState.Test.FullName));
+                return TestOutcome.Error;
             }
         }
 
-        private TestOutcome RunTestInstance(ITestCommand testCommand, ITestInstance parentTestInstance,
-            Sandbox sandbox, PatternTestState testState, DataBindingItem bindingItem)
+        private TestOutcome RunTestInstance(ITestCommand testCommand, Context primaryContext,
+            PatternTestState testState, DataBindingItem bindingItem, bool reusePrimaryTestStep)
         {
             try
             {
@@ -140,27 +156,41 @@ namespace Gallio.Framework.Pattern
                     PatternTestInstanceActions decoratedTestInstanceActions =
                         PatternTestInstanceActions.CreateDecorator(testState.TestHandler.TestInstanceHandler);
 
-                    TestOutcome outcome = DoDecorateTestInstance(sandbox, testState, decoratedTestInstanceActions);
+                    TestOutcome outcome = DoDecorateTestInstance(primaryContext.Sandbox, testState, decoratedTestInstanceActions);
                     if (outcome.Status == TestStatus.Passed)
                     {
-                        PatternTestInstance testInstance = new PatternTestInstance(testState.Test, parentTestInstance,
-                            testState.Test.Name, bindingItem.GetRow().IsDynamic);
+                        PatternTestStep testStep;
+                        if (reusePrimaryTestStep)
+                        {
+                            testStep = testState.PrimaryTestStep;
+                        }
+                        else
+                        {
+                            testStep = new PatternTestStep(testState.Test, testState.PrimaryTestStep,
+                                testState.Test.Name, testState.Test.CodeElement, false);
+                            testStep.IsDynamic = bindingItem.GetRow().IsDynamic;
+                        }
 
-                        PatternTestInstanceState testInstanceState = new PatternTestInstanceState(testInstance, decoratedTestInstanceActions, testState, bindingItem);
+                        PatternTestInstanceState testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem);
 
-                        outcome = outcome.CombineWith(DoBeforeTestInstance(sandbox, testInstanceState));
+                        outcome = outcome.CombineWith(DoBeforeTestInstance(primaryContext.Sandbox, testInstanceState));
                         if (outcome.Status == TestStatus.Passed)
                         {
-                            progressMonitor.SetStatus(testInstanceState.TestInstance.Name);
+                            progressMonitor.SetStatus(testStep.Name);
 
-                            Context context = Context.PrepareContext(testCommand.StartRootStep(new BaseTestStep(testInstanceState.TestInstance)), sandbox);
+                            Context context = reusePrimaryTestStep
+                                ? primaryContext
+                                : Context.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
+
                             outcome = outcome.CombineWith(RunTestInstanceWithContext(testCommand, context, testInstanceState));
-                            context.FinishStep(outcome);
+
+                            if (!reusePrimaryTestStep)
+                                context.FinishStep(outcome);
 
                             progressMonitor.SetStatus("");
                         }
 
-                        outcome = outcome.CombineWith(DoAfterTestInstance(sandbox, testInstanceState));
+                        outcome = outcome.CombineWith(DoAfterTestInstance(primaryContext.Sandbox, testInstanceState));
                     }
 
                     return outcome;
@@ -168,7 +198,17 @@ namespace Gallio.Framework.Pattern
             }
             catch (Exception ex)
             {
-                return ReportTestError(testCommand, parentTestInstance, ex, String.Format("An exception occurred while preparing an instance of test '{0}'.", testState.Test.FullName));
+                string message = String.Format("An exception occurred while preparing an instance of test '{0}'.", testState.Test.FullName);
+
+                if (reusePrimaryTestStep)
+                {
+                    Log.Failures.WriteException(ex, message);
+                    return TestOutcome.Error;
+                }
+                else
+                {
+                    return ReportTestError(testCommand, testState.PrimaryTestStep, ex, message);
+                }
             }
         }
 
@@ -177,7 +217,7 @@ namespace Gallio.Framework.Pattern
         {
             try
             {
-                if (options.SkipTestInstanceExecution)
+                if (options.SkipTestExecution)
                 {
                     return RunTestChildren(testCommand, context.Sandbox, testInstanceState);
                 }
@@ -207,7 +247,7 @@ namespace Gallio.Framework.Pattern
             }
             catch (Exception ex)
             {
-                Log.Failures.WriteException(ex, "An exception occurred while running test instance '{0}'.", testInstanceState.TestInstance.Name);
+                Log.Failures.WriteException(ex, "An exception occurred while running test instance '{0}'.", testInstanceState.TestStep.Name);
                 return TestOutcome.Error;
             }
         }
@@ -230,13 +270,13 @@ namespace Gallio.Framework.Pattern
                     return DoDecorateChildTest(childSandbox, testInstanceState, decoratedChildTestActions);
                 };
 
-                outcome = outcome.CombineWith(RunTest(childTestCommand, testInstanceState.TestInstance, sandbox, testHandlerDecorator));
+                outcome = outcome.CombineWith(RunTest(childTestCommand, testInstanceState.TestStep, sandbox, testHandlerDecorator));
             }
 
             return GeneralizeInheritedOutcome(outcome);
         }
 
-        private void UpdateInterimOutcome(Context context, ref TestOutcome outcome, TestOutcome newOutcome)
+        private static void UpdateInterimOutcome(Context context, ref TestOutcome outcome, TestOutcome newOutcome)
         {
             outcome = outcome.CombineWith(newOutcome);
             context.SetInterimOutcome(outcome);
@@ -255,6 +295,32 @@ namespace Gallio.Framework.Pattern
             {
                 testState.TestHandler.BeforeTest(testState);
             }, "Before Test");
+        }
+
+        private static TestOutcome DoInitializeTest(Context context, PatternTestState testState)
+        {
+            using (context.Enter())
+            {
+                context.LifecyclePhase = LifecyclePhases.Initialize;
+
+                return context.Sandbox.Run(delegate
+                {
+                    testState.TestHandler.InitializeTest(testState);
+                }, "Initialize");
+            }
+        }
+
+        private static TestOutcome DoDisposeTest(Context context, PatternTestState testState)
+        {
+            using (context.Enter())
+            {
+                context.LifecyclePhase = LifecyclePhases.Dispose;
+
+                return context.Sandbox.Run(delegate
+                {
+                    testState.TestHandler.DisposeTest(testState);
+                }, "Dispose");
+            }
         }
 
         private static TestOutcome DoAfterTest(Sandbox sandbox, PatternTestState testState)
@@ -276,7 +342,7 @@ namespace Gallio.Framework.Pattern
         private static TestOutcome DoBeforeTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
             foreach (KeyValuePair<string, string> entry in testInstanceState.BindingItem.GetRow().GetMetadata())
-                testInstanceState.TestInstance.Metadata.Add(entry.Key, entry.Value);
+                testInstanceState.TestStep.Metadata.Add(entry.Key, entry.Value);
 
             if (testInstanceState.TestState.SlotBindingAccessors.Count != 0)
             {
@@ -385,9 +451,9 @@ namespace Gallio.Framework.Pattern
             sandbox.Abort(TestOutcome.Timeout, String.Format("The test timed out after {0} seconds.", timeout.TotalSeconds));
         }
 
-        private static TestOutcome ReportTestError(ITestCommand testCommand, ITestInstance parentTestInstance, Exception ex, string message)
+        private static TestOutcome ReportTestError(ITestCommand testCommand, ITestStep parentTestStep, Exception ex, string message)
         {
-            ITestContext context = testCommand.StartRootStep(parentTestInstance);
+            ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
             Log.Failures.WriteException(ex, message);
             context.FinishStep(TestOutcome.Error, null);
             return TestOutcome.Error;

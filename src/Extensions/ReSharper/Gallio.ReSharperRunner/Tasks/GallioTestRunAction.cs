@@ -32,7 +32,6 @@ namespace Gallio.ReSharperRunner.Tasks
     /// Runs tests.
     /// </summary>
     /// <todo author="jeff">
-    /// Handle test instances.
     /// Handle test steps.
     /// Handle metadata.
     /// Handle custom log streams and attachments.

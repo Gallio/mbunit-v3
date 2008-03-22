@@ -29,7 +29,6 @@ namespace Gallio.Runner.Monitors
     {
         private readonly Report report;
         private readonly TestData test;
-        private readonly TestInstanceRun testInstanceRun;
         private readonly TestStepRun testStepRun;
         private readonly string lifecyclePhase;
 
@@ -38,19 +37,16 @@ namespace Gallio.Runner.Monitors
         /// </summary>
         /// <param name="report">The report</param>
         /// <param name="test">The test data</param>
-        /// <param name="testInstanceRun">The test instance run element that contains the test step</param>
         /// <param name="testStepRun">The test step run element</param>
         /// <param name="lifecyclePhase">The test step's lifecycle phase, or an empty string if starting or ending</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="test"/>
-        /// <paramref name="testInstanceRun"/> or <paramref name="testStepRun"/> is null</exception>
-        public TestStepRunEventArgs(Report report, TestData test, TestInstanceRun testInstanceRun, TestStepRun testStepRun, string lifecyclePhase)
+        /// or <paramref name="testStepRun"/> is null</exception>
+        public TestStepRunEventArgs(Report report, TestData test, TestStepRun testStepRun, string lifecyclePhase)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
             if (test == null)
                 throw new ArgumentNullException("test");
-            if (testInstanceRun == null)
-                throw new ArgumentNullException("testInstanceRun");
             if (testStepRun == null)
                 throw new ArgumentNullException("testStepRun");
             if (lifecyclePhase == null)
@@ -58,7 +54,6 @@ namespace Gallio.Runner.Monitors
 
             this.report = report;
             this.test = test;
-            this.testInstanceRun = testInstanceRun;
             this.testStepRun = testStepRun;
             this.lifecyclePhase = lifecyclePhase;
         }
@@ -80,14 +75,6 @@ namespace Gallio.Runner.Monitors
         }
 
         /// <summary>
-        /// Gets the test instance run element that contains the test step.
-        /// </summary>
-        public TestInstanceRun TestInstanceRun
-        {
-            get { return testInstanceRun; }
-        }
-
-        /// <summary>
         /// Gets the test step run element.
         /// </summary>
         public TestStepRun TestStepRun
@@ -105,25 +92,14 @@ namespace Gallio.Runner.Monitors
         }
 
         /// <summary>
-        /// Gets the kind of step described using the <see cref="MetadataKeys.TestKind" /> metadata key
-        /// for root steps or the value "Step" for nested steps.
+        /// Gets the kind of step described using the <see cref="MetadataKeys.TestKind" /> metadata key.
         /// </summary>
         /// <returns>The step kind</returns>
         public string GetStepKind()
         {
-            string stepKind = TestStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind);
-
-            if (stepKind == null)
-            {
-                if (TestStepRun.Step.ParentId == null)
-                    stepKind = TestInstanceRun.TestInstance.Metadata.GetValue(MetadataKeys.TestKind)
-                        ?? Test.Metadata.GetValue(MetadataKeys.TestKind)
-                        ?? TestKinds.Test;
-                else
-                    stepKind = "Step";
-            }
-
-            return stepKind;
+            return TestStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind)
+                ?? Test.Metadata.GetValue(MetadataKeys.TestKind)
+                ?? TestKinds.Test;
         }
     }
 }

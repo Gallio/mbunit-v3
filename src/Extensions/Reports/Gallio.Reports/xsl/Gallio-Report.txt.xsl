@@ -28,13 +28,12 @@
 	</xsl:template>
   
 	<xsl:template match="g:report" mode="results">
-    <xsl:variable name="testCases" select="g:testModel/descendant::g:test[@isTestCase='true']" />
-    <xsl:variable name="testCaseInstanceRuns" select="g:packageRun/g:testInstanceRun/descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]" />
+    <xsl:variable name="testCases" select="g:packageRun/g:testStepRun/descendant-or-self::g:testStepRun[g:testStep/@isTestCase='true']" />
     
-    <xsl:variable name="passed" select="$testCaseInstanceRuns[g:testStepRun/g:result/g:outcome/@status='passed']" />
-    <xsl:variable name="failed" select="$testCaseInstanceRuns[g:testStepRun/g:result/g:outcome/@status='failed']" />
-    <xsl:variable name="inconclusive" select="$testCaseInstanceRuns[g:testStepRun/g:result/g:outcome/@status='inconclusive']" />
-    <xsl:variable name="skipped" select="$testCaseInstanceRuns[g:testStepRun/g:result/g:outcome/@status='skipped']" />
+    <xsl:variable name="passed" select="$testCases[g:result/g:outcome/@status='passed']" />
+    <xsl:variable name="failed" select="$testCases[g:result/g:outcome/@status='failed']" />
+    <xsl:variable name="inconclusive" select="$testCases[g:result/g:outcome/@status='inconclusive']" />
+    <xsl:variable name="skipped" select="$testCases[g:result/g:outcome/@status='skipped']" />
 
     <xsl:if test="$show-passed-tests and $passed">
       <xsl:text>* Passed:&#xA;&#xA;</xsl:text>
@@ -61,13 +60,8 @@
     </xsl:if>
 	</xsl:template>
   
-	<xsl:template match="g:testInstanceRun">
-    <xsl:apply-templates select="g:testStepRun" />
-	</xsl:template>
-
   <xsl:template match="g:testStepRun">
-    <xsl:variable name="testInstanceRun" select="ancestor::g:testInstanceRun[1]" />
-    <xsl:variable name="testId" select="$testInstanceRun/g:testInstance/@testId" />
+    <xsl:variable name="testId" select="g:testStep/@testId" />
     <xsl:variable name="test" select="//g:test[@id=$testId]" />
 
     <xsl:text>[</xsl:text>
@@ -147,7 +141,7 @@
     
     <xsl:value-of select="$prefix"/>
     <xsl:text>&lt;Attachment: </xsl:text>
-    <xsl:value-of select="@name"/>
+    <xsl:value-of select="@attachmentName"/>
     <xsl:text>&gt;&#xA;</xsl:text>
   </xsl:template>
 

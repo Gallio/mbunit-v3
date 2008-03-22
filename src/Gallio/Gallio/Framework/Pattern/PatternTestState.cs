@@ -37,9 +37,8 @@ namespace Gallio.Framework.Pattern
     /// <item>The controller calls <see cref="IPatternTestHandler.BeforeTest" /> to give test extensions
     /// the opportunity to modify the test state.</item>
     /// <item>The controller begins iterating over the <see cref="DataBindingItem"/>s produced by the
-    /// state's <see cref="BindingContext" />.  For each item it constructs a <see cref="PatternTestInstance" />
-    /// and executes the test instance.
-    /// <seealso cref="PatternTestInstanceState"/> for further details.</item>
+    /// state's <see cref="BindingContext" />.  For each item it constructs a <see cref="PatternTestInstanceState" />
+    /// and executes the test instance.</item>
     /// <item>The controller calls <see cref="IPatternTestHandler.AfterTest" /> to give test extensions
     /// the opportunity to clean up the test state.</item>
     /// </list>
@@ -47,7 +46,7 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     public class PatternTestState
     {
-        private readonly PatternTest test;
+        private readonly PatternTestStep primaryTestStep;
         private readonly IPatternTestHandler testHandler;
         private readonly IConverter converter;
         private readonly IFormatter formatter;
@@ -60,18 +59,19 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates an initial test state object.
         /// </summary>
-        /// <param name="test">The test</param>
+        /// <param name="primaryTestStep">The primary test step</param>
         /// <param name="testHandler">The handler for the test</param>
         /// <param name="converter">The converter for data binding</param>
         /// <param name="formatter">The formatter for data binding</param>
         /// <param name="isExplicit">True if the test was selected explicitly</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="primaryTestStep"/>,
         /// <paramref name="testHandler"/>, <paramref name="converter"/>
         /// or <paramref name="formatter"/> is null</exception>
-        public PatternTestState(PatternTest test, IPatternTestHandler testHandler, IConverter converter, IFormatter formatter, bool isExplicit)
+        public PatternTestState(PatternTestStep primaryTestStep,
+            IPatternTestHandler testHandler, IConverter converter, IFormatter formatter, bool isExplicit)
         {
-            if (test == null)
-                throw new ArgumentNullException("test");
+            if (primaryTestStep == null)
+                throw new ArgumentNullException("primaryTestStep");
             if (testHandler == null)
                 throw new ArgumentNullException("testHandler");
             if (converter == null)
@@ -79,7 +79,7 @@ namespace Gallio.Framework.Pattern
             if (formatter == null)
                 throw new ArgumentNullException("formatter");
 
-            this.test = test;
+            this.primaryTestStep = primaryTestStep;
             this.testHandler = testHandler;
             this.converter = converter;
             this.formatter = formatter;
@@ -95,7 +95,22 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         public PatternTest Test
         {
-            get { return test; }
+            get { return primaryTestStep.Test; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the primary test step associated with this test state.
+        /// </para>
+        /// <para>
+        /// If the test has data bindings, the test instance for each data item will
+        /// be executed as children of the primary test step.  Otherwise,
+        /// the primary test step will be used for the entire test run.
+        /// </para>
+        /// </summary>
+        public PatternTestStep PrimaryTestStep
+        {
+            get { return primaryTestStep; }
         }
 
         /// <summary>

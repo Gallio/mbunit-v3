@@ -68,10 +68,9 @@
   <!-- Creates an aggregate statistics summary from a test instance run and its descendants -->
   <xsl:template name="aggregate-statistics">
     <xsl:param name="test" />
-    <xsl:param name="testInstanceRun" />
+    <xsl:param name="testStepRun" />
     
-    <xsl:variable name="testCases" select="$test/descendant-or-self::g:test[@isTestCase='true']" />
-    <xsl:variable name="testCaseResults" select="$testInstanceRun/descendant-or-self::g:testInstanceRun[g:testInstance/@testId = $testCases/@id]/g:testStepRun/g:result" />
+    <xsl:variable name="testCaseResults" select="$testStepRun/descendant-or-self::g:testStepRun[g:testStep/@isTestCase='true']/g:result" />
     <xsl:variable name="testCaseOutcomes" select="$testCaseResults/g:outcome" />
     
     <xsl:variable name="skippedOutcomes" select="$testCaseOutcomes[@status = 'skipped']" />
@@ -85,7 +84,7 @@
     <xsl:variable name="failedCount" select="count($failedOutcomes)"/>
 
     <g:statistics>
-      <xsl:attribute name="duration"><xsl:value-of select="$testInstanceRun/g:testStepRun/g:result/@duration"/></xsl:attribute>
+      <xsl:attribute name="duration"><xsl:value-of select="$testStepRun/g:result/@duration"/></xsl:attribute>
       <xsl:attribute name="assertCount"><xsl:value-of select="sum($testCaseResults/@assertCount)"/></xsl:attribute>
       
       <xsl:attribute name="skippedCount"><xsl:value-of select="$skippedCount"/></xsl:attribute>

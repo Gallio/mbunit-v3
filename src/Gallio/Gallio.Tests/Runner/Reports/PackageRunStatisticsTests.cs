@@ -47,9 +47,9 @@ namespace Gallio.Tests.Runner.Reports
 
         [Test]
         [ExpectedArgumentNullException]
-        public void MergeStepStatisticsWithNullStepRun()
+        public void MergeStepStatisticsWithNullTestStepRun()
         {
-            stats.MergeStepStatistics(null, true);
+            stats.MergeStepStatistics(null);
         }
 
         [Test]
@@ -66,8 +66,9 @@ namespace Gallio.Tests.Runner.Reports
             TestStepRun testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "fullName", "testId"));
             testStepRun.Result.Outcome = new TestOutcome(status);
             testStepRun.Result.AssertCount = 3;
+            testStepRun.Step.IsTestCase = isTestCase;
 
-            stats.MergeStepStatistics(testStepRun, isTestCase);
+            stats.MergeStepStatistics(testStepRun);
             Assert.AreEqual(3, stats.AssertCount);
             Assert.AreEqual(1, stats.StepCount);
             Assert.AreEqual(isTestCase ? 1 : 0, stats.TestCount);

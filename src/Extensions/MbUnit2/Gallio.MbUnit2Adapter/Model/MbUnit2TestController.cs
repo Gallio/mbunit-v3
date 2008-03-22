@@ -52,7 +52,7 @@ namespace Gallio.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
@@ -64,16 +64,16 @@ namespace Gallio.MbUnit2Adapter.Model
                 if (progressMonitor.IsCanceled)
                     return;
 
-                if (options.SkipTestInstanceExecution)
+                if (options.SkipTestExecution)
                 {
-                    SkipAll(rootTestCommand, parentTestInstance);
+                    SkipAll(rootTestCommand, parentTestStep);
                 }
                 else
                 {
                     IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
 
                     using (InstrumentedFixtureRunner fixtureRunner = new InstrumentedFixtureRunner(fixtureExplorer,
-                        testCommands, progressMonitor, parentTestInstance))
+                        testCommands, progressMonitor, parentTestStep))
                     {
                         fixtureRunner.Run();
                     }
@@ -92,7 +92,7 @@ namespace Gallio.MbUnit2Adapter.Model
             private readonly FixtureExplorer fixtureExplorer;
             private readonly IList<ITestCommand> testCommands;
             private readonly IProgressMonitor progressMonitor;
-            private readonly ITestInstance topTestInstance;
+            private readonly ITestStep topTestStep;
 
             private HashSet<Type> includedFixtureTypes;
 
@@ -105,12 +105,12 @@ namespace Gallio.MbUnit2Adapter.Model
             private double workUnit;
 
             public InstrumentedFixtureRunner(FixtureExplorer fixtureExplorer,
-                IList<ITestCommand> testCommands, IProgressMonitor progressMonitor, ITestInstance topTestInstance)
+                IList<ITestCommand> testCommands, IProgressMonitor progressMonitor, ITestStep topTestStep)
             {
                 this.fixtureExplorer = fixtureExplorer;
                 this.progressMonitor = progressMonitor;
                 this.testCommands = testCommands;
-                this.topTestInstance = topTestInstance;
+                this.topTestStep = topTestStep;
 
                 Initialize();
             }
@@ -367,7 +367,7 @@ namespace Gallio.MbUnit2Adapter.Model
 
             private void HandleAssemblyStart()
             {
-                ITestContext assemblyTestContext = assemblyTestCommand.StartRootStep(topTestInstance);
+                ITestContext assemblyTestContext = assemblyTestCommand.StartPrimaryChildStep(topTestStep);
                 activeTestContexts.Add(assemblyTestCommand, assemblyTestContext);
             }
 
@@ -388,7 +388,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 if (!activeTestContexts.TryGetValue(assemblyTestCommand, out assemblyTestContext))
                     return;
 
-                ITestContext fixtureTestContext = fixtureTestCommand.StartRootStep(assemblyTestContext.TestStep.TestInstance);
+                ITestContext fixtureTestContext = fixtureTestCommand.StartPrimaryChildStep(assemblyTestContext.TestStep);
                 activeTestContexts.Add(fixtureTestCommand, fixtureTestContext);
             }
 
@@ -418,7 +418,7 @@ namespace Gallio.MbUnit2Adapter.Model
 
                 progressMonitor.SetStatus(runPipeTestCommand.Test.Name);
 
-                ITestContext runPipeTestContext = runPipeTestCommand.StartRootStep(fixtureTestContext.TestStep.TestInstance);
+                ITestContext runPipeTestContext = runPipeTestCommand.StartPrimaryChildStep(fixtureTestContext.TestStep);
                 activeTestContexts.Add(runPipeTestCommand, runPipeTestContext);
 
                 runPipeTestContext.LifecyclePhase = LifecyclePhases.Execute;

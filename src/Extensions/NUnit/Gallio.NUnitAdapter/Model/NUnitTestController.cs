@@ -49,7 +49,7 @@ namespace Gallio.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestInstance parentTestInstance,
+        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
@@ -62,13 +62,13 @@ namespace Gallio.NUnitAdapter.Model
                 if (progressMonitor.IsCanceled)
                     return;
 
-                if (options.SkipTestInstanceExecution)
+                if (options.SkipTestExecution)
                 {
-                    SkipAll(rootTestCommand, parentTestInstance);
+                    SkipAll(rootTestCommand, parentTestStep);
                 }
                 else
                 {
-                    using (RunMonitor monitor = new RunMonitor(runner, testCommands, parentTestInstance, progressMonitor))
+                    using (RunMonitor monitor = new RunMonitor(runner, testCommands, parentTestStep, progressMonitor))
                     {
                         monitor.Run();
                     }
@@ -87,18 +87,18 @@ namespace Gallio.NUnitAdapter.Model
             private readonly IProgressMonitor progressMonitor;
             private readonly TestRunner runner;
             private readonly IList<ITestCommand> testCommands;
-            private readonly ITestInstance topTestInstance;
+            private readonly ITestStep topTestStep;
 
             private Dictionary<TestName, ITestCommand> testCommandsByTestName;
             private Stack<ITestContext> testContextStack;
 
-            public RunMonitor(TestRunner runner, IList<ITestCommand> testCommands, ITestInstance topTestInstance,
+            public RunMonitor(TestRunner runner, IList<ITestCommand> testCommands, ITestStep topTestStep,
                 IProgressMonitor progressMonitor)
             {
                 this.progressMonitor = progressMonitor;
                 this.runner = runner;
                 this.testCommands = testCommands;
-                this.topTestInstance = topTestInstance;
+                this.topTestStep = topTestStep;
 
                 Initialize();
             }
@@ -227,8 +227,8 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.SetStatus(testCommand.Test.Name);
 
-                ITestInstance parentTestInstance = testContextStack.Count != 0 ? testContextStack.Peek().TestStep.TestInstance : topTestInstance;
-                ITestContext testContext = testCommand.StartRootStep(parentTestInstance);
+                ITestStep parentTestStep = testContextStack.Count != 0 ? testContextStack.Peek().TestStep : topTestStep;
+                ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
                 testContextStack.Push(testContext);
 
                 testContext.LifecyclePhase = LifecyclePhases.Execute;
@@ -240,7 +240,7 @@ namespace Gallio.NUnitAdapter.Model
                     return;
 
                 ITestContext testContext = testContextStack.Peek();
-                NUnitTest test = (NUnitTest) testContext.TestStep.TestInstance.Test;
+                NUnitTest test = (NUnitTest) testContext.TestStep.Test;
                 if (test.Test.TestName != nunitResult.Test.TestName)
                     return;
 

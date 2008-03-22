@@ -255,11 +255,11 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Merges statistics from a test run step, incrementing the relevant counters.
+        /// Merges statistics from a test step run, incrementing the relevant counters.
         /// </summary>
         /// <param name="testStepRun">The test step run</param>
-        /// <param name="isTestCase">True if the test is a test case</param>
-        public void MergeStepStatistics(TestStepRun testStepRun, bool isTestCase)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStepRun"/> is null</exception>
+        public void MergeStepStatistics(TestStepRun testStepRun)
         {
             if (testStepRun == null)
                 throw new ArgumentNullException("testStepRun");
@@ -267,7 +267,7 @@ namespace Gallio.Runner.Reports
             assertCount += testStepRun.Result.AssertCount;
             stepCount += 1;
 
-            if (!isTestCase)
+            if (! testStepRun.Step.IsTestCase)
                 return;
 
             testCount += 1;

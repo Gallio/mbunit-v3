@@ -17,7 +17,6 @@ using System;
 using Gallio.Model.Execution;
 using Gallio.TDNetRunner.Properties;
 using Gallio.Model;
-using Gallio.Model.Serialization;
 using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
 using TestDriven.Framework;
@@ -64,9 +63,7 @@ namespace Gallio.TDNetRunner
         private void HandleTestStepFinished(object sender, TestStepRunEventArgs e)
         {
             // Ignore tests that aren't test cases.
-            // Also ignore nested test steps.
-            TestData testData = e.Test;
-            if (!testData.IsTestCase || e.TestStepRun.Step.ParentId != null)
+            if (!e.TestStepRun.Step.IsTestCase)
                 return;
 
             // A TestResult with State == TestState.Passed won't be displayed in the
@@ -94,7 +91,7 @@ namespace Gallio.TDNetRunner
 
             ExecutionLogStream warningStream = e.TestStepRun.ExecutionLog.GetStream(LogStreamNames.Warnings);
             if (warningStream != null)
-                result.Message = String.Format(Resources.TDNetLogMonitor_Warnings, warningStream);
+                result.Message = warningStream.ToString();
 
             // TD.NET will automatically count the number of passed, ignored and failed tests
             // provided we call the TestFinished method with the right State

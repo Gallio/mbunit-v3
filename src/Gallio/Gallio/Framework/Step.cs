@@ -98,10 +98,6 @@ namespace Gallio.Framework
     /// </code>
     /// </para>
     /// </example>
-    /// <todo author="jeff">
-    /// Support running other test fixtures and test instances as nested steps.
-    /// eg. Context.RunTestFixture("Name", typeof(SomeFixture));
-    /// </todo>
     public static class Step
     {
         /// <summary>

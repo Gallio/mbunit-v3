@@ -37,6 +37,8 @@ namespace Gallio.Framework.Pattern
     public class PatternTestActions : IPatternTestHandler
     {
         private readonly ActionChain<PatternTestState> beforeTestChain;
+        private readonly ActionChain<PatternTestState> initializeTestChain;
+        private readonly ActionChain<PatternTestState> disposeTestChain;
         private readonly ActionChain<PatternTestState> afterTestChain;
         private readonly ActionChain<PatternTestState, PatternTestInstanceActions> decorateTestInstanceChain;
 
@@ -49,6 +51,8 @@ namespace Gallio.Framework.Pattern
         public PatternTestActions()
         {
             beforeTestChain = new ActionChain<PatternTestState>();
+            initializeTestChain = new ActionChain<PatternTestState>();
+            disposeTestChain = new ActionChain<PatternTestState>();
             afterTestChain = new ActionChain<PatternTestState>();
             decorateTestInstanceChain = new ActionChain<PatternTestState, PatternTestInstanceActions>();
         }
@@ -76,6 +80,8 @@ namespace Gallio.Framework.Pattern
 
             PatternTestActions decorator = new PatternTestActions();
             decorator.beforeTestChain.Action = handler.BeforeTest;
+            decorator.initializeTestChain.Action = handler.InitializeTest;
+            decorator.disposeTestChain.Action = handler.DisposeTest;
             decorator.afterTestChain.Action = handler.AfterTest;
             decorator.decorateTestInstanceChain.Action = handler.DecorateTestInstance;
 
@@ -110,6 +116,24 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
+        /// Gets the chain of <see cref="IPatternTestHandler.InitializeTest" /> actions.
+        /// </summary>
+        /// <seealso cref="IPatternTestHandler.InitializeTest"/> for details about the semantics of these actions.
+        public ActionChain<PatternTestState> InitializeTestChain
+        {
+            get { return initializeTestChain; }
+        }
+
+        /// <summary>
+        /// Gets the chain of <see cref="IPatternTestHandler.DisposeTest" /> actions.
+        /// </summary>
+        /// <seealso cref="IPatternTestHandler.DisposeTest"/> for details about the semantics of these actions.
+        public ActionChain<PatternTestState> DisposeTestChain
+        {
+            get { return disposeTestChain; }
+        }
+
+        /// <summary>
         /// Gets the chain of <see cref="IPatternTestHandler.AfterTest" /> actions.
         /// </summary>
         /// <seealso cref="IPatternTestHandler.AfterTest"/> for details about the semantics of these actions.
@@ -137,6 +161,18 @@ namespace Gallio.Framework.Pattern
         public void BeforeTest(PatternTestState testState)
         {
             beforeTestChain.Action(testState);
+        }
+
+        /// <inheritdoc />
+        public void InitializeTest(PatternTestState testState)
+        {
+            initializeTestChain.Action(testState);
+        }
+
+        /// <inheritdoc />
+        public void DisposeTest(PatternTestState testState)
+        {
+            disposeTestChain.Action(testState);
         }
 
         /// <inheritdoc />

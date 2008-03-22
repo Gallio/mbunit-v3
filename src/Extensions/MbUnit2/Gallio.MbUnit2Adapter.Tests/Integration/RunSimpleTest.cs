@@ -36,16 +36,16 @@ namespace Gallio.MbUnit2Adapter.Tests.Integration
         [Test]
         public void PassTestPassed()
         {
-            TestInstanceRun run = Runner.GetFirstTestInstanceRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")));
-            Assert.AreEqual(TestOutcome.Passed, run.RootTestStepRun.Result.Outcome);
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")));
+            Assert.AreEqual(TestOutcome.Passed, run.Result.Outcome);
         }
 
         [Test]
         public void FailTestFailed()
         {
-            TestInstanceRun run = Runner.GetFirstTestInstanceRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
-            Assert.AreEqual(TestOutcome.Failed, run.RootTestStepRun.Result.Outcome);
-            StringAssert.Contains(run.RootTestStepRun.ExecutionLog.GetStream(LogStreamNames.Failures).ToString(), "Boom");
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
+            Assert.AreEqual(TestOutcome.Failed, run.Result.Outcome);
+            StringAssert.Contains(run.ExecutionLog.GetStream(LogStreamNames.Failures).ToString(), "Boom");
         }
     }
 }

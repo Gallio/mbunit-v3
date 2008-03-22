@@ -62,7 +62,7 @@ namespace Gallio.Framework.Pattern
         /// </para>
         /// <para>
         /// A pattern test decorator applies additional actions around those of
-        /// another <see cref="IPatternTestInstanceHandler" /> for a <see cref="PatternTestInstance"/>.
+        /// another <see cref="IPatternTestInstanceHandler" /> for a <see cref="PatternTestStep"/>.
         /// </para>
         /// </summary>
         /// <param name="handler">The handler to decorate</param>

@@ -15,7 +15,6 @@
 
 using System;
 using Gallio.Reflection;
-using Gallio.Properties;
 using Gallio.Utilities;
 
 namespace Gallio.Model
@@ -25,51 +24,47 @@ namespace Gallio.Model
     /// </summary>
     public class BaseTestStep : BaseTestComponent, ITestStep
     {
-        private readonly string fullName;
         private readonly ITestStep parent;
-        private readonly ITestInstance testInstance;
+        private readonly ITest test;
+        private readonly bool isPrimary;
         private string id;
+        private bool isDynamic;
+        private bool isTestCase;
 
         /// <summary>
-        /// Gets the localized name of the root step.
+        /// Creates a primary step using the same name and code element as the test to which it belongs.
         /// </summary>
-        public static string RootStepName
-        {
-            get { return Resources.BaseStep_RootStepName; }
-        }
-
-        /// <summary>
-        /// Creates a root step of a test instance.
-        /// </summary>
-        /// <param name="testInstance">The test instance to which the step belongs</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testInstance"/>
-        /// or <paramref name="testInstance"/> is null</exception>
-        public BaseTestStep(ITestInstance testInstance)
-            : this(testInstance, RootStepName, testInstance.CodeElement, null)
+        /// <param name="test">The test to which the step belongs</param>
+        /// <param name="parent">The parent test step, or null if creating the root step</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        public BaseTestStep(ITest test, ITestStep parent)
+            : this(test, parent, test.Name, test.CodeElement, true)
         {
         }
 
         /// <summary>
         /// Creates a step.
         /// </summary>
-        /// <param name="testInstance">The test instance to which the step belongs</param>
+        /// <param name="test">The test to which the step belongs</param>
+        /// <param name="parent">The parent step, or null if creating a root step</param>
         /// <param name="name">The step name</param>
         /// <param name="codeElement">The point of definition of the step, or null if unknown</param>
-        /// <param name="parent">The parent step, or null if creating a root step</param>
+        /// <param name="isPrimary">True if the test step is primary</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="testInstance"/> is null</exception>
-        public BaseTestStep(ITestInstance testInstance, string name, ICodeElementInfo codeElement, ITestStep parent)
+        /// or <paramref name="test"/> is null</exception>
+        public BaseTestStep(ITest test, ITestStep parent, string name, ICodeElementInfo codeElement, bool isPrimary)
             : base(name, codeElement)
         {
-            if (testInstance == null)
-                throw new ArgumentNullException("testInstance");
+            if (test == null)
+                throw new ArgumentNullException("test");
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            this.testInstance = testInstance;
+            this.test = test;
             this.parent = parent;
+            this.isPrimary = isPrimary;
 
-            fullName = GenerateFullName();
+            isTestCase = test.IsTestCase;
         }
 
         /// <inheritdoc />
@@ -86,7 +81,14 @@ namespace Gallio.Model
         /// <inheritdoc />
         public string FullName
         {
-            get { return fullName; }
+            get
+            {
+                if (parent == null)
+                    return @"";
+                if (parent.Parent == null)
+                    return Name;
+                return String.Concat(parent.FullName, "/", Name);
+            }
         }
 
         /// <inheritdoc />
@@ -96,25 +98,35 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public ITestInstance TestInstance
+        public ITest Test
         {
-            get { return testInstance; }
+            get { return test; }
+        }
+
+        /// <inheritdoc />
+        public bool IsPrimary
+        {
+            get { return isPrimary; }
+        }
+
+        /// <inheritdoc />
+        public bool IsDynamic
+        {
+            get { return isDynamic; }
+            set { isDynamic = value; }
+        }
+
+        /// <inheritdoc />
+        public bool IsTestCase
+        {
+            get { return isTestCase; }
+            set { isTestCase = value; }
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return String.Format("[Step] {0}", fullName);
-        }
-
-        private string GenerateFullName()
-        {
-            if (parent == null)
-                return testInstance.FullName;
-            else if (parent.Parent == null)
-                return string.Concat(parent.FullName, @":", Name);
-            else
-                return string.Concat(parent.FullName, @"/", Name);
+            return String.Format("[Step] {0}", Name);
         }
     }
 }

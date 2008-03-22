@@ -132,8 +132,4 @@
   <data name="TDNetLogMonitor_TestCasePassed" xml:space="preserve">
     <value>TestCase '{0}' passed.</value>
   </data>
-  <data name="TDNetLogMonitor_Warnings" xml:space="preserve">
-    <value>Warnings:
-    {0}</value>
-  </data>
 </root>

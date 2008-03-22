@@ -57,7 +57,7 @@
 	margin-left: 24px;
 }
 
-.gallio-report ul.testInstanceRunContainer, ul.testStepRunContainer
+.gallio-report ul.testStepRunContainer
 {
 	margin-left: 12px;
 }
@@ -97,11 +97,18 @@
 	background-color: #ff0000;
 }
 
-.gallio-report .progress-inconclusive, .gallio-report .progress-skipped
+.gallio-report .progress-inconclusive
 {
 	height:100%;
 	float:left;
 	background-color: #ffff00;
+}
+
+.gallio-report .progress-skipped
+{
+	height:100%;
+	float:left;
+	background-color: #dddddd;
 }
 
 /* Outcome bar */
@@ -133,9 +140,14 @@
 	background-color: #ff0000;
 }
 
-.gallio-report .outcome-inconclusive, .gallio-report .outcome-skipped
+.gallio-report .outcome-inconclusive
 {
 	background-color: #ffff00;
+}
+
+.gallio-report .outcome-skipped
+{
+	background-color: #dddddd;
 }
 
 /* Toggles */
@@ -145,40 +157,40 @@
 }
 
 /* Styles for test runs, including customized varieties per component kind */
-.gallio-report .testInstanceRun
+.gallio-report .testStepRun
 {
 	margin-top: 12pt;
 	font-size: 10pt;
 }
 
-.gallio-report .testInstanceRunHeading
+.gallio-report .testStepRunHeading
 {
 	font-weight:bold;
 	font-size:10pt;
 	position:relative;
 }
 
-.gallio-report .testInstanceRunHeading-Level1
+.gallio-report .testStepRunHeading-Level1
 {
 	font-size:11pt;
 }
 
-.gallio-report .testInstanceRunHeading-Level2
+.gallio-report .testStepRunHeading-Level2
 {
 	font-size:10pt;
 }
 
-.gallio-report .testInstanceRunHeading-Level3
+.gallio-report .testStepRunHeading-Level3
 {
 	font-size:10pt;
 }
 
-.gallio-report .testInstanceRunHeading-Level4
+.gallio-report .testStepRunHeading-Level4
 {
 	font-size:10pt;
 }
 
-.gallio-report .testInstanceRunPanel
+.gallio-report .testStepRunPanel
 {
 	margin-left: 12pt;
 }
@@ -192,23 +204,6 @@
 	/*border: solid 1px #505090;*/
 	background: #f4f4ff;
 	font-size: 9pt;
-}
-
-/* Styles for step runs */
-.gallio-report .testStepRun
-{
-	font-size:9pt;
-}
-
-.gallio-report .testStepRunHeading
-{
-	font-weight:bold;
-	position:relative;
-}
-
-.gallio-report .testStepRunPanel
-{
-	margin-left: 12pt;
 }
 
 /* Styles used for execution logs */

@@ -56,8 +56,8 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
         private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
-            // Ignore tests that aren't test cases & nested test steps.
-            if (!e.Test.IsTestCase || e.TestStepRun.Step.ParentId != null)
+            // Ignore tests that aren't test cases.
+            if (!e.TestStepRun.Step.IsTestCase)
                 return;
 
             presenter.Update(e.Test, e.TestStepRun);

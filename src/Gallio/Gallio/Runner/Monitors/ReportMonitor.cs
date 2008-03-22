@@ -39,8 +39,6 @@ namespace Gallio.Runner.Monitors
     public class ReportMonitor : BaseTestRunnerMonitor
     {
         private readonly Dictionary<string, TestStepState> states;
-        private readonly Dictionary<string, TestInstanceData> testInstances;
-        private readonly Dictionary<string, TestInstanceRun> testInstanceRuns;
 
         private Report report;
         private Stopwatch durationStopwatch;
@@ -55,8 +53,6 @@ namespace Gallio.Runner.Monitors
         public ReportMonitor()
         {
             states = new Dictionary<string, TestStepState>();
-            testInstances = new Dictionary<string, TestInstanceData>();
-            testInstanceRuns = new Dictionary<string, TestInstanceRun>();
             report = new Report();
         }
 
@@ -201,8 +197,6 @@ namespace Gallio.Runner.Monitors
         private void Reset()
         {
             states.Clear();
-            testInstances.Clear();
-            testInstanceRuns.Clear();
         }
 
         private void HandleLifecycleEvent(object sender, LifecycleEventArgs e)
@@ -211,50 +205,24 @@ namespace Gallio.Runner.Monitors
             {
                 switch (e.EventType)
                 {
-                    case LifecycleEventType.NewInstance:
-                    {
-                        TestInstanceData testInstanceData = e.TestInstanceData;
-                        if (testInstanceData.ParentId != null)
-                            EnsureTestInstanceIdIsValid(testInstanceData.ParentId);
-                        EnsureTestIdIsValid(testInstanceData.TestId);
-
-                        testInstances.Add(testInstanceData.Id, testInstanceData);
-                        break;
-                    }
-
                     case LifecycleEventType.Start:
                     {
-                        TestInstanceData testInstanceData = GetTestInstanceData(e.TestStepData.TestInstanceId);
-                        TestData testData = GetTestData(testInstanceData.TestId);
-
+                        TestData testData = GetTestData(e.TestStepData.TestId);
                         TestStepRun testStepRun = new TestStepRun(e.TestStepData);
 
-                        TestStepState state;
-                        if (e.TestStepData.ParentId == null)
-                        {
-                            TestInstanceRun testInstanceRun = new TestInstanceRun(testInstanceData, testStepRun);
-                            testInstanceRuns.Add(testInstanceData.Id, testInstanceRun);
-
-                            if (testInstanceData.ParentId != null)
-                            {
-                                TestInstanceRun parentTestInstanceRun = testInstanceRuns[testInstanceData.ParentId];
-                                parentTestInstanceRun.Children.Add(testInstanceRun);
-                            }
-                            else
-                            {
-                                report.PackageRun.RootTestInstanceRun = testInstanceRun;
-                            }
-
-                            state = new TestStepState(testData, testInstanceRun, testStepRun);
-                        }
-                        else
+                        if (e.TestStepData.ParentId != null)
                         {
                             TestStepState parentState = GetTestStepState(e.TestStepData.ParentId);
                             parentState.TestStepRun.Children.Add(testStepRun);
-
-                            state = new TestStepState(testData, parentState.TestInstanceRun, testStepRun);
                         }
+                        else
+                        {
+                            report.PackageRun.RootTestStepRun = testStepRun;
+                        }
+
+                        TestStepState state = new TestStepState(testData, testStepRun);
                         states.Add(e.StepId, state);
+
                         testStepRun.StartTime = DateTime.Now;
 
                         NotifyStepStarting(state);
@@ -280,8 +248,7 @@ namespace Gallio.Runner.Monitors
                         TestStepState state = GetTestStepState(e.StepId);
                         state.TestStepRun.EndTime = DateTime.Now;
                         state.TestStepRun.Result = e.Result;
-                        report.PackageRun.Statistics.MergeStepStatistics(state.TestStepRun,
-                            state.TestStepRun.Step.ParentId == null && state.TestData.IsTestCase);
+                        report.PackageRun.Statistics.MergeStepStatistics(state.TestStepRun);
 
                         state.ExecutionLogWriter.Close();
 
@@ -301,30 +268,12 @@ namespace Gallio.Runner.Monitors
             }
         }
 
-        private void EnsureTestIdIsValid(string testId)
-        {
-            GetTestData(testId);
-        }
-
-        private void EnsureTestInstanceIdIsValid(string testInstanceId)
-        {
-            GetTestInstanceData(testInstanceId);
-        }
-
         private TestData GetTestData(string testId)
         {
             TestData testData;
             if (!Runner.TestModelData.Tests.TryGetValue(testId, out testData))
                 throw new InvalidOperationException("The test id was not recognized.  It may belong to an earlier test run that has since completed.");
             return testData;
-        }
-
-        private TestInstanceData GetTestInstanceData(string testInstanceId)
-        {
-            TestInstanceData testInstanceData;
-            if (!testInstances.TryGetValue(testInstanceId, out testInstanceData))
-                throw new InvalidOperationException("The test instance id was not recognized.  It may belong to an earlier test run that has since completed.");
-            return testInstanceData;
         }
 
         private TestStepState GetTestStepState(string testStepId)
@@ -337,30 +286,28 @@ namespace Gallio.Runner.Monitors
 
         private void NotifyStepStarting(TestStepState state)
         {
-            EventHandlerUtils.SafeInvoke(testStepStarting, this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, ""));
+            EventHandlerUtils.SafeInvoke(testStepStarting, this, new TestStepRunEventArgs(report, state.TestData, state.TestStepRun, ""));
         }
 
         private void NotifyStepLifecyclePhaseChanged(TestStepState state, string lifecyclePhase)
         {
-            EventHandlerUtils.SafeInvoke(testStepLifecyclePhaseChanged, this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, lifecyclePhase));
+            EventHandlerUtils.SafeInvoke(testStepLifecyclePhaseChanged, this, new TestStepRunEventArgs(report, state.TestData, state.TestStepRun, lifecyclePhase));
         }
 
         private void NotifyStepFinished(TestStepState state)
         {
-            EventHandlerUtils.SafeInvoke(testStepFinished, this, new TestStepRunEventArgs(report, state.TestData, state.TestInstanceRun, state.TestStepRun, ""));
+            EventHandlerUtils.SafeInvoke(testStepFinished, this, new TestStepRunEventArgs(report, state.TestData, state.TestStepRun, ""));
         }
 
         private sealed class TestStepState
         {
             public readonly TestData TestData;
-            public readonly TestInstanceRun TestInstanceRun;
             public readonly TestStepRun TestStepRun;
             public readonly ExecutionLogWriter ExecutionLogWriter;
 
-            public TestStepState(TestData testData, TestInstanceRun testInstanceRun, TestStepRun testStepRun)
+            public TestStepState(TestData testData, TestStepRun testStepRun)
             {
                 TestData = testData;
-                TestInstanceRun = testInstanceRun;
                 TestStepRun = testStepRun;
 
                 ExecutionLogWriter = new ExecutionLogWriter();
