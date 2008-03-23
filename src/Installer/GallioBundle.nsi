@@ -159,8 +159,6 @@ Section "!MbUnit v3 Framework" MbUnit3Section
 	; Create Shortcuts
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
 	File "${TARGETDIR}\MbUnit Website.url"
-	Push "$INSTDIR\bin"
-	Call AddToPath
 SectionEnd
 
 !ifndef MISSING_MBUNIT_PEX_PACKAGE
