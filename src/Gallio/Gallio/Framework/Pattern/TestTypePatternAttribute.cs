@@ -76,7 +76,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="ModelException">Thrown if the attribute is applied to an inappropriate type</exception>
         protected virtual void Validate(ITypeInfo type)
         {
-            if (! type.IsClass || type.IsArray || type.IsByRef || type.IsPointer || type.ContainsGenericParameters)
+            if (! type.IsClass || type.IsArray || type.IsByRef || type.IsPointer)
                 throw new ModelException(String.Format("The {0} attribute is not valid for use on type '{1}'.  The type must be a concrete class.", GetType().Name, type));
         }
 
