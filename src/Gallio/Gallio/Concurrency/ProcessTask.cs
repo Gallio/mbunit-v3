@@ -262,6 +262,12 @@ namespace Gallio.Concurrency
 
         private void HandleProcessExit()
         {
+            // Note: We wait here outside of the critical section to ensure that
+            //       the caller is fully synchronized.  Otherwise we might fall
+            //       through to continue processing while the console output is
+            //       still being read out.
+            WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
+
             if (Interlocked.Exchange(ref exited, 1) == 0)
             {
                 NotifyTerminated(TaskResult.CreateFromValue(process.ExitCode));
@@ -284,16 +290,7 @@ namespace Gallio.Concurrency
             if (!process.WaitForExit((int)timeout.TotalMilliseconds))
                 return false;
 
-            // Since the process has exited, it should not take too long to read
-            // its remaining output buffer.  The extra synchronization code here
-            // helps clients of the ProcessTask to handle process termination more
-            // robustly as it is guaranteed to have all of the output available
-            // at that time.
-            if (consoleOutputFinished != null)
-                consoleOutputFinished.WaitOne();
-            if (consoleErrorFinished != null)
-                consoleErrorFinished.WaitOne();
-
+            WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
             return true;
         }
 
@@ -342,6 +339,19 @@ namespace Gallio.Concurrency
                 if (e.Data == null)
                     consoleErrorFinished.Set();
             }
+        }
+
+        private void WaitForConsoleToBeCompletelyReadOnceProcessHasExited()
+        {
+            // Since the process has exited, it should not take too long to read
+            // its remaining output buffer.  The extra synchronization code here
+            // helps clients of the ProcessTask to handle process termination more
+            // robustly as it is guaranteed to have all of the output available
+            // at that time.
+            if (consoleOutputFinished != null)
+                consoleOutputFinished.WaitOne();
+            if (consoleErrorFinished != null)
+                consoleErrorFinished.WaitOne();
         }
     }
 }

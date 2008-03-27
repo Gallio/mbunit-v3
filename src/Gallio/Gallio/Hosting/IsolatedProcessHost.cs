@@ -15,6 +15,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using Castle.Core.Logging;
@@ -163,7 +164,10 @@ namespace Gallio.Hosting
             {
                 profile.Initialize();
 
-                hostArguments += @" /timeout:" + (int) WatchdogTimeout.TotalSeconds;
+                hostArguments = String.Format(CultureInfo.InvariantCulture,
+                    "{0} /timeout:{1} /owner-process:{2}",
+                    hostArguments, (int)WatchdogTimeout.TotalSeconds, Process.GetCurrentProcess().Id);
+
                 processTask = CreateProcessTask(profile.HostProcessPath, hostArguments, HostSetup.WorkingDirectory);
                 processTask.CaptureConsoleOutput = true;
                 processTask.CaptureConsoleError = true;

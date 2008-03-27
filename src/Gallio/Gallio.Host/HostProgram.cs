@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using Gallio.Hosting.ConsoleSupport;
 using Gallio.Hosting;
 using Gallio.Hosting.Channels;
@@ -32,54 +33,28 @@ namespace Gallio.Host
             if (!ParseArguments(args))
             {
                 ShowHelp();
-                return -1;
+                return 1;
+            }
+
+            if (Arguments.Help)
+            {
+                ShowHelp();
+                return 0;
             }
 
             if (Arguments.IpcPortName != null && Arguments.TcpPortNumber >= 0
                 || Arguments.IpcPortName == null && Arguments.TcpPortNumber < 0)
             {
                 ShowErrorMessage("Either /ipc-port or /tcp-port must be specified, not both.");
-                return -1;
+                return 1;
             }
-
-            TimeSpan? watchdogTimeout = Arguments.TimeoutSeconds <= 0 ? (TimeSpan?)null : TimeSpan.FromSeconds(Arguments.TimeoutSeconds);
 
             UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;
             Console.WriteLine(String.Format("* Host started at {0}.", DateTime.Now));
 
             try
             {
-                IServerChannel serverChannel;
-                IClientChannel callbackChannel;
-                if (Arguments.IpcPortName != null)
-                {
-                    Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
-
-                    serverChannel = new BinaryIpcServerChannel(Arguments.IpcPortName);
-                    callbackChannel = new BinaryIpcClientChannel(Arguments.IpcPortName + @".Callback");
-                }
-                else
-                {
-                    Console.WriteLine(String.Format("* Listening for connections on TCP port: '{0}'", Arguments.TcpPortNumber));
-
-                    serverChannel = new BinaryTcpServerChannel("localhost", Arguments.TcpPortNumber);
-                    callbackChannel = new BinaryTcpClientChannel("localhost", Arguments.TcpPortNumber);
-                }
-
-                using (serverChannel)
-                {
-                    using (callbackChannel)
-                    {
-                        using (RemoteHostService hostService = new RemoteHostService(watchdogTimeout))
-                        {
-                            HostServiceChannelInterop.RegisterWithChannel(hostService, serverChannel);
-                            hostService.WaitUntilDisposed();
-
-                            if (hostService.WatchdogTimerExpired)
-                                Console.WriteLine("* Watchdog timer expired!");
-                        }
-                    }
-                }
+                InitializeAndRunHost();
             }
             catch (Exception ex)
             {
@@ -87,7 +62,78 @@ namespace Gallio.Host
             }
 
             Console.WriteLine(String.Format("* Host stopped at {0}.", DateTime.Now));
+
+            // Force the host to terminate in case there are some recalcitrant foreground
+            // threads still kicking around.
+            Environment.Exit(0);
             return 0;
+        }
+
+        private void InitializeAndRunHost()
+        {
+            IServerChannel serverChannel;
+            IClientChannel callbackChannel;
+            if (Arguments.IpcPortName != null)
+            {
+                Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
+
+                serverChannel = new BinaryIpcServerChannel(Arguments.IpcPortName);
+                callbackChannel = new BinaryIpcClientChannel(Arguments.IpcPortName + @".Callback");
+            }
+            else
+            {
+                Console.WriteLine(String.Format("* Listening for connections on TCP port: '{0}'", Arguments.TcpPortNumber));
+
+                serverChannel = new BinaryTcpServerChannel("localhost", Arguments.TcpPortNumber);
+                callbackChannel = new BinaryTcpClientChannel("localhost", Arguments.TcpPortNumber);
+            }
+
+            Process ownerProcess = null;
+            try
+            {
+                if (Arguments.OwnerProcessId >= 0)
+                    ownerProcess = Process.GetProcessById(Arguments.OwnerProcessId);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine(String.Format("* The owner process with PID {0} does not appear to be running!",
+                    Arguments.OwnerProcessId));
+                return;
+            }
+
+            TimeSpan? watchdogTimeout = Arguments.TimeoutSeconds <= 0 ? (TimeSpan?)null : TimeSpan.FromSeconds(Arguments.TimeoutSeconds);
+
+            using (serverChannel)
+            {
+                using (callbackChannel)
+                {
+                    RunHost(serverChannel, watchdogTimeout, ownerProcess);
+                }
+            }
+        }
+
+        private void RunHost(IServerChannel serverChannel, TimeSpan? watchdogTimeout, Process ownerProcess)
+        {
+            using (RemoteHostService hostService = new RemoteHostService(watchdogTimeout))
+            {
+                if (ownerProcess != null)
+                {
+                    ownerProcess.Exited += delegate { hostService.Dispose(); };
+                    ownerProcess.EnableRaisingEvents = true;
+                }
+
+                if (ownerProcess == null || !ownerProcess.HasExited)
+                {
+                    HostServiceChannelInterop.RegisterWithChannel(hostService, serverChannel);
+                    hostService.WaitUntilDisposed();
+                }
+
+                if (hostService.WatchdogTimerExpired)
+                    Console.WriteLine("* Watchdog timer expired!");
+
+                if (ownerProcess != null && ownerProcess.HasExited)
+                    Console.WriteLine("* Owner process terminated abruptly!");
+            }
         }
 
         private void HandleUnhandledExceptionNotification(object sender, CorrelatedExceptionEventArgs e)

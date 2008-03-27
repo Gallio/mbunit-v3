@@ -134,6 +134,7 @@
     <Compile Include="Framework\Pattern\PatternTestFrameworkTest.cs" />
     <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
     <Compile Include="Hosting\Channels\BinaryTcpChannelTest.cs" />
+    <Compile Include="Host\HostProgramIntegrationTest.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />
     <Compile Include="Framework\StepTest.cs" />
     <Compile Include="Hosting\Channels\BaseChannelTest.cs" />
@@ -217,6 +218,10 @@
     <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio.Host\Gallio.Host.csproj">
+      <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
+      <Name>Gallio.Host</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>

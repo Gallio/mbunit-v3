@@ -48,5 +48,23 @@ namespace Gallio.Host
             ShortName = "t"
             )]
         public int TimeoutSeconds = 15;
+
+        [CommandLineArgument(
+            CommandLineArgumentFlags.AtMostOnce,
+            Description = "When specified, automatically exits when the process specified id terminates.",
+            ValueLabel = "processId",
+            LongName = "owner-process",
+            ShortName = "op"
+            )]
+        public int OwnerProcessId = -1;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "h",
+             LongName = "help",
+             Description = "Display this help text.",
+             Synonyms = new string[] { "?" }
+             )]
+        public bool Help;
     }
 }
