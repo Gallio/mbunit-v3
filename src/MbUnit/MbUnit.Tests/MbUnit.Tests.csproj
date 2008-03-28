@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\ApartmentStateTest.cs" />
     <Compile Include="Framework\ArrayAssertTest.cs" />
     <Compile Include="Framework\AssertTest.cs" />
     <Compile Include="Framework\AssertWithReflectionTest.cs" />

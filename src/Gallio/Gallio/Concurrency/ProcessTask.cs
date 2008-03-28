@@ -282,12 +282,12 @@ namespace Gallio.Concurrency
         }
 
         /// <inheritdoc />
-        protected override bool JoinImpl(TimeSpan timeout)
+        protected override bool JoinImpl(TimeSpan? timeout)
         {
             if (process == null)
                 return true;
 
-            if (!process.WaitForExit((int)timeout.TotalMilliseconds))
+            if (!process.WaitForExit(timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : int.MaxValue))
                 return false;
 
             WaitForConsoleToBeCompletelyReadOnceProcessHasExited();

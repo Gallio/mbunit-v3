@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Threading;
+using Gallio.Concurrency;
 using Gallio.Hosting.ProgressMonitoring;
 using Gallio.Hosting;
 using Gallio.Model;
@@ -247,7 +249,7 @@ namespace Gallio.Runner.Harness
                     progressMonitor.Worked(5);
                     progressMonitor.SetStatus(@"");
 
-                    RunTestCommandsWithinANullContext(rootTestCommand, options, progressMonitor.CreateSubProgressMonitor(85));
+                    RunAllTestCommands(rootTestCommand, options, progressMonitor.CreateSubProgressMonitor(85));
                 }
                 finally
                 {
@@ -260,24 +262,36 @@ namespace Gallio.Runner.Harness
             }
         }
 
-        private void RunTestCommandsWithinANullContext(ITestCommand rootTestCommand, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        private void RunAllTestCommands(ITestCommand rootTestCommand, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            ThreadTask task = new ThreadTask("Test Runner", delegate
             {
-                if (rootTestCommand != null)
+                using (progressMonitor)
                 {
-                    using (contextTracker.EnterContext(null))
+                    if (rootTestCommand != null)
                     {
-                        Func<ITestController> rootTestControllerFactory = rootTestCommand.Test.TestControllerFactory;
-
-                        if (rootTestControllerFactory != null)
+                        using (contextTracker.EnterContext(null))
                         {
-                            using (ITestController controller = rootTestControllerFactory())
-                                controller.RunTests(rootTestCommand, null, options, progressMonitor);
+                            Func<ITestController> rootTestControllerFactory = rootTestCommand.Test.TestControllerFactory;
+
+                            if (rootTestControllerFactory != null)
+                            {
+                                using (ITestController controller = rootTestControllerFactory())
+                                    controller.RunTests(rootTestCommand, null, options, progressMonitor);
+                            }
                         }
                     }
                 }
-            }
+            });
+
+            // Use STA as the default for all tests.  A test framework may of course choose
+            // to create its own threads with different apartment states.
+            task.ApartmentState = ApartmentState.STA;
+            task.Run(null);
+
+            if (task.Result.Exception != null)
+                throw new RunnerException("A fatal exception occurred while running all test commands.",
+                    task.Result.Exception);
         }
 
         private void ThrowIfDisposed()

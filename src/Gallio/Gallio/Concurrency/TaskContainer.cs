@@ -105,15 +105,15 @@ namespace Gallio.Concurrency
         /// <summary>
         /// Waits for all of currently running tasks to terminate.
         /// </summary>
-        /// <param name="timeout">The maximum amount of time to wait</param>
+        /// <param name="timeout">The maximum amount of time to wait for completion, or null to wait indefinitely</param>
         /// <returns>True if no tasks are running as of the time this method exits,
         /// false if a timeout occurred while waiting</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/>
         /// represents a negative time span</exception>
         /// <seealso cref="Task.Join"/>
-        public bool JoinAll(TimeSpan timeout)
+        public bool JoinAll(TimeSpan? timeout)
         {
-            if (timeout.Ticks < 0)
+            if (timeout.HasValue && timeout.Value.Ticks < 0)
                 throw new ArgumentOutOfRangeException("timeout");
 
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -144,11 +144,20 @@ namespace Gallio.Concurrency
                 // Loop over all currently active tasks.  Give up if one of them times out.
                 foreach (Task task in cachedActiveTasks)
                 {
-                    TimeSpan remainingTimeout = timeout - stopwatch.Elapsed;
-                    if (remainingTimeout.Ticks <= 0)
+                    TimeSpan? remainingTimeout;
+                    if (timeout.HasValue)
                     {
-                        elapsed = true;
-                        break;
+                        remainingTimeout = timeout.Value - stopwatch.Elapsed;
+
+                        if (remainingTimeout.Value.Ticks <= 0)
+                        {
+                            elapsed = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        remainingTimeout = null;
                     }
 
                     if (!task.Join(remainingTimeout))

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using Gallio.Framework.Data;
 using Gallio.Hosting;
 using Gallio.Model.Execution;
@@ -32,6 +33,7 @@ namespace Gallio.Framework.Pattern
         private readonly PatternTestActions testActions;
         private DataSourceTable dataSourceTable;
         private TimeSpan? timeout;
+        private ApartmentState apartmentState = ApartmentState.Unknown;
 
         /// <summary>
         /// Initializes a test initially without a parent.
@@ -61,6 +63,30 @@ namespace Gallio.Framework.Pattern
                     throw new ArgumentOutOfRangeException(@"value");
                 timeout = value;
             }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets the apartment state to be used to run the test.
+        /// </para>
+        /// <para>
+        /// If the apartment state is <see cref="System.Threading.ApartmentState.Unknown" />
+        /// the test will inherit the apartment state of its parent.  Otherwise
+        /// it will run in a thread with the specified apartment state.
+        /// </para>
+        /// <para>
+        /// The test runner guarantees that the root test runs with the <see cref="System.Threading.ApartmentState.STA" />
+        /// apartment state.  Consequently the apartment state only needs to be overridden to run 
+        /// a test in some mode that may differ from that which it would ordinarily inherit.
+        /// </para>
+        /// </summary>
+        /// <value>
+        /// The default value of this property is <see cref="System.Threading.ApartmentState.Unknown" />.
+        /// </value>
+        public ApartmentState ApartmentState
+        {
+            get { return apartmentState; }
+            set { apartmentState = value; }
         }
 
         /// <summary>

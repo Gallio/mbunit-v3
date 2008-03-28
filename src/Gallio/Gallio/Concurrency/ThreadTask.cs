@@ -28,6 +28,7 @@ namespace Gallio.Concurrency
         private readonly Func<object> action;
         private readonly ThreadAbortScope threadAbortScope = new ThreadAbortScope();
         private Thread thread;
+        private ApartmentState apartmentState = ApartmentState.Unknown;
 
         /// <summary>
         /// Creates a task that will execute code within a new locally running thread.
@@ -69,6 +70,27 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
+        /// Gets or sets the desired <see cref="ApartmentState"/> to use for
+        /// the thread when it is started.
+        /// </summary>
+        /// <value>
+        /// The default value is <see cref="System.Threading.ApartmentState.Unknown" /> which
+        /// causes the new thread to use the runtime's default apartment state.
+        /// </value>
+        /// <exception cref="InvalidOperationException">Thrown if this method is called
+        /// after the thread has started</exception>
+        public ApartmentState ApartmentState
+        {
+            get { return apartmentState; }
+            set
+            {
+                if (thread != null)
+                    throw new InvalidOperationException("thread");
+                apartmentState = value;
+            }
+        }
+
+        /// <summary>
         /// Gets the thread on which the task is running, or null if the
         /// task is not running.
         /// </summary>
@@ -85,6 +107,10 @@ namespace Gallio.Concurrency
                 thread = new Thread(Run);
                 thread.IsBackground = true;
                 thread.Name = String.Format("Task: {0}", Name);
+
+                if (apartmentState != ApartmentState.Unknown)
+                    thread.SetApartmentState(apartmentState);
+
                 thread.Start();
             }
         }
@@ -99,7 +125,7 @@ namespace Gallio.Concurrency
         }
 
         /// <inheritdoc />
-        protected override bool JoinImpl(TimeSpan timeout)
+        protected override bool JoinImpl(TimeSpan? timeout)
         {
             Thread cachedThread;
             lock (this)
@@ -108,7 +134,7 @@ namespace Gallio.Concurrency
             }
 
             if (cachedThread != null)
-                return cachedThread.Join(timeout);
+                return cachedThread.Join(timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : Timeout.Infinite);
 
             return true;
         }

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Gallio.Concurrency;
 using Gallio.Framework.Data.Binders;
 using Gallio.Framework.Data.Conversions;
 using Gallio.Framework.Data.Formatters;
@@ -86,44 +87,48 @@ namespace Gallio.Framework.Pattern
         private TestOutcome RunTestBody(ITestCommand testCommand, ITestStep parentTestStep,
             Sandbox sandbox, PatternTestHandlerDecorator testHandlerDecorator, PatternTest test)
         {
-            using (CreateTimeoutTimer(sandbox, test.Timeout))
+            TestOutcome outcome = TestOutcome.Error;
+
+            DoWithTimeout(sandbox, test.Timeout, delegate
             {
-                IPatternTestHandler testHandler = test.TestActions;
-
-                TestOutcome outcome;
-                if (testHandlerDecorator != null)
-                    outcome = testHandlerDecorator(sandbox, ref testHandler);
-                else
-                    outcome = TestOutcome.Passed;
-
-                if (outcome.Status == TestStatus.Passed)
+                DoWithApartmentState(test.ApartmentState, delegate
                 {
-                    PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep, test.Name, test.CodeElement, true);
-                    PatternTestState testState = new PatternTestState(primaryTestStep, testHandler, converter, formatter, testCommand.IsExplicit);
+                    IPatternTestHandler testHandler = test.TestActions;
 
-                    outcome = outcome.CombineWith(DoBeforeTest(sandbox, testState));
+                    if (testHandlerDecorator != null)
+                        outcome = testHandlerDecorator(sandbox, ref testHandler);
+                    else
+                        outcome = TestOutcome.Passed;
+
                     if (outcome.Status == TestStatus.Passed)
                     {
-                        bool reusePrimaryTestStep = !testState.BindingContext.HasBindings;
-                        if (!reusePrimaryTestStep)
-                            primaryTestStep.IsTestCase = false;
+                        PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep, test.Name, test.CodeElement, true);
+                        PatternTestState testState = new PatternTestState(primaryTestStep, testHandler, converter, formatter, testCommand.IsExplicit);
 
-                        Context context = Context.PrepareContext(testCommand.StartStep(primaryTestStep), sandbox);
-                        outcome = outcome.CombineWith(DoInitializeTest(context, testState));
-
+                        outcome = outcome.CombineWith(DoBeforeTest(sandbox, testState));
                         if (outcome.Status == TestStatus.Passed)
-                            outcome = outcome.CombineWith(RunTestInstances(testCommand, context, testState, reusePrimaryTestStep));
+                        {
+                            bool reusePrimaryTestStep = !testState.BindingContext.HasBindings;
+                            if (!reusePrimaryTestStep)
+                                primaryTestStep.IsTestCase = false;
 
-                        outcome = outcome.CombineWith(DoDisposeTest(context, testState));
+                            Context context = Context.PrepareContext(testCommand.StartStep(primaryTestStep), sandbox);
+                            outcome = outcome.CombineWith(DoInitializeTest(context, testState));
 
-                        context.FinishStep(outcome);
+                            if (outcome.Status == TestStatus.Passed)
+                                outcome = outcome.CombineWith(RunTestInstances(testCommand, context, testState, reusePrimaryTestStep));
+
+                            outcome = outcome.CombineWith(DoDisposeTest(context, testState));
+
+                            context.FinishStep(outcome);
+                        }
+
+                        outcome = outcome.CombineWith(DoAfterTest(sandbox, testState));
                     }
+                });
+            });
 
-                    outcome = outcome.CombineWith(DoAfterTest(sandbox, testState));
-                }
-
-                return outcome;
-            }
+            return outcome;
         }
 
         private TestOutcome RunTestInstances(ITestCommand testCommand, Context primaryContext,
@@ -438,14 +443,6 @@ namespace Gallio.Framework.Pattern
         }
         #endregion
 
-        private static Timer CreateTimeoutTimer(Sandbox sandbox, TimeSpan? timeout)
-        {
-            if (!timeout.HasValue)
-                return null;
-
-            return new Timer(delegate { AbortSandboxDueToTimeout(sandbox, timeout.Value); }, null, (int)timeout.Value.TotalMilliseconds, Timeout.Infinite);
-        }
-
         private static void AbortSandboxDueToTimeout(Sandbox sandbox, TimeSpan timeout)
         {
             sandbox.Abort(TestOutcome.Timeout, String.Format("The test timed out after {0} seconds.", timeout.TotalSeconds));
@@ -470,6 +467,35 @@ namespace Gallio.Framework.Pattern
                     return TestOutcome.Failed;
                 default:
                     return TestOutcome.Inconclusive;
+            }
+        }
+
+        private static void DoWithTimeout(Sandbox sandbox, TimeSpan? timeout, Action action)
+        {
+            using (timeout.HasValue ?
+                new Timer(delegate { AbortSandboxDueToTimeout(sandbox, timeout.Value); }, null, (int)timeout.Value.TotalMilliseconds, Timeout.Infinite)
+                : null)
+            {
+                action();
+            }
+        }
+
+        private static void DoWithApartmentState(ApartmentState apartmentState, Action action)
+        {
+            if (apartmentState != ApartmentState.Unknown
+                && Thread.CurrentThread.GetApartmentState() != apartmentState)
+            {
+                ThreadTask task = new ThreadTask("Test Runner " + apartmentState, action);
+                task.ApartmentState = apartmentState;
+                task.Run(null);
+
+                if (task.Result.Exception != null)
+                    throw new ModelException(String.Format("Failed to perform action in thread with overridden apartment state {0}.",
+                        apartmentState), task.Result.Exception);
+            }
+            else
+            {
+                action();
             }
         }
     }

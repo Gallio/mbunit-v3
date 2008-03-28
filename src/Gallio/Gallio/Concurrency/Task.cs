@@ -231,16 +231,16 @@ namespace Gallio.Concurrency
         /// Does nothing if the task has not been started or is not running.
         /// </para>
         /// </summary>
-        /// <param name="timeout">The timeout</param>
+        /// <param name="timeout">The maximum amount of time to wait for completion, or null to wait indefinitely</param>
         /// <returns>True if the task is not running as of the time this method exits,
         /// false if a timeout occurred while waiting</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/>
         /// represents a negative time span</exception>
         /// <seealso cref="System.Threading.Thread.Join(TimeSpan)"/>
         /// <seealso cref="IsRunning"/>
-        public bool Join(TimeSpan timeout)
+        public bool Join(TimeSpan? timeout)
         {
-            if (timeout.Ticks < 0)
+            if (timeout.HasValue && timeout.Value.Ticks < 0)
                 throw new ArgumentOutOfRangeException("timeout");
 
             return JoinImpl(timeout);
@@ -250,10 +250,12 @@ namespace Gallio.Concurrency
         /// Starts the task and waits for it to complete until the timeout expires.
         /// If the timeout expires, aborts the task and returns <c>false</c>.
         /// </summary>
-        /// <param name="timeout">The timeout</param>
+        /// <param name="timeout">The maximum amount of time to wait for completion, or null to wait indefinitely</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/>
+        /// represents a negative time span</exception>
         /// <returns>True if the task ran to completion within the specified time span,
         /// false if the task was aborted</returns>
-        public bool Run(TimeSpan timeout)
+        public bool Run(TimeSpan? timeout)
         {
             Start();
 
@@ -279,10 +281,10 @@ namespace Gallio.Concurrency
         /// <summary>
         /// Waits for the task to terminate.
         /// </summary>
-        /// <param name="timeout">The timeout</param>
+        /// <param name="timeout">The timeout, or null to wait indefinitely</param>
         /// <returns>True if the task is not running as of the time this method exits,
         /// false if a timeout occurred while waiting</returns>
-        protected abstract bool JoinImpl(TimeSpan timeout);
+        protected abstract bool JoinImpl(TimeSpan? timeout);
 
         /// <summary>
         /// Dispatches notification that the task has terminated and provides its result.
