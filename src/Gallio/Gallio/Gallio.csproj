@@ -110,6 +110,8 @@
     <Compile Include="Framework\Data\Conversions\XPathNavigableToXPathNavigatorConversionRule.cs" />
     <Compile Include="Framework\Data\Conversions\XPathNavigatorToStringConversionRule.cs" />
     <Compile Include="Framework\Data\Conversions\XPathNavigatorToXmlSerializableTypeConversionRule.cs" />
+    <Compile Include="Framework\Data\CsvDataSet.cs" />
+    <Compile Include="Framework\Data\CsvReader.cs" />
     <Compile Include="Framework\Data\DataBinding.cs" />
     <Compile Include="Framework\Data\DataBindingException.cs" />
     <Compile Include="Framework\Data\DataSource.cs" />

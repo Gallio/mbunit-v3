@@ -46,25 +46,25 @@ namespace Gallio.Framework.Data
     /// </summary>
     public class XmlDataSet : BaseDataSet
     {
-        private readonly IXPathNavigable document;
+        private readonly Func<IXPathNavigable> documentProvider;
         private readonly string rowPath;
         private readonly bool isDynamic;
 
         /// <summary>
         /// Creates an XML data set.
         /// </summary>
-        /// <param name="document">The input XML document</param>
+        /// <param name="documentProvider">A delegate that produces the XML document on demand</param>
         /// <param name="rowPath">The XPath expression used to select rows within the document</param>
         /// <param name="isDynamic">True if the data set should be considered dynamic</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="document"/> or <paramref name="rowPath"/> is null</exception>
-        public XmlDataSet(IXPathNavigable document, string rowPath, bool isDynamic)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentProvider"/> or <paramref name="rowPath"/> is null</exception>
+        public XmlDataSet(Func<IXPathNavigable> documentProvider, string rowPath, bool isDynamic)
         {
-            if (document == null)
-                throw new ArgumentNullException("document");
+            if (documentProvider == null)
+                throw new ArgumentNullException("documentProvider");
             if (rowPath == null)
                 throw new ArgumentNullException("rowPath");
 
-            this.document = document;
+            this.documentProvider = documentProvider;
             this.rowPath = rowPath;
             this.isDynamic = isDynamic;
         }
@@ -85,6 +85,7 @@ namespace Gallio.Framework.Data
             string fullPath = rowPath + "/" + bindingPath;
             try
             {
+                IXPathNavigable document = documentProvider();
                 return document.CreateNavigator().Select(fullPath).MoveNext();
             }
             catch (XPathException)
@@ -99,6 +100,8 @@ namespace Gallio.Framework.Data
         {
             if (!isDynamic || includeDynamicRows)
             {
+                IXPathNavigable document = documentProvider();
+
                 foreach (XPathNavigator row in document.CreateNavigator().Select(rowPath))
                     yield return new XmlDataRow(row, isDynamic);
             }

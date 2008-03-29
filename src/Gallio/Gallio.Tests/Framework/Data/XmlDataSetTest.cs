@@ -20,7 +20,6 @@ using System.Xml.XPath;
 using Gallio.Collections;
 using Gallio.Framework.Data;
 using MbUnit.Framework;
-using InterimAssert = MbUnit.Framework.InterimAssert;
 
 namespace Gallio.Tests.Framework.Data
 {
@@ -38,7 +37,7 @@ namespace Gallio.Tests.Framework.Data
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsWhenRowPathIsNull()
         {
-            new XmlDataSet(new XmlDocument(), null, false);
+            new XmlDataSet(delegate { return new XmlDocument(); }, null, false);
         }
 
         [Test]
@@ -49,7 +48,7 @@ namespace Gallio.Tests.Framework.Data
             XmlDocument document = new XmlDocument();
             document.LoadXml("<root><rows><row a=\"42\"/></rows></root>");
 
-            XmlDataSet dataSet = new XmlDataSet(document, "//row", isDynamic);
+            XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", isDynamic);
             List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
             Assert.AreEqual(1, rows.Count);
             Assert.AreEqual(isDynamic, rows[0].IsDynamic);
@@ -61,7 +60,7 @@ namespace Gallio.Tests.Framework.Data
             XmlDocument document = new XmlDocument();
             document.LoadXml("<root><rows><row a=\"42\"/></rows></root>");
 
-            XmlDataSet dataSet = new XmlDataSet(document, "//row", true);
+            XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", true);
             List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, false));
             Assert.AreEqual(0, rows.Count);
         }
@@ -69,7 +68,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void ColumnCountIsZero()
         {
-            XmlDataSet dataSet = new XmlDataSet(new XmlDocument(), "", false);
+            XmlDataSet dataSet = new XmlDataSet(delegate { return new XmlDocument(); }, "", false);
             Assert.AreEqual(0, dataSet.ColumnCount);
         }
 
@@ -79,7 +78,7 @@ namespace Gallio.Tests.Framework.Data
             XmlDocument document = new XmlDocument();
             document.LoadXml("<root><rows><row a=\"42\"/><row a=\"53\"/></rows></root>");
 
-            XmlDataSet dataSet = new XmlDataSet(document, "//row", false);
+            XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", false);
 
             Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, null)),
                 "CanBind should return false if there is no binding path.");
@@ -97,7 +96,7 @@ namespace Gallio.Tests.Framework.Data
             XmlDocument document = new XmlDocument();
             document.LoadXml("<root><rows><row a=\"42\" b=\"x\"/><row a=\"53\" b=\"y\"/></rows></root>");
 
-            XmlDataSet dataSet = new XmlDataSet(document, "//row", false);
+            XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", false);
 
             DataBinding[] bindings = new DataBinding[]
             {

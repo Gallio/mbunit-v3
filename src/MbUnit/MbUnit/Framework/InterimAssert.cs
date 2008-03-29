@@ -19,6 +19,8 @@ using System.Reflection;
 using System.Text;
 using Gallio;
 using Gallio.Framework;
+using Gallio.Framework.Data.Formatters;
+using Gallio.Hosting;
 
 #pragma warning disable 1591
 
@@ -26,8 +28,7 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// This is an interim assertion class intended to be used within
-    /// MbUnit v2 tests.  We'll refactor these assertions when we move
-    /// to Gallio.
+    /// MbUnit v3 tests.  We'll refactor these assertions when the new constraint framework is developed.
     /// </summary>
     /// <remarks>
     /// DO NOT USE THIS AS THE MASTER PATTERN FOR GALLIO ASSERTIONS!
@@ -97,6 +98,33 @@ namespace MbUnit.Framework
             }
 
             Assert.Fail("Expected the block to throw an exception of type '{0}'.", exceptionType);
+        }
+
+        public static void With(string label, object value, Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception)
+            {
+                Log.Failures.WriteLine("{0}: {1}", label, Runtime.Instance.Resolve<IFormatter>().Format(value));
+                throw;
+            }
+        }
+
+        public static void With(string label1, object value1, string label2, object value2, Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception)
+            {
+                Log.Failures.WriteLine("{0}: {1}", label1, Runtime.Instance.Resolve<IFormatter>().Format(value1));
+                Log.Failures.WriteLine("{0}: {1}", label2, Runtime.Instance.Resolve<IFormatter>().Format(value2));
+                throw;
+            }
         }
 
         public static void AreElementsEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual,
