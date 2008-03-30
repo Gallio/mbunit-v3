@@ -65,6 +65,7 @@
     <Compile Include="Framework\AssertWithReflectionTest.cs" />
     <Compile Include="Framework\AssertWithTypeTest.cs" />
     <Compile Include="Framework\CollectionAssertTest.cs" />
+    <Compile Include="Framework\CsvDataTest.cs" />
     <Compile Include="Framework\FileAssertTest.cs" />
     <Compile Include="Framework\GenericAssertTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
@@ -100,6 +101,9 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Framework\CsvDataTest.csv" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compatibility\" />

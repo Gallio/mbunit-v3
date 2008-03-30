@@ -91,6 +91,9 @@ namespace Gallio.Tests.Framework.Data
         [Row("first,second\nabc,def\n#comment\n123,456", ',', '#', true, null, "second",
             new string[] { "def", "456" },
             Description = "Binding by path with header.")]
+        [Row("first,second\nabc,def\n#comment\n123,456", ',', '#', true, null, "sEcoNd",
+            new string[] { "def", "456" },
+            Description = "Binding by path with header, case insensitively.")]
         [Row("first,second\nabc,def\n#comment\n123,456", ',', '#', true, 1, "third",
             new string[] { "def", "456" },
             Description = "Binding by path with header fallback to index.")]

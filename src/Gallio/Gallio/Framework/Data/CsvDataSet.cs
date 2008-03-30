@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace Gallio.Framework.Data
@@ -165,7 +166,11 @@ namespace Gallio.Framework.Data
             {
                 if (header != null && binding.Path != null)
                 {
-                    int index = Array.IndexOf(header, binding.Path);
+                    int index = Array.FindIndex(header, delegate(string candidate)
+                    {
+                        return String.Compare(candidate, binding.Path, true, CultureInfo.InvariantCulture) == 0;
+                    });
+
                     if (index >= 0)
                         return index;
                 }

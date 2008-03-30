@@ -22,7 +22,7 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// The recursive type pattern may be used when a type is not consumed by any
     /// other pattern.  It simply recurses back into the pattern engine to consume
-    /// nested types, if any.
+    /// public and non-public nested types, if any.
     /// </summary>
     public class RecursiveTypePattern : BasePattern
     {
@@ -41,7 +41,7 @@ namespace Gallio.Framework.Pattern
         public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
         {
             ITypeInfo type = (ITypeInfo)codeElement;
-            foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public))
+            foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
                 ProcessNestedType(containingTestBuilder, nestedType);
         }
 

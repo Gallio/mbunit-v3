@@ -100,11 +100,14 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Populates the children of the assembly test all at once.
         /// </summary>
+        /// <remarks>
+        /// The default implementation processes all public and non-public types within the assembly.
+        /// </remarks>
         /// <param name="assemblyTestBuilder">The assembly test builder</param>
         /// <param name="assembly">The assembly</param>
         protected virtual void PopulateChildrenImmediately(IPatternTestBuilder assemblyTestBuilder, IAssemblyInfo assembly)
         {
-            foreach (ITypeInfo type in assembly.GetExportedTypes())
+            foreach (ITypeInfo type in assembly.GetTypes())
                 if (! type.IsNested)
                     ProcessType(assemblyTestBuilder, type);
         }

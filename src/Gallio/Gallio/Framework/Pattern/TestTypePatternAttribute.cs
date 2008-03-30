@@ -101,6 +101,11 @@ namespace Gallio.Framework.Pattern
         /// The members of base types are processed before those of subtypes.
         /// </para>
         /// </summary>
+        /// <remarks>
+        /// The default implementation processes all public members of the type including
+        /// the first constructor found, then recurses to process all public and non-public
+        /// nested types.  Non-public members other than nested types are ignored.
+        /// </remarks>
         /// <param name="typeTestBuilder">The test builder for the type</param>
         /// <param name="type">The type</param>
         protected virtual void InitializeTest(IPatternTestBuilder typeTestBuilder, ITypeInfo type)
@@ -152,7 +157,7 @@ namespace Gallio.Framework.Pattern
                 }
             }
 
-            foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public))
+            foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
                 ProcessNestedType(typeTestBuilder, nestedType);
         }
 

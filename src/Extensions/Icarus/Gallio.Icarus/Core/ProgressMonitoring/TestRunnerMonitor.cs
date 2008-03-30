@@ -57,6 +57,9 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
             // Ignore tests that aren't test cases.
+            // FIXME: This code is not a good idea because it will cause failures and other
+            //        information recorded about non-test cases (like fixtures) to be disregarded
+            //        which could make it very difficult for a user to understand what broke.
             if (!e.TestStepRun.Step.IsTestCase)
                 return;
 
