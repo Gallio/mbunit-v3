@@ -29,7 +29,7 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 InstType "Full"
-InstType "Typical"
+InstType "MbUnit v3 Only"
 
 ; Constants
 !define SF_SELECTED_MASK 254
@@ -128,7 +128,7 @@ Section "!Gallio" GallioSection
 	File /r "${TARGETDIR}\bin\Reports\*"
 
 	; Add the Gallio bin folder to the path
-	!insertmacro AddPath "$UserContext" "$INSTDIR\bin"
+	${AddPath} "$UserContext" "$INSTDIR\bin"
 
 	; Register the folder so that Visual Studio Add References can find it
 	WriteRegStr SHCTX "SOFTWARE\Microsoft\.NETFramework\v2.0.50727\AssemblyFoldersEx\Gallio" "" "$INSTDIR\bin"
@@ -584,7 +584,7 @@ SectionEnd
 Section Uninstall
 	; Remove the Gallio bin folder to the path
 	DetailPrint "Removing Gallio from path."
-	!insertmacro RemovePath "$UserContext" "$INSTDIR\bin"
+	${un.RemovePath} "$UserContext" "$INSTDIR\bin"
 
 	; Uninstall from assembly folders
 	DetailPrint "Removing Gallio from assembly folders."
@@ -718,15 +718,15 @@ Function .onInit
 	; Set installation types.
 	; Bits:
 	;   1 - Full
-	;   2 - Typical
+	;   2 - MbUnit v3 Only
 	SectionSetInstTypes ${GallioSection} 3
 
 	SectionSetInstTypes ${MbUnit3Section} 3
 	!ifndef MISSING_MBUNIT_PEX_PACKAGE
-		SectionSetInstTypes ${MbUnit3PexSection} 1
+		SectionSetInstTypes ${MbUnit3PexSection} 3
 	!endif
-	SectionSetInstTypes ${MbUnit3VS2005TemplatesSection} 1
-	SectionSetInstTypes ${MbUnit3VS2008TemplatesSection} 1
+	SectionSetInstTypes ${MbUnit3VS2005TemplatesSection} 3
+	SectionSetInstTypes ${MbUnit3VS2008TemplatesSection} 3
 
 	SectionSetInstTypes ${MbUnit2PluginSection} 1
 	SectionSetInstTypes ${MSTestPluginSection} 1
@@ -743,10 +743,10 @@ Function .onInit
 	!endif
 	SectionSetInstTypes ${TDNetAddInSection} 3
 
-	SectionSetInstTypes ${NCoverSection} 1
-	SectionSetInstTypes ${TypeMockSection} 1
+	SectionSetInstTypes ${NCoverSection} 3
+	SectionSetInstTypes ${TypeMockSection} 3
 
-	SectionSetInstTypes ${CCNetSection} 1
+	SectionSetInstTypes ${CCNetSection} 3
 	!ifndef MISSING_CHM_HELP
 		SectionSetInstTypes ${CHMHelpSection} 3
 	!endif
