@@ -28,7 +28,6 @@ namespace Gallio.Icarus.Core.Interfaces
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         string ReportPath { set; }
-        ITestRunner TestRunner { get; }
         void GetTestTree(object sender, GetTestTreeEventArgs e);
         void RunTests(object sender, EventArgs e);
         void OnGenerateReport(object sender, EventArgs e);
@@ -37,7 +36,8 @@ namespace Gallio.Icarus.Core.Interfaces
         void GetReportTypes(object sender, EventArgs e);
         void SaveReportAs(object sender, SaveReportAsEventArgs e);
         void Update(TestData testData, TestStepRun testStepRun);
-        void WriteToLog(string logName, string logBody);
         void OnGetTestFrameworks(object sender, EventArgs e);
+        void OnGetExecutionLog(object sender, SingleEventArgs<string> e);
+        void OnUnloadTestPackage(object sender, EventArgs e);
     }
 }

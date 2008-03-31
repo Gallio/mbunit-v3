@@ -119,6 +119,11 @@ namespace Gallio.Icarus.Adapter
             set { projectAdapterView.Exception = value; }
         }
 
+        public string ExecutionLog
+        {
+            set { projectAdapterView.ExecutionLog = value; }
+        }
+
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> GenerateReport;
@@ -127,6 +132,8 @@ namespace Gallio.Icarus.Adapter
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<EventArgs> GetTestFrameworks;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
+        public event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        public event EventHandler<EventArgs> UnloadTestPackage;
 
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
         {
@@ -134,6 +141,7 @@ namespace Gallio.Icarus.Adapter
             projectAdapterModel = model;
 
             project = new Project();
+            projectAdapterView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy = true;
 
             // Wire up event handlers
             projectAdapterView.AddAssemblies += AddAssembliesEventHandler;
@@ -158,6 +166,8 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.UpdateShadowCopyEvent += UpdateShadowCopyEventHandler;
             projectAdapterView.ResetTestStatus += OnResetTestStatus;
             projectAdapterView.ApplyFilter += OnApplyFilter;
+            projectAdapterView.GetExecutionLog += OnGetExecutionLog;
+            projectAdapterView.UnloadTestPackage += OnUnloadTestPackage;
 
             // wire up tree model
             projectAdapterView.TreeModel = projectAdapterModel.TreeModel;
@@ -366,14 +376,21 @@ namespace Gallio.Icarus.Adapter
             projectAdapterModel.Update(testData, testStepRun);
         }
 
-        public void WriteToLog(string logName, string logBody)
-        {
-            projectAdapterView.WriteToLog(logName, logBody);
-        }
-
         public void OnResetTestStatus(object sender, EventArgs e)
         {
             projectAdapterModel.ResetTestStatus();
+        }
+
+        public void OnGetExecutionLog(object sender, SingleEventArgs<string> e)
+        {
+            if (GetExecutionLog != null)
+                GetExecutionLog(this, e);
+        }
+
+        public void OnUnloadTestPackage(object sender, EventArgs e)
+        {
+            if (UnloadTestPackage != null)
+                UnloadTestPackage(this, e);
         }
     }
 }

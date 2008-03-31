@@ -64,10 +64,6 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
                 return;
 
             presenter.Update(e.Test, e.TestStepRun);
-
-            // store log streams
-            foreach (ExecutionLogStream els in e.TestStepRun.ExecutionLog.Streams)
-                presenter.WriteToLog(els.Name, els.ToString());
         }
     }
 }

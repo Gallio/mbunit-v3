@@ -83,7 +83,7 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        public void SerializeReport(XmlWriter xmlWriter, ExecutionLogAttachmentContentDisposition attachmentContentDisposition)
+        public virtual void SerializeReport(XmlWriter xmlWriter, ExecutionLogAttachmentContentDisposition attachmentContentDisposition)
         {
             if (xmlWriter == null)
                 throw new ArgumentNullException(@"xmlWriter");

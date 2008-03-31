@@ -70,8 +70,7 @@ namespace Gallio.Icarus.Core.Model.Tests
             mocks.ReplayAll();
             
             // these cannot be split up into seperate tests
-            testRunnerModel.LoadPackage(new TestPackageConfig());
-            testRunnerModel.BuildTests();
+            testRunnerModel.LoadTestPackage(new TestPackageConfig());
             testRunnerModel.RunTests();
             testRunnerModel.GenerateReport();
             testRunnerModel.SaveReportAs(Path.GetTempFileName(), "html");

@@ -30,7 +30,6 @@ namespace Gallio.Icarus.Core.Presenter
     {
         private readonly IProjectAdapter projectAdapter;
         private readonly ITestRunnerModel testRunnerModel;
-        private readonly ITestRunner testRunner;
 
         public string StatusText
         {
@@ -52,23 +51,11 @@ namespace Gallio.Icarus.Core.Presenter
             set { projectAdapter.ReportPath = value; }
         }
 
-        public ITestRunner TestRunner
-        {
-            get { return testRunner; }
-        }
-
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
         {
             projectAdapter = view;
             testRunnerModel = testrunnermodel;
             testRunnerModel.ProjectPresenter = this;
-
-#if DEBUG
-            testRunner = new DomainTestRunner(new LocalTestDomainFactory());
-#else
-            testRunner = Runtime.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess,
-                new NameValueCollection());
-#endif
 
             // wire up events
             projectAdapter.GetTestTree += GetTestTree;
@@ -79,15 +66,14 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.GetReportTypes += GetReportTypes;
             projectAdapter.SaveReportAs += SaveReportAs;
             projectAdapter.GetTestFrameworks += OnGetTestFrameworks;
+            projectAdapter.GetExecutionLog += OnGetExecutionLog;
+            projectAdapter.UnloadTestPackage += OnUnloadTestPackage;
         }
 
         public void GetTestTree(object sender, GetTestTreeEventArgs e)
         {
             if (e.ReloadTestModelData)
-            {
-                testRunnerModel.LoadPackage(e.TestPackageConfig);
-                projectAdapter.TestModelData = testRunnerModel.BuildTests();
-            }
+                projectAdapter.TestModelData = testRunnerModel.LoadTestPackage(e.TestPackageConfig);
             projectAdapter.DataBind(e.Mode);
         }
 
@@ -108,7 +94,7 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void SetFilter(object sender, SetFilterEventArgs e)
         {
-            testRunner.TestExecutionOptions.Filter = e.Filter;
+            testRunnerModel.SetFilter(e.Filter);
         }
 
         public void GetReportTypes(object sender, EventArgs e)
@@ -126,14 +112,19 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.Update(testData, testStepRun);
         }
 
-        public void WriteToLog(string logName, string logBody)
-        {
-            projectAdapter.WriteToLog(logName, logBody);
-        }
-
         public void OnGetTestFrameworks(object sender, EventArgs e)
         {
             projectAdapter.TestFrameworks = testRunnerModel.GetTestFrameworks();
+        }
+
+        public void OnGetExecutionLog(object sender, SingleEventArgs<string> e)
+        {
+            projectAdapter.ExecutionLog = testRunnerModel.GetExecutionLog(e.Arg);
+        }
+
+        public void OnUnloadTestPackage(object sender, EventArgs e)
+        {
+            testRunnerModel.UnloadTestPackage();
         }
     }
 }

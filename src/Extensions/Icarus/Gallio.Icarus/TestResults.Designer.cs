@@ -156,8 +156,8 @@ namespace Gallio.Icarus
             this.Controls.Add(this.testResultsList);
             this.Controls.Add(this.resultsFilterPanel);
             this.Name = "TestResults";
-            this.TabText = "Test Results";
-            this.Text = "Test Results";
+            this.TabText = "Test results";
+            this.Text = "Test results";
             this.resultsFilterPanel.ResumeLayout(false);
             this.resultsFilterPanel.PerformLayout();
             this.ResumeLayout(false);

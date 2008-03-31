@@ -28,6 +28,7 @@ using Gallio.Runner.Reports;
 using Gallio.Runner.Projects;
 
 using Aga.Controls.Tree;
+using System.IO;
 
 namespace Gallio.Icarus.Interfaces
 {
@@ -55,6 +56,8 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<SingleEventArgs<string>> UpdateWorkingDirectoryEvent;
         event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
         event EventHandler<EventArgs> ResetTestStatus;
+        event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        event EventHandler<EventArgs> UnloadTestPackage;
         ITreeModel TreeModel { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
@@ -67,6 +70,7 @@ namespace Gallio.Icarus.Interfaces
         string WorkingDirectory { set; }
         bool ShadowCopy { set; }
         Exception Exception { set; }
+        string ExecutionLog { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         int TotalTests { set; }
@@ -75,7 +79,6 @@ namespace Gallio.Icarus.Interfaces
         void ThreadedRemoveAssembly(string assembly);
         void ReloadTree();
         void SaveReport(string fileName, string reportType);
-        void WriteToLog(string logName, string logBody);
         void WriteToLog(LoggerLevel level, string name, string message, Exception exception);
         void Reset();
         void CreateReport();
@@ -91,5 +94,6 @@ namespace Gallio.Icarus.Interfaces
         void OnSaveFilter(string filter);
         void OnDeleteFilter(string filter);
         void LoadComplete();
+        void OnGetExecutionLog(string testId);
     }
 }

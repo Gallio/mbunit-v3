@@ -69,12 +69,16 @@ namespace Gallio.Icarus.Tests
         private IEventRaiser updateShadowCopyEvent;
         private IEventRaiser resetTestStatusEvent;
         private IEventRaiser applyFilterEvent;
+        private IEventRaiser getExecutionLogEvent;
+        private IEventRaiser unloadTestPackageEvent;
 
         [SetUp]
         public void SetUp()
         {
             mockView = mocks.CreateMock<IProjectAdapterView>();
             mockModel = mocks.CreateMock<IProjectAdapterModel>();
+
+            mockView.ShadowCopy = true;
             
             mockView.AddAssemblies += null;
             LastCall.IgnoreArguments();
@@ -163,6 +167,14 @@ namespace Gallio.Icarus.Tests
             mockView.ApplyFilter += null;
             LastCall.IgnoreArguments();
             applyFilterEvent = LastCall.GetEventRaiser();
+
+            mockView.GetExecutionLog += null;
+            LastCall.IgnoreArguments();
+            getExecutionLogEvent = LastCall.GetEventRaiser();
+
+            mockView.UnloadTestPackage += null;
+            LastCall.IgnoreArguments();
+            unloadTestPackageEvent = LastCall.GetEventRaiser();
 
             ITreeModel treeModel = new TestTreeModel();
             Expect.Call(mockModel.TreeModel).Return(treeModel);
@@ -403,9 +415,9 @@ namespace Gallio.Icarus.Tests
         {
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            Assert.IsFalse(projectAdapter.Project.TestPackageConfig.HostSetup.ShadowCopy);
-            updateShadowCopyEvent.Raise(mockView, new SingleEventArgs<bool>(true));
             Assert.IsTrue(projectAdapter.Project.TestPackageConfig.HostSetup.ShadowCopy);
+            updateShadowCopyEvent.Raise(mockView, new SingleEventArgs<bool>(false));
+            Assert.IsFalse(projectAdapter.Project.TestPackageConfig.HostSetup.ShadowCopy);
         }
 
         //[Test, ExpectedException(typeof(InvalidOperationException))]
@@ -584,15 +596,6 @@ namespace Gallio.Icarus.Tests
         }
 
         [Test]
-        public void WriteToLog_Test()
-        {
-            mockView.WriteToLog("test", "test");
-            mocks.ReplayAll();
-            projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.WriteToLog("test", "test");
-        }
-
-        [Test]
         public void OnResetTestStatus_Test()
         {
             mockModel.ResetTestStatus();
@@ -607,6 +610,31 @@ namespace Gallio.Icarus.Tests
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             applyFilterEvent.Raise(projectAdapter, new SingleEventArgs<string>("test"));
+        }
+
+        [Test]
+        public void GetExecutionLog_Test()
+        {
+            SingleEventArgs<string> e = new SingleEventArgs<string>("test");
+            mockPresenter = mocks.CreateMock<IProjectPresenter>();
+            mockPresenter.OnGetExecutionLog(projectAdapter, e);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.GetExecutionLog += new EventHandler<SingleEventArgs<string>>(mockPresenter.OnGetExecutionLog);
+            getExecutionLogEvent.Raise(mockView, e);
+        }
+
+        [Test]
+        public void UnloadTestPackage_Test()
+        {
+            mockPresenter = mocks.CreateMock<IProjectPresenter>();
+            mockPresenter.OnUnloadTestPackage(projectAdapter, EventArgs.Empty);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.UnloadTestPackage += new EventHandler<EventArgs>(mockPresenter.OnUnloadTestPackage);
+            unloadTestPackageEvent.Raise(mockView, EventArgs.Empty);
         }
     }
 }

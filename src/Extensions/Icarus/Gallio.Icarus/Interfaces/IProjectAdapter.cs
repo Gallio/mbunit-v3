@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model;
@@ -35,6 +36,8 @@ namespace Gallio.Icarus.Core.Interfaces
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<EventArgs> GetTestFrameworks;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
+        event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        event EventHandler<EventArgs> UnloadTestPackage;
         TestModelData TestModelData { set; }
         Project Project { get; set; }
         string StatusText { set; }
@@ -42,10 +45,10 @@ namespace Gallio.Icarus.Core.Interfaces
         IList<string> ReportTypes { set; }
         IList<string> TestFrameworks { set; }
         Exception Exception { set; }
+        string ExecutionLog { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         void DataBind(string mode);
         void Update(TestData testData, TestStepRun testStepRun);
-        void WriteToLog(string logName, string logBody);
     }
 }

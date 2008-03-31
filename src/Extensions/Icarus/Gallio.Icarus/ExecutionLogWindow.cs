@@ -13,28 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
+using System;
 using System.IO;
 
-using Gallio.Icarus.Controls;
-using Gallio.Model;
-using Gallio.Model.Filters;
-using Gallio.Model.Serialization;
-
-namespace Gallio.Icarus.Core.Interfaces
+namespace Gallio.Icarus
 {
-    public interface ITestRunnerModel
+    public partial class ExecutionLogWindow : DockWindow
     {
-        IProjectPresenter ProjectPresenter { set; }
-        TestModelData LoadTestPackage(TestPackageConfig testpackage);
-        void RunTests();
-        void StopTests();
-        void GenerateReport();
-        void SaveReportAs(string fileName, string format);
-        string GetExecutionLog(string testId);
-        IList<string> GetReportTypes();
-        IList<string> GetTestFrameworks();
-        void SetFilter(Filter<ITest> filter);
-        void UnloadTestPackage();
+        public ExecutionLogWindow()
+        {
+            InitializeComponent();
+        }
+
+        public string Log
+        {
+            set { reportViewer.Url = new Uri(value); }
+        }
     }
 }

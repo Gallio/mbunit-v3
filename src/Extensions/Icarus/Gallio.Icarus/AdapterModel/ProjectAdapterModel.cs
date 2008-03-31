@@ -250,7 +250,7 @@ namespace Gallio.Icarus.AdapterModel
                     {
                         case CheckState.Checked:
                             {
-                                if (node.NodeTypeIcon != global::Gallio.Icarus.Properties.Resources.Namespace)
+                                if (node.NodeType != TestKinds.Namespace)
                                     filters.Add(new IdFilter<ITest>(new EqualityFilter<string>(node.Name)));
                                 else
                                 {

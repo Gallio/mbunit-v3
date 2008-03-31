@@ -41,6 +41,7 @@ namespace Gallio.Icarus
     public partial class Main : Form, IProjectAdapterView
     {
         private Thread workerThread = null;
+        private Thread executionLogThread = null;
         
         private string projectFileName = String.Empty;
         private Settings settings;
@@ -55,18 +56,12 @@ namespace Gallio.Icarus
         private AssemblyList assemblyList;
         private TestResults testResults;
         private ReportWindow reportWindow;
-        private LogWindow logWindow;
-        private LogWindow consoleInputWindow;
-        private LogWindow consoleOutputWindow;
-        private LogWindow consoleErrorWindow;
-        private LogWindow debugTraceWindow;
-        private LogWindow warningsWindow;
-        private LogWindow failuresWindow;
         private LogWindow runtimeWindow;
         //private PerformanceMonitor performanceMonitor;
         private About aboutDialog;
         private PropertiesWindow propertiesWindow;
         private FiltersWindow filtersWindow;
+        private ExecutionLogWindow executionLogWindow;
         
         public ITreeModel TreeModel
         {
@@ -249,9 +244,26 @@ namespace Gallio.Icarus
                 }
                 else
                 {
-                    MessageBox.Show(String.Format("Message: {0}\nStack trace: {1}", value.Message, value.StackTrace), "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (!(value is ThreadAbortException))
+                        MessageBox.Show(String.Format("Message: {0}\nStack trace: {1}", value.Message, value.StackTrace), "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        public string ExecutionLog
+        {
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(delegate()
+                    {
+                        ExecutionLog = value;
+                    }));
+                }
+                else
+                    executionLogWindow.Log = value;
             }
         }
 
@@ -403,6 +415,8 @@ namespace Gallio.Icarus
         public event EventHandler<SingleEventArgs<string>> UpdateWorkingDirectoryEvent;
         public event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
         public event EventHandler<EventArgs> ResetTestStatus;
+        public event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        public event EventHandler<EventArgs> UnloadTestPackage;
 
         public Main()
         {
@@ -412,18 +426,12 @@ namespace Gallio.Icarus
             assemblyList = new AssemblyList(this);
             testResults = new TestResults();
             reportWindow = new ReportWindow(this);
-            logWindow = new LogWindow();
-            consoleInputWindow = new LogWindow("Console input");
-            consoleOutputWindow = new LogWindow("Console output");
-            consoleErrorWindow = new LogWindow("Console error");
-            debugTraceWindow = new LogWindow("Debug trace");
-            warningsWindow = new LogWindow("Warnings");
-            failuresWindow = new LogWindow("Failures");
             runtimeWindow = new LogWindow("Runtime");
             //performanceMonitor = new PerformanceMonitor();
             aboutDialog = new About();
             propertiesWindow = new PropertiesWindow(this);
             filtersWindow = new FiltersWindow(this);
+            executionLogWindow = new ExecutionLogWindow();
 
             deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
         }
@@ -444,6 +452,8 @@ namespace Gallio.Icarus
                 return propertiesWindow;
             else if (persistString == typeof(FiltersWindow).ToString())
                 return filtersWindow;
+            else if (persistString == typeof(ExecutionLogWindow).ToString())
+                return executionLogWindow;
             else
             {
                 string[] parsedStrings = persistString.Split(new char[] { ',' });
@@ -453,20 +463,6 @@ namespace Gallio.Icarus
                     return null;
                 switch (parsedStrings[1])
                 {
-                    case "Log":
-                        return logWindow;
-                    case "Console input":
-                        return consoleInputWindow;
-                    case "Console output":
-                        return consoleOutputWindow;
-                    case "Console error":
-                        return consoleErrorWindow;
-                    case "Debug trace":
-                        return debugTraceWindow;
-                    case "Warnings":
-                        return warningsWindow;
-                    case "Failures":
-                        return failuresWindow;
                     case "Runtime":
                         return runtimeWindow;
                     default:
@@ -495,13 +491,7 @@ namespace Gallio.Icarus
                 assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
                 //performanceMonitor.Show(dockPanel);
                 testResults.Show(dockPanel);
-                consoleInputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-                consoleOutputWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-                consoleErrorWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-                debugTraceWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-                warningsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-                failuresWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-                logWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                executionLogWindow.Show(dockPanel);
                 runtimeWindow.Show(dockPanel, DockState.DockBottomAutoHide);
                 testExplorer.Show(dockPanel, DockState.DockLeft);
             }
@@ -926,45 +916,6 @@ namespace Gallio.Icarus
                 SaveReportAs(this, new SaveReportAsEventArgs(fileName, reportType));
         }
 
-        public void WriteToLog(string logName, string logBody)
-        {
-            if (InvokeRequired)
-            {
-                Invoke((MethodInvoker)delegate()
-                {
-                    WriteToLog(logName, logBody);
-                });
-            }
-            else
-            {
-                logBody = Environment.NewLine + logBody;
-                switch (logName)
-                {
-                    case LogStreamNames.ConsoleError:
-                        consoleErrorWindow.AppendText(logBody);
-                        break;
-                    case LogStreamNames.ConsoleInput:
-                        consoleInputWindow.AppendText(logBody);
-                        break;
-                    case LogStreamNames.ConsoleOutput:
-                        consoleOutputWindow.AppendText(logBody);
-                        break;
-                    case LogStreamNames.DebugTrace:
-                        debugTraceWindow.AppendText(logBody);
-                        break;
-                    case LogStreamNames.Default:
-                        logWindow.AppendText(logBody);
-                        break;
-                    case LogStreamNames.Failures:
-                        failuresWindow.AppendText(logBody);
-                        break;
-                    case LogStreamNames.Warnings:
-                        warningsWindow.AppendText(logBody);
-                        break;
-                }
-            }
-        }
-
         public void WriteToLog(LoggerLevel level, string name, string message, Exception exception)
         {
             Color color = Color.Black;
@@ -1025,6 +976,11 @@ namespace Gallio.Icarus
         {
             try
             {
+                AbortWorkerThread();
+
+                if (UnloadTestPackage != null)
+                    UnloadTestPackage(this, EventArgs.Empty);
+
                 // create folder (if necessary)
                 string gallioDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Gallio/Icarus");
                 if (!Directory.Exists(gallioDir))
@@ -1057,27 +1013,6 @@ namespace Gallio.Icarus
             ToolStripMenuItem item = (ToolStripMenuItem)sender;
             switch (item.Name)
             {
-                case "logToolStripMenuItem":
-                    logWindow.Show(dockPanel);
-                    break;
-                case "consoleInputToolStripMenuItem":
-                    consoleInputWindow.Show(dockPanel);
-                    break;
-                case "consoleOutputToolStripMenuItem":
-                    consoleOutputWindow.Show(dockPanel);
-                    break;
-                case "consoleErrorToolStripMenuItem":
-                    consoleErrorWindow.Show(dockPanel);
-                    break;
-                case "debugTraceToolStripMenuItem":
-                    debugTraceWindow.Show(dockPanel);
-                    break;
-                case "warningsToolStripMenuItem":
-                    warningsWindow.Show(dockPanel);
-                    break;
-                case "failuresToolStripMenuItem":
-                    failuresWindow.Show(dockPanel);
-                    break;
                 //case "performanceMonitorToolStripMenuItem":
                 //    performanceMonitor.Show(dockPanel);
                 //    break;
@@ -1103,11 +1038,15 @@ namespace Gallio.Icarus
                 case "testFiltersToolStripMenuItem":
                     filtersWindow.Show(dockPanel);
                     break;
+                case "executionLogToolStripMenuItem":
+                    executionLogWindow.Show(dockPanel);
+                    break;
             }
         }
 
         public void AssemblyChanged(string filePath)
         {
+            MessageBox.Show(filePath + " has changed!");
         }
 
         public void UpdateHintDirectories(IList<string> hintDirectories)
@@ -1164,6 +1103,28 @@ namespace Gallio.Icarus
                 startButton.Enabled = true;
                 startTestsToolStripMenuItem.Enabled = true;
             }
+        }
+
+        public void OnGetExecutionLog(string testId)
+        {
+            if (executionLogThread != null)
+            {
+                executionLogThread.Abort();
+                executionLogThread = null;
+            }
+            executionLogThread = new Thread(delegate()
+                {
+                    try
+                    {
+                        if (GetExecutionLog != null)
+                            GetExecutionLog(this, new SingleEventArgs<string>(testId));
+                    }
+                    catch (Exception ex)
+                    {
+                        Exception = ex;
+                    }
+                });
+            executionLogThread.Start();
         }
     }
 }

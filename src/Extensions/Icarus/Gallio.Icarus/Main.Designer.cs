@@ -57,7 +57,6 @@ namespace Gallio.Icarus
             this.testExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.assemblyListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            //this.performanceMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testFiltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,6 +99,7 @@ namespace Gallio.Icarus
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.executionLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -194,10 +194,10 @@ namespace Gallio.Icarus
             this.testExplorerToolStripMenuItem,
             this.assemblyListToolStripMenuItem,
             this.reportToolStripMenuItem,
-            //this.performanceMonitorToolStripMenuItem,
             this.testResultsToolStripMenuItem,
             this.propertiesToolStripMenuItem,
-            this.testFiltersToolStripMenuItem});
+            this.testFiltersToolStripMenuItem,
+            this.executionLogToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -205,14 +205,14 @@ namespace Gallio.Icarus
             // testExplorerToolStripMenuItem
             // 
             this.testExplorerToolStripMenuItem.Name = "testExplorerToolStripMenuItem";
-            this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.testExplorerToolStripMenuItem.Text = "Test Explorer";
+            this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.testExplorerToolStripMenuItem.Text = "Test explorer";
             this.testExplorerToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // assemblyListToolStripMenuItem
             // 
             this.assemblyListToolStripMenuItem.Name = "assemblyListToolStripMenuItem";
-            this.assemblyListToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.assemblyListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.assemblyListToolStripMenuItem.Text = "Modules";
             this.assemblyListToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
@@ -220,22 +220,14 @@ namespace Gallio.Icarus
             // 
             this.reportToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("reportToolStripMenuItem.Image")));
             this.reportToolStripMenuItem.Name = "reportToolStripMenuItem";
-            this.reportToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.reportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.reportToolStripMenuItem.Text = "Report";
             this.reportToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
-            // 
-            // performanceMonitorToolStripMenuItem
-            // 
-            //this.performanceMonitorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("performanceMonitorToolStripMenuItem.Image")));
-            //this.performanceMonitorToolStripMenuItem.Name = "performanceMonitorToolStripMenuItem";
-            //this.performanceMonitorToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            //this.performanceMonitorToolStripMenuItem.Text = "Performance monitor";
-            //this.performanceMonitorToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // testResultsToolStripMenuItem
             // 
             this.testResultsToolStripMenuItem.Name = "testResultsToolStripMenuItem";
-            this.testResultsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.testResultsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.testResultsToolStripMenuItem.Text = "Test results";
             this.testResultsToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
@@ -243,14 +235,14 @@ namespace Gallio.Icarus
             // 
             this.propertiesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("propertiesToolStripMenuItem.Image")));
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // testFiltersToolStripMenuItem
             // 
             this.testFiltersToolStripMenuItem.Name = "testFiltersToolStripMenuItem";
-            this.testFiltersToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.testFiltersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.testFiltersToolStripMenuItem.Text = "Test filters";
             this.testFiltersToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
@@ -415,7 +407,7 @@ namespace Gallio.Icarus
             // optionsMenuItem
             // 
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsMenuItem.Size = new System.Drawing.Size(134, 22);
             this.optionsMenuItem.Text = "&Options...";
             this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
@@ -600,6 +592,13 @@ namespace Gallio.Icarus
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
             // 
+            // executionLogToolStripMenuItem
+            // 
+            this.executionLogToolStripMenuItem.Name = "executionLogToolStripMenuItem";
+            this.executionLogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.executionLogToolStripMenuItem.Text = "Execution log";
+            this.executionLogToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -689,6 +688,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runtimeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testFiltersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem executionLogToolStripMenuItem;
     }
 }
 
