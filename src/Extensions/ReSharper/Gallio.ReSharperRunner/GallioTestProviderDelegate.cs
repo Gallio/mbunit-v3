@@ -274,7 +274,7 @@ namespace Gallio.ReSharperRunner
             TestPackage testPackage = new TestPackage(new TestPackageConfig(), reflectionPolicy);
             TestModel testModel = new TestModel(testPackage);
 
-            AggregateTestExplorer aggregate = new AggregateTestExplorer();
+            AggregateTestExplorer aggregate = new AggregateTestExplorer(testModel);
             foreach (ITestFramework framework in Runtime.Instance.ResolveAll<ITestFramework>())
                 aggregate.AddTestExplorer(framework.CreateTestExplorer(testModel));
 

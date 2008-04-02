@@ -24,21 +24,20 @@ namespace Gallio.Model
     /// An aggregate test explorer combines multiple test explorers from
     /// different sources to incorporate all of their contributions.
     /// </summary>
-    public class AggregateTestExplorer : ITestExplorer
+    public class AggregateTestExplorer : BaseTestExplorer
     {
         private readonly List<ITestExplorer> explorers;
 
         /// <summary>
         /// Creates an empty aggregate test explorer.
         /// </summary>
-        public AggregateTestExplorer()
+        /// <param name="testModel">The test model that is incrementally populated by the test
+        /// explorer as it explores tests.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null</exception>
+        public AggregateTestExplorer(TestModel testModel)
+            : base(testModel)
         {
             explorers = new List<ITestExplorer>();
-        }
-
-        TestModel ITestExplorer.TestModel
-        {
-            get { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -46,16 +45,20 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="explorer">The explorer to add</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="explorer"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="explorer"/> has
+        /// a different <see cref="TestModel" /></exception>
         public void AddTestExplorer(ITestExplorer explorer)
         {
             if (explorer == null)
                 throw new ArgumentNullException("explorer");
+            if (explorer.TestModel != TestModel)
+                throw new ArgumentException("The explorer has a different test model from the aggregate.", "explorer");
 
             explorers.Add(explorer);
         }
 
         /// <inheritdoc />
-        public bool IsTest(ICodeElementInfo element)
+        public override bool IsTest(ICodeElementInfo element)
         {
             foreach (ITestExplorer explorer in explorers)
             {
@@ -74,7 +77,7 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
+        public override void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
         {
             foreach (ITestExplorer explorer in explorers)
             {
@@ -90,7 +93,7 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public void ExploreType(ITypeInfo type, Action<ITest> consumer)
+        public override void ExploreType(ITypeInfo type, Action<ITest> consumer)
         {
             foreach (ITestExplorer explorer in explorers)
             {
@@ -106,7 +109,7 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public void FinishModel()
+        public override void FinishModel()
         {
             foreach (ITestExplorer explorer in explorers)
             {

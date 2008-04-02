@@ -31,12 +31,40 @@ namespace Gallio.ReSharperRunner
 
         public string AttributeId
         {
-            get { return "Gallio Annotation"; }
+            get
+            {
+                switch (annotation.Type)
+                {
+                    case AnnotationType.Error:
+                        return HighlightingAttributeIds.ERROR_ATTRIBUTE;
+
+                    case AnnotationType.Warning:
+                        return HighlightingAttributeIds.WARNING_ATTRIBUTE;
+
+                    default:
+                    case AnnotationType.Info:
+                        return HighlightingAttributeIds.SUGGESTION_ATTRIBUTE;
+                }
+            }
         }
 
         public OverlapResolvePolicy OverlapResolvePolicy
         {
-            get { return OverlapResolvePolicy.NONE; }
+            get
+            {
+                switch (annotation.Type)
+                {
+                    case AnnotationType.Error:
+                        return OverlapResolvePolicy.ERROR;
+
+                    case AnnotationType.Warning:
+                        return OverlapResolvePolicy.WARNING;
+
+                    default:
+                    case AnnotationType.Info:
+                        return OverlapResolvePolicy.NONE;
+                }
+            }
         }
 
         public Severity Severity
@@ -45,17 +73,15 @@ namespace Gallio.ReSharperRunner
             {
                 switch (annotation.Type)
                 {
-                    case AnnotationType.Info:
-                        return Severity.INFO;
+                    case AnnotationType.Error:
+                        return Severity.ERROR;
 
                     case AnnotationType.Warning:
                         return Severity.WARNING;
 
-                    case AnnotationType.Error:
-                        return Severity.ERROR;
-
+                    case AnnotationType.Info:
                     default:
-                        return Severity.DO_NOT_SHOW;
+                        return Severity.SUGGESTION;
                 }
             }
         }
@@ -72,7 +98,7 @@ namespace Gallio.ReSharperRunner
 
         public string ErrorStripeToolTip
         {
-            get { return null; }
+            get { return ToolTip; }
         }
 
         public Color ColorOnStripe
@@ -82,7 +108,7 @@ namespace Gallio.ReSharperRunner
 
         public bool ShowToolTipInStatusBar
         {
-            get { return false; }
+            get { return true; }
         }
 
         public int NavigationOffsetPatch

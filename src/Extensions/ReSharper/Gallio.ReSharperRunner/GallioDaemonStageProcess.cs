@@ -51,7 +51,7 @@ namespace Gallio.ReSharperRunner
                     {
                         foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(projectFile))
                         {
-                            highlightings.Add(new HighlightingInfo(declaration.GetDocumentRange(),
+                            highlightings.Add(new HighlightingInfo(declaration.GetNameDocumentRange(),
                                 new GallioAnnotationHighlighting(annotation)));
                         }
                     }
