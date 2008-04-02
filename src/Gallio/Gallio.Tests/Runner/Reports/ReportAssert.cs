@@ -65,7 +65,7 @@ namespace Gallio.Tests.Runner.Reports
             Assert.AreEqual(expected.EndTime, actual.EndTime);
             AreEqual(expected.Statistics, actual.Statistics);
 
-            MbUnit.Framework.InterimAssert.WithPairs(expected.TestStepRuns, actual.TestStepRuns, AreEqual);
+            MbUnit.Framework.InterimAssert.WithPairs(expected.AllTestStepRuns, actual.AllTestStepRuns, AreEqual);
         }
 
         public static void AreEqual(PackageRunStatistics expected, PackageRunStatistics actual)

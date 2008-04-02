@@ -155,16 +155,37 @@ namespace Gallio.Framework.Utilities
         /// <returns>The first test step run, or null if not found</returns>
         public TestStepRun GetPrimaryTestStepRun(CodeReference codeReference)
         {
-            TestData data = GetTestData(codeReference);
-            if (data != null)
+            return GenericUtils.Find(Report.PackageRun.AllTestStepRuns, delegate(TestStepRun run)
             {
-                return GenericUtils.Find(Report.PackageRun.TestStepRuns, delegate(TestStepRun run)
+                return run.Step.IsPrimary && run.Step.CodeReference == codeReference;
+            });
+        }
+
+        /// <summary>
+        /// Gets all test step runs that represent test cases within a test with
+        /// the specified code reference.
+        /// </summary>
+        /// <remarks>
+        /// Can only be called after the tests have run.
+        /// </remarks>
+        /// <param name="codeReference">The code reference of the test</param>
+        /// <returns>The first test step run, or null if not found</returns>
+        public IList<TestStepRun> GetTestCaseRunsWithin(CodeReference codeReference)
+        {
+            List<TestStepRun> runs = new List<TestStepRun>();
+            foreach (TestStepRun containerRun in Report.PackageRun.AllTestStepRuns)
+            {
+                if (containerRun.Step.IsPrimary && containerRun.Step.CodeReference == codeReference)
                 {
-                    return run.Step.IsPrimary && run.Step.TestId == data.Id;
-                });
+                    foreach (TestStepRun run in containerRun.AllTestStepRuns)
+                    {
+                        if (run.Step.IsTestCase)
+                            runs.Add(run);
+                    }
+                }
             }
 
-            return null;
+            return runs;
         }
 
         /// <summary>

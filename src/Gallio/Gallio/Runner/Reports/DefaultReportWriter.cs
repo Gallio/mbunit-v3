@@ -116,7 +116,7 @@ namespace Gallio.Runner.Reports
                 // Munge the content paths and content disposition.
                 if (report.PackageRun != null)
                 {
-                    foreach (TestStepRun testStepRun in report.PackageRun.TestStepRuns)
+                    foreach (TestStepRun testStepRun in report.PackageRun.AllTestStepRuns)
                     {
                         foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                         {
@@ -207,7 +207,7 @@ namespace Gallio.Runner.Reports
 
                 progressMonitor.BeginTask("Saving report attachments.", attachmentCount);
 
-                foreach (TestStepRun testStepRun in report.PackageRun.TestStepRuns)
+                foreach (TestStepRun testStepRun in report.PackageRun.AllTestStepRuns)
                 {
                     foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                     {
@@ -246,7 +246,7 @@ namespace Gallio.Runner.Reports
 
             if (report.PackageRun != null)
             {
-                foreach (TestStepRun testStepRun in report.PackageRun.TestStepRuns)
+                foreach (TestStepRun testStepRun in report.PackageRun.AllTestStepRuns)
                 {
                     count += testStepRun.ExecutionLog.Attachments.Count;
                 }

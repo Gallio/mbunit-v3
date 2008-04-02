@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Utilities;
@@ -145,6 +146,20 @@ namespace Gallio.Runner.Reports
                     throw new ArgumentNullException(@"value");
                 executionLog = value;
             }
+        }
+
+        /// <summary>
+        /// Recursively enumerates all test step runs including this one.
+        /// </summary>
+        [XmlIgnore]
+        public IEnumerable<TestStepRun> AllTestStepRuns
+        {
+            get { return TreeUtils.GetPreOrderTraversal(this, GetChildren); }
+        }
+
+        private static IEnumerable<TestStepRun> GetChildren(TestStepRun node)
+        {
+            return node.Children;
         }
     }
 }

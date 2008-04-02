@@ -70,6 +70,7 @@
     <Compile Include="Framework\AssemblyFixtureAttribute.cs" />
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
+    <Compile Include="Framework\CombinatorialJoinAttribute.cs" />
     <Compile Include="Framework\CsvDataAttribute.cs" />
     <Compile Include="Framework\DataAttribute.cs" />
     <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
@@ -78,7 +79,9 @@
     <Compile Include="Framework\ContentAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
+    <Compile Include="Framework\JoinAttribute.cs" />
     <Compile Include="Framework\NameAttribute.cs" />
+    <Compile Include="Framework\PairwiseJoinAttribute.cs" />
     <Compile Include="Framework\PendingAttribute.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
@@ -107,6 +110,7 @@
     <Compile Include="Framework\Reflection\ReflectionException.cs" />
     <Compile Include="Framework\Reflection\Reflector.cs" />
     <Compile Include="Framework\SecurityAssert.cs" />
+    <Compile Include="Framework\SequentialJoinAttribute.cs" />
     <Compile Include="Framework\SetUpAttribute.cs" />
     <Compile Include="Framework\StringAssert.cs" />
     <Compile Include="Framework\TearDownAttribute.cs" />

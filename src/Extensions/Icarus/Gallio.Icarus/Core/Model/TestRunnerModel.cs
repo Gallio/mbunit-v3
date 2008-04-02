@@ -132,7 +132,7 @@ namespace Gallio.Icarus.Core.Model
         {
             if (reportMonitor.Report.PackageRun != null)
             {
-                foreach (TestStepRun testStepRun in reportMonitor.Report.PackageRun.TestStepRuns)
+                foreach (TestStepRun testStepRun in reportMonitor.Report.PackageRun.AllTestStepRuns)
                 {
                     if (testStepRun.Step.TestId == testId)
                     {
