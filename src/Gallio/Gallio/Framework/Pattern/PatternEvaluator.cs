@@ -316,7 +316,7 @@ namespace Gallio.Framework.Pattern
             else
             {
                 testModel.AddAnnotation(new Annotation(AnnotationType.Error, codeElement,
-                    "An exception occurred while evaluating a pattern.",
+                    "An internal error occurred while evaluating a pattern.",
                     ExceptionUtils.SafeToString(ex)));
             }
         }
