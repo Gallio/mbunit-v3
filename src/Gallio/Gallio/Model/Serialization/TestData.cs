@@ -19,6 +19,7 @@ using System.Xml.Serialization;
 using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model.Serialization
 {
@@ -27,8 +28,8 @@ namespace Gallio.Model.Serialization
     /// </summary>
     /// <seealso cref="ITest"/>
     [Serializable]
-    [XmlRoot("test", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("test", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class TestData : TestComponentData
     {
         private readonly List<TestData> children;

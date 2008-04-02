@@ -15,7 +15,6 @@
 
 using System;
 using System.Reflection;
-using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 
@@ -29,7 +28,7 @@ namespace MbUnit.Framework
     /// <remarks>
     /// This attribute can be repeated multiple times if there are multiple dependencies.
     /// </remarks>
-    public class DependsOnAttribute : DependencyPatternAttribute
+    public class DependsOnAttribute : TestDependencyPatternAttribute
     {
         private readonly Type testFixtureType;
         private readonly string testMethodName;
@@ -96,7 +95,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override ICodeElementInfo GetDependency(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        protected override ICodeElementInfo GetDependency(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
             ITypeInfo resolvedFixtureType;
             if (testFixtureType != null)
@@ -107,10 +106,7 @@ namespace MbUnit.Framework
             {
                 resolvedFixtureType = ReflectionUtils.GetType(codeElement);
                 if (resolvedFixtureType == null)
-                    throw new TestDeclarationErrorException(
-                        String.Format(
-                            "Could not resolve dependency on test method '{0}' because the declaring fixture type is not known.",
-                            testMethodName));
+                    ThrowUsageErrorException(String.Format("Could not resolve dependency on test method '{0}' because the declaring fixture type is not known.", testMethodName));
             }
 
             if (testMethodName == null)
@@ -118,8 +114,7 @@ namespace MbUnit.Framework
 
             IMethodInfo resolvedMethod = resolvedFixtureType.GetMethod(testMethodName, BindingFlags.Public | BindingFlags.Instance);
             if (resolvedMethod == null)
-                throw new TestDeclarationErrorException(
-                    String.Format("Could not resolve dependency on test method '{0}' of test fixture type '{1}' because the method was not found.",
+                ThrowUsageErrorException(String.Format("Could not resolve dependency on test method '{0}' of test fixture type '{1}' because the method was not found.",
                     testMethodName, resolvedFixtureType));
             return resolvedMethod;
         }

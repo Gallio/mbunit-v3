@@ -31,7 +31,7 @@ namespace Gallio.Framework.Pattern
     /// </para>
     /// </summary>
     /// <seealso cref="TestMethodDecoratorPatternAttribute"/>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
+    [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple=false, Inherited=true)]
     public abstract class TestMethodPatternAttribute : PatternAttribute
     {
         /// <inheritdoc />
@@ -41,49 +41,48 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement)
+        public override bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return true;
         }
 
         /// <inheritdoc />
-        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            IMethodInfo method = (IMethodInfo)codeElement;
-            Validate(method);
+            IMethodInfo method = codeElement as IMethodInfo;
+            Validate(containingScope, method);
 
-            PatternTest test = CreateTest(containingTestBuilder, method);
-            IPatternTestBuilder testBuilder = containingTestBuilder.AddChild(test);
-            InitializeTest(testBuilder, method);
-            SetTestSemantics(testBuilder.Test, method);
+            PatternTest methodTest = CreateTest(containingScope, method);
+            PatternEvaluationScope methodScope = containingScope.AddChildTest(methodTest);
+            InitializeTest(methodScope, method);
+            SetTestSemantics(methodTest, method);
 
-            testBuilder.ApplyDecorators();
+            methodScope.ApplyDecorators();
         }
 
         /// <summary>
-        /// Validates whether the attribute has been applied to a valid <see cref="IMethodInfo" />.
-        /// Called by <see cref="Consume" />.
+        /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <remarks>
-        /// The default implementation throws an exception if <paramref name="method"/> is abstract.
-        /// </remarks>
+        /// <param name="containingScope">The containing scope</param>
         /// <param name="method">The method</param>
-        /// <exception cref="ModelException">Thrown if the attribute is applied to an inappropriate method</exception>
-        protected virtual void Validate(IMethodInfo method)
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
         {
+            if (!containingScope.CanAddChildTest || method == null)
+                ThrowUsageErrorException("This attribute can only be used on a test method within a test type.");
             if (method.IsAbstract)
-                throw new ModelException(String.Format("The {0} attribute is not valid for use on method '{1}'.  The method must not be abstract.", GetType().Name, method));
+                ThrowUsageErrorException("This attribute cannot be used on an abstract method.");
         }
 
         /// <summary>
         /// Creates a test for a method.
         /// </summary>
-        /// <param name="containingTestBuilder">The containing test builder</param>
+        /// <param name="containingScope">The containing scope</param>
         /// <param name="method">The method</param>
         /// <returns>The test</returns>
-        protected virtual PatternTest CreateTest(IPatternTestBuilder containingTestBuilder, IMethodInfo method)
+        protected virtual PatternTest CreateTest(PatternEvaluationScope containingScope, IMethodInfo method)
         {
-            PatternTest test = new PatternTest(method.Name, method);
+            PatternTest test = new PatternTest(method.Name, method, containingScope.TestDataContext.CreateChild());
             test.Kind = TestKinds.Test;
             test.IsTestCase = true;
             return test;
@@ -92,25 +91,24 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Initializes a test for a method after it has been added to the test model.
         /// </summary>
-        /// <param name="methodTestBuilder">The test builder for the method</param>
+        /// <param name="methodScope">The method scope</param>
         /// <param name="method">The method</param>
-        protected virtual void InitializeTest(IPatternTestBuilder methodTestBuilder, IMethodInfo method)
+        protected virtual void InitializeTest(PatternEvaluationScope methodScope, IMethodInfo method)
         {
             string xmlDocumentation = method.GetXmlDocumentation();
             if (xmlDocumentation != null)
-                methodTestBuilder.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                methodScope.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in methodTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(method, true))
-                pattern.ProcessTest(methodTestBuilder, method);
+            methodScope.Process(method);
 
             if (method.IsGenericMethodDefinition)
             {
                 foreach (IGenericParameterInfo parameter in method.GenericArguments)
-                    ProcessGenericParameter(methodTestBuilder, parameter);
+                    methodScope.Consume(parameter, false, DefaultGenericParameterPattern);
             }
 
             foreach (IParameterInfo parameter in method.Parameters)
-                ProcessMethodParameter(methodTestBuilder, parameter);
+                methodScope.Consume(parameter, false, DefaultMethodParameterPattern);
         }
 
         /// <summary>
@@ -151,7 +149,7 @@ namespace Gallio.Framework.Pattern
                     testInstanceState.TestArguments = spec.ResolvedArguments;
 
                     if (!testInstanceState.IsReusingPrimaryTestStep)
-                        testInstanceState.TestStep.Name += spec.Format(testInstanceState.Formatter);
+                        testInstanceState.TestStep.Name = spec.Format(testInstanceState.TestStep.Name, testInstanceState.Formatter);
                 });
 
             test.TestInstanceActions.ExecuteTestInstanceChain.After(
@@ -182,52 +180,6 @@ namespace Gallio.Framework.Pattern
         protected virtual IPattern DefaultMethodParameterPattern
         {
             get { return TestParameterPatternAttribute.DefaultInstance; }
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a generic parameter, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="genericParameter">The generic parameter</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryGenericParameterPattern(IPatternResolver patternResolver, IGenericParameterInfo genericParameter)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, genericParameter) ?? DefaultGenericParameterPattern;
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a method parameter, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="methodParameter">The method parameter</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryMethodParameterPattern(IPatternResolver patternResolver, IParameterInfo methodParameter)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, methodParameter) ?? DefaultMethodParameterPattern;
-        }
-
-        /// <summary>
-        /// Processes a generic parameter.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="genericParameter">The generic parameter</param>
-        protected virtual void ProcessGenericParameter(IPatternTestBuilder typeTestBuilder, IGenericParameterInfo genericParameter)
-        {
-            IPattern pattern = GetPrimaryGenericParameterPattern(typeTestBuilder.TestModelBuilder.PatternResolver, genericParameter);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, genericParameter, false);
-        }
-
-        /// <summary>
-        /// Processes a method parameter.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="methodParameter">The method parameter</param>
-        protected virtual void ProcessMethodParameter(IPatternTestBuilder typeTestBuilder, IParameterInfo methodParameter)
-        {
-            IPattern pattern = GetPrimaryMethodParameterPattern(typeTestBuilder.TestModelBuilder.PatternResolver, methodParameter);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, methodParameter, false);
         }
     }
 }

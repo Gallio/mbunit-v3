@@ -21,7 +21,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Gallio.Collections;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -31,7 +31,7 @@ namespace Gallio.Model
     /// properties of the model in an extensible manner.
     /// </summary>
     [Serializable]
-    [XmlRoot("metadata", Namespace=SerializationUtils.XmlNamespace)]
+    [XmlRoot("metadata", Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class MetadataMap : IMultiMap<string, string>, IXmlSerializable
     {
         private IMultiMap<string, string> contents;

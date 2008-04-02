@@ -24,8 +24,8 @@ namespace MbUnit.Framework
     /// <summary>
     /// Registers a custom assembly resolver.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple=true)]
-    public sealed class AssemblyResolverAttribute : AssemblyInitializationAttribute
+    [AttributeUsage(PatternAttributeTargets.TestAssembly, AllowMultiple=true)]
+    public sealed class AssemblyResolverAttribute : TestAssemblyInitializationAttribute
     {
         private readonly Type assemblyResolverType;
 
@@ -53,7 +53,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Initialize(IPatternTestBuilder topLevelTestBuilder, IAssemblyInfo assembly)
+        public override void Initialize(PatternEvaluationScope frameworkScope, IAssemblyInfo assembly)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace MbUnit.Framework
             }
             catch (Exception ex)
             {
-                throw new ModelException(String.Format("Failed to create custom assembly resolver type '{0}'.", assemblyResolverType), ex);
+                throw new PatternUsageErrorException(String.Format("Failed to create custom assembly resolver type '{0}'.", assemblyResolverType), ex);
             }
         }
     }

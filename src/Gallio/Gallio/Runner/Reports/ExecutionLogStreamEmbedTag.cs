@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -25,7 +25,7 @@ namespace Gallio.Runner.Reports
     /// An Xml-serializable tag for embedding an attachment within an execution log.
     /// </summary>
     [Serializable]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class ExecutionLogStreamEmbedTag : ExecutionLogStreamTag
     {
         private string attachmentName;

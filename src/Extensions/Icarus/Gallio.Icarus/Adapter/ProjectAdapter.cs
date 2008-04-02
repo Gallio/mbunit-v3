@@ -29,6 +29,7 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus.Adapter
 {
@@ -316,13 +317,13 @@ namespace Gallio.Icarus.Adapter
 
         private void SaveProjectEventHandler(object sender, SingleEventArgs<string> e)
         {
-            SerializationUtils.SaveToXml(project, e.Arg);
+            XmlSerializationUtils.SaveToXml(project, e.Arg);
         }
 
         private void OpenProjectEventHandler(object sender, OpenProjectEventArgs e)
         {
             // deserialize project
-            Project = SerializationUtils.LoadFromXml<Project>(e.FileName);
+            Project = XmlSerializationUtils.LoadFromXml<Project>(e.FileName);
 
             // load test model data
             if (GetTestTree != null)

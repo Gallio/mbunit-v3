@@ -19,7 +19,7 @@ using System.Text;
 using System.Xml.Serialization;
 using Gallio.Collections;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -27,8 +27,8 @@ namespace Gallio.Runner.Reports
     /// Collects summary statistics about the execution of a test package for reporting purposes.
     /// </summary>
     [Serializable]
-    [XmlRoot(ElementName="statistics", Namespace=SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
+    [XmlRoot(ElementName="statistics", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class PackageRunStatistics
     {
         private int assertCount;

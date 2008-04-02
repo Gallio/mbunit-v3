@@ -25,18 +25,31 @@ namespace Gallio.Framework.Pattern
     /// existing method-level <see cref="PatternTest" />.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple = true, Inherited = true)]
     public abstract class TestMethodDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            IMethodInfo method = (IMethodInfo)codeElement;
+            IMethodInfo method = codeElement as IMethodInfo;
+            Validate(scope, method);
 
-            testBuilder.AddDecorator(Order, delegate(IPatternTestBuilder methodTestBuilder)
+            scope.AddDecorator(Order, delegate
             {
-                DecorateMethodTest(methodTestBuilder, method);
+                DecorateMethodTest(scope, method);
             });
+        }
+
+        /// <summary>
+        /// Verifies that the attribute is being used correctly.
+        /// </summary>
+        /// <param name="scope">The scope</param>
+        /// <param name="method">The method</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope scope, IMethodInfo method)
+        {
+            if (!scope.IsTestDeclaration || method == null)
+                ThrowUsageErrorException("This attribute can only be used on a test method.");
         }
 
         /// <summary>
@@ -48,9 +61,9 @@ namespace Gallio.Framework.Pattern
         /// or to add additional behaviors to the test.
         /// </para>
         /// </summary>
-        /// <param name="builder">The test builder</param>
+        /// <param name="methodScope">The method scope</param>
         /// <param name="method">The method</param>
-        protected virtual void DecorateMethodTest(IPatternTestBuilder builder, IMethodInfo method)
+        protected virtual void DecorateMethodTest(PatternEvaluationScope methodScope, IMethodInfo method)
         {
         }
     }

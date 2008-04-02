@@ -32,7 +32,7 @@ namespace Gallio.Framework.Pattern
     /// </para>
     /// </summary>
     /// <seealso cref="TestTypeDecoratorPatternAttribute"/>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
     public class TestTypePatternAttribute : PatternAttribute
     {
         private const string FixtureObjectCreationSpecKey = "FixtureObjectCreationSpec";
@@ -44,51 +44,48 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement)
+        public override bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return true;
         }
 
         /// <inheritdoc />
-        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            ITypeInfo type = (ITypeInfo)codeElement;
-            Validate(type);
+            ITypeInfo type = codeElement as ITypeInfo;
+            Validate(containingScope, type);
 
-            PatternTest test = CreateTest(containingTestBuilder, type);
-            IPatternTestBuilder testBuilder = containingTestBuilder.AddChild(test);
-            InitializeTest(testBuilder, type);
-            SetTestSemantics(test, type);
+            PatternTest typeTest = CreateTest(containingScope, type);
+            PatternEvaluationScope typeScope = containingScope.AddChildTest(typeTest);
+            InitializeTest(typeScope, type);
+            SetTestSemantics(typeTest, type);
 
-            testBuilder.ApplyDecorators();
+            typeScope.ApplyDecorators();
         }
 
         /// <summary>
-        /// Validates whether the attribute has been applied to a valid <see cref="ITypeInfo" />.
-        /// Called by <see cref="Consume" />.
+        /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <remarks>
-        /// The default implementation throws an exception if <paramref name="type"/> is an interface,
-        /// abstract class, open generic type definition, generic type parameter, generic method parameter,
-        /// array, pointer or reference.
-        /// </remarks>
+        /// <param name="containingScope">The containing scope</param>
         /// <param name="type">The type</param>
-        /// <exception cref="ModelException">Thrown if the attribute is applied to an inappropriate type</exception>
-        protected virtual void Validate(ITypeInfo type)
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope containingScope, ITypeInfo type)
         {
-            if (! type.IsClass || type.IsArray || type.IsByRef || type.IsPointer)
-                throw new ModelException(String.Format("The {0} attribute is not valid for use on type '{1}'.  The type must be a concrete class.", GetType().Name, type));
+            if (!containingScope.CanAddChildTest || type == null)
+                ThrowUsageErrorException("This attribute can only be used on a test type within a test assembly.");
+            if (!type.IsClass || type.ElementType != null)
+                ThrowUsageErrorException("This attribute can only be used on a class.");
         }
 
         /// <summary>
         /// Creates a test for a type.
         /// </summary>
-        /// <param name="containingTestBuilder">The containing test builder</param>
+        /// <param name="constainingScope">The containing scope</param>
         /// <param name="type">The type</param>
         /// <returns>The test</returns>
-        protected virtual PatternTest CreateTest(IPatternTestBuilder containingTestBuilder, ITypeInfo type)
+        protected virtual PatternTest CreateTest(PatternEvaluationScope constainingScope, ITypeInfo type)
         {
-            PatternTest test = new PatternTest(type.Name, type);
+            PatternTest test = new PatternTest(type.Name, type, constainingScope.TestDataContext.CreateChild());
             test.Kind = TestKinds.Fixture;
             return test;
         }
@@ -106,21 +103,20 @@ namespace Gallio.Framework.Pattern
         /// the first constructor found, then recurses to process all public and non-public
         /// nested types.  Non-public members other than nested types are ignored.
         /// </remarks>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
+        /// <param name="typeScope">The type scope</param>
         /// <param name="type">The type</param>
-        protected virtual void InitializeTest(IPatternTestBuilder typeTestBuilder, ITypeInfo type)
+        protected virtual void InitializeTest(PatternEvaluationScope typeScope, ITypeInfo type)
         {
             string xmlDocumentation = type.GetXmlDocumentation();
             if (xmlDocumentation != null)
-                typeTestBuilder.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                typeScope.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in typeTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(type, true))
-                pattern.ProcessTest(typeTestBuilder, type);
+            typeScope.Process(type);
 
             if (type.IsGenericTypeDefinition)
             {
                 foreach (IGenericParameterInfo parameter in type.GenericArguments)
-                    ProcessGenericParameter(typeTestBuilder, parameter);
+                    typeScope.Consume(parameter, false, DefaultGenericParameterPattern);
             }
 
             BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public;
@@ -130,16 +126,16 @@ namespace Gallio.Framework.Pattern
             // TODO: We should probably process groups of members in sorted order working outwards
             //       from the base type, like an onion.
             foreach (IFieldInfo field in CodeElementSorter.SortMembersByDeclaringType(type.GetFields(bindingFlags)))
-                ProcessField(typeTestBuilder, field);
+                typeScope.Consume(field, false, DefaultFieldPattern);
 
             foreach (IPropertyInfo property in CodeElementSorter.SortMembersByDeclaringType(type.GetProperties(bindingFlags)))
-                ProcessProperty(typeTestBuilder, property);
+                typeScope.Consume(property, false, DefaultPropertyPattern);
 
             foreach (IMethodInfo method in CodeElementSorter.SortMembersByDeclaringType(type.GetMethods(bindingFlags)))
-                ProcessMethod(typeTestBuilder, method);
+                typeScope.Consume(method, false, DefaultMethodPattern);
 
             foreach (IEventInfo @event in CodeElementSorter.SortMembersByDeclaringType(type.GetEvents(bindingFlags)))
-                ProcessEvent(typeTestBuilder, @event);
+                typeScope.Consume(@event, false, DefaultEventPattern);
 
             // Note: We only consider instance members of concrete types because abstract types
             //       cannot be instantiated so the members cannot be accessed.  An abstract type
@@ -148,7 +144,7 @@ namespace Gallio.Framework.Pattern
             {
                 foreach (IConstructorInfo constructor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
                 {
-                    ProcessConstructor(typeTestBuilder, constructor);
+                    typeScope.Consume(constructor, false, DefaultConstructorPattern);
 
                     // FIXME: Currently we arbitrarily choose the first constructor and throw away the rest.
                     //        This should be replaced by a more intelligent mechanism that supports a constructor
@@ -158,7 +154,7 @@ namespace Gallio.Framework.Pattern
             }
 
             foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
-                ProcessNestedType(typeTestBuilder, nestedType);
+                typeScope.Consume(nestedType, false, DefaultNestedTypePattern);
         }
 
         /// <summary>
@@ -206,7 +202,7 @@ namespace Gallio.Framework.Pattern
                     testInstanceState.FixtureType = spec.ResolvedType;
 
                     if (!testInstanceState.IsReusingPrimaryTestStep)
-                        testInstanceState.TestStep.Name += spec.Format(testInstanceState.Formatter);
+                        testInstanceState.TestStep.Name = spec.Format(testInstanceState.TestStep.Name, testInstanceState.Formatter);
                 });
 
             test.TestInstanceActions.InitializeTestInstanceChain.After(
@@ -320,167 +316,6 @@ namespace Gallio.Framework.Pattern
         protected virtual IPattern DefaultNestedTypePattern
         {
             get { return RecursiveTypePattern.Instance; }
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a generic parameter, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="genericParameter">The generic parameter</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryGenericParameterPattern(IPatternResolver patternResolver, IGenericParameterInfo genericParameter)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, genericParameter) ?? DefaultGenericParameterPattern;
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a method, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="method">The method</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryMethodPattern(IPatternResolver patternResolver, IMethodInfo method)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, method) ?? DefaultMethodPattern;
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of an event, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="event">The event</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryEventPattern(IPatternResolver patternResolver, IEventInfo @event)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, @event) ?? DefaultEventPattern;
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a field, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="field">The field</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryFieldPattern(IPatternResolver patternResolver, IFieldInfo field)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, field) ?? DefaultFieldPattern;
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a property, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="property">The property</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryPropertyPattern(IPatternResolver patternResolver, IPropertyInfo property)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, property) ?? DefaultPropertyPattern;
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a constructor, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="constructor">The constructor</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryConstructorPattern(IPatternResolver patternResolver, IConstructorInfo constructor)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, constructor) ?? DefaultConstructorPattern;
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a nested type, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="nestedType">The nested type</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryNestedTypePattern(IPatternResolver patternResolver, ITypeInfo nestedType)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, nestedType) ?? DefaultNestedTypePattern;
-        }
-
-        /// <summary>
-        /// Processes a generic parameter.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="genericParameter">The generic parameter</param>
-        protected virtual void ProcessGenericParameter(IPatternTestBuilder typeTestBuilder, IGenericParameterInfo genericParameter)
-        {
-            IPattern pattern = GetPrimaryGenericParameterPattern(typeTestBuilder.TestModelBuilder.PatternResolver, genericParameter);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, genericParameter, false);
-        }
-
-        /// <summary>
-        /// Processes a method.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="method">The method</param>
-        protected virtual void ProcessMethod(IPatternTestBuilder typeTestBuilder, IMethodInfo method)
-        {
-            IPattern pattern = GetPrimaryMethodPattern(typeTestBuilder.TestModelBuilder.PatternResolver, method);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, method, false);
-        }
-
-        /// <summary>
-        /// Processes an event.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="event">The event</param>
-        protected virtual void ProcessEvent(IPatternTestBuilder typeTestBuilder, IEventInfo @event)
-        {
-            IPattern pattern = GetPrimaryEventPattern(typeTestBuilder.TestModelBuilder.PatternResolver, @event);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, @event, false);
-        }
-
-        /// <summary>
-        /// Processes a field.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="field">The field</param>
-        protected virtual void ProcessField(IPatternTestBuilder typeTestBuilder, IFieldInfo field)
-        {
-            IPattern pattern = GetPrimaryFieldPattern(typeTestBuilder.TestModelBuilder.PatternResolver, field);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, field, false);
-        }
-
-        /// <summary>
-        /// Processes a property.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="property">The property</param>
-        protected virtual void ProcessProperty(IPatternTestBuilder typeTestBuilder, IPropertyInfo property)
-        {
-            IPattern pattern = GetPrimaryPropertyPattern(typeTestBuilder.TestModelBuilder.PatternResolver, property);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, property, false);
-        }
-
-        /// <summary>
-        /// Processes a constructor.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="constructor">The constructor</param>
-        protected virtual void ProcessConstructor(IPatternTestBuilder typeTestBuilder, IConstructorInfo constructor)
-        {
-            IPattern pattern = GetPrimaryConstructorPattern(typeTestBuilder.TestModelBuilder.PatternResolver, constructor);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, constructor, false);
-        }
-
-        /// <summary>
-        /// Processes a nested type.
-        /// </summary>
-        /// <param name="typeTestBuilder">The test builder for the type</param>
-        /// <param name="nestedType">The nested type</param>
-        protected virtual void ProcessNestedType(IPatternTestBuilder typeTestBuilder, ITypeInfo nestedType)
-        {
-            IPattern pattern = GetPrimaryNestedTypePattern(typeTestBuilder.TestModelBuilder.PatternResolver, nestedType);
-            if (pattern != null)
-                pattern.Consume(typeTestBuilder, nestedType, false);
         }
     }
 }

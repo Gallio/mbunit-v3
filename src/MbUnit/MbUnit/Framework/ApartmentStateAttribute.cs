@@ -35,8 +35,7 @@ namespace MbUnit.Framework
     /// a test in some mode that may differ from that which it would ordinarily inherit.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
-        AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ApartmentStateAttribute : TestDecoratorPatternAttribute
     {
         private readonly ApartmentState apartmentState;
@@ -71,9 +70,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
+        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            builder.Test.ApartmentState = apartmentState;
+            scope.Test.ApartmentState = apartmentState;
         }
     }
 }

@@ -22,21 +22,34 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// <para>
     /// A test decorator pattern attribute applies decorations to an
-    /// existing type or method level <see cref="PatternTest" />.
+    /// existing assembly, type or method level <see cref="PatternTest" />.
     /// </para>
     /// </summary>
     /// <seealso cref="TestTypePatternAttribute"/>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
-        AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public abstract class TestDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            testBuilder.AddDecorator(Order, delegate(IPatternTestBuilder typeTestBuilder)
+            Validate(scope, codeElement);
+
+            scope.AddDecorator(Order, delegate
             {
-                DecorateTest(typeTestBuilder, codeElement);
+                DecorateTest(scope, codeElement);
             });
+        }
+
+        /// <summary>
+        /// Verifies that the attribute is being used correctly.
+        /// </summary>
+        /// <param name="scope">The scope</param>
+        /// <param name="codeElement">The code element</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        {
+            if (!scope.IsTestDeclaration)
+                ThrowUsageErrorException("This attribute can only be used on a test.");
         }
 
         /// <summary>
@@ -48,9 +61,9 @@ namespace Gallio.Framework.Pattern
         /// or to add additional behaviors to the test.
         /// </para>
         /// </summary>
-        /// <param name="builder">The test builder</param>
+        /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
-        protected virtual void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
+        protected virtual void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
         }
     }

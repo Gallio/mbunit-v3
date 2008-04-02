@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Projects
 {
@@ -25,8 +25,8 @@ namespace Gallio.Runner.Projects
     /// Gallio project container.
     /// </summary>
     [Serializable]
-    [XmlRoot("project", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("project", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class Project
     {
         private TestPackageConfig testPackageConfig;

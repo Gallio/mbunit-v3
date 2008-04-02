@@ -101,10 +101,10 @@ namespace Gallio.Runner.Domains
         /// <inheritdoc />
         public void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
-            if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
             if (options == null)
                 throw new ArgumentNullException("options");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
 
             ThrowIfDisposed();
 

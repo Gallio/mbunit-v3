@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 
 namespace Gallio.Model
 {
@@ -25,6 +26,7 @@ namespace Gallio.Model
     {
         private readonly TestPackage testPackage;
         private readonly RootTest rootTest;
+        private readonly List<Annotation> annotations;
 
         /// <summary>
         /// Creates a test model with a new empty root test.
@@ -51,6 +53,7 @@ namespace Gallio.Model
 
             this.testPackage = testPackage;
             this.rootTest = rootTest;
+            annotations = new List<Annotation>();
         }
 
         /// <summary>
@@ -67,6 +70,45 @@ namespace Gallio.Model
         public RootTest RootTest
         {
             get { return rootTest; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the read-only list of annotations.
+        /// </para>
+        /// <para>
+        /// An annotation is an informational, warning or error message associated with
+        /// a code element in the test model.
+        /// </para>
+        /// <para>
+        /// Test frameworks publish annotations on the test model that describe usage errors
+        /// or warnings about problems that may prevent tests from running, such as using a
+        /// custom attribute incorrectly.  They may also emit informational annotations to
+        /// draw the user's attention, such as by flagging ignored or pending tests.
+        /// </para>
+        /// <para>
+        /// The presentation of annotations is undefined.  A command-line test runner might
+        /// simply log them whereas an IDE plugin could generate new task items to incorporate
+        /// them into the UI.
+        /// </para>
+        /// </summary>
+        public IList<Annotation> Annotations
+        {
+            get { return annotations.AsReadOnly(); }
+        }
+
+        /// <summary>
+        /// Adds an annotation.
+        /// </summary>
+        /// <param name="annotation">The annotation to add</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="annotation"/> is null</exception>
+        /// <seealso cref="Annotations"/>
+        public void AddAnnotation(Annotation annotation)
+        {
+            if (annotation == null)
+                throw new ArgumentNullException("annotation");
+
+            annotations.Add(annotation);
         }
     }
 }

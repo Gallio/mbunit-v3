@@ -103,7 +103,7 @@ namespace Gallio.Hosting.ProgressMonitoring
         }
 
         /// <summary>
-        /// The forwarding event listener forwards messages to the host's progress monitor.
+        /// Forwards messages to the host's progress monitor.
         /// </summary>
         private sealed class Forwarder : LongLivedMarshalByRefObject
         {

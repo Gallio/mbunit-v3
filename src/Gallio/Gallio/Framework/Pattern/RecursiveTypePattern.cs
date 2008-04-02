@@ -38,11 +38,11 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             ITypeInfo type = (ITypeInfo)codeElement;
             foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
-                ProcessNestedType(containingTestBuilder, nestedType);
+                containingScope.Consume(nestedType, false, DefaultNestedTypePattern);
         }
 
         /// <summary>
@@ -54,29 +54,6 @@ namespace Gallio.Framework.Pattern
         protected virtual IPattern DefaultNestedTypePattern
         {
             get { return Instance; }
-        }
-
-        /// <summary>
-        /// Gets the primary pattern of a nested type, or null if none.
-        /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
-        /// <param name="nestedType">The nested type</param>
-        /// <returns>The primary pattern, or null if none</returns>
-        protected IPattern GetPrimaryNestedTypePattern(IPatternResolver patternResolver, ITypeInfo nestedType)
-        {
-            return PatternUtils.GetPrimaryPattern(patternResolver, nestedType) ?? DefaultNestedTypePattern;
-        }
-
-        /// <summary>
-        /// Processes a nested type.
-        /// </summary>
-        /// <param name="containingTestBuilder">The containing test builder</param>
-        /// <param name="nestedType">The nested type</param>
-        protected virtual void ProcessNestedType(IPatternTestBuilder containingTestBuilder, ITypeInfo nestedType)
-        {
-            IPattern pattern = GetPrimaryNestedTypePattern(containingTestBuilder.TestModelBuilder.PatternResolver, nestedType);
-            if (pattern != null)
-                pattern.Consume(containingTestBuilder, nestedType, false);
         }
     }
 }

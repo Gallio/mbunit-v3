@@ -68,6 +68,7 @@
     <Compile Include="Framework\CsvDataTest.cs" />
     <Compile Include="Framework\FileAssertTest.cs" />
     <Compile Include="Framework\GenericAssertTest.cs" />
+    <Compile Include="Framework\DataBindingTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
     <Compile Include="Integration\FixtureInheritanceTest.cs" />
     <Compile Include="Model\MbUnitTestFrameworkTest.cs" />

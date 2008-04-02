@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Collections;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -25,7 +25,7 @@ namespace Gallio.Runner.Reports
     /// Summarizes the execution of a test package for reporting purposes.
     /// </summary>
     [Serializable]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class PackageRun
     {
         private PackageRunStatistics statistics;
@@ -74,7 +74,7 @@ namespace Gallio.Runner.Reports
         /// Gets or sets the statistics for the package run.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("statistics", Namespace = SerializationUtils.XmlNamespace, IsNullable = false)]
+        [XmlElement("statistics", Namespace = XmlSerializationUtils.GallioNamespace, IsNullable = false)]
         public PackageRunStatistics Statistics
         {
             get

@@ -23,7 +23,7 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// <para>
     /// Declares that a field, property, method parameter or generic parameter
-    /// represents an <see cref="PatternTestParameter" />.
+    /// represents a <see cref="PatternTestParameter" />.
     /// Subclasses of this attribute can control what happens with the parameter.
     /// </para>
     /// <para>
@@ -31,8 +31,7 @@ namespace Gallio.Framework.Pattern
     /// field or parameter declaration.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter
-        | AttributeTargets.GenericParameter, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestParameter, AllowMultiple = false, Inherited = true)]
     public abstract class TestParameterPatternAttribute : PatternAttribute
     {
         /// <summary>
@@ -57,56 +56,69 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            ISlotInfo slot = (ISlotInfo)codeElement;
-            Validate(slot);
+            ISlotInfo slot = codeElement as ISlotInfo;
+            Validate(containingScope, slot);
 
-            PatternTestParameter testParameter = CreateTestParameter(containingTestBuilder, slot);
-            IPatternTestParameterBuilder testParameterBuilder = containingTestBuilder.AddParameter(testParameter);
-            InitializeTestParameter(testParameterBuilder, slot);
+            PatternTestParameter testParameter = CreateTestParameter(containingScope, slot);
+            PatternEvaluationScope testParameterScope = containingScope.AddTestParameter(testParameter);
+            InitializeTestParameter(testParameterScope, slot);
 
-            testParameterBuilder.ApplyDecorators();
+            testParameterScope.ApplyDecorators();
         }
 
         /// <summary>
-        /// Validates whether the attribute has been applied to a valid <see cref="ISlotInfo" />.
-        /// Called by <see cref="Consume" />.
+        /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <remarks>
-        /// The default implementation does nothing.
-        /// </remarks>
+        /// <param name="containingScope">The containing scope</param>
         /// <param name="slot">The slot</param>
-        /// <exception cref="ModelException">Thrown if the attribute is applied to an inappropriate slot</exception>
-        protected virtual void Validate(ISlotInfo slot)
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope containingScope, ISlotInfo slot)
         {
+            if (!containingScope.CanAddTestParameter || slot == null)
+                ThrowUsageErrorException("This attribute can only be used on a test parameter.");
         }
 
         /// <summary>
         /// Creates a test parameter.
         /// </summary>
-        /// <param name="containingTestBuilder">The containing test builder</param>
+        /// <param name="containingScope">The containing scope</param>
         /// <param name="slot">The slot</param>
         /// <returns>The test parameter</returns>
-        protected virtual PatternTestParameter CreateTestParameter(IPatternTestBuilder containingTestBuilder, ISlotInfo slot)
+        protected virtual PatternTestParameter CreateTestParameter(PatternEvaluationScope containingScope, ISlotInfo slot)
         {
-            PatternTestParameter testParameter = new PatternTestParameter(slot);
+            PatternTestParameter testParameter = new PatternTestParameter(slot.Name, slot, containingScope.TestDataContext.CreateChild());
             return testParameter;
         }
 
         /// <summary>
         /// Initializes a test parameter after it has been added to the containing test.
         /// </summary>
-        /// <param name="testParameterBuilder">The test parameter builer</param>
+        /// <param name="testParameterScope">The test parameter scope</param>
         /// <param name="slot">The slot</param>
-        protected virtual void InitializeTestParameter(IPatternTestParameterBuilder testParameterBuilder, ISlotInfo slot)
+        protected virtual void InitializeTestParameter(PatternEvaluationScope testParameterScope, ISlotInfo slot)
         {
+            int index = slot.Position;
+            IParameterInfo parameter = slot as IParameterInfo;
+            if (parameter != null)
+            {
+                // For generic methods, we offset the position of the parameter
+                // by the number of generic method parameters.  That way
+                // we can assign each parameter in the method a unique index
+                // by reading all parameters left to right, starting with the
+                // generic parameters and moving onwards to the method parameters.
+                IMethodInfo method = parameter.Member as IMethodInfo;
+                if (method != null && method.IsGenericMethodDefinition)
+                    index += method.GenericArguments.Count;
+            }
+            testParameterScope.TestDataContext.ImplicitDataBindingIndexOffset = index;
+
             string xmlDocumentation = slot.GetXmlDocumentation();
             if (xmlDocumentation != null)
-                testParameterBuilder.TestParameter.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                testParameterScope.TestParameter.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            foreach (IPattern pattern in testParameterBuilder.TestModelBuilder.PatternResolver.GetPatterns(slot, true))
-                pattern.ProcessTestParameter(testParameterBuilder, slot);
+            testParameterScope.Process(slot);
         }
         
         private sealed class DefaultImpl : TestParameterPatternAttribute
@@ -115,10 +127,10 @@ namespace Gallio.Framework.Pattern
 
         private sealed class AutomaticImpl : TestParameterPatternAttribute
         {
-            public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+            public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
             {
-                if (containingTestBuilder.TestModelBuilder.PatternResolver.GetPatterns(codeElement, true).GetEnumerator().MoveNext())
-                    base.Consume(containingTestBuilder, codeElement, skipChildren);
+                if (containingScope.Evaluator.HasPatterns(codeElement))
+                    base.Consume(containingScope, codeElement, skipChildren);
             }
         }
     }

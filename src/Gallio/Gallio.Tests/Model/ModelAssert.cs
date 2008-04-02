@@ -76,9 +76,6 @@ namespace Gallio.Tests.Model
             }
 
             AreEqual((TestComponentData)expected, actual);
-
-            Assert.AreEqual(expected.Index, actual.Index);
-            Assert.AreEqual(expected.TypeName, actual.TypeName);
         }
 
         public static void AreEqual(MetadataMap expected, MetadataMap actual)

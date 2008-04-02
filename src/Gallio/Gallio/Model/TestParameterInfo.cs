@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Reflection;
 
 namespace Gallio.Model
 {
@@ -43,18 +42,6 @@ namespace Gallio.Model
         {
             get { return Owner; }
             set { throw new NotSupportedException(); }
-        }
-
-        /// <inheritdoc />
-        public ITypeInfo Type
-        {
-            get { return Source.Type; }
-        }
-
-        /// <inheritdoc />
-        public int Index
-        {
-            get { return Source.Index; }
         }
 
         /// <inheritdoc />

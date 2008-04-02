@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -58,6 +58,9 @@
     <Reference Include="JetBrains.Metadata, Version=3.0.517.8, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="JetBrains.ReSharper.Daemon, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="JetBrains.ReSharper.DocumentManager, Version=3.0.517.8, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -98,6 +101,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GallioAnnotationHighlighting.cs" />
+    <Compile Include="GallioDaemonStage.cs" />
+    <Compile Include="GallioDaemonStageProcess.cs" />
+    <Compile Include="GallioProjectFileState.cs" />
     <Compile Include="GallioTestProviderDelegate.cs" />
     <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestPresenter.cs" />

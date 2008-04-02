@@ -30,9 +30,9 @@ namespace Gallio.Framework.Pattern
     /// <seealso cref="PatternTestFramework"/>
     public class PatternTestExplorer : BaseTestExplorer
     {
-        private readonly IPatternTestModelBuilder builder;
+        private readonly PatternEvaluator evaluator;
         private readonly Dictionary<IAssemblyInfo, bool> assemblies;
-        private readonly Dictionary<string, IPatternTestBuilder> topLevelTestBuilders;
+        private readonly Dictionary<string, PatternEvaluationScope> frameworkScopes;
 
         /// <summary>
         /// Creates a test explorer.
@@ -42,15 +42,15 @@ namespace Gallio.Framework.Pattern
         public PatternTestExplorer(TestModel testModel)
             : base(testModel)
         {
-            builder = new DefaultPatternTestModelBuilder(testModel, DeclarativePatternResolver.Instance);
+            evaluator = new PatternEvaluator(testModel, DeclarativePatternResolver.Instance);
             assemblies = new Dictionary<IAssemblyInfo, bool>();
-            topLevelTestBuilders = new Dictionary<string, IPatternTestBuilder>();
+            frameworkScopes = new Dictionary<string, PatternEvaluationScope>();
         }
 
         /// <inheritdoc />
         public override bool IsTest(ICodeElementInfo element)
         {
-            return BootstrapAssemblyPattern.Instance.IsTest(builder.PatternResolver, element);
+            return BootstrapTestAssemblyPattern.Instance.IsTest(evaluator, element);
         }
 
         /// <inheritdoc />
@@ -58,16 +58,17 @@ namespace Gallio.Framework.Pattern
         {
             if (BuildAssemblyTest(assembly, false))
             {
-                foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(assembly))
-                    testBuilder.PopulateChildrenChain.Action(null);
+                foreach (PatternEvaluationScope scope in evaluator.GetScopes(assembly))
+                    scope.PopulateChildrenChain.Action(null);
 
                 assemblies[assembly] = true;
             }
 
             if (consumer != null)
             {
-                foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(assembly))
-                    consumer(testBuilder.Test);
+                foreach (PatternEvaluationScope scope in evaluator.GetScopes(assembly))
+                    if (scope.IsTestDeclaration)
+                        consumer(scope.Test);
             }
         }
 
@@ -78,15 +79,22 @@ namespace Gallio.Framework.Pattern
 
             if (! BuildAssemblyTest(assembly, true))
             {
-                foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(assembly))
-                    testBuilder.PopulateChildrenChain.Action(type);
+                foreach (PatternEvaluationScope scope in evaluator.GetScopes(assembly))
+                    scope.PopulateChildrenChain.Action(type);
             }
             
             if (consumer != null)
             {
-                foreach (IPatternTestBuilder testBuilder in builder.GetTestBuilders(type))
-                    consumer(testBuilder.Test);
+                foreach (PatternEvaluationScope scope in evaluator.GetScopes(type))
+                    if (scope.IsTestDeclaration)
+                        consumer(scope.Test);
             }
+        }
+
+        /// <inheritdoc />
+        public override void FinishModel()
+        {
+            evaluator.FinishModel();
         }
 
         private bool BuildAssemblyTest(IAssemblyInfo assembly, bool skipChildren)
@@ -103,41 +111,41 @@ namespace Gallio.Framework.Pattern
 
             if (!fullyPopulated)
             {
-                IPatternTestBuilder topLevelTestBuilder = GetTopLevelTestBuilder(tools);
+                PatternEvaluationScope frameworkScope = BuildFrameworkTest(tools);
 
-                InitializeAssembly(topLevelTestBuilder, assembly);
+                InitializeAssembly(frameworkScope, assembly);
 
-                BootstrapAssemblyPattern.Instance.Consume(topLevelTestBuilder, assembly, skipChildren);
+                BootstrapTestAssemblyPattern.Instance.Consume(frameworkScope, assembly, skipChildren);
             }
 
             return fullyPopulated;
         }
 
-        private IPatternTestBuilder GetTopLevelTestBuilder(IList<ToolInfo> tools)
+        private PatternEvaluationScope BuildFrameworkTest(IList<ToolInfo> tools)
         {
-            string id = BuildTopLevelTestId(tools);
+            string id = BuildFrameworkTestId(tools);
 
-            IPatternTestBuilder topLevelTestBuilder;
-            if (!topLevelTestBuilders.TryGetValue(id, out topLevelTestBuilder))
+            PatternEvaluationScope frameworkScope;
+            if (!frameworkScopes.TryGetValue(id, out frameworkScope))
             {
-                PatternTest topLevelTest = new PatternTest(BuildTopLevelTestName(tools), null);
+                PatternTest topLevelTest = new PatternTest(BuildFrameworkTestName(tools), null, new PatternTestDataContext(null));
                 topLevelTest.Kind = TestKinds.Framework;
                 topLevelTest.BaselineLocalId = id;
 
-                topLevelTestBuilder = builder.AddTopLevelTest(topLevelTest);
-                topLevelTestBuilders.Add(id, topLevelTestBuilder);
+                frameworkScope = evaluator.AddTest(topLevelTest);
+                frameworkScopes.Add(id, frameworkScope);
             }
 
-            return topLevelTestBuilder;
+            return frameworkScope;
         }
 
-        private void InitializeAssembly(IPatternTestBuilder topLevelTestBuilder, IAssemblyInfo assembly)
+        private void InitializeAssembly(PatternEvaluationScope frameworkScope, IAssemblyInfo assembly)
         {
-            foreach (AssemblyInitializationAttribute attrib in AttributeUtils.GetAttributes<AssemblyInitializationAttribute>(assembly, false))
+            foreach (TestAssemblyInitializationAttribute attrib in AttributeUtils.GetAttributes<TestAssemblyInitializationAttribute>(assembly, false))
             {
                 try
                 {
-                    attrib.Initialize(topLevelTestBuilder, assembly);
+                    attrib.Initialize(frameworkScope, assembly);
                 }
                 catch (Exception ex)
                 {
@@ -170,7 +178,7 @@ namespace Gallio.Framework.Pattern
             return tools;
         }
 
-        private static string BuildTopLevelTestId(IList<ToolInfo> tools)
+        private static string BuildFrameworkTestId(IList<ToolInfo> tools)
         {
             Hash64 hash = new Hash64();
             hash.Add("PatternTestFramework");
@@ -181,7 +189,7 @@ namespace Gallio.Framework.Pattern
             return hash.ToString();
         }
 
-        private static string BuildTopLevelTestName(IList<ToolInfo> tools)
+        private static string BuildFrameworkTestName(IList<ToolInfo> tools)
         {
             StringBuilder name = new StringBuilder();
 

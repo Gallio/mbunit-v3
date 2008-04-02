@@ -65,22 +65,31 @@ namespace Gallio.Framework.Pattern
 
             progressMonitor.SetStatus(testCommand.Test.Name);
 
-            PatternTest test = (PatternTest) testCommand.Test;
-            try
+            PatternTest test = testCommand.Test as PatternTest;
+            if (test != null)
             {
-                using (Sandbox sandbox = parentSandbox.CreateChild())
+                try
                 {
-                    return RunTestBody(testCommand, parentTestStep, sandbox, testHandlerDecorator, test);
+                    using (Sandbox sandbox = parentSandbox.CreateChild())
+                    {
+                        return RunTestBody(testCommand, parentTestStep, sandbox, testHandlerDecorator, test);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return ReportTestError(testCommand, parentTestStep, ex, String.Format("An exception occurred while preparing to run test '{0}'.", test.FullName));
+                }
+                finally
+                {
+                    progressMonitor.SetStatus("");
+                    progressMonitor.Worked(1);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                return ReportTestError(testCommand, parentTestStep, ex, String.Format("An exception occurred while preparing to run test '{0}'.", test.FullName));
-            }
-            finally
-            {
-                progressMonitor.SetStatus("");
-                progressMonitor.Worked(1);
+                ITestController controller = testCommand.Test.TestControllerFactory();
+                controller.RunTests(testCommand, parentTestStep, options, progressMonitor.CreateSubProgressMonitor(1));
+                return testCommand.RootStepFailureCount == 0 ? TestOutcome.Passed : TestOutcome.Failed;
             }
         }
 
@@ -292,7 +301,7 @@ namespace Gallio.Framework.Pattern
         {
             foreach (PatternTestParameter parameter in testState.Test.Parameters)
             {
-                IDataBindingAccessor bindingAccessor = parameter.Binder.Register(testState.BindingContext, parameter);
+                IDataBindingAccessor bindingAccessor = parameter.Binder.Register(testState.BindingContext, parameter.DataContext);
                 testState.SlotBindingAccessors.Add(new KeyValuePair<ISlotInfo, IDataBindingAccessor>(parameter.Slot, bindingAccessor));
             }
 

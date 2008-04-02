@@ -17,6 +17,7 @@ using System;
 using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Model.Serialization
 {
@@ -25,7 +26,7 @@ namespace Gallio.Model.Serialization
     /// </summary>
     /// <seealso cref="ITestComponent"/>
     [Serializable]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public abstract class TestComponentData
     {
         private string id;

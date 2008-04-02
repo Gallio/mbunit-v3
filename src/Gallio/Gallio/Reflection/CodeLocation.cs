@@ -18,7 +18,7 @@ using System.Globalization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection
 {
@@ -29,7 +29,7 @@ namespace Gallio.Reflection
     /// Lines and columns are numbered starting from 1.
     /// </remarks>
     [Serializable]
-    [XmlRoot("codeLocation", Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("codeLocation", Namespace = XmlSerializationUtils.GallioNamespace)]
     public struct CodeLocation : IEquatable<CodeLocation>, IXmlSerializable
     {
         private string path;
@@ -155,7 +155,7 @@ namespace Gallio.Reflection
         #endregion
 
         #region Xml Serialization
-        /* Note: We implement out own Xml serialization so that the code location object can still appear to be immutable.
+        /* Note: We implement our own Xml serialization so that the code location object can still appear to be immutable.
                  since we don't need any property setters unlike if we were using [XmlAttribute] attributes. */
         XmlSchema IXmlSerializable.GetSchema()
         {

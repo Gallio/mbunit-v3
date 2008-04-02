@@ -25,14 +25,14 @@ namespace MbUnit.Framework
     /// a particular type.  The expected contents of the exception message may optionally
     /// be specified.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ExpectedExceptionAttribute : TestMethodDecoratorPatternAttribute
     {
         private readonly Type exceptionType;
         private string message;
 
         /// <summary>
-        /// Declares that the associated test method is expected to throw an exception of
+        /// Declares that the associated test is expected to throw an exception of
         /// a particular type.
         /// </summary>
         /// <param name="exceptionType">The expected exception type</param>
@@ -43,7 +43,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Declares that the associated test method is expected to throw an exception of
+        /// Declares that the associated test is expected to throw an exception of
         /// a particular type.  The expected contents of the exception message may also
         /// optionally be specified.
         /// </summary>
@@ -77,9 +77,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateMethodTest(IPatternTestBuilder builder, IMethodInfo method)
+        protected override void DecorateMethodTest(PatternEvaluationScope methodScope, IMethodInfo method)
         {
-            builder.Test.Metadata.Add(MetadataKeys.ExpectedException, exceptionType.FullName);
+            methodScope.Test.Metadata.Add(MetadataKeys.ExpectedException, exceptionType.FullName);
         }
     }
 }

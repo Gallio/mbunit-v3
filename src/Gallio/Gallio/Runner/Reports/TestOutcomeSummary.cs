@@ -16,7 +16,7 @@
 using System;
 using System.Xml.Serialization;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -25,7 +25,7 @@ namespace Gallio.Runner.Reports
     /// </summary>
     /// <seealso cref="TestOutcome"/>
     [Serializable]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class TestOutcomeSummary
     {
         private TestOutcome outcome;

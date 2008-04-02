@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Text;
 using Gallio.Model;
+using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Monitors;
 using Microsoft.Build.Framework;
@@ -48,6 +50,7 @@ namespace Gallio.MSBuildTasks
         {
             base.OnAttach();
 
+            Runner.BuildTestModelComplete += HandleTestModelComplete;
             reportMonitor.TestStepFinished += HandleStepFinished;
         }
 
@@ -56,7 +59,58 @@ namespace Gallio.MSBuildTasks
         {
             base.OnDetach();
 
+            Runner.BuildTestModelComplete -= HandleTestModelComplete;
             reportMonitor.TestStepFinished -= HandleStepFinished;
+        }
+
+        private void HandleTestModelComplete(object sender, EventArgs e)
+        {
+            if (Runner.TestModelData == null)
+                return;
+
+            foreach (AnnotationData annotation in Runner.TestModelData.Annotations)
+                LogAnnotation(annotation);
+        }
+
+        private void LogAnnotation(AnnotationData annotation)
+        {
+            StringBuilder message = new StringBuilder();
+            message.Append(annotation.Message);
+
+            if (annotation.Type == AnnotationType.Info && annotation.CodeLocation != CodeLocation.Unknown)
+            {
+                message.Append("\nLocation: ");
+                message.Append(annotation.CodeLocation);
+            }
+
+            if (annotation.CodeLocation.Line == 0 && annotation.CodeReference != CodeReference.Unknown)
+            {
+                message.Append("\nReference: ");
+                message.Append(annotation.CodeReference);
+            }
+
+            if (!string.IsNullOrEmpty(annotation.Details))
+            {
+                message.Append("\nDetails: ");
+                message.Append(annotation.Details);
+            }
+
+            switch (annotation.Type)
+            {
+                case AnnotationType.Info:
+                    taskLoggingHelper.LogMessage(MessageImportance.Normal, message.ToString());
+                    break;
+
+                case AnnotationType.Error:
+                    taskLoggingHelper.LogError(null, null, null, annotation.CodeLocation.Path,
+                        annotation.CodeLocation.Line, annotation.CodeLocation.Column, 0, 0, message.ToString());
+                    break;
+
+                case AnnotationType.Warning:
+                    taskLoggingHelper.LogWarning(null, null, null, annotation.CodeLocation.Path,
+                        annotation.CodeLocation.Line, annotation.CodeLocation.Column, 0, 0, message.ToString());
+                    break;
+            }
         }
 
         private void HandleStepFinished(object sender, TestStepRunEventArgs e)
@@ -73,12 +127,12 @@ namespace Gallio.MSBuildTasks
                     break;
 
                 case TestStatus.Failed:
-                    taskLoggingHelper.LogError(null, null, null, codeLocation.Path, codeLocation.Line, 0, 0, 0, description);
+                    taskLoggingHelper.LogError(null, null, null, codeLocation.Path, codeLocation.Line, codeLocation.Column, 0, 0, description);
                     break;
 
                 case TestStatus.Skipped:
                 case TestStatus.Inconclusive:
-                    taskLoggingHelper.LogWarning(null, null, null, codeLocation.Path, codeLocation.Line, 0, 0, 0, description);
+                    taskLoggingHelper.LogWarning(null, null, null, codeLocation.Path, codeLocation.Line, codeLocation.Column, 0, 0, description);
                     break;
             }
         }

@@ -52,7 +52,7 @@ namespace MbUnit.Framework
     /// an Order property similar to decorators.  Then we can deprecate the
     /// TestSequence attribute.
     /// </todo>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple = false, Inherited = true)]
     public class TestAttribute : TestMethodPatternAttribute
     {
         /// <inheritdoc />

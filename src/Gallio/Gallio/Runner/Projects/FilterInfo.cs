@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Projects
 {
@@ -24,8 +24,8 @@ namespace Gallio.Runner.Projects
     /// Filter record for Gallio project.
     /// </summary>
     [Serializable]
-    [XmlRoot("filterInfo", Namespace=SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
+    [XmlRoot("filterInfo", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace=XmlSerializationUtils.GallioNamespace)]
     public class FilterInfo
     {
         private string filterName, filter;

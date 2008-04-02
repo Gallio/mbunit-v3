@@ -88,42 +88,48 @@ namespace Gallio.Framework.Data
         /// <para>
         /// The values are listed sequentially as follows:
         /// <list type="bullet">
+        /// <item>The <paramref name="entity"/>.</item>
         /// <item>The <see cref="IGenericParameterInfo" /> slot values, if any, are ordered by index
         /// and enclosed within angle bracket.</item>
         /// <item>The <see cref="IParameterInfo" /> slot values, if any, are ordered by index
         /// and enclosed within parentheses.</item>
-        /// <item>All other slot values, if any, are ordered by name and formatted as name-value
-        /// pairs delimited by equals signs.</item>
+        /// <item>All other slot values, if any, are sorted by name and formatted as name-value
+        /// pair assignments following a colon and delimited by a comma</item>
         /// </list>
-        /// Example: '&lt;int, string&gt;(42, "deep thought"), Book="HGTTG"'.
+        /// Example: 'SomeType&lt;int, string&gt;(42, "deep thought"): Author="Douglas Adams", Book="HGTTG"'.
         /// </para>
         /// <para>
         /// If there are no slots of a given kind, then the enclosing angle brackets or
-        /// parentheses are ignored.  Therefore if <see cref="SlotValues"/> is empty,
-        /// then an empty string will be returned.
+        /// parentheses are ignored.  Therefore if <see cref="SlotValues"/> is empty
+        /// then <paramref name="entity"/> will be returned unmodified.
         /// </para>
         /// </summary>
         /// <remarks>
         /// This method assumes that the slots all belong to the same declaring type or method
         /// which is always the case for <see cref="ObjectCreationSpec" /> and <see cref="MethodInvocationSpec" />.
         /// </remarks>
+        /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method</param>
         /// <param name="formatter">The formatter</param>
         /// <returns>The formatted specification</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null</exception>
-        public string Format(IFormatter formatter)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="entity"/>
+        /// or <paramref name="formatter"/> is null</exception>
+        public string Format(string entity, IFormatter formatter)
         {
+            if (entity == null)
+                throw new ArgumentNullException("entity");
             if (formatter == null)
                 throw new ArgumentNullException("formatter");
 
-            return FormatInternal(formatter);
+            return FormatInternal(entity, formatter);
         }
 
         /// <summary>
         /// Internal implementation of <see cref="Format" /> after argument validation.
         /// </summary>
+        /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method</param>
         /// <param name="formatter">The formatter, not null</param>
         /// <returns>The formatted specification</returns>
-        protected abstract string FormatInternal(IFormatter formatter);
+        protected abstract string FormatInternal(string entity, IFormatter formatter);
 
         /// <summary>
         /// Appends formatted generic arguments within angle brackets, if any.
@@ -171,14 +177,22 @@ namespace Gallio.Framework.Data
             foreach (KeyValuePair<string, object> entry in namedValues)
                 sortedNamedValues.Add(entry.Key, entry.Value);
 
-            foreach (KeyValuePair<string, object> entry in sortedNamedValues)
+            if (sortedNamedValues.Count != 0)
             {
-                if (str.Length != 0)
-                    str.Append(", ");
+                str.Append(": ");
 
-                str.Append(entry.Key);
-                str.Append('=');
-                str.Append(formatter.Format(entry.Value));
+                bool first = true;
+                foreach (KeyValuePair<string, object> entry in sortedNamedValues)
+                {
+                    if (first)
+                        first = false;
+                    else
+                        str.Append(", ");
+
+                    str.Append(entry.Key);
+                    str.Append('=');
+                    str.Append(formatter.Format(entry.Value));
+                }
             }
         }
 

@@ -26,19 +26,31 @@ namespace Gallio.Framework.Pattern
     /// </para>
     /// </summary>
     /// <seealso cref="TestTypePatternAttribute"/>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface,
-        AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = true, Inherited = true)]
     public abstract class TestTypeDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            ITypeInfo type = (ITypeInfo)codeElement;
+            ITypeInfo type = codeElement as ITypeInfo;
+            Validate(scope, type);
 
-            testBuilder.AddDecorator(Order, delegate(IPatternTestBuilder typeTestBuilder)
+            scope.AddDecorator(Order, delegate
             {
-                DecorateTest(typeTestBuilder, type);
+                DecorateTest(scope, type);
             });
+        }
+
+        /// <summary>
+        /// Verifies that the attribute is being used correctly.
+        /// </summary>
+        /// <param name="scope">The scope</param>
+        /// <param name="type">The type</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope scope, ITypeInfo type)
+        {
+            if (!scope.IsTestDeclaration || type == null)
+                ThrowUsageErrorException("This attribute can only be used on a test type.");
         }
 
         /// <summary>
@@ -50,9 +62,9 @@ namespace Gallio.Framework.Pattern
         /// or to add additional behaviors to the test.
         /// </para>
         /// </summary>
-        /// <param name="builder">The test builder</param>
+        /// <param name="typeScope">The type scope</param>
         /// <param name="type">The type</param>
-        protected virtual void DecorateTest(IPatternTestBuilder builder, ITypeInfo type)
+        protected virtual void DecorateTest(PatternEvaluationScope typeScope, ITypeInfo type)
         {
         }
     }

@@ -15,7 +15,7 @@
 
 using System;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -23,7 +23,7 @@ namespace Gallio.Model
     /// A test result describes the final result of having executed a test.
     /// </summary>
     [Serializable]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class TestResult
     {
         private TestOutcome outcome = TestOutcome.Inconclusive;

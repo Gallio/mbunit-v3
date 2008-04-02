@@ -31,29 +31,33 @@ namespace Gallio.Framework.Pattern
     /// filtering, reporting, documentation or other purposes.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class
-        | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field
-            | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public abstract class MetadataPatternAttribute : PatternAttribute
     {
         /// <inheritdoc />
-        public override void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            Apply(testBuilder.Test.Metadata);
+            Validate(scope, codeElement);
+
+            Apply(scope.TestComponent.Metadata);
         }
 
-        /// <inheritdoc />
-        public override void ProcessTestParameter(IPatternTestParameterBuilder testParameterBuilder, ICodeElementInfo codeElement)
+        /// <summary>
+        /// Verifies that the attribute is being used correctly.
+        /// </summary>
+        /// <param name="scope">The scope</param>
+        /// <param name="codeElement">The code element</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            Apply(testParameterBuilder.TestParameter.Metadata);
+            if (!scope.IsTestDeclaration && !scope.IsTestParameterDeclaration)
+                ThrowUsageErrorException("This attribute can only be used on a test or test parameter.");
         }
 
         /// <summary>
         /// Applies metadata contributions the metadata map of a test component.
         /// </summary>
         /// <param name="metadata">The metadata map</param>
-        protected virtual void Apply(MetadataMap metadata)
-        {
-        }
+        protected abstract void Apply(MetadataMap metadata);
     }
 }

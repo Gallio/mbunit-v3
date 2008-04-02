@@ -165,9 +165,9 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override string FormatInternal(IFormatter formatter)
+        protected override string FormatInternal(string entity, IFormatter formatter)
         {
-            StringBuilder str = new StringBuilder();
+            StringBuilder str = new StringBuilder(entity);
             AppendFormattedGenericArguments(str, resolvedGenericArguments, formatter);
             AppendFormattedMethodArguments(str, resolvedConstructorArguments, formatter);
             AppendFormattedNamedValues(str, GetNamedValues(), formatter);
@@ -276,7 +276,7 @@ namespace Gallio.Framework.Data
                 if (field != null)
                 {
                     FieldInfo resolvedField = ResolveMember(resolvedType, field.Resolve(true));
-                    resolvedFieldValues.Add(resolvedField, slotValue.Value);
+                    resolvedFieldValues.Add(resolvedField, Converter.Convert(slotValue.Value, resolvedField.FieldType));
                 }
             }
         }
@@ -291,7 +291,7 @@ namespace Gallio.Framework.Data
                 if (property != null)
                 {
                     PropertyInfo resolvedProperty = ResolveMember(resolvedType, property.Resolve(true));
-                    resolvedPropertyValues.Add(resolvedProperty, slotValue.Value);
+                    resolvedPropertyValues.Add(resolvedProperty, Converter.Convert(slotValue.Value, resolvedProperty.PropertyType));
                 }
             }
         }

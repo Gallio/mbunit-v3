@@ -75,8 +75,11 @@ namespace Gallio.Reflection.Impl
                 // look for the next one.
                 for (int i = 0; i < seqPtCount; i++)
                 {
+                    // Note: We omit the column number information because it is not useful.
+                    //       It will just refer to the column of the first line of the method,
+                    //       which already isn't sufficiently accurate to determine its point of definition.
                     if (columns[i] != 0)
-                        return new CodeLocation(docs[i].URL, lines[i], columns[i]);
+                        return new CodeLocation(docs[i].URL, lines[i], 0);
                 }
 
                 // Fallback on file information only.

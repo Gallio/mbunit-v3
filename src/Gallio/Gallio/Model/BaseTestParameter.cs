@@ -24,24 +24,16 @@ namespace Gallio.Model
     public class BaseTestParameter : BaseTestComponent, ITestParameter
     {
         private ITest owner;
-        private ITypeInfo type;
-        private int index;
 
         /// <summary>
         /// Initializes a test parameter.
         /// </summary>
         /// <param name="name">The name of the test parameter</param>
         /// <param name="codeElement">The point of definition of the parameter, or null if unknown</param>
-        /// <param name="type">The type of the parameter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="type"/> is null</exception>
-        public BaseTestParameter(string name, ICodeElementInfo codeElement, ITypeInfo type)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public BaseTestParameter(string name, ICodeElementInfo codeElement)
             : base(name, codeElement)
         {
-            if (type == null)
-                throw new ArgumentNullException(@"type");
-
-            this.type = type;
         }
 
         /// <inheritdoc />
@@ -61,32 +53,6 @@ namespace Gallio.Model
         {
             get { return owner; }
             set { owner = value; }
-        }
-
-        /// <inheritdoc />
-        public ITypeInfo Type
-        {
-            get { return type; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-
-                type = value;
-            }
-        }
-
-        /// <inheritdoc />
-        public int Index
-        {
-            get { return index; }
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentOutOfRangeException(@"value");
-
-                index = value;
-            }
         }
     }
 }

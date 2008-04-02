@@ -19,8 +19,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
 using Gallio.Properties;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection
 {
@@ -30,7 +30,7 @@ namespace Gallio.Reflection
     /// typically used to identify the point of definition of a test component.
     /// </summary>
     [Serializable]
-    [XmlRoot("codeReference", Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("codeReference", Namespace = XmlSerializationUtils.GallioNamespace)]
     public struct CodeReference : IEquatable<CodeReference>, IXmlSerializable
     {
         private string assemblyName;
@@ -287,7 +287,7 @@ namespace Gallio.Reflection
         #endregion
 
         #region Xml Serialization
-        /* Note: We implement out own Xml serialization so that the code reference object can still appear to be immutable.
+        /* Note: We implement our own Xml serialization so that the code reference object can still appear to be immutable.
                  since we don't need any property setters unlike if we were using [XmlAttribute] attributes. */
         XmlSchema IXmlSerializable.GetSchema()
         {

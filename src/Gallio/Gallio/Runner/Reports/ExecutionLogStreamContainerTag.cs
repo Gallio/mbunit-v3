@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -24,7 +24,7 @@ namespace Gallio.Runner.Reports
     /// Abstract class of Xml-serializable execution log container tags.
     /// </summary>
     [Serializable]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public abstract class ExecutionLogStreamContainerTag : ExecutionLogStreamTag
     {
         private readonly List<ExecutionLogStreamTag> contents;

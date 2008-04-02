@@ -36,8 +36,7 @@ namespace MbUnit.Framework
     /// in order according to the <see cref="DecoratorPatternAttribute.Order" /> property.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
-        AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public abstract class TestDecoratorAttribute : TestDecoratorPatternAttribute
     {
         private static int nextUniqueId;
@@ -109,13 +108,13 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
+        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
             // Note: We do this as a test instance decorator to ensure that all of
             //       the setup actions registered by the test or its containing fixture
             //       can be wrapped because this is the last possible opportunity for new
             //       actions to be added.
-            builder.Test.TestActions.DecorateTestInstanceChain.After(delegate(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
+            scope.Test.TestActions.DecorateTestInstanceChain.After(delegate(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
             {
                 WrapDefaultAction(decoratedTestInstanceActions.InitializeTestInstanceChain, Initialize);
                 WrapDefaultAction(decoratedTestInstanceActions.SetUpTestInstanceChain, SetUp);

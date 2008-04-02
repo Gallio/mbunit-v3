@@ -24,8 +24,7 @@ namespace MbUnit.Framework
     /// Sets the maximum amount of time that a test or fixture is permitted to run.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
-        AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class TimeoutAttribute : TestDecoratorPatternAttribute
     {
         private readonly int timeoutSeconds;
@@ -52,9 +51,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
+        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            builder.Test.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+            scope.Test.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
         }
     }
 }

@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -27,7 +27,7 @@ namespace Gallio.Runner.Reports
     /// sections within an execution log stream.
     /// </summary>
     [Serializable]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class ExecutionLogStreamSectionTag : ExecutionLogStreamContainerTag
     {
         private string name;

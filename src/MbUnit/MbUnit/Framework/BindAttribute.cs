@@ -26,7 +26,6 @@ namespace MbUnit.Framework
     /// by specifying a different data source, a binding path or an index.  At most
     /// one such attribute may appear on any given test parameter.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple=false, Inherited=true)]
     public class BindAttribute : TestParameterDecoratorPatternAttribute
     {
         private string source;
@@ -88,10 +87,10 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTestParameter(IPatternTestParameterBuilder builder, ISlotInfo slot)
+        protected override void DecorateTestParameter(PatternEvaluationScope slotScope, ISlotInfo slot)
         {
             DataBinding binding = new SimpleDataBinding(index, path);
-            builder.TestParameter.Binder = new ScalarDataBinder(binding, source ?? @"");
+            slotScope.TestParameter.Binder = new ScalarDataBinder(binding, source ?? @"");
         }
     }
 }

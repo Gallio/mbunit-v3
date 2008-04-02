@@ -22,7 +22,7 @@ using Gallio.Reflection;
 namespace Gallio.Model
 {
     /// <summary>
-    /// Common base-type for elements in the test object model.
+    /// Common interface for elements in the test object model.
     /// All components have a name for presentation, metadata for
     /// annotations, and a code reference to its point of definition. 
     /// </summary>

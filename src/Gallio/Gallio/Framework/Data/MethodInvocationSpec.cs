@@ -124,9 +124,9 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override string FormatInternal(IFormatter formatter)
+        protected override string FormatInternal(string entity, IFormatter formatter)
         {
-            StringBuilder str = new StringBuilder();
+            StringBuilder str = new StringBuilder(entity);
             AppendFormattedGenericArguments(str, resolvedGenericArguments, formatter);
             AppendFormattedMethodArguments(str, resolvedArguments, formatter);
             return str.ToString();

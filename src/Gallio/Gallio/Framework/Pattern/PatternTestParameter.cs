@@ -26,33 +26,28 @@ namespace Gallio.Framework.Pattern
     /// or method parameter.
     /// </summary>
     /// <seealso cref="PatternTestFramework"/>
-    public class PatternTestParameter : BaseTestParameter, IDataSourceScope
+    public class PatternTestParameter : BaseTestParameter, IPatternTestComponent
     {
-        private DataSourceTable dataSourceTable;
+        private readonly PatternTestDataContext dataContext;
         private IDataBinder binder;
 
         /// <summary>
         /// Creates a test pattern parameter.
         /// </summary>
-        /// <param name="slot">The slot</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="slot"/> is null</exception>
-        public PatternTestParameter(ISlotInfo slot)
-            : base(ValidateSlotArgument(slot).Name, slot, slot.ValueType)
+        /// <param name="name">The name of the test parameter</param>
+        /// <param name="slot">The slot represented by the parameter</param>
+        /// <param name="dataContext">The data context of the test parameter</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
+        /// <paramref name="slot"/> or <paramref name="dataContext"/> is null</exception>
+        public PatternTestParameter(string name, ISlotInfo slot, PatternTestDataContext dataContext)
+            : base(name, slot)
         {
-            Index = slot.Position;
+            if (slot == null)
+                throw new ArgumentNullException("slot");
+            if (dataContext == null)
+                throw new ArgumentNullException("dataContext");
 
-            // For generic methods, we offset the position of the parameter
-            // by the number of generic method parameters.  That way
-            // we can assign each parameter in the method a unique index
-            // by reading all parameters left to right, starting with the
-            // generic parameters and moving onwards to the method parameters.
-            IParameterInfo parameter = slot as IParameterInfo;
-            if (parameter != null)
-            {
-                IMethodInfo method = parameter.Member as IMethodInfo;
-                if (method != null && method.IsGenericMethodDefinition)
-                    Index += method.GenericArguments.Count;
-            }
+            this.dataContext = dataContext;
         }
 
         /// <summary>
@@ -75,17 +70,16 @@ namespace Gallio.Framework.Pattern
         /// Gets or sets the <see cref="IDataBinder" /> for this test parameter.
         /// </summary>
         /// <remarks>
-        /// The default value is a <see cref="ScalarDataBinder" /> with a
-        /// <see cref="DataBinding"/> defined by the <see cref="ITestComponent.Name" />
-        /// and <see cref="ITestParameter.Index" /> and <see cref="ITestParameter.Type" />
-        /// of this parameter that is resolved using the anonymous data source.
+        /// The default value is a <see cref="ScalarDataBinder" /> bound to the anonymous
+        /// data source using a <see cref="DataBinding"/> whose path is the name of this parameter and whose
+        /// index is the implicit index computed by the pararameter's data context.
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public IDataBinder Binder
         {
             get
             {
-                return binder ?? CreateDefaultBinder();
+                return binder ?? GetImplicitBinder();
             }
             set
             {
@@ -95,38 +89,21 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static ISlotInfo ValidateSlotArgument(ISlotInfo slot)
+        /// <inheritdoc />
+        public PatternTestDataContext DataContext
         {
-            if (slot == null)
-                throw new ArgumentNullException(@"slot");
-            return slot;
+            get { return dataContext; }
         }
 
         /// <inheritdoc />
-        public DataSource DefineDataSource(string name)
+        public void SetName(string value)
         {
-            if (dataSourceTable == null)
-                dataSourceTable = new DataSourceTable();
-
-            return dataSourceTable.DefineDataSource(name);
+            Name = value;
         }
 
-        /// <inheritdoc />
-        public DataSource ResolveDataSource(string name)
+        private IDataBinder GetImplicitBinder()
         {
-            if (dataSourceTable != null)
-            {
-                DataSource source = dataSourceTable.ResolveDataSource(name);
-                if (source != null)
-                    return source;
-            }
-
-            return Owner != null ? Owner.ResolveDataSource(name) : null;
-        }
-
-        private IDataBinder CreateDefaultBinder()
-        {
-            DataBinding binding = new SimpleDataBinding(Index, Name);
+            DataBinding binding = new SimpleDataBinding(dataContext.ResolveImplicitDataBindingIndex(), Name);
             return new ScalarDataBinder(binding, "");
         }
     }

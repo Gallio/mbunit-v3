@@ -46,7 +46,7 @@ namespace Gallio.Runner
         public const int InvalidArguments = 10;
 
         /// <summary>
-        /// No tests were found
+        /// No tests were found.
         /// </summary>
         public const int NoTests = 16;
     }

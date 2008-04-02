@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Reflection;
-
 namespace Gallio.Model
 {
     /// <summary>
@@ -24,7 +22,8 @@ namespace Gallio.Model
     /// </para>
     /// <para>
     /// The <see cref="ITestComponent.Name" /> property of a test parameter should be
-    /// unique among the set parameters belonging to its <see cref="Owner"/>.
+    /// unique among the set parameters belonging to its <see cref="Owner"/> to ensure
+    /// that it can be differentiated from others.  However, this constraint is not enforced.
     /// </para>
     /// </summary>
     public interface ITestParameter : ITestComponent
@@ -34,21 +33,5 @@ namespace Gallio.Model
         /// does not yet have an owner.
         /// </summary>
         ITest Owner { get; set; }
-
-        /// <summary>
-        /// Gets the type of value that must be bound to the parameter.
-        /// </summary>
-        ITypeInfo Type { get; }
-
-        /// <summary>
-        /// Gets the zero-based index of the parameter.  The index is used
-        /// instead of the parameter name in unlabeled table-like data sources
-        /// (such as row-tests and headerless CSV files) to select the column to
-        /// which the parameter will be bound.
-        /// </summary>
-        /// <value>
-        /// The index of the parameter, or 0 if not applicable.
-        /// </value>
-        int Index { get; }
     }
 }

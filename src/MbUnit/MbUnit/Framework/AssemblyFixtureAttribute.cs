@@ -57,21 +57,27 @@ namespace MbUnit.Framework
     /// within any given assembly.
     /// </para>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
     public class AssemblyFixtureAttribute : TestTypePatternAttribute
     {
         /// <inheritdoc />
-        public override void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            ITypeInfo type = (ITypeInfo)codeElement;
-            Validate(type);
+            ITypeInfo type = codeElement as ITypeInfo;
+            Validate(containingScope, type);
 
-            PatternTest assemblyTest = containingTestBuilder.Test;
-            if (assemblyTest.Kind != TestKinds.Assembly)
-                throw new ModelException("The [AssemblyFixture] attribute can only be used on a non-nested class.");
-
-            InitializeTest(containingTestBuilder, type);
+            PatternTest assemblyTest = containingScope.Test;
+            InitializeTest(containingScope, type);
             SetTestSemantics(assemblyTest, type);
+        }
+
+        /// <inheritdoc />
+        protected override void Validate(PatternEvaluationScope containingScope, ITypeInfo type)
+        {
+            base.Validate(containingScope, type);
+
+            if (containingScope.Test.Kind != TestKinds.Assembly)
+                ThrowUsageErrorException("This attribute can only be used on a non-nested class.");
         }
 
         /// <inheritdoc />
@@ -81,7 +87,7 @@ namespace MbUnit.Framework
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     if (testInstanceState.FixtureType != null)
-                        throw new ModelException("There appear to be multiple [AssemblyFixture] attributes within the assembly, or some other attribute has already defined a fixture for the assembly.");
+                        ThrowUsageErrorException("There appears to already be a fixture defined for the assembly.");
                 });
 
             base.SetTestSemantics(test, type);

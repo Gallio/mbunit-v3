@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -25,8 +26,8 @@ namespace Gallio.Runner.Reports
     /// Summarizes the execution of a single test step for reporting purposes.
     /// </summary>
     [Serializable]
-    [XmlRoot("testStepRun", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("testStepRun", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class TestStepRun
     {
         private readonly List<TestStepRun> children;
@@ -62,7 +63,7 @@ namespace Gallio.Runner.Reports
         /// Gets or sets information about the step.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("testStep", IsNullable=false, Namespace=SerializationUtils.XmlNamespace)]
+        [XmlElement("testStep", IsNullable=false, Namespace=XmlSerializationUtils.GallioNamespace)]
         public TestStepData Step
         {
             get { return step; }
@@ -77,8 +78,8 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets the list of child step runs.
         /// </summary>
-        [XmlArray("children", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
-        [XmlArrayItem("testStepRun", typeof(TestStepRun), IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlArray("children", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlArrayItem("testStepRun", typeof(TestStepRun), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public List<TestStepRun> Children
         {
             get { return children; }
@@ -108,7 +109,7 @@ namespace Gallio.Runner.Reports
         /// Gets or sets the test result from the run.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("result", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlElement("result", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public TestResult Result
         {
             get
@@ -129,7 +130,7 @@ namespace Gallio.Runner.Reports
         /// Gets or sets the execution log.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("executionLog", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlElement("executionLog", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public ExecutionLog ExecutionLog
         {
             get

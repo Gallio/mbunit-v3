@@ -15,14 +15,14 @@
 
 using System;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
     /// <summary>
     /// Specifies the Xml-encoding of an embedded execution log attachment.
     /// </summary>
-    [XmlType("encoding", Namespace=SerializationUtils.XmlNamespace)]
+    [XmlType("encoding", Namespace=XmlSerializationUtils.GallioNamespace)]
     public enum ExecutionLogAttachmentEncoding
     {
         /// <summary>

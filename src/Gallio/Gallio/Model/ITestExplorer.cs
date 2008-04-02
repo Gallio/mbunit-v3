@@ -73,5 +73,21 @@ namespace Gallio.Model
         /// <param name="consumer">An action to perform on each type-level test
         /// explored, or null if no action is required</param>
         void ExploreType(ITypeInfo type, Action<ITest> consumer);
+
+        /// <summary>
+        /// <para>
+        /// Performs any final actions after exploration has taken place to ensure that
+        /// we have a complete and internally consistent model.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A test explorer may elect to defer some processing until the test model
+        /// has been fully populated.  For example, it may not be possible to resolve
+        /// test dependencies as soon as they are encountered, so this processing may
+        /// be deferred until all assemblies and types have been explored.
+        /// </para>
+        /// </remarks>
+        void FinishModel();
     }
 }

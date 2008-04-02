@@ -16,17 +16,17 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Gallio.Model.Serialization
+namespace Gallio.Utilities
 {
     /// <summary>
     /// Utilities and constants used for serialization.
     /// </summary>
-    public static class SerializationUtils
+    public static class XmlSerializationUtils
     {
         /// <summary>
         /// The XML namespace for all Gallio XML types.
         /// </summary>
-        public const string XmlNamespace = "http://www.gallio.org/";
+        public const string GallioNamespace = "http://www.gallio.org/";
 
         /// <summary>
         /// Saves an object graph to a pretty-printed Xml file using <see cref="XmlSerializer" />.

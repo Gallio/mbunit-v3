@@ -14,18 +14,19 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Declares that the associated test method is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+    /// Declares that the associated test is expected to throw an <see cref="ArgumentOutOfRangeException" />.
     /// The expected contents of the exception message may optionally be specified.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ExpectedArgumentOutOfRangeExceptionAttribute : ExpectedExceptionAttribute
     {
         /// <summary>
-        /// Declares that the associated test method is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+        /// Declares that the associated test is expected to throw an <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         public ExpectedArgumentOutOfRangeExceptionAttribute()
             : base(typeof(ArgumentOutOfRangeException))
@@ -33,7 +34,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Declares that the associated test method is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+        /// Declares that the associated test is expected to throw an <see cref="ArgumentOutOfRangeException" />.
         /// The expected contents of the exception message may also optionally be specified.
         /// </summary>
         /// <param name="message">The expected exception message, or null if not specified</param>

@@ -33,8 +33,7 @@ namespace MbUnit.Framework
     /// also serve as a placeholder for test that have yet to be implemented.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
-        AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class PendingAttribute : TestDecoratorPatternAttribute
     {
         private readonly string reason;
@@ -70,11 +69,11 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
+        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            builder.Test.Metadata.Add(MetadataKeys.PendingReason, reason);
+            scope.Test.Metadata.Add(MetadataKeys.PendingReason, reason);
 
-            builder.Test.TestActions.InitializeTestChain.Before(delegate
+            scope.Test.TestActions.InitializeTestChain.Before(delegate
             {
                 string message = "The test depends on pending functionality.";
                 if (reason.Length != 0)

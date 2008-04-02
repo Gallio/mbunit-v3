@@ -23,19 +23,31 @@ namespace Gallio.Framework.Pattern
     /// A test parameter decorator pattern attribute applies decorations to an
     /// existing <see cref="PatternTestParameter" />.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter
-        | AttributeTargets.GenericParameter, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestParameter, AllowMultiple = true, Inherited = true)]
     public abstract class TestParameterDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void ProcessTestParameter(IPatternTestParameterBuilder testParameterBuilder, ICodeElementInfo codeElement)
+        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            ISlotInfo slot = (ISlotInfo)codeElement;
+            ISlotInfo slot = codeElement as ISlotInfo;
+            Validate(scope, slot);
 
-            testParameterBuilder.AddDecorator(Order, delegate(IPatternTestParameterBuilder decoratedTestParameterBuilder)
+            scope.AddDecorator(Order, delegate
             {
-                DecorateTestParameter(decoratedTestParameterBuilder, slot);
+                DecorateTestParameter(scope, slot);
             });
+        }
+
+        /// <summary>
+        /// Verifies that the attribute is being used correctly.
+        /// </summary>
+        /// <param name="scope">The scope</param>
+        /// <param name="slot">The slot</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope scope, ISlotInfo slot)
+        {
+            if (!scope.IsTestParameterDeclaration || slot == null)
+                ThrowUsageErrorException("This attribute can only be used on a test parameter.");
         }
 
         /// <summary>
@@ -47,9 +59,9 @@ namespace Gallio.Framework.Pattern
         /// or to add additional behaviors to the test parameter.
         /// </para>
         /// </summary>
-        /// <param name="builder">The test builder</param>
+        /// <param name="slotScope">The slot scope</param>
         /// <param name="slot">The slot</param>
-        protected virtual void DecorateTestParameter(IPatternTestParameterBuilder builder, ISlotInfo slot)
+        protected virtual void DecorateTestParameter(PatternEvaluationScope slotScope, ISlotInfo slot)
         {
         }
     }

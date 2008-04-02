@@ -78,6 +78,7 @@
     <Compile Include="Framework\ContentAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
+    <Compile Include="Framework\NameAttribute.cs" />
     <Compile Include="Framework\PendingAttribute.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />

@@ -17,6 +17,7 @@ using System;
 using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model.Serialization
 {
@@ -25,8 +26,8 @@ namespace Gallio.Model.Serialization
     /// </summary>
     /// <seealso cref="ITestStep"/>
     [Serializable]
-    [XmlRoot("testStep", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("testStep", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class TestStepData : TestComponentData
     {
         private string fullName;

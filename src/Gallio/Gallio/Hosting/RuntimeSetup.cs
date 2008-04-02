@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
 using Gallio.Utilities;
 
 namespace Gallio.Hosting
@@ -25,8 +24,8 @@ namespace Gallio.Hosting
     /// Provides configuration parameters for setting up the <see cref="Runtime" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("runtimeSetup", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("runtimeSetup", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class RuntimeSetup
     {
         private readonly List<string> pluginDirectories;

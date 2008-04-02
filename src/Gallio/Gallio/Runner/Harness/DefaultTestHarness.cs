@@ -191,10 +191,10 @@ namespace Gallio.Runner.Harness
         /// <inheritdoc />
         public void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
         {
-            if (progressMonitor == null)
-                throw new ArgumentNullException(@"progressMonitor");
             if (options == null)
                 throw new ArgumentNullException(@"options");
+            if (progressMonitor == null)
+                throw new ArgumentNullException(@"progressMonitor");
 
             ThrowIfDisposed();
 
@@ -213,6 +213,8 @@ namespace Gallio.Runner.Harness
 
                 foreach (IAssemblyInfo assembly in package.Assemblies)
                     explorer.ExploreAssembly(assembly, null);
+
+                explorer.FinishModel();
             }
         }
 

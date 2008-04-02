@@ -31,23 +31,18 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public virtual bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement)
+        public virtual bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public virtual void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        public virtual void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
         }
 
         /// <inheritdoc />
-        public virtual void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
-        {
-        }
-
-        /// <inheritdoc />
-        public virtual void ProcessTestParameter(IPatternTestParameterBuilder testParameterBuilder, ICodeElementInfo codeElement)
+        public virtual void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
         }
     }

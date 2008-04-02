@@ -16,7 +16,6 @@
 using System;
 using System.Threading;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
 using Gallio.Utilities;
 
 namespace Gallio.Hosting
@@ -25,8 +24,8 @@ namespace Gallio.Hosting
     /// Specifies a collection of parameters for setting up a <see cref="IHost" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("hostSetup", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("hostSetup", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class HostSetup
     {
         private string applicationBaseDirectory = @"";

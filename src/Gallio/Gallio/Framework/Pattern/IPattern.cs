@@ -25,21 +25,30 @@ namespace Gallio.Framework.Pattern
     /// using reflection.
     /// </para>
     /// <para>
-    /// The general idea is that a pattern can apply any number of contributions to the
-    /// <see cref="IPatternTestBuilder" /> or <see cref="IPatternTestParameterBuilder" />
-    /// that represents the current scope of the process of constructing a
-    /// test object model.  A pattern can register a decorator for the current object
-    /// being built.  Once all decorators have been gathered, they are applied in
-    /// sorted order.  Likewise a pattern can create new builders of its own
-    /// then recurse back into the reflection layer to give a chance for other patterns
-    /// to apply their own contributions.
+    /// The general idea is that a pattern applies contributions to a <see cref="PatternEvaluationScope" />
+    /// that represents the state of the pattern interpretation process.  A primary pattern
+    /// adds contributions to its containing scope with the <see cref="Consume"/> method.  All
+    /// patterns (primary and non-primary) add further contributions to the pattern's own
+    /// scope with the <see cref="Process" /> method.
     /// </para>
     /// <para>
-    /// The entire pattern test model construction process is built up in this way.
-    /// None of the rules are hardcoded except for bootstrapping via reflection.
-    /// Typically a pattern will be associated with a code element by a
-    /// <see cref="PatternAttribute" /> but new patterns can be created that look for other
-    /// kinds of attributes or do other things.
+    /// A pattern can also defer some of its processing by registering a decorator on the scope.
+    /// Once all of the decorators have been gathered, they can be applied in sorted order
+    /// as required.
+    /// </para>
+    /// <para>
+    /// Pattern processing is performed recursively.  First a top-level <see cref="BootstrapTestAssemblyPattern" />
+    /// identifies the primary pattern for an assembly.  This pattern then takes over and performs
+    /// reflection over the types within the assembly and hands off control to any primary patterns
+    /// it finds there.  And so on.  Each primary pattern also provides an opportunity for non-primary patterns
+    /// associated with the same code element to run.
+    /// </para>
+    /// <para>
+    /// Typically a pattern is associated with a code element by means of a <see cref="PatternAttribute" />
+    /// but other associations are possible.  Some patterns might define default rules for recursively
+    /// processing code elements that do not have primary patterns of their own.  Others might use
+    /// means other than standard reflection to discover the patterns to be applied.  The process is
+    /// intended to be open and extensible.
     /// </para>
     /// </summary>
     /// <seealso cref="PatternAttribute"/>
@@ -69,39 +78,46 @@ namespace Gallio.Framework.Pattern
         /// </para>
         /// <para>
         /// Non-primary patterns still play a very important part in the construction
-        /// of the test model.  Non-primary patterns may implement <see cref="ProcessTest" /> and
-        /// <see cref="ProcessTestParameter" /> to decorate tests and test parameters
-        /// created by the primary pattern.
+        /// of the test model.  Non-primary patterns may implement the <see cref="Process" />
+        /// method to decorate tests and test parameters declared by the primary pattern.
         /// </para>
         /// </summary>
         bool IsPrimary { get; }
 
         /// <summary>
         /// <para>
-        /// Returns true if the code element associated with the pattern represents a test.
+        /// Returns true if the code element represents a test.
         /// </para>
         /// </summary>
-        /// <param name="patternResolver">The pattern resolver</param>
+        /// <remarks>
+        /// <para>
+        /// This method is only called for primary patterns.
+        /// </para>
+        /// </remarks>
+        /// <param name="evaluator">The evaluator</param>
         /// <param name="codeElement">The code element</param>
         /// <returns>True if the code element represents a test</returns>
-        bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement);
+        /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
+        /// and report an error message to the user as an annotation that describes how the
+        /// pattern was misapplied.</exception>
+        bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement);
 
         /// <summary>
         /// <para>
-        /// Consumes the <paramref name="codeElement" /> and applies its contributions to
-        /// the <paramref name="containingTestBuilder"/>.
+        /// Consumes a code element and applies its contributions to the scope
+        /// provided by a containing pattern.
         /// </para>
         /// <para>
         /// This method is used to declare new tests, test parameters and other components
-        /// and add them to a containing test that was defined by some other <paramref name="codeElement" />.
+        /// and add them to a containing test that was defined in some other scope.
         /// </para>
         /// <para>
-        /// For example, when enumerating tests, the <see cref="Consume" />
-        /// will call the <see cref="ProcessTest" /> method of all patterns associated
-        /// with the public types in an assembly.  Some of these patterns will create new test fixture
+        /// For example, when enumerating test fixtures, the assembly-level pattern will
+        /// call the <see cref="Consume" /> method of the primary patterns associated
+        /// with each type in an assembly.  Some of these patterns will create new test fixture
         /// objects and add them as children of the containing assembly-level test.  They will then
-        /// call <see cref="BootstrapAssemblyPattern" /> for each of the other patterns defined
-        /// by this <paramref name="codeElement" />.  A test fixture pattern will then typically
+        /// call the <see cref="Process" /> method of each non-primary pattern associated with
+        /// the type within the scope of the test fixture.  Then they will typically 
         /// recurse into the fixture to apply contributions defined by patterns associated
         /// with methods, fields, properties, events, constructors and generic type parameters.
         /// </para>
@@ -111,51 +127,40 @@ namespace Gallio.Framework.Pattern
         /// This method is only called for primary patterns.
         /// </para>
         /// </remarks>
-        /// <param name="containingTestBuilder">The containing test builder</param>
+        /// <param name="containingScope">The containing scope</param>
         /// <param name="codeElement">The code element to process</param>
         /// <param name="skipChildren">If true, skips generating child tests.  Instead the children may
-        /// be populated on demand using <see cref="IPatternTestBuilder.PopulateChildrenChain" />.  The implementation
+        /// be populated on demand using <see cref="PatternEvaluationScope.PopulateChildrenChain" />.  The implementation
         /// may safely ignore the value of this flag so long as subsequent attempts to populate children on
-        /// demand have no adverse side-effects.</param>
+        /// demand are idempotent (do nothing or have no adverse side-effects).</param>
         /// <seealso cref="IsPrimary"/>
-        void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren);
+        /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
+        /// and report an error message to the user as an annotation that describes how the
+        /// pattern was misapplied.</exception>
+        void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren);
 
         /// <summary>
         /// <para>
-        /// Processes a test that was declared by a pattern associated with this
-        /// <paramref name="codeElement" /> and applies contributions to its builder.
+        /// Processes a code element and applies contributes to the scope of this pattern.
+        /// The scope will typically have been introduced by the <see cref="Consume" /> method
+        /// of a primary pattern applied to this code element.
         /// </para>
         /// <para>
-        /// This method is used to decorate tests defined by <paramref name="codeElement" /> itself.
+        /// This method is used by patterns to decorate tests and test parameters that
+        /// have been declared by primary patterns.
         /// </para>
         /// <para>
-        /// For example, <see cref="ProcessTest" /> will typically be called by another pattern that has
-        /// just created a new test based on declarative information about the <paramref name="codeElement" />.
-        /// The callee then has the opportunity to add decorators to the new test and to
-        /// apply other contributions of its choosing.
+        /// For example, the <see cref="Process" /> method will typically be called by another
+        /// pattern that has just created a new test based on the associated code element,
+        /// such as a test method.  The method then has the opportunity to modify the test
+        /// to add metadata, change its name, add new behaviors, and so on.
         /// </para>
         /// </summary>
-        /// <param name="testBuilder">The test builder</param>
+        /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element to process</param>
-        void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement);
-
-        /// <summary>
-        /// <para>
-        /// Processes a test parameter that was declared by a pattern associated with this
-        /// <paramref name="codeElement" /> and applies contributions to its builder.
-        /// </para>
-        /// <para>
-        /// This method is used to decorate test parameters defined by <paramref name="codeElement" /> itself.
-        /// </para>
-        /// <para>
-        /// For example, <see cref="ProcessTestParameter" /> will typically be called by another
-        /// pattern that has just created a new test parameter based on declarative information
-        /// about the <paramref name="codeElement" />.  The callee then has the opportunity to add decorators to
-        /// the new test parameter and to apply other contributions of its choosing.
-        /// </para>
-        /// </summary>
-        /// <param name="testParameterBuilder">The test parameter builder</param>
-        /// <param name="codeElement">The code element to process</param>
-        void ProcessTestParameter(IPatternTestParameterBuilder testParameterBuilder, ICodeElementInfo codeElement);
+        /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
+        /// and report an error message to the user as an annotation that describes how the
+        /// pattern was misapplied.</exception>
+        void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement);
     }
 }

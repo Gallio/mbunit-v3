@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model.Serialization
 {
@@ -27,13 +28,14 @@ namespace Gallio.Model.Serialization
     /// This class is safe for used by multiple threads.
     /// </remarks>
     [Serializable]
-    [XmlRoot("testModel", Namespace=SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
+    [XmlRoot("testModel", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class TestModelData
     {
         [NonSerialized]
         private Dictionary<string, TestData> tests;
 
+        private readonly List<AnnotationData> annotations;
         private TestData rootTest;
 
         /// <summary>
@@ -41,6 +43,7 @@ namespace Gallio.Model.Serialization
         /// </summary>
         private TestModelData()
         {
+            annotations = new List<AnnotationData>();
         }
 
         /// <summary>
@@ -49,11 +52,15 @@ namespace Gallio.Model.Serialization
         /// <param name="source">The source test model</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
         public TestModelData(TestModel source)
+            : this()
         {
             if (source == null)
                 throw new ArgumentNullException("source");
 
             rootTest = new TestData(source.RootTest);
+
+            foreach (Annotation annotation in source.Annotations)
+                annotations.Add(new AnnotationData(annotation));
         }
 
         /// <summary>
@@ -62,6 +69,7 @@ namespace Gallio.Model.Serialization
         /// <param name="rootTest">The root test</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTest"/> is null</exception>
         public TestModelData(TestData rootTest)
+            : this()
         {
             if (rootTest == null)
                 throw new ArgumentNullException(@"rootTest");
@@ -88,6 +96,31 @@ namespace Gallio.Model.Serialization
                     tests = null;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the mutable list of annotations.
+        /// </summary>
+        /// <seealso cref="TestModel.Annotations"/>
+        [XmlArray("annotations", IsNullable = false)]
+        [XmlArrayItem("annotation", typeof(AnnotationData), IsNullable = false)]
+        public List<AnnotationData> Annotations
+        {
+            get { return annotations; }
+        }
+
+        /// <summary>
+        /// Gets the number of error annotations on the model.
+        /// </summary>
+        /// <returns>The numer of error annotations present</returns>
+        public int GetErrorAnnotationCount()
+        {
+            int count = 0;
+            foreach (AnnotationData annotation in annotations)
+                if (annotation.Type == AnnotationType.Error)
+                    count += 1;
+
+            return count;
         }
 
         /// <summary>

@@ -17,6 +17,7 @@ using System;
 using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model.Serialization
 {
@@ -25,12 +26,9 @@ namespace Gallio.Model.Serialization
     /// </summary>
     /// <seealso cref="ITestParameter"/>
     [Serializable]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class TestParameterData : TestComponentData
     {
-        private string typeName;
-        private int index;
-
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
@@ -43,16 +41,11 @@ namespace Gallio.Model.Serialization
         /// </summary>
         /// <param name="id">The component id</param>
         /// <param name="name">The component name</param>
-        /// <param name="typeName">The parameter type name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>.
-        /// <paramref name="name"/> or <paramref name="typeName"/> is null</exception>
-        public TestParameterData(string id, string name, string typeName)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or
+        /// <paramref name="name"/> is null</exception>
+        public TestParameterData(string id, string name)
             : base(id, name)
         {
-            if (typeName == null)
-                throw new ArgumentNullException(@"typeName");
-
-            this.typeName = typeName;
         }
 
         /// <summary>
@@ -63,36 +56,6 @@ namespace Gallio.Model.Serialization
         public TestParameterData(ITestParameter source)
             : base(source)
         {
-            typeName = source.Type.ToString();
-            index = source.Index;
-        }
-
-        /// <summary>
-        /// Gets or sets the fully-qualified type name of the parameter's value type.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        /// <seealso cref="ITestParameter.Type"/>
-        [XmlAttribute("type")]
-        public string TypeName
-        {
-            get { return typeName; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-                typeName = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the index of the parameter.
-        /// </summary>
-        /// <seealso cref="ITestParameter.Index"/>
-        [XmlAttribute("index")]
-        public int Index
-        {
-            get { return index; }
-            set { index = value; }
         }
     }
 }

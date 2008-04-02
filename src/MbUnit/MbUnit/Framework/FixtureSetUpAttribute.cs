@@ -37,15 +37,13 @@ namespace MbUnit.Framework
     /// fixture class and must not have any parameters.  The method may be static.
     /// </para>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class FixtureSetUpAttribute : ContributionPatternAttribute
+    [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
+    public class FixtureSetUpAttribute : ContributionMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override void DecorateContainingTest(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
         {
-            IMethodInfo method = (IMethodInfo) codeElement;
-
-            containingTestBuilder.Test.TestInstanceActions.SetUpTestInstanceChain.Before(
+            containingScope.Test.TestInstanceActions.SetUpTestInstanceChain.Before(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     testInstanceState.InvokeFixtureMethod(method, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance);

@@ -32,8 +32,7 @@ namespace MbUnit.Framework
     /// without commenting them out or removing them from the source code.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
-        AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class IgnoreAttribute : TestDecoratorPatternAttribute
     {
         private readonly string reason;
@@ -69,11 +68,11 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
+        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            builder.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
+            scope.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
 
-            builder.Test.TestActions.InitializeTestChain.Before(delegate
+            scope.Test.TestActions.InitializeTestChain.Before(delegate
             {
                 string message = "The test was ignored.";
                 if (reason.Length != 0)

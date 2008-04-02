@@ -14,7 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Text;
 using Gallio.Model.Execution;
+using Gallio.Model.Serialization;
+using Gallio.Reflection;
 using Gallio.TDNetRunner.Properties;
 using Gallio.Model;
 using Gallio.Runner.Monitors;
@@ -50,6 +53,7 @@ namespace Gallio.TDNetRunner
         {
             base.OnAttach();
 
+            Runner.BuildTestModelComplete += HandleTestModelComplete;
             reportMonitor.TestStepFinished += HandleTestStepFinished;
         }
 
@@ -57,7 +61,44 @@ namespace Gallio.TDNetRunner
         {
             base.OnDetach();
 
+            Runner.BuildTestModelComplete -= HandleTestModelComplete;
             reportMonitor.TestStepFinished -= HandleTestStepFinished;
+        }
+
+        private void HandleTestModelComplete(object sender, EventArgs e)
+        {
+            if (Runner.TestModelData == null)
+                return;
+
+            foreach (AnnotationData annotation in Runner.TestModelData.Annotations)
+                LogAnnotation(annotation);
+        }
+
+        private void LogAnnotation(AnnotationData annotation)
+        {
+            StringBuilder message = new StringBuilder();
+            message.Append(annotation.Message);
+
+            if (annotation.CodeLocation != CodeLocation.Unknown)
+            {
+                message.Append("\n\tLocation: ");
+                message.Append(annotation.CodeLocation);
+            }
+
+            if (annotation.CodeLocation.Line == 0 && annotation.CodeReference != CodeReference.Unknown)
+            {
+                message.Append("\n\tReference: ");
+                message.Append(annotation.CodeReference);
+            }
+
+            if (!string.IsNullOrEmpty(annotation.Details))
+            {
+                message.Append("\n\tDetails: ");
+                message.Append(annotation.Details);
+            }
+
+            Category category = GetCategoryForAnnotation(annotation.Type);
+            testListener.WriteLine(message.ToString(), category);
         }
 
         private void HandleTestStepFinished(object sender, TestStepRunEventArgs e)
@@ -114,6 +155,24 @@ namespace Gallio.TDNetRunner
 
                 default:
                     return TestState.Failed;
+            }
+        }
+
+        private static Category GetCategoryForAnnotation(AnnotationType type)
+        {
+            switch (type)
+            {
+                case AnnotationType.Error:
+                    return Category.Error;
+
+                case AnnotationType.Warning:
+                    return Category.Warning;
+
+                case AnnotationType.Info:
+                    return Category.Info;
+
+                default:
+                    throw new ArgumentException("type");
             }
         }
     }

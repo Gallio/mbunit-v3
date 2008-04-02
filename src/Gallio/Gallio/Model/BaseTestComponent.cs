@@ -70,13 +70,7 @@ namespace Gallio.Model
         public ICodeElementInfo CodeElement
         {
             get { return codeElement; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-
-                codeElement = value;
-            }
+            set { codeElement = value; }
         }
 
         /// <inheritdoc />

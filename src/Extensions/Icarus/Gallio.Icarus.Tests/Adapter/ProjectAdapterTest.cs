@@ -29,7 +29,7 @@ using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
-
+using Gallio.Utilities;
 using MbUnit.Framework;
 
 using Rhino.Mocks;
@@ -335,7 +335,7 @@ namespace Gallio.Icarus.Tests
             projectAdapter.Project.TestPackageConfig.AssemblyFiles.Add("test.dll");
             string fileName = Path.GetTempFileName();
             saveProjectEvent.Raise(mockView, new SingleEventArgs<string>(fileName));
-            Project project = SerializationUtils.LoadFromXml<Project>(fileName);
+            Project project = XmlSerializationUtils.LoadFromXml<Project>(fileName);
             Assert.AreEqual(1, project.TestPackageConfig.AssemblyFiles.Count);
             File.Delete(fileName);
         }

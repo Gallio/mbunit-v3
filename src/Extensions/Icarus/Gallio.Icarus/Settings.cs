@@ -16,14 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
     [Serializable]
-    [XmlRoot("settings", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("settings", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public class Settings : ICloneable
     {
         private bool restorePreviousSettings = true;

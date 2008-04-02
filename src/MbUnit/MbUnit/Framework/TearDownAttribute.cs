@@ -37,15 +37,13 @@ namespace MbUnit.Framework
     /// fixture class and must not have any parameters.  The method may be static.
     /// </para>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public sealed class TearDownAttribute : ContributionPatternAttribute
+    [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
+    public sealed class TearDownAttribute : ContributionMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override void DecorateContainingTest(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
         {
-            IMethodInfo method = (IMethodInfo)codeElement;
-
-            containingTestBuilder.Test.TestInstanceActions.DecorateChildTestChain.After(
+            containingScope.Test.TestInstanceActions.DecorateChildTestChain.After(
                 delegate(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildActions)
                 {
                     decoratedChildActions.TestInstanceActions.TearDownTestInstanceChain.After(delegate

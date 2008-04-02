@@ -39,8 +39,7 @@ namespace MbUnit.Framework
     /// particularly expensive or require manual supervision by an operator.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method,
-        AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ExplicitAttribute : TestDecoratorPatternAttribute
     {
         private readonly string reason;
@@ -76,11 +75,11 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
+        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            builder.Test.Metadata.Add(MetadataKeys.ExplicitReason, reason);
+            scope.Test.Metadata.Add(MetadataKeys.ExplicitReason, reason);
 
-            builder.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
+            scope.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
             {
                 if (!state.IsExplicit)
                 {

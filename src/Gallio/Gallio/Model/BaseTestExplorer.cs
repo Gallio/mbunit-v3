@@ -60,5 +60,10 @@ namespace Gallio.Model
         public virtual void ExploreType(ITypeInfo type, Action<ITest> consumer)
         {
         }
+
+        /// <inheritdoc />
+        public virtual void FinishModel()
+        {
+        }
     }
 }

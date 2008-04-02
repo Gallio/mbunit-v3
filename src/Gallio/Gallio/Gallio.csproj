@@ -144,7 +144,6 @@
     <Compile Include="Framework\Data\IDataRow.cs" />
     <Compile Include="Framework\Data\IDataSet.cs" />
     <Compile Include="Framework\Data\IDataSourceResolver.cs" />
-    <Compile Include="Framework\Data\IDataSourceScope.cs" />
     <Compile Include="Framework\Data\IJoinStrategy.cs" />
     <Compile Include="Framework\Data\IMergeStrategy.cs" />
     <Compile Include="Framework\Data\IntersectionMergeStrategy.cs" />
@@ -163,29 +162,29 @@
     <Compile Include="Framework\Data\XmlDataSet.cs" />
     <Compile Include="Framework\InternalLogStreamWriter.cs" />
     <Compile Include="Framework\InternalLogWriter.cs" />
-    <Compile Include="Framework\Pattern\AssemblyDecoratorPatternAttribute.cs" />
-    <Compile Include="Framework\Pattern\AssemblyInitializationAttribute.cs" />
-    <Compile Include="Framework\Pattern\AssemblyPatternAttribute.cs" />
+    <Compile Include="Framework\Pattern\ContributionMethodPatternAttribute.cs" />
+    <Compile Include="Framework\Pattern\TestAssemblyDecoratorPatternAttribute.cs" />
+    <Compile Include="Framework\Pattern\TestAssemblyInitializationAttribute.cs" />
+    <Compile Include="Framework\Pattern\TestAssemblyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\BasePattern.cs" />
     <Compile Include="Framework\Pattern\BasePatternTestFrameworkExtension.cs" />
-    <Compile Include="Framework\Pattern\BootstrapAssemblyPattern.cs" />
-    <Compile Include="Framework\Pattern\ContributionPatternAttribute.cs" />
+    <Compile Include="Framework\Pattern\BootstrapTestAssemblyPattern.cs" />
     <Compile Include="Framework\Pattern\DataPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\DeclarativePatternResolver.cs" />
     <Compile Include="Framework\Pattern\DecoratorPatternAttribute.cs" />
-    <Compile Include="Framework\Pattern\DefaultPatternTestBuilder.cs" />
-    <Compile Include="Framework\Pattern\DefaultPatternTestModelBuilder.cs" />
-    <Compile Include="Framework\Pattern\DefaultPatternTestParameterBuilder.cs" />
+    <Compile Include="Framework\Pattern\PatternAttributeTargets.cs" />
+    <Compile Include="Framework\Pattern\PatternEvaluationScope.cs" />
+    <Compile Include="Framework\Pattern\IPatternTestComponent.cs" />
+    <Compile Include="Framework\Pattern\PatternTestDataContext.cs" />
+    <Compile Include="Framework\Pattern\PatternUsageErrorException.cs" />
     <Compile Include="Framework\Pattern\RecursiveTypePattern.cs" />
-    <Compile Include="Framework\Pattern\DependencyPatternAttribute.cs" />
+    <Compile Include="Framework\Pattern\TestDependencyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\IPattern.cs" />
     <Compile Include="Framework\Pattern\IPatternResolver.cs" />
-    <Compile Include="Framework\Pattern\IPatternTestBuilder.cs" />
     <Compile Include="Framework\Pattern\IPatternTestFrameworkExtension.cs" />
     <Compile Include="Framework\Pattern\IPatternTestHandler.cs" />
     <Compile Include="Framework\Pattern\IPatternTestInstanceHandler.cs" />
-    <Compile Include="Framework\Pattern\IPatternTestModelBuilder.cs" />
-    <Compile Include="Framework\Pattern\IPatternTestParameterBuilder.cs" />
+    <Compile Include="Framework\Pattern\PatternEvaluator.cs" />
     <Compile Include="Framework\Pattern\MetadataPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\PatternAttribute.cs" />
     <Compile Include="Framework\Pattern\PatternTest.cs" />
@@ -200,7 +199,6 @@
     <Compile Include="Framework\Pattern\PatternTestParameter.cs" />
     <Compile Include="Framework\Pattern\PatternTestPopulator.cs" />
     <Compile Include="Framework\Pattern\PatternTestState.cs" />
-    <Compile Include="Framework\Pattern\PatternUtils.cs" />
     <Compile Include="Framework\Pattern\TestConstructorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestMethodDecoratorPatternAttribute.cs" />
@@ -216,6 +214,8 @@
     <Compile Include="Framework\Tasks.cs" />
     <Compile Include="Framework\Utilities\LogStreamLogger.cs" />
     <Compile Include="Framework\Utilities\SampleRunner.cs" />
+    <Compile Include="Model\Annotation.cs" />
+    <Compile Include="Model\AnnotationType.cs" />
     <Compile Include="Hosting\Channels\BinaryTcpClientChannel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -303,6 +303,7 @@
     <Compile Include="Model\Execution\TestCommandFactory.cs" />
     <Compile Include="Model\Execution\TestLogWriterUtils.cs" />
     <Compile Include="Model\Filters\NameFilter.cs" />
+    <Compile Include="Model\Serialization\AnnotationData.cs" />
     <Compile Include="Reflection\CodeElementSorter.cs" />
     <Compile Include="Reflection\Impl\IResolvableTypeInfo.cs" />
     <Compile Include="Reflection\Impl\StaticArrayTypeWrapper.cs">
@@ -384,7 +385,6 @@
     <Compile Include="Reflection\IGenericParameterInfo.cs" />
     <Compile Include="Reflection\CodeElementResolveException.cs" />
     <Compile Include="Model\Serialization\TestPackageData.cs" />
-    <Compile Include="Model\TestDeclarationErrorException.cs" />
     <Compile Include="Model\Filters\EqualityFilter.cs" />
     <Compile Include="Model\Filters\FilterLexer.cs" />
     <Compile Include="Model\Filters\FilterToken.cs" />
@@ -582,7 +582,7 @@
     <Compile Include="Reflection\Impl\IXmlDocumentationResolver.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\GenericUtils.cs" />
-    <Compile Include="Model\Serialization\SerializationUtils.cs" />
+    <Compile Include="Utilities\XmlSerializationUtils.cs" />
     <Compile Include="Utilities\NonInlinedAttribute.cs" />
     <Compile Include="Utilities\CorrelatedExceptionEventArgs.cs" />
     <Compile Include="Utilities\StringUtils.cs" />

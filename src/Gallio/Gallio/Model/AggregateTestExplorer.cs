@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Reflection;
-using Gallio.Hosting;
 using Gallio.Utilities;
 
 namespace Gallio.Model
@@ -35,27 +34,6 @@ namespace Gallio.Model
         public AggregateTestExplorer()
         {
             explorers = new List<ITestExplorer>();
-        }
-
-        /// <summary>
-        /// Creates an aggregate test explorer from explorers created for
-        /// all registered <see cref="ITestFramework" /> services in the
-        /// <see cref="Runtime" />.
-        /// </summary>
-        /// <param name="testModel">The test model to populate incrementally as
-        /// tests are discovered</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null</exception>
-        public static AggregateTestExplorer CreateExplorerForAllTestFrameworks(TestModel testModel)
-        {
-            if (testModel == null)
-                throw new ArgumentNullException("testModel");
-
-            AggregateTestExplorer aggregate = new AggregateTestExplorer();
-
-            foreach (ITestFramework framework in Runtime.Instance.ResolveAll<ITestFramework>())
-                aggregate.AddTestExplorer(framework.CreateTestExplorer(testModel));
-
-            return aggregate;
         }
 
         TestModel ITestExplorer.TestModel
@@ -123,6 +101,22 @@ namespace Gallio.Model
                 catch (Exception ex)
                 {
                     UnhandledExceptionPolicy.Report(String.Format("A test explorer failed while enumerating tests in type '{0}'.", type), ex);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public void FinishModel()
+        {
+            foreach (ITestExplorer explorer in explorers)
+            {
+                try
+                {
+                    explorer.FinishModel();
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report(String.Format("A test explorer failed while finishing the construction of the test model."), ex);
                 }
             }
         }

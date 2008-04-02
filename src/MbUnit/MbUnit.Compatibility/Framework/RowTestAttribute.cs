@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -21,7 +22,7 @@ namespace MbUnit.Framework
     /// Provides compatibility with MbUnit v2 row test feature.
     /// </summary>
     [Obsolete("Use the MbUnit v3 [Test] attribute instead.  The MbUnit v3 data-driven testing features have been consolidated so the [RowTest] attribute is no longer necessary.")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple = false, Inherited = true)]
     public class RowTestAttribute : TestAttribute
     {
     }

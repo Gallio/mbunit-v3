@@ -30,7 +30,6 @@ using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model.Execution;
-using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Utilities;
 
@@ -301,7 +300,7 @@ namespace Gallio.Icarus
             try
             {
                 if (File.Exists(settingsFile))
-                    return SerializationUtils.LoadFromXml<Settings>(settingsFile);
+                    return XmlSerializationUtils.LoadFromXml<Settings>(settingsFile);
             }
             catch
             { }
@@ -742,7 +741,7 @@ namespace Gallio.Icarus
             {
                 try
                 {
-                    SerializationUtils.SaveToXml<Settings>(settings, settingsFile);
+                    XmlSerializationUtils.SaveToXml<Settings>(settings, settingsFile);
                 }
                 catch (Exception ex)
                 {

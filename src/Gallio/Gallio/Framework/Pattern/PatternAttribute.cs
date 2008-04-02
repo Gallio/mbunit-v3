@@ -33,7 +33,6 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     /// <seealso cref="IPattern"/>
     /// <seealso cref="PatternTestFramework"/>
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public abstract class PatternAttribute : Attribute, IPattern
     {
         /// <inheritdoc />
@@ -43,24 +42,40 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public virtual bool IsTest(IPatternResolver patternResolver, ICodeElementInfo codeElement)
+        public virtual bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public virtual void Consume(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement, bool skipChildren)
+        public virtual void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
         }
 
         /// <inheritdoc />
-        public virtual void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        public virtual void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
         }
 
-        /// <inheritdoc />
-        public virtual void ProcessTestParameter(IPatternTestParameterBuilder testParameterBuilder, ICodeElementInfo codeElement)
+        /// <summary>
+        /// Throws a <see cref="PatternUsageErrorException" /> with the specified message
+        /// including a short heading that identifies the attribute type.
+        /// </summary>
+        /// <param name="message">The message, not null</param>
+        protected void ThrowUsageErrorException(string message)
         {
+            ThrowUsageErrorException(message, null);
+        }
+
+        /// <summary>
+        /// Throws a <see cref="PatternUsageErrorException" /> with the specified message
+        /// including a short heading that identifies the attribute type.
+        /// </summary>
+        /// <param name="message">The message, not null</param>
+        /// <param name="ex">The associated exception, or null if none</param>
+        protected void ThrowUsageErrorException(string message, Exception ex)
+        {
+            throw new PatternUsageErrorException(String.Format("[{0}] - {1}", GetType().Name, message), ex);
         }
     }
 }

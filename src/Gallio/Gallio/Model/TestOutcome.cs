@@ -17,7 +17,7 @@ using System;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -34,7 +34,7 @@ namespace Gallio.Model
     /// </para>
     /// </summary>
     [Serializable]
-    [XmlRoot("outcome", Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("outcome", Namespace = XmlSerializationUtils.GallioNamespace)]
     public struct TestOutcome : IXmlSerializable, IEquatable<TestOutcome>
     {
         private TestStatus status;

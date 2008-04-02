@@ -15,6 +15,7 @@
 
 using System;
 
+#if false // NOT IMPLEMENTED YET
 namespace MbUnit.Framework
 {
     /// <summary>
@@ -162,3 +163,4 @@ namespace MbUnit.Framework
         }
     }
 }
+#endif

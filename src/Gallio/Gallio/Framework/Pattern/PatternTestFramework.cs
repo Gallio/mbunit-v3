@@ -43,10 +43,21 @@ namespace Gallio.Framework.Pattern
     /// </para>
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Gallio supports the use of multiple test frameworks.  The pattern test framework
     /// model defined here may not be appropriate for all purposes.  Therefore you may
     /// consider creating a new test framework from scratch by implementing <see cref="ITestFramework" />
     /// and <see cref="ITestExplorer" /> appropriately to obtain the desired semantics.
+    /// </para>
+    /// <para>
+    /// The name of the Pattern Test Framework derives from the similarity between the recursive
+    /// construction process performed by <see cref="IPattern" /> and the kind of pattern matching
+    /// that is performed by a recursive descent parser.  Each primary <see cref="IPattern" /> can be
+    /// thought of as a grammar rule that matches a given code element and describes how further
+    /// matching of nested code elements is intended to occur.  The actual matching performed is
+    /// somewhat simplistic (largely based on attribute lookup) but on the whole the framework
+    /// provides a quite flexible implementation pattern for a wide variety of testing features.
+    /// </para>
     /// </remarks>
     public class PatternTestFramework : BaseTestFramework
     {

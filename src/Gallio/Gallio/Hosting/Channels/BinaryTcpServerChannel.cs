@@ -48,6 +48,7 @@ namespace Gallio.Hosting.Channels
             channelProperties[@"port"] = portNumber;
             channelProperties[@"secure"] = true;
             channelProperties[@"exclusiveAddressUse"] = true;
+            channelProperties[@"rejectRemoteRequests"] = true;
 
             return new TcpServerChannel(channelProperties, CreateServerChannelSinkProvider());
         }

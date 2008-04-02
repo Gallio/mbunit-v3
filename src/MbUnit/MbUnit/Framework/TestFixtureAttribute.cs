@@ -34,7 +34,7 @@ namespace MbUnit.Framework
     /// The class must have a public default constructor.  The class may not be static.
     /// </para>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
     public class TestFixtureAttribute : TestTypePatternAttribute
     {
     }

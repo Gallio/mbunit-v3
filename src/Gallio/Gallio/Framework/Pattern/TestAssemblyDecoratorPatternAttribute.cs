@@ -23,19 +23,32 @@ namespace Gallio.Framework.Pattern
     /// A test assembly decorator pattern attribute applies decorations to an
     /// existing assembly-level test.
     /// </summary>
-    /// <seealso cref="AssemblyPatternAttribute"/>
-    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple=true, Inherited=true)]
-    public abstract class AssemblyDecoratorPatternAttribute : DecoratorPatternAttribute
+    /// <seealso cref="TestAssemblyPatternAttribute"/>
+    [AttributeUsage(PatternAttributeTargets.TestAssembly, AllowMultiple=true, Inherited=true)]
+    public abstract class TestAssemblyDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            IAssemblyInfo assembly = (IAssemblyInfo)codeElement;
+            IAssemblyInfo assembly = codeElement as IAssemblyInfo;
+            Validate(scope, assembly);
 
-            testBuilder.AddDecorator(Order, delegate(IPatternTestBuilder assemblyTestBuilder)
+            scope.AddDecorator(Order, delegate(PatternEvaluationScope assemblyTestScope)
             {
-                DecorateAssemblyTest(assemblyTestBuilder, assembly);
+                DecorateAssemblyTest(assemblyTestScope, assembly);
             });
+        }
+
+        /// <summary>
+        /// Verifies that the attribute is being used correctly.
+        /// </summary>
+        /// <param name="scope">The scope</param>
+        /// <param name="assembly">The assembly</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope scope, IAssemblyInfo assembly)
+        {
+            if (!scope.IsTestDeclaration || assembly == null)
+                ThrowUsageErrorException("This attribute can only be used on a test assembly.");
         }
 
         /// <summary>
@@ -47,9 +60,9 @@ namespace Gallio.Framework.Pattern
         /// or to add additional behaviors to the test.
         /// </para>
         /// </summary>
-        /// <param name="builder">The test builder</param>
+        /// <param name="assemblyScope">The assembly scope</param>
         /// <param name="assembly">The assembly</param>
-        protected virtual void DecorateAssemblyTest(IPatternTestBuilder builder, IAssemblyInfo assembly)
+        protected virtual void DecorateAssemblyTest(PatternEvaluationScope assemblyScope, IAssemblyInfo assembly)
         {
         }
     }

@@ -30,14 +30,14 @@ namespace Gallio.Framework.Pattern
     /// can be loaded.
     /// </para>
     /// </summary>
-    public abstract class AssemblyInitializationAttribute : Attribute
+    [AttributeUsage(PatternAttributeTargets.TestAssembly, AllowMultiple=true, Inherited=true)]
+    public abstract class TestAssemblyInitializationAttribute : Attribute
     {
         /// <summary>
         /// Performs early initialization for the specified assembly.
         /// </summary>
-        /// <param name="topLevelTestBuilder">The top level test builder that will contain
-        /// the assembly-level test</param>
+        /// <param name="frameworkScope">The framework-level scope that will eventually contain the assembly-level test</param>
         /// <param name="assembly">The assembly to process</param>
-        public abstract void Initialize(IPatternTestBuilder topLevelTestBuilder, IAssemblyInfo assembly);
+        public abstract void Initialize(PatternEvaluationScope frameworkScope, IAssemblyInfo assembly);
     }
 }

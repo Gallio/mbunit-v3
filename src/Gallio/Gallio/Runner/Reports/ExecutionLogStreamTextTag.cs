@@ -17,14 +17,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
     /// <summary>
     /// An Xml-serializable block of preformatted text to include in an execution log stream.
     /// </summary>
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     [Serializable]
     public sealed class ExecutionLogStreamTextTag : ExecutionLogStreamTag
     {

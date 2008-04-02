@@ -15,7 +15,6 @@
 
 using System;
 using System.Threading;
-using Gallio.Framework.Data;
 using Gallio.Hosting;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
@@ -28,21 +27,27 @@ namespace Gallio.Framework.Pattern
     /// A test case that has been defined by the <see cref="PatternTestFramework" />.
     /// </summary>
     /// <seealso cref="PatternTestFramework"/>
-    public class PatternTest : BaseTest, IDataSourceScope
+    public class PatternTest : BaseTest, IPatternTestComponent
     {
+        private readonly PatternTestDataContext dataContext;
         private readonly PatternTestActions testActions;
-        private DataSourceTable dataSourceTable;
         private TimeSpan? timeout;
         private ApartmentState apartmentState = ApartmentState.Unknown;
 
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
-        /// <param name="name">The name of the component</param>
-        /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        public PatternTest(string name, ICodeElementInfo codeElement) : base(name, codeElement)
+        /// <param name="name">The name of the test</param>
+        /// <param name="codeElement">The point of definition of the test, or null if unknown</param>
+        /// <param name="dataContext">The data context</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContext"/> is null</exception>
+        public PatternTest(string name, ICodeElementInfo codeElement, PatternTestDataContext dataContext)
+            : base(name, codeElement)
         {
+            if (dataContext == null)
+                throw new ArgumentNullException("dataContext");
+
+            this.dataContext = dataContext;
             testActions = new PatternTestActions();
         }
 
@@ -106,32 +111,21 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public DataSource DefineDataSource(string name)
-        {
-            if (dataSourceTable == null)
-                dataSourceTable = new DataSourceTable();
-
-            return dataSourceTable.DefineDataSource(name);
-        }
-
-        /// <inheritdoc />
-        public DataSource ResolveDataSource(string name)
-        {
-            if (dataSourceTable != null)
-            {
-                DataSource source = dataSourceTable.ResolveDataSource(name);
-                if (source != null)
-                    return source;
-            }
-
-            IDataSourceScope parentScope = Parent as IDataSourceScope;
-            return parentScope != null ? parentScope.ResolveDataSource(name) : null;
-        }
-
-        /// <inheritdoc />
         public override Func<ITestController> TestControllerFactory
         {
             get { return GetTestController; }
+        }
+
+        /// <inheritdoc />
+        public PatternTestDataContext DataContext
+        {
+            get { return dataContext; }
+        }
+
+        /// <inheritdoc />
+        public void SetName(string value)
+        {
+            Name = value;
         }
 
         private static ITestController GetTestController()

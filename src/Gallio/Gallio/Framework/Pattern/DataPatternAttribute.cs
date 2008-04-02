@@ -46,9 +46,7 @@ namespace Gallio.Framework.Pattern
     /// </code>
     /// </example>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class
-        | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field
-            | AttributeTargets.Parameter, AllowMultiple=true, Inherited=true)]
+    [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple=true, Inherited=true)]
     public abstract class DataPatternAttribute : DecoratorPatternAttribute
     {
         private string sourceName = "";
@@ -81,21 +79,24 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override void ProcessTest(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            testBuilder.AddDecorator(Order, delegate
+            Validate(scope, codeElement);
+
+            scope.AddDecorator(Order, delegate
             {
-                PopulateDataSource(testBuilder.Test.DefineDataSource(sourceName), codeElement);
+                PopulateDataSource(scope.TestDataContext.DefineDataSource(sourceName), codeElement);
             });
         }
 
-        /// <inheritdoc />
-        public override void ProcessTestParameter(IPatternTestParameterBuilder testParameterBuilder, ICodeElementInfo codeElement)
+        /// <summary>
+        /// Verifies that the attribute is being used correctly.
+        /// </summary>
+        /// <param name="scope">The scope</param>
+        /// <param name="codeElement">The code element</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            testParameterBuilder.AddDecorator(Order, delegate
-            {
-                PopulateDataSource(testParameterBuilder.TestParameter.DefineDataSource(sourceName), codeElement);
-            });
         }
 
         /// <summary>

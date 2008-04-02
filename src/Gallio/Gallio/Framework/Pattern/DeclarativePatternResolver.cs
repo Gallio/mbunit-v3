@@ -35,12 +35,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public IEnumerable<IPattern> GetPatterns(ICodeElementInfo codeElement, bool inherit)
+        public IEnumerable<IPattern> GetPatterns(ICodeElementInfo codeElement)
         {
             if (codeElement == null)
                 throw new ArgumentNullException("codeElement");
 
-            foreach (PatternAttribute attribute in AttributeUtils.GetAttributes<PatternAttribute>(codeElement, inherit))
+            foreach (PatternAttribute attribute in AttributeUtils.GetAttributes<PatternAttribute>(codeElement, true))
                 yield return attribute;
         }
     }

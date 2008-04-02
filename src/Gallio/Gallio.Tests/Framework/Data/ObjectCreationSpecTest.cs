@@ -390,12 +390,21 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
+        public void FormatThrowsIfEntityIsNull()
+        {
+            ObjectCreationSpec spec = new ObjectCreationSpec(EmptyClassInfo,
+                EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
+
+            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format(null, Mocks.Stub<IFormatter>()); });
+        }
+
+        [Test]
         public void FormatThrowsIfFormatterIsNull()
         {
             ObjectCreationSpec spec = new ObjectCreationSpec(EmptyClassInfo,
                 EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format(null); });
+            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format("Foo", null); });
         }
 
         [Test]
@@ -409,17 +418,17 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("<System.Int32>(1), fieldValue=2, Property=3", spec.Format(Runtime.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo<System.Int32>(1): fieldValue=2, Property=3", spec.Format("Foo", Runtime.Instance.Resolve<IFormatter>()));
         }
 
         [Test]
-        public void FormatStringIsEmptyIfThereAreNoSlots()
+        public void FormatStringIsJustTheEntityIfThereAreNoSlots()
         {
             ITypeInfo type = Reflector.Wrap(typeof(EmptyClass));
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("", spec.Format(Runtime.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo", spec.Format("Foo", Runtime.Instance.Resolve<IFormatter>()));
         }
 
         [Test]
@@ -431,7 +440,7 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(type.GetConstructors(PublicInstance)[1].Parameters[1], "abc");
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("(1, \"abc\")", spec.Format(Runtime.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo(1, \"abc\")", spec.Format("Foo", Runtime.Instance.Resolve<IFormatter>()));
         }
 
         public class EmptyClass

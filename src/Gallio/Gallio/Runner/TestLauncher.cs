@@ -580,6 +580,11 @@ namespace Gallio.Runner
                         ShowReportDocuments(result);
                     }
 
+                    // Produce a failure in case there were error annotations.
+                    if (result.ResultCode == ResultCode.Success
+                        && result.Report.TestModelData.GetErrorAnnotationCount() != 0)
+                        result.SetResultCode(ResultCode.Failure);
+
                     return result;
                 }
             }

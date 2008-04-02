@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -24,8 +24,8 @@ namespace Gallio.Runner.Reports
     /// An Xml-serializable test execution log.
     /// </summary>
     [Serializable]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
-    [XmlRoot("executionLog", Namespace=SerializationUtils.XmlNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("executionLog", Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class ExecutionLog
     {
         private readonly List<ExecutionLogStream> streams;
@@ -44,8 +44,8 @@ namespace Gallio.Runner.Reports
         /// Gets the list of streams, not null.
         /// Used for Xml-serialization.
         /// </summary>
-        [XmlArray("streams", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
-        [XmlArrayItem("stream", typeof(ExecutionLogStream), IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlArray("streams", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlArrayItem("stream", typeof(ExecutionLogStream), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public List<ExecutionLogStream> Streams
         {
             get { return streams; }
@@ -54,8 +54,8 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets the list of attachments, not null.
         /// </summary>
-        [XmlArray("attachments", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
-        [XmlArrayItem("attachment", typeof(ExecutionLogAttachment), IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlArray("attachments", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlArrayItem("attachment", typeof(ExecutionLogAttachment), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public List<ExecutionLogAttachment> Attachments
         {
             get { return attachments; }

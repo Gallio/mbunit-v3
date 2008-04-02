@@ -17,6 +17,7 @@ using System;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
 using Gallio.Model;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -25,8 +26,8 @@ namespace Gallio.Runner.Reports
     /// the combined results of all test runs and summary statistics.
     /// </summary>
     [Serializable]
-    [XmlRoot("report", Namespace=SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace=SerializationUtils.XmlNamespace)]
+    [XmlRoot("report", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class Report
     {
         private TestPackageConfig packageConfig;
@@ -36,7 +37,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the test package configuration for the report, or null if none.
         /// </summary>
-        [XmlElement("packageConfig", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlElement("packageConfig", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public TestPackageConfig PackageConfig
         {
             get { return packageConfig; }
@@ -46,7 +47,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the test model for the report, or null if none.
         /// </summary>
-        [XmlElement("testModel", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlElement("testModel", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public TestModelData TestModelData
         {
             get { return testModelData; }
@@ -56,7 +57,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the package run information included in the report, or null if none.
         /// </summary>
-        [XmlElement("packageRun", IsNullable = false, Namespace = SerializationUtils.XmlNamespace)]
+        [XmlElement("packageRun", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public PackageRun PackageRun
         {
             get { return packageRun; }

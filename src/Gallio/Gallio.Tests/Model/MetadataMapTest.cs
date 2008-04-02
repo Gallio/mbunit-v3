@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 using MbUnit.Framework;
 using Assert = MbUnit.Framework.Assert;
 
@@ -153,8 +153,8 @@ namespace Gallio.Tests.Model
             }
         }
 
-        [XmlRoot("container", Namespace = SerializationUtils.XmlNamespace)]
-        [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+        [XmlRoot("container", Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public class MetadataContainer
         {
             [XmlElement("metadata")]

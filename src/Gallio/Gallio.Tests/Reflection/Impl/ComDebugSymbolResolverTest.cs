@@ -42,7 +42,7 @@ namespace Gallio.Tests.Reflection.Impl
 
             StringAssert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
             Assert.Between(codeLocation.Line, 1000, 1003);
-            Assert.GreaterEqualThan(codeLocation.Column, 1);
+            Assert.AreEqual(0, codeLocation.Column);
         }
 
         [Test]

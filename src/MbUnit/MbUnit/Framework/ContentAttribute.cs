@@ -18,7 +18,6 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Gallio.Framework.Pattern;
-using Gallio.Model;
 using Gallio.Reflection;
 
 namespace MbUnit.Framework
@@ -136,10 +135,10 @@ namespace MbUnit.Framework
             if (filePath != null)
                 return File.OpenRead(filePath);
 
-            if (resourcePath != null)
-                return OpenResourceStream(codeElement);
+            if (resourcePath == null)
+                ThrowUsageErrorException("At least one source property must be specified.");
 
-            throw new ModelException("At least one source property must be specified.");
+            return OpenResourceStream(codeElement);
         }
 
         /// <summary>
@@ -198,7 +197,8 @@ namespace MbUnit.Framework
             {
             }
 
-            throw new ModelException(String.Format("Could not find manifest resource '{0}'.", resourcePath));
+            ThrowUsageErrorException(String.Format("Could not find manifest resource '{0}'.", resourcePath));
+            return null; // unreachable
         }
 
         private void GetResourceScope(ICodeElementInfo codeElement, out Assembly scopeAssembly, out string scopeNamespace)
@@ -224,7 +224,9 @@ namespace MbUnit.Framework
                 }
             }
 
-            throw new ModelException("Could not determine the assembly from which to load the manifest resource.");
+            ThrowUsageErrorException("Could not determine the assembly from which to load the manifest resource.");
+            scopeAssembly = null; // unreachable
+            scopeNamespace = null;
         }
     }
 }

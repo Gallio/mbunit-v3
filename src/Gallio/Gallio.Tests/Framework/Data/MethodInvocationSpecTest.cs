@@ -250,12 +250,21 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
+        public void FormatThrowsIfEntityIsNull()
+        {
+            MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), NonGenericClassEmptyMethodInfo,
+                EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
+
+            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format(null, Mocks.Stub<IFormatter>()); });
+        }
+
+        [Test]
         public void FormatThrowsIfFormatterIsNull()
         {
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), NonGenericClassEmptyMethodInfo,
                 EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format(null); });
+            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format("Foo", null); });
         }
 
         [Test]
@@ -268,16 +277,16 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(method.Parameters[0], 1);
 
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(GenericClass<int>), method, slotValues, NullConverter.Instance);
-            Assert.AreEqual("<System.Int32>(1)", spec.Format(Runtime.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo<System.Int32>(1)", spec.Format("Foo", Runtime.Instance.Resolve<IFormatter>()));
         }
 
         [Test]
-        public void FormatStringIsEmptyIfThereAreNoSlots()
+        public void FormatStringIsJustTheEntityIfThereAreNoSlots()
         {
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), NonGenericClassEmptyMethodInfo, slotValues, NullConverter.Instance);
-            Assert.AreEqual("", spec.Format(Runtime.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo", spec.Format("Foo", Runtime.Instance.Resolve<IFormatter>()));
         }
 
         public class NonGenericClass

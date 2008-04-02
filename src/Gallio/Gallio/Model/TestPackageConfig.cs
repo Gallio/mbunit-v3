@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Xml.Serialization;
 using Gallio.Hosting;
-using Gallio.Model.Serialization;
 using Gallio.Utilities;
 
 namespace Gallio.Model
@@ -35,8 +34,8 @@ namespace Gallio.Model
     /// additional configuration settings, etc...
     /// </remarks>
     [Serializable]
-    [XmlRoot("testPackageConfig", Namespace=SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("testPackageConfig", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class TestPackageConfig
     {
         private readonly List<string> hintDirectories;

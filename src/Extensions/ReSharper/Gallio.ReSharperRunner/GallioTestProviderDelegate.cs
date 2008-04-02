@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection;
@@ -67,7 +68,8 @@ namespace Gallio.ReSharperRunner
                 ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
                 ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
 
-              explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
+                explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
+                explorer.FinishModel();
             }
         }
 
@@ -90,9 +92,16 @@ namespace Gallio.ReSharperRunner
                 // Stop recursing at the first type declaration found.
                 return element is ITypeDeclaration;
             }));
+
+            // Note: We don't call FinishModel because we know the model will be incomplete.
+
+            GallioProjectFileState state = explorer.TestModel.Annotations.Count != 0
+                ? new GallioProjectFileState(explorer.TestModel.Annotations)
+                : null;
+            GallioProjectFileState.SetFileState(psiFile.GetProjectFile(), state);
         }
 
-        private void ExploreTypeDeclaration(PsiReflectionPolicy reflectionPolicy, ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
+        private static void ExploreTypeDeclaration(PsiReflectionPolicy reflectionPolicy, ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
         {
             ITypeInfo typeInfo = reflectionPolicy.Wrap(declaration.DeclaredElement);
 
@@ -264,7 +273,12 @@ namespace Gallio.ReSharperRunner
         {
             TestPackage testPackage = new TestPackage(new TestPackageConfig(), reflectionPolicy);
             TestModel testModel = new TestModel(testPackage);
-            return AggregateTestExplorer.CreateExplorerForAllTestFrameworks(testModel);
+
+            AggregateTestExplorer aggregate = new AggregateTestExplorer();
+            foreach (ITestFramework framework in Runtime.Instance.ResolveAll<ITestFramework>())
+                aggregate.AddTestExplorer(framework.CreateTestExplorer(testModel));
+
+            return aggregate;
         }
     }
 }

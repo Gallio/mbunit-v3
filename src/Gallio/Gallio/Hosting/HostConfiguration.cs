@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Gallio.Model.Serialization;
+using Gallio.Utilities;
 
 namespace Gallio.Hosting
 {
@@ -28,8 +28,8 @@ namespace Gallio.Hosting
     /// Describes the runtime configuration of a <see cref="IHost" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("hostConfiguration", Namespace = SerializationUtils.XmlNamespace)]
-    [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+    [XmlRoot("hostConfiguration", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class HostConfiguration
     {
         private string configurationXml;
@@ -304,7 +304,7 @@ namespace Gallio.Hosting
         /// maps an assembly partial name to its full name.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public sealed class AssemblyQualification
         {
             private string partialName;
@@ -389,7 +389,7 @@ namespace Gallio.Hosting
         /// specifies the codebase, a publisher policy and binding redirects.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public sealed class AssemblyDependency
         {
             private string assemblyName;
@@ -558,7 +558,7 @@ namespace Gallio.Hosting
         /// a new version.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public sealed class AssemblyBindingRedirect
         {
             private string oldVersionRange;
@@ -646,7 +646,7 @@ namespace Gallio.Hosting
         /// Describes the location of the codebase of a particular assembly version.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = SerializationUtils.XmlNamespace)]
+        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public class AssemblyCodeBase
         {
             private string version;

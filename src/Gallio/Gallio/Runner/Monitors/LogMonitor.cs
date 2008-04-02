@@ -18,6 +18,8 @@ using System.Text;
 using Castle.Core.Logging;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Serialization;
+using Gallio.Reflection;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Monitors
@@ -56,6 +58,7 @@ namespace Gallio.Runner.Monitors
         {
             base.OnAttach();
 
+            Runner.BuildTestModelComplete += HandleTestModelComplete;
             reportMonitor.TestStepStarting += HandleStepStarting;
             reportMonitor.TestStepFinished += HandleStepFinished;
         }
@@ -65,8 +68,45 @@ namespace Gallio.Runner.Monitors
         {
             base.OnDetach();
 
+            Runner.BuildTestModelComplete -= HandleTestModelComplete;
             reportMonitor.TestStepStarting -= HandleStepStarting;
             reportMonitor.TestStepFinished -= HandleStepFinished;
+        }
+
+        private void HandleTestModelComplete(object sender, EventArgs e)
+        {
+            if (Runner.TestModelData == null)
+                return;
+
+            foreach (AnnotationData annotation in Runner.TestModelData.Annotations)
+                LogAnnotation(annotation);
+        }
+
+        private void LogAnnotation(AnnotationData annotation)
+        {
+            StringBuilder message = new StringBuilder();
+            message.Append(annotation.Message);
+
+            if (annotation.CodeLocation != CodeLocation.Unknown)
+            {
+                message.Append("\n\tLocation: ");
+                message.Append(annotation.CodeLocation);
+            }
+
+            if (annotation.CodeLocation.Line == 0 && annotation.CodeReference != CodeReference.Unknown)
+            {
+                message.Append("\n\tReference: ");
+                message.Append(annotation.CodeReference);
+            }
+
+            if (!string.IsNullOrEmpty(annotation.Details))
+            {
+                message.Append("\n\tDetails: ");
+                message.Append(annotation.Details);
+            }
+
+            LoggerLevel level = GetLoggerLevelForAnnotation(annotation.Type);
+            Log(level, message.ToString());
         }
 
         private void HandleStepStarting(object sender, TestStepRunEventArgs e)
@@ -148,6 +188,24 @@ namespace Gallio.Runner.Monitors
 
                 default:
                     throw new ArgumentException("outcome");
+            }
+        }
+
+        private static LoggerLevel GetLoggerLevelForAnnotation(AnnotationType type)
+        {
+            switch (type)
+            {
+                case AnnotationType.Error:
+                    return LoggerLevel.Error;
+
+                case AnnotationType.Warning:
+                    return LoggerLevel.Warn;
+
+                case AnnotationType.Info:
+                    return LoggerLevel.Info;
+
+                default:
+                    throw new ArgumentException("type");
             }
         }
     }

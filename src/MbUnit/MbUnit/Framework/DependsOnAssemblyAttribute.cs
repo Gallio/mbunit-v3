@@ -29,7 +29,7 @@ namespace MbUnit.Framework
     /// <remarks>
     /// This attribute can be repeated multiple times if there are multiple dependencies.
     /// </remarks>
-    public class DependsOnAssemblyAttribute : DependencyPatternAttribute
+    public class DependsOnAssemblyAttribute : TestDependencyPatternAttribute
     {
         private readonly string testAssemblyName;
 
@@ -56,18 +56,17 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override ICodeElementInfo GetDependency(IPatternTestBuilder testBuilder, ICodeElementInfo codeElement)
+        protected override ICodeElementInfo GetDependency(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
             try
             {
-                return testBuilder.TestModelBuilder.ReflectionPolicy.LoadAssembly(new AssemblyName(testAssemblyName));
+                return scope.Evaluator.ReflectionPolicy.LoadAssembly(new AssemblyName(testAssemblyName));
             }
             catch (Exception ex)
             {
-                throw new TestDeclarationErrorException(
-                    String.Format(
-                        "Could not resolve dependency on test assembly '{0}' because the assembly could not be loaded.",
-                        testAssemblyName), ex);
+                throw new PatternUsageErrorException(
+                    String.Format("Could not resolve dependency on test assembly '{0}' because the assembly could not be loaded.", testAssemblyName),
+                    ex);
             }
         }
     }
