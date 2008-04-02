@@ -70,16 +70,18 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
+            string message = "The test was ignored.";
+            if (reason.Length != 0)
+                message += "\nReason: " + reason;
+            
             scope.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
 
             scope.Test.TestActions.InitializeTestChain.Before(delegate
             {
-                string message = "The test was ignored.";
-                if (reason.Length != 0)
-                    message += "\nReason: " + reason;
-
                 throw new SilentTestException(TestOutcome.Ignored, message);
             });
+
+            scope.Evaluator.TestModel.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement, message, null));
         }
     }
 }
