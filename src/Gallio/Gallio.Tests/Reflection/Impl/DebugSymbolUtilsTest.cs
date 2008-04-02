@@ -49,7 +49,7 @@ namespace Gallio.Tests.Reflection.Impl
 
             StringAssert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
             Assert.Between(codeLocation.Line, 1000, 1003);
-            Assert.GreaterEqualThan(codeLocation.Column, 1);
+            Assert.AreEqual(codeLocation.Column, 0, "No column information should be returned because it is inaccurate.");
         }
 
         [Test, ExpectedArgumentNullException]
