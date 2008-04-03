@@ -23,14 +23,15 @@ namespace MbUnit.Framework
     /// </para>
     /// <para>
     /// The test will be executed using values drawn from each data source and combined so
-    /// that at most two values differ between each combitation produced.  This constraint vastly
-    /// reduces the number of combinations tested while still providing a high degree of
-    /// variability among combinations.  Therefore this strategy has a high likelihood of
-    /// finding bugs while incurring less cost.
+    /// that all possible pairings of values from each data source are produced.  This constraint vastly
+    /// reduces the number of combinations because we only consider all interactions among
+    /// pairs of variables rather than among all variables at once.  This strategy still
+    /// provides a high degree of variability among combinations and has a high likelihood of
+    /// finding bugs while incurring much less cost than testing all possible combinations.
     /// </para>
     /// <para>
     /// If there are three data sources, A, B and C with values A1, A2, B1, B2, C1 and C2 then
-    /// the test will be run three times with inputs: (A1, B1, C1), (A2, B2, C1), (A1, B2, C2).
+    /// the test will be run four times with inputs: (A1, B1, C1), (A2, B2, C1), (A1, B2, C2), (A2, B1, C2).
     /// Compare this with the eight times that a standard cross-product combinatorial join
     /// strategy would have required.
     /// </para>

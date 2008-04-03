@@ -28,6 +28,9 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(RowAttribute))]
     [TestsOn(typeof(ColumnAttribute))]
     [TestsOn(typeof(BindAttribute))]
+    [TestsOn(typeof(CombinatorialJoinAttribute))]
+    [TestsOn(typeof(SequentialJoinAttribute))]
+    [TestsOn(typeof(PairwiseJoinAttribute))]
     public class DataBindingTest : BaseSampleTest
     {
         [Test]
@@ -59,7 +62,7 @@ namespace MbUnit.Tests.Framework
         })]
         [Row(typeof(CombinatorialJoinStrategySample), "Test", new string[] { "000", "001", "010", "011", "100", "101", "110", "111" })]
         [Row(typeof(SequentialJoinStrategySample), "Test", new string[] { "000", "111" })]
-        // pending implementation: [Row(typeof(PairwiseJoinStrategySample), "Test", new string[] { "000", "011", "110" })]
+        [Row(typeof(PairwiseJoinStrategySample), "Test", new string[] { "000", "011", "110", "101" })]
         public void VerifySampleOutput(Type fixtureType, string sampleName, string[] output)
         {
             RunFixtures(fixtureType);
