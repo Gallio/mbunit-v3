@@ -36,6 +36,13 @@ namespace MbUnit.Framework
     /// strategy would have required.
     /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The algorithm used to compute pairwise coverings is approximate and might not find
+    /// a minimal pairwise covering of values.  However, the relative size of a full combinatorial
+    /// cross product will still be exponentially larger than that of the covering that is produced.
+    /// </para>
+    /// </remarks>
     /// <seealso cref="PairwiseJoinStrategy"/>
     /// <seealso cref="SequentialJoinAttribute"/>
     /// <seealso cref="CombinatorialJoinAttribute"/>

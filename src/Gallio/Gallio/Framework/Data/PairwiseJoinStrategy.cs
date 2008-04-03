@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 
@@ -41,6 +42,10 @@ namespace Gallio.Framework.Data
     /// preferring pairs used less often over other ones.  The combinations produced may not be
     /// optimal but empirically it covers all pairs using a sufficiently small number of cases for
     /// most practical purposes.
+    /// </para>
+    /// <para>
+    /// Many thanks to James Bach at Satisfice (www.satisfice.com) for his AllPairs program from
+    /// which the algorithm used here was adapted.
     /// </para>
     /// <para>
     /// The choice of considering only 2 factors was made for the sake of implementation
@@ -109,9 +114,10 @@ namespace Gallio.Framework.Data
         private sealed class PairwiseGenerator
         {
             private readonly int[] counts;
+            private readonly Random tieBreaker;
 
             private readonly int dimensions;
-            private readonly ScoreTable[][] dimensionPairScores;
+            private readonly CoveringTable[][] coveringTables;
 
             public PairwiseGenerator(int[] counts)
             {
@@ -119,18 +125,20 @@ namespace Gallio.Framework.Data
 
                 dimensions = counts.Length;
 
-                dimensionPairScores = new ScoreTable[dimensions][];
+                coveringTables = new CoveringTable[dimensions][];
                 for (int i = 0; i < dimensions; i++)
                 {
-                    dimensionPairScores[i] = new ScoreTable[dimensions];
+                    coveringTables[i] = new CoveringTable[dimensions];
 
                     for (int j = 0; j < i; j++)
                     {
-                        int[,] scores = new int[counts[i], counts[j]];
-                        dimensionPairScores[i][j] = new ScoreTable(scores, false);
-                        dimensionPairScores[j][i] = new ScoreTable(scores, true);
+                        int[,] coverings = new int[counts[i], counts[j]];
+                        coveringTables[i][j] = new CoveringTable(coverings, false);
+                        coveringTables[j][i] = new CoveringTable(coverings, true);
                     }
                 }
+
+                tieBreaker = new Random(0); // Note: Uses a constant seed to be deterministic.
             }
 
             public bool Next(int[] indices)
@@ -139,117 +147,115 @@ namespace Gallio.Framework.Data
                     indices[i] = -1;
 
                 bool foundUncovered = false;
-                int bestFirstIndex = 0;
-                int bestSecondIndex = 0;
-                int bestSecondDimension = 0;
-
-                for (bool fill = false; ; fill = true)
+                for (int firstDimension = 0; firstDimension < dimensions; firstDimension++)
                 {
-                    for (int firstDimension = 0; firstDimension < dimensions; firstDimension++)
-                    {
-                        if (indices[firstDimension] >= 0)
-                            continue;
+                    if (indices[firstDimension] >= 0)
+                        continue;
 
-                        // Search for a second dimension that forms a pair that has been visited least.
-                        int firstCount = counts[firstDimension];
-                        int bestScore = int.MaxValue;
+                    // Find the value in the first dimension that produces the best score over all values in all other dimensions.
+                    int firstCount = counts[firstDimension];
+                    int bestFirstScore = 0;
+                    int bestFirstIndex = 0;
+                    int ties = 0;
+
+                    for (int firstIndex = 0; firstIndex < firstCount; firstIndex++)
+                    {
+                        int firstScore = 0;
                         for (int secondDimension = 0; secondDimension < dimensions; secondDimension++)
                         {
                             if (firstDimension == secondDimension)
                                 continue;
 
-                            ScoreTable scores = dimensionPairScores[firstDimension][secondDimension];
+                            CoveringTable coverings = coveringTables[firstDimension][secondDimension];
 
-                            int secondIndex = indices[secondDimension];
-                            if (secondIndex < 0)
+                            if (firstDimension < secondDimension)
                             {
-                                // Handle the case where neither the first nor second index has been chosen.
                                 int secondCount = counts[secondDimension];
-                                for (int firstIndex = 0; firstIndex < firstCount; firstIndex++)
+                                for (int secondIndex = 0; secondIndex < secondCount; secondIndex++)
                                 {
-                                    for (secondIndex = 0; secondIndex < secondCount; secondIndex++)
+                                    if (coverings.GetCoveringCount(firstIndex, secondIndex) == 0)
                                     {
-                                        int score = scores.GetScore(firstIndex, secondIndex);
-                                        if (score < bestScore)
-                                        {
-                                            bestScore = score;
-                                            bestFirstIndex = firstIndex;
-                                            bestSecondIndex = secondIndex;
-                                            bestSecondDimension = secondDimension;
-                                        }
+                                        firstScore += 1;
+                                        break;
                                     }
                                 }
                             }
                             else
                             {
-                                // Handle the case where the second index has already been chosen but not the first.
-                                for (int firstIndex = 0; firstIndex < firstCount; firstIndex++)
-                                {
-                                    int score = scores.GetScore(firstIndex, secondIndex);
-                                    if (score < bestScore)
-                                    {
-                                        bestScore = score;
-                                        bestFirstIndex = firstIndex;
-                                        bestSecondIndex = secondIndex;
-                                        bestSecondDimension = secondDimension;
-                                    }
-                                }
+                                if (coverings.GetCoveringCount(firstIndex, indices[secondDimension]) == 0)
+                                    firstScore += 1;
                             }
                         }
 
-                        // If the best score is zero, then we have found an uncovered pair.
-                        if (bestScore == 0)
-                            foundUncovered = true;
+                        if (firstScore < bestFirstScore)
+                            continue;
 
-                        // Record the pair.  We defer recording already covered pairs until we reach the second iteration
-                        // to ensure that we will find remaining uncovered pairs during the first iteration.
-                        if (foundUncovered || fill)
+                        if (firstScore == bestFirstScore)
                         {
-                            indices[firstDimension] = bestFirstIndex;
-                            indices[bestSecondDimension] = bestSecondIndex;
+                            // Randomly choose which of the ties to keep with equal probability.
+                            // This helps to reduce the variance between covered pairs.
+                            ties += 1;
+                            if (tieBreaker.Next(ties) != 0)
+                                continue;
                         }
+                        else
+                        {
+                            bestFirstScore = firstScore;
+                        }
+
+                        bestFirstIndex = firstIndex;
                     }
 
-                    // We're done when we have finished filling the list of indices.
-                    if (fill)
-                        break;
-
-                    // If we have just finished the first iteration and still not found any uncovered pairs,
-                    // then there are none left to be found.
-                    if (!foundUncovered)
-                        return false;
+                    if (bestFirstScore != 0)
+                    {
+                        // If the best score is non-zero, then we know there exists an uncovered pair that will be
+                        // covered by this choice of first index because we always prefer indexes that produce new coverings.
+                        foundUncovered = true;
+                        indices[firstDimension] = bestFirstIndex;
+                    }
+                    else
+                    {
+                        // If the best score is zero, then it makes no difference which index we choose so we
+                        // pick one at random.  This helps to reduce the variance between covered pairs
+                        // as otherwise we'd constantly be choosing the 0th element.
+                        indices[firstDimension] = tieBreaker.Next(firstCount);
+                    }
                 }
+
+                // If we did not find any uncovered pairs, then there are none to be found.
+                if (!foundUncovered)
+                    return false;
 
                 // Mark all pairs that were covered.
                 for (int i = 0; i < dimensions; i++)
                     for (int j = i + 1; j < dimensions; j++)
-                        dimensionPairScores[i][j].IncrementScore(indices[i], indices[j]);
+                        coveringTables[i][j].IncrementCoveringCount(indices[i], indices[j]);
                 return true;
             }
         }
 
-        private struct ScoreTable
+        private struct CoveringTable
         {
-            private readonly int[,] scores;
+            private readonly int[,] coverings;
             private readonly bool swapped;
 
-            public ScoreTable(int[,] scores, bool swapped)
+            public CoveringTable(int[,] coverings, bool swapped)
             {
-                this.scores = scores;
+                this.coverings = coverings;
                 this.swapped = swapped;
             }
 
-            public int GetScore(int firstIndex, int secondIndex)
+            public int GetCoveringCount(int firstIndex, int secondIndex)
             {
-                return swapped ? scores[secondIndex, firstIndex] : scores[firstIndex, secondIndex];
+                return swapped ? coverings[secondIndex, firstIndex] : coverings[firstIndex, secondIndex];
             }
 
-            public void IncrementScore(int firstIndex, int secondIndex)
+            public void IncrementCoveringCount(int firstIndex, int secondIndex)
             {
                 if (swapped)
-                    scores[secondIndex, firstIndex] += 1;
+                    coverings[secondIndex, firstIndex] += 1;
                 else
-                    scores[firstIndex, secondIndex] += 1;
+                    coverings[firstIndex, secondIndex] += 1;
             }
         }
     }

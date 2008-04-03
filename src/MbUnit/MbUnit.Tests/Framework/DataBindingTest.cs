@@ -62,7 +62,7 @@ namespace MbUnit.Tests.Framework
         })]
         [Row(typeof(CombinatorialJoinStrategySample), "Test", new string[] { "000", "001", "010", "011", "100", "101", "110", "111" })]
         [Row(typeof(SequentialJoinStrategySample), "Test", new string[] { "000", "111" })]
-        [Row(typeof(PairwiseJoinStrategySample), "Test", new string[] { "000", "011", "110", "101" })]
+        [Row(typeof(PairwiseJoinStrategySample), "Test", new string[] { "111", "100", "010", "001" })]
         public void VerifySampleOutput(Type fixtureType, string sampleName, string[] output)
         {
             RunFixtures(fixtureType);

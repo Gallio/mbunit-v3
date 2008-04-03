@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Framework;
 using Gallio.Framework.Data;
@@ -103,25 +104,27 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
-        [Row(new int[] { 1, 1 }, Description="1^2.")]
-        [Row(new int[] { 2, 2 }, Description="2^2.")]
-        [Row(new int[] { 2, 2, 2 }, Description = "2^3.")]
-        [Row(new int[] { 3, 3, 3 }, Description = "3^3.")]
-        [Row(new int[] { 3, 3, 3, 3 }, Description = "3^4.")]
-        [Row(new int[] { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 }, Description = "3^13.")]
-        [Row(new int[] { 7, 3, 4, 5 }, Description = "7*3*4*5.")]
-        public void JoinProducesCoveringsOfAllPairs(int[] dimensionCounts)
+        [Row(new int[] { 1, 1 }, 1, Description="1^2.")]
+        [Row(new int[] { 2, 2 }, 4, Description="2^2.")]
+        [Row(new int[] { 2, 2, 2 }, 4, Description = "2^3.")]
+        [Row(new int[] { 3, 3, 3 }, 10, Description = "3^3.")]
+        [Row(new int[] { 3, 3, 3, 3 }, 10, Description = "3^4.")]
+        [Row(new int[] { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 }, 21, Description = "3^13.")]
+        [Row(new int[] { 7, 3, 4, 5 }, 36, Description = "7*3*4*5.")]
+        public void JoinProducesCoveringsOfAllPairs(int[] counts, int empiricalUpperBound)
         {
+            int dimensions = counts.Length;
+
             DataBinding binding = new SimpleDataBinding(0, null);
-            IDataProvider[] providers = new IDataProvider[dimensionCounts.Length];
-            DataBinding[][] bindingsPerProvider = new DataBinding[dimensionCounts.Length][];
-            for (int i = 0; i < dimensionCounts.Length; i++)
+            IDataProvider[] providers = new IDataProvider[dimensions];
+            DataBinding[][] bindingsPerProvider = new DataBinding[dimensions][];
+            for (int i = 0; i < dimensions; i++)
             {
                 providers[i] = Mocks.CreateMock<IDataProvider>();
                 bindingsPerProvider[i] = new DataBinding[] { binding };
 
-                IDataRow[] providerRows = new IDataRow[dimensionCounts[i]];
-                for (int j = 0; j < dimensionCounts[i]; j++)
+                IDataRow[] providerRows = new IDataRow[counts[i]];
+                for (int j = 0; j < counts[i]; j++)
                     providerRows[j] = new ScalarDataRow<int>(j, null, false);
 
                 Expect.Call(providers[i].GetRows(bindingsPerProvider[i], true)).Return(providerRows);
@@ -131,20 +134,81 @@ namespace Gallio.Tests.Framework.Data
 
             List<IList<IDataRow>> rowLists = new List<IList<IDataRow>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
 
-            foreach (IList<IDataRow> rowList in rowLists)
+            int[][] values = new int[rowLists.Count][];
+            using (Log.BeginSection(String.Format("{0} combinations.", rowLists.Count)))
             {
-                Assert.AreEqual(dimensionCounts.Length, rowList.Count);
-
-                for (int i = 0; i < rowList.Count; i++)
+                for (int i = 0; i < rowLists.Count; i++)
                 {
-                    if (i != 0)
-                        Log.Write(",");
+                    IList<IDataRow> rowList = rowLists[i];
+                    Assert.AreEqual(dimensions, rowList.Count);
 
-                    Log.Write(rowList[i].GetValue(binding));
+                    values[i] = new int[dimensions];
+                    for (int j = 0; j < rowList.Count; j++)
+                    {
+                        int value = (int)rowList[j].GetValue(binding);
+                        values[i][j] = value;
+
+                        if (j != 0)
+                            Log.Write(",");
+                        Log.Write(value);
+                    }
+
+                    Log.WriteLine();
                 }
-
-                Log.WriteLine();
             }
+
+            // Check pairings.
+            bool missingPairing = false;
+            double meanOccurrences = 0;
+            double stdevOccurrences = 0;
+            int pairingCount = 0;
+
+            using (Log.BeginSection("Pairings"))
+            {
+                for (int firstDimension = 0; firstDimension < dimensions; firstDimension++)
+                {
+                    for (int secondDimension = firstDimension + 1; secondDimension < dimensions; secondDimension++)
+                    {
+                        for (int firstValue = 0; firstValue < counts[firstDimension]; firstValue++)
+                        {
+                            for (int secondValue = 0; secondValue < counts[secondDimension]; secondValue++)
+                            {
+                                int occurrences = 0;
+                                for (int i = 0; i < values.Length; i++)
+                                    if (values[i][firstDimension] == firstValue && values[i][secondDimension] == secondValue)
+                                        occurrences += 1;
+
+                                Log.WriteLine("{0} x {1} : ({2}, {3}) -> {4} occurrences.",
+                                    firstDimension, secondDimension, firstValue, secondValue, occurrences);
+
+                                if (occurrences == 0)
+                                    missingPairing = true;
+
+                                pairingCount += 1;
+                                double diff = occurrences - meanOccurrences;
+                                meanOccurrences += diff / pairingCount;
+                                stdevOccurrences += diff * (occurrences - meanOccurrences);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (pairingCount > 1)
+                stdevOccurrences = Math.Sqrt(stdevOccurrences / (pairingCount - 1));
+            else
+                stdevOccurrences = 0;
+
+            using (Log.BeginSection("Statistics"))
+            {
+                // A mean of exactly 1 implies we have found a minimal covering.
+                // A low standard deviation indicates good uniformity among the covered pairs.  0 would be ideal.
+                Log.WriteLine("Pairing Occurrence Mean: {0}", meanOccurrences);
+                Log.WriteLine("Pairing Occurrence Stdev: {0}", stdevOccurrences);
+            }
+
+            Assert.IsFalse(missingPairing, "One or more pairings were not covered!");
+            Assert.LowerEqualThan(values.Length, empiricalUpperBound, "There were more combinations produced than previously measured.  Has the algorithm gotten worse?");
         }
     }
 }
