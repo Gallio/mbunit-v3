@@ -1,4 +1,4 @@
-.gallio-report body
+body.gallio-report
 {
 	margin: 0px 0px 0px 0px;
 	padding: 0px 0px 0px 0px;
@@ -6,7 +6,7 @@
 	font-size: 10pt;
 }
 
-.gallio-report div#header
+.gallio-report div.header
 {
 	margin: 0px 0px 0px 0px;
 	padding: 0px 0px 0px 0px;
@@ -19,17 +19,13 @@
 
 .gallio-report h1
 {
-	font-size: 18pt;
-	letter-spacing: 0.2em;
-	font-weight: normal;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
 	width: 100%;
 	height: 60px;
 	background-image: url(../img/GallioTestReportHeader.png);
 	background-repeat: no-repeat;
 	background-position: 0 0;
-	color: White;
-	text-indent: 110px;/*border: solid 1px white;*/
-	padding-top: 15px;
 }
 
 .gallio-report h2
@@ -37,17 +33,9 @@
 	font-size: 13pt;
 	letter-spacing: 0.15em;
 	color: #1f1f1f;
-	/*text-decoration: underline;*/
-	/* font-weight: normal;*/
-	/*padding: 8px;*/
 	padding: 0;
 	margin: 0 0 3px 0;
 	text-indent: 8px;
-}
-
-.gallio-report h3
-{
-	font-size: 10pt;
 }
 
 .gallio-report ul

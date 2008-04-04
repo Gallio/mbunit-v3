@@ -53,7 +53,7 @@
 
   
   <xsl:template match="g:report" mode="xhtml-body">
-    <div id="header">
+    <div id="Header" class="header">
       <h1></h1>
     </div>
     <xsl:apply-templates select="g:package/g:assemblyFiles" />
@@ -327,11 +327,18 @@
           <xsl:apply-templates select="." mode="details-content" />
         </div>
 
-        <xsl:if test="g:children/g:testStepRun">
-          <ul class="testStepRunContainer">
-            <xsl:apply-templates select="g:children/g:testStepRun" mode="details" />
-          </ul>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="g:children/g:testStepRun">
+            <ul class="testStepRunContainer">
+              <xsl:apply-templates select="g:children/g:testStepRun" mode="details" />
+            </ul>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="toggle-autoclose">
+              <xsl:with-param name="href">testStepRunPanel-<xsl:value-of select="$id"/></xsl:with-param>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </div>
     </li>
   </xsl:template>
@@ -594,6 +601,13 @@
   
   <xsl:template name="toggle-stop">
     <img src="{$imgDir}FullStop.gif" alt="Toggle Placeholder" />
+  </xsl:template>
+  
+  <xsl:template name="toggle-autoclose">
+    <xsl:param name="href" />
+    
+    <!-- Auto-close certain toggles by default when JavaScript is available -->
+    <script type="text/javascript">toggle('<xsl:value-of select="$href"/>');</script>
   </xsl:template>
   
   <!-- Displays visual statistics using a progress bar and outcome icons -->
