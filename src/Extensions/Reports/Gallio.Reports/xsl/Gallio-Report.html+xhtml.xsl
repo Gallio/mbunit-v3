@@ -50,24 +50,25 @@
       <xsl:with-param name="nodes"><xsl:apply-templates select="." mode="xhtml-fragment" /></xsl:with-param>
     </xsl:call-template>
   </xsl:template>
-
   
   <xsl:template match="g:report" mode="xhtml-body">
     <div id="Header" class="header">
-      <h1></h1>
+      <div class="header-image"></div>
     </div>
-    <xsl:apply-templates select="g:package/g:assemblyFiles" />
-    <xsl:apply-templates select="g:packageRun" mode="statistics" />
-    <xsl:apply-templates select="g:packageRun" mode="summary"/>
-    <xsl:apply-templates select="g:packageRun" mode="details"/>
+    <div id="Content" class="content">
+      <xsl:apply-templates select="g:packageConfig" mode="assemblies" />
+      <xsl:apply-templates select="g:packageRun" mode="statistics" />
+      <xsl:apply-templates select="g:packageRun" mode="summary"/>
+      <xsl:apply-templates select="g:packageRun" mode="details"/>
+    </div>
   </xsl:template>
 
-  <xsl:template match="g:package/g:assemblyFiles">
+  <xsl:template match="g:packageConfig" mode="assemblies">
     <div id="Assemblies" class="section">
       <h2>Assemblies</h2>
       <div class="section-content">
         <ul>
-          <xsl:for-each select="g:assemblyFile">
+          <xsl:for-each select="g:assemblyFiles/g:assemblyFile">
             <li>
               <xsl:value-of select="."/>
             </li>
@@ -80,7 +81,7 @@
   <xsl:template match="g:packageRun" mode="statistics">
     <div id="Statistics" class="section">
       <h2>Statistics</h2>
-      <div id="statistics-section-content" class="section-content">
+      <div class="section-content">
         <table class="statistics-table">
           <tr>
             <td class="statistics-label-cell">
@@ -178,7 +179,7 @@
       <xsl:variable name="statistics" select="msxsl:node-set($statisticsRaw)/g:statistics" />
 
       <li>
-        <div>
+        <span>
           <xsl:choose>
             <xsl:when test="g:children/g:testStepRun">
               <xsl:call-template name="toggle">
@@ -201,13 +202,15 @@
           <xsl:call-template name="visual-statistics">
             <xsl:with-param name="statistics" select="$statistics" />
           </xsl:call-template>
+        </span>
+        
+        <div class="panel">
+          <xsl:if test="g:children/g:testStepRun">
+            <ul id="summaryPanel-{$id}">
+              <xsl:apply-templates select="g:children/g:testStepRun" mode="summary" />
+            </ul>
+          </xsl:if>
         </div>
-
-        <xsl:if test="g:children/g:testStepRun">
-          <ul id="summaryPanel-{$id}">
-            <xsl:apply-templates select="g:children/g:testStepRun" mode="summary" />
-          </ul>
-        </xsl:if>
       </li>
     </xsl:if>
   </xsl:template>
@@ -250,7 +253,7 @@
     <xsl:variable name="statistics" select="msxsl:node-set($statisticsRaw)/g:statistics" />
 
     <li id="testStepRun-{$id}">
-      <div class="testStepRunHeading testStepRunHeading-Level{$nestingLevel}">
+      <span class="testStepRunHeading testStepRunHeading-Level{$nestingLevel}">
         <xsl:call-template name="toggle">
           <xsl:with-param name="href">testStepRunPanel-<xsl:value-of select="$id"/></xsl:with-param>
         </xsl:call-template>
@@ -274,14 +277,14 @@
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
-      </div>
+      </span>
 
-      <div id="testStepRunPanel-{$id}" class="testStepRunPanel">
+      <div id="testStepRunPanel-{$id}" class="panel">
         <xsl:choose>
           <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
             <table class="statistics-table">
               <tr class="alternate-row">
-                <td>Results:</td>
+                <td class="statistics-label-cell">Results:</td>
                 <td>
                   <xsl:call-template name="format-statistics">
                     <xsl:with-param name="statistics" select="$statistics" />
@@ -289,15 +292,13 @@
                 </td>
               </tr>
               <tr>
-                <td>Duration:</td>
+                <td class="statistics-label-cell">Duration:</td>
                 <td>
                   <xsl:value-of select="format-number($statistics/@duration, '0.00')" />s
                 </td>
               </tr>
               <tr class="alternate-row">
-                <td>
-                  Assertions:
-                </td>
+                <td class="statistics-label-cell">Assertions:</td>
                 <td>
                   <xsl:value-of select="$statistics/@assertCount" />
                 </td>

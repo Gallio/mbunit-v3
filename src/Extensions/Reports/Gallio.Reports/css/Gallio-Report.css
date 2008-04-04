@@ -1,7 +1,16 @@
-body.gallio-report
+html
+{
+	overflow: auto;
+}
+
+div.gallio-report, body.gallio-report
 {
 	margin: 0px 0px 0px 0px;
 	padding: 0px 0px 0px 0px;
+}
+
+.gallio-report
+{
 	font-family: Verdana, Arial, Helvetica, Helv, sans-serif;
 	font-size: 10pt;
 }
@@ -14,10 +23,10 @@ body.gallio-report
 	background-image: url(../img/header-background.gif);
 	background-repeat: repeat-y;
 	width: 100%;
-	height: 60px; /*border: solid 1px red;*/
+	height: 60px;
 }
 
-.gallio-report h1
+.gallio-report div.header-image
 {
 	margin: 0px 0px 0px 0px;
 	padding: 0px 0px 0px 0px;
@@ -28,6 +37,28 @@ body.gallio-report
 	background-position: 0 0;
 }
 
+.gallio-report div.content
+{
+	width: 100%;
+}
+
+/* Generate a fixed layout when the report is the whole document */
+body.gallio-report > div.header
+{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+}
+
+body.gallio-report > div.content
+{
+	position: fixed; 
+	top: 60px;
+	bottom: 0px;
+	overflow: auto;
+}
+
+/* Section headings */
 .gallio-report h2
 {
 	font-size: 13pt;
@@ -38,18 +69,24 @@ body.gallio-report
 	text-indent: 8px;
 }
 
+/* Toggle regions */
 .gallio-report ul
 {
 	list-style-type: none;
 	padding-left: 0px;
-	margin-left: 24px;
+	margin: 0px 0px 0px 0px;
 }
 
-.gallio-report ul.testStepRunContainer
+.gallio-report div.panel
 {
-	margin-left: 12px;
+	margin: 0px 0px 0px 24px;
 }
 
+.gallio-report img.toggle
+{
+	cursor: pointer;
+	margin-right: 6px;
+}
 
 /* Progress bars */
 .gallio-report table.progressBar
@@ -138,12 +175,6 @@ body.gallio-report
 	background-color: #dddddd;
 }
 
-/* Toggles */
-.gallio-report .toggle
-{
-	cursor: pointer;
-}
-
 /* Styles for test runs, including customized varieties per component kind */
 .gallio-report .testStepRun
 {
@@ -153,34 +184,28 @@ body.gallio-report
 
 .gallio-report .testStepRunHeading
 {
-	font-weight:bold;
-	font-size:10pt;
-	position:relative;
+	font-weight: bold;
+	font-size: 10pt;
 }
 
 .gallio-report .testStepRunHeading-Level1
 {
-	font-size:11pt;
+	font-size: 11pt;
 }
 
 .gallio-report .testStepRunHeading-Level2
 {
-	font-size:10pt;
+	font-size: 10pt;
 }
 
 .gallio-report .testStepRunHeading-Level3
 {
-	font-size:10pt;
+	font-size: 9pt;
 }
 
 .gallio-report .testStepRunHeading-Level4
 {
-	font-size:10pt;
-}
-
-.gallio-report .testStepRunPanel
-{
-	margin-left: 12pt;
+	font-size: 9pt;
 }
 
 /* Styles for metadata entries */
@@ -189,7 +214,6 @@ body.gallio-report
 	margin: 5px 5px 5px 0px;
 	padding: 5px 5px 5px 5px;
 	
-	/*border: solid 1px #505090;*/
 	background: #f4f4ff;
 	font-size: 9pt;
 }
@@ -216,7 +240,6 @@ body.gallio-report
 .gallio-report .logStream
 {
 	background-color: #f0f0f0;
-	/*border: dotted 1px #505050;*/
 	border-bottom: solid 1px #c6c6c6;
 	border-right: solid 1px #c6c6c6;
 	margin: 5px 5px 5px 0px;
@@ -277,24 +300,25 @@ body.gallio-report
 .gallio-report div.section-content
 {
 	background-color: #fbfbfb;
-	padding-top: 3px;
-	padding-bottom: 3px;
+	padding: 10px 10px 10px 10px;
 }
 
 .gallio-report table.statistics-table
 {
-	width: 99%;
-	margin: 0 20px 0 0;
-	/*border: solid 1px red;*/
 	border-collapse: collapse;
+}
+
+.gallio-report table.statistics-table td
+{
+	width: 100%;
 }
 
 .gallio-report table.statistics-table td.statistics-label-cell
 {
 	font-weight: bolder;
 	color: #646464;
-	padding: 0 10x 0 10px;
-	/*text-align: right;*/
+	padding: 0px 10px 0px 10px;
+	width: auto;
 }
 
 .gallio-report table.statistics-table tr.alternate-row td
@@ -302,15 +326,6 @@ body.gallio-report
 	background-color: #f2f2f2;
 }
 
-.gallio-report div#statistics-section-content
-{
-	padding: 10px 20px 10px 20px;
-}
-
-.gallio-report div#statistics-section-content table.statistics-table
-{
-	width: 100%;
-}
 .gallio-report span.outcome-icons
 {
 	font-size: 11pt;
