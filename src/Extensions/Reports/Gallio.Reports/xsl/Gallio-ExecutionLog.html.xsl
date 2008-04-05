@@ -3,7 +3,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:g="http://www.gallio.org/">
   <xsl:output method="html" doctype-system="http://www.w3.org/TR/html4/strict.dtd"
-              doctype-public="-//W3C//DTD HTML 4.01//EN" indent="yes" encoding="utf-8" omit-xml-declaration="yes" />
+              doctype-public="-//W3C//DTD HTML 4.01//EN" indent="no" encoding="utf-8" omit-xml-declaration="yes" />
   <xsl:param name="resourceRoot" select="''" />
 
   <xsl:variable name="cssDir"><xsl:if test="$resourceRoot != ''"><xsl:value-of select="$resourceRoot"/>/</xsl:if>css/</xsl:variable>

@@ -1,3 +1,12 @@
+/* Common inherited text options */
+.gallio-report
+{
+	font-family: Verdana, Arial, Helvetica, Helv, sans-serif;
+	font-size: 10pt;
+    word-wrap: break-word; /* IE and CSS3, we use <wbr> for other browsers */
+}
+
+/* Containers */
 html
 {
 	overflow: auto;
@@ -7,12 +16,8 @@ div.gallio-report, body.gallio-report
 {
 	margin: 0px 0px 0px 0px;
 	padding: 0px 0px 0px 0px;
-}
-
-.gallio-report
-{
-	font-family: Verdana, Arial, Helvetica, Helv, sans-serif;
-	font-size: 10pt;
+	overflow: hidden;
+	width: 100%;
 }
 
 .gallio-report div.header
@@ -60,6 +65,12 @@ body.gallio-report > div.content
 	bottom: 0px;
 	overflow: auto;
 	width: auto;
+}
+
+/* Generate an embedded layout when the report is only a fragment */
+div.gallio-report > div.header
+{
+	border: solid 1px black;
 }
 
 /* Section headings */
@@ -319,12 +330,14 @@ body.gallio-report > div.content
 	padding: 10px;
 	border-bottom: solid 1px #dcdcdc;
 	border-right: solid 1px #dcdcdc;
+	overflow: hidden;
 }
 
 .gallio-report div.section-content
 {
 	background-color: #fbfbfb;
 	padding: 10px 10px 10px 10px;
+	overflow: hidden;
 }
 
 .gallio-report table.statistics-table

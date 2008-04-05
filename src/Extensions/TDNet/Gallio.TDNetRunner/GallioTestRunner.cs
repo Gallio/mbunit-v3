@@ -157,7 +157,7 @@ namespace Gallio.TDNetRunner
 
                 launcher.ReportFormats.Add(reportType);
                 launcher.ReportNameFormat = Path.GetFileName(location);
-                launcher.ReportDirectory = GetReportDirectory(logger);
+                launcher.ReportDirectory = GetReportDirectory(logger) ?? "";
 
                 if (String.IsNullOrEmpty(launcher.ReportDirectory))
                 {

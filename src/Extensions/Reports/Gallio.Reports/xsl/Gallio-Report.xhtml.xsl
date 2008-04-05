@@ -4,7 +4,7 @@
                 xmlns:g="http://www.gallio.org/"
                 xmlns="http://www.w3.org/1999/xhtml">
   <xsl:output method="xml" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
-              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" indent="yes" encoding="utf-8" />
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" indent="no" encoding="utf-8" />
   <xsl:param name="resourceRoot" select="''" />
   
   <xsl:variable name="cssDir"><xsl:if test="$resourceRoot != ''"><xsl:value-of select="$resourceRoot"/>/</xsl:if>css/</xsl:variable>

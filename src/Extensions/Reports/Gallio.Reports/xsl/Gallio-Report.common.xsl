@@ -163,23 +163,76 @@
     </xsl:choose>
   </xsl:template>
 
-  <!-- Prints text with <br/> elements -->
-  <xsl:template name="print-text-with-line-breaks">
+  <!-- Prints text with <br/> at line breaks.
+       Also introduces <wbr/> word break characters every so often if no natural breakpoints appear.
+       Some of the soft breaks are useful, but the forced break at 20 chars is intended to work around
+       limitations in browsers that do not support the word-wrap:break-all CSS3 property.
+  -->
+  <xsl:template name="print-text-with-breaks">
     <xsl:param name="text" />
-    <xsl:variable name="tail" select="substring-after($text, '&#10;')" />
+    <xsl:param name="count" select="0" />
+    
+    <xsl:if test="$text">
+      <xsl:variable name="char" select="substring($text, 1, 1)"/>
+      
+      <xsl:choose>
+        <!-- natural word breaks -->
+        <xsl:when test="$char = ' '">
+          <xsl:value-of select="$char"/>
+          <xsl:call-template name="print-text-with-breaks">
+            <xsl:with-param name="text" select="substring($text, 2)" />
+            <xsl:with-param name="count" select="0" />
+          </xsl:call-template>
+        </xsl:when>
 
-    <xsl:choose>
-      <xsl:when test="$tail!=''">
-        <xsl:value-of select="substring-before($text, '&#10;')" />
-        <br/>
-        <xsl:call-template name="print-text-with-line-breaks">
-          <xsl:with-param name="text" select="$tail" />
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$text" />
-      </xsl:otherwise>
-    </xsl:choose>
+        <!-- line breaks -->
+        <xsl:when test="$char = '&#10;'">
+          <br/>
+          <xsl:call-template name="print-text-with-breaks">
+            <xsl:with-param name="text" select="substring($text, 2)" />
+            <xsl:with-param name="count" select="0" />
+          </xsl:call-template>
+        </xsl:when>
+        
+        <!-- characters to break before -->
+        <xsl:when test="$char = '.' or $char = '/' or $char = '\' or $char = ':' or $char = '(' or $char = '&lt;' or $char = '[' or $char = '{'">
+          <wbr/>
+          <xsl:value-of select="$char"/>
+          <xsl:call-template name="print-text-with-breaks">
+            <xsl:with-param name="text" select="substring($text, 2)" />
+            <xsl:with-param name="count" select="1" />
+          </xsl:call-template>
+        </xsl:when>
+        
+        <!-- characters to break after -->
+        <xsl:when test="$char = ')' or $char = '>' or $char = ']' or $char = '}'">
+          <xsl:value-of select="$char"/>
+          <wbr/>
+          <xsl:call-template name="print-text-with-breaks">
+            <xsl:with-param name="text" select="substring($text, 2)" />
+            <xsl:with-param name="count" select="0" />
+          </xsl:call-template>
+        </xsl:when>
+        
+        <!-- other characters -->
+        <xsl:when test="$count = 19">
+          <xsl:value-of select="$char"/>
+          <wbr/>
+          <xsl:call-template name="print-text-with-breaks">
+            <xsl:with-param name="text" select="substring($text, 2)" />
+            <xsl:with-param name="count" select="0" />
+          </xsl:call-template>
+        </xsl:when>
+        
+        <xsl:otherwise>
+          <xsl:value-of select="$char"/>
+          <xsl:call-template name="print-text-with-breaks">
+            <xsl:with-param name="text" select="substring($text, 2)" />
+            <xsl:with-param name="count" select="$count + 1" />
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
   </xsl:template>
   
   <!-- Pretty print date time values -->

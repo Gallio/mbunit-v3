@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:g="http://www.gallio.org/">
-  <xsl:output method="html" indent="yes" encoding="utf-8" omit-xml-declaration="yes" />
+  <xsl:output method="html" indent="no" encoding="utf-8" omit-xml-declaration="yes" />
   <xsl:param name="resourceRoot" select="''" />
 
   <xsl:variable name="cssDir">/gallio/css/</xsl:variable>
