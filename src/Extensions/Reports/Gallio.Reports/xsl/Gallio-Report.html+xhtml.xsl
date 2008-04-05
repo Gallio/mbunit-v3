@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  This stylesheet is used for all HTML detail reports.
+  It can be rendered in any of the following modes.
+  
+  Document / Fragment:
+      A report can either be rendered a self-contained document or as
+      a fragment meant to be included in another document.
+  
+  HTML / XHTML:
+      A report can either be rendered in HTML or in XHTML syntax.
+      
+  One very important characteristic of the report is that while it uses JavaScript,
+  it does not require it.  All of the report's contents may be accessed without error
+  or serious inconvenience even with JavaScript disabled.  This is extremely important
+  for Visual Studio integration since the IE browser prevents execution of scripts
+  in local files by default.
+-->
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
@@ -98,7 +115,20 @@
         <xsl:variable name="status" select="g:result/g:outcome/@status"/>
         <xsl:if test="$status != 'passed' and (g:testStep/@isTestCase = 'true' or not(g:children/g:testStepRun))">
           <xsl:variable name="stripe-label"><xsl:value-of select="g:testStep/@name"/><xsl:text> </xsl:text><xsl:value-of select="$status"/>.</xsl:variable>
-          <a href="#testStepRun-{g:testStep/@id}" style="top:{position() * 98 div last() + 1}%" class="status-{$status}" title="{$stripe-label}"></a>
+          <a href="#testStepRun-{g:testStep/@id}" style="top:{position() * 98 div last() + 1}%" class="status-{$status}" title="{$stripe-label}">
+            <xsl:attribute name="onclick">
+              <xsl:text>expand([</xsl:text>
+              <xsl:for-each select="ancestor-or-self::g:testStepRun">
+                <xsl:if test="position() != 1">
+                  <xsl:text>,</xsl:text>
+                </xsl:if>
+                <xsl:text>'detailPanel-</xsl:text>
+                <xsl:value-of select="g:testStep/@id"/>
+                <xsl:text>'</xsl:text>
+              </xsl:for-each>
+              <xsl:text>]);</xsl:text>
+            </xsl:attribute>
+          </a>
         </xsl:if>
       </xsl:for-each>
     </div>
@@ -271,7 +301,7 @@
     <li id="testStepRun-{$id}">
       <span class="testStepRunHeading testStepRunHeading-Level{$nestingLevel}">
         <xsl:call-template name="toggle">
-          <xsl:with-param name="href">testStepRunPanel-<xsl:value-of select="$id"/></xsl:with-param>
+          <xsl:with-param name="href">detailPanel-<xsl:value-of select="$id"/></xsl:with-param>
         </xsl:call-template>
         <!--
         <xsl:call-template name="icon">
@@ -287,7 +317,7 @@
         </xsl:call-template>
       </span>
 
-      <div id="testStepRunPanel-{$id}" class="panel">
+      <div id="detailPanel-{$id}" class="panel">
         <xsl:choose>
           <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
             <table class="statistics-table">
@@ -344,7 +374,7 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="toggle-autoclose">
-              <xsl:with-param name="href">testStepRunPanel-<xsl:value-of select="$id"/></xsl:with-param>
+              <xsl:with-param name="href">detailPanel-<xsl:value-of select="$id"/></xsl:with-param>
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
