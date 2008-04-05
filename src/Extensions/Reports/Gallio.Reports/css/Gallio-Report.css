@@ -24,7 +24,7 @@ div.gallio-report, body.gallio-report
 	background-repeat: repeat-y;
 	width: 100%;
 	height: 59px;
-	border-bottom: solid black 1px;
+	border-bottom: solid 1px black;
 }
 
 .gallio-report div.header-image
@@ -136,7 +136,7 @@ body.gallio-report > div.content
 	position: absolute;
 	top: 3px;
 	left: 3px;
-	border: solid black 1px;
+	border: solid 1px black;
 }
 
 .gallio-report div.navigator div.navigator-stripes
