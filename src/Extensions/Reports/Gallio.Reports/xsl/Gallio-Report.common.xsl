@@ -67,7 +67,6 @@
   
   <!-- Creates an aggregate statistics summary from a test instance run and its descendants -->
   <xsl:template name="aggregate-statistics">
-    <xsl:param name="test" />
     <xsl:param name="testStepRun" />
     
     <xsl:variable name="testCaseResults" select="$testStepRun/descendant-or-self::g:testStepRun[g:testStep/@isTestCase='true']/g:result" />
