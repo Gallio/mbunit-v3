@@ -3,15 +3,10 @@
 {
 	font-family: Verdana, Arial, Helvetica, Helv, sans-serif;
 	font-size: 10pt;
-    word-wrap: break-word; /* IE and CSS3, we use <wbr> for other browsers */
+	word-wrap: break-word; /* IE and CSS3, we use <wbr> for other browsers */
 }
 
 /* Containers */
-html
-{
-	overflow: auto;
-}
-
 div.gallio-report, body.gallio-report
 {
 	margin: 0px 0px 0px 0px;
@@ -48,15 +43,57 @@ div.gallio-report, body.gallio-report
 	width: 100%;
 }
 
+/* Navigation bar */
+.gallio-report div.navigator
+{
+	position: fixed;
+	right: 0px;
+	bottom: 0px;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 2px 0px 2px;
+	width: 12px;
+	background-color: #d0d4d8;
+	overflow: hidden;
+}
+
+.gallio-report div.navigator a.navigator-box
+{
+	display: block;
+	cursor: pointer;
+	width: 8px;
+	height: 8px;
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	border: solid 1px black;
+}
+
+.gallio-report div.navigator div.navigator-stripes
+{
+	position: absolute;
+	top: 16px;
+	bottom: 0px;
+	width: 16px;
+}
+
+.gallio-report div.navigator div.navigator-stripes a
+{
+	display: block;
+	cursor: pointer;
+	width: 12px;
+	height: 2px;
+	position: absolute;
+}
+
 /* Generate a fixed layout when the report is the whole document */
-body.gallio-report > div.header
+body.gallio-report div.header
 {
 	position: fixed;
 	top: 0px;
 	left: 0px;
 }
 
-body.gallio-report > div.content
+body.gallio-report div.content
 {
 	position: fixed; 
 	top: 60px;
@@ -67,10 +104,20 @@ body.gallio-report > div.content
 	width: auto;
 }
 
+body.gallio-report div.navigator
+{
+	top: 60px;
+}
+
 /* Generate an embedded layout when the report is only a fragment */
-div.gallio-report > div.header
+div.gallio-report div.header
 {
 	border: solid 1px black;
+}
+
+div.gallio-report div.navigator
+{
+	top: 0px;
 }
 
 /* Section headings */
@@ -124,50 +171,6 @@ div.gallio-report > div.header
 	background-color: #999999;
 }
 
-/* Navigation bar */
-.gallio-report div.navigator
-{
-	position: fixed;
-	top: 60px;
-	right: 0px;
-	bottom: 0px;
-	margin: 0px 0px 0px 0px;
-	padding: 0px 2px 0px 2px;
-	width: 12px;
-	background-color: #d0d4d8;
-	overflow: hidden;
-}
-
-.gallio-report div.navigator > a.navigator-box
-{
-	display: block;
-	cursor: pointer;
-	width: 8px;
-	height: 8px;
-	position: absolute;
-	top: 3px;
-	left: 3px;
-	border: solid 1px black;
-}
-
-.gallio-report div.navigator div.navigator-stripes
-{
-	position: absolute;
-	top: 16px;
-	bottom: 0px;
-	width: 16px;
-}
-
-.gallio-report div.navigator div.navigator-stripes > a
-{
-	display: block;
-	cursor: pointer;
-	width: 12px;
-	height: 2px;
-	position: absolute;
-}
-
-
 /* Outcome bar */
 .gallio-report table.outcome-bar
 {
@@ -194,7 +197,7 @@ div.gallio-report > div.header
 	width: 20px;
 }
 
-.gallio-report div.outcome-bar > div
+.gallio-report div.outcome-bar div
 {
 	height:100%;
 	float:left;

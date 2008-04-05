@@ -17,6 +17,9 @@
     <Extra Include="CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll">
       <Folder>CCNet\webdashboard\bin</Folder>
     </Extra>
+    <Extra Include="templates\SiteTemplate.vm">
+      <Folder>CCNet\webdashboard\templates</Folder>
+    </Extra>
     <Extra Include="$(ReportResourcesDir)\css\*">
       <Folder>CCNet\webdashboard\gallio\css</Folder>
     </Extra>

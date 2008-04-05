@@ -54,6 +54,13 @@ we must update the dashboard configuration file to include the new test report p
    installation direction into the "webdashboard" folder of your CruiseControl.Net
    installation.
 
+   If you have customized your "templates/SiteTemplates.vm" file, you may wish edit it
+   manually instead of overwriting it.  Add the following DTD declaraction to the top of
+   this file:
+
+      <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+
 2. Edit the "dashboard.config" file in the CruiseControl.Net "webdashboard" folder.
 
      * Within the <buildPlugins> element, add the following elements:
@@ -67,6 +74,7 @@ we must update the dashboard configuration file to include the new test report p
 
      * The "webdashboard" folder now contains "gallio\css", "gallio\img", "gallio\js", "gallio\xml".
      * The "webdashboard" folder now contains "bin\CCNet.Gallio.WebDashboard.Plugin.dll".
+     * The "webdashboard" folder now contains "templates\SiteTemplate.vm" with an updated DTD declaration.
      * The "dashboard.config" file has been edited to include the new build report section.
 
 4. Restart the CruiseControl.Net web application.  (eg. By resetting IIS.)

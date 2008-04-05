@@ -33,6 +33,12 @@
         <script type="text/javascript" src="{$jsDir}Gallio-Report.js">
           <xsl:comment> comment inserted for Internet Explorer </xsl:comment>
         </script>
+        <style type="text/css">
+html
+{
+	overflow: auto;
+}          
+        </style>
       </head>
       <body class="gallio-report">
         <xsl:apply-templates select="." mode="xhtml-body" />
@@ -54,13 +60,19 @@
            be made to the stylesheets of the containing application.
       -->
       <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.css" />
+      <style type="text/css">
+html
+{
+	margin: 0px 0px 0px 0px;
+	padding: 0px 16px 0px 0px;
+	overflow: auto;
+}
+      </style>
       <script type="text/javascript" src="{$jsDir}Gallio-Report.js">
         <xsl:comment> comment inserted for Internet Explorer </xsl:comment>
       </script>
       
-      <xsl:apply-templates select="." mode="xhtml-body">
-        <xsl:with-param name="fragment" select="1" />
-      </xsl:apply-templates>
+      <xsl:apply-templates select="." mode="xhtml-body" />
     </div>
   </xsl:template>
 
@@ -71,16 +83,12 @@
   </xsl:template>
   
   <xsl:template match="g:report" mode="xhtml-body">
-    <xsl:param name="fragment" select="0" />
-    
     <div id="Header" class="header">
       <div class="header-image"></div>
     </div>
-    <xsl:if test="not($fragment)">
-      <div id="Navigator" class="navigator">
-        <xsl:apply-templates select="g:packageRun" mode="navigator" />
-      </div>
-    </xsl:if>
+    <div id="Navigator" class="navigator">
+      <xsl:apply-templates select="g:packageRun" mode="navigator" />
+    </div>
     <div id="Content" class="content">
       <xsl:apply-templates select="g:packageRun" mode="statistics" />
       <xsl:apply-templates select="g:packageConfig" mode="assemblies" />
