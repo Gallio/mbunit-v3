@@ -210,7 +210,7 @@ html
       <li>
         <span>
           <xsl:choose>
-            <xsl:when test="g:children/g:testStepRun">
+            <xsl:when test="g:children/g:testStepRun/g:testStep/@isTestCase='false'">
               <xsl:call-template name="toggle">
                 <xsl:with-param name="href">summaryPanel-<xsl:value-of select="$id"/></xsl:with-param>
               </xsl:call-template>
@@ -554,7 +554,7 @@ html
   </xsl:template>
   
   <xsl:template name="toggle-stop">
-    <img src="{$imgDir}FullStop.gif" alt="Toggle Placeholder" />
+    <img src="{$imgDir}FullStop.gif" class="toggle" alt="Toggle Placeholder" />
   </xsl:template>
   
   <xsl:template name="toggle-autoclose">

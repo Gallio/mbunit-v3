@@ -21,7 +21,9 @@
         </script>
       </head>
       <body class="gallio-report">
-        <xsl:apply-templates select="g:testStepRun" mode="details" />
+        <ul>
+          <xsl:apply-templates select="g:testStepRun" mode="details" />
+        </ul>
       </body>
     </html>
   </xsl:template>

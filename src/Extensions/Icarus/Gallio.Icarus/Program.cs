@@ -91,6 +91,8 @@ namespace Gallio.Icarus
             CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
             Arguments arguments = new Arguments();
             Project project = new Project();
+            project.TestPackageConfig.HostSetup.ShadowCopy = true;
+
             if (argumentParser.Parse(args, arguments, delegate { }))
             {
                 foreach (string file in arguments.Assemblies)
