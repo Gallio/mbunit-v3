@@ -73,9 +73,19 @@ namespace Gallio.MSTestAdapter.TestResources
         [TestMethod]
         public void TestMethod1()
         {
-            //
-            // TODO: Add test logic	here
-            //
+            Assert.AreEqual(1, 1);
+        }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            Assert.AreEqual(2, 2);
+        }
+
+        [TestMethod]
+        public void FailingTest()
+        {
+            Assert.AreEqual(1, 0);
         }
     }
 }

@@ -119,7 +119,7 @@ namespace Gallio.MSTestAdapter
 
         private static ITest CreateAssemblyTest(IAssemblyInfo assembly)
         {
-            MSTest assemblyTest = new MSTest(assembly.Name, assembly);
+            MSTestAssembly assemblyTest = new MSTestAssembly(assembly.Name, assembly);
             assemblyTest.Kind = TestKinds.Assembly;
 
             ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTest.Metadata);
@@ -197,15 +197,6 @@ namespace Gallio.MSTestAdapter
                 if (skipReason != null)
                     methodTest.Metadata.SetValue(MetadataKeys.IgnoreReason, skipReason);
             }
-
-            // Add traits.
-            //if (XunitMethodUtility.HasTraits(methodInfo))
-            //{
-            //    foreach (KeyValuePair<string, string> entry in XunitMethodUtility.GetTraits(methodInfo))
-            //    {
-            //        methodTest.Metadata.Add(entry.Key ?? @"", entry.Value ?? @"");
-            //    }
-            //}
 
             // Add XML documentation.
             string xmlDocumentation = methodInfo.GetXmlDocumentation();
