@@ -101,6 +101,11 @@ namespace Gallio.Model.Execution
         IList<ITestCommand> Children { get; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        ITestCommand Parent { get; set; }
+
+        /// <summary>
         /// <para>
         /// Gets the list of other commands that this command depends upon.
         /// </para>

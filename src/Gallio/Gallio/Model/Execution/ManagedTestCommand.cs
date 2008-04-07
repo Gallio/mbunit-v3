@@ -29,6 +29,7 @@ namespace Gallio.Model.Execution
         private readonly ITest test;
         private readonly bool isExplicit;
 
+        private ITestCommand parent;
         private List<ITestCommand> children;
         private List<ITestCommand> dependencies;
         private int rootStepFailureCount;
@@ -85,6 +86,13 @@ namespace Gallio.Model.Execution
         public IList<ITestCommand> Children
         {
             get { return children ?? (IList<ITestCommand>)EmptyArray<ITestCommand>.Instance; }
+        }
+
+        /// <inheritdoc />
+        public ITestCommand Parent
+        {
+            get { return parent; }
+            set { parent = value; }
         }
 
         /// <inheritdoc />
@@ -166,6 +174,7 @@ namespace Gallio.Model.Execution
             if (children == null)
                 children = new List<ITestCommand>();
             children.Add(child);
+            child.Parent = this;
         }
 
         /// <summary>
