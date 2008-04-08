@@ -5,7 +5,7 @@
   <property name="TestAssembly" value="..\bin\MbUnit.TestResources.dll" />
   
   <target name="PassingTests">
-    <gallio result-property="ExitCode" filter="Type: PassingTests">
+    <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -18,7 +18,7 @@
   </target>
 
   <target name="FailingTests">
-    <gallio filter="Type: FailingTests">
+    <gallio filter="Type: FailingTests" ignore-annotations="true">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -31,7 +31,7 @@
   </target>
 
   <target name="FailingTestsWithIgnoreFailures">
-    <gallio result-property="ExitCode" filter="Type: FailingTests" failonerror="false">
+    <gallio result-property="ExitCode" filter="Type: FailingTests" failonerror="false" ignore-annotations="true">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -44,7 +44,7 @@
   </target>
 
   <target name="NoAssemblies">
-    <gallio result-property="ExitCode">
+    <gallio result-property="ExitCode" ignore-annotations="true">
       <assemblies>
       </assemblies>
       <plugin-directories>
@@ -56,7 +56,7 @@
   </target>
 
   <target name="NoTests">
-    <gallio result-property="ExitCode" filter="Type: NoSuchType">
+    <gallio result-property="ExitCode" filter="Type: NoSuchType" ignore-annotations="true">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -69,7 +69,7 @@
   </target>
 
   <target name="NoFilter">
-    <gallio result-property="ExitCode" failonerror="false">
+    <gallio result-property="ExitCode" failonerror="false" ignore-annotations="true">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -82,7 +82,7 @@
   </target>  
   
   <target name="UnhandledException">
-    <gallio result-property="ExitCode" filter="Type: UnhandledExceptionTest">
+    <gallio result-property="ExitCode" filter="Type: UnhandledExceptionTest" ignore-annotations="true">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>

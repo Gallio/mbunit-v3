@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Hosting;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
@@ -30,6 +29,8 @@ namespace Gallio.Framework.Pattern
     /// <seealso cref="PatternTestFramework"/>
     public class PatternTestExplorer : BaseTestExplorer
     {
+        private readonly IPatternTestFrameworkExtension[] extensions;
+
         private readonly PatternEvaluator evaluator;
         private readonly Dictionary<IAssemblyInfo, bool> assemblies;
         private readonly Dictionary<string, PatternEvaluationScope> frameworkScopes;
@@ -38,10 +39,17 @@ namespace Gallio.Framework.Pattern
         /// Creates a test explorer.
         /// </summary>
         /// <param name="testModel">The test model</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null</exception>
-        public PatternTestExplorer(TestModel testModel)
+        /// <param name="extensions">The test framework extensions</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> or
+        /// <paramref name="extensions" /> is null</exception>
+        public PatternTestExplorer(TestModel testModel, IPatternTestFrameworkExtension[] extensions)
             : base(testModel)
         {
+            if (extensions == null)
+                throw new ArgumentNullException("extensions");
+
+            this.extensions = extensions;
+
             evaluator = new PatternEvaluator(testModel, DeclarativePatternResolver.Instance);
             assemblies = new Dictionary<IAssemblyInfo, bool>();
             frameworkScopes = new Dictionary<string, PatternEvaluationScope>();
@@ -154,11 +162,11 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static IList<ToolInfo> GetReferencedToolsSortedById(IAssemblyInfo assembly)
+        private IList<ToolInfo> GetReferencedToolsSortedById(IAssemblyInfo assembly)
         {
             List<ToolInfo> tools = new List<ToolInfo>();
 
-            foreach (IPatternTestFrameworkExtension extension in Runtime.Instance.ResolveAll<IPatternTestFrameworkExtension>())
+            foreach (IPatternTestFrameworkExtension extension in extensions)
             {
                 try
                 {

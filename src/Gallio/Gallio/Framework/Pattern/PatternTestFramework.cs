@@ -61,6 +61,21 @@ namespace Gallio.Framework.Pattern
     /// </remarks>
     public class PatternTestFramework : BaseTestFramework
     {
+        private readonly IPatternTestFrameworkExtension[] extensions;
+
+        /// <summary>
+        /// Creates an instance of the pattern test framework.
+        /// </summary>
+        /// <param name="extensions">The framework extensions</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="extensions"/> is null</exception>
+        public PatternTestFramework(IPatternTestFrameworkExtension[] extensions)
+        {
+            if (extensions == null)
+                throw new ArgumentNullException("extensions");
+
+            this.extensions = extensions;
+        }
+
         /// <inheritdoc />
         public override string Name
         {
@@ -70,7 +85,7 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override ITestExplorer CreateTestExplorer(TestModel testModel)
         {
-            return new PatternTestExplorer(testModel);
+            return new PatternTestExplorer(testModel, extensions);
         }
     }
 }

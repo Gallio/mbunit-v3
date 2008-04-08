@@ -365,3 +365,37 @@ div.gallio-report div.navigator
 {
 	background-color: #f2f2f2;
 }
+
+
+/* Annotations */
+.gallio-report div.annotation
+{
+}
+
+.gallio-report div.annotation-message
+{
+	margin-left: 2em;
+	text-indent: -2em;
+}
+
+.gallio-report div.annotation-location, div.annotation-reference, div.annotation-details
+{
+	margin-left: 4em;
+	text-indent: -2em;
+	font-style: italic;
+}
+
+.gallio-report .annotation-type-error
+{
+	color: #990000;
+}
+
+.gallio-report .annotation-type-warning
+{
+	color: #999900;
+}
+
+.gallio-report .annotation-type-info
+{
+	color: #999999;
+}

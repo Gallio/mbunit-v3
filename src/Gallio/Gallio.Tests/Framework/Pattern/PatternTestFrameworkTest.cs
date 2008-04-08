@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Gallio.Collections;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Tests.Model;
@@ -37,7 +38,7 @@ namespace Gallio.Tests.Framework.Pattern
 
         protected override ITestFramework CreateFramework()
         {
-            return new PatternTestFramework();
+            return new PatternTestFramework(EmptyArray<IPatternTestFrameworkExtension>.Instance);
         }
 
         [Test]

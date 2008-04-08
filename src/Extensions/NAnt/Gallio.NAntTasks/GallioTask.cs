@@ -104,6 +104,7 @@ namespace Gallio.NAntTasks
         private bool showReports;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
         private bool doNotRun;
+        private bool ignoreAnnotations;
         private bool echoResults = true;
 
         #endregion
@@ -317,6 +318,19 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
+        /// <para>
+        /// Sets whether to ignore annotations when determining the result code.
+        /// If false (default), then error annotations, usually indicative of broken tests, will cause
+        /// a failure result to be generated.
+        /// </para>
+        /// </summary>
+        [TaskAttribute("ignore-annotations", Required = false)]
+        public bool IgnoreAnnotations
+        {
+            set { ignoreAnnotations = value; }
+        }
+
+        /// <summary>
         /// Sets whether to echo results to the screen as tests finish.  If this option is set
         /// to true, the default, test results are echoed to the console
         /// in varying detail depending on the current verbosity level.  Otherwise
@@ -439,6 +453,7 @@ namespace Gallio.NAntTasks
                 launcher.Filter = GetFilter();
                 launcher.ShowReports = showReports;
                 launcher.DoNotRun = doNotRun;
+                launcher.IgnoreAnnotations = ignoreAnnotations;
                 launcher.EchoResults = echoResults;
                 launcher.TestRunnerFactoryName = runnerType;
                 launcher.RuntimeSetup = new RuntimeSetup();

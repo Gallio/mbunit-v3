@@ -47,7 +47,7 @@ namespace Gallio.Tests.Framework.Data.Conversions
                 rules.Add(Mocks.CreateMock<IConversionRule>());
                 rules.Add(Mocks.CreateMock<IConversionRule>());
 
-                converter = new RuleBasedConverter(rules);
+                converter = new RuleBasedConverter(rules.ToArray());
 
                 SetupResult.For(rules[0].GetConversionCost(typeof(int), typeof(string), converter)).Return(ConversionCost.Best);
                 SetupResult.For(rules[1].GetConversionCost(typeof(int), typeof(string), converter)).Return(ConversionCost.Invalid);
@@ -71,7 +71,7 @@ namespace Gallio.Tests.Framework.Data.Conversions
                 rules.Add(Mocks.CreateMock<IConversionRule>());
                 rules.Add(Mocks.CreateMock<IConversionRule>());
 
-                converter = new RuleBasedConverter(rules);
+                converter = new RuleBasedConverter(rules.ToArray());
 
                 SetupResult.For(rules[0].GetConversionCost(typeof(int), typeof(string), converter)).Return(ConversionCost.Invalid);
                 SetupResult.For(rules[1].GetConversionCost(typeof(int), typeof(string), converter)).Return(ConversionCost.Invalid);
@@ -97,7 +97,7 @@ namespace Gallio.Tests.Framework.Data.Conversions
                 rules.Add(Mocks.CreateMock<IConversionRule>());
                 rules.Add(Mocks.CreateMock<IConversionRule>());
 
-                converter = new RuleBasedConverter(rules);
+                converter = new RuleBasedConverter(rules.ToArray());
 
                 Expect.Call(rules[0].GetConversionCost(typeof(int), typeof(string), converter)).Return(ConversionCost.Invalid);
                 Expect.Call(rules[1].GetConversionCost(typeof(int), typeof(string), converter)).Return(ConversionCost.Default);
@@ -122,7 +122,7 @@ namespace Gallio.Tests.Framework.Data.Conversions
             {
                 rules.Add(Mocks.CreateMock<IConversionRule>());
 
-                converter = new RuleBasedConverter(rules);
+                converter = new RuleBasedConverter(rules.ToArray());
 
                 Expect.Call(rules[0].GetConversionCost(typeof(int), typeof(string), converter)).Do(
                     (GetConversionCostDelegate)delegate
@@ -207,7 +207,7 @@ namespace Gallio.Tests.Framework.Data.Conversions
             using (Mocks.Record())
             {
                 rules.Add(Mocks.CreateMock<IConversionRule>());
-                converter = new RuleBasedConverter(rules);
+                converter = new RuleBasedConverter(rules.ToArray());
 
                 Expect.Call(rules[0].GetConversionCost(typeof(int), typeof(double), converter)).Return(ConversionCost.Best);
             }

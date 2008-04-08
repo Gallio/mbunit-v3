@@ -7,7 +7,7 @@
   
   <Target Name="PassingTests">
     <Gallio Filter="Type: PassingTests" Assemblies="$(TestAssembly)"
-            PluginDirectories="$(GallioPath)">
+            PluginDirectories="$(GallioPath)" IgnoreAnnotations="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
     
@@ -17,14 +17,14 @@
   
   <Target Name="FailingTests">
     <Gallio Filter="Type: FailingTests" Assemblies="$(TestAssembly)"
-            PluginDirectories="$(GallioPath)" />
+            PluginDirectories="$(GallioPath)" IgnoreAnnotations="true" />
     
     <Error Text="Expected failure result code, so should not have reached this point." />
   </Target>
   
   <Target Name="FailingTestsWithIgnoreFailures">
     <Gallio Filter="Type: FailingTests" Assemblies="$(TestAssembly)" IgnoreFailures="true"
-            PluginDirectories="$(GallioPath)">
+            PluginDirectories="$(GallioPath)" IgnoreAnnotations="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
     
@@ -34,7 +34,7 @@
   
   <Target Name="NoAssemblies">
     <Gallio Assemblies=""
-            PluginDirectories="$(GallioPath)">
+            PluginDirectories="$(GallioPath)" IgnoreAnnotations="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
     
@@ -44,7 +44,7 @@
 
   <Target Name="NoTests">
     <Gallio Filter="Type: NoSuchType" Assemblies="$(TestAssembly)"
-            PluginDirectories="$(GallioPath)">
+            PluginDirectories="$(GallioPath)" IgnoreAnnotations="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
     
@@ -54,7 +54,7 @@
 
   <Target Name="NoFilter">
     <Gallio Filter="" Assemblies="$(TestAssembly)" IgnoreFailures="true"
-            PluginDirectories="$(GallioPath)">
+            PluginDirectories="$(GallioPath)" IgnoreAnnotations="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
     
@@ -64,7 +64,7 @@
   
   <Target Name="UnhandledException">
     <Gallio Filter="Type: UnhandledExceptionTest" Assemblies="$(TestAssembly)"
-            PluginDirectories="$(GallioPath)">
+            PluginDirectories="$(GallioPath)" IgnoreAnnotations="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
     

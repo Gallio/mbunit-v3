@@ -93,6 +93,7 @@ namespace Gallio.MSBuildTasks
         private bool ignoreFailures;
         private bool showReports;
         private bool doNotRun;
+        private bool ignoreAnnotations;
         private bool echoResults = true;
 
         private int exitCode;
@@ -329,6 +330,18 @@ namespace Gallio.MSBuildTasks
         public bool DoNotRun
         {
             set { doNotRun = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets whether to ignore annotations when determining the result code.
+        /// If false (default), then error annotations, usually indicative of broken tests, will cause
+        /// a failure result to be generated.
+        /// </para>
+        /// </summary>
+        public bool IgnoreAnnotations
+        {
+            set { ignoreAnnotations = value; }
         }
 
         /// <summary>
@@ -631,6 +644,7 @@ namespace Gallio.MSBuildTasks
                 launcher.Filter = GetFilter();
                 launcher.ShowReports = showReports;
                 launcher.DoNotRun = doNotRun;
+                launcher.IgnoreAnnotations = ignoreAnnotations;
                 launcher.RuntimeSetup = new RuntimeSetup();
 
                 // Set the installation path explicitly to ensure that we do not encounter problems

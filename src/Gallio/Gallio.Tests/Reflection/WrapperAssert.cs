@@ -921,8 +921,22 @@ namespace Gallio.Tests.Reflection
                     return;
             }
 
-            IList<object> nonInheritedAttribs = expectedTarget.GetCustomAttributes(false);
-            IList<object> inheritedAttribs = expectedTarget.GetCustomAttributes(true);
+            IList<object> nonInheritedAttribs;
+            IList<object> inheritedAttribs;
+            try
+            {
+                nonInheritedAttribs = expectedTarget.GetCustomAttributes(false);
+                inheritedAttribs = expectedTarget.GetCustomAttributes(true);
+            }
+            catch (ArgumentException)
+            {
+                // The sample assembly might have some attributes with deliberately invalid arguments.
+                // If we trip over then, we can just ignore them.  It would be better to check that
+                // the same exception were thrown but that's a little tedious and in any case we
+                // have pretty good guarantees that it will given everything else works.
+                return;
+            }
+
             ITypeInfo attributeType = Reflector.Wrap(typeof(Attribute));
 
             AreAttributesOfSameTypesExcludingSpecialAttributes(nonInheritedAttribs,

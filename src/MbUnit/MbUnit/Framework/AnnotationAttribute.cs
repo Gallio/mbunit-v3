@@ -13,22 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Hosting;
+using System;
+using Gallio.Framework.Pattern;
+using Gallio.Model;
 
-namespace Gallio.Framework.Data.Conversions
+namespace MbUnit.Framework
 {
     /// <summary>
-    /// A <see cref="RuleBasedConverter" /> that uses all <see cref="IConversionRule"/>s
-    /// that are registered with the <see cref="IRuntime"/>.
+    /// Associates an annotation message of the specified type with the code element.
     /// </summary>
-    public class RuntimeRuleBasedConverter : RuleBasedConverter
+    public class AnnotationAttribute : AnnotationPatternAttribute
     {
         /// <summary>
-        /// Creates a runtime rule-based converter.
+        /// Associates an annotation message of the specified type with the code element.
         /// </summary>
-        /// <param name="runtime">The runtime</param>
-        public RuntimeRuleBasedConverter(IRuntime runtime)
-            : base(runtime.ResolveAll<IConversionRule>())
+        /// <param name="type">The annotation type</param>
+        /// <param name="message">The annotation message</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        public AnnotationAttribute(AnnotationType type, string message)
+            : base(type, message)
         {
         }
     }

@@ -110,9 +110,10 @@
         </parameters>
       </component>
 
+      <!-- Converters -->
       <component id="Core.Converter"
                  service="Gallio.Framework.Data.Conversions.IConverter, Gallio"
-                 type="Gallio.Framework.Data.Conversions.RuntimeRuleBasedConverter, Gallio" />
+                 type="Gallio.Framework.Data.Conversions.RuleBasedConverter, Gallio" />
       
       <component id="Core.ArrayToArrayConversionRule"
                  service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
@@ -142,9 +143,10 @@
                  service="Gallio.Framework.Data.Conversions.IConversionRule, Gallio"
                  type="Gallio.Framework.Data.Conversions.XPathNavigatorToXmlSerializableTypeConversionRule, Gallio" />
       
+      <!-- Formatters -->
       <component id="Core.Formatter"
                  service="Gallio.Framework.Data.Formatters.IFormatter, Gallio"
-                 type="Gallio.Framework.Data.Formatters.RuntimeRuleBasedFormatter, Gallio" />
+                 type="Gallio.Framework.Data.Formatters.RuleBasedFormatter, Gallio" />
 
       <component id="Core.BooleanFormattingRule"
                  service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"

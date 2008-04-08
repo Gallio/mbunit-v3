@@ -61,6 +61,7 @@ namespace Gallio.PowerShellCommands
         private string filter = "*";
         private SwitchParameter showReports;
         private SwitchParameter doNotRun;
+        private SwitchParameter ignoreAnnotations;
         private SwitchParameter noEchoResults;
 
         #endregion
@@ -329,6 +330,20 @@ namespace Gallio.PowerShellCommands
         }
 
         /// <summary>
+        /// <para>
+        /// Sets whether to ignore annotations when determining the result code.
+        /// If false (default), then error annotations, usually indicative of broken tests, will cause
+        /// a failure result to be generated.
+        /// </para>
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("ia", "ignore-annotations")]
+        public SwitchParameter IgnoreAnnotations
+        {
+            set { ignoreAnnotations = value; }
+        }
+
+        /// <summary>
         /// Sets whether to echo results to the screen as tests finish.  If this option is specified
         /// only the final summary statistics are displayed.  Otherwise test results are echoed to the
         /// console in varying detail depending on the current verbosity level.
@@ -407,6 +422,7 @@ namespace Gallio.PowerShellCommands
                 launcher.ShowReports = showReports.IsPresent;
                 launcher.TestRunnerFactoryName = runnerType;
                 launcher.DoNotRun = doNotRun.IsPresent;
+                launcher.IgnoreAnnotations = ignoreAnnotations.IsPresent;
                 launcher.EchoResults = !noEchoResults.IsPresent;
                 launcher.RuntimeSetup = new RuntimeSetup();
 

@@ -33,7 +33,7 @@ namespace Gallio.Framework.Data.Conversions
         /// </summary>
         /// <param name="rules">The rules to use</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null</exception>
-        public RuleBasedConverter(IEnumerable<IConversionRule> rules)
+        public RuleBasedConverter(IConversionRule[] rules)
         {
             if (rules == null)
                 throw new ArgumentNullException("rules");

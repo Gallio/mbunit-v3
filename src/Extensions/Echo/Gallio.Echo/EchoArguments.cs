@@ -190,6 +190,14 @@ namespace Gallio.Echo
              )]
         public bool DoNotRun;
 
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "ia",
+             LongName = "ignore-annotations",
+             Description = "Ignore annotations when determining the result code.  When not specified error annotations, usually indicative of broken tests, will cause a failure result to be generated."
+             )]
+        public bool IgnoreAnnotations;
+
         #endregion
 
         public override string ToString()

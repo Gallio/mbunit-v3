@@ -92,6 +92,7 @@ html
     <div id="Content" class="content">
       <xsl:apply-templates select="g:packageRun" mode="statistics" />
       <xsl:apply-templates select="g:packageConfig" mode="assemblies" />
+      <xsl:apply-templates select="g:testModel/g:annotations" mode="annotations"/>
       <xsl:apply-templates select="g:packageRun" mode="summary"/>
       <xsl:apply-templates select="g:packageRun" mode="details"/>
     </div>
@@ -110,6 +111,52 @@ html
     </div>
   </xsl:template>
 
+  <xsl:template match="g:annotations" mode="annotations">
+    <xsl:if test="g:annotation">
+      <div id="Annotations" class="section">
+        <h2>Annotations</h2>
+        <div class="section-content">
+          <ul>
+            <xsl:apply-templates select="g:annotation[@type='error']" mode="annotations"/>
+            <xsl:apply-templates select="g:annotation[@type='warning']" mode="annotations"/>
+            <xsl:apply-templates select="g:annotation[@type='info']" mode="annotations"/>
+          </ul>
+        </div>
+      </div>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="g:annotation" mode="annotations">
+    <li>
+      <xsl:attribute name="class">annotation annotation-type-<xsl:value-of select="@type"/></xsl:attribute>
+      <div class="annotation-message">
+        <xsl:text>[</xsl:text><xsl:value-of select="@type"/><xsl:text>] </xsl:text>
+        <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="@message" /></xsl:call-template>
+      </div>
+      
+      <xsl:if test="g:codeLocation/@path">
+        <div class="annotation-location">
+          <xsl:text>Location: </xsl:text>
+          <xsl:call-template name="format-code-location"><xsl:with-param name="codeLocation" select="g:codeLocation" /></xsl:call-template>
+        </div>
+      </xsl:if>
+      
+      <xsl:if test="g:codeReference/@assembly">
+        <div class="annotation-reference">
+          <xsl:text>Reference: </xsl:text>
+          <xsl:call-template name="format-code-reference"><xsl:with-param name="codeReference" select="g:codeReference" /></xsl:call-template>
+        </div>
+      </xsl:if>
+      
+      <xsl:if test="@details">
+        <div class="annotation-location">
+          <xsl:text>Details: </xsl:text>
+          <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="@details" /></xsl:call-template>
+        </div>
+      </xsl:if>
+    </li>
+  </xsl:template>
+  
   <xsl:template match="g:packageRun" mode="navigator">
     <xsl:variable name="box-label"><xsl:call-template name="format-statistics"><xsl:with-param name="statistics" select="g:statistics" /></xsl:call-template></xsl:variable>
     <a href="#Statistics" title="{$box-label}">

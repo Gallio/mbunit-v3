@@ -28,7 +28,7 @@ namespace Gallio.Hosting
         private readonly IRuntime runtime;
 
         /// <summary>
-        /// Creates a test runner manager.
+        /// Creates a component resolver.
         /// </summary>
         /// <param name="runtime">The runtime</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>

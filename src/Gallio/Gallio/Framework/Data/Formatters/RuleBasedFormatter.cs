@@ -32,7 +32,7 @@ namespace Gallio.Framework.Data.Formatters
         /// </summary>
         /// <param name="rules">The rules to use</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null</exception>
-        public RuleBasedFormatter(IEnumerable<IFormattingRule> rules)
+        public RuleBasedFormatter(IFormattingRule[] rules)
         {
             if (rules == null)
                 throw new ArgumentNullException("rules");

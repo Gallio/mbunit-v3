@@ -65,6 +65,60 @@
     </xsl:if>
   </xsl:template>
   
+  <!-- Formats a CodeLocation -->
+  <xsl:template name="format-code-location">
+    <xsl:param name="codeLocation" />
+    
+    <xsl:choose>
+      <xsl:when test="$codeLocation/@path">
+        <xsl:value-of select="$codeLocation/@path"/>
+        <xsl:if test="$codeLocation/@line">
+          <xsl:text>(</xsl:text>
+          <xsl:value-of select="$codeLocation/@line"/>
+          <xsl:if test="$codeLocation/@column">
+            <xsl:text>,</xsl:text>
+            <xsl:value-of select="$codeLocation/@column"/>
+          </xsl:if>
+          <xsl:text>)</xsl:text>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>(unknown)</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <!-- Formats a CodeReference -->
+  <xsl:template name="format-code-reference">
+    <xsl:param name="codeReference" />
+    
+    <xsl:if test="$codeReference/@parameter">
+      <xsl:text>Parameter </xsl:text>
+      <xsl:value-of select="$codeReference/@parameter"/>
+      <xsl:text> of </xsl:text>
+    </xsl:if>
+    
+    <xsl:choose>
+      <xsl:when test="$codeReference/@type">
+        <xsl:value-of select="$codeReference/@type"/>
+        <xsl:if test="$codeReference/@member">
+          <xsl:text>.</xsl:text>
+          <xsl:value-of select="$codeReference/@member"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="$codeReference/@namespace">
+        <xsl:value-of select="$codeReference/@namespace"/>
+      </xsl:when>
+    </xsl:choose>
+    
+    <xsl:if test="$codeReference/@assembly">
+      <xsl:if test="$codeReference/@namespace">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="$codeReference/@assembly"/>
+    </xsl:if>
+  </xsl:template>
+  
   <!-- Creates an aggregate statistics summary from a test instance run and its descendants -->
   <xsl:template name="aggregate-statistics">
     <xsl:param name="testStepRun" />
@@ -129,35 +183,39 @@
   
   <!-- Indents text using the specified prefix -->
   <xsl:template name="indent">
-    <xsl:param name="str" />
-    <xsl:param name="prefix" select="'  '" />
+    <xsl:param name="text" />
+    <xsl:param name="firstLinePrefix" select="'  '" />
+    <xsl:param name="otherLinePrefix" select="'  '" />
 
-    <xsl:if test="$str!=''">
+    <xsl:if test="$text!=''">
       <xsl:call-template name="indent-recursive">
-        <xsl:with-param name="str" select="translate($str, '&#9;&#xA;&#xD;', ' &#xA;')" />
-        <xsl:with-param name="prefix" select="$prefix" />
+        <xsl:with-param name="text" select="translate($text, '&#9;&#xA;&#xD;', ' &#xA;')" />
+        <xsl:with-param name="firstLinePrefix" select="$firstLinePrefix" />
+        <xsl:with-param name="otherLinePrefix" select="$otherLinePrefix" />
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
 
   <xsl:template name="indent-recursive">
-    <xsl:param name="str" />
-    <xsl:param name="prefix" />
+    <xsl:param name="text" />
+    <xsl:param name="firstLinePrefix" />
+    <xsl:param name="otherLinePrefix" />
 
-    <xsl:variable name="line" select="substring-before($str, '&#xA;')" />
+    <xsl:variable name="line" select="substring-before($text, '&#xA;')" />
     <xsl:choose>
       <xsl:when test="$line!=''">
-        <xsl:value-of select="$prefix"/>
+        <xsl:value-of select="$firstLinePrefix"/>
         <xsl:value-of select="$line"/>
         <xsl:text>&#xA;</xsl:text>
         <xsl:call-template name="indent-recursive">
-          <xsl:with-param name="str" select="substring-after($str, '&#xA;')" />
-          <xsl:with-param name="prefix" select="$prefix" />
+          <xsl:with-param name="text" select="substring-after($text, '&#xA;')" />
+          <xsl:with-param name="firstLinePrefix" select="$otherLinePrefix" />
+        <xsl:with-param name="otherLinePrefix" select="$otherLinePrefix" />
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$prefix"/>
-        <xsl:value-of select="$str"/>
+        <xsl:value-of select="$firstLinePrefix"/>
+        <xsl:value-of select="$text"/>
         <xsl:text>&#xA;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>

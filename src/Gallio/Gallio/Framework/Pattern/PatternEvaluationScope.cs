@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Model;
 using Gallio.Reflection;
 
 namespace Gallio.Framework.Pattern
@@ -163,6 +164,14 @@ namespace Gallio.Framework.Pattern
         public PatternTestDataContext TestDataContext
         {
             get { return testDataContext; }
+        }
+
+        /// <summary>
+        /// Gets the test model being built.
+        /// </summary>
+        public TestModel TestModel
+        {
+            get { return evaluator.TestModel; }
         }
 
         /// <summary>

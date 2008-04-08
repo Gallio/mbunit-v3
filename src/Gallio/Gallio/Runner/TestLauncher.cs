@@ -75,6 +75,7 @@ namespace Gallio.Runner
 
         private bool echoResults;
         private bool doNotRun;
+        private bool ignoreAnnotations;
 
         private string reportDirectory;
         private string reportNameFormat;
@@ -456,6 +457,30 @@ namespace Gallio.Runner
 
         /// <summary>
         /// <para>
+        /// Gets or sets whether to ignore annotations when determining the result code.
+        /// If false, then error annotations, usually indicative of broken tests, will cause
+        /// a failure result to be generated.
+        /// </para>
+        /// <para>
+        /// The default value is <c>false</c>.
+        /// </para>
+        /// </summary>
+        public bool IgnoreAnnotations
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return ignoreAnnotations;
+            }
+            set
+            {
+                ThrowIfDisposed();
+                ignoreAnnotations = value;
+            }
+        }
+
+        /// <summary>
+        /// <para>
         /// Gets a mutable list of custom <see cref="ITestRunnerMonitor" /> objects that
         /// will be attached to the <see cref="ITestRunner" /> just prior to test execution
         /// then detached afterwards.
@@ -581,7 +606,8 @@ namespace Gallio.Runner
                     }
 
                     // Produce a failure in case there were error annotations.
-                    if (result.ResultCode == ResultCode.Success
+                    if (! ignoreAnnotations
+                        && result.ResultCode == ResultCode.Success
                         && result.Report.TestModelData.GetErrorAnnotationCount() != 0)
                         result.SetResultCode(ResultCode.Failure);
 

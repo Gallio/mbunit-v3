@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using Castle.Core;
 using Gallio.Model.Execution;
 using Gallio.Model;
@@ -34,35 +33,8 @@ namespace Gallio.Runner.Harness
     public class DefaultTestHarnessFactory : ITestHarnessFactory
     {
         private readonly ITestContextTracker contextTracker;
-        private readonly IEnumerable<ITestFramework> frameworks;
-        private readonly IEnumerable<ITestEnvironment> environments;
-
-        /// <summary>
-        /// Creates a test harness using the default <see cref="ITestContextTracker" />
-        /// and all <see cref="ITestFramework" /> and <see cref="ITestEnvironment" />
-        /// components registered with the <see cref="Runtime" />.
-        /// </summary>
-        public DefaultTestHarnessFactory()
-            : this(Runtime.Instance)
-        {
-        }
-
-        /// <summary>
-        /// Creates a test harness using the default <see cref="ITestContextTracker" />
-        /// and all <see cref="ITestFramework" /> and <see cref="ITestEnvironment" />
-        /// components registered with the specified <see cref="IRuntime" />.
-        /// </summary>
-        /// <param name="runtime">The runtime</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
-        public DefaultTestHarnessFactory(IRuntime runtime)
-        {
-            if (runtime == null)
-                throw new ArgumentNullException(@"runtime");
-
-            contextTracker = runtime.Resolve<ITestContextTracker>();
-            frameworks = runtime.ResolveAll<ITestFramework>();
-            environments = runtime.ResolveAll<ITestEnvironment>();
-        }
+        private readonly ITestFramework[] frameworks;
+        private readonly ITestEnvironment[] environments;
 
         /// <summary>
         /// Creates a default test harness factory with the specified <see cref="ITestContextTracker" />,
@@ -74,7 +46,7 @@ namespace Gallio.Runner.Harness
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>,
         /// <paramref name="frameworks" /> or <paramref name="environments"/> is null</exception>
         public DefaultTestHarnessFactory(ITestContextTracker contextTracker,
-            IEnumerable<ITestFramework> frameworks, IEnumerable<ITestEnvironment> environments)
+            ITestFramework[] frameworks, ITestEnvironment[] environments)
         {
             if (contextTracker == null)
                 throw new ArgumentNullException("contextTracker");

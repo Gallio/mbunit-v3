@@ -30,7 +30,7 @@ namespace Gallio.Echo.Tests
         [Test]
         public void EchoPrintsCorrectOutputForPassingTestsAndReturnsAnExitCodeOfZero()
         {
-            ProcessTask task = RunEcho("/filter:Type:PassingTests");
+            ProcessTask task = RunEcho("/ignore-annotations /filter:Type:PassingTests");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.AreEqual(task.ExitCode, 0, "Exit code for passing tests should be zero.");
         }
@@ -38,7 +38,7 @@ namespace Gallio.Echo.Tests
         [Test]
         public void EchoPrintsCorrectOutputForPassingAndFailingTestsAndReturnsAnExitCodeOfOne()
         {
-            ProcessTask task = RunEcho("/filter:Type:SimpleTest");
+            ProcessTask task = RunEcho("/ignore-annotations /filter:Type:SimpleTest");
             Assert.Contains(task.ConsoleOutput, "2 run, 1 passed, 1 failed, 0 inconclusive, 0 skipped");
             Assert.AreEqual(task.ExitCode, 1, "Exit code for failing tests should be one.");
         }
@@ -46,7 +46,7 @@ namespace Gallio.Echo.Tests
         [Test]
         public void EchoDoesNotTerminateAbruptlyOnUnhandledExceptions()
         {
-            ProcessTask task = RunEcho("/filter:Type:UnhandledExceptionTest");
+            ProcessTask task = RunEcho("/ignore-annotations /filter:Type:UnhandledExceptionTest");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero because the unhandled exception test still passes.");
         }

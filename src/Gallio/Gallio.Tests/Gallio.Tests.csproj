@@ -87,7 +87,6 @@
     <Compile Include="Framework\Data\Conversions\NullConverterTest.cs" />
     <Compile Include="Framework\Data\Conversions\ObjectToStringConversionRuleTest.cs" />
     <Compile Include="Framework\Data\Conversions\RuleBasedConverterTest.cs" />
-    <Compile Include="Framework\Data\Conversions\RuntimeRuleBasedConverterTest.cs" />
     <Compile Include="Framework\Data\Conversions\StringToXmlDocumentConversionRuleTest.cs" />
     <Compile Include="Framework\Data\Conversions\XPathNavigableToXPathNavigatorConversionRuleTest.cs" />
     <Compile Include="Framework\Data\Conversions\XPathNavigatorToStringConversionRuleTest.cs" />
@@ -110,7 +109,6 @@
     <Compile Include="Framework\Data\Formatters\IntegerFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\KeyValuePairFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\RuleBasedFormatterTest.cs" />
-    <Compile Include="Framework\Data\Formatters\RuntimeRuleBasedFormatterTest.cs" />
     <Compile Include="Framework\Data\Formatters\SByteFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\SingleFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\StringFormattingRuleTest.cs" />

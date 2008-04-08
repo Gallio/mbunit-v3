@@ -28,7 +28,7 @@ namespace MbUnit.Tests.Model
     [TestFixture]
     [TestsOn(typeof(MbUnitTestFrameworkExtension))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class PatternTestFrameworkTest : BaseTestFrameworkTest
+    public class MbUnitTestFrameworkExtensionTest : BaseTestFrameworkTest
     {
         protected override Assembly GetSampleAssembly()
         {
@@ -37,7 +37,7 @@ namespace MbUnit.Tests.Model
 
         protected override ITestFramework CreateFramework()
         {
-            return new PatternTestFramework();
+            return new PatternTestFramework(new IPatternTestFrameworkExtension[] { new MbUnitTestFrameworkExtension()});
         }
 
         /// <summary>

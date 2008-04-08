@@ -77,6 +77,7 @@ namespace Gallio.TDNetRunner
         private void LogAnnotation(AnnotationData annotation)
         {
             StringBuilder message = new StringBuilder();
+            message.AppendFormat("[{0}] ", annotation.Type.ToString().ToLower());
             message.Append(annotation.Message);
 
             if (annotation.CodeLocation != CodeLocation.Unknown)

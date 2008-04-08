@@ -107,6 +107,7 @@ namespace Gallio.Echo
                 launcher.TestRunnerFactoryName = Arguments.RunnerType;
 
                 launcher.DoNotRun = Arguments.DoNotRun;
+                launcher.IgnoreAnnotations = Arguments.IgnoreAnnotations;
 
                 if (!String.IsNullOrEmpty(Arguments.Filter))
                     launcher.Filter = FilterUtils.ParseTestFilter(Arguments.Filter);

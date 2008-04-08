@@ -105,7 +105,6 @@
     <Compile Include="Framework\Data\Conversions\NullConverter.cs" />
     <Compile Include="Framework\Data\Conversions\ObjectToStringConversionRule.cs" />
     <Compile Include="Framework\Data\Conversions\RuleBasedConverter.cs" />
-    <Compile Include="Framework\Data\Conversions\RuntimeRuleBasedConverter.cs" />
     <Compile Include="Framework\Data\Conversions\StringToXmlDocumentConversionRule.cs" />
     <Compile Include="Framework\Data\Conversions\XPathNavigableToXPathNavigatorConversionRule.cs" />
     <Compile Include="Framework\Data\Conversions\XPathNavigatorToStringConversionRule.cs" />
@@ -131,7 +130,6 @@
     <Compile Include="Framework\Data\Formatters\IntegerFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\KeyValuePairFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\RuleBasedFormatter.cs" />
-    <Compile Include="Framework\Data\Formatters\RuntimeRuleBasedFormatter.cs" />
     <Compile Include="Framework\Data\Formatters\SByteFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\SingleFormattingRule.cs" />
     <Compile Include="Framework\Data\Formatters\StringFormattingRule.cs" />
@@ -162,6 +160,7 @@
     <Compile Include="Framework\Data\XmlDataSet.cs" />
     <Compile Include="Framework\InternalLogStreamWriter.cs" />
     <Compile Include="Framework\InternalLogWriter.cs" />
+    <Compile Include="Framework\Pattern\AnnotationPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\ContributionMethodPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestAssemblyDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestAssemblyInitializationAttribute.cs" />
@@ -214,6 +213,7 @@
     <Compile Include="Framework\Tasks.cs" />
     <Compile Include="Framework\Utilities\LogStreamLogger.cs" />
     <Compile Include="Framework\Utilities\SampleRunner.cs" />
+    <Compile Include="Hosting\ArraySubDependencyResolver.cs" />
     <Compile Include="Model\Annotation.cs" />
     <Compile Include="Model\AnnotationType.cs" />
     <Compile Include="Hosting\Channels\BinaryTcpClientChannel.cs">

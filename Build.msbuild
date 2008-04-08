@@ -83,7 +83,6 @@
             ReportDirectory="$(BuildReportsDir)"
             ReportTypes="$(ReportTypes)"
 	    RunnerType="$(RunnerType)"
-            IgnoreFailures="$(IgnoreFailures)"
             ShowReports="$(ShowReports)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
@@ -100,8 +99,10 @@
     <Exec Command="cscript $(RootDir)\Run.vbs //nologo &quot;&quot;$(NCoverExplorerPath)\NCoverExplorer.exe&quot; &quot;$(BuildTempDir)\Coverage.xml&quot;&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')" />
 
+    <Error Text="Some tests failed!"
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
     <Warning Text="Some tests failed!"
-             Condition="'$(ExitCode)'!='0'" />
+             Condition="'$(ExitCode)'!='0' and $(IgnoreFailures)" />
   </Target>
 
   <Target Name="BuildCSharpProjects">

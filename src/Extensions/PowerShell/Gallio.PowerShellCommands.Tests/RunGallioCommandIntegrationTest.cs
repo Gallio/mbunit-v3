@@ -53,7 +53,7 @@ namespace Gallio.PowerShellCommands.Tests
         [Test]
         public void CmdletPrintsCorrectOutputForPassingTestsAndReturnsAnExitCodeOfZero()
         {
-            ProcessTask task = RunPowerShell("-verbose -filter Type:PassingTests");
+            ProcessTask task = RunPowerShell("-verbose -filter Type:PassingTests -ignore-annotations");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.AreEqual(task.ExitCode, 0, "Exit code for passing tests should be zero.");
         }
@@ -61,7 +61,7 @@ namespace Gallio.PowerShellCommands.Tests
         [Test]
         public void CmdletPrintsCorrectOutputForPassingAndFailingTestsAndReturnsAnExitCodeOfOne()
         {
-            ProcessTask task = RunPowerShell("-verbose -filter Type:SimpleTest");
+            ProcessTask task = RunPowerShell("-verbose -filter Type:SimpleTest -ignore-annotations");
             Assert.Contains(task.ConsoleOutput, "2 run, 1 passed, 1 failed, 0 inconclusive, 0 skipped");
             Assert.AreEqual(task.ExitCode, 1, "Exit code for failing tests should be one.");
         }
@@ -69,7 +69,7 @@ namespace Gallio.PowerShellCommands.Tests
         [Test]
         public void CmdletDoesNotCausePowerShellToTerminateAbruptlyOnUnhandledExceptions()
         {
-            ProcessTask task = RunPowerShell("-verbose -filter Type:UnhandledExceptionTest");
+            ProcessTask task = RunPowerShell("-verbose -filter Type:UnhandledExceptionTest -ignore-annotations");
             Assert.Contains(task.ConsoleOutput, "Unhandled!");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.IsFalse(task.ConsoleOutput.Contains("An error has occurred that was not properly handled. Additional information is shown below. The Windows PowerShell process will exit."),

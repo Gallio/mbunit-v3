@@ -16,33 +16,45 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Framework;
+using Gallio.Model;
 using MbUnit.Framework;
 
 namespace MbUnit.TestResources
 {
+    /// <summary>
+    /// A variety of tests for which the framework will generate an annotation due to
+    /// their being malformed or noteworthy.
+    /// </summary>
     [TestFixture]
-    public class MultipleStatuses
+    public class AnnotatedTests
     {
-        [Test]
-        public void Passed()
+        [Test, SetUp]
+        public void InvalidCombinationOfPrimaryAttributes()
         {
         }
 
-        [Test]
-        public void Failed()
+        [Test, Description(null)]
+        public void InvalidAttributeParameter()
         {
-            throw new TestFailedException();
         }
 
-        [Test]
-        public void Inconclusive()
+        [Test, Ignore("An ignored test should generate an annotation.")]
+        public void Ignored()
         {
-            throw new TestInconclusiveException();
         }
 
-        [Test, Ignore("Skipped")]
-        public void Skipped()
+        [Test, Annotation(AnnotationType.Error, "Bad mojo.", Details="Simulated annotation.")]
+        public void ErrorAnnotation()
+        {
+        }
+
+        [Test, Annotation(AnnotationType.Warning, "Bad mojo.", Details = "Simulated annotation.")]
+        public void WarningAnnotation()
+        {
+        }
+
+        [Test, Annotation(AnnotationType.Info, "Bad mojo.", Details = "Simulated annotation.")]
+        public void InfoAnnotation()
         {
         }
     }

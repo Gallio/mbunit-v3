@@ -16,6 +16,7 @@
 
   <xsl:template match="g:report">
 		<xsl:apply-templates select="." mode="results"/>
+    <xsl:apply-templates select="g:testModel/g:annotations" />
     <xsl:apply-templates select="g:packageRun/g:statistics" />
   </xsl:template>
   
@@ -27,7 +28,58 @@
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:template>
   
-	<xsl:template match="g:report" mode="results">
+  <xsl:template match="g:annotations">
+    <xsl:if test="g:annotation">
+      <xsl:text>* Annotations:&#xA;&#xA;</xsl:text>
+      <xsl:apply-templates select="g:annotation[@type='error']"/>
+      <xsl:apply-templates select="g:annotation[@type='warning']"/>
+      <xsl:apply-templates select="g:annotation[@type='info']"/>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="g:annotation">
+    <xsl:call-template name="indent">
+      <xsl:with-param name="text">
+        <xsl:text>[</xsl:text><xsl:value-of select="@type"/><xsl:text>] </xsl:text>
+        <xsl:value-of select="@message"/>
+      </xsl:with-param>
+      <xsl:with-param name="firstLinePrefix" select="''" />
+    </xsl:call-template>
+
+    <xsl:if test="g:codeLocation/@path">
+      <xsl:call-template name="indent">
+        <xsl:with-param name="text">
+          <xsl:text>Location: </xsl:text>
+          <xsl:call-template name="format-code-location"><xsl:with-param name="codeLocation" select="g:codeLocation" /></xsl:call-template>
+        </xsl:with-param>
+        <xsl:with-param name="secondLinePrefix" select="'    '" />
+      </xsl:call-template>
+    </xsl:if>
+      
+    <xsl:if test="g:codeReference/@assembly">
+      <xsl:call-template name="indent">
+        <xsl:with-param name="text">
+          <xsl:text>Reference: </xsl:text>
+          <xsl:call-template name="format-code-reference"><xsl:with-param name="codeReference" select="g:codeReference" /></xsl:call-template>
+        </xsl:with-param>
+        <xsl:with-param name="secondLinePrefix" select="'    '" />
+      </xsl:call-template>
+    </xsl:if>
+      
+    <xsl:if test="@details">
+      <xsl:call-template name="indent">
+        <xsl:with-param name="text">
+          <xsl:text>Details: </xsl:text>
+          <xsl:value-of select="@details"/>
+        </xsl:with-param>
+        <xsl:with-param name="secondLinePrefix" select="'    '" />
+      </xsl:call-template>
+    </xsl:if>
+    
+    <xsl:text>&#xA;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="g:report" mode="results">
     <xsl:variable name="testCases" select="g:packageRun/g:testStepRun/descendant-or-self::g:testStepRun[g:testStep/@isTestCase='true']" />
     
     <xsl:variable name="passed" select="$testCases[g:result/g:outcome/@status='passed']" />
@@ -117,7 +169,7 @@
     <xsl:param name="prefix" select="''"  />
     
     <xsl:call-template name="indent">
-      <xsl:with-param name="str" select="text()" />
+      <xsl:with-param name="text" select="text()" />
       <xsl:with-param name="prefix" select="$prefix" />
     </xsl:call-template>
   </xsl:template>
