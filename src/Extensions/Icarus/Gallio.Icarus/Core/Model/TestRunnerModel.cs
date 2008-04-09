@@ -48,7 +48,7 @@ namespace Gallio.Icarus.Core.Model
 #if DEBUG
             testRunner = new DomainTestRunner(new LocalTestDomainFactory());
 #else
-            testRunner = Runtime.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess, new NameValueCollection());
+            testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess, new NameValueCollection());
 #endif
             reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
         }
