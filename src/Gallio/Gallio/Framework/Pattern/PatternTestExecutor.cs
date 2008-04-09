@@ -24,7 +24,7 @@ using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Framework.Pattern
 {

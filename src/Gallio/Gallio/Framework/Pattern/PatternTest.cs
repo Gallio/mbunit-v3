@@ -15,7 +15,7 @@
 
 using System;
 using System.Threading;
-using Gallio.Hosting;
+using Gallio.Runtime;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Model;
@@ -135,7 +135,7 @@ namespace Gallio.Framework.Pattern
 
         private static PatternTestController ResolveTestController()
         {
-            return Runtime.Instance.Resolve<PatternTestController>();
+            return RuntimeAccessor.Instance.Resolve<PatternTestController>();
         }
     }
 }

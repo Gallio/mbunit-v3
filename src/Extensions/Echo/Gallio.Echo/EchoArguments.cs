@@ -15,7 +15,7 @@
 
 using System;
 using System.IO;
-using Gallio.Hosting.ConsoleSupport;
+using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runner;
 
 namespace Gallio.Echo

@@ -32,14 +32,16 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using Gallio.Runtime;
 using Gallio.NAntTasks.Properties;
 using Gallio.Collections;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.Windsor;
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using NAnt.Core.Types;
@@ -446,51 +448,51 @@ namespace Gallio.NAntTasks
 
             DisplayVersion();
 
-            using (TestLauncher launcher = new TestLauncher())
+            TestLauncher launcher = new TestLauncher();
+            launcher.Logger = logger;
+            launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
+            launcher.Filter = GetFilter();
+            launcher.ShowReports = showReports;
+            launcher.DoNotRun = doNotRun;
+            launcher.IgnoreAnnotations = ignoreAnnotations;
+            launcher.EchoResults = echoResults;
+            launcher.TestRunnerFactoryName = runnerType;
+
+            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
+            launcher.RuntimeSetup = new RuntimeSetup();
+
+            // Set the installation path explicitly to ensure that we do not encounter problems
+            // when the test assembly contains a local copy of the primary runtime assemblies
+            // which will confuse the runtime into searching in the wrong place for plugins.
+            launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
+
+            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
+            launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
+            launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
+
+            AddAssemblies(launcher);
+            AddHintDirectories(launcher);
+            AddPluginDirectories(launcher);
+
+            if (reportDirectory != null)
+                launcher.ReportDirectory = reportDirectory;
+            if (!String.IsNullOrEmpty(reportNameFormat))
+                launcher.ReportNameFormat = reportNameFormat;
+            if (reportTypes != null)
+                GenericUtils.AddAll(reportTypes.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
+                    launcher.ReportFormats);
+
+            TestLauncherResult result = RunLauncher(launcher);
+
+            SetResultProperty(result.ResultCode);
+            PopulateStatistics(result);
+
+            if (FailOnError)
             {
-                launcher.Logger = logger;
-                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-                launcher.Filter = GetFilter();
-                launcher.ShowReports = showReports;
-                launcher.DoNotRun = doNotRun;
-                launcher.IgnoreAnnotations = ignoreAnnotations;
-                launcher.EchoResults = echoResults;
-                launcher.TestRunnerFactoryName = runnerType;
-                launcher.RuntimeSetup = new RuntimeSetup();
-
-                // Set the installation path explicitly to ensure that we do not encounter problems
-                // when the test assembly contains a local copy of the primary runtime assemblies
-                // which will confuse the runtime into searching in the wrong place for plugins.
-                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
-
-                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
-                launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
-                launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
-
-                AddAssemblies(launcher);
-                AddHintDirectories(launcher);
-                AddPluginDirectories(launcher);
-
-                if (reportDirectory != null)
-                    launcher.ReportDirectory = reportDirectory;
-                if (!String.IsNullOrEmpty(reportNameFormat))
-                    launcher.ReportNameFormat = reportNameFormat;
-                if (reportTypes != null)
-                    GenericUtils.AddAll(reportTypes.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
-                        launcher.ReportFormats);
-
-                TestLauncherResult result = RunLauncher(launcher);
-
-                SetResultProperty(result.ResultCode);
-                PopulateStatistics(result);
-
-                if (FailOnError)
+                if (result.ResultCode != ResultCode.Success && result.ResultCode != ResultCode.NoTests)
                 {
-                    if (result.ResultCode != ResultCode.Success && result.ResultCode != ResultCode.NoTests)
-                    {
-                        // The only way to make the task fail is to throw an exception
-                        throw new BuildException(Resources.TestExecutionFailed);
-                    }
+                    // The only way to make the task fail is to throw an exception
+                    throw new BuildException(Resources.TestExecutionFailed);
                 }
             }
         }

@@ -16,7 +16,6 @@
 using System;
 using System.IO;
 using Gallio.Framework;
-using Gallio.Hosting;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
@@ -35,7 +34,7 @@ namespace MbUnit.Tests.Framework
             string oldDirectory = Environment.CurrentDirectory;
             try
             {
-                Environment.CurrentDirectory = Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(CsvDataTest).Assembly));
+                Environment.CurrentDirectory = Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(CsvDataTest).Assembly));
 
                 RunFixtures(typeof(CsvDataSample));
             }

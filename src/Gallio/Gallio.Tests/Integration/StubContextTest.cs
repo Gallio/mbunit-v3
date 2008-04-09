@@ -15,9 +15,10 @@
 
 using System;
 using System.IO;
-using Gallio.Hosting;
+using Gallio.Runtime;
 using Gallio.Framework;
 using Gallio.Model.Execution;
+using Gallio.Reflection;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Integration
@@ -39,7 +40,7 @@ namespace Gallio.Tests.Integration
             Type remoteCodeType = typeof(RemoteCode);
 
             AppDomainSetup appDomainSetup = new AppDomainSetup();
-            appDomainSetup.ApplicationBase = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(remoteCodeType.Assembly));
+            appDomainSetup.ApplicationBase = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(remoteCodeType.Assembly));
 
             AppDomain appDomain = AppDomain.CreateDomain("Test", null, appDomainSetup);
             try
@@ -69,7 +70,7 @@ namespace Gallio.Tests.Integration
                 textWriter.NewLine = "\n";
                 Console.SetOut(textWriter);
 
-                Assert.IsFalse(Runtime.IsInitialized);
+                Assert.IsFalse(RuntimeAccessor.IsInitialized);
 
                 Log.AttachPlainText("Attachment1", "Text");
                 using (Log.BeginSection("Test Section"))

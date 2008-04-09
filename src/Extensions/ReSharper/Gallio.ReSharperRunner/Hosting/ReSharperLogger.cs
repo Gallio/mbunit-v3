@@ -15,48 +15,38 @@
 
 
 using System;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using JetBrains.Util;
 
 namespace Gallio.ReSharperRunner.Hosting
 {
-    internal class ReSharperLogger : LevelFilteredLogger
+    internal class ReSharperLogger : BaseLogger
     {
-        public ReSharperLogger()
-        {
-            Level = LoggerLevel.Debug;
-        }
-
-        public override ILogger CreateChildLogger(string name)
-        {
-            return this;
-        }
-
-        protected override void Log(LoggerLevel level, string name, string message, Exception exception)
+        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
         {
             string fullMessage = message;
             if (exception != null)
                 fullMessage += exception;
 
-            Logger.LogMessage(GetLoggingLevel(level), string.Concat(GetCaption(level), ": ", fullMessage));
+            Logger.LogMessage(GetLoggingLevel(severity), string.Concat(GetCaption(severity), ": ", fullMessage));
 
             if (exception != null)
             {
-                if (level == LoggerLevel.Fatal || level == LoggerLevel.Error)
+                if (severity == LogSeverity.Error)
                     Logger.LogException(message, exception);
                 else
                     Logger.LogExceptionSilently(exception);
             }
         }
 
-        private static LoggingLevel GetLoggingLevel(LoggerLevel level)
+        private static LoggingLevel GetLoggingLevel(LogSeverity severity)
         {
-            return level == LoggerLevel.Debug ? LoggingLevel.VERBOSE : LoggingLevel.NORMAL;
+            return severity == LogSeverity.Debug ? LoggingLevel.VERBOSE : LoggingLevel.NORMAL;
         }
 
-        private static string GetCaption(LoggerLevel level)
+        private static string GetCaption(LogSeverity severity)
         {
-            return level.ToString().ToUpperInvariant();
+            return severity.ToString().ToUpperInvariant();
         }
     }
 }

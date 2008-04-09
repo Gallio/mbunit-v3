@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <castle>
-    <facilities>
-      <!-- The Startable facility enables components that implement the IStartable
-           interface to be automatically started when the IoC container is
-           initialized and then automatically stopped when the IoC container is
-           shut down.  So if you have a component that you want to ensure is
-           initialized when the application starts, just make it implements IStartable. -->
-      <facility id="Startable"
-                type="Castle.Facilities.Startable.StartableFacility, Castle.MicroKernel" />
-    </facilities>
-
     <components>
+      <component id="Core.Loader"
+                 service="Gallio.Runtime.Loader.ILoader, Gallio"
+                 type="Gallio.Runtime.Loader.DefaultLoader, Gallio" />
+      
       <component id="Core.RegisteredComponentResolver"
-                 service="Gallio.Hosting.IRegisteredComponentResolver`1, Gallio"
-                 type="Gallio.Hosting.RuntimeRegisteredComponentResolver`1, Gallio" />
+                 service="Gallio.Runtime.IRegisteredComponentResolver`1, Gallio"
+                 type="Gallio.Runtime.RuntimeRegisteredComponentResolver`1, Gallio" />
 
       <component id="Core.TestRunnerManager"
                  service="Gallio.Runner.ITestRunnerManager, Gallio"
@@ -53,12 +47,12 @@
                  type="Gallio.Framework.Pattern.PatternTestController, Gallio" />
       
       <component id="Core.IsolatedAppDomainHostFactory"
-                 service="Gallio.Hosting.IHostFactory, Gallio"
-                 type="Gallio.Hosting.IsolatedAppDomainHostFactory, Gallio" />
+                 service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
+                 type="Gallio.Runtime.Hosting.IsolatedAppDomainHostFactory, Gallio" />
       
       <component id="Core.IsolatedProcessHostFactory"
-                 service="Gallio.Hosting.IHostFactory, Gallio"
-                 type="Gallio.Hosting.IsolatedProcessHostFactory, Gallio" />
+                 service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
+                 type="Gallio.Runtime.Hosting.IsolatedProcessHostFactory, Gallio" />
       
       <component id="Core.LocalTestDomainFactory"
                  service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"

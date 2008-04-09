@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using Gallio.Collections;
-using Gallio.Hosting;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using MbUnit.Framework;
@@ -211,10 +210,10 @@ namespace Gallio.Tests.Reflection
                 }
 
                 AreEqualUpToAssemblyDisplayName(CodeReference.CreateFromAssembly(target), info.CodeReference);
-                StringAssert.AreEqualIgnoreCase(Path.GetFileName(Loader.GetAssemblyLocalPath(target)), Path.GetFileName(info.Path));
+                StringAssert.AreEqualIgnoreCase(Path.GetFileName(AssemblyUtils.GetAssemblyLocalPath(target)), Path.GetFileName(info.Path));
 
                 CodeLocation infoLocation = info.GetCodeLocation();
-                StringAssert.AreEqualIgnoreCase(Path.GetFileName(Loader.GetAssemblyLocalPath(target)), Path.GetFileName(infoLocation.Path));
+                StringAssert.AreEqualIgnoreCase(Path.GetFileName(AssemblyUtils.GetAssemblyLocalPath(target)), Path.GetFileName(infoLocation.Path));
                 Assert.AreEqual(0, infoLocation.Line);
                 Assert.AreEqual(0, infoLocation.Column);
 

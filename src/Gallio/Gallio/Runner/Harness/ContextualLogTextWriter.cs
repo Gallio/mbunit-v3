@@ -16,8 +16,8 @@
 using System;
 using System.IO;
 using System.Text;
+using Gallio.Runtime;
 using Gallio.Model.Execution;
-using Gallio.Utilities;
 
 namespace Gallio.Runner.Harness
 {

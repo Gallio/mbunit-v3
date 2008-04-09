@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime.Loader;
 using Gallio.Framework.Pattern;
-using Gallio.Hosting;
-using Gallio.Model;
 using Gallio.Reflection;
 
 namespace MbUnit.Framework
@@ -58,7 +57,7 @@ namespace MbUnit.Framework
             try
             {
                 IAssemblyResolver resolver = (IAssemblyResolver)Activator.CreateInstance(assemblyResolverType);
-                Loader.AssemblyResolverManager.AddAssemblyResolver(resolver);
+                frameworkScope.TestModel.TestPackage.Loader.AssemblyResolverManager.AddAssemblyResolver(resolver);
             }
             catch (Exception ex)
             {

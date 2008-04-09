@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 using TestDriven.Framework;
 using TDF = TestDriven.Framework;
@@ -25,9 +25,9 @@ namespace Gallio.TDNetRunner
     /// An <see cref="ILogger" /> implementation that writes messages to a
     /// <see cref="ITestListener" /> object.
     /// </summary>
-    internal class TDNetLogger : ConsoleLogger
+    internal class TDNetLogger : BaseLogger
     {
-        private readonly ITestListener tdNetLogger = null;
+        private readonly ITestListener testListener;
 
         /// <summary>
         /// Initializes a new instance of the TDNetLogger class.
@@ -35,55 +35,34 @@ namespace Gallio.TDNetRunner
         /// <param name="testListener">An ITestListener object where the
         /// messages will be written to.</param>
         public TDNetLogger(ITestListener testListener)
-            : this(testListener, "TDNetLogger")
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TDNetLogger" /> class.
-        /// </summary>
-        /// <param name="testListener">An <see cref="ITestListener" /> object where the
-        /// messages will be written to.</param>
-        /// <param name="name">The name of the logger.</param>
-        public TDNetLogger(ITestListener testListener, string name)
-            : base(name)
-        {
-            tdNetLogger = testListener;
-            Level = LoggerLevel.Info;
+            this.testListener = testListener;
         }
 
         /// <inheritdoc />
-        protected override void Log(LoggerLevel level, string name, string message, Exception exception)
+        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
         {
-            switch (level)
+            switch (severity)
             {
-                case LoggerLevel.Fatal:
-                case LoggerLevel.Error:
-                    tdNetLogger.WriteLine(message, Category.Error);
+                case LogSeverity.Error:
+                    testListener.WriteLine(message, Category.Error);
                     break;
 
-                case LoggerLevel.Warn:
-                    tdNetLogger.WriteLine(message, Category.Warning);
+                case LogSeverity.Warning:
+                    testListener.WriteLine(message, Category.Warning);
                     break;
 
-                case LoggerLevel.Info:
-                    tdNetLogger.WriteLine(message, Category.Info);
+                case LogSeverity.Info:
+                    testListener.WriteLine(message, Category.Info);
                     break;
 
-                case LoggerLevel.Debug:
-                    tdNetLogger.WriteLine(message, Category.Debug);
+                case LogSeverity.Debug:
+                    testListener.WriteLine(message, Category.Debug);
                     break;
             }
 
             if (exception != null)
-                tdNetLogger.WriteLine(ExceptionUtils.SafeToString(exception), Category.Error);
-        }
-
-        /// <inheritdoc />
-        public override ILogger CreateChildLogger(string newName)
-        {
-            //TODO: Check if this is OK
-            return new TDNetLogger(tdNetLogger, newName);
+                testListener.WriteLine(ExceptionUtils.SafeToString(exception), Category.Error);
         }
     }
 }

@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using Gallio.Hosting;
 
 namespace Gallio.Reflection.Impl
 {
@@ -93,7 +92,7 @@ namespace Gallio.Reflection.Impl
                 throw new ArgumentNullException("method");
 
             Assembly assembly = method.DeclaringType.Assembly;
-            string assemblyPath = Loader.GetAssemblyLocation(assembly); // use the shadow-copied location if applicable
+            string assemblyPath = AssemblyUtils.GetAssemblyLocation(assembly); // use the shadow-copied location if applicable
             if (assemblyPath == null)
                 return CodeLocation.Unknown;
 
@@ -104,7 +103,7 @@ namespace Gallio.Reflection.Impl
                     string pdbPath = Path.ChangeExtension(assemblyPath, @".pdb");
                     if (!File.Exists(pdbPath))
                     {
-                        string originalAssemblyPath = Loader.GetAssemblyLocalPath(assembly);
+                        string originalAssemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
                         if (originalAssemblyPath == null)
                             return CodeLocation.Unknown;
 

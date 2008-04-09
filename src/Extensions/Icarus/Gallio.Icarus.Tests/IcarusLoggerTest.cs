@@ -15,7 +15,7 @@
 
 using System;
 
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 
 using Gallio.Icarus.Interfaces;
 
@@ -26,16 +26,5 @@ namespace Gallio.Icarus.Tests
     [TestFixture]
     public class IcarusLoggerTest : MockTest
     {
-        [Test]
-        public void CreateChildLogger_Test()
-        {
-            IProjectAdapterView projectAdapterView = mocks.CreateMock<IProjectAdapterView>();
-            Exception e = new Exception("test");
-            //projectAdapterView.WriteToLog(LoggerLevel.Debug, "test", "test", e);
-            mocks.ReplayAll();
-            IcarusLogger icarusLogger = new IcarusLogger(projectAdapterView);
-            IcarusLogger childLogger = (IcarusLogger)icarusLogger.CreateChildLogger("test");
-            //childLogger.Debug("test", e);
-        }
     }
 }

@@ -36,22 +36,6 @@
     <DocumentationFile>bin\Gallio.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
-    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
@@ -133,25 +117,25 @@
     <Compile Include="Framework\Data\XmlDataSetTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkTest.cs" />
     <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
-    <Compile Include="Hosting\Channels\BinaryTcpChannelTest.cs" />
+    <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />
     <Compile Include="Framework\StepTest.cs" />
-    <Compile Include="Hosting\Channels\BaseChannelTest.cs" />
-    <Compile Include="Hosting\Channels\BaseClientChannelTest.cs" />
-    <Compile Include="Hosting\Channels\BaseServerChannelTest.cs" />
-    <Compile Include="Hosting\Channels\BinaryIpcChannelTest.cs" />
-    <Compile Include="Hosting\AbstractHostFactoryTest.cs" />
-    <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentParserTests.cs" />
-    <Compile Include="Hosting\ConsoleSupport\CommandLineOutputTests.cs" />
+    <Compile Include="Runtime\Remoting\BaseChannelTest.cs" />
+    <Compile Include="Runtime\Remoting\BaseClientChannelTest.cs" />
+    <Compile Include="Runtime\Remoting\BaseServerChannelTest.cs" />
+    <Compile Include="Runtime\Remoting\BinaryIpcChannelTest.cs" />
+    <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
+    <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentParserTests.cs" />
+    <Compile Include="Runtime\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Framework\ContextTest.cs" />
-    <Compile Include="Hosting\IsolatedAppDomainHostTest.cs" />
-    <Compile Include="Hosting\BaseHostFactoryTest.cs" />
-    <Compile Include="Hosting\IsolatedProcessHostTest.cs">
+    <Compile Include="Runtime\Hosting\IsolatedAppDomainHostTest.cs" />
+    <Compile Include="Runtime\Hosting\BaseHostFactoryTest.cs" />
+    <Compile Include="Runtime\Hosting\IsolatedProcessHostTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Hosting\RuntimeTest.cs" />
-    <Compile Include="Hosting\RuntimeRegisteredComponentResolverTest.cs" />
+    <Compile Include="Runtime\RuntimeAccessorTest.cs" />
+    <Compile Include="Runtime\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextTest.cs" />
     <Compile Include="Framework\LogTest.cs" />
     <Compile Include="Model\Execution\StubTestLogWriterTest.cs" />
@@ -205,10 +189,10 @@
     <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolverTest.cs" />
     <Compile Include="Collections\TreeUtilsTest.cs" />
     <Compile Include="Utilities\ExceptionUtilsTest.cs" />
-    <Compile Include="Utilities\CorrelatedExceptionEventArgsTest.cs" />
+    <Compile Include="Runtime\CorrelatedExceptionEventArgsTest.cs" />
     <Compile Include="Utilities\MimeTypesTest.cs" />
     <Compile Include="Utilities\StringUtilsTest.cs" />
-    <Compile Include="Utilities\UnhandledExceptionPolicyTest.cs" />
+    <Compile Include="Runtime\UnhandledExceptionPolicyTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
@@ -222,6 +206,10 @@
     <ProjectReference Include="..\Gallio.Host\Gallio.Host.csproj">
       <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
       <Name>Gallio.Host</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio.Runtime.Windsor\Gallio.Runtime.Windsor.csproj">
+      <Project>{E66579E8-6CA7-477B-9645-4DB48E6F872F}</Project>
+      <Name>Gallio.Runtime.Windsor</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>

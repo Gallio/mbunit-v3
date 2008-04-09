@@ -16,10 +16,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
-using Gallio.Hosting;
-using Gallio.Utilities;
+using Gallio.Runtime.Hosting;
+using Gallio.Runtime;
 using NCover.Framework;
 
 namespace Gallio.NCoverIntegration
@@ -78,7 +78,7 @@ namespace Gallio.NCoverIntegration
 
         private Process RegisterAndStartProfiler(ProfilerSettings settings, bool redirectOutput)
         {
-            logger.Info("* Starting NCover profiler.");
+            logger.Log(LogSeverity.Info, "* Starting NCover profiler.");
 
             driver = new ProfilerDriver(settings);
 
@@ -87,7 +87,7 @@ namespace Gallio.NCoverIntegration
             driver.Start(redirectOutput);
             if (!driver.MessageCenter.WaitForProfilerReadyEvent())
             {
-                logger.Error("* Timed out waiting for the NCover profiler to become ready.  The launch may have failed because this version of NCover does not support running programs in 64bit mode.");
+                logger.Log(LogSeverity.Error, "* Timed out waiting for the NCover profiler to become ready.  The launch may have failed because this version of NCover does not support running programs in 64bit mode.");
                 throw new HostException("Timed out waiting for the NCover profiler to become ready.");
             }
 
@@ -133,10 +133,10 @@ namespace Gallio.NCoverIntegration
             {
                 // Allow some time for the final processing to take place such as writing out the 
                 // XML reports.  If it really takes too long then abort it.
-                logger.Info("* Waiting for NCover to exit.");
+                logger.Log(LogSeverity.Info, "* Waiting for NCover to exit.");
                 if (waitForExitTask != null && ! waitForExitTask.Join(WaitForExitTimeout))
                 {
-                    logger.Error("* Timed out.  Aborting NCover.");
+                    logger.Log(LogSeverity.Error, "* Timed out.  Aborting NCover.");
                     waitForExitTask.Abort();
                 }
 

@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 using Aga.Controls.Tree;
 
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
@@ -915,25 +915,24 @@ namespace Gallio.Icarus
                 SaveReportAs(this, new SaveReportAsEventArgs(fileName, reportType));
         }
 
-        public void WriteToLog(LoggerLevel level, string name, string message, Exception exception)
+        public void WriteToLog(LogSeverity severity, string message, Exception exception)
         {
             Color color = Color.Black;
-            switch (level)
+            switch (severity)
             {
-                case LoggerLevel.Fatal:
-                case LoggerLevel.Error:
+                case LogSeverity.Error:
                     color = Color.Red;
                     break;
 
-                case LoggerLevel.Warn:
+                case LogSeverity.Warning:
                     color = Color.Yellow;
                     break;
 
-                case LoggerLevel.Info:
+                case LogSeverity.Info:
                     color = Color.Gray;
                     break;
 
-                case LoggerLevel.Debug:
+                case LogSeverity.Debug:
                     color = Color.DarkGray;
                     break;
             }

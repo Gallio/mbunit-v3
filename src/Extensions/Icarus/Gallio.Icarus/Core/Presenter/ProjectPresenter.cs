@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Specialized;
 
-using Gallio.Hosting;
+using Gallio.Runtime.Hosting;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Model.Serialization;

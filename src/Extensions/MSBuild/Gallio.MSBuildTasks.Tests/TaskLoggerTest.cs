@@ -39,14 +39,5 @@ namespace Gallio.MSBuildTasks.Tests
             TaskLoggingHelper taskLogger = new TaskLoggingHelper(task);
             new TaskLogger(taskLogger);
         }
-
-        [Test]
-        public void CreateChildLogger()
-        {
-            Gallio task = new Gallio();
-            TaskLoggingHelper taskLogger = new TaskLoggingHelper(task);
-            TaskLogger logger = new TaskLogger(taskLogger);
-            Assert.AreSame(logger.CreateChildLogger("child").GetType(), typeof(TaskLogger));
-        }
     }
 }

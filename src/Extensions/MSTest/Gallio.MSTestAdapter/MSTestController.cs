@@ -1,4 +1,4 @@
-﻿// Copyright 2008 MbUnit Project - http://www.mbunit.com/
+// Copyright 2008 MbUnit Project - http://www.mbunit.com/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ using System.Xml;
 using Gallio.MSTestAdapter.Properties;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Concurrency;
 using Microsoft.Win32;
 

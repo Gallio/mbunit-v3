@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using NAnt.Core;
 
 namespace Gallio.NAntTasks
@@ -23,7 +23,7 @@ namespace Gallio.NAntTasks
     /// <summary>
     /// An <see cref="ILogger" /> implementation that logs messages to a <see cref="Task" /> object.
     /// </summary>
-    internal class TaskLogger : LevelFilteredLogger
+    internal class TaskLogger : BaseLogger
     {
         private readonly Task task;
 
@@ -33,38 +33,31 @@ namespace Gallio.NAntTasks
                 throw new ArgumentNullException("task");
 
             this.task = task;
-            Level = LoggerLevel.Debug;
         }
 
-        protected override void Log(LoggerLevel level, string name, string message, Exception exception)
+        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
         {
             if (exception != null)
                 message += "\n" + exception;
 
-            switch (level)
+            switch (severity)
             {
-                case LoggerLevel.Fatal:
-                case LoggerLevel.Error:
-                    task.Log(global::NAnt.Core.Level.Error, message);
+                case LogSeverity.Error:
+                    task.Log(Level.Error, message);
                     break;
 
-                case LoggerLevel.Warn:
-                    task.Log(global::NAnt.Core.Level.Warning, message);
+                case LogSeverity.Warning:
+                    task.Log(Level.Warning, message);
                     break;
 
-                case LoggerLevel.Info:
-                    task.Log(global::NAnt.Core.Level.Info, message);
+                case LogSeverity.Info:
+                    task.Log(Level.Info, message);
                     break;
 
-                case LoggerLevel.Debug:
-                    task.Log(global::NAnt.Core.Level.Debug, message);
+                case LogSeverity.Debug:
+                    task.Log(Level.Debug, message);
                     break;
             }
-        }
-
-        public override ILogger CreateChildLogger(string name)
-        {
-            return new TaskLogger(task);
         }
     }
 }

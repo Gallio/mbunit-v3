@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gallio.Model.Execution;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.NUnitAdapter.Properties;
 using NUnit.Core;

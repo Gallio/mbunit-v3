@@ -15,7 +15,7 @@
 
 using System;
 using System.Diagnostics;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
 using TypeMock.Integration;
 
@@ -51,7 +51,7 @@ namespace Gallio.TypeMockIntegration
         /// <inheritdoc />
         protected override Process StartProcess(ProcessStartInfo startInfo)
         {
-            logger.Info("* Starting TypeMock.");
+            logger.Log(LogSeverity.Info, "* Starting TypeMock.");
 
             TypeMockProcess process = new TypeMockProcess(startInfo, false);
             process.Start();

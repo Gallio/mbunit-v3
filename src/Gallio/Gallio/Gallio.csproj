@@ -43,25 +43,8 @@
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
-    </Reference>
     <Reference Include="ISymWrapper" />
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
@@ -78,6 +61,50 @@
     <Compile Include="Concurrency\TaskResult.cs" />
     <Compile Include="Concurrency\ThreadAbortScope.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
+    <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentAttribute.cs" />
+    <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentFlags.cs" />
+    <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentParser.cs" />
+    <Compile Include="Runtime\ConsoleSupport\CommandLineErrorReporter.cs" />
+    <Compile Include="Runtime\ConsoleSupport\CommandLineOutput.cs" />
+    <Compile Include="Runtime\ConsoleSupport\ConsoleProgram.cs" />
+    <Compile Include="Runtime\ConsoleSupport\DefaultCommandLineArgumentAttribute.cs" />
+    <Compile Include="Runtime\ConsoleSupport\IRichConsole.cs" />
+    <Compile Include="Runtime\ConsoleSupport\NativeConsole.cs" />
+    <Compile Include="Runtime\ConsoleSupport\ResponseFileReader.cs" />
+    <Compile Include="Runtime\ConsoleSupport\RichConsoleLogger.cs" />
+    <Compile Include="Runtime\Loader\DefaultLoader.cs" />
+    <Compile Include="Runtime\Loader\ILoader.cs" />
+    <Compile Include="Runtime\Logging\BaseLogger.cs" />
+    <Compile Include="Runtime\Logging\FilteredLogger.cs" />
+    <Compile Include="Runtime\Logging\ILogger.cs" />
+    <Compile Include="Runtime\Logging\LogSeverity.cs" />
+    <Compile Include="Runtime\Logging\NullLogger.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\CancelableProgressMonitor.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\IProgressMonitor.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\IProgressMonitorPresenter.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\IProgressMonitorProvider.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\LogProgressMonitorPresenter.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\LogProgressMonitorProvider.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\NullProgressMonitor.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\NullProgressMonitorPresenter.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\NullProgressMonitorProvider.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\ObservableProgressMonitor.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\RemoteProgressMonitor.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\RichConsoleProgressMonitorPresenter.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\SubProgressMonitorCreatedEventArgs.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\TaskWithProgress.cs" />
+    <Compile Include="Runtime\Remoting\BaseChannel.cs" />
+    <Compile Include="Runtime\Remoting\BaseClientChannel.cs" />
+    <Compile Include="Runtime\Remoting\BaseServerChannel.cs" />
+    <Compile Include="Runtime\Remoting\BinaryIpcClientChannel.cs" />
+    <Compile Include="Runtime\Remoting\BinaryIpcServerChannel.cs" />
+    <Compile Include="Runtime\Remoting\BinaryTcpClientChannel.cs" />
+    <Compile Include="Runtime\Remoting\BinaryTcpServerChannel.cs" />
+    <Compile Include="Runtime\Remoting\IClientChannel.cs" />
+    <Compile Include="Runtime\Remoting\IServerChannel.cs" />
     <Compile Include="Framework\Data\AggregateDataSet.cs" />
     <Compile Include="Framework\Data\BaseDataRow.cs" />
     <Compile Include="Framework\Data\BaseDataSet.cs" />
@@ -213,16 +240,9 @@
     <Compile Include="Framework\Tasks.cs" />
     <Compile Include="Framework\Utilities\LogStreamLogger.cs" />
     <Compile Include="Framework\Utilities\SampleRunner.cs" />
-    <Compile Include="Hosting\ArraySubDependencyResolver.cs" />
     <Compile Include="Model\Annotation.cs" />
     <Compile Include="Model\AnnotationType.cs" />
-    <Compile Include="Hosting\Channels\BinaryTcpClientChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Hosting\Channels\BinaryTcpServerChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Hosting\InstallationConfiguration.cs" />
+    <Compile Include="Runtime\InstallationConfiguration.cs" />
     <Compile Include="Model\Execution\BaseTestLogWriter.cs" />
     <Compile Include="Model\Execution\ITestLogWriter.cs" />
     <Compile Include="Model\Execution\ManagedTestCommand.cs" />
@@ -242,60 +262,25 @@
     <Compile Include="Framework\TestException.cs" />
     <Compile Include="Framework\TestFailedException.cs" />
     <Compile Include="Framework\TestInconclusiveException.cs" />
-    <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentAttribute.cs" />
-    <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentFlags.cs" />
-    <Compile Include="Hosting\ConsoleSupport\CommandLineArgumentParser.cs" />
-    <Compile Include="Hosting\ConsoleSupport\CommandLineErrorReporter.cs" />
-    <Compile Include="Hosting\ConsoleSupport\CommandLineOutput.cs" />
-    <Compile Include="Hosting\ConsoleSupport\ConsoleProgram.cs" />
-    <Compile Include="Hosting\ConsoleSupport\DefaultCommandLineArgumentAttribute.cs" />
-    <Compile Include="Hosting\ConsoleSupport\IRichConsole.cs" />
-    <Compile Include="Hosting\ConsoleSupport\NativeConsole.cs" />
-    <Compile Include="Hosting\ConsoleSupport\ResponseFileReader.cs" />
-    <Compile Include="Hosting\ConsoleSupport\RichConsoleLogger.cs" />
-    <Compile Include="Hosting\HostAssemblyResolverHook.cs" />
-    <Compile Include="Hosting\IsolatedAppDomainHost.cs" />
-    <Compile Include="Hosting\IsolatedProcessHost.cs" />
-    <Compile Include="Hosting\RuntimeRegisteredComponentResolver.cs" />
-    <Compile Include="Hosting\HostConfiguration.cs" />
-    <Compile Include="Hosting\HostException.cs" />
-    <Compile Include="Hosting\HostServiceChannelInterop.cs" />
-    <Compile Include="Hosting\HostSetup.cs" />
-    <Compile Include="Hosting\IRegisteredComponent.cs" />
-    <Compile Include="Hosting\IRegisteredComponentResolver.cs" />
-    <Compile Include="Hosting\IHostService.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\CancelableProgressMonitor.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\IProgressMonitor.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\IProgressMonitorPresenter.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\IProgressMonitorProvider.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\LogProgressMonitorPresenter.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\LogProgressMonitorProvider.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\NullProgressMonitor.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\NullProgressMonitorPresenter.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\NullProgressMonitorProvider.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\ObservableProgressMonitor.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\RemoteProgressMonitor.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\RichConsoleProgressMonitorPresenter.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\SubProgressMonitorCreatedEventArgs.cs" />
-    <Compile Include="Hosting\ProgressMonitoring\TaskWithProgress.cs" />
-    <Compile Include="Hosting\RemoteHost.cs" />
-    <Compile Include="Hosting\IHost.cs" />
-    <Compile Include="Hosting\IHostFactory.cs" />
-    <Compile Include="Hosting\IsolatedAppDomainHostFactory.cs" />
-    <Compile Include="Hosting\IsolatedProcessHostFactory.cs" />
-    <Compile Include="Hosting\RemoteHostService.cs" />
-    <Compile Include="Hosting\BaseHostFactory.cs" />
-    <Compile Include="Hosting\Channels\BaseChannel.cs" />
-    <Compile Include="Hosting\Channels\BaseClientChannel.cs" />
-    <Compile Include="Hosting\Channels\BaseServerChannel.cs" />
-    <Compile Include="Hosting\Channels\BinaryIpcClientChannel.cs" />
-    <Compile Include="Hosting\Channels\IClientChannel.cs" />
-    <Compile Include="Hosting\Channels\IServerChannel.cs" />
-    <Compile Include="Hosting\Channels\BinaryIpcServerChannel.cs" />
-    <Compile Include="Hosting\RemoteLogger.cs" />
+    <Compile Include="Runtime\Hosting\HostAssemblyResolverHook.cs" />
+    <Compile Include="Runtime\Hosting\IsolatedAppDomainHost.cs" />
+    <Compile Include="Runtime\Hosting\IsolatedProcessHost.cs" />
+    <Compile Include="Runtime\RuntimeRegisteredComponentResolver.cs" />
+    <Compile Include="Runtime\Hosting\HostConfiguration.cs" />
+    <Compile Include="Runtime\Hosting\HostException.cs" />
+    <Compile Include="Runtime\Hosting\HostServiceChannelInterop.cs" />
+    <Compile Include="Runtime\Hosting\HostSetup.cs" />
+    <Compile Include="Runtime\IRegisteredComponent.cs" />
+    <Compile Include="Runtime\IRegisteredComponentResolver.cs" />
+    <Compile Include="Runtime\Hosting\IHostService.cs" />
+    <Compile Include="Runtime\Hosting\RemoteHost.cs" />
+    <Compile Include="Runtime\Hosting\IHost.cs" />
+    <Compile Include="Runtime\Hosting\IHostFactory.cs" />
+    <Compile Include="Runtime\Hosting\IsolatedAppDomainHostFactory.cs" />
+    <Compile Include="Runtime\Hosting\IsolatedProcessHostFactory.cs" />
+    <Compile Include="Runtime\Hosting\RemoteHostService.cs" />
+    <Compile Include="Runtime\Hosting\BaseHostFactory.cs" />
+    <Compile Include="Runtime\Logging\RemoteLogger.cs" />
     <Compile Include="Model\Execution\ProxyTestListener.cs" />
     <Compile Include="Collections\UserDataCollection.cs" />
     <Compile Include="Model\Execution\StubTestLogWriter.cs" />
@@ -356,16 +341,16 @@
     <Compile Include="Runner\Reports\ReportContainerUtils.cs" />
     <Compile Include="Runner\Reports\TestOutcomeSummary.cs" />
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
+    <Compile Include="Runtime\RuntimeBootstrap.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
     <Compile Include="Utilities\Memoizer.cs" />
-    <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
+    <Compile Include="Runtime\UnhandledExceptionPolicy.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />
     <Compile Include="Reflection\Impl\IDebugSymbolResolver.cs" />
-    <Compile Include="Hosting\IRuntimeFactory.cs" />
+    <Compile Include="Runtime\RuntimeFactory.cs" />
     <Compile Include="Reflection\Impl\XmlDocumentationUtils.cs" />
     <Compile Include="Reflection\CodeLocation.cs" />
-    <Compile Include="Hosting\WindsorRuntimeFactory.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
     <Compile Include="Runner\Harness\ContextualLogTextWriter.cs" />
     <Compile Include="Runner\Harness\ContextualLogTraceListener.cs" />
@@ -460,7 +445,7 @@
     <Compile Include="Runner\Reports\IReportReader.cs" />
     <Compile Include="Runner\TestLauncherResult.cs" />
     <Compile Include="Model\TestPackageConfig.cs" />
-    <Compile Include="Hosting\Loader.cs" />
+    <Compile Include="Reflection\AssemblyUtils.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
     <Compile Include="Model\Execution\LifecycleEventArgs.cs" />
     <Compile Include="Model\Execution\LifecycleEventType.cs" />
@@ -518,21 +503,20 @@
     <Compile Include="Runner\Domains\RemoteTestDomain.cs" />
     <Compile Include="Runner\ResultCode.cs" />
     <Compile Include="Runner\TestLauncher.cs" />
-    <Compile Include="Hosting\DefaultAssemblyResolverManager.cs" />
+    <Compile Include="Runtime\Loader\DefaultAssemblyResolverManager.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTracker.cs" />
     <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolver.cs" />
-    <Compile Include="Hosting\IAssemblyResolverManager.cs" />
-    <Compile Include="Hosting\RuntimeSetup.cs" />
-    <Compile Include="Hosting\WindsorRuntime.cs" />
+    <Compile Include="Runtime\Loader\IAssemblyResolverManager.cs" />
+    <Compile Include="Runtime\RuntimeSetup.cs" />
     <Compile Include="Runner\TestRunnerUtils.cs" />
     <Compile Include="Utilities\ExceptionUtils.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Collections\TreeUtils.cs" />
     <Compile Include="Utilities\Hash64.cs" />
-    <Compile Include="Hosting\LongLivedMarshalByRefObject.cs" />
+    <Compile Include="Runtime\Remoting\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Framework\Context.cs" />
     <Compile Include="Framework\ContextCookie.cs" />
-    <Compile Include="Hosting\IAssemblyResolver.cs" />
+    <Compile Include="Runtime\Loader\IAssemblyResolver.cs" />
     <Compile Include="ActionChain.cs" />
     <Compile Include="ActionDecorator.cs" />
     <Compile Include="Collections\CovariantList.cs" />
@@ -578,13 +562,13 @@
     <Compile Include="Model\TestOutcome.cs" />
     <Compile Include="Model\TestStatus.cs" />
     <Compile Include="Model\Execution\ITestContextTracker.cs" />
-    <Compile Include="Hosting\IRuntime.cs" />
+    <Compile Include="Runtime\IRuntime.cs" />
     <Compile Include="Reflection\Impl\IXmlDocumentationResolver.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\GenericUtils.cs" />
     <Compile Include="Utilities\XmlSerializationUtils.cs" />
     <Compile Include="Utilities\NonInlinedAttribute.cs" />
-    <Compile Include="Utilities\CorrelatedExceptionEventArgs.cs" />
+    <Compile Include="Runtime\CorrelatedExceptionEventArgs.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
     <Compile Include="Framework\Log.cs" />
     <Compile Include="Framework\Attachment.cs" />
@@ -594,7 +578,7 @@
     <Compile Include="Framework\LogWriter.cs" />
     <Compile Include="Utilities\MimeTypes.cs" />
     <Compile Include="Framework\TextAttachment.cs" />
-    <Compile Include="Hosting\Runtime.cs" />
+    <Compile Include="Runtime\RuntimeAccessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

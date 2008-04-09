@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Specialized;
-using Gallio.Hosting;
+using Gallio.Runtime;
 
 namespace Gallio.Runner
 {

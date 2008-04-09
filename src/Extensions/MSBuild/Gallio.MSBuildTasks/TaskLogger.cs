@@ -16,8 +16,7 @@
 using System;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Castle.Core.Logging;
-using ILogger=Castle.Core.Logging.ILogger;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.MSBuildTasks
 {
@@ -25,7 +24,7 @@ namespace Gallio.MSBuildTasks
     /// <summary>
     /// Logs messages to a <see cref="TaskLoggingHelper" /> instance.
     /// </summary>
-    internal class TaskLogger : LevelFilteredLogger
+    internal class TaskLogger : BaseLogger
     {
         private readonly TaskLoggingHelper taskLoggingHelper;
         
@@ -33,39 +32,33 @@ namespace Gallio.MSBuildTasks
         {
             if (taskLoggingHelper == null)
                 throw new ArgumentNullException("taskLoggingHelper");
+
             this.taskLoggingHelper = taskLoggingHelper;
-            Level = LoggerLevel.Debug;
         }
 
-        protected override void Log(LoggerLevel level, string name, string message, Exception exception)
+        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
         {
             if (exception != null)
                 message += "\n" + exception;
 
-            switch (level)
+            switch (severity)
             {
-                case LoggerLevel.Fatal:
-                case LoggerLevel.Error:
+                case LogSeverity.Error:
                     taskLoggingHelper.LogError(message);
                     break;
 
-                case LoggerLevel.Warn:
+                case LogSeverity.Warning:
                     taskLoggingHelper.LogWarning(message);
                     break;
 
-                case LoggerLevel.Info:
+                case LogSeverity.Info:
                     taskLoggingHelper.LogMessage(MessageImportance.High, message);
                     break;
 
-                case LoggerLevel.Debug:
+                case LogSeverity.Debug:
                     taskLoggingHelper.LogMessage(MessageImportance.Low, message);
                     break;
             }
-        }
-
-        public override ILogger CreateChildLogger(string name)
-        {
-            return this;
         }
     }
 }

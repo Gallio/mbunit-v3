@@ -3,7 +3,7 @@
   <castle>
     <components>
       <component id="NCoverIntegration.NCoverHostFactory"
-                 service="Gallio.Hosting.IHostFactory, Gallio"
+                 service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
                  type="Gallio.NCoverIntegration.NCoverHostFactory, Gallio.NCoverIntegration" />      
       
       <component id="NCoverIntegration.NCoverTestDomainFactory"

@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Gallio.Collections;
-using Gallio.Hosting;
+using Gallio.Runtime;
 using Gallio.Model;
 using System.Management.Automation;
 using Gallio.Model.Filters;
 using Gallio.PowerShellCommands.Properties;
+using Gallio.Reflection;
 using Gallio.Runner;
+using Gallio.Runtime.Windsor;
 
 namespace Gallio.PowerShellCommands
 {
@@ -414,41 +416,41 @@ namespace Gallio.PowerShellCommands
         
         internal TestLauncherResult Execute()
         {
-            using (TestLauncher launcher = new TestLauncher())
-            {
-                launcher.Logger = Logger;
-                launcher.ProgressMonitorProvider = ProgressMonitorProvider;
-                launcher.Filter = GetFilter();
-                launcher.ShowReports = showReports.IsPresent;
-                launcher.TestRunnerFactoryName = runnerType;
-                launcher.DoNotRun = doNotRun.IsPresent;
-                launcher.IgnoreAnnotations = ignoreAnnotations.IsPresent;
-                launcher.EchoResults = !noEchoResults.IsPresent;
-                launcher.RuntimeSetup = new RuntimeSetup();
+            TestLauncher launcher = new TestLauncher();
+            launcher.Logger = Logger;
+            launcher.ProgressMonitorProvider = ProgressMonitorProvider;
+            launcher.Filter = GetFilter();
+            launcher.ShowReports = showReports.IsPresent;
+            launcher.TestRunnerFactoryName = runnerType;
+            launcher.DoNotRun = doNotRun.IsPresent;
+            launcher.IgnoreAnnotations = ignoreAnnotations.IsPresent;
+            launcher.EchoResults = !noEchoResults.IsPresent;
 
-                // Set the installation path explicitly to ensure that we do not encounter problems
-                // when the test assembly contains a local copy of the primary runtime assemblies
-                // which will confuse the runtime into searching in the wrong place for plugins.
-                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(RunGallioCommand).Assembly));
+            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
+            launcher.RuntimeSetup = new RuntimeSetup();
 
-                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
-                launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
-                launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy.IsPresent;
+            // Set the installation path explicitly to ensure that we do not encounter problems
+            // when the test assembly contains a local copy of the primary runtime assemblies
+            // which will confuse the runtime into searching in the wrong place for plugins.
+            launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(RunGallioCommand).Assembly));
 
-                AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
-                AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
-                AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
+            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
+            launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
+            launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy.IsPresent;
 
-                if (reportDirectory != null)
-                    launcher.ReportDirectory = reportDirectory;
-                if (!String.IsNullOrEmpty(reportNameFormat))
-                    launcher.ReportNameFormat = reportNameFormat;
-                if (reportTypes != null)
-                    GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
+            AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
+            AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
+            AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 
-                TestLauncherResult result = RunLauncher(launcher);
-                return result;
-            }
+            if (reportDirectory != null)
+                launcher.ReportDirectory = reportDirectory;
+            if (!String.IsNullOrEmpty(reportNameFormat))
+                launcher.ReportNameFormat = reportNameFormat;
+            if (reportTypes != null)
+                GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
+
+            TestLauncherResult result = RunLauncher(launcher);
+            return result;
         }
 
         /// <exclude />

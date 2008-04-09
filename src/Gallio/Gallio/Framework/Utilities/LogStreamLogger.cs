@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Framework;
 
 namespace Gallio.Framework.Utilities
@@ -23,7 +23,7 @@ namespace Gallio.Framework.Utilities
     /// A <see cref="ILogger" /> implementation that logs messages to the specified <see cref="LogStreamWriter" />.
     /// This can be used to write log messages to the test execution log.
     /// </summary>
-    public sealed class LogStreamLogger : LevelFilteredLogger
+    public sealed class LogStreamLogger : BaseLogger
     {
         private readonly LogStreamWriter writer;
 
@@ -46,19 +46,12 @@ namespace Gallio.Framework.Utilities
                 throw new ArgumentNullException("writer");
 
             this.writer = writer;
-            Level = LoggerLevel.Debug;
         }
 
         /// <inheritdoc />
-        public override ILogger CreateChildLogger(string name)
+        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
         {
-            return this;
-        }
-
-        /// <inheritdoc />
-        protected override void Log(LoggerLevel level, string name, string message, Exception exception)
-        {
-            message = String.Format("[{0}] {1}", level.ToString().ToLowerInvariant(), message);
+            message = String.Format("[{0}] {1}", severity.ToString().ToLowerInvariant(), message);
 
             if (exception != null)
                 writer.WriteException(exception, message);

@@ -17,7 +17,6 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using Gallio.Hosting;
 
 namespace Gallio.Reflection.Impl
 {
@@ -53,7 +52,7 @@ namespace Gallio.Reflection.Impl
                 throw new ArgumentNullException("member");
 
             Type type = member as Type ?? member.DeclaringType;
-            string assemblyPath = Loader.GetAssemblyLocalPath(type.Assembly);
+            string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(type.Assembly);
             if (assemblyPath == null)
                 return null;
 

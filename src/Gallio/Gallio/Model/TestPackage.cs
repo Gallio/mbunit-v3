@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Runtime.Loader;
 using Gallio.Reflection;
 
 namespace Gallio.Model
@@ -27,6 +28,7 @@ namespace Gallio.Model
     {
         private readonly TestPackageConfig config;
         private readonly IReflectionPolicy reflectionPolicy;
+        private readonly ILoader loader;
         private readonly List<IAssemblyInfo> assemblies;
 
         /// <summary>
@@ -34,17 +36,22 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="config">The package configuration</param>
         /// <param name="reflectionPolicy">The reflection policy for the package</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="config"/> or
-        /// <paramref name="reflectionPolicy"/> is null</exception>
-        public TestPackage(TestPackageConfig config, IReflectionPolicy reflectionPolicy)
+        /// <param name="loader">The loader for the package</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="config"/>,
+        /// <paramref name="reflectionPolicy"/> or <paramref name="loader"/> is null</exception>
+        public TestPackage(TestPackageConfig config, IReflectionPolicy reflectionPolicy,
+            ILoader loader)
         {
             if (config == null)
                 throw new ArgumentNullException("config");
             if (reflectionPolicy == null)
                 throw new ArgumentNullException("reflectionPolicy");
+            if (loader == null)
+                throw new ArgumentNullException("loader");
 
             this.config = config;
             this.reflectionPolicy = reflectionPolicy;
+            this.loader = loader;
 
             assemblies = new List<IAssemblyInfo>();
         }
@@ -63,6 +70,14 @@ namespace Gallio.Model
         public IReflectionPolicy ReflectionPolicy
         {
             get { return reflectionPolicy; }
+        }
+
+        /// <summary>
+        /// Gets the loader for the package.
+        /// </summary>
+        public ILoader Loader
+        {
+            get { return loader; }
         }
 
         /// <summary>

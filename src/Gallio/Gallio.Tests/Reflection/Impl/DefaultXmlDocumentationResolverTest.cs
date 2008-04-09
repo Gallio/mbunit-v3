@@ -15,8 +15,8 @@
 
 using System;
 using System.Reflection;
-using Castle.Core.Logging;
-using Gallio.Hosting;
+using Gallio.Runtime.Logging;
+using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using Gallio.Tests;
 using MbUnit.TestResources;
@@ -61,14 +61,14 @@ namespace Gallio.Tests.Reflection.Impl
         {
             Type type = typeof(DocumentedClass);
             Assert.AreEqual("<summary>\nA documented class.\n</summary>\n<remarks>\nThe XML documentation of this test is significant.\n  Including the leading whitespace on this line.\n    And the extra 8 trailing spaces on this line!\n</remarks>",
-                resolver.GetXmlDocumentation(Loader.GetAssemblyLocalPath(type.Assembly), "T:" + type.FullName));
+                resolver.GetXmlDocumentation(AssemblyUtils.GetAssemblyLocalPath(type.Assembly), "T:" + type.FullName));
         }
 
         [Test]
         public void GetXmlDocumentation_ReturnsNullForUndocumentedMember()
         {
             Type type = typeof(DocumentedClass.UndocumentedNestedClass);
-            Assert.IsNull(resolver.GetXmlDocumentation(Loader.GetAssemblyLocalPath(type.Assembly), "T:" + type.FullName));
+            Assert.IsNull(resolver.GetXmlDocumentation(AssemblyUtils.GetAssemblyLocalPath(type.Assembly), "T:" + type.FullName));
         }
     }
 }

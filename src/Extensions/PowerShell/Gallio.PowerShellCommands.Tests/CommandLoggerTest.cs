@@ -37,12 +37,5 @@ namespace Gallio.PowerShellCommands.Tests
         {
             new CommandLogger(new RunGallioCommand());
         }
-
-        [Test]
-        public void CreateChildLogger()
-        {
-            CommandLogger logger = new CommandLogger(new RunGallioCommand());
-            Assert.AreSame(logger.CreateChildLogger("child").GetType(), typeof(CommandLogger));
-        }
     }
 }

@@ -16,13 +16,14 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Gallio.Hosting;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.Windsor;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using TestDriven.Framework;
@@ -114,7 +115,7 @@ namespace Gallio.TDNetRunner.Tests
             Assembly assembly = typeof(TDNetAddInTests).Assembly;
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                AssertTestLauncherOptions(launcher, Loader.GetAssemblyLocalPath(assembly),
+                AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
                     new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
 
                 return new TestLauncherResult(new Report());
@@ -133,7 +134,7 @@ namespace Gallio.TDNetRunner.Tests
 
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                AssertTestLauncherOptions(launcher, Loader.GetAssemblyLocalPath(assembly),
+                AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
                     new AndFilter<ITest>(new Filter<ITest>[] {
                         new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
                         new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true)
@@ -155,7 +156,7 @@ namespace Gallio.TDNetRunner.Tests
 
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                AssertTestLauncherOptions(launcher, Loader.GetAssemblyLocalPath(assembly),
+                AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
                     new AndFilter<ITest>(new Filter<ITest>[] {
                         new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
                         new TypeFilter<ITest>(new EqualityFilter<string>(method.DeclaringType.FullName), true),
@@ -178,7 +179,7 @@ namespace Gallio.TDNetRunner.Tests
 
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                AssertTestLauncherOptions(launcher, Loader.GetAssemblyLocalPath(assembly),
+                AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
                     new AndFilter<ITest>(new Filter<ITest>[] {
                         new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
                         new NamespaceFilter<ITest>(new EqualityFilter<string>(@namespace))
@@ -217,7 +218,7 @@ namespace Gallio.TDNetRunner.Tests
             Assert.IsFalse(launcher.DoNotRun);
             Assert.IsFalse(launcher.EchoResults);
             Assert.AreEqual(filter.ToFilterExpr(), launcher.Filter.ToFilterExpr());
-            Assert.IsInstanceOfType(typeof(TDNetLogger), launcher.Logger);
+            Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
             Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
             Assert.AreEqual(Path.Combine(Path.GetTempPath(), @"Gallio.TDNetRunner"), launcher.ReportDirectory);
             Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
@@ -230,10 +231,10 @@ namespace Gallio.TDNetRunner.Tests
             Assert.AreEqual(1, launcher.CustomMonitors.Count);
             Assert.IsInstanceOfType(typeof(TDNetLogMonitor), launcher.CustomMonitors[0]);
 
+            Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-            Assert.AreEqual(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(GallioTestRunner).Assembly)), launcher.RuntimeSetup.InstallationPath);
+            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTestRunner).Assembly)), launcher.RuntimeSetup.InstallationPath);
             CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
-            Assert.IsNull(launcher.RuntimeSetup.RuntimeFactoryType);
 
             CollectionAssert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.AssemblyFiles);
             CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);

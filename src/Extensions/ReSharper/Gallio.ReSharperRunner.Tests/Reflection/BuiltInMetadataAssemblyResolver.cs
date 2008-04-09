@@ -15,7 +15,7 @@
 
 using System.IO;
 using System.Reflection;
-using Gallio.Hosting;
+using Gallio.Reflection;
 using JetBrains.Metadata.Access;
 using IAssemblyResolver=JetBrains.Metadata.Reader.API.IAssemblyResolver;
 
@@ -34,7 +34,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             try
             {
                 Assembly assembly = Assembly.Load(name);
-                assemblyLocation = Loader.GetAssemblyLocalPath(assembly);
+                assemblyLocation = AssemblyUtils.GetAssemblyLocalPath(assembly);
                 return MetadataProvider.GetFromFile(assemblyLocation);
             }
             catch

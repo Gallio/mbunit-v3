@@ -15,9 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using Castle.Core.Logging;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime;
+using Gallio.Runtime.Hosting;
 using Gallio.Model;
 
 namespace Gallio.Runner.Domains
@@ -36,6 +37,7 @@ namespace Gallio.Runner.Domains
     public class HostTestDomain : RemoteTestDomain
     {
         private readonly IHostFactory hostFactory;
+        private readonly RuntimeFactory runtimeFactory;
         private readonly RuntimeSetup runtimeSetup;
         private readonly ILogger logger;
 
@@ -47,20 +49,24 @@ namespace Gallio.Runner.Domains
         /// Creates a host test domain.
         /// </summary>
         /// <param name="hostFactory">The host factory to use</param>
+        /// <param name="runtimeFactory">The runtime factory for the runtime to initialize within the host</param>
         /// <param name="runtimeSetup">The runtime setup for the runtime to initialize within the host</param>
         /// <param name="logger">The logger to use within the host</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>, <paramref name="runtimeFactory"/>,
         /// <paramref name="runtimeSetup"/>, or <paramref name="logger"/> is null</exception>
-        public HostTestDomain(IHostFactory hostFactory, RuntimeSetup runtimeSetup, ILogger logger)
+        public HostTestDomain(IHostFactory hostFactory, RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
+            if (runtimeFactory == null)
+                throw new ArgumentNullException("runtimeFactory");
             if (runtimeSetup == null)
                 throw new ArgumentNullException("runtimeSetup");
             if (logger == null)
                 throw new ArgumentNullException("logger");
 
             this.hostFactory = hostFactory;
+            this.runtimeFactory = runtimeFactory;
             this.runtimeSetup = runtimeSetup;
             this.logger = logger;
 
@@ -116,6 +122,8 @@ namespace Gallio.Runner.Domains
         {
             HostSetup hostSetup = packageConfig.HostSetup.Copy();
 
+            hostSetup.Configuration.AddAssemblyBinding(runtimeFactory.GetType().Assembly, false);
+
             foreach (IHostTestDomainContributor contributor in contributors)
                 contributor.ConfigureHost(hostSetup, packageConfig);
 
@@ -139,7 +147,7 @@ namespace Gallio.Runner.Domains
         {
             try
             {
-                host.InitializeRuntime(runtimeSetup, logger);
+                host.InitializeRuntime(runtimeFactory, runtimeSetup, logger);
 
                 Type factoryType = typeof(LocalTestDomainFactory);
                 ITestDomainFactory factory = (ITestDomainFactory)

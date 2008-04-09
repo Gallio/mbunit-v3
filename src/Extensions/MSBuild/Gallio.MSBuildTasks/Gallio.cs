@@ -17,17 +17,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Gallio.Runtime;
 using Gallio.MSBuildTasks.Properties;
 using Gallio.Collections;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.Windsor;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using ILogger=Castle.Core.Logging.ILogger;
+using ILogger=Microsoft.Build.Framework.ILogger;
 
 namespace Gallio.MSBuildTasks
 {
@@ -637,54 +640,54 @@ namespace Gallio.MSBuildTasks
 
             TaskLogger logger = new TaskLogger(Log);
 
-            using (TestLauncher launcher = new TestLauncher())
-            {
-                launcher.Logger = logger;
-                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-                launcher.Filter = GetFilter();
-                launcher.ShowReports = showReports;
-                launcher.DoNotRun = doNotRun;
-                launcher.IgnoreAnnotations = ignoreAnnotations;
-                launcher.RuntimeSetup = new RuntimeSetup();
+            TestLauncher launcher = new TestLauncher();
+            launcher.Logger = logger;
+            launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
+            launcher.Filter = GetFilter();
+            launcher.ShowReports = showReports;
+            launcher.DoNotRun = doNotRun;
+            launcher.IgnoreAnnotations = ignoreAnnotations;
 
-                // Set the installation path explicitly to ensure that we do not encounter problems
-                // when the test assembly contains a local copy of the primary runtime assemblies
-                // which will confuse the runtime into searching in the wrong place for plugins.
-                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
+            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
+            launcher.RuntimeSetup = new RuntimeSetup();
 
-                if (echoResults)
-                    launcher.CustomMonitors.Add(new TaskTestRunnerMonitor(Log, launcher.ReportMonitor));
+            // Set the installation path explicitly to ensure that we do not encounter problems
+            // when the test assembly contains a local copy of the primary runtime assemblies
+            // which will confuse the runtime into searching in the wrong place for plugins.
+            launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
 
-                if (applicationBaseDirectory != null)
-                    launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory.ItemSpec;
-                if (workingDirectory != null)
-                    launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory.ItemSpec;
-                launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
+            if (echoResults)
+                launcher.CustomMonitors.Add(new TaskTestRunnerMonitor(Log, launcher.ReportMonitor));
 
-                AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
-                AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
-                AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
+            if (applicationBaseDirectory != null)
+                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory.ItemSpec;
+            if (workingDirectory != null)
+                launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory.ItemSpec;
+            launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
 
-                if (reportDirectory != null)
-                    launcher.ReportDirectory = reportDirectory.ItemSpec;
-                if (!String.IsNullOrEmpty(reportNameFormat))
-                    launcher.ReportNameFormat = reportNameFormat;
-                if (reportTypes != null)
-                    GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
+            AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
+            AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
+            AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 
-                launcher.TestRunnerFactoryName = runnerType;
+            if (reportDirectory != null)
+                launcher.ReportDirectory = reportDirectory.ItemSpec;
+            if (!String.IsNullOrEmpty(reportNameFormat))
+                launcher.ReportNameFormat = reportNameFormat;
+            if (reportTypes != null)
+                GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
 
-                TestLauncherResult result = RunLauncher(launcher);
-                exitCode = result.ResultCode;
+            launcher.TestRunnerFactoryName = runnerType;
 
-                LogResultSummary(logger, result);
-                PopulateStatistics(result);
+            TestLauncherResult result = RunLauncher(launcher);
+            exitCode = result.ResultCode;
 
-                if (exitCode == ResultCode.Success ||
-                    exitCode == ResultCode.NoTests ||
-                    ignoreFailures)
-                    return true;
-            }
+            LogResultSummary(logger, result);
+            PopulateStatistics(result);
+
+            if (exitCode == ResultCode.Success ||
+                exitCode == ResultCode.NoTests ||
+                ignoreFailures)
+                return true;
 
             return false;
         }
@@ -712,16 +715,16 @@ namespace Gallio.MSBuildTasks
             testCount = stats.TestCount;
         }
 
-        private static void LogResultSummary(ILogger logger, TestLauncherResult result)
+        private static void LogResultSummary(TaskLogger logger, TestLauncherResult result)
         {
             switch (result.ResultCode)
             {
                 case ResultCode.Success:
-                    logger.Info(result.ResultSummary);
+                    logger.Log(LogSeverity.Info, result.ResultSummary);
                     break;
 
                 case ResultCode.Failure:
-                    logger.Error(result.ResultSummary);
+                    logger.Log(LogSeverity.Error, result.ResultSummary);
                     break;
             }
         }

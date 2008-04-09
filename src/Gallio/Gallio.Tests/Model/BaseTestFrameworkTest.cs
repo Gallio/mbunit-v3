@@ -14,14 +14,15 @@
 // limitations under the License.
 
 using System.Reflection;
+using Gallio.Runtime.Loader;
+using Gallio.Runtime;
 using Gallio.Framework;
 using Gallio.Reflection;
 using Gallio.Model;
 using MbUnit.Framework;
 using Gallio.Runner.Harness;
-using Gallio.Hosting;
 using Gallio.Model.Execution;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Tests.Model
 {
@@ -42,7 +43,8 @@ namespace Gallio.Tests.Model
         {
             sampleAssembly = GetSampleAssembly();
 
-            harness = new DefaultTestHarness(TestContextTrackerAccessor.GetInstance());
+            harness = new DefaultTestHarness(TestContextTrackerAccessor.GetInstance(),
+                RuntimeAccessor.Instance.Resolve<ILoader>());
 
             framework = CreateFramework();
             harness.AddTestFramework(framework);
@@ -63,7 +65,7 @@ namespace Gallio.Tests.Model
         protected void PopulateTestTree()
         {
             TestPackageConfig config = new TestPackageConfig();
-            config.AssemblyFiles.Add(Loader.GetFriendlyAssemblyCodeBase(sampleAssembly));
+            config.AssemblyFiles.Add(AssemblyUtils.GetFriendlyAssemblyCodeBase(sampleAssembly));
 
             harness.LoadTestPackage(config, NullProgressMonitor.CreateInstance());
             harness.BuildTestModel(new TestEnumerationOptions(), NullProgressMonitor.CreateInstance());

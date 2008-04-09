@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
-using Gallio.Hosting;
+using Gallio.Runtime.Remoting;
 using Gallio.Model.Execution;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 

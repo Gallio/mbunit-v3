@@ -15,7 +15,7 @@
 
 using System;
 using System.Management.Automation;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.PowerShellCommands
 {
@@ -23,7 +23,7 @@ namespace Gallio.PowerShellCommands
     /// <summary>
     /// Logs messages using a <see cref="BaseCommand" />'s logging functions.
     /// </summary>
-    internal class CommandLogger : LevelFilteredLogger
+    internal class CommandLogger : BaseLogger
     {
         private readonly BaseCommand cmdlet;
 
@@ -38,17 +38,15 @@ namespace Gallio.PowerShellCommands
                 throw new ArgumentNullException("cmdlet");
 
             this.cmdlet = cmdlet;
-            Level = LoggerLevel.Debug;
         }
 
         /// <summary>
         /// Logs a message.
         /// </summary>
-        /// <param name="level">The log level.</param>
-        /// <param name="name">Not used.</param>
+        /// <param name="severity">The log message severity.</param>
         /// <param name="message">The message to log.</param>
         /// <param name="exception">The exception to log (it can be null).</param>
-        protected override void Log(LoggerLevel level, string name, string message, Exception exception)
+        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
         {
             // The PowerShell logging methods may throw InvalidOperationException
             // or NotImplementedException if the PowerShell host is not connected
@@ -57,25 +55,24 @@ namespace Gallio.PowerShellCommands
             {
                 try
                 {
-                    switch (level)
+                    switch (severity)
                     {
-                        case LoggerLevel.Fatal:
-                        case LoggerLevel.Error:
+                        case LogSeverity.Error:
                             if (exception == null)
                                 exception = new Exception(message);
 
                             cmdlet.WriteError(new ErrorRecord(exception, message, ErrorCategory.NotSpecified, "Gallio"));
                             break;
 
-                        case LoggerLevel.Warn:
+                        case LogSeverity.Warning:
                             cmdlet.WriteWarning(message);
                             break;
 
-                        case LoggerLevel.Info:
+                        case LogSeverity.Info:
                             cmdlet.WriteVerbose(message);
                             break;
 
-                        case LoggerLevel.Debug:
+                        case LogSeverity.Debug:
                             cmdlet.WriteDebug(message);
                             break;
                     }
@@ -87,14 +84,6 @@ namespace Gallio.PowerShellCommands
                 {
                 }
             });
-        }
-
-        /// <inheritdoc />
-        public override ILogger CreateChildLogger(string name)
-        {
-            // We ignore the name because we do not use the child logger
-            // implementation pattern in Gallio.
-            return new CommandLogger(cmdlet);
         }
     }
 }

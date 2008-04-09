@@ -14,7 +14,8 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using Gallio.Hosting;
+using Gallio.Runtime.Loader;
+using Gallio.Runtime;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection;
@@ -36,12 +37,15 @@ namespace Gallio.ReSharperRunner
 {
     public class GallioTestProviderDelegate : IUnitTestProviderDelegate
     {
+        private readonly ILoader loader;
         private readonly GallioTestPresenter presenter;
 
         private IUnitTestProvider provider;
 
-        public GallioTestProviderDelegate()
+        public GallioTestProviderDelegate(ILoader loader)
         {
+            this.loader = loader;
+
             presenter = new GallioTestPresenter();
         }
 
@@ -269,13 +273,13 @@ namespace Gallio.ReSharperRunner
             }
         }
 
-        private static ITestExplorer CreateTestExplorer(IReflectionPolicy reflectionPolicy)
+        private ITestExplorer CreateTestExplorer(IReflectionPolicy reflectionPolicy)
         {
-            TestPackage testPackage = new TestPackage(new TestPackageConfig(), reflectionPolicy);
+            TestPackage testPackage = new TestPackage(new TestPackageConfig(), reflectionPolicy, loader);
             TestModel testModel = new TestModel(testPackage);
 
             AggregateTestExplorer aggregate = new AggregateTestExplorer(testModel);
-            foreach (ITestFramework framework in Runtime.Instance.ResolveAll<ITestFramework>())
+            foreach (ITestFramework framework in RuntimeAccessor.Instance.ResolveAll<ITestFramework>())
                 aggregate.AddTestExplorer(framework.CreateTestExplorer(testModel));
 
             return aggregate;

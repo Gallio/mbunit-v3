@@ -15,8 +15,8 @@
 
 using System;
 using System.Collections.Specialized;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime;
 
 namespace Gallio.Runner.Reports
 {

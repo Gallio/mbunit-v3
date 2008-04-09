@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime;
 
 namespace Gallio.Utilities
 {

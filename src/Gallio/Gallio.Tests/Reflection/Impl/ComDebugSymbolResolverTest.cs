@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using MbUnit.Framework;

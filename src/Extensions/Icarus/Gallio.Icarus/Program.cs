@@ -16,16 +16,15 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-
+using Gallio.Runtime;
 using Gallio.Icarus.Adapter;
 using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Core.Model;
 using Gallio.Icarus.Core.Presenter;
-using Gallio.Hosting.ConsoleSupport;
-using Gallio.Hosting;
-using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Runtime.ConsoleSupport;
+using Gallio.Reflection;
 using Gallio.Runner.Projects;
+using Gallio.Runtime.Windsor;
 
 namespace Gallio.Icarus
 {
@@ -45,18 +44,16 @@ namespace Gallio.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            try
+            main = new Main();
+
+            RuntimeSetup runtimeSetup = new RuntimeSetup();
+            // Set the installation path explicitly to ensure that we do not encounter problems
+            // when the test assembly contains a local copy of the primary runtime assemblies
+            // which will confuse the runtime into searching in the wrong place for plugins.
+            runtimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Program).Assembly));
+            runtimeSetup.PluginDirectories.AddRange(main.Settings.PluginDirectories);
+            using (RuntimeBootstrap.Initialize(WindsorRuntimeFactory.Instance, runtimeSetup, new IcarusLogger(main)))
             {
-                main = new Main();
-
-                RuntimeSetup runtimeSetup = new RuntimeSetup();
-                // Set the installation path explicitly to ensure that we do not encounter problems
-                // when the test assembly contains a local copy of the primary runtime assemblies
-                // which will confuse the runtime into searching in the wrong place for plugins.
-                runtimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(Program).Assembly));
-                runtimeSetup.PluginDirectories.AddRange(main.Settings.PluginDirectories);
-                Runtime.Initialize(runtimeSetup, new IcarusLogger(main));
-
                 // wire up model
                 projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
                 if (args.Length > 0)
@@ -75,13 +72,10 @@ namespace Gallio.Icarus
                             main.ProjectFileName = defaultProject;
                     }
                 }
+
                 projectPresenter = new ProjectPresenter(projectAdapter, new TestRunnerModel());
 
                 Application.Run(main);
-            }
-            finally
-            {
-                Runtime.Shutdown();
             }
         }
 

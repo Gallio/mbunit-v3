@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Gallio.Collections;
+using Gallio.Runtime.Loader;
+using Gallio.Runtime;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
@@ -37,7 +39,8 @@ namespace Gallio.Tests.Model.Execution
         {
             base.SetUp();
 
-            model = new TestModel(new TestPackage(new TestPackageConfig(), Reflector.ReflectionPolicy));
+            model = new TestModel(new TestPackage(new TestPackageConfig(), Reflector.ReflectionPolicy,
+                RuntimeAccessor.Instance.Resolve<ILoader>()));
             rootCommand = null;
         }
 

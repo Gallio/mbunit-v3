@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Gallio.Concurrency;
+using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Hosting;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Host
@@ -76,9 +76,9 @@ namespace Gallio.Tests.Host
         private static ProcessTask StartHost(string arguments)
         {
             return Tasks.StartProcessTask(
-                Path.Combine(Runtime.InstallationPath, "Gallio.Host.exe"),
+                Path.Combine(RuntimeAccessor.InstallationPath, "Gallio.Host.exe"),
                 arguments,
-                Runtime.InstallationPath);
+                RuntimeAccessor.InstallationPath);
         }
     }
 }

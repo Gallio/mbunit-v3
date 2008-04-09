@@ -15,13 +15,13 @@
 
 using System;
 
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 
 using Gallio.Icarus.Interfaces;
 
 namespace Gallio.Icarus
 {
-    public class IcarusLogger : LevelFilteredLogger
+    public class IcarusLogger : BaseLogger
     {
         private IProjectAdapterView projectAdapterView;
 
@@ -31,15 +31,9 @@ namespace Gallio.Icarus
         }
 
         /// <inheritdoc />
-        public override ILogger CreateChildLogger(string name)
+        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
         {
-            return new IcarusLogger(projectAdapterView);
-        }
-
-        /// <inheritdoc />
-        protected override void Log(LoggerLevel level, string name, string message, Exception exception)
-        {
-            projectAdapterView.WriteToLog(level, name, message, exception);
+            projectAdapterView.WriteToLog(severity, message, exception);
         }
     }
 }

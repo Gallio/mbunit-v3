@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Xml.Serialization;
-using Gallio.Hosting;
+using Gallio.Runtime.Hosting;
 using Gallio.Utilities;
 
 namespace Gallio.Model

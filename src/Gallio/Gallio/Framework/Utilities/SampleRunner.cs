@@ -195,29 +195,27 @@ namespace Gallio.Framework.Utilities
         {
             LogStreamWriter logStreamWriter = Log.Default;
 
-            using (TestLauncher launcher = new TestLauncher())
+            TestLauncher launcher = new TestLauncher();
+            launcher.TestPackageConfig = packageConfig;
+            launcher.Logger = new LogStreamLogger(logStreamWriter);
+            launcher.Filter = new OrFilter<ITest>(filters.ToArray());
+            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
+
+            string reportDirectory = Path.GetTempPath();
+            launcher.ReportDirectory = reportDirectory;
+            launcher.ReportNameFormat = "SampleRunnerReport";
+            launcher.ReportFormatOptions.Add(@"SaveAttachmentContents", @"false");
+            launcher.ReportFormats.Add(@"Text");
+
+            using (logStreamWriter.BeginSection("Debug Output"))
+                result = launcher.Run();
+
+            using (logStreamWriter.BeginSection("Text Report"))
             {
-                launcher.TestPackageConfig = packageConfig;
-                launcher.Logger = new LogStreamLogger(logStreamWriter);
-                launcher.Filter = new OrFilter<ITest>(filters.ToArray());
-                launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
-
-                string reportDirectory = Path.GetTempPath();
-                launcher.ReportDirectory = reportDirectory;
-                launcher.ReportNameFormat = "SampleRunnerReport";
-                launcher.ReportFormatOptions.Add(@"SaveAttachmentContents", @"false");
-                launcher.ReportFormats.Add(@"Text");
-
-                using (logStreamWriter.BeginSection("Debug Output"))
-                    result = launcher.Run();
-
-                using (logStreamWriter.BeginSection("Text Report"))
+                foreach (string reportPath in result.ReportDocumentPaths)
                 {
-                    foreach (string reportPath in result.ReportDocumentPaths)
-                    {
-                        logStreamWriter.WriteLine(File.ReadAllText(reportPath));
-                        File.Delete(reportPath);
-                    }
+                    logStreamWriter.WriteLine(File.ReadAllText(reportPath));
+                    File.Delete(reportPath);
                 }
             }
         }

@@ -16,7 +16,7 @@
 using System;
 using System.Threading;
 using Gallio;
-using Gallio.Utilities;
+using Gallio.Runtime;
 
 namespace Gallio.Concurrency
 {

@@ -17,10 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime;
+using Gallio.Reflection;
+using Gallio.Runtime.Windsor;
 using Gallio.TDNetRunner.Properties;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -128,59 +130,59 @@ namespace Gallio.TDNetRunner
             if (filter == null)
                 throw new ArgumentNullException(@"filter");
 
-            TDNetLogger logger = new TDNetLogger(testListener);
+            ILogger logger = new FilteredLogger(new TDNetLogger(testListener), LogSeverity.Info);
             LogAddInVersion(logger);
 
-            using (TestLauncher launcher = new TestLauncher())
+            TestLauncher launcher = new TestLauncher();
+            launcher.Logger = logger;
+            launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
+            launcher.Filter = filter;
+            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
+
+            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
+            launcher.RuntimeSetup = new RuntimeSetup();
+
+            // Set the installation path explicitly to ensure that we do not encounter problems
+            // when the test assembly contains a local copy of the primary runtime assemblies
+            // which will confuse the runtime into searching in the wrong place for plugins.
+            launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTestRunner).Assembly));
+
+            // This monitor will inform the user in real-time what's going on
+            launcher.CustomMonitors.Add(new TDNetLogMonitor(testListener, launcher.ReportMonitor));
+
+            string location = AssemblyUtils.GetFriendlyAssemblyLocation(assembly);
+            launcher.TestPackageConfig.AssemblyFiles.Add(location);
+
+            string assemblyDirectory = Path.GetDirectoryName(location);
+            //launcher.TestPackageConfig.HostSetup.ShadowCopy = true;
+            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDirectory;
+            launcher.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDirectory;
+
+            launcher.ReportFormats.Add(reportType);
+            launcher.ReportNameFormat = Path.GetFileName(location);
+            launcher.ReportDirectory = GetReportDirectory(logger) ?? "";
+
+            if (String.IsNullOrEmpty(launcher.ReportDirectory))
             {
-                launcher.Logger = logger;
-                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-                launcher.Filter = filter;
-                launcher.RuntimeSetup = new RuntimeSetup();
-                launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
-
-                // Set the installation path explicitly to ensure that we do not encounter problems
-                // when the test assembly contains a local copy of the primary runtime assemblies
-                // which will confuse the runtime into searching in the wrong place for plugins.
-                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(GallioTestRunner).Assembly));
-
-                // This monitor will inform the user in real-time what's going on
-                launcher.CustomMonitors.Add(new TDNetLogMonitor(testListener, launcher.ReportMonitor));
-
-                string location = Loader.GetFriendlyAssemblyLocation(assembly);
-                launcher.TestPackageConfig.AssemblyFiles.Add(location);
-
-                string assemblyDirectory = Path.GetDirectoryName(location);
-                //launcher.TestPackageConfig.HostSetup.ShadowCopy = true;
-                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDirectory;
-                launcher.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDirectory;
-
-                launcher.ReportFormats.Add(reportType);
-                launcher.ReportNameFormat = Path.GetFileName(location);
-                launcher.ReportDirectory = GetReportDirectory(logger) ?? "";
-
-                if (String.IsNullOrEmpty(launcher.ReportDirectory))
-                {
-                    return TestRunState.Failure;
-                }
-
-                TestLauncherResult result = RunLauncher(launcher);
-
-                // This will generate a link to the generated report
-                if (result.ReportDocumentPaths.Count != 0)
-                {
-                    Uri uri = new Uri(result.ReportDocumentPaths[0]);
-                    testListener.TestResultsUrl("file:///" + uri.LocalPath.Replace(" ", "%20").Replace(@"\", @"/"));
-                }
-
-                // Inform no tests run, if necessary.
-                if (result.ResultCode == ResultCode.NoTests)
-                    InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
-                else if (result.Statistics.TestCount == 0)
-                    InformNoTestsWereRun(testListener, null);
-
-                return GetTDNetResult(result);
+                return TestRunState.Failure;
             }
+
+            TestLauncherResult result = RunLauncher(launcher);
+
+            // This will generate a link to the generated report
+            if (result.ReportDocumentPaths.Count != 0)
+            {
+                Uri uri = new Uri(result.ReportDocumentPaths[0]);
+                testListener.TestResultsUrl("file:///" + uri.LocalPath.Replace(" ", "%20").Replace(@"\", @"/"));
+            }
+
+            // Inform no tests run, if necessary.
+            if (result.ResultCode == ResultCode.NoTests)
+                InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
+            else if (result.Statistics.TestCount == 0)
+                InformNoTestsWereRun(testListener, null);
+
+            return GetTDNetResult(result);
         }
 
         /// <summary>
@@ -205,7 +207,7 @@ namespace Gallio.TDNetRunner
             }
             catch (Exception e)
             {
-                logger.Error("Could not create the report directory.", e);
+                logger.Log(LogSeverity.Error, "Could not create the report directory.", e);
                 return null;
             }
         }
@@ -261,7 +263,7 @@ namespace Gallio.TDNetRunner
         private static void LogAddInVersion(ILogger logger)
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            logger.Info(String.Format(Resources.RunnerNameAndVersion + "\n",
+            logger.Log(LogSeverity.Info, String.Format(Resources.RunnerNameAndVersion + "\n",
                 appVersion.Major, appVersion.Minor, appVersion.Build));
         }
 

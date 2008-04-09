@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -39,10 +39,6 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.ActionManagement, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -104,6 +100,10 @@
     <Compile Include="ReSharperTestHarness.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
+      <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
+      <Name>MbUnit.TestResources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gallio.ReSharperRunner\Gallio.ReSharperRunner.csproj">
       <Project>{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}</Project>
       <Name>Gallio.ReSharperRunner</Name>

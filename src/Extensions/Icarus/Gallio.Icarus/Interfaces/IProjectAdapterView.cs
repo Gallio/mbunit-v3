@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model;
@@ -79,7 +79,7 @@ namespace Gallio.Icarus.Interfaces
         void ThreadedRemoveAssembly(string assembly);
         void ReloadTree();
         void SaveReport(string fileName, string reportType);
-        void WriteToLog(LoggerLevel level, string name, string message, Exception exception);
+        void WriteToLog(LogSeverity severity, string message, Exception exception);
         void Reset();
         void CreateReport();
         void AddAssembliesToTree();

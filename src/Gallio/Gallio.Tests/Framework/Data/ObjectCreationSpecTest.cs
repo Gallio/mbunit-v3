@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
+using Gallio.Runtime;
 using Gallio.Framework.Data;
 using Gallio.Framework.Data.Conversions;
 using Gallio.Framework.Data.Formatters;
-using Gallio.Hosting;
 using Gallio.Reflection;
 using MbUnit.Framework;
 
@@ -418,7 +418,7 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo<System.Int32>(1): fieldValue=2, Property=3", spec.Format("Foo", Runtime.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo<System.Int32>(1): fieldValue=2, Property=3", spec.Format("Foo", RuntimeAccessor.Instance.Resolve<IFormatter>()));
         }
 
         [Test]
@@ -428,7 +428,7 @@ namespace Gallio.Tests.Framework.Data
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo", spec.Format("Foo", Runtime.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo", spec.Format("Foo", RuntimeAccessor.Instance.Resolve<IFormatter>()));
         }
 
         [Test]
@@ -440,7 +440,7 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(type.GetConstructors(PublicInstance)[1].Parameters[1], "abc");
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo(1, \"abc\")", spec.Format("Foo", Runtime.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo(1, \"abc\")", spec.Format("Foo", RuntimeAccessor.Instance.Resolve<IFormatter>()));
         }
 
         public class EmptyClass

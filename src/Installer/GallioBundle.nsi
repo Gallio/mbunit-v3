@@ -1,5 +1,6 @@
 !include "StrRep.nsh"
 !include "Path.nsh"
+!include "SafeUninstall.nsh"
 
 ; Check arguments.
 !ifndef VERSION
@@ -113,15 +114,14 @@ Section "!Gallio" GallioSection
 	File "${TARGETDIR}\Gallio Website.url"
 
 	SetOutPath "$INSTDIR\bin"
-	File "${TARGETDIR}\bin\Castle.Core.dll"
-	File "${TARGETDIR}\bin\Castle.DynamicProxy2.dll"
-	File "${TARGETDIR}\bin\Castle.MicroKernel.dll"
-	File "${TARGETDIR}\bin\Castle.Windsor.dll"
 	File "${TARGETDIR}\bin\Gallio.dll"
 	File "${TARGETDIR}\bin\Gallio.pdb"
 	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
 	File "${TARGETDIR}\bin\Gallio.plugin"
 	File "${TARGETDIR}\bin\Gallio.xml"
+	File "${TARGETDIR}\bin\Gallio.Runtime.Windsor.dll"
+	File "${TARGETDIR}\bin\Gallio.Runtime.Windsor.pdb"
+	File "${TARGETDIR}\bin\Gallio.Runtime.Windsor.xml"
 	File "${TARGETDIR}\bin\Gallio.Host.exe"
 
 	SetOutPath "$INSTDIR\bin\Reports"
@@ -407,6 +407,24 @@ Function PatchReSharperConfigFile
 
 FunctionEnd
 
+Function un.UninstallReSharperRunner
+	Exch $0 ; VSVersion
+	Exch 1
+	Exch $1 ; RSVersion
+
+	!insertmacro GetReSharperPluginDir "$1" "$0"
+
+	StrCmp "" "$ReSharperPluginDir" Done
+		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll"
+		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll.config"
+		${un.SafeRMDir} "$ReSharperPluginDir\Gallio"
+
+	Done:
+
+	Pop $1
+	Pop $0
+FunctionEnd
+
 !macro InstallReSharperRunner RSVersion VSVersion SourcePath
 	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
 
@@ -418,12 +436,9 @@ FunctionEnd
 !macroend
 
 !macro UninstallReSharperRunner RSVersion VSVersion
-	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
-
-	StrCmp "" "$ReSharperPluginDir" +4
-		Delete "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll"
-		Delete "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll.config"
-		RMDir "$ReSharperPluginDir\Gallio"
+	Push "${RSVersion}"
+	Push "${VSVersion}"
+	Call un.UninstallReSharperRunner
 !macroend
 
 Section "ReSharper v3.1 Runner" ReSharperRunnerSection
@@ -620,11 +635,11 @@ Section Uninstall
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\8.0" "InstallDir"
 	IfErrors SkipVS2005Templates
 
-	Delete "$0\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip"
-	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip"
+	${un.SafeDelete} "$0\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip"
+	${un.SafeDelete} "$0\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip"
 
-	Delete "$0\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
-	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
+	${un.SafeDelete} "$0\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
+	${un.SafeDelete} "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
 
 	; Run DevEnv /setup to unregister the templates.
 	ExecWait '"$0\devenv.exe" /setup'
@@ -637,14 +652,14 @@ Section Uninstall
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
 	IfErrors SkipVS2008Templates
 
-	Delete "$0\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip"
-	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip"
-	Delete "$0\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip"
+	${un.SafeDelete} "$0\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip"
+	${un.SafeDelete} "$0\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip"
+	${un.SafeDelete} "$0\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip"
 	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#"
 
-	Delete "$0\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
-	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
-	Delete "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
+	${un.SafeDelete} "$0\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
+	${un.SafeDelete} "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
+	${un.SafeDelete} "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
 	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB"
 
 	; Run DevEnv /setup to unregister the templates.
@@ -654,7 +669,7 @@ Section Uninstall
 
 	; Delete Shortcuts
 	DetailPrint "Uninstalling shortcuts."
-	RMDir /r "$SMPROGRAMS\${APPNAME}"
+	${un.SafeRMDir} "$SMPROGRAMS\${APPNAME}"
 
 	; Remove from registry...
 	DetailPrint "Removing registry keys."
@@ -663,10 +678,10 @@ Section Uninstall
 
 	; Delete self
 	DetailPrint "Deleting files."
-	Delete "$INSTDIR\uninstall.exe"
+	${un.SafeDelete} "$INSTDIR\uninstall.exe"
 
 	; Remove all remaining contents
-	RMDir /r "$INSTDIR"
+	${un.SafeRMDir} "$INSTDIR"
 SectionEnd
 
 ; Component descriptions

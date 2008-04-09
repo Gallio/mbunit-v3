@@ -14,12 +14,12 @@
 // limitations under the License.
 
 using System;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
 using MbUnit.Framework;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Tests.Runner
 {

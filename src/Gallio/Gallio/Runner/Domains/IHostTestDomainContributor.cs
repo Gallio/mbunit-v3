@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Hosting;
+using Gallio.Runtime.Hosting;
 using Gallio.Model;
 
 namespace Gallio.Runner.Domains

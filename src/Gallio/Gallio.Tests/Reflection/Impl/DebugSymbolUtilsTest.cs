@@ -16,7 +16,7 @@
 
 using System;
 using System.Reflection;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using MbUnit.Framework;
@@ -39,7 +39,7 @@ namespace Gallio.Tests.Reflection.Impl
             ILogger mockLogger = Mocks.CreateMock<ILogger>();
             Mocks.ReplayAll();
 
-            Assert.AreEqual(CodeLocation.Unknown, DebugSymbolUtils.GetSourceLocation(mockLogger.GetType().GetMethod("CreateChildLogger")));
+            Assert.AreEqual(CodeLocation.Unknown, DebugSymbolUtils.GetSourceLocation(mockLogger.GetType().GetMethods()[0]));
         }
 
         [Test]

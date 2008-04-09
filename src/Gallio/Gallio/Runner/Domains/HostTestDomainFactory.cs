@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using Castle.Core.Logging;
-using Gallio.Hosting;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime.Remoting;
+using Gallio.Runtime;
+using Gallio.Runtime.Hosting;
 using Gallio.Runner.Domains;
 
 namespace Gallio.Runner.Domains
@@ -28,29 +30,30 @@ namespace Gallio.Runner.Domains
     public class HostTestDomainFactory : LongLivedMarshalByRefObject, ITestDomainFactory
     {
         private IHostFactory hostFactory;
+        private RuntimeFactory runtimeFactory;
         private RuntimeSetup runtimeSetup;
         private ILogger logger;
         private IEnumerable<IHostTestDomainContributor> contributors;
 
         /// <summary>
         /// Creates an host test domain factory using the same <see cref="RuntimeSetup" />
-        /// as the current <see cref="Runtime" /> and automaticallyed registers all available
+        /// as the current <see cref="RuntimeAccessor" /> and automaticallyed registers all available
         /// <see cref="IHostTestDomainContributor" /> components.
         /// </summary>
         /// <remarks>
-        /// The <see cref="Runtime" /> must be initialized prior to using this constructor.
+        /// The <see cref="RuntimeAccessor" /> must be initialized prior to using this constructor.
         /// </remarks>
         /// <param name="hostFactory">The host factory</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the <see cref="Runtime" /> is not initialized</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the <see cref="RuntimeAccessor" /> is not initialized</exception>
         public HostTestDomainFactory(IHostFactory hostFactory)
-            : this(hostFactory, Runtime.Instance)
+            : this(hostFactory, RuntimeAccessor.Instance)
         {
         }
 
         /// <summary>
-        /// Creates an host test domain factory using the same <see cref="RuntimeSetup" />
-        /// as the specified <see cref="IRuntime" /> and all registered
+        /// Creates an host test domain factory using the same <see cref="RuntimeFactory" />
+        /// and <see cref="RuntimeSetup" /> as the specified <see cref="IRuntime" /> and all registered
         /// <see cref="IHostTestDomainContributor" /> components.
         /// </summary>
         /// <param name="hostFactory">The host factory</param>
@@ -62,7 +65,7 @@ namespace Gallio.Runner.Domains
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");
 
-            Initialize(hostFactory, runtime.GetRuntimeSetup(),
+            Initialize(hostFactory, runtime.GetRuntimeFactory(), runtime.GetRuntimeSetup(),
                 runtime.Resolve<ILogger>(), runtime.ResolveAll<IHostTestDomainContributor>());
         }
 
@@ -71,20 +74,21 @@ namespace Gallio.Runner.Domains
         /// runtimes using the provided runtime setup.
         /// </summary>
         /// <param name="hostFactory">The host factory</param>
+        /// <param name="runtimeFactory">The runtime factory</param>
         /// <param name="runtimeSetup">The runtime setup</param>
         /// <param name="logger">The logger</param>
         /// <param name="contributors">The collection of domain contributors</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>, <paramref name="runtimeFactory"/>,
         /// <paramref name="runtimeSetup"/>, <paramref name="logger"/> or <paramref name="contributors"/> is null</exception>
-        public HostTestDomainFactory(IHostFactory hostFactory, RuntimeSetup runtimeSetup, ILogger logger, IEnumerable<IHostTestDomainContributor> contributors)
+        public HostTestDomainFactory(IHostFactory hostFactory, RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger, IEnumerable<IHostTestDomainContributor> contributors)
         {
-            Initialize(hostFactory, runtimeSetup, logger, contributors);
+            Initialize(hostFactory, runtimeFactory, runtimeSetup, logger, contributors);
         }
 
         /// <inheritdoc />
         public ITestDomain CreateDomain()
         {
-            HostTestDomain domain = new HostTestDomain(hostFactory, runtimeSetup, logger);
+            HostTestDomain domain = new HostTestDomain(hostFactory, runtimeFactory, runtimeSetup, logger);
 
             foreach (IHostTestDomainContributor contributor in contributors)
                 domain.AddContributor(contributor);
@@ -92,18 +96,21 @@ namespace Gallio.Runner.Domains
             return domain;
         }
 
-        private void Initialize(IHostFactory hostFactory, RuntimeSetup runtimeSetup, ILogger logger, IEnumerable<IHostTestDomainContributor> contributors)
+        private void Initialize(IHostFactory hostFactory, RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger, IEnumerable<IHostTestDomainContributor> contributors)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
+            if (runtimeFactory == null)
+                throw new ArgumentNullException("runtimeFactory");
             if (runtimeSetup == null)
-                throw new ArgumentNullException(@"runtimeSetup");
+                throw new ArgumentNullException("runtimeSetup");
             if (logger == null)
                 throw new ArgumentNullException("logger");
             if (contributors == null)
-                throw new ArgumentNullException(@"contributors");
+                throw new ArgumentNullException("contributors");
 
             this.hostFactory = hostFactory;
+            this.runtimeFactory = runtimeFactory;
             this.runtimeSetup = runtimeSetup;
             this.logger = logger;
             this.contributors = contributors;

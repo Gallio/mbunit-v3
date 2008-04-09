@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Hosting;
+using Gallio.Runtime;
 using Gallio.ReSharperRunner.Hosting;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
@@ -24,7 +24,7 @@ namespace Gallio.ReSharperRunner.Tasks
     /// A remote task runner for Gallio.
     /// </summary>
     /// <remarks>
-    /// This implementation is careful to initialize the <see cref="Runtime" />
+    /// This implementation is careful to initialize the <see cref="RuntimeAccessor" />
     /// before doing anything else because it's possible that the Gallio
     /// assemblies cannot yet be resolved.
     /// </remarks>

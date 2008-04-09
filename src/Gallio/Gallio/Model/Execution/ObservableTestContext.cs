@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Gallio.Collections;
+using Gallio.Runtime;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Utilities;

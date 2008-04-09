@@ -37,13 +37,5 @@ namespace Gallio.NAntTasks.Tests
             GallioTask task = new GallioTask();
             new TaskLogger(task);
         }
-
-        [Test]
-        public void CreateChildLogger()
-        {
-            GallioTask task = new GallioTask();
-            TaskLogger logger = new TaskLogger(task);
-            Assert.AreSame(logger.CreateChildLogger("child").GetType(), typeof(TaskLogger));
-        }
     }
 }

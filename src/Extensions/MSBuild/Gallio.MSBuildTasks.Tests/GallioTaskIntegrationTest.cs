@@ -15,9 +15,10 @@
 
 using System.Text;
 using Gallio.Concurrency;
+using Gallio.Runtime;
 using Gallio.Framework;
+using Gallio.Reflection;
 using MbUnit.Framework;
-using Gallio.Hosting;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -46,7 +47,7 @@ namespace Gallio.MSBuildTasks.Tests
 
             Assert.IsTrue(File.Exists(executablePath), "Cannot find the MSBuild executable!");
 
-            workingDirectory = Path.Combine(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(GetType().Assembly)), @"..\TestBuildFiles");
+            workingDirectory = Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)), @"..\TestBuildFiles");
         }
 
         [Test]
@@ -79,7 +80,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             ProcessTask task = Tasks.StartProcessTask(executablePath,
                 String.Concat("Integration.proj /t:", target,
-                " /p:GallioPath=\"", Runtime.InstallationPath, "\""),
+                " /p:GallioPath=\"", RuntimeAccessor.InstallationPath, "\""),
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

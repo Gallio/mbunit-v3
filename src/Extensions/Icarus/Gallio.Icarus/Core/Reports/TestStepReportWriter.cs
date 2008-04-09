@@ -19,7 +19,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runner.Reports;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;

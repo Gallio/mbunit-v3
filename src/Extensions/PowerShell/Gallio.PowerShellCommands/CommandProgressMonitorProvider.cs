@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.PowerShellCommands
 {

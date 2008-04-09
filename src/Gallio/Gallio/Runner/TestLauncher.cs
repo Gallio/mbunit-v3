@@ -20,9 +20,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using Castle.Core.Logging;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Monitors;
@@ -45,21 +45,26 @@ namespace Gallio.Runner
     /// </list>
     /// </para>
     /// <para>
-    /// By default, a new <see cref="Runtime" /> environment is established just before
-    /// test execution begins and is disposed just afterwards.  If you already have a
-    /// <see cref="Runtime" /> environment, set the <see cref="RuntimeSetup" /> to <c>null</c>.
-    /// You can also override the default <see cref="ITestRunner" /> that is created
+    /// By default, the launcher assumes that a runtime environment has already been
+    /// established and is accessible via the <see cref="RuntimeAccessor" />.  If there
+    /// is no runtime yet, then you can cause one to be configured automatically for the
+    /// duration of the test run by setting the <see cref="RuntimeSetup"/> and <see cref="RuntimeFactory" />
+    /// properties accordingly.
+    /// </para>
+    /// <para>
+    /// You can override the default <see cref="ITestRunner" /> that is created
     /// by setting the <see cref="TestRunnerFactoryName" /> property.
     /// </para>
     /// </summary>
     /// <todo>
     /// More validation of arguments up front.  Particularly report formats.
     /// </todo>
-    public class TestLauncher : IDisposable
+    public class TestLauncher
     {
         #region Private Members
 
         private TestPackageConfig testPackageConfig;
+        private RuntimeFactory runtimeFactory;
         private RuntimeSetup runtimeSetup;
 
         private readonly List<string> reportFormats;
@@ -71,7 +76,7 @@ namespace Gallio.Runner
         private Filter<ITest> filter;
 
         private string testRunnerFactoryName;
-        private NameValueCollection testRunnerOptions;
+        private readonly NameValueCollection testRunnerOptions;
 
         private bool echoResults;
         private bool doNotRun;
@@ -80,8 +85,8 @@ namespace Gallio.Runner
         private string reportDirectory;
         private string reportNameFormat;
 
-        private ReportMonitor reportMonitor;
-        private List<ITestRunnerMonitor> customMonitors;
+        private readonly ReportMonitor reportMonitor;
+        private readonly List<ITestRunnerMonitor> customMonitors;
 
         private bool showReports;
 
@@ -111,19 +116,6 @@ namespace Gallio.Runner
             customMonitors = new List<ITestRunnerMonitor>();
         }
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            // Help out the GC a little bit.
-            runtimeSetup = null;
-            testPackageConfig = null;
-            progressMonitorProvider = null;
-            logger = null;
-            filter = null;
-            reportMonitor = null;
-            customMonitors = null;
-        }
-
         /// <summary>
         /// <para>
         /// Gets or sets the progress monitor provider to use.
@@ -135,16 +127,12 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public IProgressMonitorProvider ProgressMonitorProvider
         {
-            get
-            {
-                ThrowIfDisposed();
-                return progressMonitorProvider;
-            }
+            get { return progressMonitorProvider; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                ThrowIfDisposed();
+
                 progressMonitorProvider = value;
             }
         }
@@ -160,16 +148,12 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public ILogger Logger
         {
-            get
-            {
-                ThrowIfDisposed();
-                return logger;
-            }
+            get { return logger; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                ThrowIfDisposed();
+
                 logger = value;
             }
         }
@@ -185,16 +169,12 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public Filter<ITest> Filter
         {
-            get
-            {
-                ThrowIfDisposed();
-                return filter;
-            }
+            get { return filter; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                ThrowIfDisposed();
+
                 filter = value;
             }
         }
@@ -205,53 +185,54 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public TestPackageConfig TestPackageConfig
         {
-            get
-            {
-                ThrowIfDisposed();
-                return testPackageConfig;
-            }
+            get { return testPackageConfig; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                ThrowIfDisposed();
+
                 testPackageConfig = value;
             }
         }
 
         /// <summary>
         /// <para>
-        /// Gets or sets the <see cref="RuntimeSetup" /> to use for automatically initializing
-        /// the <see cref="Runtime"/> during test execution or <c>null</c> if the <see cref="Runtime" />
-        /// is already initialized.
+        /// Gets or sets the <see cref="RuntimeFactory" /> to use for automatically initializing
+        /// the runtime during test execution or <c>null</c> if the runtime is already initialized.
         /// </para>
         /// <para>
-        /// If this value if not <c>null</c> then the launcher will initialize the <see cref="Runtime" />
-        /// using this <see cref="RuntimeSetup" /> just prior to test execution and will automatically
-        /// shut down the <see cref="Runtime" /> just afterwards.
+        /// If this value if not <c>null</c> then the launcher will initialize the runtime
+        /// using this <see cref="RuntimeFactory" /> and the <see cref="RuntimeSetup"/> just prior to
+        /// test execution and will automatically shut down the runtime just afterwards.
         /// </para>
         /// <para>
-        /// The default value is <c>null</c> which assumes that the <see cref="Runtime" /> is already initialized.
+        /// The default value is <c>null</c> which assumes that the runtime is already initialized.
         /// </para>
         /// </summary>
-        /// <remarks>
-        /// Runtimes cannot be nested.  So if the value of this property is not <c>null</c> and
-        /// the runtime has already been initialized, then an exception will be thrown when
-        /// running the tests because the <see cref="TestLauncher" /> will attempt to reinitialize
-        /// the runtime unnecessarily.
-        /// </remarks>
+        public RuntimeFactory RuntimeFactory
+        {
+            get { return runtimeFactory; }
+            set { runtimeFactory = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets the <see cref="RuntimeSetup" /> to use for automatically initializing
+        /// the runtime during test execution or <c>null</c> if the runtime is already initialized.
+        /// </para>
+        /// <para>
+        /// If this value if not <c>null</c> then the launcher will initialize the runtime
+        /// using this <see cref="RuntimeSetup" /> and the <see cref="RuntimeFactory"/> just prior to
+        /// test execution and will automatically shut down the runtime just afterwards.
+        /// </para>
+        /// <para>
+        /// The default value is <c>null</c> which assumes that the runtime is already initialized.
+        /// </para>
+        /// </summary>
         public RuntimeSetup RuntimeSetup
         {
-            get
-            {
-                ThrowIfDisposed();
-                return runtimeSetup;
-            }
-            set
-            {
-                ThrowIfDisposed();
-                runtimeSetup = value;
-            }
+            get { return runtimeSetup; }
+            set { runtimeSetup = value; }
         }
 
         /// <summary>
@@ -266,17 +247,12 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public string TestRunnerFactoryName
         {
-            get
-            {
-                ThrowIfDisposed();
-                return testRunnerFactoryName;
-            }
+            get { return testRunnerFactoryName; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
 
-                ThrowIfDisposed();
                 testRunnerFactoryName = value;
             }
         }
@@ -286,11 +262,7 @@ namespace Gallio.Runner
         /// </summary>
         public NameValueCollection TestRunnerOptions
         {
-            get
-            {
-                ThrowIfDisposed();
-                return testRunnerOptions;
-            }
+            get { return testRunnerOptions; }
         }
 
         /// <summary>
@@ -304,16 +276,8 @@ namespace Gallio.Runner
         /// </summary>
         public bool EchoResults
         {
-            get
-            {
-                ThrowIfDisposed();
-                return echoResults;
-            }
-            set
-            {
-                ThrowIfDisposed();
-                echoResults = value;
-            }
+            get { return echoResults; }
+            set { echoResults = value; }
         }
 
         /// <summary>
@@ -328,16 +292,8 @@ namespace Gallio.Runner
         /// </summary>
         public bool DoNotRun
         {
-            get
-            {
-                ThrowIfDisposed();
-                return doNotRun;
-            }
-            set
-            {
-                ThrowIfDisposed();
-                doNotRun = value;
-            }
+            get { return doNotRun; }
+            set { doNotRun = value; }
         }
 
         /// <summary>
@@ -351,16 +307,12 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public string ReportDirectory
         {
-            get
-            {
-                ThrowIfDisposed();
-                return reportDirectory;
-            }
+            get { return reportDirectory; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                ThrowIfDisposed();
+
                 reportDirectory = value;
             }
         }
@@ -377,16 +329,12 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public string ReportNameFormat
         {
-            get
-            {
-                ThrowIfDisposed();
-                return reportNameFormat;
-            }
+            get { return reportNameFormat; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                ThrowIfDisposed();
+
                 reportNameFormat = value; 
             }
         }
@@ -396,11 +344,7 @@ namespace Gallio.Runner
         /// </summary>
         public IList<string> ReportFormats
         {
-            get
-            {
-                ThrowIfDisposed();
-                return reportFormats;
-            }
+            get { return reportFormats; }
         }
 
         /// <summary>
@@ -408,11 +352,7 @@ namespace Gallio.Runner
         /// </summary>
         public NameValueCollection ReportFormatOptions
         {
-            get
-            {
-                ThrowIfDisposed();
-                return reportFormatOptions;
-            }
+            get { return reportFormatOptions; }
         }
 
         /// <summary>
@@ -426,11 +366,7 @@ namespace Gallio.Runner
         /// </summary>
         public ReportMonitor ReportMonitor
         {
-            get
-            {
-                ThrowIfDisposed();
-                return reportMonitor;
-            }
+            get { return reportMonitor; }
         }
 
         /// <summary>
@@ -443,16 +379,8 @@ namespace Gallio.Runner
         /// </summary>
         public bool ShowReports
         {
-            get
-            {
-                ThrowIfDisposed();
-                return showReports;
-            }
-            set
-            {
-                ThrowIfDisposed();
-                showReports = value;
-            }
+            get { return showReports; }
+            set { showReports = value; }
         }
 
         /// <summary>
@@ -467,16 +395,8 @@ namespace Gallio.Runner
         /// </summary>
         public bool IgnoreAnnotations
         {
-            get
-            {
-                ThrowIfDisposed();
-                return ignoreAnnotations;
-            }
-            set
-            {
-                ThrowIfDisposed();
-                ignoreAnnotations = value;
-            }
+            get { return ignoreAnnotations; }
+            set { ignoreAnnotations = value; }
         }
 
         /// <summary>
@@ -492,11 +412,7 @@ namespace Gallio.Runner
         /// </summary>
         public IList<ITestRunnerMonitor> CustomMonitors
         {
-            get
-            {
-                ThrowIfDisposed();
-                return customMonitors;
-            }
+            get { return customMonitors; }
         }
 
         #region Public Methods
@@ -506,15 +422,19 @@ namespace Gallio.Runner
         /// Runs the test package as configured.
         /// </para>
         /// <para>
-        /// If <see cref="RuntimeSetup" /> is non-<c>null</c>, initializes the <see cref="Runtime" />
-        /// for the duration of this method then shuts it down automatically before returning.
+        /// If <see cref="RuntimeSetup" /> and <see cref="RuntimeFactory" /> are non-<c>null</c>,
+        /// initializes the runtime for the duration of this method then shuts it down automatically
+        /// before returning.  Otherwise assumes the runtime has already been initialized and
+        /// accesses it using <see cref="RuntimeAccessor" />.
         /// </para>
         /// </summary>
+        /// <remarks>
+        /// Runtimes cannot be nested.  So if the launcher is asked to initialize the runtime and
+        /// it has already been initialized then an exception will be thrown.
+        /// </remarks>
         /// <returns>An integer representing the result of the execution.</returns>
         public TestLauncherResult Run()
         {
-            ThrowIfDisposed();
-
             reportMonitor.ResetReport();
 
             TestLauncherResult result = new TestLauncherResult(reportMonitor.Report);
@@ -522,24 +442,23 @@ namespace Gallio.Runner
             if (!PrepareToRun(result))
                 return result;
 
-            logger.Info("Initializing the test runner.");
+            logger.Log(LogSeverity.Info, "Initializing the test runner.");
 
-            if (runtimeSetup != null)
-                Runtime.Initialize(runtimeSetup, logger);
-
-            try
+            using (runtimeFactory != null && runtimeSetup != null
+                ? RuntimeBootstrap.Initialize(runtimeFactory, runtimeSetup, logger)
+                : null)
             {
                 using (ITestRunner runner = CreateRunner(result))
                 {
                     if (runner == null)
                         return result;
 
-                    IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
+                    IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                     if (!InitializeRunner(result, runner, reportManager))
                         return result;
 
                     Stopwatch stopWatch = Stopwatch.StartNew();
-                    logger.InfoFormat("Start time: {0}", DateTime.Now.ToShortTimeString());
+                    logger.Log(LogSeverity.Info, String.Format("Start time: {0}", DateTime.Now.ToShortTimeString()));
 
                     try
                     {
@@ -595,13 +514,13 @@ namespace Gallio.Runner
                     }
 
                     // Done.
-                    logger.InfoFormat("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
+                    logger.Log(LogSeverity.Info, String.Format("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
                         DateTime.Now.ToShortTimeString(),
-                        stopWatch.Elapsed.TotalSeconds);
+                        stopWatch.Elapsed.TotalSeconds));
 
                     if (showReports)
                     {
-                        logger.Info("Displaying reports.");
+                        logger.Log(LogSeverity.Info, "Displaying reports.");
                         ShowReportDocuments(result);
                     }
 
@@ -613,11 +532,6 @@ namespace Gallio.Runner
 
                     return result;
                 }
-            }
-            finally
-            {
-                if (runtimeSetup != null)
-                    Runtime.Shutdown();
             }
         }
 
@@ -674,7 +588,7 @@ namespace Gallio.Runner
                 }
                 catch (Exception ex)
                 {
-                    logger.FatalFormat("Could not open report '{0}' for display.", reportDocumentPath, ex);
+                    logger.Log(LogSeverity.Error, String.Format("Could not open report '{0}' for display.", reportDocumentPath), ex);
                 }
             }
         }
@@ -701,13 +615,13 @@ namespace Gallio.Runner
 
         private ITestRunner CreateRunner(TestLauncherResult result)
         {
-            ITestRunnerManager manager = Runtime.Instance.Resolve<ITestRunnerManager>();
+            ITestRunnerManager manager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
             ITestRunnerFactory factory = manager.FactoryResolver.Resolve(testRunnerFactoryName);
 
             if (factory == null)
             {
                 result.SetResultCode(ResultCode.InvalidArguments);
-                logger.ErrorFormat("Unrecognized test runner factory name: '{0}'.", testRunnerFactoryName);
+                logger.Log(LogSeverity.Error, String.Format("Unrecognized test runner factory name: '{0}'.", testRunnerFactoryName));
                 return null;
             }
 
@@ -723,7 +637,7 @@ namespace Gallio.Runner
             }
 
             reportMonitor.Attach(runner);
-            AttachDebugMonitorIfNeeded(runner);
+            AttachDebugMonitor(runner);
             AttachLogMonitorIfNeeded(runner);
             AttachCustomMonitors(runner);
             return true;
@@ -736,24 +650,23 @@ namespace Gallio.Runner
                 IReportFormatter formatter = reportManager.FormatterResolver.Resolve(reportFormat);
                 if (formatter == null)
                 {
-                    logger.ErrorFormat("Unrecognized report format: '{0}'.", reportFormat);
+                    logger.Log(LogSeverity.Error, String.Format("Unrecognized report format: '{0}'.", reportFormat));
                     return false;
                 }
             }
 
             if (reportNameFormat.Length == 0)
             {
-                logger.ErrorFormat("Report name format must not be empty.");
+                logger.Log(LogSeverity.Error, "Report name format must not be empty.");
                 return false;
             }
 
             return true;
         }
 
-        private void AttachDebugMonitorIfNeeded(ITestRunner runner)
+        private void AttachDebugMonitor(ITestRunner runner)
         {
-            if (logger.IsDebugEnabled)
-                new DebugMonitor(logger).Attach(runner);
+            new DebugMonitor(logger).Attach(runner);
         }
 
         private void AttachLogMonitorIfNeeded(ITestRunner runner)
@@ -804,7 +717,7 @@ namespace Gallio.Runner
                     if (!File.Exists(assemblyName))
                     {
                         assembliesToRemove.Add(assemblyName);
-                        logger.Error("Cannot find assembly: {0}", assemblyName);
+                        logger.Log(LogSeverity.Error, String.Format("Cannot find assembly: {0}", assemblyName));
                     }
                 }
 
@@ -834,7 +747,7 @@ namespace Gallio.Runner
                     message.Append("\n\t").Append(path);
                 message.AppendLine();
 
-                logger.Info(message.ToString());
+                logger.Log(LogSeverity.Info, message.ToString());
             }
         }
 
@@ -850,7 +763,7 @@ namespace Gallio.Runner
         {
             if (testPackageConfig.AssemblyFiles.Count == 0)
             {
-                logger.Warn("No test assemblies to execute!");
+                logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
                 return false;
             }
 
@@ -907,12 +820,6 @@ namespace Gallio.Runner
             return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
                 reportTime.ToString(@"yyyyMMdd"),
                 reportTime.ToString(@"HHmmss"));
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (testPackageConfig == null)
-                throw new ObjectDisposedException(GetType().Name);
         }
 
         #endregion

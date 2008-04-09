@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 
 using System.IO;
 using System.Reflection;
-using Gallio.Hosting;
+using Gallio.Reflection;
 using Gallio.ReSharperRunner.Tests;
 using JetBrains.ProjectModel;
 using JetBrains.Shell;
@@ -68,7 +68,7 @@ namespace Gallio.ReSharperRunner.Tests
                 return;
 
             FileSystemPath testSolutionPath = new FileSystemPath(
-                Path.Combine(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(testAssembly)), @"..\TestSolution.sln"));
+                Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(testAssembly)), @"..\TestSolution.sln"));
             SolutionManager.Instance.OpenSolution(testSolutionPath, new SimpleTaskExecutor());
 
             isTestSolutionLoaded = true;

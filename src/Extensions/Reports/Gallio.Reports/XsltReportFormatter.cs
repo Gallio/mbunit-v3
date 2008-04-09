@@ -20,9 +20,9 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime;
 using Gallio.Runner.Reports;
-using Gallio.Hosting;
 
 namespace Gallio.Reports
 {

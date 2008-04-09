@@ -16,15 +16,17 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime;
 using Gallio.Echo.Properties;
 using Gallio.Collections;
-using Gallio.Hosting.ConsoleSupport;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ConsoleSupport;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model.Filters;
+using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
-using Gallio.Hosting;
+using Gallio.Runtime.Windsor;
 
 namespace Gallio.Echo
 {
@@ -65,61 +67,59 @@ namespace Gallio.Echo
 
             int resultCode = RunTests(logger);
             if (resultCode == ResultCode.Canceled)
-                logger.Warn(Resources.MainClass_Canceled);
+                logger.Log(LogSeverity.Warning, Resources.MainClass_Canceled);
 
             return resultCode;
         }
 
         private int RunTests(ILogger logger)
         {
-            logger.Debug(Arguments.ToString());
+            logger.Log(LogSeverity.Debug, Arguments.ToString());
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(Resources.MainClass_Initializing);
             Console.ResetColor();
 
-            using (TestLauncher launcher = new TestLauncher())
-            {
-                launcher.Logger = logger;
-                launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console);
+            TestLauncher launcher = new TestLauncher();
+            launcher.Logger = logger;
+            launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console);
 
-                launcher.RuntimeSetup = new RuntimeSetup();
+            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
+            launcher.RuntimeSetup = new RuntimeSetup();
+            launcher.RuntimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
-                // Set the installation path explicitly to ensure that we do not encounter problems
-                // when the test assembly contains a local copy of the primary runtime assemblies
-                // which will confuse the runtime into searching in the wrong place for plugins.
-                launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(Loader.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
+            // Set the installation path explicitly to ensure that we do not encounter problems
+            // when the test assembly contains a local copy of the primary runtime assemblies
+            // which will confuse the runtime into searching in the wrong place for plugins.
+            launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
 
-                launcher.RuntimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
+            launcher.TestPackageConfig.HostSetup.ShadowCopy = Arguments.ShadowCopy;
+            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = Arguments.ApplicationBaseDirectory;
+            launcher.TestPackageConfig.HostSetup.WorkingDirectory = Arguments.WorkingDirectory;
 
-                launcher.TestPackageConfig.HostSetup.ShadowCopy = Arguments.ShadowCopy;
-                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = Arguments.ApplicationBaseDirectory;
-                launcher.TestPackageConfig.HostSetup.WorkingDirectory = Arguments.WorkingDirectory;
+            launcher.TestPackageConfig.AssemblyFiles.AddRange(Arguments.Assemblies);
+            launcher.TestPackageConfig.HintDirectories.AddRange(Arguments.HintDirectories);
 
-                launcher.TestPackageConfig.AssemblyFiles.AddRange(Arguments.Assemblies);
-                launcher.TestPackageConfig.HintDirectories.AddRange(Arguments.HintDirectories);
+            launcher.ReportDirectory = Arguments.ReportDirectory;
+            launcher.ReportNameFormat = Arguments.ReportNameFormat;
 
-                launcher.ReportDirectory = Arguments.ReportDirectory;
-                launcher.ReportNameFormat = Arguments.ReportNameFormat;
+            GenericUtils.AddAll(Arguments.ReportTypes, launcher.ReportFormats);
 
-                GenericUtils.AddAll(Arguments.ReportTypes, launcher.ReportFormats);
+            launcher.TestRunnerFactoryName = Arguments.RunnerType;
 
-                launcher.TestRunnerFactoryName = Arguments.RunnerType;
+            launcher.DoNotRun = Arguments.DoNotRun;
+            launcher.IgnoreAnnotations = Arguments.IgnoreAnnotations;
 
-                launcher.DoNotRun = Arguments.DoNotRun;
-                launcher.IgnoreAnnotations = Arguments.IgnoreAnnotations;
+            if (!String.IsNullOrEmpty(Arguments.Filter))
+                launcher.Filter = FilterUtils.ParseTestFilter(Arguments.Filter);
 
-                if (!String.IsNullOrEmpty(Arguments.Filter))
-                    launcher.Filter = FilterUtils.ParseTestFilter(Arguments.Filter);
+            launcher.EchoResults = !Arguments.NoEchoResults;
+            launcher.ShowReports = Arguments.ShowReports;
 
-                launcher.EchoResults = !Arguments.NoEchoResults;
-                launcher.ShowReports = Arguments.ShowReports;
+            TestLauncherResult result = launcher.Run();
+            DisplayResultSummary(result);
 
-                TestLauncherResult result = launcher.Run();
-                DisplayResultSummary(result);
-
-                return result.ResultCode;
-            }
+            return result.ResultCode;
         }
 
         private void DisplayResultSummary(TestLauncherResult result)
@@ -143,24 +143,25 @@ namespace Gallio.Echo
         {
             RichConsoleLogger logger = new RichConsoleLogger(Console);
 
+            LogSeverity minSeverity;
             switch (Arguments.Verbosity)
             {
                 case Verbosity.Quiet:
-                    logger.Level = LoggerLevel.Error;
+                    minSeverity = LogSeverity.Error;
                     break;
                 default:
                 case Verbosity.Normal:
-                    logger.Level = LoggerLevel.Warn;
+                    minSeverity = LogSeverity.Warning;
                     break;
                 case Verbosity.Verbose:
-                    logger.Level = LoggerLevel.Info;
+                    minSeverity = LogSeverity.Info;
                     break;
                 case Verbosity.Debug:
-                    logger.Level = LoggerLevel.Debug;
+                    minSeverity = LogSeverity.Debug;
                     break;
             }
 
-            return logger;
+            return new FilteredLogger(logger, minSeverity);
         }
 
         private void InstallCancelHandler()
@@ -205,18 +206,13 @@ namespace Gallio.Echo
             if (Arguments != null && Arguments.PluginDirectories != null)
                 setup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
-            Runtime.Initialize(setup, CreateLogger());
-            try
+            using (RuntimeBootstrap.Initialize(WindsorRuntimeFactory.Instance, setup, CreateLogger()))
             {
-                IReportManager reportManager = Runtime.Instance.Resolve<IReportManager>();
+                IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                 ShowRegisteredComponents("Supported report types:", reportManager.FormatterResolver);
 
-                ITestRunnerManager runnerManager = Runtime.Instance.Resolve<ITestRunnerManager>();
+                ITestRunnerManager runnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
                 ShowRegisteredComponents("Supported runner types:", runnerManager.FactoryResolver);
-            }
-            finally
-            {
-                Runtime.Shutdown();
             }
         }
 

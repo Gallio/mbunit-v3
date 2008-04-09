@@ -15,7 +15,7 @@
 
 using System;
 using System.Text;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Serialization;
@@ -27,8 +27,8 @@ namespace Gallio.Runner.Monitors
     /// <summary>
     /// A log monitor writes a summary of test execution progress to an <see cref="ILogger" />
     /// so the user can monitor what's going on.  Passing tests are recorded with severity
-    /// <see cref="LoggerLevel.Info" />, warnings are recorded with severity <see cref="LoggerLevel.Warn" />
-    /// and failures are recorded with severity <see cref="LoggerLevel.Error" />.
+    /// <see cref="LogSeverity.Info" />, warnings are recorded with severity <see cref="LogSeverity.Warning" />
+    /// and failures are recorded with severity <see cref="LogSeverity.Error" />.
     /// </summary>
     public class LogMonitor : BaseTestRunnerMonitor
     {
@@ -105,19 +105,19 @@ namespace Gallio.Runner.Monitors
                 message.Append(annotation.Details);
             }
 
-            LoggerLevel level = GetLoggerLevelForAnnotation(annotation.Type);
-            Log(level, message.ToString());
+            LogSeverity severity = GetLogSeverityForAnnotation(annotation.Type);
+            logger.Log(severity, message.ToString());
         }
 
         private void HandleStepStarting(object sender, TestStepRunEventArgs e)
         {
-            logger.DebugFormat("[starting] {0}", e.TestStepRun.Step.FullName);
+            logger.Log(LogSeverity.Debug, String.Format("[starting] {0}", e.TestStepRun.Step.FullName));
         }
 
         private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
             TestOutcome outcome = e.TestStepRun.Result.Outcome;
-            LoggerLevel level = GetLoggerLevelForOutcome(outcome);
+            LogSeverity severity = GetLogSeverityForOutcome(outcome);
             string warnings = FormatStream(e.TestStepRun, LogStreamNames.Warnings);
             string failures = FormatStream(e.TestStepRun, LogStreamNames.Failures);
 
@@ -126,8 +126,8 @@ namespace Gallio.Runner.Monitors
 
             if (warnings.Length != 0)
             {
-                if (level < LoggerLevel.Warn)
-                    level = LoggerLevel.Warn;
+                if (severity < LogSeverity.Warning)
+                    severity = LogSeverity.Warning;
 
                 messageBuilder.AppendLine();
                 messageBuilder.Append(warnings);
@@ -136,34 +136,15 @@ namespace Gallio.Runner.Monitors
 
             if (failures.Length != 0)
             {
-                if (level < LoggerLevel.Error)
-                    level = LoggerLevel.Error;
+                if (severity < LogSeverity.Error)
+                    severity = LogSeverity.Error;
 
                 messageBuilder.AppendLine();
                 messageBuilder.Append(failures);
                 messageBuilder.AppendLine();
             }
 
-            Log(level, messageBuilder.ToString());
-        }
-
-        private void Log(LoggerLevel level, string message)
-        {
-            switch (level)
-            {
-                case LoggerLevel.Info:
-                    logger.Info(message);
-                    break;
-                case LoggerLevel.Warn:
-                    logger.Warn(message);
-                    break;
-                case LoggerLevel.Error:
-                    logger.Error(message);
-                    break;
-                case LoggerLevel.Debug:
-                    logger.Debug(message);
-                    break;
-            }
+            logger.Log(severity, messageBuilder.ToString());
         }
 
         private static string FormatStream(TestStepRun testStepRun, string streamName)
@@ -172,37 +153,37 @@ namespace Gallio.Runner.Monitors
             return stream != null ? stream.ToString() : @"";
         }
 
-        private static LoggerLevel GetLoggerLevelForOutcome(TestOutcome outcome)
+        private static LogSeverity GetLogSeverityForOutcome(TestOutcome outcome)
         {
             switch (outcome.Status)
             {
                 case TestStatus.Passed:
-                    return LoggerLevel.Info;
+                    return LogSeverity.Info;
 
                 case TestStatus.Skipped:
                 case TestStatus.Inconclusive:
-                    return LoggerLevel.Warn;
+                    return LogSeverity.Warning;
 
                 case TestStatus.Failed:
-                    return LoggerLevel.Error;
+                    return LogSeverity.Error;
 
                 default:
                     throw new ArgumentException("outcome");
             }
         }
 
-        private static LoggerLevel GetLoggerLevelForAnnotation(AnnotationType type)
+        private static LogSeverity GetLogSeverityForAnnotation(AnnotationType type)
         {
             switch (type)
             {
                 case AnnotationType.Error:
-                    return LoggerLevel.Error;
+                    return LogSeverity.Error;
 
                 case AnnotationType.Warning:
-                    return LoggerLevel.Warn;
+                    return LogSeverity.Warning;
 
                 case AnnotationType.Info:
-                    return LoggerLevel.Info;
+                    return LogSeverity.Info;
 
                 default:
                     throw new ArgumentException("type");

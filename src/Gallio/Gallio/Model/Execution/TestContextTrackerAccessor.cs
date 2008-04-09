@@ -13,14 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Hosting;
+using Gallio.Runtime;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
     /// Static service locator class for <see cref="ITestContextTracker" />.
     /// Handles the case where no <see cref="ITestContextTracker" /> is registered
-    /// with the <see cref="Runtime" /> by returning a <see cref="StubTestContextTracker" />.
+    /// with the <see cref="RuntimeAccessor" /> by returning a <see cref="StubTestContextTracker" />.
     /// </summary>
     public static class TestContextTrackerAccessor
     {
@@ -28,7 +28,7 @@ namespace Gallio.Model.Execution
 
         static TestContextTrackerAccessor()
         {
-            Runtime.InstanceChanged += delegate { cachedContextTracker = null; };
+            RuntimeAccessor.InstanceChanged += delegate { cachedContextTracker = null; };
         }
 
         /// <summary>
@@ -38,8 +38,8 @@ namespace Gallio.Model.Execution
         {
             if (cachedContextTracker == null)
             {
-                if (Runtime.IsInitialized)
-                    cachedContextTracker = Runtime.Instance.Resolve<ITestContextTracker>();
+                if (RuntimeAccessor.IsInitialized)
+                    cachedContextTracker = RuntimeAccessor.Instance.Resolve<ITestContextTracker>();
                 else
                     cachedContextTracker = new StubTestContextTracker();
             }

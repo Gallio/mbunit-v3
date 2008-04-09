@@ -18,8 +18,8 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.IO;
 
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.ProgressMonitoring;
 using Gallio.Model;
@@ -50,7 +50,7 @@ namespace Gallio.Icarus.Core.Model
 #else
             testRunner = Runtime.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess, new NameValueCollection());
 #endif
-            reportManager = Runtime.Instance.Resolve<IReportManager>();
+            reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
         }
 
         public IProjectPresenter ProjectPresenter
@@ -177,7 +177,7 @@ namespace Gallio.Icarus.Core.Model
         public IList<string> GetTestFrameworks()
         {
             List<string> frameworks = new List<string>();
-            foreach (ITestFramework framework in Runtime.Instance.ResolveAll<ITestFramework>())
+            foreach (ITestFramework framework in RuntimeAccessor.Instance.ResolveAll<ITestFramework>())
                 frameworks.Add(framework.Name);
             return frameworks;
         }

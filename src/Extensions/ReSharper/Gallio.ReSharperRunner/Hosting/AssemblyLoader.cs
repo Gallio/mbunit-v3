@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Gallio.Runtime.Loader;
 
 namespace Gallio.ReSharperRunner.Hosting
 {
@@ -29,7 +30,7 @@ namespace Gallio.ReSharperRunner.Hosting
     /// We can't use <see cref="JetBrains.ReSharper.TaskRunnerFramework.AssemblyLoader" /> because
     /// it opens assemblies for exclusive read access, which breaks during debugging
     /// because Visual Studio keeps a lock on the file.
-    /// We can't use <see cref="Gallio.Hosting.DefaultAssemblyResolverManager" /> because
+    /// We can't use <see cref="DefaultAssemblyResolverManager" /> because
     /// we haven't yet loaded up the Gallio assemblies.
     /// *sigh*
     /// </remarks>

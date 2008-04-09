@@ -14,13 +14,14 @@
 // limitations under the License.
 
 using Gallio.Concurrency;
+using Gallio.Runtime;
 using Gallio.Framework;
+using Gallio.Reflection;
 using MbUnit.Framework;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using Gallio.Hosting;
 using Gallio.Runner;
 
 namespace Gallio.NAntTasks.Tests
@@ -41,7 +42,7 @@ namespace Gallio.NAntTasks.Tests
         [FixtureSetUp]
         public void FixtureSetUp()
         {
-            string binPath = Path.GetDirectoryName(Loader.GetAssemblyLocalPath(GetType().Assembly));
+            string binPath = Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly));
 
             workingDirectory = Path.Combine(binPath, @"..\TestBuildFiles");
             executablePath = Path.Combine(binPath, @"..\..\libs\NAnt.exe");
@@ -79,7 +80,7 @@ namespace Gallio.NAntTasks.Tests
         {
             ProcessTask task = Tasks.StartProcessTask(executablePath,
                 String.Concat("/f:Integration.build ", target,
-                " /D:GallioPath=\"", Runtime.InstallationPath, "\""),
+                " /D:GallioPath=\"", RuntimeAccessor.InstallationPath, "\""),
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

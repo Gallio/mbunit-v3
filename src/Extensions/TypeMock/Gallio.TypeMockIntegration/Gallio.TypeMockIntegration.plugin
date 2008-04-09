@@ -3,7 +3,7 @@
   <castle>
     <components>
       <component id="TypeMockIntegration.TypeMockHostFactory"
-                 service="Gallio.Hosting.IHostFactory, Gallio"
+                 service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
                  type="Gallio.TypeMockIntegration.TypeMockHostFactory, Gallio.TypeMockIntegration" />      
       
       <component id="TypeMockIntegration.TypeMockTestDomainFactory"

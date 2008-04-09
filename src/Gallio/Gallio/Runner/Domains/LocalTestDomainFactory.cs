@@ -14,7 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Hosting;
+using Gallio.Runtime.Remoting;
+using Gallio.Runtime;
 using Gallio.Runner.Harness;
 
 namespace Gallio.Runner.Domains
@@ -23,9 +24,9 @@ namespace Gallio.Runner.Domains
     /// A factory for <see cref="LocalTestDomain" />.
     /// </summary>
     /// <remarks>
-    /// The <see cref="Runtime" /> must be initialized prior to using this factory
+    /// The <see cref="RuntimeAccessor" /> must be initialized prior to using this factory
     /// because the tests will run within the current <see cref="AppDomain" /> and
-    /// <see cref="Runtime"/>.
+    /// <see cref="RuntimeAccessor"/>.
     /// </remarks>
     public class LocalTestDomainFactory : LongLivedMarshalByRefObject, ITestDomainFactory
     {
@@ -33,10 +34,10 @@ namespace Gallio.Runner.Domains
 
         /// <summary>
         /// Creates a local test domain factory using the default <see cref="ITestHarnessFactory" />
-        /// component registered with the <see cref="Runtime" />.
+        /// component registered with the <see cref="RuntimeAccessor" />.
         /// </summary>
         public LocalTestDomainFactory()
-            : this(Runtime.Instance.Resolve<ITestHarnessFactory>())
+            : this(RuntimeAccessor.Instance.Resolve<ITestHarnessFactory>())
         {
         }
 

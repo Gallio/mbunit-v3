@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Serialization;
@@ -28,7 +28,7 @@ namespace Gallio.Runner.Domains
     /// with the current app-domain including loading assemblies.
     /// </summary>
     /// <remarks>
-    /// The <see cref="Runtime" /> must be initialized prior to the use of this domain.
+    /// The <see cref="RuntimeAccessor" /> must be initialized prior to the use of this domain.
     /// </remarks>
     public class LocalTestDomain : BaseTestDomain
     {

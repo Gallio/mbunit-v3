@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner.Reports
 {

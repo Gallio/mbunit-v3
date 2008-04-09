@@ -14,13 +14,13 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Model.Execution;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Runner.Domains;
-using Gallio.Utilities;
 
 namespace Gallio.Runner.Domains
 {

@@ -15,12 +15,13 @@
 
 using System;
 using System.IO;
-using Gallio.Hosting;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.Windsor;
 using MbUnit.Framework;
 using Gallio.NAntTasks;
 using NAnt.Core;
@@ -61,10 +62,10 @@ namespace Gallio.NAntTasks.Tests
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
                 Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
 
+                Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-                Assert.AreEqual(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
+                Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
-                Assert.IsNull(launcher.RuntimeSetup.RuntimeFactoryType);
 
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
@@ -119,10 +120,10 @@ namespace Gallio.NAntTasks.Tests
 
                 Assert.AreEqual(0, launcher.CustomMonitors.Count);
 
+                Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-                Assert.AreEqual(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
+                Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
                 CollectionAssert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
-                Assert.IsNull(launcher.RuntimeSetup.RuntimeFactoryType);
 
                 CollectionAssert.AreElementsEqual(new string[] { "assembly1", "assembly2" }, launcher.TestPackageConfig.AssemblyFiles);
                 CollectionAssert.AreElementsEqual(new string[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);

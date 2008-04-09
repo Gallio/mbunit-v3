@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,10 @@
 
 using System;
 using System.Diagnostics;
-using Gallio.Hosting.ConsoleSupport;
-using Gallio.Hosting;
-using Gallio.Hosting.Channels;
+using Gallio.Runtime.ConsoleSupport;
+using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Remoting;
+using Gallio.Runtime;
 using Gallio.Utilities;
 
 namespace Gallio.Host

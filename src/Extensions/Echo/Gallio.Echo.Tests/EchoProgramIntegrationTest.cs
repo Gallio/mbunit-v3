@@ -16,8 +16,9 @@
 using System;
 using System.IO;
 using Gallio.Concurrency;
+using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Hosting;
+using Gallio.Reflection;
 using MbUnit.Framework;
 using MbUnit.TestResources;
 
@@ -53,12 +54,12 @@ namespace Gallio.Echo.Tests
 
         private ProcessTask RunEcho(string options)
         {
-            string testAssemblyPath = Loader.GetAssemblyLocalPath(typeof(SimpleTest).Assembly);
-            string workingDirectory = Path.GetDirectoryName((Loader.GetAssemblyLocalPath(GetType().Assembly)));
+            string testAssemblyPath = AssemblyUtils.GetAssemblyLocalPath(typeof(SimpleTest).Assembly);
+            string workingDirectory = Path.GetDirectoryName((AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)));
             string executablePath = Path.Combine(workingDirectory, "Gallio.Echo.exe");
 
             ProcessTask task = Tasks.StartProcessTask(executablePath,
-                "\"" + testAssemblyPath + "\" /pd:\"" + Runtime.InstallationPath + "\" " + options,
+                "\"" + testAssemblyPath + "\" /pd:\"" + RuntimeAccessor.InstallationPath + "\" " + options,
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

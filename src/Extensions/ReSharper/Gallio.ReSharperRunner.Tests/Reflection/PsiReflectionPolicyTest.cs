@@ -14,7 +14,7 @@
 // limitations under the License.
 
 
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection;
@@ -24,6 +24,7 @@ using JetBrains.ProjectModel.Impl;
 using JetBrains.ReSharper.Psi;
 using MbUnit.Framework;
 using System.Reflection;
+using MbUnit.TestResources;
 
 namespace Gallio.ReSharperRunner.Tests.Reflection
 {
@@ -90,7 +91,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         [Test, Description("Other tests exercise Psi project modules, this one checks Psi assembly modules.")]
         public void AssemblyWrapperForPsiAssemblyModules()
         {
-            Assembly target = typeof(ILogger).Assembly;
+            Assembly target = typeof(SimpleTest).Assembly;
             IAssemblyInfo info = GetAssembly(target);
 
             WrapperAssert.AreEquivalent(target, info, false);
@@ -100,7 +101,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         public void AssemblyWrapperForPsiAssemblyModules_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<Assembly, IAssemblyInfo>(
-                typeof(ILogger).Assembly,
+                typeof(PsiReflectionPolicy).Assembly,
                 typeof(ITest).Assembly,
                 GetAssembly);
         }

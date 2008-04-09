@@ -17,13 +17,14 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.XPath;
-using Gallio.Hosting;
+using Gallio.Runtime;
+using Gallio.Runtime.Windsor;
 using JetBrains.UI.Shell;
 
 namespace Gallio.ReSharperRunner.Hosting
 {
     /// <summary>
-    /// Resolves and initializes the Gallio <see cref="Runtime" /> environment.
+    /// Resolves and initializes the Gallio <see cref="RuntimeAccessor" /> environment.
     /// This class is constructed in such a way as to conceal dependencies
     /// on the Gallio assemblies.  If for whatever reason the assemblies cannot
     /// be loaded, the runtime proxy will revert to null implementations of
@@ -210,7 +211,7 @@ namespace Gallio.ReSharperRunner.Hosting
         {
             public static T Resolve<T>()
             {
-                return Runtime.Instance.Resolve<T>();
+                return RuntimeAccessor.Instance.Resolve<T>();
             }
 
             public static void InitializeRuntime(string configFilePath)
@@ -218,13 +219,13 @@ namespace Gallio.ReSharperRunner.Hosting
                 RuntimeSetup setup = new RuntimeSetup();
                 setup.ConfigurationFilePath = configFilePath;
 
-                Runtime.Initialize(setup, new ReSharperLogger());
+                RuntimeBootstrap.Initialize(WindsorRuntimeFactory.Instance, setup, new ReSharperLogger());
             }
 
             public static void ThrowAnExceptionIfTheRuntimeAssemblyIsNotAccessible()
             {
                 // Check whether we can run this code without failure.
-                GC.KeepAlive(Runtime.IsInitialized);
+                GC.KeepAlive(RuntimeAccessor.IsInitialized);
             }
         }
     }

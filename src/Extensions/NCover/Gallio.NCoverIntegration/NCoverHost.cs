@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
-using Castle.Core.Logging;
+using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
-using Gallio.Hosting;
+using Gallio.Runtime.Hosting;
 
 namespace Gallio.NCoverIntegration
 {

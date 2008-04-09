@@ -18,9 +18,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Gallio;
+using Gallio.Runtime;
 using Gallio.Framework;
 using Gallio.Framework.Data.Formatters;
-using Gallio.Hosting;
 
 #pragma warning disable 1591
 
@@ -108,7 +108,7 @@ namespace MbUnit.Framework
             }
             catch (Exception)
             {
-                Log.Failures.WriteLine("{0}: {1}", label, Runtime.Instance.Resolve<IFormatter>().Format(value));
+                Log.Failures.WriteLine("{0}: {1}", label, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value));
                 throw;
             }
         }
@@ -121,8 +121,8 @@ namespace MbUnit.Framework
             }
             catch (Exception)
             {
-                Log.Failures.WriteLine("{0}: {1}", label1, Runtime.Instance.Resolve<IFormatter>().Format(value1));
-                Log.Failures.WriteLine("{0}: {1}", label2, Runtime.Instance.Resolve<IFormatter>().Format(value2));
+                Log.Failures.WriteLine("{0}: {1}", label1, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value1));
+                Log.Failures.WriteLine("{0}: {1}", label2, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value2));
                 throw;
             }
         }

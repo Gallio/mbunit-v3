@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-using Gallio.Hosting.ConsoleSupport;
+using Gallio.Runtime.ConsoleSupport;
 
 namespace Gallio.Icarus
 {

@@ -15,7 +15,7 @@
 
 using System.Diagnostics;
 using Gallio.Framework.Utilities;
-using Gallio.Hosting;
+using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
 using TypeMock.Integration;
 

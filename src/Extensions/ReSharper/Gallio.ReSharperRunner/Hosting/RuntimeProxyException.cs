@@ -15,13 +15,13 @@
 
 using System;
 using System.Runtime.Serialization;
-using Gallio.Hosting;
+using Gallio.Runtime;
 
 namespace Gallio.ReSharperRunner.Hosting
 {
     /// <summary>
     /// The type of exception thrown when the runtime proxy cannot perform
-    /// a requested service.  This can happen because the <see cref="Runtime" />
+    /// a requested service.  This can happen because the <see cref="RuntimeAccessor" />
     /// is not accessible.
     /// </summary>
     [Serializable]

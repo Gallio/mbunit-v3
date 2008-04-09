@@ -14,13 +14,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Gallio.Hosting;
-using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Reflection;
 using Gallio.Runner;
 using MbUnit.Framework;
 using MbUnit.TestResources;
@@ -48,7 +45,7 @@ namespace Gallio.NCoverIntegration.Tests
             Type simpleTestType = typeof(SimpleTest);
 
             TestLauncher launcher = new TestLauncher();
-            launcher.TestPackageConfig.AssemblyFiles.Add(Loader.GetAssemblyLocalPath(simpleTestType.Assembly));
+            launcher.TestPackageConfig.AssemblyFiles.Add(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly));
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = tempPath;
             launcher.TestRunnerFactoryName = NCoverTestRunnerFactoryName;
             launcher.Filter = new TypeFilter<ITest>(new EqualityFilter<string>(simpleTestType.FullName), false);

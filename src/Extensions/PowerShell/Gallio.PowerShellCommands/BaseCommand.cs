@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Threading;
-using Castle.Core.Logging;
-using Gallio.Hosting.ProgressMonitoring;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
 
 namespace Gallio.PowerShellCommands

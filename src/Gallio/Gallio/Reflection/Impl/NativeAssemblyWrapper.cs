@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Hosting;
 
 namespace Gallio.Reflection.Impl
 {
@@ -39,7 +38,7 @@ namespace Gallio.Reflection.Impl
 
         public string Path
         {
-            get { return Loader.GetFriendlyAssemblyCodeBase(Target); }
+            get { return AssemblyUtils.GetFriendlyAssemblyCodeBase(Target); }
         }
 
         public string FullName

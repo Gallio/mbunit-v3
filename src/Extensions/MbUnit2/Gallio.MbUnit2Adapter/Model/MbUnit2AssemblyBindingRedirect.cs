@@ -16,7 +16,7 @@
 extern alias MbUnit2;
 
 using System.Reflection;
-using Gallio.Hosting;
+using Gallio.Runtime.Hosting;
 using Gallio.Model;
 using Gallio.Runner.Domains;
 

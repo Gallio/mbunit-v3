@@ -18,9 +18,10 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using System.Xml;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime;
 using Gallio.Framework;
+using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
 using Gallio.Utilities;
@@ -123,7 +124,7 @@ namespace Gallio.Reports.Tests
         [Test]
         public void FormatWritesTheTransformedReport()
         {
-            string resourcePath = Path.Combine(Path.GetDirectoryName(Loader.GetAssemblyLocalPath(GetType().Assembly)), @"..\Resources");
+            string resourcePath = Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)), @"..\Resources");
 
             IRuntime runtime = Mocks.CreateMock<IRuntime>();
             IReportWriter reportWriter = Mocks.CreateMock<IReportWriter>();

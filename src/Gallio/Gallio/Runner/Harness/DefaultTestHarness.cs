@@ -16,11 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
 using System.Threading;
 using Gallio.Concurrency;
-using Gallio.Hosting.ProgressMonitoring;
-using Gallio.Hosting;
+using Gallio.Runtime.Loader;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
@@ -32,13 +32,14 @@ namespace Gallio.Runner.Harness
     /// Default implementation of a test harness.
     /// </summary>
     /// <remarks>
-    /// The <see cref="Runtime" /> must be initialized prior to using this factory
+    /// The <see cref="RuntimeAccessor" /> must be initialized prior to using this factory
     /// because the tests will run within the current <see cref="AppDomain" /> and
-    /// <see cref="Runtime"/>.
+    /// <see cref="RuntimeAccessor"/>.
     /// </remarks>
     public class DefaultTestHarness : ITestHarness
     {
         private ITestContextTracker contextTracker;
+        private ILoader loader;
 
         private bool isDisposed;
 
@@ -52,13 +53,18 @@ namespace Gallio.Runner.Harness
         /// Creates a test harness.
         /// </summary>
         /// <param name="contextTracker">The test context tracker</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/> is null</exception>
-        public DefaultTestHarness(ITestContextTracker contextTracker)
+        /// <param name="loader">The loader</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>
+        /// or <paramref name="loader "/> is null</exception>
+        public DefaultTestHarness(ITestContextTracker contextTracker, ILoader loader)
         {
             if (contextTracker == null)
                 throw new ArgumentNullException("contextTracker");
+            if (loader == null)
+                throw new ArgumentNullException("loader");
 
             this.contextTracker = contextTracker;
+            this.loader = loader;
 
             frameworks = new List<ITestFramework>();
             environments = new List<ITestEnvironment>();
@@ -137,13 +143,13 @@ namespace Gallio.Runner.Harness
                 progressMonitor.BeginTask("Loading test package.", 10);
                 progressMonitor.SetStatus("Performing pre-processing.");
 
-                package = new TestPackage(packageConfig, Reflector.ReflectionPolicy);
+                package = new TestPackage(packageConfig, Reflector.ReflectionPolicy, loader);
 
                 foreach (string path in packageConfig.HintDirectories)
-                    Loader.AssemblyResolverManager.AddHintDirectory(path);
+                    loader.AssemblyResolverManager.AddHintDirectory(path);
 
                 foreach (string assemblyFile in packageConfig.AssemblyFiles)
-                    Loader.AssemblyResolverManager.AddHintDirectory(FileUtils.GetFullPathOfParentDirectory(assemblyFile));
+                    loader.AssemblyResolverManager.AddHintDirectory(FileUtils.GetFullPathOfParentDirectory(assemblyFile));
 
                 progressMonitor.Worked(1);
 
@@ -178,7 +184,7 @@ namespace Gallio.Runner.Harness
 
             try
             {
-                IAssemblyInfo assembly = Reflector.Wrap(Assembly.LoadFrom(assemblyFile));
+                IAssemblyInfo assembly = Reflector.Wrap(loader.LoadAssemblyFrom(assemblyFile));
                 package.AddAssembly(assembly);
             }
             catch (Exception ex)
