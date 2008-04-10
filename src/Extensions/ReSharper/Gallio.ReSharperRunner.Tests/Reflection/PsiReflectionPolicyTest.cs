@@ -101,7 +101,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         public void AssemblyWrapperForPsiAssemblyModules_EqualityAndHashcode()
         {
             VerifyEqualityAndHashcodeContracts<Assembly, IAssemblyInfo>(
-                typeof(PsiReflectionPolicy).Assembly,
+                typeof(SimpleTest).Assembly,
                 typeof(ITest).Assembly,
                 GetAssembly);
         }
