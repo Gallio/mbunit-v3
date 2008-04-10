@@ -90,7 +90,7 @@
     </Gallio>
 
     <NCoverExplorer Condition="$(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')"
-                    Exclusions="Assembly=*.Tests;Assembly=*.TestResources"
+                    Exclusions="Assembly=*.Tests;Assembly=*.TestResources;Assembly=JetBrains.*"
                     XmlReportName="CoverageSummary.xml"
 		    ReportType="ModuleClassFunctionSummary"
 		    ToolPath="$(NCoverExplorerPath)"
