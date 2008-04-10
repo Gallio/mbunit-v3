@@ -354,17 +354,14 @@ Var ReSharperInstallDir
 Var ReSharperPluginDir
 !macro GetReSharperPluginDir RSVersion VSVersion
 	ClearErrors
-	ReadRegStr $0 HKCU "Software\JetBrains\ReSharper\${RSVersion}\${VSVersion}" "InstallDir"
-	IfErrors +3
-		StrCpy $ReSharperInstallDir $0
-		Goto +8
+	ReadRegStr $ReSharperInstallDir HKCU "Software\JetBrains\ReSharper\${RSVersion}\${VSVersion}" "InstallDir"
+	IfErrors +1 +7
 
 	ClearErrors
-	ReadRegStr $0 HKLM "Software\JetBrains\ReSharper\${RSVersion}\${VSVersion}" "InstallDir"
-	IfErrors +3
-		StrCpy $ReSharperInstallDir $0
-		Goto +3
+	ReadRegStr $ReSharperInstallDir HKLM "Software\JetBrains\ReSharper\${RSVersion}\${VSVersion}" "InstallDir"
+	IfErrors +1 +4
 
+	StrCpy $ReSharperInstallDir ""
 	StrCpy $ReSharperPluginDir ""
 	Goto +5
 
@@ -845,7 +842,9 @@ Function AddRemovePageLeave
 
 	; Note: We don't uninstall silently anymore because it takes too
 	;       long and it sucks not to get any feedback during the process.
-	ExecWait '"$OLD_INSTALL_DIR\uninstall.exe" _?=$OLD_INSTALL_DIR' $0
+	CopyFiles /SILENT "$OLD_INSTALL_DIR\uninstall.exe" "$TEMP\Gallio-uninstall.exe"
+	ExecWait '"$TEMP\Gallio-uninstall.exe" _?=$OLD_INSTALL_DIR' $0
+	Delete "$TEMP\Gallio-uninstall.exe"
 	IntCmp $0 0 Ok
 	MessageBox MB_OK "Cannot proceed because the old version was not successfully uninstalled."
 	Abort
