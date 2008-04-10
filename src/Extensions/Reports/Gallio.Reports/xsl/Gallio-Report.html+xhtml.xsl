@@ -648,11 +648,11 @@ html
     
     <xsl:if test="not($condensed)">
       <span class="outcome-icons">
-        <img src="{$imgDir}Passed.gif" />
-        <xsl:value-of select="$statistics/@passedCount" />
-        <img src="{$imgDir}Failed.gif" />
-        <xsl:value-of select="$statistics/@failedCount" />
-        <img src="{$imgDir}Ignored.gif" />
+        <img src="{$imgDir}Passed.gif" alt="Passed"/>
+        <xsl:value-of select="$statistics/@passedCount"/>
+        <img src="{$imgDir}Failed.gif" alt="Failed"/>
+        <xsl:value-of select="$statistics/@failedCount"/>
+        <img src="{$imgDir}Ignored.gif" alt="Inconclusive or Skipped"/>
         <xsl:value-of select="$statistics/@inconclusiveCount + $statistics/@skippedCount" />            
       </span>
     </xsl:if>
