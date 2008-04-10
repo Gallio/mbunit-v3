@@ -552,7 +552,7 @@ namespace Gallio.Icarus.Tests
         public void Exception_Test()
         {
             Exception exception = new Exception("message");
-            mockView.Exception = exception;
+            mockView.NotifyException(exception);
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.Exception = exception;

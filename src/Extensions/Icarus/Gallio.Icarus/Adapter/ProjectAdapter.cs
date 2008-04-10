@@ -117,7 +117,7 @@ namespace Gallio.Icarus.Adapter
 
         public Exception Exception
         {
-            set { projectAdapterView.Exception = value; }
+            set { projectAdapterView.NotifyException(value); }
         }
 
         public string ExecutionLog

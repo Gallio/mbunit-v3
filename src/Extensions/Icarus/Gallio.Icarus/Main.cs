@@ -23,7 +23,7 @@ using System.Threading;
 using System.Windows.Forms;
 
 using Aga.Controls.Tree;
-
+using Gallio.Concurrency;
 using Gallio.Runtime.Logging;
 
 using Gallio.Icarus.Controls;
@@ -39,7 +39,7 @@ namespace Gallio.Icarus
 {
     public partial class Main : Form, IProjectAdapterView
     {
-        private Thread workerThread = null;
+        private Task workerTask = null;
         private Thread executionLogThread = null;
         
         private string projectFileName = String.Empty;
@@ -230,23 +230,17 @@ namespace Gallio.Icarus
             }
         }
 
-        public Exception Exception
+        public void NotifyException(Exception value)
         {
-            set
+            if (InvokeRequired)
             {
-                if (InvokeRequired)
-                {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        Exception = value;
-                    }));
-                }
-                else
-                {
-                    if (!(value is ThreadAbortException))
-                        MessageBox.Show(String.Format("Message: {0}\nStack trace: {1}", value.Message, value.StackTrace), "Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                Invoke(new MethodInvoker(delegate() { NotifyException(value); }));
+            }
+            else
+            {
+                if (!(value is ThreadAbortException))
+                    MessageBox.Show(String.Format("Message: {0}\nStack trace: {1}", value.Message, value.StackTrace), "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -495,8 +489,7 @@ namespace Gallio.Icarus
                 testExplorer.Show(dockPanel, DockState.DockLeft);
             }
 
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+            StartWorkerTask(delegate
             {
                 if (GetReportTypes != null)
                     GetReportTypes(this, EventArgs.Empty);
@@ -506,14 +499,12 @@ namespace Gallio.Icarus
                     OpenProjectFromFile(projectFileName);
                 else
                     ThreadedReloadTree(true);
-                StatusText = string.Empty;
             });
-            workerThread.Start();
         }
 
         private void fileExit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Close();
         }
 
         private void aboutMenuItem_Click(object sender, EventArgs e)
@@ -539,8 +530,7 @@ namespace Gallio.Icarus
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
 
-                AbortWorkerThread();
-                workerThread = new Thread(delegate()
+                StartWorkerTask(delegate
                 {
                     // save test filter
                     OnSaveFilter("LastRun");
@@ -559,14 +549,11 @@ namespace Gallio.Icarus
                         stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                         startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                     });
-
-                    StatusText = string.Empty;
                 });
-                workerThread.Start();
             }
             catch (Exception ex)
             {
-                Exception = ex;
+                NotifyException(ex);
             }
         }
 
@@ -607,14 +594,11 @@ namespace Gallio.Icarus
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+            StatusText = "Reloading...";
+            StartWorkerTask(delegate
             {
-                StatusText = "Reloading...";
                 ThreadedReloadTree(true);
-                StatusText = string.Empty;
             });
-            workerThread.Start();
         }
 
         private void openProject_Click(object sender, EventArgs e)
@@ -623,12 +607,10 @@ namespace Gallio.Icarus
             openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
             if (openFile.ShowDialog() == DialogResult.OK)
             {
-                AbortWorkerThread();
-                workerThread = new Thread(delegate()
+                StartWorkerTask(delegate
                 {
                     OpenProjectFromFile(openFile.FileName);
                 });
-                workerThread.Start();
             }
         }
 
@@ -642,7 +624,7 @@ namespace Gallio.Icarus
             }
             catch (Exception ex)
             {
-                Exception = ex;
+                NotifyException(ex);
             }
             StatusText = string.Empty;
         }
@@ -667,22 +649,13 @@ namespace Gallio.Icarus
                     projectFileName = saveFile.FileName;
                 }
             }
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+
+            StatusText = "Saving project";
+            StartWorkerTask(delegate
             {
-                StatusText = "Saving project";
-                try
-                {
-                    if (SaveProject != null)
-                        SaveProject(this, new SingleEventArgs<string>(projectFileName));
-                }
-                catch (Exception ex)
-                {
-                    Exception = ex;
-                }
-                StatusText = string.Empty;
+                if (SaveProject != null)
+                    SaveProject(this, new SingleEventArgs<string>(projectFileName));
             });
-            workerThread.Start();
         }
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -697,34 +670,22 @@ namespace Gallio.Icarus
             openFile.Multiselect = true;
             if (openFile.ShowDialog() == DialogResult.OK)
             {
-                AbortWorkerThread();
-                workerThread = new Thread(delegate()
+                StatusText = "Adding assemblies";
+                StartWorkerTask(delegate
                 {
-                    StatusText = "Adding assemblies";
-                    try
-                    {
-                        if (AddAssemblies != null)
-                            AddAssemblies(this, new SingleEventArgs<IList<string>>(openFile.FileNames));
-                        ThreadedReloadTree(true);
-                    }
-                    catch (Exception ex)
-                    {
-                        Exception = ex;
-                    }
-                    StatusText = string.Empty;
+                    if (AddAssemblies != null)
+                        AddAssemblies(this, new SingleEventArgs<IList<string>>(openFile.FileNames));
+                    ThreadedReloadTree(true);
                 });
-                workerThread.Start();
             }
         }
 
         public void ReloadTree()
         {
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+            StartWorkerTask(delegate
             {
                 ThreadedReloadTree(false);
             });
-            workerThread.Start();
         }
 
         private void ThreadedReloadTree(bool reloadTestModelData)
@@ -745,7 +706,7 @@ namespace Gallio.Icarus
                 }
                 catch (Exception ex)
                 {
-                    Exception = ex;
+                    NotifyException(ex);
                 }
             }
             if (!options.IsDisposed)
@@ -754,7 +715,7 @@ namespace Gallio.Icarus
 
         private void ExitMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Close();
         }
 
         public void Reset()
@@ -771,44 +732,14 @@ namespace Gallio.Icarus
 
         public void RemoveAssembliesFromTree()
         {
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+            StatusText = "Removing assemblies";
+            StartWorkerTask(delegate
             {
                 // remove assemblies
-                StatusText = "Removing assemblies";
                 if (RemoveAssemblies != null)
                     RemoveAssemblies(this, new EventArgs());
                 ThreadedReloadTree(true);
-                StatusText = string.Empty;
             });
-            workerThread.Start();
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (workerThread != null)
-                workerThread.Abort();
-            base.OnClosing(e);
-        }
-
-        private void AbortWorkerThread()
-        {
-            if (workerThread != null)
-            {
-                try
-                {
-                    StatusText = "Aborting worker thread";
-                    workerThread.Join(1000);
-                    workerThread.Abort();
-                    workerThread.Join(2000);
-                    workerThread = null;
-                }
-                catch (Exception ex)
-                {
-                    if (ex is ThreadAbortException)
-                        return;
-                }
-            }
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -818,10 +749,9 @@ namespace Gallio.Icarus
 
         private void CancelTests()
         {
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+            StatusText = "Stopping tests";
+            StartWorkerTask(delegate
             {
-                StatusText = "Stopping tests";
                 if (StopTests != null)
                     StopTests(this, new EventArgs());
 
@@ -831,23 +761,18 @@ namespace Gallio.Icarus
                     stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                     startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 });
-                StatusText = string.Empty;
             });
-            workerThread.Start();
         }
 
         public void ThreadedRemoveAssembly(string assembly)
         {
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+            StatusText = "Removing assembly";
+            StartWorkerTask(delegate
             {
-                StatusText = "Removing assembly";
                 if (RemoveAssembly != null)
                     RemoveAssembly(this, new SingleEventArgs<string>(assembly));
                 ThreadedReloadTree(true);
-                StatusText = string.Empty;
             });
-            workerThread.Start();
         }
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -867,16 +792,13 @@ namespace Gallio.Icarus
 
         private void CreateNewProject()
         {
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
+            StatusText = "Creating new project";
+            StartWorkerTask(delegate
             {
-                StatusText = "Creating new project";
                 if (NewProject != null)
                     NewProject(this, EventArgs.Empty);
                 ThreadedReloadTree(true);
-                StatusText = string.Empty;
             });
-            workerThread.Start();
         }
 
         private void newProjectToolStripButton_Click(object sender, EventArgs e)
@@ -942,20 +864,10 @@ namespace Gallio.Icarus
 
         public void CreateReport()
         {
-            AbortWorkerThread();
-            workerThread = new Thread(delegate()
-                {
-                    try
-                    {
-                        ThreadedCreateReport();
-                        StatusText = string.Empty;
-                    }
-                    catch (Exception ex)
-                    {
-                        Exception = ex;
-                    }
-                });
-            workerThread.Start();
+            StartWorkerTask(delegate
+            {
+                ThreadedCreateReport();
+            });
         }
 
         private void ThreadedCreateReport()
@@ -972,13 +884,31 @@ namespace Gallio.Icarus
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (e.CloseReason != CloseReason.ApplicationExitCall)
+            {
+                e.Cancel = true;
+
+                StartWorkerTask(delegate
+                {
+                    try
+                    {
+                        if (UnloadTestPackage != null)
+                            UnloadTestPackage(this, EventArgs.Empty);
+
+                        SaveStateOnClose();
+                    }
+                    finally
+                    {
+                        Application.Exit();
+                    }
+                });
+            }
+        }
+
+        private void SaveStateOnClose()
+        {
             try
             {
-                AbortWorkerThread();
-
-                if (UnloadTestPackage != null)
-                    UnloadTestPackage(this, EventArgs.Empty);
-
                 // create folder (if necessary)
                 string gallioDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Gallio/Icarus");
                 if (!Directory.Exists(gallioDir))
@@ -996,7 +926,7 @@ namespace Gallio.Icarus
             }
             catch
             {
-                // eat any exceptions
+                // FIXME.  Must be able to improve this!
             }
         }
 
@@ -1119,10 +1049,41 @@ namespace Gallio.Icarus
                     }
                     catch (Exception ex)
                     {
-                        Exception = ex;
+                        NotifyException(ex);
                     }
                 });
             executionLogThread.Start();
+        }
+
+        private void StartWorkerTask(Action action)
+        {
+            AbortWorkerTask();
+
+            workerTask = new ThreadTask("Icarus Worker", action);
+
+            workerTask.Terminated += delegate
+            {
+                if (!workerTask.IsAborted)
+                {
+                    StatusText = "";
+
+                    if (workerTask.Result.Exception != null)
+                        NotifyException(workerTask.Result.Exception);
+                }
+            };
+
+            workerTask.Start();
+        }
+
+        private void AbortWorkerTask()
+        {
+            Task cachedWorkerTask = Interlocked.Exchange(ref workerTask, null);
+            if (cachedWorkerTask != null)
+            {
+                StatusText = "Aborting worker thread";
+                cachedWorkerTask.Abort();
+                cachedWorkerTask.Join(TimeSpan.FromMilliseconds(2000));
+            }
         }
     }
 }

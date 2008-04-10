@@ -69,7 +69,7 @@ namespace Gallio.Icarus.Interfaces
         string ApplicationBaseDirectory { set; }
         string WorkingDirectory { set; }
         bool ShadowCopy { set; }
-        Exception Exception { set; }
+        void NotifyException(Exception value);
         string ExecutionLog { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
