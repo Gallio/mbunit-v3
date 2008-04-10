@@ -79,16 +79,16 @@ namespace Gallio.Icarus.Core.Model.Tests
         //    testRunnerModel.StopTests();
         //}
 
-        [Test]
-        public void GetReportTypes_Test()
-        {
-            IList<string> reportTypes = testRunnerModel.GetReportTypes();
-        }
+        //[Test]
+        //public void GetReportTypes_Test()
+        //{
+        //    IList<string> reportTypes = testRunnerModel.GetReportTypes();
+        //}
 
-        [Test]
-        public void GetTestFrameworks_Test()
-        {
-            IList<string> frameworks = testRunnerModel.GetTestFrameworks();
-        }
+        //[Test]
+        //public void GetTestFrameworks_Test()
+        //{
+        //    IList<string> frameworks = testRunnerModel.GetTestFrameworks();
+        //}
     }
 }
