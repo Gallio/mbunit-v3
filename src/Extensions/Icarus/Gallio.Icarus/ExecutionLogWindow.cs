@@ -25,9 +25,9 @@ namespace Gallio.Icarus
             InitializeComponent();
         }
 
-        public string Log
+        public Stream Log
         {
-            set { reportViewer.Url = new Uri(value); }
+            set { reportViewer.DocumentStream = value; }
         }
     }
 }

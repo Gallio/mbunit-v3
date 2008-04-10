@@ -206,8 +206,7 @@ namespace Gallio.Icarus
             {
                 removeAssemblyToolStripMenuItem.Enabled = (((TestTreeNode)testTree.SelectedNode.Tag).NodeType == TestKinds.Assembly);
                 viewSourceCodeToolStripMenuItem.Enabled = ((TestTreeNode)testTree.SelectedNode.Tag).SourceCodeAvailable;
-                if (((TestTreeNode)testTree.SelectedNode.Tag).NodeType != TestKinds.Namespace)
-                    projectAdapterView.OnGetExecutionLog(((TestTreeNode)testTree.SelectedNode.Tag).Name);
+                projectAdapterView.OnGetExecutionLog(((TestTreeNode)testTree.SelectedNode.Tag).Name);
             }
         }
     }

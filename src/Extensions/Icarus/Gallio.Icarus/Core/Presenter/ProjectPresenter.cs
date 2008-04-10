@@ -73,7 +73,10 @@ namespace Gallio.Icarus.Core.Presenter
         public void GetTestTree(object sender, GetTestTreeEventArgs e)
         {
             if (e.ReloadTestModelData)
-                projectAdapter.TestModelData = testRunnerModel.LoadTestPackage(e.TestPackageConfig);
+            {
+                testRunnerModel.LoadTestPackage(e.TestPackageConfig);
+                projectAdapter.TestModelData = testRunnerModel.BuildTestModel();
+            }
             projectAdapter.DataBind(e.Mode);
         }
 
@@ -119,7 +122,7 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void OnGetExecutionLog(object sender, SingleEventArgs<string> e)
         {
-            projectAdapter.ExecutionLog = testRunnerModel.GetExecutionLog(e.Arg);
+            projectAdapter.ExecutionLog = testRunnerModel.GetExecutionLog(e.Arg, projectAdapter.TestModelData);
         }
 
         public void OnUnloadTestPackage(object sender, EventArgs e)

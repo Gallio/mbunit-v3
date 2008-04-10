@@ -30,6 +30,8 @@ using Gallio.Icarus.Core.Reports;
 using Gallio.Runner;
 using Gallio.Runner.Domains;
 using Gallio.Model.Filters;
+using System.Globalization;
+using System.Reflection;
 
 namespace Gallio.Icarus.Core.Model
 {
@@ -42,16 +44,9 @@ namespace Gallio.Icarus.Core.Model
         private IProgressMonitor runTestsProgressMonitor = null;
         private TestRunnerMonitor testRunnerMonitor = null;
         private IReportManager reportManager;
-
-        public TestRunnerModel()
-        {
-#if XDEBUG
-            testRunner = new DomainTestRunner(new LocalTestDomainFactory());
-#else
-            testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess, new NameValueCollection());
-#endif
-            reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
-        }
+        private string reportFolder;
+        private string executionLogFolder;
+        private string reportNameFormat = "test-report-{0}-{1}";
 
         public IProjectPresenter ProjectPresenter
         {
@@ -65,36 +60,82 @@ namespace Gallio.Icarus.Core.Model
             }
         }
 
-        public TestModelData LoadTestPackage(TestPackageConfig testPackageConfig)
+        public string ReportFolder
         {
+            set { reportFolder = value; }
+        }
+
+        public TestRunnerModel()
+        {
+            // create test runner
+#if DEBUG
+            testRunner = new DomainTestRunner(new LocalTestDomainFactory());
+#else
+            testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess, new NameValueCollection());
+#endif
             // attach report monitor to test runner
             reportMonitor = new ReportMonitor();
             reportMonitor.Attach(testRunner);
 
+            // get a report manager
+            reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+            executionLogFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Gallio\Icarus\ExecutionLog");
+            SetupExecutionLog();
+        }
+
+        private void SetupExecutionLog()
+        {
+            if (!Directory.Exists(executionLogFolder))
+                Directory.CreateDirectory(executionLogFolder);
+
+            // output css file
+            Stream css = Assembly.GetExecutingAssembly().GetManifestResourceStream("Gallio.Icarus.Core.Reports.ExecutionLog.css");
+            FileStream fs = File.Open(Path.Combine(executionLogFolder, "ExecutionLog.css"), FileMode.Create, FileAccess.Write);
+            const int size = 4096;
+            byte[] bytes = new byte[size];
+            int numBytes;
+            while ((numBytes = css.Read(bytes, 0, size)) > 0)
+                fs.Write(bytes, 0, numBytes);
+        }
+
+        public void LoadTestPackage(TestPackageConfig testPackageConfig)
+        {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 testRunner.LoadTestPackage(testPackageConfig, progressMonitor);
             });
+        }
 
+        public TestModelData BuildTestModel()
+        {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 testRunner.BuildTestModel(progressMonitor);
             });
-
             return testRunner.TestModelData;
         }
 
         public void RunTests()
         {
-            testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor);
+            // tidy up last run
+            reportMonitor.ResetReport();
+            // clear old attachments
+            DirectoryInfo di = new DirectoryInfo(executionLogFolder);
+            foreach (DirectoryInfo attachmentFolder in di.GetDirectories())
+                attachmentFolder.Delete(true);
+
+            // attach test runner monitor
+            testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor, executionLogFolder);
             testRunnerMonitor.Attach(testRunner);
 
+            // run tests
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 runTestsProgressMonitor = progressMonitor;
                 testRunner.RunTests(progressMonitor);
             });
 
+            // detach test runner monitor
             testRunnerMonitor.Detach();
         }
 
@@ -106,46 +147,42 @@ namespace Gallio.Icarus.Core.Model
 
         public void GenerateReport()
         {
-            string reportName = "";
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                progressMonitor.BeginTask("Generating report.", 100);
-
-                string reportDirectory = Path.GetTempPath();
-                IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, "MbUnit-Report");
+                IReportContainer reportContainer = CreateReportContainer(reportMonitor.Report);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(reportMonitor.Report, reportContainer);
 
-                // Delete the report if it exists already.
-                reportContainer.DeleteReport();
-
-                // Format the report as html.
-                reportManager.Format(reportWriter, "html", new NameValueCollection(), progressMonitor.CreateSubProgressMonitor(90));
-
-                progressMonitor.SetStatus("Displaying report.");
-                if (reportWriter.ReportDocumentPaths.Count == 1)
-                    reportName = Path.Combine(reportDirectory, reportWriter.ReportDocumentPaths[0]);
+                // format the report as xml
+                reportManager.Format(reportWriter, "xml", new NameValueCollection(), progressMonitor);
             });
-            projectPresenter.ReportPath = reportName;
         }
 
-        public string GetExecutionLog(string testId)
+        private IReportContainer CreateReportContainer(Report report)
+        {
+            string reportName = GenerateReportName(report);
+            return new FileSystemReportContainer(reportFolder, reportName);
+        }
+
+        private string GenerateReportName(Report report)
+        {
+            DateTime reportTime = report.PackageRun != null ? report.PackageRun.StartTime : DateTime.Now;
+
+            return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
+                reportTime.ToString(@"yyyyMMdd"),
+                reportTime.ToString(@"HHmmss"));
+        }
+
+        public Stream GetExecutionLog(string testId, TestModelData testModelData)
         {
             if (reportMonitor.Report.PackageRun != null)
             {
                 foreach (TestStepRun testStepRun in reportMonitor.Report.PackageRun.AllTestStepRuns)
                 {
                     if (testStepRun.Step.TestId == testId)
-                    {
-                        string reportDirectory = Path.Combine(Path.GetTempPath(), @"Gallio\Icarus\ExecutionLog");
-                        IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, "ExecutionLog");
-                        reportContainer.DeleteReport();
-                        IReportWriter reportWriter = new TestStepReportWriter(reportMonitor.Report, testStepRun, reportContainer);
-                        reportManager.Format(reportWriter, "ExecutionLog", new NameValueCollection(), NullProgressMonitor.CreateInstance());
-                        return Path.Combine(reportDirectory, reportWriter.ReportDocumentPaths[0]);
-                    }
+                        return TestStepReportWriter.OutputReport(testStepRun, testModelData, executionLogFolder);
                 }
             }
-            return "about:blank";
+            return null;
         }
 
         public IList<string> GetReportTypes()

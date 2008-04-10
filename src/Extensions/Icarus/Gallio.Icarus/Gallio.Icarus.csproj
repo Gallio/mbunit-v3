@@ -303,6 +303,7 @@
     <None Include="Resources\PropertyWindow.ico" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Core\Reports\ExecutionLog.css" />
     <Content Include="Resources\arrow_refresh.png" />
     <Content Include="Resources\Assembly.ico" />
     <Content Include="Resources\Assembly.png" />

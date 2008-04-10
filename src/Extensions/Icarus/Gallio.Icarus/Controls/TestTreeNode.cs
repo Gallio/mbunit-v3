@@ -46,7 +46,9 @@ namespace Gallio.Icarus.Controls
             set
             {
                 testStatus = value;
+                testStatusIcon = GetTestStatusIcon(value);
                 UpdateParentTestStatus();
+                NotifyModel();
             }
         }
 
@@ -121,11 +123,6 @@ namespace Gallio.Icarus.Controls
         public Image TestStatusIcon
         {
             get { return testStatusIcon; }
-            set
-            {
-                testStatusIcon = value;
-                NotifyModel();
-            }
         }
 
         public TestTreeNode(string text, string name, string nodeType)
@@ -263,6 +260,22 @@ namespace Gallio.Icarus.Controls
             TestTreeNode parent = Parent as TestTreeNode;
             if (parent != null)
                 parent.TestStatus = SiblingTestStatus;
+        }
+
+        private Image GetTestStatusIcon(TestStatus testStatus)
+        {
+            switch (testStatus)
+            {
+                case TestStatus.Failed:
+                    return global::Gallio.Icarus.Properties.Resources.cross;
+                case TestStatus.Passed:
+                    return global::Gallio.Icarus.Properties.Resources.tick;
+                case TestStatus.Skipped:
+                    return global::Gallio.Icarus.Properties.Resources.error;
+                case TestStatus.Inconclusive:
+                default:
+                    return null;
+            }
         }
     }
 }

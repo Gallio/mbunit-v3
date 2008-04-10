@@ -244,7 +244,7 @@ namespace Gallio.Icarus
             }
         }
 
-        public string ExecutionLog
+        public Stream ExecutionLog
         {
             set
             {
@@ -556,41 +556,6 @@ namespace Gallio.Icarus
                 NotifyException(ex);
             }
         }
-
-        //private void ShowTaskDialog()
-        //{
-        //    //trayIcon.Icon = Resources.FailMb;
-        //    //trayIcon.ShowBalloonTip(5, "Gallio Test Notice", "Recent changes have caused 5 of your unit tests to fail.",
-        //    //                        ToolTipIcon.Error);
-        //    List<TaskButton> taskButtons = new List<TaskButton>();
-
-        //    TaskButton button1 = new TaskButton();
-        //    button1.Text = "Button 1";
-        //    button1.Icon = Resources.tick;
-        //    button1.Description = "This is the first button, it should explain what the option does.";
-        //    taskButtons.Add(button1);
-
-        //    TaskButton button2 = new TaskButton();
-        //    button2.Text = "Button 2";
-        //    button2.Icon = Resources.help_browser;
-        //    button2.Description =
-        //        "This is the second button, much the same as the first button but this one demonstrates that the text will wrap onto the next line.";
-        //    taskButtons.Add(button2);
-
-        //    TaskButton button3 = new TaskButton();
-        //    button3.Text = "Close Window";
-        //    button3.Icon = Resources.cross;
-        //    button3.Description = "Saves all changes and exits the application.";
-        //    taskButtons.Add(button3);
-
-        //    TaskButton res = TaskDialog.Show("Title Text",
-        //                                     "Description about the problem and what you need to do to resolve it. Each button can have its own description too.",
-        //                                     taskButtons);
-        //    if (res == button2)
-        //        MessageBox.Show("Button 2 was clicked.");
-        //    else if (res == button1)
-        //        MessageBox.Show("Button 1 was clicked.");
-        //}
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
@@ -974,7 +939,26 @@ namespace Gallio.Icarus
 
         public void AssemblyChanged(string filePath)
         {
-            MessageBox.Show(filePath + " has changed!");
+            List<TaskButton> taskButtons = new List<TaskButton>();
+            TaskButton yes = new TaskButton();
+            yes.Text = "Yes";
+            yes.Icon = global::Gallio.Icarus.Properties.Resources.tick;
+            yes.Description = "Reload the test model.";
+            taskButtons.Add(yes);
+            TaskButton no = new TaskButton();
+            no.Text = "No";
+            no.Icon = global::Gallio.Icarus.Properties.Resources.cross;
+            no.Description = "Don't reload.";
+            taskButtons.Add(no);
+
+            if (TaskDialog.Show("Assembly changed", filePath + " has changed, would you like to reload the test model?", 
+                taskButtons) == yes)
+            {
+                StartWorkerTask(delegate()
+                {
+                    ThreadedReloadTree(true);
+                });
+            }
         }
 
         public void UpdateHintDirectories(IList<string> hintDirectories)

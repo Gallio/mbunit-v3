@@ -17,9 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-using Aga.Controls.Tree;
-
-using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Remoting;
@@ -37,10 +34,9 @@ namespace Gallio.Icarus.Adapter
     {
         private readonly IProjectAdapterView projectAdapterView;
         private readonly IProjectAdapterModel projectAdapterModel;
-        
         private TestModelData testModelData;
+        private string projectFolder = Path.Combine(Path.GetTempPath(), "Gallio/Icarus/Default");
         private Project project;
-
         private AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
 
         public TestModelData TestModelData
@@ -120,7 +116,7 @@ namespace Gallio.Icarus.Adapter
             set { projectAdapterView.NotifyException(value); }
         }
 
-        public string ExecutionLog
+        public Stream ExecutionLog
         {
             set { projectAdapterView.ExecutionLog = value; }
         }
@@ -134,6 +130,7 @@ namespace Gallio.Icarus.Adapter
         public event EventHandler<EventArgs> GetTestFrameworks;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         public event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        //public event EventHandler<SingleEventArgs<string>> SaveProject;
         public event EventHandler<EventArgs> UnloadTestPackage;
 
         public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
@@ -317,6 +314,7 @@ namespace Gallio.Icarus.Adapter
 
         private void SaveProjectEventHandler(object sender, SingleEventArgs<string> e)
         {
+            projectFolder = Path.GetDirectoryName(e.Arg);
             XmlSerializationUtils.SaveToXml(project, e.Arg);
         }
 

@@ -93,28 +93,17 @@ namespace Gallio.Icarus.Controls
             get { return (TestTreeNode)Nodes[0]; }
         }
 
-        private Image GetTestStatusIcon(TestStatus testStatus)
-        {
-            switch (testStatus)
-            {
-                case TestStatus.Failed:
-                    return global::Gallio.Icarus.Properties.Resources.cross;
-                case TestStatus.Passed:
-                    return global::Gallio.Icarus.Properties.Resources.tick;
-                case TestStatus.Skipped:
-                    return global::Gallio.Icarus.Properties.Resources.error;
-                default:
-                    return null;
-            }
-        }
-
         public void ResetTestStatus()
         {
             foreach (Node node in Nodes)
-            {
-                if (node is TestTreeNode)
-                    ((TestTreeNode)node).TestStatus = TestStatus.Inconclusive;
-            }
+                ResetTestStatus(node);
+        }
+
+        private void ResetTestStatus(Node node)
+        {
+            ((TestTreeNode)node).TestStatus = TestStatus.Inconclusive;
+            foreach (Node n in node.Nodes)
+                ResetTestStatus(n);
         }
 
         public void UpdateTestStatus(string testId, TestStatus testStatus)
@@ -123,7 +112,6 @@ namespace Gallio.Icarus.Controls
             foreach (TestTreeNode node in nodes)
             {
                 node.TestStatus = testStatus;
-                node.TestStatusIcon = GetTestStatusIcon(testStatus);
                 Filter(node);
             }
         }

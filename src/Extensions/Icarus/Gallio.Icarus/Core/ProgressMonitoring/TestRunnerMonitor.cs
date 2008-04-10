@@ -15,12 +15,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring
 {
@@ -28,16 +32,20 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
     {
         private readonly ReportMonitor reportMonitor;
         private readonly IProjectPresenter presenter;
+        private readonly string reportFolder;
 
-        public TestRunnerMonitor(IProjectPresenter presenter, ReportMonitor reportMonitor)
+        public TestRunnerMonitor(IProjectPresenter presenter, ReportMonitor reportMonitor, string reportFolder)
         {
             if (presenter == null)
                 throw new ArgumentNullException(@"presenter");
             if (reportMonitor == null)
                 throw new ArgumentNullException(@"reportMonitor");
+            if (string.IsNullOrEmpty(reportFolder))
+                throw new ArgumentException(@"reportFolder");
 
             this.presenter = presenter;
             this.reportMonitor = reportMonitor;
+            this.reportFolder = reportFolder;
         }
 
         /// <inheritdoc />
@@ -56,14 +64,23 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
         private void HandleStepFinished(object sender, TestStepRunEventArgs e)
         {
-            // Ignore tests that aren't test cases.
-            // FIXME: This code is not a good idea because it will cause failures and other
-            //        information recorded about non-test cases (like fixtures) to be disregarded
-            //        which could make it very difficult for a user to understand what broke.
-            if (!e.TestStepRun.Step.IsTestCase)
-                return;
-
             presenter.Update(e.Test, e.TestStepRun);
+
+            // store attachments as we go along for the execution log viewer!
+            string attachmentDirectory = string.Empty;
+            if (e.TestStepRun.ExecutionLog.Attachments.Count > 0)
+            {
+                attachmentDirectory = Path.Combine(reportFolder, FileUtils.EncodeFileName(e.TestStepRun.Step.Id));
+                if (!Directory.Exists(attachmentDirectory))
+                    Directory.CreateDirectory(attachmentDirectory);
+            }
+
+            foreach (ExecutionLogAttachment ela in e.TestStepRun.ExecutionLog.Attachments)
+            {
+                string fileName = Path.Combine(attachmentDirectory, FileUtils.EncodeFileName(ela.Name));
+                using (FileStream fs = File.Open(fileName, FileMode.Create, FileAccess.Write))
+                    ela.SaveContents(fs, Encoding.Default);
+            }
         }
     }
 }

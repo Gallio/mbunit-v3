@@ -133,27 +133,6 @@
           <htmlReportFormatter>${ReportFormatter.Html}</htmlReportFormatter>
         </parameters>
       </component>
-
-      <component id="ReportFormatter.ExecutionLog"
-           service="Gallio.Runner.Reports.IReportFormatter, Gallio"
-           type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
-        <parameters>
-          <name>ExecutionLog</name>
-          <description>Generates HTML execution logs with inline encoded attachments.</description>
-          <extension>html</extension>
-          <contentType>text/html</contentType>
-          <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
-          <contentUri>plugin://Gallio.Reports/</contentUri>
-          <xsltPath>xsl/Gallio-ExecutionLog.html.xsl</xsltPath>
-          <resourcePaths>
-            <array>
-              <item>css</item>
-              <item>js</item>
-              <item>img</item>
-            </array>
-          </resourcePaths>
-        </parameters>
-      </component>
     </components>
   </castle>
 </configuration>

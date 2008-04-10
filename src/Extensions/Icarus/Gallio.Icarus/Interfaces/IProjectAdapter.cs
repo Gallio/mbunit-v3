@@ -38,14 +38,14 @@ namespace Gallio.Icarus.Core.Interfaces
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         event EventHandler<SingleEventArgs<string>> GetExecutionLog;
         event EventHandler<EventArgs> UnloadTestPackage;
-        TestModelData TestModelData { set; }
+        TestModelData TestModelData { get; set; }
         Project Project { get; set; }
         string StatusText { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
         IList<string> TestFrameworks { set; }
         Exception Exception { set; }
-        string ExecutionLog { set; }
+        Stream ExecutionLog { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         void DataBind(string mode);

@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Tests.Core.ProgressMonitoring
         [Test, ExpectedArgumentNullException("presenter")]
         public void NullPresenter_Test()
         {
-            TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(null, null);
+            TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(null, null, string.Empty);
         }
 
         [Test, ExpectedArgumentNullException("reportMonitor")]
@@ -36,7 +36,7 @@ namespace Gallio.Icarus.Tests.Core.ProgressMonitoring
         {
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
             mocks.ReplayAll();
-            TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(projectPresenter, null);
+            TestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(projectPresenter, null, string.Empty);
         }
     }
 }
