@@ -34,12 +34,14 @@
 
   <PropertyGroup>
     <BuildDependsOn>
+      CreateBuildDir;
       RecursiveBeforeBuild;
       BuildCSharpProjects;
       RecursiveAfterBuild;
       CopyFiles
     </BuildDependsOn>
     <RebuildDependsOn>
+      CreateBuildDir;
       RecursiveBeforeBuild;
       RebuildCSharpProjects;
       RecursiveAfterBuild;
